@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package berty.entity;
+
+option go_package = "github.com/berty/berty/core/api/entity";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+message Contact {
+  enum Status {
+    Unknown = 0;
+    IsFriend = 1;
+    IsTrustedFriend = 2;
+    IsRequested = 3;
+    RequestedMe = 4;
+    IsBlocked = 5;
+    Myself = 42;
+  }
+
+  //
+  // gorm fields
+  //
+
+  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp deleted_at = 4 [(gogoproto.stdtime) = true];
+
+  //
+  // internal fields
+  //
+
+  Status status = 10;
+  // Sigchain sigchain = 11;
+
+  //
+  // profile fields
+  //
+
+  string display_name = 20;
+  string display_status = 11;
+}

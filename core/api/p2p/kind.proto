@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package berty.p2p;
+
+import "api/entity/contact.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/berty/berty/core/api/p2p";
+
+enum Kind {
+  Unknown = 0;
+
+  //
+  // System events
+  //
+
+  // Sent events are used by the UI.
+  Sent = 101;
+
+  // Ack events are created and sent after receiving an event from a peer.
+  Ack = 102;
+
+  // Ping events can be use to check and measure the availability of a peer.
+  Ping = 103;
+
+  //
+  // Contact events
+  //
+
+  ContactRequest = 201;
+  ContactRequestAccepted = 202;
+  ContactShareMe = 203;
+  ContactShare = 204;
+
+  //
+  // Conversation events
+  //
+
+  /*
+  ConversationCreate = 301;
+  ConversationDelete = 302;
+  ConversationLeave = 303;
+  ConversationInvite = 304;
+  ConversationSetTitle = 305;
+  ConversationAcceptInvite = 306;
+  ConversationRefuseInvite = 307;
+  ConversationNewMessage = 308;
+  ...
+  */
+}
+
+//
+// System events
+//
+
+message SentAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
+message AckAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
+message PingAttrs {}
+
+//
+// Contact events
+//
+
+message ContactRequestAttrs { berty.entity.Contact me = 1; string intro_message = 2; }
+message ContactRequestAcceptedAttrs { }
+message ContactShareMeAttrs { berty.entity.Contact me = 1; }
+message ContactShareAttrs { berty.entity.Contact contact = 1; }
