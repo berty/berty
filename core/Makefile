@@ -21,3 +21,8 @@ clean:
 
 .PHONY: generate
 generate: $(GENERATED_FILES)
+
+.PHONY: _ci_prepare
+_ci_prepare:
+	@# touching files to avoid regenerating files based on modification date
+	touch $(GENERATED_FILES)
