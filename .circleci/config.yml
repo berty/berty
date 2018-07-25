@@ -1,0 +1,50 @@
+version: 2
+
+.golang_workspace: &golang_workspace
+  working_directory: /go/src/github.com/berty/berty
+  environment:
+    GOPATH: /go
+    GOTEST_TIMEOUT: 1m
+  docker:
+    - image: circleci/golang:latest
+
+jobs:
+  core.go.test:
+    <<: *golang_workspace
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-go-cache
+      - run:
+          name: prepare CI
+          command: |
+            (cd core; make _ci_prepare)
+            mkdir -p /tmp/test-results
+            go get github.com/jstemmer/go-junit-report
+      #- run:
+      #    name: install core
+      #    command: |
+      #      cd core
+      #      make install
+      - run:
+          name: test core
+          command: |
+            cd core
+            make test | tee /tmp/test-results/go-test-report.out
+      - run:
+          name: junit-report
+          command: |
+            go-junit-report < /tmp/test-results/go-test-report.out > /tmp/test-results/go-test-report.xml
+      - save_cache:
+          key: v1-go-cache
+          paths:
+            - "/go/pkg"
+      - store_test_results:
+          path: /tmp/test-results
+
+workflows:
+  version: 2
+  commit:
+    jobs:
+      - core.go.test
