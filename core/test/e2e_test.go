@@ -12,7 +12,7 @@ import (
 	"github.com/berty/berty/core/api/node"
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/network/drivermock"
+	"github.com/berty/berty/core/network/mock"
 )
 
 func TestWithSimpleNetwork(t *testing.T) {
@@ -44,7 +44,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 		}
 
 		Convey("Initialize nodes", FailureHalts, func() {
-			network := drivermock.NewSimple()
+			network := mock.NewSimple()
 			aliceNetwork := network.Driver()
 			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, aliceNetwork)
 			So(err, ShouldBeNil)
@@ -313,13 +313,13 @@ func TestWithEnqueuer(t *testing.T) {
 
 	Convey("End-to-end test (with enqueuer network mock)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
-			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, drivermock.NewEnqueuer())
+			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
 
-			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, drivermock.NewEnqueuer())
+			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
 
-			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, drivermock.NewEnqueuer())
+			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
 		})
 
@@ -437,7 +437,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(len(contacts[1].Devices), ShouldEqual, 0)
 			})
 			Convey("Alice sends a ContactRequest event to Bob", FailureHalts, func() {
-				event := <-alice.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.Author(), ShouldEqual, alice.node.UserID())
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
@@ -478,7 +478,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 0, 0, 0})
 			})
 			Convey("Bob replies an Ack event to Alice's ContactRequest", FailureHalts, func() {
-				event := <-bob.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.Author(), ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -528,7 +528,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 2, 0, 0, 0})
 			})
 			Convey("Bob sends a ContactRequestAccepted event to Alice", FailureHalts, func() {
-				event := <-bob.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -553,7 +553,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 0, 0, 0})
 			})
 			Convey("Bob sends a ContactShareMe event to Alice", FailureHalts, func() {
-				event := <-bob.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
@@ -580,7 +580,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 0, 0, 0, 0, 0})
 			})
 			Convey("Alice sends a ContactShareMe event to Bob", FailureHalts, func() {
-				event := <-alice.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
@@ -597,7 +597,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 1, 0, 0})
 			})
 			Convey("Alice replies an Ack event to Bob's ContactRequestAccepted", FailureHalts, func() {
-				event := <-alice.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
@@ -612,7 +612,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 1, 0, 0})
 			})
 			Convey("Alice replies an Ack event to Bob's ContactShareMe", FailureHalts, func() {
-				event := <-alice.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
@@ -627,7 +627,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
 			})
 			Convey("Bob replies an Ack event to Alice's ContactShareMe", FailureHalts, func() {
-				event := <-bob.networkDriver.(*drivermock.Enqueuer).Queue()
+				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())

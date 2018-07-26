@@ -7,6 +7,5 @@ func GetFreeTCPPort() (int, error) {
 	if err != nil {
 		return 0, err
 	}
-
 	return l.Addr().(*net.TCPAddr).Port, l.Close()
 }
