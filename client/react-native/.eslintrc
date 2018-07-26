@@ -1,0 +1,34 @@
+{
+  "parser": "babel-eslint",
+    "extends": [
+      "eslint:recommended",
+      "typescript",
+      "typescript/react",
+      "standard",
+      "standard-react",
+    ],
+    "plugins": [
+      "react",
+      "jsx-a11y",
+      "import",
+      "typescript",
+    ],
+    "rules": {
+      "no-console": "off",
+      "linebreak-style": "off",
+      "comma-dangle": [
+        "off",
+        "always-multiline"
+      ],
+      "no-multi-spaces": "off",
+      "no-unused-vars": "error",
+      "react/prop-types": "off",
+      "react/display-name": "warn",
+      "react/no-unused-prop-types": "off",
+      "no-invalid-this": "off",
+      "func-style": "off",
+      "class-methods-use-this": "off",
+      "typescript/no-use-before-define": "off",
+      "require-jsdoc": "off",
+    }
+}
