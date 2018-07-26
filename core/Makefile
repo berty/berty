@@ -4,13 +4,16 @@ CODE_PATHS = $(filter-out node_modules/,$(wildcard */))
 PROTOS = $(call rwildcard, $(CODE_PATHS), *.proto)
 GENERATED_FILES = $(patsubst %.proto,%.pb.go,$(PROTOS))
 PROTOC_OPTS = --proto_path=../vendor:../vendor/github.com/gogo/protobuf:.
+CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
+CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
+BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 
 .PHONY: all
 all: test
 
 .PHONY: test
 test: generate
-	go test -test.timeout 30s -v ./...
+	$(BUILD_ENV) go test -test.timeout 30s -v ./...
 
 %.pb.go: %.proto
 	protoc $(PROTOC_OPTS) --gofast_out=plugins=grpc:"$(GOPATH)/src" "$(dir $<)"/*.proto
