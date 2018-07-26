@@ -43,6 +43,11 @@ jobs:
             (cd core; make _ci_prepare)
             mkdir -p /tmp/test-results
             go get github.com/jstemmer/go-junit-report
+      - run:
+          name: install openssl 1.0.x
+          command: |
+            sudo apt-get update
+            sudo apt-get install libssl1.0-dev
       #- run:
       #    name: install core
       #    command: |
