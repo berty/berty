@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package berty.node;
+
+import "api/p2p/event.proto";
+import "api/entity/contact.proto";
+
+option go_package = "github.com/berty/berty/core/api/node";
+
+service BertyNode {
+
+  //
+  // Events
+  //
+
+  rpc EventStream(Void) returns (stream berty.p2p.Event);  // yield new events in real-time
+  rpc EventList(Void) returns (stream berty.p2p.Event);    // list old events
+
+  //
+  // Contacts
+  //
+
+  rpc ContactRequest(ContactRequestInput) returns (berty.entity.Contact);
+  rpc ContactAcceptRequest(berty.entity.Contact) returns (berty.entity.Contact);
+  rpc ContactRemove(berty.entity.Contact) returns (berty.entity.Contact);
+  rpc ContactUpdate(berty.entity.Contact) returns (berty.entity.Contact);
+  rpc ContactList(Void) returns (stream berty.entity.Contact);
+
+  //
+  // Conversations
+  //
+
+  // TODO...
+}
+
+message ContactRequestInput {
+  berty.entity.Contact contact = 1;
+  string intro_message = 2;
+}
+
+message Void {}

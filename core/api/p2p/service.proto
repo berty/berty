@@ -6,7 +6,7 @@ option go_package = "github.com/berty/berty/core/api/p2p";
 
 import "api/p2p/event.proto";
 
-service Berty {
+service BertyP2P {
   rpc Handle(Event) returns (Void) {};
 }
 
