@@ -1,0 +1,24 @@
+{
+  "author": "multiformats",
+  "bugs": {
+    "url": "https://github.com/multiformats/go-multiaddr-net"
+  },
+  "gx": {
+    "dvcsimport": "github.com/multiformats/go-multiaddr-net"
+  },
+  "gxDependencies": [
+    {
+      "author": "multiformats",
+      "hash": "QmUxSEGbv2nmYNnfXi7839wwQqTN3kwQeUxe8dTjZWZs7J",
+      "name": "go-multiaddr",
+      "version": "1.2.7"
+    }
+  ],
+  "gxVersion": "0.6.0",
+  "language": "go",
+  "license": "",
+  "name": "go-multiaddr-net",
+  "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
+  "version": "1.6.2"
+}
+
