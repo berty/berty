@@ -1,0 +1,16 @@
+# https://github.com/go-task/task
+
+dl-deps:
+  desc: Downloads cli dependencies
+  cmds:
+    - go get -u github.com/golang/lint/golint
+
+lint:
+  desc: Runs golint on this project
+  cmds:
+    - golint .
+
+test:
+  desc: Runs automated tests for this project
+  cmds:
+    - go test -v .

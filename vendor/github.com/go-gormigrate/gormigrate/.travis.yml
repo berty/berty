@@ -1,0 +1,8 @@
+language: go
+go:
+  - 1.8
+script:
+  - go get -v -u github.com/go-task/task/cmd/task
+  - task dl-deps
+  - task lint
+  - task test
