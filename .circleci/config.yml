@@ -9,6 +9,27 @@ version: 2
     - image: circleci/golang:latest
 
 jobs:
+  project.lint:
+    <<: *golang_workspace
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-go-cache
+      - run:
+          name: prepare CI
+          command: |
+            (cd core; make _ci_prepare)
+            go get -u gopkg.in/alecthomas/gometalinter.v2
+            gometalinter.v2 -i -u
+      - run:
+          name: lint
+          command: make lint
+      - save_cache:
+          key: v1-go-cache
+          paths:
+            - "/go/pkg"
+
   core.go.test:
     <<: *golang_workspace
     steps:
@@ -47,4 +68,5 @@ workflows:
   version: 2
   commit:
     jobs:
+      - project.lint
       - core.go.test
