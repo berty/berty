@@ -31,3 +31,21 @@
 [prune]
   go-tests = true
   unused-packages = true
+
+## multiformats
+
+[[override]]
+  name = "github.com/multiformats/go-multihash"
+  revision = "8be2a682ab9f254311de1375145a2f78a809b07d" # gx revision 1.0.8
+
+[[override]]
+  name = "github.com/multiformats/go-multiaddr-net"
+  revision = "cba4f9fea8613343eb7ecc4ddadd8e7298a00c39" # gx revision 1.6.3
+
+[[override]]
+  name = "github.com/multiformats/go-multiaddr"
+  revision = "2b4e098f3e0aa2c8bc960f0e4bdc3247efc3749c" # gx revision 1.3.0
+
+[[override]]
+  name = "github.com/multiformats/go-multiaddr-dns"
+  revision = "78f39e8892d4f8c5c9f18679cc06d0b40ecab8cf" # gx revision ??? (current upstream) (previous revision 0.2.4)

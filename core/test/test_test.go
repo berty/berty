@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/berty/berty/core/network/drivermock"
+	"github.com/berty/berty/core/network/mock"
 )
 
 func init() {
@@ -62,7 +62,7 @@ func nodeChansLens(apps ...*AppMock) []int {
 	time.Sleep(1 * time.Millisecond) // FIXME: wait for an event instead of waiting for a fixed time
 	out := []int{}
 	for _, app := range apps {
-		out = append(out, len(app.networkDriver.(*drivermock.Enqueuer).Queue()))
+		out = append(out, len(app.networkDriver.(*mock.Enqueuer).Queue()))
 		out = append(out, len(app.node.ClientEventsChan()))
 	}
 	return out
