@@ -48,11 +48,11 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install libssl1.0-dev
-      #- run:
-      #    name: install core
-      #    command: |
-      #      cd core
-      #      make install
+      - run:
+          name: install core
+          command: |
+            cd core
+            make install
       - run:
           name: test core
           command: |
