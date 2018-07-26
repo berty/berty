@@ -103,7 +103,7 @@ func (h *Host) NewStream(ctx context.Context, p peer.ID, protos ...protocol.ID) 
 	selected, err := mstream.SelectOneOf(protoStrs, s)
 	if err != nil {
 		if errClose := s.Close(); errClose != nil {
-			zap.L().Error("An occured while closing a stream", zap.Error(errClose))
+			zap.L().Error("An occurred while closing a stream", zap.Error(errClose))
 		}
 		return nil, err
 	}
