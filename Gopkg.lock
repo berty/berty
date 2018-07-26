@@ -38,6 +38,12 @@
   revision = "0892b62f0d9fb5857760c3cfca837207185117ee"
 
 [[projects]]
+  name = "github.com/inconshreveable/mousetrap"
+  packages = ["."]
+  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
+  version = "v1.0"
+
+[[projects]]
   name = "github.com/jinzhu/gorm"
   packages = ["."]
   revision = "6ed508ec6a4ecb3531899a69cbc746ccf65a4166"
@@ -80,6 +86,18 @@
   ]
   revision = "9e8dc3f972df6c8fcc0375ef492c24d0bb204857"
   version = "1.6.3"
+
+[[projects]]
+  name = "github.com/spf13/cobra"
+  packages = ["."]
+  revision = "ef82de70bb3f60c65fb8eebacbb2d122ef517385"
+  version = "v0.0.3"
+
+[[projects]]
+  name = "github.com/spf13/pflag"
+  packages = ["."]
+  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/xeodou/go-sqlcipher"
@@ -163,6 +181,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7de6da849df5d2d933a42e223f1af4f416e80cfd037a480c1fdc046494a865ad"
+  inputs-digest = "2855bb64427b9d8edd5d8bb8f5cff4690184e6d7cfb501737a5c2c96f88d1a4e"
   solver-name = "gps-cdcl"
   solver-version = 1
