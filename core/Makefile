@@ -9,7 +9,11 @@ CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 
 .PHONY: all
-all: test
+all: install
+
+.PHONY: install
+install:
+	go install -v ./cmd/...
 
 .PHONY: test
 test: generate
