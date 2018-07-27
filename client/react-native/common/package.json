@@ -1,0 +1,6 @@
+{
+  "name": "@berty/common",
+  "version": "0.0.1",
+  "description": "Berty's react native common",
+  "main": "index.js"
+}
