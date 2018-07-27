@@ -1,0 +1,4 @@
+.git/
+client/
+node_modules/
+gin-bin
