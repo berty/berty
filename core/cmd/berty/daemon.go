@@ -10,6 +10,7 @@ import (
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
@@ -76,7 +77,7 @@ func daemon(opts *daemonOptions) error {
 	if !opts.hideBanner {
 		fmt.Println(banner)
 	}
-	log.Printf("listening on %s", opts.bind)
+	zap.L().Info("grpc server started", zap.String("bind", opts.bind))
 
 	// start node
 	go func() {
