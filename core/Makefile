@@ -13,7 +13,7 @@ all: install
 
 .PHONY: install
 install: generate
-	go install -v ./cmd/...
+	$(BUILD_ENV) go install -v ./cmd/...
 
 .PHONY: test
 test: generate
