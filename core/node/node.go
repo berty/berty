@@ -1,8 +1,14 @@
 package node
 
-type Node struct{}
+import "github.com/jinzhu/gorm"
 
-func New(opts ...nodeOptions) *Node {
+// Node is the top-level object of a Berty peer
+type Node struct {
+	db *gorm.DB
+}
+
+// New initializes a new Node object
+func New(opts ...NewNodeOption) *Node {
 	n := &Node{}
 
 	for _, opt := range opts {
@@ -11,4 +17,10 @@ func New(opts ...nodeOptions) *Node {
 	return n
 }
 
-type nodeOptions func(n *Node)
+// Start is the node's mainloop
+func (n *Node) Start() error {
+	select {}
+}
+
+// NewNodeOption is a callback used to configure a Node during intiailization phase
+type NewNodeOption func(n *Node)
