@@ -12,7 +12,7 @@ BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 all: install
 
 .PHONY: install
-install:
+install: generate
 	go install -v ./cmd/...
 
 .PHONY: test
