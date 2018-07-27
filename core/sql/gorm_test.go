@@ -5,8 +5,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/berty/berty/core/sql/sqlcipher"
 	. "github.com/smartystreets/goconvey/convey"
+
+	"github.com/berty/berty/core/sql/sqlcipher"
 )
 
 func TestInit(t *testing.T) {
