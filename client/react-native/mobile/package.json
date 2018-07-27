@@ -1,0 +1,13 @@
+{
+  "name": "@berty/mobile",
+  "version": "0.0.1",
+  "scripts": {
+    "postinstall": "mkdir -p node_modules/@berty && yarn link:react-native && yarn link:berty",
+    "start": "lsof -t -i :8081 || react-native start --reset-cache --root $PWD &",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "jest",
+    "link:react-native": "ln -fs ../../node_modules/react-native node_modules/react-native",
+    "link:berty": "ln -fs ../../../common node_modules/@berty/common"
+  }
+}

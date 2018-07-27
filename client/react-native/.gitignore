@@ -1,0 +1,123 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# junk files
+#
+*~
+*#
+.#*
+.DS_Store
+gin-bin
+
+# OSX
+#
+.DS_Store
+
+## Gomobile
+#
+ios/core.framework
+ios/ipfs.framework # remove me when we are done with the core framework
+android/app/libs/ipfs.aar
+
+# Xcode
+#
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.ipa.meta
+*.xcuserstate
+project.xcworkspace
+*.dSYM.zip
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# BUCK
+buck-out/
+\.buckd/
+*.keystore
+
+# Firebase
+google-services.json
+
+# fastlane
+#
+# It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
+# screenshots whenever they are needed.
+# For more information about the recommended setup visit:
+# https://docs.fastlane.tools/best-practices/source-control/
+
+*/fastlane/report.xml
+*/fastlane/Preview.html
+*/fastlane/screenshots
+
+# gradle (additionals)
+android/app/build/
+android/app/libs/
+android/app/gradle/
+android/app/gradlew
+android/app/gradlew.bat
+
+# fastlane (additionals)
+fastlane/Appfile
+fastlane/Matchfile
+
+# Gomobile
+!android/app/libs/*.aar
+gomobile/vendor
+gomobile/bin
+gomobile/_vendor-*
+gomobile/tags
+android/libs/
+ios/libs/
+
+# mobile
+shim.js
+
+# GoGrpc framework
+ios/core.framework
+android/app/libs/core.aar
+
+# Go template
+.tmp/
+
+# Optional eslint cache
+.eslintcache
+
+# VScode
+jsconfig.json
+
+# Cocoapods
+*.xcworkspace/
+
+# certificates
+*.ud.wulo.ios.p12
+
+# package-lock.json files
+package-lock.json
+
+# Environment
+.env.debug
+.env.release

@@ -1,0 +1,10 @@
+{
+  "name": "@berty/gomobile",
+  "version": "0.0.1",
+  "description": "Berty's react native gomobile",
+  "scripts": {
+    "postinstall": "make build",
+    "babel-plugin-import": "^1.8.0",
+    "start": "true"
+  }
+}
