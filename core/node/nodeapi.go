@@ -6,8 +6,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/entity"
 	"github.com/berty/berty/core/api/node"
+	"github.com/berty/berty/core/entity"
 )
 
 // WithNodeGrpcServer registers the Node as a 'berty.node' protobuf server implementation
