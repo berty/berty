@@ -4,7 +4,7 @@ BIN = $(GOPATH)/bin/berty
 CODE_PATHS = $(filter-out node_modules/,$(wildcard */))
 PROTOS = $(call rwildcard, $(CODE_PATHS), *.proto)
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
-GENERATED_FILES = $(patsubst %.proto,%.pb.go,$(PROTOS)) client/berty.node.service.gen.go $(rwildcard $(CODE_PATHS),*.gen.go)
+GENERATED_FILES = $(patsubst %.proto,%.pb.go,$(PROTOS)) client/berty.node.service.gen.go $(call rwildcard $(CODE_PATHS), *.gen.go)
 PROTOC_OPTS = --proto_path=../vendor:../vendor/github.com/gogo/protobuf:.
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
@@ -51,8 +51,10 @@ _ci_prepare:
 %.pb.go: %.proto
 	protoc $(PROTOC_OPTS) --gofast_out=plugins=grpc:"$(GOPATH)/src" "$(dir $<)"/*.proto
 
+# FIXME: use an automated rule that matches every client generated files
 client/berty.node.service.gen.go: $(PROTOS)
-	for protodir in $(dir $(SERVICE_PROTOS)); do \
+	@# FIXME: implement `uniq` in make
+	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
 	  protoc $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./client:./client $$protodir/*.proto; \
-	done
+	); done
 	goimports -w ./client/
