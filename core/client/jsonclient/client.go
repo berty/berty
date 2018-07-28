@@ -8,32 +8,32 @@ import (
 	"github.com/berty/berty/core/client"
 )
 
-type unaryJsonMethod func(*client.Client, context.Context, []byte) (interface{}, error)
+type unaryCallback func(*client.Client, context.Context, []byte) (interface{}, error)
 
-var methodMapping map[string]unaryJsonMethod
+var unaryMap map[string]unaryCallback
 
-func registerMethod(name string, method unaryJsonMethod) {
-	if methodMapping == nil {
-		methodMapping = make(map[string]unaryJsonMethod)
+func registerUnary(name string, endpoint unaryCallback) {
+	if unaryMap == nil {
+		unaryMap = make(map[string]unaryCallback)
 	}
-	methodMapping[name] = method
+	unaryMap[name] = endpoint
 }
 
-func Call(c *client.Client, ctx context.Context, method string, jsonInput []byte) (interface{}, error) {
+func Call(ctx context.Context, c *client.Client, endpoint string, jsonInput []byte) (interface{}, error) {
 	if jsonInput == nil {
 		jsonInput = []byte("{}")
 	}
-	for name, handler := range methodMapping {
-		if strings.ToLower(name) == strings.ToLower(method) {
+	for name, handler := range unaryMap {
+		if strings.ToLower(name) == strings.ToLower(endpoint) {
 			return handler(c, ctx, jsonInput)
 		}
 	}
-	return nil, fmt.Errorf("unknown method: %q", method)
+	return nil, fmt.Errorf("unknown endpoint: %q", endpoint)
 }
 
-func AvailableMethods() []string {
+func Unaries() []string {
 	names := []string{}
-	for name := range methodMapping {
+	for name := range unaryMap {
 		names = append(names, name)
 	}
 	return names

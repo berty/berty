@@ -24,7 +24,7 @@ import (
   func init() {
      {{- range $method := .Method }}
      {{- if and (not .ClientStreaming) (not .ServerStreaming)}}
-     registerMethod("{{$file.Package}}.{{$method.Name}}", {{$file.Package|splitList "."|last|title}}{{$method.Name}})
+     registerUnary("{{$file.Package}}.{{$method.Name}}", {{$file.Package|splitList "."|last|title}}{{$method.Name}})
      {{- else}}
      // FIXME: support "{{$file.Package}}.{{$method.Name}}" streaming
      {{- end}}
