@@ -6,7 +6,7 @@ import (
 	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 
-	"github.com/berty/berty/core/api/entity"
+	"github.com/berty/berty/core/entity"
 )
 
 // Init configures an active gorm connection
