@@ -16,10 +16,10 @@ import (
 func init() {
 	// FIXME: support "berty.node.EventStream" streaming
 	// FIXME: support "berty.node.EventList" streaming
-	registerMethod("berty.node.ContactRequest", NodeContactRequest)
-	registerMethod("berty.node.ContactAcceptRequest", NodeContactAcceptRequest)
-	registerMethod("berty.node.ContactRemove", NodeContactRemove)
-	registerMethod("berty.node.ContactUpdate", NodeContactUpdate)
+	registerUnary("berty.node.ContactRequest", NodeContactRequest)
+	registerUnary("berty.node.ContactAcceptRequest", NodeContactAcceptRequest)
+	registerUnary("berty.node.ContactRemove", NodeContactRemove)
+	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
 	// FIXME: support "berty.node.ContactList" streaming
 }
 

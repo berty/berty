@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	registerMethod("berty.p2p.Handle", P2pHandle)
+	registerUnary("berty.p2p.Handle", P2pHandle)
 }
 
 func P2pHandle(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
