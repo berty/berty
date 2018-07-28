@@ -6,6 +6,7 @@ import (
 	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 
+	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 )
 
@@ -22,6 +23,7 @@ func Init(db *gorm.DB) (*gorm.DB, error) {
 			ID: "1",
 			Migrate: func(tx *gorm.DB) error {
 				return tx.AutoMigrate(
+					p2p.Event{},
 					entity.Contact{},
 				).Error
 			},
