@@ -33,6 +33,10 @@ $(BIN): $(GENERATED_FILES) $(SOURCES)
 test: generate
 	$(BUILD_ENV) go test -test.timeout 30s -v ./...
 
+.PHONY: lint
+lint: generate
+	gometalinter.v2 --config=../.gometalinter.json ./...
+
 .PHONY: clean
 clean:
 	rm -f $(GENERATED_FILES) $(BIN)

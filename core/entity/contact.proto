@@ -39,5 +39,8 @@ message Contact {
   //
 
   string display_name = 20;
-  string display_status = 11;
+  string display_status = 21;
+
+  string override_display_name = 120;
+  string override_display_status = 121;
 }

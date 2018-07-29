@@ -14,3 +14,7 @@ func (c *Contact) Filtered() *Contact {
 		// FIXME: share sigchain
 	}
 }
+
+func (c *Contact) PeerID() string {
+	return c.ID // FIXME: use sigchain
+}
