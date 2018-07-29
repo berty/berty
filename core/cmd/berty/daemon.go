@@ -64,11 +64,14 @@ func daemon(opts *daemonOptions) error {
 	}
 
 	// initialize node
-	n := node.New(
+	n, err := node.New(
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
 		node.WithSQL(db),
 	)
+	if err != nil {
+		return errors.Wrap(err, "failed to initialize node")
+	}
 
 	// start grpc server(s)
 	go func() {
