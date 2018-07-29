@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.entity;
 
-option go_package = "github.com/berty/berty/core/api/entity";
+option go_package = "github.com/berty/berty/core/entity";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";

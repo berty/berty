@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.node;
 
 import "api/p2p/event.proto";
-import "api/entity/contact.proto";
+import "entity/contact.proto";
 
 option go_package = "github.com/berty/berty/core/api/node";
 
