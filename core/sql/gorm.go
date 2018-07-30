@@ -14,7 +14,6 @@ import (
 func Init(db *gorm.DB) (*gorm.DB, error) {
 	db = db.Set("gorm:auto_preload", true)
 	db = db.Set("gorm:association_autoupdate", false)
-	db.LogMode(true)
 
 	// FIXME: configure zap logger
 	// FIXME: configure hard delete
@@ -38,6 +37,9 @@ func Init(db *gorm.DB) (*gorm.DB, error) {
 	if err := m.Migrate(); err != nil {
 		return nil, err
 	}
+
+	db.SetLogger(&zapLogger{})
+	db.LogMode(true)
 
 	return db, nil
 }
