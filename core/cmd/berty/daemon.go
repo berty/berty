@@ -21,10 +21,11 @@ import (
 )
 
 type daemonOptions struct {
-	bind       string
-	hideBanner bool
-	sqlPath    string
-	sqlKey     string
+	bind         string
+	hideBanner   bool
+	sqlPath      string
+	sqlKey       string
+	dropDatabase bool
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -40,6 +41,7 @@ func newDaemonCommand() *cobra.Command {
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.StringVarP(&opts.sqlPath, "sql-path", "", "/tmp/berty.db", "sqlcipher database path")
 	flags.StringVarP(&opts.sqlKey, "sql-key", "", "s3cur3", "sqlcipher database encryption key")
+	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	return cmd
 }
 
@@ -62,6 +64,14 @@ func daemon(opts *daemonOptions) error {
 	defer db.Close()
 	if db, err = sql.Init(db); err != nil {
 		return errors.Wrap(err, "failed to initialize sql")
+	}
+	if opts.dropDatabase {
+		if err = sql.DropDatabase(db); err != nil {
+			return errors.Wrap(err, "failed to drop database")
+		}
+	}
+	if err = sql.Migrate(db); err != nil {
+		return errors.Wrap(err, "failed to apply sql migrations")
 	}
 
 	// initialize node
