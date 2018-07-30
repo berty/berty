@@ -26,7 +26,7 @@ run: $(BIN)
 .PHONY: install
 install: $(BIN)
 
-$(BIN): $(GENERATED_FILES) $(SOURCES)
+$(BIN): generate $(SOURCES)
 	$(BUILD_ENV) go install -v ./cmd/...
 
 .PHONY: test

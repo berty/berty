@@ -6,16 +6,13 @@ option go_package = "github.com/berty/berty/core/entity";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
-import "entity/device.proto";
 
-message Contact {
+message Device {
   enum Status {
     Unknown = 0;
-    IsFriend = 1;
-    IsTrustedFriend = 2;
-    IsRequested = 3;
-    RequestedMe = 4;
-    IsBlocked = 5;
+    Connected = 1;
+    Disconnected = 2;
+    Available = 3;
     Myself = 42;
   }
 
@@ -29,29 +26,21 @@ message Contact {
   google.protobuf.Timestamp deleted_at = 4 [(gogoproto.stdtime) = true];
 
   //
+  // metadata fields
+  //
+
+  string name = 5;
+
+  //
   // internal fields
   //
 
   Status status = 10;
+  uint32 api_version = 11;
 
   //
   // association fields
   //
 
-  // Sigchain sigchain = 20;
-  repeated Device devices = 21; // HasMany to Device.Contact
-
-  //
-  // profile fields
-  //
-
-  string display_name = 30;
-  string display_status = 31;
-
-  //
-  // overridable fields
-  //
-
-  string override_display_name = 130;
-  string override_display_status = 131;
+  string contact_id = 12 [(gogoproto.customname) = "ContactID"]; // backref to Contact.Device
 }

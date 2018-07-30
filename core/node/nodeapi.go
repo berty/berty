@@ -65,7 +65,7 @@ func (n *Node) ContactAcceptRequest(_ context.Context, input *entity.Contact) (*
 
 	// send ContactShareMe event
 	event = n.NewContactEvent(contact, p2p.Kind_ContactShareMe)
-	if err := event.SetAttrs(&p2p.ContactShareAttrs{Contact: n.myself.Filtered()}); err != nil {
+	if err := event.SetAttrs(&p2p.ContactShareAttrs{Contact: n.config.Myself.Filtered()}); err != nil {
 		return nil, err
 	}
 	if err := n.EnqueueOutgoingEvent(event); err != nil {
@@ -100,7 +100,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	event := n.NewContactEvent(contact, p2p.Kind_ContactRequest)
 	if err := event.SetAttrs(&p2p.ContactRequestAttrs{
 		Me: &entity.Contact{
-			DisplayName: n.myself.DisplayName,
+			DisplayName: n.config.Myself.DisplayName,
 		},
 		IntroMessage: req.IntroMessage,
 	}); err != nil {
