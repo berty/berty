@@ -11,7 +11,9 @@
     ".*\\.pb\\.go",
     ".*\\.gen\\.go",
     "should have comment or be unexported",
-    "error return value not checked \\(defer"
+    "error return value not checked \\(defer",
+    "jsonPrint is unused",
+    "jsonPrintIndent is unused"
   ],
   "EnableGC": true,
   "Enable": [

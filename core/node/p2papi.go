@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"fmt"
 
 	"google.golang.org/grpc"
 
@@ -18,5 +17,5 @@ func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 
 // Handle implements berty.p2p.Handle
 func (n *Node) Handle(context.Context, *p2p.Event) (*p2p.Void, error) {
-	return nil, fmt.Errorf("not implemented")
+	return nil, ErrNotImplemented
 }

@@ -56,10 +56,8 @@ message Event {
   // Attributes is a nested protobuf message containing per-event-type additional attributes.
   bytes attributes = 14;
 
-  oneof context {
-    // ConversationID needs to be set if the event belongs to a conversation.
-    string conversation_id = 15 [(gogoproto.customname) = "ConversationID"];
-  }
+  // ConversationID needs to be set if the event belongs to a conversation.
+  string conversation_id = 15 [(gogoproto.customname) = "ConversationID"];
 
   //
   // enums

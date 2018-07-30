@@ -46,7 +46,6 @@ func newClientCommand() *cobra.Command {
 }
 
 func clientUnary(opts *clientOptions) error {
-	fmt.Println(opts.endpoint)
 	ctx := context.Background()
 
 	zap.L().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
