@@ -11,6 +11,7 @@ CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 RUN_DAEMON_OPTS ?= --log-level=debug
+TEST_PATHS ?= ./...
 
 ##
 ## phonies
@@ -29,13 +30,20 @@ install: $(BIN)
 $(BIN): generate $(SOURCES)
 	$(BUILD_ENV) go install -v ./cmd/...
 
+.PHONY: testwatch
+testwatch:
+	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
+	trap 'kill $$(jobs -p) 2>/dev/null; exit 0' INT; \
+	  make test || true; \
+	  while true; do watchman-wait . -p "**/*.go"; make test; sleep .3; done
+
 .PHONY: test
 test: generate
-	$(BUILD_ENV) go test -test.timeout 30s -v ./...
+	$(BUILD_ENV) go test -test.timeout 30s -v $(TEST_PATHS)
 
 .PHONY: lint
 lint: generate
-	gometalinter.v2 --config=../.gometalinter.json ./...
+	gometalinter.v2 --config=../.gometalinter.json $(TEST_PATHS)
 
 .PHONY: clean
 clean:
