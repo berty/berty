@@ -1,6 +1,7 @@
 package p2p
 
 import (
+	"encoding/json"
 	"strings"
 	"time"
 )
@@ -43,4 +44,10 @@ func (e Event) Copy() *Event {
 
 func (e Event) Author() string {
 	return strings.Split(e.ID, ":")[0]
+}
+
+func (e Event) ToJSON() string {
+	// FIXME: use jsonpb
+	out, _ := json.Marshal(e)
+	return string(out)
 }
