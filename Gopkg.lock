@@ -601,6 +601,12 @@
   version = "v1.0.1"
 
 [[projects]]
+  name = "github.com/teris-io/shortid"
+  packages = ["."]
+  revision = "6c56cef5189ca1b3d5ef01dc07f4d611dfc0bb33"
+  version = "v1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/whyrusleeping/base32"
   packages = ["."]
@@ -823,6 +829,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "537bc07dd4b59f22cf9139e6c1bbd74b1222d20a0abb273a3d12404ff428fcec"
+  inputs-digest = "0c9bc3d3d4190d3147abba076ad4853734f9bb05b13ecfe1971909c783410471"
   solver-name = "gps-cdcl"
   solver-version = 1
