@@ -57,6 +57,9 @@ func (a *AppMock) Open() error {
 	if a.db, err = sql.Init(a.db); err != nil {
 		return errors.Wrap(err, "failed to initialize sql")
 	}
+	if err = sql.Migrate(a.db); err != nil {
+		return errors.Wrap(err, "failed to apply sql migrations")
+	}
 
 	gs := grpc.NewServer()
 	port, err := netutil.GetFreeTCPPort()
