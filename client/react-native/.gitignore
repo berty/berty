@@ -14,9 +14,8 @@ gin-bin
 
 ## Gomobile
 #
-ios/core.framework
-ios/ipfs.framework # remove me when we are done with the core framework
-android/app/libs/ipfs.aar
+mobile/ios/core.framework
+mobile/android/app/libs/core.aar
 
 # Xcode
 #
