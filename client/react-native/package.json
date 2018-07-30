@@ -4,15 +4,16 @@
   "description": "Berty's react native",
   "dependencies": {
     "react": "^16.4.1",
-    "react-native": "^0.55.2"
+    "react-native": "0.56.0"
   },
   "devDependencies": {
+    "@babel/core": "7.0.0-beta.47",
     "babel-cli": "^6.26.0",
     "babel-core": "6.26.0",
     "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-react-native": "^4.0.0",
+    "babel-preset-react-native": "^5.0.2",
     "babel-preset-stage-0": "^6.24.1",
     "babel-runtime": "6.26.0",
     "eslint": "^5.2.0",
