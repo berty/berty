@@ -1,6 +1,7 @@
 package node
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
@@ -11,6 +12,7 @@ import (
 
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
+	"github.com/berty/berty/core/network"
 )
 
 // Node is the top-level object of a Berty peer
@@ -21,6 +23,7 @@ type Node struct {
 	config         *entity.Config
 	initDevice     *entity.Device
 	handleMutex    sync.Mutex
+	networkDriver  network.Driver
 }
 
 // New initializes a new Node object
@@ -59,7 +62,15 @@ func New(opts ...NewNodeOption) (*Node, error) {
 
 // Start is the node's mainloop
 func (n *Node) Start() error {
-	select {}
+	ctx := context.Background()
+	for {
+		select {
+		case event := <-n.outgoingEvents:
+			if err := n.networkDriver.SendEvent(ctx, event); err != nil {
+				zap.L().Warn("failed to send outgoing event", zap.Error(err), zap.String("event", event.ToJSON()))
+			}
+		}
+	}
 }
 
 // Close closes object initialized by Node itself
@@ -71,7 +82,7 @@ func (n *Node) Close() error {
 
 // Validate returns an error if object is invalid
 func (n *Node) Validate() error {
-	if n == nil || n.sql == nil || n.initDevice == nil {
+	if n == nil || n.sql == nil || n.initDevice == nil || n.networkDriver == nil {
 		return errors.New("missing required fields to create a new Node")
 	}
 	return nil
@@ -93,5 +104,4 @@ func (n *Node) UserID() string {
 	return n.config.Myself.ID
 }
 
-func (n *Node) OutgoingEventsChan() chan *p2p.Event { return n.outgoingEvents }
-func (n *Node) ClientEventsChan() chan *p2p.Event   { return n.clientEvents }
+func (n *Node) ClientEventsChan() chan *p2p.Event { return n.clientEvents }
