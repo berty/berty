@@ -26,12 +26,16 @@ run: $(BIN)
 .PHONY: install
 install: $(BIN)
 
-$(BIN): $(GENERATED_FILES) $(SOURCES)
+$(BIN): generate $(SOURCES)
 	$(BUILD_ENV) go install -v ./cmd/...
 
 .PHONY: test
 test: generate
 	$(BUILD_ENV) go test -test.timeout 30s -v ./...
+
+.PHONY: lint
+lint: generate
+	gometalinter.v2 --config=../.gometalinter.json ./...
 
 .PHONY: clean
 clean:
