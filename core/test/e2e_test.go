@@ -13,7 +13,7 @@ import (
 
 func Test(t *testing.T) {
 	var (
-		alice, bob, eve *DeviceMock
+		alice, bob, eve *AppMock
 		err             error
 		internalCtx     = context.Background()
 	)
@@ -30,13 +30,13 @@ func Test(t *testing.T) {
 	}()
 	Convey("End-to-end test", t, func() {
 		Convey("Initialize nodes", func() {
-			alice, err = NewDeviceMock("Alice's iPhone")
+			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"})
 			So(err, ShouldBeNil)
 
-			bob, err = NewDeviceMock("iPhone de Bob")
+			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"})
 			So(err, ShouldBeNil)
 
-			eve, err = NewDeviceMock("Eve")
+			eve, err = NewAppMock(&entity.Device{Name: "Eve"})
 			So(err, ShouldBeNil)
 		})
 
@@ -57,8 +57,7 @@ func Test(t *testing.T) {
 						So(err, ShouldBeNil)
 						contacts = append(contacts, contact)
 					}
-					So(len(contacts), ShouldEqual, 0) // FIXME: should not, see the next line
-					// FIXME: So(len(contacts), ShouldEqual, 1) // myself is the only known contact
+					So(len(contacts), ShouldEqual, 1)
 				})
 				Convey("Bob should only know istself", FailureHalts, nil)
 				Convey("Eve should only know istself", FailureHalts, nil)
@@ -109,11 +108,11 @@ func Test(t *testing.T) {
 	})
 }
 
-func nodeChansLens(devices ...*DeviceMock) []int {
+func nodeChansLens(apps ...*AppMock) []int {
 	out := []int{}
-	for _, device := range devices {
-		out = append(out, len(device.node.OutgoingEventsChan()))
-		out = append(out, len(device.node.ClientEventsChan()))
+	for _, app := range apps {
+		out = append(out, len(app.node.OutgoingEventsChan()))
+		out = append(out, len(app.node.ClientEventsChan()))
 	}
 	return out
 }

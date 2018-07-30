@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/node"
 	"github.com/berty/berty/core/sql"
 	"github.com/berty/berty/core/sql/sqlcipher"
@@ -68,6 +69,7 @@ func daemon(opts *daemonOptions) error {
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
 		node.WithSQL(db),
+		node.WithDevice(&entity.Device{Name: "bart"}), // FIXME: get device dynamically
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize node")

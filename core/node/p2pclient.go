@@ -8,7 +8,7 @@ import (
 )
 
 func (n *Node) NewContactEvent(destination *entity.Contact, kind p2p.Kind) *p2p.Event {
-	event := p2p.NewOutgoingEvent(n.myself.ID, destination.ID, kind)
+	event := p2p.NewOutgoingEvent(n.config.Myself.ID, destination.ID, kind)
 	event.ID = n.NewID()
 	return event
 }

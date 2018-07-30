@@ -12,14 +12,14 @@ import (
 
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/client"
+	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network/netutil"
 	"github.com/berty/berty/core/node"
 	"github.com/berty/berty/core/sql"
 	"github.com/berty/berty/core/sql/sqlcipher"
 )
 
-type DeviceMock struct {
-	name       string
+type AppMock struct {
 	dbPath     string
 	listener   net.Listener
 	db         *gorm.DB
@@ -27,33 +27,34 @@ type DeviceMock struct {
 	clientConn *grpc.ClientConn
 	client     *client.Client
 	ctx        context.Context
+	device     *entity.Device
 }
 
-func NewDeviceMock(name string) (*DeviceMock, error) {
+func NewAppMock(device *entity.Device) (*AppMock, error) {
 	tmpFile, err := ioutil.TempFile("", "sqlite")
 	if err != nil {
 		return nil, err
 	}
 
-	device := DeviceMock{
-		name:   name,
+	a := AppMock{
 		dbPath: tmpFile.Name(),
+		device: device,
 	}
 
-	if err := device.Open(); err != nil {
+	if err := a.Open(); err != nil {
 		return nil, err
 	}
 
-	return &device, nil
+	return &a, nil
 }
 
-func (d *DeviceMock) Open() error {
+func (a *AppMock) Open() error {
 	var err error
 
-	if d.db, err = sqlcipher.Open(d.dbPath, []byte("s3cur3")); err != nil {
+	if a.db, err = sqlcipher.Open(a.dbPath, []byte("s3cur3")); err != nil {
 		return err
 	}
-	if d.db, err = sql.Init(d.db); err != nil {
+	if a.db, err = sql.Init(a.db); err != nil {
 		return errors.Wrap(err, "failed to initialize sql")
 	}
 
@@ -62,44 +63,47 @@ func (d *DeviceMock) Open() error {
 	if err != nil {
 		return err
 	}
-	d.listener, err = net.Listen("tcp", fmt.Sprintf(":%d", port))
+	a.listener, err = net.Listen("tcp", fmt.Sprintf(":%d", port))
 	if err != nil {
 		return err
 	}
 
-	if d.node, err = node.New(
-		node.WithSQL(d.db),
+	if a.node, err = node.New(
+		node.WithSQL(a.db),
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
+		node.WithDevice(a.device),
 	); err != nil {
 		return err
 	}
 
 	go func() {
-		_ = gs.Serve(d.listener)
+		_ = gs.Serve(a.listener)
 	}()
 
-	d.clientConn, err = grpc.Dial(fmt.Sprintf(":%d", port), grpc.WithInsecure())
+	a.clientConn, err = grpc.Dial(fmt.Sprintf(":%d", port), grpc.WithInsecure())
 	if err != nil {
 		return err
 	}
-	d.client = client.New(d.clientConn)
+	a.client = client.New(a.clientConn)
 
-	d.ctx = p2p.SetSender(context.Background(), d.node.PeerID())
+	a.ctx = p2p.SetSender(context.Background(), a.node.PeerID())
 
 	return nil
 }
 
-func (d *DeviceMock) Close() error {
-	if err := d.db.Close(); err != nil {
+func (a *AppMock) Close() error {
+	if err := a.db.Close(); err != nil {
 		return err
 	}
-	if err := d.listener.Close(); err != nil {
+	if err := a.listener.Close(); err != nil {
 		return err
 	}
-	if err := d.clientConn.Close(); err != nil {
+	if err := a.clientConn.Close(); err != nil {
 		return err
 	}
-	d.node.Close()
+	if err := a.node.Close(); err != nil {
+		return err
+	}
 	return nil
 }

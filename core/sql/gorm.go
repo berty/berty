@@ -14,6 +14,7 @@ import (
 func Init(db *gorm.DB) (*gorm.DB, error) {
 	db = db.Set("gorm:auto_preload", true)
 	db = db.Set("gorm:association_autoupdate", false)
+	db.LogMode(true)
 
 	// FIXME: configure zap logger
 	// FIXME: configure hard delete
@@ -25,6 +26,8 @@ func Init(db *gorm.DB) (*gorm.DB, error) {
 				return tx.AutoMigrate(
 					p2p.Event{},
 					entity.Contact{},
+					entity.Device{},
+					entity.Config{},
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
