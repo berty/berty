@@ -3,6 +3,7 @@ package multiaddr
 import (
 	"encoding/binary"
 	"fmt"
+	"math/bits"
 	"strings"
 )
 
@@ -32,7 +33,8 @@ const (
 	P_UDT   = 0x012D
 	P_UTP   = 0x012E
 	P_UNIX  = 0x0190
-	P_IPFS  = 0x01A5
+	P_P2P   = 0x01A5
+	P_IPFS  = 0x01A5 // alias for backwards compatability
 	P_HTTP  = 0x01E0
 	P_HTTPS = 0x01BB
 	P_ONION = 0x01BC
@@ -45,21 +47,76 @@ const (
 
 // Protocols is the list of multiaddr protocols supported by this module.
 var Protocols = []Protocol{
-	Protocol{P_IP4, 32, "ip4", CodeToVarint(P_IP4), false, TranscoderIP4},
-	Protocol{P_TCP, 16, "tcp", CodeToVarint(P_TCP), false, TranscoderPort},
-	Protocol{P_UDP, 16, "udp", CodeToVarint(P_UDP), false, TranscoderPort},
-	Protocol{P_DCCP, 16, "dccp", CodeToVarint(P_DCCP), false, TranscoderPort},
-	Protocol{P_IP6, 128, "ip6", CodeToVarint(P_IP6), false, TranscoderIP6},
-	// these require varint:
-	Protocol{P_SCTP, 16, "sctp", CodeToVarint(P_SCTP), false, TranscoderPort},
-	Protocol{P_ONION, 96, "onion", CodeToVarint(P_ONION), false, TranscoderOnion},
-	Protocol{P_UTP, 0, "utp", CodeToVarint(P_UTP), false, nil},
-	Protocol{P_UDT, 0, "udt", CodeToVarint(P_UDT), false, nil},
-	Protocol{P_QUIC, 0, "quic", CodeToVarint(P_QUIC), false, nil},
-	Protocol{P_HTTP, 0, "http", CodeToVarint(P_HTTP), false, nil},
-	Protocol{P_HTTPS, 0, "https", CodeToVarint(P_HTTPS), false, nil},
-	Protocol{P_IPFS, LengthPrefixedVarSize, "ipfs", CodeToVarint(P_IPFS), false, TranscoderIPFS},
-	Protocol{P_UNIX, LengthPrefixedVarSize, "unix", CodeToVarint(P_UNIX), true, TranscoderUnix},
+	protoIP4,
+	protoTCP,
+	protoUDP,
+	protoDCCP,
+	protoIP6,
+	protoSCTP,
+	protoONION,
+	protoUTP,
+	protoUDT,
+	protoQUIC,
+	protoHTTP,
+	protoHTTPS,
+	protoP2P,
+	protoUNIX,
+}
+
+var (
+	protoIP4  = Protocol{P_IP4, 32, "ip4", CodeToVarint(P_IP4), false, TranscoderIP4}
+	protoTCP  = Protocol{P_TCP, 16, "tcp", CodeToVarint(P_TCP), false, TranscoderPort}
+	protoUDP  = Protocol{P_UDP, 16, "udp", CodeToVarint(P_UDP), false, TranscoderPort}
+	protoDCCP = Protocol{P_DCCP, 16, "dccp", CodeToVarint(P_DCCP), false, TranscoderPort}
+	protoIP6  = Protocol{P_IP6, 128, "ip6", CodeToVarint(P_IP6), false, TranscoderIP6}
+	// these require varint
+	protoSCTP  = Protocol{P_SCTP, 16, "sctp", CodeToVarint(P_SCTP), false, TranscoderPort}
+	protoONION = Protocol{P_ONION, 96, "onion", CodeToVarint(P_ONION), false, TranscoderOnion}
+	protoUTP   = Protocol{P_UTP, 0, "utp", CodeToVarint(P_UTP), false, nil}
+	protoUDT   = Protocol{P_UDT, 0, "udt", CodeToVarint(P_UDT), false, nil}
+	protoQUIC  = Protocol{P_QUIC, 0, "quic", CodeToVarint(P_QUIC), false, nil}
+	protoHTTP  = Protocol{P_HTTP, 0, "http", CodeToVarint(P_HTTP), false, nil}
+	protoHTTPS = Protocol{P_HTTPS, 0, "https", CodeToVarint(P_HTTPS), false, nil}
+	protoP2P   = Protocol{P_P2P, LengthPrefixedVarSize, "ipfs", CodeToVarint(P_P2P), false, TranscoderP2P}
+	protoUNIX  = Protocol{P_UNIX, LengthPrefixedVarSize, "unix", CodeToVarint(P_UNIX), true, TranscoderUnix}
+)
+
+var ProtocolsByName = map[string]Protocol{}
+
+func init() {
+	for _, p := range Protocols {
+		ProtocolsByName[p.Name] = p
+	}
+
+	// explicitly set both of these
+	ProtocolsByName["p2p"] = protoP2P
+	ProtocolsByName["ipfs"] = protoP2P
+}
+
+// SwapToP2pMultiaddrs is a function to make the transition from /ipfs/...
+// multiaddrs to /p2p/... multiaddrs easier
+// The first stage of the rollout is to ship this package to all users so
+// that all users of multiaddr can parse both /ipfs/ and /p2p/ multiaddrs
+// as the same code (P_P2P). During this stage of the rollout, all addresses
+// with P_P2P will continue printing as /ipfs/, so that older clients without
+// the new parsing code won't break.
+// Once the network has adopted the new parsing code broadly enough, users of
+// multiaddr can add a call to this method to an init function in their codebase.
+// This will cause any P_P2P multiaddr to print out as /p2p/ instead of /ipfs/.
+// Note that the binary serialization of this multiaddr does not change at any
+// point. This means that this code is not a breaking network change at any point
+func SwapToP2pMultiaddrs() {
+	for i := range Protocols {
+		if Protocols[i].Code == P_P2P {
+			Protocols[i].Name = "p2p"
+			break
+		}
+	}
+
+	protoP2P.Name = "p2p"
+
+	ProtocolsByName["ipfs"] = protoP2P
+	ProtocolsByName["p2p"] = protoP2P
 }
 
 func AddProtocol(p Protocol) error {
@@ -73,17 +130,13 @@ func AddProtocol(p Protocol) error {
 	}
 
 	Protocols = append(Protocols, p)
+	ProtocolsByName[p.Name] = p
 	return nil
 }
 
 // ProtocolWithName returns the Protocol description with given string name.
 func ProtocolWithName(s string) Protocol {
-	for _, p := range Protocols {
-		if p.Name == s {
-			return p
-		}
-	}
-	return Protocol{}
+	return ProtocolsByName[s]
 }
 
 // ProtocolWithCode returns the Protocol description with given protocol code.
@@ -117,7 +170,7 @@ func ProtocolsWithString(s string) ([]Protocol, error) {
 
 // CodeToVarint converts an integer to a varint-encoded []byte
 func CodeToVarint(num int) []byte {
-	buf := make([]byte, (num/7)+1) // varint package is uint64
+	buf := make([]byte, bits.Len(uint(num))/7+1)
 	n := binary.PutUvarint(buf, uint64(num))
 	return buf[:n]
 }

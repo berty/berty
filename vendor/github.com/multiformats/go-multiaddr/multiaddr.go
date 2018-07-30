@@ -86,12 +86,12 @@ func (m *multiaddr) Protocols() []Protocol {
 		ps = append(ps, p)
 		b = b[n:]
 
-		size, err := sizeForAddr(p, b)
+		n, size, err := sizeForAddr(p, b)
 		if err != nil {
 			panic(err)
 		}
 
-		b = b[size:]
+		b = b[n+size:]
 	}
 	return ps
 }
