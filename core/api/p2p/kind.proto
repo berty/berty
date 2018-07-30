@@ -54,7 +54,7 @@ enum Kind {
 //
 
 message SentAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
-message AckAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
+message AckAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; string ErrMsg = 2; }
 message PingAttrs {}
 
 //

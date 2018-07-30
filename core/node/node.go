@@ -2,6 +2,7 @@ package node
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
@@ -19,6 +20,7 @@ type Node struct {
 	sql            *gorm.DB
 	config         *entity.Config
 	initDevice     *entity.Device
+	handleMutex    sync.Mutex
 }
 
 // New initializes a new Node object
@@ -83,8 +85,12 @@ func (n *Node) NewID() string {
 	return fmt.Sprintf("%s:%s", n.config.Myself.ID, uuid.Must(uuid.NewV4()).String())
 }
 
-func (n *Node) PeerID() string {
-	return n.config.Myself.PeerID()
+func (n *Node) DeviceID() string {
+	return n.config.CurrentDevice.ID
+}
+
+func (n *Node) UserID() string {
+	return n.config.Myself.ID
 }
 
 func (n *Node) OutgoingEventsChan() chan *p2p.Event { return n.outgoingEvents }

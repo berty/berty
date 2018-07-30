@@ -7,6 +7,7 @@ option go_package = "github.com/berty/berty/core/entity";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "entity/contact.proto";
+import "entity/device.proto";
 
 message Config {
   //
@@ -24,4 +25,7 @@ message Config {
 
   Contact myself = 5;
   string myself_id = 6 [(gogoproto.customname) = "MyselfID"];
+
+  Device current_device = 7;
+  string current_device_id = 8 [(gogoproto.customname) = "CurrentDeviceID"];
 }
