@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/berty/berty/core/entity"
+	"github.com/berty/berty/core/network/drivermock"
 	"github.com/berty/berty/core/node"
 	"github.com/berty/berty/core/sql"
 	"github.com/berty/berty/core/sql/sqlcipher"
@@ -26,6 +27,7 @@ type daemonOptions struct {
 	sqlPath      string
 	sqlKey       string
 	dropDatabase bool
+	initOnly     bool
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -42,6 +44,7 @@ func newDaemonCommand() *cobra.Command {
 	flags.StringVarP(&opts.sqlPath, "sql-path", "", "/tmp/berty.db", "sqlcipher database path")
 	flags.StringVarP(&opts.sqlKey, "sql-key", "", "s3cur3", "sqlcipher database encryption key")
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
+	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	return cmd
 }
 
@@ -79,25 +82,32 @@ func daemon(opts *daemonOptions) error {
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
 		node.WithSQL(db),
-		node.WithDevice(&entity.Device{Name: "bart"}), // FIXME: get device dynamically
+		node.WithDevice(&entity.Device{Name: "bart"}),    // FIXME: get device dynamically
+		node.WithNetworkDriver(drivermock.NewEnqueuer()), // FIXME: use a p2p driver instead
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize node")
+	}
+
+	if opts.initOnly {
+		return nil
 	}
 
 	// start grpc server(s)
 	go func() {
 		errChan <- gs.Serve(listener)
 	}()
-	if !opts.hideBanner {
-		fmt.Println(banner)
-	}
 	zap.L().Info("grpc server started", zap.String("bind", opts.bind))
 
 	// start node
 	go func() {
 		errChan <- n.Start()
 	}()
+
+	// show banner
+	if !opts.hideBanner {
+		fmt.Println(banner)
+	}
 
 	// signal handling
 	signalChan := make(chan os.Signal, 1)
