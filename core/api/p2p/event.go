@@ -1,6 +1,9 @@
 package p2p
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 func NewOutgoingEvent(sender, receiver string, kind Kind) *Event {
 	return &Event{
@@ -13,7 +16,31 @@ func NewOutgoingEvent(sender, receiver string, kind Kind) *Event {
 	}
 }
 
-func (e *Event) Validate() error {
+func (e Event) Validate() error {
 	// FIXME: generate validation
 	return nil
+}
+
+func (e Event) Copy() *Event {
+	return &Event{
+		ID:                 e.ID,
+		CreatedAt:          e.CreatedAt,
+		UpdatedAt:          e.UpdatedAt,
+		DeletedAt:          e.DeletedAt,
+		SenderID:           e.SenderID,
+		Direction:          e.Direction,
+		SenderAPIVersion:   e.SenderAPIVersion,
+		ReceiverAPIVersion: e.ReceiverAPIVersion,
+		ReceiverID:         e.ReceiverID,
+		Kind:               e.Kind,
+		SentAt:             e.SentAt,
+		ReceivedAt:         e.ReceivedAt,
+		AckedAt:            e.AckedAt,
+		ConversationID:     e.ConversationID,
+		Attributes:         e.Attributes,
+	}
+}
+
+func (e Event) Author() string {
+	return strings.Split(e.ID, ":")[0]
 }

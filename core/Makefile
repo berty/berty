@@ -5,13 +5,18 @@ SOURCES = $(call rwildcard, $(CODE_PATHS), *.go)
 CODE_PATHS = $(filter-out node_modules/,$(wildcard */))
 PROTOS = $(call rwildcard, $(CODE_PATHS), *.proto)
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
-GENERATED_FILES = $(patsubst %.proto,%.pb.go,$(PROTOS)) client/berty.node.service.gen.go $(call rwildcard $(CODE_PATHS), *.gen.go)
+GENERATED_FILES = \
+	$(patsubst %.proto,%.pb.go,$(PROTOS)) \
+	client/berty.node.service.gen.go \
+	$(call rwildcard $(CODE_PATHS), *.gen.go) \
+	api/p2p/kind.gen.go
 PROTOC_OPTS = --proto_path=../vendor:../vendor/github.com/gogo/protobuf:.
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
+TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 30s -v $(TEST_PATHS)
 
 ##
 ## phonies
@@ -34,12 +39,12 @@ $(BIN): generate $(SOURCES)
 testwatch:
 	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
 	trap 'kill $$(jobs -p) 2>/dev/null; exit 0' INT; \
-	  make test || true; \
-	  while true; do watchman-wait . -p "**/*.go"; make test; sleep .3; done
+	  clear; $(TEST_CMD); \
+	  while true; do watchman-wait . -p "**/*.go"; clear; $(TEST_CMD); sleep .3; done
 
 .PHONY: test
 test: generate
-	$(BUILD_ENV) go test -test.timeout 30s -v $(TEST_PATHS)
+	$(TEST_CMD)
 
 .PHONY: lint
 lint: generate
@@ -71,3 +76,7 @@ client/berty.node.service.gen.go: $(PROTOS)
 	  protoc $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./client:./client $$protodir/*.proto; \
 	); done
 	goimports -w ./client/
+
+api/p2p/kind.gen.go: $(PROTOS)
+	protoc $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
+	goimports -w ./api/p2p

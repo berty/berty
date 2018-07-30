@@ -23,3 +23,14 @@ func (n *Node) EnqueueOutgoingEvent(event *p2p.Event) error {
 	n.outgoingEvents <- event
 	return nil
 }
+
+func (n *Node) contactShareMe(to *entity.Contact) error {
+	event := n.NewContactEvent(to, p2p.Kind_ContactShareMe)
+	if err := event.SetAttrs(&p2p.ContactShareAttrs{Contact: n.config.Myself.Filtered()}); err != nil {
+		return err
+	}
+	if err := n.EnqueueOutgoingEvent(event); err != nil {
+		return err
+	}
+	return nil
+}

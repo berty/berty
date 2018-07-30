@@ -90,7 +90,7 @@ func (a *AppMock) Open() error {
 	}
 	a.client = client.New(a.clientConn)
 
-	a.ctx = p2p.SetSender(context.Background(), a.node.PeerID())
+	a.ctx = p2p.SetSender(context.Background(), a.node.DeviceID())
 
 	return nil
 }
