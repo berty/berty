@@ -1,4 +1,4 @@
-package p2p
+package host
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 
 	"github.com/apex/log"
 
-	host "github.com/libp2p/go-libp2p-host"
+	ihost "github.com/libp2p/go-libp2p-host"
 	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -50,6 +50,8 @@ type Host struct {
 	//	proc goprocess.Process
 }
 
+var _ ihost.Host = (*Host)(nil)
+
 // NewHost Create fresh Host instance
 func NewHost(net inet.Network) *Host {
 	h := &Host{
@@ -64,8 +66,6 @@ func NewHost(net inet.Network) *Host {
 	net.SetStreamHandler(h.newStreamHandler)
 	return h
 }
-
-var _ host.Host = (*Host)(nil)
 
 // Addrs returns the listen addresses of the Host
 func (h *Host) Addrs() []ma.Multiaddr {
