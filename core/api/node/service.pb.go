@@ -17,7 +17,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import berty_p2p1 "github.com/berty/berty/core/api/p2p"
-import berty_entity "github.com/berty/berty/core/entity"
+import berty_entity1 "github.com/berty/berty/core/entity"
 
 import context "golang.org/x/net/context"
 import grpc "google.golang.org/grpc"
@@ -36,8 +36,8 @@ var _ = math.Inf
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
 type ContactRequestInput struct {
-	Contact      *berty_entity.Contact `protobuf:"bytes,1,opt,name=contact" json:"contact,omitempty"`
-	IntroMessage string                `protobuf:"bytes,2,opt,name=intro_message,json=introMessage,proto3" json:"intro_message,omitempty"`
+	Contact      *berty_entity1.Contact `protobuf:"bytes,1,opt,name=contact" json:"contact,omitempty"`
+	IntroMessage string                 `protobuf:"bytes,2,opt,name=intro_message,json=introMessage,proto3" json:"intro_message,omitempty"`
 }
 
 func (m *ContactRequestInput) Reset()                    { *m = ContactRequestInput{} }
@@ -45,7 +45,7 @@ func (m *ContactRequestInput) String() string            { return proto.CompactT
 func (*ContactRequestInput) ProtoMessage()               {}
 func (*ContactRequestInput) Descriptor() ([]byte, []int) { return fileDescriptorService, []int{0} }
 
-func (m *ContactRequestInput) GetContact() *berty_entity.Contact {
+func (m *ContactRequestInput) GetContact() *berty_entity1.Contact {
 	if m != nil {
 		return m.Contact
 	}
@@ -85,10 +85,10 @@ const _ = grpc.SupportPackageIsVersion4
 type ServiceClient interface {
 	EventStream(ctx context.Context, in *Void, opts ...grpc.CallOption) (Service_EventStreamClient, error)
 	EventList(ctx context.Context, in *Void, opts ...grpc.CallOption) (Service_EventListClient, error)
-	ContactRequest(ctx context.Context, in *ContactRequestInput, opts ...grpc.CallOption) (*berty_entity.Contact, error)
-	ContactAcceptRequest(ctx context.Context, in *berty_entity.Contact, opts ...grpc.CallOption) (*berty_entity.Contact, error)
-	ContactRemove(ctx context.Context, in *berty_entity.Contact, opts ...grpc.CallOption) (*berty_entity.Contact, error)
-	ContactUpdate(ctx context.Context, in *berty_entity.Contact, opts ...grpc.CallOption) (*berty_entity.Contact, error)
+	ContactRequest(ctx context.Context, in *ContactRequestInput, opts ...grpc.CallOption) (*berty_entity1.Contact, error)
+	ContactAcceptRequest(ctx context.Context, in *berty_entity1.Contact, opts ...grpc.CallOption) (*berty_entity1.Contact, error)
+	ContactRemove(ctx context.Context, in *berty_entity1.Contact, opts ...grpc.CallOption) (*berty_entity1.Contact, error)
+	ContactUpdate(ctx context.Context, in *berty_entity1.Contact, opts ...grpc.CallOption) (*berty_entity1.Contact, error)
 	ContactList(ctx context.Context, in *Void, opts ...grpc.CallOption) (Service_ContactListClient, error)
 }
 
@@ -164,8 +164,8 @@ func (x *serviceEventListClient) Recv() (*berty_p2p1.Event, error) {
 	return m, nil
 }
 
-func (c *serviceClient) ContactRequest(ctx context.Context, in *ContactRequestInput, opts ...grpc.CallOption) (*berty_entity.Contact, error) {
-	out := new(berty_entity.Contact)
+func (c *serviceClient) ContactRequest(ctx context.Context, in *ContactRequestInput, opts ...grpc.CallOption) (*berty_entity1.Contact, error) {
+	out := new(berty_entity1.Contact)
 	err := grpc.Invoke(ctx, "/berty.node.Service/ContactRequest", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -173,8 +173,8 @@ func (c *serviceClient) ContactRequest(ctx context.Context, in *ContactRequestIn
 	return out, nil
 }
 
-func (c *serviceClient) ContactAcceptRequest(ctx context.Context, in *berty_entity.Contact, opts ...grpc.CallOption) (*berty_entity.Contact, error) {
-	out := new(berty_entity.Contact)
+func (c *serviceClient) ContactAcceptRequest(ctx context.Context, in *berty_entity1.Contact, opts ...grpc.CallOption) (*berty_entity1.Contact, error) {
+	out := new(berty_entity1.Contact)
 	err := grpc.Invoke(ctx, "/berty.node.Service/ContactAcceptRequest", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -182,8 +182,8 @@ func (c *serviceClient) ContactAcceptRequest(ctx context.Context, in *berty_enti
 	return out, nil
 }
 
-func (c *serviceClient) ContactRemove(ctx context.Context, in *berty_entity.Contact, opts ...grpc.CallOption) (*berty_entity.Contact, error) {
-	out := new(berty_entity.Contact)
+func (c *serviceClient) ContactRemove(ctx context.Context, in *berty_entity1.Contact, opts ...grpc.CallOption) (*berty_entity1.Contact, error) {
+	out := new(berty_entity1.Contact)
 	err := grpc.Invoke(ctx, "/berty.node.Service/ContactRemove", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -191,8 +191,8 @@ func (c *serviceClient) ContactRemove(ctx context.Context, in *berty_entity.Cont
 	return out, nil
 }
 
-func (c *serviceClient) ContactUpdate(ctx context.Context, in *berty_entity.Contact, opts ...grpc.CallOption) (*berty_entity.Contact, error) {
-	out := new(berty_entity.Contact)
+func (c *serviceClient) ContactUpdate(ctx context.Context, in *berty_entity1.Contact, opts ...grpc.CallOption) (*berty_entity1.Contact, error) {
+	out := new(berty_entity1.Contact)
 	err := grpc.Invoke(ctx, "/berty.node.Service/ContactUpdate", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -216,7 +216,7 @@ func (c *serviceClient) ContactList(ctx context.Context, in *Void, opts ...grpc.
 }
 
 type Service_ContactListClient interface {
-	Recv() (*berty_entity.Contact, error)
+	Recv() (*berty_entity1.Contact, error)
 	grpc.ClientStream
 }
 
@@ -224,8 +224,8 @@ type serviceContactListClient struct {
 	grpc.ClientStream
 }
 
-func (x *serviceContactListClient) Recv() (*berty_entity.Contact, error) {
-	m := new(berty_entity.Contact)
+func (x *serviceContactListClient) Recv() (*berty_entity1.Contact, error) {
+	m := new(berty_entity1.Contact)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
@@ -237,10 +237,10 @@ func (x *serviceContactListClient) Recv() (*berty_entity.Contact, error) {
 type ServiceServer interface {
 	EventStream(*Void, Service_EventStreamServer) error
 	EventList(*Void, Service_EventListServer) error
-	ContactRequest(context.Context, *ContactRequestInput) (*berty_entity.Contact, error)
-	ContactAcceptRequest(context.Context, *berty_entity.Contact) (*berty_entity.Contact, error)
-	ContactRemove(context.Context, *berty_entity.Contact) (*berty_entity.Contact, error)
-	ContactUpdate(context.Context, *berty_entity.Contact) (*berty_entity.Contact, error)
+	ContactRequest(context.Context, *ContactRequestInput) (*berty_entity1.Contact, error)
+	ContactAcceptRequest(context.Context, *berty_entity1.Contact) (*berty_entity1.Contact, error)
+	ContactRemove(context.Context, *berty_entity1.Contact) (*berty_entity1.Contact, error)
+	ContactUpdate(context.Context, *berty_entity1.Contact) (*berty_entity1.Contact, error)
 	ContactList(*Void, Service_ContactListServer) error
 }
 
@@ -309,7 +309,7 @@ func _Service_ContactRequest_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 func _Service_ContactAcceptRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(berty_entity.Contact)
+	in := new(berty_entity1.Contact)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -321,13 +321,13 @@ func _Service_ContactAcceptRequest_Handler(srv interface{}, ctx context.Context,
 		FullMethod: "/berty.node.Service/ContactAcceptRequest",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).ContactAcceptRequest(ctx, req.(*berty_entity.Contact))
+		return srv.(ServiceServer).ContactAcceptRequest(ctx, req.(*berty_entity1.Contact))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Service_ContactRemove_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(berty_entity.Contact)
+	in := new(berty_entity1.Contact)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -339,13 +339,13 @@ func _Service_ContactRemove_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/berty.node.Service/ContactRemove",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).ContactRemove(ctx, req.(*berty_entity.Contact))
+		return srv.(ServiceServer).ContactRemove(ctx, req.(*berty_entity1.Contact))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Service_ContactUpdate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(berty_entity.Contact)
+	in := new(berty_entity1.Contact)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -357,7 +357,7 @@ func _Service_ContactUpdate_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/berty.node.Service/ContactUpdate",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).ContactUpdate(ctx, req.(*berty_entity.Contact))
+		return srv.(ServiceServer).ContactUpdate(ctx, req.(*berty_entity1.Contact))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -371,7 +371,7 @@ func _Service_ContactList_Handler(srv interface{}, stream grpc.ServerStream) err
 }
 
 type Service_ContactListServer interface {
-	Send(*berty_entity.Contact) error
+	Send(*berty_entity1.Contact) error
 	grpc.ServerStream
 }
 
@@ -379,7 +379,7 @@ type serviceContactListServer struct {
 	grpc.ServerStream
 }
 
-func (x *serviceContactListServer) Send(m *berty_entity.Contact) error {
+func (x *serviceContactListServer) Send(m *berty_entity1.Contact) error {
 	return x.ServerStream.SendMsg(m)
 }
 
@@ -574,7 +574,7 @@ func (m *ContactRequestInput) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Contact == nil {
-				m.Contact = &berty_entity.Contact{}
+				m.Contact = &berty_entity1.Contact{}
 			}
 			if err := m.Contact.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
