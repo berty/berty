@@ -4,10 +4,9 @@ import (
 	"context"
 	"io"
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"github.com/berty/berty/core/api/node"
 	"github.com/berty/berty/core/api/p2p"
@@ -15,7 +14,83 @@ import (
 	"github.com/berty/berty/core/network/drivermock"
 )
 
-func Test(t *testing.T) {
+func TestWithSimpleNetwork(t *testing.T) {
+	var (
+		alice, bob, eve *AppMock
+		err             error
+		internalCtx     = context.Background()
+		network         = drivermock.NewSimple()
+	)
+	defer func() {
+		if alice != nil {
+			alice.Close()
+		}
+		if bob != nil {
+			bob.Close()
+		}
+		if eve != nil {
+			eve.Close()
+		}
+	}()
+
+	setupTestLogging()
+
+	Convey("End-to-end test (with simple network mock)", t, FailureHalts, func() {
+		Convey("Initialize nodes", FailureHalts, func() {
+			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, network)
+			So(err, ShouldBeNil)
+
+			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, network)
+			So(err, ShouldBeNil)
+
+			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, network)
+			So(err, ShouldBeNil)
+
+			network.AddPeer(alice.node.UserID(), alice.clientConn)
+			network.AddPeer(bob.node.UserID(), bob.clientConn)
+			network.AddPeer(eve.node.UserID(), eve.clientConn)
+		})
+		Convey("Nodes should be empty when just initialized", FailureHalts, func() {
+			stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
+			So(err, ShouldBeNil)
+			contacts := []*entity.Contact{}
+			for {
+				contact, err := stream.Recv()
+				if err == io.EOF {
+					break
+				}
+				So(err, ShouldBeNil)
+				contacts = append(contacts, contact)
+			}
+			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+		})
+		Convey("Alice adds Bob as contact", FailureHalts, func() {
+			Convey("Alice calls node.ContactRequest", FailureHalts, func() {
+				res, err := alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
+					Contact: &entity.Contact{
+						OverrideDisplayName: "Bob from school",
+						ID:                  bob.node.UserID(),
+					},
+					IntroMessage: "hello, I want to chat!",
+				})
+				So(err, ShouldBeNil)
+				So(res, ShouldNotBeNil)
+				time.Sleep(50 * time.Millisecond)
+			})
+			/*
+				Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
+					res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
+						ID: alice.node.UserID(),
+					})
+					So(err, ShouldBeNil)
+					So(res, ShouldNotBeNil)
+				})
+			*/
+		})
+	})
+}
+
+func TestWithEnqueuer(t *testing.T) {
 	var (
 		alice, bob, eve *AppMock
 		err             error
@@ -33,20 +108,11 @@ func Test(t *testing.T) {
 		}
 	}()
 
-	// initialize zap
-	config := zap.NewDevelopmentConfig()
-	config.Level.SetLevel(zap.InfoLevel)
-	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	logger, err := config.Build()
-	if err != nil {
-		panic(err)
-	}
-	zap.ReplaceGlobals(logger)
+	setupTestLogging()
 
 	// let's test
 
-	Convey("End-to-end test (manual)", t, FailureHalts, func() {
+	Convey("End-to-end test (with enqueuer network mock)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
 			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, drivermock.NewEnqueuer())
 			So(err, ShouldBeNil)
