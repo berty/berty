@@ -29,6 +29,12 @@ func TestInit(t *testing.T) {
 		db, err = Init(db)
 		So(err, ShouldBeNil)
 		So(db, ShouldNotBeNil)
-		So(db.HasTable("contacts"), ShouldBeTrue)
+
+		err = Migrate(db)
+		So(err, ShouldBeNil)
+		So(db.HasTable("contact"), ShouldBeTrue)
+		So(db.HasTable("config"), ShouldBeTrue)
+		So(db.HasTable("event"), ShouldBeTrue)
+		So(db.HasTable("device"), ShouldBeTrue)
 	})
 }
