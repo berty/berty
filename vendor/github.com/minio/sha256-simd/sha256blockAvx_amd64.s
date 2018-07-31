@@ -355,7 +355,7 @@ loop2:
     MOVQ _inp+72(FP), SI
 	ADDQ $64, SI
 	CMPQ _inp_end+64(FP), SI
-	JNE  loop0
+ 	JNE  loop0
 
 done_hash:
     RET

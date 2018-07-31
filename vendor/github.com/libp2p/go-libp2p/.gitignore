@@ -1,0 +1,4 @@
+*.swp
+examples/echo/echo
+examples/multicodecs/multicodecs
+.idea
