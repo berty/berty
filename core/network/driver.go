@@ -7,5 +7,6 @@ import (
 )
 
 type Driver interface {
-	SendEvent(ctx context.Context, event *p2p.Event) error
+	SendEvent(context.Context, *p2p.Event) error
+	SetReceiveEventHandler(func(context.Context, *p2p.Event) (*p2p.Void, error))
 }

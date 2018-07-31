@@ -57,6 +57,8 @@ func New(opts ...NewNodeOption) (*Node, error) {
 	}
 	n.config = config
 
+	n.networkDriver.SetReceiveEventHandler(n.Handle)
+
 	return n, nil
 }
 

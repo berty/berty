@@ -5,45 +5,64 @@ import (
 	"fmt"
 
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 
 	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/client"
 	"github.com/berty/berty/core/network"
 )
 
-type peer struct {
-	id   string
-	conn *grpc.ClientConn
-}
+//
+// Manager
+//
 
-type Simple struct {
-	network.Driver
-
+type SimpleManager struct {
 	peers []peer
 }
 
-func NewSimple() *Simple {
-	return &Simple{
+type peer struct {
+	id     string
+	driver *SimpleDriver
+}
+
+func NewSimple() *SimpleManager {
+	return &SimpleManager{
 		peers: make([]peer, 0),
 	}
 }
 
-func (s *Simple) SendEvent(ctx context.Context, event *p2p.Event) error {
-	for _, peer := range s.peers {
+func (m *SimpleManager) Driver() *SimpleDriver {
+	return &SimpleDriver{
+		manager: m,
+	}
+}
+
+func (m *SimpleManager) AddPeer(id string, driver *SimpleDriver) {
+	m.peers = append(m.peers, peer{id: id, driver: driver})
+}
+
+//
+// Driver
+//
+
+type SimpleDriver struct {
+	network.Driver
+	manager *SimpleManager
+	handler func(context.Context, *p2p.Event) (*p2p.Void, error)
+}
+
+func (d *SimpleDriver) SendEvent(ctx context.Context, event *p2p.Event) error {
+	for _, peer := range d.manager.peers {
 		if peer.id == event.ReceiverID {
 			zap.L().Debug("Simple.SendEvent",
 				zap.String("sender", event.SenderID),
 				zap.String("receiver", event.ReceiverID),
 			)
-			_, err := client.New(peer.conn).P2p().Handle(p2p.SetSender(ctx, event.SenderID), event)
+			_, err := peer.driver.handler(p2p.SetSender(ctx, event.SenderID), event)
 			return err
 		}
 	}
-	zap.L().Error("AAAAAAAAAAAAAAAAA")
 	return fmt.Errorf("peer not found")
 }
 
-func (s *Simple) AddPeer(id string, conn *grpc.ClientConn) {
-	s.peers = append(s.peers, peer{id: id, conn: conn})
+func (d *SimpleDriver) SetReceiveEventHandler(handler func(context.Context, *p2p.Event) (*p2p.Void, error)) {
+	d.handler = handler
 }
