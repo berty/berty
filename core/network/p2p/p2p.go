@@ -3,7 +3,9 @@ package p2p
 import (
 	"context"
 
+	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/network"
+	"github.com/berty/berty/core/network/protocols/services/p2pgrpc"
 	libp2p "github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -31,7 +33,8 @@ type Driver struct {
 	host host.Host
 
 	// services
-	dht *dht.IpfsDHT
+	dht  *dht.IpfsDHT
+	grpc *p2pgrpc.P2Pgrpc
 }
 
 // New create a new driver
@@ -41,7 +44,7 @@ func New(ctx context.Context, cfg *DriverConfig) (network.Driver, error) {
 		return nil, err
 	}
 
-	driver := Driver{
+	driver := &Driver{
 		host: host,
 	}
 
@@ -58,4 +61,15 @@ func New(ctx context.Context, cfg *DriverConfig) (network.Driver, error) {
 			return nil, err
 		}
 	}
+
+	driver.grpc = p2pgrpc.NewP2PGrpcService(host)
+	return driver, nil
+}
+
+func (d *Driver) SendEvent(ctx context.Context, e *p2p.Event) error {
+	return nil
+}
+
+func (d *Driver) SetReceiveEventHandler(f func(context.Context, *p2p.Event) (*p2p.Void, error)) {
+
 }
