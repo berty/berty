@@ -1,0 +1,42 @@
+{
+  "bugs": {
+    "url": "https://github.com/libp2p/go-libp2p-routing"
+  },
+  "gx": {
+    "dvcsimport": "github.com/libp2p/go-libp2p-routing",
+    "goversion": "1.5.2"
+  },
+  "gxDependencies": [
+    {
+      "author": "whyrusleeping",
+      "hash": "Qme1knMqwt1hKZbc1BmQFmnm9f36nyQGwXxPGVpVJ9rMK5",
+      "name": "go-libp2p-crypto",
+      "version": "1.6.2"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmZR2XWVVBCtbgBWnQhWk2xcQfaR3W8faQPriAiaaj7rsr",
+      "name": "go-libp2p-peerstore",
+      "version": "1.4.22"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmapdYm1b22Frv3k17fqrBYTFRxwiaVJkB299Mfn33edeB",
+      "name": "go-cid",
+      "version": "0.7.21"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN",
+      "name": "go-libp2p-peer",
+      "version": "2.3.5"
+    }
+  ],
+  "gxVersion": "0.4.0",
+  "language": "go",
+  "license": "MIT",
+  "name": "go-libp2p-routing",
+  "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
+  "version": "2.4.4"
+}
+
