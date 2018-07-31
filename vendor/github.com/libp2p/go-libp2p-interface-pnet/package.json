@@ -1,0 +1,18 @@
+{
+  "author": "libp2p",
+  "bugs": {
+    "URL": "https://github.com/libp2p/go-libp2p-interface-pnet/issues",
+    "url": "https://github.com/libp2p/go-libp2p-interface-pnet/issues"
+  },
+  "gx": {
+    "dvcsimport": "github.com/libp2p/go-libp2p-interface-pnet"
+  },
+  "gxDependencies": [],
+  "gxVersion": "0.9.1",
+  "language": "go",
+  "license": "MIT",
+  "name": "go-libp2p-interface-pnet",
+  "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
+  "version": "3.0.0"
+}
+

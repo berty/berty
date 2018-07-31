@@ -1,0 +1,36 @@
+{
+  "author": "stebalien",
+  "bugs": {
+    "url": "https://github.com/libp2p/go-conn-security"
+  },
+  "gx": {
+    "dvcsimport": "github.com/libp2p/go-conn-security-multistream"
+  },
+  "gxDependencies": [
+    {
+      "author": "Stebalien",
+      "hash": "QmYMGCwtKbLXfh2MUTbLoP66N9Y24DSg8PFJRG21eE2qwv",
+      "name": "go-conn-security",
+      "version": "0.1.5"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN",
+      "name": "go-libp2p-peer",
+      "version": "2.3.5"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmbXRda5H2K3MSQyWWxTMtd8DWuguEBUCe6hpxfXVpFUGj",
+      "name": "go-multistream",
+      "version": "0.3.7"
+    }
+  ],
+  "gxVersion": "0.12.1",
+  "language": "go",
+  "license": "MIT",
+  "name": "go-conn-security-multistream",
+  "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
+  "version": "0.1.4"
+}
+
