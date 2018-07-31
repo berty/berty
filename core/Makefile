@@ -46,6 +46,14 @@ testwatch:
 test: generate
 	$(TEST_CMD)
 
+.PHONY: integration
+integration: install
+	rm -f /tmp/berty.integration.db
+	@# initialize a new daemon on a fresh db
+	$(BIN) daemon --init-only --sql-path=/tmp/berty.integration.db
+	@# initialize a new daemon based on an existing db
+	$(BIN) daemon --init-only --sql-path=/tmp/berty.integration.db
+
 .PHONY: lint
 lint: generate
 	gometalinter.v2 --config=../.gometalinter.json $(TEST_PATHS)

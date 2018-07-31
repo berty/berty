@@ -51,6 +51,10 @@ jobs:
           command: |
             docker build --cache-from=berty -t berty .
       - run:
+          name: Run application within Docker
+          command: |
+            docker run --rm berty daemon --init-only
+      - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
@@ -88,6 +92,11 @@ jobs:
           command: |
             cd core
             make test | tee /tmp/test-results/go-test-report.out
+      - run:
+          name: integration core
+          command: |
+            cd core
+            make integration
       - run:
           name: junit-report
           command: |
