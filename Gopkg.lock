@@ -99,6 +99,15 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/hashicorp/golang-lru"
+  packages = [
+    ".",
+    "simplelru"
+  ]
+  revision = "0fb14efe8c47ae851c0034ed7a448854d3d34cf3"
+
+[[projects]]
+  branch = "master"
   name = "github.com/huin/goupnp"
   packages = [
     ".",
@@ -118,6 +127,29 @@
   version = "v1.0"
 
 [[projects]]
+  name = "github.com/ipfs/go-cid"
+  packages = ["."]
+  revision = "5b04f3043387b02aeeee6a35899f0e767bae3b33"
+  version = "v0.7.21"
+
+[[projects]]
+  name = "github.com/ipfs/go-datastore"
+  packages = [
+    ".",
+    "autobatch",
+    "query",
+    "sync"
+  ]
+  revision = "e9b957d683804610bb830a00aed753633c4a5d36"
+  version = "v2.4.1"
+
+[[projects]]
+  name = "github.com/ipfs/go-ipfs-util"
+  packages = ["."]
+  revision = "10d786c5ed859afd22223df76a89bf57b24b2ee1"
+  version = "v1.2.8"
+
+[[projects]]
   name = "github.com/ipfs/go-log"
   packages = [
     ".",
@@ -127,6 +159,12 @@
   ]
   revision = "5dc2060baaf8db344f31dafd852340b93811d03f"
   version = "v1.5.3"
+
+[[projects]]
+  name = "github.com/ipfs/go-todocounter"
+  packages = ["."]
+  revision = "289b6e202fbecea527f25a32d76593ee2f12de4c"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/jackpal/gateway"
@@ -139,6 +177,12 @@
   packages = ["."]
   revision = "c9cfead9f2a36ddf3daa40ba269aa7f4bbba6b62"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/jbenet/go-context"
+  packages = ["io"]
+  revision = "d14ea06fba99483203c19d92cfcd13ebe73135f4"
 
 [[projects]]
   branch = "master"
@@ -251,6 +295,25 @@
   version = "v3.0.0"
 
 [[projects]]
+  name = "github.com/libp2p/go-libp2p-kad-dht"
+  packages = [
+    ".",
+    "opts",
+    "pb",
+    "providers"
+  ]
+  revision = "bb96b2099757e4e49680f67a5dd98f287d77d5e5"
+
+[[projects]]
+  name = "github.com/libp2p/go-libp2p-kbucket"
+  packages = [
+    ".",
+    "keyspace"
+  ]
+  revision = "5f4553e0df3d8f3b4325f7e606b5a13d462a64af"
+  version = "v2.2.4"
+
+[[projects]]
   name = "github.com/libp2p/go-libp2p-loggables"
   packages = ["."]
   revision = "39f1f79d7096e5bcba253bb5cab6651b11366fee"
@@ -276,7 +339,10 @@
 
 [[projects]]
   name = "github.com/libp2p/go-libp2p-peer"
-  packages = ["."]
+  packages = [
+    ".",
+    "peerset"
+  ]
   revision = "a26c4b782bfe3b2570c539f69dc7777a45117a90"
   version = "v2.3.5"
 
@@ -284,7 +350,8 @@
   name = "github.com/libp2p/go-libp2p-peerstore"
   packages = [
     ".",
-    "addr"
+    "addr",
+    "queue"
   ]
   revision = "49898a5f59ac4bea31b49d0c62ba214a6da16dbd"
   version = "v1.4.22"
@@ -294,6 +361,25 @@
   packages = ["."]
   revision = "e34f0d7468b3519bf9bf4e43c1d028ce651eab51"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/libp2p/go-libp2p-record"
+  packages = [
+    ".",
+    "pb"
+  ]
+  revision = "c29879dbb015d19ccb0a0dfcf3ce9e2f3ac6ec68"
+  version = "v4.1.3"
+
+[[projects]]
+  name = "github.com/libp2p/go-libp2p-routing"
+  packages = [
+    ".",
+    "notifications",
+    "options"
+  ]
+  revision = "29f1089de6a0826ecf62d20cddd8bb0930d54fb2"
+  version = "v2.4.4"
 
 [[projects]]
   name = "github.com/libp2p/go-libp2p-secio"
@@ -422,6 +508,12 @@
   revision = "cba4f9fea8613343eb7ecc4ddadd8e7298a00c39"
 
 [[projects]]
+  name = "github.com/multiformats/go-multibase"
+  packages = ["."]
+  revision = "dfd5076869faca5aed2886dcba60b44a0d0e9c01"
+  version = "v0.2.6"
+
+[[projects]]
   name = "github.com/multiformats/go-multihash"
   packages = ["."]
   revision = "8be2a682ab9f254311de1375145a2f78a809b07d"
@@ -490,6 +582,18 @@
   packages = ["."]
   revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
   version = "v1.0.1"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/whyrusleeping/base32"
+  packages = ["."]
+  revision = "c30ac30633ccdabefe87eb12465113f06f1bab75"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/whyrusleeping/go-keyspace"
+  packages = ["."]
+  revision = "5b898ac5add1da7178a4a98e69cb7b9205c085ee"
 
 [[projects]]
   branch = "master"
@@ -689,6 +793,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d291ee6ab9b03f4f37d25d8a079313f23cba19c2c4309d0d65aac8a8388ea924"
+  inputs-digest = "334b1c1837b76a68df591be24942217829477afd2de8846e80c730adbcb7e295"
   solver-name = "gps-cdcl"
   solver-version = 1

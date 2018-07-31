@@ -32,6 +32,7 @@
   go-tests = true
   unused-packages = true
 
+
 ## multiformats
 
 [[override]]
@@ -50,12 +51,13 @@
   name = "github.com/multiformats/go-multiaddr-dns"
   revision = "78f39e8892d4f8c5c9f18679cc06d0b40ecab8cf" # gx revision ??? (current upstream) (previous revision 0.2.4)
 
+
 ## libp2p
 
 [[override]]
   name="github.com/libp2p/go-libp2p-swarm"
   revision="5a13bddfa3a06705681ade8e1d4ea85374b6b12e" # gx revision 3.0.6
-  
-# [[override]]
-#   name="github.com/libp2p/go-libp2p-peer"
-#   revision="a26c4b782bfe3b2570c539f69dc7777a45117a90" # gx revision 2.3.5
+
+[[override]]
+  name = "github.com/libp2p/go-libp2p-kad-dht"
+  revision = "bb96b2099757e4e49680f67a5dd98f287d77d5e5" # gx revision 4.2.7

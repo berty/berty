@@ -1,0 +1,27 @@
+os:
+  - linux
+  - osx
+
+sudo: false
+
+language: go
+
+go:
+    - 1.9.x
+
+install:
+  - make deps
+
+script:
+  - bash <(curl -s https://raw.githubusercontent.com/ipfs/ci-helpers/master/travis-ci/run-standard-tests.sh)
+
+script:
+  - make deps
+  - go test ./...
+
+cache:
+    directories:
+        - $GOPATH/src/gx
+
+notifications:
+  email: false
