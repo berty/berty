@@ -154,6 +154,45 @@ func TestWithSimpleNetwork(t *testing.T) {
 				So(len(contacts), ShouldEqual, 1)
 			})
 		})
+		Convey("Bob creates a conversation with Alice", FailureHalts, func() {
+			Convey("Bob has no conversation", FailureHalts, func() {
+				stream, err := bob.client.Node().ConversationList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				conversations := []*entity.Conversation{}
+				for {
+					conversation, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					conversations = append(conversations, conversation)
+				}
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 0)
+			})
+			Convey("Alice has no conversation", FailureHalts, func() {
+				stream, err := alice.client.Node().ConversationList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				conversations := []*entity.Conversation{}
+				for {
+					conversation, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					conversations = append(conversations, conversation)
+				}
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 0)
+			})
+			Convey("Eve has no conversation", FailureHalts, nil)
+			Convey("Bob calls node.ConversationCreate", FailureHalts, nil)
+			Convey("Bob calls node.ConversationInvite", FailureHalts, nil)
+			Convey("Alice calls node.ConversationAcceptInvite", FailureHalts, nil)
+			Convey("Bob has the conversation with Alice", FailureHalts, nil)
+			Convey("Alice has the conversation with Bob", FailureHalts, nil)
+			Convey("Eve has no conversation (again)", FailureHalts, nil)
+		})
 	})
 }
 

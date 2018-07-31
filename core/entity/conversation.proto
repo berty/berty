@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package berty.entity;
+
+option go_package = "github.com/berty/berty/core/entity";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+import "entity/contact.proto";
+
+message Conversation {
+  //
+  // gorm fields
+  //
+
+  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp deleted_at = 4 [(gogoproto.stdtime) = true];
+
+  //
+  // metadata
+  //
+
+  string title = 20;
+  string topic = 21;
+
+  //
+  // associations
+  //
+
+  repeated ConversationMember members = 100; // HasMany to ConversationMember.Conversation
+}
+
+message ConversationMember {
+  //
+  // gorm fields
+  //
+
+  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp deleted_at = 4 [(gogoproto.stdtime) = true];
+
+  enum Status {
+    Unknown = 0;
+    Owner = 1;
+    Active = 2;
+    Invited = 3;
+    Blocked = 4;
+    // Alumni = 5;
+  }
+
+  //
+  // metadata
+  //
+
+  Status status = 10;
+
+  //
+  // associations
+  //
+
+  Contact contact = 100;
+  string conversation_id = 101 [(gogoproto.customname) = "ConversationID"]; // backref
+  string contact_id = 102 [(gogoproto.customname) = "ContactID"];
+}

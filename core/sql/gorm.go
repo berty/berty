@@ -28,6 +28,8 @@ func Migrate(db *gorm.DB) error {
 				return tx.AutoMigrate(
 					p2p.Event{},
 					entity.Contact{},
+					entity.Conversation{},
+					entity.ConversationMember{},
 					entity.Device{},
 					entity.Config{},
 				).Error
@@ -47,7 +49,7 @@ func Migrate(db *gorm.DB) error {
 func DropDatabase(db *gorm.DB) error {
 	return db.DropTableIfExists(
 		// base entities
-		"config", "contact", "event", "device",
+		"config", "contact", "event", "device", "conversation", "conversation_member",
 
 		// association tables
 
