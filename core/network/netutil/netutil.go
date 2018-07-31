@@ -30,15 +30,19 @@ func (pa *ProtocolAddr) String() string {
 // conn must implement net.conn
 var _ net.Listener = (*listener)(nil)
 
+type fclose func() error
+
 type listener struct {
 	cstream chan net.Conn
 	addr    *ProtocolAddr
+	fc      fclose
 }
 
-func NewListener(pid protocol.ID) *listener {
+func NewListener(fc fclose, pid protocol.ID) *listener {
 	return &listener{
 		cstream: make(chan net.Conn),
 		addr:    &ProtocolAddr{pid},
+		fc:      fc,
 	}
 }
 
@@ -57,7 +61,7 @@ func (l *listener) Accept() (net.Conn, error) {
 }
 
 func (l *listener) Close() error {
-	return l.Reset()
+	return l.fc()
 }
 
 func (l *listener) Addr() net.Addr {
