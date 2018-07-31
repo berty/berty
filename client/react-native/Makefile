@@ -11,6 +11,7 @@ all: $(ROOT) $(DEPS)
 
 .PHONY: fclean
 fclean: $(FCLEAN)
+	yarn cache clean && watchman watch-del-all
 
 .PHONY: re
 re: $(RE)
