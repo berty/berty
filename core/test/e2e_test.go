@@ -19,7 +19,6 @@ func TestWithSimpleNetwork(t *testing.T) {
 		alice, bob, eve *AppMock
 		err             error
 		internalCtx     = context.Background()
-		network         = drivermock.NewSimple()
 	)
 	defer func() {
 		if alice != nil {
@@ -37,18 +36,22 @@ func TestWithSimpleNetwork(t *testing.T) {
 
 	Convey("End-to-end test (with simple network mock)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
-			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, network)
+			network := drivermock.NewSimple()
+			aliceNetwork := network.Driver()
+			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, aliceNetwork)
 			So(err, ShouldBeNil)
 
-			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, network)
+			bobNetwork := network.Driver()
+			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, bobNetwork)
 			So(err, ShouldBeNil)
 
-			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, network)
+			eveNetwork := network.Driver()
+			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, eveNetwork)
 			So(err, ShouldBeNil)
 
-			network.AddPeer(alice.node.UserID(), alice.clientConn)
-			network.AddPeer(bob.node.UserID(), bob.clientConn)
-			network.AddPeer(eve.node.UserID(), eve.clientConn)
+			network.AddPeer(alice.node.UserID(), aliceNetwork)
+			network.AddPeer(bob.node.UserID(), bobNetwork)
+			network.AddPeer(eve.node.UserID(), eveNetwork)
 		})
 		Convey("Nodes should be empty when just initialized", FailureHalts, func() {
 			stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
@@ -77,15 +80,79 @@ func TestWithSimpleNetwork(t *testing.T) {
 				So(res, ShouldNotBeNil)
 				time.Sleep(50 * time.Millisecond)
 			})
-			/*
-				Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
-					res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
-						ID: alice.node.UserID(),
-					})
-					So(err, ShouldBeNil)
-					So(res, ShouldNotBeNil)
+			Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
+				res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
+					ID: alice.node.UserID(),
 				})
-			*/
+				So(err, ShouldBeNil)
+				So(res, ShouldNotBeNil)
+				time.Sleep(50 * time.Millisecond)
+			})
+			Convey("Alice has Bob as friend", FailureHalts, func() {
+				stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				contacts := []*entity.Contact{}
+				for {
+					contact, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					contacts = append(contacts, contact)
+				}
+				So(err, ShouldBeNil)
+				So(len(contacts), ShouldEqual, 2)
+
+				// myself
+				So(contacts[0].DisplayName, ShouldEqual, "Alice")
+				So(contacts[0].Status, ShouldEqual, entity.Contact_Myself)
+
+				// bob
+				So(contacts[1].ID, ShouldNotBeEmpty)
+				So(contacts[1].DisplayName, ShouldEqual, "Bob")
+				So(contacts[1].OverrideDisplayName, ShouldEqual, "Bob from school")
+				So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
+			})
+			Convey("Bob has Alice as friend", FailureHalts, func() {
+				stream, err := bob.client.Node().ContactList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				contacts := []*entity.Contact{}
+				for {
+					contact, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					contacts = append(contacts, contact)
+				}
+				So(err, ShouldBeNil)
+				So(len(contacts), ShouldEqual, 2)
+
+				// myself
+				So(contacts[0].DisplayName, ShouldEqual, "Bob")
+				So(contacts[0].Status, ShouldEqual, entity.Contact_Myself)
+
+				// alice
+				So(contacts[1].ID, ShouldNotBeEmpty)
+				So(contacts[1].DisplayName, ShouldEqual, "Alice")
+				So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
+				So(contacts[1].Devices[0].ID, ShouldEqual, alice.node.UserID())
+			})
+			Convey("Eve has no friend", FailureHalts, func() {
+				stream, err := eve.client.Node().ContactList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				contacts := []*entity.Contact{}
+				for {
+					contact, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					contacts = append(contacts, contact)
+				}
+				So(err, ShouldBeNil)
+				So(len(contacts), ShouldEqual, 1)
+			})
 		})
 	})
 }
