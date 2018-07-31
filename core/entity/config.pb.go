@@ -7,11 +7,14 @@
 	It is generated from these files:
 		entity/config.proto
 		entity/contact.proto
+		entity/conversation.proto
 		entity/device.proto
 
 	It has these top-level messages:
 		Config
 		Contact
+		Conversation
+		ConversationMember
 		Device
 */
 package entity
