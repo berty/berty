@@ -5,8 +5,64 @@ import (
 	"time"
 
 	inet "github.com/libp2p/go-libp2p-net"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	manet "github.com/multiformats/go-multiaddr-net"
+	"go.uber.org/zap"
 )
+
+// ProtocolAddr is a net.Addr
+var _ net.Addr = (*ProtocolAddr)(nil)
+
+// ProtocolAddr implement net.Addr for protocol.ID
+// this doesn't really make sense, only there for implementation purpose of net.Addr
+type ProtocolAddr struct {
+	pid protocol.ID
+}
+
+func (pa *ProtocolAddr) Network() string {
+	return pa.String()
+}
+
+func (pa *ProtocolAddr) String() string {
+	return string(pa.pid)
+}
+
+// conn must implement net.conn
+var _ net.Listener = (*listener)(nil)
+
+type listener struct {
+	cstream chan net.Conn
+	addr    *ProtocolAddr
+}
+
+func NewListener(pid protocol.ID) *listener {
+	return &listener{
+		cstream: make(chan net.Conn),
+		addr:    &ProtocolAddr{pid},
+	}
+}
+
+func (l *listener) HandleStream(s inet.Stream) {
+	c, err := NewConnFromStream(s)
+	if err != nil {
+		l.cstream <- c
+		return
+	}
+
+	zap.L().Warn("Handle stream error", zap.Error(err))
+}
+
+func (l *listener) Accept() (net.Conn, error) {
+	return <-l.cstream, nil
+}
+
+func (l *listener) Close() error {
+	return l.Reset()
+}
+
+func (l *listener) Addr() net.Addr {
+	return l.addr
+}
 
 // conn must implement net.conn
 var _ net.Conn = (*conn)(nil)
