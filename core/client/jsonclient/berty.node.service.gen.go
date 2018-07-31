@@ -21,6 +21,10 @@ func init() {
 	registerUnary("berty.node.ContactRemove", NodeContactRemove)
 	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
 	// FIXME: support "berty.node.ContactList" streaming
+	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
+	// FIXME: support "berty.node.ConversationList" streaming
+	registerUnary("berty.node.ConversationAcceptInvite", NodeConversationAcceptInvite)
+	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
 }
 
 func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
@@ -77,4 +81,46 @@ func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []b
 		return nil, err
 	}
 	return client.Node().ContactUpdate(ctx, &typedInput)
+}
+
+func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationCreate"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput entity.Conversation
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ConversationCreate(ctx, &typedInput)
+}
+
+func NodeConversationAcceptInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationAcceptInvite"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput entity.Conversation
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ConversationAcceptInvite(ctx, &typedInput)
+}
+
+func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationInvite"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput entity.ConversationMember
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ConversationInvite(ctx, &typedInput)
 }

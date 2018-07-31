@@ -155,3 +155,33 @@ func (n *Node) ContactList(_ *node.Void, stream node.Service_ContactListServer) 
 	}
 	return nil
 }
+
+//
+// Conversation
+//
+
+func (n *Node) ConversationCreate(context.Context, *entity.Conversation) (*entity.Conversation, error) {
+	return nil, ErrNotImplemented
+}
+
+func (n *Node) ConversationAcceptInvite(context.Context, *entity.Conversation) (*entity.Conversation, error) {
+	return nil, ErrNotImplemented
+}
+
+func (n *Node) ConversationInvite(context.Context, *entity.ConversationMember) (*entity.Conversation, error) {
+	return nil, ErrNotImplemented
+}
+
+func (n *Node) ConversationList(_ *node.Void, stream node.Service_ConversationListServer) error {
+	var conversations []*entity.Conversation
+	if err := n.sql.Find(&conversations).Error; err != nil {
+		return errors.Wrap(err, "failed to get conversations from database")
+	}
+
+	for _, conversation := range conversations {
+		if err := stream.Send(conversation); err != nil {
+			return err
+		}
+	}
+	return nil
+}
