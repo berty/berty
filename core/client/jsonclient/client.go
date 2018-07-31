@@ -19,7 +19,7 @@ func registerUnary(name string, endpoint unaryCallback) {
 	unaryMap[name] = endpoint
 }
 
-func Call(ctx context.Context, c *client.Client, endpoint string, jsonInput []byte) (interface{}, error) {
+func CallUnary(ctx context.Context, c *client.Client, endpoint string, jsonInput []byte) (interface{}, error) {
 	if jsonInput == nil {
 		jsonInput = []byte("{}")
 	}

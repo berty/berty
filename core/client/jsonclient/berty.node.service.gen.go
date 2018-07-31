@@ -14,17 +14,81 @@ import (
 )
 
 func init() {
-	// FIXME: support "berty.node.EventStream" streaming
-	// FIXME: support "berty.node.EventList" streaming
+	registerServerStream("berty.node.EventStream", NodeEventStream)
+	registerServerStream("berty.node.EventList", NodeEventList)
 	registerUnary("berty.node.ContactRequest", NodeContactRequest)
 	registerUnary("berty.node.ContactAcceptRequest", NodeContactAcceptRequest)
 	registerUnary("berty.node.ContactRemove", NodeContactRemove)
 	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
-	// FIXME: support "berty.node.ContactList" streaming
+	registerServerStream("berty.node.ContactList", NodeContactList)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
-	// FIXME: support "berty.node.ConversationList" streaming
+	registerServerStream("berty.node.ConversationList", NodeConversationList)
 	registerUnary("berty.node.ConversationAcceptInvite", NodeConversationAcceptInvite)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
+}
+
+func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "EventStream"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().EventStream(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+
+	return streamProxy, nil
+}
+
+func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "EventList"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().EventList(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+
+	return streamProxy, nil
 }
 
 func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
@@ -83,6 +147,38 @@ func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []b
 	return client.Node().ContactUpdate(ctx, &typedInput)
 }
 
+func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ContactList"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().ContactList(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+
+	return streamProxy, nil
+}
+
 func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	zap.L().Debug("client call",
 		zap.String("service", "Service"),
@@ -95,6 +191,38 @@ func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInpu
 		return nil, err
 	}
 	return client.Node().ConversationCreate(ctx, &typedInput)
+}
+
+func NodeConversationList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationList"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().ConversationList(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+
+	return streamProxy, nil
 }
 
 func NodeConversationAcceptInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
