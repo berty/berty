@@ -29,11 +29,16 @@ func NewP2PGrpcService(h host.Host) *P2Pgrpc {
 
 func (pg *P2Pgrpc) NewListener(id protocol.ID) net.Listener {
 	pid := getGrpcProtocolID(id)
-	l := netutil.NewListener(pid)
 
-	pg.h.SetStreamHandler(proto.ID(), l.HandleStream)
+	fclose := func() error {
+		pg.h.RemoveStreamHandler(pid)
+		return nil
+	}
+
+	l := netutil.NewListener(fclose, pid)
+	pg.h.SetStreamHandler(pid, l.HandleStream)
+
 	return l
-
 }
 
 type dialer func(string, time.Duration) (net.Conn, error)

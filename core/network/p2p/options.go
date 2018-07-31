@@ -1,22 +1,23 @@
 package p2p
 
 import (
-	"fmt"
-
-	"github.com/berty/berty/core/network/host"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"
 )
 
-// Option type to configure host
-type Option func(*host.HostConfig) error
+// WithDHT creates a new DHT with the specified options.
+// if BootstrapConfig, it will the default boostrap config
+func WithDHT(bc *dht.BootstrapConfig, opts ...dhtopt.Option) Option {
+	return func(dc *DriverConfig) error {
+		dc.dht = true
+		dc.dhtOpts = opts
 
-func WithPeerstore(ps pstore.Peerstore) Option {
-	return func(*host.Host) error {
-		if h.ps != nil {
-			return fmt.Errorf("Peerstore already defined")
+		if bc == nil {
+			dc.dhtBoostrapConfig = *bc
+		} else {
+			dc.dhtBoostrapConfig = dht.DefaultBootstrapConfig
 		}
 
-		h.ps = ps
 		return nil
 	}
 }
