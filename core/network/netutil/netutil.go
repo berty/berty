@@ -7,6 +7,7 @@ import (
 	inet "github.com/libp2p/go-libp2p-net"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	manet "github.com/multiformats/go-multiaddr-net"
+
 	"go.uber.org/zap"
 )
 
@@ -38,15 +39,17 @@ type listener struct {
 	fc      fclose
 }
 
-func NewListener(fc fclose, pid protocol.ID) *listener {
-	return &listener{
+func NewListener(fc fclose, pid protocol.ID) (net.Listener, inet.StreamHandler) {
+	l := &listener{
 		cstream: make(chan net.Conn),
 		addr:    &ProtocolAddr{pid},
 		fc:      fc,
 	}
+
+	return l, l.handleStream
 }
 
-func (l *listener) HandleStream(s inet.Stream) {
+func (l *listener) handleStream(s inet.Stream) {
 	c, err := NewConnFromStream(s)
 	if err != nil {
 		l.cstream <- c
@@ -68,7 +71,7 @@ func (l *listener) Addr() net.Addr {
 	return l.addr
 }
 
-// conn must implement net.conn
+// Conn must implement net.conn
 var _ net.Conn = (*conn)(nil)
 
 type conn struct {
@@ -77,7 +80,7 @@ type conn struct {
 	remoteAddr net.Addr
 }
 
-// NewConnFromStream convert a inet.Stream to a net.Conn
+// NewConnFromStream convert a inet.Stream to a net.conn
 func NewConnFromStream(s inet.Stream) (net.Conn, error) {
 	localAddr, err := manet.ToNetAddr(s.Conn().LocalMultiaddr())
 	if err != nil {

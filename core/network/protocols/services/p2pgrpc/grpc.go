@@ -13,38 +13,52 @@ import (
 	"go.uber.org/zap"
 )
 
-const protocolIDPrefix = "/berty/grpc/"
+const ID = "/berty/grpc"
 
-func getGrpcProtocolID(pid protocol.ID) protocol.ID {
-	return protocol.ID(fmt.Sprintf("%s/%s", protocolIDPrefix, string(pid)))
+func getGrpcID(proto string) string {
+	return ID + "/" + proto
 }
 
 type P2Pgrpc struct {
-	h host.Host
+	host host.Host
 }
 
-func NewP2PGrpcService(h host.Host) *P2Pgrpc {
-	return &P2Pgrpc{h}
+func NewP2PGrpcService(host host.Host) *P2Pgrpc {
+	return &P2Pgrpc{host}
 }
 
-func (pg *P2Pgrpc) NewListener(id protocol.ID) net.Listener {
-	pid := getGrpcProtocolID(id)
+func (pg *P2Pgrpc) hasProtocol(proto string) bool {
+	for _, p := range pg.host.Mux().Protocols() {
+		if proto == p {
+			return true
+		}
+	}
 
-	fclose := func() error {
-		pg.h.RemoveStreamHandler(pid)
+	return false
+}
+
+func (pg *P2Pgrpc) NewListener(proto string) net.Listener {
+	id := getGrpcID(proto)
+
+	if pg.hasProtocol(id) {
+		zap.L().Warn("Proto already registered", zap.String("pid", id))
 		return nil
 	}
 
-	l := netutil.NewListener(fclose, pid)
-	pg.h.SetStreamHandler(pid, l.HandleStream)
+	pid := protocol.ID(id)
+	fclose := func() error {
+		pg.host.RemoveStreamHandler(pid)
+		return nil
+	}
+
+	l, handler := netutil.NewListener(fclose, pid)
+	pg.host.SetStreamHandler(pid, handler)
 
 	return l
 }
 
-type dialer func(string, time.Duration) (net.Conn, error)
-
-func (pg *P2Pgrpc) NewDialer(id protocol.ID) dialer {
-	pid := getGrpcProtocolID(id)
+func (pg *P2Pgrpc) NewDialer(proto string) func(string, time.Duration) (net.Conn, error) {
+	pid := protocol.ID(getGrpcID(proto))
 	return func(target string, timeout time.Duration) (net.Conn, error) {
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
@@ -57,7 +71,7 @@ func (pg *P2Pgrpc) NewDialer(id protocol.ID) dialer {
 		// No stream exist, creating a new one
 		zap.L().Debug("Dialing", zap.String("addr", target))
 
-		s, err := pg.h.NewStream(ctx, peerID, pid)
+		s, err := pg.host.NewStream(ctx, peerID, pid)
 		if err != nil {
 			zap.L().Error("new stream failed ", zap.Error(err))
 			return nil, err
