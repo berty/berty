@@ -25,8 +25,9 @@ import (
      {{- range $method := .Method }}
      {{- if and (not .ClientStreaming) (not .ServerStreaming)}}
      registerUnary("{{$file.Package}}.{{$method.Name}}", {{$file.Package|splitList "."|last|title}}{{$method.Name}})
-     {{- else}}
-     // FIXME: support "{{$file.Package}}.{{$method.Name}}" streaming
+     {{- end}}
+     {{- if and (not .ClientStreaming) (.ServerStreaming)}}
+     registerServerStream("{{$file.Package}}.{{$method.Name}}", {{$file.Package|splitList "."|last|title}}{{$method.Name}})
      {{- end}}
      {{- end}}
   }
@@ -45,6 +46,39 @@ import (
                   return nil, err
             }
             return client.{{$file.Package|splitList "."|last|title}}().{{$method.Name}}(ctx, &typedInput)
+      }
+    {{- end}}
+    {{if and (not .ClientStreaming) (.ServerStreaming)}}
+      func {{$file.Package|splitList "."|last|title}}{{$method.Name}}(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+            zap.L().Debug("client call",
+                  zap.String("service", "{{$svc.Name}}"),
+                  zap.String("method", "{{$method.Name}}"),
+                  zap.String("input", string(jsonInput)),
+            )
+            {{ $in := $method.InputType | getMessageType $file }}
+            var typedInput {{$in.GoType "."}}
+            if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+                  return nil, err
+            }
+            stream, err := client.{{$file.Package|splitList "."|last|title}}().{{$method.Name}}(ctx, &typedInput)
+            if err != nil {
+                  return nil, err
+            }
+
+            // start a stream proxy
+            streamProxy := newGenericServerStreamProxy()
+            go func() {
+                    for {
+                            data, err := stream.Recv()
+                            streamProxy.queue <- genericStreamEntry{data: data, err: err}
+                            if err != nil {
+                                    break
+                            }
+                    }
+                    // FIXME: wait for queue to be empty, then close chan
+            }()
+
+            return streamProxy, nil
       }
     {{- end}}
   {{- end}}
