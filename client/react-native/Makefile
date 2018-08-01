@@ -11,6 +11,7 @@ all: $(ROOT) $(DEPS)
 
 .PHONY: fclean
 fclean: $(FCLEAN)
+	yarn cache clean && watchman watch-del-all
 
 .PHONY: re
 re: $(RE)
@@ -20,15 +21,14 @@ $(ROOT)/node_modules $(DEPS): %/node_modules: %/package.json
 
 .PHONY: $(DIRS)
 $(DIRS): %: %/node_modules $(ROOT)/node_modules
-	cd $@ && yarn start
 
 .PHONY: android
 android: gomobile mobile
-	cd mobile && yarn android
+	cd mobile && yarn android && yarn start
 
 .PHONY: ios
 ios: gomobile mobile
-	cd mobile && yarn ios --device $(device)
+	cd mobile && yarn ios --device $(device) && yarn start
 
 .PHONY: $(FCLEAN)
 $(FCLEAN):
