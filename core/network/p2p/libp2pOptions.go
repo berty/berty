@@ -6,17 +6,20 @@ import (
 	"net"
 
 	libp2p "github.com/libp2p/go-libp2p"
+	circuit "github.com/libp2p/go-libp2p-circuit"
 	crypto "github.com/libp2p/go-libp2p-crypto"
+	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
 	pnet "github.com/libp2p/go-libp2p-interface-pnet"
 	metrics "github.com/libp2p/go-libp2p-metrics"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	"github.com/libp2p/go-libp2p/config"
+	ma "github.com/multiformats/go-multiaddr"
 )
 
 // WithListenAddrStrings configures libp2p to listen on the given (unparsed)
 // addresses.
 func WithListenAddrStrings(s ...string) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.ListenAddrStrings(s...))
 		return nil
 	}
@@ -24,7 +27,7 @@ func WithListenAddrStrings(s ...string) Option {
 
 // WithListenAddrs configures libp2p to listen on the given addresses.
 func WithListenAddrs(addrs ...ma.Multiaddr) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.ListenAddrs(addrs...))
 		return nil
 	}
@@ -44,7 +47,7 @@ func WithListenAddrs(addrs ...ma.Multiaddr) Option {
 // * Network
 // * Peerstore
 func WithSecurity(name string, tpt interface{}) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Security(name, tpt))
 		return nil
 	}
@@ -53,8 +56,8 @@ func WithSecurity(name string, tpt interface{}) Option {
 // WithInsecure is an option that completely disables all transport security.
 // It's incompatible with all other transport security protocols.
 func WithInsecure() Option {
-	return func(dc *DriverConfig) error {
-		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Insecure())
+	return func(dc *driverConfig) error {
+		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.NoSecurity)
 		return nil
 	}
 }
@@ -71,7 +74,7 @@ func WithInsecure() Option {
 // * Network
 // * Peerstore
 func WithMuxer(name string, tpt interface{}) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Muxer(name, tpt))
 		return nil
 	}
@@ -94,15 +97,15 @@ func WithMuxer(name string, tpt interface{}) Option {
 // * Address filter (filter.Filter)
 // * Peerstore
 func WithTransport(tpt interface{}) Option {
-	return func(dc *DriverConfig) error {
-		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Transport)
+	return func(dc *driverConfig) error {
+		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Transport(tpt))
 		return nil
 	}
 }
 
 // WithPeerstore configures libp2p to use the given peerstore.
 func WithPeerstore(ps pstore.Peerstore) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Peerstore(ps))
 		return nil
 	}
@@ -110,7 +113,7 @@ func WithPeerstore(ps pstore.Peerstore) Option {
 
 // WithPrivateNetwork configures libp2p to use the given private network protector.
 func WithPrivateNetwork(prot pnet.Protector) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.PrivateNetwork(prot))
 		return nil
 	}
@@ -118,7 +121,7 @@ func WithPrivateNetwork(prot pnet.Protector) Option {
 
 // WithBandwidthReporter configures libp2p to use the given bandwidth reporter.
 func WithBandwidthReporter(rep metrics.Reporter) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.BandwidthReporter(rep))
 		return nil
 	}
@@ -126,7 +129,7 @@ func WithBandwidthReporter(rep metrics.Reporter) Option {
 
 // WithIdentity configures libp2p to use the given private key to identify itself.
 func WithIdentity(sk crypto.PrivKey) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Identity(sk))
 		return nil
 	}
@@ -134,7 +137,7 @@ func WithIdentity(sk crypto.PrivKey) Option {
 
 // WithConnectionManager configures libp2p to use the given connection manager.
 func WithConnectionManager(connman ifconnmgr.ConnManager) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.ConnectionManager(connman))
 		return nil
 	}
@@ -142,15 +145,15 @@ func WithConnectionManager(connman ifconnmgr.ConnManager) Option {
 
 // WithAddrsFactory configures libp2p to use the given address factory.
 func WithAddrsFactory(factory config.AddrsFactory) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.AddrsFactory(factory))
 		return nil
 	}
 }
 
-// WithEnableRelay configures libp2p to enable the relay transport.
+// WithRelay configures libp2p to enable the relay transport.
 func WithRelay(options ...circuit.RelayOpt) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.EnableRelay(options...))
 		return nil
 	}
@@ -159,7 +162,7 @@ func WithRelay(options ...circuit.RelayOpt) Option {
 // WithFilterAddresses configures libp2p to never dial nor accept connections from
 // the given addresses.
 func WithFilterAddresses(addrs ...*net.IPNet) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.FilterAddresses(addrs...))
 		return nil
 	}
@@ -168,7 +171,7 @@ func WithFilterAddresses(addrs ...*net.IPNet) Option {
 // WithNATPortMap configures libp2p to use the default NATManager. The default
 // NATManager will attempt to open a port in your network's firewall using UPnP.
 func WithNATPortMap() Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.NATPortMap())
 		return nil
 	}
@@ -177,7 +180,7 @@ func WithNATPortMap() Option {
 // WithNATManager will configure libp2p to use the requested NATManager. This
 // function should be passed a NATManager *constructor* that takes a libp2p Network.
 func WithNATManager(nm config.NATManagerC) Option {
-	return func(dc *DriverConfig) error {
+	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, libp2p.NATManager(nm))
 		return nil
 	}
