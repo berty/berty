@@ -13,6 +13,7 @@ import (
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network"
+	"github.com/berty/berty/core/sql"
 )
 
 // Node is the top-level object of a Berty peer
@@ -68,8 +69,30 @@ func (n *Node) Start() error {
 	for {
 		select {
 		case event := <-n.outgoingEvents:
-			if err := n.networkDriver.SendEvent(ctx, event); err != nil {
-				zap.L().Warn("failed to send outgoing event", zap.Error(err), zap.String("event", event.ToJSON()))
+			switch {
+			case event.ReceiverID != "": // ContactEvent
+				if err := n.networkDriver.SendEvent(ctx, event); err != nil {
+					zap.L().Warn("failed to send outgoing event", zap.Error(err), zap.String("event", event.ToJSON()))
+				}
+			case event.ConversationID != "": //ConversationEvent
+				members, err := sql.MembersByConversationID(n.sql, event.ConversationID)
+				if err != nil {
+					zap.L().Warn("failed to get members for conversation", zap.String("conversation_id", event.ConversationID))
+					break
+				}
+				for _, member := range members {
+					if member.ContactID == n.UserID() {
+						// skip myself
+						continue
+					}
+					copy := event.Copy()
+					copy.ReceiverID = member.ContactID
+					if err := n.networkDriver.SendEvent(ctx, copy); err != nil {
+						zap.L().Warn("failed to send outgoing event", zap.Error(err), zap.String("event", event.ToJSON()))
+					}
+				}
+			default:
+				zap.L().Error("unhandled event type")
 			}
 		}
 	}

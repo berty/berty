@@ -286,6 +286,111 @@ func TestWithSimpleNetwork(t *testing.T) {
 				So(len(conversations), ShouldEqual, 0)
 			})
 		})
+		Convey("Bob sends a message on the conversation", FailureHalts, func() {
+			Convey("Bob does not have any message in conversation history", FailureHalts, func() {
+				stream, err := bob.client.Node().EventList(internalCtx, &node.EventListInput{
+					Limit: 10,
+					Filter: &p2p.Event{
+						ConversationID: cache["conversation_id"].(string),
+					},
+				})
+				events := []*p2p.Event{}
+				for {
+					event, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					events = append(events, event)
+				}
+				So(err, ShouldBeNil)
+				So(len(events), ShouldEqual, 0)
+				time.Sleep(sleepBetweenSteps)
+			})
+			Convey("Alice does not have any message in conversation history", FailureHalts, func() {
+				stream, err := alice.client.Node().EventList(internalCtx, &node.EventListInput{
+					Limit: 10,
+					Filter: &p2p.Event{
+						ConversationID: cache["conversation_id"].(string),
+					},
+				})
+				events := []*p2p.Event{}
+				for {
+					event, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					events = append(events, event)
+				}
+				So(err, ShouldBeNil)
+				So(len(events), ShouldEqual, 0)
+				time.Sleep(sleepBetweenSteps)
+			})
+			Convey("Bob creates a conversation with Alice", FailureHalts, func() {
+				res, err := bob.client.Node().ConversationAddMessage(internalCtx, &node.ConversationAddMessageInput{
+					Conversation: &entity.Conversation{
+						ID: cache["conversation_id"].(string),
+					},
+					Message: &entity.Message{
+						Text: "hello world!",
+					},
+				})
+				So(err, ShouldBeNil)
+				So(res, ShouldNotBeNil)
+				time.Sleep(sleepBetweenSteps)
+			})
+			Convey("Bob has one message in conversation history", FailureHalts, func() {
+				stream, err := bob.client.Node().EventList(internalCtx, &node.EventListInput{
+					Limit: 10,
+					Filter: &p2p.Event{
+						ConversationID: cache["conversation_id"].(string),
+					},
+				})
+				events := []*p2p.Event{}
+				for {
+					event, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					events = append(events, event)
+				}
+				So(err, ShouldBeNil)
+				So(len(events), ShouldEqual, 1)
+				So(events[0].Kind, ShouldEqual, p2p.Kind_ConversationNewMessage)
+				So(events[0].Direction, ShouldEqual, p2p.Event_Outgoing)
+				attrs, err := events[0].GetConversationNewMessageAttrs()
+				So(err, ShouldBeNil)
+				So(attrs.Message.Text, ShouldEqual, "hello world!")
+				time.Sleep(sleepBetweenSteps)
+			})
+			Convey("Alice has one message in conversation history", FailureHalts, func() {
+				stream, err := alice.client.Node().EventList(internalCtx, &node.EventListInput{
+					Limit: 10,
+					Filter: &p2p.Event{
+						ConversationID: cache["conversation_id"].(string),
+					},
+				})
+				events := []*p2p.Event{}
+				for {
+					event, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					events = append(events, event)
+				}
+				So(err, ShouldBeNil)
+				So(len(events), ShouldEqual, 1)
+				So(events[0].Kind, ShouldEqual, p2p.Kind_ConversationNewMessage)
+				So(events[0].Direction, ShouldEqual, p2p.Event_Incoming)
+				attrs, err := events[0].GetConversationNewMessageAttrs()
+				So(err, ShouldBeNil)
+				So(attrs.Message.Text, ShouldEqual, "hello world!")
+				time.Sleep(sleepBetweenSteps)
+			})
+		})
 	})
 }
 

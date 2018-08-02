@@ -66,7 +66,7 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput node.Void
+	var typedInput node.EventListInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
