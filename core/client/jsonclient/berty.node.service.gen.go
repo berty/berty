@@ -23,7 +23,6 @@ func init() {
 	registerServerStream("berty.node.ContactList", NodeContactList)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
-	registerUnary("berty.node.ConversationAcceptInvite", NodeConversationAcceptInvite)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
 }
 
@@ -223,20 +222,6 @@ func NodeConversationList(client *client.Client, ctx context.Context, jsonInput 
 	}()
 
 	return streamProxy, nil
-}
-
-func NodeConversationAcceptInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationAcceptInvite"),
-		zap.String("input", string(jsonInput)),
-	)
-
-	var typedInput entity.Conversation
-	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
-	}
-	return client.Node().ConversationAcceptInvite(ctx, &typedInput)
 }
 
 func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {

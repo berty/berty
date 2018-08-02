@@ -46,9 +46,9 @@ message ConversationMember {
     Unknown = 0;
     Owner = 1;
     Active = 2;
-    Invited = 3;
-    Blocked = 4;
-    // Alumni = 5;
+    Blocked = 3;
+    // Alumni = 4; // if we want to keep track of removed ones
+    // Invited = 5; // if we want to add an invite step
   }
 
   //

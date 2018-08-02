@@ -141,6 +141,25 @@ func (e *Event) SetContactShareAttrs(attrs *ContactShareAttrs) error {
 	return nil
 }
 
+// GetConversationInviteAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationInviteAttrs() (*ConversationInviteAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationInviteAttrs{}, nil
+	}
+	var attrs ConversationInviteAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationInviteAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationInviteAttrs(attrs *ConversationInviteAttrs) error {
+	raw, err := proto.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetAttrs parses the embedded attributes
 func (e *Event) GetAttrs() (proto.Message, error) {
 	switch e.Kind {
@@ -158,6 +177,8 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetContactShareMeAttrs()
 	case Kind_ContactShare:
 		return e.GetContactShareAttrs()
+	case Kind_ConversationInvite:
+		return e.GetConversationInviteAttrs()
 	}
 	return nil, fmt.Errorf("not supported event kind: %q", e.Kind)
 }

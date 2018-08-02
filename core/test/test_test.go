@@ -3,7 +3,10 @@ package test
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"math/rand"
 	"os"
+	"runtime"
 	"time"
 
 	"go.uber.org/zap"
@@ -11,6 +14,14 @@ import (
 
 	"github.com/berty/berty/core/network/drivermock"
 )
+
+func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
+}
+
+//
+// json print helpers
+//
 
 func jsonPrint(i interface{}) {
 	out, _ := json.Marshal(i)
@@ -22,6 +33,31 @@ func jsonPrintIndent(i interface{}) {
 	fmt.Println(string(out))
 }
 
+//
+// duration / bench helpers
+//
+
+var durations map[string][]time.Time
+
+func printDuration(key string) {
+	if durations == nil {
+		durations = make(map[string][]time.Time)
+	}
+	_, fn, line, _ := runtime.Caller(1)
+	now := time.Now()
+	if _, found := durations[key]; found {
+		log.Printf("\n[duration] %s: %s:%d diff=%s total=%s\n", key, fn, line, now.Sub(durations[key][1]), now.Sub(durations[key][0]))
+		durations[key][1] = now
+	} else {
+		log.Printf("\n[duration] %s: %s:%d init\n", key, fn, line)
+		durations[key] = []time.Time{now, now}
+	}
+}
+
+//
+// appmock helpers
+//
+
 func nodeChansLens(apps ...*AppMock) []int {
 	time.Sleep(1 * time.Millisecond) // FIXME: wait for an event instead of waiting for a fixed time
 	out := []int{}
@@ -31,6 +67,10 @@ func nodeChansLens(apps ...*AppMock) []int {
 	}
 	return out
 }
+
+//
+// logging
+//
 
 func setupTestLogging() {
 	// initialize zap

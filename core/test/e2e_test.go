@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"io"
+	"os"
 	"testing"
 	"time"
 
@@ -16,9 +17,11 @@ import (
 
 func TestWithSimpleNetwork(t *testing.T) {
 	var (
-		alice, bob, eve *AppMock
-		err             error
-		internalCtx     = context.Background()
+		alice, bob, eve      *AppMock
+		err                  error
+		internalCtx          = context.Background()
+		cache                = map[string]interface{}{}
+		sleepBetweenSteps, _ = time.ParseDuration("50ms")
 	)
 	defer func() {
 		if alice != nil {
@@ -35,6 +38,11 @@ func TestWithSimpleNetwork(t *testing.T) {
 	setupTestLogging()
 
 	Convey("End-to-end test (with simple network mock)", t, FailureHalts, func() {
+		if duration := os.Getenv("TEST_SLEEP_BETWEEN_STEPS"); duration != "" {
+			sleepBetweenSteps, err = time.ParseDuration(duration)
+			So(err, ShouldBeNil)
+		}
+
 		Convey("Initialize nodes", FailureHalts, func() {
 			network := drivermock.NewSimple()
 			aliceNetwork := network.Driver()
@@ -78,7 +86,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 				})
 				So(err, ShouldBeNil)
 				So(res, ShouldNotBeNil)
-				time.Sleep(50 * time.Millisecond)
+				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
 				res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
@@ -86,7 +94,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 				})
 				So(err, ShouldBeNil)
 				So(res, ShouldNotBeNil)
-				time.Sleep(50 * time.Millisecond)
+				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Alice has Bob as friend", FailureHalts, func() {
 				stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
@@ -185,13 +193,98 @@ func TestWithSimpleNetwork(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 0)
 			})
-			Convey("Eve has no conversation", FailureHalts, nil)
-			Convey("Bob calls node.ConversationCreate", FailureHalts, nil)
-			Convey("Bob calls node.ConversationInvite", FailureHalts, nil)
-			Convey("Alice calls node.ConversationAcceptInvite", FailureHalts, nil)
-			Convey("Bob has the conversation with Alice", FailureHalts, nil)
-			Convey("Alice has the conversation with Bob", FailureHalts, nil)
-			Convey("Eve has no conversation (again)", FailureHalts, nil)
+			Convey("Eve has no conversation", FailureHalts, func() {
+				stream, err := eve.client.Node().ConversationList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				conversations := []*entity.Conversation{}
+				for {
+					conversation, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					conversations = append(conversations, conversation)
+				}
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 0)
+			})
+			Convey("Bob creates a conversation with Alice", FailureHalts, func() {
+				res, err := bob.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+					Title: "Alice & Bob",
+					Topic: "hey!",
+					Members: []*entity.ConversationMember{
+						{ContactID: alice.node.UserID()},
+					},
+				})
+				So(err, ShouldBeNil)
+				So(res, ShouldNotBeNil)
+				cache["conversation_id"] = res.ID
+				time.Sleep(sleepBetweenSteps)
+			})
+			Convey("Bob has the conversation with Alice", FailureHalts, func() {
+				stream, err := bob.client.Node().ConversationList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				conversations := []*entity.Conversation{}
+				for {
+					conversation, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					conversations = append(conversations, conversation)
+				}
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 1)
+
+				So(conversations[0].Title, ShouldEqual, "Alice & Bob")
+				So(len(conversations[0].Members), ShouldEqual, 2)
+				So(conversations[0].Members[0].ContactID, ShouldEqual, bob.node.UserID())
+				So(conversations[0].Members[1].ContactID, ShouldEqual, alice.node.UserID())
+				So(conversations[0].Members[0].Status, ShouldEqual, entity.ConversationMember_Owner)
+				So(conversations[0].Members[1].Status, ShouldEqual, entity.ConversationMember_Active)
+			})
+			Convey("Alice has the conversation with Bob", FailureHalts, func() {
+				stream, err := alice.client.Node().ConversationList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				conversations := []*entity.Conversation{}
+				for {
+					conversation, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					conversations = append(conversations, conversation)
+				}
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 1)
+
+				So(conversations[0].Title, ShouldEqual, "Alice & Bob")
+				So(len(conversations[0].Members), ShouldEqual, 2)
+				So(conversations[0].Members[0].ContactID, ShouldNotEqual, conversations[0].Members[1].ContactID)
+				for _, member := range conversations[0].Members {
+					switch member.ContactID {
+					case alice.node.UserID():
+						So(member.Status, ShouldEqual, entity.ConversationMember_Active)
+					case bob.node.UserID():
+						So(member.Status, ShouldEqual, entity.ConversationMember_Owner)
+					}
+				}
+			})
+			Convey("Eve has no conversation (again)", FailureHalts, func() {
+				stream, err := eve.client.Node().ConversationList(internalCtx, &node.Void{})
+				So(err, ShouldBeNil)
+				conversations := []*entity.Conversation{}
+				for {
+					conversation, err := stream.Recv()
+					if err == io.EOF {
+						break
+					}
+					So(err, ShouldBeNil)
+					conversations = append(conversations, conversation)
+				}
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 0)
+			})
 		})
 	})
 }
@@ -494,7 +587,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
-				So(attrs.Me.ID, ShouldBeEmpty)
+				So(attrs.Me.ID, ShouldEqual, alice.node.UserID())
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 
@@ -555,7 +648,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
-				So(attrs.Me.ID, ShouldBeEmpty)
+				So(attrs.Me.ID, ShouldEqual, alice.node.UserID())
 				So(attrs.Me.DisplayName, ShouldEqual, "Alice")
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)

@@ -9,6 +9,7 @@ func (c *Contact) Validate() error {
 
 func (c *Contact) Filtered() *Contact {
 	return &Contact{
+		ID:            c.ID,
 		DisplayName:   c.DisplayName,
 		DisplayStatus: c.DisplayStatus,
 		// FIXME: share sigchain
