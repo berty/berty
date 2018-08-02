@@ -4,6 +4,7 @@ package berty.p2p;
 
 import "entity/contact.proto";
 import "entity/conversation.proto";
+import "entity/message.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/berty/berty/core/api/p2p";
@@ -38,12 +39,7 @@ enum Kind {
   //
 
   ConversationInvite = 301;
-
-  //
-  // Message events
-  //
-
-  // FIXME: todo
+  ConversationNewMessage = 302;
 }
 
 //
@@ -68,3 +64,4 @@ message ContactShareAttrs { berty.entity.Contact contact = 1; }
 //
 
 message ConversationInviteAttrs { berty.entity.Conversation conversation = 1; }
+message ConversationNewMessageAttrs { berty.entity.Message message = 1; }

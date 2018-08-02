@@ -35,6 +35,7 @@ service Service {
   rpc ConversationCreate(berty.entity.Conversation) returns (berty.entity.Conversation);
   rpc ConversationList(Void) returns (stream berty.entity.Conversation);
   rpc ConversationInvite(berty.entity.ConversationMember) returns (berty.entity.Conversation);
+  rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event);
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConverstionAcceptJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
@@ -43,6 +44,11 @@ service Service {
 message ContactRequestInput {
   berty.entity.Contact contact = 1;
   string intro_text = 2;
+}
+
+message ConversationAddMessageInput {
+  berty.entity.Conversation conversation = 1;
+  berty.entity.Message message = 2;
 }
 
 message Void {}
