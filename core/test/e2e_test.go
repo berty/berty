@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"io"
+	"os"
 	"testing"
 	"time"
 
@@ -16,9 +17,10 @@ import (
 
 func TestWithSimpleNetwork(t *testing.T) {
 	var (
-		alice, bob, eve *AppMock
-		err             error
-		internalCtx     = context.Background()
+		alice, bob, eve      *AppMock
+		err                  error
+		internalCtx          = context.Background()
+		sleepBetweenSteps, _ = time.ParseDuration("50ms")
 	)
 	defer func() {
 		if alice != nil {
@@ -35,6 +37,11 @@ func TestWithSimpleNetwork(t *testing.T) {
 	setupTestLogging()
 
 	Convey("End-to-end test (with simple network mock)", t, FailureHalts, func() {
+		if duration := os.Getenv("TEST_SLEEP_BETWEEN_STEPS"); duration != "" {
+			sleepBetweenSteps, err = time.ParseDuration(duration)
+			So(err, ShouldBeNil)
+		}
+
 		Convey("Initialize nodes", FailureHalts, func() {
 			network := drivermock.NewSimple()
 			aliceNetwork := network.Driver()
@@ -78,7 +85,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 				})
 				So(err, ShouldBeNil)
 				So(res, ShouldNotBeNil)
-				time.Sleep(50 * time.Millisecond)
+				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
 				res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
@@ -86,7 +93,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 				})
 				So(err, ShouldBeNil)
 				So(res, ShouldNotBeNil)
-				time.Sleep(50 * time.Millisecond)
+				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Alice has Bob as friend", FailureHalts, func() {
 				stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
