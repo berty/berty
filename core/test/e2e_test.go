@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"io"
 	"os"
 	"testing"
 	"time"
@@ -62,17 +61,16 @@ func TestWithSimpleNetwork(t *testing.T) {
 			network.AddPeer(eve.node.UserID(), eveNetwork)
 		})
 		Convey("Nodes should be empty when just initialized", FailureHalts, func() {
-			stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
+			contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
-			contacts := []*entity.Contact{}
-			for {
-				contact, err := stream.Recv()
-				if err == io.EOF {
-					break
-				}
-				So(err, ShouldBeNil)
-				contacts = append(contacts, contact)
-			}
+			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
+			contacts, err = bob.client.ContactList(internalCtx, &node.Void{})
+			So(err, ShouldBeNil)
+			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
+			contacts, err = eve.client.ContactList(internalCtx, &node.Void{})
+			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 		})
 		Convey("Alice adds Bob as contact", FailureHalts, func() {
@@ -97,17 +95,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Alice has Bob as friend", FailureHalts, func() {
-				stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
+				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -122,17 +110,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 				So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
 			})
 			Convey("Bob has Alice as friend", FailureHalts, func() {
-				stream, err := bob.client.Node().ContactList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
+				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -147,64 +125,24 @@ func TestWithSimpleNetwork(t *testing.T) {
 				So(contacts[1].Devices[0].ID, ShouldEqual, alice.node.UserID())
 			})
 			Convey("Eve has no friend", FailureHalts, func() {
-				stream, err := eve.client.Node().ContactList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
+				contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1)
 			})
 		})
 		Convey("Bob creates a conversation with Alice", FailureHalts, func() {
 			Convey("Bob has no conversation", FailureHalts, func() {
-				stream, err := bob.client.Node().ConversationList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				conversations := []*entity.Conversation{}
-				for {
-					conversation, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					conversations = append(conversations, conversation)
-				}
+				conversations, err := bob.client.ConversationList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 0)
 			})
 			Convey("Alice has no conversation", FailureHalts, func() {
-				stream, err := alice.client.Node().ConversationList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				conversations := []*entity.Conversation{}
-				for {
-					conversation, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					conversations = append(conversations, conversation)
-				}
+				conversations, err := alice.client.ConversationList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 0)
 			})
 			Convey("Eve has no conversation", FailureHalts, func() {
-				stream, err := eve.client.Node().ConversationList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				conversations := []*entity.Conversation{}
-				for {
-					conversation, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					conversations = append(conversations, conversation)
-				}
+				conversations, err := eve.client.ConversationList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 0)
 			})
@@ -221,18 +159,8 @@ func TestWithSimpleNetwork(t *testing.T) {
 				cache["conversation_id"] = res.ID
 				time.Sleep(sleepBetweenSteps)
 			})
-			Convey("Bob has the conversation with Alice", FailureHalts, func() {
-				stream, err := bob.client.Node().ConversationList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				conversations := []*entity.Conversation{}
-				for {
-					conversation, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					conversations = append(conversations, conversation)
-				}
+			Convey("Bob has a conversation with Alice", FailureHalts, func() {
+				conversations, err := bob.client.ConversationList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 1)
 
@@ -244,17 +172,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 				So(conversations[0].Members[1].Status, ShouldEqual, entity.ConversationMember_Active)
 			})
 			Convey("Alice has the conversation with Bob", FailureHalts, func() {
-				stream, err := alice.client.Node().ConversationList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				conversations := []*entity.Conversation{}
-				for {
-					conversation, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					conversations = append(conversations, conversation)
-				}
+				conversations, err := alice.client.ConversationList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 1)
 
@@ -271,58 +189,30 @@ func TestWithSimpleNetwork(t *testing.T) {
 				}
 			})
 			Convey("Eve has no conversation (again)", FailureHalts, func() {
-				stream, err := eve.client.Node().ConversationList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				conversations := []*entity.Conversation{}
-				for {
-					conversation, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					conversations = append(conversations, conversation)
-				}
+				conversations, err := eve.client.ConversationList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 0)
 			})
 		})
 		Convey("Bob sends a message on the conversation", FailureHalts, func() {
 			Convey("Bob does not have any message in conversation history", FailureHalts, func() {
-				stream, err := bob.client.Node().EventList(internalCtx, &node.EventListInput{
+				events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 					Limit: 10,
 					Filter: &p2p.Event{
 						ConversationID: cache["conversation_id"].(string),
 					},
 				})
-				events := []*p2p.Event{}
-				for {
-					event, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					events = append(events, event)
-				}
 				So(err, ShouldBeNil)
 				So(len(events), ShouldEqual, 0)
 				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Alice does not have any message in conversation history", FailureHalts, func() {
-				stream, err := alice.client.Node().EventList(internalCtx, &node.EventListInput{
+				events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 					Limit: 10,
 					Filter: &p2p.Event{
 						ConversationID: cache["conversation_id"].(string),
 					},
 				})
-				events := []*p2p.Event{}
-				for {
-					event, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					events = append(events, event)
-				}
 				So(err, ShouldBeNil)
 				So(len(events), ShouldEqual, 0)
 				time.Sleep(sleepBetweenSteps)
@@ -341,23 +231,15 @@ func TestWithSimpleNetwork(t *testing.T) {
 				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Bob has one message in conversation history", FailureHalts, func() {
-				stream, err := bob.client.Node().EventList(internalCtx, &node.EventListInput{
+				events, err := bob.client.EventList(internalCtx, &node.EventListInput{
 					Limit: 10,
 					Filter: &p2p.Event{
 						ConversationID: cache["conversation_id"].(string),
 					},
 				})
-				events := []*p2p.Event{}
-				for {
-					event, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					events = append(events, event)
-				}
 				So(err, ShouldBeNil)
 				So(len(events), ShouldEqual, 1)
+
 				So(events[0].Kind, ShouldEqual, p2p.Kind_ConversationNewMessage)
 				So(events[0].Direction, ShouldEqual, p2p.Event_Outgoing)
 				attrs, err := events[0].GetConversationNewMessageAttrs()
@@ -366,21 +248,12 @@ func TestWithSimpleNetwork(t *testing.T) {
 				time.Sleep(sleepBetweenSteps)
 			})
 			Convey("Alice has one message in conversation history", FailureHalts, func() {
-				stream, err := alice.client.Node().EventList(internalCtx, &node.EventListInput{
+				events, err := alice.client.EventList(internalCtx, &node.EventListInput{
 					Limit: 10,
 					Filter: &p2p.Event{
 						ConversationID: cache["conversation_id"].(string),
 					},
 				})
-				events := []*p2p.Event{}
-				for {
-					event, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					events = append(events, event)
-				}
 				So(err, ShouldBeNil)
 				So(len(events), ShouldEqual, 1)
 				So(events[0].Kind, ShouldEqual, p2p.Kind_ConversationNewMessage)
@@ -432,18 +305,10 @@ func TestWithEnqueuer(t *testing.T) {
 			So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
 
 			Convey("Alice should only know itself", FailureHalts, func() {
-				stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
+				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
 				So(contacts[0].DisplayName, ShouldEqual, "Alice")
 				So(contacts[0].ID, ShouldEqual, alice.node.UserID())
 				So(contacts[0].DisplayStatus, ShouldEqual, "")
@@ -456,18 +321,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[0].Devices[0].ContactID, ShouldEqual, alice.node.UserID())
 			})
 			Convey("Bob should only know itself", FailureHalts, func() {
-				stream, err := bob.client.Node().ContactList(internalCtx, &node.Void{})
+				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
 				So(contacts[0].DisplayName, ShouldEqual, "Bob")
 				So(contacts[0].ID, ShouldEqual, bob.node.UserID())
 				So(contacts[0].DisplayStatus, ShouldEqual, "")
@@ -480,18 +337,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[0].Devices[0].ContactID, ShouldEqual, bob.node.UserID())
 			})
 			Convey("Eve should only know itself", FailureHalts, func() {
-				stream, err := eve.client.Node().ContactList(internalCtx, &node.Void{})
+				contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
 				So(contacts[0].DisplayName, ShouldEqual, "Eve")
 				So(contacts[0].ID, ShouldEqual, eve.node.UserID())
 				So(contacts[0].DisplayStatus, ShouldEqual, "")
@@ -522,18 +371,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 0, 0, 0, 0})
 			})
 			Convey("Alice has en entry in sql for Bob", FailureHalts, func() {
-				stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
+				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
 				So(len(contacts), ShouldEqual, 2)
+
 				So(contacts[1].DisplayName, ShouldBeEmpty)
 				So(contacts[1].OverrideDisplayName, ShouldEqual, "Bob from school")
 				So(contacts[1].ID, ShouldEqual, bob.node.UserID())
@@ -600,18 +441,10 @@ func TestWithEnqueuer(t *testing.T) {
 				// FIXME: check that event is acked in db
 			})
 			Convey("Bob has en entry in sql for Alice", FailureHalts, func() {
-				stream, err := bob.client.Node().ContactList(internalCtx, &node.Void{})
+				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
 				So(len(contacts), ShouldEqual, 2)
+
 				So(contacts[1].DisplayName, ShouldEqual, "Alice")
 				So(contacts[1].OverrideDisplayName, ShouldBeEmpty)
 				So(contacts[1].ID, ShouldEqual, alice.node.UserID())
@@ -761,17 +594,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
 			})
 			Convey("Alice has Bob as friend", FailureHalts, func() {
-				stream, err := alice.client.Node().ContactList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
+				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -789,17 +612,7 @@ func TestWithEnqueuer(t *testing.T) {
 				//So(contacts[1].Devices[0].Key, ShouldNotBeNil)
 			})
 			Convey("Bob has Alice as friend", FailureHalts, func() {
-				stream, err := bob.client.Node().ContactList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
+				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -817,17 +630,7 @@ func TestWithEnqueuer(t *testing.T) {
 				//So(contacts[1].Devices[0].Key, ShouldNotBeNil)
 			})
 			Convey("Eve has no friend", FailureHalts, func() {
-				stream, err := eve.client.Node().ContactList(internalCtx, &node.Void{})
-				So(err, ShouldBeNil)
-				contacts := []*entity.Contact{}
-				for {
-					contact, err := stream.Recv()
-					if err == io.EOF {
-						break
-					}
-					So(err, ShouldBeNil)
-					contacts = append(contacts, contact)
-				}
+				contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1)
 			})
