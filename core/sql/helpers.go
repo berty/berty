@@ -25,3 +25,11 @@ func ConversationByID(db *gorm.DB, id string) (*entity.Conversation, error) {
 	var conversation entity.Conversation
 	return &conversation, db.First(&conversation, "ID = ?", id).Error
 }
+
+func MembersByConversationID(db *gorm.DB, conversationID string) ([]*entity.ConversationMember, error) {
+	var members []*entity.ConversationMember
+	return members, db.
+		Where(entity.ConversationMember{ConversationID: conversationID}).
+		Find(&members).
+		Error
+}

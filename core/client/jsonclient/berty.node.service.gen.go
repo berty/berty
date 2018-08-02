@@ -24,6 +24,7 @@ func init() {
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
+	registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
 }
 
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
@@ -65,7 +66,7 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput node.Void
+	var typedInput node.EventListInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -236,4 +237,18 @@ func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInpu
 		return nil, err
 	}
 	return client.Node().ConversationInvite(ctx, &typedInput)
+}
+
+func NodeConversationAddMessage(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationAddMessage"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.ConversationAddMessageInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ConversationAddMessage(ctx, &typedInput)
 }

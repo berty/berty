@@ -5,6 +5,7 @@ package berty.node;
 import "api/p2p/event.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
+import "entity/message.proto";
 
 option go_package = "github.com/berty/berty/core/api/node";
 
@@ -15,7 +16,7 @@ service Service {
   //
 
   rpc EventStream(Void) returns (stream berty.p2p.Event);  // yield new events in real-time
-  rpc EventList(Void) returns (stream berty.p2p.Event);    // list old events
+  rpc EventList(EventListInput) returns (stream berty.p2p.Event);    // list old events
 
   //
   // Contacts
@@ -34,16 +35,25 @@ service Service {
   rpc ConversationCreate(berty.entity.Conversation) returns (berty.entity.Conversation);
   rpc ConversationList(Void) returns (stream berty.entity.Conversation);
   rpc ConversationInvite(berty.entity.ConversationMember) returns (berty.entity.Conversation);
+  rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event);
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConverstionAcceptJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
-
-  // TODO...
 }
 
 message ContactRequestInput {
   berty.entity.Contact contact = 1;
-  string intro_message = 2;
+  string intro_text = 2;
+}
+
+message ConversationAddMessageInput {
+  berty.entity.Conversation conversation = 1;
+  berty.entity.Message message = 2;
+}
+
+message EventListInput {
+  uint32 limit = 1;
+  berty.p2p.Event filter = 2;
 }
 
 message Void {}
