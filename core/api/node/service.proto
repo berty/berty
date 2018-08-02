@@ -16,7 +16,7 @@ service Service {
   //
 
   rpc EventStream(Void) returns (stream berty.p2p.Event);  // yield new events in real-time
-  rpc EventList(Void) returns (stream berty.p2p.Event);    // list old events
+  rpc EventList(EventListInput) returns (stream berty.p2p.Event);    // list old events
 
   //
   // Contacts
@@ -49,6 +49,11 @@ message ContactRequestInput {
 message ConversationAddMessageInput {
   berty.entity.Conversation conversation = 1;
   berty.entity.Message message = 2;
+}
+
+message EventListInput {
+  uint32 limit = 1;
+  berty.p2p.Event filter = 2;
 }
 
 message Void {}
