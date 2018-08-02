@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -15,7 +16,9 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/network/drivermock"
+	"github.com/berty/berty/core/network"
+	"github.com/berty/berty/core/network/mock"
+	"github.com/berty/berty/core/network/p2p"
 	"github.com/berty/berty/core/node"
 	"github.com/berty/berty/core/sql"
 	"github.com/berty/berty/core/sql/sqlcipher"
@@ -28,6 +31,7 @@ type daemonOptions struct {
 	sqlKey       string
 	dropDatabase bool
 	initOnly     bool
+	noP2P        bool
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -39,12 +43,13 @@ func newDaemonCommand() *cobra.Command {
 		},
 	}
 	flags := cmd.Flags()
-	flags.StringVarP(&opts.bind, "bind", "", "0.0.0.0:1337", "gRPC listening address")
-	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
-	flags.StringVarP(&opts.sqlPath, "sql-path", "", "/tmp/berty.db", "sqlcipher database path")
-	flags.StringVarP(&opts.sqlKey, "sql-key", "", "s3cur3", "sqlcipher database encryption key")
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
+	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
+	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drvier")
+	flags.StringVarP(&opts.bind, "bind", "", "0.0.0.0:1337", "gRPC listening address")
+	flags.StringVarP(&opts.sqlKey, "sql-key", "", "s3cur3", "sqlcipher database encryption key")
+	flags.StringVarP(&opts.sqlPath, "sql-path", "", "/tmp/berty.db", "sqlcipher database path")
 	return cmd
 }
 
@@ -64,17 +69,42 @@ func daemon(opts *daemonOptions) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to open sqlcipher")
 	}
+
 	defer db.Close()
 	if db, err = sql.Init(db); err != nil {
 		return errors.Wrap(err, "failed to initialize sql")
 	}
+
 	if opts.dropDatabase {
 		if err = sql.DropDatabase(db); err != nil {
 			return errors.Wrap(err, "failed to drop database")
 		}
 	}
+
 	if err = sql.Migrate(db); err != nil {
 		return errors.Wrap(err, "failed to apply sql migrations")
+	}
+
+	var driver network.Driver
+	if !opts.noP2P {
+		driver, err = p2p.NewDriver(
+			context.Background(),
+			p2p.WithRandomIdentity(),
+			p2p.WithDefaultMuxers(),
+			p2p.WithDefaultPeerstore(),
+			p2p.WithDefaultSecurity(),
+			p2p.WithDefaultTransports(),
+
+			p2p.WithListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
+			p2p.WithBootstrap(p2p.BootstrapIpfs...),
+		)
+		if err != nil {
+			return err
+		}
+	}
+
+	if driver == nil {
+		driver = mock.NewEnqueuer()
 	}
 
 	// initialize node
@@ -82,8 +112,8 @@ func daemon(opts *daemonOptions) error {
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
 		node.WithSQL(db),
-		node.WithDevice(&entity.Device{Name: "bart"}),    // FIXME: get device dynamically
-		node.WithNetworkDriver(drivermock.NewEnqueuer()), // FIXME: use a p2p driver instead
+		node.WithDevice(&entity.Device{Name: "bart"}), // FIXME: get device dynamically
+		node.WithNetworkDriver(driver),                // FIXME: use a p2p driver instead
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize node")

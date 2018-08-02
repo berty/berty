@@ -1,0 +1,72 @@
+{
+  "author": "whyrusleeping",
+  "bugs": {
+    "url": "https://github.com/libp2p/go-ws-transport/issues"
+  },
+  "gx": {
+    "dvcsimport": "github.com/libp2p/go-ws-transport"
+  },
+  "gxDependencies": [
+    {
+      "author": "whyrusleeping",
+      "hash": "QmV6FjemM1K8oXjrvuq3wuVWWoU2TLDPmNnKrxHzY3v6Ai",
+      "name": "go-multiaddr-net",
+      "version": "1.6.3"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmQscWDtDBDsWAM58aY6gU2KtxyFFmvvZgdfJExYPLgtXA",
+      "name": "mafmt",
+      "version": "1.2.7"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmW5LxJm2Yo3S7uVsfLM7NsJn2QnKbvZD7uYsZVYR7YViE",
+      "name": "go-libp2p-transport",
+      "version": "3.0.5"
+    },
+    {
+      "author": "gorilla",
+      "hash": "QmZH5VXfAJouGMyCCHTRPGCT3e5MG9Lu78Ln3YAYW1XTts",
+      "name": "websocket",
+      "version": "0.0.1"
+    },
+    {
+      "author": "multiformats",
+      "hash": "QmYmsdtJ3HsodkePE3eU3TsCaP2YvPZJ4LoXnNkDE5Tpt7",
+      "name": "go-multiaddr",
+      "version": "1.3.0"
+    },
+    {
+      "author": "Stebalien",
+      "hash": "QmYMGCwtKbLXfh2MUTbLoP66N9Y24DSg8PFJRG21eE2qwv",
+      "name": "go-conn-security",
+      "version": "0.1.5"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmZHiqdRuNXujvSPNu1ZWxxzV6a2WhoZpfYkesdgyaKF9f",
+      "name": "go-smux-multiplex",
+      "version": "3.0.11"
+    },
+    {
+      "author": "steb",
+      "hash": "Qma7AuxEA7dd1wAy95hTxXgxy4q7mU4Pyd1x4PRAzGP1fs",
+      "name": "go-libp2p-transport-upgrader",
+      "version": "0.1.5"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN",
+      "name": "go-libp2p-peer",
+      "version": "2.3.5"
+    }
+  ],
+  "gxVersion": "0.4.0",
+  "language": "go",
+  "license": "MIT",
+  "name": "go-ws-transport",
+  "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
+  "version": "2.0.5"
+}
+

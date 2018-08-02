@@ -1,0 +1,42 @@
+{
+  "author": "jbenet",
+  "bugs": {
+    "url": "https://github.com/jbenet/go-datastore"
+  },
+  "gx": {
+    "dvcsimport": "github.com/ipfs/go-datastore"
+  },
+  "gxDependencies": [
+    {
+      "author": "satori",
+      "hash": "QmcBWojPoNh4qm7zvv4qiepvCnnc7ALS9qcp7TNwwxT1gT",
+      "name": "go.uuid",
+      "version": "1.1.0"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmSF8fPo3jgVBAy8fpdjjYqgG87dkJgUprRBHRd2tmfgpP",
+      "name": "goprocess",
+      "version": "1.0.0"
+    },
+    {
+      "author": "gustavo",
+      "hash": "QmYBJ8BXPDTMnzLFdv4rS5kbR1fUFASDVDpK7ZbeWMx6hq",
+      "name": "go-check",
+      "version": "1.0.0"
+    },
+    {
+      "author": "hsanjuan",
+      "hash": "QmRJVNatYJwTAHgdSM1Xef9QVQ1Ch3XHdmcrykjP5Y4soL",
+      "name": "go-ipfs-delay",
+      "version": "0.0.1"
+    }
+  ],
+  "gxVersion": "0.7.0",
+  "language": "go",
+  "license": "MIT",
+  "name": "go-datastore",
+  "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
+  "version": "2.4.1"
+}
+

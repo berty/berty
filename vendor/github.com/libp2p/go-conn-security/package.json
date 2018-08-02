@@ -1,0 +1,36 @@
+{
+  "author": "Stebalien",
+  "bugs": {
+    "url": "https://github.com/libp2p/go-conn-security"
+  },
+  "gx": {
+    "dvcsimport": "github.com/libp2p/go-conn-security"
+  },
+  "gxDependencies": [
+    {
+      "author": "whyrusleeping",
+      "hash": "QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN",
+      "name": "go-libp2p-peer",
+      "version": "2.3.5"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "Qme1knMqwt1hKZbc1BmQFmnm9f36nyQGwXxPGVpVJ9rMK5",
+      "name": "go-libp2p-crypto",
+      "version": "1.6.2"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmPjvxTpVH8qJyQDnxnsxF9kv9jezKD1kozz1hs3fCGsNh",
+      "name": "go-libp2p-net",
+      "version": "3.0.5"
+    }
+  ],
+  "gxVersion": "0.12.1",
+  "language": "go",
+  "license": "MIT",
+  "name": "go-conn-security",
+  "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
+  "version": "0.1.5"
+}
+
