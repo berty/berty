@@ -58,7 +58,7 @@ message PingAttrs {}
 // Contact events
 //
 
-message ContactRequestAttrs { berty.entity.Contact me = 1; string intro_message = 2; }
+message ContactRequestAttrs { berty.entity.Contact me = 1; string intro_text = 2; }
 message ContactRequestAcceptedAttrs { }
 message ContactShareMeAttrs { berty.entity.Contact me = 1; }
 message ContactShareAttrs { berty.entity.Contact contact = 1; }

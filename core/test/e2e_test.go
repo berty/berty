@@ -82,7 +82,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 						OverrideDisplayName: "Bob from school",
 						ID:                  bob.node.UserID(),
 					},
-					IntroMessage: "hello, I want to chat!",
+					IntroText: "hello, I want to chat!",
 				})
 				So(err, ShouldBeNil)
 				So(res, ShouldNotBeNil)
@@ -406,7 +406,7 @@ func TestWithEnqueuer(t *testing.T) {
 						OverrideDisplayName: "Bob from school",
 						ID:                  bob.node.UserID(),
 					},
-					IntroMessage: "hello, I want to chat!",
+					IntroText: "hello, I want to chat!",
 				})
 				So(err, ShouldBeNil)
 				So(res.Status, ShouldEqual, entity.Contact_IsRequested)
@@ -450,7 +450,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 				So(attrs.Me.Devices, ShouldBeNil)
-				So(attrs.IntroMessage, ShouldEqual, "hello, I want to chat!")
+				So(attrs.IntroText, ShouldEqual, "hello, I want to chat!")
 				// unary call
 				res, err := bob.node.Handle(alice.ctx, event.Copy())
 				// FIXME: we should call an internal function in node that calls HandleEvent
@@ -474,7 +474,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 				So(attrs.Me.Devices, ShouldBeNil)
-				So(attrs.IntroMessage, ShouldEqual, "hello, I want to chat!")
+				So(attrs.IntroText, ShouldEqual, "hello, I want to chat!")
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 0, 0, 0})
 			})
 			Convey("Bob replies an Ack event to Alice's ContactRequest", FailureHalts, func() {

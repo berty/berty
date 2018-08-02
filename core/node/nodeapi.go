@@ -98,7 +98,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 			ID:          n.UserID(),
 			DisplayName: n.config.Myself.DisplayName,
 		},
-		IntroMessage: req.IntroMessage,
+		IntroText: req.IntroText,
 	}); err != nil {
 		return nil, err
 	}
@@ -235,4 +235,8 @@ func (n *Node) ConversationList(_ *node.Void, stream node.Service_ConversationLi
 		}
 	}
 	return nil
+}
+
+func (n *Node) ConversationAddMessage(context.Context, *node.ConversationAddMessageInput) (*p2p.Event, error) {
+	return nil, nil
 }
