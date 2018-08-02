@@ -3,6 +3,7 @@ package test
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"os"
 	"time"
 
@@ -11,6 +12,14 @@ import (
 
 	"github.com/berty/berty/core/network/drivermock"
 )
+
+func init() {
+	rand.Seed(time.Now().UTC().UnixNano())
+}
+
+//
+// json print helpers
+//
 
 func jsonPrint(i interface{}) {
 	out, _ := json.Marshal(i)
