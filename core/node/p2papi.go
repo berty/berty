@@ -58,6 +58,7 @@ func (n *Node) handle(ctx context.Context, input *p2p.Event) error {
 		p2p.Kind_ContactRequest:         n.handleContactRequest,
 		p2p.Kind_ContactRequestAccepted: n.handleContactRequestAccepted,
 		p2p.Kind_ContactShareMe:         n.handleContactShareMe,
+		p2p.Kind_ConversationInvite:     n.handleConversationInvite,
 	}[input.Kind]
 	var handlingError error
 	if !found {
