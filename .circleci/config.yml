@@ -142,7 +142,7 @@ jobs:
             - client/react-native/mobile/node_modules
 
   android:
-    working_directory: ~/go/src/github.com/berty/berty/client/react-native/
+    working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/android
     docker:
       - image: sfroment/test:lastest
     steps:
@@ -151,6 +151,18 @@ jobs:
 
       - attach_workspace:
           at: ~/go/src/github.com/berty/berty/
+
+      - run:
+          name: setup golang environment
+          command: |
+            echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+
+      - run:
+          name: gomobile android build
+          command: |
+            env && cd ../../gomobile && gomobile init -v -ndk $ANDROID_NDK_HOME && make core.build.android
+
+
 
 
 workflows:
