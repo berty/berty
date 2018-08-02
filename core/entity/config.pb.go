@@ -9,6 +9,7 @@
 		entity/contact.proto
 		entity/conversation.proto
 		entity/device.proto
+		entity/message.proto
 
 	It has these top-level messages:
 		Config
@@ -16,6 +17,7 @@
 		Conversation
 		ConversationMember
 		Device
+		Message
 */
 package entity
 

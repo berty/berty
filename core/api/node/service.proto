@@ -5,6 +5,7 @@ package berty.node;
 import "api/p2p/event.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
+import "entity/message.proto";
 
 option go_package = "github.com/berty/berty/core/api/node";
 
@@ -37,13 +38,11 @@ service Service {
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConverstionAcceptJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
-
-  // TODO...
 }
 
 message ContactRequestInput {
   berty.entity.Contact contact = 1;
-  string intro_message = 2;
+  string intro_text = 2;
 }
 
 message Void {}
