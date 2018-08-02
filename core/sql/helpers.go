@@ -13,11 +13,15 @@ func ContactByID(db *gorm.DB, id string) (*entity.Contact, error) {
 	return &contact, db.First(&contact, "ID = ?", id).Error
 }
 
-// FindContact tries different approaches to get a full contact based on a partial one
 func FindContact(db *gorm.DB, input *entity.Contact) (*entity.Contact, error) {
 	if input.ID != "" {
 		return ContactByID(db, input.ID)
 	}
 	// FIXME: support looking-up by sigchain
 	return nil, errors.New("not enough information to search contact")
+}
+
+func ConversationByID(db *gorm.DB, id string) (*entity.Conversation, error) {
+	var conversation entity.Conversation
+	return &conversation, db.First(&conversation, "ID = ?", id).Error
 }

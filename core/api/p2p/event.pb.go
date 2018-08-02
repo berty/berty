@@ -18,6 +18,7 @@
 		ContactRequestAcceptedAttrs
 		ContactShareMeAttrs
 		ContactShareAttrs
+		ConversationInviteAttrs
 		Void
 */
 package p2p
