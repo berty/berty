@@ -19,6 +19,7 @@
 		ContactShareMeAttrs
 		ContactShareAttrs
 		ConversationInviteAttrs
+		ConversationNewMessageAttrs
 		Void
 */
 package p2p

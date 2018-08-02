@@ -24,8 +24,19 @@ func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 //
 
 // EventList implements berty.node.EventList
-func (n *Node) EventList(*node.Void, node.Service_EventListServer) error {
-	return ErrNotImplemented
+func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventListServer) error {
+	var events []*p2p.Event
+
+	if err := n.sql.Where(input.Filter).Find(&events).Error; err != nil {
+		return err
+	}
+
+	for _, event := range events {
+		if err := stream.Send(event); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // EventStream implements berty.node.EventStream
@@ -98,7 +109,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 			ID:          n.UserID(),
 			DisplayName: n.config.Myself.DisplayName,
 		},
-		IntroMessage: req.IntroMessage,
+		IntroText: req.IntroText,
 	}); err != nil {
 		return nil, err
 	}
@@ -235,4 +246,17 @@ func (n *Node) ConversationList(_ *node.Void, stream node.Service_ConversationLi
 		}
 	}
 	return nil
+}
+
+func (n *Node) ConversationAddMessage(_ context.Context, input *node.ConversationAddMessageInput) (*p2p.Event, error) {
+	event := n.NewConversationEvent(input.Conversation, p2p.Kind_ConversationNewMessage)
+	if err := event.SetAttrs(&p2p.ConversationNewMessageAttrs{
+		Message: input.Message,
+	}); err != nil {
+		return nil, err
+	}
+	if err := n.EnqueueOutgoingEvent(event); err != nil {
+		return nil, err
+	}
+	return event, nil
 }

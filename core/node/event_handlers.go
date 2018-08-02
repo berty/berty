@@ -114,3 +114,14 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 
 	return nil
 }
+
+func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Event) error {
+	_, err := input.GetConversationNewMessageAttrs()
+	if err != nil {
+		return err
+	}
+
+	// nothing to do
+
+	return nil
+}

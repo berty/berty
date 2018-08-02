@@ -13,6 +13,13 @@ func (n *Node) NewContactEvent(destination *entity.Contact, kind p2p.Kind) *p2p.
 	return event
 }
 
+func (n *Node) NewConversationEvent(destination *entity.Conversation, kind p2p.Kind) *p2p.Event {
+	event := p2p.NewOutgoingEvent(n.config.Myself.ID, "", kind)
+	event.ConversationID = destination.ID
+	event.ID = n.NewID()
+	return event
+}
+
 func (n *Node) EnqueueOutgoingEvent(event *p2p.Event) error {
 	if err := event.Validate(); err != nil {
 		return errors.Wrap(err, "invalid event")
