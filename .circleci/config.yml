@@ -91,7 +91,7 @@ jobs:
           name: test core
           command: |
             cd core
-            make test | tee /tmp/test-results/go-test-report.out
+            TEST_SLEEP_BETWEEN_STEPS=1s make test | tee /tmp/test-results/go-test-report.out
       - run:
           name: integration core
           command: |
