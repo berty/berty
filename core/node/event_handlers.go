@@ -12,6 +12,10 @@ import (
 
 type EventHandler func(context.Context, *p2p.Event) error
 
+//
+// Contact handlers
+//
+
 func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error {
 	attrs, err := input.GetContactRequestAttrs()
 	if err != nil {
@@ -76,4 +80,37 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	contact.DisplayStatus = attrs.Me.DisplayStatus
 	// FIXME: save more attributes
 	return n.sql.Save(contact).Error
+}
+
+//
+// Conversation handlers
+//
+
+func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) error {
+	attrs, err := input.GetConversationInviteAttrs()
+	if err != nil {
+		return err
+	}
+
+	members := []*entity.ConversationMember{}
+	for _, member := range attrs.Conversation.Members {
+		members = append(members, &entity.ConversationMember{
+			ID:        member.ID,
+			ContactID: member.Contact.ID,
+			Status:    member.Status,
+		})
+	}
+	conversation := &entity.Conversation{
+		Members: members,
+		ID:      attrs.Conversation.ID,
+		Title:   attrs.Conversation.Title,
+		Topic:   attrs.Conversation.Topic,
+	}
+
+	// save conversation
+	if err := n.sql.Set("gorm:association_autoupdate", true).Save(conversation).Error; err != nil {
+		return errors.Wrap(err, "failed to save conversation")
+	}
+
+	return nil
 }

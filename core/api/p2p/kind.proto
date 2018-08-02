@@ -3,6 +3,7 @@ syntax = "proto3";
 package berty.p2p;
 
 import "entity/contact.proto";
+import "entity/conversation.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/berty/berty/core/api/p2p";
@@ -36,17 +37,13 @@ enum Kind {
   // Conversation events
   //
 
-  /*
-  ConversationCreate = 301;
-  ConversationDelete = 302;
-  ConversationLeave = 303;
-  ConversationInvite = 304;
-  ConversationSetTitle = 305;
-  ConversationAcceptInvite = 306;
-  ConversationRefuseInvite = 307;
-  ConversationNewMessage = 308;
-  ...
-  */
+  ConversationInvite = 301;
+
+  //
+  // Message events
+  //
+
+  // FIXME: todo
 }
 
 //
@@ -65,3 +62,9 @@ message ContactRequestAttrs { berty.entity.Contact me = 1; string intro_message 
 message ContactRequestAcceptedAttrs { }
 message ContactShareMeAttrs { berty.entity.Contact me = 1; }
 message ContactShareAttrs { berty.entity.Contact contact = 1; }
+
+//
+// Conversation events
+//
+
+message ConversationInviteAttrs { berty.entity.Conversation conversation = 1; }

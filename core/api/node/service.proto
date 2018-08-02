@@ -33,7 +33,6 @@ service Service {
 
   rpc ConversationCreate(berty.entity.Conversation) returns (berty.entity.Conversation);
   rpc ConversationList(Void) returns (stream berty.entity.Conversation);
-  rpc ConversationAcceptInvite(berty.entity.Conversation) returns (berty.entity.Conversation);
   rpc ConversationInvite(berty.entity.ConversationMember) returns (berty.entity.Conversation);
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);

@@ -160,11 +160,62 @@ func (n *Node) ContactList(_ *node.Void, stream node.Service_ContactListServer) 
 // Conversation
 //
 
-func (n *Node) ConversationCreate(context.Context, *entity.Conversation) (*entity.Conversation, error) {
-	return nil, ErrNotImplemented
+func (n *Node) ConversationCreate(_ context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	members := []*entity.ConversationMember{
+		{
+			ID:        n.NewID(),
+			ContactID: n.UserID(),
+			Status:    entity.ConversationMember_Owner,
+		},
+	}
+	for _, member := range input.Members {
+		members = append(members, &entity.ConversationMember{
+			ID:        n.NewID(),
+			ContactID: member.ContactID,
+			Status:    entity.ConversationMember_Active,
+		})
+	}
+
+	// save new conversation
+	createConversation := &entity.Conversation{
+		ID:      n.NewID(),
+		Members: members,
+		Title:   input.Title,
+		Topic:   input.Topic,
+	}
+	if err := n.sql.Set("gorm:association_autoupdate", true).Save(&createConversation).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to save conversation")
+	}
+
+	// load new conversation again, to preload associations
+	conversation, err := sql.ConversationByID(n.sql, createConversation.ID)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load freshly created conversation")
+	}
+
+	// send invite to peers
+	filtered := conversation.Filtered()
+	for _, member := range conversation.Members {
+		if member.Contact.ID == n.UserID() {
+			// skipping myself
+			continue
+		}
+		event := n.NewContactEvent(member.Contact, p2p.Kind_ConversationInvite)
+		if err := event.SetAttrs(&p2p.ConversationInviteAttrs{
+			Conversation: filtered,
+		}); err != nil {
+			return nil, err
+		}
+		if err := n.EnqueueOutgoingEvent(event); err != nil {
+			return nil, err
+		}
+	}
+
+	return conversation, err
 }
 
-func (n *Node) ConversationAcceptInvite(context.Context, *entity.Conversation) (*entity.Conversation, error) {
+func (n *Node) ConversationAcceptInvite(_ context.Context, conversation *entity.Conversation) (*entity.Conversation, error) {
+
 	return nil, ErrNotImplemented
 }
 
