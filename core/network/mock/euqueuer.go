@@ -1,4 +1,4 @@
-package drivermock
+package mock
 
 import (
 	"context"
