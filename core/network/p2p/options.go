@@ -52,3 +52,12 @@ func WithBootstrap(addrs ...string) Option {
 		return nil
 	}
 }
+
+// WithBootstrap configure boostrap connection
+func WithBootstrapSync(addrs ...string) Option {
+	return func(dc *driverConfig) error {
+		dc.bootstrapSync = true
+		dc.bootstrap = addrs
+		return nil
+	}
+}

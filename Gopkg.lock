@@ -247,6 +247,14 @@
   revision = "df26ef91ad66a626a4b7147fd95d18962395a20e"
 
 [[projects]]
+  name = "github.com/libp2p/go-floodsub"
+  packages = [
+    ".",
+    "pb"
+  ]
+  revision = "0757ff4be464991b29373cb712bfb580e4af63b0"
+
+[[projects]]
   name = "github.com/libp2p/go-flow-metrics"
   packages = ["."]
   revision = "cc546389dcf06b4bcbf6b8594069588e5c8a1451"
@@ -308,7 +316,7 @@
     "pb",
     "providers"
   ]
-  revision = "bb96b2099757e4e49680f67a5dd98f287d77d5e5"
+  revision = "370d378b32a6c61040cf2c51ba40887a956612e5"
 
 [[projects]]
   name = "github.com/libp2p/go-libp2p-kbucket"
@@ -374,8 +382,7 @@
     ".",
     "pb"
   ]
-  revision = "c29879dbb015d19ccb0a0dfcf3ce9e2f3ac6ec68"
-  version = "v4.1.3"
+  revision = "a08427cde51df024d4fa0d7a153a4bfad8a57660"
 
 [[projects]]
   name = "github.com/libp2p/go-libp2p-routing"
@@ -399,7 +406,7 @@
 [[projects]]
   name = "github.com/libp2p/go-libp2p-swarm"
   packages = ["."]
-  revision = "5a13bddfa3a06705681ade8e1d4ea85374b6b12e"
+  revision = "a00fa8aa37a812f404bfa9b9d3dccc82a66029cf"
 
 [[projects]]
   name = "github.com/libp2p/go-libp2p-transport"
@@ -799,6 +806,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "27ad17fc91d3d3d705cbcf40213c25507874f0d8c69f76e3d4875dffda3db3b9"
+  inputs-digest = "0e77273dc3c8f8888cd2e67a0d9abeb71b5312c46f922cbb15797fc190347398"
   solver-name = "gps-cdcl"
   solver-version = 1
