@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"github.com/berty/berty/core/api/node"
@@ -40,8 +41,28 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 }
 
 // EventStream implements berty.node.EventStream
-func (n *Node) EventStream(*node.Void, node.Service_EventStreamServer) error {
-	return ErrNotImplemented
+func (n *Node) EventStream(_ *node.Void, stream node.Service_EventStreamServer) error {
+	if n.clientEventsConnected {
+		return ErrAnotherClientIsAlreadyConnected
+	}
+
+	zap.L().Debug("EventStream connected")
+	n.clientEventsConnected = true
+	defer func() {
+		zap.L().Debug("EventStream disconnected")
+		n.clientEventsConnected = false
+	}()
+
+	for {
+		select {
+		case <-stream.Context().Done():
+			return stream.Context().Err()
+		case event := <-n.clientEvents:
+			if err := stream.Send(event); err != nil {
+				return err
+			}
+		}
+	}
 }
 
 //
