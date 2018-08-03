@@ -160,7 +160,7 @@ jobs:
       - run:
           name: gomobile android build
           command: |
-            env && cd ../../gomobile && gomobile init -v -ndk $ANDROID_NDK_HOME && make core.build.android
+            env && cd ../../gomobile && make core.build.android
 
       - restore_cache:
           key: android-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/android/Gemfile.lock" }}
@@ -177,7 +177,7 @@ jobs:
       - run:
           name: build app
           command: |
-            time bundle exec fastlane android beta --verbose
+            time bundle exec fastlane android beta
 
 
 
