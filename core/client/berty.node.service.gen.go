@@ -3,10 +3,91 @@
 package client
 
 import (
+	"context"
+	"io"
+
 	"github.com/berty/berty/core/api/node"
+	"github.com/berty/berty/core/api/p2p"
+	"github.com/berty/berty/core/entity"
 )
 
 // Service returns the native gRPC client
 func (c *Client) Node() node.ServiceClient {
 	return node.NewServiceClient(c.conn)
+}
+
+func (c *Client) EventStream(ctx context.Context, input *node.Void) ([]*p2p.Event, error) {
+	stream, err := c.Node().EventStream(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*p2p.Event
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
+
+func (c *Client) EventList(ctx context.Context, input *node.EventListInput) ([]*p2p.Event, error) {
+	stream, err := c.Node().EventList(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*p2p.Event
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
+
+func (c *Client) ContactList(ctx context.Context, input *node.Void) ([]*entity.Contact, error) {
+	stream, err := c.Node().ContactList(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*entity.Contact
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
+
+func (c *Client) ConversationList(ctx context.Context, input *node.Void) ([]*entity.Conversation, error) {
+	stream, err := c.Node().ConversationList(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*entity.Conversation
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
 }
