@@ -1,6 +1,7 @@
 package dht
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -59,7 +60,7 @@ func (dht *IpfsDHT) handleGetValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 
 	// first, is there even a key?
 	k := pmes.GetKey()
-	if k == "" {
+	if len(k) == 0 {
 		return nil, errors.New("handleGetValue but no key was provided")
 		// TODO: send back an error response? could be bad, but the other node's hanging.
 	}
@@ -90,7 +91,7 @@ func (dht *IpfsDHT) handleGetValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 	return resp, nil
 }
 
-func (dht *IpfsDHT) checkLocalDatastore(k string) (*recpb.Record, error) {
+func (dht *IpfsDHT) checkLocalDatastore(k []byte) (*recpb.Record, error) {
 	log.Debugf("%s handleGetValue looking into ds", dht.self)
 	dskey := convertToDsKey(k)
 	iVal, err := dht.datastore.Get(dskey)
@@ -150,8 +151,7 @@ func (dht *IpfsDHT) checkLocalDatastore(k string) (*recpb.Record, error) {
 
 // Cleans the record (to avoid storing arbitrary data).
 func cleanRecord(rec *recpb.Record) {
-	rec.XXX_unrecognized = nil
-	rec.TimeReceived = nil
+	rec.TimeReceived = ""
 }
 
 // Store a value in this peer local storage
@@ -170,14 +170,14 @@ func (dht *IpfsDHT) handlePutValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 		return nil, errors.New("nil record")
 	}
 
-	if pmes.GetKey() != rec.GetKey() {
+	if !bytes.Equal(pmes.GetKey(), rec.GetKey()) {
 		return nil, errors.New("put key doesn't match record key")
 	}
 
 	cleanRecord(rec)
 
 	// Make sure the record is valid (not expired, valid signature etc)
-	if err = dht.Validator.Validate(rec.GetKey(), rec.GetValue()); err != nil {
+	if err = dht.Validator.Validate(string(rec.GetKey()), rec.GetValue()); err != nil {
 		log.Warningf("Bad dht record in PUT from: %s. %s", p.Pretty(), err)
 		return nil, err
 	}
@@ -194,7 +194,7 @@ func (dht *IpfsDHT) handlePutValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 
 	if existing != nil {
 		recs := [][]byte{rec.GetValue(), existing.GetValue()}
-		i, err := dht.Validator.Select(rec.GetKey(), recs)
+		i, err := dht.Validator.Select(string(rec.GetKey()), recs)
 		if err != nil {
 			log.Warningf("Bad dht record in PUT from %s: %s", p.Pretty(), err)
 			return nil, err
@@ -206,7 +206,7 @@ func (dht *IpfsDHT) handlePutValue(ctx context.Context, p peer.ID, pmes *pb.Mess
 	}
 
 	// record the time we receive every record
-	rec.TimeReceived = proto.String(u.FormatRFC3339(time.Now()))
+	rec.TimeReceived = u.FormatRFC3339(time.Now())
 
 	data, err := proto.Marshal(rec)
 	if err != nil {
@@ -245,7 +245,7 @@ func (dht *IpfsDHT) getRecordFromDatastore(dskey ds.Key) (*recpb.Record, error) 
 		return nil, nil
 	}
 
-	err = dht.Validator.Validate(rec.GetKey(), rec.GetValue())
+	err = dht.Validator.Validate(string(rec.GetKey()), rec.GetValue())
 	if err != nil {
 		// Invalid record in datastore, probably expired but don't return an error,
 		// we'll just overwrite it
@@ -263,7 +263,7 @@ func (dht *IpfsDHT) handlePing(_ context.Context, p peer.ID, pmes *pb.Message) (
 
 func (dht *IpfsDHT) handleFindPeer(ctx context.Context, p peer.ID, pmes *pb.Message) (*pb.Message, error) {
 	defer log.EventBegin(ctx, "handleFindPeer", p).Done()
-	resp := pb.NewMessage(pmes.GetType(), "", pmes.GetClusterLevel())
+	resp := pb.NewMessage(pmes.GetType(), nil, pmes.GetClusterLevel())
 	var closest []peer.ID
 
 	// if looking for self... special case where we send it on CloserPeers.
@@ -331,7 +331,7 @@ func (dht *IpfsDHT) handleGetProviders(ctx context.Context, p peer.ID, pmes *pb.
 	defer log.Debugf("%s end", reqDesc)
 
 	// check if we have this value, to add ourselves as provider.
-	has, err := dht.datastore.Has(convertToDsKey(c.KeyString()))
+	has, err := dht.datastore.Has(convertToDsKey(c.Bytes()))
 	if err != nil && err != ds.ErrNotFound {
 		log.Debugf("unexpected datastore error: %v\n", err)
 		has = false
@@ -403,6 +403,6 @@ func (dht *IpfsDHT) handleAddProvider(ctx context.Context, p peer.ID, pmes *pb.M
 	return nil, nil
 }
 
-func convertToDsKey(s string) ds.Key {
-	return ds.NewKey(base32.RawStdEncoding.EncodeToString([]byte(s)))
+func convertToDsKey(s []byte) ds.Key {
+	return ds.NewKey(base32.RawStdEncoding.EncodeToString(s))
 }

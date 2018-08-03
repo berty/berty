@@ -22,8 +22,8 @@ import (
 // queries.
 type BootstrapConfig struct {
 	Queries int           // how many queries to run per period
-	Period  time.Duration // how often to run periodi cbootstrap.
-	Timeout time.Duration // how long to wait for a bootstrao query to run
+	Period  time.Duration // how often to run periodic bootstrap.
+	Timeout time.Duration // how long to wait for a bootstrap query to run
 }
 
 var DefaultBootstrapConfig = BootstrapConfig{
@@ -33,7 +33,7 @@ var DefaultBootstrapConfig = BootstrapConfig{
 	// of our implementation's robustness, we should lower this down to 8 or 4.
 	Queries: 1,
 
-	// For now, this is set to 1 minute, which is a medium period. We are
+	// For now, this is set to 5 minutes, which is a medium period. We are
 	// We are currently more interested in ensuring we have a properly formed
 	// DHT than making sure our dht minimizes traffic.
 	Period: time.Duration(5 * time.Minute),
@@ -77,7 +77,17 @@ func (dht *IpfsDHT) BootstrapWithConfig(cfg BootstrapConfig) (goprocess.Process,
 		return nil, fmt.Errorf("invalid number of queries: %d", cfg.Queries)
 	}
 
-	proc := periodicproc.Tick(cfg.Period, dht.bootstrapWorker(cfg))
+	proc := dht.Process().Go(func(p goprocess.Process) {
+		<-p.Go(dht.bootstrapWorker(cfg)).Closed()
+		for {
+			select {
+			case <-time.After(cfg.Period):
+				<-p.Go(dht.bootstrapWorker(cfg)).Closed()
+			case <-p.Closing():
+				return
+			}
+		}
+	})
 
 	return proc, nil
 }

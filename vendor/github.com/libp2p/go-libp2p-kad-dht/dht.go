@@ -143,22 +143,21 @@ func makeDHT(ctx context.Context, h host.Host, dstore ds.Batching, protocols []p
 }
 
 // putValueToPeer stores the given key/value pair at the peer 'p'
-func (dht *IpfsDHT) putValueToPeer(ctx context.Context, p peer.ID,
-	key string, rec *recpb.Record) error {
+func (dht *IpfsDHT) putValueToPeer(ctx context.Context, p peer.ID, rec *recpb.Record) error {
 
-	pmes := pb.NewMessage(pb.Message_PUT_VALUE, key, 0)
+	pmes := pb.NewMessage(pb.Message_PUT_VALUE, rec.Key, 0)
 	pmes.Record = rec
 	rpmes, err := dht.sendRequest(ctx, p, pmes)
 	if err != nil {
-		if err == ErrReadTimeout {
-			log.Warningf("read timeout: %s %s", p.Pretty(), key)
-		}
+		log.Debugf("putValueToPeer: %v. (peer: %s, key: %s)", err, p.Pretty(), loggableKey(string(rec.Key)))
 		return err
 	}
 
 	if !bytes.Equal(rpmes.GetRecord().Value, pmes.GetRecord().Value) {
+		log.Warningf("putValueToPeer: value not put correctly. (%v != %v)", pmes, rpmes)
 		return errors.New("value not put correctly")
 	}
+
 	return nil
 }
 
@@ -183,7 +182,7 @@ func (dht *IpfsDHT) getValueOrPeers(ctx context.Context, p peer.ID, key string) 
 		log.Debug("getValueOrPeers: got value")
 
 		// make sure record is valid.
-		err = dht.Validator.Validate(record.GetKey(), record.GetValue())
+		err = dht.Validator.Validate(string(record.GetKey()), record.GetValue())
 		if err != nil {
 			log.Info("Received invalid record! (discarded)")
 			// return a sentinal to signify an invalid record was received
@@ -212,13 +211,13 @@ func (dht *IpfsDHT) getValueSingle(ctx context.Context, p peer.ID, key string) (
 	eip := log.EventBegin(ctx, "getValueSingle", meta)
 	defer eip.Done()
 
-	pmes := pb.NewMessage(pb.Message_GET_VALUE, key, 0)
+	pmes := pb.NewMessage(pb.Message_GET_VALUE, []byte(key), 0)
 	resp, err := dht.sendRequest(ctx, p, pmes)
 	switch err {
 	case nil:
 		return resp, nil
 	case ErrReadTimeout:
-		log.Warningf("read timeout: %s %s", p.Pretty(), key)
+		log.Warningf("getValueSingle: read timeout %s %s", p.Pretty(), key)
 		fallthrough
 	default:
 		eip.SetError(err)
@@ -231,12 +230,13 @@ func (dht *IpfsDHT) getLocal(key string) (*recpb.Record, error) {
 	log.Debugf("getLocal %s", key)
 	rec, err := dht.getRecordFromDatastore(mkDsKey(key))
 	if err != nil {
+		log.Warningf("getLocal: %s", err)
 		return nil, err
 	}
 
 	// Double check the key. Can't hurt.
-	if rec != nil && rec.GetKey() != key {
-		log.Errorf("BUG: found a DHT record that didn't match it's key: %s != %s", rec.GetKey(), key)
+	if rec != nil && string(rec.GetKey()) != key {
+		log.Errorf("BUG getLocal: found a DHT record that didn't match it's key: %s != %s", rec.GetKey(), key)
 		return nil, nil
 
 	}
@@ -256,8 +256,10 @@ func (dht *IpfsDHT) getOwnPrivateKey() (ci.PrivKey, error) {
 
 // putLocal stores the key value pair in the datastore
 func (dht *IpfsDHT) putLocal(key string, rec *recpb.Record) error {
+	log.Debugf("putLocal: %v %v", key, rec)
 	data, err := proto.Marshal(rec)
 	if err != nil {
+		log.Warningf("putLocal: %s", err)
 		return err
 	}
 
@@ -290,7 +292,7 @@ func (dht *IpfsDHT) findPeerSingle(ctx context.Context, p peer.ID, id peer.ID) (
 		})
 	defer eip.Done()
 
-	pmes := pb.NewMessage(pb.Message_FIND_NODE, string(id), 0)
+	pmes := pb.NewMessage(pb.Message_FIND_NODE, []byte(id), 0)
 	resp, err := dht.sendRequest(ctx, p, pmes)
 	switch err {
 	case nil:
@@ -308,7 +310,7 @@ func (dht *IpfsDHT) findProvidersSingle(ctx context.Context, p peer.ID, key *cid
 	eip := log.EventBegin(ctx, "findProvidersSingle", p, key)
 	defer eip.Done()
 
-	pmes := pb.NewMessage(pb.Message_GET_PROVIDERS, key.KeyString(), 0)
+	pmes := pb.NewMessage(pb.Message_GET_PROVIDERS, key.Bytes(), 0)
 	resp, err := dht.sendRequest(ctx, p, pmes)
 	switch err {
 	case nil:
@@ -324,7 +326,7 @@ func (dht *IpfsDHT) findProvidersSingle(ctx context.Context, p peer.ID, key *cid
 
 // nearestPeersToQuery returns the routing tables closest peers.
 func (dht *IpfsDHT) nearestPeersToQuery(pmes *pb.Message, count int) []peer.ID {
-	closer := dht.routingTable.NearestPeers(kb.ConvertKey(pmes.GetKey()), count)
+	closer := dht.routingTable.NearestPeers(kb.ConvertKey(string(pmes.GetKey())), count)
 	return closer
 }
 
@@ -334,7 +336,7 @@ func (dht *IpfsDHT) betterPeersToQuery(pmes *pb.Message, p peer.ID, count int) [
 
 	// no node? nil
 	if closer == nil {
-		log.Warning("no closer peers to send:", p)
+		log.Warning("betterPeersToQuery: no closer peers to send:", p)
 		return nil
 	}
 
@@ -343,7 +345,7 @@ func (dht *IpfsDHT) betterPeersToQuery(pmes *pb.Message, p peer.ID, count int) [
 
 		// == to self? thats bad
 		if clp == dht.self {
-			log.Warning("attempted to return self! this shouldn't happen...")
+			log.Error("BUG betterPeersToQuery: attempted to return self! this shouldn't happen...")
 			return nil
 		}
 		// Dont send a peer back themselves

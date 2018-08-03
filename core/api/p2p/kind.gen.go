@@ -3,7 +3,7 @@
 package p2p
 
 import (
-	"fmt"
+	fmt "fmt"
 
 	"github.com/gogo/protobuf/proto"
 )
