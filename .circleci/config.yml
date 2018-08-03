@@ -191,7 +191,14 @@ jobs:
     working_directory: ~/go/src/github.com/berty/berty
     macos:
       xcode: "9.0"
+    environment:
+      FL_OUTPUT_DIR: output
+    shell: /bin/bash --login -o pipefail
     steps:
+      - run:
+          name: set Ruby version
+          command:  echo "ruby-2.4" > ~/.ruby-version
+
       - restore_cache:
           key: ios-golang-{{ .Environment.GOVERSION }}-2
 
@@ -231,6 +238,23 @@ jobs:
           command: |
             make core.build.ios
 
+      # - restore_cache:
+      #     key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-1
+
+      - run:
+          working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
+          command: bundle check || bundle install --path vendor/bundle
+
+      # - save_cache:
+      #     key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-1
+      #     paths:
+      #       - vendor/bundle
+
+      - run:
+          name: build app
+          working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
+          command: |
+            time bundle exec fastlane ios adhoc --verbose
 
 workflows:
   version: 2
