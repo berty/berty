@@ -93,6 +93,12 @@ jobs:
             cd core
             TEST_SLEEP_BETWEEN_STEPS=1s make test | tee /tmp/test-results/go-test-report.out
       - run:
+          name: test client (bot)
+          command: |
+            cd client/go
+            go test -v ./... | tee /tmp/test-results/go-test-report.out
+            go install -v ./...
+      - run:
           name: integration core
           command: |
             cd core
