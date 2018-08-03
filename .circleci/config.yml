@@ -190,7 +190,7 @@ jobs:
   client.rn.ios:
     working_directory: ~/go/src/github.com/berty/berty
     macos:
-      xcode: "9.0"
+      xcode: "9.4.1"
     environment:
       FL_OUTPUT_DIR: output
     shell: /bin/bash --login -o pipefail
@@ -198,6 +198,11 @@ jobs:
       - run:
           name: set Ruby version
           command:  echo "ruby-2.4" > ~/.ruby-version
+
+      - checkout
+
+      - attach_workspace:
+          at: ~/go/src/github.com/berty/berty/
 
       - restore_cache:
           key: ios-golang-{{ .Environment.GOVERSION }}-2
@@ -230,31 +235,29 @@ jobs:
             - ~/go
             - ~/go-install
 
-      - checkout
-
       - run:
           name: install core
           working_directory: ~/go/src/github.com/berty/berty/client/react-native/gomobile
           command: |
             make core.build.ios
 
-      # - restore_cache:
-      #     key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-1
+      - restore_cache:
+          key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-3
 
       - run:
           working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
           command: bundle check || bundle install --path vendor/bundle
 
-      # - save_cache:
-      #     key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-1
-      #     paths:
-      #       - vendor/bundle
+      - save_cache:
+          key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-3
+          paths:
+            - client/react-native/mobile/ios/vendor/bundle
 
       - run:
           name: build app
           working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
           command: |
-            time bundle exec fastlane ios adhoc --verbose
+            time bundle exec fastlane ios adhoc refresh_certificates:true use_temporary_keychain:true --verbose
 
 workflows:
   version: 2
@@ -267,4 +270,6 @@ workflows:
       - client.rn.android:
           requires:
             - client.rn.node
-      - client.rn.ios
+      - client.rn.ios:
+          requires:
+            - client.rn.node
