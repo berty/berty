@@ -108,7 +108,7 @@ jobs:
       - store_test_results:
           path: /tmp/test-results
 
-  node:
+  client.rn.node:
     working_directory: ~/go/src/github.com/berty/berty
     docker:
       - image: circleci/node:8
@@ -141,7 +141,7 @@ jobs:
             - client/react-native/common/node_modules
             - client/react-native/mobile/node_modules
 
-  android:
+  client.rn.android:
     working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/android
     docker:
       - image: sfroment/test:lastest
@@ -189,7 +189,7 @@ workflows:
       - project.lint
       - core.go.test
       - docker.build
-      - node
-      - android:
+      - client.rn.node
+      - client.rn.android:
           requires:
-            - node
+            - client.rn.node
