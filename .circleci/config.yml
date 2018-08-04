@@ -9,8 +9,12 @@ version: 2
     - image: circleci/golang:latest
 
 jobs:
-  project.lint:
-    <<: *golang_workspace
+  lint:
+    docker:
+      - image: bertychat/linter:latest
+    working_directory: /go/src/github.com/berty/berty
+    environment:
+      GOPATH: /go
     steps:
       - checkout
       - restore_cache:
@@ -19,9 +23,7 @@ jobs:
       - run:
           name: prepare CI
           command: |
-            (cd core; make _ci_prepare)
-            go get -u gopkg.in/alecthomas/gometalinter.v2
-            gometalinter.v2 -i -u
+            make _ci_prepare
       - run:
           name: lint
           command: make lint
@@ -74,7 +76,7 @@ jobs:
       - run:
           name: prepare CI
           command: |
-            (cd core; make _ci_prepare)
+            make _ci_prepare
             mkdir -p /tmp/test-results
             go get github.com/jstemmer/go-junit-report
       - run:
@@ -192,7 +194,7 @@ workflows:
   version: 2
   commit:
     jobs:
-      - project.lint
+      - lint
       - core.go.test
       - docker.build
       - client.rn.node
