@@ -9,6 +9,9 @@ RE := $(addsuffix .re, $(DIRS) $(ROOT))
 .PHONY: all
 all: $(ROOT) $(DEPS)
 
+.PHONY: deps
+deps: $(DEPS)
+
 .PHONY: fclean
 fclean: $(FCLEAN)
 	yarn cache clean && watchman watch-del-all

@@ -4,6 +4,8 @@ COPY ./gomobile-env-flag.diff /tmp/gomobile-env-flag.diff
 
 RUN cd ~ && git clone https://github.com/udhos/update-golang && sudo ~/update-golang/update-golang.sh
 RUN echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> ~/.bashrc
-RUN /usr/local/go/bin/go get golang.org/x/mobile/cmd/gomobile
-RUN patch -l < /tmp/gomobile-env-flag.diff ~/go/src/golang.org/x/mobile/cmd/gomobile/env.go && /usr/local/go/bin/go install golang.org/x/mobile/cmd/gomobile
+ENV PATH="/usr/local/go/bin/:/home/circleci/go/bin:${PATH}"
+RUN go get golang.org/x/mobile/cmd/gomobile
+RUN patch -l < /tmp/gomobile-env-flag.diff ~/go/src/golang.org/x/mobile/cmd/gomobile/env.go && go install golang.org/x/mobile/cmd/gomobile
+RUN gomobile init -v -ndk ${ANDROID_NDK_HOME}
 

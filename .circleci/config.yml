@@ -114,6 +114,80 @@ jobs:
       - store_test_results:
           path: /tmp/test-results
 
+  client.rn.node:
+    working_directory: ~/go/src/github.com/berty/berty
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: yarn-v1-{{ checksum "client/react-native/yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
+
+      - run: cd client/react-native && make deps
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "client/react-native/yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - persist_to_workspace:
+          root: ~/go/src/github.com/berty/berty
+          paths:
+            - client/react-native/node_modules
+            - client/react-native/gomobile/node_modules
+            - client/react-native/common/node_modules
+            - client/react-native/mobile/node_modules
+
+  client.rn.android:
+    working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/android
+    docker:
+      - image: sfroment/test:lastest
+    steps:
+      - checkout:
+          path: ~/go/src/github.com/berty/berty/
+
+      - attach_workspace:
+          at: ~/go/src/github.com/berty/berty/
+
+      - run:
+          name: setup golang environment
+          command: |
+            echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+
+      - run:
+          name: gomobile android build
+          command: |
+            env && cd ../../gomobile && make core.build.android
+
+      - restore_cache:
+          key: android-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/android/Gemfile.lock" }}
+
+      - run:
+          name: install bundle
+          command: bundle check || bundle install --path vendor/bundle
+
+      - save_cache:
+          key: android-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/android/Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: build app
+          command: |
+            time bundle exec fastlane android beta
+
+
+
+
 workflows:
   version: 2
   commit:
@@ -121,3 +195,7 @@ workflows:
       - project.lint
       - core.go.test
       - docker.build
+      - client.rn.node
+      - client.rn.android:
+          requires:
+            - client.rn.node
