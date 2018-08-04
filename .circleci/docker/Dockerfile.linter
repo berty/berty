@@ -1,13 +1,12 @@
 FROM golang:alpine
 
 # build deps
-RUN apk --no-cache --update add nodejs-npm git make
+RUN apk --no-cache --update add nodejs-npm git make musl-dev gcc g++
 
 # gometalinter
 RUN go get -u gopkg.in/alecthomas/gometalinter.v2 \
  && gometalinter.v2 -i -u \
  && ln -s /go/bin/gometalinter.v2 /usr/bin/gometalinter.v2
 
-# dockerfile
-RUN npm install --global dockerlint \
- && ln -s /usr/bin/dockerlint /usr/bin/docker-lint
+# dockerlint
+RUN npm install --global dockerlint
