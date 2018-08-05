@@ -7,7 +7,6 @@ import (
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
 	ipfsaddr "github.com/ipfs/go-ipfs-addr"
-	floodsub "github.com/libp2p/go-floodsub"
 	libp2p "github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -49,7 +48,6 @@ type Driver struct {
 
 	ccmanager *p2putil.Manager
 	handler   func(context.Context, *p2p.Event) (*p2p.Void, error)
-	fs        *floodsub.PubSub
 
 	// services
 	dht *dht.IpfsDHT

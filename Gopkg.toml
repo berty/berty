@@ -63,9 +63,5 @@
 	revision = "370d378b32a6c61040cf2c51ba40887a956612e5" # gx revision 4.3.1
 
 [[override]]
-  name = "github.com/libp2p/go-floodsub"
-  revision = "0757ff4be464991b29373cb712bfb580e4af63b0" # gx revision 0.9.23
-
-[[override]]
 	name = "github.com/libp2p/go-libp2p-record"
 	revision = "a08427cde51df024d4fa0d7a153a4bfad8a57660" # gx revision 4.1.5
