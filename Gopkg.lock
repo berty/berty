@@ -253,6 +253,14 @@
   revision = "df26ef91ad66a626a4b7147fd95d18962395a20e"
 
 [[projects]]
+  name = "github.com/libp2p/go-floodsub"
+  packages = [
+    ".",
+    "pb"
+  ]
+  revision = "0757ff4be464991b29373cb712bfb580e4af63b0"
+
+[[projects]]
   name = "github.com/libp2p/go-flow-metrics"
   packages = ["."]
   revision = "cc546389dcf06b4bcbf6b8594069588e5c8a1451"
@@ -653,6 +661,12 @@
   name = "github.com/whyrusleeping/multiaddr-filter"
   packages = ["."]
   revision = "e903e4adabd70b78bc9293b6ee4f359afb3f9f59"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/whyrusleeping/timecache"
+  packages = ["."]
+  revision = "cfcb2f1abfee846c430233aef0b630a946e0a5a6"
 
 [[projects]]
   branch = "master"
