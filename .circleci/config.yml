@@ -152,7 +152,7 @@ jobs:
   client.rn.android:
     working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/android
     docker:
-      - image: sfroment/test:lastest
+      - image: sfroment/test:lastest #Fix me when we get berty docker account
     steps:
       - checkout:
           path: ~/go/src/github.com/berty/berty/
@@ -187,8 +187,77 @@ jobs:
           command: |
             time bundle exec fastlane android beta
 
+  client.rn.ios:
+    working_directory: ~/go/src/github.com/berty/berty
+    macos:
+      xcode: "9.4.1"
+    environment:
+      FL_OUTPUT_DIR: output
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - run:
+          name: set Ruby version
+          command:  echo "ruby-2.4" > ~/.ruby-version
 
+      - checkout
 
+      - attach_workspace:
+          at: ~/go/src/github.com/berty/berty/
+
+      - restore_cache:
+          key: ios-golang-{{ .Environment.GOVERSION }}-2
+
+      - run:
+          name: install-go
+          command: |
+            if [ ! -f ~/go-install/go/bin/go ]; then
+              cd ~ && git clone https://github.com/udhos/update-golang
+              cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install ./update-golang.sh
+            fi
+            echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+
+      - run:
+          name: install gomobile
+          command: |
+            if [ ! -f ~/go/bin/gomobile ]; then
+              go get golang.org/x/mobile/cmd/gomobile
+              cd ~/go/src/golang.org/x/mobile
+              git remote add upstream git@github.com:sfroment/mobile
+              git fetch upstream
+              git cherry-pick 1b1535a2ec50640fac08cd318cf1d557e198e94d
+              go install golang.org/x/mobile/cmd/gomobile
+              gomobile init
+            fi
+
+      - save_cache:
+          key: ios-golang-{{ .Environment.GOVERSION }}-2
+          paths:
+            - ~/go
+            - ~/go-install
+
+      - run:
+          name: install core
+          working_directory: ~/go/src/github.com/berty/berty/client/react-native/gomobile
+          command: |
+            make core.build.ios
+
+      - restore_cache:
+          key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-3
+
+      - run:
+          working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
+          command: bundle check || bundle install --path vendor/bundle
+
+      - save_cache:
+          key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-3
+          paths:
+            - client/react-native/mobile/ios/vendor/bundle
+
+      - run:
+          name: build app
+          working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
+          command: |
+            time bundle exec fastlane ios adhoc refresh_certificates:true use_temporary_keychain:true --verbose
 
 workflows:
   version: 2
@@ -199,5 +268,8 @@ workflows:
       - docker.build
       - client.rn.node
       - client.rn.android:
+          requires:
+            - client.rn.node
+      - client.rn.ios:
           requires:
             - client.rn.node
