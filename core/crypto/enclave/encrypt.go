@@ -13,6 +13,8 @@ func Encrypt(keyID string, plainText string, label []byte) (cipherText string, e
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
 		return "", errors.New("Error: keyID doesn't exist")
+	} else if plainText == "" {
+		return "", errors.New("Error: plainText is empty")
 	}
 
 	// Call the right encryption function
@@ -26,19 +28,24 @@ func Encrypt(keyID string, plainText string, label []byte) (cipherText string, e
 func encryptRSA(keyID string, plainText string, label []byte) (cipherText string, err error) {
 	// Encrypt plain text using public key
 	var bytes []byte
-	bytes, err = rsa.EncryptOAEP(
-		sha512.New(),
-		rand.Reader,
-		keyPairs[keyID].pubKey,
-		[]byte(plainText),
-		label,
-	)
-	if err != nil {
-		log.Println("Error during plain text encryption:", err)
-		return
-	}
+	pubKey, rsaType := keyPairs[keyID].pubKey.(*rsa.PublicKey)
+	if rsaType {
+		bytes, err = rsa.EncryptOAEP(
+			sha512.New(),
+			rand.Reader,
+			pubKey,
+			[]byte(plainText),
+			label,
+		)
+		if err != nil {
+			log.Println("Error during plain text encryption:", err)
+			return
+		}
 
-	cipherText = string(bytes)
+		cipherText = string(bytes)
+	} else {
+		err = errors.New("Error: can't cast pubKey to *rsa.PublicKey")
+	}
 
 	return
 

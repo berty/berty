@@ -12,6 +12,10 @@ func Verify(keyID string, text string, signature []byte) (verified bool, err err
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
 		return false, errors.New("Error: keyID doesn't exist")
+	} else if text == "" {
+		return false, errors.New("Error: text is empty")
+	} else if len(signature) == 0 {
+		return false, errors.New("Error: signature is empty")
 	}
 
 	// Call the right verification function
@@ -24,26 +28,31 @@ func Verify(keyID string, text string, signature []byte) (verified bool, err err
 // Verify signature using RSA
 func verifyRSA(keyID string, text string, signature []byte) (verified bool, err error) {
 	// Verify signature using signature and text parameters
-	pssh := crypto.SHA512.New()
-	_, err = pssh.Write([]byte(text))
-	if err != nil {
-		log.Println("Error during text hashing:", err)
-		return
-	}
-	hashed := pssh.Sum(nil)
+	pubKey, rsaType := keyPairs[keyID].pubKey.(*rsa.PublicKey)
+	if rsaType {
+		pssh := crypto.SHA512.New()
+		_, err = pssh.Write([]byte(text))
+		if err != nil {
+			log.Println("Error during text hashing:", err)
+			return
+		}
+		hashed := pssh.Sum(nil)
 
-	err = rsa.VerifyPSS(
-		keyPairs[keyID].pubKey,
-		crypto.SHA512,
-		hashed,
-		signature,
-		&rsa.PSSOptions{},
-	)
+		err = rsa.VerifyPSS(
+			pubKey,
+			crypto.SHA512,
+			hashed,
+			signature,
+			&rsa.PSSOptions{},
+		)
 
-	if err != nil {
-		verified = false
+		if err != nil {
+			verified = false
+		} else {
+			verified = true
+		}
 	} else {
-		verified = true
+		err = errors.New("Error: can't cast pubKey to *rsa.PublicKey")
 	}
 
 	return

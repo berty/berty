@@ -21,26 +21,12 @@ func isKeyIDAlreadyExist(keyID string) bool {
 	return false
 }
 
-// Try to store key pair in keys map using potentially specified ID or try generate a new one
-func storeInKeyPairsMap(options Opts, keypair keyPair) (keyID string, err error) {
-	if options.ID != "" {
-		// Return error if specified ID already exists and fallback isn't allowed
-		if isKeyIDAlreadyExist(options.ID) && !options.IDFallback {
-			return "", errors.New("Error: keyID " + options.ID + " not available and fallback is disallowed")
-		}
-		keyID = options.ID
-	}
-
-	// Try to generate a shortid <timeout> times before returning error
+// Try to generate a shortid <timeout> times before returning error
+func getAnAvailableID() (keyID string, err error) {
 	for try := 0; try < timeout; try++ {
-		// If ID is available, reserve it then return
-		if keyID != "" && !isKeyIDAlreadyExist(keyID) {
-			keyPairs[keyID] = keypair
-			log.Println("Key pair added to keys map with ID:", keyID)
-			return
-		}
 		keyID, err = shortid.Generate()
-		if err != nil {
+		// If ID is available or if an error has occurred, return
+		if !isKeyIDAlreadyExist(keyID) || err != nil {
 			return
 		}
 	}
@@ -48,15 +34,40 @@ func storeInKeyPairsMap(options Opts, keypair keyPair) (keyID string, err error)
 	return "", errors.New("Error: can't find an available ID in keyPairs map (timeout " + strconv.Itoa(timeout) + ")")
 }
 
+// Try to store key pair in keys map using potentially specified ID or try generate a new one
+func storeInKeyPairsMap(options KeyOpts, keypair keyPair) (keyID string, err error) {
+	// Return error if specified ID already exists and fallback isn't allowed
+	if options.ID != "" && isKeyIDAlreadyExist(options.ID) && !options.IDFallback {
+		return "", errors.New("Error: keyID " + options.ID + " not available and fallback is disallowed")
+	} else if options.ID != "" && !isKeyIDAlreadyExist(options.ID) {
+		// If specified ID is available, use it
+		keyID = options.ID
+	} else {
+		// If no ID is specified or ID isn't available, generate an available random shortid
+		keyID, err = getAnAvailableID()
+	}
+
+	if err == nil {
+		keyPairs[keyID] = keypair
+		log.Println("Key pair added to keys map with ID:", keyID)
+	}
+
+	return
+}
+
 // RemoveFromKeyPairsMap removes key pair with keyID from the keys map
-func RemoveFromKeyPairsMap(keyID string) error {
+func RemoveFromKeyPairsMap(keyID string) (err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
 		return errors.New("Error: keyID doesn't exist")
 	}
 
+	// If the key pair is stored in a platform specific key storage, remove it
+	if keyPairs[keyID].keyStore == Enclave {
+		err = removeFromEnclave(keyID)
+	}
 	delete(keyPairs, keyID)
 	log.Println("Key pair with ID", keyID, "has been removed from the keys map")
 
-	return nil
+	return
 }
