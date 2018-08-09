@@ -1,0 +1,89 @@
+syntax = "proto3";
+
+package keypair;
+
+
+option go_package = "github.com/berty/berty/core/crypto/keypair";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+
+
+enum PublicKeyAlgorithm {
+    UnknownPublicKeyAlgorithm = 0;
+    RSA = 1;
+    DSA = 2;
+    ECDSA = 3;
+}
+
+enum SignatureAlgorithm {
+    UnknownSignatureAlgorithm = 0;
+    MD2WithRSA = 1;
+    MD5WithRSA = 2;
+    SHA1WithRSA = 3;
+    SHA256WithRSA = 4;
+    SHA384WithRSA = 5;
+    SHA512WithRSA = 6;
+    DSAWithSHA1 = 7;
+    DSAWithSHA256 = 8;
+    ECDSAWithSHA1 = 9;
+    ECDSAWithSHA256 = 10;
+    ECDSAWithSHA384 = 11;
+    ECDSAWithSHA512 = 12;
+    SHA256WithRSAPSS = 13;
+    SHA384WithRSAPSS = 14;
+    SHA512WithRSAPSS = 15;
+
+}
+
+
+message Signature {
+    bytes signature = 1;
+    SignatureAlgorithm SignatureAlgorithm = 2;
+}
+
+
+message EcdsaSignature {
+    bool rNeg = 1;
+    bytes r = 2;
+    bool sNeg = 3;
+    bytes s = 4;
+}
+
+message CertificateContent {
+    int32 version = 1;
+    PublicKeyAlgorithm public_key_algorithm = 2;
+    bytes public_key = 3;
+
+    string issuer = 4;
+    string subject = 5;
+    google.protobuf.Timestamp not_before = 6  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+    google.protobuf.Timestamp not_after = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+    bytes extension = 8;
+}
+
+
+message Certificate {
+    CertificateContent content = 1;
+    Signature signature = 2;
+}
+
+
+message RevocationContent {
+    int32 version = 1;
+
+    string issuer = 2;
+    string subject = 3;
+    google.protobuf.Timestamp issued_on = 4  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+    bytes extension = 5;
+}
+
+
+message Revocation {
+    RevocationContent content = 1;
+    Signature signature = 2;
+}
+

@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package sigchain;
+
+option go_package = "github.com/berty/berty/core/crypto/sigchain";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+
+message SigEvent {
+    SigEventType                    event_type = 1;
+
+    bytes                           hash = 2;
+    bytes                           parent_hash = 3;
+    bytes                           payload = 4;
+    bytes                           public_key = 5;
+    google.protobuf.Timestamp       created_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+    string                          issuer = 7;
+    string                          subject = 8;
+
+
+    enum SigEventType {
+        InitChain = 0;
+        AddDevice = 1;
+        RemoveDevice = 2;
+    }
+}
+
+
+message SigChain {
+    string                          peer_id = 1;
+    bytes                           public_key = 2; // See x509.MarshalPKIXPublicKey
+    repeated SigEvent               events = 3;
+}
+
+message EventExtension {
+    int32 version = 1;
+    bytes parent_event_hash = 2;
+}
