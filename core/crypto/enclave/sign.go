@@ -13,6 +13,8 @@ func Sign(keyID string, text string) (signature []byte, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
 		return []byte{}, errors.New("Error: keyID doesn't exist")
+	} else if text == "" {
+		return []byte{}, errors.New("Error: text is empty")
 	}
 
 	// Call the right signing function
@@ -28,24 +30,29 @@ func Sign(keyID string, text string) (signature []byte, err error) {
 // Sign text using RSA
 func signRSA(keyID string, text string) (signature []byte, err error) {
 	// Generate signature for text parameter
-	pssh := crypto.SHA512.New()
-	_, err = pssh.Write([]byte(text))
-	if err != nil {
-		log.Println("Error during text hashing:", err)
-		return
-	}
-	hashed := pssh.Sum(nil)
+	privKey, rsaType := keyPairs[keyID].privKey.(*rsa.PrivateKey)
+	if rsaType {
+		pssh := crypto.SHA512.New()
+		_, err = pssh.Write([]byte(text))
+		if err != nil {
+			log.Println("Error during text hashing:", err)
+			return
+		}
+		hashed := pssh.Sum(nil)
 
-	signature, err = rsa.SignPSS(
-		rand.Reader,
-		keyPairs[keyID].privKey,
-		crypto.SHA512,
-		hashed,
-		&rsa.PSSOptions{},
-	)
+		signature, err = rsa.SignPSS(
+			rand.Reader,
+			privKey,
+			crypto.SHA512,
+			hashed,
+			&rsa.PSSOptions{},
+		)
 
-	if err != nil {
-		log.Println("Error during authentification code signing:", err)
+		if err != nil {
+			log.Println("Error during authentification code signing:", err)
+		}
+	} else {
+		err = errors.New("Error: can't cast privKey to *rsa.PrivateKey")
 	}
 
 	return
@@ -54,9 +61,4 @@ func signRSA(keyID string, text string) (signature []byte, err error) {
 // Sign text using ECC
 func signECC(keyID string, text string) (signature []byte, err error) {
 	return []byte{}, errors.New("Error: ECC-256 signing not implemented yet")
-}
-
-// Sign text using platform specific API
-func signEnclave(keyID string, text string) (signature []byte, err error) {
-	return []byte{}, errors.New("Error: enclave signing not implemented yet")
 }

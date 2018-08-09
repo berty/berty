@@ -13,6 +13,8 @@ func Decrypt(keyID string, cipherText string, label []byte) (plainText string, e
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
 		return "", errors.New("Error: keyID doesn't exist")
+	} else if cipherText == "" {
+		return "", errors.New("Error: cipherText is empty")
 	}
 
 	// Call the right decryption function
@@ -29,29 +31,29 @@ func Decrypt(keyID string, cipherText string, label []byte) (plainText string, e
 func decryptRSA(keyID string, cipherText string, label []byte) (plainText string, err error) {
 	// Decrypt ciphertext using private keys
 	var bytes []byte
-	bytes, err = rsa.DecryptOAEP(
-		sha512.New(),
-		rand.Reader,
-		keyPairs[keyID].privKey,
-		[]byte(cipherText),
-		label,
-	)
+	privKey, rsaType := keyPairs[keyID].privKey.(*rsa.PrivateKey)
+	if rsaType {
+		bytes, err = rsa.DecryptOAEP(
+			sha512.New(),
+			rand.Reader,
+			privKey,
+			[]byte(cipherText),
+			label,
+		)
 
-	if err != nil {
-		log.Println("Error during cipher text decryption:", err)
-		return
+		if err != nil {
+			log.Println("Error during cipher text decryption:", err)
+			return
+		}
+
+		plainText = string(bytes)
+	} else {
+		err = errors.New("Error: can't cast privKey to *rsa.PrivateKey")
 	}
-
-	plainText = string(bytes)
 	return
 }
 
 // Decrypt ciphertext using ECC
 func decryptECC(keyID string, cipherText string, label []byte) (plainText string, err error) {
 	return "", errors.New("Error: ECC-256 decryption not implemented yet")
-}
-
-// Decrypt ciphertext using specific platform API
-func decryptEnclave(keyID string, cipherText string, label []byte) (plainText string, err error) {
-	return "", errors.New("Error: enclave decryption not implemented yet")
 }
