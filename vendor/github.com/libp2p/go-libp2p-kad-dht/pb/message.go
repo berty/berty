@@ -17,10 +17,10 @@ type PeerRoutingInfo struct {
 }
 
 // NewMessage constructs a new dht message with given type, key, and level
-func NewMessage(typ Message_MessageType, key string, level int) *Message {
+func NewMessage(typ Message_MessageType, key []byte, level int) *Message {
 	m := &Message{
-		Type: &typ,
-		Key:  &key,
+		Type: typ,
+		Key:  key,
 	}
 	m.SetClusterLevel(level)
 	return m
@@ -34,9 +34,9 @@ func peerRoutingInfoToPBPeer(p PeerRoutingInfo) *Message_Peer {
 		pbp.Addrs[i] = maddr.Bytes() // Bytes, not String. Compressed.
 	}
 	s := string(p.ID)
-	pbp.Id = &s
+	pbp.Id = []byte(s)
 	c := ConnectionType(p.Connectedness)
-	pbp.Connection = &c
+	pbp.Connection = c
 	return pbp
 }
 
@@ -47,8 +47,7 @@ func peerInfoToPBPeer(p pstore.PeerInfo) *Message_Peer {
 	for i, maddr := range p.Addrs {
 		pbp.Addrs[i] = maddr.Bytes() // Bytes, not String. Compressed.
 	}
-	s := string(p.ID)
-	pbp.Id = &s
+	pbp.Id = []byte(p.ID)
 	return pbp
 }
 
@@ -78,7 +77,7 @@ func PeerInfosToPBPeers(n inet.Network, peers []pstore.PeerInfo) []*Message_Peer
 	pbps := RawPeerInfosToPBPeers(peers)
 	for i, pbp := range pbps {
 		c := ConnectionType(n.Connectedness(peers[i].ID))
-		pbp.Connection = &c
+		pbp.Connection = c
 	}
 	return pbps
 }
@@ -136,7 +135,7 @@ func (m *Message) GetClusterLevel() int {
 // default "no value" protobuf behavior (0)
 func (m *Message) SetClusterLevel(level int) {
 	lvl := int32(level)
-	m.ClusterLevelRaw = &lvl
+	m.ClusterLevelRaw = lvl
 }
 
 // Loggable turns a Message into machine-readable log output

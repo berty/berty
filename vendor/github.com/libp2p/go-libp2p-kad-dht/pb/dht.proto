@@ -5,10 +5,10 @@
 // Now from `libp2p/go-libp2p-kad-dht/pb` you can run...
 // `protoc --gogo_out=. --proto_path=../../go-libp2p-record/pb/ --proto_path=./ dht.proto`
 
-syntax = "proto2";
+syntax = "proto3";
 package dht.pb;
 
-import "record.proto";
+import "github.com/libp2p/go-libp2p-record/pb/record.proto";
 
 message Message {
 	enum MessageType {
@@ -37,29 +37,29 @@ message Message {
 
 	message Peer {
 		// ID of a given peer.
-		optional string id = 1;
+		bytes id = 1;
 
 		// multiaddrs for a given peer
 		repeated bytes addrs = 2;
 
 		// used to signal the sender's connection capabilities to the peer
-		optional ConnectionType connection = 3;
+		ConnectionType connection = 3;
 	}
 
 	// defines what type of message it is.
-	optional MessageType type = 1;
+	MessageType type = 1;
 
 	// defines what coral cluster level this query/response belongs to.
 	// in case we want to implement coral's cluster rings in the future.
-	optional int32 clusterLevelRaw = 10;
+	int32 clusterLevelRaw = 10;
 
 	// Used to specify the key associated with this message.
 	// PUT_VALUE, GET_VALUE, ADD_PROVIDER, GET_PROVIDERS
-	optional string key = 2;
+	bytes key = 2;
 
 	// Used to return a value
 	// PUT_VALUE, GET_VALUE
-	optional record.pb.Record record = 3;
+	record.pb.Record record = 3;
 
 	// Used to return peers closer to a key in a query
 	// GET_VALUE, GET_PROVIDERS, FIND_NODE

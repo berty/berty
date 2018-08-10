@@ -8,7 +8,6 @@ import (
 	"sync"
 	"time"
 
-	proto "github.com/gogo/protobuf/proto"
 	cid "github.com/ipfs/go-cid"
 	u "github.com/ipfs/go-ipfs-util"
 	logging "github.com/ipfs/go-log"
@@ -71,7 +70,7 @@ func (dht *IpfsDHT) PutValue(ctx context.Context, key string, value []byte, opts
 	}
 
 	rec := record.MakePutRecord(key, value)
-	rec.TimeReceived = proto.String(u.FormatRFC3339(time.Now()))
+	rec.TimeReceived = u.FormatRFC3339(time.Now())
 	err = dht.putLocal(key, rec)
 	if err != nil {
 		return err
@@ -94,7 +93,7 @@ func (dht *IpfsDHT) PutValue(ctx context.Context, key string, value []byte, opts
 				ID:   p,
 			})
 
-			err := dht.putValueToPeer(ctx, p, key, rec)
+			err := dht.putValueToPeer(ctx, p, rec)
 			if err != nil {
 				log.Debugf("failed putting value to peer: %s", err)
 			}
@@ -172,7 +171,7 @@ func (dht *IpfsDHT) GetValue(ctx context.Context, key string, opts ...ropts.Opti
 				}
 				ctx, cancel := context.WithTimeout(dht.Context(), time.Second*30)
 				defer cancel()
-				err := dht.putValueToPeer(ctx, v.From, key, fixupRec)
+				err := dht.putValueToPeer(ctx, v.From, fixupRec)
 				if err != nil {
 					log.Debug("Error correcting DHT entry: ", err)
 				}
@@ -349,7 +348,7 @@ func (dht *IpfsDHT) makeProvRecord(skey *cid.Cid) (*pb.Message, error) {
 		return nil, fmt.Errorf("no known addresses for self. cannot put provider.")
 	}
 
-	pmes := pb.NewMessage(pb.Message_ADD_PROVIDER, skey.KeyString(), 0)
+	pmes := pb.NewMessage(pb.Message_ADD_PROVIDER, skey.Bytes(), 0)
 	pmes.ProviderPeers = pb.RawPeerInfosToPBPeers([]pstore.PeerInfo{pi})
 	return pmes, nil
 }
@@ -580,7 +579,7 @@ func (dht *IpfsDHT) FindPeersConnectedToPeer(ctx context.Context, id peer.ID) (<
 			peersSeenMx.Unlock()
 
 			// if peer is connected, send it to our client.
-			if pb.Connectedness(*pbp.Connection) == inet.Connected {
+			if pb.Connectedness(pbp.Connection) == inet.Connected {
 				select {
 				case <-ctx.Done():
 					return nil, ctx.Err()
@@ -590,7 +589,7 @@ func (dht *IpfsDHT) FindPeersConnectedToPeer(ctx context.Context, id peer.ID) (<
 
 			// if peer is the peer we're looking for, don't bother querying it.
 			// TODO maybe query it?
-			if pb.Connectedness(*pbp.Connection) != inet.Connected {
+			if pb.Connectedness(pbp.Connection) != inet.Connected {
 				clpeers = append(clpeers, pi)
 			}
 		}
