@@ -210,7 +210,7 @@ func (n *Node) ContactList(_ *node.Void, stream node.Service_ContactListServer) 
 // Conversation
 //
 
-func (n *Node) ConversationCreate(_ context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+func (n *Node) ConversationCreate(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
@@ -244,6 +244,11 @@ func (n *Node) ConversationCreate(_ context.Context, input *entity.Conversation)
 	conversation, err := sql.ConversationByID(n.sql, createConversation.ID)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to load freshly created conversation")
+	}
+
+	// Subscribe to conversation
+	if err := n.networkDriver.SubscribeTo(ctx, conversation.ID); err != nil {
+		return nil, err
 	}
 
 	// send invite to peers

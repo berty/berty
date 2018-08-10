@@ -64,7 +64,7 @@ func setupTestLogging() {
 	zap.ReplaceGlobals(logger)
 }
 
-func TestWithSimpleNetwork(t *testing.T) {
+func TestP2PNetwork(t *testing.T) {
 	var (
 		homer, lisa, bart, roger, patrick *p2p.Driver
 		err                               error

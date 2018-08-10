@@ -30,7 +30,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	requester.Status = entity.Contact_RequestedMe
 	requester.Devices = []*entity.Device{
 		{
-			ID: p2p.GetSender(ctx),
+			ID: input.SenderID,
 			//Key: crypto.NewPublicKey(p2p.GetPubkey(ctx)),
 		},
 	}
@@ -44,7 +44,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 
 func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Event) error {
 	// fetching existing contact from db
-	contact, err := sql.ContactByID(n.sql, p2p.GetSender(ctx))
+	contact, err := sql.ContactByID(n.sql, input.SenderID)
 	if err != nil {
 		return errors.Wrap(err, "no such contact")
 	}
@@ -60,6 +60,9 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 		return err
 	}
 
+	if err := n.networkDriver.SubscribeTo(ctx, input.SenderID); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -70,7 +73,7 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	}
 
 	// fetching existing contact from db
-	contact, err := sql.ContactByID(n.sql, p2p.GetSender(ctx))
+	contact, err := sql.ContactByID(n.sql, input.SenderID)
 	if err != nil {
 		return errors.Wrap(err, "no such contact")
 	}
@@ -112,6 +115,9 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 		return errors.Wrap(err, "failed to save conversation")
 	}
 
+	if err := n.networkDriver.SubscribeTo(ctx, attrs.Conversation.ID); err != nil {
+		return err
+	}
 	return nil
 }
 
