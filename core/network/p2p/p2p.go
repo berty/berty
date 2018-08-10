@@ -265,6 +265,10 @@ func (d *Driver) SendEventToSubscribers(ctx context.Context, id string, e *p2p.E
 	sendEvent := func(_s pstore.PeerInfo) {
 		peerID := _s.ID.Pretty()
 
+		if _s.ID.Pretty() == d.ID().Pretty() {
+			return
+		}
+
 		if err := d.Connect(ctx, _s); err != nil {
 			zap.L().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
 		}
@@ -278,7 +282,7 @@ func (d *Driver) SendEventToSubscribers(ctx context.Context, id string, e *p2p.E
 
 		_, err = sc.Handle(ctx, e)
 		if err != nil {
-			zap.L().Warn("Failed to send event", zap.String("event", fmt.Sprintf("%+v", e)))
+			zap.L().Warn("Failed to send event", zap.String("event", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
 		}
 	}
 

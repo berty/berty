@@ -29,7 +29,7 @@ func (n *Node) handle(ctx context.Context, input *p2p.Event) error {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
-	if input.SenderID != p2p.GetSender(ctx) {
+	if input.SenderID == "" {
 		return ErrInvalidEventSender
 	}
 
