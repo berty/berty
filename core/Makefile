@@ -17,6 +17,11 @@ BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 30s -v $(TEST_PATHS)
+PROTOC ?= protoc
+ifeq (, $(shell which protoc))
+PROTOC = docker run --rm -v "$(GOPATH)/src:$(GOPATH)/src" -v "$(PWD)/..:$(PWD)/.." -w "$(PWD)" moul/protoc-gen-gotemplate
+endif
+
 
 ##
 ## phonies
@@ -70,21 +75,31 @@ _ci_prepare:
 	@# touching files to avoid regenerating files based on modification date
 	touch $(GENERATED_FILES)
 
+.PHONY: dev-deps
+dev-deps:
+	go get -u -v \
+	  github.com/gogo/protobuf/proto \
+	  github.com/gogo/protobuf/protoc-gen-gogo \
+	  github.com/gogo/protobuf/gogoproto \
+	  github.com/gogo/protobuf/protoc-gen-gofast \
+	  github.com/gogo/protobuf/jsonpb \
+	  github.com/moul/protoc-gen-gotemplate
+
 ##
 ## file-based rules
 ##
 
 %.pb.go: %.proto
-	protoc $(PROTOC_OPTS) --gofast_out=plugins=grpc:"$(GOPATH)/src" "$(dir $<)"/*.proto
+	$(PROTOC) $(PROTOC_OPTS) --gofast_out=plugins=grpc:"$(GOPATH)/src" "$(dir $<)"/*.proto
 
 # FIXME: use an automated rule that matches every client generated files
 client/berty.node.service.gen.go: $(PROTOS)
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
-	  protoc $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./client:./client $$protodir/*.proto; \
+	  $(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./client:./client $$protodir/*.proto; \
 	); done
 	goimports -w ./client/
 
 api/p2p/kind.gen.go: $(PROTOS)
-	protoc $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
 	goimports -w ./api/p2p
