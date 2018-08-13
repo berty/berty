@@ -8,8 +8,7 @@ import (
        "context"
 
         "github.com/berty/berty/core/{{.File.Name|dir}}"
-	"github.com/berty/berty/core/client"
-        "github.com/berty/berty/core/{{.File.Name|dir}}"
+	"github.com/berty/berty/core/api/client"
         {{- range .File.Dependency}}
           {{- $dependency := . | getProtoFile}}
           {{$dependency.GoPkg}}
