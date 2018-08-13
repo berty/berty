@@ -4,8 +4,8 @@ import (
 	"context"
 	"io"
 
+	"github.com/berty/berty/core/api/client"
 	"github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/client"
 )
 
 type Bot struct {

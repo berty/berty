@@ -8,8 +8,8 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/berty/berty/core/api/client"
 	"github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/client"
 	"github.com/berty/berty/core/entity"
 )
 
