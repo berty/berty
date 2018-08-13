@@ -2,7 +2,10 @@
 
 package p2p
 
-import "github.com/gogo/protobuf/proto"
+import (
+       "fmt"
+       "github.com/gogo/protobuf/proto"
+)
 
   {{- range .File.MessageType}}
     {{- $oo := .Name | trunc (int (sub (len .Name) 5)) }}

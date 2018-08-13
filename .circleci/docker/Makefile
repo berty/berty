@@ -1,6 +1,6 @@
 DOCKER_NAMESPACE ?= bertychat/
 DOCKER_TAG ?= latest
-IMAGES ?= android-ci linter
+IMAGES ?= android-ci linter protoc
 
 .PHONY: docker.build
 docker.build:
