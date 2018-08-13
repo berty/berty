@@ -1,0 +1,13 @@
+FROM moul/protoc-gen-gotemplate
+
+RUN apk --update add git openssh
+
+# Update deps
+RUN go get -u -v \
+	  github.com/gogo/protobuf/proto \
+	  github.com/gogo/protobuf/protoc-gen-gogo \
+	  github.com/gogo/protobuf/gogoproto \
+	  github.com/gogo/protobuf/protoc-gen-gofast \
+	  github.com/gogo/protobuf/jsonpb \
+	  github.com/moul/protoc-gen-gotemplate \
+	  golang.org/x/tools/cmd/goimports
