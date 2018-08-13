@@ -15,6 +15,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/berty/berty/core"
+	nodeapi "github.com/berty/berty/core/api/node"
+	p2papi "github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network"
 	"github.com/berty/berty/core/network/mock"
@@ -127,7 +130,13 @@ func daemon(opts *daemonOptions) error {
 	go func() {
 		errChan <- gs.Serve(listener)
 	}()
-	zap.L().Info("grpc server started", zap.String("bind", opts.bind))
+	zap.L().Info("grpc server started",
+		zap.String("user-id", n.UserID()),
+		zap.String("bind", opts.bind),
+		zap.Int("p2p-api", int(p2papi.Version)),
+		zap.Int("node-api", int(nodeapi.Version)),
+		zap.String("version", core.Version),
+	)
 
 	// start node
 	go func() {
