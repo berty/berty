@@ -215,6 +215,7 @@ module.exports = {
                   
                   presets: [require.resolve('babel-preset-react-app')],
                   plugins: [
+										'react-native-web',
                     [
                       require.resolve('babel-plugin-named-asset-import'),
                       {
