@@ -32,6 +32,37 @@ jobs:
           paths:
             - "/go/pkg"
 
+  generate:
+    docker:
+      - image: bertychat/protoc
+    working_directory: /go/src/github.com/berty/berty
+    environment:
+      GOPATH: /go
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: update dev deps
+          command: |
+            cd core
+            make dev-deps
+      - run:
+          name: cleanup existing generated files
+          command: |
+            cd core
+            make clean
+      - run:
+          name: make generate
+          command: |
+            cd core
+            make generate
+      - run:
+          name: check if files changed
+          command: |
+            git status | cat
+            git diff | cat
+            git diff-index --quiet HEAD --
+
   docker.build:
     docker:
       - image: docker:17.05.0-ce-git
@@ -264,6 +295,7 @@ workflows:
   commit:
     jobs:
       - lint
+      - generate
       - core.go.test
       - docker.build
       - client.rn.node
