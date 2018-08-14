@@ -290,6 +290,41 @@ jobs:
           command: |
             time bundle exec fastlane ios adhoc refresh_certificates:true use_temporary_keychain:true --verbose
 
+  client.rn.web:
+    working_directory: ~/go/src/github.com/berty/berty
+    docker:
+      - image: circleci/node:8
+    steps:
+      - checkout
+
+      - attach_workspace:
+          at: ~/go/src/github.com/berty/berty/
+
+
+      - restore_cache:
+          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+
+      - restore_cache:
+          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+
+      - run: cd client/react-native/web && yarn
+
+      - save_cache:
+          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
+
+      - save_cache:
+          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+          paths:
+            - node_modules
+
+      - run:
+          name: build web app
+          working_directory: ~/go/src/github.com/berty/berty/client/react-native/web
+          command: |
+            yarn build
+
 workflows:
   version: 2
   commit:
@@ -303,5 +338,8 @@ workflows:
           requires:
             - client.rn.node
       - client.rn.ios:
+          requires:
+            - client.rn.node
+      - client.rn.web:
           requires:
             - client.rn.node
