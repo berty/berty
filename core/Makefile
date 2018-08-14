@@ -7,7 +7,7 @@ PROTOS = $(call rwildcard, $(CODE_PATHS), *.proto)
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_FILES = \
 	$(patsubst %.proto,%.pb.go,$(PROTOS)) \
-	client/berty.node.service.gen.go \
+	api/client/berty.node.service.gen.go \
 	$(call rwildcard $(CODE_PATHS), *.gen.go) \
 	api/p2p/kind.gen.go
 PROTOC_OPTS = --proto_path=../vendor:../vendor/github.com/gogo/protobuf:.
@@ -93,12 +93,12 @@ dev-deps:
 	$(PROTOC) $(PROTOC_OPTS) --gofast_out=plugins=grpc:"$(GOPATH)/src" "$(dir $<)"/*.proto
 
 # FIXME: use an automated rule that matches every client generated files
-client/berty.node.service.gen.go: $(PROTOS)
+api/client/berty.node.service.gen.go: $(PROTOS)
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
-	  $(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./client:./client $$protodir/*.proto; \
+	  $(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
 	); done
-	goimports -w ./client/
+	goimports -w ./api/client/
 
 api/p2p/kind.gen.go: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto

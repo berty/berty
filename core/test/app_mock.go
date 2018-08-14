@@ -12,8 +12,8 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
+	"github.com/berty/berty/core/api/client"
 	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/client"
 	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network"
 	"github.com/berty/berty/core/network/netutil"
