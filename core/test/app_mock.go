@@ -56,7 +56,7 @@ func NewAppMock(device *entity.Device, networkDriver network.Driver) (*AppMock, 
 func (a *AppMock) Open() error {
 	var err error
 
-	if a.db, err = sqlcipher.Open(a.dbPath, []byte("s3cur3")); err != nil {
+	if a.db, err = sqlcipher.Open(a.dbPath+"?cache=shared&_txlock=deferred&_loc=auto&_mutex=full", []byte("s3cur3")); err != nil {
 		return err
 	}
 	if a.db, err = sql.Init(a.db); err != nil {
