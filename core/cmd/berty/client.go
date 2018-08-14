@@ -11,8 +11,8 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"github.com/berty/berty/core/client"
-	"github.com/berty/berty/core/client/jsonclient"
+	"github.com/berty/berty/core/api/client"
+	"github.com/berty/berty/core/api/client/jsonclient"
 )
 
 type clientOptions struct {
