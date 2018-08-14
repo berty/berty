@@ -194,11 +194,13 @@ jobs:
       - run:
           name: setup golang environment
           command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
             echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build
           command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
             env && cd ../../gomobile && make core.build.android
 
       - restore_cache:
@@ -206,7 +208,9 @@ jobs:
 
       - run:
           name: install bundle
-          command: bundle check || bundle install --path vendor/bundle
+          command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            bundle check || bundle install --path vendor/bundle
 
       - save_cache:
           key: android-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/android/Gemfile.lock" }}
@@ -216,6 +220,7 @@ jobs:
       - run:
           name: build app
           command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
             time bundle exec fastlane android beta
 
   client.rn.ios:
@@ -241,6 +246,7 @@ jobs:
       - run:
           name: install-go
           command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
             if [ ! -f ~/go-install/go/bin/go ]; then
               cd ~ && git clone https://github.com/udhos/update-golang
               cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install ./update-golang.sh
@@ -250,6 +256,7 @@ jobs:
       - run:
           name: install gomobile
           command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
             if [ ! -f ~/go/bin/gomobile ]; then
               go get golang.org/x/mobile/cmd/gomobile
               cd ~/go/src/golang.org/x/mobile
@@ -270,6 +277,7 @@ jobs:
           name: install core
           working_directory: ~/go/src/github.com/berty/berty/client/react-native/gomobile
           command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
             make core.build.ios
 
       - restore_cache:
@@ -277,7 +285,9 @@ jobs:
 
       - run:
           working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
-          command: bundle check || bundle install --path vendor/bundle
+          command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            bundle check || bundle install --path vendor/bundle
 
       - save_cache:
           key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-3
@@ -288,6 +298,7 @@ jobs:
           name: build app
           working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
           command: |
+            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
             time bundle exec fastlane ios adhoc refresh_certificates:true use_temporary_keychain:true --verbose
 
   client.rn.web:
