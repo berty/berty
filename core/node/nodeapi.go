@@ -26,6 +26,9 @@ func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 
 // EventList implements berty.node.EventList
 func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventListServer) error {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	var events []*p2p.Event
 
 	if err := n.sql.Where(input.Filter).Find(&events).Error; err != nil {
@@ -71,6 +74,9 @@ func (n *Node) EventStream(_ *node.Void, stream node.Service_EventStreamServer) 
 
 // ContactAcceptRequest implements berty.node.ContactAcceptRequest
 func (n *Node) ContactAcceptRequest(_ context.Context, input *entity.Contact) (*entity.Contact, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	// input validation
 	if err := input.Validate(); err != nil {
 		return nil, errors.Wrap(err, ErrInvalidInput.Error())
@@ -105,6 +111,9 @@ func (n *Node) ContactAcceptRequest(_ context.Context, input *entity.Contact) (*
 
 // ContactRequest implements berty.node.ContactRequest
 func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput) (*entity.Contact, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	// input validation
 	if err := req.Contact.Validate(); err != nil {
 		return nil, errors.Wrap(err, ErrInvalidInput.Error())
@@ -143,6 +152,9 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 
 // ContactUpdate implements berty.node.ContactUpdate
 func (n *Node) ContactUpdate(_ context.Context, contact *entity.Contact) (*entity.Contact, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	// input validation
 	if contact == nil || contact.ID == "" {
 		return nil, ErrInvalidInput
@@ -158,6 +170,9 @@ func (n *Node) ContactUpdate(_ context.Context, contact *entity.Contact) (*entit
 
 // ContactRemove implements berty.node.ContactRemove
 func (n *Node) ContactRemove(_ context.Context, contact *entity.Contact) (*entity.Contact, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	// input validation
 	if contact == nil || contact.ID == "" {
 		return nil, ErrInvalidInput
@@ -175,6 +190,9 @@ func (n *Node) ContactRemove(_ context.Context, contact *entity.Contact) (*entit
 
 // ContactList implements berty.node.ContactList
 func (n *Node) ContactList(_ *node.Void, stream node.Service_ContactListServer) error {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	var contacts []*entity.Contact
 	if err := n.sql.Find(&contacts).Error; err != nil {
 		return errors.Wrap(err, "failed to get contacts from database")
@@ -193,6 +211,9 @@ func (n *Node) ContactList(_ *node.Void, stream node.Service_ContactListServer) 
 //
 
 func (n *Node) ConversationCreate(_ context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	members := []*entity.ConversationMember{
 		{
 			ID:        n.NewID(),
@@ -247,15 +268,23 @@ func (n *Node) ConversationCreate(_ context.Context, input *entity.Conversation)
 }
 
 func (n *Node) ConversationAcceptInvite(_ context.Context, conversation *entity.Conversation) (*entity.Conversation, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
 
 	return nil, ErrNotImplemented
 }
 
 func (n *Node) ConversationInvite(context.Context, *entity.ConversationMember) (*entity.Conversation, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	return nil, ErrNotImplemented
 }
 
 func (n *Node) ConversationList(_ *node.Void, stream node.Service_ConversationListServer) error {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	var conversations []*entity.Conversation
 	if err := n.sql.Find(&conversations).Error; err != nil {
 		return errors.Wrap(err, "failed to get conversations from database")
@@ -270,6 +299,9 @@ func (n *Node) ConversationList(_ *node.Void, stream node.Service_ConversationLi
 }
 
 func (n *Node) ConversationAddMessage(_ context.Context, input *node.ConversationAddMessageInput) (*p2p.Event, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
 	event := n.NewConversationEvent(input.Conversation, p2p.Kind_ConversationNewMessage)
 	if err := event.SetAttrs(&p2p.ConversationNewMessageAttrs{
 		Message: input.Message,

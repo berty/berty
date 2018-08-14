@@ -32,7 +32,7 @@ func TestOpen(t *testing.T) {
 		// reopen the database with an invalid key
 		db, err = Open(tmpFile.Name(), []byte(`invalid`))
 		So(err, ShouldNotBeNil)
-		So(err.Error(), ShouldEqual, "invalid sqlcipher encryption key: file is encrypted or is not a database")
+		So(err.Error(), ShouldEqual, "invalid sqlcipher encryption key: file is not a database")
 		So(db, ShouldBeNil)
 
 		// reopen the database with the good key

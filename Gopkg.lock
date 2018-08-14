@@ -661,10 +661,10 @@
   revision = "cb29a700b01dc3c2fdd743c00cf54685056bb62a"
 
 [[projects]]
+  branch = "master"
   name = "github.com/xeodou/go-sqlcipher"
   packages = ["."]
-  revision = "cc625710e0eea4e9b8e78fd1498a60f5cb98e5c4"
-  version = "3.11.0"
+  revision = "7f9cd319987f539fcfbcfdda2c0f5dfadc078124"
 
 [[projects]]
   name = "go.uber.org/atomic"
@@ -804,6 +804,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "45dd3992c577d399a4e0b381c717ab059b7aa87764e115892ca2fc14e61141a1"
+  inputs-digest = "2df898464c534018073372735bff3a3baae6a56adb53ce557626c0924630a05c"
   solver-name = "gps-cdcl"
   solver-version = 1
