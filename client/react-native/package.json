@@ -4,7 +4,9 @@
   "description": "Berty's react native",
   "dependencies": {
     "react": "^16.4.1",
-    "react-native": "0.56.0"
+    "react-dom": "^16.4.2",
+    "react-native": "0.56.0",
+    "react-native-web": "^0.8.9"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-beta.47",
