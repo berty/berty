@@ -24,6 +24,10 @@
 #   go-tests = true
 #   unused-packages = true
 
+[[constraint]]
+  name = "github.com/xeodou/go-sqlcipher"
+  branch = "master"
+
 [[override]]
   name = "github.com/satori/go.uuid"
   revision = "c596ec57260fd2ad47b2ae6809d6890a2f99c3b2" # 1.2.0 (latest) is broken
