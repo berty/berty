@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package provider;
+
+option go_package = "github.com/berty/berty/core/network/p2p/protocol/service/provider";
+
+message ProviderInfo {
+  string id = 1;
+  bytes peer_info = 2; 
+}

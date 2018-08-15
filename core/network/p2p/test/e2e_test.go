@@ -9,6 +9,7 @@ import (
 
 	api "github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/network/p2p"
+	ipfslog "github.com/ipfs/go-log"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
@@ -51,6 +52,7 @@ func setupTestLogging() {
 	// initialize zap
 	config := zap.NewDevelopmentConfig()
 	if os.Getenv("LOG_LEVEL") == "debug" {
+		ipfslog.SetDebugLogging()
 		config.Level.SetLevel(zap.DebugLevel)
 	} else {
 		config.Level.SetLevel(zap.InfoLevel)
@@ -70,7 +72,6 @@ func TestWithSimpleNetwork(t *testing.T) {
 		err                               error
 	)
 	setupTestLogging()
-	// logging.SetDebugLogging()
 
 	dht.PoolSize = 3
 	ds := []*p2p.Driver{homer, lisa, bart, roger, patrick}
@@ -83,6 +84,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 						zap.L().Warn("error while closing", zap.Error(err))
 					}
 				}()
+
 			}
 		}
 	}()
@@ -91,8 +93,6 @@ func TestWithSimpleNetwork(t *testing.T) {
 		Convey("setup test", FailureHalts, func() {
 			// ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
 			// defer cancel()
-
-			ctx := context.Background()
 
 			homer, err = setupDriver()
 			So(err, ShouldBeNil)
@@ -111,16 +111,16 @@ func TestWithSimpleNetwork(t *testing.T) {
 			patrick, err = setupDriver(b...)
 			So(err, ShouldBeNil)
 
-			err = lisa.Announce(ctx, "Lisa")
+			err = lisa.Announce("Lisa")
 			So(err, ShouldBeNil)
 
-			err = bart.Announce(ctx, "Bart")
+			err = bart.Announce("Bart")
 			So(err, ShouldBeNil)
 
-			err = patrick.Announce(ctx, "Patrick")
+			err = patrick.Announce("Patrick")
 			So(err, ShouldBeNil)
 
-			err = roger.Announce(ctx, "Roger")
+			err = roger.Announce("Roger")
 			So(err, ShouldBeNil)
 
 			time.Sleep(time.Second * 2)

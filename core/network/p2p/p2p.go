@@ -7,7 +7,9 @@ import (
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
 	ipfsaddr "github.com/ipfs/go-ipfs-addr"
+
 	libp2p "github.com/libp2p/go-libp2p"
+	crypto "github.com/libp2p/go-libp2p-crypto"
 	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"
@@ -23,6 +25,7 @@ import (
 	"github.com/berty/berty/core/network"
 	"github.com/berty/berty/core/network/p2p/p2putil"
 	"github.com/berty/berty/core/network/p2p/protocol/service/p2pgrpc"
+	"github.com/berty/berty/core/network/p2p/protocol/service/provider"
 )
 
 const ID = "api/p2p/event"
@@ -48,6 +51,9 @@ type Driver struct {
 
 	ccmanager *p2putil.Manager
 	handler   func(context.Context, *p2p.Event) (*p2p.Void, error)
+	provider  *provider.Provider
+
+	pub crypto.PubKey
 
 	// services
 	dht *dht.IpfsDHT
@@ -91,6 +97,10 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		if err := driver.Bootstrap(ctx, cfg.bootstrapSync, cfg.bootstrap...); err != nil {
 			return nil, err
 		}
+	}
+
+	if driver.provider, err = provider.New(ctx, host); err != nil {
+		return nil, err
 	}
 
 	sgrpc := p2pgrpc.NewP2PGrpcService(host)
@@ -262,11 +272,12 @@ func (d *Driver) SendEventToSubscribers(ctx context.Context, id string, e *p2p.E
 		return fmt.Errorf("No subscribers found")
 	}
 
-	sendEvent := func(_s pstore.PeerInfo) {
+	for _, s := range ss {
+		_s := s
 		peerID := _s.ID.Pretty()
 
 		if err := d.Connect(ctx, _s); err != nil {
-			zap.L().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
+			zap.L().Warn("Failed to connect", zap.String("id", peerID), zap.Error(err))
 		}
 
 		c, err := d.ccmanager.GetConn(ctx, peerID)
@@ -282,38 +293,31 @@ func (d *Driver) SendEventToSubscribers(ctx context.Context, id string, e *p2p.E
 		}
 	}
 
-	for _, s := range ss {
-		_s := s
-		go sendEvent(_s)
-	}
 	return nil
 }
 
 // Announce yourself on the ring, for the moment just an alias of SubscribeTo
-func (d *Driver) Announce(ctx context.Context, id string) error {
-	return d.SubscribeTo(ctx, id)
+func (d *Driver) Announce(id string) error {
+	return d.provider.Subscribe(id)
 }
 
 // FindSubscribers with the given ID
-func (d *Driver) FindSubscribers(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
-	c, err := d.createCid(id)
+func (d *Driver) FindSubscribers(ctx context.Context, id string) (pis []pstore.PeerInfo, err error) {
+	pis, err = d.provider.GetPeersForKey(id)
 	if err != nil {
-		return nil, err
+		if pis, err = d.provider.AnnounceAndWait(ctx, id); err != nil {
+			return nil, err
+		}
 	}
 
-	return d.dht.FindProviders(ctx, c)
+	return pis, nil
 }
 
 // SubscribeTo to the given ID
-func (d *Driver) SubscribeTo(ctx context.Context, id string) error {
-	c, err := d.createCid(id)
-	if err != nil {
-		return err
-	}
-
+func (d *Driver) SubscribeTo(id string) error {
 	// Announce that you are subscribed to this conversation, but don't
 	// broadcast it! in this way, if you die, your announcement will die with you!
-	return d.dht.Provide(ctx, c, true)
+	return d.provider.Subscribe(id)
 }
 
 func (d *Driver) SetReceiveEventHandler(f func(context.Context, *p2p.Event) (*p2p.Void, error)) {
