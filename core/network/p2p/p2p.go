@@ -102,7 +102,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		return nil, err
 	}
 
-	fmt.Println("test 3")
 	if cfg.enableMDNS {
 		sa, err := mdns.NewMdnsService(ctx, host, time.Second, "berty")
 		if err != nil {

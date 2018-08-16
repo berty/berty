@@ -29,7 +29,6 @@ func (c *driverConfig) Apply(opts ...Option) error {
 	return nil
 }
 
-// WithDHTOptions creates a new DHT with the specified options.
 func WithMDNS() Option {
 	return func(dc *driverConfig) error {
 		dc.enableMDNS = true
