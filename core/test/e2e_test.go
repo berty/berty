@@ -691,7 +691,7 @@ func getBoostrap(d *p2pnet.Driver) []string {
 	bootstrap := make([]string, len(addrs))
 
 	for i, a := range addrs {
-		bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a, d.ID().Pretty())
+		bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a, d.ID())
 	}
 
 	return bootstrap

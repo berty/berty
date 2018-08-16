@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
-	"time"
 
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -27,16 +27,21 @@ import (
 	"github.com/berty/berty/core/node"
 	"github.com/berty/berty/core/sql"
 	"github.com/berty/berty/core/sql/sqlcipher"
+	p2plog "github.com/ipfs/go-log"
 )
 
 type daemonOptions struct {
-	bind         string
-	hideBanner   bool
-	sqlPath      string
-	sqlKey       string
-	dropDatabase bool
-	initOnly     bool
-	noP2P        bool
+	bind           string
+	hideBanner     bool
+	sqlPath        string
+	sqlKey         string
+	bootstrap      []string
+	dropDatabase   bool
+	initOnly       bool
+	noP2P          bool
+	logP2PLevel    string
+	bindP2P        []string
+	logP2PSubsytem []string
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -47,14 +52,20 @@ func newDaemonCommand() *cobra.Command {
 			return daemon(opts)
 		},
 	}
+
 	flags := cmd.Flags()
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
-	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drvier")
-	flags.StringVarP(&opts.bind, "bind", "", "0.0.0.0:1337", "gRPC listening address")
+	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drier")
+	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
 	flags.StringVarP(&opts.sqlKey, "sql-key", "", "s3cur3", "sqlcipher database encryption key")
 	flags.StringVarP(&opts.sqlPath, "sql-path", "", "/tmp/berty.db", "sqlcipher database path")
+	flags.StringSliceVarP(&opts.bootstrap, "bootstrap", "", []string{}, "boostrap peers")
+	flags.StringSliceVarP(&opts.bindP2P, "bind-p2p", "", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
+	flags.StringVarP(&opts.logP2PLevel, "log-p2p-level", "", "", "Enable log on libp2p (can be 'critical', 'error', 'warning', 'notice', 'info', 'debug')")
+	flags.StringSliceVarP(&opts.logP2PSubsytem, "log-p2p-subsystem", "", []string{"*"}, "log libp2p specific subsystem")
+
 	return cmd
 }
 
@@ -64,7 +75,18 @@ func daemon(opts *daemonOptions) error {
 	// initialize gRPC
 	gs := grpc.NewServer()
 	reflection.Register(gs)
-	listener, err := reuse.Listen("tcp", opts.bind)
+
+	addr, err := net.ResolveTCPAddr("tcp", opts.bind)
+	if err != nil {
+		return err
+	}
+
+	if addr.IP == nil {
+		addr.IP = net.IP{127, 0, 0, 1}
+	}
+
+	fmt.Printf("%s - %s:%d\n", addr.Network(), addr.IP.String(), addr.Port)
+	listener, err := reuse.Listen(addr.Network(), fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port))
 	if err != nil {
 		return err
 	}
@@ -92,11 +114,14 @@ func daemon(opts *daemonOptions) error {
 
 	var driver network.Driver
 	if !opts.noP2P {
-		var bootstrapConfig = &dht.BootstrapConfig{
-			Queries: 5,
-			Period:  time.Second,
-			Timeout: 10 * time.Second,
+		if opts.logP2PLevel != "" {
+			for _, name := range opts.logP2PSubsytem {
+				if err := p2plog.SetLogLevel(name, strings.ToUpper(opts.logP2PLevel)); err != nil {
+					return err
+				}
+			}
 		}
+
 		driver, err = p2p.NewDriver(
 			context.Background(),
 			p2p.WithRandomIdentity(),
@@ -104,9 +129,9 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
 			p2p.WithDefaultTransports(),
-			p2p.WithDHTBoostrapConfig(bootstrapConfig),
-			p2p.WithListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
-			p2p.WithBootstrap(p2p.BootstrapIpfs...),
+			p2p.WithMDNS(),
+			p2p.WithListenAddrStrings(opts.bindP2P...),
+			p2p.WithBootstrap(opts.bootstrap...),
 		)
 		if err != nil {
 			return err

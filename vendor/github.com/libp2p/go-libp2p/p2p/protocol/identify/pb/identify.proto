@@ -1,3 +1,5 @@
+syntax = "proto2";
+
 package identify.pb;
 
 message Identify {
