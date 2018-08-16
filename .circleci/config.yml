@@ -183,7 +183,7 @@ jobs:
   client.rn.android:
     working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/android
     docker:
-      - image: sfroment/test:lastest #Fix me when we get berty docker account
+      - image: bertychat/android-ci:latest
     steps:
       - checkout:
           path: ~/go/src/github.com/berty/berty/
