@@ -86,7 +86,7 @@ jobs:
       - run:
           name: Run application within Docker
           command: |
-            docker run --rm berty daemon --init-only
+            docker run --rm berty daemon --init-only --no-p2p
       - run:
           name: Save Docker image layer cache
           command: |

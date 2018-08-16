@@ -7,7 +7,9 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -90,6 +92,11 @@ func daemon(opts *daemonOptions) error {
 
 	var driver network.Driver
 	if !opts.noP2P {
+		var bootstrapConfig = &dht.BootstrapConfig{
+			Queries: 5,
+			Period:  time.Second,
+			Timeout: 10 * time.Second,
+		}
 		driver, err = p2p.NewDriver(
 			context.Background(),
 			p2p.WithRandomIdentity(),
@@ -97,7 +104,7 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
 			p2p.WithDefaultTransports(),
-
+			p2p.WithDHTBoostrapConfig(bootstrapConfig),
 			p2p.WithListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
 			p2p.WithBootstrap(p2p.BootstrapIpfs...),
 		)
