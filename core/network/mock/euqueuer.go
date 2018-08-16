@@ -31,3 +31,7 @@ func (e *Enqueuer) SendEvent(_ context.Context, event *p2p.Event) error {
 func (e *Enqueuer) SetReceiveEventHandler(_ func(context.Context, *p2p.Event) (*p2p.Void, error)) {
 	// doing nothing, enqueuer does not support receiving events
 }
+
+func (e *Enqueuer) SubscribeTo(_ context.Context, _ string) error {
+	return nil
+}

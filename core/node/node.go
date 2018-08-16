@@ -61,6 +61,10 @@ func New(opts ...NewNodeOption) (*Node, error) {
 
 	n.networkDriver.SetReceiveEventHandler(n.Handle)
 
+	if err := n.networkDriver.SubscribeTo(context.Background(), n.UserID()); err != nil {
+		return nil, err
+	}
+
 	return n, nil
 }
 

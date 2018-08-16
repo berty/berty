@@ -66,3 +66,7 @@ func (d *SimpleDriver) SendEvent(ctx context.Context, event *p2p.Event) error {
 func (d *SimpleDriver) SetReceiveEventHandler(handler func(context.Context, *p2p.Event) (*p2p.Void, error)) {
 	d.handler = handler
 }
+
+func (d *SimpleDriver) SubscribeTo(_ context.Context, _ string) error {
+	return nil
+}
