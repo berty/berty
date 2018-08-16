@@ -263,12 +263,12 @@
   packages = [
     ".",
     "config",
+    "p2p/discovery",
     "p2p/host/basic",
     "p2p/protocol/identify",
     "p2p/protocol/identify/pb"
   ]
-  revision = "cdc6d1940763222a9f338a14903bb383384dc46c"
-  version = "v6.0.5"
+  revision = "cc70c4be36f765ba9fb92d6e0528722773af607d"
 
 [[projects]]
   name = "github.com/libp2p/go-libp2p-circuit"
@@ -486,6 +486,12 @@
   version = "v0.0.3"
 
 [[projects]]
+  name = "github.com/miekg/dns"
+  packages = ["."]
+  revision = "5a2b9fab83ff0f8bfc99684bd5f43a37abe560f1"
+  version = "v1.0.8"
+
+[[projects]]
   branch = "master"
   name = "github.com/minio/blake2b-simd"
   packages = ["."]
@@ -650,6 +656,12 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/whyrusleeping/mdns"
+  packages = ["."]
+  revision = "ef8f1e9eacb7c443789af0b37377f75119aed680"
+
+[[projects]]
+  branch = "master"
   name = "github.com/whyrusleeping/multiaddr-filter"
   packages = ["."]
   revision = "e903e4adabd70b78bc9293b6ee4f359afb3f9f59"
@@ -697,6 +709,8 @@
   packages = [
     "blake2s",
     "blowfish",
+    "ed25519",
+    "ed25519/internal/edwards25519",
     "sha3"
   ]
   revision = "c126467f60eb25f8f27e5a981f32a87e3965053f"
@@ -705,6 +719,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = [
+    "bpf",
     "context",
     "html",
     "html/atom",
@@ -713,7 +728,11 @@
     "http2",
     "http2/hpack",
     "idna",
+    "internal/iana",
+    "internal/socket",
     "internal/timeseries",
+    "ipv4",
+    "ipv6",
     "trace"
   ]
   revision = "3673e40ba22529d22c3fd7c93e97b0ce50fa7bdd"
@@ -804,6 +823,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2df898464c534018073372735bff3a3baae6a56adb53ce557626c0924630a05c"
+  inputs-digest = "537bc07dd4b59f22cf9139e6c1bbd74b1222d20a0abb273a3d12404ff428fcec"
   solver-name = "gps-cdcl"
   solver-version = 1
