@@ -73,18 +73,11 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		host: host,
 	}
 
-	if len(cfg.bootstrap) > 0 {
-		if err := driver.Bootstrap(ctx, cfg.bootstrapSync, cfg.bootstrap...); err != nil {
-			return nil, err
-		}
-	}
-
+	ds := datastore.NewMapDatastore()
 	if len(cfg.dhtOpts) == 0 {
-		ds := datastore.NewMapDatastore()
 		cfg.dhtOpts = []dhtopt.Option{dhtopt.Datastore(ds)}
 	}
 
-	ds := datastore.NewMapDatastore()
 	driver.dht = dht.NewDHT(context.Background(), host, ds)
 	if err != nil {
 		return nil, err
@@ -108,6 +101,12 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 			zap.L().Warn("Failed to enable MDNS", zap.Error(err))
 		} else {
 			sa.RegisterNotifee((*DriverDiscoveryNotifee)(driver))
+		}
+	}
+
+	if len(cfg.bootstrap) > 0 {
+		if err := driver.Bootstrap(ctx, cfg.bootstrapSync, cfg.bootstrap...); err != nil {
+			return nil, err
 		}
 	}
 
