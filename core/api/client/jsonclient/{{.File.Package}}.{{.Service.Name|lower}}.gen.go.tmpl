@@ -10,8 +10,8 @@ import (
 
         "go.uber.org/zap"
 
-	"github.com/berty/berty/core/api/client"
-        "github.com/berty/berty/core/{{.File.Name|dir}}"
+	"berty.tech/core/api/client"
+        "berty.tech/core/{{.File.Name|dir}}"
         {{- range .File.Dependency}}
           {{- $dependency := . | getProtoFile}}
           {{$dependency.GoPkg}}

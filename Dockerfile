@@ -1,9 +1,9 @@
 # build core
 FROM            golang:1.10-alpine as core-builder
 RUN             apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev
-COPY            vendor /go/src/github.com/berty/berty/vendor
-COPY            core /go/src/github.com/berty/berty/core
-WORKDIR         /go/src/github.com/berty/berty
+COPY            vendor /go/src/berty.tech/vendor
+COPY            core /go/src/berty.tech/core
+WORKDIR         /go/src/berty.tech
 RUN             cd core && make _ci_prepare # touching generated files
 RUN             cd core && make install
 

@@ -12,7 +12,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/berty/berty/core/network/mock"
+	"berty.tech/core/network/mock"
 )
 
 func init() {
