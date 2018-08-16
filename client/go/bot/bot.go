@@ -3,6 +3,7 @@ package bot
 import (
 	"context"
 	"io"
+	"time"
 
 	"github.com/berty/berty/core/api/client"
 	"github.com/berty/berty/core/api/node"
@@ -31,7 +32,7 @@ func New(opts ...Option) (*Bot, error) {
 	return &bot, nil
 }
 
-func (b *Bot) Run() error {
+func (b *Bot) Start() error {
 	ctx := context.Background()
 	stream, err := b.client.Node().EventStream(ctx, &node.Void{})
 	if err != nil {
@@ -46,8 +47,15 @@ func (b *Bot) Run() error {
 			return err
 		}
 		botEvent := &Event{
-			*event,
+			Event: *event,
+			ctx:   stream.Context(),
 		}
+
+		// give some time to avoid race conditions
+		// should be fixed when we will have setup
+		// all the required mutexes everywhere
+		time.Sleep(100 * time.Millisecond)
+
 		for _, handler := range b.handlers {
 			if err := handler.Handle(b, botEvent); err != nil {
 				return err
