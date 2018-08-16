@@ -3,7 +3,7 @@ package network
 import (
 	"context"
 
-	"github.com/berty/berty/core/api/p2p"
+	"berty.tech/core/api/p2p"
 )
 
 type Driver interface {

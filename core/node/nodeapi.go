@@ -7,10 +7,10 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/sql"
+	"berty.tech/core/api/node"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+	"berty.tech/core/sql"
 )
 
 // WithNodeGrpcServer registers the Node as a 'berty.node' protobuf server implementation

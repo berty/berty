@@ -8,9 +8,9 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/berty/berty/core/api/client"
-	"github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/client"
+	"berty.tech/core/api/node"
+	"berty.tech/core/entity"
 )
 
 func init() {

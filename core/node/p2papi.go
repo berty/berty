@@ -8,8 +8,8 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"github.com/pkg/errors"
 )
 

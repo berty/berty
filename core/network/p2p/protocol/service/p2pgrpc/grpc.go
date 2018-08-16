@@ -11,7 +11,7 @@ import (
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	"go.uber.org/zap"
 
-	"github.com/berty/berty/core/network/p2p/p2putil"
+	"berty.tech/core/network/p2p/p2putil"
 )
 
 const ID = "/berty/grpc"

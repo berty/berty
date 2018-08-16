@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/berty/berty/core/api/client"
+	"berty.tech/core/api/client"
 )
 
 type GenericServerStreamClient interface {

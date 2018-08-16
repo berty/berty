@@ -5,7 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/entity"
 )
 
 func ContactByID(db *gorm.DB, id string) (*entity.Contact, error) {

@@ -10,10 +10,10 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/network"
-	"github.com/berty/berty/core/sql"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+	"berty.tech/core/network"
+	"berty.tech/core/sql"
 )
 
 // Node is the top-level object of a Berty peer

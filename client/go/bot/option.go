@@ -3,7 +3,7 @@ package bot
 import (
 	grpc "google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/client"
+	"berty.tech/core/api/client"
 )
 
 type Option func(b *Bot) error

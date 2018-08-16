@@ -3,8 +3,8 @@ package node
 import (
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 func (n *Node) initConfig() (*entity.Config, error) {

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.p2p;
 
-option go_package = "github.com/berty/berty/core/api/p2p";
+option go_package = "berty.tech/core/api/p2p";
 
 import "api/p2p/event.proto";
 

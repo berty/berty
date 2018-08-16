@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/berty/berty/client/go/bot"
+	"berty.tech/client/go/bot"
 )
 
 func main() {
