@@ -1,20 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/berty/berty/client/go/bot"
 )
 
 func main() {
-	b, err := bot.New(bot.WithDefaultDaemon())
+	b, err := bot.New(
+		bot.WithDefaultDaemon(),
+		bot.WithAutoAcceptInvites(),
+		bot.WithLogger(),
+	)
 	if err != nil {
 		panic(err)
 	}
 
 	b.AddHandlerFunc(func(b *bot.Bot, e *bot.Event) error {
-		fmt.Println("a", e)
+		// do stuff
 		return nil
 	})
 	b.AddHandler(bot.Trigger{
@@ -22,13 +25,13 @@ func main() {
 			return true
 		},
 		Then: func(b *bot.Bot, e *bot.Event) error {
-			fmt.Println("b", e)
+			// do stuff
 			return nil
 		},
 	})
 
 	log.Println("starting bot...")
-	if err := b.Run(); err != nil {
+	if err := b.Start(); err != nil {
 		log.Fatal(err)
 	}
 }

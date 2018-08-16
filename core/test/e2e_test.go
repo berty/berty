@@ -387,6 +387,7 @@ func TestWithEnqueuer(t *testing.T) {
 			})
 			Convey("Alice sends a ContactRequest event to Bob", FailureHalts, func() {
 				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				jsonPrintIndent(event)
 				So(event.Author(), ShouldEqual, alice.node.UserID())
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
