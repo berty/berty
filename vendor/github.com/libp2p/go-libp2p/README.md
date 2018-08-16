@@ -1,6 +1,6 @@
 
 <h1 align="center">
-  <a href="libp2p.io"><img width="250" src="https://github.com/libp2p/libp2p/blob/master/logo/alternates/libp2p-logo-alt-2.png?raw=true" alt="libp2p hex logo" /></a>
+  <a href="libp2p.io"><img width="250" src="https://github.com/libp2p/libp2p/blob/master/logo/black-bg-2.png?raw=true" alt="libp2p hex logo" /></a>
 </h1>
 
 <h3 align="center">The Go implementation of the libp2p Networking Stack.</h3>
@@ -65,7 +65,7 @@ There is currently only one bundle of `go-libp2p`, this package. This bundle is 
 ### Install
 
 ```bash
-> go get -d github.com/libp2p/go-libp2p/...
+> go get -u -d github.com/libp2p/go-libp2p/...
 > cd $GOPATH/src/github.com/libp2p/go-libp2p
 > make
 > make deps
@@ -77,7 +77,7 @@ There is currently only one bundle of `go-libp2p`, this package. This bundle is 
 
 ### Examples
 
-Examples can be found on the [examples folder](examples).
+Examples can be found in the [examples repo](https://github.com/libp2p/go-libp2p-examples).
 
 ## Development
 
