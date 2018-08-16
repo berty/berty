@@ -7,13 +7,14 @@ import (
 	"testing"
 	"time"
 
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	. "github.com/smartystreets/goconvey/convey"
+
 	"github.com/berty/berty/core/api/node"
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network/mock"
-	p2pNetwork "github.com/berty/berty/core/network/p2p"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
-	. "github.com/smartystreets/goconvey/convey"
+	p2pnet "github.com/berty/berty/core/network/p2p"
 )
 
 func TestWithSimpleNetwork(t *testing.T) {
@@ -656,9 +657,9 @@ func TestWithEnqueuer(t *testing.T) {
 	})
 }
 
-func setupP2PNetwork(bootstrap ...string) (*p2pNetwork.Driver, error) {
+func setupP2PNetwork(bootstrap ...string) (*p2pnet.Driver, error) {
 	var (
-		driver *p2pNetwork.Driver
+		driver *p2pnet.Driver
 		err    error
 	)
 
@@ -668,16 +669,16 @@ func setupP2PNetwork(bootstrap ...string) (*p2pNetwork.Driver, error) {
 		Timeout: time.Duration(10 * time.Second),
 	}
 
-	driver, err = p2pNetwork.NewDriver(
+	driver, err = p2pnet.NewDriver(
 		context.Background(),
-		p2pNetwork.WithRandomIdentity(),
-		p2pNetwork.WithDefaultMuxers(),
-		p2pNetwork.WithDefaultPeerstore(),
-		p2pNetwork.WithDefaultSecurity(),
-		p2pNetwork.WithDefaultTransports(),
-		p2pNetwork.WithDHTBoostrapConfig(bootstrapConfig),
-		p2pNetwork.WithListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
-		p2pNetwork.WithBootstrapSync(bootstrap...),
+		p2pnet.WithRandomIdentity(),
+		p2pnet.WithDefaultMuxers(),
+		p2pnet.WithDefaultPeerstore(),
+		p2pnet.WithDefaultSecurity(),
+		p2pnet.WithDefaultTransports(),
+		p2pnet.WithDHTBoostrapConfig(bootstrapConfig),
+		p2pnet.WithListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
+		p2pnet.WithBootstrapSync(bootstrap...),
 	)
 	if err != nil {
 		return nil, err
@@ -685,7 +686,7 @@ func setupP2PNetwork(bootstrap ...string) (*p2pNetwork.Driver, error) {
 	return driver, nil
 }
 
-func getBoostrap(d *p2pNetwork.Driver) []string {
+func getBoostrap(d *p2pnet.Driver) []string {
 	addrs := d.Addrs()
 	bootstrap := make([]string, len(addrs))
 
@@ -698,7 +699,7 @@ func getBoostrap(d *p2pNetwork.Driver) []string {
 
 func TestNodesWithP2PNetwork(t *testing.T) {
 	var (
-		aliceNetwork, bobNetwork, eveNetwork *p2pNetwork.Driver
+		aliceNetwork, bobNetwork, eveNetwork *p2pnet.Driver
 		alice, bob, eve                      *AppMock
 		err                                  error
 		internalCtx                          = context.Background()
