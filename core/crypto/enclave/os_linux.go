@@ -10,12 +10,12 @@ func newKeyPairEnclave(options KeyOpts) (keyID string, err error) {
 }
 
 // Decrypt ciphertext using specific platform API
-func decryptEnclave(keyID string, cipherText string, label []byte) (plainText string, err error) {
-	return "", errors.New("Error: enclave decryption not implemented yet for Linux")
+func decryptEnclave(keyID string, cipherText []byte) (plainText []byte, err error) {
+	return []byte{}, errors.New("Error: enclave decryption not implemented yet for Linux")
 }
 
 // Sign text using platform specific API
-func signEnclave(keyID string, text string) (signature []byte, err error) {
+func signEnclave(keyID string, plainText []byte) (signature []byte, err error) {
 	return []byte{}, errors.New("Error: enclave signing not implemented yet for Linux")
 }
 

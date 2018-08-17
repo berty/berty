@@ -8,32 +8,33 @@ import (
 )
 
 // Verify signature using the function corresponding to the key type (ECC or RSA)
-func Verify(keyID string, text string, signature []byte) (verified bool, err error) {
+func Verify(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
 		return false, errors.New("Error: keyID doesn't exist")
-	} else if text == "" {
-		return false, errors.New("Error: text is empty")
+	} else if len(plainText) == 0 {
+		return false, errors.New("Error: plainText is empty")
 	} else if len(signature) == 0 {
 		return false, errors.New("Error: signature is empty")
 	}
 
 	// Call the right verification function
 	if keyPairs[keyID].keyType == RSA2048 {
-		return verifyRSA(keyID, text, signature)
+		return verifyRSA(keyID, plainText, signature)
 	}
-	return verifyECC(keyID, text, signature)
+
+	return verifyECC(keyID, plainText, signature)
 }
 
 // Verify signature using RSA
-func verifyRSA(keyID string, text string, signature []byte) (verified bool, err error) {
-	// Verify signature using signature and text parameters
+func verifyRSA(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
+	// Verify signature using signature and plainText parameters
 	pubKey, rsaType := keyPairs[keyID].pubKey.(*rsa.PublicKey)
 	if rsaType {
 		pssh := crypto.SHA512.New()
-		_, err = pssh.Write([]byte(text))
+		_, err = pssh.Write(plainText)
 		if err != nil {
-			log.Println("Error during text hashing:", err)
+			log.Println("Error during plainText hashing:", err)
 			return
 		}
 		hashed := pssh.Sum(nil)
@@ -59,6 +60,6 @@ func verifyRSA(keyID string, text string, signature []byte) (verified bool, err 
 }
 
 // Verify signature using ECC
-func verifyECC(keyID string, text string, signature []byte) (verified bool, err error) {
+func verifyECC(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
 	return false, errors.New("Error: ECC-256 verification not implemented yet")
 }
