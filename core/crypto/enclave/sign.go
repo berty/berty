@@ -8,34 +8,35 @@ import (
 	"log"
 )
 
-// Sign text using the function corresponding to the key type and the key store
-func Sign(keyID string, text string) (signature []byte, err error) {
+// Sign plainText using the function corresponding to the key type and the key store
+func Sign(keyID string, plainText []byte) (signature []byte, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
 		return []byte{}, errors.New("Error: keyID doesn't exist")
-	} else if text == "" {
-		return []byte{}, errors.New("Error: text is empty")
+	} else if len(plainText) == 0 {
+		return []byte{}, errors.New("Error: plainText is empty")
 	}
 
 	// Call the right signing function
 	if keyPairs[keyID].keyStore == Software {
 		if keyPairs[keyID].keyType == RSA2048 {
-			return signRSA(keyID, text)
+			return signRSA(keyID, plainText)
 		}
-		return signECC(keyID, text)
+		return signECC(keyID, plainText)
 	}
-	return signEnclave(keyID, text)
+
+	return signEnclave(keyID, plainText)
 }
 
-// Sign text using RSA
-func signRSA(keyID string, text string) (signature []byte, err error) {
-	// Generate signature for text parameter
+// Sign plainText using RSA
+func signRSA(keyID string, plainText []byte) (signature []byte, err error) {
+	// Generate signature for plainText parameter
 	privKey, rsaType := keyPairs[keyID].privKey.(*rsa.PrivateKey)
 	if rsaType {
 		pssh := crypto.SHA512.New()
-		_, err = pssh.Write([]byte(text))
+		_, err = pssh.Write(plainText)
 		if err != nil {
-			log.Println("Error during text hashing:", err)
+			log.Println("Error during plainText hashing:", err)
 			return
 		}
 		hashed := pssh.Sum(nil)
@@ -58,7 +59,7 @@ func signRSA(keyID string, text string) (signature []byte, err error) {
 	return
 }
 
-// Sign text using ECC
-func signECC(keyID string, text string) (signature []byte, err error) {
+// Sign plainText using ECC
+func signECC(keyID string, plainText []byte) (signature []byte, err error) {
 	return []byte{}, errors.New("Error: ECC-256 signing not implemented yet")
 }

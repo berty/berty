@@ -9,40 +9,38 @@ import (
 )
 
 // Encrypt plain text using the function corresponding to the key type (ECC or RSA)
-func Encrypt(keyID string, plainText string, label []byte) (cipherText string, err error) {
+func Encrypt(keyID string, plainText []byte) (cipherText []byte, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return "", errors.New("Error: keyID doesn't exist")
-	} else if plainText == "" {
-		return "", errors.New("Error: plainText is empty")
+		return []byte{}, errors.New("Error: keyID doesn't exist")
+	} else if len(plainText) == 0 {
+		return []byte{}, errors.New("Error: plainText is empty")
 	}
 
 	// Call the right encryption function
 	if keyPairs[keyID].keyType == RSA2048 {
-		return encryptRSA(keyID, plainText, label)
+		return encryptRSA(keyID, plainText)
 	}
-	return encryptECC(keyID, plainText, label)
+	return encryptECC(keyID, plainText)
 }
 
 // Encrypt plain text using RSA
-func encryptRSA(keyID string, plainText string, label []byte) (cipherText string, err error) {
+func encryptRSA(keyID string, plainText []byte) (cipherText []byte, err error) {
 	// Encrypt plain text using public key
-	var bytes []byte
 	pubKey, rsaType := keyPairs[keyID].pubKey.(*rsa.PublicKey)
 	if rsaType {
-		bytes, err = rsa.EncryptOAEP(
+		cipherText, err = rsa.EncryptOAEP(
 			sha512.New(),
 			rand.Reader,
 			pubKey,
-			[]byte(plainText),
-			label,
+			plainText,
+			[]byte{},
 		)
 		if err != nil {
 			log.Println("Error during plain text encryption:", err)
 			return
 		}
 
-		cipherText = string(bytes)
 	} else {
 		err = errors.New("Error: can't cast pubKey to *rsa.PublicKey")
 	}
@@ -52,6 +50,6 @@ func encryptRSA(keyID string, plainText string, label []byte) (cipherText string
 }
 
 // Encrypt plain text using ECC
-func encryptECC(keyID string, plainText string, label []byte) (cipherText string, err error) {
-	return "", errors.New("Error: ECC-256 encryption not implemented yet")
+func encryptECC(keyID string, plainText []byte) (cipherText []byte, err error) {
+	return []byte{}, errors.New("Error: ECC-256 encryption not implemented yet")
 }

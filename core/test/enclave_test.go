@@ -27,7 +27,7 @@ func TestEnclave(t *testing.T) {
 	*/
 
 	separator := "-------------------------------------------------------------"
-	plainText := "plainText"
+	plainText := []byte("plainText")
 
 	key1, _ := enclave.NewKeyPair(enclave.KeyOpts{
 		ID:    "42",
@@ -115,6 +115,7 @@ func TestEnclave(t *testing.T) {
 				})
 				_ = key3
 
+				log.Println("Processing1")
 				So(err, ShouldBeNil)
 				fmt.Println(separator)
 			})
@@ -212,64 +213,50 @@ func TestEnclave(t *testing.T) {
 
 	Convey("Encrypt/Decrypt tests", t, func() {
 
-		cipherText1Label1, _ := enclave.Encrypt(key1, plainText, []byte("label1"))
-		cipherText1Label2, _ := enclave.Encrypt(key1, plainText, []byte("label2"))
-		cipherText2Label1, _ := enclave.Encrypt(key2, plainText, []byte("label1"))
-		cipherText2Label2, _ := enclave.Encrypt(key2, plainText, []byte("label2"))
+		cipherText1, _ := enclave.Encrypt(key1, plainText)
+		cipherText2, _ := enclave.Encrypt(key2, plainText)
 
-		decryptedText1Label1, _ := enclave.Decrypt(key1, cipherText1Label1, []byte("label1"))
-		decryptedText1Label2, _ := enclave.Decrypt(key1, cipherText1Label2, []byte("label2"))
-		decryptedText2Label1, _ := enclave.Decrypt(key2, cipherText2Label1, []byte("label1"))
-		decryptedText2Label2, _ := enclave.Decrypt(key2, cipherText2Label2, []byte("label2"))
+		decryptedText1, _ := enclave.Decrypt(key1, cipherText1)
+		decryptedText2, _ := enclave.Decrypt(key2, cipherText2)
 
 		Convey("Plain text and ciphertext should be different", func() {
-			So(plainText, ShouldNotEqual, cipherText1Label1)
-			So(plainText, ShouldNotEqual, cipherText1Label2)
-			So(plainText, ShouldNotEqual, cipherText2Label1)
-			So(plainText, ShouldNotEqual, cipherText2Label2)
+			So(string(plainText), ShouldNotEqual, string(cipherText1))
+			So(string(plainText), ShouldNotEqual, string(cipherText2))
 		})
 
 		Convey("Each ciphertext should be different", func() {
-			So(cipherText1Label1, ShouldNotEqual, cipherText1Label2)
-			So(cipherText2Label1, ShouldNotEqual, cipherText2Label2)
-			So(cipherText1Label1, ShouldNotEqual, cipherText2Label1)
-			So(cipherText1Label2, ShouldNotEqual, cipherText2Label2)
+			So(string(cipherText1), ShouldNotEqual, string(cipherText2))
 		})
 
 		Convey("Decrypted text and plain text encrypted/decrypted with the same label should match", func() {
-			So(decryptedText1Label1, ShouldEqual, plainText)
-			So(decryptedText1Label2, ShouldEqual, plainText)
-			So(decryptedText2Label1, ShouldEqual, plainText)
-			So(decryptedText2Label2, ShouldEqual, plainText)
+			So(string(decryptedText1), ShouldEqual, string(plainText))
+			So(string(decryptedText2), ShouldEqual, string(plainText))
 		})
 
 		Convey("Encrypt/Decrypt function should fail with a wrong keyID", func() {
-			_, err = enclave.Encrypt("unknown-id", plainText, []byte{})
+			_, err = enclave.Encrypt("unknown-id", plainText)
 			log.Println(err.Error())
 			So(err, ShouldNotBeNil)
 
-			_, err = enclave.Decrypt("unknown-id", plainText, []byte{})
+			_, err = enclave.Decrypt("unknown-id", plainText)
 			log.Println(err.Error())
 			So(err, ShouldNotBeNil)
 			fmt.Println(separator)
 		})
 
-		Convey("Decrypted text and plain text encrypted/decrypted with the different label should mismatch", func() {
-			decryptedText1Label1Mismatch, err1Label1 := enclave.Decrypt(key1, cipherText1Label1, []byte("label2"))
-			decryptedText1Label2Mismatch, err1Label2 := enclave.Decrypt(key1, cipherText1Label2, []byte("label1"))
-			decryptedText2Label1Mismatch, err2Label1 := enclave.Decrypt(key2, cipherText2Label1, []byte("label2"))
-			decryptedText2Label2Mismatch, err2Label2 := enclave.Decrypt(key2, cipherText2Label2, []byte("label1"))
+		if runtime.GOOS == "darwin" {
+			Convey("Decrypt with enclave should works as intended on Darwin", func() {
+				key3, _ = enclave.NewKeyPair(enclave.KeyOpts{
+					Type:  enclave.RSA2048,
+					Store: enclave.Enclave,
+				})
+				cipherText3, _ := enclave.Encrypt(key3, plainText)
+				decryptedText3, _ := enclave.Decrypt(key3, cipherText3)
 
-			So(decryptedText1Label1Mismatch, ShouldNotEqual, plainText)
-			So(decryptedText1Label2Mismatch, ShouldNotEqual, plainText)
-			So(decryptedText2Label1Mismatch, ShouldNotEqual, plainText)
-			So(decryptedText2Label2Mismatch, ShouldNotEqual, plainText)
-			So(err1Label1, ShouldNotBeNil)
-			So(err1Label2, ShouldNotBeNil)
-			So(err2Label1, ShouldNotBeNil)
-			So(err2Label2, ShouldNotBeNil)
-			fmt.Println(separator)
-		})
+				So(string(cipherText3), ShouldNotEqual, string(decryptedText3))
+				So(string(decryptedText3), ShouldEqual, string(plainText))
+			})
+		}
 	})
 
 	Convey("Sign/Verify tests", t, func() {
@@ -294,5 +281,11 @@ func TestEnclave(t *testing.T) {
 	Convey("Key pair persistency tests", t, func() {
 		Convey("TODO: Check if key pairs are restored correctly", FailureHalts, nil)
 		Convey("TODO: Check if key pairs are saved correctly", FailureHalts, nil)
+	})
+
+	Convey("Benchmark comparison between algorithm and software/hardware", t, func() {
+		// Check https://golang.org/pkg/testing/#hdr-Benchmarks
+		Convey("TODO: Check performance difference between ECC and RSA", FailureHalts, nil)
+		Convey("TODO: Check performance difference software and hardware", FailureHalts, nil)
 	})
 }
