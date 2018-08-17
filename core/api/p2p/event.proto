@@ -48,7 +48,7 @@ message Event {
   uint32 receiver_api_version = 11 [(gogoproto.customname) = "ReceiverAPIVersion"];
 
   // Receiver is the ID of the receiver.
-  string receiver = 12 [(gogoproto.customname) = "ReceiverID"];
+  string receiver_id = 12 [(gogoproto.customname) = "ReceiverID"];
 
   // Kind is an enum defining the event type.
   Kind kind = 13;

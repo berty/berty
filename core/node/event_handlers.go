@@ -60,7 +60,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 		return err
 	}
 
-	if err := n.networkDriver.SubscribeTo(ctx, input.SenderID); err != nil {
+	if err := n.networkDriver.Join(ctx, input.SenderID); err != nil {
 		return err
 	}
 	return nil
@@ -115,7 +115,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 		return errors.Wrap(err, "failed to save conversation")
 	}
 
-	if err := n.networkDriver.SubscribeTo(ctx, attrs.Conversation.ID); err != nil {
+	if err := n.networkDriver.Join(ctx, attrs.Conversation.ID); err != nil {
 		return err
 	}
 	return nil

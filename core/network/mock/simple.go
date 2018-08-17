@@ -15,28 +15,24 @@ import (
 //
 
 type SimpleManager struct {
-	peers []peer
-}
-
-type peer struct {
-	id     string
-	driver *SimpleDriver
+	peers []*SimpleDriver
 }
 
 func NewSimple() *SimpleManager {
 	return &SimpleManager{
-		peers: make([]peer, 0),
+		peers: make([]*SimpleDriver, 0),
 	}
 }
 
 func (m *SimpleManager) Driver() *SimpleDriver {
 	return &SimpleDriver{
-		manager: m,
+		manager:  m,
+		channels: []string{},
 	}
 }
 
-func (m *SimpleManager) AddPeer(id string, driver *SimpleDriver) {
-	m.peers = append(m.peers, peer{id: id, driver: driver})
+func (m *SimpleManager) AddPeer(driver *SimpleDriver) {
+	m.peers = append(m.peers, driver)
 }
 
 //
@@ -45,28 +41,37 @@ func (m *SimpleManager) AddPeer(id string, driver *SimpleDriver) {
 
 type SimpleDriver struct {
 	network.Driver
-	manager *SimpleManager
-	handler func(context.Context, *p2p.Event) (*p2p.Void, error)
+	manager  *SimpleManager
+	channels []string
+	handler  func(context.Context, *p2p.Envelope) (*p2p.Void, error)
 }
 
-func (d *SimpleDriver) SendEvent(ctx context.Context, event *p2p.Event) error {
+func (d *SimpleDriver) Emit(ctx context.Context, envelope *p2p.Envelope) error {
+	found := false
 	for _, peer := range d.manager.peers {
-		if peer.id == event.ReceiverID {
-			zap.L().Debug("Simple.SendEvent",
-				zap.String("sender", event.SenderID),
-				zap.String("receiver", event.ReceiverID),
-			)
-			_, err := peer.driver.handler(p2p.SetSender(ctx, event.SenderID), event)
-			return err
+		for _, channel := range peer.channels {
+			if channel == envelope.ChannelID {
+				found = true
+				zap.L().Debug("Simple.Emit",
+					zap.String("channel", envelope.ChannelID),
+				)
+				if _, err := peer.handler(ctx, envelope); err != nil {
+					zap.L().Error("peer.driver.handler failed", zap.Error(err))
+				}
+			}
 		}
 	}
-	return fmt.Errorf("peer not found")
+	if !found {
+		return fmt.Errorf("peer not found")
+	}
+	return nil
 }
 
-func (d *SimpleDriver) SetReceiveEventHandler(handler func(context.Context, *p2p.Event) (*p2p.Void, error)) {
+func (d *SimpleDriver) OnEnvelopeHandler(handler func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
 	d.handler = handler
 }
 
-func (d *SimpleDriver) SubscribeTo(_ context.Context, _ string) error {
+func (d *SimpleDriver) Join(_ context.Context, channel string) error {
+	d.channels = append(d.channels, channel)
 	return nil
 }

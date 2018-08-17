@@ -134,7 +134,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(len(contacts[1].Devices), ShouldEqual, 0)
 			})
 			Convey("Alice sends a ContactRequest event to Bob", FailureHalts, func() {
-				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.Author(), ShouldEqual, alice.node.UserID())
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
@@ -149,15 +152,16 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.Devices, ShouldBeNil)
 				So(attrs.IntroText, ShouldEqual, "hello, I want to chat!")
 				// unary call
-				res, err := bob.node.Handle(alice.ctx, event.Copy())
+				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 				// FIXME: we should call an internal function in node that calls HandleEvent
 				//        and automatically mark the event as acked when unary responds
 				So(err, ShouldBeNil)
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
 			})
 			Convey("Bob emits the ContactRequest event to its client", FailureHalts, func() {
 				event := <-bob.node.ClientEventsChan()
+
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequest)
@@ -175,7 +179,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 0, 0, 0})
 			})
 			Convey("Bob replies an Ack event to Alice's ContactRequest", FailureHalts, func() {
-				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.Author(), ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -185,10 +192,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
 				// FIXME: check that event is not acked in db
-				res, err := alice.node.Handle(bob.ctx, event.Copy())
+				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 				// FIXME: check that event is acked in db
 			})
 			Convey("Bob has en entry in sql for Alice", FailureHalts, func() {
@@ -217,32 +224,39 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 2, 0, 0, 0})
 			})
 			Convey("Bob sends a ContactRequestAccepted event to Alice", FailureHalts, func() {
-				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
-				_, err := event.GetContactRequestAcceptedAttrs()
+				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
 
-				res, err := alice.node.Handle(bob.ctx, event.Copy())
+				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 1, 1, 0, 0, 0})
 			})
 			Convey("Alice emits the ContactRequestAccepted event to its clients", FailureHalts, func() {
 				event := <-alice.node.ClientEventsChan()
+
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
-				_, err := event.GetContactRequestAcceptedAttrs()
+				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 0, 0, 0})
 			})
 			Convey("Bob sends a ContactShareMe event to Alice", FailureHalts, func() {
-				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
@@ -251,13 +265,14 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.DisplayName, ShouldEqual, "Bob")
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 
-				res, err := alice.node.Handle(bob.ctx, event.Copy())
+				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 0, 0, 0, 0})
 			})
 			Convey("Alice emits the ContactShareMe event to its client", FailureHalts, func() {
 				event := <-alice.node.ClientEventsChan()
+
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
@@ -269,7 +284,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 0, 0, 0, 0, 0})
 			})
 			Convey("Alice sends a ContactShareMe event to Bob", FailureHalts, func() {
-				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
@@ -280,13 +298,16 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 
-				res, err := bob.node.Handle(alice.ctx, event.Copy())
+				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 				So(err, ShouldBeNil)
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 1, 0, 0})
 			})
 			Convey("Alice replies an Ack event to Bob's ContactRequestAccepted", FailureHalts, func() {
-				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
@@ -295,13 +316,16 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
 
-				res, err := bob.node.Handle(alice.ctx, event.Copy())
+				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 				So(err, ShouldBeNil)
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 1, 0, 0})
 			})
 			Convey("Alice replies an Ack event to Bob's ContactShareMe", FailureHalts, func() {
-				event := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
@@ -310,13 +334,16 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
 
-				res, err := bob.node.Handle(alice.ctx, event.Copy())
+				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 				So(err, ShouldBeNil)
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
 			})
 			Convey("Bob replies an Ack event to Alice's ContactShareMe", FailureHalts, func() {
-				event := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+				event, err := alice.node.OpenEnvelope(envelope)
+				So(err, ShouldBeNil)
+
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
@@ -324,13 +351,14 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
 
-				res, err := alice.node.Handle(bob.ctx, event.Copy())
+				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
-				So(res, ShouldResemble, &p2p.Void{})
+				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 1, 0, 0})
 			})
 			Convey("Bob emits the ContactShareMe event to its client", FailureHalts, func() {
 				event := <-bob.node.ClientEventsChan()
+
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
@@ -477,9 +505,9 @@ func TestWithSimpleNetwork(t *testing.T) {
 			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, eveNetwork)
 			So(err, ShouldBeNil)
 
-			network.AddPeer(alice.node.UserID(), aliceNetwork)
-			network.AddPeer(bob.node.UserID(), bobNetwork)
-			network.AddPeer(eve.node.UserID(), eveNetwork)
+			network.AddPeer(aliceNetwork)
+			network.AddPeer(bobNetwork)
+			network.AddPeer(eveNetwork)
 		})
 		scenario(t, alice, bob, eve)
 	})
