@@ -13,19 +13,19 @@ import (
 )
 
 func init() {
-	registerUnary("berty.p2p.Handle", P2pHandle)
+	registerUnary("berty.p2p.HandleEnvelope", P2pHandleEnvelope)
 }
 
-func P2pHandle(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func P2pHandleEnvelope(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	zap.L().Debug("client call",
 		zap.String("service", "Service"),
-		zap.String("method", "Handle"),
+		zap.String("method", "HandleEnvelope"),
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput p2p.Event
+	var typedInput p2p.Envelope
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.P2p().Handle(ctx, &typedInput)
+	return client.P2p().HandleEnvelope(ctx, &typedInput)
 }

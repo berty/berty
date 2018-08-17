@@ -164,6 +164,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 	})
 	Convey("Bob sends a message on the conversation", FailureHalts, func() {
 		Convey("Bob does not have any message in conversation history", FailureHalts, func() {
+			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
 				Filter: &p2p.Event{
@@ -175,6 +176,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			time.Sleep(sleepBetweenSteps)
 		})
 		Convey("Alice does not have any message in conversation history", FailureHalts, func() {
+			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
 				Filter: &p2p.Event{
@@ -186,6 +188,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			time.Sleep(sleepBetweenSteps)
 		})
 		Convey("Bob creates a conversation with Alice", FailureHalts, func() {
+			So(cache["conversation_id"], ShouldNotBeNil)
 			res, err := bob.client.Node().ConversationAddMessage(internalCtx, &node.ConversationAddMessageInput{
 				Conversation: &entity.Conversation{
 					ID: cache["conversation_id"].(string),
@@ -199,6 +202,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			time.Sleep(sleepBetweenSteps)
 		})
 		Convey("Bob has one message in conversation history", FailureHalts, func() {
+			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := bob.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
 				Filter: &p2p.Event{
@@ -216,6 +220,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			time.Sleep(sleepBetweenSteps)
 		})
 		Convey("Alice has one message in conversation history", FailureHalts, func() {
+			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := alice.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
 				Filter: &p2p.Event{
