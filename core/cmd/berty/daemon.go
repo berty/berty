@@ -13,6 +13,7 @@ import (
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -44,16 +45,7 @@ type daemonOptions struct {
 	logP2PSubsytem []string
 }
 
-func newDaemonCommand() *cobra.Command {
-	opts := &daemonOptions{}
-	cmd := &cobra.Command{
-		Use: "daemon",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return daemon(opts)
-		},
-	}
-
-	flags := cmd.Flags()
+func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
@@ -65,7 +57,17 @@ func newDaemonCommand() *cobra.Command {
 	flags.StringSliceVarP(&opts.bindP2P, "bind-p2p", "", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	flags.StringVarP(&opts.logP2PLevel, "log-p2p-level", "", "", "Enable log on libp2p (can be 'critical', 'error', 'warning', 'notice', 'info', 'debug')")
 	flags.StringSliceVarP(&opts.logP2PSubsytem, "log-p2p-subsystem", "", []string{"*"}, "log libp2p specific subsystem")
+}
 
+func newDaemonCommand() *cobra.Command {
+	opts := &daemonOptions{}
+	cmd := &cobra.Command{
+		Use: "daemon",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return daemon(opts)
+		},
+	}
+	daemonSetupFlags(cmd.Flags(), opts)
 	return cmd
 }
 
