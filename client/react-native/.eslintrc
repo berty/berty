@@ -30,5 +30,10 @@
       "class-methods-use-this": "off",
       "typescript/no-use-before-define": "off",
       "require-jsdoc": "off",
+    },
+    "settings": {
+      "react": {
+        "version": "16.4.1"
+      }
     }
 }
