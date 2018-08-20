@@ -13,9 +13,9 @@ import (
 
 var theFuture = time.Date(2099, time.December, 31, 0, 0, 0, 0, time.UTC)
 
-func MakeCertificate(cryptoImpl keypair.Interface, publicKey []byte, peerID string, parentCertificate *keypair.Certificate, parentEventHash []byte) (*keypair.Certificate, error) {
+func MakeCertificate(cryptoImpl keypair.Interface, publicKey []byte, identityID string, parentCertificate *keypair.Certificate, parentEventHash []byte) (*keypair.Certificate, error) {
 	extension := EventExtension{}
-	extension.Version = 1
+	extension.Version = EventExtensionVersions_VERSION_1
 	extension.ParentEventHash = parentEventHash
 
 	extensionBytes, err := extension.Marshal()
@@ -26,18 +26,18 @@ func MakeCertificate(cryptoImpl keypair.Interface, publicKey []byte, peerID stri
 
 	certificate := &keypair.CertificateContent{}
 
-	certificate.Version = 1
+	certificate.Version = keypair.CertRevocationVersions_VERSION_1
 	certificate.NotBefore = time.Now() // TODO: we might face devices with an invalid date
 	certificate.NotAfter = theFuture   // TODO: we might want to have expiring devices (short lived internet café sessions, bots etc.)
-	certificate.Subject = peerID
+	certificate.Subject = identityID
 	certificate.PublicKey = publicKey
 	certificate.Extension = extensionBytes
 
 	if parentCertificate != nil {
 		certificate.Issuer = parentCertificate.Content.Subject
 	} else {
-		// If self signed use self peerId
-		certificate.Issuer = peerID
+		// If self signed use self identityID
+		certificate.Issuer = identityID
 	}
 
 	raw, err := certificate.GetDataToSign()
@@ -47,7 +47,7 @@ func MakeCertificate(cryptoImpl keypair.Interface, publicKey []byte, peerID stri
 	}
 
 	signature, err := cryptoImpl.Sign(raw)
-	sigAlgo := cryptoImpl.SignatureAlgorithm()
+	sigAlgorithm := cryptoImpl.SignatureAlgorithm()
 
 	if err != nil {
 		return nil, err
@@ -57,19 +57,19 @@ func MakeCertificate(cryptoImpl keypair.Interface, publicKey []byte, peerID stri
 		Content: certificate,
 		Signature: &keypair.Signature{
 			Signature:          signature,
-			SignatureAlgorithm: sigAlgo,
+			SignatureAlgorithm: sigAlgorithm,
 		},
 	}, nil
 }
 
-func (m *SigChain) Init(cryptoImpl keypair.Interface, peerID string) error {
+func (m *SigChain) Init(cryptoImpl keypair.Interface, identityID string) error {
 	publicKey, err := cryptoImpl.GetPubKey()
 
 	if err != nil {
 		return err
 	}
 
-	signedCertificate, err := MakeCertificate(cryptoImpl, publicKey, peerID, nil, []byte{})
+	signedCertificate, err := MakeCertificate(cryptoImpl, publicKey, identityID, nil, []byte{})
 
 	if err != nil {
 		return err
@@ -82,12 +82,12 @@ func (m *SigChain) Init(cryptoImpl keypair.Interface, peerID string) error {
 	}
 
 	event := SigEvent{
-		EventType: SigEvent_InitChain,
+		EventType: SigEvent_INIT_CHAIN,
 		Payload:   payload,
 		PublicKey: signedCertificate.Content.PublicKey,
 		CreatedAt: time.Now(),
-		Issuer:    peerID,
-		Subject:   peerID,
+		Issuer:    identityID,
+		Subject:   identityID,
 	}
 
 	event.Hash, err = event.ComputeHashForEvent()
@@ -97,16 +97,16 @@ func (m *SigChain) Init(cryptoImpl keypair.Interface, peerID string) error {
 	}
 
 	m.PublicKey = publicKey
-	m.PeerId = peerID
+	m.UserId = identityID
 	m.Events = []*SigEvent{&event}
 
 	return nil
 }
 
-func (m *SigChain) GetCertificateForPeer(peerID string) (*keypair.Certificate, error) {
+func (m *SigChain) GetCertificateForIdentity(identityID string) (*keypair.Certificate, error) {
 	for i := range m.Events {
 		event := m.Events[i]
-		if (event.EventType == SigEvent_AddDevice || event.EventType == SigEvent_InitChain) && event.Subject == peerID {
+		if (event.EventType == SigEvent_ADD_DEVICE || event.EventType == SigEvent_INIT_CHAIN) && event.Subject == identityID {
 			certificate := &keypair.Certificate{}
 			err := certificate.Unmarshal(event.Payload)
 
@@ -118,11 +118,11 @@ func (m *SigChain) GetCertificateForPeer(peerID string) (*keypair.Certificate, e
 		}
 	}
 
-	return nil, errors.New("certificate for peer not found")
+	return nil, errors.New("certificate for identity not found")
 }
 
-func (m *SigChain) AddDevice(cryptoImpl keypair.Interface, selfPeerID, peerID string, publicKey []byte) error {
-	currentDevice, err := m.GetCertificateForPeer(selfPeerID)
+func (m *SigChain) AddDevice(cryptoImpl keypair.Interface, selfIdentityID, identityID string, publicKey []byte) error {
+	currentDevice, err := m.GetCertificateForIdentity(selfIdentityID)
 
 	if err != nil {
 		return err
@@ -130,7 +130,7 @@ func (m *SigChain) AddDevice(cryptoImpl keypair.Interface, selfPeerID, peerID st
 
 	lastEventHash := m.Events[len(m.Events)-1].Hash
 
-	signedCertificate, err := MakeCertificate(cryptoImpl, publicKey, peerID, currentDevice, lastEventHash)
+	signedCertificate, err := MakeCertificate(cryptoImpl, publicKey, identityID, currentDevice, lastEventHash)
 
 	if err != nil {
 		return err
@@ -143,13 +143,13 @@ func (m *SigChain) AddDevice(cryptoImpl keypair.Interface, selfPeerID, peerID st
 	}
 
 	event := SigEvent{
-		EventType:  SigEvent_AddDevice,
+		EventType:  SigEvent_ADD_DEVICE,
 		ParentHash: m.Events[len(m.Events)-1].Hash,
 		Payload:    payload,
 		PublicKey:  publicKey,
 		CreatedAt:  time.Now(),
 		Issuer:     currentDevice.Content.Issuer,
-		Subject:    peerID,
+		Subject:    identityID,
 	}
 
 	event.Hash, err = event.ComputeHashForEvent()
@@ -163,14 +163,14 @@ func (m *SigChain) AddDevice(cryptoImpl keypair.Interface, selfPeerID, peerID st
 	return nil
 }
 
-func (m *SigChain) RemoveDevice(cryptoImpl keypair.Interface, selfPeerID, peerID string) error {
-	currentCertificate, err := m.GetCertificateForPeer(selfPeerID)
+func (m *SigChain) RemoveDevice(cryptoImpl keypair.Interface, selfIdentityID, identityID string) error {
+	currentCertificate, err := m.GetCertificateForIdentity(selfIdentityID)
 
 	if err != nil {
 		return err
 	}
 
-	certificate, err := m.GetCertificateForPeer(peerID)
+	certificate, err := m.GetCertificateForIdentity(identityID)
 
 	if err != nil {
 		return err
@@ -191,7 +191,7 @@ func (m *SigChain) RemoveDevice(cryptoImpl keypair.Interface, selfPeerID, peerID
 	}
 
 	event := SigEvent{
-		EventType:  SigEvent_RemoveDevice,
+		EventType:  SigEvent_REMOVE_DEVICE,
 		ParentHash: m.Events[len(m.Events)-1].Hash,
 		Payload:    payload,
 		PublicKey:  certificate.Content.PublicKey,
@@ -213,7 +213,7 @@ func (m *SigChain) RemoveDevice(cryptoImpl keypair.Interface, selfPeerID, peerID
 
 func MakeRevocation(cryptoImpl keypair.Interface, currentCertificate *keypair.Certificate, certificate *keypair.Certificate, parentEventHash []byte) (*keypair.Revocation, error) {
 	extension := EventExtension{}
-	extension.Version = 1
+	extension.Version = EventExtensionVersions_VERSION_1
 	extension.ParentEventHash = parentEventHash
 
 	extensionBytes, err := extension.Marshal()
@@ -223,7 +223,7 @@ func MakeRevocation(cryptoImpl keypair.Interface, currentCertificate *keypair.Ce
 	}
 
 	revocation := keypair.RevocationContent{}
-	revocation.Version = 1
+	revocation.Version = keypair.CertRevocationVersions_VERSION_1
 	revocation.Issuer = currentCertificate.Content.Subject
 	revocation.Subject = certificate.Content.Subject
 	revocation.IssuedOn = time.Now()
@@ -264,7 +264,7 @@ func (m *SigChain) CheckSigChain() (map[string]*keypair.Certificate, error) {
 		}
 
 		switch event.EventType {
-		case SigEvent_AddDevice, SigEvent_InitChain:
+		case SigEvent_ADD_DEVICE, SigEvent_INIT_CHAIN:
 			var issuerCert *keypair.Certificate
 			certificate := &keypair.Certificate{}
 			certificateExtension := &EventExtension{}
@@ -281,7 +281,7 @@ func (m *SigChain) CheckSigChain() (map[string]*keypair.Certificate, error) {
 				return devices, errors.New("sigchain: certificate parent hash mismatch")
 			}
 
-			if event.EventType == SigEvent_AddDevice {
+			if event.EventType == SigEvent_ADD_DEVICE {
 				if _, ok := devices[certificate.Content.Issuer]; ok == false {
 					return devices, errors.New("sigchain: issuer device not found")
 				}
@@ -297,7 +297,7 @@ func (m *SigChain) CheckSigChain() (map[string]*keypair.Certificate, error) {
 
 			devices[certificate.Content.Subject] = certificate
 
-		case SigEvent_RemoveDevice:
+		case SigEvent_REMOVE_DEVICE:
 			revocation := &keypair.Revocation{}
 			revocationExtension := &EventExtension{}
 

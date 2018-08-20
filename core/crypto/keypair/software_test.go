@@ -19,10 +19,10 @@ func TestFlow(t *testing.T) {
 
 	message := []byte("hello universe")
 
-	cryptoImpl1 := UnsecureCrypto{}
+	cryptoImpl1 := InsecureCrypto{}
 	cryptoImpl1.SetPrivateKeyData(privBytes1)
 
-	cryptoImpl2 := UnsecureCrypto{}
+	cryptoImpl2 := InsecureCrypto{}
 	cryptoImpl2.SetPrivateKeyData(privBytes2)
 
 	encryptedMessage, err := cryptoImpl1.Encrypt(message, pubBytes2)
