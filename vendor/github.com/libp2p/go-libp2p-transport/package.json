@@ -8,9 +8,9 @@
   },
   "gxDependencies": [
     {
-      "hash": "QmcVVHfdyv15GVPk7NrxdWjh2hLVccXnoD8j2tyQShiXJb",
+      "hash": "QmRREK2CAZ5Re2Bd9zZFG6FeYDppUWt5cMgsoUEp3ktgSr",
       "name": "go-log",
-      "version": "1.5.3"
+      "version": "1.5.5"
     },
     {
       "author": "multiformats",
@@ -20,9 +20,9 @@
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmPjvxTpVH8qJyQDnxnsxF9kv9jezKD1kozz1hs3fCGsNh",
+      "hash": "QmVwU7Mgwg6qaPn9XXz93ANfq1PTxcduGRzfe41Sygg4mR",
       "name": "go-libp2p-net",
-      "version": "3.0.5"
+      "version": "3.0.6"
     },
     {
       "author": "whyrusleeping",
@@ -32,9 +32,9 @@
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN",
+      "hash": "QmcZSzKEM5yDfpZbeEEZaVmaZ1zXm6JWTbrQZSB8hCVPzk",
       "name": "go-libp2p-peer",
-      "version": "2.3.5"
+      "version": "2.3.6"
     }
   ],
   "gxVersion": "0.4.0",
@@ -42,6 +42,6 @@
   "license": "MIT",
   "name": "go-libp2p-transport",
   "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
-  "version": "3.0.5"
+  "version": "3.0.6"
 }
 

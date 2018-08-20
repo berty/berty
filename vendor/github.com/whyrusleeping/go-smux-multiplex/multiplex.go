@@ -3,7 +3,7 @@ package peerstream_multiplex
 import (
 	"net"
 
-	smux "github.com/libp2p/go-stream-muxer"
+	smux "github.com/libp2p/go-stream-muxer"   // Conn is a connection to a remote peer.
 	mp "github.com/whyrusleeping/go-multiplex" // Conn is a connection to a remote peer.
 )
 

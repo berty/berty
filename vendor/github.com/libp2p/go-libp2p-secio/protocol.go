@@ -155,9 +155,9 @@ func (s *secureSession) runHandshakeSync() error {
 	proposeOut := new(pb.Propose)
 	proposeOut.Rand = nonceOut
 	proposeOut.Pubkey = myPubKeyBytes
-	proposeOut.Exchanges = &SupportedExchanges
-	proposeOut.Ciphers = &SupportedCiphers
-	proposeOut.Hashes = &SupportedHashes
+	proposeOut.Exchanges = SupportedExchanges
+	proposeOut.Ciphers = SupportedCiphers
+	proposeOut.Hashes = SupportedHashes
 
 	// log.Debugf("1.0 Propose: nonce:%s exchanges:%s ciphers:%s hashes:%s",
 	// 	nonceOut, SupportedExchanges, SupportedCiphers, SupportedHashes)
