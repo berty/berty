@@ -1,4 +1,5 @@
 apply plugin: "com.android.application"
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 import com.android.build.OutputFile
 
@@ -73,7 +74,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
-    entryFile: "${project.projectDir}/../../index.js"
+    entryFile: "${project.projectDir}/../../../common/index.js"
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -141,6 +142,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
     compile fileTree(dir: "libs", include: ["*.jar"])
     api(name: 'core', ext: 'aar')
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"

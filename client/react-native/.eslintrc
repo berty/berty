@@ -1,39 +1,36 @@
 {
   "parser": "babel-eslint",
-    "extends": [
-      "eslint:recommended",
-      "typescript",
-      "typescript/react",
-      "standard",
-      "standard-react",
+  "extends": [
+    "eslint:recommended",
+    "standard",
+    "standard-react"
+  ],
+  "plugins": [
+    "jsx-a11y",
+    "react",
+    "prettier",
+    "promise",
+    "typescript",
+    "import",
+    "standard"
+  ],
+  "rules": {
+    "no-console": "off",
+    "linebreak-style": "off",
+    "comma-dangle": [
+      "off",
+      "always-multiline"
     ],
-    "plugins": [
-      "react",
-      "jsx-a11y",
-      "import",
-      "typescript",
-    ],
-    "rules": {
-      "no-console": "off",
-      "linebreak-style": "off",
-      "comma-dangle": [
-        "off",
-        "always-multiline"
-      ],
-      "no-multi-spaces": "off",
-      "no-unused-vars": "error",
-      "react/prop-types": "off",
-      "react/display-name": "warn",
-      "react/no-unused-prop-types": "off",
-      "no-invalid-this": "off",
-      "func-style": "off",
-      "class-methods-use-this": "off",
-      "typescript/no-use-before-define": "off",
-      "require-jsdoc": "off",
-    },
-    "settings": {
-      "react": {
-        "version": "16.4.1"
-      }
-    }
+    "no-multi-spaces": "off",
+    "no-unused-vars": "error",
+    "react/prop-types": "off",
+    "react/display-name": "warn",
+    "react/no-unused-prop-types": "off",
+    "react/jsx-indent": "off",
+    "no-invalid-this": "off",
+    "func-style": "off",
+    "class-methods-use-this": "off",
+    "typescript/no-use-before-define": "off",
+    "require-jsdoc": "off",
+  }
 }

@@ -2,12 +2,13 @@
   "name": "@berty/mobile",
   "version": "0.0.1",
   "scripts": {
-    "postinstall": "mkdir -p node_modules/@berty && yarn link:react-native && yarn link:berty",
+    "postinstall": "mkdir -p node_modules/@berty && yarn link:rn && yarn link:rn-vector-icons && yarn link:berty",
     "start": "lsof -t -i :8081 || react-native start --reset-cache --root $PWD",
     "android": "react-native run-android --no-packager",
     "ios": "react-native run-ios --no-packager",
     "test": "jest",
-    "link:react-native": "ln -fs ../../node_modules/react-native node_modules/react-native",
+    "link:rn": "ln -fs ../../node_modules/react-native node_modules/react-native",
+    "link:rn-vector-icons": "ln -fs ../../node_modules/react-native-vector-icons node_modules/react-native-vector-icons",
     "link:berty": "ln -fs ../../../common node_modules/@berty/common"
   }
 }
