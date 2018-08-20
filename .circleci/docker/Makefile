@@ -5,7 +5,7 @@ IMAGES ?= android-ci linter protoc
 .PHONY: docker.build
 docker.build:
 	for image in $(IMAGES); do \
-	  docker build -t $(DOCKER_NAMESPACE)$$image:$(DOCKER_TAG) -f Dockerfile.$$image .; \
+	  docker build --pull -t $(DOCKER_NAMESPACE)$$image:$(DOCKER_TAG) -f Dockerfile.$$image .; \
 	done
 
 .PHONY: docker.release
