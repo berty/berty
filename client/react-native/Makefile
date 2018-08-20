@@ -5,6 +5,7 @@ DEPS := $(addsuffix /node_modules, $(DIRS) $(ROOT))
 CLEAN := $(addsuffix .clean, $(DIRS) $(ROOT))
 FCLEAN := $(addsuffix .fclean, $(DIRS) $(ROOT))
 RE := $(addsuffix .re, $(DIRS) $(ROOT))
+START := $(addsuffix .start, $(DIRS) $(ROOT))
 
 .PHONY: all
 all: $(ROOT) $(DEPS)
@@ -31,7 +32,7 @@ android: gomobile mobile
 
 .PHONY: ios
 ios: gomobile mobile
-	cd mobile && yarn ios --device $(device) && yarn start
+	cd mobile && yarn ios --device '$(device)' && yarn start
 
 .PHONY: $(FCLEAN)
 $(FCLEAN):
@@ -39,3 +40,6 @@ $(FCLEAN):
 
 .PHONY: $(RE)
 $(RE): %.re: %.fclean %/node_modules
+
+$(START): %.start: %
+	cd $< && yarn start
