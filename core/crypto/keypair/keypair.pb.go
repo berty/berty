@@ -47,7 +47,7 @@ func (x CertRevocationVersions) String() string {
 	return proto.EnumName(CertRevocationVersions_name, int32(x))
 }
 func (CertRevocationVersions) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{0}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{0}
 }
 
 type PublicKeyAlgorithm int32
@@ -76,7 +76,7 @@ func (x PublicKeyAlgorithm) String() string {
 	return proto.EnumName(PublicKeyAlgorithm_name, int32(x))
 }
 func (PublicKeyAlgorithm) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{1}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{1}
 }
 
 // https://golang.org/pkg/crypto/x509/#SignatureAlgorithm
@@ -142,7 +142,7 @@ func (x SignatureAlgorithm) String() string {
 	return proto.EnumName(SignatureAlgorithm_name, int32(x))
 }
 func (SignatureAlgorithm) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{2}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{2}
 }
 
 type Signature struct {
@@ -157,7 +157,7 @@ func (m *Signature) Reset()         { *m = Signature{} }
 func (m *Signature) String() string { return proto.CompactTextString(m) }
 func (*Signature) ProtoMessage()    {}
 func (*Signature) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{0}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{0}
 }
 func (m *Signature) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -214,7 +214,7 @@ func (m *EcdsaSignature) Reset()         { *m = EcdsaSignature{} }
 func (m *EcdsaSignature) String() string { return proto.CompactTextString(m) }
 func (*EcdsaSignature) ProtoMessage()    {}
 func (*EcdsaSignature) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{1}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{1}
 }
 func (m *EcdsaSignature) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -289,7 +289,7 @@ func (m *CertificateContent) Reset()         { *m = CertificateContent{} }
 func (m *CertificateContent) String() string { return proto.CompactTextString(m) }
 func (*CertificateContent) ProtoMessage()    {}
 func (*CertificateContent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{2}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{2}
 }
 func (m *CertificateContent) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -386,7 +386,7 @@ func (m *Certificate) Reset()         { *m = Certificate{} }
 func (m *Certificate) String() string { return proto.CompactTextString(m) }
 func (*Certificate) ProtoMessage()    {}
 func (*Certificate) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{3}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{3}
 }
 func (m *Certificate) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -444,7 +444,7 @@ func (m *RevocationContent) Reset()         { *m = RevocationContent{} }
 func (m *RevocationContent) String() string { return proto.CompactTextString(m) }
 func (*RevocationContent) ProtoMessage()    {}
 func (*RevocationContent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{4}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{4}
 }
 func (m *RevocationContent) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -520,7 +520,7 @@ func (m *Revocation) Reset()         { *m = Revocation{} }
 func (m *Revocation) String() string { return proto.CompactTextString(m) }
 func (*Revocation) ProtoMessage()    {}
 func (*Revocation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_keypair_1d27a4d01100aae6, []int{5}
+	return fileDescriptor_keypair_e9cdc9ca28a2f5d8, []int{5}
 }
 func (m *Revocation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -2072,10 +2072,10 @@ var (
 )
 
 func init() {
-	proto.RegisterFile("crypto/keypair/keypair.proto", fileDescriptor_keypair_1d27a4d01100aae6)
+	proto.RegisterFile("crypto/keypair/keypair.proto", fileDescriptor_keypair_e9cdc9ca28a2f5d8)
 }
 
-var fileDescriptor_keypair_1d27a4d01100aae6 = []byte{
+var fileDescriptor_keypair_e9cdc9ca28a2f5d8 = []byte{
 	// 778 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x95, 0xcd, 0x6e, 0xea, 0x46,
 	0x14, 0xc7, 0x31, 0x84, 0x0f, 0x1f, 0x08, 0xd7, 0x99, 0x7b, 0x1b, 0x21, 0x6e, 0x0a, 0x88, 0x55,

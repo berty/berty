@@ -32,26 +32,11 @@ message Contact {
   // internal fields
   //
 
-  Status status = 10;
-
-  //
-  // association fields
-  //
-
-  // Sigchain sigchain = 20;
-  repeated Device devices = 21; // HasMany to Device.Contact
-
-  //
-  // profile fields
-  //
-
-  string display_name = 30;
-  string display_status = 31;
-
-  //
-  // overridable fields
-  //
-
-  string override_display_name = 130;
-  string override_display_status = 131;
+  bytes sigchain = 10;
+  Status status = 11;
+  repeated Device devices = 12; // HasMany to Device.Contact
+  string display_name = 13;
+  string display_status = 14;
+  string override_display_name = 15;
+  string override_display_status = 16;
 }
