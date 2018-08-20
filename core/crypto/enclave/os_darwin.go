@@ -104,8 +104,12 @@ func decryptEnclave(keyID string, cipherText []byte) (plainText []byte, err erro
 	cString := C.CString(keyID)
 	defer C.free(unsafe.Pointer(cString))
 
+	// Convert Golang byte slice cipherText to NSData* then defer freeing it
+	cData := byteSliceToNSData(cipherText)
+	defer C.freeData(cData)
+
 	// Call objective-c function to decrypt using safely stored private key
-	plainText = byteSliceFromNSData(C.decryptCiphertextUsingPrivateKey(cString, byteSliceToNSData(cipherText), C.int(keyPairs[keyID].keyType)))
+	plainText = byteSliceFromNSData(C.decryptCiphertextUsingPrivateKey(cString, cData, C.int(keyPairs[keyID].keyType)))
 
 	if len(plainText) == 0 {
 		err = errors.New("Error during text decryption using Darwin API")
@@ -116,7 +120,22 @@ func decryptEnclave(keyID string, cipherText []byte) (plainText []byte, err erro
 
 // Sign text using platform specific API
 func signEnclave(keyID string, plainText []byte) (signature []byte, err error) {
-	return []byte{}, errors.New("Error: enclave signing not implemented yet for Darwin")
+	// Convert Golang string keyID to a C string then defer freeing it
+	cString := C.CString(keyID)
+	defer C.free(unsafe.Pointer(cString))
+
+	// Convert Golang byte slice plainText to NSData* then defer freeing it
+	cData := byteSliceToNSData(plainText)
+	defer C.freeData(cData)
+
+	// Call objective-c function to decrypt using safely stored private key
+	signature = byteSliceFromNSData(C.signDataUsingPrivateKey(cString, cData, C.int(keyPairs[keyID].keyType)))
+
+	if len(plainText) == 0 {
+		err = errors.New("Error during text decryption using Darwin API")
+	}
+
+	return
 }
 
 // Remove key pair from keychain
