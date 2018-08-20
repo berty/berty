@@ -5,7 +5,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
-
 	// sqlcipher blank import
 	_ "github.com/xeodou/go-sqlcipher"
 )
@@ -22,7 +21,9 @@ func Open(source interface{}, key []byte) (*gorm.DB, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to initialize a new gorm connection")
 	}
-
+	// FIXME: is here to avoid file is not a database
+	db.DB().SetMaxIdleConns(1)
+	db.DB().SetMaxOpenConns(1)
 	// disable logger to prevent printing warns that are already returned
 	db.LogMode(false)
 
