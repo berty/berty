@@ -7,6 +7,7 @@ PROTOS = $(call rwildcard, $(CODE_PATHS), *.proto)
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_FILES = \
 	$(patsubst %.proto,%.pb.go,$(PROTOS)) \
+	api/node/service.graphql \
 	api/client/berty.node.service.gen.go \
 	$(call rwildcard $(CODE_PATHS), *.gen.go) \
 	api/p2p/kind.gen.go
@@ -104,6 +105,12 @@ api/client/berty.node.service.gen.go: $(PROTOS)
 	); done
 	goimports -w ./api/client/
 
+
 api/p2p/kind.gen.go: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
 	goimports -w ./api/p2p
+
+api/node/service.graphql: $(PROTOS)
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
+	cd ./api/node/graphql && gqlgen -v gen
+
