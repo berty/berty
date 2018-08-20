@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package keypair;
+
+
+option go_package = "github.com/berty/berty/core/crypto/keypair";
+
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+
+enum CertRevocationVersions {
+    UNKNOWN_VERSION = 0;
+    VERSION_1 = 1;
+}
+
+
+enum PublicKeyAlgorithm {
+    UNKNOWN_PUBLIC_KEY_ALGORITHM = 0;
+    RSA = 1;
+    DSA = 2;
+    ECDSA = 3;
+}
+
+// https://golang.org/pkg/crypto/x509/#SignatureAlgorithm
+enum SignatureAlgorithm {
+    UNKNOWN_SIGNATURE_ALGORITHM = 0;
+    MD2_WITH_RSA = 1;
+    MD5_WITH_RSA = 2;
+    SHA1_WITH_RSA = 3;
+    SHA256_WITH_RSA = 4;
+    SHA384_WITH_RSA = 5;
+    SHA512_WITH_RSA = 6;
+    DSA_WITH_SHA1 = 7;
+    DSA_WITH_SHA256 = 8;
+    ECDSA_WITH_SHA1 = 9;
+    ECDSA_WITH_SHA256 = 10;
+    ECDSA_WITH_SHA384 = 11;
+    ECDSA_WITH_SHA512 = 12;
+    SHA256_WITH_RSAPSS = 13;
+    SHA384_WITH_RSAPSS = 14;
+    SHA512_WITH_RSAPSS = 15;
+
+}
+
+
+message Signature {
+    bytes signature = 1;
+    SignatureAlgorithm signature_algorithm = 2;
+}
+
+
+message EcdsaSignature {
+    bool rNeg = 1;
+    bytes r = 2;
+    bool sNeg = 3;
+    bytes s = 4;
+}
+
+message CertificateContent {
+    CertRevocationVersions version = 1;
+    PublicKeyAlgorithm public_key_algorithm = 2;
+    bytes public_key = 3;
+
+    string issuer = 4;
+    string subject = 5;
+    google.protobuf.Timestamp not_before = 6  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+    google.protobuf.Timestamp not_after = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+    bytes extension = 8;
+}
+
+
+message Certificate {
+    CertificateContent content = 1;
+    Signature signature = 2;
+}
+
+
+message RevocationContent {
+    CertRevocationVersions version = 1;
+
+    string issuer = 2;
+    string subject = 3;
+    google.protobuf.Timestamp issued_on = 4  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+    bytes extension = 5;
+}
+
+
+message Revocation {
+    RevocationContent content = 1;
+    Signature signature = 2;
+}
+
