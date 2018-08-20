@@ -10,25 +10,25 @@ import (
 	"errors"
 )
 
-type UnsecureCrypto struct {
-	privateKey *interface{}
+type InsecureCrypto struct {
+	privateKey crypto.PrivateKey
 }
 
-func (c *UnsecureCrypto) SignatureAlgorithm() SignatureAlgorithm {
-	switch priv := (*c.privateKey).(type) {
+func (c *InsecureCrypto) SignatureAlgorithm() SignatureAlgorithm {
+	switch private := (c.privateKey).(type) {
 	case *rsa.PrivateKey:
-		return SignatureAlgorithm_SHA256WithRSA
+		return SignatureAlgorithm_SHA256_WITH_RSA
 
 	case *ecdsa.PrivateKey:
-		switch priv.Curve {
+		switch private.Curve {
 		case elliptic.P224(), elliptic.P256():
-			return SignatureAlgorithm_ECDSAWithSHA256
+			return SignatureAlgorithm_ECDSA_WITH_SHA256
 
 		case elliptic.P384():
-			return SignatureAlgorithm_ECDSAWithSHA384
+			return SignatureAlgorithm_ECDSA_WITH_SHA384
 
 		case elliptic.P521():
-			return SignatureAlgorithm_ECDSAWithSHA512
+			return SignatureAlgorithm_ECDSA_WITH_SHA512
 
 		}
 	}
@@ -36,8 +36,8 @@ func (c *UnsecureCrypto) SignatureAlgorithm() SignatureAlgorithm {
 	panic("unknown signature algorithm")
 }
 
-func (c *UnsecureCrypto) PublicKeyAlgorithm() PublicKeyAlgorithm {
-	switch (*c.privateKey).(type) {
+func (c *InsecureCrypto) PublicKeyAlgorithm() PublicKeyAlgorithm {
+	switch (c.privateKey).(type) {
 	case *rsa.PublicKey:
 		return PublicKeyAlgorithm_RSA
 
@@ -45,27 +45,26 @@ func (c *UnsecureCrypto) PublicKeyAlgorithm() PublicKeyAlgorithm {
 		return PublicKeyAlgorithm_ECDSA
 	}
 
-	return PublicKeyAlgorithm_UnknownPublicKeyAlgorithm
+	return PublicKeyAlgorithm_UNKNOWN_PUBLIC_KEY_ALGORITHM
 }
 
-func (c *UnsecureCrypto) Sign(message []byte) ([]byte, error) {
-	//var hashFunc crypto.Hash
+func (c *InsecureCrypto) Sign(message []byte) ([]byte, error) {
 	var publicKey crypto.PublicKey
 	var key crypto.Signer
 	var ok bool
 
-	switch priv := (*c.privateKey).(type) {
+	switch private := (c.privateKey).(type) {
 	case *rsa.PrivateKey:
-		publicKey = priv.Public()
-		key, ok = (*c.privateKey).(crypto.Signer)
+		publicKey = private.Public()
+		key, ok = (c.privateKey).(crypto.Signer)
 		if !ok {
-			return nil, errors.New("couldn't cast rsa to signer interface")
+			return nil, errors.New("couldn't cast RSA to signer interface")
 		}
 	case *ecdsa.PrivateKey:
-		publicKey = priv.Public()
-		key, ok = (*c.privateKey).(crypto.Signer)
+		publicKey = private.Public()
+		key, ok = (c.privateKey).(crypto.Signer)
 		if !ok {
-			return nil, errors.New("couldn't cast ecdsa to signer interface")
+			return nil, errors.New("couldn't cast ECDSA to signer interface")
 		}
 
 	default:
@@ -96,7 +95,7 @@ func (c *UnsecureCrypto) Sign(message []byte) ([]byte, error) {
 	return signature, nil
 }
 
-func (c *UnsecureCrypto) Encrypt(message []byte, pubKeyBytes []byte) ([]byte, error) {
+func (c *InsecureCrypto) Encrypt(message []byte, pubKeyBytes []byte) ([]byte, error) {
 	pubKey, err := x509.ParsePKIXPublicKey(pubKeyBytes)
 
 	if err != nil {
@@ -112,8 +111,8 @@ func (c *UnsecureCrypto) Encrypt(message []byte, pubKeyBytes []byte) ([]byte, er
 	}
 }
 
-func (c *UnsecureCrypto) Decrypt(message []byte) ([]byte, error) {
-	privateKey, ok := (*c.privateKey).(rsa.PrivateKey)
+func (c *InsecureCrypto) Decrypt(message []byte) ([]byte, error) {
+	privateKey, ok := (c.privateKey).(rsa.PrivateKey)
 
 	if ok != true {
 		return nil, errors.New("unable to use RSA key")
@@ -122,15 +121,15 @@ func (c *UnsecureCrypto) Decrypt(message []byte) ([]byte, error) {
 	return rsa.DecryptPKCS1v15(rand.Reader, &privateKey, message)
 }
 
-func (c *UnsecureCrypto) GetPubKey() ([]byte, error) {
-	switch priv := (*c.privateKey).(type) {
+func (c *InsecureCrypto) GetPubKey() ([]byte, error) {
+	switch private := (c.privateKey).(type) {
 	case *rsa.PrivateKey:
-		pubBytes, err := x509.MarshalPKIXPublicKey(priv.Public())
+		pubBytes, err := x509.MarshalPKIXPublicKey(private.Public())
 
 		return pubBytes, err
 
 	case *ecdsa.PrivateKey:
-		pubBytes, err := x509.MarshalPKIXPublicKey(priv.Public())
+		pubBytes, err := x509.MarshalPKIXPublicKey(private.Public())
 
 		return pubBytes, err
 	default:
@@ -138,14 +137,14 @@ func (c *UnsecureCrypto) GetPubKey() ([]byte, error) {
 	}
 }
 
-func (c *UnsecureCrypto) SetPrivateKeyData(privateKeyBytes []byte) error {
+func (c *InsecureCrypto) SetPrivateKeyData(privateKeyBytes []byte) error {
 	key, err := x509.ParsePKCS8PrivateKey(privateKeyBytes)
 
 	if err != nil {
 		return err
 	}
 
-	c.privateKey = &key
+	c.privateKey = key
 
 	return nil
 }

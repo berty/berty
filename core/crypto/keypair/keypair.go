@@ -24,38 +24,30 @@ type Interface interface {
 }
 
 func (m SignatureAlgorithm) GetHashFunction() (crypto.Hash, error) {
-	switch m {
-	case SignatureAlgorithm_MD5WithRSA:
-		return crypto.MD5, nil
-	case SignatureAlgorithm_SHA1WithRSA:
-		return crypto.SHA1, nil
-	case SignatureAlgorithm_SHA256WithRSA:
-		return crypto.SHA256, nil
-	case SignatureAlgorithm_SHA384WithRSA:
-		return crypto.SHA384, nil
-	case SignatureAlgorithm_SHA512WithRSA:
-		return crypto.SHA512, nil
-	case SignatureAlgorithm_DSAWithSHA1:
-		return crypto.SHA1, nil
-	case SignatureAlgorithm_DSAWithSHA256:
-		return crypto.SHA256, nil
-	case SignatureAlgorithm_ECDSAWithSHA1:
-		return crypto.SHA1, nil
-	case SignatureAlgorithm_ECDSAWithSHA256:
-		return crypto.SHA256, nil
-	case SignatureAlgorithm_ECDSAWithSHA384:
-		return crypto.SHA384, nil
-	case SignatureAlgorithm_ECDSAWithSHA512:
-		return crypto.SHA384, nil
-	case SignatureAlgorithm_SHA256WithRSAPSS:
-		return crypto.SHA256, nil
-	case SignatureAlgorithm_SHA384WithRSAPSS:
-		return crypto.SHA384, nil
-	case SignatureAlgorithm_SHA512WithRSAPSS:
-		return crypto.SHA384, nil
+	algorithms := map[SignatureAlgorithm]crypto.Hash{
+		SignatureAlgorithm_MD5_WITH_RSA:       crypto.MD5,
+		SignatureAlgorithm_SHA1_WITH_RSA:      crypto.SHA1,
+		SignatureAlgorithm_SHA256_WITH_RSA:    crypto.SHA256,
+		SignatureAlgorithm_SHA384_WITH_RSA:    crypto.SHA384,
+		SignatureAlgorithm_SHA512_WITH_RSA:    crypto.SHA512,
+		SignatureAlgorithm_DSA_WITH_SHA1:      crypto.SHA1,
+		SignatureAlgorithm_DSA_WITH_SHA256:    crypto.SHA256,
+		SignatureAlgorithm_ECDSA_WITH_SHA1:    crypto.SHA1,
+		SignatureAlgorithm_ECDSA_WITH_SHA256:  crypto.SHA256,
+		SignatureAlgorithm_ECDSA_WITH_SHA384:  crypto.SHA384,
+		SignatureAlgorithm_ECDSA_WITH_SHA512:  crypto.SHA384,
+		SignatureAlgorithm_SHA256_WITH_RSAPSS: crypto.SHA256,
+		SignatureAlgorithm_SHA384_WITH_RSAPSS: crypto.SHA384,
+		SignatureAlgorithm_SHA512_WITH_RSAPSS: crypto.SHA384,
 	}
 
-	return crypto.MD4, errors.New("unsupported hashing function")
+	algorithm, ok := algorithms[m]
+
+	if ok == false {
+		return crypto.MD4, errors.New("unsupported hashing function")
+	}
+
+	return algorithm, nil
 }
 
 // GetDataToSign We need to have a predictable way to check a
@@ -179,7 +171,7 @@ func IntToBytes(input uint64) []byte {
 	return bs
 }
 
-func GetHashFuncForKey(pub interface{}) (crypto.Hash, error) {
+func GetHashFuncForKey(pub crypto.PublicKey) (crypto.Hash, error) {
 	switch pub := pub.(type) {
 	case *rsa.PublicKey:
 		return crypto.SHA256, nil

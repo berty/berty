@@ -31,7 +31,7 @@ func TestFlow(t *testing.T) {
 		t.Errorf("unable to marshal a RSA pubkey : %s", err)
 	}
 
-	cryptoImpl := keypair.UnsecureCrypto{}
+	cryptoImpl := keypair.InsecureCrypto{}
 
 	privByte, err := x509.MarshalPKCS8PrivateKey(p)
 
@@ -82,7 +82,7 @@ func TestInit(t *testing.T) {
 	privBytes, _ := x509.MarshalPKCS8PrivateKey(p)
 	pubBytes, _ := x509.MarshalPKIXPublicKey(p.Public())
 
-	cryptoImpl := keypair.UnsecureCrypto{}
+	cryptoImpl := keypair.InsecureCrypto{}
 	cryptoImpl.SetPrivateKeyData(privBytes)
 
 	sc := SigChain{}
@@ -116,7 +116,7 @@ func TestAdd(t *testing.T) {
 	p2, _ := rsa.GenerateKey(rand.Reader, 2048)
 	pub2Byte, _ := x509.MarshalPKIXPublicKey(p2.PublicKey)
 
-	cryptoImpl := keypair.UnsecureCrypto{}
+	cryptoImpl := keypair.InsecureCrypto{}
 	cryptoImpl.SetPrivateKeyData(privByte)
 
 	sc := SigChain{}
@@ -152,7 +152,7 @@ func TestRemove(t *testing.T) {
 	p2, _ := rsa.GenerateKey(rand.Reader, 2048)
 	pub2Byte, _ := x509.MarshalPKIXPublicKey(p2.PublicKey)
 
-	cryptoImpl := keypair.UnsecureCrypto{}
+	cryptoImpl := keypair.InsecureCrypto{}
 	cryptoImpl.SetPrivateKeyData(privByte)
 
 	sc := SigChain{}
@@ -177,7 +177,7 @@ func TestCertificateCheckSignature(t *testing.T) {
 	p, _ := rsa.GenerateKey(rand.Reader, 2048)
 	privBytes, _ := x509.MarshalPKCS8PrivateKey(p)
 
-	cryptoImpl := keypair.UnsecureCrypto{}
+	cryptoImpl := keypair.InsecureCrypto{}
 	cryptoImpl.SetPrivateKeyData(privBytes)
 
 	sc := SigChain{}
@@ -203,7 +203,7 @@ func TestRevocationCheckSignature(t *testing.T) {
 	p, _ := rsa.GenerateKey(rand.Reader, 2048)
 	privBytes, _ := x509.MarshalPKCS8PrivateKey(p)
 
-	cryptoImpl := keypair.UnsecureCrypto{}
+	cryptoImpl := keypair.InsecureCrypto{}
 	cryptoImpl.SetPrivateKeyData(privBytes)
 
 	sc := SigChain{}

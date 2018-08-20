@@ -9,38 +9,44 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
 
+enum CertRevocationVersions {
+    UNKNOWN_VERSION = 0;
+    VERSION_1 = 1;
+}
+
 
 enum PublicKeyAlgorithm {
-    UnknownPublicKeyAlgorithm = 0;
+    UNKNOWN_PUBLIC_KEY_ALGORITHM = 0;
     RSA = 1;
     DSA = 2;
     ECDSA = 3;
 }
 
+// https://golang.org/pkg/crypto/x509/#SignatureAlgorithm
 enum SignatureAlgorithm {
-    UnknownSignatureAlgorithm = 0;
-    MD2WithRSA = 1;
-    MD5WithRSA = 2;
-    SHA1WithRSA = 3;
-    SHA256WithRSA = 4;
-    SHA384WithRSA = 5;
-    SHA512WithRSA = 6;
-    DSAWithSHA1 = 7;
-    DSAWithSHA256 = 8;
-    ECDSAWithSHA1 = 9;
-    ECDSAWithSHA256 = 10;
-    ECDSAWithSHA384 = 11;
-    ECDSAWithSHA512 = 12;
-    SHA256WithRSAPSS = 13;
-    SHA384WithRSAPSS = 14;
-    SHA512WithRSAPSS = 15;
+    UNKNOWN_SIGNATURE_ALGORITHM = 0;
+    MD2_WITH_RSA = 1;
+    MD5_WITH_RSA = 2;
+    SHA1_WITH_RSA = 3;
+    SHA256_WITH_RSA = 4;
+    SHA384_WITH_RSA = 5;
+    SHA512_WITH_RSA = 6;
+    DSA_WITH_SHA1 = 7;
+    DSA_WITH_SHA256 = 8;
+    ECDSA_WITH_SHA1 = 9;
+    ECDSA_WITH_SHA256 = 10;
+    ECDSA_WITH_SHA384 = 11;
+    ECDSA_WITH_SHA512 = 12;
+    SHA256_WITH_RSAPSS = 13;
+    SHA384_WITH_RSAPSS = 14;
+    SHA512_WITH_RSAPSS = 15;
 
 }
 
 
 message Signature {
     bytes signature = 1;
-    SignatureAlgorithm SignatureAlgorithm = 2;
+    SignatureAlgorithm signature_algorithm = 2;
 }
 
 
@@ -52,7 +58,7 @@ message EcdsaSignature {
 }
 
 message CertificateContent {
-    int32 version = 1;
+    CertRevocationVersions version = 1;
     PublicKeyAlgorithm public_key_algorithm = 2;
     bytes public_key = 3;
 
@@ -72,7 +78,7 @@ message Certificate {
 
 
 message RevocationContent {
-    int32 version = 1;
+    CertRevocationVersions version = 1;
 
     string issuer = 2;
     string subject = 3;
