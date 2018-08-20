@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package berty.node;
 
+import "google/protobuf/descriptor.proto";
 import "api/p2p/event.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
@@ -9,33 +10,72 @@ import "entity/message.proto";
 
 option go_package = "github.com/berty/berty/core/api/node";
 
+extend google.protobuf.MethodOptions {
+  string graphql_fields = 53001;
+  string graphql_id = 53002;
+  string graphql_type = 53003;
+}
+
 service Service {
 
   //
   // Events
   //
 
-  rpc EventStream(Void) returns (stream berty.p2p.Event);  // yield new events in real-time
-  rpc EventList(EventListInput) returns (stream berty.p2p.Event);    // list old events
+  // yield new events in real-time
+  rpc EventStream(Void) returns (stream berty.p2p.Event) {
+    option (graphql_type) = "Subscription";
+  };
+  // list old events
+  rpc EventList(EventListInput) returns (stream berty.p2p.Event) {
+    option (graphql_type) = "Query";
+  };
 
   //
   // Contacts
   //
 
-  rpc ContactRequest(ContactRequestInput) returns (berty.entity.Contact);
-  rpc ContactAcceptRequest(berty.entity.Contact) returns (berty.entity.Contact);
-  rpc ContactRemove(berty.entity.Contact) returns (berty.entity.Contact);
-  rpc ContactUpdate(berty.entity.Contact) returns (berty.entity.Contact);
-  rpc ContactList(Void) returns (stream berty.entity.Contact);
+  rpc ContactRequest(ContactRequestInput) returns (berty.entity.Contact) {
+    option (graphql_fields) = "id: String";
+    option (graphql_type) = "Mutation";
+  };
+  rpc ContactAcceptRequest(berty.entity.Contact) returns (berty.entity.Contact) {
+    option (graphql_fields) = "id: String";
+    option (graphql_type) = "mutation";
+  };
+  rpc ContactRemove(berty.entity.Contact) returns (berty.entity.Contact) {
+    option (graphql_fields) = "id: String";
+    option (graphql_type) = "Mutation";
+  };
+  rpc ContactUpdate(berty.entity.Contact) returns (berty.entity.Contact) {
+    option (graphql_fields) = "id: String";
+    option (graphql_type) = "Mutation";
+  };
+  rpc ContactList(Void) returns (stream berty.entity.Contact) {
+    option (graphql_type) = "Query";
+  };
+
 
   //
   // Conversations
   //
 
-  rpc ConversationCreate(berty.entity.Conversation) returns (berty.entity.Conversation);
-  rpc ConversationList(Void) returns (stream berty.entity.Conversation);
-  rpc ConversationInvite(berty.entity.ConversationMember) returns (berty.entity.Conversation);
-  rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event);
+  rpc ConversationCreate(berty.entity.Conversation) returns (berty.entity.Conversation) {
+    option (graphql_fields) = "id: String";
+    option (graphql_type) = "Mutation";
+  };
+  rpc ConversationList(Void) returns (stream berty.entity.Conversation) {
+    option (graphql_type) = "Query";
+  };
+  rpc ConversationInvite(berty.entity.ConversationMember) returns (berty.entity.Conversation) {
+    option (graphql_fields) = "id: String";
+    option (graphql_type) = "Mutation";
+  };
+  rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event) {
+    option (graphql_fields) = "id: String";
+    option (graphql_type) = "Mutation";
+  };
+
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConverstionAcceptJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);

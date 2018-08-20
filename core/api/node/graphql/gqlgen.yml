@@ -1,0 +1,15 @@
+schema: service.graphql
+
+# Let gqlgen know where to put the generated server
+exec:
+  filename: graph/graph.go
+  package: graph
+
+# Let gqlgen know where to the generated models (if any)
+model:
+  filename: models/models.go
+  package: model
+# Optional, turns on resolver stub generation
+resolver:
+  filename: resolver.go # where to write them
+  type: Resolver  # whats the resolver root implementation type called?
