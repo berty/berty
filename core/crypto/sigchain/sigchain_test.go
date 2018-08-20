@@ -1,13 +1,11 @@
 package sigchain
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
-
 	"testing"
-
-	"bytes"
 
 	"github.com/berty/berty/core/crypto/keypair"
 )

@@ -65,6 +65,9 @@ func New(opts ...NewNodeOption) (*Node, error) {
 		return nil, err
 	}
 
+	// FIXME: subscribe to every owned device IDs
+	// FIXME: subscribe to every joined conversations
+
 	return n, nil
 }
 

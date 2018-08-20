@@ -40,7 +40,6 @@ enum SignatureAlgorithm {
     SHA256_WITH_RSAPSS = 13;
     SHA384_WITH_RSAPSS = 14;
     SHA512_WITH_RSAPSS = 15;
-
 }
 
 
@@ -92,4 +91,3 @@ message Revocation {
     RevocationContent content = 1;
     Signature signature = 2;
 }
-
