@@ -1,4 +1,3 @@
-'use strict'
 
 const autoprefixer = require('autoprefixer')
 const path = require('path')
