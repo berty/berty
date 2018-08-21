@@ -16,6 +16,10 @@ import (
 	p2pnet "github.com/berty/berty/core/network/p2p"
 )
 
+func init() {
+	InitLogger()
+}
+
 func TestWithEnqueuer(t *testing.T) {
 	var (
 		alice, bob, eve *AppMock
@@ -33,8 +37,6 @@ func TestWithEnqueuer(t *testing.T) {
 			eve.Close()
 		}
 	}()
-
-	setupTestLogging()
 
 	// let's test
 
@@ -459,8 +461,6 @@ func TestWithSimpleNetwork(t *testing.T) {
 			eve.Close()
 		}
 	}()
-
-	setupTestLogging()
 
 	Convey("End-to-end test (with simple network mock)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
