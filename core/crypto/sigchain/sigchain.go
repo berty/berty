@@ -96,7 +96,6 @@ func (m *SigChain) Init(cryptoImpl keypair.Interface, identityID string) error {
 		return err
 	}
 
-	m.PublicKey = publicKey
 	m.UserId = identityID
 	m.Events = []*SigEvent{&event}
 
