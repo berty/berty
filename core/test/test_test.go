@@ -5,12 +5,8 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"os"
 	"runtime"
 	"time"
-
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"github.com/berty/berty/core/network/mock"
 )
@@ -66,25 +62,4 @@ func nodeChansLens(apps ...*AppMock) []int {
 		out = append(out, len(app.node.ClientEventsChan()))
 	}
 	return out
-}
-
-//
-// logging
-//
-
-func setupTestLogging() {
-	// initialize zap
-	config := zap.NewDevelopmentConfig()
-	if os.Getenv("LOG_LEVEL") == "debug" {
-		config.Level.SetLevel(zap.DebugLevel)
-	} else {
-		config.Level.SetLevel(zap.InfoLevel)
-	}
-	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	logger, err := config.Build()
-	if err != nil {
-		panic(err)
-	}
-	zap.ReplaceGlobals(logger)
 }
