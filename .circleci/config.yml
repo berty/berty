@@ -4,7 +4,7 @@ version: 2
   working_directory: /go/src/github.com/berty/berty
   environment:
     GOPATH: /go
-    GOTEST_TIMEOUT: 1m
+    GOTEST_TIMEOUT: 5m
   docker:
     - image: circleci/golang:latest
 
