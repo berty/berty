@@ -89,12 +89,10 @@ func (rt *RoutingTable) Update(p peer.ID) {
 		// If this bucket is the rightmost bucket, and its full
 		// we need to split it and create a new bucket
 		if bucketID == len(rt.Buckets)-1 {
-			rt.PeerRemoved(rt.nextBucket())
-			return
+			rt.nextBucket()
 		} else {
 			// If the bucket cant split kick out least active node
 			rt.PeerRemoved(bucket.PopBack())
-			return
 		}
 	}
 }
@@ -117,19 +115,18 @@ func (rt *RoutingTable) Remove(p peer.ID) {
 	rt.PeerRemoved(p)
 }
 
-func (rt *RoutingTable) nextBucket() peer.ID {
+func (rt *RoutingTable) nextBucket() {
 	bucket := rt.Buckets[len(rt.Buckets)-1]
 	newBucket := bucket.Split(len(rt.Buckets)-1, rt.local)
 	rt.Buckets = append(rt.Buckets, newBucket)
 	if newBucket.Len() > rt.bucketsize {
-		return rt.nextBucket()
+		rt.nextBucket()
 	}
 
 	// If all elements were on left side of split...
 	if bucket.Len() > rt.bucketsize {
-		return bucket.PopBack()
+		rt.PeerRemoved(bucket.PopBack())
 	}
-	return ""
 }
 
 // Find a specific peer by ID or return nil

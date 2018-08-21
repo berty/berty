@@ -15,27 +15,21 @@
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmcVVHfdyv15GVPk7NrxdWjh2hLVccXnoD8j2tyQShiXJb",
+      "hash": "QmRREK2CAZ5Re2Bd9zZFG6FeYDppUWt5cMgsoUEp3ktgSr",
       "name": "go-log",
-      "version": "1.5.3"
+      "version": "1.5.5"
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmZ4Qi3GaRbjcx28Sme5eMH7RQjGkt8wHxt2a65oLaeFEV",
-      "name": "gogo-protobuf",
-      "version": "0.0.0"
-    },
-    {
-      "author": "whyrusleeping",
-      "hash": "Qme1knMqwt1hKZbc1BmQFmnm9f36nyQGwXxPGVpVJ9rMK5",
+      "hash": "QmPvyPwuCgJ7pDmrKDxRtsScJgBaM5h4EpRL2qQJsmXf4n",
       "name": "go-libp2p-crypto",
-      "version": "1.6.2"
+      "version": "2.0.1"
     },
     {
       "author": "whyrusleeping",
-      "hash": "QmdVrMn1LhB4ybb8hMVaMLXnA8XRSewMnK6YqXKXoTcRvN",
+      "hash": "QmcZSzKEM5yDfpZbeEEZaVmaZ1zXm6JWTbrQZSB8hCVPzk",
       "name": "go-libp2p-peer",
-      "version": "2.3.5"
+      "version": "2.3.6"
     },
     {
       "author": "whyrusleeping",
@@ -57,9 +51,15 @@
     },
     {
       "author": "Stebalien",
-      "hash": "QmYMGCwtKbLXfh2MUTbLoP66N9Y24DSg8PFJRG21eE2qwv",
+      "hash": "QmaKSpLZuCobQa8tfcKkZYdabfTPuihz113WM7RT9moeVS",
       "name": "go-conn-security",
-      "version": "0.1.5"
+      "version": "0.1.6"
+    },
+    {
+      "author": "whyrusleeping",
+      "hash": "QmdxUuburamoF6zF9qjeQC4WYcWGbWuRmdLacMEsW8ioD8",
+      "name": "gogo-protobuf",
+      "version": "0.0.0"
     }
   ],
   "gxVersion": "0.4.0",
@@ -67,6 +67,6 @@
   "license": "MIT",
   "name": "go-libp2p-secio",
   "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
-  "version": "2.0.4"
+  "version": "2.0.6"
 }
 

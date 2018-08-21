@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"math/big"
+	"math/bits"
 
 	u "github.com/ipfs/go-ipfs-util"
 )
@@ -44,23 +45,14 @@ func (s *xorKeySpace) Distance(k1, k2 Key) *big.Int {
 
 // Less returns whether the first key is smaller than the second.
 func (s *xorKeySpace) Less(k1, k2 Key) bool {
-	a := k1.Bytes
-	b := k2.Bytes
-	for i := 0; i < len(a); i++ {
-		if a[i] != b[i] {
-			return a[i] < b[i]
-		}
-	}
-	return true
+	return bytes.Compare(k1.Bytes, k2.Bytes) < 0
 }
 
 // ZeroPrefixLen returns the number of consecutive zeroes in a byte slice.
 func ZeroPrefixLen(id []byte) int {
-	for i := 0; i < len(id); i++ {
-		for j := 0; j < 8; j++ {
-			if (id[i]>>uint8(7-j))&0x1 != 0 {
-				return i*8 + j
-			}
+	for i, b := range id {
+		if b != 0 {
+			return i*8 + bits.LeadingZeros8(uint8(b))
 		}
 	}
 	return len(id) * 8

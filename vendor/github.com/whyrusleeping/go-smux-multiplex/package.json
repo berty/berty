@@ -9,9 +9,9 @@
   "gxDependencies": [
     {
       "author": "whyrusleeping",
-      "hash": "QmWqdfNRLm397vpdWh9SP8id8U2yRW5oFdKN6nMtXJSEhL",
+      "hash": "QmVh3e4SQmDTnQaHkd7J2EFKK9JTbpMkrNdbWF4iBcpGVg",
       "name": "go-multiplex",
-      "version": "0.2.23"
+      "version": "0.2.25"
     },
     {
       "author": "whyrusleeping",
@@ -25,6 +25,6 @@
   "license": "",
   "name": "go-smux-multiplex",
   "releaseCmd": "git commit -a -m \"gx publish $VERSION\"",
-  "version": "3.0.10"
+  "version": "3.0.12"
 }
 
