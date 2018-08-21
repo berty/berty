@@ -13,6 +13,7 @@ import (
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -31,10 +32,10 @@ import (
 )
 
 type daemonOptions struct {
+	sql sqlOptions
+
 	bind           string
 	hideBanner     bool
-	sqlPath        string
-	sqlKey         string
 	bootstrap      []string
 	dropDatabase   bool
 	initOnly       bool
@@ -42,6 +43,18 @@ type daemonOptions struct {
 	logP2PLevel    string
 	bindP2P        []string
 	logP2PSubsytem []string
+}
+
+func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
+	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
+	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
+	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
+	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drier")
+	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
+	flags.StringSliceVarP(&opts.bootstrap, "bootstrap", "", []string{}, "boostrap peers")
+	flags.StringSliceVarP(&opts.bindP2P, "bind-p2p", "", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
+	flags.StringVarP(&opts.logP2PLevel, "log-p2p-level", "", "", "Enable log on libp2p (can be 'critical', 'error', 'warning', 'notice', 'info', 'debug')")
+	flags.StringSliceVarP(&opts.logP2PSubsytem, "log-p2p-subsystem", "", []string{"*"}, "log libp2p specific subsystem")
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -52,20 +65,8 @@ func newDaemonCommand() *cobra.Command {
 			return daemon(opts)
 		},
 	}
-
-	flags := cmd.Flags()
-	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
-	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
-	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
-	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drier")
-	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
-	flags.StringVarP(&opts.sqlKey, "sql-key", "", "s3cur3", "sqlcipher database encryption key")
-	flags.StringVarP(&opts.sqlPath, "sql-path", "", "/tmp/berty.db", "sqlcipher database path")
-	flags.StringSliceVarP(&opts.bootstrap, "bootstrap", "", []string{}, "boostrap peers")
-	flags.StringSliceVarP(&opts.bindP2P, "bind-p2p", "", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
-	flags.StringVarP(&opts.logP2PLevel, "log-p2p-level", "", "", "Enable log on libp2p (can be 'critical', 'error', 'warning', 'notice', 'info', 'debug')")
-	flags.StringSliceVarP(&opts.logP2PSubsytem, "log-p2p-subsystem", "", []string{"*"}, "log libp2p specific subsystem")
-
+	sqlSetupFlags(cmd.Flags(), &opts.sql)
+	daemonSetupFlags(cmd.Flags(), opts)
 	return cmd
 }
 
@@ -92,7 +93,7 @@ func daemon(opts *daemonOptions) error {
 	}
 
 	// initialize sql
-	db, err := sqlcipher.Open(opts.sqlPath, []byte(opts.sqlKey))
+	db, err := sqlcipher.Open(opts.sql.path, []byte(opts.sql.key))
 	if err != nil {
 		return errors.Wrap(err, "failed to open sqlcipher")
 	}
