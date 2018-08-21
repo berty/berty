@@ -23,6 +23,7 @@ func newRootCommand() *cobra.Command {
 	cmd.AddCommand(
 		newDaemonCommand(),
 		newClientCommand(),
+		newSQLCommand(),
 	)
 	return cmd
 }
