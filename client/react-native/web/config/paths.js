@@ -1,4 +1,3 @@
-'use strict'
 
 const path = require('path')
 const fs = require('fs')
@@ -57,10 +56,7 @@ module.exports = {
 
 let checkForMonorepo = true
 
-module.exports.srcPaths = [
-  module.exports.appSrc + '/web',
-  module.exports.appSrc + '/common'
-]
+module.exports.srcPaths = [module.exports.appSrc + '/common']
 
 module.exports.useYarn = fs.existsSync(
   path.join(module.exports.appPath, 'yarn.lock')

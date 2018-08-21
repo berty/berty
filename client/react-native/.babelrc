@@ -1,5 +1,5 @@
 {
-  "presets": ["react-native"],
+  "presets": ["react-native", "react-app"],
   "plugins": [
     "@babel/plugin-proposal-function-bind",
 
@@ -20,5 +20,6 @@
     "@babel/plugin-syntax-import-meta",
     ["@babel/plugin-proposal-class-properties", { "loose": false }],
     "@babel/plugin-proposal-json-strings"
+
   ]
 }
