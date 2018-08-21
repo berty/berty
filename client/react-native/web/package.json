@@ -2,10 +2,11 @@
   "name": "@berty/web",
   "version": "0.0.1",
   "scripts": {
-    "postinstall": "mkdir -p node_modules/@berty; ln -fs ../../../common node_modules/@berty/common",
-    "start": "node scripts/start.js",
+    "postinstall": "mkdir -p node_modules/@berty; ln -fs ../../../common node_modules/@berty",
+    "start": "concurrently 'yarn relay --watch' 'node scripts/start.js'",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom"
+    "test": "node scripts/test.js --env=jsdom",
+    "relay": "relay-compiler --src ../common --schema ../common/schema.graphql"
   },
   "dependencies": {
     "@svgr/webpack": "2.2.1",
@@ -14,6 +15,7 @@
     "bfj": "6.1.1",
     "case-sensitive-paths-webpack-plugin": "2.1.2",
     "chalk": "2.4.1",
+    "concurrently": "^3.6.1",
     "css-loader": "1.0.0",
     "dotenv": "6.0.0",
     "dotenv-expand": "4.2.0",
@@ -33,6 +35,7 @@
     "promise": "8.0.1",
     "raf": "3.4.0",
     "react-dev-utils": "6.0.0-next.3e165448",
+    "relay-compiler": "^1.6.2",
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.22.1",

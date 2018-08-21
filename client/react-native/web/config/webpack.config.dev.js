@@ -11,6 +11,7 @@ const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
 const getClientEnvironment = require('./env')
 const paths = require('./paths')
 const ManifestPlugin = require('webpack-manifest-plugin')
+
 const fs = require('fs')
 const babelrc = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, '../../.babelrc'))
@@ -150,6 +151,11 @@ module.exports = {
       // please link the files into your node_modules/ and let module-resolution kick in.
       // Make sure your source files are compiled, as they will not be processed in any way.
       new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson])
+      // Generate graphql schema for relay
+      // new RelayCompilerWebpackPlugin({
+      //   src: paths.appSrc,
+      //   schema: paths.appSrc + '/common/schema.graphql'
+      // })
     ]
   },
   module: {

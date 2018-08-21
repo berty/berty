@@ -1,0 +1,454 @@
+# GENERATED CODE -- DO NOT EDIT!
+
+interface Node {
+  id: ID!
+}
+
+type GoogleProtobufFileDescriptorSet {
+  file: [GoogleProtobufFileDescriptorProto]
+}
+
+type GoogleProtobufFileDescriptorProto {
+  name: String
+  package: String
+  dependency: [String]
+  publicDependency: [Int]
+  weakDependency: [Int]
+  messageType: [GoogleProtobufDescriptorProto]
+  enumType: [GoogleProtobufEnumDescriptorProto]
+  service: [GoogleProtobufServiceDescriptorProto]
+  extension: [GoogleProtobufFieldDescriptorProto]
+  options: GoogleProtobufFileOptions
+  sourceCodeInfo: GoogleProtobufSourceCodeInfo
+  syntax: String
+}
+
+type GoogleProtobufDescriptorProtoExtensionRange {
+  start: Int
+  end: Int
+  options: GoogleProtobufExtensionRangeOptions
+}
+
+type GoogleProtobufDescriptorProtoReservedRange {
+  start: Int
+  end: Int
+}
+
+type GoogleProtobufDescriptorProto {
+  name: String
+  field: [GoogleProtobufFieldDescriptorProto]
+  extension: [GoogleProtobufFieldDescriptorProto]
+  nestedType: [GoogleProtobufDescriptorProto]
+  enumType: [GoogleProtobufEnumDescriptorProto]
+  extensionRange: [GoogleProtobufDescriptorProtoExtensionRange]
+  oneofDecl: [GoogleProtobufOneofDescriptorProto]
+  options: GoogleProtobufMessageOptions
+  reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
+  reservedName: [String]
+}
+
+type GoogleProtobufExtensionRangeOptions {
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+type GoogleProtobufFieldDescriptorProto {
+  name: String
+  number: Int
+  label: GoogleProtobufFieldDescriptorProtoLabel
+  type: GoogleProtobufFieldDescriptorProtoType
+  typeName: String
+  extendee: String
+  defaultValue: String
+  oneofIndex: Int
+  jsonName: String
+  options: GoogleProtobufFieldOptions
+}
+
+enum GoogleProtobufFieldDescriptorProtoType {
+  TYPE_DOUBLE
+  TYPE_FLOAT
+  TYPE_INT64
+  TYPE_UINT64
+  TYPE_INT32
+  TYPE_FIXED64
+  TYPE_FIXED32
+  TYPE_BOOL
+  TYPE_STRING
+  TYPE_GROUP
+  TYPE_MESSAGE
+  TYPE_BYTES
+  TYPE_UINT32
+  TYPE_ENUM
+  TYPE_SFIXED32
+  TYPE_SFIXED64
+  TYPE_SINT32
+  TYPE_SINT64
+}
+
+enum GoogleProtobufFieldDescriptorProtoLabel {
+  LABEL_OPTIONAL
+  LABEL_REQUIRED
+  LABEL_REPEATED
+}
+
+type GoogleProtobufOneofDescriptorProto {
+  name: String
+  options: GoogleProtobufOneofOptions
+}
+
+type GoogleProtobufEnumDescriptorProtoEnumReservedRange {
+  start: Int
+  end: Int
+}
+
+type GoogleProtobufEnumDescriptorProto {
+  name: String
+  value: [GoogleProtobufEnumValueDescriptorProto]
+  options: GoogleProtobufEnumOptions
+  reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
+  reservedName: [String]
+}
+
+type GoogleProtobufEnumValueDescriptorProto {
+  name: String
+  number: Int
+  options: GoogleProtobufEnumValueOptions
+}
+
+type GoogleProtobufServiceDescriptorProto {
+  name: String
+  method: [GoogleProtobufMethodDescriptorProto]
+  options: GoogleProtobufServiceOptions
+}
+
+type GoogleProtobufMethodDescriptorProto {
+  name: String
+  inputType: String
+  outputType: String
+  options: GoogleProtobufMethodOptions
+  clientStreaming: Boolean
+  serverStreaming: Boolean
+}
+
+type GoogleProtobufFileOptions {
+  javaPackage: String
+  javaOuterClassname: String
+  javaMultipleFiles: Boolean
+  javaGenerateEqualsAndHash: Boolean
+  javaStringCheckUtf8: Boolean
+  optimizeFor: GoogleProtobufFileOptionsOptimizeMode
+  goPackage: String
+  ccGenericServices: Boolean
+  javaGenericServices: Boolean
+  pyGenericServices: Boolean
+  phpGenericServices: Boolean
+  deprecated: Boolean
+  ccEnableArenas: Boolean
+  objcClassPrefix: String
+  csharpNamespace: String
+  swiftPrefix: String
+  phpClassPrefix: String
+  phpNamespace: String
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+enum GoogleProtobufFileOptionsOptimizeMode {
+  SPEED
+  CODE_SIZE
+  LITE_RUNTIME
+}
+
+type GoogleProtobufMessageOptions {
+  messageSetWireFormat: Boolean
+  noStandardDescriptorAccessor: Boolean
+  deprecated: Boolean
+  mapEntry: Boolean
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+type GoogleProtobufFieldOptions {
+  ctype: GoogleProtobufFieldOptionsCType
+  packed: Boolean
+  jstype: GoogleProtobufFieldOptionsJSType
+  lazy: Boolean
+  deprecated: Boolean
+  weak: Boolean
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+enum GoogleProtobufFieldOptionsCType {
+  STRING
+  CORD
+  STRING_PIECE
+}
+
+enum GoogleProtobufFieldOptionsJSType {
+  JS_NORMAL
+  JS_STRING
+  JS_NUMBER
+}
+
+type GoogleProtobufOneofOptions {
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+type GoogleProtobufEnumOptions {
+  allowAlias: Boolean
+  deprecated: Boolean
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+type GoogleProtobufEnumValueOptions {
+  deprecated: Boolean
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+type GoogleProtobufServiceOptions {
+  deprecated: Boolean
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+type GoogleProtobufMethodOptions {
+  deprecated: Boolean
+  idempotencyLevel: GoogleProtobufMethodOptionsIdempotencyLevel
+  uninterpretedOption: [GoogleProtobufUninterpretedOption]
+}
+
+enum GoogleProtobufMethodOptionsIdempotencyLevel {
+  IDEMPOTENCY_UNKNOWN
+  NO_SIDE_EFFECTS
+  IDEMPOTENT
+}
+
+type GoogleProtobufUninterpretedOptionNamePart {
+  namePart: String
+  isExtension: Boolean
+}
+
+type GoogleProtobufUninterpretedOption {
+  name: [GoogleProtobufUninterpretedOptionNamePart]
+  identifierValue: String
+  positiveIntValue: Int
+  negativeIntValue: Int
+  doubleValue: Float
+  stringValue: String
+  aggregateValue: String
+}
+
+type GoogleProtobufSourceCodeInfoLocation {
+  path: [Int]
+  span: [Int]
+  leadingComments: String
+  trailingComments: String
+  leadingDetachedComments: [String]
+}
+
+type GoogleProtobufSourceCodeInfo {
+  location: [GoogleProtobufSourceCodeInfoLocation]
+}
+
+type GoogleProtobufGeneratedCodeInfoAnnotation {
+  path: [Int]
+  sourceFile: String
+  begin: Int
+  end: Int
+}
+
+type GoogleProtobufGeneratedCodeInfo {
+  annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
+}
+
+type GoogleProtobufTimestamp {
+  seconds: Int
+  nanos: Int
+}
+
+type BertyEntityDevice {
+  id: String
+  createdAt: GoogleProtobufTimestamp
+  updatedAt: GoogleProtobufTimestamp
+  deletedAt: GoogleProtobufTimestamp
+  name: String
+  status: BertyEntityDeviceStatus
+  apiVersion: Int
+  contactId: String
+}
+
+enum BertyEntityDeviceStatus {
+  Unknown
+  Connected
+  Disconnected
+  Available
+  Myself
+}
+
+type BertyEntityContact {
+  id: String
+  createdAt: GoogleProtobufTimestamp
+  updatedAt: GoogleProtobufTimestamp
+  deletedAt: GoogleProtobufTimestamp
+  status: BertyEntityContactStatus
+  devices: [BertyEntityDevice]
+  displayName: String
+  displayStatus: String
+  overrideDisplayName: String
+  overrideDisplayStatus: String
+}
+
+enum BertyEntityContactStatus {
+  Unknown
+  IsFriend
+  IsTrustedFriend
+  IsRequested
+  RequestedMe
+  IsBlocked
+  Myself
+}
+
+type BertyEntityConversation {
+  id: String
+  createdAt: GoogleProtobufTimestamp
+  updatedAt: GoogleProtobufTimestamp
+  deletedAt: GoogleProtobufTimestamp
+  title: String
+  topic: String
+  members: [BertyEntityConversationMember]
+}
+
+type BertyEntityConversationMember {
+  id: String
+  createdAt: GoogleProtobufTimestamp
+  updatedAt: GoogleProtobufTimestamp
+  deletedAt: GoogleProtobufTimestamp
+  status: BertyEntityConversationMemberStatus
+  contact: BertyEntityContact
+  conversationId: String
+  contactId: String
+}
+
+enum BertyEntityConversationMemberStatus {
+  Unknown
+  Owner
+  Active
+  Blocked
+}
+
+type BertyEntityMessage {
+  text: String
+}
+
+type BertyP2pSentAttrs {
+  ids: [String]
+}
+
+type BertyP2pAckAttrs {
+  ids: [String]
+  ErrMsg: String
+}
+
+type BertyP2pPingAttrs {
+  # Can't make empty type
+  T: Boolean
+}
+
+type BertyP2pContactRequestAttrs {
+  me: BertyEntityContact
+  introText: String
+}
+
+type BertyP2pContactRequestAcceptedAttrs {
+  # Can't make empty type
+  T: Boolean
+}
+
+type BertyP2pContactShareMeAttrs {
+  me: BertyEntityContact
+}
+
+type BertyP2pContactShareAttrs {
+  contact: BertyEntityContact
+}
+
+type BertyP2pConversationInviteAttrs {
+  conversation: BertyEntityConversation
+}
+
+type BertyP2pConversationNewMessageAttrs {
+  message: BertyEntityMessage
+}
+
+enum BertyP2pKind {
+  Unknown
+  Sent
+  Ack
+  Ping
+  ContactRequest
+  ContactRequestAccepted
+  ContactShareMe
+  ContactShare
+  ConversationInvite
+  ConversationNewMessage
+}
+
+type BertyP2pEvent {
+  id: String
+  senderId: String
+  createdAt: GoogleProtobufTimestamp
+  updatedAt: GoogleProtobufTimestamp
+  deletedAt: GoogleProtobufTimestamp
+  sentAt: GoogleProtobufTimestamp
+  receivedAt: GoogleProtobufTimestamp
+  ackedAt: GoogleProtobufTimestamp
+  direction: BertyP2pEventDirection
+  senderApiVersion: Int
+  receiverApiVersion: Int
+  receiver: String
+  kind: BertyP2pKind
+  attributes: String
+  conversationId: String
+}
+
+enum BertyP2pEventDirection {
+  UnknownDirection
+  Incoming
+  Outgoing
+}
+
+type BertyNodeContactRequestInput {
+  contact: BertyEntityContact
+  introText: String
+}
+
+type BertyNodeConversationAddMessageInput {
+  conversation: BertyEntityConversation
+  message: BertyEntityMessage
+}
+
+type BertyNodeEventListInput {
+  limit: Int
+  filter: BertyP2pEvent
+}
+
+type BertyNodeVoid {
+  # Can't make empty type
+  T: Boolean
+}
+
+type Subscription {
+  EventStream: BertyP2pEvent
+}
+
+type Mutation {
+  ContactRequest(id: String): BertyEntityContact
+  ContactRemove(id: String): BertyEntityContact
+  ContactUpdate(id: String): BertyEntityContact
+  ConversationCreate(id: String): BertyEntityConversation
+  ConversationInvite(id: String): BertyEntityConversation
+  ConversationAddMessage(id: String): BertyP2pEvent
+}
+
+type Query {
+  EventList: BertyP2pEvent
+  ContactList: BertyEntityContact
+  ConversationList: BertyEntityConversation
+}

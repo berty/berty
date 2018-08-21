@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
-import {
-  TextInput,
-  Text,
-  View,
-  Button,
-  Alert,
-  StyleSheet
-} from 'react-native'
+import { TextInput, Text, View, Button, Alert, StyleSheet } from 'react-native'
+import { graphql, commitMutation } from 'react-relay'
+import environment from '../../relay.js'
 
 var fields = {
   id: '',
@@ -18,13 +13,25 @@ export default class ContactRequest extends Component {
   render = () => {
     return (
       <View style={styles.contactView}>
-        <Input label='Berty ID' placeholder='Please enter a Berty ID ...' type='username' state='id' />
-        <Input label='Email address' placeholder='Please enter an email address ...'  type='emailAddress' state='email' />
-        <Input label='Phone number' placeholder='Please enter a phone number ...'  type='telephoneNumber' state='phone' />
-        <Button
-          title='Request'
-          onPress={handleRequestButton}
+        <Input
+          label='Berty ID'
+          placeholder='Please enter a Berty ID ...'
+          type='username'
+          state='id'
         />
+        <Input
+          label='Email address'
+          placeholder='Please enter an email address ...'
+          type='emailAddress'
+          state='email'
+        />
+        <Input
+          label='Phone number'
+          placeholder='Please enter a phone number ...'
+          type='telephoneNumber'
+          state='phone'
+        />
+        <Button title='Request' onPress={handleRequestButton} />
       </View>
     )
   }
@@ -34,13 +41,11 @@ class Input extends Component {
   render = () => {
     return (
       <View>
-        <Text
-          style={styles.label}
-        >
-          {this.props.label}
-        </Text>
+        <Text style={styles.label}>{this.props.label}</Text>
         <TextInput
-          onChangeText={(text) => { fields[this.props.state] = text }}
+          onChangeText={text => {
+            fields[this.props.state] = text
+          }}
           style={styles.input}
           placeholder={this.props.placeholder}
           textContentType={this.props.type}
@@ -50,9 +55,25 @@ class Input extends Component {
   }
 }
 
+const mutation = graphql`
+  mutation ContactRequestMutation($id: String) {
+    ContactRequest(id: $id) {
+      id
+    }
+  }
+`
+
+const commit = (variables = {}) =>
+  commitMutation(environment, {
+    mutation,
+    variables,
+    onCompleted: (res, errs) =>
+      console.log('Response receive from server.', res, errs),
+    onError: err => console.error(err)
+  })
+
 function handleRequestButton () {
-  let body =
-  `
+  let body = `
     Contact request sent:
     Berty ID = ${fields['id']}
     Email Adress = ${fields['email']}
@@ -62,11 +83,10 @@ function handleRequestButton () {
   Alert.alert(
     'Request',
     body,
-    [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
-    ],
+    [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
     { cancelable: false }
   )
+  commit({ id: fields['id'] })
 }
 
 const styles = StyleSheet.create({
@@ -86,6 +106,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   }
 })
