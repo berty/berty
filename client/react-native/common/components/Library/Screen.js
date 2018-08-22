@@ -7,22 +7,22 @@ import { screen } from '../constants'
 
 export type ScreenState = {
   dimensions: { width: number, height: number },
-  orientation: 'portrait' | 'landscape'
+  orientation: 'portrait' | 'landscape',
 }
 
 export type ScreenProps = {
   absolute: boolean,
   style?: Object,
-  onResize?: ScreenState => any
+  onResize?: ScreenState => any,
 }
 
 export default class Screen extends Component<ScreenProps, ScreenState> {
   state = {
     dimensions: {
       width: screen.dimensions.width,
-      height: screen.dimensions.height
+      height: screen.dimensions.height,
     },
-    orientation: screen.orientation
+    orientation: screen.orientation,
   }
 
   _dimensions = screen.dimensions
@@ -39,7 +39,7 @@ export default class Screen extends Component<ScreenProps, ScreenState> {
       this.setState(
         {
           dimensions: { width, height },
-          orientation: width < height ? 'portrait' : 'landscape'
+          orientation: width < height ? 'portrait' : 'landscape',
         },
         () => {
           this.props.onResize && this.props.onResize(this.state)

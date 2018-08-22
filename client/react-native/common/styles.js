@@ -3,7 +3,7 @@ import { colors } from './constants'
 
 const styles = StyleSheet.create({
   padding: {
-    padding: 16
+    padding: 16,
   },
   paddingLeft: { paddingLeft: 16 },
   paddingTop: { paddingTop: 16 },
@@ -12,32 +12,32 @@ const styles = StyleSheet.create({
   paddingHorizontal: { paddingLeft: 16, paddingRight: 16 },
   paddingVertical: { paddingTop: 16, paddingBottom: 16 },
   margin: {
-    margin: 16
+    margin: 16,
   },
   marginTop: {
-    marginTop: 16
+    marginTop: 16,
   },
   marginBottom: {
-    marginBottom: 16
+    marginBottom: 16,
   },
   marginLeft: {
-    marginLeft: 16
+    marginLeft: 16,
   },
   marginTopLeft: {
     marginTop: 16,
-    marginLeft: 16
+    marginLeft: 16,
   },
   marginTopRight: {
     marginTop: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   marginHorizontal: {
     marginLeft: 16,
-    marginRight: 16
+    marginRight: 16,
   },
   marginVertical: {
     marginTop: 16,
-    marginBottom: 16
+    marginBottom: 16,
   },
   title: {
     lineHeight: 21,
@@ -45,111 +45,111 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 10,
     textAlign: 'center',
-    color: colors.primary
+    color: colors.primary,
   },
   tinyText: {
     lineHeight: 14,
     fontSize: 10,
     textAlign: 'center',
-    color: colors.textGrey
+    color: colors.textGrey,
   },
   smallText: {
     lineHeight: 20,
     fontSize: 14,
     textAlign: 'center',
-    color: colors.textGrey
+    color: colors.textGrey,
   },
   mediumText: {
     lineHeight: 20,
     fontSize: 16,
     textAlign: 'center',
-    color: colors.textGrey
+    color: colors.textGrey,
   },
   bigText: {
     lineHeight: 30,
     fontSize: 25,
     textAlign: 'center',
-    color: colors.textGrey
+    color: colors.textGrey,
   },
   largeText: {
     lineHeight: 23,
     fontSize: 19,
     textAlign: 'center',
-    color: colors.textGrey
+    color: colors.textGrey,
   },
   textGrey: {
-    color: colors.textGrey
+    color: colors.textGrey,
   },
   textLeft: {
-    textAlign: 'left'
+    textAlign: 'left',
   },
   textRight: {
-    textAlign: 'right'
+    textAlign: 'right',
   },
   textCenter: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   textTop: {
-    textAlignVertical: 'top'
+    textAlignVertical: 'top',
   },
   textBottom: {
-    textAlignVertical: 'bottom'
+    textAlignVertical: 'bottom',
   },
   textAlignMiddle: {
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
   row: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   col: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   rounded: {
-    borderRadius: 4
+    borderRadius: 4,
   },
   button: {
-    borderRadius: 4
+    borderRadius: 4,
   },
   buttonBottom: {
     borderTopLeftRadius: 0,
-    borderTopRightRadius: 0
+    borderTopRightRadius: 0,
   },
   shadow: {
     shadowColor: colors.shadowGrey,
     shadowOffset: { height: 0, width: 0 },
     shadowOpacity: 0.3,
     shadowRadius: 3,
-    ...(Platform.OS === 'android' ? { elevation: 2 } : {})
+    ...(Platform.OS === 'android' ? { elevation: 2 } : {}),
   },
   bold: {
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   border: {
     borderWidth: 0.5,
-    borderColor: colors.borderGrey
+    borderColor: colors.borderGrey,
   },
   borderLeft: {
     borderLeftWidth: 0.5,
-    borderColor: colors.borderGrey
+    borderColor: colors.borderGrey,
   },
   borderTop: {
     borderTopWidth: 0.5,
-    borderColor: colors.borderGrey
+    borderColor: colors.borderGrey,
   },
   borderRight: {
     borderRightWidth: 0.5,
-    borderColor: colors.borderGrey
+    borderColor: colors.borderGrey,
   },
   borderBottom: {
     borderBottomWidth: 0.5,
-    borderColor: colors.borderGrey
-  }
+    borderColor: colors.borderGrey,
+  },
 })
 
 export const {
@@ -189,7 +189,7 @@ export const {
   borderLeft,
   borderTop,
   borderRight,
-  borderBottom
+  borderBottom,
 } = styles
 
 export default styles

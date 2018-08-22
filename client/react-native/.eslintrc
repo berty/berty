@@ -18,8 +18,7 @@
   "rules": {
     "no-console": "off",
     "linebreak-style": "off",
-    "comma-dangle": [
-      "off",
+    "comma-dangle": ["error",
       "always-multiline"
     ],
     "no-multi-spaces": "off",

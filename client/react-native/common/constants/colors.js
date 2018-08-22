@@ -26,5 +26,5 @@ export default {
   secondary: '#f1f1fc',
   success: '#15D09D',
   warning: '#FFD665',
-  error: '#F00062'
+  error: '#F00062',
 }
