@@ -1,4 +1,3 @@
-
 const path = require('path')
 const fs = require('fs')
 const url = require('url')
@@ -51,7 +50,7 @@ module.exports = {
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
-  servedPath: getServedPath(resolveApp('package.json'))
+  servedPath: getServedPath(resolveApp('package.json')),
 }
 
 let checkForMonorepo = true

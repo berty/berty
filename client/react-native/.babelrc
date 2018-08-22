@@ -1,6 +1,8 @@
 {
   "presets": ["react-native", "react-app"],
   "plugins": [
+    "relay",
+
     "@babel/plugin-proposal-function-bind",
 
     "@babel/plugin-proposal-export-default-from",
