@@ -11,7 +11,7 @@ const Icon = ({ name, color, rotate, style, ...props }: { name: String }) => {
     name
       .split('-')
       .splice(1)
-      .join('-')
+      .join('-'),
   ]
   const iconProps = {
     name: iconName,
@@ -20,12 +20,12 @@ const Icon = ({ name, color, rotate, style, ...props }: { name: String }) => {
       { color: color || colors.textGrey },
       rotate && {
         transform: [
-          { rotate: typeof rotate === 'boolean' ? '90deg' : `${rotate}deg` }
-        ]
+          { rotate: typeof rotate === 'boolean' ? '90deg' : `${rotate}deg` },
+        ],
       },
-      style
+      style,
     ],
-    ...props
+    ...props,
   }
   switch (type) {
     case 'feather':

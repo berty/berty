@@ -4,7 +4,7 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  TouchableOpacity
+  TouchableOpacity,
 } from 'react-native'
 import { Separator, CustomTextInput, Icon, Text } from '.'
 import { Row, Col } from './Grid'
@@ -17,11 +17,11 @@ export default class Menu extends Component {
       style={[
         {
           width: '100%',
-          backgroundColor: 'transparent'
+          backgroundColor: 'transparent',
         },
         marginTop,
         !icon && !title && { marginTop: 32 },
-        style
+        style,
       ]}
     >
       <Row style={[marginTopLeft]}>
@@ -40,7 +40,7 @@ export default class Menu extends Component {
 
   static Item = class Item extends Component {
     state = {
-      delete: false
+      delete: false,
     }
 
     _delete = callback => () =>
