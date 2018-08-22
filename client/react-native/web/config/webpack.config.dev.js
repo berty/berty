@@ -1,8 +1,7 @@
-'use strict'
-
 const autoprefixer = require('autoprefixer')
 const path = require('path')
 const webpack = require('webpack')
+const eslintFormatter = require('react-dev-utils/eslintFormatter')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
@@ -166,6 +165,13 @@ module.exports = {
         enforce: 'pre',
         use: [
           {
+            options: {
+              formatter: eslintFormatter,
+              eslintPath: require.resolve('eslint'),
+              baseConfig: {
+                extends: [require.resolve('eslint-config-react-app')]
+              }
+            },
             loader: require.resolve('eslint-loader')
           }
         ],

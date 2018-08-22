@@ -3,7 +3,8 @@
   "extends": [
     "eslint:recommended",
     "standard",
-    "standard-react"
+    "standard-react",
+    "react-app"
   ],
   "plugins": [
     "jsx-a11y",
