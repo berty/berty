@@ -1,7 +1,3 @@
-{{setStore "extGraphqlFields" 53001}}
-{{setStore "extGraphqlID" 53002}}
-{{setStore "extGraphqlType" 53003}}
-
 {{if not (getStore "headerSet")}}
 # GENERATED CODE -- DO NOT EDIT!
 
@@ -143,17 +139,21 @@ enum {{$PackageName}}{{.Name}} {
 {{- $methods := .Method }}
 {{- range ("Subscription,Mutation,Query" | splitArray ",")}}
 type {{.}} {
-{{- $typeName := . }}
-{{- range $methods }}
+  {{- $typeName := . }}
+  {{- range $methods }}
   {{- $type := stringMethodOptionsExtension 53003 . -}}
   {{ if eq $type $typeName }}
   {{- $fields := stringMethodOptionsExtension 53001 . -}}
   {{- $id := stringMethodOptionsExtension 53002 . -}}
 
   {{- if (eq $fields "")}}{{setStore "args" "" -}}
-  {{- else}}{{setStore "args" (concat "(" $fields ")")}} {{end}}
+  {{- else}}{{setStore "args" (concat "(" $fields ")")}}{{end}}
+
+  {{- if (and (ne $typeName "Subscription" ) .ServerStreaming) }}
+  {{.Name}}{{getStore "args"}}: [{{ .OutputType | replace "." "_" | camelCase | replace "_" "" }}]
+  {{- else }}
   {{.Name}}{{getStore "args"}}: {{ .OutputType | replace "." "_" | camelCase | replace "_" "" }}
-  {{- end -}}
+  {{- end -}}{{- end -}}
 {{- end}}
 }
 {{- end -}}{{- end -}}

@@ -2,6 +2,16 @@
 
 
 [[projects]]
+  name = "github.com/99designs/gqlgen"
+  packages = [
+    "graphql",
+    "graphql/introspection",
+    "handler"
+  ]
+  revision = "6f6622c6b78098660f03d38fb8f0d459d428bdbe"
+  version = "v0.4.4"
+
+[[projects]]
   branch = "master"
   name = "github.com/agl/ed25519"
   packages = [
@@ -10,6 +20,12 @@
     "extra25519"
   ]
   revision = "5312a61534124124185d41f09206b9fef1d88403"
+
+[[projects]]
+  name = "github.com/agnivade/levenshtein"
+  packages = ["."]
+  revision = "3d21ba515fe27b856f230847e856431ae1724adc"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/apex/log"
@@ -609,6 +625,20 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/vektah/gqlparser"
+  packages = [
+    ".",
+    "ast",
+    "gqlerror",
+    "lexer",
+    "parser",
+    "validator",
+    "validator/rules"
+  ]
+  revision = "4d7ef2674c0989e731b92d0c79bf827402d5842b"
+
+[[projects]]
+  branch = "master"
   name = "github.com/whyrusleeping/base32"
   packages = ["."]
   revision = "c30ac30633ccdabefe87eb12465113f06f1bab75"
@@ -831,6 +861,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0c9bc3d3d4190d3147abba076ad4853734f9bb05b13ecfe1971909c783410471"
+  inputs-digest = "595dd5620aca0a3fbe643cfd3fb2f393ac5b6f97826fe99777b32098f0c99943"
   solver-name = "gps-cdcl"
   solver-version = 1

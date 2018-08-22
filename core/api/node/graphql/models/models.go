@@ -61,6 +61,10 @@ type BertyNodeConversationAddMessageInput struct {
 	Conversation *BertyEntityConversation `json:"conversation"`
 	Message      *BertyEntityMessage      `json:"message"`
 }
+type BertyNodeConversationManageMembersInput struct {
+	Conversation *BertyEntityConversation         `json:"conversation"`
+	Members      []*BertyEntityConversationMember `json:"members"`
+}
 type BertyNodeEventListInput struct {
 	Limit  *int           `json:"limit"`
 	Filter *BertyP2pEvent `json:"filter"`

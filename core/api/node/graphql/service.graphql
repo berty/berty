@@ -1,8 +1,4 @@
 
-
-
-
-
 # GENERATED CODE -- DO NOT EDIT!
 
 interface Node {
@@ -237,24 +233,12 @@ type GoogleProtobufGeneratedCodeInfoAnnotation {
 type GoogleProtobufGeneratedCodeInfo {
   annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
 }  
-
-
-
-
    
-
-
-
-
   
 type GoogleProtobufTimestamp {
   seconds: Int
   nanos: Int
 }  
-
-
-
-
   
 type BertyEntityDevice {
   id: String
@@ -273,10 +257,6 @@ enum BertyEntityDeviceStatus {
   Available
   Myself
 }  
-
-
-
-
   
 type BertyEntityContact {
   id: String
@@ -300,10 +280,6 @@ enum BertyEntityContactStatus {
   IsBlocked
   Myself
 }  
-
-
-
-
   
 type BertyEntityConversation {
   id: String
@@ -330,18 +306,10 @@ enum BertyEntityConversationMemberStatus {
   Active
   Blocked
 }  
-
-
-
-
   
 type BertyEntityMessage {
   text: String
 }  
-
-
-
-
   
 type BertyP2pSentAttrs {
   ids: [String]
@@ -385,10 +353,6 @@ enum BertyP2pKind {
   ConversationInvite
   ConversationNewMessage
 } 
-
-
-
-
   
 type BertyP2pEvent {
   id: String
@@ -412,10 +376,6 @@ enum BertyP2pEventDirection {
   Incoming
   Outgoing
 }  
-
-
-
-
   
 type BertyNodeContactRequestInput {
   contact: BertyEntityContact
@@ -429,22 +389,27 @@ type BertyNodeEventListInput {
   limit: Int
   filter: BertyP2pEvent
 } 
+type BertyNodeConversationManageMembersInput {
+  conversation: BertyEntityConversation
+  members: [BertyEntityConversationMember]
+} 
 type BertyNodeVoid { # Can't make empty type
   T: Boolean
 }  
 type Subscription {
   EventStream: BertyP2pEvent
 }
-type Mutation { 
-  ContactRequest(id: String): BertyEntityContact 
-  ContactRemove(id: String): BertyEntityContact 
-  ContactUpdate(id: String): BertyEntityContact 
-  ConversationCreate(id: String): BertyEntityConversation 
-  ConversationInvite(id: String): BertyEntityConversation 
-  ConversationAddMessage(id: String): BertyP2pEvent
+type Mutation {
+  ContactRequest(contactId: String!, introText: String): BertyEntityContact
+  ContactRemove(contactId: String!): BertyEntityContact
+  ContactUpdate(contactId: String!, displayName: String): BertyEntityContact
+  ConversationCreate(contactIds: [String!]!): BertyEntityConversation
+  ConversationInvite(conversationId: String!, contactIds: [String!]!): BertyEntityConversation
+  ConversationExclude(conversationId: String!, contactIds: [String!]!): BertyEntityConversation
+  ConversationAddMessage(conversationId: String!, message: String!): BertyP2pEvent
 }
 type Query {
-  EventList: BertyP2pEvent
-  ContactList: BertyEntityContact
-  ConversationList: BertyEntityConversation
+  EventList(limit: Int): [BertyP2pEvent]
+  ContactList: [BertyEntityContact]
+  ConversationList: [BertyEntityConversation]
 }

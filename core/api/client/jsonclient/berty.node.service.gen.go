@@ -28,6 +28,7 @@ import (
      registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
      registerServerStream("berty.node.ConversationList", NodeConversationList)
      registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
+     registerUnary("berty.node.ConversationExclude", NodeConversationExclude)
      registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
      registerUnary("berty.node.HandleEvent", NodeHandleEvent)
   }
@@ -248,11 +249,26 @@ import (
                   zap.String("input", string(jsonInput)),
             )
             
-            var typedInput entity.ConversationMember
+            var typedInput node.ConversationManageMembersInput
             if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
                   return nil, err
             }
             return client.Node().ConversationInvite(ctx, &typedInput)
+      }
+    
+      
+      func NodeConversationExclude(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+            zap.L().Debug("client call",
+                  zap.String("service", "Service"),
+                  zap.String("method", "ConversationExclude"),
+                  zap.String("input", string(jsonInput)),
+            )
+            
+            var typedInput node.ConversationManageMembersInput
+            if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+                  return nil, err
+            }
+            return client.Node().ConversationExclude(ctx, &typedInput)
       }
     
       
