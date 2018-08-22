@@ -14,7 +14,7 @@ import {
   textTop,
   textBottom,
   bold,
-  shadow
+  shadow,
 } from '../styles'
 import { colors } from '../constants'
 
@@ -41,14 +41,14 @@ const getPadding = (
     small: 6,
     medium: 8,
     large: 10,
-    big: 12
+    big: 12,
   }
 ) => {
   const padding = find({ inside: props, from: paddings, or: 'small' })
   return {
     padding,
     paddingTop: padding / 3,
-    paddingBottom: padding / 3
+    paddingBottom: padding / 3,
   }
 }
 
@@ -59,14 +59,14 @@ const getBorderRadius = (
     small: 3,
     medium: 4,
     large: 5,
-    big: 6
+    big: 6,
   }
 ) => {
   const borderRadius = props.rounded
     ? find({ inside: props, from: radiuses, or: 'small' })
     : 0
   return {
-    borderRadius
+    borderRadius,
   }
 }
 
@@ -77,7 +77,7 @@ const getSize = (
     small: smallText,
     medium: mediumText,
     large: largeText,
-    big: bigText
+    big: bigText,
   }
 ) => find({ inside: props, from: sizes, or: 'small' })
 
@@ -88,7 +88,7 @@ const getIconSize = (
     small: mediumText,
     medium: largeText,
     large: largeText,
-    big: bigText
+    big: bigText,
   }
 ) => find({ inside: props, from: sizes, or: 'small' })
 
@@ -97,7 +97,7 @@ const getHorizAlign = (
   aligns = {
     center: textCenter,
     left: textLeft,
-    right: textRight
+    right: textRight,
   }
 ) => find({ inside: props, from: aligns, or: 'center' })
 
@@ -106,12 +106,13 @@ const getVertiAlign = (
   aligns = {
     middle: textMiddle,
     top: textTop,
-    bottom: textBottom
+    bottom: textBottom,
   }
 ) => find({ inside: props, from: aligns, or: 'middle' })
 
 const getColor = ({ background, color }) => ({
-  color: colors[color] || color || (background ? colors.white : colors.textGrey)
+  color:
+    colors[color] || color || (background ? colors.white : colors.textGrey),
 })
 
 const getWeight = props => props.bold && bold
@@ -125,11 +126,11 @@ export const BackgroundText = props => {
           backgroundColor:
             (background === true && colors.blackGrey) ||
             background ||
-            colors.transparent
+            colors.transparent,
         },
         getBorderRadius(props),
         getPadding(props),
-        props.shadow && shadow
+        props.shadow && shadow,
       ]}
     >
       {children}
@@ -145,7 +146,7 @@ export const ForegroundText = props => {
     getSize(props),
     getIconSize(props),
     getWeight(props),
-    getColor(props)
+    getColor(props),
   ]
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>

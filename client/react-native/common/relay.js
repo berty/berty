@@ -9,12 +9,12 @@ const fetchQuery = async (operation, variables) => {
       method: 'POST',
       headers: {
         // Add authentication and other headers here
-        'content-type': 'application/json'
+        'content-type': 'application/json',
       },
       body: JSON.stringify({
         query: operation.text, // GraphQL text from input
-        variables
-      })
+        variables,
+      }),
     })
     return response.json()
   } catch (err) {
@@ -28,7 +28,7 @@ const store = new Store(new RecordSource())
 
 const environment = new Environment({
   network,
-  store
+  store,
   // ... other options
 })
 

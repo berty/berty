@@ -6,7 +6,7 @@ import environment from '../../relay.js'
 var fields = {
   id: '',
   email: '',
-  phone: ''
+  phone: '',
 }
 
 export default class ContactRequest extends Component {
@@ -69,7 +69,7 @@ const commit = (variables = {}) =>
     variables,
     onCompleted: (res, errs) =>
       console.log('Response receive from server.', res, errs),
-    onError: err => console.error(err)
+    onError: err => console.error(err),
   })
 
 function handleRequestButton () {
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
   contactView: {
     marginTop: 50,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   input: {
     borderColor: 'gray',
@@ -102,10 +102,10 @@ const styles = StyleSheet.create({
     height: 30,
     fontSize: 20,
     marginTop: 5,
-    marginBottom: 30
+    marginBottom: 30,
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 })

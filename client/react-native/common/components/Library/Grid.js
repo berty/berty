@@ -14,7 +14,7 @@ export const Block = ({
   <View
     style={[
       { flex, flexDirection, alignItems, alignSelf, justifyContent },
-      style
+      style,
     ]}
     {...props}
   >
@@ -51,5 +51,5 @@ export const Col = props => (
 
 export default {
   Row,
-  Col
+  Col,
 }
