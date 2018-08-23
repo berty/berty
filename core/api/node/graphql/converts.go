@@ -3,7 +3,10 @@ package graphql
 import (
 	"encoding/base64"
 
+	"time"
+
 	"github.com/berty/berty/core/api/node/graphql/models"
+	"github.com/berty/berty/core/api/node/graphql/scalar"
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 )
@@ -36,6 +39,9 @@ func convertContact(contact *entity.Contact, err error) (*model.BertyEntityConta
 		ID:          &contact.ID,
 		Status:      convertContactStatus(contact.Status),
 		DisplayName: &contact.DisplayName,
+		CreatedAt:   &scalar.DateTime{Value: &contact.CreatedAt},
+		UpdatedAt:   &scalar.DateTime{Value: &contact.UpdatedAt},
+		DeletedAt:   &scalar.DateTime{Value: contact.DeletedAt},
 	}, err
 }
 
@@ -68,6 +74,9 @@ func convertConversationMember(conversationMember *entity.ConversationMember) *m
 		Contact:        contact,
 		ConversationID: &conversationMember.ConversationID,
 		ContactID:      &conversationMember.ContactID,
+		CreatedAt:      &scalar.DateTime{Value: &conversationMember.CreatedAt},
+		UpdatedAt:      &scalar.DateTime{Value: &conversationMember.UpdatedAt},
+		DeletedAt:      &scalar.DateTime{Value: conversationMember.DeletedAt},
 	}
 }
 
@@ -87,10 +96,13 @@ func convertConversation(conversation *entity.Conversation, err error) (*model.B
 	}
 
 	return &model.BertyEntityConversation{
-		ID:      &conversation.ID,
-		Title:   &conversation.Title,
-		Topic:   &conversation.Topic,
-		Members: members,
+		ID:        &conversation.ID,
+		Title:     &conversation.Title,
+		Topic:     &conversation.Topic,
+		Members:   members,
+		CreatedAt: &scalar.DateTime{Value: &conversation.CreatedAt},
+		UpdatedAt: &scalar.DateTime{Value: &conversation.UpdatedAt},
+		DeletedAt: &scalar.DateTime{Value: conversation.DeletedAt},
 	}, err
 }
 
@@ -125,6 +137,12 @@ func convertEvent(event *p2p.Event, err error) (*model.BertyP2pEvent, error) {
 		Kind:               convertEventKind(event.Kind),
 		Attributes:         convertBytes(&event.Attributes),
 		ConversationID:     &event.ConversationID,
+		CreatedAt:          &scalar.DateTime{Value: &event.CreatedAt},
+		UpdatedAt:          &scalar.DateTime{Value: &event.UpdatedAt},
+		DeletedAt:          &scalar.DateTime{Value: event.DeletedAt},
+		SentAt:             &scalar.DateTime{Value: event.SentAt},
+		ReceivedAt:         &scalar.DateTime{Value: event.ReceivedAt},
+		AckedAt:            &scalar.DateTime{Value: event.AckedAt},
 	}, err
 }
 
@@ -148,6 +166,16 @@ func convertEventKind(value p2p.Kind) *model.BertyP2pKind {
 	}
 
 	return &ret
+}
+
+func convertTime(value *time.Time) *string {
+	if value == nil {
+		return nil
+	}
+
+	t := value.UTC().Format(time.RFC3339Nano)
+
+	return &t
 }
 
 func convertEventDirection(value p2p.Event_Direction) *model.BertyP2pEventDirection {

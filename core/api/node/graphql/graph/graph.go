@@ -12,6 +12,7 @@ import (
 	graphql "github.com/99designs/gqlgen/graphql"
 	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	model "github.com/berty/berty/core/api/node/graphql/models"
+	scalar "github.com/berty/berty/core/api/node/graphql/scalar"
 	gqlparser "github.com/vektah/gqlparser"
 	ast "github.com/vektah/gqlparser/ast"
 )
@@ -205,11 +206,11 @@ func (ec *executionContext) _BertyEntityContact_createdAt(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
@@ -225,11 +226,11 @@ func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
@@ -245,11 +246,11 @@ func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityContact_sigchain(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
@@ -469,11 +470,11 @@ func (ec *executionContext) _BertyEntityConversation_createdAt(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
@@ -489,11 +490,11 @@ func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
@@ -509,11 +510,11 @@ func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityConversation_title(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
@@ -655,11 +656,11 @@ func (ec *executionContext) _BertyEntityConversationMember_createdAt(ctx context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
@@ -675,11 +676,11 @@ func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
@@ -695,11 +696,11 @@ func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_status(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
@@ -852,11 +853,11 @@ func (ec *executionContext) _BertyEntityDevice_createdAt(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
@@ -872,11 +873,11 @@ func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
@@ -892,11 +893,11 @@ func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyEntityDevice_name(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
@@ -1792,11 +1793,11 @@ func (ec *executionContext) _BertyP2pEvent_createdAt(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -1812,11 +1813,11 @@ func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -1832,11 +1833,11 @@ func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyP2pEvent_sentAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -1852,11 +1853,11 @@ func (ec *executionContext) _BertyP2pEvent_sentAt(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyP2pEvent_receivedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -1872,11 +1873,11 @@ func (ec *executionContext) _BertyP2pEvent_receivedAt(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyP2pEvent_ackedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -1892,11 +1893,11 @@ func (ec *executionContext) _BertyP2pEvent_ackedAt(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.GoogleProtobufTimestamp)
+	res := resTmp.(*scalar.DateTime)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._GoogleProtobufTimestamp(ctx, field.Selections, res)
+	return *res
 }
 
 func (ec *executionContext) _BertyP2pEvent_direction(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -7286,6 +7287,8 @@ var parsedSchema = gqlparser.MustLoadSchema(
 	&ast.Source{Name: "service.graphql", Input: `
 # GENERATED CODE -- DO NOT EDIT!
 
+scalar DateTime
+
 interface Node {
   id: ID!
 }
@@ -7527,9 +7530,9 @@ type GoogleProtobufTimestamp {
   
 type BertyEntityDevice {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   name: String
   status: BertyEntityDeviceStatus
   apiVersion: Int
@@ -7545,9 +7548,9 @@ enum BertyEntityDeviceStatus {
   
 type BertyEntityContact {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   sigchain: String
   status: BertyEntityContactStatus
   devices: [BertyEntityDevice]
@@ -7568,18 +7571,18 @@ enum BertyEntityContactStatus {
   
 type BertyEntityConversation {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   title: String
   topic: String
   members: [BertyEntityConversationMember]
 } 
 type BertyEntityConversationMember {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   status: BertyEntityConversationMemberStatus
   contact: BertyEntityContact
   conversationId: String
@@ -7642,12 +7645,12 @@ enum BertyP2pKind {
 type BertyP2pEvent {
   id: String
   senderId: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
-  sentAt: GoogleProtobufTimestamp
-  receivedAt: GoogleProtobufTimestamp
-  ackedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  sentAt: DateTime
+  receivedAt: DateTime
+  ackedAt: DateTime
   direction: BertyP2pEventDirection
   senderApiVersion: Int
   receiverApiVersion: Int

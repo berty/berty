@@ -1,6 +1,8 @@
 
 # GENERATED CODE -- DO NOT EDIT!
 
+scalar DateTime
+
 interface Node {
   id: ID!
 }
@@ -242,9 +244,9 @@ type GoogleProtobufTimestamp {
   
 type BertyEntityDevice {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   name: String
   status: BertyEntityDeviceStatus
   apiVersion: Int
@@ -260,9 +262,9 @@ enum BertyEntityDeviceStatus {
   
 type BertyEntityContact {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   sigchain: String
   status: BertyEntityContactStatus
   devices: [BertyEntityDevice]
@@ -283,18 +285,18 @@ enum BertyEntityContactStatus {
   
 type BertyEntityConversation {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   title: String
   topic: String
   members: [BertyEntityConversationMember]
 } 
 type BertyEntityConversationMember {
   id: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
   status: BertyEntityConversationMemberStatus
   contact: BertyEntityContact
   conversationId: String
@@ -357,12 +359,12 @@ enum BertyP2pKind {
 type BertyP2pEvent {
   id: String
   senderId: String
-  createdAt: GoogleProtobufTimestamp
-  updatedAt: GoogleProtobufTimestamp
-  deletedAt: GoogleProtobufTimestamp
-  sentAt: GoogleProtobufTimestamp
-  receivedAt: GoogleProtobufTimestamp
-  ackedAt: GoogleProtobufTimestamp
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  sentAt: DateTime
+  receivedAt: DateTime
+  ackedAt: DateTime
   direction: BertyP2pEventDirection
   senderApiVersion: Int
   receiverApiVersion: Int

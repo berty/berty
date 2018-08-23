@@ -1,6 +1,8 @@
 {{if not (getStore "headerSet")}}
 # GENERATED CODE -- DO NOT EDIT!
 
+scalar DateTime
+
 interface Node {
   id: ID!
 }
@@ -95,6 +97,11 @@ type {{concat $PackageName .Name}} {
   {{- range .Field}}
   {{- if (or (eq (.Type | string) "TYPE_MESSAGE") (eq (.Type | string) "TYPE_ENUM"))}}
   {{$type := .TypeName | replace "." "_" | camelCase | replace "_" "" -}}
+  {{- setStore "attrType" $type}}
+  {{- if (eq $type "GoogleProtobufTimestamp") -}}
+  {{- setStore "attrType" "DateTime" -}}
+  {{- end }}
+  {{- $type := getStore "attrType" -}}
   {{.JsonName}}: 
   {{- if (isFieldRepeated .)}} {{printf "[%s]" $type}}
   {{- else}} {{$type}}{{- end}}

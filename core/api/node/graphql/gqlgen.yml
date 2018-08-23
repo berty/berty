@@ -13,3 +13,7 @@ model:
 resolver:
   filename: resolver.go # where to write them
   type: Resolver  # whats the resolver root implementation type called?
+
+models:
+  DateTime:
+    model: github.com/berty/berty/core/api/node/graphql/scalar.DateTime
