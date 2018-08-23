@@ -119,7 +119,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 				Title: "Alice & Bob",
 				Topic: "hey!",
 				Members: []*entity.ConversationMember{
-					{ContactID: aliceode.UserID()},
+					{ContactID: alice.node.UserID()},
 				},
 			})
 			So(err, ShouldBeNil)
