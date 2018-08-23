@@ -402,13 +402,13 @@ type Subscription {
   EventStream: BertyP2pEvent
 }
 type Mutation {
-  ContactRequest(contactId: String!, introText: String): BertyEntityContact
-  ContactRemove(contactId: String!): BertyEntityContact
-  ContactUpdate(contactId: String!, displayName: String): BertyEntityContact
-  ConversationCreate(contactIds: [String!]!): BertyEntityConversation
-  ConversationInvite(conversationId: String!, contactIds: [String!]!): BertyEntityConversation
-  ConversationExclude(conversationId: String!, contactIds: [String!]!): BertyEntityConversation
-  ConversationAddMessage(conversationId: String!, message: String!): BertyP2pEvent
+  ContactRequest(contactID: String!, introText: String): BertyEntityContact
+  ContactRemove(contactID: String!): BertyEntityContact
+  ContactUpdate(contactID: String!, displayName: String): BertyEntityContact
+  ConversationCreate(contactsID: [String!]!): BertyEntityConversation
+  ConversationInvite(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
+  ConversationExclude(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
+  ConversationAddMessage(conversationID: String!, message: String!): BertyP2pEvent
 }
 type Query {
   EventList(limit: Int): [BertyP2pEvent]

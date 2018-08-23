@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"time"
+
+	"go.uber.org/zap"
 )
 
 type DateTime struct {
@@ -30,13 +32,23 @@ func (y *DateTime) UnmarshalGQL(v interface{}) error {
 
 // MarshalGQL implements the graphql.Marshaler interface
 func (y DateTime) MarshalGQL(w io.Writer) {
+	var err error
+
 	if y.Value == nil {
-		w.Write([]byte(`null`))
+		if _, err = w.Write([]byte(`null`)); err != nil {
+			zap.L().Error("Write error", zap.Error(err))
+		}
 	} else {
 		ret := y.Value.UTC().Format(time.RFC3339)
+		if _, err = w.Write([]byte("\"")); err != nil {
+			zap.L().Error("Write error", zap.Error(err))
+		}
+		if _, err = w.Write([]byte(ret)); err != nil {
+			zap.L().Error("Write error", zap.Error(err))
+		}
 
-		w.Write([]byte("\""))
-		w.Write([]byte(ret))
-		w.Write([]byte("\""))
+		if _, err = w.Write([]byte("\"")); err != nil {
+			zap.L().Error("Write error", zap.Error(err))
+		}
 	}
 }

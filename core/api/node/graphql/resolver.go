@@ -38,7 +38,7 @@ func (r *Resolver) Subscription() graph.SubscriptionResolver {
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) ContactRequest(ctx context.Context, contactId string, introText *string) (*model.BertyEntityContact, error) {
+func (r *mutationResolver) ContactRequest(ctx context.Context, contactID string, introText *string) (*model.BertyEntityContact, error) {
 	// @TODO: Find a way to properly handle defaults values
 	if introText == nil {
 		tmp := "Hi, I'd like to add you to my professional network on Berty"
@@ -47,7 +47,7 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, contactId string,
 
 	req := &service.ContactRequestInput{
 		Contact: &entity.Contact{
-			ID: contactId,
+			ID: contactID,
 		},
 		IntroText: *introText,
 	}
@@ -55,52 +55,52 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, contactId string,
 	return convertContact(r.client.ContactRequest(ctx, req))
 }
 
-func (r *mutationResolver) ContactRemove(ctx context.Context, contactId string) (*model.BertyEntityContact, error) {
+func (r *mutationResolver) ContactRemove(ctx context.Context, contactID string) (*model.BertyEntityContact, error) {
 	req := &entity.Contact{
-		ID: contactId,
+		ID: contactID,
 	}
 
 	return convertContact(r.client.ContactRemove(ctx, req))
 }
 
-func (r *mutationResolver) ContactUpdate(ctx context.Context, contactId string, displayName *string) (*model.BertyEntityContact, error) {
+func (r *mutationResolver) ContactUpdate(ctx context.Context, contactID string, displayName *string) (*model.BertyEntityContact, error) {
 	if displayName == nil {
 		return nil, errors.New("contact update without a displayName is not currently supported")
 	}
 
 	contact := entity.Contact{
-		ID:          contactId,
+		ID:          contactID,
 		DisplayName: *displayName,
 	}
 
 	return convertContact(r.client.ContactUpdate(ctx, &contact))
 }
-func (r *mutationResolver) ConversationCreate(ctx context.Context, contactIds []string) (*model.BertyEntityConversation, error) {
+func (r *mutationResolver) ConversationCreate(ctx context.Context, contactsID []string) (*model.BertyEntityConversation, error) {
 	return convertConversation(r.client.ConversationCreate(ctx, &entity.Conversation{
-		Members: memberSliceFromContactIds(contactIds),
+		Members: memberSliceFromContactIds(contactsID),
 	}))
 }
 
-func (r *mutationResolver) ConversationInvite(ctx context.Context, conversationId string, contactIds []string) (*model.BertyEntityConversation, error) {
+func (r *mutationResolver) ConversationInvite(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error) {
 	return convertConversation(r.client.ConversationInvite(ctx, &service.ConversationManageMembersInput{
 		Conversation: &entity.Conversation{
-			ID: conversationId,
+			ID: conversationID,
 		},
-		Members: memberSliceFromContactIds(contactIds),
+		Members: memberSliceFromContactIds(contactsID),
 	}))
 }
-func (r *mutationResolver) ConversationExclude(ctx context.Context, conversationId string, contactIds []string) (*model.BertyEntityConversation, error) {
+func (r *mutationResolver) ConversationExclude(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error) {
 	return convertConversation(r.client.ConversationExclude(ctx, &service.ConversationManageMembersInput{
 		Conversation: &entity.Conversation{
-			ID: conversationId,
+			ID: conversationID,
 		},
-		Members: memberSliceFromContactIds(contactIds),
+		Members: memberSliceFromContactIds(contactsID),
 	}))
 }
-func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversationId string, message string) (*model.BertyP2pEvent, error) {
+func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversationID string, message string) (*model.BertyP2pEvent, error) {
 	return convertEvent(r.client.ConversationAddMessage(ctx, &service.ConversationAddMessageInput{
 		Conversation: &entity.Conversation{
-			ID: conversationId,
+			ID: conversationID,
 		},
 		Message: &entity.Message{
 			Text: message,

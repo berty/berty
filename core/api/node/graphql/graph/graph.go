@@ -39,13 +39,13 @@ type ResolverRoot interface {
 type DirectiveRoot struct {
 }
 type MutationResolver interface {
-	ContactRequest(ctx context.Context, contactId string, introText *string) (*model.BertyEntityContact, error)
-	ContactRemove(ctx context.Context, contactId string) (*model.BertyEntityContact, error)
-	ContactUpdate(ctx context.Context, contactId string, displayName *string) (*model.BertyEntityContact, error)
-	ConversationCreate(ctx context.Context, contactIds []string) (*model.BertyEntityConversation, error)
-	ConversationInvite(ctx context.Context, conversationId string, contactIds []string) (*model.BertyEntityConversation, error)
-	ConversationExclude(ctx context.Context, conversationId string, contactIds []string) (*model.BertyEntityConversation, error)
-	ConversationAddMessage(ctx context.Context, conversationId string, message string) (*model.BertyP2pEvent, error)
+	ContactRequest(ctx context.Context, contactID string, introText *string) (*model.BertyEntityContact, error)
+	ContactRemove(ctx context.Context, contactID string) (*model.BertyEntityContact, error)
+	ContactUpdate(ctx context.Context, contactID string, displayName *string) (*model.BertyEntityContact, error)
+	ConversationCreate(ctx context.Context, contactsID []string) (*model.BertyEntityConversation, error)
+	ConversationInvite(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error)
+	ConversationExclude(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error)
+	ConversationAddMessage(ctx context.Context, conversationID string, message string) (*model.BertyP2pEvent, error)
 }
 type QueryResolver interface {
 	EventList(ctx context.Context, limit *int) ([]*model.BertyP2pEvent, error)
@@ -137,6 +137,7 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 	fields := graphql.CollectFields(ctx, sel, bertyEntityContactImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -170,6 +171,9 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -187,6 +191,7 @@ func (ec *executionContext) _BertyEntityContact_id(ctx context.Context, field gr
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -207,6 +212,7 @@ func (ec *executionContext) _BertyEntityContact_createdAt(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -227,6 +233,7 @@ func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -247,6 +254,7 @@ func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -267,6 +275,7 @@ func (ec *executionContext) _BertyEntityContact_sigchain(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -287,6 +296,7 @@ func (ec *executionContext) _BertyEntityContact_status(ctx context.Context, fiel
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContactStatus)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -313,6 +323,7 @@ func (ec *executionContext) _BertyEntityContact_devices(ctx context.Context, fie
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -336,6 +347,7 @@ func (ec *executionContext) _BertyEntityContact_displayName(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -356,6 +368,7 @@ func (ec *executionContext) _BertyEntityContact_displayStatus(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -376,6 +389,7 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayName(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -396,6 +410,7 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayStatus(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -409,6 +424,7 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -434,6 +450,9 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -451,6 +470,7 @@ func (ec *executionContext) _BertyEntityConversation_id(ctx context.Context, fie
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -471,6 +491,7 @@ func (ec *executionContext) _BertyEntityConversation_createdAt(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -491,6 +512,7 @@ func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -511,6 +533,7 @@ func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -531,6 +554,7 @@ func (ec *executionContext) _BertyEntityConversation_title(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -551,6 +575,7 @@ func (ec *executionContext) _BertyEntityConversation_topic(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -577,6 +602,7 @@ func (ec *executionContext) _BertyEntityConversation_members(ctx context.Context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -593,6 +619,7 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -620,6 +647,9 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -637,6 +667,7 @@ func (ec *executionContext) _BertyEntityConversationMember_id(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -657,6 +688,7 @@ func (ec *executionContext) _BertyEntityConversationMember_createdAt(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -677,6 +709,7 @@ func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -697,6 +730,7 @@ func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -717,6 +751,7 @@ func (ec *executionContext) _BertyEntityConversationMember_status(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversationMemberStatus)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -737,6 +772,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contact(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -757,6 +793,7 @@ func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -777,6 +814,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -790,6 +828,7 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyEntityDeviceImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -817,6 +856,9 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -834,6 +876,7 @@ func (ec *executionContext) _BertyEntityDevice_id(ctx context.Context, field gra
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -854,6 +897,7 @@ func (ec *executionContext) _BertyEntityDevice_createdAt(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -874,6 +918,7 @@ func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -894,6 +939,7 @@ func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -914,6 +960,7 @@ func (ec *executionContext) _BertyEntityDevice_name(ctx context.Context, field g
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -934,6 +981,7 @@ func (ec *executionContext) _BertyEntityDevice_status(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityDeviceStatus)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -954,6 +1002,7 @@ func (ec *executionContext) _BertyEntityDevice_apiVersion(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -974,6 +1023,7 @@ func (ec *executionContext) _BertyEntityDevice_contactId(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -987,6 +1037,7 @@ func (ec *executionContext) _BertyEntityMessage(ctx context.Context, sel ast.Sel
 	fields := graphql.CollectFields(ctx, sel, bertyEntityMessageImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1000,6 +1051,9 @@ func (ec *executionContext) _BertyEntityMessage(ctx context.Context, sel ast.Sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1017,6 +1071,7 @@ func (ec *executionContext) _BertyEntityMessage_text(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1030,6 +1085,7 @@ func (ec *executionContext) _BertyNodeContactRequestInput(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, bertyNodeContactRequestInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1045,6 +1101,9 @@ func (ec *executionContext) _BertyNodeContactRequestInput(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1062,6 +1121,7 @@ func (ec *executionContext) _BertyNodeContactRequestInput_contact(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1082,6 +1142,7 @@ func (ec *executionContext) _BertyNodeContactRequestInput_introText(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1095,6 +1156,7 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationAddMessageInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1110,6 +1172,9 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1127,6 +1192,7 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput_conversation(c
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1147,6 +1213,7 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput_message(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityMessage)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1160,6 +1227,7 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput(ctx context
 	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationManageMembersInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1175,6 +1243,9 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput(ctx context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1192,6 +1263,7 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput_conversatio
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1218,6 +1290,7 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput_members(ctx
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -1234,6 +1307,7 @@ func (ec *executionContext) _BertyNodeEventListInput(ctx context.Context, sel as
 	fields := graphql.CollectFields(ctx, sel, bertyNodeEventListInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1249,6 +1323,9 @@ func (ec *executionContext) _BertyNodeEventListInput(ctx context.Context, sel as
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1266,6 +1343,7 @@ func (ec *executionContext) _BertyNodeEventListInput_limit(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1286,6 +1364,7 @@ func (ec *executionContext) _BertyNodeEventListInput_filter(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pEvent)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1299,6 +1378,7 @@ func (ec *executionContext) _BertyNodeVoid(ctx context.Context, sel ast.Selectio
 	fields := graphql.CollectFields(ctx, sel, bertyNodeVoidImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1312,6 +1392,9 @@ func (ec *executionContext) _BertyNodeVoid(ctx context.Context, sel ast.Selectio
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1329,6 +1412,7 @@ func (ec *executionContext) _BertyNodeVoid_T(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1342,6 +1426,7 @@ func (ec *executionContext) _BertyP2pAckAttrs(ctx context.Context, sel ast.Selec
 	fields := graphql.CollectFields(ctx, sel, bertyP2pAckAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1357,6 +1442,9 @@ func (ec *executionContext) _BertyP2pAckAttrs(ctx context.Context, sel ast.Selec
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1380,6 +1468,7 @@ func (ec *executionContext) _BertyP2pAckAttrs_ids(ctx context.Context, field gra
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -1403,6 +1492,7 @@ func (ec *executionContext) _BertyP2pAckAttrs_ErrMsg(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1416,6 +1506,7 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactRequestAcceptedAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1429,6 +1520,9 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1446,6 +1540,7 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs_T(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1459,6 +1554,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactRequestAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1474,6 +1570,9 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs(ctx context.Context, se
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1491,6 +1590,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs_me(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1511,6 +1611,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs_introText(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1524,6 +1625,7 @@ func (ec *executionContext) _BertyP2pContactShareAttrs(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactShareAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1537,6 +1639,9 @@ func (ec *executionContext) _BertyP2pContactShareAttrs(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1554,6 +1659,7 @@ func (ec *executionContext) _BertyP2pContactShareAttrs_contact(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1567,6 +1673,7 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactShareMeAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1580,6 +1687,9 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs(ctx context.Context, se
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1597,6 +1707,7 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs_me(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1610,6 +1721,7 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, bertyP2pConversationInviteAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1623,6 +1735,9 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1640,6 +1755,7 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs_conversation(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1653,6 +1769,7 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, bertyP2pConversationNewMessageAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1666,6 +1783,9 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1683,6 +1803,7 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityMessage)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1696,6 +1817,7 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 	fields := graphql.CollectFields(ctx, sel, bertyP2pEventImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1737,6 +1859,9 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -1754,6 +1879,7 @@ func (ec *executionContext) _BertyP2pEvent_id(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1774,6 +1900,7 @@ func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field g
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1794,6 +1921,7 @@ func (ec *executionContext) _BertyP2pEvent_createdAt(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1814,6 +1942,7 @@ func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1834,6 +1963,7 @@ func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1854,6 +1984,7 @@ func (ec *executionContext) _BertyP2pEvent_sentAt(ctx context.Context, field gra
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1874,6 +2005,7 @@ func (ec *executionContext) _BertyP2pEvent_receivedAt(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1894,6 +2026,7 @@ func (ec *executionContext) _BertyP2pEvent_ackedAt(ctx context.Context, field gr
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1914,6 +2047,7 @@ func (ec *executionContext) _BertyP2pEvent_direction(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pEventDirection)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1934,6 +2068,7 @@ func (ec *executionContext) _BertyP2pEvent_senderApiVersion(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1954,6 +2089,7 @@ func (ec *executionContext) _BertyP2pEvent_receiverApiVersion(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1974,6 +2110,7 @@ func (ec *executionContext) _BertyP2pEvent_receiverId(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1994,6 +2131,7 @@ func (ec *executionContext) _BertyP2pEvent_kind(ctx context.Context, field graph
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pKind)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2014,6 +2152,7 @@ func (ec *executionContext) _BertyP2pEvent_attributes(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2034,6 +2173,7 @@ func (ec *executionContext) _BertyP2pEvent_conversationId(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2047,6 +2187,7 @@ func (ec *executionContext) _BertyP2pPingAttrs(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyP2pPingAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2060,6 +2201,9 @@ func (ec *executionContext) _BertyP2pPingAttrs(ctx context.Context, sel ast.Sele
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2077,6 +2221,7 @@ func (ec *executionContext) _BertyP2pPingAttrs_T(ctx context.Context, field grap
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2090,6 +2235,7 @@ func (ec *executionContext) _BertyP2pSentAttrs(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyP2pSentAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2103,6 +2249,9 @@ func (ec *executionContext) _BertyP2pSentAttrs(ctx context.Context, sel ast.Sele
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2126,6 +2275,7 @@ func (ec *executionContext) _BertyP2pSentAttrs_ids(ctx context.Context, field gr
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2142,6 +2292,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto(ctx context.Context, 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2173,6 +2324,9 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto(ctx context.Context, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2190,6 +2344,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_name(ctx context.Cont
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2216,6 +2371,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_field(ctx context.Con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2245,6 +2401,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_extension(ctx context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2274,6 +2431,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_nestedType(ctx contex
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2303,6 +2461,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_enumType(ctx context.
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2332,6 +2491,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_extensionRange(ctx co
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2361,6 +2521,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_oneofDecl(ctx context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2384,6 +2545,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_options(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufMessageOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2410,6 +2572,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedRange(ctx con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2439,6 +2602,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedName(ctx cont
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2455,6 +2619,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange(ctx con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoExtensionRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2472,6 +2637,9 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange(ctx con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2489,6 +2657,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_start(c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2509,6 +2678,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_end(ctx
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2529,6 +2699,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_options
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufExtensionRangeOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2542,6 +2713,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange(ctx cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoReservedRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2557,6 +2729,9 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange(ctx cont
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2574,6 +2749,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_start(ct
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2594,6 +2770,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_end(ctx 
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2607,6 +2784,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2628,6 +2806,9 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto(ctx context.Conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2645,6 +2826,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_name(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2671,6 +2853,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_value(ctx context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2694,6 +2877,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_options(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufEnumOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2720,6 +2904,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedRange(ctx
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2749,6 +2934,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedName(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2765,6 +2951,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange(
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumDescriptorProtoEnumReservedRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2780,6 +2967,9 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange(
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2797,6 +2987,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2817,6 +3008,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2830,6 +3022,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2847,6 +3040,9 @@ func (ec *executionContext) _GoogleProtobufEnumOptions(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2864,6 +3060,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_allowAlias(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2884,6 +3081,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_deprecated(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2910,6 +3108,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_uninterpretedOption(ctx c
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2926,6 +3125,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto(ctx context.
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumValueDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2943,6 +3143,9 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto(ctx context.
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -2960,6 +3163,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_name(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2980,6 +3184,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_number(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3000,6 +3205,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_options(ctx 
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufEnumValueOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3013,6 +3219,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions(ctx context.Context,
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumValueOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3028,6 +3235,9 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions(ctx context.Context,
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -3045,6 +3255,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions_deprecated(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3071,6 +3282,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions_uninterpretedOption(
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3087,6 +3299,7 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufExtensionRangeOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3100,6 +3313,9 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -3123,6 +3339,7 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions_uninterpretedOp
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3139,6 +3356,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto(ctx context.Cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFieldDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3170,6 +3388,9 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto(ctx context.Cont
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -3187,6 +3408,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_name(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3207,6 +3429,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_number(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3227,6 +3450,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_label(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldDescriptorProtoLabel)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3247,6 +3471,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_type(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldDescriptorProtoType)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3267,6 +3492,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_typeName(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3287,6 +3513,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_extendee(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3307,6 +3534,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_defaultValue(ctx
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3327,6 +3555,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_oneofIndex(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3347,6 +3576,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_jsonName(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3367,6 +3597,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_options(ctx cont
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3380,6 +3611,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions(ctx context.Context, sel
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFieldOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3405,6 +3637,9 @@ func (ec *executionContext) _GoogleProtobufFieldOptions(ctx context.Context, sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -3422,6 +3657,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_ctype(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldOptionsCtype)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3442,6 +3678,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_packed(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3462,6 +3699,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_jstype(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldOptionsJstype)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3482,6 +3720,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_lazy(ctx context.Context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3502,6 +3741,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_deprecated(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3522,6 +3762,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_weak(ctx context.Context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3548,6 +3789,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_uninterpretedOption(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3564,6 +3806,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3599,6 +3842,9 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto(ctx context.Conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -3616,6 +3862,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_name(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3636,6 +3883,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_package(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3662,6 +3910,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_dependency(ctx co
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3691,6 +3940,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_publicDependency(
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3720,6 +3970,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_weakDependency(ct
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3749,6 +4000,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_messageType(ctx c
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3778,6 +4030,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_enumType(ctx cont
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3807,6 +4060,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_service(ctx conte
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3836,6 +4090,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_extension(ctx con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3859,6 +4114,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_options(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFileOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3879,6 +4135,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_sourceCodeInfo(ct
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufSourceCodeInfo)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3899,6 +4156,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_syntax(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3912,6 +4170,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileDescriptorSetImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3925,6 +4184,9 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -3948,6 +4210,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet_file(ctx context.Co
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3964,6 +4227,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4013,6 +4277,9 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -4030,6 +4297,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaPackage(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4050,6 +4318,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaOuterClassname(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4070,6 +4339,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaMultipleFiles(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4090,6 +4360,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaGenerateEqualsAndHash
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4110,6 +4381,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaStringCheckUtf8(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4130,6 +4402,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_optimizeFor(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFileOptionsOptimizeMode)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4150,6 +4423,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_goPackage(ctx context.Con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4170,6 +4444,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_ccGenericServices(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4190,6 +4465,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaGenericServices(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4210,6 +4486,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_pyGenericServices(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4230,6 +4507,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpGenericServices(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4250,6 +4528,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_deprecated(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4270,6 +4549,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_ccEnableArenas(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4290,6 +4570,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_objcClassPrefix(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4310,6 +4591,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_csharpNamespace(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4330,6 +4612,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_swiftPrefix(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4350,6 +4633,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpClassPrefix(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4370,6 +4654,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpNamespace(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4396,6 +4681,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_uninterpretedOption(ctx c
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4412,6 +4698,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, googleProtobufGeneratedCodeInfoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4425,6 +4712,9 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -4448,6 +4738,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo_annotation(ctx cont
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4464,6 +4755,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation(ctx conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufGeneratedCodeInfoAnnotationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4483,6 +4775,9 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation(ctx conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -4506,6 +4801,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_path(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4529,6 +4825,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_sourceFil
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4549,6 +4846,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_begin(ctx
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4569,6 +4867,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_end(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4582,6 +4881,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMessageOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4603,6 +4903,9 @@ func (ec *executionContext) _GoogleProtobufMessageOptions(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -4620,6 +4923,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_messageSetWireFormat(c
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4640,6 +4944,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_noStandardDescriptorAc
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4660,6 +4965,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_deprecated(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4680,6 +4986,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_mapEntry(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4706,6 +5013,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_uninterpretedOption(ct
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4722,6 +5030,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMethodDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4745,6 +5054,9 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -4762,6 +5074,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_name(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4782,6 +5095,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_inputType(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4802,6 +5116,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_outputType(ctx 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4822,6 +5137,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_options(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufMethodOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4842,6 +5158,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_clientStreaming
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4862,6 +5179,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_serverStreaming
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4875,6 +5193,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMethodOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4892,6 +5211,9 @@ func (ec *executionContext) _GoogleProtobufMethodOptions(ctx context.Context, se
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -4909,6 +5231,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_deprecated(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4929,6 +5252,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_idempotencyLevel(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufMethodOptionsIdempotencyLevel)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4955,6 +5279,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_uninterpretedOption(ctx
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4971,6 +5296,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto(ctx context.Cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufOneofDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4986,6 +5312,9 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto(ctx context.Cont
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5003,6 +5332,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_name(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5023,6 +5353,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_options(ctx cont
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufOneofOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5036,6 +5367,7 @@ func (ec *executionContext) _GoogleProtobufOneofOptions(ctx context.Context, sel
 	fields := graphql.CollectFields(ctx, sel, googleProtobufOneofOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5049,6 +5381,9 @@ func (ec *executionContext) _GoogleProtobufOneofOptions(ctx context.Context, sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5072,6 +5407,7 @@ func (ec *executionContext) _GoogleProtobufOneofOptions_uninterpretedOption(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5088,6 +5424,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, googleProtobufServiceDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5105,6 +5442,9 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5122,6 +5462,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_name(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5148,6 +5489,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_method(ctx con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5171,6 +5513,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_options(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufServiceOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5184,6 +5527,7 @@ func (ec *executionContext) _GoogleProtobufServiceOptions(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufServiceOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5199,6 +5543,9 @@ func (ec *executionContext) _GoogleProtobufServiceOptions(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5216,6 +5563,7 @@ func (ec *executionContext) _GoogleProtobufServiceOptions_deprecated(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5242,6 +5590,7 @@ func (ec *executionContext) _GoogleProtobufServiceOptions_uninterpretedOption(ct
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5258,6 +5607,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufSourceCodeInfoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5271,6 +5621,9 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5294,6 +5647,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo_location(ctx context.C
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5310,6 +5664,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, googleProtobufSourceCodeInfoLocationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5331,6 +5686,9 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5354,6 +5712,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_path(ctx conte
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5383,6 +5742,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_span(ctx conte
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5406,6 +5766,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingComment
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5426,6 +5787,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_trailingCommen
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5452,6 +5814,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingDetache
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5468,6 +5831,7 @@ func (ec *executionContext) _GoogleProtobufTimestamp(ctx context.Context, sel as
 	fields := graphql.CollectFields(ctx, sel, googleProtobufTimestampImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5483,6 +5847,9 @@ func (ec *executionContext) _GoogleProtobufTimestamp(ctx context.Context, sel as
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5500,6 +5867,7 @@ func (ec *executionContext) _GoogleProtobufTimestamp_seconds(ctx context.Context
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5520,6 +5888,7 @@ func (ec *executionContext) _GoogleProtobufTimestamp_nanos(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5533,6 +5902,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufUninterpretedOptionImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5558,6 +5928,9 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5581,6 +5954,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_name(ctx context.
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5604,6 +5978,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_identifierValue(c
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5624,6 +5999,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_positiveIntValue(
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5644,6 +6020,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_negativeIntValue(
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5664,6 +6041,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_doubleValue(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*float64)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5684,6 +6062,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_stringValue(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5704,6 +6083,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_aggregateValue(ct
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5717,6 +6097,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart(ctx conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufUninterpretedOptionNamePartImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5732,6 +6113,9 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart(ctx conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5749,6 +6133,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_namePart(
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5769,6 +6154,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_isExtensi
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5786,6 +6172,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	})
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5811,6 +6198,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5818,7 +6208,7 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["contactId"]; ok {
+	if tmp, ok := rawArgs["contactID"]; ok {
 		var err error
 		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
@@ -5826,7 +6216,7 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 			return graphql.Null
 		}
 	}
-	args["contactId"] = arg0
+	args["contactID"] = arg0
 	var arg1 *string
 	if tmp, ok := rawArgs["introText"]; ok {
 		var err error
@@ -5849,12 +6239,13 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactRequest(ctx, args["contactId"].(string), args["introText"].(*string))
+		return ec.resolvers.Mutation().ContactRequest(ctx, args["contactID"].(string), args["introText"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5865,7 +6256,7 @@ func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field g
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["contactId"]; ok {
+	if tmp, ok := rawArgs["contactID"]; ok {
 		var err error
 		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
@@ -5873,7 +6264,7 @@ func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field g
 			return graphql.Null
 		}
 	}
-	args["contactId"] = arg0
+	args["contactID"] = arg0
 	rctx := &graphql.ResolverContext{
 		Object: "Mutation",
 		Args:   args,
@@ -5881,12 +6272,13 @@ func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field g
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactRemove(ctx, args["contactId"].(string))
+		return ec.resolvers.Mutation().ContactRemove(ctx, args["contactID"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5897,7 +6289,7 @@ func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field g
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["contactId"]; ok {
+	if tmp, ok := rawArgs["contactID"]; ok {
 		var err error
 		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
@@ -5905,7 +6297,7 @@ func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field g
 			return graphql.Null
 		}
 	}
-	args["contactId"] = arg0
+	args["contactID"] = arg0
 	var arg1 *string
 	if tmp, ok := rawArgs["displayName"]; ok {
 		var err error
@@ -5928,12 +6320,13 @@ func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field g
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactUpdate(ctx, args["contactId"].(string), args["displayName"].(*string))
+		return ec.resolvers.Mutation().ContactUpdate(ctx, args["contactID"].(string), args["displayName"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5944,7 +6337,7 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
 	var arg0 []string
-	if tmp, ok := rawArgs["contactIds"]; ok {
+	if tmp, ok := rawArgs["contactsID"]; ok {
 		var err error
 		var rawIf1 []interface{}
 		if tmp != nil {
@@ -5963,7 +6356,7 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 			return graphql.Null
 		}
 	}
-	args["contactIds"] = arg0
+	args["contactsID"] = arg0
 	rctx := &graphql.ResolverContext{
 		Object: "Mutation",
 		Args:   args,
@@ -5971,12 +6364,13 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationCreate(ctx, args["contactIds"].([]string))
+		return ec.resolvers.Mutation().ConversationCreate(ctx, args["contactsID"].([]string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5987,7 +6381,7 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
+	if tmp, ok := rawArgs["conversationID"]; ok {
 		var err error
 		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
@@ -5995,9 +6389,9 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 			return graphql.Null
 		}
 	}
-	args["conversationId"] = arg0
+	args["conversationID"] = arg0
 	var arg1 []string
-	if tmp, ok := rawArgs["contactIds"]; ok {
+	if tmp, ok := rawArgs["contactsID"]; ok {
 		var err error
 		var rawIf1 []interface{}
 		if tmp != nil {
@@ -6016,7 +6410,7 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 			return graphql.Null
 		}
 	}
-	args["contactIds"] = arg1
+	args["contactsID"] = arg1
 	rctx := &graphql.ResolverContext{
 		Object: "Mutation",
 		Args:   args,
@@ -6024,12 +6418,13 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationInvite(ctx, args["conversationId"].(string), args["contactIds"].([]string))
+		return ec.resolvers.Mutation().ConversationInvite(ctx, args["conversationID"].(string), args["contactsID"].([]string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6040,7 +6435,7 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
+	if tmp, ok := rawArgs["conversationID"]; ok {
 		var err error
 		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
@@ -6048,9 +6443,9 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 			return graphql.Null
 		}
 	}
-	args["conversationId"] = arg0
+	args["conversationID"] = arg0
 	var arg1 []string
-	if tmp, ok := rawArgs["contactIds"]; ok {
+	if tmp, ok := rawArgs["contactsID"]; ok {
 		var err error
 		var rawIf1 []interface{}
 		if tmp != nil {
@@ -6069,7 +6464,7 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 			return graphql.Null
 		}
 	}
-	args["contactIds"] = arg1
+	args["contactsID"] = arg1
 	rctx := &graphql.ResolverContext{
 		Object: "Mutation",
 		Args:   args,
@@ -6077,12 +6472,13 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationExclude(ctx, args["conversationId"].(string), args["contactIds"].([]string))
+		return ec.resolvers.Mutation().ConversationExclude(ctx, args["conversationID"].(string), args["contactsID"].([]string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6093,7 +6489,7 @@ func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
+	if tmp, ok := rawArgs["conversationID"]; ok {
 		var err error
 		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
@@ -6101,7 +6497,7 @@ func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context
 			return graphql.Null
 		}
 	}
-	args["conversationId"] = arg0
+	args["conversationID"] = arg0
 	var arg1 string
 	if tmp, ok := rawArgs["message"]; ok {
 		var err error
@@ -6119,12 +6515,13 @@ func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationAddMessage(ctx, args["conversationId"].(string), args["message"].(string))
+		return ec.resolvers.Mutation().ConversationAddMessage(ctx, args["conversationID"].(string), args["message"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pEvent)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6143,6 +6540,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6176,6 +6574,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		}
 	}
 	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6216,6 +6617,7 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -6245,6 +6647,7 @@ func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphq
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -6274,6 +6677,7 @@ func (ec *executionContext) _Query_ConversationList(ctx context.Context, field g
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -6309,6 +6713,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6329,6 +6734,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Schema)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6386,6 +6792,7 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 	fields := graphql.CollectFields(ctx, sel, __DirectiveImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6394,17 +6801,29 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("__Directive")
 		case "name":
 			out.Values[i] = ec.___Directive_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___Directive_description(ctx, field, obj)
 		case "locations":
 			out.Values[i] = ec.___Directive_locations(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "args":
 			out.Values[i] = ec.___Directive_args(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6419,6 +6838,9 @@ func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6453,6 +6875,9 @@ func (ec *executionContext) ___Directive_locations(ctx context.Context, field gr
 		return obj.Locations, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]string)
@@ -6479,6 +6904,9 @@ func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql
 		return obj.Args, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.InputValue)
@@ -6501,6 +6929,7 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 	fields := graphql.CollectFields(ctx, sel, __EnumValueImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6509,10 +6938,16 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("__EnumValue")
 		case "name":
 			out.Values[i] = ec.___EnumValue_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___EnumValue_description(ctx, field, obj)
 		case "isDeprecated":
 			out.Values[i] = ec.___EnumValue_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecationReason":
 			out.Values[i] = ec.___EnumValue_deprecationReason(ctx, field, obj)
 		default:
@@ -6520,6 +6955,9 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6534,6 +6972,9 @@ func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6568,6 +7009,9 @@ func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field
 		return obj.IsDeprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
@@ -6598,6 +7042,7 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 	fields := graphql.CollectFields(ctx, sel, __FieldImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6606,14 +7051,26 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = graphql.MarshalString("__Field")
 		case "name":
 			out.Values[i] = ec.___Field_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___Field_description(ctx, field, obj)
 		case "args":
 			out.Values[i] = ec.___Field_args(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "type":
 			out.Values[i] = ec.___Field_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "isDeprecated":
 			out.Values[i] = ec.___Field_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecationReason":
 			out.Values[i] = ec.___Field_deprecationReason(ctx, field, obj)
 		default:
@@ -6621,6 +7078,9 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6635,6 +7095,9 @@ func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.Col
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6669,6 +7132,9 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 		return obj.Args, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.InputValue)
@@ -6695,10 +7161,17 @@ func (ec *executionContext) ___Field_type(ctx context.Context, field graphql.Col
 		return obj.Type, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
@@ -6715,6 +7188,9 @@ func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field gra
 		return obj.IsDeprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
@@ -6745,6 +7221,7 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 	fields := graphql.CollectFields(ctx, sel, __InputValueImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6753,10 +7230,16 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 			out.Values[i] = graphql.MarshalString("__InputValue")
 		case "name":
 			out.Values[i] = ec.___InputValue_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___InputValue_description(ctx, field, obj)
 		case "type":
 			out.Values[i] = ec.___InputValue_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "defaultValue":
 			out.Values[i] = ec.___InputValue_defaultValue(ctx, field, obj)
 		default:
@@ -6764,6 +7247,9 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6778,6 +7264,9 @@ func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphq
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6812,10 +7301,17 @@ func (ec *executionContext) ___InputValue_type(ctx context.Context, field graphq
 		return obj.Type, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
@@ -6835,6 +7331,7 @@ func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, fiel
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6848,6 +7345,7 @@ func (ec *executionContext) ___Schema(ctx context.Context, sel ast.SelectionSet,
 	fields := graphql.CollectFields(ctx, sel, __SchemaImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6856,19 +7354,31 @@ func (ec *executionContext) ___Schema(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = graphql.MarshalString("__Schema")
 		case "types":
 			out.Values[i] = ec.___Schema_types(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "queryType":
 			out.Values[i] = ec.___Schema_queryType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "mutationType":
 			out.Values[i] = ec.___Schema_mutationType(ctx, field, obj)
 		case "subscriptionType":
 			out.Values[i] = ec.___Schema_subscriptionType(ctx, field, obj)
 		case "directives":
 			out.Values[i] = ec.___Schema_directives(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6883,6 +7393,9 @@ func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.C
 		return obj.Types(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Type)
@@ -6909,10 +7422,17 @@ func (ec *executionContext) ___Schema_queryType(ctx context.Context, field graph
 		return obj.QueryType(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
@@ -6932,6 +7452,7 @@ func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field gr
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6952,6 +7473,7 @@ func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, fiel
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6969,6 +7491,9 @@ func (ec *executionContext) ___Schema_directives(ctx context.Context, field grap
 		return obj.Directives(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Directive)
@@ -6991,6 +7516,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 	fields := graphql.CollectFields(ctx, sel, __TypeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6999,6 +7525,9 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = graphql.MarshalString("__Type")
 		case "kind":
 			out.Values[i] = ec.___Type_kind(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "name":
 			out.Values[i] = ec.___Type_name(ctx, field, obj)
 		case "description":
@@ -7020,6 +7549,9 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -7034,6 +7566,9 @@ func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.Coll
 		return obj.Kind(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -7054,6 +7589,7 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -7245,6 +7781,7 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -7688,13 +8225,13 @@ type Subscription {
   EventStream: BertyP2pEvent
 }
 type Mutation {
-  ContactRequest(contactId: String!, introText: String): BertyEntityContact
-  ContactRemove(contactId: String!): BertyEntityContact
-  ContactUpdate(contactId: String!, displayName: String): BertyEntityContact
-  ConversationCreate(contactIds: [String!]!): BertyEntityConversation
-  ConversationInvite(conversationId: String!, contactIds: [String!]!): BertyEntityConversation
-  ConversationExclude(conversationId: String!, contactIds: [String!]!): BertyEntityConversation
-  ConversationAddMessage(conversationId: String!, message: String!): BertyP2pEvent
+  ContactRequest(contactID: String!, introText: String): BertyEntityContact
+  ContactRemove(contactID: String!): BertyEntityContact
+  ContactUpdate(contactID: String!, displayName: String): BertyEntityContact
+  ConversationCreate(contactsID: [String!]!): BertyEntityConversation
+  ConversationInvite(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
+  ConversationExclude(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
+  ConversationAddMessage(conversationID: String!, message: String!): BertyP2pEvent
 }
 type Query {
   EventList(limit: Int): [BertyP2pEvent]

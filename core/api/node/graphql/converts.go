@@ -3,8 +3,6 @@ package graphql
 import (
 	"encoding/base64"
 
-	"time"
-
 	"github.com/berty/berty/core/api/node/graphql/models"
 	"github.com/berty/berty/core/api/node/graphql/scalar"
 	"github.com/berty/berty/core/api/p2p"
@@ -22,7 +20,7 @@ func convertContactStatus(value entity.Contact_Status) *model.BertyEntityContact
 		entity.Contact_Myself:          model.BertyEntityContactStatusUnknown,
 	}[value]
 
-	if ok == false {
+	if !ok {
 		t := model.BertyEntityContactStatusUnknown
 		return &t
 	}
@@ -53,7 +51,7 @@ func convertConversationMemberStatus(value entity.ConversationMember_Status) *mo
 		entity.ConversationMember_Blocked: model.BertyEntityConversationMemberStatusBlocked,
 	}[value]
 
-	if ok == false {
+	if !ok {
 		t := model.BertyEntityConversationMemberStatusUnknown
 		return &t
 	}
@@ -160,7 +158,7 @@ func convertEventKind(value p2p.Kind) *model.BertyP2pKind {
 		p2p.Kind_ConversationNewMessage: model.BertyP2pKindConversationNewMessage,
 	}[value]
 
-	if ok == false {
+	if !ok {
 		t := model.BertyP2pKindUnknown
 		return &t
 	}
@@ -168,15 +166,15 @@ func convertEventKind(value p2p.Kind) *model.BertyP2pKind {
 	return &ret
 }
 
-func convertTime(value *time.Time) *string {
-	if value == nil {
-		return nil
-	}
+// func convertTime(value *time.Time) *string {
+// 	if value == nil {
+// 		return nil
+// 	}
 
-	t := value.UTC().Format(time.RFC3339Nano)
+// 	t := value.UTC().Format(time.RFC3339Nano)
 
-	return &t
-}
+// 	return &t
+// }
 
 func convertEventDirection(value p2p.Event_Direction) *model.BertyP2pEventDirection {
 	ret, ok := map[p2p.Event_Direction]model.BertyP2pEventDirection{
@@ -185,7 +183,7 @@ func convertEventDirection(value p2p.Event_Direction) *model.BertyP2pEventDirect
 		p2p.Event_Outgoing:         model.BertyP2pEventDirectionOutgoing,
 	}[value]
 
-	if ok == false {
+	if !ok {
 		t := model.BertyP2pEventDirectionUnknownDirection
 		return &t
 	}
@@ -193,14 +191,14 @@ func convertEventDirection(value p2p.Event_Direction) *model.BertyP2pEventDirect
 	return &ret
 }
 
-func memberSliceFromContactIds(contactIds []string) []*entity.ConversationMember {
+func memberSliceFromContactIds(contactsID []string) []*entity.ConversationMember {
 	var members []*entity.ConversationMember
 
-	for i := range contactIds {
-		contactId := contactIds[i]
+	for i := range contactsID {
+		contactID := contactsID[i]
 
 		members = append(members, &entity.ConversationMember{
-			ContactID: contactId,
+			ContactID: contactID,
 		})
 	}
 
