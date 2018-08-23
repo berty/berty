@@ -3,6 +3,7 @@ package node
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"go.uber.org/zap"
@@ -22,8 +23,16 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
-	if input.SenderID == "" {
-		return ErrInvalidEventSender
+	if input.SenderID == n.UserID() {
+		return fmt.Errorf("skipping event created by myself")
+	}
+
+	var count int
+	if err := n.sql.Model(&p2p.Event{}).Where(&p2p.Event{ID: input.ID, SenderID: input.SenderID}).Count(&count).Error; err != nil {
+		return err
+	}
+	if count > 0 {
+		return fmt.Errorf("event already handled")
 	}
 
 	now := time.Now()
@@ -37,7 +46,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	out, err := json.Marshal(input)
 	if err == nil {
 		zap.L().Debug("handle event",
-			zap.String("sender", p2p.GetSender(ctx)),
+			zap.String("sender", input.SenderID),
 			zap.String("event", string(out)),
 		)
 	}
