@@ -18,10 +18,13 @@ RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 3m -v $(TEST_PATHS)
 PROTOC ?= protoc
+DOCKER_PROTOC = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:$(GOPATH)/src" -v "$(PWD)/..:$(PWD)/.." -w "$(PWD)" bertychat/protoc
 ifeq (, $(shell which protoc))
-PROTOC = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:$(GOPATH)/src" -v "$(PWD)/..:$(PWD)/.." -w "$(PWD)" bertychat/protoc
+PROTOC=$(DOCKER_PROTOC)
 endif
-
+ifeq (1, $(USE_DOCKER))
+PROTOC=$(DOCKER_PROTOC)
+endif
 
 ##
 ## phonies

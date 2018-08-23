@@ -128,24 +128,25 @@ func TestP2PNetwork(t *testing.T) {
 
 		Convey("Roger send an event to Lisa", FailureHalts, func(c C) {
 			ctx := context.Background()
-			e := &api.Event{
-				ReceiverID: "Lisa",
+			e := &api.Envelope{
+				ChannelID: "Lisa",
 			}
 
-			lisaEvent := make(chan *api.Event, 1)
-			lisa.SetReceiveEventHandler(func(ctx context.Context, event *api.Event) (*api.Void, error) {
-				if event == nil {
-					lisaEvent <- nil
+			lisaQueue := make(chan *api.Envelope, 1)
+			lisa.OnEnvelopeHandler(func(ctx context.Context, envelope *api.Envelope) (*api.Void, error) {
+				if envelope == nil {
+					lisaQueue <- nil
 					return nil, err
 				}
-				lisaEvent <- event
+				lisaQueue <- envelope
 				return &api.Void{}, nil
 			})
 
-			err = roger.SendEvent(ctx, e)
+			err = roger.Emit(ctx, e)
 			So(err, ShouldBeNil)
 
-			So(<-lisaEvent, ShouldNotBeNil)
+			So(<-lisaQueue, ShouldNotBeNil)
+			// So(len(lisaQueue), ShouldEqual, 1)
 		})
 	})
 }

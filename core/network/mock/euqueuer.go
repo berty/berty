@@ -10,28 +10,28 @@ import (
 type Enqueuer struct {
 	network.Driver
 
-	queue chan *p2p.Event
+	queue chan *p2p.Envelope
 }
 
 func NewEnqueuer() *Enqueuer {
 	return &Enqueuer{
-		queue: make(chan *p2p.Event, 100),
+		queue: make(chan *p2p.Envelope, 100),
 	}
 }
 
-func (e *Enqueuer) Queue() chan *p2p.Event {
+func (e *Enqueuer) Queue() chan *p2p.Envelope {
 	return e.queue
 }
 
-func (e *Enqueuer) SendEvent(_ context.Context, event *p2p.Event) error {
-	e.queue <- event
+func (e *Enqueuer) Emit(_ context.Context, envelope *p2p.Envelope) error {
+	e.queue <- envelope
 	return nil
 }
 
-func (e *Enqueuer) SetReceiveEventHandler(_ func(context.Context, *p2p.Event) (*p2p.Void, error)) {
+func (e *Enqueuer) OnEnvelopeHandler(_ func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
 	// doing nothing, enqueuer does not support receiving events
 }
 
-func (e *Enqueuer) SubscribeTo(_ context.Context, _ string) error {
+func (e *Enqueuer) Join(_ context.Context, _ string) error {
 	return nil
 }

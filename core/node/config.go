@@ -16,7 +16,7 @@ import (
 
 func (n *Node) initConfig() (*entity.Config, error) {
 	// keypair
-	priv, err := rsa.GenerateKey(rand.Reader, 4096)
+	priv, err := rsa.GenerateKey(rand.Reader, 1024) // FIXME: setting default keysize to 1024 to speedup development (tests), we need to increase the security before the release
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to generate RSA key")
 	}
@@ -40,7 +40,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 	// db object
 	currentDevice := &entity.Device{
 		Status:     entity.Device_Myself,
-		ID:         base64.RawStdEncoding.EncodeToString(pubBytes),
+		ID:         base64.StdEncoding.EncodeToString(pubBytes),
 		Name:       n.initDevice.Name,
 		ApiVersion: p2p.Version,
 	}
@@ -52,7 +52,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 
 	config := entity.Config{
 		Myself: &entity.Contact{
-			ID:          base64.RawStdEncoding.EncodeToString(pubBytes),
+			ID:          base64.StdEncoding.EncodeToString(pubBytes),
 			Devices:     []*entity.Device{currentDevice},
 			DisplayName: n.initDevice.Username(),
 			Status:      entity.Contact_Myself,
