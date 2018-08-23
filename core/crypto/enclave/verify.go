@@ -1,12 +1,6 @@
 package enclave
 
-import (
-	"crypto"
-	"crypto/rsa"
-	"errors"
-	"log"
-)
-
+/*
 // Verify signature using the function corresponding to the key type (ECC or RSA)
 func Verify(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
 	// Check if keyID exists in keyPairs map
@@ -25,7 +19,9 @@ func Verify(keyID string, plainText []byte, signature []byte) (verified bool, er
 
 	return verifyECC(keyID, plainText, signature)
 }
+*/
 
+/*
 // Verify signature using RSA
 func verifyRSA(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
 	// Verify signature using signature and plainText parameters
@@ -34,8 +30,7 @@ func verifyRSA(keyID string, plainText []byte, signature []byte) (verified bool,
 		pssh := crypto.SHA512.New()
 		_, err = pssh.Write(plainText)
 		if err != nil {
-			log.Println("Error during plainText hashing:", err)
-			return
+			return false, errors.Wrap(err, "error during plainText hashing")
 		}
 		hashed := pssh.Sum(nil)
 
@@ -63,3 +58,4 @@ func verifyRSA(keyID string, plainText []byte, signature []byte) (verified bool,
 func verifyECC(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
 	return false, errors.New("ECC-256 verification not implemented yet")
 }
+*/

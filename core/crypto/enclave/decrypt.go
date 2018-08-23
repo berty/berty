@@ -1,13 +1,6 @@
 package enclave
 
-import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/sha512"
-	"errors"
-	"log"
-)
-
+/*
 // Decrypt plain text using the function corresponding to the key type and the key store
 func Decrypt(keyID string, cipherText []byte) (plainText []byte, err error) {
 	// Check if keyID exists in keyPairs map
@@ -27,7 +20,9 @@ func Decrypt(keyID string, cipherText []byte) (plainText []byte, err error) {
 
 	return decryptEnclave(keyID, cipherText)
 }
+*/
 
+/*
 // Decrypt ciphertext using RSA
 func decryptRSA(keyID string, cipherText []byte) (plainText []byte, err error) {
 	// Decrypt ciphertext using private keys
@@ -42,13 +37,13 @@ func decryptRSA(keyID string, cipherText []byte) (plainText []byte, err error) {
 		)
 
 		if err != nil {
-			log.Println("Error during cipher text decryption:", err)
+			err = errors.Wrap(err, "error during cipher text decryption")
 			return
 		}
 	} else {
 		err = errors.New("can't cast privKey to *rsa.PrivateKey")
+		return
 	}
-
 	return
 }
 
@@ -56,3 +51,5 @@ func decryptRSA(keyID string, cipherText []byte) (plainText []byte, err error) {
 func decryptECC(keyID string, cipherText []byte) (plainText []byte, err error) {
 	return []byte{}, errors.New("ECC-256 decryption not implemented yet")
 }
+
+*/

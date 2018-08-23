@@ -1,11 +1,10 @@
 package enclave
 
-import "errors"
-
 // Load key pairs from persistent memory (keychain, keystore, encrypted container, etc...)
 func init() {
 }
 
+/*
 // MakeKeyPairPersistent saves key pair to a persistent memory (keychain, keystore, encrypted container, etc...)
 func MakeKeyPairPersistent(keyID string) error {
 
@@ -16,3 +15,4 @@ func MakeKeyPairPersistent(keyID string) error {
 
 	return errors.New("persistence not implemented yet")
 }
+*/

@@ -1,13 +1,6 @@
 package enclave
 
-import (
-	"crypto"
-	"crypto/rand"
-	"crypto/rsa"
-	"errors"
-	"log"
-)
-
+/*
 // Sign plainText using the function corresponding to the key type and the key store
 func Sign(keyID string, plainText []byte) (signature []byte, err error) {
 	// Check if keyID exists in keyPairs map
@@ -27,18 +20,21 @@ func Sign(keyID string, plainText []byte) (signature []byte, err error) {
 
 	return signEnclave(keyID, plainText)
 }
+*/
 
+/*
 // Sign plainText using RSA
 func signRSA(keyID string, plainText []byte) (signature []byte, err error) {
 	// Generate signature for plainText parameter
 	privKey, rsaType := keyPairs[keyID].privKey.(*rsa.PrivateKey)
 	if rsaType {
 		pssh := crypto.SHA512.New()
+
 		_, err = pssh.Write(plainText)
 		if err != nil {
-			log.Println("Error during plainText hashing:", err)
-			return
+			return nil, errors.Wrap(err, "error during plainText hashing")
 		}
+
 		hashed := pssh.Sum(nil)
 
 		signature, err = rsa.SignPSS(
@@ -48,18 +44,18 @@ func signRSA(keyID string, plainText []byte) (signature []byte, err error) {
 			hashed,
 			&rsa.PSSOptions{},
 		)
-
 		if err != nil {
-			log.Println("Error during authentification code signing:", err)
+			return nil, errors.Wrap(err, "error during authentification code signing")
 		}
-	} else {
-		err = errors.New("can't cast privKey to *rsa.PrivateKey")
+
+		return signature, nil
 	}
 
-	return
+	return nil, errors.New("can't cast privKey to *rsa.PrivateKey")
 }
 
 // Sign plainText using ECC
 func signECC(keyID string, plainText []byte) (signature []byte, err error) {
 	return []byte{}, errors.New("ECC-256 signing not implemented yet")
 }
+*/
