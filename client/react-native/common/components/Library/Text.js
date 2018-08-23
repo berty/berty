@@ -15,8 +15,8 @@ import {
   textBottom,
   bold,
   shadow,
-} from '../styles'
-import { colors } from '../constants'
+} from '../../styles'
+import { colors } from '../../constants'
 
 const reverse = props =>
   Object.keys(props)

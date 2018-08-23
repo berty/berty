@@ -7,9 +7,9 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import { Separator, CustomTextInput, Icon, Text } from '.'
-import { Row, Col } from './Grid'
-import { largeText, margin, marginTopLeft, marginTop } from '../styles'
-import { colors } from '../constants'
+import { Row, Col } from './Flex'
+import { largeText, margin, marginTopLeft, marginTop } from '../../styles'
+import { colors } from '../../constants'
 
 export default class Menu extends Component {
   static Section = ({ icon, title, children, style, ...props }) => (
