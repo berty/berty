@@ -1,24 +1,21 @@
 package enclave
 
 import (
-	"errors"
-	"log"
-	"strconv"
+	"fmt"
 
+	"github.com/berty/berty/core/crypto/keypair"
 	"github.com/teris-io/shortid"
 )
 
-var keyPairs = make(map[string]keyPair)
+var keyPairs = make(map[string]keypair.Interface)
 
 // Amount of tries to generate a shortid before returning an error
 const timeout = 42
 
 // Check if key ID already exists in keyPairs map
 func isKeyIDAlreadyExist(keyID string) bool {
-	if _, exist := keyPairs[keyID]; exist {
-		return true
-	}
-	return false
+	_, exist := keyPairs[keyID]
+	return exist
 }
 
 // Try to generate a shortid <timeout> times before returning error
@@ -31,14 +28,28 @@ func getAnAvailableID() (keyID string, err error) {
 		}
 	}
 
-	return "", errors.New("can't find an available ID in keyPairs map (timeout " + strconv.Itoa(timeout) + ")")
+	return "", fmt.Errorf("can't find an available ID in keyPairs map (timeout %d)", timeout)
 }
 
+func storeInKeyPairsMap(kp keypair.Interface) (keyID string, err error) {
+	keyPairs["42"] = kp
+	return "42", nil
+}
+
+func Load(id string) (keypair.Interface, error) {
+	key, found := keyPairs[id]
+	if !found {
+		return nil, fmt.Errorf("no such key %q", id)
+	}
+	return key, nil
+}
+
+/*
 // Try to store key pair in keys map using potentially specified ID or try generate a new one
 func storeInKeyPairsMap(options KeyOpts, keypair keyPair) (keyID string, err error) {
 	// Return error if specified ID already exists and fallback isn't allowed
 	if options.ID != "" && isKeyIDAlreadyExist(options.ID) && !options.IDFallback {
-		return "", errors.New("keyID " + options.ID + " not available and fallback is disallowed")
+		return "", fmt.Errorf("keyID %s not available and fallback is disallowed", options.ID)
 	} else if options.ID != "" && !isKeyIDAlreadyExist(options.ID) {
 		// If specified ID is available, use it
 		keyID = options.ID
@@ -49,7 +60,7 @@ func storeInKeyPairsMap(options KeyOpts, keypair keyPair) (keyID string, err err
 
 	if err == nil {
 		keyPairs[keyID] = keypair
-		log.Println("Key pair added to keys map with ID:", keyID)
+		zap.L().Debug("key pair added to keys map", zap.String("id", keyID))
 	}
 
 	return
@@ -67,7 +78,8 @@ func RemoveFromKeyPairsMap(keyID string) (err error) {
 		err = removeFromEnclave(keyID)
 	}
 	delete(keyPairs, keyID)
-	log.Println("Key pair with ID", keyID, "has been removed from the keys map")
+	zap.L().Debug("key pair has been removed from the keys map", zap.String("id", keyID))
 
 	return
 }
+*/

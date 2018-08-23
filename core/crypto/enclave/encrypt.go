@@ -1,13 +1,6 @@
 package enclave
 
-import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/sha512"
-	"errors"
-	"log"
-)
-
+/*
 // Encrypt plain text using the function corresponding to the key type (ECC or RSA)
 func Encrypt(keyID string, plainText []byte) (cipherText []byte, err error) {
 	// Check if keyID exists in keyPairs map
@@ -23,7 +16,9 @@ func Encrypt(keyID string, plainText []byte) (cipherText []byte, err error) {
 	}
 	return encryptECC(keyID, plainText)
 }
+*/
 
+/*
 // Encrypt plain text using RSA
 func encryptRSA(keyID string, plainText []byte) (cipherText []byte, err error) {
 	// Encrypt plain text using public key
@@ -37,19 +32,16 @@ func encryptRSA(keyID string, plainText []byte) (cipherText []byte, err error) {
 			[]byte{},
 		)
 		if err != nil {
-			log.Println("Error during plain text encryption:", err)
-			return
+			return nil, errors.Wrap(err, "error during plain text encryption")
 		}
-
-	} else {
-		err = errors.New("can't cast pubKey to *rsa.PublicKey")
+		return
 	}
-
-	return
-
+	return nil, errors.New("can't cast pubKey to *rsa.PublicKey")
 }
 
 // Encrypt plain text using ECC
 func encryptECC(keyID string, plainText []byte) (cipherText []byte, err error) {
 	return []byte{}, errors.New("ECC-256 encryption not implemented yet")
 }
+
+*/

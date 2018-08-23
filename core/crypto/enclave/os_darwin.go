@@ -17,14 +17,7 @@ NSData *convertBytesToNSData(void *bytes, int length) { return [NSData dataWithB
 */
 import "C"
 
-import (
-	"crypto/rsa"
-	"crypto/x509"
-	"errors"
-	"log"
-	"unsafe"
-)
-
+/*
 // Convert NSData* from objective-c to golang []byte
 func byteSliceFromNSData(data *C.NSData) []byte {
 	if data == nil {
@@ -59,15 +52,17 @@ func newKeyPairEnclave(options KeyOpts) (keyID string, err error) {
 	defer C.free(unsafe.Pointer(cString))
 
 	// Generate a key pair according to the options parameter (within enclave or keychain)
-	var keyPair keyPair
-	var pubKey []byte
+	var (
+		keyPair keyPair
+		pubKey  []byte
+	)
 
 	// Generate a key pair within the keychain within the enclave
 	if options.Type == ECC256 || options.TypeFallback {
 		pubKey = byteSliceFromNSData(C.generateKeyPairWithinEnclave(cString))
 		if len(pubKey) > 0 {
 			keyPair.keyType = ECC256
-			log.Println("Key pair generation within the Darwin Secure Enclave succeeded")
+			zap.L().Debug("key pair generation within the Darwin Secure Enclave succeeded")
 		}
 	}
 
@@ -76,10 +71,10 @@ func newKeyPairEnclave(options KeyOpts) (keyID string, err error) {
 		pubKey = byteSliceFromNSData(C.generateKeyPairWithoutEnclave(cString, C.int(options.Type)))
 		if len(pubKey) > 0 {
 			keyPair.keyType = options.Type
-			log.Println("Key pair generation within the Darwin keychain succeeded")
+			zap.L().Debug("key pair generation within the Darwin keychain succeeded")
 		} else {
 			err = RemoveFromKeyPairsMap(keyID)
-			return "", errors.New("error during key generation with Darwin API: " + err.Error())
+			return "", errors.Wrap(err, "error during key generation with Darwin API")
 		}
 	}
 
@@ -88,7 +83,7 @@ func newKeyPairEnclave(options KeyOpts) (keyID string, err error) {
 		rsaPubKey, err = x509.ParsePKCS1PublicKey(pubKey)
 		if err != nil {
 			err = RemoveFromKeyPairsMap(keyID)
-			return "", errors.New("error during key generation with Darwin API: " + err.Error())
+			return "", errors.Wrap(err, "error during key generation with Darwin API")
 		}
 		keyPair.pubKey = rsaPubKey
 	}
@@ -151,3 +146,4 @@ func removeFromEnclave(keyID string) error {
 
 	return nil
 }
+*/
