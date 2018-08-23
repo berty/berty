@@ -28,7 +28,7 @@ import (
 	"github.com/berty/berty/core/network/p2p/protocol/service/p2pgrpc"
 )
 
-const ID = "api/p2p/event"
+const ID = "api/p2p/envelope"
 
 // driverConfig configure the driver
 type driverConfig struct {
@@ -53,7 +53,7 @@ type Driver struct {
 	host host.Host
 
 	ccmanager *p2putil.Manager
-	handler   func(context.Context, *p2p.Event) (*p2p.Void, error)
+	handler   func(context.Context, *p2p.Envelope) (*p2p.Void, error)
 
 	subsStack []*cid.Cid
 	muSubs    sync.Mutex
@@ -267,18 +267,12 @@ func (d *Driver) Find(ctx context.Context, pid peer.ID) (pstore.PeerInfo, error)
 	return d.dht.FindPeer(ctx, pid)
 }
 
-func (d *Driver) SendEvent(ctx context.Context, e *p2p.Event) error {
-	receiverID := e.GetReceiverID()
-	return d.SendEventToSubscribers(ctx, receiverID, e)
+func (d *Driver) Emit(ctx context.Context, e *p2p.Envelope) error {
+	return d.EmitTo(ctx, e.GetChannelID(), e)
 }
 
-func (d *Driver) SendEventToConversation(ctx context.Context, e *p2p.Event) error {
-	conversationID := e.GetConversationID()
-	return d.SendEventToSubscribers(ctx, conversationID, e)
-}
-
-func (d *Driver) SendEventToSubscribers(ctx context.Context, id string, e *p2p.Event) error {
-	ss, err := d.FindSubscribers(ctx, id)
+func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) error {
+	ss, err := d.FindSubscribers(ctx, channel)
 	if err != nil {
 		return err
 	}
@@ -287,7 +281,7 @@ func (d *Driver) SendEventToSubscribers(ctx context.Context, id string, e *p2p.E
 		return fmt.Errorf("No subscribers found")
 	}
 
-	sendEvent := func(_s pstore.PeerInfo) {
+	sendEnvelope := func(_s pstore.PeerInfo) {
 		peerID := _s.ID.Pretty()
 
 		if _s.ID.Pretty() == d.ID() {
@@ -305,22 +299,22 @@ func (d *Driver) SendEventToSubscribers(ctx context.Context, id string, e *p2p.E
 
 		sc := p2p.NewServiceClient(c)
 
-		_, err = sc.Handle(ctx, e)
+		_, err = sc.HandleEnvelope(ctx, e)
 		if err != nil {
-			zap.L().Warn("Failed to send event", zap.String("event", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
+			zap.L().Warn("Failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
 		}
 	}
 
 	for _, s := range ss {
 		_s := s
-		go sendEvent(_s)
+		go sendEnvelope(_s)
 	}
 	return nil
 }
 
 // Announce yourself on the ring, for the moment just an alias of SubscribeTo
 func (d *Driver) Announce(ctx context.Context, id string) error {
-	return d.SubscribeTo(ctx, id)
+	return d.Join(ctx, id)
 }
 
 // FindSubscribers with the given ID
@@ -339,8 +333,8 @@ func (d *Driver) stackSub(c *cid.Cid) {
 	d.muSubs.Unlock()
 }
 
-// SubscribeTo to the given ID
-func (d *Driver) SubscribeTo(ctx context.Context, id string) error {
+// Join to the given ID
+func (d *Driver) Join(ctx context.Context, id string) error {
 	c, err := d.createCid(id)
 	if err != nil {
 		return err
@@ -357,13 +351,13 @@ func (d *Driver) SubscribeTo(ctx context.Context, id string) error {
 	return nil
 }
 
-func (d *Driver) SetReceiveEventHandler(f func(context.Context, *p2p.Event) (*p2p.Void, error)) {
+func (d *Driver) OnEnvelopeHandler(f func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
 	d.handler = f
 }
 
 type DriverService Driver
 
-func (ds *DriverService) Handle(ctx context.Context, e *p2p.Event) (*p2p.Void, error) {
+func (ds *DriverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*p2p.Void, error) {
 	if ds.handler != nil {
 		return ds.handler(ctx, e)
 	}

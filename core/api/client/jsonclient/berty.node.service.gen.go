@@ -10,6 +10,7 @@ import (
 
 	"github.com/berty/berty/core/api/client"
 	"github.com/berty/berty/core/api/node"
+	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 )
 
@@ -25,6 +26,7 @@ func init() {
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
 	registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
+	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 }
 
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
@@ -251,4 +253,18 @@ func NodeConversationAddMessage(client *client.Client, ctx context.Context, json
 		return nil, err
 	}
 	return client.Node().ConversationAddMessage(ctx, &typedInput)
+}
+
+func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	zap.L().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "HandleEvent"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput p2p.Event
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().HandleEvent(ctx, &typedInput)
 }

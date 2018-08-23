@@ -214,6 +214,11 @@ func (n *Node) ConversationCreate(ctx context.Context, input *entity.Conversatio
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
+	input.ID = n.NewID()
+	if err := input.Validate(); err != nil {
+		return nil, err
+	}
+
 	members := []*entity.ConversationMember{
 		{
 			ID:        n.NewID(),
@@ -231,7 +236,7 @@ func (n *Node) ConversationCreate(ctx context.Context, input *entity.Conversatio
 
 	// save new conversation
 	createConversation := &entity.Conversation{
-		ID:      n.NewID(),
+		ID:      input.ID,
 		Members: members,
 		Title:   input.Title,
 		Topic:   input.Topic,
@@ -247,7 +252,7 @@ func (n *Node) ConversationCreate(ctx context.Context, input *entity.Conversatio
 	}
 
 	// Subscribe to conversation
-	if err := n.networkDriver.SubscribeTo(ctx, conversation.ID); err != nil {
+	if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
 		return nil, err
 	}
 

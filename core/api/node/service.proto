@@ -39,6 +39,14 @@ service Service {
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConverstionAcceptJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
+
+  //
+  // Devtools
+  //
+
+  // HandleEvent is the unencrypted (and unsafe) version of HandleEnvelope.
+  // it's only exposed over the node API, it should be completely deactivated in public releases
+  rpc HandleEvent(berty.p2p.Event) returns (Void) {};
 }
 
 message ContactRequestInput {

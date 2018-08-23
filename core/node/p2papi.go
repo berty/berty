@@ -2,15 +2,13 @@ package node
 
 import (
 	"context"
-	"encoding/json"
-	"time"
+	"encoding/base64"
 
+	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
-	"github.com/pkg/errors"
 )
 
 // WithP2PGrpcServer registers the Node as a 'berty.p2p' protobuf server implementation
@@ -20,74 +18,53 @@ func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 	}
 }
 
-// Handle implements berty.p2p.Handle (synchronous unary)
-func (n *Node) Handle(ctx context.Context, input *p2p.Event) (*p2p.Void, error) {
-	return &p2p.Void{}, n.handle(ctx, input)
+func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {
+	return &p2p.Void{}, n.handleEnvelope(ctx, input)
 }
 
-func (n *Node) handle(ctx context.Context, input *p2p.Event) error {
-	n.handleMutex.Lock()
-	defer n.handleMutex.Unlock()
+func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
+	event, err := n.OpenEnvelope(input)
+	if err != nil {
+		return err
+	}
+	return n.handleEvent(ctx, event)
+}
 
-	if input.SenderID == "" {
-		return ErrInvalidEventSender
+func (n *Node) OpenEnvelope(envelope *p2p.Envelope) (*p2p.Event, error) {
+	event := p2p.Event{}
+	if err := proto.Unmarshal(envelope.EncryptedEvent, &event); err != nil {
+		return nil, err
 	}
 
-	now := time.Now()
-	input.Direction = p2p.Event_Incoming   // set direction to incoming
-	input.ReceivedAt = &now                // set current date
-	input.ReceiverAPIVersion = p2p.Version // it's important to keep our current version to be able to apply per-message migrations in the future
-	// input.ReceiverID = ""               // we should be able to remove this information
+	event.SenderID = base64.StdEncoding.EncodeToString(envelope.SignerPublicKey)
 
-	// debug
-	// FIXME: check if logger is in debug mode
-	out, err := json.Marshal(input)
-	if err == nil {
-		zap.L().Debug("handle event",
-			zap.String("sender", p2p.GetSender(ctx)),
-			zap.String("event", string(out)),
-		)
-	}
+	return &event, nil
+}
 
-	if input.Kind == p2p.Kind_Ack {
-		// FIXME: update acked_at in db
-		return nil
-	}
-
-	handler, found := map[p2p.Kind]EventHandler{
-		p2p.Kind_ContactRequest:         n.handleContactRequest,
-		p2p.Kind_ContactRequestAccepted: n.handleContactRequestAccepted,
-		p2p.Kind_ContactShareMe:         n.handleContactShareMe,
-		p2p.Kind_ConversationInvite:     n.handleConversationInvite,
-		p2p.Kind_ConversationNewMessage: n.handleConversationNewMessage,
-	}[input.Kind]
-	var handlingError error
-	if !found {
-		handlingError = ErrNotImplemented
-	} else {
-		handlingError = handler(ctx, input)
-	}
-
-	// emits the event to the client (UI)
-	if handlingError == nil {
-		if err := n.EnqueueClientEvent(input); err != nil {
-			return err
+// Start is the node's mainloop
+func (n *Node) Start() error {
+	ctx := context.Background()
+	for {
+		event := <-n.outgoingEvents
+		envelope := p2p.Envelope{}
+		eventBytes, err := proto.Marshal(event)
+		if err != nil {
+			zap.L().Warn("failed to marshal outgoing event", zap.Error(err))
 		}
-	} else {
-		zap.L().Error("p2p.Handle event", zap.Error(handlingError))
+		switch {
+		case event.ReceiverID != "": // ContactEvent
+			envelope.ChannelID = event.ReceiverID
+			envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
+			envelope.SignerPublicKey = n.pubkey
+		case event.ConversationID != "": //ConversationEvent
+			envelope.ChannelID = event.ConversationID
+			envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
+			envelope.SignerPublicKey = n.pubkey  // FIXME: use a signature instead of exposing the pubkey
+		default:
+			zap.L().Error("unhandled event type")
+		}
+		if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
+			zap.L().Error("failed to emit envelope on network", zap.Error(err))
+		}
 	}
-
-	if err := n.sql.Save(input).Error; err != nil {
-		return errors.Wrap(err, "failed to save event in db")
-	}
-
-	// asynchronously ack, maybe we can ignore this one?
-	ack := n.NewContactEvent(&entity.Contact{ID: input.SenderID}, p2p.Kind_Ack)
-	if err := ack.SetAttrs(&p2p.AckAttrs{IDs: []string{input.ID}}); err != nil {
-		return err
-	}
-	if err := n.EnqueueOutgoingEvent(ack); err != nil {
-		return err
-	}
-	return handlingError
 }

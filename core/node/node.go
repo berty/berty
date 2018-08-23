@@ -2,18 +2,20 @@ package node
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"sync"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 
 	"github.com/berty/berty/core/api/p2p"
+	"github.com/berty/berty/core/crypto/sigchain"
 	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network"
-	"github.com/berty/berty/core/sql"
 )
 
 // Node is the top-level object of a Berty peer
@@ -26,6 +28,9 @@ type Node struct {
 	initDevice            *entity.Device
 	handleMutex           sync.Mutex
 	networkDriver         network.Driver
+
+	pubkey    []byte // FIXME: use a crypto instance, i.e., enclave
+	b64pubkey string // FIXME: same as above
 }
 
 // New initializes a new Node object
@@ -59,9 +64,17 @@ func New(opts ...NewNodeOption) (*Node, error) {
 	}
 	n.config = config
 
-	n.networkDriver.SetReceiveEventHandler(n.Handle)
+	// cache the signing pubkey
+	var sc sigchain.SigChain
+	if err := proto.Unmarshal(config.Myself.Sigchain, &sc); err != nil {
+		return nil, errors.Wrap(err, "cannot get sigchain")
+	}
+	n.pubkey = []byte(sc.UserId)
+	n.b64pubkey = base64.StdEncoding.EncodeToString(n.pubkey)
 
-	if err := n.networkDriver.SubscribeTo(context.Background(), n.UserID()); err != nil {
+	// configure network
+	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
+	if err := n.networkDriver.Join(context.Background(), n.UserID()); err != nil {
 		return nil, err
 	}
 
@@ -69,41 +82,6 @@ func New(opts ...NewNodeOption) (*Node, error) {
 	// FIXME: subscribe to every joined conversations
 
 	return n, nil
-}
-
-// Start is the node's mainloop
-func (n *Node) Start() error {
-	ctx := context.Background()
-	for {
-		select {
-		case event := <-n.outgoingEvents:
-			switch {
-			case event.ReceiverID != "": // ContactEvent
-				if err := n.networkDriver.SendEvent(ctx, event); err != nil {
-					zap.L().Warn("failed to send outgoing event", zap.Error(err), zap.String("event", event.ToJSON()))
-				}
-			case event.ConversationID != "": //ConversationEvent
-				members, err := sql.MembersByConversationID(n.sql, event.ConversationID)
-				if err != nil {
-					zap.L().Warn("failed to get members for conversation", zap.String("conversation_id", event.ConversationID))
-					break
-				}
-				for _, member := range members {
-					if member.ContactID == n.UserID() {
-						// skip myself
-						continue
-					}
-					copy := event.Copy()
-					copy.ReceiverID = member.ContactID
-					if err := n.networkDriver.SendEvent(ctx, copy); err != nil {
-						zap.L().Warn("failed to send outgoing event", zap.Error(err), zap.String("event", event.ToJSON()))
-					}
-				}
-			default:
-				zap.L().Error("unhandled event type")
-			}
-		}
-	}
 }
 
 // Close closes object initialized by Node itself
