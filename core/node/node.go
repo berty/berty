@@ -2,17 +2,15 @@ package node
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"sync"
 
-	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
 	"berty.tech/core/api/p2p"
-	"berty.tech/core/crypto/sigchain"
+	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 )
@@ -27,9 +25,7 @@ type Node struct {
 	initDevice            *entity.Device
 	handleMutex           sync.Mutex
 	networkDriver         network.Driver
-
-	pubkey    []byte // FIXME: use a crypto instance, i.e., enclave
-	b64pubkey string // FIXME: same as above
+	keypair               keypair.Interface
 }
 
 // New initializes a new Node object
@@ -63,13 +59,13 @@ func New(opts ...NewNodeOption) (*Node, error) {
 	}
 	n.config = config
 
-	// cache the signing pubkey
-	var sc sigchain.SigChain
-	if err := proto.Unmarshal(config.Myself.Sigchain, &sc); err != nil {
-		return nil, errors.Wrap(err, "cannot get sigchain")
+	// retrieve keypair
+	// FIXME: use enclave
+	kp := &keypair.InsecureCrypto{}
+	if err := kp.SetPrivateKeyData([]byte(n.config.PrivateKeyID)); err != nil {
+		return nil, errors.Wrap(err, "failed to set private key in keypair")
 	}
-	n.pubkey = []byte(sc.UserId)
-	n.b64pubkey = base64.StdEncoding.EncodeToString(n.pubkey)
+	n.keypair = kp
 
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)

@@ -56,7 +56,7 @@ func (x Device_Status) String() string {
 	return proto.EnumName(Device_Status_name, int32(x))
 }
 func (Device_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_device_3e4227d99cf87161, []int{0, 0}
+	return fileDescriptor_device_0561f5231d0111ab, []int{0, 0}
 }
 
 type Device struct {
@@ -77,7 +77,7 @@ func (m *Device) Reset()         { *m = Device{} }
 func (m *Device) String() string { return proto.CompactTextString(m) }
 func (*Device) ProtoMessage()    {}
 func (*Device) Descriptor() ([]byte, []int) {
-	return fileDescriptor_device_3e4227d99cf87161, []int{0}
+	return fileDescriptor_device_0561f5231d0111ab, []int{0}
 }
 func (m *Device) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -672,9 +672,9 @@ var (
 	ErrIntOverflowDevice   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("entity/device.proto", fileDescriptor_device_3e4227d99cf87161) }
+func init() { proto.RegisterFile("entity/device.proto", fileDescriptor_device_0561f5231d0111ab) }
 
-var fileDescriptor_device_3e4227d99cf87161 = []byte{
+var fileDescriptor_device_0561f5231d0111ab = []byte{
 	// 430 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x90, 0xbf, 0x8e, 0xd3, 0x40,
 	0x10, 0xc6, 0xb3, 0x4e, 0x30, 0x64, 0x92, 0x20, 0x6b, 0xa1, 0xb0, 0x02, 0x8a, 0x23, 0x57, 0x11,

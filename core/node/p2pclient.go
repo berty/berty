@@ -8,13 +8,13 @@ import (
 )
 
 func (n *Node) NewContactEvent(destination *entity.Contact, kind p2p.Kind) *p2p.Event {
-	event := p2p.NewOutgoingEvent(n.b64pubkey, destination.ID, kind)
+	event := p2p.NewOutgoingEvent(n.UserID(), destination.ID, kind)
 	event.ID = n.NewID()
 	return event
 }
 
 func (n *Node) NewConversationEvent(destination *entity.Conversation, kind p2p.Kind) *p2p.Event {
-	event := p2p.NewOutgoingEvent(n.b64pubkey, "", kind)
+	event := p2p.NewOutgoingEvent(n.UserID(), "", kind)
 	event.ConversationID = destination.ID
 	event.ID = n.NewID()
 	return event

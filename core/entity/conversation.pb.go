@@ -53,7 +53,7 @@ func (x ConversationMember_Status) String() string {
 	return proto.EnumName(ConversationMember_Status_name, int32(x))
 }
 func (ConversationMember_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_conversation_0aaa4903f99f3f35, []int{1, 0}
+	return fileDescriptor_conversation_6b780bf5174b5631, []int{1, 0}
 }
 
 type Conversation struct {
@@ -73,7 +73,7 @@ func (m *Conversation) Reset()         { *m = Conversation{} }
 func (m *Conversation) String() string { return proto.CompactTextString(m) }
 func (*Conversation) ProtoMessage()    {}
 func (*Conversation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conversation_0aaa4903f99f3f35, []int{0}
+	return fileDescriptor_conversation_6b780bf5174b5631, []int{0}
 }
 func (m *Conversation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -169,7 +169,7 @@ func (m *ConversationMember) Reset()         { *m = ConversationMember{} }
 func (m *ConversationMember) String() string { return proto.CompactTextString(m) }
 func (*ConversationMember) ProtoMessage()    {}
 func (*ConversationMember) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conversation_0aaa4903f99f3f35, []int{1}
+	return fileDescriptor_conversation_6b780bf5174b5631, []int{1}
 }
 func (m *ConversationMember) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1172,10 +1172,10 @@ var (
 )
 
 func init() {
-	proto.RegisterFile("entity/conversation.proto", fileDescriptor_conversation_0aaa4903f99f3f35)
+	proto.RegisterFile("entity/conversation.proto", fileDescriptor_conversation_6b780bf5174b5631)
 }
 
-var fileDescriptor_conversation_0aaa4903f99f3f35 = []byte{
+var fileDescriptor_conversation_6b780bf5174b5631 = []byte{
 	// 494 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x53, 0xb1, 0x8e, 0xd3, 0x40,
 	0x10, 0x8d, 0x9d, 0x5c, 0x42, 0x26, 0x47, 0x88, 0x56, 0x39, 0xc9, 0x44, 0x28, 0x8e, 0xdc, 0x90,

@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"encoding/base64"
 
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
@@ -35,14 +34,17 @@ func (n *Node) OpenEnvelope(envelope *p2p.Envelope) (*p2p.Event, error) {
 	if err := proto.Unmarshal(envelope.EncryptedEvent, &event); err != nil {
 		return nil, err
 	}
-
-	event.SenderID = base64.StdEncoding.EncodeToString(envelope.SignerPublicKey)
+	event.SenderID = n.UserID()
 
 	return &event, nil
 }
 
 // Start is the node's mainloop
 func (n *Node) Start() error {
+	pubkey, err := n.keypair.GetPubKey()
+	if err != nil {
+		return err
+	}
 	ctx := context.Background()
 	for {
 		event := <-n.outgoingEvents
@@ -55,11 +57,11 @@ func (n *Node) Start() error {
 		case event.ReceiverID != "": // ContactEvent
 			envelope.ChannelID = event.ReceiverID
 			envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
-			envelope.SignerPublicKey = n.pubkey
+			envelope.SignerPublicKey = pubkey
 		case event.ConversationID != "": //ConversationEvent
 			envelope.ChannelID = event.ConversationID
 			envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
-			envelope.SignerPublicKey = n.pubkey  // FIXME: use a signature instead of exposing the pubkey
+			envelope.SignerPublicKey = pubkey    // FIXME: use a signature instead of exposing the pubkey
 		default:
 			logger().Error("unhandled event type")
 		}

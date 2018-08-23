@@ -59,6 +59,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 			Sigchain:    scBytes,
 		},
 		CurrentDevice: currentDevice,
+		PrivateKeyID:  string(privBytes), // FIXME: use enclave ID
 	}
 
 	if err := n.sql.Set("gorm:association_autoupdate", true).Save(&config).Error; err != nil {
