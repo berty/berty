@@ -79,7 +79,7 @@ func newKeyPairEnclave(options KeyOpts) (keyID string, err error) {
 			log.Println("Key pair generation within the Darwin keychain succeeded")
 		} else {
 			err = RemoveFromKeyPairsMap(keyID)
-			return "", errors.New("Error during key generation with Darwin API: " + err.Error())
+			return "", errors.New("error during key generation with Darwin API: " + err.Error())
 		}
 	}
 
@@ -88,7 +88,7 @@ func newKeyPairEnclave(options KeyOpts) (keyID string, err error) {
 		rsaPubKey, err = x509.ParsePKCS1PublicKey(pubKey)
 		if err != nil {
 			err = RemoveFromKeyPairsMap(keyID)
-			return "", errors.New("Error during key generation with Darwin API: " + err.Error())
+			return "", errors.New("error during key generation with Darwin API: " + err.Error())
 		}
 		keyPair.pubKey = rsaPubKey
 	}
@@ -112,7 +112,7 @@ func decryptEnclave(keyID string, cipherText []byte) (plainText []byte, err erro
 	plainText = byteSliceFromNSData(C.decryptCiphertextUsingPrivateKey(cString, cData, C.int(keyPairs[keyID].keyType)))
 
 	if len(plainText) == 0 {
-		err = errors.New("Error during text decryption using Darwin API")
+		err = errors.New("error during text decryption using Darwin API")
 	}
 
 	return
@@ -132,7 +132,7 @@ func signEnclave(keyID string, plainText []byte) (signature []byte, err error) {
 	signature = byteSliceFromNSData(C.signDataUsingPrivateKey(cString, cData, C.int(keyPairs[keyID].keyType)))
 
 	if len(plainText) == 0 {
-		err = errors.New("Error during text decryption using Darwin API")
+		err = errors.New("error during text decryption using Darwin API")
 	}
 
 	return
@@ -146,7 +146,7 @@ func removeFromEnclave(keyID string) error {
 
 	// Delete key pair from keychain
 	if C.deleteKeyPairFromKeychain(cString) != C.bool(true) {
-		return errors.New("Error during keychain deletion")
+		return errors.New("error during keychain deletion")
 	}
 
 	return nil

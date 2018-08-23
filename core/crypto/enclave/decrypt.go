@@ -12,9 +12,9 @@ import (
 func Decrypt(keyID string, cipherText []byte) (plainText []byte, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return []byte{}, errors.New("Error: keyID doesn't exist")
+		return []byte{}, errors.New("keyID doesn't exist")
 	} else if len(cipherText) == 0 {
-		return []byte{}, errors.New("Error: cipherText is empty")
+		return []byte{}, errors.New("cipherText is empty")
 	}
 
 	// Call the right decryption function
@@ -46,7 +46,7 @@ func decryptRSA(keyID string, cipherText []byte) (plainText []byte, err error) {
 			return
 		}
 	} else {
-		err = errors.New("Error: can't cast privKey to *rsa.PrivateKey")
+		err = errors.New("can't cast privKey to *rsa.PrivateKey")
 	}
 
 	return
@@ -54,5 +54,5 @@ func decryptRSA(keyID string, cipherText []byte) (plainText []byte, err error) {
 
 // Decrypt ciphertext using ECC
 func decryptECC(keyID string, cipherText []byte) (plainText []byte, err error) {
-	return []byte{}, errors.New("Error: ECC-256 decryption not implemented yet")
+	return []byte{}, errors.New("ECC-256 decryption not implemented yet")
 }

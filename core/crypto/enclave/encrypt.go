@@ -12,9 +12,9 @@ import (
 func Encrypt(keyID string, plainText []byte) (cipherText []byte, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return []byte{}, errors.New("Error: keyID doesn't exist")
+		return []byte{}, errors.New("keyID doesn't exist")
 	} else if len(plainText) == 0 {
-		return []byte{}, errors.New("Error: plainText is empty")
+		return []byte{}, errors.New("plainText is empty")
 	}
 
 	// Call the right encryption function
@@ -42,7 +42,7 @@ func encryptRSA(keyID string, plainText []byte) (cipherText []byte, err error) {
 		}
 
 	} else {
-		err = errors.New("Error: can't cast pubKey to *rsa.PublicKey")
+		err = errors.New("can't cast pubKey to *rsa.PublicKey")
 	}
 
 	return
@@ -51,5 +51,5 @@ func encryptRSA(keyID string, plainText []byte) (cipherText []byte, err error) {
 
 // Encrypt plain text using ECC
 func encryptECC(keyID string, plainText []byte) (cipherText []byte, err error) {
-	return []byte{}, errors.New("Error: ECC-256 encryption not implemented yet")
+	return []byte{}, errors.New("ECC-256 encryption not implemented yet")
 }

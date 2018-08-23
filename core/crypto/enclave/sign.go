@@ -12,9 +12,9 @@ import (
 func Sign(keyID string, plainText []byte) (signature []byte, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return []byte{}, errors.New("Error: keyID doesn't exist")
+		return []byte{}, errors.New("keyID doesn't exist")
 	} else if len(plainText) == 0 {
-		return []byte{}, errors.New("Error: plainText is empty")
+		return []byte{}, errors.New("plainText is empty")
 	}
 
 	// Call the right signing function
@@ -53,7 +53,7 @@ func signRSA(keyID string, plainText []byte) (signature []byte, err error) {
 			log.Println("Error during authentification code signing:", err)
 		}
 	} else {
-		err = errors.New("Error: can't cast privKey to *rsa.PrivateKey")
+		err = errors.New("can't cast privKey to *rsa.PrivateKey")
 	}
 
 	return
@@ -61,5 +61,5 @@ func signRSA(keyID string, plainText []byte) (signature []byte, err error) {
 
 // Sign plainText using ECC
 func signECC(keyID string, plainText []byte) (signature []byte, err error) {
-	return []byte{}, errors.New("Error: ECC-256 signing not implemented yet")
+	return []byte{}, errors.New("ECC-256 signing not implemented yet")
 }
