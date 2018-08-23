@@ -11,11 +11,11 @@ import (
 func Verify(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return false, errors.New("Error: keyID doesn't exist")
+		return false, errors.New("keyID doesn't exist")
 	} else if len(plainText) == 0 {
-		return false, errors.New("Error: plainText is empty")
+		return false, errors.New("plainText is empty")
 	} else if len(signature) == 0 {
-		return false, errors.New("Error: signature is empty")
+		return false, errors.New("signature is empty")
 	}
 
 	// Call the right verification function
@@ -53,7 +53,7 @@ func verifyRSA(keyID string, plainText []byte, signature []byte) (verified bool,
 			verified = true
 		}
 	} else {
-		err = errors.New("Error: can't cast pubKey to *rsa.PublicKey")
+		err = errors.New("can't cast pubKey to *rsa.PublicKey")
 	}
 
 	return
@@ -61,5 +61,5 @@ func verifyRSA(keyID string, plainText []byte, signature []byte) (verified bool,
 
 // Verify signature using ECC
 func verifyECC(keyID string, plainText []byte, signature []byte) (verified bool, err error) {
-	return false, errors.New("Error: ECC-256 verification not implemented yet")
+	return false, errors.New("ECC-256 verification not implemented yet")
 }

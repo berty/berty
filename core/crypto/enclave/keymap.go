@@ -31,14 +31,14 @@ func getAnAvailableID() (keyID string, err error) {
 		}
 	}
 
-	return "", errors.New("Error: can't find an available ID in keyPairs map (timeout " + strconv.Itoa(timeout) + ")")
+	return "", errors.New("can't find an available ID in keyPairs map (timeout " + strconv.Itoa(timeout) + ")")
 }
 
 // Try to store key pair in keys map using potentially specified ID or try generate a new one
 func storeInKeyPairsMap(options KeyOpts, keypair keyPair) (keyID string, err error) {
 	// Return error if specified ID already exists and fallback isn't allowed
 	if options.ID != "" && isKeyIDAlreadyExist(options.ID) && !options.IDFallback {
-		return "", errors.New("Error: keyID " + options.ID + " not available and fallback is disallowed")
+		return "", errors.New("keyID " + options.ID + " not available and fallback is disallowed")
 	} else if options.ID != "" && !isKeyIDAlreadyExist(options.ID) {
 		// If specified ID is available, use it
 		keyID = options.ID
@@ -59,7 +59,7 @@ func storeInKeyPairsMap(options KeyOpts, keypair keyPair) (keyID string, err err
 func RemoveFromKeyPairsMap(keyID string) (err error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return errors.New("Error: keyID doesn't exist")
+		return errors.New("keyID doesn't exist")
 	}
 
 	// If the key pair is stored in a platform specific key storage, remove it

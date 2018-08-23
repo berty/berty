@@ -47,9 +47,9 @@ const (
 func NewKeyPair(options KeyOpts) (keyID string, err error) {
 	// Check if type and store parameters are correct
 	if options.Store != Enclave && options.Store != Software {
-		return "", errors.New("Error: wrong KeyOpts.Store parameter")
+		return "", errors.New("wrong KeyOpts.Store parameter")
 	} else if options.Type != RSA2048 && options.Type != ECC256 {
-		return "", errors.New("Error: wrong KeyOpts.Type parameter")
+		return "", errors.New("wrong KeyOpts.Type parameter")
 	}
 
 	// Try to generate enclave key pair if requested
@@ -114,5 +114,5 @@ func newKeyPairSoftwareRSA(options KeyOpts) (keyID string, err error) {
 
 // Generate a random ECC-256 key pair then return the corresponding ID
 func newKeyPairSoftwareECC(options KeyOpts) (keyID string, err error) {
-	return "", errors.New("Error: ECC-256 key generation not implemented yet")
+	return "", errors.New("ECC-256 key generation not implemented yet")
 }

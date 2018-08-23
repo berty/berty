@@ -6,7 +6,7 @@ import "errors"
 func WhichKeyStore(keyID string) (KeyStore, error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return 0, errors.New("Error: keyID doesn't exist")
+		return 0, errors.New("keyID doesn't exist")
 	}
 
 	return keyPairs[keyID].keyStore, nil
@@ -16,7 +16,7 @@ func WhichKeyStore(keyID string) (KeyStore, error) {
 func WhichKeyType(keyID string) (KeyType, error) {
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return 0, errors.New("Error: keyID doesn't exist")
+		return 0, errors.New("keyID doesn't exist")
 	}
 
 	return keyPairs[keyID].keyType, nil

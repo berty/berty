@@ -11,8 +11,8 @@ func MakeKeyPairPersistent(keyID string) error {
 
 	// Check if keyID exists in keyPairs map
 	if !isKeyIDAlreadyExist(keyID) {
-		return errors.New("Error: keyID doesn't exist")
+		return errors.New("keyID doesn't exist")
 	}
 
-	return errors.New("Error: persistence not implemented yet")
+	return errors.New("persistence not implemented yet")
 }
