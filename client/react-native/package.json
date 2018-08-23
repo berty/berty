@@ -13,7 +13,8 @@
     "react-native-vector-icons": "^5.0.0",
     "react-native-web": "^0.8.9",
     "react-relay": "^1.6.2",
-    "relay-compiler": "^1.6.2"
+    "relay-compiler": "^1.6.2",
+    "subscriptions-transport-ws": "^0.9.14"
   },
   "devDependencies": {
     "@babel/core": "7.0.0-rc.1",
