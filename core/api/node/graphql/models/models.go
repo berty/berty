@@ -6,13 +6,15 @@ import (
 	fmt "fmt"
 	io "io"
 	strconv "strconv"
+
+	scalar "github.com/berty/berty/core/api/node/graphql/scalar"
 )
 
 type BertyEntityContact struct {
 	ID                    *string                   `json:"id"`
-	CreatedAt             *GoogleProtobufTimestamp  `json:"createdAt"`
-	UpdatedAt             *GoogleProtobufTimestamp  `json:"updatedAt"`
-	DeletedAt             *GoogleProtobufTimestamp  `json:"deletedAt"`
+	CreatedAt             *scalar.DateTime          `json:"createdAt"`
+	UpdatedAt             *scalar.DateTime          `json:"updatedAt"`
+	DeletedAt             *scalar.DateTime          `json:"deletedAt"`
 	Sigchain              *string                   `json:"sigchain"`
 	Status                *BertyEntityContactStatus `json:"status"`
 	Devices               []*BertyEntityDevice      `json:"devices"`
@@ -23,18 +25,18 @@ type BertyEntityContact struct {
 }
 type BertyEntityConversation struct {
 	ID        *string                          `json:"id"`
-	CreatedAt *GoogleProtobufTimestamp         `json:"createdAt"`
-	UpdatedAt *GoogleProtobufTimestamp         `json:"updatedAt"`
-	DeletedAt *GoogleProtobufTimestamp         `json:"deletedAt"`
+	CreatedAt *scalar.DateTime                 `json:"createdAt"`
+	UpdatedAt *scalar.DateTime                 `json:"updatedAt"`
+	DeletedAt *scalar.DateTime                 `json:"deletedAt"`
 	Title     *string                          `json:"title"`
 	Topic     *string                          `json:"topic"`
 	Members   []*BertyEntityConversationMember `json:"members"`
 }
 type BertyEntityConversationMember struct {
 	ID             *string                              `json:"id"`
-	CreatedAt      *GoogleProtobufTimestamp             `json:"createdAt"`
-	UpdatedAt      *GoogleProtobufTimestamp             `json:"updatedAt"`
-	DeletedAt      *GoogleProtobufTimestamp             `json:"deletedAt"`
+	CreatedAt      *scalar.DateTime                     `json:"createdAt"`
+	UpdatedAt      *scalar.DateTime                     `json:"updatedAt"`
+	DeletedAt      *scalar.DateTime                     `json:"deletedAt"`
 	Status         *BertyEntityConversationMemberStatus `json:"status"`
 	Contact        *BertyEntityContact                  `json:"contact"`
 	ConversationID *string                              `json:"conversationId"`
@@ -42,9 +44,9 @@ type BertyEntityConversationMember struct {
 }
 type BertyEntityDevice struct {
 	ID         *string                  `json:"id"`
-	CreatedAt  *GoogleProtobufTimestamp `json:"createdAt"`
-	UpdatedAt  *GoogleProtobufTimestamp `json:"updatedAt"`
-	DeletedAt  *GoogleProtobufTimestamp `json:"deletedAt"`
+	CreatedAt  *scalar.DateTime         `json:"createdAt"`
+	UpdatedAt  *scalar.DateTime         `json:"updatedAt"`
+	DeletedAt  *scalar.DateTime         `json:"deletedAt"`
 	Name       *string                  `json:"name"`
 	Status     *BertyEntityDeviceStatus `json:"status"`
 	APIVersion *int                     `json:"apiVersion"`
@@ -96,21 +98,21 @@ type BertyP2pConversationNewMessageAttrs struct {
 	Message *BertyEntityMessage `json:"message"`
 }
 type BertyP2pEvent struct {
-	ID                 *string                  `json:"id"`
-	SenderID           *string                  `json:"senderId"`
-	CreatedAt          *GoogleProtobufTimestamp `json:"createdAt"`
-	UpdatedAt          *GoogleProtobufTimestamp `json:"updatedAt"`
-	DeletedAt          *GoogleProtobufTimestamp `json:"deletedAt"`
-	SentAt             *GoogleProtobufTimestamp `json:"sentAt"`
-	ReceivedAt         *GoogleProtobufTimestamp `json:"receivedAt"`
-	AckedAt            *GoogleProtobufTimestamp `json:"ackedAt"`
-	Direction          *BertyP2pEventDirection  `json:"direction"`
-	SenderAPIVersion   *int                     `json:"senderApiVersion"`
-	ReceiverAPIVersion *int                     `json:"receiverApiVersion"`
-	ReceiverID         *string                  `json:"receiverId"`
-	Kind               *BertyP2pKind            `json:"kind"`
-	Attributes         *string                  `json:"attributes"`
-	ConversationID     *string                  `json:"conversationId"`
+	ID                 *string                 `json:"id"`
+	SenderID           *string                 `json:"senderId"`
+	CreatedAt          *scalar.DateTime        `json:"createdAt"`
+	UpdatedAt          *scalar.DateTime        `json:"updatedAt"`
+	DeletedAt          *scalar.DateTime        `json:"deletedAt"`
+	SentAt             *scalar.DateTime        `json:"sentAt"`
+	ReceivedAt         *scalar.DateTime        `json:"receivedAt"`
+	AckedAt            *scalar.DateTime        `json:"ackedAt"`
+	Direction          *BertyP2pEventDirection `json:"direction"`
+	SenderAPIVersion   *int                    `json:"senderApiVersion"`
+	ReceiverAPIVersion *int                    `json:"receiverApiVersion"`
+	ReceiverID         *string                 `json:"receiverId"`
+	Kind               *BertyP2pKind           `json:"kind"`
+	Attributes         *string                 `json:"attributes"`
+	ConversationID     *string                 `json:"conversationId"`
 }
 type BertyP2pPingAttrs struct {
 	T *bool `json:"T"`
