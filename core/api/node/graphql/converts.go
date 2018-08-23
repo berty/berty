@@ -121,7 +121,7 @@ func convertEvent(event *p2p.Event, err error) (*model.BertyP2pEvent, error) {
 		Direction:          convertEventDirection(event.Direction),
 		SenderAPIVersion:   convertUint32(event.SenderAPIVersion),
 		ReceiverAPIVersion: convertUint32(event.ReceiverAPIVersion),
-		Receiver:           &event.ReceiverID,
+		ReceiverID:         &event.ReceiverID,
 		Kind:               convertEventKind(event.Kind),
 		Attributes:         convertBytes(&event.Attributes),
 		ConversationID:     &event.ConversationID,
