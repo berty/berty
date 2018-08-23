@@ -3,11 +3,10 @@
   "version": "0.0.1",
   "scripts": {
     "postinstall": "mkdir -p node_modules/@berty; ln -fs ../../../common node_modules/@berty",
-    "start": "concurrently 'cd .. && watchman-make -p common/schema.graphql -r \"cd web && yarn gqlg\"' 'yarn relay --watch' 'node scripts/start.js'",
+    "start": "concurrently 'yarn relay --watch' 'node scripts/start.js'",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "relay": "relay-compiler --src ../common --schema ../common/schema.graphql",
-    "gqlg": "gqlg --schemaFilePath ../common/schema.graphql --destDirPath ../common/graphql"
+    "relay": "relay-compiler --src ../common --schema ../common/schema.graphql"
   },
   "dependencies": {
     "@svgr/webpack": "2.2.1",

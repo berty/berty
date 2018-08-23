@@ -50,6 +50,7 @@ export const Col = props => (
 )
 
 export default {
+  Grid,
   Row,
   Col,
 }

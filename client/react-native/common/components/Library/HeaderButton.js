@@ -1,9 +1,7 @@
-// @flow
-
 import * as React from 'react'
 import { TouchableOpacity } from 'react-native'
-import { Icon } from '../utils'
-import { largeText, margin } from '../styles'
+import Icon from './Icon'
+import { largeText, margin } from '../../styles'
 
 const HeaderButton = ({ icon, onPress }) => {
   return (
