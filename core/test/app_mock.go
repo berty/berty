@@ -13,7 +13,6 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/berty/berty/core/api/client"
-	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network"
 	"github.com/berty/berty/core/network/netutil"
@@ -108,7 +107,7 @@ func (a *AppMock) Open() error {
 	}
 	a.client = client.New(a.clientConn)
 
-	a.ctx = p2p.SetSender(context.Background(), a.node.DeviceID())
+	a.ctx = context.Background()
 
 	return nil
 }
