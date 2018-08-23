@@ -296,6 +296,7 @@ includes_SunOS='
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/sockio.h>
+#include <sys/stat.h>
 #include <sys/mman.h>
 #include <sys/wait.h>
 #include <sys/ioctl.h>
@@ -437,7 +438,7 @@ ccflags="$@"
 		$2 ~ /^SECCOMP_MODE_/ ||
 		$2 ~ /^SPLICE_/ ||
 		$2 !~ /^AUDIT_RECORD_MAGIC/ &&
-		$2 ~ /^[A-Z0-9_]+_MAGIC2?$/ ||
+		$2 ~ /^[A-Z][A-Z0-9_]+_MAGIC2?$/ ||
 		$2 ~ /^(VM|VMADDR)_/ ||
 		$2 ~ /^IOCTL_VM_SOCKETS_/ ||
 		$2 ~ /^(TASKSTATS|TS)_/ ||

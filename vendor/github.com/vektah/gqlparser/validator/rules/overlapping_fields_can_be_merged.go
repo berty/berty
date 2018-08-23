@@ -410,7 +410,7 @@ func (m *overlappingFieldsCanBeMergedManager) collectConflictsBetween(conflicts 
 }
 
 func (m *overlappingFieldsCanBeMergedManager) findConflict(parentFieldsAreMutuallyExclusive bool, fieldA *ast.Field, fieldB *ast.Field) *ConflictMessage {
-	if fieldA.Definition == nil || fieldB.Definition == nil {
+	if fieldA.Definition == nil || fieldA.ObjectDefinition == nil || fieldB.Definition == nil || fieldB.ObjectDefinition == nil {
 		return nil
 	}
 

@@ -50,6 +50,7 @@ func makeMuxer(h host.Host, tpts []MsMuxC) (mux.Transport, error) {
 		if _, ok := transportSet[tptC.ID]; ok {
 			return nil, fmt.Errorf("duplicate muxer transport: %s", tptC.ID)
 		}
+		transportSet[tptC.ID] = struct{}{}
 	}
 	for _, tptC := range tpts {
 		tpt, err := tptC.MuxC(h)

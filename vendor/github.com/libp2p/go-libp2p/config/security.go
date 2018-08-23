@@ -61,6 +61,7 @@ func makeSecurityTransport(h host.Host, tpts []MsSecC) (security.Transport, erro
 		if _, ok := transportSet[tptC.ID]; ok {
 			return nil, fmt.Errorf("duplicate security transport: %s", tptC.ID)
 		}
+		transportSet[tptC.ID] = struct{}{}
 	}
 	for _, tptC := range tpts {
 		tpt, err := tptC.SecC(h)
