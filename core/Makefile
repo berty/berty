@@ -19,12 +19,16 @@ RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 3m -v $(TEST_PATHS)
 PROTOC ?= protoc
-DOCKER_PROTOC = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:$(GOPATH)/src" -v "$(PWD)/..:$(PWD)/.." -w "$(PWD)" bertychat/protoc
+GQLGEN ?= gqlgen
+DOCKER_PROTOC = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:/go/src" -v "$(PWD)/..:/go/src/github.com/berty/berty" -w "/go/src/github.com/berty/berty/core"  bertychat/protoc protoc
+DOCKER_GQLGEN = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:/go/src" -v "$(PWD)/..:/go/src/github.com/berty/berty" -w "/go/src/github.com/berty/berty/core"  bertychat/protoc gqlgen
 ifeq (, $(shell which protoc))
 PROTOC=$(DOCKER_PROTOC)
+GQLGEN=$(DOCKER_GQLGEN)
 endif
 ifeq (1, $(USE_DOCKER))
 PROTOC=$(DOCKER_PROTOC)
+GQLGEN=$(DOCKER_GQLGEN)
 endif
 
 ##
@@ -96,8 +100,8 @@ dev-deps:
 	  github.com/gogo/protobuf/jsonpb \
 	  github.com/moul/protoc-gen-gotemplate \
 	  golang.org/x/tools/cmd/goimports \
-		github.com/99designs/gqlgen \
-		github.com/vektah/gorunpkg
+	  github.com/99designs/gqlgen \
+	  github.com/vektah/gorunpkg
 
 ##
 ## file-based rules
@@ -120,4 +124,4 @@ api/p2p/kind.gen.go: $(PROTOS)
 
 api/node/graphql/service.gen.graphql: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
-	cd ./api/node/graphql && gqlgen -v gen
+	cd ./api/node/graphql && $(GQLGEN) -v gen

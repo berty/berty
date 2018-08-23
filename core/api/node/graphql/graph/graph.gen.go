@@ -7,11 +7,12 @@ import (
 	context "context"
 	fmt "fmt"
 	strconv "strconv"
+	sync "sync"
 
-	graphql "github.com/99designs/gqlgen/graphql"
-	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	model "berty.tech/core/api/node/graphql/model"
 	scalar "berty.tech/core/api/node/graphql/scalar"
+	graphql "github.com/99designs/gqlgen/graphql"
+	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	gqlparser "github.com/vektah/gqlparser"
 	ast "github.com/vektah/gqlparser/ast"
 )
@@ -136,6 +137,7 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 	fields := graphql.CollectFields(ctx, sel, bertyEntityContactImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -169,16 +171,19 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyEntityContact_id(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ID, nil
 	})
@@ -186,6 +191,7 @@ func (ec *executionContext) _BertyEntityContact_id(ctx context.Context, field gr
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -193,12 +199,12 @@ func (ec *executionContext) _BertyEntityContact_id(ctx context.Context, field gr
 }
 
 func (ec *executionContext) _BertyEntityContact_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CreatedAt, nil
 	})
@@ -206,6 +212,7 @@ func (ec *executionContext) _BertyEntityContact_createdAt(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -213,12 +220,12 @@ func (ec *executionContext) _BertyEntityContact_createdAt(ctx context.Context, f
 }
 
 func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UpdatedAt, nil
 	})
@@ -226,6 +233,7 @@ func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -233,12 +241,12 @@ func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, f
 }
 
 func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DeletedAt, nil
 	})
@@ -246,6 +254,7 @@ func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -253,12 +262,12 @@ func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, f
 }
 
 func (ec *executionContext) _BertyEntityContact_sigchain(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Sigchain, nil
 	})
@@ -266,6 +275,7 @@ func (ec *executionContext) _BertyEntityContact_sigchain(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -273,12 +283,12 @@ func (ec *executionContext) _BertyEntityContact_sigchain(ctx context.Context, fi
 }
 
 func (ec *executionContext) _BertyEntityContact_status(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Status, nil
 	})
@@ -286,6 +296,7 @@ func (ec *executionContext) _BertyEntityContact_status(ctx context.Context, fiel
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContactStatus)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -293,12 +304,12 @@ func (ec *executionContext) _BertyEntityContact_status(ctx context.Context, fiel
 }
 
 func (ec *executionContext) _BertyEntityContact_devices(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Devices, nil
 	})
@@ -312,6 +323,7 @@ func (ec *executionContext) _BertyEntityContact_devices(ctx context.Context, fie
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -322,12 +334,12 @@ func (ec *executionContext) _BertyEntityContact_devices(ctx context.Context, fie
 }
 
 func (ec *executionContext) _BertyEntityContact_displayName(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DisplayName, nil
 	})
@@ -335,6 +347,7 @@ func (ec *executionContext) _BertyEntityContact_displayName(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -342,12 +355,12 @@ func (ec *executionContext) _BertyEntityContact_displayName(ctx context.Context,
 }
 
 func (ec *executionContext) _BertyEntityContact_displayStatus(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DisplayStatus, nil
 	})
@@ -355,6 +368,7 @@ func (ec *executionContext) _BertyEntityContact_displayStatus(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -362,12 +376,12 @@ func (ec *executionContext) _BertyEntityContact_displayStatus(ctx context.Contex
 }
 
 func (ec *executionContext) _BertyEntityContact_overrideDisplayName(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.OverrideDisplayName, nil
 	})
@@ -375,6 +389,7 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayName(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -382,12 +397,12 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayName(ctx context.
 }
 
 func (ec *executionContext) _BertyEntityContact_overrideDisplayStatus(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.OverrideDisplayStatus, nil
 	})
@@ -395,6 +410,7 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayStatus(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -408,6 +424,7 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -433,16 +450,19 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyEntityConversation_id(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ID, nil
 	})
@@ -450,6 +470,7 @@ func (ec *executionContext) _BertyEntityConversation_id(ctx context.Context, fie
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -457,12 +478,12 @@ func (ec *executionContext) _BertyEntityConversation_id(ctx context.Context, fie
 }
 
 func (ec *executionContext) _BertyEntityConversation_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CreatedAt, nil
 	})
@@ -470,6 +491,7 @@ func (ec *executionContext) _BertyEntityConversation_createdAt(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -477,12 +499,12 @@ func (ec *executionContext) _BertyEntityConversation_createdAt(ctx context.Conte
 }
 
 func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UpdatedAt, nil
 	})
@@ -490,6 +512,7 @@ func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -497,12 +520,12 @@ func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Conte
 }
 
 func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DeletedAt, nil
 	})
@@ -510,6 +533,7 @@ func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -517,12 +541,12 @@ func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Conte
 }
 
 func (ec *executionContext) _BertyEntityConversation_title(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Title, nil
 	})
@@ -530,6 +554,7 @@ func (ec *executionContext) _BertyEntityConversation_title(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -537,12 +562,12 @@ func (ec *executionContext) _BertyEntityConversation_title(ctx context.Context, 
 }
 
 func (ec *executionContext) _BertyEntityConversation_topic(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Topic, nil
 	})
@@ -550,6 +575,7 @@ func (ec *executionContext) _BertyEntityConversation_topic(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -557,12 +583,12 @@ func (ec *executionContext) _BertyEntityConversation_topic(ctx context.Context, 
 }
 
 func (ec *executionContext) _BertyEntityConversation_members(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Members, nil
 	})
@@ -576,6 +602,7 @@ func (ec *executionContext) _BertyEntityConversation_members(ctx context.Context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -592,6 +619,7 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -619,16 +647,19 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_id(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ID, nil
 	})
@@ -636,6 +667,7 @@ func (ec *executionContext) _BertyEntityConversationMember_id(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -643,12 +675,12 @@ func (ec *executionContext) _BertyEntityConversationMember_id(ctx context.Contex
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CreatedAt, nil
 	})
@@ -656,6 +688,7 @@ func (ec *executionContext) _BertyEntityConversationMember_createdAt(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -663,12 +696,12 @@ func (ec *executionContext) _BertyEntityConversationMember_createdAt(ctx context
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UpdatedAt, nil
 	})
@@ -676,6 +709,7 @@ func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -683,12 +717,12 @@ func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DeletedAt, nil
 	})
@@ -696,6 +730,7 @@ func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -703,12 +738,12 @@ func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_status(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Status, nil
 	})
@@ -716,6 +751,7 @@ func (ec *executionContext) _BertyEntityConversationMember_status(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversationMemberStatus)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -723,12 +759,12 @@ func (ec *executionContext) _BertyEntityConversationMember_status(ctx context.Co
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_contact(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Contact, nil
 	})
@@ -736,6 +772,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contact(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -743,12 +780,12 @@ func (ec *executionContext) _BertyEntityConversationMember_contact(ctx context.C
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ConversationID, nil
 	})
@@ -756,6 +793,7 @@ func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -763,12 +801,12 @@ func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx co
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ContactID, nil
 	})
@@ -776,6 +814,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -789,6 +828,7 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyEntityDeviceImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -816,16 +856,19 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyEntityDevice_id(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ID, nil
 	})
@@ -833,6 +876,7 @@ func (ec *executionContext) _BertyEntityDevice_id(ctx context.Context, field gra
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -840,12 +884,12 @@ func (ec *executionContext) _BertyEntityDevice_id(ctx context.Context, field gra
 }
 
 func (ec *executionContext) _BertyEntityDevice_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CreatedAt, nil
 	})
@@ -853,6 +897,7 @@ func (ec *executionContext) _BertyEntityDevice_createdAt(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -860,12 +905,12 @@ func (ec *executionContext) _BertyEntityDevice_createdAt(ctx context.Context, fi
 }
 
 func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UpdatedAt, nil
 	})
@@ -873,6 +918,7 @@ func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -880,12 +926,12 @@ func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, fi
 }
 
 func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DeletedAt, nil
 	})
@@ -893,6 +939,7 @@ func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -900,12 +947,12 @@ func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, fi
 }
 
 func (ec *executionContext) _BertyEntityDevice_name(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -913,6 +960,7 @@ func (ec *executionContext) _BertyEntityDevice_name(ctx context.Context, field g
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -920,12 +968,12 @@ func (ec *executionContext) _BertyEntityDevice_name(ctx context.Context, field g
 }
 
 func (ec *executionContext) _BertyEntityDevice_status(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Status, nil
 	})
@@ -933,6 +981,7 @@ func (ec *executionContext) _BertyEntityDevice_status(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityDeviceStatus)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -940,12 +989,12 @@ func (ec *executionContext) _BertyEntityDevice_status(ctx context.Context, field
 }
 
 func (ec *executionContext) _BertyEntityDevice_apiVersion(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.APIVersion, nil
 	})
@@ -953,6 +1002,7 @@ func (ec *executionContext) _BertyEntityDevice_apiVersion(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -960,12 +1010,12 @@ func (ec *executionContext) _BertyEntityDevice_apiVersion(ctx context.Context, f
 }
 
 func (ec *executionContext) _BertyEntityDevice_contactId(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ContactID, nil
 	})
@@ -973,6 +1023,7 @@ func (ec *executionContext) _BertyEntityDevice_contactId(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -986,6 +1037,7 @@ func (ec *executionContext) _BertyEntityMessage(ctx context.Context, sel ast.Sel
 	fields := graphql.CollectFields(ctx, sel, bertyEntityMessageImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -999,16 +1051,19 @@ func (ec *executionContext) _BertyEntityMessage(ctx context.Context, sel ast.Sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyEntityMessage_text(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityMessage) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityMessage"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityMessage",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Text, nil
 	})
@@ -1016,6 +1071,7 @@ func (ec *executionContext) _BertyEntityMessage_text(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1029,6 +1085,7 @@ func (ec *executionContext) _BertyNodeContactRequestInput(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, bertyNodeContactRequestInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1044,16 +1101,19 @@ func (ec *executionContext) _BertyNodeContactRequestInput(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyNodeContactRequestInput_contact(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeContactRequestInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeContactRequestInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeContactRequestInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Contact, nil
 	})
@@ -1061,6 +1121,7 @@ func (ec *executionContext) _BertyNodeContactRequestInput_contact(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1068,12 +1129,12 @@ func (ec *executionContext) _BertyNodeContactRequestInput_contact(ctx context.Co
 }
 
 func (ec *executionContext) _BertyNodeContactRequestInput_introText(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeContactRequestInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeContactRequestInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeContactRequestInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.IntroText, nil
 	})
@@ -1081,6 +1142,7 @@ func (ec *executionContext) _BertyNodeContactRequestInput_introText(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1094,6 +1156,7 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationAddMessageInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1109,16 +1172,19 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyNodeConversationAddMessageInput_conversation(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeConversationAddMessageInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeConversationAddMessageInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationAddMessageInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Conversation, nil
 	})
@@ -1126,6 +1192,7 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput_conversation(c
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1133,12 +1200,12 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput_conversation(c
 }
 
 func (ec *executionContext) _BertyNodeConversationAddMessageInput_message(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeConversationAddMessageInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeConversationAddMessageInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationAddMessageInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Message, nil
 	})
@@ -1146,6 +1213,7 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput_message(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityMessage)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1159,6 +1227,7 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput(ctx context
 	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationManageMembersInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1174,16 +1243,19 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput(ctx context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyNodeConversationManageMembersInput_conversation(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeConversationManageMembersInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeConversationManageMembersInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationManageMembersInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Conversation, nil
 	})
@@ -1191,6 +1263,7 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput_conversatio
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1198,12 +1271,12 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput_conversatio
 }
 
 func (ec *executionContext) _BertyNodeConversationManageMembersInput_members(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeConversationManageMembersInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeConversationManageMembersInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationManageMembersInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Members, nil
 	})
@@ -1217,6 +1290,7 @@ func (ec *executionContext) _BertyNodeConversationManageMembersInput_members(ctx
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -1233,6 +1307,7 @@ func (ec *executionContext) _BertyNodeEventListInput(ctx context.Context, sel as
 	fields := graphql.CollectFields(ctx, sel, bertyNodeEventListInputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1248,16 +1323,19 @@ func (ec *executionContext) _BertyNodeEventListInput(ctx context.Context, sel as
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyNodeEventListInput_limit(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeEventListInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeEventListInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeEventListInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Limit, nil
 	})
@@ -1265,6 +1343,7 @@ func (ec *executionContext) _BertyNodeEventListInput_limit(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1272,12 +1351,12 @@ func (ec *executionContext) _BertyNodeEventListInput_limit(ctx context.Context, 
 }
 
 func (ec *executionContext) _BertyNodeEventListInput_filter(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeEventListInput) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeEventListInput"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeEventListInput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Filter, nil
 	})
@@ -1285,6 +1364,7 @@ func (ec *executionContext) _BertyNodeEventListInput_filter(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pEvent)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1298,6 +1378,7 @@ func (ec *executionContext) _BertyNodeVoid(ctx context.Context, sel ast.Selectio
 	fields := graphql.CollectFields(ctx, sel, bertyNodeVoidImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1311,16 +1392,19 @@ func (ec *executionContext) _BertyNodeVoid(ctx context.Context, sel ast.Selectio
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyNodeVoid_T(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeVoid) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeVoid"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeVoid",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.T, nil
 	})
@@ -1328,6 +1412,7 @@ func (ec *executionContext) _BertyNodeVoid_T(ctx context.Context, field graphql.
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1341,6 +1426,7 @@ func (ec *executionContext) _BertyP2pAckAttrs(ctx context.Context, sel ast.Selec
 	fields := graphql.CollectFields(ctx, sel, bertyP2pAckAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1356,16 +1442,19 @@ func (ec *executionContext) _BertyP2pAckAttrs(ctx context.Context, sel ast.Selec
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pAckAttrs_ids(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pAckAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pAckAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pAckAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Ids, nil
 	})
@@ -1379,6 +1468,7 @@ func (ec *executionContext) _BertyP2pAckAttrs_ids(ctx context.Context, field gra
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -1389,12 +1479,12 @@ func (ec *executionContext) _BertyP2pAckAttrs_ids(ctx context.Context, field gra
 }
 
 func (ec *executionContext) _BertyP2pAckAttrs_ErrMsg(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pAckAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pAckAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pAckAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ErrMsg, nil
 	})
@@ -1402,6 +1492,7 @@ func (ec *executionContext) _BertyP2pAckAttrs_ErrMsg(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1415,6 +1506,7 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactRequestAcceptedAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1428,16 +1520,19 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs_T(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pContactRequestAcceptedAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactRequestAcceptedAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactRequestAcceptedAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.T, nil
 	})
@@ -1445,6 +1540,7 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs_T(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1458,6 +1554,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactRequestAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1473,16 +1570,19 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs(ctx context.Context, se
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pContactRequestAttrs_me(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pContactRequestAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactRequestAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactRequestAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Me, nil
 	})
@@ -1490,6 +1590,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs_me(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1497,12 +1598,12 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs_me(ctx context.Context,
 }
 
 func (ec *executionContext) _BertyP2pContactRequestAttrs_introText(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pContactRequestAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactRequestAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactRequestAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.IntroText, nil
 	})
@@ -1510,6 +1611,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs_introText(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1523,6 +1625,7 @@ func (ec *executionContext) _BertyP2pContactShareAttrs(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactShareAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1536,16 +1639,19 @@ func (ec *executionContext) _BertyP2pContactShareAttrs(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pContactShareAttrs_contact(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pContactShareAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactShareAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactShareAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Contact, nil
 	})
@@ -1553,6 +1659,7 @@ func (ec *executionContext) _BertyP2pContactShareAttrs_contact(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1566,6 +1673,7 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactShareMeAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1579,16 +1687,19 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs(ctx context.Context, se
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pContactShareMeAttrs_me(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pContactShareMeAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactShareMeAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactShareMeAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Me, nil
 	})
@@ -1596,6 +1707,7 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs_me(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1609,6 +1721,7 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, bertyP2pConversationInviteAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1622,16 +1735,19 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pConversationInviteAttrs_conversation(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pConversationInviteAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pConversationInviteAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pConversationInviteAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Conversation, nil
 	})
@@ -1639,6 +1755,7 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs_conversation(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1652,6 +1769,7 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, bertyP2pConversationNewMessageAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1665,16 +1783,19 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pConversationNewMessageAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pConversationNewMessageAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pConversationNewMessageAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Message, nil
 	})
@@ -1682,6 +1803,7 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityMessage)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1695,6 +1817,7 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 	fields := graphql.CollectFields(ctx, sel, bertyP2pEventImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1736,16 +1859,19 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pEvent_id(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ID, nil
 	})
@@ -1753,6 +1879,7 @@ func (ec *executionContext) _BertyP2pEvent_id(ctx context.Context, field graphql
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1760,12 +1887,12 @@ func (ec *executionContext) _BertyP2pEvent_id(ctx context.Context, field graphql
 }
 
 func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.SenderID, nil
 	})
@@ -1773,6 +1900,7 @@ func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field g
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1780,12 +1908,12 @@ func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field g
 }
 
 func (ec *executionContext) _BertyP2pEvent_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CreatedAt, nil
 	})
@@ -1793,6 +1921,7 @@ func (ec *executionContext) _BertyP2pEvent_createdAt(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1800,12 +1929,12 @@ func (ec *executionContext) _BertyP2pEvent_createdAt(ctx context.Context, field 
 }
 
 func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UpdatedAt, nil
 	})
@@ -1813,6 +1942,7 @@ func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1820,12 +1950,12 @@ func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field 
 }
 
 func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DeletedAt, nil
 	})
@@ -1833,6 +1963,7 @@ func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1840,12 +1971,12 @@ func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field 
 }
 
 func (ec *executionContext) _BertyP2pEvent_sentAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.SentAt, nil
 	})
@@ -1853,6 +1984,7 @@ func (ec *executionContext) _BertyP2pEvent_sentAt(ctx context.Context, field gra
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1860,12 +1992,12 @@ func (ec *executionContext) _BertyP2pEvent_sentAt(ctx context.Context, field gra
 }
 
 func (ec *executionContext) _BertyP2pEvent_receivedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ReceivedAt, nil
 	})
@@ -1873,6 +2005,7 @@ func (ec *executionContext) _BertyP2pEvent_receivedAt(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1880,12 +2013,12 @@ func (ec *executionContext) _BertyP2pEvent_receivedAt(ctx context.Context, field
 }
 
 func (ec *executionContext) _BertyP2pEvent_ackedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.AckedAt, nil
 	})
@@ -1893,6 +2026,7 @@ func (ec *executionContext) _BertyP2pEvent_ackedAt(ctx context.Context, field gr
 		return graphql.Null
 	}
 	res := resTmp.(*scalar.DateTime)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1900,12 +2034,12 @@ func (ec *executionContext) _BertyP2pEvent_ackedAt(ctx context.Context, field gr
 }
 
 func (ec *executionContext) _BertyP2pEvent_direction(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Direction, nil
 	})
@@ -1913,6 +2047,7 @@ func (ec *executionContext) _BertyP2pEvent_direction(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pEventDirection)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1920,12 +2055,12 @@ func (ec *executionContext) _BertyP2pEvent_direction(ctx context.Context, field 
 }
 
 func (ec *executionContext) _BertyP2pEvent_senderApiVersion(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.SenderAPIVersion, nil
 	})
@@ -1933,6 +2068,7 @@ func (ec *executionContext) _BertyP2pEvent_senderApiVersion(ctx context.Context,
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1940,12 +2076,12 @@ func (ec *executionContext) _BertyP2pEvent_senderApiVersion(ctx context.Context,
 }
 
 func (ec *executionContext) _BertyP2pEvent_receiverApiVersion(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ReceiverAPIVersion, nil
 	})
@@ -1953,6 +2089,7 @@ func (ec *executionContext) _BertyP2pEvent_receiverApiVersion(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1960,12 +2097,12 @@ func (ec *executionContext) _BertyP2pEvent_receiverApiVersion(ctx context.Contex
 }
 
 func (ec *executionContext) _BertyP2pEvent_receiverId(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ReceiverID, nil
 	})
@@ -1973,6 +2110,7 @@ func (ec *executionContext) _BertyP2pEvent_receiverId(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -1980,12 +2118,12 @@ func (ec *executionContext) _BertyP2pEvent_receiverId(ctx context.Context, field
 }
 
 func (ec *executionContext) _BertyP2pEvent_kind(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Kind, nil
 	})
@@ -1993,6 +2131,7 @@ func (ec *executionContext) _BertyP2pEvent_kind(ctx context.Context, field graph
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pKind)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2000,12 +2139,12 @@ func (ec *executionContext) _BertyP2pEvent_kind(ctx context.Context, field graph
 }
 
 func (ec *executionContext) _BertyP2pEvent_attributes(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Attributes, nil
 	})
@@ -2013,6 +2152,7 @@ func (ec *executionContext) _BertyP2pEvent_attributes(ctx context.Context, field
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2020,12 +2160,12 @@ func (ec *executionContext) _BertyP2pEvent_attributes(ctx context.Context, field
 }
 
 func (ec *executionContext) _BertyP2pEvent_conversationId(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ConversationID, nil
 	})
@@ -2033,6 +2173,7 @@ func (ec *executionContext) _BertyP2pEvent_conversationId(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2046,6 +2187,7 @@ func (ec *executionContext) _BertyP2pPingAttrs(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyP2pPingAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2059,16 +2201,19 @@ func (ec *executionContext) _BertyP2pPingAttrs(ctx context.Context, sel ast.Sele
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pPingAttrs_T(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pPingAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pPingAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPingAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.T, nil
 	})
@@ -2076,6 +2221,7 @@ func (ec *executionContext) _BertyP2pPingAttrs_T(ctx context.Context, field grap
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2089,6 +2235,7 @@ func (ec *executionContext) _BertyP2pSentAttrs(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyP2pSentAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2102,16 +2249,19 @@ func (ec *executionContext) _BertyP2pSentAttrs(ctx context.Context, sel ast.Sele
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _BertyP2pSentAttrs_ids(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pSentAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pSentAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pSentAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Ids, nil
 	})
@@ -2125,6 +2275,7 @@ func (ec *executionContext) _BertyP2pSentAttrs_ids(ctx context.Context, field gr
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2141,6 +2292,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto(ctx context.Context, 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2172,16 +2324,19 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto(ctx context.Context, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -2189,6 +2344,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_name(ctx context.Cont
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2196,12 +2352,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_name(ctx context.Cont
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_field(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Field, nil
 	})
@@ -2215,6 +2371,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_field(ctx context.Con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2225,12 +2382,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_field(ctx context.Con
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_extension(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Extension, nil
 	})
@@ -2244,6 +2401,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_extension(ctx context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2254,12 +2412,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_extension(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_nestedType(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.NestedType, nil
 	})
@@ -2273,6 +2431,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_nestedType(ctx contex
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2283,12 +2442,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_nestedType(ctx contex
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_enumType(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.EnumType, nil
 	})
@@ -2302,6 +2461,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_enumType(ctx context.
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2312,12 +2472,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_enumType(ctx context.
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_extensionRange(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ExtensionRange, nil
 	})
@@ -2331,6 +2491,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_extensionRange(ctx co
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2341,12 +2502,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_extensionRange(ctx co
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_oneofDecl(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.OneofDecl, nil
 	})
@@ -2360,6 +2521,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_oneofDecl(ctx context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2370,12 +2532,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_oneofDecl(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -2383,6 +2545,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_options(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufMessageOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2390,12 +2553,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_options(ctx context.C
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedRange(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ReservedRange, nil
 	})
@@ -2409,6 +2572,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedRange(ctx con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2419,12 +2583,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedRange(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedName(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ReservedName, nil
 	})
@@ -2438,6 +2602,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedName(ctx cont
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2454,6 +2619,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange(ctx con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoExtensionRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2471,16 +2637,19 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange(ctx con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_start(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProtoExtensionRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoExtensionRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoExtensionRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Start, nil
 	})
@@ -2488,6 +2657,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_start(c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2495,12 +2665,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_start(c
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_end(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProtoExtensionRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoExtensionRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoExtensionRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.End, nil
 	})
@@ -2508,6 +2678,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_end(ctx
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2515,12 +2686,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_end(ctx
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProtoExtensionRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoExtensionRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoExtensionRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -2528,6 +2699,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_options
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufExtensionRangeOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2541,6 +2713,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange(ctx cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoReservedRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2556,16 +2729,19 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange(ctx cont
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_start(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProtoReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Start, nil
 	})
@@ -2573,6 +2749,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_start(ct
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2580,12 +2757,12 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_start(ct
 }
 
 func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_end(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufDescriptorProtoReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.End, nil
 	})
@@ -2593,6 +2770,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_end(ctx 
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2606,6 +2784,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2627,16 +2806,19 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto(ctx context.Conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -2644,6 +2826,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_name(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2651,12 +2834,12 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_name(ctx context.
 }
 
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_value(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Value, nil
 	})
@@ -2670,6 +2853,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_value(ctx context
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2680,12 +2864,12 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_value(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -2693,6 +2877,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_options(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufEnumOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2700,12 +2885,12 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_options(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedRange(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ReservedRange, nil
 	})
@@ -2719,6 +2904,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedRange(ctx
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2729,12 +2915,12 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedRange(ctx
 }
 
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedName(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ReservedName, nil
 	})
@@ -2748,6 +2934,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedName(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2764,6 +2951,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange(
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumDescriptorProtoEnumReservedRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2779,16 +2967,19 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange(
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_start(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumDescriptorProtoEnumReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProtoEnumReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProtoEnumReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Start, nil
 	})
@@ -2796,6 +2987,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2803,12 +2995,12 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_
 }
 
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_end(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumDescriptorProtoEnumReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProtoEnumReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProtoEnumReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.End, nil
 	})
@@ -2816,6 +3008,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2829,6 +3022,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2846,16 +3040,19 @@ func (ec *executionContext) _GoogleProtobufEnumOptions(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufEnumOptions_allowAlias(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.AllowAlias, nil
 	})
@@ -2863,6 +3060,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_allowAlias(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2870,12 +3068,12 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_allowAlias(ctx context.Co
 }
 
 func (ec *executionContext) _GoogleProtobufEnumOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Deprecated, nil
 	})
@@ -2883,6 +3081,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_deprecated(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2890,12 +3089,12 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_deprecated(ctx context.Co
 }
 
 func (ec *executionContext) _GoogleProtobufEnumOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -2909,6 +3108,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions_uninterpretedOption(ctx c
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -2925,6 +3125,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto(ctx context.
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumValueDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2942,16 +3143,19 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto(ctx context.
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumValueDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -2959,6 +3163,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_name(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2966,12 +3171,12 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_name(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_number(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumValueDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Number, nil
 	})
@@ -2979,6 +3184,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_number(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -2986,12 +3192,12 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_number(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumValueDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -2999,6 +3205,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_options(ctx 
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufEnumValueOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3012,6 +3219,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions(ctx context.Context,
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumValueOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3027,16 +3235,19 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions(ctx context.Context,
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufEnumValueOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumValueOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Deprecated, nil
 	})
@@ -3044,6 +3255,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions_deprecated(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3051,12 +3263,12 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions_deprecated(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufEnumValueOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufEnumValueOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -3070,6 +3282,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions_uninterpretedOption(
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3086,6 +3299,7 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufExtensionRangeOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3099,16 +3313,19 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufExtensionRangeOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufExtensionRangeOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufExtensionRangeOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufExtensionRangeOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -3122,6 +3339,7 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions_uninterpretedOp
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3138,6 +3356,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto(ctx context.Cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFieldDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3169,16 +3388,19 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto(ctx context.Cont
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -3186,6 +3408,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_name(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3193,12 +3416,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_name(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_number(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Number, nil
 	})
@@ -3206,6 +3429,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_number(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3213,12 +3437,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_number(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_label(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Label, nil
 	})
@@ -3226,6 +3450,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_label(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldDescriptorProtoLabel)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3233,12 +3458,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_label(ctx contex
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_type(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Type, nil
 	})
@@ -3246,6 +3471,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_type(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldDescriptorProtoType)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3253,12 +3479,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_type(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_typeName(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.TypeName, nil
 	})
@@ -3266,6 +3492,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_typeName(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3273,12 +3500,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_typeName(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_extendee(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Extendee, nil
 	})
@@ -3286,6 +3513,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_extendee(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3293,12 +3521,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_extendee(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_defaultValue(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DefaultValue, nil
 	})
@@ -3306,6 +3534,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_defaultValue(ctx
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3313,12 +3542,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_defaultValue(ctx
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_oneofIndex(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.OneofIndex, nil
 	})
@@ -3326,6 +3555,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_oneofIndex(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3333,12 +3563,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_oneofIndex(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_jsonName(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.JSONName, nil
 	})
@@ -3346,6 +3576,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_jsonName(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3353,12 +3584,12 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_jsonName(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -3366,6 +3597,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_options(ctx cont
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3379,6 +3611,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions(ctx context.Context, sel
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFieldOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3404,16 +3637,19 @@ func (ec *executionContext) _GoogleProtobufFieldOptions(ctx context.Context, sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufFieldOptions_ctype(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Ctype, nil
 	})
@@ -3421,6 +3657,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_ctype(ctx context.Contex
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldOptionsCtype)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3428,12 +3665,12 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_ctype(ctx context.Contex
 }
 
 func (ec *executionContext) _GoogleProtobufFieldOptions_packed(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Packed, nil
 	})
@@ -3441,6 +3678,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_packed(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3448,12 +3686,12 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_packed(ctx context.Conte
 }
 
 func (ec *executionContext) _GoogleProtobufFieldOptions_jstype(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Jstype, nil
 	})
@@ -3461,6 +3699,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_jstype(ctx context.Conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFieldOptionsJstype)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3468,12 +3707,12 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_jstype(ctx context.Conte
 }
 
 func (ec *executionContext) _GoogleProtobufFieldOptions_lazy(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Lazy, nil
 	})
@@ -3481,6 +3720,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_lazy(ctx context.Context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3488,12 +3728,12 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_lazy(ctx context.Context
 }
 
 func (ec *executionContext) _GoogleProtobufFieldOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Deprecated, nil
 	})
@@ -3501,6 +3741,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_deprecated(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3508,12 +3749,12 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_deprecated(ctx context.C
 }
 
 func (ec *executionContext) _GoogleProtobufFieldOptions_weak(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Weak, nil
 	})
@@ -3521,6 +3762,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_weak(ctx context.Context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3528,12 +3770,12 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_weak(ctx context.Context
 }
 
 func (ec *executionContext) _GoogleProtobufFieldOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -3547,6 +3789,7 @@ func (ec *executionContext) _GoogleProtobufFieldOptions_uninterpretedOption(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3563,6 +3806,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3598,16 +3842,19 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto(ctx context.Conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -3615,6 +3862,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_name(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3622,12 +3870,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_name(ctx context.
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_package(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Package, nil
 	})
@@ -3635,6 +3883,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_package(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3642,12 +3891,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_package(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_dependency(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Dependency, nil
 	})
@@ -3661,6 +3910,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_dependency(ctx co
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3671,12 +3921,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_dependency(ctx co
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_publicDependency(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.PublicDependency, nil
 	})
@@ -3690,6 +3940,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_publicDependency(
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3700,12 +3951,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_publicDependency(
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_weakDependency(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.WeakDependency, nil
 	})
@@ -3719,6 +3970,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_weakDependency(ct
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3729,12 +3981,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_weakDependency(ct
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_messageType(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.MessageType, nil
 	})
@@ -3748,6 +4000,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_messageType(ctx c
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3758,12 +4011,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_messageType(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_enumType(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.EnumType, nil
 	})
@@ -3777,6 +4030,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_enumType(ctx cont
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3787,12 +4041,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_enumType(ctx cont
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_service(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Service, nil
 	})
@@ -3806,6 +4060,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_service(ctx conte
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3816,12 +4071,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_service(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_extension(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Extension, nil
 	})
@@ -3835,6 +4090,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_extension(ctx con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3845,12 +4101,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_extension(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -3858,6 +4114,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_options(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFileOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3865,12 +4122,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_options(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_sourceCodeInfo(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.SourceCodeInfo, nil
 	})
@@ -3878,6 +4135,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_sourceCodeInfo(ct
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufSourceCodeInfo)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3885,12 +4143,12 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_sourceCodeInfo(ct
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_syntax(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Syntax, nil
 	})
@@ -3898,6 +4156,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_syntax(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -3911,6 +4170,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileDescriptorSetImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3924,16 +4184,19 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufFileDescriptorSet_file(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileDescriptorSet) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorSet"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorSet",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.File, nil
 	})
@@ -3947,6 +4210,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet_file(ctx context.Co
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -3963,6 +4227,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4005,6 +4270,10 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 			out.Values[i] = ec._GoogleProtobufFileOptions_phpClassPrefix(ctx, field, obj)
 		case "phpNamespace":
 			out.Values[i] = ec._GoogleProtobufFileOptions_phpNamespace(ctx, field, obj)
+		case "phpMetadataNamespace":
+			out.Values[i] = ec._GoogleProtobufFileOptions_phpMetadataNamespace(ctx, field, obj)
+		case "rubyPackage":
+			out.Values[i] = ec._GoogleProtobufFileOptions_rubyPackage(ctx, field, obj)
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufFileOptions_uninterpretedOption(ctx, field, obj)
 		default:
@@ -4012,16 +4281,19 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_javaPackage(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.JavaPackage, nil
 	})
@@ -4029,6 +4301,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaPackage(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4036,12 +4309,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaPackage(ctx context.C
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_javaOuterClassname(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.JavaOuterClassname, nil
 	})
@@ -4049,6 +4322,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaOuterClassname(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4056,12 +4330,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaOuterClassname(ctx co
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_javaMultipleFiles(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.JavaMultipleFiles, nil
 	})
@@ -4069,6 +4343,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaMultipleFiles(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4076,12 +4351,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaMultipleFiles(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_javaGenerateEqualsAndHash(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.JavaGenerateEqualsAndHash, nil
 	})
@@ -4089,6 +4364,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaGenerateEqualsAndHash
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4096,12 +4372,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaGenerateEqualsAndHash
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_javaStringCheckUtf8(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.JavaStringCheckUtf8, nil
 	})
@@ -4109,6 +4385,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaStringCheckUtf8(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4116,12 +4393,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaStringCheckUtf8(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_optimizeFor(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.OptimizeFor, nil
 	})
@@ -4129,6 +4406,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_optimizeFor(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufFileOptionsOptimizeMode)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4136,12 +4414,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_optimizeFor(ctx context.C
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_goPackage(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.GoPackage, nil
 	})
@@ -4149,6 +4427,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_goPackage(ctx context.Con
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4156,12 +4435,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_goPackage(ctx context.Con
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_ccGenericServices(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CcGenericServices, nil
 	})
@@ -4169,6 +4448,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_ccGenericServices(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4176,12 +4456,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_ccGenericServices(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_javaGenericServices(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.JavaGenericServices, nil
 	})
@@ -4189,6 +4469,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaGenericServices(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4196,12 +4477,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaGenericServices(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_pyGenericServices(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.PyGenericServices, nil
 	})
@@ -4209,6 +4490,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_pyGenericServices(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4216,12 +4498,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_pyGenericServices(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_phpGenericServices(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.PhpGenericServices, nil
 	})
@@ -4229,6 +4511,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpGenericServices(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4236,12 +4519,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpGenericServices(ctx co
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Deprecated, nil
 	})
@@ -4249,6 +4532,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_deprecated(ctx context.Co
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4256,12 +4540,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_deprecated(ctx context.Co
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_ccEnableArenas(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CcEnableArenas, nil
 	})
@@ -4269,6 +4553,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_ccEnableArenas(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4276,12 +4561,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_ccEnableArenas(ctx contex
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_objcClassPrefix(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ObjcClassPrefix, nil
 	})
@@ -4289,6 +4574,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_objcClassPrefix(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4296,12 +4582,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_objcClassPrefix(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_csharpNamespace(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.CsharpNamespace, nil
 	})
@@ -4309,6 +4595,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_csharpNamespace(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4316,12 +4603,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_csharpNamespace(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_swiftPrefix(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.SwiftPrefix, nil
 	})
@@ -4329,6 +4616,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_swiftPrefix(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4336,12 +4624,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_swiftPrefix(ctx context.C
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_phpClassPrefix(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.PhpClassPrefix, nil
 	})
@@ -4349,6 +4637,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpClassPrefix(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4356,12 +4645,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpClassPrefix(ctx contex
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_phpNamespace(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.PhpNamespace, nil
 	})
@@ -4369,6 +4658,49 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpNamespace(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _GoogleProtobufFileOptions_phpMetadataNamespace(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.PhpMetadataNamespace, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _GoogleProtobufFileOptions_rubyPackage(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.RubyPackage, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4376,12 +4708,12 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpNamespace(ctx context.
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufFileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -4395,6 +4727,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_uninterpretedOption(ctx c
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4411,6 +4744,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, googleProtobufGeneratedCodeInfoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4424,16 +4758,19 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo_annotation(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufGeneratedCodeInfo) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfo"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Annotation, nil
 	})
@@ -4447,6 +4784,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo_annotation(ctx cont
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4463,6 +4801,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation(ctx conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufGeneratedCodeInfoAnnotationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4482,16 +4821,19 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation(ctx conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_path(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufGeneratedCodeInfoAnnotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Path, nil
 	})
@@ -4505,6 +4847,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_path(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4515,12 +4858,12 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_path(ctx 
 }
 
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_sourceFile(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufGeneratedCodeInfoAnnotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.SourceFile, nil
 	})
@@ -4528,6 +4871,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_sourceFil
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4535,12 +4879,12 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_sourceFil
 }
 
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_begin(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufGeneratedCodeInfoAnnotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Begin, nil
 	})
@@ -4548,6 +4892,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_begin(ctx
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4555,12 +4900,12 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_begin(ctx
 }
 
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_end(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufGeneratedCodeInfoAnnotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.End, nil
 	})
@@ -4568,6 +4913,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_end(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4581,6 +4927,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMessageOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4602,16 +4949,19 @@ func (ec *executionContext) _GoogleProtobufMessageOptions(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufMessageOptions_messageSetWireFormat(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.MessageSetWireFormat, nil
 	})
@@ -4619,6 +4969,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_messageSetWireFormat(c
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4626,12 +4977,12 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_messageSetWireFormat(c
 }
 
 func (ec *executionContext) _GoogleProtobufMessageOptions_noStandardDescriptorAccessor(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.NoStandardDescriptorAccessor, nil
 	})
@@ -4639,6 +4990,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_noStandardDescriptorAc
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4646,12 +4998,12 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_noStandardDescriptorAc
 }
 
 func (ec *executionContext) _GoogleProtobufMessageOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Deprecated, nil
 	})
@@ -4659,6 +5011,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_deprecated(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4666,12 +5019,12 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_deprecated(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufMessageOptions_mapEntry(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.MapEntry, nil
 	})
@@ -4679,6 +5032,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_mapEntry(ctx context.C
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4686,12 +5040,12 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_mapEntry(ctx context.C
 }
 
 func (ec *executionContext) _GoogleProtobufMessageOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -4705,6 +5059,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions_uninterpretedOption(ct
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4721,6 +5076,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMethodDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4744,16 +5100,19 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -4761,6 +5120,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_name(ctx contex
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4768,12 +5128,12 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_name(ctx contex
 }
 
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_inputType(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.InputType, nil
 	})
@@ -4781,6 +5141,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_inputType(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4788,12 +5149,12 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_inputType(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_outputType(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.OutputType, nil
 	})
@@ -4801,6 +5162,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_outputType(ctx 
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4808,12 +5170,12 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_outputType(ctx 
 }
 
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -4821,6 +5183,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_options(ctx con
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufMethodOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4828,12 +5191,12 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_options(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_clientStreaming(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ClientStreaming, nil
 	})
@@ -4841,6 +5204,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_clientStreaming
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4848,12 +5212,12 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_clientStreaming
 }
 
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_serverStreaming(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.ServerStreaming, nil
 	})
@@ -4861,6 +5225,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_serverStreaming
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4874,6 +5239,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMethodOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4891,16 +5257,19 @@ func (ec *executionContext) _GoogleProtobufMethodOptions(ctx context.Context, se
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufMethodOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Deprecated, nil
 	})
@@ -4908,6 +5277,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_deprecated(ctx context.
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4915,12 +5285,12 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_deprecated(ctx context.
 }
 
 func (ec *executionContext) _GoogleProtobufMethodOptions_idempotencyLevel(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.IdempotencyLevel, nil
 	})
@@ -4928,6 +5298,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_idempotencyLevel(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufMethodOptionsIdempotencyLevel)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -4935,12 +5306,12 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_idempotencyLevel(ctx co
 }
 
 func (ec *executionContext) _GoogleProtobufMethodOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufMethodOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -4954,6 +5325,7 @@ func (ec *executionContext) _GoogleProtobufMethodOptions_uninterpretedOption(ctx
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -4970,6 +5342,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto(ctx context.Cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufOneofDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4985,16 +5358,19 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto(ctx context.Cont
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufOneofDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufOneofDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufOneofDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -5002,6 +5378,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_name(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5009,12 +5386,12 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_name(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufOneofDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufOneofDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufOneofDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -5022,6 +5399,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_options(ctx cont
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufOneofOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5035,6 +5413,7 @@ func (ec *executionContext) _GoogleProtobufOneofOptions(ctx context.Context, sel
 	fields := graphql.CollectFields(ctx, sel, googleProtobufOneofOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5048,16 +5427,19 @@ func (ec *executionContext) _GoogleProtobufOneofOptions(ctx context.Context, sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufOneofOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufOneofOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufOneofOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufOneofOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -5071,6 +5453,7 @@ func (ec *executionContext) _GoogleProtobufOneofOptions_uninterpretedOption(ctx 
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5087,6 +5470,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, googleProtobufServiceDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5104,16 +5488,19 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufServiceDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -5121,6 +5508,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_name(ctx conte
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5128,12 +5516,12 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_name(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_method(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufServiceDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Method, nil
 	})
@@ -5147,6 +5535,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_method(ctx con
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5157,12 +5546,12 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_method(ctx con
 }
 
 func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufServiceDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Options, nil
 	})
@@ -5170,6 +5559,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_options(ctx co
 		return graphql.Null
 	}
 	res := resTmp.(*model.GoogleProtobufServiceOptions)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5183,6 +5573,7 @@ func (ec *executionContext) _GoogleProtobufServiceOptions(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufServiceOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5198,16 +5589,19 @@ func (ec *executionContext) _GoogleProtobufServiceOptions(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufServiceOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufServiceOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Deprecated, nil
 	})
@@ -5215,6 +5609,7 @@ func (ec *executionContext) _GoogleProtobufServiceOptions_deprecated(ctx context
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5222,12 +5617,12 @@ func (ec *executionContext) _GoogleProtobufServiceOptions_deprecated(ctx context
 }
 
 func (ec *executionContext) _GoogleProtobufServiceOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufServiceOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.UninterpretedOption, nil
 	})
@@ -5241,6 +5636,7 @@ func (ec *executionContext) _GoogleProtobufServiceOptions_uninterpretedOption(ct
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5257,6 +5653,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufSourceCodeInfoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5270,16 +5667,19 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufSourceCodeInfo_location(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufSourceCodeInfo) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfo"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Location, nil
 	})
@@ -5293,6 +5693,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo_location(ctx context.C
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5309,6 +5710,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, googleProtobufSourceCodeInfoLocationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5330,16 +5732,19 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_path(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufSourceCodeInfoLocation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Path, nil
 	})
@@ -5353,6 +5758,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_path(ctx conte
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5363,12 +5769,12 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_path(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_span(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufSourceCodeInfoLocation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Span, nil
 	})
@@ -5382,6 +5788,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_span(ctx conte
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5392,12 +5799,12 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_span(ctx conte
 }
 
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingComments(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufSourceCodeInfoLocation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.LeadingComments, nil
 	})
@@ -5405,6 +5812,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingComment
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5412,12 +5820,12 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingComment
 }
 
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_trailingComments(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufSourceCodeInfoLocation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.TrailingComments, nil
 	})
@@ -5425,6 +5833,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_trailingCommen
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5432,12 +5841,12 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_trailingCommen
 }
 
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingDetachedComments(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufSourceCodeInfoLocation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.LeadingDetachedComments, nil
 	})
@@ -5451,6 +5860,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingDetache
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5467,6 +5877,7 @@ func (ec *executionContext) _GoogleProtobufTimestamp(ctx context.Context, sel as
 	fields := graphql.CollectFields(ctx, sel, googleProtobufTimestampImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5482,16 +5893,19 @@ func (ec *executionContext) _GoogleProtobufTimestamp(ctx context.Context, sel as
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufTimestamp_seconds(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufTimestamp) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufTimestamp"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufTimestamp",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Seconds, nil
 	})
@@ -5499,6 +5913,7 @@ func (ec *executionContext) _GoogleProtobufTimestamp_seconds(ctx context.Context
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5506,12 +5921,12 @@ func (ec *executionContext) _GoogleProtobufTimestamp_seconds(ctx context.Context
 }
 
 func (ec *executionContext) _GoogleProtobufTimestamp_nanos(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufTimestamp) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufTimestamp"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufTimestamp",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Nanos, nil
 	})
@@ -5519,6 +5934,7 @@ func (ec *executionContext) _GoogleProtobufTimestamp_nanos(ctx context.Context, 
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5532,6 +5948,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufUninterpretedOptionImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5557,16 +5974,19 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_name(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
@@ -5580,6 +6000,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_name(ctx context.
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
+
 			if res[idx1] == nil {
 				return graphql.Null
 			}
@@ -5590,12 +6011,12 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_name(ctx context.
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_identifierValue(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.IdentifierValue, nil
 	})
@@ -5603,6 +6024,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_identifierValue(c
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5610,12 +6032,12 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_identifierValue(c
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_positiveIntValue(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.PositiveIntValue, nil
 	})
@@ -5623,6 +6045,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_positiveIntValue(
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5630,12 +6053,12 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_positiveIntValue(
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_negativeIntValue(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.NegativeIntValue, nil
 	})
@@ -5643,6 +6066,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_negativeIntValue(
 		return graphql.Null
 	}
 	res := resTmp.(*int)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5650,12 +6074,12 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_negativeIntValue(
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_doubleValue(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DoubleValue, nil
 	})
@@ -5663,6 +6087,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_doubleValue(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*float64)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5670,12 +6095,12 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_doubleValue(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_stringValue(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.StringValue, nil
 	})
@@ -5683,6 +6108,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_stringValue(ctx c
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5690,12 +6116,12 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_stringValue(ctx c
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_aggregateValue(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.AggregateValue, nil
 	})
@@ -5703,6 +6129,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_aggregateValue(ct
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5716,6 +6143,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart(ctx conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufUninterpretedOptionNamePartImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5731,16 +6159,19 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart(ctx conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_namePart(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOptionNamePart) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOptionNamePart"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOptionNamePart",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.NamePart, nil
 	})
@@ -5748,6 +6179,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_namePart(
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5755,12 +6187,12 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_namePart(
 }
 
 func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_isExtension(ctx context.Context, field graphql.CollectedField, obj *model.GoogleProtobufUninterpretedOptionNamePart) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOptionNamePart"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOptionNamePart",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.IsExtension, nil
 	})
@@ -5768,6 +6200,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_isExtensi
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5785,6 +6218,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	})
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5810,6 +6244,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -5841,12 +6278,12 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 		}
 	}
 	args["introText"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.resolvers.Mutation().ContactRequest(ctx, args["contactID"].(string), args["introText"].(*string))
 	})
@@ -5854,6 +6291,7 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5873,12 +6311,12 @@ func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field g
 		}
 	}
 	args["contactID"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.resolvers.Mutation().ContactRemove(ctx, args["contactID"].(string))
 	})
@@ -5886,6 +6324,7 @@ func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field g
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5920,12 +6359,12 @@ func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field g
 		}
 	}
 	args["displayName"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.resolvers.Mutation().ContactUpdate(ctx, args["contactID"].(string), args["displayName"].(*string))
 	})
@@ -5933,6 +6372,7 @@ func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field g
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityContact)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -5963,12 +6403,12 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 		}
 	}
 	args["contactsID"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.resolvers.Mutation().ConversationCreate(ctx, args["contactsID"].([]string))
 	})
@@ -5976,6 +6416,7 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6016,12 +6457,12 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 		}
 	}
 	args["contactsID"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.resolvers.Mutation().ConversationInvite(ctx, args["conversationID"].(string), args["contactsID"].([]string))
 	})
@@ -6029,6 +6470,7 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6069,12 +6511,12 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 		}
 	}
 	args["contactsID"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.resolvers.Mutation().ConversationExclude(ctx, args["conversationID"].(string), args["contactsID"].([]string))
 	})
@@ -6082,6 +6524,7 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyEntityConversation)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6111,12 +6554,12 @@ func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context
 		}
 	}
 	args["message"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.resolvers.Mutation().ConversationAddMessage(ctx, args["conversationID"].(string), args["message"].(string))
 	})
@@ -6124,6 +6567,7 @@ func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context
 		return graphql.Null
 	}
 	res := resTmp.(*model.BertyP2pEvent)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6140,7 +6584,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		Object: "Query",
 	})
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6148,11 +6594,23 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
 		case "EventList":
-			out.Values[i] = ec._Query_EventList(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_EventList(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "ContactList":
-			out.Values[i] = ec._Query_ContactList(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ContactList(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "ConversationList":
-			out.Values[i] = ec._Query_ConversationList(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ConversationList(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -6161,7 +6619,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
@@ -6183,117 +6644,93 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 		}
 	}
 	args["limit"] = arg0
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return ec.resolvers.Query().EventList(ctx, args["limit"].(*int))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.BertyP2pEvent)
+	arr1 := graphql.Array{}
+	for idx1 := range res {
+		arr1 = append(arr1, func() graphql.Marshaler {
+			rctx := graphql.GetResolverContext(ctx)
+			rctx.PushIndex(idx1)
+			defer rctx.Pop()
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().EventList(ctx, args["limit"].(*int))
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.([]*model.BertyP2pEvent)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-				return ec._BertyP2pEvent(ctx, field.Selections, res[idx1])
-			}())
-		}
-		return arr1
-	})
+			if res[idx1] == nil {
+				return graphql.Null
+			}
+			return ec._BertyP2pEvent(ctx, field.Selections, res[idx1])
+		}())
+	}
+	return arr1
 }
 
 func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return ec.resolvers.Query().ContactList(ctx)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.BertyEntityContact)
+	arr1 := graphql.Array{}
+	for idx1 := range res {
+		arr1 = append(arr1, func() graphql.Marshaler {
+			rctx := graphql.GetResolverContext(ctx)
+			rctx.PushIndex(idx1)
+			defer rctx.Pop()
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().ContactList(ctx)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.([]*model.BertyEntityContact)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-				return ec._BertyEntityContact(ctx, field.Selections, res[idx1])
-			}())
-		}
-		return arr1
-	})
+			if res[idx1] == nil {
+				return graphql.Null
+			}
+			return ec._BertyEntityContact(ctx, field.Selections, res[idx1])
+		}())
+	}
+	return arr1
 }
 
 func (ec *executionContext) _Query_ConversationList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return ec.resolvers.Query().ConversationList(ctx)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.BertyEntityConversation)
+	arr1 := graphql.Array{}
+	for idx1 := range res {
+		arr1 = append(arr1, func() graphql.Marshaler {
+			rctx := graphql.GetResolverContext(ctx)
+			rctx.PushIndex(idx1)
+			defer rctx.Pop()
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().ConversationList(ctx)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.([]*model.BertyEntityConversation)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-				return ec._BertyEntityConversation(ctx, field.Selections, res[idx1])
-			}())
-		}
-		return arr1
-	})
+			if res[idx1] == nil {
+				return graphql.Null
+			}
+			return ec._BertyEntityConversation(ctx, field.Selections, res[idx1])
+		}())
+	}
+	return arr1
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
@@ -6309,12 +6746,12 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 		}
 	}
 	args["name"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Query"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.introspectType(args["name"].(string)), nil
 	})
@@ -6322,6 +6759,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6329,12 +6767,12 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 }
 
 func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Query"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return ec.introspectSchema(), nil
 	})
@@ -6342,6 +6780,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Schema)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6399,6 +6838,7 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 	fields := graphql.CollectFields(ctx, sel, __DirectiveImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6407,31 +6847,46 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("__Directive")
 		case "name":
 			out.Values[i] = ec.___Directive_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___Directive_description(ctx, field, obj)
 		case "locations":
 			out.Values[i] = ec.___Directive_locations(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "args":
 			out.Values[i] = ec.___Directive_args(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6439,12 +6894,12 @@ func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql
 }
 
 func (ec *executionContext) ___Directive_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Description, nil
 	})
@@ -6456,16 +6911,19 @@ func (ec *executionContext) ___Directive_description(ctx context.Context, field 
 }
 
 func (ec *executionContext) ___Directive_locations(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Locations, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]string)
@@ -6482,16 +6940,19 @@ func (ec *executionContext) ___Directive_locations(ctx context.Context, field gr
 }
 
 func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Args, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.InputValue)
@@ -6514,6 +6975,7 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 	fields := graphql.CollectFields(ctx, sel, __EnumValueImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6522,10 +6984,16 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("__EnumValue")
 		case "name":
 			out.Values[i] = ec.___EnumValue_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___EnumValue_description(ctx, field, obj)
 		case "isDeprecated":
 			out.Values[i] = ec.___EnumValue_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecationReason":
 			out.Values[i] = ec.___EnumValue_deprecationReason(ctx, field, obj)
 		default:
@@ -6533,20 +7001,26 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6554,12 +7028,12 @@ func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql
 }
 
 func (ec *executionContext) ___EnumValue_description(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Description, nil
 	})
@@ -6571,16 +7045,19 @@ func (ec *executionContext) ___EnumValue_description(ctx context.Context, field 
 }
 
 func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.IsDeprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
@@ -6588,12 +7065,12 @@ func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field
 }
 
 func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DeprecationReason, nil
 	})
@@ -6611,6 +7088,7 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 	fields := graphql.CollectFields(ctx, sel, __FieldImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6619,14 +7097,26 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = graphql.MarshalString("__Field")
 		case "name":
 			out.Values[i] = ec.___Field_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___Field_description(ctx, field, obj)
 		case "args":
 			out.Values[i] = ec.___Field_args(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "type":
 			out.Values[i] = ec.___Field_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "isDeprecated":
 			out.Values[i] = ec.___Field_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecationReason":
 			out.Values[i] = ec.___Field_deprecationReason(ctx, field, obj)
 		default:
@@ -6634,20 +7124,26 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6655,12 +7151,12 @@ func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.Col
 }
 
 func (ec *executionContext) ___Field_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Description, nil
 	})
@@ -6672,16 +7168,19 @@ func (ec *executionContext) ___Field_description(ctx context.Context, field grap
 }
 
 func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Args, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.InputValue)
@@ -6698,36 +7197,46 @@ func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.Col
 }
 
 func (ec *executionContext) ___Field_type(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Type, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.IsDeprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
@@ -6735,12 +7244,12 @@ func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field gra
 }
 
 func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DeprecationReason, nil
 	})
@@ -6758,6 +7267,7 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 	fields := graphql.CollectFields(ctx, sel, __InputValueImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6766,10 +7276,16 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 			out.Values[i] = graphql.MarshalString("__InputValue")
 		case "name":
 			out.Values[i] = ec.___InputValue_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___InputValue_description(ctx, field, obj)
 		case "type":
 			out.Values[i] = ec.___InputValue_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "defaultValue":
 			out.Values[i] = ec.___InputValue_defaultValue(ctx, field, obj)
 		default:
@@ -6777,20 +7293,26 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -6798,12 +7320,12 @@ func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphq
 }
 
 func (ec *executionContext) ___InputValue_description(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Description, nil
 	})
@@ -6815,32 +7337,39 @@ func (ec *executionContext) ___InputValue_description(ctx context.Context, field
 }
 
 func (ec *executionContext) ___InputValue_type(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Type, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.DefaultValue, nil
 	})
@@ -6848,6 +7377,7 @@ func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, fiel
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6861,6 +7391,7 @@ func (ec *executionContext) ___Schema(ctx context.Context, sel ast.SelectionSet,
 	fields := graphql.CollectFields(ctx, sel, __SchemaImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6869,33 +7400,48 @@ func (ec *executionContext) ___Schema(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = graphql.MarshalString("__Schema")
 		case "types":
 			out.Values[i] = ec.___Schema_types(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "queryType":
 			out.Values[i] = ec.___Schema_queryType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "mutationType":
 			out.Values[i] = ec.___Schema_mutationType(ctx, field, obj)
 		case "subscriptionType":
 			out.Values[i] = ec.___Schema_subscriptionType(ctx, field, obj)
 		case "directives":
 			out.Values[i] = ec.___Schema_directives(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Types(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Type)
@@ -6912,32 +7458,39 @@ func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.C
 }
 
 func (ec *executionContext) ___Schema_queryType(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.QueryType(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return ec.___Type(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.MutationType(), nil
 	})
@@ -6945,6 +7498,7 @@ func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field gr
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6952,12 +7506,12 @@ func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field gr
 }
 
 func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.SubscriptionType(), nil
 	})
@@ -6965,6 +7519,7 @@ func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, fiel
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -6972,16 +7527,19 @@ func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, fiel
 }
 
 func (ec *executionContext) ___Schema_directives(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Directives(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Directive)
@@ -7004,6 +7562,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 	fields := graphql.CollectFields(ctx, sel, __TypeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -7012,6 +7571,9 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = graphql.MarshalString("__Type")
 		case "kind":
 			out.Values[i] = ec.___Type_kind(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "name":
 			out.Values[i] = ec.___Type_name(ctx, field, obj)
 		case "description":
@@ -7033,20 +7595,26 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
 func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Kind(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
@@ -7054,12 +7622,12 @@ func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.Coll
 }
 
 func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Name(), nil
 	})
@@ -7067,6 +7635,7 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -7074,12 +7643,12 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 }
 
 func (ec *executionContext) ___Type_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Description(), nil
 	})
@@ -7103,12 +7672,12 @@ func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.Co
 		}
 	}
 	args["includeDeprecated"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Fields(args["includeDeprecated"].(bool)), nil
 	})
@@ -7129,12 +7698,12 @@ func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.Co
 }
 
 func (ec *executionContext) ___Type_interfaces(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.Interfaces(), nil
 	})
@@ -7155,12 +7724,12 @@ func (ec *executionContext) ___Type_interfaces(ctx context.Context, field graphq
 }
 
 func (ec *executionContext) ___Type_possibleTypes(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.PossibleTypes(), nil
 	})
@@ -7193,12 +7762,12 @@ func (ec *executionContext) ___Type_enumValues(ctx context.Context, field graphq
 		}
 	}
 	args["includeDeprecated"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.EnumValues(args["includeDeprecated"].(bool)), nil
 	})
@@ -7219,12 +7788,12 @@ func (ec *executionContext) ___Type_enumValues(ctx context.Context, field graphq
 }
 
 func (ec *executionContext) ___Type_inputFields(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.InputFields(), nil
 	})
@@ -7245,12 +7814,12 @@ func (ec *executionContext) ___Type_inputFields(ctx context.Context, field graph
 }
 
 func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
 		return obj.OfType(), nil
 	})
@@ -7258,6 +7827,7 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -7273,7 +7843,13 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	}
 }
 
-func (ec *executionContext) FieldMiddleware(ctx context.Context, next graphql.Resolver) interface{} {
+func (ec *executionContext) FieldMiddleware(ctx context.Context, next graphql.Resolver) (ret interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
 	res, err := ec.ResolverMiddleware(ctx, next)
 	if err != nil {
 		ec.Error(ctx, err)
@@ -7300,10 +7876,10 @@ interface Node {
   id: ID!
 }
 
-
+  
 type GoogleProtobufFileDescriptorSet {
   file: [GoogleProtobufFileDescriptorProto]
-}
+} 
 type GoogleProtobufFileDescriptorProto {
   name: String
   package: String
@@ -7317,7 +7893,7 @@ type GoogleProtobufFileDescriptorProto {
   options: GoogleProtobufFileOptions
   sourceCodeInfo: GoogleProtobufSourceCodeInfo
   syntax: String
-}
+}  
 
 type GoogleProtobufDescriptorProtoExtensionRange {
   start: Int
@@ -7340,10 +7916,10 @@ type GoogleProtobufDescriptorProto {
   options: GoogleProtobufMessageOptions
   reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
   reservedName: [String]
-}
+} 
 type GoogleProtobufExtensionRangeOptions {
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufFieldDescriptorProto {
   name: String
   number: Int
@@ -7380,11 +7956,11 @@ enum GoogleProtobufFieldDescriptorProtoLabel {
   LABEL_OPTIONAL
   LABEL_REQUIRED
   LABEL_REPEATED
-}
+} 
 type GoogleProtobufOneofDescriptorProto {
   name: String
   options: GoogleProtobufOneofOptions
-}
+}  
 
 type GoogleProtobufEnumDescriptorProtoEnumReservedRange {
   start: Int
@@ -7396,17 +7972,17 @@ type GoogleProtobufEnumDescriptorProto {
   options: GoogleProtobufEnumOptions
   reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
   reservedName: [String]
-}
+} 
 type GoogleProtobufEnumValueDescriptorProto {
   name: String
   number: Int
   options: GoogleProtobufEnumValueOptions
-}
+} 
 type GoogleProtobufServiceDescriptorProto {
   name: String
   method: [GoogleProtobufMethodDescriptorProto]
   options: GoogleProtobufServiceOptions
-}
+} 
 type GoogleProtobufMethodDescriptorProto {
   name: String
   inputType: String
@@ -7414,7 +7990,7 @@ type GoogleProtobufMethodDescriptorProto {
   options: GoogleProtobufMethodOptions
   clientStreaming: Boolean
   serverStreaming: Boolean
-}
+} 
 type GoogleProtobufFileOptions {
   javaPackage: String
   javaOuterClassname: String
@@ -7434,20 +8010,22 @@ type GoogleProtobufFileOptions {
   swiftPrefix: String
   phpClassPrefix: String
   phpNamespace: String
+  phpMetadataNamespace: String
+  rubyPackage: String
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 enum GoogleProtobufFileOptionsOptimizeMode {
   SPEED
   CODE_SIZE
   LITE_RUNTIME
-}
+} 
 type GoogleProtobufMessageOptions {
   messageSetWireFormat: Boolean
   noStandardDescriptorAccessor: Boolean
   deprecated: Boolean
   mapEntry: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufFieldOptions {
   ctype: GoogleProtobufFieldOptionsCType
   packed: Boolean
@@ -7466,23 +8044,23 @@ enum GoogleProtobufFieldOptionsJSType {
   JS_NORMAL
   JS_STRING
   JS_NUMBER
-}
+} 
 type GoogleProtobufOneofOptions {
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufEnumOptions {
   allowAlias: Boolean
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufEnumValueOptions {
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufServiceOptions {
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufMethodOptions {
   deprecated: Boolean
   idempotencyLevel: GoogleProtobufMethodOptionsIdempotencyLevel
@@ -7492,7 +8070,7 @@ enum GoogleProtobufMethodOptionsIdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
   NO_SIDE_EFFECTS
   IDEMPOTENT
-}
+}  
 
 type GoogleProtobufUninterpretedOptionNamePart {
   namePart: String
@@ -7506,7 +8084,7 @@ type GoogleProtobufUninterpretedOption {
   doubleValue: Float
   stringValue: String
   aggregateValue: String
-}
+}  
 
 type GoogleProtobufSourceCodeInfoLocation {
   path: [Int]
@@ -7517,7 +8095,7 @@ type GoogleProtobufSourceCodeInfoLocation {
 }
 type GoogleProtobufSourceCodeInfo {
   location: [GoogleProtobufSourceCodeInfoLocation]
-}
+}  
 
 type GoogleProtobufGeneratedCodeInfoAnnotation {
   path: [Int]
@@ -7527,14 +8105,14 @@ type GoogleProtobufGeneratedCodeInfoAnnotation {
 }
 type GoogleProtobufGeneratedCodeInfo {
   annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
-}
-
-
+}  
+   
+  
 type GoogleProtobufTimestamp {
   seconds: Int
   nanos: Int
-}
-
+}  
+  
 type BertyEntityDevice {
   id: String
   createdAt: DateTime
@@ -7551,8 +8129,8 @@ enum BertyEntityDeviceStatus {
   Disconnected
   Available
   Myself
-}
-
+}  
+  
 type BertyEntityContact {
   id: String
   createdAt: DateTime
@@ -7574,8 +8152,8 @@ enum BertyEntityContactStatus {
   RequestedMe
   IsBlocked
   Myself
-}
-
+}  
+  
 type BertyEntityConversation {
   id: String
   createdAt: DateTime
@@ -7584,7 +8162,7 @@ type BertyEntityConversation {
   title: String
   topic: String
   members: [BertyEntityConversationMember]
-}
+} 
 type BertyEntityConversationMember {
   id: String
   createdAt: DateTime
@@ -7600,41 +8178,41 @@ enum BertyEntityConversationMemberStatus {
   Owner
   Active
   Blocked
-}
-
+}  
+  
 type BertyEntityMessage {
   text: String
-}
-
+}  
+  
 type BertyP2pSentAttrs {
   ids: [String]
-}
+} 
 type BertyP2pAckAttrs {
   ids: [String]
   ErrMsg: String
-}
+} 
 type BertyP2pPingAttrs { # Can't make empty type
   T: Boolean
-}
+} 
 type BertyP2pContactRequestAttrs {
   me: BertyEntityContact
   introText: String
-}
+} 
 type BertyP2pContactRequestAcceptedAttrs { # Can't make empty type
   T: Boolean
-}
+} 
 type BertyP2pContactShareMeAttrs {
   me: BertyEntityContact
-}
+} 
 type BertyP2pContactShareAttrs {
   contact: BertyEntityContact
-}
+} 
 type BertyP2pConversationInviteAttrs {
   conversation: BertyEntityConversation
-}
+} 
 type BertyP2pConversationNewMessageAttrs {
   message: BertyEntityMessage
-}
+} 
 
 enum BertyP2pKind {
   Unknown
@@ -7647,8 +8225,8 @@ enum BertyP2pKind {
   ContactShare
   ConversationInvite
   ConversationNewMessage
-}
-
+} 
+  
 type BertyP2pEvent {
   id: String
   senderId: String
@@ -7670,27 +8248,27 @@ enum BertyP2pEventDirection {
   UnknownDirection
   Incoming
   Outgoing
-}
-
+}  
+  
 type BertyNodeContactRequestInput {
   contact: BertyEntityContact
   introText: String
-}
+} 
 type BertyNodeConversationAddMessageInput {
   conversation: BertyEntityConversation
   message: BertyEntityMessage
-}
+} 
 type BertyNodeEventListInput {
   limit: Int
   filter: BertyP2pEvent
-}
+} 
 type BertyNodeConversationManageMembersInput {
   conversation: BertyEntityConversation
   members: [BertyEntityConversationMember]
-}
+} 
 type BertyNodeVoid { # Can't make empty type
   T: Boolean
-}
+}  
 type Subscription {
   EventStream: BertyP2pEvent
 }

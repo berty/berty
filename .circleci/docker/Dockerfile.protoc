@@ -1,13 +1,23 @@
-FROM moul/protoc-gen-gotemplate
+FROM    znly/protoc as znly
 
-RUN apk --update add git openssh
+#FROM    golang:1.10-alpine
 
-# Update deps
-RUN go get -u -v \
+RUN     apk --update add make git go rsync libc-dev openssh
+
+RUN go version
+
+#COPY --from=znly
+
+RUN     go get -u -v \
 	  github.com/gogo/protobuf/proto \
 	  github.com/gogo/protobuf/protoc-gen-gogo \
 	  github.com/gogo/protobuf/gogoproto \
 	  github.com/gogo/protobuf/protoc-gen-gofast \
 	  github.com/gogo/protobuf/jsonpb \
 	  github.com/moul/protoc-gen-gotemplate \
-	  golang.org/x/tools/cmd/goimports
+	  golang.org/x/tools/cmd/goimports \
+	  github.com/99designs/gqlgen \
+	  github.com/vektah/gorunpkg
+
+ENV	GOPATH=/go \
+	PATH=/go/bin:${PATH}
