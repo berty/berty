@@ -4,16 +4,15 @@ package graphql
 
 import (
 	"context"
+	"errors"
 	"io"
 
-	"errors"
+	"go.uber.org/zap"
 
 	service "github.com/berty/berty/core/api/node"
 	"github.com/berty/berty/core/api/node/graphql/graph"
-	model "github.com/berty/berty/core/api/node/graphql/models"
-
+	"github.com/berty/berty/core/api/node/graphql/model"
 	"github.com/berty/berty/core/entity"
-	"go.uber.org/zap"
 )
 
 type Resolver struct {
