@@ -49,7 +49,7 @@ func (n *Node) Start() error {
 		envelope := p2p.Envelope{}
 		eventBytes, err := proto.Marshal(event)
 		if err != nil {
-			zap.L().Warn("failed to marshal outgoing event", zap.Error(err))
+			logger().Warn("failed to marshal outgoing event", zap.Error(err))
 		}
 		switch {
 		case event.ReceiverID != "": // ContactEvent
@@ -61,10 +61,10 @@ func (n *Node) Start() error {
 			envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
 			envelope.SignerPublicKey = n.pubkey  // FIXME: use a signature instead of exposing the pubkey
 		default:
-			zap.L().Error("unhandled event type")
+			logger().Error("unhandled event type")
 		}
 		if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
-			zap.L().Error("failed to emit envelope on network", zap.Error(err))
+			logger().Error("failed to emit envelope on network", zap.Error(err))
 		}
 	}
 }

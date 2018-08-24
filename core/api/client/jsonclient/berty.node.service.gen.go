@@ -31,7 +31,7 @@ func init() {
 }
 
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "EventStream"),
 		zap.String("input", string(jsonInput)),
@@ -63,7 +63,7 @@ func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byt
 }
 
 func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "EventList"),
 		zap.String("input", string(jsonInput)),
@@ -95,7 +95,7 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 }
 
 func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ContactRequest"),
 		zap.String("input", string(jsonInput)),
@@ -109,7 +109,7 @@ func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []
 }
 
 func NodeContactAcceptRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ContactAcceptRequest"),
 		zap.String("input", string(jsonInput)),
@@ -123,7 +123,7 @@ func NodeContactAcceptRequest(client *client.Client, ctx context.Context, jsonIn
 }
 
 func NodeContactRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ContactRemove"),
 		zap.String("input", string(jsonInput)),
@@ -137,7 +137,7 @@ func NodeContactRemove(client *client.Client, ctx context.Context, jsonInput []b
 }
 
 func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ContactUpdate"),
 		zap.String("input", string(jsonInput)),
@@ -151,7 +151,7 @@ func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []b
 }
 
 func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ContactList"),
 		zap.String("input", string(jsonInput)),
@@ -183,7 +183,7 @@ func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byt
 }
 
 func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ConversationCreate"),
 		zap.String("input", string(jsonInput)),
@@ -197,7 +197,7 @@ func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInpu
 }
 
 func NodeConversationList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ConversationList"),
 		zap.String("input", string(jsonInput)),
@@ -229,7 +229,7 @@ func NodeConversationList(client *client.Client, ctx context.Context, jsonInput 
 }
 
 func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ConversationInvite"),
 		zap.String("input", string(jsonInput)),
@@ -243,7 +243,7 @@ func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInpu
 }
 
 func NodeConversationExclude(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ConversationExclude"),
 		zap.String("input", string(jsonInput)),
@@ -257,7 +257,7 @@ func NodeConversationExclude(client *client.Client, ctx context.Context, jsonInp
 }
 
 func NodeConversationAddMessage(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "ConversationAddMessage"),
 		zap.String("input", string(jsonInput)),
@@ -271,7 +271,7 @@ func NodeConversationAddMessage(client *client.Client, ctx context.Context, json
 }
 
 func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "HandleEvent"),
 		zap.String("input", string(jsonInput)),

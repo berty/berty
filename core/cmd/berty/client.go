@@ -66,7 +66,7 @@ func newClientCommand() *cobra.Command {
 func clientServerStream(opts *clientOptions) error {
 	ctx := context.Background()
 
-	zap.L().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
+	logger().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
 	conn, err := grpc.Dial(opts.nodeAddress, grpc.WithInsecure())
 	if err != nil {
 		return errors.Wrap(err, "failed to dial node")
@@ -121,7 +121,7 @@ func clientServerStream(opts *clientOptions) error {
 func clientUnary(opts *clientOptions) error {
 	ctx := context.Background()
 
-	zap.L().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
+	logger().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
 	conn, err := grpc.Dial(opts.nodeAddress, grpc.WithInsecure())
 	if err != nil {
 		return errors.Wrap(err, "failed to dial node")

@@ -205,7 +205,7 @@ func (r *subscriptionResolver) EventStream(ctx context.Context) (<-chan *model.B
 			// }
 
 			if err != nil {
-				zap.L().Error("EventStream error", zap.Error(err))
+				logger().Error("EventStream error", zap.Error(err))
 				break
 			}
 

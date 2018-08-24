@@ -52,12 +52,12 @@ func (d *SimpleDriver) Emit(ctx context.Context, envelope *p2p.Envelope) error {
 		for _, channel := range peer.channels {
 			if channel == envelope.ChannelID {
 				found = true
-				zap.L().Debug("Simple.Emit",
+				logger().Debug("Simple.Emit",
 					zap.String("channel", envelope.ChannelID),
 					zap.Strings("peers", peer.channels),
 				)
 				if _, err := peer.handler(ctx, envelope); err != nil {
-					zap.L().Error("peer.driver.handler failed", zap.Error(err))
+					logger().Error("peer.driver.handler failed", zap.Error(err))
 				}
 			}
 		}

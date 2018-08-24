@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"github.com/berty/berty/core/api/node"
@@ -49,10 +48,10 @@ func (n *Node) EventStream(_ *node.Void, stream node.Service_EventStreamServer) 
 		return ErrAnotherClientIsAlreadyConnected
 	}
 
-	zap.L().Debug("EventStream connected")
+	logger().Debug("EventStream connected")
 	n.clientEventsConnected = true
 	defer func() {
-		zap.L().Debug("EventStream disconnected")
+		logger().Debug("EventStream disconnected")
 		n.clientEventsConnected = false
 	}()
 
