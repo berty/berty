@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash f2e5cef24eb67b78bd6e36191a6d83f9
+ * @relayHash 50e99ed296e44445fae835895914e067
  */
 
 /* eslint-disable */
@@ -11,10 +11,10 @@
 import type { ConcreteRequest } from 'relay-runtime';
 export type BertyEntityContactStatus = "IsBlocked" | "IsFriend" | "IsRequested" | "IsTrustedFriend" | "Myself" | "RequestedMe" | "Unknown" | "%future added value";
 export type BertyEntityDeviceStatus = "Available" | "Connected" | "Disconnected" | "Myself" | "Unknown" | "%future added value";
-export type ContactRequestMutationVariables = {|
+export type contactRequestMutationVariables = {|
   id?: ?string
 |};
-export type ContactRequestMutationResponse = {|
+export type contactRequestMutationResponse = {|
   +ContactRequest: ?{|
     +id: ?string,
     +createdAt: ?{|
@@ -55,15 +55,15 @@ export type ContactRequestMutationResponse = {|
     +overrideDisplayStatus: ?string,
   |}
 |};
-export type ContactRequestMutation = {|
-  variables: ContactRequestMutationVariables,
-  response: ContactRequestMutationResponse,
+export type contactRequestMutation = {|
+  variables: contactRequestMutationVariables,
+  response: contactRequestMutationResponse,
 |};
 */
 
 
 /*
-mutation ContactRequestMutation(
+mutation contactRequestMutation(
   $id: String
 ) {
   ContactRequest(id: $id) {
@@ -270,13 +270,13 @@ v7 = [
 return {
   "kind": "Request",
   "operationKind": "mutation",
-  "name": "ContactRequestMutation",
+  "name": "contactRequestMutation",
   "id": null,
-  "text": "mutation ContactRequestMutation(\n  $id: String\n) {\n  ContactRequest(id: $id) {\n    id\n    createdAt {\n      seconds\n      nanos\n    }\n    updatedAt {\n      seconds\n      nanos\n    }\n    deletedAt {\n      seconds\n      nanos\n    }\n    status\n    devices {\n      id\n      createdAt {\n        seconds\n        nanos\n      }\n      updatedAt {\n        seconds\n        nanos\n      }\n      deletedAt {\n        seconds\n        nanos\n      }\n      name\n      status\n      apiVersion\n      contactId\n    }\n    displayName\n    displayStatus\n    overrideDisplayName\n    overrideDisplayStatus\n  }\n}\n",
+  "text": "mutation contactRequestMutation(\n  $id: String\n) {\n  ContactRequest(id: $id) {\n    id\n    createdAt {\n      seconds\n      nanos\n    }\n    updatedAt {\n      seconds\n      nanos\n    }\n    deletedAt {\n      seconds\n      nanos\n    }\n    status\n    devices {\n      id\n      createdAt {\n        seconds\n        nanos\n      }\n      updatedAt {\n        seconds\n        nanos\n      }\n      deletedAt {\n        seconds\n        nanos\n      }\n      name\n      status\n      apiVersion\n      contactId\n    }\n    displayName\n    displayStatus\n    overrideDisplayName\n    overrideDisplayStatus\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
-    "name": "ContactRequestMutation",
+    "name": "contactRequestMutation",
     "type": "Mutation",
     "metadata": null,
     "argumentDefinitions": v0,
@@ -284,12 +284,12 @@ return {
   },
   "operation": {
     "kind": "Operation",
-    "name": "ContactRequestMutation",
+    "name": "contactRequestMutation",
     "argumentDefinitions": v0,
     "selections": v7
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'a8e1079d425a13c2c2c914cf6973aabb';
+(node/*: any*/).hash = 'ce002efc539aa79c27b44969c05b33bf';
 module.exports = node;

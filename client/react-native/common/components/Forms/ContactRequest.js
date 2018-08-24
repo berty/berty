@@ -3,7 +3,7 @@ import { TextInput, View, Button, Alert, StyleSheet } from 'react-native'
 import { commit } from '../../relay'
 import { Flex, Text } from '../Library'
 import { mutations } from '../../graphql'
-
+import { screen } from '../../constants'
 const fields = {
   id: '',
   email: '',
@@ -42,37 +42,40 @@ export const Input = props => (
 )
 
 export const ContactRequest = () => (
-  <Flex.Grid>
-    <Input
-      label='Berty ID'
-      placeholder='Please enter a Berty ID ...'
-      type='username'
-      state='id'
-    />
-    <Input
-      label='Email address'
-      placeholder='Please enter an email address ...'
-      type='emailAddress'
-      state='email'
-    />
-    <Input
-      label='Phone number'
-      placeholder='Please enter a phone number ...'
-      type='telephoneNumber'
-      state='phone'
-    />
-    <Button title='Request' onPress={handleRequestButton} />
+  <Flex.Grid style={{ height: screen.dimensions.height }}>
+    <Flex.Row flex={2}>
+      <Input
+        label='Berty ID'
+        placeholder='Please enter a Berty ID ...'
+        type='username'
+        state='id'
+      />
+    </Flex.Row>
+    <Flex.Row flex={3}>
+      <Input
+        label='Email address'
+        placeholder='Please enter an email address ...'
+        type='emailAddress'
+        state='email'
+      />
+    </Flex.Row>
+    <Flex.Row>
+      <Input
+        label='Phone number'
+        placeholder='Please enter a phone number ...'
+        type='telephoneNumber'
+        state='phone'
+      />
+    </Flex.Row>
+    <Flex.Row flex={4}>
+      <Button title='Request' onPress={handleRequestButton} />
+    </Flex.Row>
   </Flex.Grid>
 )
 
 export default ContactRequest
 
 const styles = StyleSheet.create({
-  contactView: {
-    marginTop: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   input: {
     borderColor: 'gray',
     borderBottomWidth: 1,
@@ -81,9 +84,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 5,
     marginBottom: 30,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 })

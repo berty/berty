@@ -46,7 +46,7 @@ module.exports = {
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('../common/index.js'),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('../.'),
+  appSrc: resolveApp('../common'),
   testsSetup: resolveApp('src/setupTests.js'),
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),
@@ -55,7 +55,7 @@ module.exports = {
 
 let checkForMonorepo = true
 
-module.exports.srcPaths = [module.exports.appSrc + '/common']
+module.exports.srcPaths = [module.exports.appSrc]
 
 module.exports.useYarn = fs.existsSync(
   path.join(module.exports.appPath, 'yarn.lock')
