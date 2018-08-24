@@ -5,6 +5,7 @@ package p2p
 import (
 	"fmt"
 
+	circuit "github.com/libp2p/go-libp2p-circuit"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"
 )
@@ -67,4 +68,14 @@ func WithBootstrapSync(addrs ...string) Option {
 		dc.bootstrap = addrs
 		return nil
 	}
+}
+
+// WithRelayClient will allow client to use relay
+func WithRelayClient() Option {
+	return WithRelay(circuit.OptActive)
+}
+
+// WithRelayHOP will create a relay hop that can be use by client
+func WithRelayHOP() Option {
+	return WithRelay(circuit.OptActive, circuit.OptHop)
 }

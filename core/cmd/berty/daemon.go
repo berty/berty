@@ -8,11 +8,9 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/99designs/gqlgen/handler"
-	p2plog "github.com/ipfs/go-log"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -38,15 +36,16 @@ import (
 type daemonOptions struct {
 	sql sqlOptions
 
-	bind           string
-	hideBanner     bool
-	bootstrap      []string
-	dropDatabase   bool
-	initOnly       bool
-	noP2P          bool
-	logP2PLevel    string
-	bindP2P        []string
-	logP2PSubsytem []string
+	bind         string
+	hideBanner   bool
+	dropDatabase bool
+	initOnly     bool
+
+	// p2p
+	bootstrap []string
+	noP2P     bool
+	bindP2P   []string
+	hop       bool // relay hop
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
@@ -54,11 +53,10 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drier")
+	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
-	flags.StringSliceVarP(&opts.bootstrap, "bootstrap", "", []string{}, "boostrap peers")
-	flags.StringSliceVarP(&opts.bindP2P, "bind-p2p", "", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
-	flags.StringVarP(&opts.logP2PLevel, "log-p2p-level", "", "", "Enable log on libp2p (can be 'critical', 'error', 'warning', 'notice', 'info', 'debug')")
-	flags.StringSliceVarP(&opts.logP2PSubsytem, "log-p2p-subsystem", "", []string{"*"}, "log libp2p specific subsystem")
+	flags.StringSliceVar(&opts.bootstrap, "bootstrap", []string{}, "boostrap peers")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -119,12 +117,11 @@ func daemon(opts *daemonOptions) error {
 
 	var driver network.Driver
 	if !opts.noP2P {
-		if opts.logP2PLevel != "" {
-			for _, name := range opts.logP2PSubsytem {
-				if err := p2plog.SetLogLevel(name, strings.ToUpper(opts.logP2PLevel)); err != nil {
-					return err
-				}
-			}
+		var relayOpt p2p.Option
+		if opts.hop {
+			relayOpt = p2p.WithRelayHOP()
+		} else {
+			relayOpt = p2p.WithRelayClient()
 		}
 
 		driver, err = p2p.NewDriver(
@@ -134,9 +131,11 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
 			p2p.WithDefaultTransports(),
+			p2p.WithNATPortMap(), // @TODO: Is this a pb on mobile?
 			p2p.WithMDNS(),
 			p2p.WithListenAddrStrings(opts.bindP2P...),
 			p2p.WithBootstrap(opts.bootstrap...),
+			relayOpt,
 		)
 		if err != nil {
 			return err
@@ -182,7 +181,7 @@ func daemon(opts *daemonOptions) error {
 		errChan <- gs.Serve(listener)
 	}()
 
-	zap.L().Info("grpc server started",
+	logger.Info("grpc server started",
 		zap.String("user-id", n.UserID()),
 		zap.String("bind", opts.bind),
 		zap.Int("p2p-api", int(p2papi.Version)),
