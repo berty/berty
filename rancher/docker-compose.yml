@@ -1,0 +1,8 @@
+version: '2'
+services:
+  berty:
+    image: ${IMAGE}
+    ports:
+      - "4002:4002"
+    command: "daemon --log-level-p2p=info --log-level=info --mdns=false --hop=true --bind-p2p='/ip4/0.0.0.0/tcp/4002'"
+

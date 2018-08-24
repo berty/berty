@@ -46,6 +46,7 @@ type daemonOptions struct {
 	noP2P     bool
 	bindP2P   []string
 	hop       bool // relay hop
+	mdns      bool
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
@@ -54,6 +55,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drier")
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
+	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
 	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", []string{}, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
@@ -117,26 +119,31 @@ func daemon(opts *daemonOptions) error {
 
 	var driver network.Driver
 	if !opts.noP2P {
-		var relayOpt p2p.Option
-		if opts.hop {
-			relayOpt = p2p.WithRelayHOP()
-		} else {
-			relayOpt = p2p.WithRelayClient()
-		}
-
-		driver, err = p2p.NewDriver(
-			context.Background(),
+		p2pOpts := []p2p.Option{
 			p2p.WithRandomIdentity(),
 			p2p.WithDefaultMuxers(),
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
 			p2p.WithDefaultTransports(),
-			p2p.WithNATPortMap(), // @TODO: Is this a pb on mobile?
-			p2p.WithMDNS(),
+			// @TODO: Allow static identity loaded from a file (useful for relay
+			// server for creating static endpoint for bootstrap)
+			// p2p.WithIdentity(<key>),
+			p2p.WithNATPortMap(), // @T\ODO: Is this a pb on mobile?
 			p2p.WithListenAddrStrings(opts.bindP2P...),
 			p2p.WithBootstrap(opts.bootstrap...),
-			relayOpt,
-		)
+		}
+
+		if opts.mdns {
+			p2pOpts = append(p2pOpts, p2p.WithMDNS())
+		}
+
+		if opts.hop {
+			p2pOpts = append(p2pOpts, p2p.WithRelayHOP())
+		} else {
+			p2pOpts = append(p2pOpts, p2p.WithRelayClient())
+		}
+
+		driver, err = p2p.NewDriver(context.Background(), p2pOpts...)
 		if err != nil {
 			return err
 		}
