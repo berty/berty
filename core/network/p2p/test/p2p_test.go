@@ -80,7 +80,7 @@ func TestP2PNetwork(t *testing.T) {
 				_d := d
 				go func() {
 					if err := _d.Close(); err != nil {
-						zap.L().Warn("error while closing", zap.Error(err))
+						logger().Warn("error while closing", zap.Error(err))
 					}
 				}()
 			}

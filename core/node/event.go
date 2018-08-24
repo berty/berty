@@ -45,7 +45,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	// FIXME: check if logger is in debug mode
 	out, err := json.Marshal(input)
 	if err == nil {
-		zap.L().Debug("handle event",
+		logger().Debug("handle event",
 			zap.String("sender", input.SenderID),
 			zap.String("event", string(out)),
 		)
@@ -76,7 +76,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 			return err
 		}
 	} else {
-		zap.L().Error("p2p.Handle event", zap.Error(handlingError))
+		logger().Error("p2p.Handle event", zap.Error(handlingError))
 	}
 
 	if err := n.sql.Save(input).Error; err != nil {

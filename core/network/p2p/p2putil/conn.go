@@ -51,7 +51,7 @@ func NewListener(fc fclose, pid protocol.ID) (net.Listener, inet.StreamHandler) 
 func (l *listener) handleStream(s inet.Stream) {
 	c, err := NewConnFromStream(s)
 	if err != nil {
-		zap.L().Warn("Handle stream error", zap.Error(err))
+		logger().Warn("Handle stream error", zap.Error(err))
 		return
 	}
 	l.cstream <- c

@@ -3,7 +3,7 @@ package graphql
 import (
 	"encoding/base64"
 
-	"github.com/berty/berty/core/api/node/graphql/models"
+	"github.com/berty/berty/core/api/node/graphql/model"
 	"github.com/berty/berty/core/api/node/graphql/scalar"
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"

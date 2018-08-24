@@ -181,7 +181,7 @@ func daemon(opts *daemonOptions) error {
 		errChan <- gs.Serve(listener)
 	}()
 
-	logger.Info("grpc server started",
+	logger().Info("grpc server started",
 		zap.String("user-id", n.UserID()),
 		zap.String("bind", opts.bind),
 		zap.Int("p2p-api", int(p2papi.Version)),

@@ -14,8 +14,6 @@ import (
 	"github.com/berty/berty/core/api/p2p"
 )
 
-var logger = zap.L().Named("main")
-
 type p2pLogBackendWrapper struct {
 	logger *zap.Logger
 }
@@ -106,11 +104,11 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	config.Level.SetLevel(logLevel)
 	config.DisableStacktrace = true
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	logger, err := config.Build()
+	l, err := config.Build()
 	if err != nil {
 		return err
 	}
-	zap.ReplaceGlobals(logger)
+	zap.ReplaceGlobals(l)
 
 	// configure p2p log
 	logging.SetBackend(&p2pLogBackendWrapper{
@@ -134,6 +132,6 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	zap.L().Named("root").Debug("logger initialized")
+	logger().Debug("logger initialized")
 	return nil
 }

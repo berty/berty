@@ -15,7 +15,7 @@ func (l *zapLogger) Print(values ...interface{}) {
 
 	switch values[0] {
 	case "sql":
-		zap.L().Debug("gorm.debug.sql",
+		logger().Debug("gorm.debug.sql",
 			zap.String("query", values[3].(string)),
 			zap.Any("values", values[4]),
 			zap.Duration("duration", values[2].(time.Duration)),
@@ -23,7 +23,7 @@ func (l *zapLogger) Print(values ...interface{}) {
 			zap.String("source", values[1].(string)), // if AddCallerSkip(6) is well defined, we can safely remove this field
 		)
 	default:
-		zap.L().Debug("gorm.debug.other",
+		logger().Debug("gorm.debug.other",
 			zap.Any("values", values[2:]),
 			zap.String("source", values[1].(string)), // if AddCallerSkip(6) is well defined, we can safely remove this field
 		)

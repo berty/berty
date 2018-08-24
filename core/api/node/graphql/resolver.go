@@ -4,16 +4,15 @@ package graphql
 
 import (
 	"context"
+	"errors"
 	"io"
 
-	"errors"
+	"go.uber.org/zap"
 
 	service "github.com/berty/berty/core/api/node"
 	"github.com/berty/berty/core/api/node/graphql/graph"
-	model "github.com/berty/berty/core/api/node/graphql/models"
-
+	"github.com/berty/berty/core/api/node/graphql/model"
 	"github.com/berty/berty/core/entity"
-	"go.uber.org/zap"
 )
 
 type Resolver struct {
@@ -206,7 +205,7 @@ func (r *subscriptionResolver) EventStream(ctx context.Context) (<-chan *model.B
 			// }
 
 			if err != nil {
-				zap.L().Error("EventStream error", zap.Error(err))
+				logger().Error("EventStream error", zap.Error(err))
 				break
 			}
 

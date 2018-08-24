@@ -70,7 +70,7 @@ func (m *Manager) GetConn(ctx context.Context, target string) (*grpc.ClientConn,
 
 	c, ok := m.pool[target]
 	if !ok {
-		zap.L().Debug("Creating new connection with", zap.String("target", target))
+		logger().Debug("Creating new connection with", zap.String("target", target))
 		c = newClient(m, target)
 		m.pool[target] = c
 	}
@@ -88,7 +88,7 @@ func (m *Manager) GetConn(ctx context.Context, target string) (*grpc.ClientConn,
 	case connectivity.Shutdown:
 		m.mu.Lock()
 		if err = c.Close(); err != nil {
-			zap.L().Warn("Failed to close connection", zap.Error(err))
+			logger().Warn("Failed to close connection", zap.Error(err))
 		}
 
 		delete(m.pool, target)
