@@ -38,11 +38,14 @@ type daemonOptions struct {
 
 	bind         string
 	hideBanner   bool
-	bootstrap    []string
 	dropDatabase bool
 	initOnly     bool
-	noP2P        bool
-	bindP2P      []string
+
+	// p2p
+	bootstrap []string
+	noP2P     bool
+	bindP2P   []string
+	hop       bool // relay hop
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
@@ -50,9 +53,10 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drier")
+	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
-	flags.StringSliceVarP(&opts.bootstrap, "bootstrap", "", []string{}, "boostrap peers")
-	flags.StringSliceVarP(&opts.bindP2P, "bind-p2p", "", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
+	flags.StringSliceVar(&opts.bootstrap, "bootstrap", []string{}, "boostrap peers")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -113,6 +117,13 @@ func daemon(opts *daemonOptions) error {
 
 	var driver network.Driver
 	if !opts.noP2P {
+		var relayOpt p2p.Option
+		if opts.hop {
+			relayOpt = p2p.WithRelayHOP()
+		} else {
+			relayOpt = p2p.WithRelayClient()
+		}
+
 		driver, err = p2p.NewDriver(
 			context.Background(),
 			p2p.WithRandomIdentity(),
@@ -120,9 +131,11 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
 			p2p.WithDefaultTransports(),
+			p2p.WithNATPortMap(), // @TODO: Is this a pb on mobile?
 			p2p.WithMDNS(),
 			p2p.WithListenAddrStrings(opts.bindP2P...),
 			p2p.WithBootstrap(opts.bootstrap...),
+			relayOpt,
 		)
 		if err != nil {
 			return err

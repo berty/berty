@@ -74,7 +74,15 @@ func newRootCommand() *cobra.Command {
 
 func setupLogger(cmd *cobra.Command, args []string) error {
 	cfgLogLevel, err := cmd.Flags().GetString("log-level")
+	if err != nil {
+		return err
+	}
+
 	cfgP2PLogLevel, err := cmd.Flags().GetString("log-level-p2p")
+	if err != nil {
+		return err
+	}
+
 	cfgP2PLogSubsystem, err := cmd.Flags().GetStringSlice("log-p2p-subsystem")
 	if err != nil {
 		return err
