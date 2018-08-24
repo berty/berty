@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { ContactRequest } from './Forms'
+import React, { PureComponent } from 'react'
+import Screens from './Screens'
 
-export default class App extends Component {
-  render = () => {
-    return <ContactRequest />
+export default class App extends PureComponent {
+  render () {
+    return <Screens />
   }
 }

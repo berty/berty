@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay'
 
 export default graphql`
-  mutation ContactRequestMutation($id: String) {
+  mutation contactRequestMutation($id: String) {
     ContactRequest(id: $id) {
       id
       createdAt {
