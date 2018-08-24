@@ -5,11 +5,14 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"net/http"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
 
+	"github.com/99designs/gqlgen/handler"
+	p2plog "github.com/ipfs/go-log"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -20,6 +23,8 @@ import (
 
 	"github.com/berty/berty/core"
 	nodeapi "github.com/berty/berty/core/api/node"
+	gql "github.com/berty/berty/core/api/node/graphql"
+	graph "github.com/berty/berty/core/api/node/graphql/graph"
 	p2papi "github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/entity"
 	"github.com/berty/berty/core/network"
@@ -28,7 +33,6 @@ import (
 	"github.com/berty/berty/core/node"
 	"github.com/berty/berty/core/sql"
 	"github.com/berty/berty/core/sql/sqlcipher"
-	p2plog "github.com/ipfs/go-log"
 )
 
 type daemonOptions struct {
@@ -159,10 +163,25 @@ func daemon(opts *daemonOptions) error {
 		return nil
 	}
 
+	go func() {
+		errChan <- http.ListenAndServe(":8700", nil)
+	}()
+
+	conn, err := grpc.Dial(opts.bind, grpc.WithInsecure())
+	if err != nil {
+		return errors.Wrap(err, "failed to dial node")
+	}
+
+	resolver := gql.New(nodeapi.NewServiceClient(conn))
+
+	http.Handle("/", handler.Playground("Berty", "/query"))
+	http.Handle("/query", handler.GraphQL(graph.NewExecutableSchema(resolver)))
+
 	// start grpc server(s)
 	go func() {
 		errChan <- gs.Serve(listener)
 	}()
+
 	zap.L().Info("grpc server started",
 		zap.String("user-id", n.UserID()),
 		zap.String("bind", opts.bind),

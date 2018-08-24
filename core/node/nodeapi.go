@@ -165,7 +165,7 @@ func (n *Node) ContactUpdate(_ context.Context, contact *entity.Contact) (*entit
 
 	// FIXME: protect import fields from updatind
 
-	return contact, n.sql.Save(contact).Error
+	return contact, n.sql.Model(contact).Update("displayName", contact.DisplayName).Error
 }
 
 // ContactRemove implements berty.node.ContactRemove
@@ -284,7 +284,14 @@ func (n *Node) ConversationAcceptInvite(_ context.Context, conversation *entity.
 	return nil, ErrNotImplemented
 }
 
-func (n *Node) ConversationInvite(context.Context, *entity.ConversationMember) (*entity.Conversation, error) {
+func (n *Node) ConversationInvite(context.Context, *node.ConversationManageMembersInput) (*entity.Conversation, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
+	return nil, ErrNotImplemented
+}
+
+func (n *Node) ConversationExclude(context.Context, *node.ConversationManageMembersInput) (*entity.Conversation, error) {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
