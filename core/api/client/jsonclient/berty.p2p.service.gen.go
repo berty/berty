@@ -17,7 +17,7 @@ func init() {
 }
 
 func P2pHandleEnvelope(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	zap.L().Debug("client call",
+	logger().Debug("client call",
 		zap.String("service", "Service"),
 		zap.String("method", "HandleEnvelope"),
 		zap.String("input", string(jsonInput)),

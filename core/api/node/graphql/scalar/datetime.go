@@ -36,19 +36,19 @@ func (y DateTime) MarshalGQL(w io.Writer) {
 
 	if y.Value == nil {
 		if _, err = w.Write([]byte(`null`)); err != nil {
-			zap.L().Error("Write error", zap.Error(err))
+			logger().Error("Write error", zap.Error(err))
 		}
 	} else {
 		ret := y.Value.UTC().Format(time.RFC3339)
 		if _, err = w.Write([]byte("\"")); err != nil {
-			zap.L().Error("Write error", zap.Error(err))
+			logger().Error("Write error", zap.Error(err))
 		}
 		if _, err = w.Write([]byte(ret)); err != nil {
-			zap.L().Error("Write error", zap.Error(err))
+			logger().Error("Write error", zap.Error(err))
 		}
 
 		if _, err = w.Write([]byte("\"")); err != nil {
-			zap.L().Error("Write error", zap.Error(err))
+			logger().Error("Write error", zap.Error(err))
 		}
 	}
 }

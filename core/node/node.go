@@ -10,7 +10,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
-	"go.uber.org/zap"
 
 	"github.com/berty/berty/core/api/p2p"
 	"github.com/berty/berty/core/crypto/sigchain"
@@ -54,7 +53,7 @@ func New(opts ...NewNodeOption) (*Node, error) {
 	// get config from sql
 	config, err := n.Config()
 	if err != nil {
-		zap.L().Debug("config is missing from sql, creating a new one")
+		logger().Debug("config is missing from sql, creating a new one")
 		if config, err = n.initConfig(); err != nil {
 			return nil, errors.Wrap(err, "failed to initialize config")
 		}
