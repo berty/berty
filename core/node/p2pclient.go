@@ -3,8 +3,8 @@ package node
 import (
 	"github.com/pkg/errors"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 func (n *Node) NewContactEvent(destination *entity.Contact, kind p2p.Kind) *p2p.Event {

@@ -11,10 +11,10 @@ import (
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/crypto/sigchain"
-	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/network"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/crypto/sigchain"
+	"berty.tech/core/entity"
+	"berty.tech/core/network"
 )
 
 // Node is the top-level object of a Berty peer

@@ -3,7 +3,7 @@ syntax = "proto3";
 package keypair;
 
 
-option go_package = "github.com/berty/berty/core/crypto/keypair";
+option go_package = "berty.tech/core/crypto/keypair";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";

@@ -1,7 +1,7 @@
 version: 2
 
 .golang_workspace: &golang_workspace
-  working_directory: /go/src/github.com/berty/berty
+  working_directory: /go/src/berty.tech
   environment:
     GOPATH: /go
     GOTEST_TIMEOUT: 5m
@@ -12,7 +12,7 @@ jobs:
   lint:
     docker:
       - image: bertychat/linter:latest
-    working_directory: /go/src/github.com/berty/berty
+    working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
     steps:
@@ -35,7 +35,7 @@ jobs:
   generate:
     docker:
       - image: bertychat/protoc
-    working_directory: /go/src/github.com/berty/berty
+    working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
     steps:
@@ -148,7 +148,7 @@ jobs:
           path: /tmp/test-results
 
   client.rn.node:
-    working_directory: ~/go/src/github.com/berty/berty
+    working_directory: ~/go/src/berty.tech
     docker:
       - image: circleci/node:8
     steps:
@@ -173,7 +173,7 @@ jobs:
             - node_modules
 
       - persist_to_workspace:
-          root: ~/go/src/github.com/berty/berty
+          root: ~/go/src/berty.tech
           paths:
             - client/react-native/node_modules
             - client/react-native/gomobile/node_modules
@@ -181,50 +181,50 @@ jobs:
             - client/react-native/mobile/node_modules
 
   client.rn.android:
-    working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/android
+    working_directory: ~/go/src/berty.tech/client/react-native/mobile/android
     docker:
       - image: bertychat/android-ci:latest
     steps:
       - checkout:
-          path: ~/go/src/github.com/berty/berty/
+          path: ~/go/src/berty.tech/
 
       - attach_workspace:
-          at: ~/go/src/github.com/berty/berty/
+          at: ~/go/src/berty.tech/
 
       - run:
           name: setup golang environment
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             env && cd ../../gomobile && make core.build.android
 
       - restore_cache:
-          key: android-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/android/Gemfile.lock" }}
+          key: android-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/android/Gemfile.lock" }}
 
       - run:
           name: install bundle
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             bundle check || bundle install --path vendor/bundle
 
       - save_cache:
-          key: android-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/android/Gemfile.lock" }}
+          key: android-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/android/Gemfile.lock" }}
           paths:
             - vendor/bundle
 
       - run:
           name: build app
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             time bundle exec fastlane android beta
 
   client.rn.ios:
-    working_directory: ~/go/src/github.com/berty/berty
+    working_directory: ~/go/src/berty.tech
     macos:
       xcode: "9.4.1"
     environment:
@@ -238,7 +238,7 @@ jobs:
       - checkout
 
       - attach_workspace:
-          at: ~/go/src/github.com/berty/berty/
+          at: ~/go/src/berty.tech/
 
       - restore_cache:
           key: ios-golang-{{ .Environment.GOVERSION }}-2
@@ -246,7 +246,7 @@ jobs:
       - run:
           name: install-go
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             if [ ! -f ~/go-install/go/bin/go ]; then
               cd ~ && git clone https://github.com/udhos/update-golang
               cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install ./update-golang.sh
@@ -256,7 +256,7 @@ jobs:
       - run:
           name: install gomobile
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             if [ ! -f ~/go/bin/gomobile ]; then
               go get golang.org/x/mobile/cmd/gomobile
               cd ~/go/src/golang.org/x/mobile
@@ -275,41 +275,41 @@ jobs:
 
       - run:
           name: install core
-          working_directory: ~/go/src/github.com/berty/berty/client/react-native/gomobile
+          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             make core.build.ios
 
       - restore_cache:
-          key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-3
+          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/ios/Gemfile.lock" }}-3
 
       - run:
-          working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
+          working_directory: ~/go/src/berty.tech/client/react-native/mobile/ios
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             bundle check || bundle install --path vendor/bundle
 
       - save_cache:
-          key: ios-gems-{{ checksum "~/go/src/github.com/berty/berty/client/react-native/mobile/ios/Gemfile.lock" }}-3
+          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/ios/Gemfile.lock" }}-3
           paths:
             - client/react-native/mobile/ios/vendor/bundle
 
       - run:
           name: build app
-          working_directory: ~/go/src/github.com/berty/berty/client/react-native/mobile/ios
+          working_directory: ~/go/src/berty.tech/client/react-native/mobile/ios
           command: |
-            ~/go/src/github.com/berty/berty/.circleci/paths_changed ^client ^.circle || exit 0
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             time bundle exec fastlane ios adhoc refresh_certificates:true use_temporary_keychain:true --verbose
 
   client.rn.web:
-    working_directory: ~/go/src/github.com/berty/berty
+    working_directory: ~/go/src/berty.tech
     docker:
       - image: circleci/node:8
     steps:
       - checkout
 
       - attach_workspace:
-          at: ~/go/src/github.com/berty/berty/
+          at: ~/go/src/berty.tech/
 
 
       - restore_cache:
@@ -332,7 +332,7 @@ jobs:
 
       - run:
           name: build web app
-          working_directory: ~/go/src/github.com/berty/berty/client/react-native/web
+          working_directory: ~/go/src/berty.tech/client/react-native/web
           command: |
             yarn build
 

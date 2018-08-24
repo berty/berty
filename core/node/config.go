@@ -6,10 +6,10 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/crypto/keypair"
-	"github.com/berty/berty/core/crypto/sigchain"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/crypto/keypair"
+	"berty.tech/core/crypto/sigchain"
+	"berty.tech/core/entity"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 )

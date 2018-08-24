@@ -3,7 +3,7 @@
 package client
 
 import (
-	"github.com/berty/berty/core/api/p2p"
+	"berty.tech/core/api/p2p"
 )
 
 // Service returns the native gRPC client

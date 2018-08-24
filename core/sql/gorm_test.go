@@ -7,7 +7,7 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 
-	"github.com/berty/berty/core/sql/sqlcipher"
+	"berty.tech/core/sql/sqlcipher"
 )
 
 func TestInit(t *testing.T) {

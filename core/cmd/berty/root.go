@@ -9,9 +9,9 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 
-	"github.com/berty/berty/core"
-	"github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/api/p2p"
+	"berty.tech/core"
+	"berty.tech/core/api/node"
+	"berty.tech/core/api/p2p"
 )
 
 type p2pLogBackendWrapper struct {

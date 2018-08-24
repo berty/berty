@@ -7,7 +7,7 @@ import (
 	io "io"
 	strconv "strconv"
 
-	scalar "github.com/berty/berty/core/api/node/graphql/scalar"
+	scalar "berty.tech/core/api/node/graphql/scalar"
 )
 
 type BertyEntityContact struct {
