@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.entity;
 
-option go_package = "github.com/berty/berty/core/entity";
+option go_package = "berty.tech/core/entity";
 
 message Message {
   string text = 1;

@@ -7,7 +7,7 @@ import "entity/conversation.proto";
 import "entity/message.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/berty/berty/core/api/p2p";
+option go_package = "berty.tech/core/api/p2p";
 
 enum Kind {
   Unknown = 0;

@@ -16,4 +16,4 @@ resolver:
 
 models:
   DateTime:
-    model: github.com/berty/berty/core/api/node/graphql/scalar.DateTime
+    model: berty.tech/core/api/node/graphql/scalar.DateTime

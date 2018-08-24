@@ -9,10 +9,10 @@ import (
 
 	"go.uber.org/zap"
 
-	service "github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/api/node/graphql/graph"
-	"github.com/berty/berty/core/api/node/graphql/model"
-	"github.com/berty/berty/core/entity"
+	service "berty.tech/core/api/node"
+	"berty.tech/core/api/node/graphql/graph"
+	"berty.tech/core/api/node/graphql/model"
+	"berty.tech/core/entity"
 )
 
 type Resolver struct {

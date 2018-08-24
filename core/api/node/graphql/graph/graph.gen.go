@@ -10,8 +10,8 @@ import (
 
 	graphql "github.com/99designs/gqlgen/graphql"
 	introspection "github.com/99designs/gqlgen/graphql/introspection"
-	model "github.com/berty/berty/core/api/node/graphql/model"
-	scalar "github.com/berty/berty/core/api/node/graphql/scalar"
+	model "berty.tech/core/api/node/graphql/model"
+	scalar "berty.tech/core/api/node/graphql/scalar"
 	gqlparser "github.com/vektah/gqlparser"
 	ast "github.com/vektah/gqlparser/ast"
 )

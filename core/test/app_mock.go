@@ -12,13 +12,13 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/client"
-	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/network"
-	"github.com/berty/berty/core/network/netutil"
-	"github.com/berty/berty/core/node"
-	"github.com/berty/berty/core/sql"
-	"github.com/berty/berty/core/sql/sqlcipher"
+	"berty.tech/core/api/client"
+	"berty.tech/core/entity"
+	"berty.tech/core/network"
+	"berty.tech/core/network/netutil"
+	"berty.tech/core/node"
+	"berty.tech/core/sql"
+	"berty.tech/core/sql/sqlcipher"
 )
 
 type AppMock struct {

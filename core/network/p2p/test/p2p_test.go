@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	api "github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/network/p2p"
+	api "berty.tech/core/api/p2p"
+	"berty.tech/core/network/p2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"

@@ -9,11 +9,11 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 
-	"github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/network/mock"
-	p2pnet "github.com/berty/berty/core/network/p2p"
+	"berty.tech/core/api/node"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+	"berty.tech/core/network/mock"
+	p2pnet "berty.tech/core/network/p2p"
 )
 
 func init() {

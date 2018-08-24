@@ -1,6 +1,6 @@
 package node
 
-import "github.com/berty/berty/core/entity"
+import "berty.tech/core/entity"
 
 func WithDevice(device *entity.Device) NewNodeOption {
 	return func(n *Node) {

@@ -7,8 +7,8 @@ package client
 import (
        "context"
 
-        "github.com/berty/berty/core/{{.File.Name|dir}}"
-	"github.com/berty/berty/core/api/client"
+        "berty.tech/core/{{.File.Name|dir}}"
+	"berty.tech/core/api/client"
         {{- range .File.Dependency}}
           {{- $dependency := . | getProtoFile}}
           "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
