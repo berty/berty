@@ -27,6 +27,8 @@
 
 [![Throughput Graph](https://graphs.waffle.io/libp2p/go-libp2p/throughput.svg)](https://waffle.io/libp2p/go-libp2p/metrics/throughput)
 
+[**`Weekly Core Dev Calls`**](https://github.com/ipfs/pm/issues/674)
+
 # Table of Contents
 
 - [Background](#background)

@@ -11,7 +11,7 @@ import (
 	"github.com/berty/berty/core/api/client"
         {{- range .File.Dependency}}
           {{- $dependency := . | getProtoFile}}
-          {{$dependency.GoPkg}}
+          "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
         {{- end}}
 )
 

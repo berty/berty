@@ -1,0 +1,19 @@
+schema: service.gen.graphql
+
+# Let gqlgen know where to put the generated server
+exec:
+  filename: graph/graph.gen.go
+  package: graph
+
+# Let gqlgen know where to the generated models (if any)
+model:
+  filename: models/models.gen.go
+  package: model
+# Optional, turns on resolver stub generation
+resolver:
+  filename: resolver.go # where to write them
+  type: Resolver  # whats the resolver root implementation type called?
+
+models:
+  DateTime:
+    model: github.com/berty/berty/core/api/node/graphql/scalar.DateTime
