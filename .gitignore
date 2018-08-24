@@ -1,5 +1,6 @@
 # ag
 .agignore
+.env
 
 # OSX
 .DS_Store
