@@ -1,7 +1,7 @@
 package node
 
 import (
-	"github.com/berty/berty/core/api/p2p"
+	"berty.tech/core/api/p2p"
 	"github.com/pkg/errors"
 )
 

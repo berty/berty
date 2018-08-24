@@ -4,8 +4,8 @@ import (
 	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 // Init configures an active gorm connection

@@ -8,7 +8,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/berty/berty/core/network/mock"
+	"berty.tech/core/network/mock"
 )
 
 func init() {

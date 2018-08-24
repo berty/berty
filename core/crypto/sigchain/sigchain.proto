@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sigchain;
 
-option go_package = "github.com/berty/berty/core/crypto/sigchain";
+option go_package = "berty.tech/core/crypto/sigchain";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";

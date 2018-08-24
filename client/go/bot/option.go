@@ -6,9 +6,9 @@ import (
 
 	grpc "google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/client"
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/client"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 type Option func(b *Bot) error

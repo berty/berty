@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
-	"github.com/berty/berty/core/sql"
-	"github.com/berty/berty/core/sql/sqlcipher"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+	"berty.tech/core/sql"
+	"berty.tech/core/sql/sqlcipher"
 )
 
 type sqlDumpOptions struct {

@@ -7,7 +7,7 @@ import (
 
 	"crypto"
 
-	"github.com/berty/berty/core/crypto/keypair"
+	"berty.tech/core/crypto/keypair"
 	"github.com/gogo/protobuf/proto"
 )
 

@@ -22,10 +22,10 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/network"
-	"github.com/berty/berty/core/network/p2p/p2putil"
-	"github.com/berty/berty/core/network/p2p/protocol/service/p2pgrpc"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/network"
+	"berty.tech/core/network/p2p/p2putil"
+	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
 )
 
 const ID = "api/p2p/envelope"

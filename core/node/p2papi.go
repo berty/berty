@@ -8,7 +8,7 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
-	"github.com/berty/berty/core/api/p2p"
+	"berty.tech/core/api/p2p"
 )
 
 // WithP2PGrpcServer registers the Node as a 'berty.p2p' protobuf server implementation

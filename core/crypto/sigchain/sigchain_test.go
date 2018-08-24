@@ -7,7 +7,7 @@ import (
 	"crypto/x509"
 	"testing"
 
-	"github.com/berty/berty/core/crypto/keypair"
+	"berty.tech/core/crypto/keypair"
 )
 
 func TestFlow(t *testing.T) {
