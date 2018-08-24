@@ -91,13 +91,13 @@ func (a *AppMock) Open() error {
 			if strings.Contains(err.Error(), "use of closed network connection") {
 				return
 			}
-			zap.L().Error("grpc server error", zap.Error(err))
+			logger().Error("grpc server error", zap.Error(err))
 		}
 	}()
 
 	go func() {
 		if err := a.node.Start(); err != nil {
-			zap.L().Error("node routine error", zap.Error(err))
+			logger().Error("node routine error", zap.Error(err))
 		}
 	}()
 

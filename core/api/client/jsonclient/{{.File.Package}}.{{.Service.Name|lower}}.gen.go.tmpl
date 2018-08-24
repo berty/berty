@@ -35,7 +35,7 @@ import (
     {{ range $method := .Method}}
       {{if and (not .ClientStreaming) (not .ServerStreaming)}}
       func {{$file.Package|splitList "."|last|title}}{{$method.Name}}(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-            zap.L().Debug("client call",
+            logger().Debug("client call",
                   zap.String("service", "{{$svc.Name}}"),
                   zap.String("method", "{{$method.Name}}"),
                   zap.String("input", string(jsonInput)),
@@ -50,7 +50,7 @@ import (
     {{- end}}
     {{if and (not .ClientStreaming) (.ServerStreaming)}}
       func {{$file.Package|splitList "."|last|title}}{{$method.Name}}(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
-            zap.L().Debug("client call",
+            logger().Debug("client call",
                   zap.String("service", "{{$svc.Name}}"),
                   zap.String("method", "{{$method.Name}}"),
                   zap.String("input", string(jsonInput)),

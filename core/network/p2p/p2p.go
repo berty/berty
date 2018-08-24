@@ -90,7 +90,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	_, err = driver.dht.BootstrapWithConfig(cfg.dhtBoostrapConfig)
 	if err != nil {
 		if closeErr := host.Close(); closeErr != nil {
-			zap.L().Error("failed to close host", zap.Error(closeErr))
+			logger().Error("failed to close host", zap.Error(closeErr))
 		}
 		return nil, err
 	}
@@ -98,7 +98,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	if cfg.enableMDNS {
 		sa, err := mdns.NewMdnsService(ctx, host, time.Second, "berty")
 		if err != nil {
-			zap.L().Warn("Failed to enable MDNS", zap.Error(err))
+			logger().Warn("Failed to enable MDNS", zap.Error(err))
 		} else {
 			sa.RegisterNotifee((*DriverDiscoveryNotifee)(driver))
 		}
@@ -127,11 +127,11 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 
 	go func() {
 		if err := gs.Serve(l); err != nil {
-			zap.L().Error("Listen error", zap.Error(err))
+			logger().Error("Listen error", zap.Error(err))
 		}
 	}()
 
-	zap.L().Debug("Host", zap.String("ID", driver.ID()), zap.Strings("Addrs", driver.Addrs()))
+	logger().Debug("Host", zap.String("ID", driver.ID()), zap.Strings("Addrs", driver.Addrs()))
 
 	return driver, nil
 }
@@ -199,7 +199,7 @@ func (d *Driver) Bootstrap(ctx context.Context, sync bool, addrs ...string) erro
 func (d *Driver) BootstrapPeerAsync(ctx context.Context, addr string) error {
 	go func() {
 		if err := d.BootstrapPeer(ctx, addr); err != nil {
-			zap.L().Warn("Bootstrap error", zap.String("addr", addr), zap.Error(err))
+			logger().Warn("Bootstrap error", zap.String("addr", addr), zap.Error(err))
 		}
 	}()
 
@@ -289,19 +289,19 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 		}
 
 		if err := d.Connect(ctx, _s); err != nil {
-			zap.L().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
+			logger().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
 		}
 
 		c, err := d.ccmanager.GetConn(ctx, peerID)
 		if err != nil {
-			zap.L().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
+			logger().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
 		}
 
 		sc := p2p.NewServiceClient(c)
 
 		_, err = sc.HandleEnvelope(ctx, e)
 		if err != nil {
-			zap.L().Warn("Failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
+			logger().Warn("Failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
 		}
 	}
 
@@ -343,7 +343,7 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 	if err := d.dht.Provide(ctx, c, true); err != nil {
 		// stack peer if no peer found
 		d.stackSub(c)
-		zap.L().Warn("Provide err", zap.Error(err))
+		logger().Warn("Provide err", zap.Error(err))
 	}
 
 	// Announce that you are subscribed to this conversation, but don't
@@ -369,7 +369,7 @@ type DriverDiscoveryNotifee Driver
 
 func (ddn *DriverDiscoveryNotifee) HandlePeerFound(pi pstore.PeerInfo) {
 	if err := ddn.host.Connect(context.Background(), pi); err != nil {
-		zap.L().Warn("mdns discovery failed", zap.String("remoteID", pi.ID.Pretty()), zap.Error(err))
+		logger().Warn("mdns discovery failed", zap.String("remoteID", pi.ID.Pretty()), zap.Error(err))
 	} else {
 		// absorb addresses into peerstore
 		ddn.host.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.PermanentAddrTTL)
@@ -392,7 +392,7 @@ func (ddn *DriverDiscoveryNotifee) Connected(s inet.Network, c inet.Conn) {
 			for _, c := range ddn.subsStack {
 				if err := ddn.dht.Provide(context.Background(), c, true); err != nil {
 					// stack peer if no peer found
-					zap.L().Warn("Provide err", zap.Error(err))
+					logger().Warn("Provide err", zap.Error(err))
 					newSubsStack = append(newSubsStack, c)
 				}
 			}
