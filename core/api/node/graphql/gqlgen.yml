@@ -7,7 +7,7 @@ exec:
 
 # Let gqlgen know where to the generated models (if any)
 model:
-  filename: models/models.gen.go
+  filename: model/model.gen.go
   package: model
 # Optional, turns on resolver stub generation
 resolver:
