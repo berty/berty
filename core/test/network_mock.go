@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/network"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/network"
 )
 
 type NetworkMock struct {

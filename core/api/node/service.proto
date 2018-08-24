@@ -8,7 +8,7 @@ import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
 
-option go_package = "github.com/berty/berty/core/api/node";
+option go_package = "berty.tech/core/api/node";
 
 extend google.protobuf.MethodOptions {
   string graphql_fields = 53001;

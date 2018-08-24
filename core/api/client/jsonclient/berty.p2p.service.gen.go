@@ -8,8 +8,8 @@ import (
 
 	"go.uber.org/zap"
 
-	"github.com/berty/berty/core/api/client"
-	"github.com/berty/berty/core/api/p2p"
+	"berty.tech/core/api/client"
+	"berty.tech/core/api/p2p"
 )
 
 func init() {

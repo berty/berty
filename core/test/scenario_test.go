@@ -8,9 +8,9 @@ import (
 
 	. "github.com/smartystreets/goconvey/convey"
 
-	"github.com/berty/berty/core/api/node"
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/node"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 var cache = map[string]interface{}{}

@@ -3,10 +3,10 @@ package graphql
 import (
 	"encoding/base64"
 
-	"github.com/berty/berty/core/api/node/graphql/model"
-	"github.com/berty/berty/core/api/node/graphql/scalar"
-	"github.com/berty/berty/core/api/p2p"
-	"github.com/berty/berty/core/entity"
+	"berty.tech/core/api/node/graphql/model"
+	"berty.tech/core/api/node/graphql/scalar"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 func convertContactStatus(value entity.Contact_Status) *model.BertyEntityContactStatus {
