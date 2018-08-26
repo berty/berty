@@ -4,3 +4,5 @@
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/8a578732b451e07380b929f107b060f3.svg?columns=all)](https://waffle.io/berty/berty)
 
 > Secure communications for everyone
+
+`go get berty.tech`
