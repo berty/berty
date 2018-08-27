@@ -6,6 +6,7 @@ CLEAN := $(addsuffix .clean, $(DIRS) $(ROOT))
 FCLEAN := $(addsuffix .fclean, $(DIRS) $(ROOT))
 RE := $(addsuffix .re, $(DIRS) $(ROOT))
 START := $(addsuffix .start, $(DIRS) $(ROOT))
+BUILD := $(addsuffix .build, $(DIRS) $(ROOT))
 
 .PHONY: all
 all: $(ROOT) $(DEPS)
@@ -32,11 +33,13 @@ $(ROOT)/node_modules $(DEPS): %/node_modules: %/package.json
 $(DIRS): %: %/node_modules $(ROOT)/node_modules
 
 .PHONY: android
-android: gomobile mobile
+android: mobile
+	make -C gomobile android
 	cd mobile && yarn android && yarn start
 
 .PHONY: ios
-ios: gomobile mobile
+ios: mobile
+	make -C gomobile ios
 	cd mobile && yarn ios --device '$(device)' && yarn start
 
 .PHONY: $(FCLEAN)
@@ -48,3 +51,6 @@ $(RE): %.re: %.fclean %/node_modules
 
 $(START): %.start: %
 	cd $< && yarn start
+
+$(BUILD): %.build: %
+	cd $< && yarn build

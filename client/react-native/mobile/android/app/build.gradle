@@ -141,8 +141,9 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-vector-icons')
-    compile fileTree(dir: "libs", include: ["*.jar"])
+    api project(':react-native-network-info')
+    api project(':react-native-vector-icons')
+    api fileTree(dir: "libs", include: ["*.jar"])
     api(name: 'core', ext: 'aar')
     compile "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     compile "com.facebook.react:react-native:+"  // From node_modules

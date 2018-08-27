@@ -1,4 +1,4 @@
-package chat.berty;
+package chat.berty.main;
 
 import com.facebook.react.ReactActivity;
 
