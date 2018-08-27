@@ -32,5 +32,6 @@
     "class-methods-use-this": "off",
     "typescript/no-use-before-define": "off",
     "require-jsdoc": "off",
+    "jsx-a11y/href-no-hash": "off"
   }
 }

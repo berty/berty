@@ -1,78 +1,16 @@
-import React, { Component } from 'react'
-import { TextInput, Text, View, Button, Alert, StyleSheet } from 'react-native'
-import { graphql, commitMutation } from 'react-relay'
-import environment from '../../relay.js'
-
-var fields = {
+import React from 'react'
+import { TextInput, View, Button, Alert, StyleSheet } from 'react-native'
+import { commit } from '../../relay'
+import { Flex, Text } from '../Library'
+import { mutations } from '../../graphql'
+import { screen } from '../../constants'
+const fields = {
   id: '',
   email: '',
   phone: '',
 }
 
-export default class ContactRequest extends Component {
-  render = () => {
-    return (
-      <View style={styles.contactView}>
-        <Input
-          label='Berty ID'
-          placeholder='Please enter a Berty ID ...'
-          type='username'
-          state='id'
-        />
-        <Input
-          label='Email address'
-          placeholder='Please enter an email address ...'
-          type='emailAddress'
-          state='email'
-        />
-        <Input
-          label='Phone number'
-          placeholder='Please enter a phone number ...'
-          type='telephoneNumber'
-          state='phone'
-        />
-        <Button title='Request' onPress={handleRequestButton} />
-      </View>
-    )
-  }
-}
-
-class Input extends Component {
-  render = () => {
-    return (
-      <View>
-        <Text style={styles.label}>{this.props.label}</Text>
-        <TextInput
-          onChangeText={text => {
-            fields[this.props.state] = text
-          }}
-          style={styles.input}
-          placeholder={this.props.placeholder}
-          textContentType={this.props.type}
-        />
-      </View>
-    )
-  }
-}
-
-const mutation = graphql`
-  mutation ContactRequestMutation($id: String) {
-    ContactRequest(id: $id) {
-      id
-    }
-  }
-`
-
-const commit = (variables = {}) =>
-  commitMutation(environment, {
-    mutation,
-    variables,
-    onCompleted: (res, errs) =>
-      console.log('Response receive from server.', res, errs),
-    onError: err => console.error(err),
-  })
-
-function handleRequestButton () {
+const handleRequestButton = () => {
   let body = `
     Contact request sent:
     Berty ID = ${fields['id']}
@@ -86,15 +24,58 @@ function handleRequestButton () {
     [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
     { cancelable: false }
   )
-  commit({ id: fields['id'] })
+  commit(mutations.ContactRequest, { id: fields['id'] })
 }
 
+export const Input = props => (
+  <View>
+    <Text bold>{props.label}</Text>
+    <TextInput
+      onChangeText={text => {
+        fields[props.state] = text
+      }}
+      style={styles.input}
+      placeholder={props.placeholder}
+      textContentType={props.type}
+    />
+  </View>
+)
+
+export const ContactRequest = () => (
+  <Flex.Grid style={{ height: screen.dimensions.height }}>
+    <Flex.Row flex={2}>
+      <Input
+        label='Berty ID'
+        placeholder='Please enter a Berty ID ...'
+        type='username'
+        state='id'
+      />
+    </Flex.Row>
+    <Flex.Row flex={3}>
+      <Input
+        label='Email address'
+        placeholder='Please enter an email address ...'
+        type='emailAddress'
+        state='email'
+      />
+    </Flex.Row>
+    <Flex.Row>
+      <Input
+        label='Phone number'
+        placeholder='Please enter a phone number ...'
+        type='telephoneNumber'
+        state='phone'
+      />
+    </Flex.Row>
+    <Flex.Row flex={4}>
+      <Button title='Request' onPress={handleRequestButton} />
+    </Flex.Row>
+  </Flex.Grid>
+)
+
+export default ContactRequest
+
 const styles = StyleSheet.create({
-  contactView: {
-    marginTop: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   input: {
     borderColor: 'gray',
     borderBottomWidth: 1,
@@ -103,9 +84,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     marginTop: 5,
     marginBottom: 30,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 })
