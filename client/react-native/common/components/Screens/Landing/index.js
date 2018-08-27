@@ -2,8 +2,7 @@ import { PureComponent } from 'react'
 import { createStackNavigator } from 'react-navigation'
 
 class Landing extends PureComponent {
-  render = (props = this.props) => {
-    console.log(props)
+  render (props = this.props) {
     return null
   }
 }

@@ -49,9 +49,9 @@ export default class Menu extends Component {
         this.setState({ delete: false })
       })
 
-    render = (
+    render (
       { icon, title, style, children, onPress, onDelete } = this.props
-    ) => {
+    ) {
       return (
         <Fragment>
           <TouchableOpacity
@@ -104,7 +104,7 @@ export default class Menu extends Component {
     </Fragment>
   )
 
-  render = () => {
+  render () {
     const { style, absolute } = this.props
     return (
       <ScrollView

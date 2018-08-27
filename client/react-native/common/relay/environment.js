@@ -6,7 +6,7 @@ import fetch from 'isomorphic-fetch'
 // and returns its results as a Promise:
 const fetchQuery = async (operation, variables) => {
   try {
-    const response = await fetch('http://localhost:8700/graphql', {
+    const response = await fetch('http://localhost:8700', {
       method: 'POST',
       headers: {
         // Add authentication and other headers here
@@ -14,7 +14,7 @@ const fetchQuery = async (operation, variables) => {
       },
       body: JSON.stringify({
         query: operation.text, // GraphQL text from input
-        variables,
+        data: variables,
       }),
     })
     return response.json()
