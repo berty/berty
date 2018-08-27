@@ -1,16 +1,56 @@
 import { Environment, Network, RecordSource, Store } from 'relay-runtime'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import fetch from 'isomorphic-fetch'
+import { Platform, NativeModules } from 'react-native'
+import { NetworkInfo } from 'react-native-network-info'
+
+// @TODO: patch web CoreModule
+if (Platform.OS === 'web') {
+  NativeModules.CoreModule = {
+    start: async () => {},
+    getPort: async () => '8700',
+  }
+}
+
+const { CoreModule } = NativeModules
 
 // Define a function that fetches the results of an operation (query/mutation/etc)
 // and returns its results as a Promise:
+
+// const fetchXHR = (url, { method, headers, body } = {}) =>
+//  new Promise((resolve, reject) => {
+//    const xhr = new XMLHttpRequest()
+//    xhr.open(method, url, true)
+//    Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]))
+//    xhr.onload = () => {
+//      const data = JSON.parse(xhr.responseText)
+//      if (
+//        xhr.readyState === 4 &&
+//        (xhr.status === '201' || xhr.status === '200')
+//      ) {
+//        resolve(data)
+//      } else {
+//        reject(data)
+//      }
+//    }
+//    xhr.send(body)
+//  })i
+
+let getIP = () =>
+  new Promise(
+    resolve =>
+      __DEV__ // eslint-disable-line
+        ? NetworkInfo.getIPV4Address(ip => resolve(ip))
+        : resolve('0.0.0.0')
+  )
+
 const fetchQuery = async (operation, variables) => {
   try {
-    const response = await fetch('http://localhost:8700/query', {
+    const port = await CoreModule.getPort()
+    const response = await fetch(`http://${await getIP()}:${port}/query`, {
       method: 'POST',
       headers: {
         // Add authentication and other headers here
-        'content-type': 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         query: operation.text, // GraphQL text from input
@@ -23,14 +63,21 @@ const fetchQuery = async (operation, variables) => {
   }
 }
 
-// eslint-disable-next-line
-const setupSubscription = (config, variables, cacheConfig, observer) => {
+const setupSubscription = async (
+  config,
+  constiables,
+  cacheConfig,
+  observer
+) => {
   const query = config.text
-
-  const subscriptionClient = new SubscriptionClient('ws://localhost:8700', {
-    reconnect: true,
-  })
-  subscriptionClient.subscribe({ query, variables }, (error, result) => {
+  const port = await CoreModule.getPort()
+  const subscriptionClient = new SubscriptionClient(
+    `ws://${await getIP()}:${port}/query`,
+    {
+      reconnect: true,
+    }
+  )
+  subscriptionClient.subscribe({ query, constiables }, (error, result) => {
     if (error != null) {
       console.error(error)
     }

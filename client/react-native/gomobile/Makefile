@@ -1,6 +1,8 @@
 PWD 								:= 	$(shell pwd)
 
-CORE_PACKAGE 				:=	 $(PWD)/../../../core
+CORE_PACKAGE 				:=	$(PWD)/../../../core
+CORE_SOURCES				:=  $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
+												$(shell find . -type f -name "*.go")
 
 CGO_CPPFLAGS	 			:= 	-I/usr/local/opt/openssl/include
 
@@ -38,13 +40,17 @@ init: deps
 	gomobile init -v -ndk $(ANDROID_NDK_HOME)
 
 .PHONY: ios
-ios:
+ios: $(IOS_BUILD_PATH)/core.framework
+
+$(IOS_BUILD_PATH)/core.framework: $(CORE_SOURCES)
 	mkdir -p $(IOS_BUILD_PATH)
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
 		gomobile bind -v -target=ios -o $(IOS_BUILD_PATH)/core.framework .
 
 .PHONY: android
-android:
+android: $(ANDROID_BUILD_PATH)/core.aar
+
+$(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	mkdir -p $(ANDROID_BUILDS_PATH)
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
 		gomobile bind -v -target=android -o $(ANDROID_BUILDS_PATH)/core.aar .
