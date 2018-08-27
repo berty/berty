@@ -1,36 +1,18 @@
 import { graphql } from 'react-relay'
 
 export default graphql`
-  mutation contactRequestMutation($id: String) {
-    ContactRequest(id: $id) {
+  mutation ContactRequestMutation($contactID: String!) {
+    ContactRequest(contactID: $contactID) {
       id
-      createdAt {
-        seconds
-        nanos
-      }
-      updatedAt {
-        seconds
-        nanos
-      }
-      deletedAt {
-        seconds
-        nanos
-      }
+      createdAt
+      updatedAt
+      deletedAt
       status
       devices {
         id
-        createdAt {
-          seconds
-          nanos
-        }
-        updatedAt {
-          seconds
-          nanos
-        }
-        deletedAt {
-          seconds
-          nanos
-        }
+        createdAt
+        updatedAt
+        deletedAt
         name
         status
         apiVersion
