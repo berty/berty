@@ -1,22 +1,9 @@
-// @flow
-
 import React, { Component } from 'react'
-import { Grid } from './Grid'
+import { Grid } from './Flex'
 import { StyleSheet, Dimensions } from 'react-native'
-import { screen } from '../constants'
+import { screen } from '../../constants'
 
-export type ScreenState = {
-  dimensions: { width: number, height: number },
-  orientation: 'portrait' | 'landscape',
-}
-
-export type ScreenProps = {
-  absolute: boolean,
-  style?: Object,
-  onResize?: ScreenState => any,
-}
-
-export default class Screen extends Component<ScreenProps, ScreenState> {
+export default class Screen extends Component {
   state = {
     dimensions: {
       width: screen.dimensions.width,
@@ -48,7 +35,7 @@ export default class Screen extends Component<ScreenProps, ScreenState> {
     }
   }
 
-  render = () => {
+  render () {
     const { absolute, style, onResize, ...props } = this.props
     const { dimensions } = this.state
     return (

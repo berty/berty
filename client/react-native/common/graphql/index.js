@@ -1,2 +1,3 @@
-module.exports.mutations = require('./mutations');
-module.exports.queries = require('./queries');module.exports.subscriptions = require('./subscriptions');
+export * as mutations from './mutations'
+export * as queries from './queries'
+export * as subscriptions from './subscriptions'

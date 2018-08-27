@@ -10,9 +10,10 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/99designs/gqlgen/handler"
+	gqlhandler "github.com/99designs/gqlgen/handler"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
+	"github.com/rs/cors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"go.uber.org/zap"
@@ -169,10 +170,6 @@ func daemon(opts *daemonOptions) error {
 		return nil
 	}
 
-	go func() {
-		errChan <- http.ListenAndServe(":8700", nil)
-	}()
-
 	conn, err := grpc.Dial(opts.bind, grpc.WithInsecure())
 	if err != nil {
 		return errors.Wrap(err, "failed to dial node")
@@ -180,8 +177,22 @@ func daemon(opts *daemonOptions) error {
 
 	resolver := gql.New(nodeapi.NewServiceClient(conn))
 
-	http.Handle("/", handler.Playground("Berty", "/query"))
-	http.Handle("/query", handler.GraphQL(graph.NewExecutableSchema(resolver)))
+	mux := http.NewServeMux()
+	mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
+	mux.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver)))
+
+	handler := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"}, // FIXME: use specific URLs?
+		AllowedMethods: []string{"POST"},
+		//AllowCredentials: true,
+		AllowedHeaders: []string{"authorization", "content-type"},
+		ExposedHeaders: []string{"Access-Control-Allow-Origin"},
+		//Debug:            true,
+	}).Handler(mux)
+
+	go func() {
+		errChan <- http.ListenAndServe(":8700", handler)
+	}()
 
 	// start grpc server(s)
 	go func() {

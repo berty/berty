@@ -2,9 +2,9 @@ import React from 'react'
 import IconFeather from 'react-native-vector-icons/dist/Feather'
 import IconAwesome from 'react-native-vector-icons/dist/FontAwesome'
 import IconMatCom from 'react-native-vector-icons/dist/MaterialCommunityIcons'
-import { colors } from '../constants'
+import { colors } from '../../constants'
 
-const Icon = ({ name, color, rotate, style, ...props }: { name: String }) => {
+const Icon = ({ name, color, rotate, style, ...props }) => {
   if (name == null) return null
   const [type, iconName] = [
     name.split('-', 1)[0],
