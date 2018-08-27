@@ -5,7 +5,7 @@ import App from './components/App'
 
 if (Platform.OS === 'web') {
   ReactDOM.render(<App />, document.getElementById('root'))
-  require('./registerServiceWorker')()
+  import('./registerServiceWorker').then(console.log)
 } else {
   AppRegistry.registerComponent('root', () => App)
 }

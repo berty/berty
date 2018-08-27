@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 50e99ed296e44445fae835895914e067
+ * @relayHash 7650f6c56c61e5ea478c3fea131155d9
  */
 
 /* eslint-disable */
@@ -11,39 +11,21 @@
 import type { ConcreteRequest } from 'relay-runtime';
 export type BertyEntityContactStatus = "IsBlocked" | "IsFriend" | "IsRequested" | "IsTrustedFriend" | "Myself" | "RequestedMe" | "Unknown" | "%future added value";
 export type BertyEntityDeviceStatus = "Available" | "Connected" | "Disconnected" | "Myself" | "Unknown" | "%future added value";
-export type contactRequestMutationVariables = {|
-  id?: ?string
+export type ContactRequestMutationVariables = {|
+  contactID: string
 |};
-export type contactRequestMutationResponse = {|
+export type ContactRequestMutationResponse = {|
   +ContactRequest: ?{|
     +id: ?string,
-    +createdAt: ?{|
-      +seconds: ?number,
-      +nanos: ?number,
-    |},
-    +updatedAt: ?{|
-      +seconds: ?number,
-      +nanos: ?number,
-    |},
-    +deletedAt: ?{|
-      +seconds: ?number,
-      +nanos: ?number,
-    |},
+    +createdAt: ?any,
+    +updatedAt: ?any,
+    +deletedAt: ?any,
     +status: ?BertyEntityContactStatus,
     +devices: ?$ReadOnlyArray<?{|
       +id: ?string,
-      +createdAt: ?{|
-        +seconds: ?number,
-        +nanos: ?number,
-      |},
-      +updatedAt: ?{|
-        +seconds: ?number,
-        +nanos: ?number,
-      |},
-      +deletedAt: ?{|
-        +seconds: ?number,
-        +nanos: ?number,
-      |},
+      +createdAt: ?any,
+      +updatedAt: ?any,
+      +deletedAt: ?any,
       +name: ?string,
       +status: ?BertyEntityDeviceStatus,
       +apiVersion: ?number,
@@ -55,46 +37,28 @@ export type contactRequestMutationResponse = {|
     +overrideDisplayStatus: ?string,
   |}
 |};
-export type contactRequestMutation = {|
-  variables: contactRequestMutationVariables,
-  response: contactRequestMutationResponse,
+export type ContactRequestMutation = {|
+  variables: ContactRequestMutationVariables,
+  response: ContactRequestMutationResponse,
 |};
 */
 
 
 /*
-mutation contactRequestMutation(
-  $id: String
+mutation ContactRequestMutation(
+  $contactID: String!
 ) {
-  ContactRequest(id: $id) {
+  ContactRequest(contactID: $contactID) {
     id
-    createdAt {
-      seconds
-      nanos
-    }
-    updatedAt {
-      seconds
-      nanos
-    }
-    deletedAt {
-      seconds
-      nanos
-    }
+    createdAt
+    updatedAt
+    deletedAt
     status
     devices {
       id
-      createdAt {
-        seconds
-        nanos
-      }
-      updatedAt {
-        seconds
-        nanos
-      }
-      deletedAt {
-        seconds
-        nanos
-      }
+      createdAt
+      updatedAt
+      deletedAt
       name
       status
       apiVersion
@@ -112,8 +76,8 @@ const node/*: ConcreteRequest*/ = (function(){
 var v0 = [
   {
     "kind": "LocalArgument",
-    "name": "id",
-    "type": "String",
+    "name": "contactID",
+    "type": "String!",
     "defaultValue": null
   }
 ],
@@ -124,60 +88,35 @@ v1 = {
   "args": null,
   "storageKey": null
 },
-v2 = [
-  {
-    "kind": "ScalarField",
-    "alias": null,
-    "name": "seconds",
-    "args": null,
-    "storageKey": null
-  },
-  {
-    "kind": "ScalarField",
-    "alias": null,
-    "name": "nanos",
-    "args": null,
-    "storageKey": null
-  }
-],
-v3 = {
-  "kind": "LinkedField",
+v2 = {
+  "kind": "ScalarField",
   "alias": null,
   "name": "createdAt",
-  "storageKey": null,
   "args": null,
-  "concreteType": "GoogleProtobufTimestamp",
-  "plural": false,
-  "selections": v2
+  "storageKey": null
 },
-v4 = {
-  "kind": "LinkedField",
+v3 = {
+  "kind": "ScalarField",
   "alias": null,
   "name": "updatedAt",
-  "storageKey": null,
   "args": null,
-  "concreteType": "GoogleProtobufTimestamp",
-  "plural": false,
-  "selections": v2
+  "storageKey": null
 },
-v5 = {
-  "kind": "LinkedField",
+v4 = {
+  "kind": "ScalarField",
   "alias": null,
   "name": "deletedAt",
-  "storageKey": null,
   "args": null,
-  "concreteType": "GoogleProtobufTimestamp",
-  "plural": false,
-  "selections": v2
+  "storageKey": null
 },
-v6 = {
+v5 = {
   "kind": "ScalarField",
   "alias": null,
   "name": "status",
   "args": null,
   "storageKey": null
 },
-v7 = [
+v6 = [
   {
     "kind": "LinkedField",
     "alias": null,
@@ -186,19 +125,19 @@ v7 = [
     "args": [
       {
         "kind": "Variable",
-        "name": "id",
-        "variableName": "id",
-        "type": "String"
+        "name": "contactID",
+        "variableName": "contactID",
+        "type": "String!"
       }
     ],
     "concreteType": "BertyEntityContact",
     "plural": false,
     "selections": [
       v1,
+      v2,
       v3,
       v4,
       v5,
-      v6,
       {
         "kind": "LinkedField",
         "alias": null,
@@ -209,9 +148,9 @@ v7 = [
         "plural": true,
         "selections": [
           v1,
+          v2,
           v3,
           v4,
-          v5,
           {
             "kind": "ScalarField",
             "alias": null,
@@ -219,7 +158,7 @@ v7 = [
             "args": null,
             "storageKey": null
           },
-          v6,
+          v5,
           {
             "kind": "ScalarField",
             "alias": null,
@@ -270,26 +209,26 @@ v7 = [
 return {
   "kind": "Request",
   "operationKind": "mutation",
-  "name": "contactRequestMutation",
+  "name": "ContactRequestMutation",
   "id": null,
-  "text": "mutation contactRequestMutation(\n  $id: String\n) {\n  ContactRequest(id: $id) {\n    id\n    createdAt {\n      seconds\n      nanos\n    }\n    updatedAt {\n      seconds\n      nanos\n    }\n    deletedAt {\n      seconds\n      nanos\n    }\n    status\n    devices {\n      id\n      createdAt {\n        seconds\n        nanos\n      }\n      updatedAt {\n        seconds\n        nanos\n      }\n      deletedAt {\n        seconds\n        nanos\n      }\n      name\n      status\n      apiVersion\n      contactId\n    }\n    displayName\n    displayStatus\n    overrideDisplayName\n    overrideDisplayStatus\n  }\n}\n",
+  "text": "mutation ContactRequestMutation(\n  $contactID: String!\n) {\n  ContactRequest(contactID: $contactID) {\n    id\n    createdAt\n    updatedAt\n    deletedAt\n    status\n    devices {\n      id\n      createdAt\n      updatedAt\n      deletedAt\n      name\n      status\n      apiVersion\n      contactId\n    }\n    displayName\n    displayStatus\n    overrideDisplayName\n    overrideDisplayStatus\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
-    "name": "contactRequestMutation",
+    "name": "ContactRequestMutation",
     "type": "Mutation",
     "metadata": null,
     "argumentDefinitions": v0,
-    "selections": v7
+    "selections": v6
   },
   "operation": {
     "kind": "Operation",
-    "name": "contactRequestMutation",
+    "name": "ContactRequestMutation",
     "argumentDefinitions": v0,
-    "selections": v7
+    "selections": v6
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'ce002efc539aa79c27b44969c05b33bf';
+(node/*: any*/).hash = 'd80c6e3e0630e856cb928bb60ff5947e';
 module.exports = node;

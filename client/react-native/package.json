@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
-    "babel-eslint": "8.2.6",
+    "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
     "babel-plugin-react-native-web": "^0.8.9",
     "babel-plugin-relay": "^1.6.2",
@@ -27,7 +27,7 @@
     "babel-preset-react-native": "^4.0.0",
     "babel-preset-stage-0": "^6.24.1",
     "babel-runtime": "^6.26.0",
-    "eslint": "^5.2.0",
+    "eslint": "^5.4.0",
     "eslint-config-prettier": "^3.0.1",
     "eslint-config-prettier-standard": "^2.0.0",
     "eslint-config-react-app": "^2.1.0",
