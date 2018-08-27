@@ -1,7 +1,7 @@
 import { PureComponent } from 'react'
 
 export default class ByPublicKey extends PureComponent {
-  render = () => {
+  render () {
     return null
   }
 }
