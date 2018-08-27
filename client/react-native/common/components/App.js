@@ -7,7 +7,10 @@ export default class App extends PureComponent {
   async componentDidMount () {
     try {
       console.log(
-        await commit(mutations.ContactRequest, { contactID: 'XXXXXXXXXXXX' })
+        await commit(mutations.ContactRequest, {
+          contactID: 'Bla',
+          introText: 'Hello World !',
+        })
       )
     } catch (err) {
       console.error(err)
