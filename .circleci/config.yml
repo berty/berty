@@ -51,17 +51,17 @@ jobs:
           command: |
             cd core
             make clean
-      #- run:
-      #    name: make generate
-      #    command: |
-      #      cd core
-      #      make generate
-      #- run:
-      #    name: check if files changed
-      #    command: |
-      #      git status | cat
-      #      git diff | cat
-      #      git diff-index --quiet HEAD --
+      - run:
+         name: make generate
+         command: |
+           cd core
+           make generate
+      - run:
+         name: check if files changed
+         command: |
+           git status | cat
+           git diff | cat
+           git diff-index --quiet HEAD --
 
   docker.build:
     docker:
