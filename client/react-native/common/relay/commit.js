@@ -6,7 +6,13 @@ export default (mutation, variables = {}) =>
     commitMutation(environment, {
       mutation,
       variables,
-      onCompleted: resolve,
+      onCompleted: (res, errs) => {
+        if (errs && errs.length) {
+          reject(errs)
+          return
+        }
+        resolve(res)
+      },
       onError: reject,
     })
   )

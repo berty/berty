@@ -13,8 +13,8 @@
     "react-native-vector-icons": "^5.0.0",
     "react-native-web": "^0.8.9",
     "react-navigation": "^2.12.1",
-    "react-relay": "^1.6.2",
-    "relay-compiler": "^1.6.2",
+    "react-relay": "^1.4.1",
+    "relay-compiler": "^1.4.1",
     "subscriptions-transport-ws": "^0.9.14"
   },
   "devDependencies": {

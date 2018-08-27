@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash 7650f6c56c61e5ea478c3fea131155d9
+ * @relayHash fac5e34c77dcd1fc85036e09231dc8d2
  */
 
 /* eslint-disable */
@@ -10,9 +10,9 @@
 /*::
 import type { ConcreteRequest } from 'relay-runtime';
 export type BertyEntityContactStatus = "IsBlocked" | "IsFriend" | "IsRequested" | "IsTrustedFriend" | "Myself" | "RequestedMe" | "Unknown" | "%future added value";
-export type BertyEntityDeviceStatus = "Available" | "Connected" | "Disconnected" | "Myself" | "Unknown" | "%future added value";
 export type ContactRequestMutationVariables = {|
-  contactID: string
+  contactID: string,
+  introText?: ?string,
 |};
 export type ContactRequestMutationResponse = {|
   +ContactRequest: ?{|
@@ -21,20 +21,6 @@ export type ContactRequestMutationResponse = {|
     +updatedAt: ?any,
     +deletedAt: ?any,
     +status: ?BertyEntityContactStatus,
-    +devices: ?$ReadOnlyArray<?{|
-      +id: ?string,
-      +createdAt: ?any,
-      +updatedAt: ?any,
-      +deletedAt: ?any,
-      +name: ?string,
-      +status: ?BertyEntityDeviceStatus,
-      +apiVersion: ?number,
-      +contactId: ?string,
-    |}>,
-    +displayName: ?string,
-    +displayStatus: ?string,
-    +overrideDisplayName: ?string,
-    +overrideDisplayStatus: ?string,
   |}
 |};
 export type ContactRequestMutation = {|
@@ -47,27 +33,14 @@ export type ContactRequestMutation = {|
 /*
 mutation ContactRequestMutation(
   $contactID: String!
+  $introText: String
 ) {
-  ContactRequest(contactID: $contactID) {
+  ContactRequest(contactID: $contactID, introText: $introText) {
     id
     createdAt
     updatedAt
     deletedAt
     status
-    devices {
-      id
-      createdAt
-      updatedAt
-      deletedAt
-      name
-      status
-      apiVersion
-      contactId
-    }
-    displayName
-    displayStatus
-    overrideDisplayName
-    overrideDisplayStatus
   }
 }
 */
@@ -79,44 +52,15 @@ var v0 = [
     "name": "contactID",
     "type": "String!",
     "defaultValue": null
+  },
+  {
+    "kind": "LocalArgument",
+    "name": "introText",
+    "type": "String",
+    "defaultValue": null
   }
 ],
-v1 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "id",
-  "args": null,
-  "storageKey": null
-},
-v2 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "createdAt",
-  "args": null,
-  "storageKey": null
-},
-v3 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "updatedAt",
-  "args": null,
-  "storageKey": null
-},
-v4 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "deletedAt",
-  "args": null,
-  "storageKey": null
-},
-v5 = {
-  "kind": "ScalarField",
-  "alias": null,
-  "name": "status",
-  "args": null,
-  "storageKey": null
-},
-v6 = [
+v1 = [
   {
     "kind": "LinkedField",
     "alias": null,
@@ -128,78 +72,49 @@ v6 = [
         "name": "contactID",
         "variableName": "contactID",
         "type": "String!"
+      },
+      {
+        "kind": "Variable",
+        "name": "introText",
+        "variableName": "introText",
+        "type": "String"
       }
     ],
     "concreteType": "BertyEntityContact",
     "plural": false,
     "selections": [
-      v1,
-      v2,
-      v3,
-      v4,
-      v5,
-      {
-        "kind": "LinkedField",
-        "alias": null,
-        "name": "devices",
-        "storageKey": null,
-        "args": null,
-        "concreteType": "BertyEntityDevice",
-        "plural": true,
-        "selections": [
-          v1,
-          v2,
-          v3,
-          v4,
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "name",
-            "args": null,
-            "storageKey": null
-          },
-          v5,
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "apiVersion",
-            "args": null,
-            "storageKey": null
-          },
-          {
-            "kind": "ScalarField",
-            "alias": null,
-            "name": "contactId",
-            "args": null,
-            "storageKey": null
-          }
-        ]
-      },
       {
         "kind": "ScalarField",
         "alias": null,
-        "name": "displayName",
+        "name": "id",
         "args": null,
         "storageKey": null
       },
       {
         "kind": "ScalarField",
         "alias": null,
-        "name": "displayStatus",
+        "name": "createdAt",
         "args": null,
         "storageKey": null
       },
       {
         "kind": "ScalarField",
         "alias": null,
-        "name": "overrideDisplayName",
+        "name": "updatedAt",
         "args": null,
         "storageKey": null
       },
       {
         "kind": "ScalarField",
         "alias": null,
-        "name": "overrideDisplayStatus",
+        "name": "deletedAt",
+        "args": null,
+        "storageKey": null
+      },
+      {
+        "kind": "ScalarField",
+        "alias": null,
+        "name": "status",
         "args": null,
         "storageKey": null
       }
@@ -211,7 +126,7 @@ return {
   "operationKind": "mutation",
   "name": "ContactRequestMutation",
   "id": null,
-  "text": "mutation ContactRequestMutation(\n  $contactID: String!\n) {\n  ContactRequest(contactID: $contactID) {\n    id\n    createdAt\n    updatedAt\n    deletedAt\n    status\n    devices {\n      id\n      createdAt\n      updatedAt\n      deletedAt\n      name\n      status\n      apiVersion\n      contactId\n    }\n    displayName\n    displayStatus\n    overrideDisplayName\n    overrideDisplayStatus\n  }\n}\n",
+  "text": "mutation ContactRequestMutation(\n  $contactID: String!\n  $introText: String\n) {\n  ContactRequest(contactID: $contactID, introText: $introText) {\n    id\n    createdAt\n    updatedAt\n    deletedAt\n    status\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
@@ -219,16 +134,16 @@ return {
     "type": "Mutation",
     "metadata": null,
     "argumentDefinitions": v0,
-    "selections": v6
+    "selections": v1
   },
   "operation": {
     "kind": "Operation",
     "name": "ContactRequestMutation",
     "argumentDefinitions": v0,
-    "selections": v6
+    "selections": v1
   }
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = 'd80c6e3e0630e856cb928bb60ff5947e';
+(node/*: any*/).hash = '1b9976b06f79748521e6f41349da4b2f';
 module.exports = node;
