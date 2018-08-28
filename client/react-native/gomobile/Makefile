@@ -1,35 +1,56 @@
-PWD := $(shell pwd)
+PWD 								:= 	$(shell pwd)
 
-CORE_PACKAGE := $(PWD)/../../../core
+CORE_PACKAGE 				:=	 $(PWD)/../../../core
 
-IOS_OUTPUT     := $(PWD)/../mobile/ios
-ANDROID_OUTPUT := $(PWD)/../mobile/android/app/libs
+CGO_CPPFLAGS	 			:= 	-I/usr/local/opt/openssl/include
 
-ANDROID_NDK_HOME ?= /usr/local/share/android-ndk/
+LIBS_PATH 					:= $(PWD)/../../../scripts/built
 
-GOTEST_TIMEOUT ?= 30s
+IOS_BUILD_PATH    	:= 	$(PWD)/../mobile/ios
+IOS_LDFLAGS					:=  -L $(LIBS_PATH)/ios
 
+ANDROID_NDK_HOME 		:= 	/usr/local/share/android-ndk/
+ANDROID_ARCHS 			:= 	aarch64 arm x86_64 x86
+ANDROID_LIBS_PATHS	:= 	$(addprefix $(LIBS_PATH)/android/, $(ANDROID_ARCHS))
+ANDROID_LDFLAGS			:= 	$(addprefix -L, $(ANDROID_LIBS_PATHS))
+ANDROID_BUILDS_PATH := 	$(PWD)/../mobile/android/app/libs
+ANDROID_BUILDS 			:= 	$(addprefix $(ANDROID_BUILDS_PATH)/core., $(addsuffix .aar, $(ANDROID_ARCHS)))
+
+GOTEST_TIMEOUT 			?= 	30s
+
+.PHONY: deps-osx
 deps-osx:
 	brew cask install android-sdk android-ndk
 
+.PHONY: deps
 deps:
 	go get -v golang.org/x/mobile/cmd/gomobile
+	cd $(GOPATH)/src/golang.org/x/mobile \
+		&& (git remote add upstream git@github.com:sfroment/mobile || true) \
+		&& git fetch upstream \
+		&& (git cherry-pick 1b1535a2ec50640fac08cd318cf1d557e198e94d || true)
+	go install golang.org/x/mobile/cmd/gomobile
 	go get -v golang.org/x/mobile/cmd/gobind
+	gomobile init
 
+.PHONY: init
 init: deps
 	gomobile init -v -ndk $(ANDROID_NDK_HOME)
 
-core.build.ios:
-	mkdir -p $(IOS_OUTPUT)
-	gomobile bind -v -target=ios -o $(IOS_OUTPUT)/core.framework .
+.PHONY: ios
+ios:
+	mkdir -p $(IOS_BUILD_PATH)
+	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
+		gomobile bind -v -target=ios -o $(IOS_BUILD_PATH)/core.framework .
 
-core.build.android:
-	mkdir -p $(ANDROID_OUTPUT)
-	gomobile bind -v -target=android -o $(ANDROID_OUTPUT)/core.aar .
+.PHONY: android
+android:
+	mkdir -p $(ANDROID_BUILDS_PATH)
+	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
+		gomobile bind -v -target=android -o $(ANDROID_BUILDS_PATH)/core.aar .
 
 .PHONY: test
 test:
 	go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
-core.build: core.build.ios core.build.android
-build: core.build
+build: android ios
