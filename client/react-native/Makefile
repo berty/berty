@@ -10,6 +10,11 @@ START := $(addsuffix .start, $(DIRS) $(ROOT))
 .PHONY: all
 all: $(ROOT) $(DEPS)
 
+.PHONY: help
+help:
+	@echo "React-Native commands:"
+	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | grep -v / | sed 's/^/  $(HELP_MSG_PREFIX)make /'
+
 .PHONY: deps
 deps: $(DEPS)
 
