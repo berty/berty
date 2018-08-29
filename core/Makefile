@@ -31,8 +31,15 @@ endif
 ## phonies
 ##
 
-.PHONY: all
-all: run
+.PHONY: help
+help:
+	@echo "Core commands:"
+	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | grep -v / | sed 's/^/  $(HELP_MSG_PREFIX)make /'
+
+.PHONY: dev
+dev: install
+	@if ! command -v gin &>/dev/null; then go get github.com/codegangsta/gin; fi
+	$(BUILD_ENV) gin --immediate --appPort=1337 --build=./cmd/berty run -- daemon $(RUN_DEAMON_OPTS)
 
 .PHONY: run
 run: $(BIN)
@@ -114,4 +121,3 @@ api/p2p/kind.gen.go: $(PROTOS)
 api/node/graphql/service.gen.graphql: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	cd ./api/node/graphql && gqlgen -v gen
-
