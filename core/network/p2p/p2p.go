@@ -169,11 +169,15 @@ func (d *Driver) getPeerInfo(addr string) (*pstore.PeerInfo, error) {
 }
 
 func (d *Driver) Close() error {
+	// FIXME: save cache to speedup next connections
+
+	// close dht
 	err := d.dht.Close()
 	if err != nil {
 		return err
 	}
 
+	// close host
 	return d.host.Close()
 }
 

@@ -15,4 +15,7 @@ type Driver interface {
 
 	// OnEnvelopeHandler sets the callback that will handle each new received envelope
 	OnEnvelopeHandler(func(context.Context, *p2p.Envelope) (*p2p.Void, error))
+
+	// Close cleanups things
+	Close() error
 }
