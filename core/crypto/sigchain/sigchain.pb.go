@@ -47,7 +47,7 @@ func (x EventExtensionVersions) String() string {
 	return proto.EnumName(EventExtensionVersions_name, int32(x))
 }
 func (EventExtensionVersions) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_sigchain_c1ab87ab2cd85e21, []int{0}
+	return fileDescriptor_sigchain_20b29b89cc0bced7, []int{0}
 }
 
 type SigEvent_SigEventType int32
@@ -73,7 +73,7 @@ func (x SigEvent_SigEventType) String() string {
 	return proto.EnumName(SigEvent_SigEventType_name, int32(x))
 }
 func (SigEvent_SigEventType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_sigchain_c1ab87ab2cd85e21, []int{0, 0}
+	return fileDescriptor_sigchain_20b29b89cc0bced7, []int{0, 0}
 }
 
 type SigEvent struct {
@@ -94,7 +94,7 @@ func (m *SigEvent) Reset()         { *m = SigEvent{} }
 func (m *SigEvent) String() string { return proto.CompactTextString(m) }
 func (*SigEvent) ProtoMessage()    {}
 func (*SigEvent) Descriptor() ([]byte, []int) {
-	return fileDescriptor_sigchain_c1ab87ab2cd85e21, []int{0}
+	return fileDescriptor_sigchain_20b29b89cc0bced7, []int{0}
 }
 func (m *SigEvent) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -191,7 +191,7 @@ func (m *SigChain) Reset()         { *m = SigChain{} }
 func (m *SigChain) String() string { return proto.CompactTextString(m) }
 func (*SigChain) ProtoMessage()    {}
 func (*SigChain) Descriptor() ([]byte, []int) {
-	return fileDescriptor_sigchain_c1ab87ab2cd85e21, []int{1}
+	return fileDescriptor_sigchain_20b29b89cc0bced7, []int{1}
 }
 func (m *SigChain) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -246,7 +246,7 @@ func (m *EventExtension) Reset()         { *m = EventExtension{} }
 func (m *EventExtension) String() string { return proto.CompactTextString(m) }
 func (*EventExtension) ProtoMessage()    {}
 func (*EventExtension) Descriptor() ([]byte, []int) {
-	return fileDescriptor_sigchain_c1ab87ab2cd85e21, []int{2}
+	return fileDescriptor_sigchain_20b29b89cc0bced7, []int{2}
 }
 func (m *EventExtension) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1132,10 +1132,10 @@ var (
 )
 
 func init() {
-	proto.RegisterFile("crypto/sigchain/sigchain.proto", fileDescriptor_sigchain_c1ab87ab2cd85e21)
+	proto.RegisterFile("crypto/sigchain/sigchain.proto", fileDescriptor_sigchain_20b29b89cc0bced7)
 }
 
-var fileDescriptor_sigchain_c1ab87ab2cd85e21 = []byte{
+var fileDescriptor_sigchain_20b29b89cc0bced7 = []byte{
 	// 503 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x53, 0xcd, 0x6e, 0xd3, 0x40,
 	0x10, 0xce, 0xa6, 0x25, 0x89, 0x27, 0x6d, 0x9a, 0x2e, 0xa8, 0x58, 0x91, 0x88, 0xad, 0x9c, 0xa2,

@@ -55,7 +55,7 @@ func (x Event_Direction) String() string {
 	return proto.EnumName(Event_Direction_name, int32(x))
 }
 func (Event_Direction) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_event_52523626a99db47b, []int{0, 0}
+	return fileDescriptor_event_83ec8620eb2e71d1, []int{0, 0}
 }
 
 type Event struct {
@@ -103,7 +103,7 @@ func (m *Event) Reset()         { *m = Event{} }
 func (m *Event) String() string { return proto.CompactTextString(m) }
 func (*Event) ProtoMessage()    {}
 func (*Event) Descriptor() ([]byte, []int) {
-	return fileDescriptor_event_52523626a99db47b, []int{0}
+	return fileDescriptor_event_83ec8620eb2e71d1, []int{0}
 }
 func (m *Event) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1022,9 +1022,9 @@ var (
 	ErrIntOverflowEvent   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("api/p2p/event.proto", fileDescriptor_event_52523626a99db47b) }
+func init() { proto.RegisterFile("api/p2p/event.proto", fileDescriptor_event_83ec8620eb2e71d1) }
 
-var fileDescriptor_event_52523626a99db47b = []byte{
+var fileDescriptor_event_83ec8620eb2e71d1 = []byte{
 	// 577 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0x4d, 0x6e, 0xd3, 0x40,
 	0x14, 0xc7, 0xeb, 0xd0, 0x36, 0xf6, 0x6b, 0x9b, 0x44, 0x43, 0x04, 0x56, 0x84, 0xe2, 0x28, 0x6c,

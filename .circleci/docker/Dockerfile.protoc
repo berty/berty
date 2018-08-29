@@ -1,14 +1,8 @@
-FROM    znly/protoc as znly
+FROM moul/protoc-gen-gotemplate
 
-#FROM    golang:1.10-alpine
+RUN     apk --update add make git go rsync libc-dev openssh docker
 
-RUN     apk --update add make git go rsync libc-dev openssh
-
-RUN go version
-
-#COPY --from=znly
-
-RUN     go get -u -v \
+RUN go get -u -v \
 	  github.com/gogo/protobuf/proto \
 	  github.com/gogo/protobuf/protoc-gen-gogo \
 	  github.com/gogo/protobuf/gogoproto \
@@ -17,7 +11,10 @@ RUN     go get -u -v \
 	  github.com/moul/protoc-gen-gotemplate \
 	  golang.org/x/tools/cmd/goimports \
 	  github.com/99designs/gqlgen \
-	  github.com/vektah/gorunpkg
+	  github.com/vektah/gorunpkg \
+	  github.com/spf13/cobra
+
+RUN cd /go/src/github.com/99designs/gqlgen && git checkout v0.4.4 && go install github.com/99designs/gqlgen
 
 ENV	GOPATH=/go \
 	PATH=/go/bin:${PATH}
