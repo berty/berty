@@ -1,5 +1,5 @@
 # build core
-FROM            golang:1.10-alpine as core-builder
+FROM            golang:1.11-alpine as core-builder
 RUN             apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev
 COPY            vendor /go/src/berty.tech/vendor
 COPY            core /go/src/berty.tech/core
