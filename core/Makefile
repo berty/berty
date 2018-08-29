@@ -89,7 +89,6 @@ dev-deps:
 	  github.com/gogo/protobuf/jsonpb \
 	  github.com/moul/protoc-gen-gotemplate \
 	  golang.org/x/tools/cmd/goimports \
-		github.com/99designs/gqlgen \
 		github.com/vektah/gorunpkg
 
 ##
