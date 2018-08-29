@@ -34,7 +34,7 @@ func (m *Envelope) Reset()         { *m = Envelope{} }
 func (m *Envelope) String() string { return proto.CompactTextString(m) }
 func (*Envelope) ProtoMessage()    {}
 func (*Envelope) Descriptor() ([]byte, []int) {
-	return fileDescriptor_envelope_b4e7f3ada4734854, []int{0}
+	return fileDescriptor_envelope_011a2c456f5a558d, []int{0}
 }
 func (m *Envelope) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -416,9 +416,9 @@ var (
 	ErrIntOverflowEnvelope   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("api/p2p/envelope.proto", fileDescriptor_envelope_b4e7f3ada4734854) }
+func init() { proto.RegisterFile("api/p2p/envelope.proto", fileDescriptor_envelope_011a2c456f5a558d) }
 
-var fileDescriptor_envelope_b4e7f3ada4734854 = []byte{
+var fileDescriptor_envelope_011a2c456f5a558d = []byte{
 	// 223 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4b, 0x2c, 0xc8, 0xd4,
 	0x2f, 0x30, 0x2a, 0xd0, 0x4f, 0xcd, 0x2b, 0x4b, 0xcd, 0xc9, 0x2f, 0x48, 0xd5, 0x2b, 0x28, 0xca,

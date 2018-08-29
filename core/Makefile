@@ -20,16 +20,6 @@ TEST_PATHS ?= ./...
 TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 3m -v $(TEST_PATHS)
 PROTOC ?= protoc
 GQLGEN ?= gqlgen
-DOCKER_PROTOC = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:/go/src" -v "$(PWD)/..:/go/src/github.com/berty/berty" -w "/go/src/github.com/berty/berty/core"  bertychat/protoc protoc
-DOCKER_GQLGEN = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:/go/src" -v "$(PWD)/..:/go/src/github.com/berty/berty" -w "/go/src/github.com/berty/berty/core"  bertychat/protoc gqlgen
-ifeq (, $(shell which protoc))
-PROTOC=$(DOCKER_PROTOC)
-GQLGEN=$(DOCKER_GQLGEN)
-endif
-ifeq (1, $(USE_DOCKER))
-PROTOC=$(DOCKER_PROTOC)
-GQLGEN=$(DOCKER_GQLGEN)
-endif
 
 ##
 ## phonies
@@ -52,7 +42,7 @@ run: $(BIN)
 .PHONY: install
 install: $(BIN)
 
-$(BIN): generate $(SOURCES)
+$(BIN): generate_local $(SOURCES)
 	$(BUILD_ENV) go install -v ./cmd/...
 
 .PHONY: testwatch
@@ -63,7 +53,7 @@ testwatch:
 	  while true; do watchman-wait . -p "**/*.go"; clear; $(TEST_CMD); sleep .3; done
 
 .PHONY: test
-test: generate
+test: generate_local
 	$(TEST_CMD)
 
 .PHONY: integration
@@ -82,8 +72,8 @@ lint: generate
 clean:
 	rm -f $(GENERATED_FILES) $(BIN)
 
-.PHONY: generate
-generate: $(GENERATED_FILES)
+.PHONY: generate_local
+generate_local: $(GENERATED_FILES)
 
 .PHONY: _ci_prepare
 _ci_prepare:

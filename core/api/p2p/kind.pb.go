@@ -69,7 +69,7 @@ func (x Kind) String() string {
 	return proto.EnumName(Kind_name, int32(x))
 }
 func (Kind) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{0}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{0}
 }
 
 type SentAttrs struct {
@@ -83,7 +83,7 @@ func (m *SentAttrs) Reset()         { *m = SentAttrs{} }
 func (m *SentAttrs) String() string { return proto.CompactTextString(m) }
 func (*SentAttrs) ProtoMessage()    {}
 func (*SentAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{0}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{0}
 }
 func (m *SentAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -131,7 +131,7 @@ func (m *AckAttrs) Reset()         { *m = AckAttrs{} }
 func (m *AckAttrs) String() string { return proto.CompactTextString(m) }
 func (*AckAttrs) ProtoMessage()    {}
 func (*AckAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{1}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{1}
 }
 func (m *AckAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -184,7 +184,7 @@ func (m *PingAttrs) Reset()         { *m = PingAttrs{} }
 func (m *PingAttrs) String() string { return proto.CompactTextString(m) }
 func (*PingAttrs) ProtoMessage()    {}
 func (*PingAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{2}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{2}
 }
 func (m *PingAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -225,7 +225,7 @@ func (m *ContactRequestAttrs) Reset()         { *m = ContactRequestAttrs{} }
 func (m *ContactRequestAttrs) String() string { return proto.CompactTextString(m) }
 func (*ContactRequestAttrs) ProtoMessage()    {}
 func (*ContactRequestAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{3}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{3}
 }
 func (m *ContactRequestAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -278,7 +278,7 @@ func (m *ContactRequestAcceptedAttrs) Reset()         { *m = ContactRequestAccep
 func (m *ContactRequestAcceptedAttrs) String() string { return proto.CompactTextString(m) }
 func (*ContactRequestAcceptedAttrs) ProtoMessage()    {}
 func (*ContactRequestAcceptedAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{4}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{4}
 }
 func (m *ContactRequestAcceptedAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -318,7 +318,7 @@ func (m *ContactShareMeAttrs) Reset()         { *m = ContactShareMeAttrs{} }
 func (m *ContactShareMeAttrs) String() string { return proto.CompactTextString(m) }
 func (*ContactShareMeAttrs) ProtoMessage()    {}
 func (*ContactShareMeAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{5}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{5}
 }
 func (m *ContactShareMeAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -365,7 +365,7 @@ func (m *ContactShareAttrs) Reset()         { *m = ContactShareAttrs{} }
 func (m *ContactShareAttrs) String() string { return proto.CompactTextString(m) }
 func (*ContactShareAttrs) ProtoMessage()    {}
 func (*ContactShareAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{6}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{6}
 }
 func (m *ContactShareAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -412,7 +412,7 @@ func (m *ConversationInviteAttrs) Reset()         { *m = ConversationInviteAttrs
 func (m *ConversationInviteAttrs) String() string { return proto.CompactTextString(m) }
 func (*ConversationInviteAttrs) ProtoMessage()    {}
 func (*ConversationInviteAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{7}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{7}
 }
 func (m *ConversationInviteAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -459,7 +459,7 @@ func (m *ConversationNewMessageAttrs) Reset()         { *m = ConversationNewMess
 func (m *ConversationNewMessageAttrs) String() string { return proto.CompactTextString(m) }
 func (*ConversationNewMessageAttrs) ProtoMessage()    {}
 func (*ConversationNewMessageAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_2fb5fcd6d5779d1e, []int{8}
+	return fileDescriptor_kind_241f5d52a928d5de, []int{8}
 }
 func (m *ConversationNewMessageAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1776,9 +1776,9 @@ var (
 	ErrIntOverflowKind   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("api/p2p/kind.proto", fileDescriptor_kind_2fb5fcd6d5779d1e) }
+func init() { proto.RegisterFile("api/p2p/kind.proto", fileDescriptor_kind_241f5d52a928d5de) }
 
-var fileDescriptor_kind_2fb5fcd6d5779d1e = []byte{
+var fileDescriptor_kind_241f5d52a928d5de = []byte{
 	// 473 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x53, 0xdd, 0x6e, 0xd3, 0x30,
 	0x18, 0x9d, 0xd3, 0x69, 0x5d, 0xbe, 0x4e, 0xc8, 0xf3, 0x60, 0xed, 0x3a, 0xad, 0x54, 0x91, 0x40,

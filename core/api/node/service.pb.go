@@ -40,7 +40,7 @@ func (m *ContactRequestInput) Reset()         { *m = ContactRequestInput{} }
 func (m *ContactRequestInput) String() string { return proto.CompactTextString(m) }
 func (*ContactRequestInput) ProtoMessage()    {}
 func (*ContactRequestInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_8d450ea5586e1555, []int{0}
+	return fileDescriptor_service_69cae59375ea7ee1, []int{0}
 }
 func (m *ContactRequestInput) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -95,7 +95,7 @@ func (m *ConversationAddMessageInput) Reset()         { *m = ConversationAddMess
 func (m *ConversationAddMessageInput) String() string { return proto.CompactTextString(m) }
 func (*ConversationAddMessageInput) ProtoMessage()    {}
 func (*ConversationAddMessageInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_8d450ea5586e1555, []int{1}
+	return fileDescriptor_service_69cae59375ea7ee1, []int{1}
 }
 func (m *ConversationAddMessageInput) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -150,7 +150,7 @@ func (m *EventListInput) Reset()         { *m = EventListInput{} }
 func (m *EventListInput) String() string { return proto.CompactTextString(m) }
 func (*EventListInput) ProtoMessage()    {}
 func (*EventListInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_8d450ea5586e1555, []int{2}
+	return fileDescriptor_service_69cae59375ea7ee1, []int{2}
 }
 func (m *EventListInput) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -205,7 +205,7 @@ func (m *ConversationManageMembersInput) Reset()         { *m = ConversationMana
 func (m *ConversationManageMembersInput) String() string { return proto.CompactTextString(m) }
 func (*ConversationManageMembersInput) ProtoMessage()    {}
 func (*ConversationManageMembersInput) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_8d450ea5586e1555, []int{3}
+	return fileDescriptor_service_69cae59375ea7ee1, []int{3}
 }
 func (m *ConversationManageMembersInput) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -258,7 +258,7 @@ func (m *Void) Reset()         { *m = Void{} }
 func (m *Void) String() string { return proto.CompactTextString(m) }
 func (*Void) ProtoMessage()    {}
 func (*Void) Descriptor() ([]byte, []int) {
-	return fileDescriptor_service_8d450ea5586e1555, []int{4}
+	return fileDescriptor_service_69cae59375ea7ee1, []int{4}
 }
 func (m *Void) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1792,9 +1792,9 @@ var (
 	ErrIntOverflowService   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("api/node/service.proto", fileDescriptor_service_8d450ea5586e1555) }
+func init() { proto.RegisterFile("api/node/service.proto", fileDescriptor_service_69cae59375ea7ee1) }
 
-var fileDescriptor_service_8d450ea5586e1555 = []byte{
+var fileDescriptor_service_69cae59375ea7ee1 = []byte{
 	// 815 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0x4f, 0x6f, 0xd3, 0x48,
 	0x14, 0xaf, 0xdb, 0x6d, 0xbb, 0x99, 0xb4, 0x55, 0x35, 0xed, 0x76, 0x63, 0xaf, 0x36, 0xeb, 0xb5,

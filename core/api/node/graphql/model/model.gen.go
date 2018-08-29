@@ -226,8 +226,6 @@ type GoogleProtobufFileOptions struct {
 	SwiftPrefix               *string                                `json:"swiftPrefix"`
 	PhpClassPrefix            *string                                `json:"phpClassPrefix"`
 	PhpNamespace              *string                                `json:"phpNamespace"`
-	PhpMetadataNamespace      *string                                `json:"phpMetadataNamespace"`
-	RubyPackage               *string                                `json:"rubyPackage"`
 	UninterpretedOption       []*GoogleProtobufUninterpretedOption   `json:"uninterpretedOption"`
 }
 type GoogleProtobufGeneratedCodeInfo struct {
