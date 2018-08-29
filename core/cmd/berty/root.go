@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"path"
+	"strings"
 
 	p2plog "github.com/ipfs/go-log"
 	"github.com/spf13/cobra"
@@ -12,6 +14,7 @@ import (
 	"berty.tech/core"
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/pkg/filteredzap"
 )
 
 type p2pLogBackendWrapper struct {
@@ -60,8 +63,8 @@ func newRootCommand() *cobra.Command {
 	}
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
-	cmd.PersistentFlags().StringP("log-level-p2p", "", "", "Enable log on libp2p (can be 'critical', 'error', 'warning', 'notice', 'info', 'debug') will take log level by default")
-	cmd.PersistentFlags().StringSliceP("log-p2p-subsystem", "", []string{}, "log libp2p specific subsystem")
+	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
+
 	cmd.AddCommand(
 		newDaemonCommand(),
 		newClientCommand(),
@@ -72,16 +75,6 @@ func newRootCommand() *cobra.Command {
 
 func setupLogger(cmd *cobra.Command, args []string) error {
 	cfgLogLevel, err := cmd.Flags().GetString("log-level")
-	if err != nil {
-		return err
-	}
-
-	cfgP2PLogLevel, err := cmd.Flags().GetString("log-level-p2p")
-	if err != nil {
-		return err
-	}
-
-	cfgP2PLogSubsystem, err := cmd.Flags().GetStringSlice("log-p2p-subsystem")
 	if err != nil {
 		return err
 	}
@@ -100,6 +93,8 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unknown log level: %q", cfgLogLevel)
 	}
 
+	// configure zap
+
 	config := zap.NewDevelopmentConfig()
 	config.Level.SetLevel(logLevel)
 	config.DisableStacktrace = true
@@ -108,28 +103,39 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	zap.ReplaceGlobals(l)
+	filtered := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+		matchMap := map[string]bool{}
+		patternsString, err := cmd.Flags().GetString("log-namespaces")
+		if err != nil {
+			panic(err)
+		}
+		patterns := strings.Split(patternsString, ",")
+		return filteredzap.NewFilteringCore(core, func(entry zapcore.Entry, fields []zapcore.Field) bool {
+			// always print error messages
+			if entry.Level >= zapcore.ErrorLevel {
+				return true
+			}
+			// only show debug,info,warn messages for enabled --log-namespaces
+			if _, found := matchMap[entry.LoggerName]; !found {
+				matchMap[entry.LoggerName] = false
+				for _, pattern := range patterns {
+					if matched, _ := path.Match(pattern, entry.LoggerName); matched {
+						matchMap[entry.LoggerName] = true
+						break
+					}
+				}
+			}
+			return matchMap[entry.LoggerName]
+		})
+	})
+	zap.ReplaceGlobals(l.WithOptions(filtered))
 
 	// configure p2p log
 	logging.SetBackend(&p2pLogBackendWrapper{
 		logger: zap.L().Named("vendor.libp2p").WithOptions(zap.AddCallerSkip(4)),
 	})
-
-	if cfgP2PLogLevel == "" {
-		cfgP2PLogLevel = getP2PLogLevel(logLevel).String()
-	} else if len(cfgP2PLogSubsystem) == 0 {
-		cfgP2PLogSubsystem = append(cfgP2PLogSubsystem, "*")
-	}
-
-	// Set default p2plog to critical
-	if err := p2plog.SetLogLevel("*", logging.INFO.String()); err != nil {
-		return err
-	}
-
-	for _, subname := range cfgP2PLogSubsystem {
-		if err := p2plog.SetLogLevel(subname, cfgP2PLogLevel); err != nil {
-			return err
-		}
+	if err := p2plog.SetLogLevel("*", getP2PLogLevel(logLevel).String()); err != nil {
+		logger().Warn("failed to set p2p log level", zap.Error(err))
 	}
 
 	logger().Debug("logger initialized")
