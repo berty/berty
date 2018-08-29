@@ -148,6 +148,11 @@ func daemon(opts *daemonOptions) error {
 		if err != nil {
 			return err
 		}
+		defer func() {
+			if err := driver.Close(); err != nil {
+				logger().Warn("failed to close network driver", zap.Error(err))
+			}
+		}()
 	}
 
 	if driver == nil {
@@ -165,6 +170,11 @@ func daemon(opts *daemonOptions) error {
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize node")
 	}
+	defer func() {
+		if err := n.Close(); err != nil {
+			logger().Warn("failed to close node", zap.Error(err))
+		}
+	}()
 
 	if opts.initOnly {
 		return nil
