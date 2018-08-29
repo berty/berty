@@ -62,7 +62,7 @@ func (x Contact_Status) String() string {
 	return proto.EnumName(Contact_Status_name, int32(x))
 }
 func (Contact_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_contact_de5ad45faee30155, []int{0, 0}
+	return fileDescriptor_contact_5a21bf03422a235a, []int{0, 0}
 }
 
 type Contact struct {
@@ -86,7 +86,7 @@ func (m *Contact) Reset()         { *m = Contact{} }
 func (m *Contact) String() string { return proto.CompactTextString(m) }
 func (*Contact) ProtoMessage()    {}
 func (*Contact) Descriptor() ([]byte, []int) {
-	return fileDescriptor_contact_de5ad45faee30155, []int{0}
+	return fileDescriptor_contact_5a21bf03422a235a, []int{0}
 }
 func (m *Contact) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -845,9 +845,9 @@ var (
 	ErrIntOverflowContact   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("entity/contact.proto", fileDescriptor_contact_de5ad45faee30155) }
+func init() { proto.RegisterFile("entity/contact.proto", fileDescriptor_contact_5a21bf03422a235a) }
 
-var fileDescriptor_contact_de5ad45faee30155 = []byte{
+var fileDescriptor_contact_5a21bf03422a235a = []byte{
 	// 519 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x52, 0xcd, 0x6a, 0xdb, 0x4c,
 	0x14, 0x8d, 0x1c, 0xc7, 0x3f, 0x57, 0xfe, 0x11, 0x63, 0x87, 0x4f, 0x98, 0x60, 0xfb, 0x33, 0x14,

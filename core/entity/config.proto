@@ -28,4 +28,6 @@ message Config {
 
   Device current_device = 7;
   string current_device_id = 8 [(gogoproto.customname) = "CurrentDeviceID"];
+
+  string private_key_id = 9 [(gogoproto.customname) = "PrivateKeyID"];
 }
