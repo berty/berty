@@ -42,7 +42,7 @@ run: $(BIN)
 .PHONY: install
 install: $(BIN)
 
-$(BIN): generate_local $(SOURCES)
+$(BIN): generate $(SOURCES)
 	$(BUILD_ENV) go install -v ./cmd/...
 
 .PHONY: testwatch
@@ -53,7 +53,7 @@ testwatch:
 	  while true; do watchman-wait . -p "**/*.go"; clear; $(TEST_CMD); sleep .3; done
 
 .PHONY: test
-test: generate_local
+test: generate
 	$(TEST_CMD)
 
 .PHONY: integration
@@ -68,6 +68,23 @@ integration: install
 lint: generate
 	gometalinter.v2 --config=../.gometalinter.json $(TEST_PATHS)
 
+.PHONY: generate
+generate: .generated
+
+.generated: $(PROTOS)
+	rm -f $(GENERATED_FILES)
+	docker run \
+	    --user="$(shell id -u)" \
+	    --volume="$(GOPATH)/src:$(GOPATH)/src" \
+	    --env="GOPATH=$(GOPATH)" \
+	    --volume="$(PWD)/..:$(PWD)/.." \
+	    --workdir="$(PWD)" \
+	    --entrypoint="sh" \
+	    --rm \
+	  bertychat/protoc \
+	  -xec 'make generate_local'
+	touch $@
+
 .PHONY: clean
 clean:
 	rm -f $(GENERATED_FILES) $(BIN)
@@ -78,7 +95,7 @@ generate_local: $(GENERATED_FILES)
 .PHONY: _ci_prepare
 _ci_prepare:
 	@# touching files to avoid regenerating files based on modification date
-	touch $(GENERATED_FILES)
+	touch .generated
 
 .PHONY: dev-deps
 dev-deps:
