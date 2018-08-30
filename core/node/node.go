@@ -1,7 +1,6 @@
 package node
 
 import (
-	"context"
 	"encoding/base64"
 	"fmt"
 	"sync"
@@ -72,13 +71,11 @@ func New(opts ...NewNodeOption) (*Node, error) {
 	n.b64pubkey = base64.StdEncoding.EncodeToString(n.pubkey)
 
 	// configure network
-	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
-	if err := n.networkDriver.Join(context.Background(), n.UserID()); err != nil {
-		return nil, err
+	if n.networkDriver != nil {
+		if err := n.UseNetworkDriver(n.networkDriver); err != nil {
+			return nil, errors.Wrap(err, "failed to setup network driver")
+		}
 	}
-
-	// FIXME: subscribe to every owned device IDs
-	// FIXME: subscribe to every joined conversations
 
 	return n, nil
 }
