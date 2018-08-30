@@ -8,10 +8,10 @@ import (
 	fmt "fmt"
 	strconv "strconv"
 
-	graphql "github.com/99designs/gqlgen/graphql"
-	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	model "berty.tech/core/api/node/graphql/model"
 	scalar "berty.tech/core/api/node/graphql/scalar"
+	graphql "github.com/99designs/gqlgen/graphql"
+	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	gqlparser "github.com/vektah/gqlparser"
 	ast "github.com/vektah/gqlparser/ast"
 )
@@ -7300,10 +7300,10 @@ interface Node {
   id: ID!
 }
 
-
+  
 type GoogleProtobufFileDescriptorSet {
   file: [GoogleProtobufFileDescriptorProto]
-}
+} 
 type GoogleProtobufFileDescriptorProto {
   name: String
   package: String
@@ -7317,7 +7317,7 @@ type GoogleProtobufFileDescriptorProto {
   options: GoogleProtobufFileOptions
   sourceCodeInfo: GoogleProtobufSourceCodeInfo
   syntax: String
-}
+}  
 
 type GoogleProtobufDescriptorProtoExtensionRange {
   start: Int
@@ -7340,10 +7340,10 @@ type GoogleProtobufDescriptorProto {
   options: GoogleProtobufMessageOptions
   reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
   reservedName: [String]
-}
+} 
 type GoogleProtobufExtensionRangeOptions {
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufFieldDescriptorProto {
   name: String
   number: Int
@@ -7380,11 +7380,11 @@ enum GoogleProtobufFieldDescriptorProtoLabel {
   LABEL_OPTIONAL
   LABEL_REQUIRED
   LABEL_REPEATED
-}
+} 
 type GoogleProtobufOneofDescriptorProto {
   name: String
   options: GoogleProtobufOneofOptions
-}
+}  
 
 type GoogleProtobufEnumDescriptorProtoEnumReservedRange {
   start: Int
@@ -7396,17 +7396,17 @@ type GoogleProtobufEnumDescriptorProto {
   options: GoogleProtobufEnumOptions
   reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
   reservedName: [String]
-}
+} 
 type GoogleProtobufEnumValueDescriptorProto {
   name: String
   number: Int
   options: GoogleProtobufEnumValueOptions
-}
+} 
 type GoogleProtobufServiceDescriptorProto {
   name: String
   method: [GoogleProtobufMethodDescriptorProto]
   options: GoogleProtobufServiceOptions
-}
+} 
 type GoogleProtobufMethodDescriptorProto {
   name: String
   inputType: String
@@ -7414,7 +7414,7 @@ type GoogleProtobufMethodDescriptorProto {
   options: GoogleProtobufMethodOptions
   clientStreaming: Boolean
   serverStreaming: Boolean
-}
+} 
 type GoogleProtobufFileOptions {
   javaPackage: String
   javaOuterClassname: String
@@ -7440,14 +7440,14 @@ enum GoogleProtobufFileOptionsOptimizeMode {
   SPEED
   CODE_SIZE
   LITE_RUNTIME
-}
+} 
 type GoogleProtobufMessageOptions {
   messageSetWireFormat: Boolean
   noStandardDescriptorAccessor: Boolean
   deprecated: Boolean
   mapEntry: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufFieldOptions {
   ctype: GoogleProtobufFieldOptionsCType
   packed: Boolean
@@ -7466,23 +7466,23 @@ enum GoogleProtobufFieldOptionsJSType {
   JS_NORMAL
   JS_STRING
   JS_NUMBER
-}
+} 
 type GoogleProtobufOneofOptions {
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufEnumOptions {
   allowAlias: Boolean
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufEnumValueOptions {
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufServiceOptions {
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
-}
+} 
 type GoogleProtobufMethodOptions {
   deprecated: Boolean
   idempotencyLevel: GoogleProtobufMethodOptionsIdempotencyLevel
@@ -7492,7 +7492,7 @@ enum GoogleProtobufMethodOptionsIdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
   NO_SIDE_EFFECTS
   IDEMPOTENT
-}
+}  
 
 type GoogleProtobufUninterpretedOptionNamePart {
   namePart: String
@@ -7506,7 +7506,7 @@ type GoogleProtobufUninterpretedOption {
   doubleValue: Float
   stringValue: String
   aggregateValue: String
-}
+}  
 
 type GoogleProtobufSourceCodeInfoLocation {
   path: [Int]
@@ -7517,7 +7517,7 @@ type GoogleProtobufSourceCodeInfoLocation {
 }
 type GoogleProtobufSourceCodeInfo {
   location: [GoogleProtobufSourceCodeInfoLocation]
-}
+}  
 
 type GoogleProtobufGeneratedCodeInfoAnnotation {
   path: [Int]
@@ -7527,14 +7527,14 @@ type GoogleProtobufGeneratedCodeInfoAnnotation {
 }
 type GoogleProtobufGeneratedCodeInfo {
   annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
-}
-
-
+}  
+   
+  
 type GoogleProtobufTimestamp {
   seconds: Int
   nanos: Int
-}
-
+}  
+  
 type BertyEntityDevice {
   id: String
   createdAt: DateTime
@@ -7551,8 +7551,8 @@ enum BertyEntityDeviceStatus {
   Disconnected
   Available
   Myself
-}
-
+}  
+  
 type BertyEntityContact {
   id: String
   createdAt: DateTime
@@ -7574,8 +7574,8 @@ enum BertyEntityContactStatus {
   RequestedMe
   IsBlocked
   Myself
-}
-
+}  
+  
 type BertyEntityConversation {
   id: String
   createdAt: DateTime
@@ -7584,7 +7584,7 @@ type BertyEntityConversation {
   title: String
   topic: String
   members: [BertyEntityConversationMember]
-}
+} 
 type BertyEntityConversationMember {
   id: String
   createdAt: DateTime
@@ -7600,41 +7600,41 @@ enum BertyEntityConversationMemberStatus {
   Owner
   Active
   Blocked
-}
-
+}  
+  
 type BertyEntityMessage {
   text: String
-}
-
+}  
+  
 type BertyP2pSentAttrs {
   ids: [String]
-}
+} 
 type BertyP2pAckAttrs {
   ids: [String]
   ErrMsg: String
-}
+} 
 type BertyP2pPingAttrs { # Can't make empty type
   T: Boolean
-}
+} 
 type BertyP2pContactRequestAttrs {
   me: BertyEntityContact
   introText: String
-}
+} 
 type BertyP2pContactRequestAcceptedAttrs { # Can't make empty type
   T: Boolean
-}
+} 
 type BertyP2pContactShareMeAttrs {
   me: BertyEntityContact
-}
+} 
 type BertyP2pContactShareAttrs {
   contact: BertyEntityContact
-}
+} 
 type BertyP2pConversationInviteAttrs {
   conversation: BertyEntityConversation
-}
+} 
 type BertyP2pConversationNewMessageAttrs {
   message: BertyEntityMessage
-}
+} 
 
 enum BertyP2pKind {
   Unknown
@@ -7647,8 +7647,8 @@ enum BertyP2pKind {
   ContactShare
   ConversationInvite
   ConversationNewMessage
-}
-
+} 
+  
 type BertyP2pEvent {
   id: String
   senderId: String
@@ -7670,27 +7670,27 @@ enum BertyP2pEventDirection {
   UnknownDirection
   Incoming
   Outgoing
-}
-
+}  
+  
 type BertyNodeContactRequestInput {
   contact: BertyEntityContact
   introText: String
-}
+} 
 type BertyNodeConversationAddMessageInput {
   conversation: BertyEntityConversation
   message: BertyEntityMessage
-}
+} 
 type BertyNodeEventListInput {
   limit: Int
   filter: BertyP2pEvent
-}
+} 
 type BertyNodeConversationManageMembersInput {
   conversation: BertyEntityConversation
   members: [BertyEntityConversationMember]
-}
+} 
 type BertyNodeVoid { # Can't make empty type
   T: Boolean
-}
+}  
 type Subscription {
   EventStream: BertyP2pEvent
 }
