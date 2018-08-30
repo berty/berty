@@ -3,6 +3,7 @@ package p2p
 import (
 	"context"
 	"fmt"
+	"net"
 	"sync"
 	"time"
 
@@ -15,7 +16,7 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"
 	inet "github.com/libp2p/go-libp2p-net"
-	peer "github.com/libp2p/go-libp2p-peer"
+	"github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
 	ma "github.com/multiformats/go-multiaddr"
@@ -27,9 +28,12 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p/p2putil"
 	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
+	"github.com/libp2p/go-libp2p-protocol"
 )
 
-const ID = "api/p2p/envelope"
+const ID = "api/p2p/methods"
+
+var ProtocolID = protocol.ID(p2pgrpc.GetGrpcID(ID))
 
 // driverConfig configure the driver
 type driverConfig struct {
@@ -260,6 +264,10 @@ func (d *Driver) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 	return d.host.Connect(ctx, pi)
 }
 
+func (d *Driver) Dial(ctx context.Context, peerId string, timeout time.Duration, pid protocol.ID) (net.Conn, error) {
+	return p2putil.NewDialer(d.host, pid)(peerId, timeout)
+}
+
 func (d *Driver) createCid(id string) (*cid.Cid, error) {
 	h, err := mh.Sum([]byte(id), mh.SHA2_256, -1)
 	if err != nil {
@@ -369,6 +377,10 @@ func (ds *DriverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*
 	}
 
 	return nil, fmt.Errorf("no handler set")
+}
+
+func (ds *DriverService) Ping(ctx context.Context, e *p2p.PingInput) (*p2p.Void, error) {
+	return &p2p.Void{}, nil
 }
 
 type DriverDiscoveryNotifee Driver

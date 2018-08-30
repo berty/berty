@@ -2,13 +2,19 @@ package network
 
 import (
 	"context"
+	"net"
+	"time"
 
 	"berty.tech/core/api/p2p"
+	"github.com/libp2p/go-libp2p-protocol"
 )
 
 type Driver interface {
 	// Emit sends an envelope to a channel
 	Emit(context.Context, *p2p.Envelope) error
+
+	// Dial get a raw connection
+	Dial(context.Context, string, time.Duration, protocol.ID) (net.Conn, error)
 
 	// Join subscribe for new envelope in a channel
 	Join(context.Context, string) error
