@@ -204,15 +204,20 @@ func daemon(opts *daemonOptions) error {
 			p2pOpts = append(p2pOpts, p2p.WithRelayClient())
 		}
 
-		driver, err = p2p.NewDriver(context.Background(), p2pOpts...)
+		p2pDriver, err := p2p.NewDriver(context.Background(), p2pOpts...)
+
 		if err != nil {
 			return err
 		}
+
 		defer func() {
 			if err := driver.Close(); err != nil {
 				logger().Warn("failed to close network driver", zap.Error(err))
 			}
 		}()
+
+		driver = p2pDriver
+		fmt.Printf("driver ID - %s\n", p2pDriver.ID())
 	}
 
 	if driver == nil {
