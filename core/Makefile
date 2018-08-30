@@ -19,13 +19,7 @@ RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 3m -v $(TEST_PATHS)
 PROTOC ?= protoc
-DOCKER_PROTOC = docker run --user="$(shell id -u)" --rm -v "$(GOPATH)/src:$(GOPATH)/src" -v "$(PWD)/..:$(PWD)/.." -w "$(PWD)" bertychat/protoc
-ifeq (, $(shell which protoc))
-PROTOC=$(DOCKER_PROTOC)
-endif
-ifeq (1, $(USE_DOCKER))
-PROTOC=$(DOCKER_PROTOC)
-endif
+GQLGEN ?= gqlgen
 
 ##
 ## phonies
@@ -74,17 +68,34 @@ integration: install
 lint: generate
 	gometalinter.v2 --config=../.gometalinter.json $(TEST_PATHS)
 
+.PHONY: generate
+generate: .generated
+
+.generated: $(PROTOS)
+	rm -f $(GENERATED_FILES)
+	docker run \
+	    --user="$(shell id -u)" \
+	    --volume="$(GOPATH)/src:$(GOPATH)/src" \
+	    --env="GOPATH=$(GOPATH)" \
+	    --volume="$(PWD)/..:$(PWD)/.." \
+	    --workdir="$(PWD)" \
+	    --entrypoint="sh" \
+	    --rm \
+	  bertychat/protoc \
+	  -xec 'make generate_local'
+	touch $@
+
 .PHONY: clean
 clean:
 	rm -f $(GENERATED_FILES) $(BIN)
 
-.PHONY: generate
-generate: $(GENERATED_FILES)
+.PHONY: generate_local
+generate_local: $(GENERATED_FILES)
 
 .PHONY: _ci_prepare
 _ci_prepare:
 	@# touching files to avoid regenerating files based on modification date
-	touch $(GENERATED_FILES)
+	touch .generated
 
 .PHONY: dev-deps
 dev-deps:
@@ -96,8 +107,8 @@ dev-deps:
 	  github.com/gogo/protobuf/jsonpb \
 	  github.com/moul/protoc-gen-gotemplate \
 	  golang.org/x/tools/cmd/goimports \
-		github.com/99designs/gqlgen \
-		github.com/vektah/gorunpkg
+	  github.com/99designs/gqlgen \
+	  github.com/vektah/gorunpkg
 
 ##
 ## file-based rules
@@ -120,4 +131,4 @@ api/p2p/kind.gen.go: $(PROTOS)
 
 api/node/graphql/service.gen.graphql: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
-	cd ./api/node/graphql && gqlgen -v gen
+	cd ./api/node/graphql && $(GQLGEN) -v gen

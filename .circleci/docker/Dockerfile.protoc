@@ -1,8 +1,7 @@
 FROM moul/protoc-gen-gotemplate
 
-RUN apk --update add git openssh
+RUN     apk --update add make git go rsync libc-dev openssh docker
 
-# Update deps
 RUN go get -u -v \
 	  github.com/gogo/protobuf/proto \
 	  github.com/gogo/protobuf/protoc-gen-gogo \
@@ -10,4 +9,12 @@ RUN go get -u -v \
 	  github.com/gogo/protobuf/protoc-gen-gofast \
 	  github.com/gogo/protobuf/jsonpb \
 	  github.com/moul/protoc-gen-gotemplate \
-	  golang.org/x/tools/cmd/goimports
+	  golang.org/x/tools/cmd/goimports \
+	  github.com/99designs/gqlgen \
+	  github.com/vektah/gorunpkg \
+	  github.com/spf13/cobra
+
+RUN cd /go/src/github.com/99designs/gqlgen && git checkout v0.4.4 && go install github.com/99designs/gqlgen
+
+ENV	GOPATH=/go \
+	PATH=/go/bin:${PATH}
