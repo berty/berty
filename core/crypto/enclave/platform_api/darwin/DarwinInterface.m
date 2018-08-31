@@ -4,28 +4,16 @@
 #define LABEL @"Berty Messaging Key"
 #define tag(keyID) [[NSString stringWithUTF8String:keyID] dataUsingEncoding:NSUTF8StringEncoding]
 
-// Define available encryption algorithms
-#define RSA2048 1
-#define ECC256  2
-
-// Return key type and length corresponding value in Darwin API
-#define keyType(type) (type == ECC256) ? kSecAttrKeyTypeECSECPrimeRandom : kSecAttrKeyTypeRSA
-#define keyLength(type) (type == ECC256) ? @256 : @2048
-
-// Return encryption algorithm corresponding value in Darwin API
-#define encAlgoType(type) (type == ECC256) ? kSecKeyAlgorithmECIESEncryptionStandardX963SHA512AESGCM : kSecKeyAlgorithmRSAEncryptionOAEPSHA512
-
-// Return signing algorithm corresponding value in Darwin API
-#define signAlgoType(type) (type == ECC256) ? kSecKeyAlgorithmECDSASignatureMessageX962SHA512 : kSecKeyAlgorithmRSASignatureMessagePSSSHA512
-
-// Generate a key pair and store the private key in the Secure Enclave.
-// Stores only 256-bit elliptic curve private keys (no compatible with RSA).
+// Generates a key pair and stores the private key in the Secure Enclave.
+// Stores only 256-bit elliptic curve private keys (incompatible with RSA).
 // This Darwin feature is only available on specific hardware:
 // - iOS devices with an Apple A7 or later A-series processor
 // - MacBook Pro with a Touch Bar
-// The binary need to be signed with a Developer ID certificate to enable this feature
-NSData *generateKeyPairWithinEnclave(const char *goKeyID) {
-    NSData *publicKeyData = NULL;
+// To enable this feature on macOS, the binary needs to be signed with a Developer ID certificate
+// and the entitlements must contains Keychain Sharing capability
+// See: https://forums.developer.apple.com/thread/107586#327834
+bool generateKeyPairWithinEnclave(const char *goKeyID) {
+    bool success;
     SecKeyRef privateKeyRef;
     SecKeyRef publicKeyRef;
     CFErrorRef error = NULL;
@@ -39,7 +27,7 @@ NSData *generateKeyPairWithinEnclave(const char *goKeyID) {
         NSLog(@"Error during access control flags creation: %@\n", error);
         CFRelease(error);
         if (access) { CFRelease(access); };
-        return publicKeyData;
+        return false;
     }
 
     NSDictionary *attributes =
@@ -57,61 +45,90 @@ NSData *generateKeyPairWithinEnclave(const char *goKeyID) {
 
     if (status != errSecSuccess) {
         NSLog(@"Error during access control flags creation of key with ID %s\n", goKeyID);
+        success = false;
     } else {
         NSLog(@"Key with ID %s successfully generated within the enclave\n", goKeyID);
-        publicKeyData = (__bridge NSData*)SecKeyCopyExternalRepresentation(publicKeyRef, &error);
-        if (error) {
-            NSLog(@"Error during copy of public key external representation");
-            deleteKeyPairFromKeychain(goKeyID);
-            CFRelease(error);
-        }
         CFRelease(publicKeyRef);
         CFRelease(privateKeyRef);
+        success = true;
     }
 
     CFRelease(access);
     [attributes release];
 
-    return publicKeyData;
+    return success;
 }
-
-// Generate a key pair without the Secure Enclave feature, then store it in the keychain.
-// Compatible with RSA and ECC.
-NSData *generateKeyPairWithoutEnclave(const char *goKeyID, int type) {
-    NSData *publicKeyData = NULL;
-    CFErrorRef error = NULL;
+// Retrieves private key ref from the keychain.
+// If the private key is stored inside the Secure Enclave, you can't access
+// to the key value, you can only use it through a reference to decrypt and sign.
+SecKeyRef getPrivateKeyFromKeychain(const char *goKeyID) {
     SecKeyRef privateKeyRef;
-    SecKeyRef publicKeyRef;
-    NSDictionary *attributes =
-      @{(id)kSecAttrKeyType:        (id)CFBridgingRelease(keyType(type)),
-        (id)kSecAttrKeySizeInBits:  keyLength(type),
-        (id)kSecAttrIsPermanent:    @YES,
-        (id)kSecAttrLabel:          LABEL,
-        (id)kSecAttrApplicationTag: tag(goKeyID),
-      };
+    NSDictionary *query = @{(id)kSecClass:              (id)kSecClassKey,
+                            (id)kSecAttrLabel:          LABEL,
+                            (id)kSecAttrApplicationTag: tag(goKeyID),
+                            (id)kSecAttrCanDecrypt:     @YES,
+                            (id)kSecReturnRef:          @YES,
+                            };
 
-    OSStatus status = SecKeyGeneratePair((__bridge CFDictionaryRef)attributes, &publicKeyRef, &privateKeyRef);
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query,
+                                          (CFTypeRef *)&privateKeyRef);
 
+    [query release];
     if (status != errSecSuccess) {
-        NSLog(@"Error during generation of key pair with id %s\n", goKeyID);
-    } else {
-        NSLog(@"Key with id %s successfully generated without the enclave\n", goKeyID);
-        publicKeyData = (__bridge NSData*)SecKeyCopyExternalRepresentation(publicKeyRef, &error);
-        if (error) {
-            NSLog(@"Error during copy of public key external representation");
-            deleteKeyPairFromKeychain(goKeyID);
-            CFRelease(error);
-        }
-        CFRelease(publicKeyRef);
-        CFRelease(privateKeyRef);
+        NSLog(@"Private key with id %s not found in keychain\n", goKeyID);
+        if (privateKeyRef) { CFRelease(privateKeyRef); };
+        return NULL;
     }
 
-    [attributes release];
+    return privateKeyRef;
+}
+
+// Retrieves public key ref from the keychain.
+// If the private key is stored inside the Secure Enclave, you can still access
+// to the corresponding public key value.
+SecKeyRef getPublicKeyFromKeychain(const char *goKeyID) {
+    SecKeyRef publicKeyRef;
+    NSDictionary *query = @{(id)kSecClass:              (id)kSecClassKey,
+                            (id)kSecAttrLabel:          LABEL,
+                            (id)kSecAttrApplicationTag: tag(goKeyID),
+                            (id)kSecAttrCanEncrypt:     @YES,
+                            (id)kSecReturnRef:          @YES,
+                            };
+
+    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query,
+                                          (CFTypeRef *)&publicKeyRef);
+
+    [query release];
+    if (status != errSecSuccess) {
+        NSLog(@"Public key with id %s not found in keychain\n", goKeyID);
+        if (publicKeyRef) { CFRelease(publicKeyRef); };
+        return NULL;
+    }
+
+    return publicKeyRef;
+}
+
+// Retrieves public key ref from the keychain then returns its X9.63 representation.
+// If the private key is stored inside the Secure Enclave, you can still access
+// to the corresponding public key value.
+NSData *getPublicKeyX963Representation(const char *goKeyID) {
+    NSData *publicKeyData = NULL;
+    CFErrorRef error = NULL;
+    SecKeyRef publicKeyRef = getPublicKeyFromKeychain(goKeyID);
+
+    if (publicKeyRef) {
+      publicKeyData = (__bridge NSData*)SecKeyCopyExternalRepresentation(publicKeyRef, &error);
+      if (error) {
+          NSLog(@"Error during copy of public key external representation");
+          CFRelease(error);
+      }
+      CFRelease(publicKeyRef);
+    }
 
     return publicKeyData;
 }
 
-// Delete the key pair corresponding to the keyID parameter from the keychain
+// Deletes the key pair corresponding to the keyID parameter from the keychain
 bool deleteKeyPairFromKeychain(const char *goKeyID) {
     bool ret;
     NSDictionary *queryPub = @{(id)kSecClass:              (id)kSecClassKey,
@@ -144,71 +161,19 @@ bool deleteKeyPairFromKeychain(const char *goKeyID) {
     return ret;
 }
 
-// Retrieve private key ref from the keychain.
-// If the private key is stored inside the Secure Enclave, you can't access
-// to the key value, you can only use it through a reference to decrypt and sign.
-SecKeyRef getPrivateKeyFromKeychain(const char *goKeyID) {
-    SecKeyRef privateKeyRef;
-    NSDictionary *query = @{(id)kSecClass:              (id)kSecClassKey,
-                            (id)kSecAttrLabel:          LABEL,
-                            (id)kSecAttrApplicationTag: tag(goKeyID),
-                            (id)kSecAttrCanDecrypt:     @YES,
-                            (id)kSecReturnRef:          @YES,
-                            };
-
-    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query,
-                                          (CFTypeRef *)&privateKeyRef);
-
-    [query release];
-    if (status != errSecSuccess) {
-        NSLog(@"Private key with id %s not found in keychain\n", goKeyID);
-        if (privateKeyRef) { CFRelease(privateKeyRef); };
-        return NULL;
-    }
-
-    return privateKeyRef;
-}
-
-// Retrieve public key ref from the keychain.
-// If the private key is stored inside the Secure Enclave, you can still access
-// to the corresponding public key value.
-SecKeyRef getPublicKeyFromKeychain(const char *goKeyID) {
-    SecKeyRef publicKeyRef;
-    NSDictionary *query = @{(id)kSecClass:              (id)kSecClassKey,
-                            (id)kSecAttrLabel:          LABEL,
-                            (id)kSecAttrApplicationTag: tag(goKeyID),
-                            (id)kSecAttrCanEncrypt:     @YES,
-                            (id)kSecReturnRef:          @YES,
-                            };
-
-    OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)query,
-                                          (CFTypeRef *)&publicKeyRef);
-
-    [query release];
-    if (status != errSecSuccess) {
-        NSLog(@"Public key with id %s not found in keychain\n", goKeyID);
-        if (publicKeyRef) { CFRelease(publicKeyRef); };
-        return NULL;
-    }
-
-    return publicKeyRef;
-}
-
-// Decrypt ciphertext using private key and corresponding encryption algorithm (RSA or ECC)
-NSData *decryptCiphertextUsingPrivateKey(const char *goKeyID, NSData *ciphertext, int type) {
+// Decrypts ciphertext using private key
+NSData *decryptCiphertextUsingPrivateKey(const char *goKeyID, NSData *ciphertext) {
     NSData *plaintext = NULL;
     CFErrorRef error = NULL;
     SecKeyRef privateKeyRef = getPrivateKeyFromKeychain(goKeyID);
     if (privateKeyRef) {
         bool canDecrypt = SecKeyIsAlgorithmSupported(privateKeyRef,
                                                      kSecKeyOperationTypeDecrypt,
-                                                     encAlgoType(type));
-        if (type == RSA2048 && [ciphertext length] != SecKeyGetBlockSize(privateKeyRef)) {
-            NSLog(@"Error during text decryption using key with id %s: for RSA-2048/SHA512 ciphertext length must be equal to Key Block Size\n", goKeyID);
-        } else if (canDecrypt) {
+                                                     kSecKeyAlgorithmECIESEncryptionStandardX963SHA512AESGCM);
+        if (canDecrypt) {
             plaintext = (__bridge NSData*)(SecKeyCreateDecryptedData(
                               privateKeyRef,
-                              encAlgoType(type),
+                              kSecKeyAlgorithmECIESEncryptionStandardX963SHA512AESGCM,
                               (__bridge CFDataRef)ciphertext,
                               &error)
                           );
@@ -230,9 +195,42 @@ NSData *decryptCiphertextUsingPrivateKey(const char *goKeyID, NSData *ciphertext
     return plaintext;
 }
 
+// Signs data using private key
+NSData *signDataUsingPrivateKey(const char *goKeyID, NSData *data) {
+  	NSData* signature = NULL;
+  	CFErrorRef error = NULL;
+  	SecKeyRef privateKeyRef = getPrivateKeyFromKeychain(goKeyID);
+    if (privateKeyRef) {
+        bool canSign = SecKeyIsAlgorithmSupported(privateKeyRef,
+                                                  kSecKeyOperationTypeSign,
+                                                  kSecKeyAlgorithmECDSASignatureMessageX962SHA512);
+        if (canSign) {
+          	signature = (__bridge NSData*)(SecKeyCreateSignature(
+                  					privateKeyRef,
+                            kSecKeyAlgorithmECDSASignatureMessageX962SHA512,
+                  					(__bridge CFDataRef)data,
+                  					&error)
+                				);
+
+          	if (!signature) {
+            		NSLog(@"Error during signature generation using key with id %s: %@\n", goKeyID, error);
+            		CFRelease(error);
+            }
+        } else {
+              NSLog(@"Error during signature generation using key with id %s: wrong algorithm\n", goKeyID);
+        }
+
+      	CFRelease(privateKeyRef);
+    } else {
+        NSLog(@"Can't find private key with id %s\n", goKeyID);
+    }
+
+  	return signature;
+}
+
 // TMP function for testing purpose
-// Encrypt plaintext using public key and corresponding encryption algorithm (RSA or ECC)
-NSData *encryptPlaintextUsingPublicKey(const char *goKeyID, const char *goPlaintext, int type) {
+// Encrypts plaintext using public key
+NSData *encryptPlaintextUsingPublicKey(const char *goKeyID, const char *goPlaintext) {
     NSString *plaintext = [NSString stringWithUTF8String:goPlaintext];
     CFErrorRef error = NULL;
     NSData *ciphertext = NULL;
@@ -240,13 +238,11 @@ NSData *encryptPlaintextUsingPublicKey(const char *goKeyID, const char *goPlaint
     if (publicKeyRef) {
         bool canEncrypt = SecKeyIsAlgorithmSupported(publicKeyRef,
                                                      kSecKeyOperationTypeEncrypt,
-                                                     encAlgoType(type));
-        if (type == RSA2048 && [plaintext length] > (SecKeyGetBlockSize(publicKeyRef) - 130)) {
-            NSLog(@"Error during text encryption using key with id %s: RSA-2048/SHA512 can't encrypt more bytes than Key Block Size - 130\n", goKeyID);
-        } else if (canEncrypt) {
+                                                     kSecKeyAlgorithmECIESEncryptionStandardX963SHA512AESGCM);
+        if (canEncrypt) {
             ciphertext = (__bridge NSData*)(SecKeyCreateEncryptedData(
                                                 publicKeyRef,
-                                                encAlgoType(type),
+                                                kSecKeyAlgorithmECIESEncryptionStandardX963SHA512AESGCM,
                                                 (__bridge CFDataRef)[plaintext dataUsingEncoding:NSUTF8StringEncoding],
                                                 &error)
                                             );
@@ -270,55 +266,22 @@ NSData *encryptPlaintextUsingPublicKey(const char *goKeyID, const char *goPlaint
     return ciphertext;
 }
 
-// Sign data using private key and corresponding signing algorithm (RSA or ECC)
-NSData *signDataUsingPrivateKey(const char *goKeyID, NSData *data, int type) {
-  	NSData* signature = NULL;
-  	CFErrorRef error = NULL;
-  	SecKeyRef privateKeyRef = getPrivateKeyFromKeychain(goKeyID);
-    if (privateKeyRef) {
-        bool canSign = SecKeyIsAlgorithmSupported(privateKeyRef,
-                                                  kSecKeyOperationTypeSign,
-                                                  signAlgoType(type));
-        if (canSign) {
-          	signature = (__bridge NSData*)(SecKeyCreateSignature(
-                  					privateKeyRef,
-                            signAlgoType(type),
-                  					(__bridge CFDataRef)data,
-                  					&error)
-                				);
-
-          	if (!signature) {
-            		NSLog(@"Error during signature generation using key with id %s: %@\n", goKeyID, error);
-            		CFRelease(error);
-            }
-        } else {
-              NSLog(@"Error during signature generation using key with id %s: wrong algorithm\n", goKeyID);
-        }
-
-      	CFRelease(privateKeyRef);
-    } else {
-        NSLog(@"Can't find private key with id %s\n", goKeyID);
-    }
-
-  	return signature;
-}
-
 // TMP function for testing purpose
-// Verify signature using public key and corresponding signing algorithm (RSA or ECC)
-bool verifySignatureUsingPublicKey(const char *goKeyID, NSData *data, NSData *signature, int type) {
+// Verifies signature using public key
+bool verifySignatureUsingPublicKey(const char *goKeyID, NSData *data, NSData *signature) {
     bool verification = false;
   	CFErrorRef error = NULL;
   	SecKeyRef publicKeyRef = getPublicKeyFromKeychain(goKeyID);
     if (publicKeyRef) {
       	bool canVerify = SecKeyIsAlgorithmSupported(publicKeyRef,
                                 										kSecKeyOperationTypeVerify,
-                                										signAlgoType(type));
+                                										kSecKeyAlgorithmECDSASignatureMessageX962SHA512);
         if (canVerify) {
           	verification = SecKeyVerifySignature(
                       							publicKeyRef,
-                      							signAlgoType(type),
-                      							(__bridge CFDataRef)signature,
+                      							kSecKeyAlgorithmECDSASignatureMessageX962SHA512,
                       							(__bridge CFDataRef)data,
+                      							(__bridge CFDataRef)signature,
                       							&error
                     						);
           	if (!verification) {
