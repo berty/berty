@@ -84,13 +84,14 @@ fastlane/Appfile
 fastlane/Matchfile
 
 # Gomobile
-!android/app/libs/*.aar
+mobile/android/app/libs/*.aar
+mobile/android/app/libs/*-sources.jar
 gomobile/vendor
 gomobile/bin
 gomobile/_vendor-*
 gomobile/tags
-android/libs/
-ios/libs/
+mobile/android/libs/
+mobile/ios/libs/
 
 # mobile
 shim.js

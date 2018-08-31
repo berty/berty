@@ -3,7 +3,9 @@
   "version": "0.0.1",
   "description": "Berty's react native gomobile",
   "scripts": {
-    "babel-plugin-import": "^1.8.0",
+    "build": "make build",
+    "android:build": "make android.build",
+    "ios:build": "make ios.build",
     "start": "true"
   }
 }
