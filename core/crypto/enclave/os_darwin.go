@@ -20,8 +20,6 @@ import (
 	"unsafe"
 
 	"github.com/pkg/errors"
-
-	"go.uber.org/zap"
 )
 
 // Converts NSData* from objective-c to golang []byte
@@ -64,7 +62,7 @@ func generateEnclaveKeypairECC(size uint16) (*ECCHardwareEnclave, error) {
 
 	// Try to generate a key pair within the enclave
 	if C.generateKeyPairWithinEnclave(cString) == C.bool(true) {
-		zap.L().Debug("key pair generation within the Darwin Secure Enclave succeeded")
+		logger().Debug("key pair generation within the Darwin Secure Enclave succeeded")
 		return &ECCHardwareEnclave{id: keyID}, nil
 	}
 
@@ -119,7 +117,7 @@ func signUsingEnclave(keyID string, plaintext []byte, algo KeyAlgo) ([]byte, err
 
 // Loads all reserved IDs from platform specific key store
 func buildCacheFromPlatformKeyStore() {
-	zap.L().Debug("buildCacheFromPlatformKeyStore not implemented yet")
+	logger().Debug("buildCacheFromPlatformKeyStore not implemented yet")
 }
 
 // Retrieves RSA public key PKIX representation from generic key store

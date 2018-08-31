@@ -11,7 +11,7 @@ import (
 
 func Verify(plaintext []byte, signature []byte, pubKeyBytes []byte) error {
 	err := verifyUsingHardware(plaintext, signature, pubKeyBytes)
-	if err == errors.Wrap(ErrNotImplemented, "hardware verification on this platform") {
+	if errors.Cause(err) == ErrNotImplemented {
 		err = verifyUsingSoftware(plaintext, signature, pubKeyBytes)
 	}
 
