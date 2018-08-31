@@ -196,7 +196,7 @@ jobs:
           name: gomobile android build
           command: |
             ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
-            env && cd ../../gomobile && make core.build.android
+            env && cd ../../gomobile && make android
 
       - restore_cache:
           key: android-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/android/Gemfile.lock" }}
@@ -273,7 +273,7 @@ jobs:
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
           command: |
             ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
-            make core.build.ios
+            make ios
 
       - restore_cache:
           key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/ios/Gemfile.lock" }}-3
