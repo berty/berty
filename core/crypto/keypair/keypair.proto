@@ -42,7 +42,6 @@ enum SignatureAlgorithm {
     SHA512_WITH_RSAPSS = 15;
 }
 
-
 message Signature {
     bytes signature = 1;
     SignatureAlgorithm signature_algorithm = 2;

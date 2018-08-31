@@ -95,7 +95,7 @@ func (c *InsecureCrypto) Sign(message []byte) ([]byte, error) {
 	return signature, nil
 }
 
-func (c *InsecureCrypto) Encrypt(message []byte, pubKeyBytes []byte) ([]byte, error) {
+func /*(c *InsecureCrypto)*/ Encrypt(message []byte, pubKeyBytes []byte) ([]byte, error) {
 	pubKey, err := x509.ParsePKIXPublicKey(pubKeyBytes)
 
 	if err != nil {
