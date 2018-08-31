@@ -1,4 +1,4 @@
-package enclave
+package public
 
 import "github.com/pkg/errors"
 
