@@ -95,6 +95,8 @@ generate_local: $(GENERATED_FILES)
 .PHONY: _ci_prepare
 _ci_prepare:
 	@# touching files to avoid regenerating files based on modification date
+	touch $(PROTOS) $(SOURCES)
+	sleep 1
 	touch .generated
 
 .PHONY: dev-deps
