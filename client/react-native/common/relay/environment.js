@@ -1,7 +1,6 @@
 import { Environment, Network, RecordSource, Store } from 'relay-runtime'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { Platform, NativeModules } from 'react-native'
-import { NetworkInfo } from 'react-native-network-info'
 
 // @TODO: patch web CoreModule
 if (Platform.OS === 'web') {
@@ -33,15 +32,20 @@ const { CoreModule } = NativeModules
 //      }
 //    }
 //    xhr.send(body)
-//  })i
+//  })
 
 let getIP = () =>
-  new Promise(
-    resolve =>
-      __DEV__ // eslint-disable-line
-        ? NetworkInfo.getIPV4Address(ip => resolve(ip))
+  new Promise(resolve => {
+    if (Platform.OS === 'web') {
+      return window.location.hostname
+    } else {
+      return __DEV__ // eslint-disable-line
+        ? require('react-native-network-info').NetworkInfo.getIPV4Address(ip =>
+          resolve(ip)
+        )
         : resolve('0.0.0.0')
-  )
+    }
+  })
 
 const fetchQuery = async (operation, variables) => {
   try {
