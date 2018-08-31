@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 func generateSoftwareKeypairRSA(size uint16) (*RSASoftwareEnclave, error) {
@@ -18,7 +17,7 @@ func generateSoftwareKeypairRSA(size uint16) (*RSASoftwareEnclave, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "key pair generation failed")
 	}
-	zap.L().Debug(fmt.Sprintf("software RSA-%d key pair generated successfully", size))
+	logger().Debug(fmt.Sprintf("software RSA-%d key pair generated successfully", size))
 
 	_, err = x509.MarshalPKIXPublicKey(&keyPairRSA.PublicKey)
 	if err != nil {

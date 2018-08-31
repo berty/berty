@@ -47,7 +47,7 @@ func reserveID(keyStore string) (string, error) {
 	}
 
 	cacheReservedID[keyID] = keyStore
-	zap.L().Debug("ID has been reserved and added to cache map", zap.String("id", keyID))
+	logger().Debug("ID has been reserved and added to cache map", zap.String("id", keyID))
 
 	return keyID, nil
 }
@@ -60,7 +60,7 @@ func freeID(keyID string) error {
 	}
 
 	delete(cacheReservedID, keyID)
-	zap.L().Debug("reserved keyID id has been removed from the cache", zap.String("id", keyID))
+	logger().Debug("reserved keyID id has been removed from the cache", zap.String("id", keyID))
 
 	return nil
 }

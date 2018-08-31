@@ -3,9 +3,7 @@
 package enclave
 
 import (
-	"errors"
-
-	"go.uber.org/zap"
+	"github.com/pkg/errors"
 )
 
 // Generates RSA enclave key pair using platform specific API
@@ -30,7 +28,7 @@ func signUsingEnclave(keyID string, plaintext []byte, algo KeyAlgo) ([]byte, err
 
 // Loads all reserved IDs from platform specific key store
 func buildCacheFromPlatformKeyStore() {
-	zap.L().Debug("buildCacheFromPlatformKeyStore not implemented yet")
+	logger().Debug("buildCacheFromPlatformKeyStore not implemented yet")
 }
 
 // Loads key pair from platform specific key store
@@ -41,13 +39,12 @@ func loadFromPlatformKeyStore(keyID string, keyAlgo KeyAlgo) (Keypair, error) {
 			return &RSAHardwareEnclave{id: keyID}, nil
 		}
 		return nil, errors.New("can't retrieve this key pair from Android key store")
-	} else {
-		_, err := getECCPubKeyPKIXFromPlatformKeyStore(keyID)
-		if err == nil {
-			return &ECCHardwareEnclave{id: keyID}, nil
-		}
-		return nil, errors.New("can't retrieve this key pair from Android key store")
 	}
+	_, err := getECCPubKeyPKIXFromPlatformKeyStore(keyID)
+	if err == nil {
+		return &ECCHardwareEnclave{id: keyID}, nil
+	}
+	return nil, errors.New("can't retrieve this key pair from Android key store")
 }
 
 // Retrieves RSA public key PKIX representation from generic key store
