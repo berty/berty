@@ -1,181 +1,224 @@
 package enclave
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
+	"fmt"
+	"strings"
 
 	"github.com/berty/berty/core/crypto/keypair"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
-// KeyOpts is a struct that hold options for key generation
-type KeyOpts struct {
-	Type KeyType // Mandatory
-	Size uint32
+// NewKeyOpts is a struct that hold options for key generation
+type NewKeyOpts struct {
+	Algo KeyAlgo
+	Size uint16
 }
 
-// KeyType can be either RSA-2048 or ECC-256
-type KeyType int
+// KeyAlgo can be either RSA or ECC
+type KeyAlgo uint8
 
-// Pseudo-enum with different KeyType
+// Pseudo-enum containing all KeyAlgo values
 const (
-	UnknownKeyType KeyType = iota
-	RSA2048
-	ECC256
+	UnknownKeyAlgo KeyAlgo = iota
+	RSA
+	ECC
 )
 
-// KeyStore define if key pair is managed through software or platform specific API (such as Apple Secure Enclave)
-type KeyStore int
-
-// Pseudo-enum with different KeyStore
-const (
-	UnknownKeyStore KeyStore = iota
-	Hardware
-	Software
-)
-
-type Enclave interface {
+// Keypair interface extends keypair.Interface methods
+type Keypair interface {
 	keypair.Interface
-	ID() string
+	ID() string   // id used to load the enclave keypair without knowing its private key content
+	IsSafe() bool // is it safe against private key retrieval
 }
 
-// New returns an instance that implements keypair.Interface
-func New(opts KeyOpts) (keypair.Interface, error) {
-	if opts.Size == 0 {
-		opts.Size = 4096 // default value
+// New returns an instance that implements Enclave interface
+func New(opts NewKeyOpts) (Keypair, error) {
+	// Set default values
+	if opts.Algo == UnknownKeyAlgo {
+		opts.Algo = RSA
 	}
-	if opts.Type == UnknownKeyType {
-		opts.Type = RSA2048
+	if opts.Size == 0 && opts.Algo == RSA {
+		opts.Size = 4096
+	} else if opts.Size == 0 && opts.Algo == ECC {
+		opts.Size = 256
 	}
 
-	switch opts.Type {
-	case ECC256:
+	switch opts.Algo {
+	case ECC:
 		driver, err := NewECCHardwareEnclave(opts.Size)
 		if err == nil {
 			return driver, nil
 		}
 		return NewECCSoftwareEnclave(opts.Size)
-	case RSA2048:
+	case RSA:
 		driver, err := NewRSAHardwareEnclave(opts.Size)
 		if err == nil {
 			return driver, nil
 		}
 		return NewRSASoftwareEnclave(opts.Size)
 	default:
-		return nil, ErrUnsupportedKeyType
+		return nil, ErrUnsupportedKeyAlgo
 	}
 }
 
+// Checks if keyID is valid and return fields slice
+func splitKeyID(keyID string) []string {
+	fields := strings.Split(keyID, ":")
+	if len(fields) == 3 {
+		if (fields[0] == "rsa" || fields[0] == "ecc") &&
+			(fields[1] == "safe" || fields[1] == "unsafe") {
+			return fields
+		}
+	}
+
+	return nil
+}
+
+// Load loads an Enclave using keyID
+func Load(keyID string) (Keypair, error) {
+	fields := splitKeyID(keyID)
+	if fields == nil {
+		return nil, errors.New("wrong keyID format")
+	}
+
+	if fields[0] == "rsa" {
+		if fields[1] == "safe" {
+			return loadFromPlatformKeyStore(fields[3], RSA)
+		}
+		return loadFromGenericKeyStore(fields[3], RSA)
+	}
+	if fields[1] == "safe" {
+		return loadFromPlatformKeyStore(fields[3], ECC)
+	}
+	return loadFromGenericKeyStore(fields[3], ECC)
+}
+
+// Remove removes an Enclave using keyID
+func Remove(keyID string) error {
+	fields := splitKeyID(keyID)
+	if fields == nil {
+		return errors.New("wrong keyID format")
+	}
+
+	if fields[1] == "safe" {
+		return removeFromPlatformKeyStore(keyID)
+	}
+	return removeFromGenericKeyStore(keyID)
+}
+
 //
 
-type RSAHardwareEnclave struct{}
-
-func NewRSAHardwareEnclave(size uint32) (*RSAHardwareEnclave, error) { return nil, ErrNotImplemented }
-
-func (e *RSAHardwareEnclave) ID() string { return "42" }
-
-func (e *RSAHardwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
-	return keypair.SignatureAlgorithm_SHA256_WITH_RSA
+type RSAHardwareEnclave struct {
+	id string
 }
+
+func NewRSAHardwareEnclave(size uint16) (*RSAHardwareEnclave, error) {
+	return generateEnclaveKeypairRSA(size)
+}
+
+func (e *RSAHardwareEnclave) ID() string   { return fmt.Sprintf("rsa:safe:%s", e.id) }
+func (e *RSAHardwareEnclave) IsSafe() bool { return true }
 func (e *RSAHardwareEnclave) PublicKeyAlgorithm() keypair.PublicKeyAlgorithm {
 	return keypair.PublicKeyAlgorithm_RSA
 }
-
-func (e *RSAHardwareEnclave) Sign(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
-func (e *RSAHardwareEnclave) Encrypt(message []byte, pubKey []byte) ([]byte, error) {
-	return nil, ErrNotImplemented
+func (e *RSAHardwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
+	return keypair.SignatureAlgorithm_SHA512_WITH_RSA
 }
-func (e *RSAHardwareEnclave) Decrypt(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
-func (e *RSAHardwareEnclave) GetPubKey() ([]byte, error)             { return nil, ErrNotImplemented }
+func (e *RSAHardwareEnclave) GetPubKey() ([]byte, error) {
+	return getRSAPubKeyPKIXFromPlatformKeyStore(e.id)
+}
+
+func (e *RSAHardwareEnclave) Decrypt(ciphertext []byte) ([]byte, error) {
+	return decryptUsingEnclave(e.id, ciphertext, RSA)
+}
+func (e *RSAHardwareEnclave) Sign(plaintext []byte) ([]byte, error) {
+	return signUsingEnclave(e.id, plaintext, RSA)
+}
 
 //
 
-type ECCHardwareEnclave struct{}
-
-func NewECCHardwareEnclave(size uint32) (*ECCHardwareEnclave, error) { return nil, ErrNotImplemented }
-
-func (e *ECCHardwareEnclave) ID() string { return "42" }
-
-func (e *ECCHardwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
-	return keypair.SignatureAlgorithm_ECDSA_WITH_SHA256
+type ECCHardwareEnclave struct {
+	id string
 }
+
+func NewECCHardwareEnclave(size uint16) (*ECCHardwareEnclave, error) {
+	return generateEnclaveKeypairECC(size)
+}
+
+func (e *ECCHardwareEnclave) ID() string   { return fmt.Sprintf("ecc:safe:%s", e.id) }
+func (e *ECCHardwareEnclave) IsSafe() bool { return true }
 func (e *ECCHardwareEnclave) PublicKeyAlgorithm() keypair.PublicKeyAlgorithm {
 	return keypair.PublicKeyAlgorithm_ECDSA
 }
-
-func (e *ECCHardwareEnclave) Sign(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
-func (e *ECCHardwareEnclave) Encrypt(message []byte, pubKey []byte) ([]byte, error) {
-	return nil, ErrNotImplemented
+func (e *ECCHardwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
+	return keypair.SignatureAlgorithm_ECDSA_WITH_SHA512
 }
-func (e *ECCHardwareEnclave) Decrypt(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
-func (e *ECCHardwareEnclave) GetPubKey() ([]byte, error)             { return nil, ErrNotImplemented }
+func (e *ECCHardwareEnclave) GetPubKey() ([]byte, error) {
+	return getECCPubKeyPKIXFromPlatformKeyStore(e.id)
+}
+
+func (e *ECCHardwareEnclave) Decrypt(ciphertext []byte) ([]byte, error) {
+	return decryptUsingEnclave(e.id, ciphertext, ECC)
+}
+func (e *ECCHardwareEnclave) Sign(plaintext []byte) ([]byte, error) {
+	return signUsingEnclave(e.id, plaintext, ECC)
+}
 
 //
 
 type RSASoftwareEnclave struct {
-	privKey *rsa.PrivateKey
-	id      string
+	id string
 }
 
-func NewRSASoftwareEnclave(size uint32) (*RSASoftwareEnclave, error) {
-	// Generate a random RSA key pair
-	keyPairRSA, err := rsa.GenerateKey(rand.Reader, int(size))
-	if err != nil {
-		return nil, errors.Wrap(err, "error during key pair generation")
-	}
-	zap.L().Debug("software RSA-2048 key pair generated successfully")
-
-	kp := &RSASoftwareEnclave{
-		privKey: keyPairRSA,
-	}
-
-	keyId, err := storeInKeyPairsMap(kp)
-	if err != nil {
-		return nil, err
-	}
-	kp.id = keyId
-
-	return kp, nil
+func NewRSASoftwareEnclave(size uint16) (*RSASoftwareEnclave, error) {
+	return generateSoftwareKeypairRSA(size)
 }
 
-func (e *RSASoftwareEnclave) ID() string { return "42" }
-
-func (e *RSASoftwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
-	return keypair.SignatureAlgorithm_SHA256_WITH_RSA
-}
+func (e *RSASoftwareEnclave) ID() string   { return fmt.Sprintf("rsa:unsafe:%s", e.id) }
+func (e *RSASoftwareEnclave) IsSafe() bool { return false }
 func (e *RSASoftwareEnclave) PublicKeyAlgorithm() keypair.PublicKeyAlgorithm {
 	return keypair.PublicKeyAlgorithm_RSA
 }
-
-func (e *RSASoftwareEnclave) Sign(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
-func (e *RSASoftwareEnclave) Encrypt(message []byte, pubKey []byte) ([]byte, error) {
-	return nil, ErrNotImplemented
+func (e *RSASoftwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
+	return keypair.SignatureAlgorithm_SHA512_WITH_RSA
 }
-func (e *RSASoftwareEnclave) Decrypt(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
 func (e *RSASoftwareEnclave) GetPubKey() ([]byte, error) {
-	return x509.MarshalPKIXPublicKey(e.privKey.Public())
+	return getRSAPubKeyPKIXFromGenericKeyStore(e.id)
+}
+
+func (e *RSASoftwareEnclave) Decrypt(ciphertext []byte) ([]byte, error) {
+	return decryptUsingSoftwareRSA(ciphertext, e.id)
+}
+
+func (e *RSASoftwareEnclave) Sign(plaintext []byte) ([]byte, error) {
+	return signUsingSoftwareRSA(plaintext, e.id)
 }
 
 //
 
-type ECCSoftwareEnclave struct{}
-
-func NewECCSoftwareEnclave(size uint32) (*ECCSoftwareEnclave, error) { return nil, ErrNotImplemented }
-
-func (e *ECCSoftwareEnclave) ID() string { return "42" }
-
-func (e *ECCSoftwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
-	return keypair.SignatureAlgorithm_ECDSA_WITH_SHA256
+type ECCSoftwareEnclave struct {
+	id string
 }
+
+func NewECCSoftwareEnclave(size uint16) (*ECCSoftwareEnclave, error) {
+	return generateSoftwareKeypairECC(size)
+}
+
+func (e *ECCSoftwareEnclave) ID() string   { return fmt.Sprintf("ecc:unsafe:%s", e.id) }
+func (e *ECCSoftwareEnclave) IsSafe() bool { return false }
 func (e *ECCSoftwareEnclave) PublicKeyAlgorithm() keypair.PublicKeyAlgorithm {
 	return keypair.PublicKeyAlgorithm_ECDSA
 }
-
-func (e *ECCSoftwareEnclave) Sign(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
-func (e *ECCSoftwareEnclave) Encrypt(message []byte, pubKey []byte) ([]byte, error) {
-	return nil, ErrNotImplemented
+func (e *ECCSoftwareEnclave) SignatureAlgorithm() keypair.SignatureAlgorithm {
+	return keypair.SignatureAlgorithm_ECDSA_WITH_SHA512
 }
-func (e *ECCSoftwareEnclave) Decrypt(message []byte) ([]byte, error) { return nil, ErrNotImplemented }
-func (e *ECCSoftwareEnclave) GetPubKey() ([]byte, error)             { return nil, ErrNotImplemented }
+func (e *ECCSoftwareEnclave) GetPubKey() ([]byte, error) {
+	return getECCPubKeyPKIXFromGenericKeyStore(e.id)
+}
+
+func (e *ECCSoftwareEnclave) Decrypt(ciphertext []byte) ([]byte, error) {
+	return decryptUsingSoftwareECC(ciphertext, e.id)
+}
+func (e *ECCSoftwareEnclave) Sign(plaintext []byte) ([]byte, error) {
+	return signUsingSoftwareECC(plaintext, e.id)
+}

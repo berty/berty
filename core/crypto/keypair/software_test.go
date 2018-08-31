@@ -25,7 +25,7 @@ func TestFlow(t *testing.T) {
 	cryptoImpl2 := InsecureCrypto{}
 	cryptoImpl2.SetPrivateKeyData(privBytes2)
 
-	encryptedMessage, err := cryptoImpl1.Encrypt(message, pubBytes2)
+	encryptedMessage, err := Encrypt(message, pubBytes2)
 
 	if err != nil {
 		t.Errorf("unable to encrypt message : %s", err)
@@ -35,7 +35,7 @@ func TestFlow(t *testing.T) {
 		t.Errorf("message is not encrypted")
 	}
 
-	decryptedMessage, err := cryptoImpl2.Encrypt(message, pubBytes2)
+	decryptedMessage, err := Encrypt(message, pubBytes2)
 
 	if err != nil {
 		t.Errorf("unable to decrypt message : %s", err)

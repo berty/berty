@@ -18,7 +18,6 @@ type Interface interface {
 	PublicKeyAlgorithm() PublicKeyAlgorithm
 
 	Sign(message []byte) ([]byte, error)
-	Encrypt(message []byte, pubKey []byte) ([]byte, error)
 	Decrypt(message []byte) ([]byte, error)
 	GetPubKey() ([]byte, error)
 }

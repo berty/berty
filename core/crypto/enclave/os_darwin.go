@@ -16,9 +16,15 @@ void freeData(NSData *data) { [data release]; }
 NSData *convertBytesToNSData(void *bytes, int length) { return [NSData dataWithBytes:bytes length:length]; }
 */
 import "C"
+import (
+	"unsafe"
 
-/*
-// Convert NSData* from objective-c to golang []byte
+	"github.com/pkg/errors"
+
+	"go.uber.org/zap"
+)
+
+// Converts NSData* from objective-c to golang []byte
 func byteSliceFromNSData(data *C.NSData) []byte {
 	if data == nil {
 		return []byte{}
@@ -34,116 +40,141 @@ func byteSliceFromNSData(data *C.NSData) []byte {
 	return goData
 }
 
-// Convert []byte from golang to objective-c NSData*
+// Converts []byte from golang to objective-c NSData*
 func byteSliceToNSData(data []byte) *C.NSData {
 	return C.convertBytesToNSData(unsafe.Pointer(&data[0]), C.int(len(data)))
 }
 
-// Generate enclave key pair using platform specific API
-func newKeyPairEnclave(options KeyOpts) (keyID string, err error) {
-	// Reserve keyID in keyPairs map
-	keyID, err = storeInKeyPairsMap(options, keyPair{})
+// Generates RSA enclave key pair using platform specific API
+func generateEnclaveKeypairRSA(size uint16) (*RSAHardwareEnclave, error) {
+	return nil, errors.Wrap(ErrNotImplementable, "RSA key generation within Darwin Secure Enclave")
+}
+
+// Generates ECC enclave key pair using platform specific API
+func generateEnclaveKeypairECC(size uint16) (*ECCHardwareEnclave, error) {
+	// Reserve keyID in cache
+	keyID, err := reserveID("ecc:safe")
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	// Convert Golang string keyID to a C string then defer freeing it
 	cString := C.CString(keyID)
 	defer C.free(unsafe.Pointer(cString))
 
-	// Generate a key pair according to the options parameter (within enclave or keychain)
-	var (
-		keyPair keyPair
-		pubKey  []byte
-	)
-
-	// Generate a key pair within the keychain within the enclave
-	if options.Type == ECC256 || options.TypeFallback {
-		pubKey = byteSliceFromNSData(C.generateKeyPairWithinEnclave(cString))
-		if len(pubKey) > 0 {
-			keyPair.keyType = ECC256
-			zap.L().Debug("key pair generation within the Darwin Secure Enclave succeeded")
-		}
+	// Try to generate a key pair within the enclave
+	if C.generateKeyPairWithinEnclave(cString) == C.bool(true) {
+		zap.L().Debug("key pair generation within the Darwin Secure Enclave succeeded")
+		return &ECCHardwareEnclave{id: keyID}, nil
 	}
 
-	// Generate a key pair within the keychain without the enclave
+	// If generation failed, free reserved ID
+	err = freeID(keyID)
+	if err != nil {
+		return nil, errors.Wrap(err, "key generation within Darwin Secure Enclave failed")
+	}
+
+	return nil, errors.New("key generation within Darwin Secure Enclave failed")
+}
+
+// Decrypts ciphertext using specific platform API
+func decryptUsingEnclave(keyID string, ciphertext []byte, algo KeyAlgo) ([]byte, error) {
+	// Convert Golang string keyID to a C string then defer freeing it
+	cString := C.CString(keyID)
+	defer C.free(unsafe.Pointer(cString))
+
+	// Convert Golang byte slice ciphertext to NSData* then defer freeing it
+	cData := byteSliceToNSData(ciphertext)
+	defer C.freeData(cData)
+
+	// Call objective-c function to decrypt using safely stored private key
+	plaintext := byteSliceFromNSData(C.decryptCiphertextUsingPrivateKey(cString, cData))
+
+	if len(plaintext) == 0 {
+		return nil, errors.New("text decryption using Darwin Secure Enclave failed")
+	}
+
+	return plaintext, nil
+}
+
+// Signs text using platform specific API
+func signUsingEnclave(keyID string, plaintext []byte, algo KeyAlgo) ([]byte, error) {
+	// Convert Golang string keyID to a C string then defer freeing it
+	cString := C.CString(keyID)
+	defer C.free(unsafe.Pointer(cString))
+
+	// Convert Golang byte slice plaintext to NSData* then defer freeing it
+	cData := byteSliceToNSData(plaintext)
+	defer C.freeData(cData)
+
+	// Call objective-c function to decrypt using safely stored private key
+	signature := byteSliceFromNSData(C.signDataUsingPrivateKey(cString, cData))
+
+	if len(signature) == 0 {
+		return nil, errors.New("signature verification using Darwin Secure Enclave failed")
+	}
+
+	return signature, nil
+}
+
+// Loads all reserved IDs from platform specific key store
+func buildCacheFromPlatformKeyStore() {
+	zap.L().Debug("buildCacheFromPlatformKeyStore not implemented yet")
+}
+
+// Retrieves RSA public key PKIX representation from generic key store
+func getRSAPubKeyPKIXFromPlatformKeyStore(keyID string) ([]byte, error) {
+	// Technically we could stores RSA key pair inside the keychain,
+	// but since RSA is incompatible with Secure Enclave, we wont do it
+	return nil, errors.Wrap(ErrNotImplementable, "RSA key generation within Darwin Secure Enclave")
+}
+
+// Retrieves ECC public key PKIX representation from generic key store
+func getECCPubKeyPKIXFromPlatformKeyStore(keyID string) ([]byte, error) {
+	// Convert Golang string keyID to a C string then defer freeing it
+	cString := C.CString(keyID)
+	defer C.free(unsafe.Pointer(cString))
+
+	// Check if public key with specified keyID exists in keychain
+	pubKey := byteSliceFromNSData(C.getPublicKeyX963Representation(cString))
 	if len(pubKey) == 0 {
-		pubKey = byteSliceFromNSData(C.generateKeyPairWithoutEnclave(cString, C.int(options.Type)))
-		if len(pubKey) > 0 {
-			keyPair.keyType = options.Type
-			zap.L().Debug("key pair generation within the Darwin keychain succeeded")
-		} else {
-			err = RemoveFromKeyPairsMap(keyID)
-			return "", errors.Wrap(err, "error during key generation with Darwin API")
+		return nil, errors.New("can't retrieve this keyID in keychain")
+	}
+
+	return pubKey, nil
+}
+
+// Loads key pair from platform specific key store
+func loadFromPlatformKeyStore(keyID string, keyAlgo KeyAlgo) (Keypair, error) {
+	if keyAlgo == RSA {
+		_, err := getRSAPubKeyPKIXFromPlatformKeyStore(keyID)
+		if err == nil {
+			return &RSAHardwareEnclave{id: keyID}, nil
 		}
+		return nil, errors.New("can't retrieve this key pair from Darwin key store")
 	}
-
-	if keyPair.keyType == RSA2048 {
-		var rsaPubKey *rsa.PublicKey
-		rsaPubKey, err = x509.ParsePKCS1PublicKey(pubKey)
-		if err != nil {
-			err = RemoveFromKeyPairsMap(keyID)
-			return "", errors.Wrap(err, "error during key generation with Darwin API")
-		}
-		keyPair.pubKey = rsaPubKey
+	_, err := getECCPubKeyPKIXFromPlatformKeyStore(keyID)
+	if err == nil {
+		return &ECCHardwareEnclave{id: keyID}, nil
 	}
-	keyPair.keyStore = Enclave
-	keyPairs[keyID] = keyPair
-
-	return
+	return nil, errors.New("can't retrieve this key pair from Darwin key store")
 }
 
-// Decrypt ciphertext using specific platform API
-func decryptEnclave(keyID string, cipherText []byte) (plainText []byte, err error) {
-	// Convert Golang string keyID to a C string then defer freeing it
-	cString := C.CString(keyID)
-	defer C.free(unsafe.Pointer(cString))
-
-	// Convert Golang byte slice cipherText to NSData* then defer freeing it
-	cData := byteSliceToNSData(cipherText)
-	defer C.freeData(cData)
-
-	// Call objective-c function to decrypt using safely stored private key
-	plainText = byteSliceFromNSData(C.decryptCiphertextUsingPrivateKey(cString, cData, C.int(keyPairs[keyID].keyType)))
-
-	if len(plainText) == 0 {
-		err = errors.New("error during text decryption using Darwin API")
+// Removes key pair from platform specific key store
+func removeFromPlatformKeyStore(keyID string) error {
+	// Check if keyID exists in cache
+	if !isKeyIDReserved(keyID) {
+		return errors.New("keyID doesn't exist")
 	}
 
-	return
-}
-
-// Sign text using platform specific API
-func signEnclave(keyID string, plainText []byte) (signature []byte, err error) {
-	// Convert Golang string keyID to a C string then defer freeing it
-	cString := C.CString(keyID)
-	defer C.free(unsafe.Pointer(cString))
-
-	// Convert Golang byte slice plainText to NSData* then defer freeing it
-	cData := byteSliceToNSData(plainText)
-	defer C.freeData(cData)
-
-	// Call objective-c function to decrypt using safely stored private key
-	signature = byteSliceFromNSData(C.signDataUsingPrivateKey(cString, cData, C.int(keyPairs[keyID].keyType)))
-
-	if len(plainText) == 0 {
-		err = errors.New("error during text decryption using Darwin API")
-	}
-
-	return
-}
-
-// Remove key pair from keychain
-func removeFromEnclave(keyID string) error {
 	// Convert Golang string keyID to a C string then defer freeing it
 	cString := C.CString(keyID)
 	defer C.free(unsafe.Pointer(cString))
 
 	// Delete key pair from keychain
 	if C.deleteKeyPairFromKeychain(cString) != C.bool(true) {
-		return errors.New("error during keychain deletion")
+		return errors.New("keychain deletion failed")
 	}
 
-	return nil
+	return freeID(keyID)
 }
-*/
