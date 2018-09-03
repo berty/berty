@@ -30,6 +30,61 @@ const genContacts = (
     displayName: dn,
   }))
 
+const Button = ({ height, width, onPress, children }) => (
+  <TouchableOpacity
+    style={{
+      height,
+      width,
+      backgroundColor: 'black',
+      borderRadius: 24,
+    }}
+    onPress={onPress}
+  >
+    <Text style={[{ height }]} middle center icon='plus' color={colors.white}>
+      {children}
+    </Text>
+  </TouchableOpacity>
+)
+
+const Header = ({ navigation }) => (
+  <Flex.Rows
+    size={1}
+    style={[
+      { backgroundColor: colors.white, height: 100 },
+      borderBottom,
+      padding,
+    ]}
+  >
+    <Flex.Cols size={1} align='center' space='between'>
+      <Text icon='feather-users' large color={colors.black}>
+        Contacts
+      </Text>
+      <Button
+        icon='plus'
+        height={30}
+        width={65}
+        onPress={() => navigation.push('Add')}
+      >
+        Add
+      </Button>
+    </Flex.Cols>
+    <TextInput
+      style={[
+        {
+          height: 36,
+          backgroundColor: colors.grey7,
+          borderWidth: 0,
+          borderRadius: 18,
+        },
+        marginTop,
+        paddingLeft,
+        paddingRight,
+      ]}
+      placeholder='Search'
+    />
+  </Flex.Rows>
+)
+
 const Item = ({
   data: { id, displayName, overrideDisplayName },
   navigation,
@@ -59,39 +114,7 @@ const Item = ({
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Flex.Rows
-        size={1}
-        style={[
-          { backgroundColor: colors.white, height: 100 },
-          borderBottom,
-          padding,
-        ]}
-      >
-        <Flex.Cols size={1} align='center' space='between'>
-          <Text icon='feather-users' large color={colors.black}>
-            Contacts
-          </Text>
-          <Text icon='plus' background={colors.black} rounded='circle'>
-            Add
-          </Text>
-        </Flex.Cols>
-        <TextInput
-          style={[
-            {
-              height: 36,
-              backgroundColor: colors.grey7,
-              borderWidth: 0,
-              borderRadius: 18,
-            },
-            marginTop,
-            paddingLeft,
-            paddingRight,
-          ]}
-          placeholder='Search'
-        />
-      </Flex.Rows>
-    ),
+    header: <Header navigation={navigation} />,
   })
   render () {
     const { navigation } = this.props

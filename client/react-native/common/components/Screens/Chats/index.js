@@ -8,6 +8,6 @@ export default createStackNavigator(
     Detail,
   },
   {
-    initialHomeName: 'List',
+    initialRouteName: 'List',
   }
 )

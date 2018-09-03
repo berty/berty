@@ -117,6 +117,15 @@ const getColor = ({ background, color }) => ({
 
 const getWeight = props => props.bold && bold
 
+const getJustify = (
+  props,
+  justify = {
+    center: 'center',
+    left: 'flex-start',
+    right: 'flex-end',
+  }
+) => find({ inside: props, from: justify, or: 'center' })
+
 export const BackgroundText = props => {
   const { background, children } = props
   return (
@@ -148,9 +157,14 @@ export const ForegroundText = props => {
     getWeight(props),
     getColor(props),
   ]
-  console.log(size)
+
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: getJustify(props),
+      }}
+    >
       {icon && typeof icon === 'string' ? (
         <Icon
           name={icon}
