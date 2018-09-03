@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   largeText: {
     lineHeight: 23,
-    fontSize: 19,
+    fontSize: 18,
     textAlign: 'center',
     color: colors.textGrey,
   },
