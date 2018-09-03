@@ -55,11 +55,11 @@ const getPadding = (
 const getBorderRadius = (
   props,
   radiuses = {
-    tiny: 2,
-    small: 3,
-    medium: 4,
-    large: 5,
-    big: 6,
+    tiny: props.rounded === 'circle' ? 10 : 2,
+    small: props.rounded === 'circle' ? 14 : 3,
+    medium: props.rounded === 'circle' ? 16 : 4,
+    large: props.rounded === 'circle' ? 18 : 5,
+    big: props.rounded === 'cirecle' ? 25 : 6,
   }
 ) => {
   const borderRadius = props.rounded
@@ -148,6 +148,7 @@ export const ForegroundText = props => {
     getWeight(props),
     getColor(props),
   ]
+  console.log(size)
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
       {icon && typeof icon === 'string' ? (
@@ -171,6 +172,7 @@ export const ForegroundText = props => {
 }
 
 export const Text = props => {
+  console.log(props)
   props = reverse(props)
   const { background } = props
   return background ? (

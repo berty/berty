@@ -1,56 +1,74 @@
 import React from 'react'
 import { View } from 'react-native'
 
+const getDirection = (key, directions = { rows: 'column', cols: 'row' }) =>
+  directions[key] || null
+
+const getAlign = (
+  key,
+  align = {
+    top: 'flex-start',
+    left: 'flex-start',
+    right: 'flex-end',
+    bottom: 'flex-end',
+    center: 'center',
+    stretch: 'stretch',
+  }
+) => align[key] || align['center']
+
+const getSpace = (
+  key,
+  space = {
+    start: 'flex-start',
+    center: 'center',
+    end: 'flex-end',
+    around: 'space-around',
+    between: 'space-between',
+    evenly: 'space-evenly',
+  }
+) => space[key] || space['center']
+
 export const Block = ({
-  flex,
-  flexDirection,
-  alignItems,
-  alignSelf,
-  justifyContent,
-  children = null,
-  style = {},
+  size = 1,
+  direction,
+  align,
+  self,
+  space,
+  children,
+  style,
   ...props
-}) => (
-  <View
-    style={[
-      { flex, flexDirection, alignItems, alignSelf, justifyContent },
-      style,
-    ]}
-    {...props}
-  >
-    {children}
-  </View>
+}) =>
+  console.log(props) || (
+    <View
+      style={[
+        {
+          flex: size,
+          flexDirection: direction && getDirection(direction),
+          alignItems: align && getAlign(align),
+          alignSelf: self && getAlign(self),
+          justifyContent: space && getSpace(space),
+        },
+        style,
+      ]}
+      {...props}
+    >
+      {children}
+    </View>
+  )
+
+export const Grid = props => <Block {...props} />
+
+export const Rows = ({ direction, ...props }) => (
+  <Block direction='rows' {...props} />
 )
 
-export const Grid = props => (
-  <Block
-    flexDirection={'column'}
-    alignItems={'center'}
-    justifyContent={'space-between'}
-    {...props}
-  />
-)
-
-export const Row = ({ flexDirection, ...props }) => (
-  <Block
-    flexDirection={'row'}
-    alignItems={'center'}
-    justifyContent={'space-between'}
-    {...props}
-  />
-)
-
-export const Col = props => (
-  <Block
-    flexDirection={'column'}
-    alignItems={'center'}
-    justifyContent={'space-between'}
-    {...props}
-  />
+export const Cols = ({ direction, ...props }) => (
+  <Block direction='cols' {...props} />
 )
 
 export default {
   Grid,
-  Row,
-  Col,
+  Rows,
+  Cols,
+  Block,
 }
