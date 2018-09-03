@@ -11,3 +11,6 @@ gin-bin
 
 # emacs
 .projectile
+
+# sub projects
+/depviz/
