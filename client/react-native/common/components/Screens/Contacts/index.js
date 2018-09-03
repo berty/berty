@@ -12,6 +12,6 @@ export default createStackNavigator(
     Edit,
   },
   {
-    initialHomeName: 'List',
+    initialRouteName: 'List',
   }
 )
