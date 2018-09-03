@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { FlatList, TouchableOpacity, TextInput } from 'react-native'
-import { Screen, Flex, Text, Separator } from '../../Library'
+import { Screen, Flex, Text, Separator, Button } from '../../Library'
 import { colors } from '../../../constants'
 import {
   marginLeft,
@@ -29,22 +29,6 @@ const genContacts = (
     id: k.toString(),
     displayName: dn,
   }))
-
-const Button = ({ height, width, onPress, children }) => (
-  <TouchableOpacity
-    style={{
-      height,
-      width,
-      backgroundColor: 'black',
-      borderRadius: 24,
-    }}
-    onPress={onPress}
-  >
-    <Text style={[{ height }]} middle center icon='plus' color={colors.white}>
-      {children}
-    </Text>
-  </TouchableOpacity>
-)
 
 const Header = ({ navigation }) => (
   <Flex.Rows

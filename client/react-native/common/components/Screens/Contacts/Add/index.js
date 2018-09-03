@@ -5,9 +5,9 @@ import ByPublicKey from './ByPublicKey'
 import ByQRCode from './ByQRCode'
 
 import React from 'react'
-import { TouchableOpacity } from 'react-native'
-import { Text } from '../../../Library'
-import { padding } from '../../../../styles'
+import { Text, Button } from '../../../Library'
+import { padding, borderBottom, marginRight } from '../../../../styles'
+import { colors } from '../../../../constants'
 
 export default createSubStackNavigator(
   {
@@ -17,27 +17,31 @@ export default createSubStackNavigator(
     Choice,
   },
   {
-    initialRouteName: 'Choice',
-    navigationOptions: params =>
-      console.log(params) || {
-        headerStyle: [
-          {
-            height: 54,
-          },
-          padding,
-        ],
-        headerLeft: (
-          <TouchableOpacity
-            onPress={() => params.screenProps.parent.navigation.goBack()}
-          >
-            <Text>Back</Text>
-          </TouchableOpacity>
-        ),
-        headerTitle: (
-          <Text icon='user-plus' large>
-            Add a contact
-          </Text>
-        ),
-      },
+    initialRouteName: 'ByPublicKey',
+    navigationOptions: params => ({
+      headerStyle: [
+        {
+          height: 54,
+        },
+        borderBottom,
+        padding,
+      ],
+      headerLeft: (
+        <Text icon='user-plus' medium>
+          Add a contact
+        </Text>
+      ),
+      headerRight: (
+        <Button
+          backgroundColor={colors.grey6}
+          color={colors.white}
+          icon='x'
+          style={[marginRight]}
+          onPress={() => params.screenProps.parent.navigation.goBack()}
+        >
+          Cancel
+        </Button>
+      ),
+    }),
   }
 )
