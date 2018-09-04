@@ -5,7 +5,6 @@ export default class Detail extends PureComponent {
     tabBarVisible: false,
   })
   render () {
-    console.log(this.props)
     return null
   }
 }
