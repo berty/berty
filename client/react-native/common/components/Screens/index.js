@@ -10,6 +10,6 @@ export default createBottomTabNavigator(
     Settings,
   },
   {
-    initialRouteName: 'Contacts',
+    initialRouteName: 'Chats',
   }
 )
