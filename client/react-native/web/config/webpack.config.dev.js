@@ -138,7 +138,7 @@ module.exports = {
           {
             test: /\.ttf$/,
             loader: require.resolve('url-loader'), // or directly file-loader
-            include: path.appSrc,
+            include: path.fontSrc,
           },
           // Process JS with Babel.
           {
