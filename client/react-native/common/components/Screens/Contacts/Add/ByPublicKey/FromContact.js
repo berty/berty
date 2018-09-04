@@ -10,9 +10,17 @@ import {
   rounded,
   textTiny,
 } from '../../../../../styles'
+import { commit } from '../../../../../relay'
+import { mutations } from '../../../../../graphql'
 
 export default class FromContact extends PureComponent {
+  state = {
+    contactID: '',
+  }
+
   render () {
+    const { navigation } = this.props
+    const { contactID } = this.state
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <Flex.Rows style={[padding]} align='center'>
@@ -34,8 +42,22 @@ export default class FromContact extends PureComponent {
             ]}
             multiline
             placeholder='Type or copy/paste a berty user public key here'
+            value={contactID}
+            onChangeText={contactID => this.setState({ contactID })}
           />
-          <Button icon='plus' style={[marginTop]}>
+          <Button
+            icon='plus'
+            style={[marginTop]}
+            onPress={async () => {
+              try {
+                await commit(mutations.ContactRequest, { contactID })
+                navigation.goBack(null)
+              } catch (err) {
+                this.setState({ err })
+                console.error(err)
+              }
+            }}
+          >
             ADD THIS KEY
           </Button>
         </Flex.Rows>
