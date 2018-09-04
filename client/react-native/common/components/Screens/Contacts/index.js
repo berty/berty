@@ -1,10 +1,10 @@
-import { createStackNavigator } from 'react-navigation'
+import { createSubStackNavigator } from '../../../helpers/react-navigation'
 import Add from './Add'
 import Detail from './Detail'
 import Edit from './Edit'
 import List from './List'
 
-export default createStackNavigator(
+export default createSubStackNavigator(
   {
     List,
     Add,
@@ -13,5 +13,6 @@ export default createStackNavigator(
   },
   {
     initialRouteName: 'List',
+    hedaer: null,
   }
 )

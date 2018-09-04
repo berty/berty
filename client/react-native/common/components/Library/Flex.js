@@ -37,24 +37,23 @@ export const Block = ({
   children,
   style,
   ...props
-}) =>
-  console.log(props) || (
-    <View
-      style={[
-        {
-          flex: size,
-          flexDirection: direction && getDirection(direction),
-          alignItems: align && getAlign(align),
-          alignSelf: self && getAlign(self),
-          justifyContent: space && getSpace(space),
-        },
-        style,
-      ]}
-      {...props}
-    >
-      {children}
-    </View>
-  )
+}) => (
+  <View
+    style={[
+      {
+        flex: size,
+        flexDirection: direction && getDirection(direction),
+        alignItems: align && getAlign(align),
+        alignSelf: self && getAlign(self),
+        justifyContent: space && getSpace(space),
+      },
+      style,
+    ]}
+    {...props}
+  >
+    {children}
+  </View>
+)
 
 export const Grid = props => <Block {...props} />
 

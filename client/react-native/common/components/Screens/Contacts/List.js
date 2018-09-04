@@ -74,9 +74,7 @@ const Item = ({
   navigation,
 }) => (
   <TouchableOpacity
-    onPress={() => {
-      navigation.push('Detail', { id })
-    }}
+    onPress={() => navigation.push('Detail', { id })}
     style={{
       backgroundColor: colors.white,
       paddingVertical: 16,
@@ -99,6 +97,7 @@ const Item = ({
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: <Header navigation={navigation} />,
+    tabBarVisible: true,
   })
   render () {
     const { navigation } = this.props

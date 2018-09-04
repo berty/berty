@@ -1,13 +1,23 @@
-import React, { PureComponent } from 'react'
 import { createStackNavigator } from 'react-navigation'
 
-export const createSubStackNavigator = (routeConfig, stackNavigatorConfig) => {
+export const createSubStackNavigator = (
+  routeConfig,
+  stackNavigatorConfig,
+  parentStackNavigatorConfig
+) => {
   const Stack = createStackNavigator(routeConfig, stackNavigatorConfig)
-  class StackWrapper extends PureComponent {
-    static navigationOptions = { header: null }
-    render () {
-      return <Stack screenProps={{ parent: this.props }} />
-    }
+  if (parentStackNavigatorConfig == null) {
+    Stack.navigationOptions = ({
+      navigation: {
+        state: { routes, index },
+      },
+    }) => ({
+      header: null,
+      tabBarVisible:
+        routes[index].routeName === stackNavigatorConfig.initialRouteName,
+    })
+  } else {
+    Stack.navigationOptions = parentStackNavigatorConfig
   }
-  return StackWrapper
+  return Stack
 }

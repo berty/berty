@@ -37,7 +37,7 @@ export default createSubStackNavigator(
           color={colors.white}
           icon='x'
           style={[marginRight]}
-          onPress={() => params.screenProps.parent.navigation.goBack()}
+          onPress={() => params.navigation.goBack(null)}
         >
           Cancel
         </Button>

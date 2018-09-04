@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { TextInput } from 'react-native'
-import { Flex, Screen, Text, Button } from '../../../Library'
-import { colors } from '../../../../constants'
+import { Flex, Screen, Text, Button } from '../../../../Library'
+import { colors } from '../../../../../constants'
 import {
   padding,
   paddingVertical,
@@ -9,9 +9,9 @@ import {
   marginBottom,
   rounded,
   textTiny,
-} from '../../../../styles'
+} from '../../../../../styles'
 
-export default class ByPublicKey extends PureComponent {
+export default class FromContact extends PureComponent {
   render () {
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>

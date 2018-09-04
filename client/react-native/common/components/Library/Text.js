@@ -186,7 +186,6 @@ export const ForegroundText = props => {
 }
 
 export const Text = props => {
-  console.log(props)
   props = reverse(props)
   return (
     <BackgroundText {...props}>
