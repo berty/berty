@@ -1,6 +1,6 @@
 /**
  * @flow
- * @relayHash fac5e34c77dcd1fc85036e09231dc8d2
+ * @relayHash 78742a6451ebe27031bbf6351ea07617
  */
 
 /* eslint-disable */
@@ -17,10 +17,11 @@ export type ContactRequestMutationVariables = {|
 export type ContactRequestMutationResponse = {|
   +ContactRequest: ?{|
     +id: ?string,
-    +createdAt: ?any,
-    +updatedAt: ?any,
-    +deletedAt: ?any,
     +status: ?BertyEntityContactStatus,
+    +displayName: ?string,
+    +displayStatus: ?string,
+    +overrideDisplayName: ?string,
+    +overrideDisplayStatus: ?string,
   |}
 |};
 export type ContactRequestMutation = {|
@@ -37,10 +38,11 @@ mutation ContactRequestMutation(
 ) {
   ContactRequest(contactID: $contactID, introText: $introText) {
     id
-    createdAt
-    updatedAt
-    deletedAt
     status
+    displayName
+    displayStatus
+    overrideDisplayName
+    overrideDisplayStatus
   }
 }
 */
@@ -93,28 +95,35 @@ v1 = [
       {
         "kind": "ScalarField",
         "alias": null,
-        "name": "createdAt",
-        "args": null,
-        "storageKey": null
-      },
-      {
-        "kind": "ScalarField",
-        "alias": null,
-        "name": "updatedAt",
-        "args": null,
-        "storageKey": null
-      },
-      {
-        "kind": "ScalarField",
-        "alias": null,
-        "name": "deletedAt",
-        "args": null,
-        "storageKey": null
-      },
-      {
-        "kind": "ScalarField",
-        "alias": null,
         "name": "status",
+        "args": null,
+        "storageKey": null
+      },
+      {
+        "kind": "ScalarField",
+        "alias": null,
+        "name": "displayName",
+        "args": null,
+        "storageKey": null
+      },
+      {
+        "kind": "ScalarField",
+        "alias": null,
+        "name": "displayStatus",
+        "args": null,
+        "storageKey": null
+      },
+      {
+        "kind": "ScalarField",
+        "alias": null,
+        "name": "overrideDisplayName",
+        "args": null,
+        "storageKey": null
+      },
+      {
+        "kind": "ScalarField",
+        "alias": null,
+        "name": "overrideDisplayStatus",
         "args": null,
         "storageKey": null
       }
@@ -126,7 +135,7 @@ return {
   "operationKind": "mutation",
   "name": "ContactRequestMutation",
   "id": null,
-  "text": "mutation ContactRequestMutation(\n  $contactID: String!\n  $introText: String\n) {\n  ContactRequest(contactID: $contactID, introText: $introText) {\n    id\n    createdAt\n    updatedAt\n    deletedAt\n    status\n  }\n}\n",
+  "text": "mutation ContactRequestMutation(\n  $contactID: String!\n  $introText: String\n) {\n  ContactRequest(contactID: $contactID, introText: $introText) {\n    id\n    status\n    displayName\n    displayStatus\n    overrideDisplayName\n    overrideDisplayStatus\n  }\n}\n",
   "metadata": {},
   "fragment": {
     "kind": "Fragment",
@@ -145,5 +154,5 @@ return {
 };
 })();
 // prettier-ignore
-(node/*: any*/).hash = '1b9976b06f79748521e6f41349da4b2f';
+(node/*: any*/).hash = '9231acf7f328a793bb459f1bb4305377';
 module.exports = node;

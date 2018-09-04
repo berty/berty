@@ -10,6 +10,9 @@ import {
   marginTop,
   borderBottom,
 } from '../../../styles'
+import { fetchQuery } from 'react-relay'
+import { environment } from '../../../relay'
+import { queries } from '../../../graphql'
 
 const genContacts = (
   displayNames = [
@@ -99,16 +102,42 @@ export default class List extends PureComponent {
     header: <Header navigation={navigation} />,
     tabBarVisible: true,
   })
+
+  state = {
+    refreshing: false,
+    contacts: null,
+    err: null,
+  }
+
+  async componentDidMount () {
+    if (this.state.contacts === null) {
+      await this.getContacts()
+    }
+  }
+
+  getContacts = async () => {
+    try {
+      const { ContactList } = await fetchQuery(environment, queries.ContactList)
+      this.setState({ refreshing: false, contacts: ContactList, err: null })
+    } catch (err) {
+      this.setState({ refreshing: false, contacts: null, err: err })
+      console.error(err)
+    }
+  }
+
   render () {
     const { navigation } = this.props
+    const { refreshing, contacts } = this.state
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <FlatList
-          data={genContacts()}
+          data={[...(contacts || []), ...genContacts()]}
           style={[paddingLeft, paddingRight]}
           ItemSeparatorComponent={({ highlighted }) => (
             <Separator highlighted={highlighted} />
           )}
+          refreshing={refreshing}
+          onRefresh={this.getContacts}
           renderItem={data => (
             <Item
               key={data.id}
