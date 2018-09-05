@@ -41,40 +41,45 @@ const Header = ({ navigation }) => (
     ]}
   >
     <Flex.Cols size={1} align='start' space='between'>
-      <Text icon='message-circle' large color={colors.black}>
+      <Text icon='message-circle' left large color={colors.black}>
         Chats
       </Text>
     </Flex.Cols>
   </Flex.Rows>
 )
 
-const Item = ({ data: { id, title }, navigation }) => (
-  <TouchableOpacity
-    onPress={() => navigation.push('Detail', { id })}
-    style={{
-      backgroundColor: colors.white,
-      paddingVertical: 16,
-      height: 71,
-    }}
-  >
-    <Flex.Cols align='left'>
-      <Flex.Rows size={1} align='left' style={{marginLeft: 30}}>
-        <Image
-          style={{width: 40, height: 40, borderRadius: 50}}
-          source={{uri: 'https://api.adorable.io/avatars/285/' + title + '.png'}}
-        />
-      </Flex.Rows>
-      <Flex.Rows size={6} align='left' style={{marginLeft: 14}}>
-        <Text color={colors.black} left middle>
-          {title}
-        </Text>
-        <Text color={colors.subtleGrey} tiny>
-          Last message sent 3 hours ago ...
-        </Text>
-      </Flex.Rows>
-    </Flex.Cols>
-  </TouchableOpacity>
-)
+const Item = ({ data, navigation }) => {
+  const { title } = data
+  return (
+    <TouchableOpacity
+      onPress={() => navigation.push('Detail', { conversation: data })}
+      style={{
+        backgroundColor: colors.white,
+        paddingVertical: 16,
+        height: 71,
+      }}
+    >
+      <Flex.Cols align='left'>
+        <Flex.Rows size={1} align='left' style={{ marginLeft: 30 }}>
+          <Image
+            style={{ width: 40, height: 40, borderRadius: 50 }}
+            source={{
+              uri: 'https://api.adorable.io/avatars/285/' + title + '.png',
+            }}
+          />
+        </Flex.Rows>
+        <Flex.Rows size={6} align='left' style={{ marginLeft: 14 }}>
+          <Text color={colors.black} left middle>
+            {title}
+          </Text>
+          <Text color={colors.subtleGrey} tiny>
+            Last message sent 3 hours ago ...
+          </Text>
+        </Flex.Rows>
+      </Flex.Cols>
+    </TouchableOpacity>
+  )
+}
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({

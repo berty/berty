@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text as TextNative } from 'react-native'
+import { View, Text as TextNative, TextInput } from 'react-native'
 import { Icon } from '.'
 import {
   tinyText,
@@ -15,6 +15,7 @@ import {
   textBottom,
   bold,
   shadow,
+  margin,
 } from '../../styles'
 import { colors } from '../../constants'
 
@@ -44,7 +45,10 @@ const getPadding = (
     big: 12,
   }
 ) => {
-  const padding = find({ inside: props, from: paddings, or: 'small' })
+  let padding = props.padding
+  if (typeof padding === 'boolean') {
+    padding = find({ inside: props, from: paddings, or: 'small' })
+  }
   return {
     padding,
     paddingTop: padding / 3,
@@ -55,16 +59,17 @@ const getPadding = (
 const getBorderRadius = (
   props,
   radiuses = {
-    tiny: props.rounded === 'circle' ? 10 : 2,
-    small: props.rounded === 'circle' ? 14 : 3,
-    medium: props.rounded === 'circle' ? 16 : 4,
-    large: props.rounded === 'circle' ? 18 : 5,
-    big: props.rounded === 'cirecle' ? 25 : 6,
+    tiny: 2,
+    small: 3,
+    medium: 4,
+    large: 5,
+    big: 6,
   }
 ) => {
-  const borderRadius = props.rounded
-    ? find({ inside: props, from: radiuses, or: 'small' })
-    : 0
+  let borderRadius = props.rounded || 0
+  if (typeof borderRadius === 'boolean') {
+    borderRadius = find({ inside: props, from: radiuses, or: 'small' })
+  }
   return {
     borderRadius,
   }
@@ -140,6 +145,12 @@ export const BackgroundText = props => {
         getBorderRadius(props),
         getPadding(props),
         props.shadow && shadow,
+        props.margin && typeof props.margin === 'boolean'
+          ? margin
+          : { margin: props.margin },
+        props.flex && typeof props.flex === 'boolean'
+          ? { flex: 1 }
+          : { flex: props.flex },
       ]}
     >
       {children}
@@ -148,7 +159,7 @@ export const BackgroundText = props => {
 }
 
 export const ForegroundText = props => {
-  const { icon, style, children, ellipsizeMode, numberOfLines } = props
+  const { icon, input, style, children, ellipsizeMode, numberOfLines } = props
   const [vertical, horizontal, size, iconSize, weight, color] = [
     getVertiAlign(props),
     getHorizAlign(props),
@@ -157,30 +168,46 @@ export const ForegroundText = props => {
     getWeight(props),
     getColor(props),
   ]
-
   return (
     <View
       style={{
         flexDirection: 'row',
+        flex: 1,
         justifyContent: getJustify(props),
       }}
     >
       {icon && typeof icon === 'string' ? (
         <Icon
           name={icon}
-          style={[vertical, horizontal, iconSize, weight, color, style]}
+          style={[iconSize, weight, color, style, vertical, horizontal]}
         />
       ) : (
         icon
       )}
-      <TextNative
-        style={[vertical, horizontal, size, weight, color, style]}
-        ellipsizeMode={ellipsizeMode}
-        numberOfLines={numberOfLines}
-      >
-        {icon && '  '}
-        {children}
-      </TextNative>
+      {input ? (
+        <TextInput
+          {...input}
+          style={[
+            size,
+            weight,
+            color,
+            style,
+            vertical,
+            horizontal,
+            { flex: 1 },
+          ]}
+          value={children || input.value}
+        />
+      ) : (
+        <TextNative
+          style={[size, weight, color, style, vertical, horizontal]}
+          ellipsizeMode={ellipsizeMode}
+          numberOfLines={numberOfLines}
+        >
+          {icon && '  '}
+          {children}
+        </TextNative>
+      )}
     </View>
   )
 }

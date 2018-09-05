@@ -61,7 +61,7 @@ export default class Menu extends Component {
             <Flex.Cols>
               <Flex.Cols style={margin} size={7} space='start'>
                 {children || (
-                  <Text small icon={icon} color={color || colors.textGrey}>
+                  <Text small left icon={icon} color={color || colors.textGrey}>
                     {title}
                   </Text>
                 )}
@@ -72,17 +72,22 @@ export default class Menu extends Component {
                     {this.state.delete ? (
                       <ActivityIndicator color={color || colors.textGrey} />
                     ) : (
-                      <Icon name='trash-2' style={[{color: color || colors.textGrey}, largeText]} />
+                      <Icon
+                        name='trash-2'
+                        style={[{ color: color || colors.textGrey }, largeText]}
+                      />
                     )}
                   </Flex.Rows>
                 </TouchableOpacity>
               )}
               {onPress && (
                 <Flex.Rows style={margin} self='right'>
-                  <Icon name='chevron-right' style={{color: color || colors.textGrey}} />
+                  <Icon
+                    name='chevron-right'
+                    style={{ color: color || colors.textGrey }}
+                  />
                 </Flex.Rows>
               )}
-              {}
             </Flex.Cols>
           </TouchableOpacity>
           <Separator />
