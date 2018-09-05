@@ -42,7 +42,7 @@ const Header = ({ navigation }) => (
     ]}
   >
     <Flex.Cols size={1} align='start' space='between'>
-      <Text icon='feather-users' large color={colors.black}>
+      <Text icon='message-circle' large color={colors.black}>
         Chats
       </Text>
     </Flex.Cols>
