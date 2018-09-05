@@ -28,6 +28,15 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/brianvoe/gofakeit"
+  packages = [
+    ".",
+    "data"
+  ]
+  revision = "e28678794005528f2fd7bb4e76c3d219602058a6"
+  version = "v3.12.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/btcsuite/btcd"
   packages = ["btcec"]
@@ -861,6 +870,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0194a02afe276057d46fc2e5ca116cf67eb241ee42bf2b379c74469f2c94de1a"
+  inputs-digest = "4b1bd1fc5872fd271de16b3dfc37c64c262a8b7a3fecba01519929ce333264f3"
   solver-name = "gps-cdcl"
   solver-version = 1

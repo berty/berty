@@ -28,6 +28,7 @@ func init() {
 	registerUnary("berty.node.ConversationExclude", NodeConversationExclude)
 	registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
+	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
 }
 
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
@@ -282,4 +283,18 @@ func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byt
 		return nil, err
 	}
 	return client.Node().HandleEvent(ctx, &typedInput)
+}
+
+func NodeGenerateFakeData(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "GenerateFakeData"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().GenerateFakeData(ctx, &typedInput)
 }
