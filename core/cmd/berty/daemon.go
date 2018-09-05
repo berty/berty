@@ -11,6 +11,10 @@ import (
 	"syscall"
 
 	gqlhandler "github.com/99designs/gqlgen/handler"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
@@ -78,8 +82,27 @@ func newDaemonCommand() *cobra.Command {
 func daemon(opts *daemonOptions) error {
 	errChan := make(chan error)
 
+	interceptors := []grpc.ServerOption{
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_ctxtags.StreamServerInterceptor(),
+			//grpc_opentracing.StreamServerInterceptor(),
+			//grpc_prometheus.StreamServerInterceptor,
+			grpc_zap.StreamServerInterceptor(zap.L()),
+			//grpc_auth.StreamServerInterceptor(myAuthFunction),
+			grpc_recovery.StreamServerInterceptor(),
+		)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_ctxtags.UnaryServerInterceptor(),
+			//grpc_opentracing.UnaryServerInterceptor(),
+			//grpc_prometheus.UnaryServerInterceptor,
+			grpc_zap.UnaryServerInterceptor(zap.L()),
+			//grpc_auth.UnaryServerInterceptor(myAuthFunction),
+			grpc_recovery.UnaryServerInterceptor(),
+		)),
+	}
+
 	// initialize gRPC
-	gs := grpc.NewServer()
+	gs := grpc.NewServer(interceptors...)
 	reflection.Register(gs)
 
 	addr, err := net.ResolveTCPAddr("tcp", opts.bind)
