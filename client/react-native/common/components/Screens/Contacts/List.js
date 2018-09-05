@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
-import { FlatList, TouchableOpacity, TextInput } from 'react-native'
+import { FlatList, TouchableOpacity, TextInput, Image } from 'react-native'
 import { Screen, Flex, Text, Separator, Button } from '../../Library'
 import { colors } from '../../../constants'
 import {
-  marginLeft,
   paddingLeft,
   paddingRight,
   padding,
@@ -84,8 +83,14 @@ const Item = ({
       height: 71,
     }}
   >
-    <Flex.Cols align='left' style={{ marginLeft }}>
-      <Flex.Rows size={1} align='left'>
+    <Flex.Cols align='left'>
+      <Flex.Rows size={1} align='left' style={{marginLeft: 21}}>
+        <Image
+          style={{width: 50, height: 50, borderRadius: 50}}
+          source={{uri: 'https://api.adorable.io/avatars/285/' + (overrideDisplayName || displayName) + '.png'}}
+        />
+      </Flex.Rows>
+      <Flex.Rows size={6} align='left' style={{marginLeft: 42}}>
         <Text color={colors.black} left middle>
           {overrideDisplayName || displayName}
         </Text>

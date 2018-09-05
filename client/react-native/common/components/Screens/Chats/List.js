@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
-import { FlatList, TouchableOpacity } from 'react-native'
+import { FlatList, TouchableOpacity, Image } from 'react-native'
 import { Screen, Flex, Text, Separator } from '../../Library'
 import { colors } from '../../../constants'
 import {
-  marginLeft,
   paddingLeft,
   paddingRight,
   padding,
@@ -58,8 +57,14 @@ const Item = ({ data: { id, title }, navigation }) => (
       height: 71,
     }}
   >
-    <Flex.Cols align='left' style={{ marginLeft }}>
-      <Flex.Rows size={1} align='left'>
+    <Flex.Cols align='left'>
+      <Flex.Rows size={1} align='left' style={{marginLeft: 21}}>
+        <Image
+          style={{width: 50, height: 50, borderRadius: 50}}
+          source={{uri: 'https://api.adorable.io/avatars/285/' + title + '.png'}}
+        />
+      </Flex.Rows>
+      <Flex.Rows size={6} align='left' style={{marginLeft: 42}}>
         <Text color={colors.black} left middle>
           {title}
         </Text>
