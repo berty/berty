@@ -4,7 +4,6 @@ package berty.p2p;
 
 option go_package = "berty.tech/core/api/p2p";
 
-import "api/p2p/event.proto";
 import "api/p2p/envelope.proto";
 
 service Service {
