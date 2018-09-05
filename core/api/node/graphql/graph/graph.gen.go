@@ -45,6 +45,7 @@ type MutationResolver interface {
 	ConversationInvite(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error)
 	ConversationExclude(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error)
 	ConversationAddMessage(ctx context.Context, conversationID string, message string) (*model.BertyP2pEvent, error)
+	GenerateFakeData(ctx context.Context) (*model.BertyNodeVoid, error)
 }
 type QueryResolver interface {
 	EventList(ctx context.Context, limit *int) ([]*model.BertyP2pEvent, error)
@@ -5805,6 +5806,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_ConversationExclude(ctx, field)
 		case "ConversationAddMessage":
 			out.Values[i] = ec._Mutation_ConversationAddMessage(ctx, field)
+		case "GenerateFakeData":
+			out.Values[i] = ec._Mutation_GenerateFakeData(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6128,6 +6131,26 @@ func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context
 		return graphql.Null
 	}
 	return ec._BertyP2pEvent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_GenerateFakeData(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Mutation"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return ec.resolvers.Mutation().GenerateFakeData(ctx)
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyNodeVoid)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -7702,6 +7725,7 @@ type Mutation {
   ConversationInvite(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
   ConversationExclude(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
   ConversationAddMessage(conversationID: String!, message: String!): BertyP2pEvent
+  GenerateFakeData: BertyNodeVoid
 }
 type Query {
   EventList(limit: Int): [BertyP2pEvent]
