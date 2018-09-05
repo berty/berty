@@ -27,41 +27,45 @@ export default class FromContact extends PureComponent {
           <Text medium color={colors.black} style={[marginBottom]}>
             Enter a public key
           </Text>
-          <Flex.Rows size={8}>
-            <TextInput
-              style={[
-                {
-                  width: 330,
-                  height: 330,
-                  backgroundColor: colors.grey7,
-                  color: colors.black,
-                },
-                textTiny,
-                padding,
-                marginTop,
-                rounded,
-              ]}
-              multiline
-              placeholder='Type or copy/paste a berty user public key here'
-              value={contactID}
-              onChangeText={contactID => this.setState({ contactID })}
-            />
-            <Button
-              icon='plus'
-              style={[marginTop]}
-              onPress={async () => {
-                try {
-                  await commit(mutations.ContactRequest, { contactID })
-                  navigation.goBack(null)
-                } catch (err) {
-                  this.setState({ err })
-                  console.error(err)
-                }
-              }}
-            >
-              ADD THIS KEY
-            </Button>
-          </Flex.Rows>
+          <TextInput
+            style={[
+              {
+                width: 330,
+                height: 330,
+                backgroundColor: colors.grey7,
+                color: colors.black,
+              },
+              textTiny,
+              padding,
+              marginTop,
+              rounded,
+            ]}
+            multiline
+            placeholder='Type or copy/paste a berty user public key here'
+            value={contactID}
+            onChangeText={contactID => this.setState({ contactID })}
+          />
+          <Button
+            icon='plus'
+            background='blue'
+            margin
+            padding
+            rounded={23}
+            height={24}
+            medium
+            middle
+            onPress={async () => {
+              try {
+                await commit(mutations.ContactRequest, { contactID })
+                navigation.goBack(null)
+              } catch (err) {
+                this.setState({ err })
+                console.error(err)
+              }
+            }}
+          >
+            ADD THIS KEY
+          </Button>
         </Flex.Rows>
       </Screen>
     )
