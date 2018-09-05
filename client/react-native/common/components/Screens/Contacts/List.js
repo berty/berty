@@ -46,13 +46,11 @@ const Header = ({ navigation }) => (
         Contacts
       </Text>
       <Button
-        icon='plus'
-        height={30}
-        width={65}
+        icon='user-plus'
+        large
+        color='black'
         onPress={() => navigation.push('Add')}
-      >
-        Add
-      </Button>
+      />
     </Flex.Cols>
     <TextInput
       style={[

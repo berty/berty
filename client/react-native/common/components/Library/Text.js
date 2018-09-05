@@ -159,7 +159,15 @@ export const BackgroundText = props => {
 }
 
 export const ForegroundText = props => {
-  const { icon, input, style, children, ellipsizeMode, numberOfLines } = props
+  const {
+    icon,
+    input,
+    style,
+    children,
+    ellipsizeMode,
+    numberOfLines,
+    height,
+  } = props
   const [vertical, horizontal, size, iconSize, weight, color] = [
     getVertiAlign(props),
     getHorizAlign(props),
@@ -179,7 +187,16 @@ export const ForegroundText = props => {
       {icon && typeof icon === 'string' ? (
         <Icon
           name={icon}
-          style={[iconSize, weight, color, style, vertical, horizontal]}
+          style={[
+            iconSize,
+            weight,
+            color,
+            style,
+            vertical,
+            horizontal,
+            { height },
+            { lineHeight: height },
+          ]}
         />
       ) : (
         icon
@@ -195,12 +212,23 @@ export const ForegroundText = props => {
             vertical,
             horizontal,
             { flex: 1 },
+            { height },
+            { lineHeight: height },
           ]}
           value={children || input.value}
         />
       ) : (
         <TextNative
-          style={[size, weight, color, style, vertical, horizontal]}
+          style={[
+            size,
+            weight,
+            color,
+            style,
+            vertical,
+            horizontal,
+            { height },
+            { lineHeight: height },
+          ]}
           ellipsizeMode={ellipsizeMode}
           numberOfLines={numberOfLines}
         >
