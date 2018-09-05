@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math/rand"
+	"strings"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
@@ -20,15 +21,20 @@ import (
 )
 
 func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void, error) {
-	n.handleMutex.Lock()
-	defer n.handleMutex.Unlock()
+	// FIXME: enable mutext, but allow calling submethod, i.e., node.CreateConversation
+	//n.handleMutex.Lock()
+	//defer n.handleMutex.Unlock()
 
-	//contacts := []*entity.Contact{}
+	contacts := []*entity.Contact{}
 	for i := 0; i < 10; i++ {
 		var (
 			username   = gofakeit.Username()
 			devicename = fmt.Sprintf("%s's phone", username)
 		)
+		if rand.Intn(3) > 0 {
+			username = fmt.Sprintf("%s %s", gofakeit.FirstName(), gofakeit.LastName())
+		}
+
 		priv, err := rsa.GenerateKey(crand.Reader, 512)
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to generate rsa key")
@@ -53,8 +59,6 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to marshal sigchain")
 		}
-
-		// FIXME: generate sigchain
 		contact := &entity.Contact{
 			ID:          base64.StdEncoding.EncodeToString(pubBytes),
 			DisplayName: username,
@@ -72,13 +76,24 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 		if err := n.sql.Set("gorm:association_autoupdate", true).Save(&contact).Error; err != nil {
 			return nil, errors.Wrap(err, "failed to save contacts")
 		}
-		//contacts = append(contacts, contact)
+		contacts = append(contacts, contact)
 	}
 
-	/*
-		out, _ := json.MarshalIndent(contacts, "", "  ")
-		fmt.Println(string(out))
-	*/
+	for i := 0; i < 10; i++ {
+		members := []*entity.ConversationMember{}
+		for j := 0; j < rand.Intn(2)+1; j++ {
+			members = append(members, &entity.ConversationMember{
+				ContactID: contacts[rand.Intn(len(contacts))].ID,
+			})
+		}
+		if _, err := n.ConversationCreate(context.Background(), &entity.Conversation{
+			Members: members,
+			Title:   strings.Title(fmt.Sprintf("%s %s", gofakeit.HipsterWord(), gofakeit.HackerNoun())),
+			Topic:   gofakeit.HackerPhrase(),
+		}); err != nil {
+			return nil, errors.Wrap(err, "failed to create conversation")
+		}
+	}
 
 	return &node.Void{}, nil
 }
