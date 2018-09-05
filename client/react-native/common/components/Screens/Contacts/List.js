@@ -42,7 +42,7 @@ const Header = ({ navigation }) => (
     ]}
   >
     <Flex.Cols size={1} align='center' space='between'>
-      <Text icon='feather-users' large color={colors.black}>
+      <Text icon='feather-users' left large color={colors.black}>
         Contacts
       </Text>
       <Button
@@ -84,13 +84,18 @@ const Item = ({
     }}
   >
     <Flex.Cols align='left'>
-      <Flex.Rows size={1} align='left' style={{marginLeft: 30}}>
+      <Flex.Rows size={1} align='left' style={{ marginLeft: 30 }}>
         <Image
-          style={{width: 40, height: 40, borderRadius: 50}}
-          source={{uri: 'https://api.adorable.io/avatars/285/' + (overrideDisplayName || displayName) + '.png'}}
+          style={{ width: 40, height: 40, borderRadius: 50 }}
+          source={{
+            uri:
+              'https://api.adorable.io/avatars/285/' +
+              (overrideDisplayName || displayName) +
+              '.png',
+          }}
         />
       </Flex.Rows>
-      <Flex.Rows size={6} align='left' style={{marginLeft: 14}}>
+      <Flex.Rows size={6} align='left' style={{ marginLeft: 14 }}>
         <Text color={colors.black} left middle>
           {overrideDisplayName || displayName}
         </Text>
