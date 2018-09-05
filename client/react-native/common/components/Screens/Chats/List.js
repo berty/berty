@@ -58,13 +58,13 @@ const Item = ({ data: { id, title }, navigation }) => (
     }}
   >
     <Flex.Cols align='left'>
-      <Flex.Rows size={1} align='left' style={{marginLeft: 21}}>
+      <Flex.Rows size={1} align='left' style={{marginLeft: 30}}>
         <Image
-          style={{width: 50, height: 50, borderRadius: 50}}
+          style={{width: 40, height: 40, borderRadius: 50}}
           source={{uri: 'https://api.adorable.io/avatars/285/' + title + '.png'}}
         />
       </Flex.Rows>
-      <Flex.Rows size={6} align='left' style={{marginLeft: 42}}>
+      <Flex.Rows size={6} align='left' style={{marginLeft: 14}}>
         <Text color={colors.black} left middle>
           {title}
         </Text>
