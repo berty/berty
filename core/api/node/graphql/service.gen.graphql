@@ -409,6 +409,7 @@ type Mutation {
   ConversationInvite(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
   ConversationExclude(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
   ConversationAddMessage(conversationID: String!, message: String!): BertyP2pEvent
+  GenerateFakeData: BertyNodeVoid
 }
 type Query {
   EventList(limit: Int): [BertyP2pEvent]

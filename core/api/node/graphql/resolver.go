@@ -107,6 +107,11 @@ func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversat
 	}))
 }
 
+func (r *mutationResolver) GenerateFakeData(ctx context.Context) (*model.BertyNodeVoid, error) {
+	_, err := r.client.GenerateFakeData(ctx, &service.Void{})
+	return &model.BertyNodeVoid{}, err
+}
+
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) EventList(ctx context.Context, limit *int) ([]*model.BertyP2pEvent, error) {

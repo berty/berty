@@ -92,6 +92,10 @@ service Service {
   // HandleEvent is the unencrypted (and unsafe) version of HandleEnvelope.
   // it's only exposed over the node API, it should be completely deactivated in public releases
   rpc HandleEvent(berty.p2p.Event) returns (Void) {};
+
+  rpc GenerateFakeData(Void) returns (Void) {
+    option (graphql_type) = "Mutation";
+  };
 }
 
 message ContactRequestInput {
