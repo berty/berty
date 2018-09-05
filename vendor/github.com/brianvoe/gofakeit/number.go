@@ -22,12 +22,12 @@ func Uint16() uint16 {
 
 // Uint32 will generate a random uint32 value
 func Uint32() uint32 {
-	return uint32(randIntRange(0, math.MaxUint32))
+	return rand.Uint32()
 }
 
 // Uint64 will generate a random uint64 value
 func Uint64() uint64 {
-	return uint64(rand.Int63n(math.MaxInt64))
+	return rand.Uint64()
 }
 
 // Int8 will generate a random Int8 value

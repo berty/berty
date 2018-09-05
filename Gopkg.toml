@@ -36,6 +36,10 @@
   go-tests = true
   unused-packages = true
 
+[[override]]
+  name = "github.com/brianvoe/gofakeit" # temporary, waiting for https://github.com/brianvoe/gofakeit/pull/30
+  source = "github.com/moul/gofakeit"
+  branch = "32bit"
 
 ## multiformats
 
