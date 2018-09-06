@@ -8,11 +8,12 @@ import {
   marginTop,
   rounded,
   textTiny,
+  borderBottom,
 } from '../../../../styles'
 import { commit } from '../../../../relay'
 import { mutations } from '../../../../graphql'
 
-import { createBottomTabNavigator } from 'react-navigation'
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
 class ByPublicKey extends PureComponent {
   state = {
@@ -65,7 +66,9 @@ class ByPublicKey extends PureComponent {
               middle
               onPress={async () => {
                 try {
-                  await commit(mutations.ContactRequest, { contactID })
+                  console.log(
+                    await commit(mutations.ContactRequest, { contactID })
+                  )
                   navigation.goBack(null)
                 } catch (err) {
                   this.setState({ err })
@@ -82,12 +85,31 @@ class ByPublicKey extends PureComponent {
   }
 }
 
-export default createBottomTabNavigator(
+export default createTabNavigator(
   {
     'Enter a public key': ByPublicKey,
     'View my public key': ByPublicKey,
   },
   {
     initialRouteName: 'Enter a public key',
+    swipeEnabled: true,
+    animationEnabled: true,
+    tabBarPosition: 'top',
+
+    tabBarOptions: {
+      labelStyle: {
+        color: colors.black,
+      },
+      indicatorStyle: {
+        backgroundColor: colors.black,
+      },
+      style: [
+        {
+          backgroundColor: colors.white,
+          borderTopWidth: 0,
+        },
+        borderBottom,
+      ],
+    },
   }
 )
