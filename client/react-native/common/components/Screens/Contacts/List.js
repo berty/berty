@@ -59,6 +59,7 @@ const Header = ({ navigation }) => (
           backgroundColor: colors.grey7,
           borderWidth: 0,
           borderRadius: 18,
+          outline: 'none',
         },
         marginTop,
         paddingLeft,
@@ -123,10 +124,18 @@ export default class List extends PureComponent {
     }
   }
 
+  sortContacts = (ContactList) => {
+    return ContactList.sort((a, b) => {
+      let an = a['displayName'].toLowerCase()
+      let bn = b['displayName'].toLowerCase()
+      return ((an < bn) ? -1 : ((an > bn) ? 1 : 0))
+    })
+  }
+
   getContacts = async () => {
     try {
       const { ContactList } = await fetchQuery(environment, queries.ContactList)
-      this.setState({ refreshing: false, contacts: ContactList, err: null })
+      this.setState({ refreshing: false, contacts: this.sortContacts(genContacts().concat(ContactList)), err: null })
     } catch (err) {
       this.setState({ refreshing: false, contacts: null, err: err })
       console.error(err)
@@ -139,7 +148,7 @@ export default class List extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <FlatList
-          data={[...(contacts || []), ...genContacts()]}
+          data={[...(contacts || [])]}
           style={[paddingLeft, paddingRight]}
           ItemSeparatorComponent={({ highlighted }) => (
             <Separator highlighted={highlighted} />
