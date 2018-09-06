@@ -1,13 +1,13 @@
-import { createStackNavigator } from 'react-navigation'
+import { createSubStackNavigator } from '../../../helpers/react-navigation'
 import List from './List'
 import Detail from './Detail'
 
-export default createStackNavigator(
+export default createSubStackNavigator(
   {
     List,
     Detail,
   },
   {
-    initialHomeName: 'List',
+    initialRouteName: 'List',
   }
 )

@@ -37,7 +37,7 @@ const { CoreModule } = NativeModules
 let getIP = () =>
   new Promise(resolve => {
     if (Platform.OS === 'web') {
-      return window.location.hostname
+      resolve(window.location.hostname)
     } else {
       return __DEV__ // eslint-disable-line
         ? require('react-native-network-info').NetworkInfo.getIPV4Address(ip =>
@@ -47,7 +47,7 @@ let getIP = () =>
     }
   })
 
-const fetchQuery = async (operation, variables) => {
+export const fetchQuery = async (operation, variables) => {
   try {
     const port = await CoreModule.getPort()
     const response = await fetch(`http://${await getIP()}:${port}/query`, {
@@ -64,6 +64,7 @@ const fetchQuery = async (operation, variables) => {
     return await response.json()
   } catch (err) {
     console.error(err)
+    console.log(err)
   }
 }
 

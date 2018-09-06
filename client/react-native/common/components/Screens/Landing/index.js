@@ -14,5 +14,6 @@ export default createStackNavigator(
     3: Landing,
     4: Landing,
   },
-  { initialHomeName: '1' }
+  { initialRouteName: '1' }
 )
+
