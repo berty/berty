@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text as TextNative } from 'react-native'
+import { View, Text as TextNative, TextInput } from 'react-native'
 import { Icon } from '.'
 import {
   tinyText,
@@ -15,6 +15,7 @@ import {
   textBottom,
   bold,
   shadow,
+  margin,
 } from '../../styles'
 import { colors } from '../../constants'
 
@@ -44,7 +45,10 @@ const getPadding = (
     big: 12,
   }
 ) => {
-  const padding = find({ inside: props, from: paddings, or: 'small' })
+  let padding = props.padding
+  if (typeof padding === 'boolean') {
+    padding = find({ inside: props, from: paddings, or: 'small' })
+  }
   return {
     padding,
     paddingTop: padding / 3,
@@ -62,9 +66,10 @@ const getBorderRadius = (
     big: 6,
   }
 ) => {
-  const borderRadius = props.rounded
-    ? find({ inside: props, from: radiuses, or: 'small' })
-    : 0
+  let borderRadius = props.rounded || 0
+  if (typeof borderRadius === 'boolean') {
+    borderRadius = find({ inside: props, from: radiuses, or: 'small' })
+  }
   return {
     borderRadius,
   }
@@ -117,6 +122,15 @@ const getColor = ({ background, color }) => ({
 
 const getWeight = props => props.bold && bold
 
+const getJustify = (
+  props,
+  justify = {
+    center: 'center',
+    left: 'flex-start',
+    right: 'flex-end',
+  }
+) => find({ inside: props, from: justify, or: 'center' })
+
 export const BackgroundText = props => {
   const { background, children } = props
   return (
@@ -131,6 +145,12 @@ export const BackgroundText = props => {
         getBorderRadius(props),
         getPadding(props),
         props.shadow && shadow,
+        props.margin && typeof props.margin === 'boolean'
+          ? margin
+          : { margin: props.margin },
+        props.flex && typeof props.flex === 'boolean'
+          ? { flex: 1 }
+          : { flex: props.flex },
       ]}
     >
       {children}
@@ -139,7 +159,15 @@ export const BackgroundText = props => {
 }
 
 export const ForegroundText = props => {
-  const { icon, style, children, ellipsizeMode, numberOfLines } = props
+  const {
+    icon,
+    input,
+    style,
+    children,
+    ellipsizeMode,
+    numberOfLines,
+    height,
+  } = props
   const [vertical, horizontal, size, iconSize, weight, color] = [
     getVertiAlign(props),
     getHorizAlign(props),
@@ -149,36 +177,75 @@ export const ForegroundText = props => {
     getColor(props),
   ]
   return (
-    <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+    <View
+      style={{
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: getJustify(props),
+      }}
+    >
       {icon && typeof icon === 'string' ? (
         <Icon
           name={icon}
-          style={[vertical, horizontal, iconSize, weight, color, style]}
+          style={[
+            iconSize,
+            weight,
+            color,
+            style,
+            vertical,
+            horizontal,
+            { height },
+            { lineHeight: height },
+          ]}
         />
       ) : (
         icon
       )}
-      <TextNative
-        style={[vertical, horizontal, size, weight, color, style]}
-        ellipsizeMode={ellipsizeMode}
-        numberOfLines={numberOfLines}
-      >
-        {icon && '  '}
-        {children}
-      </TextNative>
+      {input ? (
+        <TextInput
+          {...input}
+          style={[
+            size,
+            weight,
+            color,
+            style,
+            vertical,
+            horizontal,
+            { flex: 1 },
+            { height },
+            { lineHeight: height },
+          ]}
+          value={children || input.value}
+        />
+      ) : (
+        <TextNative
+          style={[
+            size,
+            weight,
+            color,
+            style,
+            vertical,
+            horizontal,
+            { height },
+            { lineHeight: height },
+          ]}
+          ellipsizeMode={ellipsizeMode}
+          numberOfLines={numberOfLines}
+        >
+          {icon && '  '}
+          {children}
+        </TextNative>
+      )}
     </View>
   )
 }
 
 export const Text = props => {
   props = reverse(props)
-  const { background } = props
-  return background ? (
+  return (
     <BackgroundText {...props}>
       <ForegroundText {...props} />
     </BackgroundText>
-  ) : (
-    <ForegroundText {...props} />
   )
 }
 

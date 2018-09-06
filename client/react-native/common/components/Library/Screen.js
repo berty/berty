@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Grid } from './Flex'
-import { StyleSheet, Dimensions } from 'react-native'
+import { StyleSheet, Dimensions, View } from 'react-native'
 import { screen } from '../../constants'
 
 export default class Screen extends Component {
@@ -39,12 +38,18 @@ export default class Screen extends Component {
     const { absolute, style, onResize, ...props } = this.props
     const { dimensions } = this.state
     return (
-      <Grid
-        flex={1}
+      <View
+        style={[
+          {
+            flex: 1,
+            justifyContent: 'flex-start',
+          },
+          dimensions,
+          style,
+          absolute && StyleSheet.absoluteFill,
+        ]}
         onLayout={this._onLayout}
-        justifyContent='flex-start'
         {...props}
-        style={[dimensions, style, absolute && StyleSheet.absoluteFill]}
       />
     )
   }

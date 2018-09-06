@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import { Separator, CustomTextInput, Icon, Text } from '.'
-import { Row, Col } from './Flex'
+import Flex from './Flex'
 import { largeText, margin, marginTopLeft, marginTop } from '../../styles'
 import { colors } from '../../constants'
 
@@ -24,15 +24,15 @@ export default class Menu extends Component {
         style,
       ]}
     >
-      <Row style={[marginTopLeft]}>
-        <Row flex={1} justifyContent='flex-start'>
+      <Flex.Cols style={[marginTopLeft]}>
+        <Flex.Cols size={1} space='start'>
           {title && (
             <Text small icon={icon} style={{ marginBottom: 7 }} {...props}>
               {title}
             </Text>
           )}
-        </Row>
-      </Row>
+        </Flex.Cols>
+      </Flex.Cols>
       <Separator />
       {children}
     </View>
@@ -50,7 +50,7 @@ export default class Menu extends Component {
       })
 
     render (
-      { icon, title, style, children, onPress, onDelete } = this.props
+      { icon, title, style, color, children, onPress, onDelete } = this.props
     ) {
       return (
         <Fragment>
@@ -58,32 +58,37 @@ export default class Menu extends Component {
             style={[{ width: '100%', backgroundColor: colors.white }, style]}
             onPress={onPress}
           >
-            <Row>
-              <Row style={margin} flex={7} justifyContent='flex-start'>
+            <Flex.Cols>
+              <Flex.Cols style={margin} size={7} space='start'>
                 {children || (
-                  <Text small icon={icon}>
+                  <Text small left icon={icon} color={color || colors.textGrey}>
                     {title}
                   </Text>
                 )}
-              </Row>
+              </Flex.Cols>
               {onDelete && (
                 <TouchableOpacity onPress={this._delete(onDelete)}>
-                  <Col style={margin} alignSelf='flex-end'>
+                  <Flex.Rows style={margin} self='right'>
                     {this.state.delete ? (
-                      <ActivityIndicator color={colors.textGrey} />
+                      <ActivityIndicator color={color || colors.textGrey} />
                     ) : (
-                      <Icon name='trash-2' style={largeText} />
+                      <Icon
+                        name='trash-2'
+                        style={[{ color: color || colors.textGrey }, largeText]}
+                      />
                     )}
-                  </Col>
+                  </Flex.Rows>
                 </TouchableOpacity>
               )}
               {onPress && (
-                <Col style={margin} alignSelf='flex-end'>
-                  <Icon name='chevron-right' style={largeText} />
-                </Col>
+                <Flex.Rows style={margin} self='right'>
+                  <Icon
+                    name='chevron-right'
+                    style={{ color: color || colors.textGrey }}
+                  />
+                </Flex.Rows>
               )}
-              {}
-            </Row>
+            </Flex.Cols>
           </TouchableOpacity>
           <Separator />
         </Fragment>
@@ -93,13 +98,13 @@ export default class Menu extends Component {
 
   static Input = ({ icon, style, ...props }) => (
     <Fragment>
-      <Row flex={1} justifyContent='flex-start'>
+      <Flex.Rows size={1} space='start'>
         {icon && <Icon name={icon} style={largeText} />}
         <CustomTextInput
           {...props}
           style={[{ width: '100%', backgroundColor: colors.white }, style]}
         />
-      </Row>
+      </Flex.Rows>
       <Separator />
     </Fragment>
   )

@@ -1,5 +1,5 @@
 {
-  "presets": ["stage-0", "react-native", "react-app"],
+  "presets": ["react-native", "react-app", "stage-0"],
   "plugins": [
     "relay"
   ]

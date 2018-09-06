@@ -10,6 +10,6 @@ export default createBottomTabNavigator(
     Settings,
   },
   {
-    tabBarPosition: 'bottom',
+    initialRouteName: 'Chats',
   }
 )

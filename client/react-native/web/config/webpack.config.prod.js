@@ -138,6 +138,12 @@ module.exports = {
               name: 'static/media/[name].[hash:8].[ext]',
             },
           },
+          // Get fonts
+          {
+            test: /\.ttf$/,
+            loader: require.resolve('url-loader'), // or directly file-loader
+            include: path.fontSrc,
+          },
           // Process JS with Babel.
           {
             test: /\.(js|jsx|mjs)$/,
