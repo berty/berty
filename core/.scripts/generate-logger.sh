@@ -17,7 +17,7 @@ package $pkgname
 import "go.uber.org/zap"
 
 func logger() *zap.Logger {
-     return zap.L().Named("$logname")
+    return zap.L().Named("$logname")
 }
 
 EOF

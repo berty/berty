@@ -10,11 +10,35 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 4
 
-[*.js]
-indent_size = 2
+[Makefile]
+indent_style = tab
 
 [*.go]
 indent_style = tab
 
-[Makefile]
-indent_style = tab
+[*.proto]
+indent_size = 2
+
+[*.tmpl]
+indent_size = 2
+
+[*.js]
+indent_size = 2
+
+[*.html]
+indent_size = 2
+
+[*.bat]
+end_of_line = crlf
+
+[*.{json,yml}]
+indent_size = 2
+
+[.{babelrc,eslintrc}]
+indent_size = 2
+
+[{Fastfile,.buckconfig,BUCK}]
+indent_size = 2
+
+[*.diff]
+indent_size = 1

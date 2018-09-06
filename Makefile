@@ -8,17 +8,39 @@ help:
 	@cd client/react-native >/dev/null; HELP_MSG_PREFIX="cd client\\/react-native \\&\\& " $(MAKE) help 2>/dev/null
 
 .PHONY: lint
-lint: lint-go lint-dockerfile
+lint: lint-go lint-dockerfile lint-editorconfig
 
 .PHONY: lint-dockerfile
 lint-dockerfile:
 	set -e; for dockerfile in `find . -name "Dockerfile" -or -name "Dockerfile.*"`; do \
-	  dockerlint -f $$dockerfile; \
+		dockerlint -f $$dockerfile; \
 	done
 
 .PHONY: lint-go
 lint-go:
 	gometalinter.v2 ./...
+
+.PHONY: lint-editorconfig
+lint-editorconfig:
+	@FILES=`find . -type f												\
+			! -name 'Gopkg*'											\
+			! -name 'yarn.lock'											\
+			! -name 'Gemfile.lock'										\
+			! -name '.gitkeep'											\
+			! -name '.generated'										\
+			! -name '*.gen.go'											\
+			! -name '*.gen.go.tmpl'										\
+			! -name '*.gen.graphql'										\
+			! -name 'project.pbxproj'									\
+			! -path '*/node_modules/*'									\
+			! -path '*/__generated__/*'									\
+			! -path './scripts/built/*'									\
+			! -path './.git/*'											\
+			! -path './.github/*'										\
+			! -path './vendor/*'`;										\
+	COUNT=$$(echo "$$FILES" | wc -l | tr -d ' ');						\
+	echo "Checking if $$COUNT files comply with EditorConfig rules...";	\
+	eclint check $$FILES
 
 .PHONY: _ci_prepare
 _ci_prepare:
