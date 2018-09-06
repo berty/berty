@@ -23,3 +23,7 @@ lint-go:
 .PHONY: _ci_prepare
 _ci_prepare:
 	cd core && make _ci_prepare
+
+.PHONY: docker.build
+docker.build:
+	docker build -t bertychat/berty .
