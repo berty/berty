@@ -121,3 +121,6 @@ package-lock.json
 # Environment
 .env.debug
 .env.release
+
+# Fix code factor __generated__ exclude patterns
+__generated__/
