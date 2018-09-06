@@ -28,14 +28,13 @@
   version = "v1.0.0"
 
 [[projects]]
-  branch = "32bit"
   name = "github.com/brianvoe/gofakeit"
   packages = [
     ".",
     "data"
   ]
-  revision = "0ee3569a3eede696bfd91fdd1ecc846a270246e3"
-  source = "github.com/moul/gofakeit"
+  revision = "df4975330df29aa30c268a4c16aabbbe6263fc2d"
+  version = "v3.12.1"
 
 [[projects]]
   branch = "master"
@@ -887,6 +886,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "08119a353db14eb7944910259198d1cb64d264c635f5e21331cd23ce8ae5ce7f"
+  inputs-digest = "b8bed918b108ca4adb312200672d71f061926c67f76356d2f547cc1aa0d474b9"
   solver-name = "gps-cdcl"
   solver-version = 1
