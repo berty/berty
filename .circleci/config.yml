@@ -127,6 +127,12 @@ jobs:
             go test -v ./... | tee /tmp/test-results/go-test-report.out
             go install -v ./...
       - run:
+          name: test gomobile
+          command: |
+            cd client/react-native/gomobile
+            go test -v ./... | tee /tmp/test-results/go-test-report.out
+            GOARCH=386 go test -v ./... | tee /tmp/test-results/go-test-report.out
+      - run:
           name: integration core
           command: |
             cd core
