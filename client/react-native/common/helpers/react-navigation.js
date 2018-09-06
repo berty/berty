@@ -15,6 +15,10 @@ export const createSubStackNavigator = (
       header: null,
       tabBarVisible:
         routes[index].routeName === stackNavigatorConfig.initialRouteName,
+      swipeEnabled:
+        routes[index].routeName === stackNavigatorConfig.initialRouteName,
+      animationEnabled:
+        routes[index].routeName === stackNavigatorConfig.initialRouteName,
     })
   } else {
     Stack.navigationOptions = parentStackNavigatorConfig
