@@ -12,25 +12,6 @@ import { fetchQuery } from 'react-relay'
 import { environment } from '../../../relay'
 import { queries } from '../../../graphql'
 
-const genChats = (
-  title = [
-    'Myla Maldonado',
-    'Graeme Kenny',
-    'Sienna-Rose Carter',
-    'Marcos Odonnell',
-    'Arnold Puckett',
-    'Chay Blake',
-    'Katarina Rosario',
-    'Amy-Louise Chaney',
-    'Janet Steele',
-    'Rodney Ayala',
-  ]
-) =>
-  title.map((t, k) => ({
-    id: k.toString(),
-    title: t,
-  }))
-
 const Header = ({ navigation }) => (
   <Flex.Rows
     size={1}
@@ -122,7 +103,7 @@ export default class List extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <FlatList
-          data={[...(conversations || []), ...genChats()]}
+          data={[...(conversations || [])]}
           style={[paddingLeft, paddingRight]}
           ItemSeparatorComponent={({ highlighted }) => (
             <Separator highlighted={highlighted} />

@@ -13,25 +13,6 @@ import { fetchQuery } from 'react-relay'
 import { environment } from '../../../relay'
 import { queries } from '../../../graphql'
 
-const genContacts = (
-  displayNames = [
-    'Myla Maldonado',
-    'Graeme Kenny',
-    'Sienna-Rose Carter',
-    'Marcos Odonnell',
-    'Arnold Puckett',
-    'Chay Blake',
-    'Katarina Rosario',
-    'Amy-Louise Chaney',
-    'Janet Steele',
-    'Rodney Ayala',
-  ]
-) =>
-  displayNames.map((dn, k) => ({
-    id: k.toString(),
-    displayName: dn,
-  }))
-
 const Header = ({ navigation }) => (
   <Flex.Rows
     size={1}
@@ -124,18 +105,22 @@ export default class List extends PureComponent {
     }
   }
 
-  sortContacts = (ContactList) => {
+  sortContacts = ContactList => {
     return ContactList.sort((a, b) => {
       let an = a['displayName'].toLowerCase()
       let bn = b['displayName'].toLowerCase()
-      return ((an < bn) ? -1 : ((an > bn) ? 1 : 0))
+      return an < bn ? -1 : an > bn ? 1 : 0
     })
   }
 
   getContacts = async () => {
     try {
       const { ContactList } = await fetchQuery(environment, queries.ContactList)
-      this.setState({ refreshing: false, contacts: this.sortContacts(genContacts().concat(ContactList)), err: null })
+      this.setState({
+        refreshing: false,
+        contacts: this.sortContacts([].concat(ContactList)),
+        err: null,
+      })
     } catch (err) {
       this.setState({ refreshing: false, contacts: null, err: err })
       console.error(err)
