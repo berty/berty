@@ -8,8 +8,7 @@ import {
   padding,
   borderBottom,
 } from '../../../styles'
-import { fetchQuery } from 'react-relay'
-import { environment } from '../../../relay'
+import { QueryReducer } from '../../../relay'
 import { queries } from '../../../graphql'
 
 const Header = ({ navigation }) => (
@@ -68,57 +67,31 @@ export default class List extends PureComponent {
     tabBarVisible: true,
   })
 
-  state = {
-    refreshing: false,
-    conversations: null,
-    err: null,
-  }
-
-  async componentDidMount () {
-    if (this.state.conversations == null) {
-      await this.getConversations()
-    }
-  }
-
-  getConversations = async () => {
-    try {
-      const { ConversationList } = await fetchQuery(
-        environment,
-        queries.ConversationList
-      )
-      this.setState({
-        refreshing: false,
-        conversations: ConversationList,
-        err: null,
-      })
-    } catch (err) {
-      this.setState({ refreshing: false, conversations: null, err: err })
-      console.error(err)
-    }
-  }
-
   render () {
     const { navigation } = this.props
-    const { refreshing, conversations } = this.state
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <FlatList
-          data={[...(conversations || [])]}
-          style={[paddingLeft, paddingRight]}
-          ItemSeparatorComponent={({ highlighted }) => (
-            <Separator highlighted={highlighted} />
-          )}
-          refreshing={refreshing}
-          onRefresh={this.getConversations}
-          renderItem={data => (
-            <Item
-              key={data.id}
-              data={data.item}
-              separators={data.separators}
-              navigation={navigation}
+        <QueryReducer query={queries.ConversationList}>
+          {(state, retry) => (
+            <FlatList
+              data={state.data.ConversationList || []}
+              style={[paddingLeft, paddingRight]}
+              ItemSeparatorComponent={({ highlighted }) => (
+                <Separator highlighted={highlighted} />
+              )}
+              refreshing={state.type === state.loading}
+              onRefresh={retry}
+              renderItem={data => (
+                <Item
+                  key={data.id}
+                  data={data.item}
+                  separators={data.separators}
+                  navigation={navigation}
+                />
+              )}
             />
           )}
-        />
+        </QueryReducer>
       </Screen>
     )
   }

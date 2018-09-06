@@ -5,12 +5,12 @@ import { colors } from '../../../constants'
 import {
   paddingLeft,
   paddingRight,
+  marginHorizontal,
   padding,
   marginTop,
   borderBottom,
 } from '../../../styles'
-import { fetchQuery } from 'react-relay'
-import { environment } from '../../../relay'
+import { QueryReducer } from '../../../relay'
 import { queries } from '../../../graphql'
 
 const Header = ({ navigation }) => (
@@ -57,11 +57,14 @@ const Item = ({
 }) => (
   <TouchableOpacity
     onPress={() => navigation.push('Detail', { id })}
-    style={{
-      backgroundColor: colors.white,
-      paddingVertical: 16,
-      height: 71,
-    }}
+    style={[
+      {
+        backgroundColor: colors.white,
+        paddingVertical: 16,
+        height: 71,
+      },
+      marginHorizontal,
+    ]}
   >
     <Flex.Cols align='left'>
       <Flex.Rows size={1} align='left' style={{ marginLeft: 30 }}>
@@ -93,18 +96,6 @@ export default class List extends PureComponent {
     tabBarVisible: true,
   })
 
-  state = {
-    refreshing: false,
-    contacts: null,
-    err: null,
-  }
-
-  async componentDidMount () {
-    if (this.state.contacts === null) {
-      await this.getContacts()
-    }
-  }
-
   sortContacts = ContactList => {
     return ContactList.sort((a, b) => {
       let an = a['displayName'].toLowerCase()
@@ -113,42 +104,30 @@ export default class List extends PureComponent {
     })
   }
 
-  getContacts = async () => {
-    try {
-      const { ContactList } = await fetchQuery(environment, queries.ContactList)
-      this.setState({
-        refreshing: false,
-        contacts: this.sortContacts([].concat(ContactList)),
-        err: null,
-      })
-    } catch (err) {
-      this.setState({ refreshing: false, contacts: null, err: err })
-      console.error(err)
-    }
-  }
-
   render () {
     const { navigation } = this.props
-    const { refreshing, contacts } = this.state
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <FlatList
-          data={[...(contacts || [])]}
-          style={[paddingLeft, paddingRight]}
-          ItemSeparatorComponent={({ highlighted }) => (
-            <Separator highlighted={highlighted} />
-          )}
-          refreshing={refreshing}
-          onRefresh={this.getContacts}
-          renderItem={data => (
-            <Item
-              key={data.id}
-              data={data.item}
-              separators={data.separators}
-              navigation={navigation}
+        <QueryReducer query={queries.ContactList}>
+          {(state, retry) => (
+            <FlatList
+              data={this.sortContacts([].concat(state.data.ContactList || []))}
+              ItemSeparatorComponent={({ highlighted }) => (
+                <Separator highlighted={highlighted} />
+              )}
+              refreshing={state.type === state.loading}
+              onRefresh={retry}
+              renderItem={data => (
+                <Item
+                  key={data.id}
+                  data={data.item}
+                  separators={data.separators}
+                  navigation={navigation}
+                />
+              )}
             />
           )}
-        />
+        </QueryReducer>
       </Screen>
     )
   }
