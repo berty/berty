@@ -49,8 +49,8 @@ $(BIN): generate $(SOURCES)
 testwatch:
 	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
 	trap 'kill $$(jobs -p) 2>/dev/null; exit 0' INT; \
-	  clear; $(TEST_CMD); \
-	  while true; do watchman-wait . -p "**/*.go"; clear; $(TEST_CMD); sleep .3; done
+	clear; $(TEST_CMD); \
+	while true; do watchman-wait . -p "**/*.go"; clear; $(TEST_CMD); sleep .3; done
 
 .PHONY: test
 test: generate
@@ -74,15 +74,15 @@ generate: .generated
 .generated: $(PROTOS)
 	rm -f $(GENERATED_FILES)
 	docker run \
-	    --user="$(shell id -u)" \
-	    --volume="$(GOPATH)/src:$(GOPATH)/src" \
-	    --env="GOPATH=$(GOPATH)" \
-	    --volume="$(PWD)/..:$(PWD)/.." \
-	    --workdir="$(PWD)" \
-	    --entrypoint="sh" \
-	    --rm \
-	  bertychat/protoc \
-	  -xec 'make generate_local'
+		--user="$(shell id -u)" \
+		--volume="$(GOPATH)/src:$(GOPATH)/src" \
+		--env="GOPATH=$(GOPATH)" \
+		--volume="$(PWD)/..:$(PWD)/.." \
+		--workdir="$(PWD)" \
+		--entrypoint="sh" \
+		--rm \
+		bertychat/protoc \
+		-xec 'make generate_local'
 	touch $@
 
 .PHONY: clean
@@ -102,15 +102,15 @@ _ci_prepare:
 .PHONY: dev-deps
 dev-deps:
 	go get -u -v \
-	  github.com/gogo/protobuf/proto \
-	  github.com/gogo/protobuf/protoc-gen-gogo \
-	  github.com/gogo/protobuf/gogoproto \
-	  github.com/gogo/protobuf/protoc-gen-gofast \
-	  github.com/gogo/protobuf/jsonpb \
-	  github.com/moul/protoc-gen-gotemplate \
-	  golang.org/x/tools/cmd/goimports \
-	  github.com/99designs/gqlgen \
-	  github.com/vektah/gorunpkg
+		github.com/gogo/protobuf/proto \
+		github.com/gogo/protobuf/protoc-gen-gogo \
+		github.com/gogo/protobuf/gogoproto \
+		github.com/gogo/protobuf/protoc-gen-gofast \
+		github.com/gogo/protobuf/jsonpb \
+		github.com/moul/protoc-gen-gotemplate \
+		golang.org/x/tools/cmd/goimports \
+		github.com/99designs/gqlgen \
+		github.com/vektah/gorunpkg
 
 ##
 ## file-based rules
@@ -123,7 +123,7 @@ dev-deps:
 api/client/berty.node.service.gen.go: $(PROTOS)
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
-	  $(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
+		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
 	); done
 	goimports -w ./api/client
 

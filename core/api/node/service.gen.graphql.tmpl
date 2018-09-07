@@ -102,7 +102,7 @@ type {{concat $PackageName .Name}} {
   {{- setStore "attrType" "DateTime" -}}
   {{- end }}
   {{- $type := getStore "attrType" -}}
-  {{.JsonName}}: 
+  {{.JsonName}}:
   {{- if (isFieldRepeated .)}} {{printf "[%s]" $type}}
   {{- else}} {{$type}}{{- end}}
   {{- else}}

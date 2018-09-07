@@ -11,9 +11,9 @@
 @interface RCT_EXTERN_REMAP_MODULE(CoreModule, CoreModule, NSObject)
 
 RCT_EXTERN_METHOD(start:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject);
+                    reject:(RCTPromiseRejectBlock)reject);
 
 RCT_EXTERN_METHOD(getPort:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject);
+                    reject:(RCTPromiseRejectBlock)reject);
 
 @end
