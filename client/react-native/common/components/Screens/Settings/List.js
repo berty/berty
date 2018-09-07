@@ -1,14 +1,11 @@
 import React, { PureComponent } from 'react'
 import { colors } from '../../../constants'
+import { View } from 'react-native'
 import { Menu, Flex, Text } from '../../Library'
-import {
-  padding,
-  borderBottom,
-} from '../../../styles'
+import { padding, borderBottom } from '../../../styles'
 
 const Header = ({ navigation }) => (
-  <Flex.Rows
-    size={1}
+  <View
     style={[
       { backgroundColor: colors.white, height: 72 },
       borderBottom,
@@ -20,7 +17,7 @@ const Header = ({ navigation }) => (
         Settings
       </Text>
     </Flex.Cols>
-  </Flex.Rows>
+  </View>
 )
 
 export default class List extends PureComponent {
