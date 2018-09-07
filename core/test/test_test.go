@@ -59,7 +59,7 @@ func nodeChansLens(apps ...*AppMock) []int {
 	out := []int{}
 	for _, app := range apps {
 		out = append(out, len(app.networkDriver.(*mock.Enqueuer).Queue()))
-		out = append(out, len(app.node.ClientEventsChan()))
+		out = append(out, len(app.eventStream))
 	}
 	return out
 }

@@ -71,6 +71,9 @@ type BertyNodeEventListInput struct {
 	Limit  *int           `json:"limit"`
 	Filter *BertyP2pEvent `json:"filter"`
 }
+type BertyNodeEventStreamInput struct {
+	Filter *BertyP2pEvent `json:"filter"`
+}
 type BertyNodeVoid struct {
 	T *bool `json:"T"`
 }

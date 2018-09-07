@@ -387,6 +387,9 @@ type BertyNodeConversationAddMessageInput {
   conversation: BertyEntityConversation
   message: BertyEntityMessage
 } 
+type BertyNodeEventStreamInput {
+  filter: BertyP2pEvent
+} 
 type BertyNodeEventListInput {
   limit: Int
   filter: BertyP2pEvent

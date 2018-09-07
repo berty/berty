@@ -13,6 +13,8 @@ import (
 	"google.golang.org/grpc"
 
 	"berty.tech/core/api/client"
+	nodeapi "berty.tech/core/api/node"
+	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/network/netutil"
@@ -31,6 +33,8 @@ type AppMock struct {
 	ctx           context.Context
 	device        *entity.Device
 	networkDriver network.Driver
+	eventStream   chan *p2p.Event
+	cancel        func()
 }
 
 func NewAppMock(device *entity.Device, networkDriver network.Driver) (*AppMock, error) {
@@ -107,12 +111,31 @@ func (a *AppMock) Open() error {
 	}
 	a.client = client.New(a.clientConn)
 
-	a.ctx = context.Background()
+	a.ctx, a.cancel = context.WithCancel(context.Background())
 
 	return nil
 }
 
+func (a *AppMock) InitEventStream() error {
+	a.eventStream = make(chan *p2p.Event, 100)
+	stream, err := a.client.Node().EventStream(a.ctx, &nodeapi.EventStreamInput{})
+	if err != nil {
+		return err
+	}
+	go func() {
+		for {
+			data, err := stream.Recv()
+			if err != nil {
+				logger().Debug("failed to receive stream data", zap.Error(err))
+			}
+			a.eventStream <- data
+		}
+	}()
+	return nil
+}
+
 func (a *AppMock) Close() error {
+	a.cancel()
 	if err := a.db.Close(); err != nil {
 		return err
 	}
