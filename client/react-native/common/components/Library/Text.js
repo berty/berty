@@ -1,5 +1,10 @@
 import React from 'react'
-import { View, Text as TextNative, TextInput } from 'react-native'
+import {
+  TouchableOpacity,
+  View,
+  Text as TextNative,
+  TextInput,
+} from 'react-native'
 import { Icon } from '.'
 import {
   tinyText,
@@ -132,29 +137,30 @@ const getJustify = (
 ) => find({ inside: props, from: justify, or: 'center' })
 
 export const BackgroundText = props => {
-  const { background, children } = props
-  return (
-    <View
-      style={[
-        {
-          backgroundColor:
-            (background === true && colors.blackGrey) ||
-            background ||
-            colors.transparent,
-        },
-        getBorderRadius(props),
-        getPadding(props),
-        props.shadow && shadow,
-        props.margin && typeof props.margin === 'boolean'
-          ? margin
-          : { margin: props.margin },
-        props.flex && typeof props.flex === 'boolean'
-          ? { flex: 1 }
-          : { flex: props.flex },
-      ]}
-    >
+  const { background, children, button, onPress } = props
+  const style = [
+    {
+      backgroundColor:
+        (background === true && colors.blackGrey) ||
+        background ||
+        colors.transparent,
+    },
+    getBorderRadius(props),
+    getPadding(props),
+    props.shadow && shadow,
+    props.margin && typeof props.margin === 'boolean'
+      ? margin
+      : { margin: props.margin },
+    props.flex && typeof props.flex === 'boolean'
+      ? { flex: 1 }
+      : { flex: props.flex },
+  ]
+  return button ? (
+    <TouchableOpacity style={style} onPress={onPress}>
       {children}
-    </View>
+    </TouchableOpacity>
+  ) : (
+    <View style={style}>{children}</View>
   )
 }
 

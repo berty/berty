@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { FlatList, TouchableOpacity, Image } from 'react-native'
+import { FlatList, TouchableOpacity, Image, View } from 'react-native'
 import { Screen, Flex, Text, Separator } from '../../Library'
 import { colors } from '../../../constants'
 import {
@@ -12,8 +12,7 @@ import { QueryReducer } from '../../../relay'
 import { queries } from '../../../graphql'
 
 const Header = ({ navigation }) => (
-  <Flex.Rows
-    size={1}
+  <View
     style={[
       { backgroundColor: colors.white, height: 56 },
       borderBottom,
@@ -25,7 +24,7 @@ const Header = ({ navigation }) => (
         Chats
       </Text>
     </Flex.Cols>
-  </Flex.Rows>
+  </View>
 )
 
 const Item = ({ data, navigation }) => {
