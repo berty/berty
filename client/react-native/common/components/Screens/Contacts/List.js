@@ -123,45 +123,25 @@ export default class List extends PureComponent {
     const { navigation } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        {
-          // <QueryReducer query={subscriptions.EventStream}>
-          // <{(state, retry) => {
-          // <  switch (state.type) {
-          // <    case state.loading:
-          // <      return <Text>Loading</Text>
-          // <    case state.success:
-          // <      return <Text>Success</Text>
-          // <    case state.error:
-          // <      return <Text>Error</Text>
-          // <    default:
-          // <      return <Text>default</Text>
-          // <  }
-          // <}}
-          // <</QueryReducer>
-        }
         <QueryReducer query={queries.ContactList}>
-          {(state, retry) =>
-            console.log(state) || (
-              <FlatList
-                data={this.sortContacts(
-                  [].concat(state.data.ContactList || [])
-                )}
-                ItemSeparatorComponent={({ highlighted }) => (
-                  <Separator highlighted={highlighted} />
-                )}
-                refreshing={state.type === state.loading}
-                onRefresh={retry}
-                renderItem={data => (
-                  <Item
-                    key={data.id}
-                    data={data.item}
-                    separators={data.separators}
-                    navigation={navigation}
-                  />
-                )}
-              />
-            )
-          }
+          {(state, retry) => (
+            <FlatList
+              data={this.sortContacts([].concat(state.data.ContactList || []))}
+              ItemSeparatorComponent={({ highlighted }) => (
+                <Separator highlighted={highlighted} />
+              )}
+              refreshing={state.type === state.loading}
+              onRefresh={retry}
+              renderItem={data => (
+                <Item
+                  key={data.id}
+                  data={data.item}
+                  separators={data.separators}
+                  navigation={navigation}
+                />
+              )}
+            />
+          )}
         </QueryReducer>
       </Screen>
     )
