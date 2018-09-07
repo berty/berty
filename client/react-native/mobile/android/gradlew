@@ -31,15 +31,15 @@ cygwin=false
 msys=false
 darwin=false
 case "`uname`" in
-  CYGWIN* )
-    cygwin=true
-    ;;
-  Darwin* )
-    darwin=true
-    ;;
-  MINGW* )
-    msys=true
-    ;;
+    CYGWIN* )
+        cygwin=true
+        ;;
+    Darwin* )
+        darwin=true
+        ;;
+    MINGW* )
+        msys=true
+        ;;
 esac
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched.

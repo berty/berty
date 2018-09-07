@@ -5,8 +5,11 @@ RUN apk --no-cache --update add nodejs-npm git make musl-dev gcc g++
 
 # gometalinter
 RUN go get -u gopkg.in/alecthomas/gometalinter.v2 \
- && gometalinter.v2 -i -u \
- && ln -s /go/bin/gometalinter.v2 /usr/bin/gometalinter.v2
+    && gometalinter.v2 -i -u \
+    && ln -s /go/bin/gometalinter.v2 /usr/bin/gometalinter.v2
 
 # dockerlint
 RUN npm install --global dockerlint
+
+# eclint
+RUN npm install --global eclint
