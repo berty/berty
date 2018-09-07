@@ -68,26 +68,36 @@ export const fetchQuery = async (operation, variables) => {
   }
 }
 
-const setupSubscription = async (
-  config,
-  constiables,
-  cacheConfig,
-  observer
-) => {
-  const query = config.text
-  const port = await CoreModule.getPort()
-  const subscriptionClient = new SubscriptionClient(
-    `ws://${await getIP()}:${port}/query`,
-    {
-      reconnect: true,
+const setupSubscription = async (config, variables, cacheConfig, observer) => {
+  try {
+    const query = config.text
+    const port = await CoreModule.getPort()
+    const subscriptionClient = new SubscriptionClient(
+      `ws://${await getIP()}:${port}/query`,
+      {
+        reconnect: true,
+      }
+    )
+
+    const onNext = result => {
+      observer.onNext(result)
     }
-  )
-  subscriptionClient.subscribe({ query, constiables }, (error, result) => {
-    if (error != null) {
-      console.error(error)
+
+    const onError = error => {
+      observer.onError(error)
     }
-    observer.onNext({ data: result })
-  })
+
+    const onComplete = () => {
+      observer.onCompleted()
+    }
+
+    subscriptionClient
+      .request({ query, variables })
+      .subscribe(onNext, onError, onComplete)
+  } catch (err) {
+    console.error(err)
+  }
+  // client.unsubscribe()
 }
 
 // Create a network layer from the fetch function

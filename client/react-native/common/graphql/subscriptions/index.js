@@ -1,1 +1,1 @@
-
+export EventStream from './EventStream'
