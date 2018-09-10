@@ -432,10 +432,10 @@ enum BertyP2pKind {
 
 
 
-  
+    
 
-type BertyP2pEvent {
-  id: String
+type BertyP2pEvent implements Node {
+  id: ID!
   senderId: String
   createdAt: DateTime
   updatedAt: DateTime

@@ -1721,7 +1721,7 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx con
 	return ec._BertyEntityMessage(ctx, field.Selections, res)
 }
 
-var bertyP2pEventImplementors = []string{"BertyP2pEvent"}
+var bertyP2pEventImplementors = []string{"BertyP2pEvent", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
 func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.SelectionSet, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -1785,11 +1785,8 @@ func (ec *executionContext) _BertyP2pEvent_id(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*res)
+	res := resTmp.(string)
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -7794,6 +7791,10 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 		return ec._BertyEntityConversationMember(ctx, sel, &obj)
 	case *model.BertyEntityConversationMember:
 		return ec._BertyEntityConversationMember(ctx, sel, obj)
+	case model.BertyP2pEvent:
+		return ec._BertyP2pEvent(ctx, sel, &obj)
+	case *model.BertyP2pEvent:
+		return ec._BertyP2pEvent(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
@@ -8510,10 +8511,10 @@ enum BertyP2pKind {
 
 
 
-  
+    
 
-type BertyP2pEvent {
-  id: String
+type BertyP2pEvent implements Node {
+  id: ID!
   senderId: String
   createdAt: DateTime
   updatedAt: DateTime

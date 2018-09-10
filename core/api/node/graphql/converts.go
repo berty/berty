@@ -2,12 +2,63 @@ package graphql
 
 import (
 	"encoding/base64"
+	"fmt"
+	"strings"
 
 	"berty.tech/core/api/node/graphql/model"
 	"berty.tech/core/api/node/graphql/scalar"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 )
+
+type EntityKind string
+
+var (
+	ContactKind            EntityKind = "CONTACT"
+	ConversationKind       EntityKind = "CONVERSATION"
+	EventKind              EntityKind = "EVENT"
+	DeviceKind             EntityKind = "DEVICE"
+	ConversationMemberKind EntityKind = "CONVERSATION_MEMBER"
+)
+
+var EntityKindMap = map[string]EntityKind{
+	"CONTACT":             ContactKind,
+	"CONVERSATION":        ConversationKind,
+	"EVENT":               EventKind,
+	"DEVICE":              DeviceKind,
+	"CONVERSATION_MEMBER": ConversationMemberKind,
+}
+
+type globalID struct {
+	Kind EntityKind
+	ID   string
+}
+
+func (gid *globalID) String() string {
+	id := strings.Join([]string{string(gid.Kind), gid.ID}, ":")
+	return base64.StdEncoding.EncodeToString([]byte(id))
+
+}
+
+func (gid *globalID) FromString(e string) error {
+	bs, err := base64.StdEncoding.DecodeString(e)
+	if err != nil {
+		return err
+	}
+
+	sid := strings.Split(string(bs), ":")
+	if len(sid) != 2 {
+		return fmt.Errorf("Not a valid global id, should have two element speared by `:`")
+	}
+
+	if kind, ok := EntityKindMap[sid[0]]; ok {
+		gid.Kind = kind
+		gid.ID = sid[1]
+		return nil
+	}
+
+	return fmt.Errorf("Unknown entity kind `%s`", sid[0])
+}
 
 func convertContactStatus(value entity.Contact_Status) *model.BertyEntityContactStatus {
 	ret, ok := map[entity.Contact_Status]model.BertyEntityContactStatus{
@@ -33,8 +84,13 @@ func convertContact(contact *entity.Contact) *model.BertyEntityContact {
 		return &model.BertyEntityContact{}
 	}
 
+	contactGlobalID := &globalID{
+		Kind: ContactKind,
+		ID:   contact.ID,
+	}
+
 	return &model.BertyEntityContact{
-		ID:          contact.ID,
+		ID:          contactGlobalID.String(),
 		Status:      convertContactStatus(contact.Status),
 		DisplayName: &contact.DisplayName,
 		CreatedAt:   &scalar.DateTime{Value: &contact.CreatedAt},
@@ -64,8 +120,13 @@ func convertConversationMember(conversationMember *entity.ConversationMember) *m
 		return &model.BertyEntityConversationMember{}
 	}
 
+	conversationMemberGlobalID := &globalID{
+		Kind: ConversationMemberKind,
+		ID:   conversationMember.ID,
+	}
+
 	return &model.BertyEntityConversationMember{
-		ID:             conversationMember.ID,
+		ID:             conversationMemberGlobalID.String(),
 		Status:         convertConversationMemberStatus(conversationMember.Status),
 		Contact:        convertContact(conversationMember.Contact),
 		ConversationID: &conversationMember.ConversationID,
@@ -91,8 +152,13 @@ func convertConversation(conversation *entity.Conversation) *model.BertyEntityCo
 		members = append(members, convertConversationMember(member))
 	}
 
+	conversationGlobalID := &globalID{
+		Kind: ConversationKind,
+		ID:   conversation.ID,
+	}
+
 	return &model.BertyEntityConversation{
-		ID:        conversation.ID,
+		ID:        conversationGlobalID.String(),
 		Title:     &conversation.Title,
 		Topic:     &conversation.Topic,
 		Members:   members,
@@ -123,8 +189,13 @@ func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
 		return &model.BertyP2pEvent{}
 	}
 
+	eventGlobalID := &globalID{
+		Kind: EventKind,
+		ID:   event.ID,
+	}
+
 	return &model.BertyP2pEvent{
-		ID:                 &event.ID,
+		ID:                 eventGlobalID.String(),
 		SenderID:           &event.SenderID,
 		Direction:          convertEventDirection(event.Direction),
 		SenderAPIVersion:   convertUint32(event.SenderAPIVersion),
@@ -169,7 +240,7 @@ func convertEventKind(value p2p.Kind) *model.BertyP2pKind {
 // 		return nil
 // 	}
 
-// 	t := value.UTC().Format(time.RFC3339Nano)
+// 	t := value.UTC().Format(time.RFC3339
 
 // 	return &t
 // }
@@ -189,16 +260,19 @@ func convertEventDirection(value p2p.Event_Direction) *model.BertyP2pEventDirect
 	return &ret
 }
 
-func memberSliceFromContactIds(contactsID []string) []*entity.ConversationMember {
-	var members []*entity.ConversationMember
+func memberSliceFromContactIds(contactsID []string) ([]*entity.ConversationMember, error) {
+	members := make([]*entity.ConversationMember, len(contactsID))
+	for i, cid := range contactsID {
+		var gid globalID
+		err := gid.FromString(cid)
+		if err != nil {
+			return nil, err
+		}
 
-	for i := range contactsID {
-		contactID := contactsID[i]
-
-		members = append(members, &entity.ConversationMember{
-			ContactID: contactID,
-		})
+		members[i] = &entity.ConversationMember{
+			ContactID: gid.ID,
+		}
 	}
 
-	return members
+	return members, nil
 }
