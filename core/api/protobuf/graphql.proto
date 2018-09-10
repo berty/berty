@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package protobuf.gql;
+
+import "google/protobuf/descriptor.proto";
+
+extend google.protobuf.MethodOptions {
+  string graphql_fields = 53001;
+  string graphql_type = 53002;
+  string graphql_interface = 53003;
+}
+
+extend google.protobuf.FieldOptions {
+  bool graphql_id = 53004;
+}

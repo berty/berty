@@ -28,19 +28,19 @@ func convertContactStatus(value entity.Contact_Status) *model.BertyEntityContact
 	return &ret
 }
 
-func convertContact(contact *entity.Contact, err error) (*model.BertyEntityContact, error) {
+func convertContact(contact *entity.Contact) *model.BertyEntityContact {
 	if contact == nil {
-		return &model.BertyEntityContact{}, err
+		return &model.BertyEntityContact{}
 	}
 
 	return &model.BertyEntityContact{
-		ID:          &contact.ID,
+		ID:          contact.ID,
 		Status:      convertContactStatus(contact.Status),
 		DisplayName: &contact.DisplayName,
 		CreatedAt:   &scalar.DateTime{Value: &contact.CreatedAt},
 		UpdatedAt:   &scalar.DateTime{Value: &contact.UpdatedAt},
 		DeletedAt:   &scalar.DateTime{Value: contact.DeletedAt},
-	}, err
+	}
 }
 
 func convertConversationMemberStatus(value entity.ConversationMember_Status) *model.BertyEntityConversationMemberStatus {
@@ -64,12 +64,10 @@ func convertConversationMember(conversationMember *entity.ConversationMember) *m
 		return &model.BertyEntityConversationMember{}
 	}
 
-	contact, _ := convertContact(conversationMember.Contact, nil)
-
 	return &model.BertyEntityConversationMember{
-		ID:             &conversationMember.ID,
+		ID:             conversationMember.ID,
 		Status:         convertConversationMemberStatus(conversationMember.Status),
-		Contact:        contact,
+		Contact:        convertContact(conversationMember.Contact),
 		ConversationID: &conversationMember.ConversationID,
 		ContactID:      &conversationMember.ContactID,
 		CreatedAt:      &scalar.DateTime{Value: &conversationMember.CreatedAt},
@@ -78,9 +76,9 @@ func convertConversationMember(conversationMember *entity.ConversationMember) *m
 	}
 }
 
-func convertConversation(conversation *entity.Conversation, err error) (*model.BertyEntityConversation, error) {
+func convertConversation(conversation *entity.Conversation) *model.BertyEntityConversation {
 	if conversation == nil {
-		return &model.BertyEntityConversation{}, err
+		return &model.BertyEntityConversation{}
 	}
 
 	var members []*model.BertyEntityConversationMember
@@ -94,14 +92,14 @@ func convertConversation(conversation *entity.Conversation, err error) (*model.B
 	}
 
 	return &model.BertyEntityConversation{
-		ID:        &conversation.ID,
+		ID:        conversation.ID,
 		Title:     &conversation.Title,
 		Topic:     &conversation.Topic,
 		Members:   members,
 		CreatedAt: &scalar.DateTime{Value: &conversation.CreatedAt},
 		UpdatedAt: &scalar.DateTime{Value: &conversation.UpdatedAt},
 		DeletedAt: &scalar.DateTime{Value: conversation.DeletedAt},
-	}, err
+	}
 }
 
 func convertUint32(value uint32) *int {
@@ -120,9 +118,9 @@ func convertBytes(value *[]byte) *string {
 	return &encoded
 }
 
-func convertEvent(event *p2p.Event, err error) (*model.BertyP2pEvent, error) {
+func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
 	if event == nil {
-		return &model.BertyP2pEvent{}, err
+		return &model.BertyP2pEvent{}
 	}
 
 	return &model.BertyP2pEvent{
@@ -141,7 +139,7 @@ func convertEvent(event *p2p.Event, err error) (*model.BertyP2pEvent, error) {
 		SentAt:             &scalar.DateTime{Value: event.SentAt},
 		ReceivedAt:         &scalar.DateTime{Value: event.ReceivedAt},
 		AckedAt:            &scalar.DateTime{Value: event.AckedAt},
-	}, err
+	}
 }
 
 func convertEventKind(value p2p.Kind) *model.BertyP2pKind {
