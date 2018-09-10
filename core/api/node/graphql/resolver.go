@@ -46,9 +46,15 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, input model.Conta
 		input.IntroText = &tmp
 	}
 
+	var contactGlobalID globalID
+	err := contactGlobalID.FromString(input.ContactID)
+	if err != nil {
+		return nil, err
+	}
+
 	req := &service.ContactRequestInput{
 		Contact: &entity.Contact{
-			ID: input.ContactID,
+			ID: contactGlobalID.ID,
 		},
 		IntroText: *input.IntroText,
 	}
@@ -65,8 +71,14 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, input model.Conta
 }
 
 func (r *mutationResolver) ContactRemove(ctx context.Context, input model.ContactRemoveInput) (*model.ContactRemovePayload, error) {
+	var contactGlobalID globalID
+	err := contactGlobalID.FromString(input.ContactID)
+	if err != nil {
+		return nil, err
+	}
+
 	req := &entity.Contact{
-		ID: input.ContactID,
+		ID: contactGlobalID.ID,
 	}
 
 	contact, err := r.client.ContactRemove(ctx, req)
@@ -85,8 +97,14 @@ func (r *mutationResolver) ContactUpdate(ctx context.Context, input model.Contac
 		return nil, errors.New("contact update without a displayName is not currently supported")
 	}
 
+	var contactGlobalID globalID
+	err := contactGlobalID.FromString(input.ContactID)
+	if err != nil {
+		return nil, err
+	}
+
 	req := entity.Contact{
-		ID:          input.ContactID,
+		ID:          contactGlobalID.ID,
 		DisplayName: *input.DisplayName,
 	}
 
@@ -102,8 +120,24 @@ func (r *mutationResolver) ContactUpdate(ctx context.Context, input model.Contac
 }
 
 func (r *mutationResolver) ConversationCreate(ctx context.Context, input model.ConversationCreateInput) (*model.ConversationCreatePayload, error) {
+	membersID := make([]string, len(input.ContactsID))
+	for i, cid := range input.ContactsID {
+		gid := globalID{}
+		err := gid.FromString(cid)
+		if err != nil {
+			return nil, err
+		}
+
+		membersID[i] = gid.ID
+	}
+
+	members, err := memberSliceFromContactIds(input.ContactsID)
+	if err != nil {
+		return nil, err
+	}
+
 	req := &entity.Conversation{
-		Members: memberSliceFromContactIds(input.ContactsID),
+		Members: members,
 	}
 
 	conversation, err := r.client.ConversationCreate(ctx, req)
@@ -118,11 +152,22 @@ func (r *mutationResolver) ConversationCreate(ctx context.Context, input model.C
 }
 
 func (r *mutationResolver) ConversationInvite(ctx context.Context, input model.ConversationInviteInput) (*model.ConversationInvitePayload, error) {
+	var conversationGlobalID globalID
+	err := conversationGlobalID.FromString(input.ConversationID)
+	if err != nil {
+		return nil, err
+	}
+
+	members, err := memberSliceFromContactIds(input.ContactsID)
+	if err != nil {
+		return nil, err
+	}
+
 	req := &service.ConversationManageMembersInput{
 		Conversation: &entity.Conversation{
-			ID: input.ConversationID,
+			ID: conversationGlobalID.ID,
 		},
-		Members: memberSliceFromContactIds(input.ContactsID),
+		Members: members,
 	}
 
 	conversation, err := r.client.ConversationInvite(ctx, req)
@@ -137,11 +182,22 @@ func (r *mutationResolver) ConversationInvite(ctx context.Context, input model.C
 }
 
 func (r *mutationResolver) ConversationExclude(ctx context.Context, input model.ConversationExcludeInput) (*model.ConversationExcludePayload, error) {
+	var conversationGlobalID globalID
+	err := conversationGlobalID.FromString(input.ConversationID)
+	if err != nil {
+		return nil, err
+	}
+
+	members, err := memberSliceFromContactIds(input.ContactsID)
+	if err != nil {
+		return nil, err
+	}
+
 	req := &service.ConversationManageMembersInput{
 		Conversation: &entity.Conversation{
 			ID: input.ConversationID,
 		},
-		Members: memberSliceFromContactIds(input.ContactsID),
+		Members: members,
 	}
 
 	conversation, err := r.client.ConversationExclude(ctx, req)
@@ -156,9 +212,15 @@ func (r *mutationResolver) ConversationExclude(ctx context.Context, input model.
 }
 
 func (r *mutationResolver) ConversationAddMessage(ctx context.Context, input model.ConversationAddMessageInput) (*model.ConversationAddMessagePayload, error) {
+	var conversationGlobalID globalID
+	err := conversationGlobalID.FromString(input.ConversationID)
+	if err != nil {
+		return nil, err
+	}
+
 	req := &service.ConversationAddMessageInput{
 		Conversation: &entity.Conversation{
-			ID: input.ConversationID,
+			ID: conversationGlobalID.ID,
 		},
 		Message: &entity.Message{
 			Text: input.Message,

@@ -101,7 +101,7 @@ type BertyP2pConversationNewMessageAttrs struct {
 	Message *BertyEntityMessage `json:"message"`
 }
 type BertyP2pEvent struct {
-	ID                 *string                 `json:"id"`
+	ID                 string                  `json:"id"`
 	SenderID           *string                 `json:"senderId"`
 	CreatedAt          *scalar.DateTime        `json:"createdAt"`
 	UpdatedAt          *scalar.DateTime        `json:"updatedAt"`
