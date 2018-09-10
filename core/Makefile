@@ -132,5 +132,5 @@ api/p2p/kind.gen.go: $(PROTOS)
 	goimports -w ./api/p2p
 
 api/node/graphql/service.gen.graphql: $(PROTOS)
-	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	cd ./api/node/graphql && $(GQLGEN) -v gen
