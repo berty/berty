@@ -78,15 +78,15 @@ require (
 	github.com/libp2p/go-libp2p-routing v2.6.5+incompatible // indirect
 	github.com/libp2p/go-libp2p-secio v2.0.15+incompatible // indirect
 	github.com/libp2p/go-libp2p-swarm v3.0.19+incompatible // indirect
-	github.com/libp2p/go-libp2p-transport v3.0.13+incompatible // indirect
+	github.com/libp2p/go-libp2p-transport v3.0.13+incompatible
 	github.com/libp2p/go-libp2p-transport-upgrader v0.1.14 // indirect
 	github.com/libp2p/go-maddr-filter v1.1.9 // indirect
 	github.com/libp2p/go-mplex v0.2.30 // indirect
 	github.com/libp2p/go-msgio v0.0.6 // indirect
 	github.com/libp2p/go-reuseport v0.1.18
-	github.com/libp2p/go-reuseport-transport v0.1.10 // indirect
+	github.com/libp2p/go-reuseport-transport v0.1.10
 	github.com/libp2p/go-sockaddr v1.0.3 // indirect
-	github.com/libp2p/go-stream-muxer v3.0.1+incompatible // indirect
+	github.com/libp2p/go-stream-muxer v3.0.1+incompatible
 	github.com/libp2p/go-tcp-transport v2.0.14+incompatible // indirect
 	github.com/libp2p/go-testutil v1.2.8 // indirect
 	github.com/libp2p/go-ws-transport v2.0.14+incompatible // indirect
@@ -131,10 +131,10 @@ require (
 	github.com/whyrusleeping/go-smux-multiplex v3.0.16+incompatible // indirect
 	github.com/whyrusleeping/go-smux-multistream v2.0.2+incompatible // indirect
 	github.com/whyrusleeping/go-smux-yamux v2.0.6+incompatible // indirect
-	github.com/whyrusleeping/mafmt v0.0.0-20180627004827-1dc32401ee9f // indirect
+	github.com/whyrusleeping/mafmt v0.0.0-20180627004827-1dc32401ee9f
 	github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30 // indirect
 	github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 // indirect
-	github.com/whyrusleeping/yamux v1.1.2 // indirect
+	github.com/whyrusleeping/yamux v1.1.2
 	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f
 	go.uber.org/atomic v1.3.2 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
