@@ -16,4 +16,3 @@ export default createStackNavigator(
   },
   { initialRouteName: '1' }
 )
-

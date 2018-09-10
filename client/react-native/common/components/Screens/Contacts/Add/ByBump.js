@@ -3,6 +3,6 @@ import { Text } from '../../../Library'
 
 export default class ByBump extends PureComponent {
   render () {
-    return <Text>Hello World !</Text>
+    return <Text>Bump!</Text>
   }
 }
