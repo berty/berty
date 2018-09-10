@@ -6,6 +6,7 @@ export default graphql`
       id
       displayName
       overrideDisplayName
+      status
     }
   }
 `
