@@ -1,4 +1,4 @@
-package chat.berty;
+package com.bluetooth;
 
 import android.app.Activity;
 import android.app.Service;
@@ -43,7 +43,7 @@ import static android.content.ContentValues.TAG;
 public class BertyBluetoothModule extends ReactContextBaseJavaModule {
     protected BluetoothAdapter mBluetoothAdapter;
     final static int BLUETOOTH_ENABLE_REQUEST = 1;
-    protected ReactApplicationContext mReactContext;
+    public ReactApplicationContext mReactContext;
 
     protected UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 

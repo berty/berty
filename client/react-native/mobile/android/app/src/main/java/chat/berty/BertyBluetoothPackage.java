@@ -1,4 +1,4 @@
-package chat.berty;
+package com.bluetooth;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

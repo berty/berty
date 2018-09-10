@@ -1,4 +1,4 @@
-package chat.berty;
+package com.bluetooth;
 
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
