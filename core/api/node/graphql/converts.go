@@ -12,12 +12,12 @@ import (
 func convertContactStatus(value entity.Contact_Status) *model.BertyEntityContactStatus {
 	ret, ok := map[entity.Contact_Status]model.BertyEntityContactStatus{
 		entity.Contact_Unknown:         model.BertyEntityContactStatusUnknown,
-		entity.Contact_IsFriend:        model.BertyEntityContactStatusUnknown,
-		entity.Contact_IsTrustedFriend: model.BertyEntityContactStatusUnknown,
-		entity.Contact_IsRequested:     model.BertyEntityContactStatusUnknown,
-		entity.Contact_RequestedMe:     model.BertyEntityContactStatusUnknown,
-		entity.Contact_IsBlocked:       model.BertyEntityContactStatusUnknown,
-		entity.Contact_Myself:          model.BertyEntityContactStatusUnknown,
+		entity.Contact_IsFriend:        model.BertyEntityContactStatusIsFriend,
+		entity.Contact_IsTrustedFriend: model.BertyEntityContactStatusIsTrustedFriend,
+		entity.Contact_IsRequested:     model.BertyEntityContactStatusIsRequested,
+		entity.Contact_RequestedMe:     model.BertyEntityContactStatusRequestedMe,
+		entity.Contact_IsBlocked:       model.BertyEntityContactStatusIsBlocked,
+		entity.Contact_Myself:          model.BertyEntityContactStatusMyself,
 	}[value]
 
 	if !ok {
