@@ -42,31 +42,6 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
-// EventStream implements berty.node.EventStream
-func (n *Node) EventStream(_ *node.Void, stream node.Service_EventStreamServer) error {
-	if n.clientEventsConnected {
-		return ErrAnotherClientIsAlreadyConnected
-	}
-
-	logger().Debug("EventStream connected")
-	n.clientEventsConnected = true
-	defer func() {
-		logger().Debug("EventStream disconnected")
-		n.clientEventsConnected = false
-	}()
-
-	for {
-		select {
-		case <-stream.Context().Done():
-			return stream.Context().Err()
-		case event := <-n.clientEvents:
-			if err := stream.Send(event); err != nil {
-				return err
-			}
-		}
-	}
-}
-
 //
 // contacts
 //

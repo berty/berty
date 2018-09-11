@@ -23,7 +23,7 @@ service Service {
   //
 
   // yield new events in real-time
-  rpc EventStream(Void) returns (stream berty.p2p.Event) {
+  rpc EventStream(EventStreamInput) returns (stream berty.p2p.Event) {
     option (graphql_type) = "Subscription";
   };
   // list old events
@@ -106,6 +106,10 @@ message ContactRequestInput {
 message ConversationAddMessageInput {
   berty.entity.Conversation conversation = 1;
   berty.entity.Message message = 2;
+}
+
+message EventStreamInput {
+  berty.p2p.Event filter = 1;
 }
 
 message EventListInput {

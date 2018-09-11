@@ -38,7 +38,7 @@ func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byt
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput node.Void
+	var typedInput node.EventStreamInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
