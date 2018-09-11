@@ -11,6 +11,7 @@ import (
 	"syscall"
 
 	gqlhandler "github.com/99designs/gqlgen/handler"
+	"github.com/gorilla/websocket"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -212,7 +213,11 @@ func daemon(opts *daemonOptions) error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
-	mux.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver)))
+	mux.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver), gqlhandler.WebsocketUpgrader(websocket.Upgrader{
+		CheckOrigin: func(*http.Request) bool {
+			return true
+		},
+	})))
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"}, // FIXME: use specific URLs?

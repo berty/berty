@@ -1,7 +1,7 @@
-import { Platform } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import { colors } from './constants'
 
-const styles = {
+const styles = StyleSheet.create({
   padding: {
     padding: 16,
   },
@@ -56,6 +56,7 @@ const styles = {
   smallText: {
     lineHeight: 20,
     fontSize: 14,
+    textAlign: 'center',
     color: colors.textGrey,
   },
   mediumText: {
@@ -149,7 +150,7 @@ const styles = {
     borderBottomWidth: 0.5,
     borderColor: colors.borderGrey,
   },
-}
+})
 
 export const {
   padding,
