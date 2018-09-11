@@ -39,7 +39,7 @@ func (m *SimpleManager) AddPeer(driver *SimpleDriver) {
 // Driver
 //
 
-type SimpleDriver struct {
+ type SimpleDriver struct {
 	network.Driver
 	manager  *SimpleManager
 	channels []string

@@ -46,9 +46,9 @@ func (gid *globalID) FromString(e string) error {
 		return err
 	}
 
-	sid := strings.Split(string(bs), ":")
+	sid := strings.SplitN(string(bs), ":", 2)
 	if len(sid) != 2 {
-		return fmt.Errorf("Not a valid global id, should have two element speared by `:`")
+		return fmt.Errorf("Not a valid global id `%s`", bs)
 	}
 
 	if kind, ok := EntityKindMap[sid[0]]; ok {

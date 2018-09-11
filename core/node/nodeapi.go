@@ -12,6 +12,9 @@ import (
 	"berty.tech/core/sql"
 )
 
+// Node implements ServiceServer
+var _ node.ServiceServer = (*Node)(nil)
+
 // WithNodeGrpcServer registers the Node as a 'berty.node' protobuf server implementation
 func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 	return func(n *Node) {
@@ -40,6 +43,18 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 		}
 	}
 	return nil
+}
+
+// GetEvent implements berty.node.GetEvent
+func (n *Node) GetEvent(ctx context.Context, event *p2p.Event) (*p2p.Event, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
+	if err := n.sql.First(event, "ID = ?", event.ID).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get event from database")
+	}
+
+	return event, nil
 }
 
 //
@@ -180,6 +195,18 @@ func (n *Node) ContactList(_ *node.Void, stream node.Service_ContactListServer) 
 	return nil
 }
 
+// GetContact implements berty.node.GetContact
+func (n *Node) GetContact(ctx context.Context, contact *entity.Contact) (*entity.Contact, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
+	if err := n.sql.First(contact, "ID = ?", contact.ID).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get contact from database")
+	}
+
+	return contact, nil
+}
+
 //
 // Conversation
 //
@@ -303,4 +330,28 @@ func (n *Node) ConversationAddMessage(_ context.Context, input *node.Conversatio
 		return nil, err
 	}
 	return event, nil
+}
+
+// GetConversation implements berty.node.GetConversation
+func (n *Node) GetConversation(ctx context.Context, conversation *entity.Conversation) (*entity.Conversation, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
+	if err := n.sql.First(conversation, "ID = ?", conversation.ID).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get conversation from database")
+	}
+
+	return conversation, nil
+}
+
+// GetConversationMember implements berty.node.GetConversationMember
+func (n *Node) GetConversationMember(ctx context.Context, conversationMember *entity.ConversationMember) (*entity.ConversationMember, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
+	if err := n.sql.First(conversationMember, "ID = ?", conversationMember.ID).Error; err != nil {
+		return nil, errors.Wrap(err, "failed to get conversationMember from database")
+	}
+
+	return conversationMember, nil
 }

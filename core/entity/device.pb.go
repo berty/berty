@@ -6,7 +6,7 @@ package entity // import "berty.tech/core/entity"
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "api/protobuf"
+import _ "berty.tech/core/api/protobuf"
 import _ "github.com/gogo/protobuf/gogoproto"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
 
@@ -57,7 +57,7 @@ func (x Device_Status) String() string {
 	return proto.EnumName(Device_Status_name, int32(x))
 }
 func (Device_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_device_0b63a92776f6f59c, []int{0, 0}
+	return fileDescriptor_device_582c3b7679216ee1, []int{0, 0}
 }
 
 type Device struct {
@@ -78,7 +78,7 @@ func (m *Device) Reset()         { *m = Device{} }
 func (m *Device) String() string { return proto.CompactTextString(m) }
 func (*Device) ProtoMessage()    {}
 func (*Device) Descriptor() ([]byte, []int) {
-	return fileDescriptor_device_0b63a92776f6f59c, []int{0}
+	return fileDescriptor_device_582c3b7679216ee1, []int{0}
 }
 func (m *Device) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -673,9 +673,9 @@ var (
 	ErrIntOverflowDevice   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("entity/device.proto", fileDescriptor_device_0b63a92776f6f59c) }
+func init() { proto.RegisterFile("entity/device.proto", fileDescriptor_device_582c3b7679216ee1) }
 
-var fileDescriptor_device_0b63a92776f6f59c = []byte{
+var fileDescriptor_device_582c3b7679216ee1 = []byte{
 	// 440 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x91, 0xbd, 0x8e, 0xd3, 0x40,
 	0x14, 0x85, 0x33, 0x4e, 0x30, 0xe4, 0x26, 0x41, 0xd6, 0x80, 0x90, 0x09, 0x52, 0x6c, 0xa5, 0xb2,

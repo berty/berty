@@ -17,16 +17,20 @@ import (
 func init() {
 	registerServerStream("berty.node.EventStream", NodeEventStream)
 	registerServerStream("berty.node.EventList", NodeEventList)
+	registerUnary("berty.node.GetEvent", NodeGetEvent)
 	registerUnary("berty.node.ContactRequest", NodeContactRequest)
 	registerUnary("berty.node.ContactAcceptRequest", NodeContactAcceptRequest)
 	registerUnary("berty.node.ContactRemove", NodeContactRemove)
 	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
 	registerServerStream("berty.node.ContactList", NodeContactList)
+	registerUnary("berty.node.GetContact", NodeGetContact)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
 	registerUnary("berty.node.ConversationExclude", NodeConversationExclude)
 	registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
+	registerUnary("berty.node.GetConversation", NodeGetConversation)
+	registerUnary("berty.node.GetConversationMember", NodeGetConversationMember)
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
 }
@@ -93,6 +97,20 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 	}()
 
 	return streamProxy, nil
+}
+
+func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "GetEvent"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput p2p.Event
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().GetEvent(ctx, &typedInput)
 }
 
 func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
@@ -183,6 +201,20 @@ func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byt
 	return streamProxy, nil
 }
 
+func NodeGetContact(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "GetContact"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput entity.Contact
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().GetContact(ctx, &typedInput)
+}
+
 func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
 		zap.String("service", "Service"),
@@ -269,6 +301,34 @@ func NodeConversationAddMessage(client *client.Client, ctx context.Context, json
 		return nil, err
 	}
 	return client.Node().ConversationAddMessage(ctx, &typedInput)
+}
+
+func NodeGetConversation(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "GetConversation"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput entity.Conversation
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().GetConversation(ctx, &typedInput)
+}
+
+func NodeGetConversationMember(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "GetConversationMember"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput entity.ConversationMember
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().GetConversationMember(ctx, &typedInput)
 }
 
 func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {

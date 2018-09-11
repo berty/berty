@@ -18,12 +18,17 @@ service Service {
 
   // yield new events in real-time
   rpc EventStream(EventStreamInput) returns (stream berty.p2p.Event) {
-    option (protobuf.gql.graphql_type) = "Subscription";
+    option (berty.gql.graphql_fields) = "kind: String, conversationID: String";
+    option (berty.gql.graphql_type) = "Subscription";
   };
   // list old events
   rpc EventList(EventListInput) returns (stream berty.p2p.Event) {
-    option (protobuf.gql.graphql_fields) = "limit: Int";
-    option (protobuf.gql.graphql_type) = "Query";
+    option (berty.gql.graphql_fields) = "limit: Int";
+    option (berty.gql.graphql_type) = "Query";
+  };
+  rpc GetEvent(berty.p2p.Event) returns (berty.p2p.Event) {
+    option (berty.gql.graphql_fields) = "eventID: String!";
+    option (berty.gql.graphql_type) = "Query";
   };
 
   //
@@ -31,49 +36,61 @@ service Service {
   //
 
   rpc ContactRequest(ContactRequestInput) returns (berty.entity.Contact) {
-    option (protobuf.gql.graphql_fields) = "contactID: String!, introText: String";
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_fields) = "contactID: String!, introText: String";
+    option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactAcceptRequest(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (protobuf.gql.graphql_fields) = "contactID: String!";
-    option (protobuf.gql.graphql_type) = "mutation";
+    option (berty.gql.graphql_fields) = "contactID: String!";
+    option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactRemove(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (protobuf.gql.graphql_fields) = "contactID: String!";
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_fields) = "contactID: String!";
+    option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactUpdate(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (protobuf.gql.graphql_fields) = "contactID: String!, displayName: String";
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_fields) = "contactID: String!, displayName: String";
+    option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactList(Void) returns (stream berty.entity.Contact) {
-    option (protobuf.gql.graphql_type) = "Query";
+    option (berty.gql.graphql_type) = "Query";
   };
-
+  rpc GetContact(berty.entity.Contact) returns (berty.entity.Contact) {
+    option (berty.gql.graphql_fields) = "contactID: String!";
+    option (berty.gql.graphql_type) = "Query";
+  };
 
   //
   // Conversations
   //
 
   rpc ConversationCreate(berty.entity.Conversation) returns (berty.entity.Conversation) {
-    option (protobuf.gql.graphql_fields) = "contactsID: [String!]!";
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_fields) = "contactsID: [String!]!";
+    option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationList(Void) returns (stream berty.entity.Conversation) {
-    option (protobuf.gql.graphql_type) = "Query";
+    option (berty.gql.graphql_type) = "Query";
   };
   rpc ConversationInvite(ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (protobuf.gql.graphql_fields) = "conversationID: String!, contactsID: [String!]!";
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_fields) = "conversationID: String!, contactsID: [String!]!";
+    option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationExclude(ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (protobuf.gql.graphql_fields) = "conversationID: String!, contactsID: [String!]!";
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_fields) = "conversationID: String!, contactsID: [String!]!";
+    option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event) {
-    option (protobuf.gql.graphql_fields) = "conversationID: String!, message: String!";
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_fields) = "conversationID: String!, message: String!";
+    option (berty.gql.graphql_type) = "Mutation";
   };
+  rpc GetConversation(berty.entity.Conversation) returns (berty.entity.Conversation) {
+    option (berty.gql.graphql_fields) = "conversationID: String!";
+    option (berty.gql.graphql_type) = "Query";
+  };
+  rpc GetConversationMember(berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
+    option (berty.gql.graphql_fields) = "conversationMemberID: String!";
+    option (berty.gql.graphql_type) = "Query";
+  };
+
 
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
@@ -88,7 +105,7 @@ service Service {
   rpc HandleEvent(berty.p2p.Event) returns (Void) {};
 
   rpc GenerateFakeData(Void) returns (Void) {
-    option (protobuf.gql.graphql_type) = "Mutation";
+    option (berty.gql.graphql_type) = "Mutation";
   };
 }
 
