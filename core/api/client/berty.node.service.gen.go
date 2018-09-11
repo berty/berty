@@ -16,7 +16,7 @@ func (c *Client) Node() node.ServiceClient {
 	return node.NewServiceClient(c.conn)
 }
 
-func (c *Client) EventStream(ctx context.Context, input *node.Void) ([]*p2p.Event, error) {
+func (c *Client) EventStream(ctx context.Context, input *node.EventStreamInput) ([]*p2p.Event, error) {
 	stream, err := c.Node().EventStream(ctx, input)
 	if err != nil {
 		return nil, err

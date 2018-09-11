@@ -34,7 +34,7 @@ func New(opts ...Option) (*Bot, error) {
 
 func (b *Bot) Start() error {
 	ctx := context.Background()
-	stream, err := b.client.Node().EventStream(ctx, &node.Void{})
+	stream, err := b.client.Node().EventStream(ctx, &node.EventStreamInput{})
 	if err != nil {
 		return err
 	}

@@ -18,14 +18,14 @@ import (
 
 // Node is the top-level object of a Berty peer
 type Node struct {
-	clientEvents          chan *p2p.Event
-	outgoingEvents        chan *p2p.Event
-	clientEventsConnected bool
-	sql                   *gorm.DB
-	config                *entity.Config
-	initDevice            *entity.Device
-	handleMutex           sync.Mutex
-	networkDriver         network.Driver
+	clientEvents            chan *p2p.Event
+	clientEventsSubscribers []clientEventSubscriber
+	outgoingEvents          chan *p2p.Event
+	sql                     *gorm.DB
+	config                  *entity.Config
+	initDevice              *entity.Device
+	handleMutex             sync.Mutex
+	networkDriver           network.Driver
 
 	pubkey    []byte // FIXME: use a crypto instance, i.e., enclave
 	b64pubkey string // FIXME: same as above
@@ -110,5 +110,3 @@ func (n *Node) DeviceID() string {
 func (n *Node) UserID() string {
 	return n.config.Myself.ID
 }
-
-func (n *Node) ClientEventsChan() chan *p2p.Event { return n.clientEvents }

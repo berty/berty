@@ -195,7 +195,7 @@ type subscriptionResolver struct{ *Resolver }
 
 func (r *subscriptionResolver) EventStream(ctx context.Context) (<-chan *model.BertyP2pEvent, error) {
 	ce := make(chan *model.BertyP2pEvent)
-	req := &service.Void{}
+	req := &service.EventStreamInput{}
 	stream, err := r.client.EventStream(ctx, req)
 	if err != nil {
 		return nil, err

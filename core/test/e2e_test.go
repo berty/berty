@@ -44,12 +44,15 @@ func TestWithEnqueuer(t *testing.T) {
 		Convey("Initialize nodes", FailureHalts, func() {
 			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
+			So(alice.InitEventStream(), ShouldBeNil)
 
 			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
+			So(bob.InitEventStream(), ShouldBeNil)
 
 			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
+			So(eve.InitEventStream(), ShouldBeNil)
 		})
 
 		Convey("Nodes should be empty when just initialized", FailureHalts, func() {
@@ -160,7 +163,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
 			})
 			Convey("Bob emits the ContactRequest event to its client", FailureHalts, func() {
-				event := <-bob.node.ClientEventsChan()
+				event := <-bob.eventStream
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
@@ -242,7 +245,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 1, 1, 0, 0, 0})
 			})
 			Convey("Alice emits the ContactRequestAccepted event to its clients", FailureHalts, func() {
-				event := <-alice.node.ClientEventsChan()
+				event := <-alice.eventStream
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
@@ -268,10 +271,11 @@ func TestWithEnqueuer(t *testing.T) {
 				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
+				time.Sleep(10 * time.Millisecond)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 0, 0, 0, 0})
 			})
 			Convey("Alice emits the ContactShareMe event to its client", FailureHalts, func() {
-				event := <-alice.node.ClientEventsChan()
+				event := <-alice.eventStream
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
@@ -357,7 +361,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 1, 0, 0})
 			})
 			Convey("Bob emits the ContactShareMe event to its client", FailureHalts, func() {
-				event := <-bob.node.ClientEventsChan()
+				event := <-bob.eventStream
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
@@ -508,6 +512,11 @@ func TestWithSimpleNetwork(t *testing.T) {
 			network.AddPeer(aliceNetwork)
 			network.AddPeer(bobNetwork)
 			network.AddPeer(eveNetwork)
+
+			time.Sleep(10 * time.Millisecond)
+			So(alice.InitEventStream(), ShouldBeNil)
+			So(bob.InitEventStream(), ShouldBeNil)
+			So(eve.InitEventStream(), ShouldBeNil)
 		})
 		scenario(t, alice, bob, eve)
 	})
@@ -537,6 +546,10 @@ func TestNodesWithP2PNetwork(t *testing.T) {
 			So(err, ShouldBeNil)
 			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, eveNetwork)
 			So(err, ShouldBeNil)
+
+			So(bob.InitEventStream(), ShouldBeNil)
+			So(alice.InitEventStream(), ShouldBeNil)
+			So(eve.InitEventStream(), ShouldBeNil)
 		})
 		scenario(t, alice, bob, eve)
 	})

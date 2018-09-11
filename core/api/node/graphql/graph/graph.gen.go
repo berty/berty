@@ -1292,6 +1292,49 @@ func (ec *executionContext) _BertyNodeEventListInput_filter(ctx context.Context,
 	return ec._BertyP2pEvent(ctx, field.Selections, res)
 }
 
+var bertyNodeEventStreamInputImplementors = []string{"BertyNodeEventStreamInput"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeEventStreamInput(ctx context.Context, sel ast.SelectionSet, obj *model.BertyNodeEventStreamInput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeEventStreamInputImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeEventStreamInput")
+		case "filter":
+			out.Values[i] = ec._BertyNodeEventStreamInput_filter(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeEventStreamInput_filter(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeEventStreamInput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeEventStreamInput"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Filter, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyP2pEvent)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyP2pEvent(ctx, field.Selections, res)
+}
+
 var bertyNodeVoidImplementors = []string{"BertyNodeVoid"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -7702,6 +7745,9 @@ type BertyNodeContactRequestInput {
 type BertyNodeConversationAddMessageInput {
   conversation: BertyEntityConversation
   message: BertyEntityMessage
+} 
+type BertyNodeEventStreamInput {
+  filter: BertyP2pEvent
 } 
 type BertyNodeEventListInput {
   limit: Int
