@@ -27,7 +27,6 @@ class ByPublicKey extends PureComponent {
     const {
       state: { routeName },
     } = navigation
-    console.log(routeName)
     const { contactID, myID } = this.state
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>

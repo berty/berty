@@ -33,7 +33,7 @@ help:
 .PHONY: dev
 dev: install
 	@if ! command -v gin &>/dev/null; then go get github.com/codegangsta/gin; fi
-	$(BUILD_ENV) gin --immediate --appPort=1337 --build=./cmd/berty run -- daemon $(RUN_DAEMON_OPTS)
+	$(BUILD_ENV) gin --immediate --port=2999 --appPort=1337 --build=./cmd/berty run -- daemon $(RUN_DAEMON_OPTS)
 
 .PHONY: run
 run: $(BIN)

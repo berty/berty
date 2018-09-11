@@ -1,54 +1,69 @@
 import React, { PureComponent } from 'react'
-import { FlatList, TouchableOpacity, TextInput, Image } from 'react-native'
-import { Screen, Flex, Text, Separator, Button } from '../../Library'
+import {
+  FlatList,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  View,
+} from 'react-native'
+import { Screen, Flex, Text, Separator } from '../../Library'
 import { colors } from '../../../constants'
 import {
   paddingLeft,
   paddingRight,
   marginHorizontal,
   padding,
-  marginTop,
   borderBottom,
+  paddingBottom,
 } from '../../../styles'
 import { QueryReducer } from '../../../relay'
 import { queries } from '../../../graphql'
 
 const Header = ({ navigation }) => (
-  <Flex.Rows
-    size={1}
+  <View
     style={[
       { backgroundColor: colors.white, height: 100 },
       borderBottom,
       padding,
     ]}
   >
-    <Flex.Cols size={1} align='center' space='between'>
-      <Text icon='feather-users' left large color={colors.black}>
-        Contacts
-      </Text>
-      <Button
-        icon='user-plus'
-        large
-        color='black'
-        onPress={() => navigation.push('Add')}
-      />
-    </Flex.Cols>
-    <TextInput
-      style={[
-        {
-          height: 36,
-          backgroundColor: colors.grey7,
-          borderWidth: 0,
-          borderRadius: 18,
-          outline: 'none',
-        },
-        marginTop,
-        paddingLeft,
-        paddingRight,
-      ]}
-      placeholder='Search'
-    />
-  </Flex.Rows>
+    <Flex.Rows>
+      <Flex.Cols
+        size={1}
+        align='center'
+        space='between'
+        style={[paddingBottom]}
+      >
+        <Text icon='feather-users' left large color={colors.black}>
+          Contacts
+        </Text>
+        <Text
+          icon='user-plus'
+          large
+          right
+          button
+          color='black'
+          onPress={() => navigation.push('Add')}
+        />
+      </Flex.Cols>
+      <Flex.Cols size={1} style={[paddingBottom]}>
+        <TextInput
+          style={[
+            {
+              height: 36,
+              flex: 1,
+              backgroundColor: colors.grey7,
+              borderWidth: 0,
+              borderRadius: 18,
+            },
+            paddingLeft,
+            paddingRight,
+          ]}
+          placeholder='Search'
+        />
+      </Flex.Cols>
+    </Flex.Rows>
+  </View>
 )
 
 const Item = ({
