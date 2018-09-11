@@ -6,7 +6,7 @@ package entity // import "berty.tech/core/entity"
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "api/protobuf"
+import _ "berty.tech/core/api/protobuf"
 import _ "github.com/gogo/protobuf/gogoproto"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
 
@@ -63,7 +63,7 @@ func (x Contact_Status) String() string {
 	return proto.EnumName(Contact_Status_name, int32(x))
 }
 func (Contact_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_contact_8af1dc1e2c371dde, []int{0, 0}
+	return fileDescriptor_contact_bc1201a8728a8926, []int{0, 0}
 }
 
 type Contact struct {
@@ -87,7 +87,7 @@ func (m *Contact) Reset()         { *m = Contact{} }
 func (m *Contact) String() string { return proto.CompactTextString(m) }
 func (*Contact) ProtoMessage()    {}
 func (*Contact) Descriptor() ([]byte, []int) {
-	return fileDescriptor_contact_8af1dc1e2c371dde, []int{0}
+	return fileDescriptor_contact_bc1201a8728a8926, []int{0}
 }
 func (m *Contact) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -846,9 +846,9 @@ var (
 	ErrIntOverflowContact   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("entity/contact.proto", fileDescriptor_contact_8af1dc1e2c371dde) }
+func init() { proto.RegisterFile("entity/contact.proto", fileDescriptor_contact_bc1201a8728a8926) }
 
-var fileDescriptor_contact_8af1dc1e2c371dde = []byte{
+var fileDescriptor_contact_bc1201a8728a8926 = []byte{
 	// 528 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x51, 0xcd, 0x6e, 0xd3, 0x4c,
 	0x14, 0xad, 0xd3, 0x36, 0x6d, 0xc6, 0xf9, 0xb1, 0x26, 0xe9, 0xf7, 0x99, 0x08, 0x25, 0x26, 0x12,

@@ -5,6 +5,7 @@ package graphql
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 
 	"go.uber.org/zap"
@@ -12,6 +13,7 @@ import (
 	service "berty.tech/core/api/node"
 	"berty.tech/core/api/node/graphql/graph"
 	"berty.tech/core/api/node/graphql/model"
+	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 )
 
@@ -65,6 +67,29 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, input model.Conta
 	}
 
 	return &model.ContactRequestPayload{
+		BertyEntityContact: convertContact(contact),
+		ClientMutationID:   input.ClientMutationID,
+	}, nil
+}
+
+func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, input model.ContactAcceptRequestInput) (*model.ContactAcceptRequestPayload, error) {
+	// @TODO: Find a way to properly handle defaults values
+	var contactGlobalID globalID
+	err := contactGlobalID.FromString(input.ContactID)
+	if err != nil {
+		return nil, err
+	}
+
+	req := &entity.Contact{
+		ID: contactGlobalID.ID,
+	}
+
+	contact, err := r.client.ContactAcceptRequest(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.ContactAcceptRequestPayload{
 		BertyEntityContact: convertContact(contact),
 		ClientMutationID:   input.ClientMutationID,
 	}, nil
@@ -254,7 +279,23 @@ func (r *mutationResolver) GenerateFakeData(ctx context.Context, input model.Gen
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
-	panic("not implemented")
+	var gid globalID
+	if err := gid.FromString(id); err != nil {
+		return nil, err
+	}
+
+	switch gid.Kind {
+	case EventKind:
+		return r.GetEvent(ctx, id)
+	case ContactKind:
+		return r.GetContact(ctx, id)
+	case ConversationKind:
+		return r.GetConversation(ctx, id)
+	case ConversationMemberKind:
+		return r.GetConversationMember(ctx, id)
+	}
+
+	return nil, fmt.Errorf("`%s:%s` unknown kind (%s)", string(gid.Kind), gid.ID, string(gid.Kind))
 }
 
 func (r *queryResolver) EventList(ctx context.Context, limit *int) ([]*model.BertyP2pEvent, error) {
@@ -286,6 +327,24 @@ func (r *queryResolver) EventList(ctx context.Context, limit *int) ([]*model.Ber
 	return entries, nil
 }
 
+func (r *queryResolver) GetEvent(ctx context.Context, eventID string) (*model.BertyP2pEvent, error) {
+	var gid globalID
+	if err := gid.FromString(eventID); err != nil {
+		return nil, err
+	}
+
+	req := &p2p.Event{
+		ID: gid.ID,
+	}
+
+	event, err := r.client.GetEvent(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertEvent(event), err
+}
+
 func (r *queryResolver) ContactList(ctx context.Context) ([]*model.BertyEntityContact, error) {
 	req := &service.Void{}
 	stream, err := r.client.ContactList(ctx, req)
@@ -309,6 +368,42 @@ func (r *queryResolver) ContactList(ctx context.Context) ([]*model.BertyEntityCo
 	}
 
 	return entries, nil
+}
+
+func (r *queryResolver) GetContact(ctx context.Context, contactID string) (*model.BertyEntityContact, error) {
+	var gid globalID
+	if err := gid.FromString(contactID); err != nil {
+		return nil, err
+	}
+
+	req := &entity.Contact{
+		ID: gid.ID,
+	}
+
+	contact, err := r.client.GetContact(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertContact(contact), err
+}
+
+func (r *queryResolver) GetConversation(ctx context.Context, conversationID string) (*model.BertyEntityConversation, error) {
+	var gid globalID
+	if err := gid.FromString(conversationID); err != nil {
+		return nil, err
+	}
+
+	req := &entity.Conversation{
+		ID: gid.ID,
+	}
+
+	conversation, err := r.client.GetConversation(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertConversation(conversation), err
 }
 
 func (r *queryResolver) ConversationList(ctx context.Context) ([]*model.BertyEntityConversation, error) {
@@ -336,11 +431,37 @@ func (r *queryResolver) ConversationList(ctx context.Context) ([]*model.BertyEnt
 	return entries, nil
 }
 
+func (r *queryResolver) GetConversationMember(ctx context.Context, conversationMemberID string) (*model.BertyEntityConversationMember, error) {
+	var gid globalID
+	if err := gid.FromString(conversationMemberID); err != nil {
+		return nil, err
+	}
+
+	req := &entity.ConversationMember{
+		ID: gid.ID,
+	}
+
+	conversationMember, err := r.client.GetConversationMember(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertConversationMember(conversationMember), err
+}
+
 type subscriptionResolver struct{ *Resolver }
 
-func (r *subscriptionResolver) EventStream(ctx context.Context) (<-chan *model.BertyP2pEvent, error) {
+func (r *subscriptionResolver) EventStream(ctx context.Context, kind *string, conversationID *string) (<-chan *model.BertyP2pEvent, error) {
 	ce := make(chan *model.BertyP2pEvent)
+
 	req := &service.EventStreamInput{}
+	if kind != nil || conversationID != nil {
+		req.Filter = &p2p.Event{
+			// Kind: , @TODO: need converter for kind filter
+			ConversationID: *conversationID,
+		}
+	}
+
 	stream, err := r.client.EventStream(ctx, req)
 	if err != nil {
 		return nil, err
@@ -359,8 +480,13 @@ func (r *subscriptionResolver) EventStream(ctx context.Context) (<-chan *model.B
 				break
 			}
 
+			gid := &globalID{
+				Kind: EventKind,
+				ID:   entry.ID,
+			}
+
 			ret := &model.BertyP2pEvent{
-				ID:             &entry.ID,
+				ID:             gid.String(),
 				SenderID:       &entry.SenderID,
 				ConversationID: &entry.ConversationID,
 			}

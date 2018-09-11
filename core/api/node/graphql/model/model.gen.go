@@ -123,6 +123,14 @@ type BertyP2pPingAttrs struct {
 type BertyP2pSentAttrs struct {
 	Ids []*string `json:"ids"`
 }
+type ContactAcceptRequestInput struct {
+	ContactID        string `json:"contactID"`
+	ClientMutationID string `json:"clientMutationId"`
+}
+type ContactAcceptRequestPayload struct {
+	BertyEntityContact *BertyEntityContact `json:"bertyEntityContact"`
+	ClientMutationID   string              `json:"clientMutationId"`
+}
 type ContactRemoveInput struct {
 	ContactID        string `json:"contactID"`
 	ClientMutationID string `json:"clientMutationId"`

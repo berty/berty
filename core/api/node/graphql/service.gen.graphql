@@ -504,6 +504,16 @@ type ContactRequestPayload {
   clientMutationId: String!
 }
 
+input ContactAcceptRequestInput {
+  contactID: String!
+  clientMutationId: String!
+}
+
+type ContactAcceptRequestPayload {
+  bertyEntityContact: BertyEntityContact
+  clientMutationId: String!
+}
+
 input ContactRemoveInput {
   contactID: String!
   clientMutationId: String!
@@ -582,6 +592,7 @@ type GenerateFakeDataPayload {
 
 type Mutation {
   ContactRequest(input: ContactRequestInput!): ContactRequestPayload
+  ContactAcceptRequest(input: ContactAcceptRequestInput!): ContactAcceptRequestPayload
   ContactRemove(input: ContactRemoveInput!): ContactRemovePayload
   ContactUpdate(input: ContactUpdateInput!): ContactUpdatePayload
   ConversationCreate(input: ConversationCreateInput!): ConversationCreatePayload
@@ -600,8 +611,12 @@ type Query {
 
   
   EventList(limit: Int): [BertyP2pEvent]
+  GetEvent(eventID: String!): BertyP2pEvent
   ContactList: [BertyEntityContact]
+  GetContact(contactID: String!): BertyEntityContact
   ConversationList: [BertyEntityConversation]
+  GetConversation(conversationID: String!): BertyEntityConversation
+  GetConversationMember(conversationMemberID: String!): BertyEntityConversationMember
 }
 
 
@@ -609,6 +624,6 @@ type Query {
 
 type Subscription {
   
-  EventStream: BertyP2pEvent
+  EventStream(kind: String, conversationID: String): BertyP2pEvent
 }
 

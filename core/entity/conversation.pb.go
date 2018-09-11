@@ -6,7 +6,7 @@ package entity // import "berty.tech/core/entity"
 import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
-import _ "api/protobuf"
+import _ "berty.tech/core/api/protobuf"
 import _ "github.com/gogo/protobuf/gogoproto"
 import _ "github.com/golang/protobuf/ptypes/timestamp"
 
@@ -54,7 +54,7 @@ func (x ConversationMember_Status) String() string {
 	return proto.EnumName(ConversationMember_Status_name, int32(x))
 }
 func (ConversationMember_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_conversation_324d95e4224ee3f5, []int{1, 0}
+	return fileDescriptor_conversation_46b3fe5eca2f788d, []int{1, 0}
 }
 
 type Conversation struct {
@@ -74,7 +74,7 @@ func (m *Conversation) Reset()         { *m = Conversation{} }
 func (m *Conversation) String() string { return proto.CompactTextString(m) }
 func (*Conversation) ProtoMessage()    {}
 func (*Conversation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conversation_324d95e4224ee3f5, []int{0}
+	return fileDescriptor_conversation_46b3fe5eca2f788d, []int{0}
 }
 func (m *Conversation) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -170,7 +170,7 @@ func (m *ConversationMember) Reset()         { *m = ConversationMember{} }
 func (m *ConversationMember) String() string { return proto.CompactTextString(m) }
 func (*ConversationMember) ProtoMessage()    {}
 func (*ConversationMember) Descriptor() ([]byte, []int) {
-	return fileDescriptor_conversation_324d95e4224ee3f5, []int{1}
+	return fileDescriptor_conversation_46b3fe5eca2f788d, []int{1}
 }
 func (m *ConversationMember) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -1173,10 +1173,10 @@ var (
 )
 
 func init() {
-	proto.RegisterFile("entity/conversation.proto", fileDescriptor_conversation_324d95e4224ee3f5)
+	proto.RegisterFile("entity/conversation.proto", fileDescriptor_conversation_46b3fe5eca2f788d)
 }
 
-var fileDescriptor_conversation_324d95e4224ee3f5 = []byte{
+var fileDescriptor_conversation_46b3fe5eca2f788d = []byte{
 	// 504 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x53, 0xc1, 0x6e, 0xd3, 0x4a,
 	0x14, 0xcd, 0x38, 0x69, 0xf2, 0x72, 0xd3, 0x17, 0xa2, 0x51, 0x8a, 0xdc, 0x2c, 0x62, 0x2b, 0x1b,
