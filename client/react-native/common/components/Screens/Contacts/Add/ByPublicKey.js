@@ -81,7 +81,11 @@ class ByPublicKey extends PureComponent {
             <Fragment>
               <Button
                 icon='share'
+<<<<<<< HEAD
                 background={colors.blue}
+=======
+                background='blue'
+>>>>>>> improve(rn): added a 'Share the key' button (placeholder) and a functionnal 'Copy the key' button
                 margin
                 padding
                 rounded={23}
@@ -94,7 +98,11 @@ class ByPublicKey extends PureComponent {
               </Button>
               <Button
                 icon='copy'
+<<<<<<< HEAD
                 background={colors.blue}
+=======
+                background='blue'
+>>>>>>> improve(rn): added a 'Share the key' button (placeholder) and a functionnal 'Copy the key' button
                 margin
                 padding
                 rounded={23}
