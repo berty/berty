@@ -20,14 +20,16 @@ export default ({ subscription, iterators = [], updaters = [] }) => {
     return { dispose }
   }
 
-  const subscribe = (iterator = function * () {}, updater = () => {}) => {
-    _iterators.push(iterator)
-    _updaters.push(updater)
+  const subscribe = ({ updater, iterator }) => {
+    iterator && _iterators.push(iterator)
+    updater && _updaters.push(updater)
 
     return {
       unsubscribe: () => {
-        _iterators = _iterators.filter(_ => _ !== iterator)
-        _updaters = _updaters.filter(_ => _ !== updater)
+        _iterators = iterator
+          ? _iterators.filter(_ => _ !== iterator)
+          : _iterators
+        _updaters = updater ? _updaters.filter(_ => _ !== updater) : _updaters
       },
     }
   }

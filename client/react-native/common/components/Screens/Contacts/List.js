@@ -19,6 +19,8 @@ import {
 import { QueryReducer } from '../../../relay'
 import { queries } from '../../../graphql'
 
+// TODO: implement pagination
+
 const Header = ({ navigation }) => (
   <View
     style={[
