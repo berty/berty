@@ -9,14 +9,17 @@ export default class App extends PureComponent {
   async componentDidMount () {
     try {
       await CoreModule.start()
-      subscriptions.EventStream.subscribe(function * () {
-        try {
-          while (true) {
-            console.log(yield)
+      subscriptions.EventStream.subscribe({
+        iterator: function * () {
+          try {
+            while (true) {
+              console.log(yield)
+            }
+          } catch (error) {
+            console.error(error)
           }
-        } catch (error) {
-          console.error(error)
-        }
+        },
+        updater: undefined,
       })
       subscriptions.EventStream.start()
     } catch (err) {
