@@ -1,5 +1,5 @@
 PWD := $(shell pwd)
-ROOT := .
+ROOT := $(PWD)
 DIRS := common mobile web gomobile
 DEPS := $(addsuffix /node_modules, $(DIRS) $(ROOT))
 CLEAN := $(addsuffix .clean, $(DIRS) $(ROOT))
@@ -26,11 +26,11 @@ fclean: $(FCLEAN)
 .PHONY: re
 re: $(RE)
 
-$(ROOT)/node_modules $(DEPS): %/node_modules: %/package.json
+$(DEPS): %/node_modules: %/package.json
 	cd $(dir $@) && yarn
 
 .PHONY: $(DIRS)
-$(DIRS): %/node_modules $(ROOT)/node_modules
+$(DIRS): %: %/node_modules $(ROOT)/node_modules
 
 .PHONY: android
 android: mobile
@@ -50,8 +50,7 @@ $(FCLEAN):
 $(RE): %.re: %.fclean %/node_modules
 
 $(START): %.start: %
-	# cd $< && yarn start
-	echo $@
+	cd $< && yarn start
 
 $(BUILD): %.build: %
 	cd $< && yarn build
