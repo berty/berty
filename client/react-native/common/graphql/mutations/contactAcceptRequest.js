@@ -1,9 +1,9 @@
 import { graphql } from 'react-relay'
 import { commit } from '../../relay'
 
-const ContactRequestMutation = graphql`
-  mutation ContactRequestMutation($input: ContactRequestInput!) {
-    ContactRequest(input: $input) {
+const ContactAcceptRequestMutation = graphql`
+  mutation ContactAcceptRequestMutation($input: ContactAcceptRequestInput!) {
+    ContactAcceptRequest(input: $input) {
       clientMutationId
       bertyEntityContact {
         id
@@ -32,5 +32,6 @@ const ContactRequestMutation = graphql`
 `
 
 export default {
-  commit: input => commit(ContactRequestMutation, 'ContactRequest', input),
+  commit: input =>
+    commit(ContactAcceptRequestMutation, 'ContactAcceptRequest', input),
 }
