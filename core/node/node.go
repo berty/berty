@@ -20,6 +20,7 @@ import (
 type Node struct {
 	clientEvents            chan *p2p.Event
 	clientEventsSubscribers []clientEventSubscriber
+	clientEventsMutex       sync.Mutex
 	outgoingEvents          chan *p2p.Event
 	sql                     *gorm.DB
 	config                  *entity.Config
