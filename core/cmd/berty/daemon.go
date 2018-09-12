@@ -41,6 +41,10 @@ import (
 	"berty.tech/core/sql/sqlcipher"
 )
 
+var defaultBootstrap = []string{
+	"/ip4/167.99.215.90/tcp/4004/ipfs/Qme2FmUfPs6KtFo9W74ncKQKdrjW2Dq37tCqtEtZg4sp79",
+}
+
 type daemonOptions struct {
 	sql sqlOptions
 
@@ -67,7 +71,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
 	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
-	flags.StringSliceVar(&opts.bootstrap, "bootstrap", []string{}, "boostrap peers")
+	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 }
 
