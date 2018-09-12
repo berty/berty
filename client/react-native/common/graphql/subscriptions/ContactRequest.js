@@ -10,8 +10,8 @@ export default {
           try {
             while (true) {
               const response = yield
-              if (response.kind === 'ContactRequest') {
-                iterator.next(response)
+              if (response.EventStream.kind === 'ContactRequest') {
+                iterator.next(response.EventStream)
               }
             }
           } catch (error) {
@@ -22,8 +22,8 @@ export default {
       updater:
         updater &&
         ((store, data) => {
-          if (data.kind === 'ContactRequest') {
-            return updater(store, data)
+          if (data.EventStream.kind === 'ContactRequest') {
+            return updater(store, data.EventStream)
           }
         }),
     }),

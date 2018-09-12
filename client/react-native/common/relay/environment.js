@@ -49,7 +49,6 @@ let getIP = () =>
 
 export const fetchQuery = async (operation, variables) => {
   try {
-    console.log(variables)
     const port = await CoreModule.getPort()
     const response = await fetch(`http://${await getIP()}:${port}/query`, {
       method: 'POST',
@@ -65,7 +64,6 @@ export const fetchQuery = async (operation, variables) => {
     return await response.json()
   } catch (err) {
     console.error(err)
-    console.log(err)
   }
 }
 
