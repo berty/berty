@@ -4,6 +4,7 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
+import "api/protobuf/graphql.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "entity/device.proto";
@@ -23,7 +24,7 @@ message Contact {
   // gorm fields
   //
 
-  string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  string id = 1 [(berty.gql.graphql_id) = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
   google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp deleted_at = 4 [(gogoproto.stdtime) = true];

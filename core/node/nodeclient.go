@@ -43,8 +43,9 @@ func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_Eve
 		queue: make(chan *p2p.Event, 1),
 	}
 
-	// write lock
+	n.clientEventsMutex.Lock()
 	n.clientEventsSubscribers = append(n.clientEventsSubscribers, sub)
+	n.clientEventsMutex.Unlock()
 
 	defer func() {
 		logger().Debug("EventStream disconnected", zap.Stringer("input", input))

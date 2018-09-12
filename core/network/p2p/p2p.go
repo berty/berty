@@ -8,6 +8,7 @@ import (
 
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
+	syncdatastore "github.com/ipfs/go-datastore/sync"
 	ipfsaddr "github.com/ipfs/go-ipfs-addr"
 	libp2p "github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p-host"
@@ -73,7 +74,8 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		host: host,
 	}
 
-	ds := datastore.NewMapDatastore()
+	ds := syncdatastore.MutexWrap(datastore.NewMapDatastore())
+
 	if len(cfg.dhtOpts) == 0 {
 		cfg.dhtOpts = []dhtopt.Option{dhtopt.Datastore(ds)}
 	}
