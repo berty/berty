@@ -54,14 +54,6 @@ func getKeyType(t string) (KeyType, error) {
 	return Unknow, fmt.Errorf("Unknow key type")
 }
 
-func getStringKeyType(t KeyType) (string, error) {
-	if v, ok := KeyTypesString[t]; ok {
-		return v, nil
-	}
-
-	return "Unknown", fmt.Errorf("Unknow key type")
-}
-
 func newIdentityCommand() *cobra.Command {
 	cryptoKeyGenerateCmd.Flags().BoolVar(&cfgCryptoPubKey, "pub", false, "Also print public key (will only print pubkey if `raw` option is enabled)")
 	cryptoKeyGenerateCmd.Flags().BoolVar(&cfgCryptoRaw, "bytes", false, "Print raw key")
