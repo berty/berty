@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net"
@@ -16,6 +17,7 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
@@ -48,6 +50,7 @@ type daemonOptions struct {
 	initOnly     bool
 
 	// p2p
+	identity  string
 	bootstrap []string
 	noP2P     bool
 	bindP2P   []string
@@ -63,6 +66,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
 	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
+	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", []string{}, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 }
@@ -75,6 +79,7 @@ func newDaemonCommand() *cobra.Command {
 			return daemon(opts)
 		},
 	}
+
 	sqlSetupFlags(cmd.Flags(), &opts.sql)
 	daemonSetupFlags(cmd.Flags(), opts)
 	return cmd
@@ -144,8 +149,24 @@ func daemon(opts *daemonOptions) error {
 
 	var driver network.Driver
 	if !opts.noP2P {
+		var identity p2p.Option
+		if opts.identity == "" {
+			identity = p2p.WithRandomIdentity()
+		} else {
+			bytes, err := base64.StdEncoding.DecodeString(opts.identity)
+			if err != nil {
+				return errors.Wrap(err, "failed to decode identity opt, should be base64 encoded")
+			}
+
+			prvKey, err := p2pcrypto.UnmarshalPrivateKey(bytes)
+			if err != nil {
+				return errors.Wrap(err, "failed to unmarshal private key")
+			}
+
+			identity = p2p.WithIdentity(prvKey)
+		}
+
 		p2pOpts := []p2p.Option{
-			p2p.WithRandomIdentity(),
 			p2p.WithDefaultMuxers(),
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
@@ -156,6 +177,7 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithNATPortMap(), // @T\ODO: Is this a pb on mobile?
 			p2p.WithListenAddrStrings(opts.bindP2P...),
 			p2p.WithBootstrap(opts.bootstrap...),
+			identity,
 		}
 
 		if opts.mdns {

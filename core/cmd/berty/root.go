@@ -61,6 +61,7 @@ func newRootCommand() *cobra.Command {
 		Version:           fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version),
 		PersistentPreRunE: setupLogger,
 	}
+
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
 	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
@@ -69,7 +70,9 @@ func newRootCommand() *cobra.Command {
 		newDaemonCommand(),
 		newClientCommand(),
 		newSQLCommand(),
+		newIdentityCommand(),
 	)
+
 	return cmd
 }
 
