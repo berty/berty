@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import {
+  Platform,
   FlatList,
   TouchableOpacity,
   TextInput,
@@ -57,6 +58,7 @@ const Header = ({ navigation }) => (
               backgroundColor: colors.grey7,
               borderWidth: 0,
               borderRadius: 18,
+              ...(Platform.OS === 'web' ?  {outline: 'none'} : {}),
             },
             paddingLeft,
             paddingRight,

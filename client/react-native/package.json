@@ -6,6 +6,7 @@
     "graphql": "^0.13.2",
     "graphql-relay": "^0.5.5",
     "isomorphic-fetch": "^2.2.1",
+    "qrcode-react": "^0.1.16",
     "react": "^16.4.2",
     "react-art": "^16.4.2",
     "react-dom": "^16.4.2",
