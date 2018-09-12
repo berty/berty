@@ -50,7 +50,6 @@ export default class Request extends PureComponent {
   retry = null
 
   componentDidMount () {
-    console.log(subscriptions)
     this.subscriber = subscriptions.ContactRequest.subscribe({
       updater: (store, data) => this.retry && this.retry(),
     })
