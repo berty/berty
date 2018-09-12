@@ -40,9 +40,9 @@ init: deps
 	gomobile init -v -ndk $(ANDROID_NDK_HOME)
 
 .PHONY: ios
-ios: $(IOS_BUILD_PATH)/core.framework
+ios: $(IOS_BUILD_PATH)/core.framework/Core
 
-$(IOS_BUILD_PATH)/core.framework: $(CORE_SOURCES)
+$(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 	mkdir -p $(IOS_BUILD_PATH)
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
 		gomobile bind -v -target=ios -o $(IOS_BUILD_PATH)/core.framework .
