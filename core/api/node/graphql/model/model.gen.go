@@ -11,7 +11,7 @@ import (
 )
 
 type BertyEntityContact struct {
-	ID                    *string                   `json:"id"`
+	ID                    string                    `json:"id"`
 	CreatedAt             *scalar.DateTime          `json:"createdAt"`
 	UpdatedAt             *scalar.DateTime          `json:"updatedAt"`
 	DeletedAt             *scalar.DateTime          `json:"deletedAt"`
@@ -24,7 +24,7 @@ type BertyEntityContact struct {
 	OverrideDisplayStatus *string                   `json:"overrideDisplayStatus"`
 }
 type BertyEntityConversation struct {
-	ID        *string                          `json:"id"`
+	ID        string                           `json:"id"`
 	CreatedAt *scalar.DateTime                 `json:"createdAt"`
 	UpdatedAt *scalar.DateTime                 `json:"updatedAt"`
 	DeletedAt *scalar.DateTime                 `json:"deletedAt"`
@@ -33,7 +33,7 @@ type BertyEntityConversation struct {
 	Members   []*BertyEntityConversationMember `json:"members"`
 }
 type BertyEntityConversationMember struct {
-	ID             *string                              `json:"id"`
+	ID             string                               `json:"id"`
 	CreatedAt      *scalar.DateTime                     `json:"createdAt"`
 	UpdatedAt      *scalar.DateTime                     `json:"updatedAt"`
 	DeletedAt      *scalar.DateTime                     `json:"deletedAt"`
@@ -43,7 +43,7 @@ type BertyEntityConversationMember struct {
 	ContactID      *string                              `json:"contactId"`
 }
 type BertyEntityDevice struct {
-	ID         *string                  `json:"id"`
+	ID         string                   `json:"id"`
 	CreatedAt  *scalar.DateTime         `json:"createdAt"`
 	UpdatedAt  *scalar.DateTime         `json:"updatedAt"`
 	DeletedAt  *scalar.DateTime         `json:"deletedAt"`
@@ -101,7 +101,7 @@ type BertyP2pConversationNewMessageAttrs struct {
 	Message *BertyEntityMessage `json:"message"`
 }
 type BertyP2pEvent struct {
-	ID                 *string                 `json:"id"`
+	ID                 string                  `json:"id"`
 	SenderID           *string                 `json:"senderId"`
 	CreatedAt          *scalar.DateTime        `json:"createdAt"`
 	UpdatedAt          *scalar.DateTime        `json:"updatedAt"`
@@ -122,6 +122,82 @@ type BertyP2pPingAttrs struct {
 }
 type BertyP2pSentAttrs struct {
 	Ids []*string `json:"ids"`
+}
+type ContactAcceptRequestInput struct {
+	ContactID        string `json:"contactID"`
+	ClientMutationID string `json:"clientMutationId"`
+}
+type ContactAcceptRequestPayload struct {
+	BertyEntityContact *BertyEntityContact `json:"bertyEntityContact"`
+	ClientMutationID   string              `json:"clientMutationId"`
+}
+type ContactRemoveInput struct {
+	ContactID        string `json:"contactID"`
+	ClientMutationID string `json:"clientMutationId"`
+}
+type ContactRemovePayload struct {
+	BertyEntityContact *BertyEntityContact `json:"bertyEntityContact"`
+	ClientMutationID   string              `json:"clientMutationId"`
+}
+type ContactRequestInput struct {
+	ContactID        string  `json:"contactID"`
+	IntroText        *string `json:"introText"`
+	ClientMutationID string  `json:"clientMutationId"`
+}
+type ContactRequestPayload struct {
+	BertyEntityContact *BertyEntityContact `json:"bertyEntityContact"`
+	ClientMutationID   string              `json:"clientMutationId"`
+}
+type ContactUpdateInput struct {
+	ContactID        string  `json:"contactID"`
+	DisplayName      *string `json:"displayName"`
+	ClientMutationID string  `json:"clientMutationId"`
+}
+type ContactUpdatePayload struct {
+	BertyEntityContact *BertyEntityContact `json:"bertyEntityContact"`
+	ClientMutationID   string              `json:"clientMutationId"`
+}
+type ConversationAddMessageInput struct {
+	ConversationID   string `json:"conversationID"`
+	Message          string `json:"message"`
+	ClientMutationID string `json:"clientMutationId"`
+}
+type ConversationAddMessagePayload struct {
+	BertyP2pEvent    *BertyP2pEvent `json:"bertyP2pEvent"`
+	ClientMutationID string         `json:"clientMutationId"`
+}
+type ConversationCreateInput struct {
+	ContactsID       []string `json:"contactsID"`
+	ClientMutationID string   `json:"clientMutationId"`
+}
+type ConversationCreatePayload struct {
+	BertyEntityConversation *BertyEntityConversation `json:"bertyEntityConversation"`
+	ClientMutationID        string                   `json:"clientMutationId"`
+}
+type ConversationExcludeInput struct {
+	ConversationID   string   `json:"conversationID"`
+	ContactsID       []string `json:"contactsID"`
+	ClientMutationID string   `json:"clientMutationId"`
+}
+type ConversationExcludePayload struct {
+	BertyEntityConversation *BertyEntityConversation `json:"bertyEntityConversation"`
+	ClientMutationID        string                   `json:"clientMutationId"`
+}
+type ConversationInviteInput struct {
+	ConversationID   string   `json:"conversationID"`
+	ContactsID       []string `json:"contactsID"`
+	ClientMutationID string   `json:"clientMutationId"`
+}
+type ConversationInvitePayload struct {
+	BertyEntityConversation *BertyEntityConversation `json:"bertyEntityConversation"`
+	ClientMutationID        string                   `json:"clientMutationId"`
+}
+type GenerateFakeDataInput struct {
+	ClientMutationID string `json:"clientMutationId"`
+}
+type GenerateFakeDataPayload struct {
+	BertyNodeVoid    *BertyNodeVoid `json:"bertyNodeVoid"`
+	ClientMutationID string         `json:"clientMutationId"`
 }
 type GoogleProtobufDescriptorProto struct {
 	Name           *string                                        `json:"name"`

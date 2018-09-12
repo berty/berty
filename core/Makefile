@@ -17,7 +17,8 @@ CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
-TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 3m -v $(TEST_PATHS)
+TEST_OPTS ?= -v
+TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 3m $(TEST_OPTS) $(TEST_PATHS)
 PROTOC ?= protoc
 GQLGEN ?= gqlgen
 
@@ -132,5 +133,5 @@ api/p2p/kind.gen.go: $(PROTOS)
 	goimports -w ./api/p2p
 
 api/node/graphql/service.gen.graphql: $(PROTOS)
-	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	cd ./api/node/graphql && $(GQLGEN) -v gen

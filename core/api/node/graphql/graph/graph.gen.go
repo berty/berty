@@ -38,22 +38,28 @@ type ResolverRoot interface {
 type DirectiveRoot struct {
 }
 type MutationResolver interface {
-	ContactRequest(ctx context.Context, contactID string, introText *string) (*model.BertyEntityContact, error)
-	ContactRemove(ctx context.Context, contactID string) (*model.BertyEntityContact, error)
-	ContactUpdate(ctx context.Context, contactID string, displayName *string) (*model.BertyEntityContact, error)
-	ConversationCreate(ctx context.Context, contactsID []string) (*model.BertyEntityConversation, error)
-	ConversationInvite(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error)
-	ConversationExclude(ctx context.Context, conversationID string, contactsID []string) (*model.BertyEntityConversation, error)
-	ConversationAddMessage(ctx context.Context, conversationID string, message string) (*model.BertyP2pEvent, error)
-	GenerateFakeData(ctx context.Context) (*model.BertyNodeVoid, error)
+	ContactRequest(ctx context.Context, input model.ContactRequestInput) (*model.ContactRequestPayload, error)
+	ContactAcceptRequest(ctx context.Context, input model.ContactAcceptRequestInput) (*model.ContactAcceptRequestPayload, error)
+	ContactRemove(ctx context.Context, input model.ContactRemoveInput) (*model.ContactRemovePayload, error)
+	ContactUpdate(ctx context.Context, input model.ContactUpdateInput) (*model.ContactUpdatePayload, error)
+	ConversationCreate(ctx context.Context, input model.ConversationCreateInput) (*model.ConversationCreatePayload, error)
+	ConversationInvite(ctx context.Context, input model.ConversationInviteInput) (*model.ConversationInvitePayload, error)
+	ConversationExclude(ctx context.Context, input model.ConversationExcludeInput) (*model.ConversationExcludePayload, error)
+	ConversationAddMessage(ctx context.Context, input model.ConversationAddMessageInput) (*model.ConversationAddMessagePayload, error)
+	GenerateFakeData(ctx context.Context, input model.GenerateFakeDataInput) (*model.GenerateFakeDataPayload, error)
 }
 type QueryResolver interface {
+	Node(ctx context.Context, id string) (model.Node, error)
 	EventList(ctx context.Context, limit *int) ([]*model.BertyP2pEvent, error)
+	GetEvent(ctx context.Context, eventID string) (*model.BertyP2pEvent, error)
 	ContactList(ctx context.Context) ([]*model.BertyEntityContact, error)
+	GetContact(ctx context.Context, contactID string) (*model.BertyEntityContact, error)
 	ConversationList(ctx context.Context) ([]*model.BertyEntityConversation, error)
+	GetConversation(ctx context.Context, conversationID string) (*model.BertyEntityConversation, error)
+	GetConversationMember(ctx context.Context, conversationMemberID string) (*model.BertyEntityConversationMember, error)
 }
 type SubscriptionResolver interface {
-	EventStream(ctx context.Context) (<-chan *model.BertyP2pEvent, error)
+	EventStream(ctx context.Context, kind *string, conversationID *string) (<-chan *model.BertyP2pEvent, error)
 }
 
 type executableSchema struct {
@@ -130,7 +136,7 @@ type executionContext struct {
 	*executableSchema
 }
 
-var bertyEntityContactImplementors = []string{"BertyEntityContact"}
+var bertyEntityContactImplementors = []string{"BertyEntityContact", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
 func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.SelectionSet, obj *model.BertyEntityContact) graphql.Marshaler {
@@ -186,11 +192,8 @@ func (ec *executionContext) _BertyEntityContact_id(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*res)
+	res := resTmp.(string)
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _BertyEntityContact_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityContact) graphql.Marshaler {
@@ -402,7 +405,7 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayStatus(ctx contex
 	return graphql.MarshalString(*res)
 }
 
-var bertyEntityConversationImplementors = []string{"BertyEntityConversation"}
+var bertyEntityConversationImplementors = []string{"BertyEntityConversation", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
 func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel ast.SelectionSet, obj *model.BertyEntityConversation) graphql.Marshaler {
@@ -450,11 +453,8 @@ func (ec *executionContext) _BertyEntityConversation_id(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*res)
+	res := resTmp.(string)
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _BertyEntityConversation_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversation) graphql.Marshaler {
@@ -586,7 +586,7 @@ func (ec *executionContext) _BertyEntityConversation_members(ctx context.Context
 	return arr1
 }
 
-var bertyEntityConversationMemberImplementors = []string{"BertyEntityConversationMember"}
+var bertyEntityConversationMemberImplementors = []string{"BertyEntityConversationMember", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
 func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, sel ast.SelectionSet, obj *model.BertyEntityConversationMember) graphql.Marshaler {
@@ -636,11 +636,8 @@ func (ec *executionContext) _BertyEntityConversationMember_id(ctx context.Contex
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*res)
+	res := resTmp.(string)
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _BertyEntityConversationMember_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityConversationMember) graphql.Marshaler {
@@ -783,7 +780,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context
 	return graphql.MarshalString(*res)
 }
 
-var bertyEntityDeviceImplementors = []string{"BertyEntityDevice"}
+var bertyEntityDeviceImplementors = []string{"BertyEntityDevice", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
 func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.SelectionSet, obj *model.BertyEntityDevice) graphql.Marshaler {
@@ -833,11 +830,8 @@ func (ec *executionContext) _BertyEntityDevice_id(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*res)
+	res := resTmp.(string)
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _BertyEntityDevice_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntityDevice) graphql.Marshaler {
@@ -1732,7 +1726,7 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx con
 	return ec._BertyEntityMessage(ctx, field.Selections, res)
 }
 
-var bertyP2pEventImplementors = []string{"BertyP2pEvent"}
+var bertyP2pEventImplementors = []string{"BertyP2pEvent", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
 func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.SelectionSet, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -1796,11 +1790,8 @@ func (ec *executionContext) _BertyP2pEvent_id(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
-	if res == nil {
-		return graphql.Null
-	}
-	return graphql.MarshalString(*res)
+	res := resTmp.(string)
+	return graphql.MarshalID(res)
 }
 
 func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pEvent) graphql.Marshaler {
@@ -2176,6 +2167,564 @@ func (ec *executionContext) _BertyP2pSentAttrs_ids(ctx context.Context, field gr
 		}())
 	}
 	return arr1
+}
+
+var contactAcceptRequestPayloadImplementors = []string{"ContactAcceptRequestPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ContactAcceptRequestPayload(ctx context.Context, sel ast.SelectionSet, obj *model.ContactAcceptRequestPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, contactAcceptRequestPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ContactAcceptRequestPayload")
+		case "bertyEntityContact":
+			out.Values[i] = ec._ContactAcceptRequestPayload_bertyEntityContact(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ContactAcceptRequestPayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ContactAcceptRequestPayload_bertyEntityContact(ctx context.Context, field graphql.CollectedField, obj *model.ContactAcceptRequestPayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactAcceptRequestPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyEntityContact, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityContact)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactAcceptRequestPayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ContactAcceptRequestPayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactAcceptRequestPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var contactRemovePayloadImplementors = []string{"ContactRemovePayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ContactRemovePayload(ctx context.Context, sel ast.SelectionSet, obj *model.ContactRemovePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, contactRemovePayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ContactRemovePayload")
+		case "bertyEntityContact":
+			out.Values[i] = ec._ContactRemovePayload_bertyEntityContact(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ContactRemovePayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ContactRemovePayload_bertyEntityContact(ctx context.Context, field graphql.CollectedField, obj *model.ContactRemovePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactRemovePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyEntityContact, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityContact)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactRemovePayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ContactRemovePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactRemovePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var contactRequestPayloadImplementors = []string{"ContactRequestPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ContactRequestPayload(ctx context.Context, sel ast.SelectionSet, obj *model.ContactRequestPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, contactRequestPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ContactRequestPayload")
+		case "bertyEntityContact":
+			out.Values[i] = ec._ContactRequestPayload_bertyEntityContact(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ContactRequestPayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ContactRequestPayload_bertyEntityContact(ctx context.Context, field graphql.CollectedField, obj *model.ContactRequestPayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactRequestPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyEntityContact, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityContact)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactRequestPayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ContactRequestPayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactRequestPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var contactUpdatePayloadImplementors = []string{"ContactUpdatePayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ContactUpdatePayload(ctx context.Context, sel ast.SelectionSet, obj *model.ContactUpdatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, contactUpdatePayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ContactUpdatePayload")
+		case "bertyEntityContact":
+			out.Values[i] = ec._ContactUpdatePayload_bertyEntityContact(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ContactUpdatePayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ContactUpdatePayload_bertyEntityContact(ctx context.Context, field graphql.CollectedField, obj *model.ContactUpdatePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactUpdatePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyEntityContact, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityContact)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ContactUpdatePayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ContactUpdatePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ContactUpdatePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var conversationAddMessagePayloadImplementors = []string{"ConversationAddMessagePayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ConversationAddMessagePayload(ctx context.Context, sel ast.SelectionSet, obj *model.ConversationAddMessagePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, conversationAddMessagePayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConversationAddMessagePayload")
+		case "bertyP2pEvent":
+			out.Values[i] = ec._ConversationAddMessagePayload_bertyP2pEvent(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ConversationAddMessagePayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ConversationAddMessagePayload_bertyP2pEvent(ctx context.Context, field graphql.CollectedField, obj *model.ConversationAddMessagePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationAddMessagePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyP2pEvent, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyP2pEvent)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyP2pEvent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ConversationAddMessagePayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ConversationAddMessagePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationAddMessagePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var conversationCreatePayloadImplementors = []string{"ConversationCreatePayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ConversationCreatePayload(ctx context.Context, sel ast.SelectionSet, obj *model.ConversationCreatePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, conversationCreatePayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConversationCreatePayload")
+		case "bertyEntityConversation":
+			out.Values[i] = ec._ConversationCreatePayload_bertyEntityConversation(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ConversationCreatePayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ConversationCreatePayload_bertyEntityConversation(ctx context.Context, field graphql.CollectedField, obj *model.ConversationCreatePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationCreatePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyEntityConversation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityConversation)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ConversationCreatePayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ConversationCreatePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationCreatePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var conversationExcludePayloadImplementors = []string{"ConversationExcludePayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ConversationExcludePayload(ctx context.Context, sel ast.SelectionSet, obj *model.ConversationExcludePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, conversationExcludePayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConversationExcludePayload")
+		case "bertyEntityConversation":
+			out.Values[i] = ec._ConversationExcludePayload_bertyEntityConversation(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ConversationExcludePayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ConversationExcludePayload_bertyEntityConversation(ctx context.Context, field graphql.CollectedField, obj *model.ConversationExcludePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationExcludePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyEntityConversation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityConversation)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ConversationExcludePayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ConversationExcludePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationExcludePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var conversationInvitePayloadImplementors = []string{"ConversationInvitePayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _ConversationInvitePayload(ctx context.Context, sel ast.SelectionSet, obj *model.ConversationInvitePayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, conversationInvitePayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("ConversationInvitePayload")
+		case "bertyEntityConversation":
+			out.Values[i] = ec._ConversationInvitePayload_bertyEntityConversation(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._ConversationInvitePayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _ConversationInvitePayload_bertyEntityConversation(ctx context.Context, field graphql.CollectedField, obj *model.ConversationInvitePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationInvitePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyEntityConversation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityConversation)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _ConversationInvitePayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.ConversationInvitePayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "ConversationInvitePayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var generateFakeDataPayloadImplementors = []string{"GenerateFakeDataPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _GenerateFakeDataPayload(ctx context.Context, sel ast.SelectionSet, obj *model.GenerateFakeDataPayload) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, generateFakeDataPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("GenerateFakeDataPayload")
+		case "bertyNodeVoid":
+			out.Values[i] = ec._GenerateFakeDataPayload_bertyNodeVoid(ctx, field, obj)
+		case "clientMutationId":
+			out.Values[i] = ec._GenerateFakeDataPayload_clientMutationId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _GenerateFakeDataPayload_bertyNodeVoid(ctx context.Context, field graphql.CollectedField, obj *model.GenerateFakeDataPayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "GenerateFakeDataPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.BertyNodeVoid, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyNodeVoid)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GenerateFakeDataPayload_clientMutationId(ctx context.Context, field graphql.CollectedField, obj *model.GenerateFakeDataPayload) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "GenerateFakeDataPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ClientMutationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
 }
 
 var googleProtobufDescriptorProtoImplementors = []string{"GoogleProtobufDescriptorProto"}
@@ -5837,6 +6386,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "ContactRequest":
 			out.Values[i] = ec._Mutation_ContactRequest(ctx, field)
+		case "ContactAcceptRequest":
+			out.Values[i] = ec._Mutation_ContactAcceptRequest(ctx, field)
 		case "ContactRemove":
 			out.Values[i] = ec._Mutation_ContactRemove(ctx, field)
 		case "ContactUpdate":
@@ -5862,31 +6413,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["contactID"]; ok {
+	var arg0 model.ContactRequestInput
+	if tmp, ok := rawArgs["input"]; ok {
 		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
+		arg0, err = UnmarshalContactRequestInput(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["contactID"] = arg0
-	var arg1 *string
-	if tmp, ok := rawArgs["introText"]; ok {
-		var err error
-		var ptr1 string
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalString(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["introText"] = arg1
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
 	rctx.Args = args
@@ -5894,31 +6430,63 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactRequest(ctx, args["contactID"].(string), args["introText"].(*string))
+		return ec.resolvers.Mutation().ContactRequest(ctx, args["input"].(model.ContactRequestInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyEntityContact)
+	res := resTmp.(*model.ContactRequestPayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyEntityContact(ctx, field.Selections, res)
+	return ec._ContactRequestPayload(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_ContactAcceptRequest(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 model.ContactAcceptRequestInput
+	if tmp, ok := rawArgs["input"]; ok {
+		var err error
+		arg0, err = UnmarshalContactAcceptRequestInput(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["input"] = arg0
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "Mutation"
+	rctx.Args = args
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return ec.resolvers.Mutation().ContactAcceptRequest(ctx, args["input"].(model.ContactAcceptRequestInput))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.ContactAcceptRequestPayload)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._ContactAcceptRequestPayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["contactID"]; ok {
+	var arg0 model.ContactRemoveInput
+	if tmp, ok := rawArgs["input"]; ok {
 		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
+		arg0, err = UnmarshalContactRemoveInput(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["contactID"] = arg0
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
 	rctx.Args = args
@@ -5926,46 +6494,31 @@ func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field g
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactRemove(ctx, args["contactID"].(string))
+		return ec.resolvers.Mutation().ContactRemove(ctx, args["input"].(model.ContactRemoveInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyEntityContact)
+	res := resTmp.(*model.ContactRemovePayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyEntityContact(ctx, field.Selections, res)
+	return ec._ContactRemovePayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["contactID"]; ok {
+	var arg0 model.ContactUpdateInput
+	if tmp, ok := rawArgs["input"]; ok {
 		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
+		arg0, err = UnmarshalContactUpdateInput(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["contactID"] = arg0
-	var arg1 *string
-	if tmp, ok := rawArgs["displayName"]; ok {
-		var err error
-		var ptr1 string
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalString(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayName"] = arg1
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
 	rctx.Args = args
@@ -5973,42 +6526,31 @@ func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field g
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactUpdate(ctx, args["contactID"].(string), args["displayName"].(*string))
+		return ec.resolvers.Mutation().ContactUpdate(ctx, args["input"].(model.ContactUpdateInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyEntityContact)
+	res := resTmp.(*model.ContactUpdatePayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyEntityContact(ctx, field.Selections, res)
+	return ec._ContactUpdatePayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
-	var arg0 []string
-	if tmp, ok := rawArgs["contactsID"]; ok {
+	var arg0 model.ConversationCreateInput
+	if tmp, ok := rawArgs["input"]; ok {
 		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg0 = make([]string, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg0[idx1], err = graphql.UnmarshalString(rawIf1[idx1])
-		}
+		arg0, err = UnmarshalConversationCreateInput(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["contactsID"] = arg0
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
 	rctx.Args = args
@@ -6016,52 +6558,31 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationCreate(ctx, args["contactsID"].([]string))
+		return ec.resolvers.Mutation().ConversationCreate(ctx, args["input"].(model.ConversationCreateInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyEntityConversation)
+	res := resTmp.(*model.ConversationCreatePayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyEntityConversation(ctx, field.Selections, res)
+	return ec._ConversationCreatePayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["conversationID"]; ok {
+	var arg0 model.ConversationInviteInput
+	if tmp, ok := rawArgs["input"]; ok {
 		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
+		arg0, err = UnmarshalConversationInviteInput(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["conversationID"] = arg0
-	var arg1 []string
-	if tmp, ok := rawArgs["contactsID"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg1 = make([]string, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg1[idx1], err = graphql.UnmarshalString(rawIf1[idx1])
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["contactsID"] = arg1
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
 	rctx.Args = args
@@ -6069,52 +6590,31 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationInvite(ctx, args["conversationID"].(string), args["contactsID"].([]string))
+		return ec.resolvers.Mutation().ConversationInvite(ctx, args["input"].(model.ConversationInviteInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyEntityConversation)
+	res := resTmp.(*model.ConversationInvitePayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyEntityConversation(ctx, field.Selections, res)
+	return ec._ConversationInvitePayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["conversationID"]; ok {
+	var arg0 model.ConversationExcludeInput
+	if tmp, ok := rawArgs["input"]; ok {
 		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
+		arg0, err = UnmarshalConversationExcludeInput(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["conversationID"] = arg0
-	var arg1 []string
-	if tmp, ok := rawArgs["contactsID"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg1 = make([]string, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg1[idx1], err = graphql.UnmarshalString(rawIf1[idx1])
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["contactsID"] = arg1
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
 	rctx.Args = args
@@ -6122,41 +6622,31 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationExclude(ctx, args["conversationID"].(string), args["contactsID"].([]string))
+		return ec.resolvers.Mutation().ConversationExclude(ctx, args["input"].(model.ConversationExcludeInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyEntityConversation)
+	res := resTmp.(*model.ConversationExcludePayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyEntityConversation(ctx, field.Selections, res)
+	return ec._ConversationExcludePayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["conversationID"]; ok {
+	var arg0 model.ConversationAddMessageInput
+	if tmp, ok := rawArgs["input"]; ok {
 		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
+		arg0, err = UnmarshalConversationAddMessageInput(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
 		}
 	}
-	args["conversationID"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["message"]; ok {
-		var err error
-		arg1, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["message"] = arg1
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
 	rctx.Args = args
@@ -6164,36 +6654,48 @@ func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationAddMessage(ctx, args["conversationID"].(string), args["message"].(string))
+		return ec.resolvers.Mutation().ConversationAddMessage(ctx, args["input"].(model.ConversationAddMessageInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyP2pEvent)
+	res := resTmp.(*model.ConversationAddMessagePayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyP2pEvent(ctx, field.Selections, res)
+	return ec._ConversationAddMessagePayload(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_GenerateFakeData(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 model.GenerateFakeDataInput
+	if tmp, ok := rawArgs["input"]; ok {
+		var err error
+		arg0, err = UnmarshalGenerateFakeDataInput(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["input"] = arg0
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Mutation"
-	rctx.Args = nil
+	rctx.Args = args
 	rctx.Field = field
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().GenerateFakeData(ctx)
+		return ec.resolvers.Mutation().GenerateFakeData(ctx, args["input"].(model.GenerateFakeDataInput))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.BertyNodeVoid)
+	res := resTmp.(*model.GenerateFakeDataPayload)
 	if res == nil {
 		return graphql.Null
 	}
-	return ec._BertyNodeVoid(ctx, field.Selections, res)
+	return ec._GenerateFakeDataPayload(ctx, field.Selections, res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -6213,12 +6715,22 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
+		case "node":
+			out.Values[i] = ec._Query_node(ctx, field)
 		case "EventList":
 			out.Values[i] = ec._Query_EventList(ctx, field)
+		case "GetEvent":
+			out.Values[i] = ec._Query_GetEvent(ctx, field)
 		case "ContactList":
 			out.Values[i] = ec._Query_ContactList(ctx, field)
+		case "GetContact":
+			out.Values[i] = ec._Query_GetContact(ctx, field)
 		case "ConversationList":
 			out.Values[i] = ec._Query_ConversationList(ctx, field)
+		case "GetConversation":
+			out.Values[i] = ec._Query_GetConversation(ctx, field)
+		case "GetConversationMember":
+			out.Values[i] = ec._Query_GetConversationMember(ctx, field)
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -6229,6 +6741,44 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	}
 
 	return out
+}
+
+func (ec *executionContext) _Query_node(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalID(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["id"] = arg0
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().Node(ctx, args["id"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(model.Node)
+		return ec._Node(ctx, field.Selections, &res)
+	})
 }
 
 func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
@@ -6286,6 +6836,47 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 	})
 }
 
+func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["eventID"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["eventID"] = arg0
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().GetEvent(ctx, args["eventID"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(*model.BertyP2pEvent)
+		if res == nil {
+			return graphql.Null
+		}
+		return ec._BertyP2pEvent(ctx, field.Selections, res)
+	})
+}
+
 func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
 		Object: "Query",
@@ -6324,6 +6915,47 @@ func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphq
 	})
 }
 
+func (ec *executionContext) _Query_GetContact(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["contactID"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["contactID"] = arg0
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().GetContact(ctx, args["contactID"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(*model.BertyEntityContact)
+		if res == nil {
+			return graphql.Null
+		}
+		return ec._BertyEntityContact(ctx, field.Selections, res)
+	})
+}
+
 func (ec *executionContext) _Query_ConversationList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
 		Object: "Query",
@@ -6359,6 +6991,88 @@ func (ec *executionContext) _Query_ConversationList(ctx context.Context, field g
 			}())
 		}
 		return arr1
+	})
+}
+
+func (ec *executionContext) _Query_GetConversation(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["conversationID"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["conversationID"] = arg0
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().GetConversation(ctx, args["conversationID"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(*model.BertyEntityConversation)
+		if res == nil {
+			return graphql.Null
+		}
+		return ec._BertyEntityConversation(ctx, field.Selections, res)
+	})
+}
+
+func (ec *executionContext) _Query_GetConversationMember(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["conversationMemberID"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["conversationMemberID"] = arg0
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().GetConversationMember(ctx, args["conversationMemberID"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(*model.BertyEntityConversationMember)
+		if res == nil {
+			return graphql.Null
+		}
+		return ec._BertyEntityConversationMember(ctx, field.Selections, res)
 	})
 }
 
@@ -6436,8 +7150,40 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 }
 
 func (ec *executionContext) _Subscription_EventStream(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["kind"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = graphql.UnmarshalString(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return nil
+		}
+	}
+	args["kind"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["conversationID"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = graphql.UnmarshalString(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return nil
+		}
+	}
+	args["conversationID"] = arg1
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{Field: field})
-	results, err := ec.resolvers.Subscription().EventStream(ctx)
+	results, err := ec.resolvers.Subscription().EventStream(ctx, args["kind"].(*string), args["conversationID"].(*string))
 	if err != nil {
 		ec.Error(ctx, err)
 		return nil
@@ -7334,9 +8080,312 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	switch obj := (*obj).(type) {
 	case nil:
 		return graphql.Null
+	case model.BertyEntityDevice:
+		return ec._BertyEntityDevice(ctx, sel, &obj)
+	case *model.BertyEntityDevice:
+		return ec._BertyEntityDevice(ctx, sel, obj)
+	case model.BertyEntityContact:
+		return ec._BertyEntityContact(ctx, sel, &obj)
+	case *model.BertyEntityContact:
+		return ec._BertyEntityContact(ctx, sel, obj)
+	case model.BertyEntityConversation:
+		return ec._BertyEntityConversation(ctx, sel, &obj)
+	case *model.BertyEntityConversation:
+		return ec._BertyEntityConversation(ctx, sel, obj)
+	case model.BertyEntityConversationMember:
+		return ec._BertyEntityConversationMember(ctx, sel, &obj)
+	case *model.BertyEntityConversationMember:
+		return ec._BertyEntityConversationMember(ctx, sel, obj)
+	case model.BertyP2pEvent:
+		return ec._BertyP2pEvent(ctx, sel, &obj)
+	case *model.BertyP2pEvent:
+		return ec._BertyP2pEvent(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
+}
+
+func UnmarshalContactAcceptRequestInput(v interface{}) (model.ContactAcceptRequestInput, error) {
+	var it model.ContactAcceptRequestInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "contactID":
+			var err error
+			it.ContactID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalContactRemoveInput(v interface{}) (model.ContactRemoveInput, error) {
+	var it model.ContactRemoveInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "contactID":
+			var err error
+			it.ContactID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalContactRequestInput(v interface{}) (model.ContactRequestInput, error) {
+	var it model.ContactRequestInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "contactID":
+			var err error
+			it.ContactID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "introText":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.IntroText = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalContactUpdateInput(v interface{}) (model.ContactUpdateInput, error) {
+	var it model.ContactUpdateInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "contactID":
+			var err error
+			it.ContactID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "displayName":
+			var err error
+			var ptr1 string
+			if v != nil {
+				ptr1, err = graphql.UnmarshalString(v)
+				it.DisplayName = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalConversationAddMessageInput(v interface{}) (model.ConversationAddMessageInput, error) {
+	var it model.ConversationAddMessageInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "conversationID":
+			var err error
+			it.ConversationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "message":
+			var err error
+			it.Message, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalConversationCreateInput(v interface{}) (model.ConversationCreateInput, error) {
+	var it model.ConversationCreateInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "contactsID":
+			var err error
+			var rawIf1 []interface{}
+			if v != nil {
+				if tmp1, ok := v.([]interface{}); ok {
+					rawIf1 = tmp1
+				} else {
+					rawIf1 = []interface{}{v}
+				}
+			}
+			it.ContactsID = make([]string, len(rawIf1))
+			for idx1 := range rawIf1 {
+				it.ContactsID[idx1], err = graphql.UnmarshalString(rawIf1[idx1])
+			}
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalConversationExcludeInput(v interface{}) (model.ConversationExcludeInput, error) {
+	var it model.ConversationExcludeInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "conversationID":
+			var err error
+			it.ConversationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "contactsID":
+			var err error
+			var rawIf1 []interface{}
+			if v != nil {
+				if tmp1, ok := v.([]interface{}); ok {
+					rawIf1 = tmp1
+				} else {
+					rawIf1 = []interface{}{v}
+				}
+			}
+			it.ContactsID = make([]string, len(rawIf1))
+			for idx1 := range rawIf1 {
+				it.ContactsID[idx1], err = graphql.UnmarshalString(rawIf1[idx1])
+			}
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalConversationInviteInput(v interface{}) (model.ConversationInviteInput, error) {
+	var it model.ConversationInviteInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "conversationID":
+			var err error
+			it.ConversationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "contactsID":
+			var err error
+			var rawIf1 []interface{}
+			if v != nil {
+				if tmp1, ok := v.([]interface{}); ok {
+					rawIf1 = tmp1
+				} else {
+					rawIf1 = []interface{}{v}
+				}
+			}
+			it.ContactsID = make([]string, len(rawIf1))
+			for idx1 := range rawIf1 {
+				it.ContactsID[idx1], err = graphql.UnmarshalString(rawIf1[idx1])
+			}
+			if err != nil {
+				return it, err
+			}
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalGenerateFakeDataInput(v interface{}) (model.GenerateFakeDataInput, error) {
+	var it model.GenerateFakeDataInput
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "clientMutationId":
+			var err error
+			it.ClientMutationID, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
 }
 
 func (ec *executionContext) FieldMiddleware(ctx context.Context, next graphql.Resolver) interface{} {
@@ -7366,10 +8415,16 @@ interface Node {
   id: ID!
 }
 
+
+
+
+
   
+
 type GoogleProtobufFileDescriptorSet {
   file: [GoogleProtobufFileDescriptorProto]
 } 
+
 type GoogleProtobufFileDescriptorProto {
   name: String
   package: String
@@ -7395,6 +8450,7 @@ type GoogleProtobufDescriptorProtoReservedRange {
   start: Int
   end: Int
 }
+
 type GoogleProtobufDescriptorProto {
   name: String
   field: [GoogleProtobufFieldDescriptorProto]
@@ -7407,9 +8463,11 @@ type GoogleProtobufDescriptorProto {
   reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
   reservedName: [String]
 } 
+
 type GoogleProtobufExtensionRangeOptions {
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 } 
+
 type GoogleProtobufFieldDescriptorProto {
   name: String
   number: Int
@@ -7422,6 +8480,7 @@ type GoogleProtobufFieldDescriptorProto {
   jsonName: String
   options: GoogleProtobufFieldOptions
 }
+
 enum GoogleProtobufFieldDescriptorProtoType {
   TYPE_DOUBLE
   TYPE_FLOAT
@@ -7442,11 +8501,13 @@ enum GoogleProtobufFieldDescriptorProtoType {
   TYPE_SINT32
   TYPE_SINT64
 }
+
 enum GoogleProtobufFieldDescriptorProtoLabel {
   LABEL_OPTIONAL
   LABEL_REQUIRED
   LABEL_REPEATED
 } 
+
 type GoogleProtobufOneofDescriptorProto {
   name: String
   options: GoogleProtobufOneofOptions
@@ -7456,6 +8517,7 @@ type GoogleProtobufEnumDescriptorProtoEnumReservedRange {
   start: Int
   end: Int
 }
+
 type GoogleProtobufEnumDescriptorProto {
   name: String
   value: [GoogleProtobufEnumValueDescriptorProto]
@@ -7463,16 +8525,19 @@ type GoogleProtobufEnumDescriptorProto {
   reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
   reservedName: [String]
 } 
+
 type GoogleProtobufEnumValueDescriptorProto {
   name: String
   number: Int
   options: GoogleProtobufEnumValueOptions
 } 
+
 type GoogleProtobufServiceDescriptorProto {
   name: String
   method: [GoogleProtobufMethodDescriptorProto]
   options: GoogleProtobufServiceOptions
 } 
+
 type GoogleProtobufMethodDescriptorProto {
   name: String
   inputType: String
@@ -7481,6 +8546,7 @@ type GoogleProtobufMethodDescriptorProto {
   clientStreaming: Boolean
   serverStreaming: Boolean
 } 
+
 type GoogleProtobufFileOptions {
   javaPackage: String
   javaOuterClassname: String
@@ -7502,11 +8568,13 @@ type GoogleProtobufFileOptions {
   phpNamespace: String
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
+
 enum GoogleProtobufFileOptionsOptimizeMode {
   SPEED
   CODE_SIZE
   LITE_RUNTIME
 } 
+
 type GoogleProtobufMessageOptions {
   messageSetWireFormat: Boolean
   noStandardDescriptorAccessor: Boolean
@@ -7514,6 +8582,7 @@ type GoogleProtobufMessageOptions {
   mapEntry: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 } 
+
 type GoogleProtobufFieldOptions {
   ctype: GoogleProtobufFieldOptionsCType
   packed: Boolean
@@ -7523,37 +8592,45 @@ type GoogleProtobufFieldOptions {
   weak: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
+
 enum GoogleProtobufFieldOptionsCType {
   STRING
   CORD
   STRING_PIECE
 }
+
 enum GoogleProtobufFieldOptionsJSType {
   JS_NORMAL
   JS_STRING
   JS_NUMBER
 } 
+
 type GoogleProtobufOneofOptions {
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 } 
+
 type GoogleProtobufEnumOptions {
   allowAlias: Boolean
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 } 
+
 type GoogleProtobufEnumValueOptions {
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 } 
+
 type GoogleProtobufServiceOptions {
   deprecated: Boolean
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 } 
+
 type GoogleProtobufMethodOptions {
   deprecated: Boolean
   idempotencyLevel: GoogleProtobufMethodOptionsIdempotencyLevel
   uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
+
 enum GoogleProtobufMethodOptionsIdempotencyLevel {
   IDEMPOTENCY_UNKNOWN
   NO_SIDE_EFFECTS
@@ -7564,6 +8641,7 @@ type GoogleProtobufUninterpretedOptionNamePart {
   namePart: String
   isExtension: Boolean
 }
+
 type GoogleProtobufUninterpretedOption {
   name: [GoogleProtobufUninterpretedOptionNamePart]
   identifierValue: String
@@ -7581,6 +8659,7 @@ type GoogleProtobufSourceCodeInfoLocation {
   trailingComments: String
   leadingDetachedComments: [String]
 }
+
 type GoogleProtobufSourceCodeInfo {
   location: [GoogleProtobufSourceCodeInfoLocation]
 }  
@@ -7591,18 +8670,34 @@ type GoogleProtobufGeneratedCodeInfoAnnotation {
   begin: Int
   end: Int
 }
+
 type GoogleProtobufGeneratedCodeInfo {
   annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
 }  
+
+
+
    
+
+
+
+   
+
+
+
   
+
 type GoogleProtobufTimestamp {
   seconds: Int
   nanos: Int
 }  
-  
-type BertyEntityDevice {
-  id: String
+
+
+
+    
+
+type BertyEntityDevice implements Node {
+  id: ID!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -7611,6 +8706,7 @@ type BertyEntityDevice {
   apiVersion: Int
   contactId: String
 }
+
 enum BertyEntityDeviceStatus {
   Unknown
   Connected
@@ -7618,9 +8714,13 @@ enum BertyEntityDeviceStatus {
   Available
   Myself
 }  
-  
-type BertyEntityContact {
-  id: String
+
+
+
+    
+
+type BertyEntityContact implements Node {
+  id: ID!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -7632,6 +8732,7 @@ type BertyEntityContact {
   overrideDisplayName: String
   overrideDisplayStatus: String
 }
+
 enum BertyEntityContactStatus {
   Unknown
   IsFriend
@@ -7641,18 +8742,23 @@ enum BertyEntityContactStatus {
   IsBlocked
   Myself
 }  
-  
-type BertyEntityConversation {
-  id: String
+
+
+
+    
+
+type BertyEntityConversation implements Node {
+  id: ID!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
   title: String
   topic: String
   members: [BertyEntityConversationMember]
-} 
-type BertyEntityConversationMember {
-  id: String
+}   
+
+type BertyEntityConversationMember implements Node {
+  id: ID!
   createdAt: DateTime
   updatedAt: DateTime
   deletedAt: DateTime
@@ -7661,43 +8767,60 @@ type BertyEntityConversationMember {
   conversationId: String
   contactId: String
 }
+
 enum BertyEntityConversationMemberStatus {
   Unknown
   Owner
   Active
   Blocked
 }  
+
+
+
   
+
 type BertyEntityMessage {
   text: String
 }  
+
+
+
   
+
 type BertyP2pSentAttrs {
   ids: [String]
 } 
+
 type BertyP2pAckAttrs {
   ids: [String]
   ErrMsg: String
 } 
+
 type BertyP2pPingAttrs { # Can't make empty type
   T: Boolean
 } 
+
 type BertyP2pContactRequestAttrs {
   me: BertyEntityContact
   introText: String
 } 
+
 type BertyP2pContactRequestAcceptedAttrs { # Can't make empty type
   T: Boolean
 } 
+
 type BertyP2pContactShareMeAttrs {
   me: BertyEntityContact
 } 
+
 type BertyP2pContactShareAttrs {
   contact: BertyEntityContact
 } 
+
 type BertyP2pConversationInviteAttrs {
   conversation: BertyEntityConversation
 } 
+
 type BertyP2pConversationNewMessageAttrs {
   message: BertyEntityMessage
 } 
@@ -7714,9 +8837,13 @@ enum BertyP2pKind {
   ConversationInvite
   ConversationNewMessage
 } 
-  
-type BertyP2pEvent {
-  id: String
+
+
+
+    
+
+type BertyP2pEvent implements Node {
+  id: ID!
   senderId: String
   createdAt: DateTime
   updatedAt: DateTime
@@ -7732,51 +8859,181 @@ type BertyP2pEvent {
   attributes: String
   conversationId: String
 }
+
 enum BertyP2pEventDirection {
   UnknownDirection
   Incoming
   Outgoing
 }  
+
+
+
   
+
 type BertyNodeContactRequestInput {
   contact: BertyEntityContact
   introText: String
 } 
+
 type BertyNodeConversationAddMessageInput {
   conversation: BertyEntityConversation
   message: BertyEntityMessage
 } 
+
 type BertyNodeEventStreamInput {
   filter: BertyP2pEvent
 } 
+
 type BertyNodeEventListInput {
   limit: Int
   filter: BertyP2pEvent
 } 
+
 type BertyNodeConversationManageMembersInput {
   conversation: BertyEntityConversation
   members: [BertyEntityConversationMember]
 } 
+
 type BertyNodeVoid { # Can't make empty type
   T: Boolean
 }  
-type Subscription {
-  EventStream: BertyP2pEvent
+
+
+
+
+input ContactRequestInput {
+  contactID: String!
+  introText: String
+  clientMutationId: String!
 }
+
+type ContactRequestPayload {
+  bertyEntityContact: BertyEntityContact
+  clientMutationId: String!
+}
+
+input ContactAcceptRequestInput {
+  contactID: String!
+  clientMutationId: String!
+}
+
+type ContactAcceptRequestPayload {
+  bertyEntityContact: BertyEntityContact
+  clientMutationId: String!
+}
+
+input ContactRemoveInput {
+  contactID: String!
+  clientMutationId: String!
+}
+
+type ContactRemovePayload {
+  bertyEntityContact: BertyEntityContact
+  clientMutationId: String!
+}
+
+input ContactUpdateInput {
+  contactID: String!
+  displayName: String
+  clientMutationId: String!
+}
+
+type ContactUpdatePayload {
+  bertyEntityContact: BertyEntityContact
+  clientMutationId: String!
+}
+
+input ConversationCreateInput {
+  contactsID: [String!]!
+  clientMutationId: String!
+}
+
+type ConversationCreatePayload {
+  bertyEntityConversation: BertyEntityConversation
+  clientMutationId: String!
+}
+
+input ConversationInviteInput {
+  conversationID: String!
+  contactsID: [String!]!
+  clientMutationId: String!
+}
+
+type ConversationInvitePayload {
+  bertyEntityConversation: BertyEntityConversation
+  clientMutationId: String!
+}
+
+input ConversationExcludeInput {
+  conversationID: String!
+  contactsID: [String!]!
+  clientMutationId: String!
+}
+
+type ConversationExcludePayload {
+  bertyEntityConversation: BertyEntityConversation
+  clientMutationId: String!
+}
+
+input ConversationAddMessageInput {
+  conversationID: String!
+  message: String!
+  clientMutationId: String!
+}
+
+type ConversationAddMessagePayload {
+  bertyP2pEvent: BertyP2pEvent
+  clientMutationId: String!
+}
+
+input GenerateFakeDataInput {
+  clientMutationId: String!
+}
+
+type GenerateFakeDataPayload {
+  bertyNodeVoid: BertyNodeVoid
+  clientMutationId: String!
+}
+
+
+
+
 type Mutation {
-  ContactRequest(contactID: String!, introText: String): BertyEntityContact
-  ContactRemove(contactID: String!): BertyEntityContact
-  ContactUpdate(contactID: String!, displayName: String): BertyEntityContact
-  ConversationCreate(contactsID: [String!]!): BertyEntityConversation
-  ConversationInvite(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
-  ConversationExclude(conversationID: String!, contactsID: [String!]!): BertyEntityConversation
-  ConversationAddMessage(conversationID: String!, message: String!): BertyP2pEvent
-  GenerateFakeData: BertyNodeVoid
+  ContactRequest(input: ContactRequestInput!): ContactRequestPayload
+  ContactAcceptRequest(input: ContactAcceptRequestInput!): ContactAcceptRequestPayload
+  ContactRemove(input: ContactRemoveInput!): ContactRemovePayload
+  ContactUpdate(input: ContactUpdateInput!): ContactUpdatePayload
+  ConversationCreate(input: ConversationCreateInput!): ConversationCreatePayload
+  ConversationInvite(input: ConversationInviteInput!): ConversationInvitePayload
+  ConversationExclude(input: ConversationExcludeInput!): ConversationExcludePayload
+  ConversationAddMessage(input: ConversationAddMessageInput!): ConversationAddMessagePayload
+  GenerateFakeData(input: GenerateFakeDataInput!): GenerateFakeDataPayload
 }
+
+
+
+
 type Query {
+  # Root field
+  node(id: ID!): Node
+
+  
   EventList(limit: Int): [BertyP2pEvent]
+  GetEvent(eventID: String!): BertyP2pEvent
   ContactList: [BertyEntityContact]
+  GetContact(contactID: String!): BertyEntityContact
   ConversationList: [BertyEntityConversation]
+  GetConversation(conversationID: String!): BertyEntityConversation
+  GetConversationMember(conversationMemberID: String!): BertyEntityConversationMember
 }
+
+
+
+
+type Subscription {
+  
+  EventStream(kind: String, conversationID: String): BertyP2pEvent
+}
+
 `},
 )

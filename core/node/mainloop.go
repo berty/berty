@@ -35,12 +35,13 @@ func (n *Node) Start() error {
 				logger().Error("failed to emit envelope on network", zap.Error(err))
 			}
 		case event := <-n.clientEvents:
-			// read lock
+			n.clientEventsMutex.Lock()
 			for _, sub := range n.clientEventsSubscribers {
 				if sub.filter(event) {
 					sub.queue <- event
 				}
 			}
+			n.clientEventsMutex.Unlock()
 		}
 	}
 }
