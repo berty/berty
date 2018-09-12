@@ -874,9 +874,6 @@ func encodeVarintKeypair(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *Signature) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	l = len(m.Signature)
@@ -893,9 +890,6 @@ func (m *Signature) Size() (n int) {
 }
 
 func (m *EcdsaSignature) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.RNeg {
@@ -919,9 +913,6 @@ func (m *EcdsaSignature) Size() (n int) {
 }
 
 func (m *CertificateContent) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Version != 0 {
@@ -957,9 +948,6 @@ func (m *CertificateContent) Size() (n int) {
 }
 
 func (m *Certificate) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Content != nil {
@@ -977,9 +965,6 @@ func (m *Certificate) Size() (n int) {
 }
 
 func (m *RevocationContent) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Version != 0 {
@@ -1006,9 +991,6 @@ func (m *RevocationContent) Size() (n int) {
 }
 
 func (m *Revocation) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Content != nil {

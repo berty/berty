@@ -1312,9 +1312,6 @@ func encodeVarintService(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *ContactRequestInput) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Contact != nil {
@@ -1332,9 +1329,6 @@ func (m *ContactRequestInput) Size() (n int) {
 }
 
 func (m *ConversationAddMessageInput) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Conversation != nil {
@@ -1352,9 +1346,6 @@ func (m *ConversationAddMessageInput) Size() (n int) {
 }
 
 func (m *EventStreamInput) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Filter != nil {
@@ -1368,9 +1359,6 @@ func (m *EventStreamInput) Size() (n int) {
 }
 
 func (m *EventListInput) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Limit != 0 {
@@ -1387,9 +1375,6 @@ func (m *EventListInput) Size() (n int) {
 }
 
 func (m *ConversationManageMembersInput) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Conversation != nil {
@@ -1409,9 +1394,6 @@ func (m *ConversationManageMembersInput) Size() (n int) {
 }
 
 func (m *Void) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.XXX_unrecognized != nil {

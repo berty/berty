@@ -798,9 +798,6 @@ func encodeVarintKind(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *SentAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if len(m.IDs) > 0 {
@@ -816,9 +813,6 @@ func (m *SentAttrs) Size() (n int) {
 }
 
 func (m *AckAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if len(m.IDs) > 0 {
@@ -838,9 +832,6 @@ func (m *AckAttrs) Size() (n int) {
 }
 
 func (m *PingAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.XXX_unrecognized != nil {
@@ -850,9 +841,6 @@ func (m *PingAttrs) Size() (n int) {
 }
 
 func (m *ContactRequestAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Me != nil {
@@ -870,9 +858,6 @@ func (m *ContactRequestAttrs) Size() (n int) {
 }
 
 func (m *ContactRequestAcceptedAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.XXX_unrecognized != nil {
@@ -882,9 +867,6 @@ func (m *ContactRequestAcceptedAttrs) Size() (n int) {
 }
 
 func (m *ContactShareMeAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Me != nil {
@@ -898,9 +880,6 @@ func (m *ContactShareMeAttrs) Size() (n int) {
 }
 
 func (m *ContactShareAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Contact != nil {
@@ -914,9 +893,6 @@ func (m *ContactShareAttrs) Size() (n int) {
 }
 
 func (m *ConversationInviteAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Conversation != nil {
@@ -930,9 +906,6 @@ func (m *ConversationInviteAttrs) Size() (n int) {
 }
 
 func (m *ConversationNewMessageAttrs) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Message != nil {

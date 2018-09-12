@@ -173,9 +173,6 @@ func encodeVarintService(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *Void) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.XXX_unrecognized != nil {

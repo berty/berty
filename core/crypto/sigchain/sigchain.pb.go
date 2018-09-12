@@ -447,9 +447,6 @@ func encodeVarintSigchain(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *SigEvent) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.EventType != 0 {
@@ -488,9 +485,6 @@ func (m *SigEvent) Size() (n int) {
 }
 
 func (m *SigChain) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	l = len(m.UserId)
@@ -510,9 +504,6 @@ func (m *SigChain) Size() (n int) {
 }
 
 func (m *EventExtension) Size() (n int) {
-	if m == nil {
-		return 0
-	}
 	var l int
 	_ = l
 	if m.Version != 0 {

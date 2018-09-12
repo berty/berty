@@ -30,7 +30,6 @@
     "promise": "8.0.1",
     "raf": "3.4.0",
     "react-dev-utils": "^5.0.2",
-    "react-qr-reader": "^2.1.0",
     "relay-compiler": "^1.4.1",
     "resolve": "1.8.1",
     "style-loader": "0.22.1",
