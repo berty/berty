@@ -1,6 +1,12 @@
 import { Environment, Network, RecordSource, Store } from 'relay-runtime'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { Platform, NativeModules } from 'react-native'
+import { installRelayDevTools } from 'relay-devtools'
+
+// eslint-disable-next-line
+if (__DEV__) {
+  installRelayDevTools()
+}
 
 // @TODO: patch web CoreModule
 if (Platform.OS === 'web') {
