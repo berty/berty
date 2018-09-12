@@ -290,7 +290,7 @@ func (m *SigChain) CheckSigChain() (map[string]*keypair.Certificate, error) {
 				issuerCert = certificate
 			}
 
-			if err := keypair.CheckSignature(certificate, issuerCert); err != nil {
+			if err := keypair.CheckSignatureUsingCert(certificate, issuerCert); err != nil {
 				return devices, err
 			}
 
@@ -322,7 +322,7 @@ func (m *SigChain) CheckSigChain() (map[string]*keypair.Certificate, error) {
 
 			issuerCert := devices[revocation.Content.Issuer]
 
-			if err := keypair.CheckSignature(revocation, issuerCert); err != nil {
+			if err := keypair.CheckSignatureUsingCert(revocation, issuerCert); err != nil {
 				return devices, err
 			}
 

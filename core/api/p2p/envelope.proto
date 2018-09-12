@@ -5,9 +5,11 @@ package berty.p2p;
 option go_package = "berty.tech/core/api/p2p";
 
 import "gogoproto/gogo.proto";
+import "crypto/keypair/keypair.proto";
 
 message Envelope {
-  string channel_id = 1 [(gogoproto.customname) = "ChannelID"];
-  bytes encrypted_event = 2;
-  bytes signer_public_key = 3;
+  string              channel_id = 1 [(gogoproto.customname) = "ChannelID"];
+  bytes               encrypted_event = 2;
+  keypair.Signature   signature = 3;
+  string              source = 4;
 }

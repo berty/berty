@@ -1,39 +1,76 @@
 package node
 
 import (
-	"crypto/rand"
-	"crypto/rsa"
-	"crypto/x509"
 	"encoding/base64"
 
+	"go.uber.org/zap"
+
 	"berty.tech/core/api/p2p"
-	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 )
 
-func (n *Node) initConfig() (*entity.Config, error) {
-	// keypair
-	priv, err := rsa.GenerateKey(rand.Reader, 1024) // FIXME: setting default keysize to 1024 to speedup development (tests), we need to increase the security before the release
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to generate RSA key")
+func WithInitConfig() NewNodeOption {
+	return func(n *Node) {
+		// get config from sql
+		config, err := n.Config()
+		if err != nil {
+			config = &entity.Config{}
+
+			if err = n.sql.Create(config).Error; err != nil {
+				zap.Error(errors.Wrap(err, "failed to save empty config"))
+
+				return
+			}
+		}
+
+		n.config = config
 	}
-	privBytes, _ := x509.MarshalPKCS8PrivateKey(priv)
-	pubBytes, err := x509.MarshalPKIXPublicKey(priv.Public())
+}
+
+func WithConfig() NewNodeOption {
+	return func(n *Node) {
+		// get config from sql
+		config, err := n.Config()
+
+		if err != nil {
+			zap.Error(errors.Wrap(err, "failed to load existing config"))
+
+			return
+		}
+
+		if config.Validate() != nil {
+			logger().Debug("config is missing from sql, creating a new one")
+			if _, err = n.initConfig(); err != nil {
+				zap.Error(errors.Wrap(err, "failed to initialize config"))
+
+				return
+			}
+		}
+
+		config, _ = n.Config()
+
+		if err = config.Validate(); err != nil {
+			zap.Error(errors.Wrap(err, "node config is invalid"))
+			return
+		}
+
+		n.config = config
+	}
+}
+
+func (n *Node) initConfig() (*entity.Config, error) {
+	pubBytes, err := n.crypto.GetPubKey()
+
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal priv key")
+		return nil, errors.Wrap(err, "unable to init config")
 	}
 
-	// sigchain
-	cryptoImpl := keypair.InsecureCrypto{} // FIXME: use enclave
-	if err := cryptoImpl.SetPrivateKeyData(privBytes); err != nil {
-		return nil, errors.Wrap(err, "failed to set private key in keypair")
-	}
 	sc := sigchain.SigChain{}
 
-	if err := sc.Init(&cryptoImpl, string(pubBytes)); err != nil {
+	if err := sc.Init(n.crypto, string(pubBytes)); err != nil {
 		return nil, errors.Wrap(err, "failed to initialize sigchain")
 	}
 
@@ -45,30 +82,56 @@ func (n *Node) initConfig() (*entity.Config, error) {
 		ApiVersion: p2p.Version,
 	}
 
+	if err := n.sql.Create(currentDevice).Error; err != nil {
+		return nil, errors.Wrap(err, "unable to save config")
+	}
+
 	scBytes, err := proto.Marshal(&sc)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to marshal sigchain")
 	}
 
-	config := entity.Config{
-		Myself: &entity.Contact{
-			ID:          base64.StdEncoding.EncodeToString(pubBytes),
-			Devices:     []*entity.Device{currentDevice},
-			DisplayName: n.initDevice.Username(),
-			Status:      entity.Contact_Myself,
-			Sigchain:    scBytes,
-		},
-		CurrentDevice: currentDevice,
+	myself := &entity.Contact{
+		ID:          base64.StdEncoding.EncodeToString(pubBytes),
+		DisplayName: n.initDevice.Username(),
+		Status:      entity.Contact_Myself,
+		Sigchain:    scBytes,
 	}
 
-	if err := n.sql.Set("gorm:association_autoupdate", true).Save(&config).Error; err != nil {
+	if err := n.sql.Create(myself).Error; err != nil {
+		return nil, errors.Wrap(err, "unable to save myself")
+	}
+
+	n.sql.Model(&myself).Association("Devices").Append(currentDevice)
+
+	n.config.CurrentDevice = currentDevice
+	n.config.CurrentDeviceID = n.config.CurrentDevice.ID
+	n.config.Myself = myself
+	n.config.MyselfID = n.config.Myself.ID
+
+	if err := n.sql.
+		Set("gorm:association_autocreate", true).
+		Set("gorm:association_autoupdate", true).
+		Save(&n.config).
+		Error; err != nil {
 		return nil, errors.Wrap(err, "failed to save config")
 	}
-	return n.Config()
+
+	return n.config, nil
 }
 
 // Config gets config from database
 func (n *Node) Config() (*entity.Config, error) {
-	var config entity.Config
-	return &config, n.sql.First(&config).Error
+	var config []*entity.Config
+
+	if err := n.sql.Preload("CurrentDevice").Preload("Myself").Preload("Myself.Devices").Find(&config, &entity.Config{}).Error; err != nil {
+		// if err := n.sql.First(config).Error; err != nil {
+		return nil, errors.Wrap(err, "unable to get config")
+	}
+
+	if len(config) == 0 {
+		return nil, errors.New("config not found")
+	}
+
+	return config[0], nil
 }
