@@ -77,6 +77,10 @@ const setupSubscription = async (config, variables, cacheConfig, observer) => {
   try {
     const query = config.text
     const port = await CoreModule.getPort()
+    if (Platform.OS !== 'web') {
+      // Display port in console log for mobiles
+      console.log('Port:', port)
+    }
     const subscriptionClient = new SubscriptionClient(
       `ws://${await getIP()}:${port}/query`,
       {
