@@ -24,7 +24,11 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	defer n.handleMutex.Unlock()
 
 	if input.SenderID == n.UserID() {
-		return fmt.Errorf("skipping event created by myself")
+		logger().Debug("skipping event created by myself",
+			zap.String("sender", input.SenderID),
+			zap.String("id", input.ID),
+		)
+		return nil
 	}
 
 	var count int
@@ -42,12 +46,15 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	// input.ReceiverID = ""               // we should be able to remove this information
 
 	// debug
-	// FIXME: check if logger is in debug mode
-	out, err := json.Marshal(input)
-	if err == nil {
-		logger().Debug("handle event",
+	if ce := logger().Check(zap.DebugLevel, "handle event"); ce != nil {
+		var event string
+		if out, err := json.Marshal(input); err == nil {
+			event = string(out)
+		}
+		ce.Write(
 			zap.String("sender", input.SenderID),
-			zap.String("event", string(out)),
+			zap.String("id", input.ID),
+			zap.String("event", event),
 		)
 	}
 
