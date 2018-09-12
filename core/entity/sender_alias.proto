@@ -6,28 +6,25 @@ option go_package = "berty.tech/core/entity";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
-import "entity/contact.proto";
-import "entity/device.proto";
 
-message Config {
-  //
-  // gorm required fields
-  //
+message SenderAlias {
+  enum Status {
+    UNKNOWN = 0;
+    SENT = 1;
+    SENT_AND_ACKED = 2;
+    RECEIVED = 3;
+  }
 
   string id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
   google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp deleted_at = 4 [(gogoproto.stdtime) = true];
 
-  //
-  // myself
-  //
 
-  Contact myself = 5;
-  string myself_id = 6 [(gogoproto.customname) = "MyselfID"];
-
-  Device current_device = 7;
-  string current_device_id = 8 [(gogoproto.customname) = "CurrentDeviceID"];
-
-  bytes crypto_params = 9;
+  Status status = 5;
+  string origin_device_id = 6 [(gogoproto.customname) = "OriginDeviceID"];
+  string contact_id = 7 [(gogoproto.customname) = "ContactID"];
+  string conversation_id = 8 [(gogoproto.customname) = "ConversationID"];
+  string alias_identifier = 9;
+  bool used = 10;
 }

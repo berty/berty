@@ -6,12 +6,13 @@ import (
 	"testing"
 	"time"
 
-	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/errorcodes"
 	"berty.tech/core/network/mock"
 	p2pnet "berty.tech/core/network/p2p"
 )
@@ -78,7 +79,7 @@ func TestWithEnqueuer(t *testing.T) {
 					So(bob.node.DevtoolsMapget("test"), ShouldEqual, fmt.Sprintf("%d", i))
 					envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 					event, err := alice.node.OpenEnvelope(envelope)
-					So(err, ShouldBeNil)
+					So(err, ShouldBeIn, nil, errorcodes.ErrorUntrustedEnvelope)
 					So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 					//jsonPrintIndent(event)
 				}
@@ -252,7 +253,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
-				So(err, ShouldBeNil)
+				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Author(), ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
@@ -301,6 +302,9 @@ func TestWithEnqueuer(t *testing.T) {
 				So(res.DisplayStatus, ShouldBeEmpty)
 				So(len(res.Devices), ShouldEqual, 1)
 				So(res.Devices[0].ID, ShouldEqual, alice.node.UserID())
+
+				time.Sleep(time.Second * 1)
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 2, 0, 0, 0})
 
 				everythingWentFine()
@@ -310,7 +314,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
-				So(err, ShouldBeNil)
+				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
@@ -347,7 +351,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
-				So(err, ShouldBeNil)
+				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -458,7 +462,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
-				So(err, ShouldBeNil)
+				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -562,6 +566,201 @@ func TestWithEnqueuer(t *testing.T) {
 		})
 		Convey("Test asynchronous messages", FailureHalts, func() {
 			Convey("TODO", FailureHalts, nil)
+		})
+	})
+}
+
+func TestAliasesFlow(t *testing.T) {
+	var (
+		alice, bob  *AppMock
+		err         error
+		internalCtx = context.Background()
+		res         interface{}
+		envelope    *p2p.Envelope
+	)
+
+	defer func() {
+		if alice != nil {
+			alice.Close()
+		}
+		if bob != nil {
+			bob.Close()
+		}
+	}()
+
+	timeBetweenSteps := 150 * time.Millisecond
+
+	Convey("Test renew aliases via mock.NewEnqueuer", t, FailureHalts, func() {
+		Convey("Initialize nodes", FailureHalts, func() {
+			everythingWentFine()
+
+			network := mock.NewSimple()
+			aliceNetwork := network.Driver()
+			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, aliceNetwork, WithUnencryptedDb())
+			So(err, ShouldBeNil)
+			So(alice.InitEventStream(), ShouldBeNil)
+
+			bobNetwork := network.Driver()
+			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, bobNetwork, WithUnencryptedDb())
+			So(err, ShouldBeNil)
+			So(bob.InitEventStream(), ShouldBeNil)
+
+			network.AddPeer(aliceNetwork)
+			network.AddPeer(bobNetwork)
+
+			everythingWentFine()
+		})
+
+		Convey("Alice adds Bob as a friend and init a conversation", FailureHalts, func() {
+
+			contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
+			So(err, ShouldBeNil)
+			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
+			contacts, err = bob.client.ContactList(internalCtx, &node.ContactListInput{})
+			So(err, ShouldBeNil)
+			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
+			shouldIContinue(t)
+			res, err = alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
+				Contact: &entity.Contact{
+					OverrideDisplayName: "Bob from school",
+					ID:                  bob.node.UserID(),
+				},
+				IntroText: "hello, I want to chat!",
+			})
+
+			So(err, ShouldBeNil)
+			time.Sleep(timeBetweenSteps)
+
+			contacts, err = alice.client.ContactList(internalCtx, &node.ContactListInput{})
+			So(err, ShouldBeNil)
+			So(len(contacts), ShouldEqual, 2) // 'myself' is the only known contact
+
+			contacts, err = bob.client.ContactList(internalCtx, &node.ContactListInput{})
+			So(err, ShouldBeNil)
+			So(len(contacts), ShouldEqual, 2) // 'myself' is the only known contact
+
+			So(err, ShouldBeNil)
+			So(res, ShouldNotBeNil)
+			time.Sleep(timeBetweenSteps)
+
+			res, err = bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
+				ID: alice.node.UserID(),
+			})
+
+			So(err, ShouldBeNil)
+			So(res, ShouldNotBeNil)
+			time.Sleep(timeBetweenSteps)
+
+			contacts, err = alice.client.ContactList(internalCtx, &node.ContactListInput{})
+			So(err, ShouldBeNil)
+			So(len(contacts), ShouldEqual, 2)
+
+			contacts, err = bob.client.ContactList(internalCtx, &node.ContactListInput{})
+			So(err, ShouldBeNil)
+			So(len(contacts), ShouldEqual, 2)
+
+			_, err = bob.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+				Title: "Alice & Bob",
+				Topic: "hey!",
+				Members: []*entity.ConversationMember{
+					{ContactID: alice.node.UserID()},
+				},
+			})
+
+			So(err, ShouldBeNil)
+
+			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			So(err, ShouldBeNil)
+			So(len(conversations), ShouldEqual, 1)
+
+			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			So(err, ShouldBeNil)
+			So(len(conversations), ShouldEqual, 1)
+
+			everythingWentFine()
+		})
+
+		Convey("Check that bob emitted non aliased messages", FailureHalts, func() {
+			shouldIContinue(t)
+
+			envelope = bob.networkDriver.(*mock.SimpleDriver).GetLastSentEnvelope()
+			So(envelope.Source, ShouldEqual, bob.node.UserID())
+
+			envelope = bob.networkDriver.(*mock.SimpleDriver).GetLastReceivedEnvelope()
+			So(envelope.Source, ShouldEqual, alice.node.UserID())
+
+			everythingWentFine()
+		})
+
+		Convey("Alice send initial aliases to Bob and sends an aliased message to Bob", FailureHalts, func() {
+			shouldIContinue(t)
+
+			alias, err := alice.node.GenerateAliasForContact(bob.node.UserID())
+			So(err, ShouldBeNil)
+
+			time.Sleep(timeBetweenSteps)
+
+			_, err = alice.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+				Title: "Alice & Bob 2",
+				Topic: "hey! oh!",
+				Members: []*entity.ConversationMember{
+					{ContactID: bob.node.UserID()},
+				},
+			})
+
+			So(err, ShouldBeNil)
+			time.Sleep(timeBetweenSteps)
+
+			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			So(err, ShouldBeNil)
+			So(len(conversations), ShouldEqual, 2)
+
+			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			So(err, ShouldBeNil)
+			So(len(conversations), ShouldEqual, 2)
+
+			envelope = bob.networkDriver.(*mock.SimpleDriver).GetLastReceivedEnvelope()
+			So(envelope.Source, ShouldEqual, alias.AliasIdentifier)
+
+			envelope = alice.networkDriver.(*mock.SimpleDriver).GetLastSentEnvelope()
+			So(envelope.Source, ShouldEqual, alias.AliasIdentifier)
+
+			err = alice.node.SenderAliasesRenew()
+
+			So(err, ShouldBeNil)
+
+			time.Sleep(timeBetweenSteps)
+
+			_, err = alice.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+				Title: "Alice & Bob 3",
+				Topic: "hey! oh! let's go",
+				Members: []*entity.ConversationMember{
+					{ContactID: bob.node.UserID()},
+				},
+			})
+
+			So(err, ShouldBeNil)
+			time.Sleep(timeBetweenSteps)
+
+			conversations, err = bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			So(err, ShouldBeNil)
+			So(len(conversations), ShouldEqual, 3)
+
+			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			So(err, ShouldBeNil)
+			So(len(conversations), ShouldEqual, 3)
+
+			envelope = bob.networkDriver.(*mock.SimpleDriver).GetLastReceivedEnvelope()
+			So(envelope.Source, ShouldNotEqual, alias.AliasIdentifier)
+			So(envelope.Source, ShouldNotEqual, alice.node.UserID())
+
+			envelope = alice.networkDriver.(*mock.SimpleDriver).GetLastSentEnvelope()
+			So(envelope.Source, ShouldNotEqual, alias.AliasIdentifier)
+			So(envelope.Source, ShouldNotEqual, alice.node.UserID())
+
+			everythingWentFine()
 		})
 	})
 }

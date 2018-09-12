@@ -68,11 +68,6 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		)
 	}
 
-	if input.Kind == p2p.Kind_Ack {
-		// FIXME: update acked_at in db
-		return nil
-	}
-
 	handler, found := map[p2p.Kind]EventHandler{
 		p2p.Kind_ContactRequest:         n.handleContactRequest,
 		p2p.Kind_ContactRequestAccepted: n.handleContactRequestAccepted,
@@ -80,12 +75,18 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		p2p.Kind_ConversationInvite:     n.handleConversationInvite,
 		p2p.Kind_ConversationNewMessage: n.handleConversationNewMessage,
 		p2p.Kind_DevtoolsMapset:         n.handleDevtoolsMapset,
+		p2p.Kind_SenderAliasUpdate:      n.handleSenderAliasUpdate,
+		p2p.Kind_Ack:                    n.handleAck,
 	}[input.Kind]
 	var handlingError error
 	if !found {
 		handlingError = ErrNotImplemented
 	} else {
 		handlingError = handler(ctx, input)
+	}
+
+	if input.Kind == p2p.Kind_Ack {
+		return handlingError
 	}
 
 	// emits the event to the client (UI)
@@ -103,11 +104,19 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 
 	// asynchronously ack, maybe we can ignore this one?
 	ack := n.NewContactEvent(&entity.Contact{ID: input.SenderID}, p2p.Kind_Ack)
+	ack.AckedAt = &now
 	if err := ack.SetAttrs(&p2p.AckAttrs{IDs: []string{input.ID}}); err != nil {
 		return err
 	}
 	if err := n.EnqueueOutgoingEvent(ack); err != nil {
 		return err
 	}
+
+	input.AckedAt = &now
+
+	if err := n.sql.Save(input).Error; err != nil {
+		return errors.Wrap(err, "failed to save event acked at in db")
+	}
+
 	return handlingError
 }

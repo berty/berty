@@ -379,6 +379,30 @@ type BertyEntityMessage {
 
   
 
+type BertyEntitySenderAlias {
+  id: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  status: BertyEntitySenderAliasStatus
+  originDeviceId: String
+  contactId: String
+  conversationId: String
+  aliasIdentifier: String
+  used: Boolean
+}
+
+enum BertyEntitySenderAliasStatus {
+  UNKNOWN
+  SENT
+  SENT_AND_ACKED
+  RECEIVED
+}  
+
+
+
+  
+
 type BertyP2pSentAttrs {
   ids: [String]
 } 
@@ -422,6 +446,10 @@ type BertyP2pDevtoolsMapsetAttrs {
   val: String
 } 
 
+type BertyP2pSenderAliasUpdateAttrs {
+  aliases: [BertyEntitySenderAlias]
+} 
+
 enum BertyP2pKind {
   Unknown
   Sent
@@ -434,6 +462,7 @@ enum BertyP2pKind {
   ConversationInvite
   ConversationNewMessage
   DevtoolsMapset
+  SenderAliasUpdate
 } 
 
 

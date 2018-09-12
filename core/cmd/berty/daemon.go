@@ -258,6 +258,9 @@ func daemon(opts *daemonOptions) error {
 		node.WithSQL(db),
 		node.WithDevice(&entity.Device{Name: user}), // FIXME: get device dynamically
 		node.WithNetworkDriver(driver),              // FIXME: use a p2p driver instead
+		node.WithInitConfig(),
+		node.WithSoftwareCrypto(),
+		node.WithConfig(),
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize node")
