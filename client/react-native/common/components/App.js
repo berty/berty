@@ -9,27 +9,28 @@ export default class App extends PureComponent {
   async componentDidMount () {
     try {
       await CoreModule.start()
-      subscriptions.EventStream.subscribe({
+      subscriptions.eventStream.subscribe({
         iterator: function * () {
           try {
             while (true) {
-              console.log(yield)
+              console.log('EventStream: ', yield)
             }
           } catch (error) {
-            console.error(error)
+            console.error('EventStream: ', error)
           }
+          console.log('EventStream: return')
         },
         updater: undefined,
       })
-      subscriptions.EventStream.start()
+      subscriptions.eventStream.start()
     } catch (err) {
       console.error(err)
-      subscriptions.EventStream.dispose()
+      subscriptions.eventStream.dispose()
     }
   }
 
   componentWillUnmount () {
-    subscriptions.EventStream.dispose()
+    subscriptions.eventStream.dispose()
   }
 
   render () {

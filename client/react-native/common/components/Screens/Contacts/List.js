@@ -17,7 +17,7 @@ import {
   paddingBottom,
 } from '../../../styles'
 import { QueryReducer } from '../../../relay'
-import { queries } from '../../../graphql'
+import { queries, subscriptions } from '../../../graphql'
 
 // TODO: implement pagination
 
@@ -121,29 +121,48 @@ export default class List extends PureComponent {
     })
   }
 
+  componentDidMount () {
+    this.subscribers = [
+      subscriptions.contactRequest.subscribe({
+        updater: (store, data) => this.retry && this.retry(),
+      }),
+      subscriptions.contactRequestAccepted.subscribe({
+        updater: (store, data) => this.retry && this.retry(),
+      }),
+    ]
+  }
+
+  componentWillUnmount () {
+    this.subscribers.forEach(subscriber => subscriber.unsubscribe())
+  }
+
   render () {
     const { navigation } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <QueryReducer query={queries.ContactList}>
-          {(state, retry) => (
-            <FlatList
-              data={this.sortContacts([].concat(state.data.ContactList || []))}
-              ItemSeparatorComponent={({ highlighted }) => (
-                <Separator highlighted={highlighted} />
-              )}
-              refreshing={state.type === state.loading}
-              onRefresh={retry}
-              renderItem={data => (
-                <Item
-                  key={data.id}
-                  data={data.item}
-                  separators={data.separators}
-                  navigation={navigation}
-                />
-              )}
-            />
-          )}
+          {(state, retry) =>
+            (this.retry = retry) && (
+              <FlatList
+                data={this.sortContacts(
+                  [].concat(state.data.ContactList || [])
+                )}
+                ItemSeparatorComponent={({ highlighted }) => (
+                  <Separator highlighted={highlighted} />
+                )}
+                refreshing={state.type === state.loading}
+                onRefresh={retry}
+                renderItem={data => (
+                  <Item
+                    key={data.id}
+                    data={data.item}
+                    separators={data.separators}
+                    navigation={navigation}
+                  />
+                )}
+              />
+            )
+          }
         </QueryReducer>
       </Screen>
     )

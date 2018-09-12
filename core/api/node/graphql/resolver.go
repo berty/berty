@@ -480,18 +480,7 @@ func (r *subscriptionResolver) EventStream(ctx context.Context, kind *string, co
 				break
 			}
 
-			gid := &globalID{
-				Kind: EventKind,
-				ID:   entry.ID,
-			}
-
-			ret := &model.BertyP2pEvent{
-				ID:             gid.String(),
-				SenderID:       &entry.SenderID,
-				ConversationID: &entry.ConversationID,
-			}
-
-			ce <- ret
+			ce <- convertEvent(entry)
 		}
 	}()
 

@@ -10,7 +10,7 @@ export default class RequestValidation extends PureComponent {
   acceptRequest = async () => {
     try {
       const contactID = this.props.navigation.getParam('id')
-      await mutations.contactAcceptRequest.commit({ contactID })
+      await mutations.contactRequestAccepted.commit({ contactID })
       this.props.navigation.goBack(null)
     } catch (err) {
       console.error(err)

@@ -46,11 +46,8 @@ const Item = ({
 )
 
 export default class Request extends PureComponent {
-  subscriber = null
-  retry = null
-
   componentDidMount () {
-    this.subscriber = subscriptions.ContactRequest.subscribe({
+    this.subscriber = subscriptions.contactRequest.subscribe({
       updater: (store, data) => this.retry && this.retry(),
     })
   }
