@@ -30,7 +30,7 @@ $(ROOT)/node_modules $(DEPS): %/node_modules: %/package.json
 	cd $(dir $@) && yarn
 
 .PHONY: $(DIRS)
-$(DIRS): %: %/node_modules $(ROOT)/node_modules
+$(DIRS): %/node_modules $(ROOT)/node_modules
 
 .PHONY: android
 android: mobile
@@ -50,7 +50,8 @@ $(FCLEAN):
 $(RE): %.re: %.fclean %/node_modules
 
 $(START): %.start: %
-	cd $< && yarn start
+	# cd $< && yarn start
+	echo $@
 
 $(BUILD): %.build: %
 	cd $< && yarn build
