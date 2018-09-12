@@ -10,7 +10,6 @@ import {
   textTiny,
   borderBottom,
 } from '../../../../styles'
-import { commit } from '../../../../relay'
 import { mutations } from '../../../../graphql'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
@@ -65,9 +64,9 @@ class ByPublicKey extends PureComponent {
               middle
               onPress={async () => {
                 try {
-                  console.log(
-                    await commit(mutations.ContactRequest, { contactID })
-                  )
+                  await mutations.contactRequest.commit({
+                    contactID: btoa(`CONTACT:${contactID}`),
+                  })
                   navigation.goBack(null)
                 } catch (err) {
                   this.setState({ err })

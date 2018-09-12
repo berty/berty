@@ -1,1 +1,2 @@
-export ContactRequest from './ContactRequest'
+export contactRequest from './ContactRequest'
+export contactAcceptRequest from './ContactAcceptRequest'

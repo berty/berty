@@ -2,7 +2,7 @@ import environment from './environment'
 import { requestSubscription } from 'react-relay'
 
 export default ({ subscription, iterators = [], updaters = [] }) => {
-  let _iterators = iterators
+  let _generators = iterators
   let _updaters = updaters
 
   let dispose = () => {}
@@ -11,23 +11,26 @@ export default ({ subscription, iterators = [], updaters = [] }) => {
     dispose = requestSubscription(environment, {
       subscription,
       onNext: response =>
-        _iterators.forEach(iterator => iterator.next(response)),
-      onError: error => _iterators.forEach(iterator => iterator.throw(error)),
-      onCompleted: () => _iterators.forEach(iterator => iterator.return()),
-      updater: (store, data) =>
-        _updaters.forEach(updater => updater(store, data)),
+        _generators.forEach(generator => generator.next(response)),
+      onError: error =>
+        _generators.forEach(generator => generator.throw(error)),
+      onCompleted: () => _generators.forEach(generator => generator.return()),
+      updater: (store, data) => _updaters.forEach(updater => updater(store, data)),
     }).dispose
     return { dispose }
   }
 
-  const subscribe = (iterator = function * () {}, updater = () => {}) => {
-    _iterators.push(iterator)
-    _updaters.push(updater)
-
+  const subscribe = ({ updater, iterator }) => {
+    const generator = iterator && iterator()
+    iterator && _generators.push(generator)
+    updater && _updaters.push(updater)
+    generator && generator.next()
     return {
       unsubscribe: () => {
-        _iterators = _iterators.filter(_ => _ !== iterator)
-        _updaters = _updaters.filter(_ => _ !== updater)
+        _generators = iterator
+          ? _generators.filter(_ => _ !== iterator)
+          : _generators
+        _updaters = updater ? _updaters.filter(_ => _ !== updater) : _updaters
       },
     }
   }

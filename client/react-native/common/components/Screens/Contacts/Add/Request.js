@@ -2,12 +2,9 @@ import React, { PureComponent } from 'react'
 import { FlatList, TouchableOpacity, Image } from 'react-native'
 import { Screen, Flex, Text, Separator } from '../../../Library'
 import { colors } from '../../../../constants'
-import {
-  borderTop,
-  marginHorizontal,
-} from '../../../../styles'
+import { borderTop, marginHorizontal } from '../../../../styles'
 import { QueryReducer } from '../../../../relay'
-import { queries } from '../../../../graphql'
+import { queries, subscriptions } from '../../../../graphql'
 
 const Item = ({
   data: { id, displayName, overrideDisplayName },
@@ -49,27 +46,44 @@ const Item = ({
 )
 
 export default class Request extends PureComponent {
+  componentDidMount () {
+    this.subscriber = subscriptions.contactRequest.subscribe({
+      updater: (store, data) => this.retry && this.retry(),
+    })
+  }
+
+  componentWillUnmount () {
+    this.subscriber.unsubscribe()
+  }
+
   render () {
     const { navigation } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }, borderTop]}>
         <QueryReducer query={queries.ContactList}>
-          {(state, retry) => (
-            <FlatList
-              data={([].concat(state.data.ContactList || [])).filter(entry => entry.status === 'RequestedMe')}
-              ItemSeparatorComponent={({ highlighted }) => (
-                <Separator highlighted={highlighted} />)} refreshing={state.type === state.loading}
-              onRefresh={retry}
-              renderItem={data => (
-                <Item
-                  key={data.id}
-                  data={data.item}
-                  separators={data.separators}
-                  navigation={navigation}
-                />
-              )}
-            />
-          )}
+          {(state, retry) => {
+            this.retry = retry
+            return (
+              <FlatList
+                data={[]
+                  .concat(state.data.ContactList || [])
+                  .filter(entry => entry.status === 'RequestedMe')}
+                ItemSeparatorComponent={({ highlighted }) => (
+                  <Separator highlighted={highlighted} />
+                )}
+                refreshing={state.type === state.loading}
+                onRefresh={retry}
+                renderItem={data => (
+                  <Item
+                    key={data.id}
+                    data={data.item}
+                    separators={data.separators}
+                    navigation={navigation}
+                  />
+                )}
+              />
+            )
+          }}
         </QueryReducer>
       </Screen>
     )
