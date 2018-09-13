@@ -1,3 +1,5 @@
+// TODO: create generic contact list with pagination
+
 import React, { PureComponent } from 'react'
 import { Screen, Header, ContactList } from '../../Library'
 import { colors } from '../../../constants'

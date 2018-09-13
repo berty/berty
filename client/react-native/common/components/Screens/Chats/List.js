@@ -3,6 +3,7 @@ import { FlatList } from 'react-native'
 import { Screen, Separator, Header, ListItem } from '../../Library'
 import { colors } from '../../../constants'
 import { QueryReducer } from '../../../relay'
+import { subscriptions } from '../../../graphql'
 import { createFragmentContainer, graphql } from 'react-relay'
 
 class ListItemWrapper extends PureComponent {
@@ -45,7 +46,7 @@ class List extends PureComponent {
         onRefresh={retry}
         renderItem={data => (
           <ItemContainer
-            key={data.id}
+            key={data.item.id}
             data={data.item}
             separators={data.separators}
             navigation={navigation}
@@ -71,6 +72,14 @@ export default class ListScreen extends PureComponent {
     tabBarVisible: true,
   })
 
+  componentDidMount () {
+    this.subscribers = [
+      subscriptions.conversationInvite.subscribe({
+        update: (store, data) => this.retry && this.retry,
+      }),
+    ]
+  }
+
   render () {
     const { navigation } = this.props
     return (
@@ -84,14 +93,16 @@ export default class ListScreen extends PureComponent {
             }
           `}
         >
-          {(state, retry) => (
-            <List
-              navigation={navigation}
-              data={state.data}
-              loading={state.type === state.loading}
-              retry={retry}
-            />
-          )}
+          {(state, retry) =>
+            (this.retry = retry) && (
+              <List
+                navigation={navigation}
+                data={state.data}
+                loading={state.type === state.loading}
+                retry={retry}
+              />
+            )
+          }
         </QueryReducer>
       </Screen>
     )
@@ -111,6 +122,11 @@ const ItemContainer = createFragmentContainer(
         id
         status
         contactId
+        contact {
+          status
+          displayName
+          overrideDisplayName
+        }
       }
     }
   `
