@@ -6,12 +6,24 @@ import { QueryReducer } from '../../../relay'
 import { subscriptions } from '../../../graphql'
 import { createFragmentContainer, graphql } from 'react-relay'
 
+const getTitle = ({ title, members } = this.props) =>
+  title ||
+  members.map((m, index) => {
+    const displayName =
+      m.contact.status === 'Myself'
+        ? m.contact.status
+        : m.contact.overrideDisplayName || m.contact.displayName
+    const before =
+      index === 0 ? '' : index === members.length - 1 ? ' and ' : ', '
+    return `${before}${displayName}`
+  })
+
 class ListItemWrapper extends PureComponent {
   render () {
     const { data, navigation } = this.props
     return (
       <ListItem
-        title={data.title}
+        title={getTitle(data)}
         subtitle='Last message sent 3 hours ago...' // Placeholder
         onPress={() => navigation.push('Detail', { conversation: data })}
       />
@@ -67,6 +79,7 @@ export default class ListScreen extends PureComponent {
         rightBtnIcon='edit'
         searchBar
         searchHandler={text => console.log(text)} // Placeholder
+        onPressRightBtn={() => navigation.push('Add')}
       />
     ),
     tabBarVisible: true,

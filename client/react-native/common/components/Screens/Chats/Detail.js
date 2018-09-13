@@ -33,9 +33,23 @@ const Message = ({ text }) => (
   </Text>
 )
 
+const getTitle = ({ title, members } = this.props) =>
+  title ||
+  members.map((m, index) => {
+    const displayName =
+      m.contact.status === 'Myself'
+        ? m.contact.status
+        : m.contact.overrideDisplayName || m.contact.displayName
+    const before =
+      index === 0 ? '' : index === members.length - 1 ? ' and ' : ', '
+    return `${before}${displayName}`
+  })
+
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    headerTitle: <Text large>{navigation.getParam('conversation').title}</Text>,
+    headerTitle: (
+      <Text large>{getTitle(navigation.getParam('conversation'))}</Text>
+    ),
     headerLeft: (
       <TouchableOpacity onPress={() => navigation.goBack(null)}>
         <Text padding large icon='arrow-left' />
