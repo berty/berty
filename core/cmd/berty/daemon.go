@@ -49,7 +49,8 @@ var defaultBootstrap = []string{
 type daemonOptions struct {
 	sql sqlOptions `mapstructure:"sql"`
 
-	bind         string `mapstructure:"grpc-bind"`
+	grpcBind     string `mapstructure:"grpc-bind"`
+	gqlBind      string `mapstructure:"gql-bind"`
 	hideBanner   bool   `mapstructure:"hide-banner"`
 	dropDatabase bool   `mapstructure:"drop-database"`
 	initOnly     bool   `mapstructure:"init-only"`
@@ -71,8 +72,8 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Drier")
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
-	flags.StringVar(&opts.bind, "grpc-bind", ":1337", "gRPC listening address")
-	flags.StringVar(&opts.bindgql, "gql-bind", ":8700", "Bind graphql api")
+	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
+	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
@@ -125,7 +126,7 @@ func daemon(opts *daemonOptions) error {
 	gs := grpc.NewServer(interceptors...)
 	reflection.Register(gs)
 
-	addr, err := net.ResolveTCPAddr("tcp", opts.bind)
+	addr, err := net.ResolveTCPAddr("tcp", opts.grpcBind)
 	if err != nil {
 		return err
 	}
@@ -243,7 +244,7 @@ func daemon(opts *daemonOptions) error {
 		return nil
 	}
 
-	conn, err := grpc.Dial(opts.bind, grpc.WithInsecure())
+	conn, err := grpc.Dial(opts.grpcBind, grpc.WithInsecure())
 	if err != nil {
 		return errors.Wrap(err, "failed to dial node")
 	}
@@ -268,7 +269,7 @@ func daemon(opts *daemonOptions) error {
 	}).Handler(mux)
 
 	go func() {
-		errChan <- http.ListenAndServe(opts.bindgql, handler)
+		errChan <- http.ListenAndServe(opts.gqlBind, handler)
 	}()
 
 	// start grpc server(s)
@@ -278,8 +279,8 @@ func daemon(opts *daemonOptions) error {
 
 	logger().Info("grpc server started",
 		zap.String("user-id", n.UserID()),
-		zap.String("grpc-bind", opts.bind),
-		zap.String("gql-bind", opts.bindgql),
+		zap.String("grpc-bind", opts.grpcBind),
+		zap.String("gql-bind", opts.gqlBind),
 		zap.Int("p2p-api", int(p2papi.Version)),
 		zap.Int("node-api", int(nodeapi.Version)),
 		zap.String("version", core.Version),
