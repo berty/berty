@@ -29,6 +29,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 	})
 
 	Convey("Nodes should be empty when just initialized", FailureHalts, func() {
+		shouldIContinue(t)
+
 		contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 		So(err, ShouldBeNil)
 		So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
@@ -40,9 +42,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		contacts, err = eve.client.ContactList(internalCtx, &node.Void{})
 		So(err, ShouldBeNil)
 		So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
+
+		everythingWentFine()
 	})
 	Convey("Alice adds Bob as contact", FailureHalts, func() {
 		Convey("Alice calls node.ContactRequest", FailureHalts, func() {
+			shouldIContinue(t)
 			res, err := alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
 				Contact: &entity.Contact{
 					OverrideDisplayName: "Bob from school",
@@ -53,16 +58,24 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(err, ShouldBeNil)
 			So(res, ShouldNotBeNil)
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 		Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
+			shouldIContinue(t)
+
 			res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
 				ID: alice.node.UserID(),
 			})
 			So(err, ShouldBeNil)
 			So(res, ShouldNotBeNil)
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 		Convey("Alice has Bob as friend", FailureHalts, func() {
+			shouldIContinue(t)
+
 			contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2)
@@ -76,8 +89,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(contacts[1].DisplayName, ShouldEqual, "Bob")
 			So(contacts[1].OverrideDisplayName, ShouldEqual, "Bob from school")
 			So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
+
+			everythingWentFine()
 		})
 		Convey("Bob has Alice as friend", FailureHalts, func() {
+			shouldIContinue(t)
+
 			contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2)
@@ -91,30 +108,51 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(contacts[1].DisplayName, ShouldEqual, "Alice")
 			So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
 			So(contacts[1].Devices[0].ID, ShouldEqual, alice.node.UserID())
+
+			everythingWentFine()
 		})
 		Convey("Eve has no friend", FailureHalts, func() {
+			shouldIContinue(t)
+
 			contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 1)
 		})
+
+		everythingWentFine()
 	})
 	Convey("Bob creates a conversation with Alice", FailureHalts, func() {
+
 		Convey("Bob has no conversation", FailureHalts, func() {
+			shouldIContinue(t)
+
 			conversations, err := bob.client.ConversationList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
+
+			everythingWentFine()
 		})
 		Convey("Alice has no conversation", FailureHalts, func() {
+			shouldIContinue(t)
+
 			conversations, err := alice.client.ConversationList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
+
+			everythingWentFine()
 		})
 		Convey("Eve has no conversation", FailureHalts, func() {
+			shouldIContinue(t)
+
 			conversations, err := eve.client.ConversationList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
+
+			everythingWentFine()
 		})
 		Convey("Bob creates a conversation with Alice", FailureHalts, func() {
+			shouldIContinue(t)
+
 			res, err := bob.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
 				Title: "Alice & Bob",
 				Topic: "hey!",
@@ -126,8 +164,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(res, ShouldNotBeNil)
 			cache["conversation_id"] = res.ID
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 		Convey("Bob has a conversation with Alice", FailureHalts, func() {
+			shouldIContinue(t)
+
 			conversations, err := bob.client.ConversationList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
@@ -138,8 +180,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(conversations[0].Members[1].ContactID, ShouldEqual, alice.node.UserID())
 			So(conversations[0].Members[0].Status, ShouldEqual, entity.ConversationMember_Owner)
 			So(conversations[0].Members[1].Status, ShouldEqual, entity.ConversationMember_Active)
+
+			everythingWentFine()
 		})
 		Convey("Alice has the conversation with Bob", FailureHalts, func() {
+			shouldIContinue(t)
+
 			conversations, err := alice.client.ConversationList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
@@ -155,15 +201,23 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 					So(member.Status, ShouldEqual, entity.ConversationMember_Owner)
 				}
 			}
+
+			everythingWentFine()
 		})
 		Convey("Eve has no conversation (again)", FailureHalts, func() {
+			shouldIContinue(t)
+
 			conversations, err := eve.client.ConversationList(internalCtx, &node.Void{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
 		})
+
+		everythingWentFine()
 	})
 	Convey("Bob sends a message on the conversation", FailureHalts, func() {
 		Convey("Bob does not have any message in conversation history", FailureHalts, func() {
+			shouldIContinue(t)
+
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
@@ -174,8 +228,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(err, ShouldBeNil)
 			So(len(events), ShouldEqual, 0)
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 		Convey("Alice does not have any message in conversation history", FailureHalts, func() {
+			shouldIContinue(t)
+
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
@@ -186,8 +244,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(err, ShouldBeNil)
 			So(len(events), ShouldEqual, 0)
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 		Convey("Bob creates a conversation with Alice", FailureHalts, func() {
+			shouldIContinue(t)
+
 			So(cache["conversation_id"], ShouldNotBeNil)
 			res, err := bob.client.Node().ConversationAddMessage(internalCtx, &node.ConversationAddMessageInput{
 				Conversation: &entity.Conversation{
@@ -200,8 +262,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(err, ShouldBeNil)
 			So(res, ShouldNotBeNil)
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 		Convey("Bob has one message in conversation history", FailureHalts, func() {
+			shouldIContinue(t)
+
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := bob.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
@@ -218,8 +284,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(err, ShouldBeNil)
 			So(attrs.Message.Text, ShouldEqual, "hello world!")
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 		Convey("Alice has one message in conversation history", FailureHalts, func() {
+			shouldIContinue(t)
+
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := alice.client.EventList(internalCtx, &node.EventListInput{
 				Limit: 10,
@@ -235,6 +305,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(err, ShouldBeNil)
 			So(attrs.Message.Text, ShouldEqual, "hello world!")
 			time.Sleep(sleepBetweenSteps)
+
+			everythingWentFine()
 		})
 	})
 }
