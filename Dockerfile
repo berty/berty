@@ -8,7 +8,7 @@ RUN             cd core && make _ci_prepare # touching generated files
 RUN             cd core && make install
 
 # minimal runtime
-FROM            alpine
+FROM            alpine:3.8
 RUN             apk --no-cache --update add openssl
 COPY            --from=core-builder /go/bin/berty /bin/berty
 ENTRYPOINT      ["/bin/berty"]

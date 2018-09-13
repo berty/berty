@@ -1,14 +1,19 @@
 package main
 
 import (
+	"flag"
 	"log"
 
 	"berty.tech/client/go/bot"
 )
 
+var addr = flag.String("addr", "127.0.0.1:1337", "daemon gRPC address")
+
 func main() {
+	flag.Parse()
+
 	b, err := bot.New(
-		bot.WithDefaultDaemon(),
+		bot.WithTCPDaemon(*addr),
 		bot.WithAutoAcceptInvites(),
 		bot.WithLogger(),
 	)

@@ -1,0 +1,17 @@
+version: "3"
+
+services:
+  daemon:
+    build: ../../../../..
+    command: daemon --log-level=debug -b :6666
+    ports:
+      - 6666
+    network_mode: host
+  bot:
+    build:
+      context: ../../../../..
+      dockerfile: ./client/go/bot/examples/berty-bot-example/Dockerfile
+    network_mode: host
+    depends_on:
+      - daemon
+    command: -addr=127.0.0.1:6666
