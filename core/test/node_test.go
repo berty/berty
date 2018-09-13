@@ -41,6 +41,7 @@ func streamToQueue(queue chan eventStreamEntry, stream node.Service_EventStreamC
 func TestNodeHelpers(t *testing.T) {
 	Convey("Testing Node", t, func() {
 		Convey("Testing Node.EventStream", FailureContinues, func(c C) {
+			t.Skip("see https://github.com/berty/berty/issues/252")
 			app, err := NewAppMock(&entity.Device{Name: "test phone"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
 			defer app.Close()
