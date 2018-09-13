@@ -18,7 +18,7 @@ BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
-TEST_CMD ?= $(BUILD_ENV) go test -test.timeout 3m $(TEST_OPTS) $(TEST_PATHS)
+TEST_CMD ?= go test -test.timeout 3m $(TEST_OPTS) $(TEST_PATHS)
 PROTOC ?= protoc
 GQLGEN ?= gqlgen
 
@@ -50,12 +50,18 @@ $(BIN): generate $(SOURCES)
 testwatch:
 	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
 	trap 'kill $$(jobs -p) 2>/dev/null; exit 0' INT; \
-	clear; $(TEST_CMD); \
-	while true; do watchman-wait . -p "**/*.go"; clear; $(TEST_CMD); sleep .3; done
+	clear; $(BUILD_ENV) $(TEST_CMD); \
+	while true; do watchman-wait . -p "**/*.go"; clear; $(BUILD_ENV) $(TEST_CMD); sleep .3; done
 
 .PHONY: test
 test: generate
-	$(TEST_CMD)
+	$(BUILD_ENV) $(TEST_CMD)
+
+# testloop runs test suite until it fails (without test caching)
+.PHONY: testloop
+testloop: generate
+	@if ! command -v watchman &>/dev/null; then go get moul.io/retry; fi
+	$(BUILD_ENV) retry -r $(TEST_CMD) -count 1
 
 .PHONY: integration
 integration: install
