@@ -42,7 +42,7 @@ import (
 )
 
 var defaultBootstrap = []string{
-	"/ip4/167.99.215.90/tcp/4004/ipfs/Qme2FmUfPs6KtFo9W74ncKQKdrjW2Dq37tCqtEtZg4sp79",
+	"/ip4/104.248.78.238/tcp/4004/ipfs/QmPCbsVWDtLTdCtwfp5ftZ96xccUNe4hegKStgbss8YACT",
 }
 
 type daemonOptions struct {
@@ -52,6 +52,7 @@ type daemonOptions struct {
 	hideBanner   bool
 	dropDatabase bool
 	initOnly     bool
+	bindgql      string
 
 	// p2p
 	identity  string
@@ -70,6 +71,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
 	flags.StringVarP(&opts.bind, "bind", "b", ":1337", "gRPC listening address")
+	flags.StringVarP(&opts.bindgql, "bind-graphql", "g", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
@@ -255,7 +257,7 @@ func daemon(opts *daemonOptions) error {
 	}).Handler(mux)
 
 	go func() {
-		errChan <- http.ListenAndServe(":8700", handler)
+		errChan <- http.ListenAndServe(opts.bindgql, handler)
 	}()
 
 	// start grpc server(s)

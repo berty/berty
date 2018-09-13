@@ -287,33 +287,30 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 		return fmt.Errorf("No subscribers found")
 	}
 
-	sendEnvelope := func(_s pstore.PeerInfo) {
-		peerID := _s.ID.Pretty()
-
-		if _s.ID.Pretty() == d.ID() {
-			return
-		}
-
-		if err := d.Connect(ctx, _s); err != nil {
-			logger().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
-		}
-
-		c, err := d.ccmanager.GetConn(ctx, peerID)
-		if err != nil {
-			logger().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
-		}
-
-		sc := p2p.NewServiceClient(c)
-
-		_, err = sc.HandleEnvelope(ctx, e)
-		if err != nil {
-			logger().Warn("Failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
-		}
-	}
-
 	for _, s := range ss {
-		_s := s
-		go sendEnvelope(_s)
+		go func(pi pstore.PeerInfo) {
+			peerID := pi.ID.Pretty()
+
+			if pi.ID.Pretty() == d.ID() {
+				return
+			}
+
+			if err := d.Connect(ctx, pi); err != nil {
+				logger().Warn("Failed to connect", zap.String("id", peerID), zap.Error(err))
+			}
+
+			c, err := d.ccmanager.GetConn(ctx, peerID)
+			if err != nil {
+				logger().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
+			}
+
+			sc := p2p.NewServiceClient(c)
+
+			_, err = sc.HandleEnvelope(ctx, e)
+			if err != nil {
+				logger().Error("Failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
+			}
+		}(s)
 	}
 	return nil
 }
@@ -325,6 +322,7 @@ func (d *Driver) Announce(ctx context.Context, id string) error {
 
 // FindSubscribers with the given ID
 func (d *Driver) FindSubscribers(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
+	logger().Debug("Looking for", zap.String("id", id))
 	c, err := d.createCid(id)
 	if err != nil {
 		return nil, err
@@ -351,6 +349,8 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 		d.stackSub(c)
 		logger().Warn("Provide err", zap.Error(err))
 	}
+
+	logger().Debug("Annoucing", zap.String("id", id))
 
 	// Announce that you are subscribed to this conversation, but don't
 	// broadcast it! in this way, if you die, your announcement will die with you!
