@@ -26,6 +26,7 @@ func TestWithEnqueuer(t *testing.T) {
 		err             error
 		internalCtx     = context.Background()
 	)
+
 	defer func() {
 		if alice != nil {
 			alice.Close()
@@ -38,10 +39,15 @@ func TestWithEnqueuer(t *testing.T) {
 		}
 	}()
 
-	// let's test
+	everythingWentFine()
 
+	//
+	// let's test
+	//
 	Convey("End-to-end test (with enqueuer network mock)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
+			shouldIContinue(t)
+
 			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
 			So(alice.InitEventStream(), ShouldBeNil)
@@ -53,12 +59,16 @@ func TestWithEnqueuer(t *testing.T) {
 			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, mock.NewEnqueuer())
 			So(err, ShouldBeNil)
 			So(eve.InitEventStream(), ShouldBeNil)
+
+			everythingWentFine()
 		})
 
 		Convey("Nodes should be empty when just initialized", FailureHalts, func() {
 			So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
 
 			Convey("Alice should only know itself", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
@@ -73,8 +83,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[0].Devices[0].ApiVersion, ShouldEqual, p2p.Version)
 				So(contacts[0].Devices[0].ID, ShouldEqual, alice.node.DeviceID())
 				So(contacts[0].Devices[0].ContactID, ShouldEqual, alice.node.UserID())
+
+				everythingWentFine()
 			})
 			Convey("Bob should only know itself", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
@@ -89,8 +103,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[0].Devices[0].ApiVersion, ShouldEqual, p2p.Version)
 				So(contacts[0].Devices[0].ID, ShouldEqual, bob.node.DeviceID())
 				So(contacts[0].Devices[0].ContactID, ShouldEqual, bob.node.UserID())
+
+				everythingWentFine()
 			})
 			Convey("Eve should only know itself", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
@@ -105,10 +123,15 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[0].Devices[0].ApiVersion, ShouldEqual, p2p.Version)
 				So(contacts[0].Devices[0].ID, ShouldEqual, eve.node.DeviceID())
 				So(contacts[0].Devices[0].ContactID, ShouldEqual, eve.node.UserID())
+				everythingWentFine()
 			})
+
 		})
 		Convey("Alice adds Bob as contact", FailureHalts, func() {
+
 			Convey("Alice calls node.ContactRequest", FailureHalts, func() {
+				shouldIContinue(t)
+
 				res, err := alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
 					Contact: &entity.Contact{
 						OverrideDisplayName: "Bob from school",
@@ -123,8 +146,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(res.DisplayStatus, ShouldBeEmpty)
 				So(len(res.Devices), ShouldEqual, 0)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 0, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Alice has en entry in sql for Bob", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
@@ -135,8 +162,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[1].DisplayStatus, ShouldBeEmpty)
 				So(contacts[1].Status, ShouldEqual, entity.Contact_IsRequested)
 				So(len(contacts[1].Devices), ShouldEqual, 0)
+
+				everythingWentFine()
 			})
 			Convey("Alice sends a ContactRequest event to Bob", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -161,8 +192,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Bob emits the ContactRequest event to its client", FailureHalts, func() {
+				shouldIContinue(t)
+
 				event := <-bob.eventStream
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
@@ -180,8 +215,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.Devices, ShouldBeNil)
 				So(attrs.IntroText, ShouldEqual, "hello, I want to chat!")
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Bob replies an Ack event to Alice's ContactRequest", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -200,8 +239,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
 				So(res, ShouldResemble, &node.Void{})
 				// FIXME: check that event is acked in db
+
+				everythingWentFine()
 			})
 			Convey("Bob has en entry in sql for Alice", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
@@ -212,8 +255,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[1].DisplayStatus, ShouldBeEmpty)
 				So(contacts[1].Status, ShouldEqual, entity.Contact_RequestedMe)
 				So(len(contacts[1].Devices), ShouldEqual, 1)
+
+				everythingWentFine()
 			})
 			Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
+				shouldIContinue(t)
+
 				res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
 					ID: alice.node.UserID(),
 				})
@@ -225,8 +272,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(len(res.Devices), ShouldEqual, 1)
 				So(res.Devices[0].ID, ShouldEqual, alice.node.UserID())
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 2, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Bob sends a ContactRequestAccepted event to Alice", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -243,8 +294,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(res, ShouldResemble, &node.Void{})
 
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 1, 1, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Alice emits the ContactRequestAccepted event to its clients", FailureHalts, func() {
+				shouldIContinue(t)
+
 				event := <-alice.eventStream
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -254,8 +309,12 @@ func TestWithEnqueuer(t *testing.T) {
 				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Bob sends a ContactShareMe event to Alice", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -273,8 +332,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(res, ShouldResemble, &node.Void{})
 				time.Sleep(10 * time.Millisecond)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 0, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Alice emits the ContactShareMe event to its client", FailureHalts, func() {
+				shouldIContinue(t)
+
 				event := <-alice.eventStream
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -286,8 +349,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.DisplayName, ShouldEqual, "Bob")
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 0, 0, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Alice sends a ContactShareMe event to Bob", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -306,8 +373,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 1, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Alice replies an Ack event to Bob's ContactRequestAccepted", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -324,8 +395,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 1, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Alice replies an Ack event to Bob's ContactShareMe", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -342,8 +417,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Bob replies an Ack event to Alice's ContactShareMe", FailureHalts, func() {
+				shouldIContinue(t)
+
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(envelope)
 				So(err, ShouldBeNil)
@@ -359,8 +438,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 1, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Bob emits the ContactShareMe event to its client", FailureHalts, func() {
+				shouldIContinue(t)
+
 				event := <-bob.eventStream
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
@@ -375,8 +458,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 				So(attrs.Me.Devices, ShouldBeNil)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
+
+				everythingWentFine()
 			})
 			Convey("Alice has Bob as friend", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
@@ -393,8 +480,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
 				So(contacts[1].DisplayStatus, ShouldBeEmpty)
 				//So(contacts[1].Devices[0].Key, ShouldNotBeNil)
+
+				everythingWentFine()
 			})
 			Convey("Bob has Alice as friend", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
@@ -411,8 +502,12 @@ func TestWithEnqueuer(t *testing.T) {
 				So(contacts[1].OverrideDisplayName, ShouldBeEmpty)
 				So(contacts[1].Devices[0].ID, ShouldEqual, alice.node.UserID())
 				//So(contacts[1].Devices[0].Key, ShouldNotBeNil)
+
+				everythingWentFine()
 			})
 			Convey("Eve has no friend", FailureHalts, func() {
+				shouldIContinue(t)
+
 				contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1)

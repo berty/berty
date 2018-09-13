@@ -6,6 +6,7 @@ import (
 	"log"
 	"math/rand"
 	"runtime"
+	"testing"
 	"time"
 
 	"berty.tech/core/network/mock"
@@ -62,4 +63,22 @@ func nodeChansLens(apps ...*AppMock) []int {
 		out = append(out, len(app.eventStream))
 	}
 	return out
+}
+
+//
+// fail fast
+//
+// see e2e_test.go for examples
+//
+var lastTestSucceed = true
+
+func shouldIContinue(t *testing.T) {
+	if !lastTestSucceed {
+		t.Skip("a previous test failed, stopping here")
+	}
+	lastTestSucceed = false
+}
+
+func everythingWentFine() {
+	lastTestSucceed = true
 }
