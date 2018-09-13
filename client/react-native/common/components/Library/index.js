@@ -1,4 +1,4 @@
-export HeaderButton from './HeaderButton'
+export Header from './Header'
 export Icon from './Icon'
 export Menu from './Menu'
 export Screen from './Screen'

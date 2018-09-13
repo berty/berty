@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
-import { FlatList, TouchableOpacity, Image, View } from 'react-native'
-import { Screen, Flex, Text, Separator } from '../../Library'
+import { FlatList, TouchableOpacity, Image } from 'react-native'
+import { Screen, Flex, Text, Separator, Header } from '../../Library'
 import { colors } from '../../../constants'
 import {
   paddingLeft,
   paddingRight,
-  padding,
-  borderBottom,
 } from '../../../styles'
 import { QueryReducer } from '../../../relay'
 import { createFragmentContainer, graphql } from 'react-relay'
@@ -87,24 +85,12 @@ class List extends PureComponent {
 }
 
 export default class ListScreen extends PureComponent {
-  static Header = ({ navigation }) => (
-    <View
-      style={[
-        { backgroundColor: colors.white, height: 56 },
-        borderBottom,
-        padding,
-      ]}
-    >
-      <Flex.Cols size={1} align='start' space='between'>
-        <Text icon='message-circle' left large color={colors.black}>
-          Chats
-        </Text>
-      </Flex.Cols>
-    </View>
-  )
-
   static navigationOptions = ({ navigation }) => ({
-    header: <ListScreen.Header navigation={navigation} />,
+    header: <Header
+      navigation={navigation}
+      title='Chats'
+      titleIcon='message-circle'
+    />,
     tabBarVisible: true,
   })
 
