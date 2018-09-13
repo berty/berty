@@ -1,72 +1,18 @@
 import React, { PureComponent } from 'react'
+import { FlatList, TouchableOpacity, Image } from 'react-native'
 import {
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  View,
-} from 'react-native'
-import { Screen, Flex, Text, Separator } from '../../Library'
+  Screen,
+  Flex,
+  Text,
+  Separator,
+  Header,
+} from '../../Library'
 import { colors } from '../../../constants'
-import {
-  paddingLeft,
-  paddingRight,
-  marginHorizontal,
-  padding,
-  borderBottom,
-  paddingBottom,
-} from '../../../styles'
+import { marginHorizontal } from '../../../styles'
 import { QueryReducer } from '../../../relay'
 import { queries, subscriptions } from '../../../graphql'
 
 // TODO: implement pagination
-
-const Header = ({ navigation }) => (
-  <View
-    style={[
-      { backgroundColor: colors.white, height: 100 },
-      borderBottom,
-      padding,
-    ]}
-  >
-    <Flex.Rows>
-      <Flex.Cols
-        size={1}
-        align='center'
-        space='between'
-        style={[paddingBottom]}
-      >
-        <Text icon='feather-users' left large color={colors.black}>
-          Contacts
-        </Text>
-        <Text
-          icon='user-plus'
-          large
-          right
-          button
-          color='black'
-          onPress={() => navigation.push('Add')}
-        />
-      </Flex.Cols>
-      <Flex.Cols size={1} style={[paddingBottom]}>
-        <TextInput
-          style={[
-            {
-              height: 36,
-              flex: 1,
-              backgroundColor: colors.grey7,
-              borderWidth: 0,
-              borderRadius: 18,
-            },
-            paddingLeft,
-            paddingRight,
-          ]}
-          placeholder='Search'
-        />
-      </Flex.Cols>
-    </Flex.Rows>
-  </View>
-)
 
 const Item = ({
   data: { id, displayName, overrideDisplayName },
@@ -109,7 +55,15 @@ const Item = ({
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} />,
+    header: <Header
+      navigation={navigation}
+      title='Contacts'
+      titleIcon='feather-users'
+      backBtn
+      rightBtnIcon='user-plus'
+      onPressRightBtn={() => navigation.push('Add')}
+      searchBar
+    />,
     tabBarVisible: true,
   })
 

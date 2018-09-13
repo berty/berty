@@ -1,28 +1,13 @@
 import React, { PureComponent } from 'react'
-import { colors } from '../../../constants'
-import { View } from 'react-native'
-import { Menu, Flex, Text } from '../../Library'
-import { padding, borderBottom } from '../../../styles'
-
-const Header = ({ navigation }) => (
-  <View
-    style={[
-      { backgroundColor: colors.white, height: 72 },
-      borderBottom,
-      padding,
-    ]}
-  >
-    <Flex.Cols size={1} align='start' space='between'>
-      <Text icon='settings' large color={colors.black}>
-        Settings
-      </Text>
-    </Flex.Cols>
-  </View>
-)
+import { Menu, Header } from '../../Library'
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} />,
+    header: <Header
+      navigation={navigation}
+      title='Settings'
+      titleIcon='settings'
+    />,
     tabBarVisible: false,
   })
   render () {
