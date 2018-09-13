@@ -23,7 +23,7 @@ service Service {
   };
   // list old events
   rpc EventList(EventListInput) returns (stream berty.p2p.Event) {
-    option (berty.gql.graphql_fields) = "limit: Int";
+    option (berty.gql.graphql_fields) = "limit: Int, kind: BertyP2pKind, conversationID: String";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc GetEvent(berty.p2p.Event) returns (berty.p2p.Event) {

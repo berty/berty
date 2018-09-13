@@ -88,7 +88,7 @@ export default class ListScreen extends PureComponent {
   componentDidMount () {
     this.subscribers = [
       subscriptions.conversationInvite.subscribe({
-        update: (store, data) => this.retry && this.retry,
+        updater: (store, data) => this.retry && this.retry(),
       }),
     ]
   }

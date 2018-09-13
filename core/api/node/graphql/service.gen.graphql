@@ -610,7 +610,7 @@ type Query {
   node(id: ID!): Node
 
   
-  EventList(limit: Int): [BertyP2pEvent]
+  EventList(limit: Int, kind: BertyP2pKind, conversationID: String): [BertyP2pEvent]
   GetEvent(eventID: String!): BertyP2pEvent
   ContactList: [BertyEntityContact]
   GetContact(contactID: String!): BertyEntityContact
