@@ -1,26 +1,11 @@
 import React, { PureComponent } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
-import { Text, Flex, Screen, Icon } from '../../Library'
+import { TouchableOpacity, FlatList } from 'react-native'
+import { Text, Flex, Screen } from '../../Library'
 import { colors } from '../../../constants'
-import { mediumText, padding } from '../../../styles'
+import { queries, mutations, subscriptions } from '../../../graphql'
+import { QueryReducer } from '../../../relay'
 
-const genMessages = () => [
-  {
-    memberID: '0',
-    text:
-      'Hello !\nI have a question for you, do you know a good & secure messaging app ?',
-  },
-  {
-    memberID: '1',
-    text: "Hi, That' funny you ask, I'm actually working on a new app !",
-  },
-  {
-    memberID: '2',
-    text: 'I will let you know as soon as we have a MVP !',
-  },
-]
-
-const Message = ({ text }) => (
+const Message = props => (
   <Text
     left
     margin={8}
@@ -29,7 +14,7 @@ const Message = ({ text }) => (
     rounded={12}
     background={colors.grey1}
   >
-    {text}
+    {atob(props.data.attributes).trim()}
   </Text>
 )
 
@@ -58,22 +43,73 @@ export default class Detail extends PureComponent {
   })
 
   state = {
-    refreshing: false,
     conversation: this.props.navigation.getParam('conversation'),
     members: this.props.navigation.getParam('conversation').members,
-    messages: genMessages(),
+    messages: [],
     input: '',
   }
 
+  onSubmit = async (data, retry) => {
+    try {
+      const { conversation, text } = this.state
+      await mutations.conversationAddMessage.commit({
+        conversationID: conversation.id,
+        message: text,
+      })
+      this.retry && this.retry()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  componentDidMount () {
+    const {
+      conversation: { id },
+    } = this.state
+    this.subscriber = subscriptions.conversationNewMessage.subscribe({
+      updater: (store, data) => {
+        if (data.conversationId === id) {
+          this.retry && this.retry()
+        }
+      },
+    })
+  }
+
+  componentWillUnmount () {
+    this.subscriber.unsubscribe()
+  }
+
   render () {
-    const { messages } = this.state
+    const {
+      conversation: { id },
+    } = this.state
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Flex.Rows>
-          <ScrollView style={{ paddingBottom: 60 }}>
-            {messages &&
-              messages.map((msg, k) => <Message key={k.toString()} {...msg} />)}
-          </ScrollView>
+          <QueryReducer
+            query={queries.EventList}
+            variables={{ conversationID: id }}
+          >
+            {(state, retry) =>
+              (this.retry = retry) && (
+                <FlatList
+                  style={{ paddingBottom: 60 }}
+                  data={state.data.EventList.filter(
+                    event => event.kind === 'ConversationNewMessage'
+                  )}
+                  refreshing={state.type === state.loading}
+                  onRefresh={retry}
+                  renderItem={data => (
+                    <Message
+                      key={data.item.id}
+                      data={data.item}
+                      separators={data.separators}
+                    />
+                  )}
+                />
+              )
+            }
+          </QueryReducer>
           <Flex.Rows
             style={{
               position: 'absolute',
@@ -81,25 +117,27 @@ export default class Detail extends PureComponent {
               left: 0,
               right: 0,
               backgroundColor: colors.white,
+              height: 60,
             }}
           >
-            <Flex.Cols style={{ height: 60 }}>
+            <Flex.Cols style={{ height: 60 }} space='center'>
               <Text
                 left
                 middle
                 padding
+                margin
                 flex
-                icon={
-                  <Icon
-                    name='edit-2'
-                    style={[padding, mediumText, { height: 60 }]}
-                  />
-                }
+                rounded='circle'
+                icon='edit-2'
                 input={{
+                  returnKeyType: 'send',
+                  onChangeText: text => this.setState({ text }),
                   placeholder: 'Write a secure message...',
-                  onChangeText: input => this.setState({ input }),
-                  height: 60,
                 }}
+                height={36}
+                background={colors.grey8}
+                color={colors.grey5}
+                onSubmit={this.onSubmit}
               />
             </Flex.Cols>
           </Flex.Rows>

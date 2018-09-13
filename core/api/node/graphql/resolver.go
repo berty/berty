@@ -298,7 +298,15 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 	return nil, fmt.Errorf("`%s:%s` unknown kind (%s)", string(gid.Kind), gid.ID, string(gid.Kind))
 }
 
-func (r *queryResolver) EventList(ctx context.Context, limit *int) ([]*model.BertyP2pEvent, error) {
+func (r *queryResolver) EventList(ctx context.Context, limit *int, kind *model.BertyP2pKind, conversationID *string) ([]*model.BertyP2pEvent, error) {
+
+	var conversationGID globalID
+	if conversationID != nil {
+		if err := conversationGID.FromString(*conversationID); err != nil {
+			return nil, err
+		}
+	}
+
 	req := &service.EventListInput{}
 	if limit != nil {
 		req.Limit = uint32(*limit)

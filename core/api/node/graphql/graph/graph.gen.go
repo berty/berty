@@ -50,7 +50,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (model.Node, error)
-	EventList(ctx context.Context, limit *int) ([]*model.BertyP2pEvent, error)
+	EventList(ctx context.Context, limit *int, kind *model.BertyP2pKind, conversationID *string) ([]*model.BertyP2pEvent, error)
 	GetEvent(ctx context.Context, eventID string) (*model.BertyP2pEvent, error)
 	ContactList(ctx context.Context) ([]*model.BertyEntityContact, error)
 	GetContact(ctx context.Context, contactID string) (*model.BertyEntityContact, error)
@@ -6799,6 +6799,36 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 		}
 	}
 	args["limit"] = arg0
+	var arg1 *model.BertyP2pKind
+	if tmp, ok := rawArgs["kind"]; ok {
+		var err error
+		var ptr1 model.BertyP2pKind
+		if tmp != nil {
+			err = (&ptr1).UnmarshalGQL(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["kind"] = arg1
+	var arg2 *string
+	if tmp, ok := rawArgs["conversationID"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = graphql.UnmarshalString(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["conversationID"] = arg2
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
@@ -6814,7 +6844,7 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 		}()
 
 		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().EventList(ctx, args["limit"].(*int))
+			return ec.resolvers.Query().EventList(ctx, args["limit"].(*int), args["kind"].(*model.BertyP2pKind), args["conversationID"].(*string))
 		})
 		if resTmp == nil {
 			return graphql.Null
@@ -9018,7 +9048,7 @@ type Query {
   node(id: ID!): Node
 
   
-  EventList(limit: Int): [BertyP2pEvent]
+  EventList(limit: Int, kind: BertyP2pKind, conversationID: String): [BertyP2pEvent]
   GetEvent(eventID: String!): BertyP2pEvent
   ContactList: [BertyEntityContact]
   GetContact(contactID: String!): BertyEntityContact

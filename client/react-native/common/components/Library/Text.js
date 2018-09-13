@@ -4,6 +4,7 @@ import {
   View,
   Text as TextNative,
   TextInput,
+  Platform,
 } from 'react-native'
 import { Icon } from '.'
 import {
@@ -55,11 +56,24 @@ const getPadding = (
     padding = find({ inside: props, from: paddings, or: 'small' })
   }
   return {
-    padding,
-    paddingTop: padding / 3,
-    paddingBottom: padding / 3,
+    paddingVertical: padding / 3,
+    paddingHorizontal: padding,
   }
 }
+
+const getIconPadding = (
+  props,
+  paddings = {
+    tiny: 4,
+    small: 6,
+    medium: 8,
+    large: 10,
+    big: 12,
+  }
+) =>
+  (props.children || props.input) && {
+    paddingRight: find({ inside: props, from: paddings, or: 'small' }),
+  }
 
 const getBorderRadius = (
   props,
@@ -72,7 +86,9 @@ const getBorderRadius = (
   }
 ) => {
   let borderRadius = props.rounded || 0
-  if (typeof borderRadius === 'boolean') {
+  if (borderRadius === 'circle') {
+    borderRadius = props.height / 2
+  } else if (typeof borderRadius === 'boolean') {
     borderRadius = find({ inside: props, from: radiuses, or: 'small' })
   }
   return {
@@ -141,16 +157,18 @@ const getJustify = (
 ) => find({ inside: props, from: justify, or: 'center' })
 
 export const BackgroundText = props => {
-  const { background, children, button, onPress } = props
+  const { background, children, button, height, onPress } = props
   const style = [
     {
       backgroundColor:
         (background === true && colors.blackGrey) ||
         background ||
         colors.transparent,
+      height,
     },
     getBorderRadius(props),
     getPadding(props),
+    getOpacity(props),
     props.shadow && shadow,
     props.margin && typeof props.margin === 'boolean'
       ? margin
@@ -177,15 +195,16 @@ export const ForegroundText = props => {
     ellipsizeMode,
     numberOfLines,
     height,
+    onSubmit,
   } = props
-  const [vertical, horizontal, size, iconSize, weight, color, opacity] = [
+  const [vertical, horizontal, size, iconSize, weight, color, iconPadding] = [
     getVertiAlign(props),
     getHorizAlign(props),
     getSize(props),
     getIconSize(props),
     getWeight(props),
     getColor(props),
-    getOpacity(props),
+    getIconPadding(props),
   ]
   return (
     <View
@@ -193,6 +212,7 @@ export const ForegroundText = props => {
         flexDirection: 'row',
         flex: 1,
         justifyContent: getJustify(props),
+        alignItems: 'center',
       }}
     >
       {icon && typeof icon === 'string' ? (
@@ -202,10 +222,10 @@ export const ForegroundText = props => {
             iconSize,
             weight,
             color,
-            opacity,
             style,
             vertical,
             horizontal,
+            iconPadding,
             { height },
             { lineHeight: height },
           ]}
@@ -215,20 +235,23 @@ export const ForegroundText = props => {
       )}
       {input ? (
         <TextInput
-          {...input}
+          {...(typeof input === 'object' ? input : {})}
           style={[
             size,
             weight,
             color,
-            opacity,
             style,
             vertical,
             horizontal,
-            { flex: 1 },
-            { height },
-            { lineHeight: height },
+            { height, lineHeight: height },
+            {
+              flex: 1,
+              ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
+            },
           ]}
-          value={children || input.value}
+          placeholder={children || input.placeholder}
+          placeholderTextColor={color}
+          onSubmitEditing={onSubmit}
         />
       ) : (
         <TextNative
@@ -236,17 +259,14 @@ export const ForegroundText = props => {
             size,
             weight,
             color,
-            opacity,
             style,
             vertical,
             horizontal,
-            { height },
-            { lineHeight: height },
+            { height, lineHeight: height },
           ]}
           ellipsizeMode={ellipsizeMode}
           numberOfLines={numberOfLines}
         >
-          {icon && '  '}
           {children}
         </TextNative>
       )}

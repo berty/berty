@@ -15,7 +15,8 @@ export default ({ subscription, iterators = [], updaters = [] }) => {
       onError: error =>
         _generators.forEach(generator => generator.throw(error)),
       onCompleted: () => _generators.forEach(generator => generator.return()),
-      updater: (store, data) => _updaters.forEach(updater => updater(store, data)),
+      updater: (store, data) =>
+        _updaters.forEach(updater => updater(store, data)),
     }).dispose
     return { dispose }
   }
