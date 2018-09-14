@@ -23,6 +23,7 @@ import (
 	"github.com/rs/cors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -46,21 +47,21 @@ var defaultBootstrap = []string{
 }
 
 type daemonOptions struct {
-	sql sqlOptions
+	sql sqlOptions `mapstructure:"sql"`
 
-	bind         string
-	hideBanner   bool
-	dropDatabase bool
-	initOnly     bool
-	bindgql      string
+	bind         string `mapstructure:"grpc-bind"`
+	hideBanner   bool   `mapstructure:"hide-banner"`
+	dropDatabase bool   `mapstructure:"drop-database"`
+	initOnly     bool   `mapstructure:"init-only"`
+	bindgql      string `mapstructure:"gql-bind"`
 
 	// p2p
-	identity  string
-	bootstrap []string
-	noP2P     bool
-	bindP2P   []string
-	hop       bool // relay hop
-	mdns      bool
+	identity  string   `mapstructure:"identity"`
+	bootstrap []string `mapstructure:"bootstrap"`
+	noP2P     bool     `mapstructure:"no-p2p"`
+	bindP2P   []string `mapstructure:"bind-p2p"`
+	hop       bool     `mapstructure:"hop"` // relay hop
+	mdns      bool     `mapstructure:"mdns"`
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
@@ -75,6 +76,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
+	_ = viper.BindPFlags(flags)
 }
 
 func newDaemonCommand() *cobra.Command {
@@ -82,12 +84,18 @@ func newDaemonCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "daemon",
 		RunE: func(cmd *cobra.Command, args []string) error {
+			if err := viper.Unmarshal(opts); err != nil {
+				return err
+			}
+			if err := viper.Unmarshal(&opts.sql); err != nil {
+				return err
+			}
 			return daemon(opts)
 		},
 	}
 
-	sqlSetupFlags(cmd.Flags(), &opts.sql)
 	daemonSetupFlags(cmd.Flags(), opts)
+	sqlSetupFlags(cmd.Flags(), &opts.sql)
 	return cmd
 }
 
@@ -126,7 +134,6 @@ func daemon(opts *daemonOptions) error {
 		addr.IP = net.IP{127, 0, 0, 1}
 	}
 
-	fmt.Printf("%s - %s:%d\n", addr.Network(), addr.IP.String(), addr.Port)
 	listener, err := reuse.Listen(addr.Network(), fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port))
 	if err != nil {
 		return err
@@ -212,12 +219,16 @@ func daemon(opts *daemonOptions) error {
 	}
 
 	// initialize node
+	user := os.Getenv("USER")
+	if user == "" {
+		user = "new-berty-user"
+	}
 	n, err := node.New(
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
 		node.WithSQL(db),
-		node.WithDevice(&entity.Device{Name: "bart"}), // FIXME: get device dynamically
-		node.WithNetworkDriver(driver),                // FIXME: use a p2p driver instead
+		node.WithDevice(&entity.Device{Name: user}), // FIXME: get device dynamically
+		node.WithNetworkDriver(driver),              // FIXME: use a p2p driver instead
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize node")
@@ -267,7 +278,8 @@ func daemon(opts *daemonOptions) error {
 
 	logger().Info("grpc server started",
 		zap.String("user-id", n.UserID()),
-		zap.String("bind", opts.bind),
+		zap.String("grpc-bind", opts.bind),
+		zap.String("gql-bind", opts.bindgql),
 		zap.Int("p2p-api", int(p2papi.Version)),
 		zap.Int("node-api", int(nodeapi.Version)),
 		zap.String("version", core.Version),
