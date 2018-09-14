@@ -23,23 +23,23 @@ lint-go:
 .PHONY: lint-editorconfig
 lint-editorconfig:
 	@FILES=`find . -type f												\
-			! -name 'Gopkg*'											\
-			! -name 'yarn.lock'											\
+			! -name 'Gopkg*'										\
+			! -name 'yarn.lock'										\
 			! -name 'Gemfile.lock'										\
-			! -name '.gitkeep'											\
+			! -name '.gitkeep'										\
 			! -name '.generated'										\
-			! -name '*.gen.go'											\
+			! -name '*.gen.go'										\
 			! -name '*.gen.go.tmpl'										\
 			! -name '*.gen.graphql'										\
 			! -name 'project.pbxproj'									\
 			! -path '*/node_modules/*'									\
 			! -path '*/__generated__/*'									\
-			! -path './scripts/built/*'									\
-			! -path './.git/*'											\
+			! -path './client/common/openssl/built/*'							\
+			! -path './.git/*'										\
 			! -path './.github/*'										\
 			! -path './vendor/*'`;										\
-	COUNT=$$(echo "$$FILES" | wc -l | tr -d ' ');						\
-	echo "Checking if $$COUNT files comply with EditorConfig rules...";	\
+	COUNT=$$(echo "$$FILES" | wc -l | tr -d ' ');									\
+	echo "Checking if $$COUNT files comply with EditorConfig rules...";						\
 	eclint check $$FILES
 
 .PHONY: _ci_prepare
