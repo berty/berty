@@ -13,7 +13,6 @@ export default class List extends PureComponent {
         navigation={navigation}
         title='Contacts'
         titleIcon='feather-users'
-        backBtn
         rightBtnIcon='user-plus'
         onPressRightBtn={() => navigation.push('Add')}
         searchBar
