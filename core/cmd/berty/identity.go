@@ -1,10 +1,10 @@
 package main
 
 import (
+	"crypto/rand"
 	"encoding/base64"
 	"fmt"
 	"io"
-	"crypto/rand"
 	"os"
 
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
@@ -28,11 +28,11 @@ const (
 	Secp256k1 KeyType = p2pcrypto.Secp256k1
 )
 
-var KeyTypesString = map[KeyType]string{
-	RSA:       "RSA",
-	Ed25519:   "Ed25519",
-	Secp256k1: "Secp256k1",
-}
+// var KeyTypesString = map[KeyType]string{
+// 	RSA:       "RSA",
+// 	Ed25519:   "Ed25519",
+// 	Secp256k1: "Secp256k1",
+// }
 
 var StringKeyTypes = map[string]KeyType{
 	"RSA":       RSA,
@@ -41,10 +41,6 @@ var StringKeyTypes = map[string]KeyType{
 }
 
 var r io.Reader = rand.Reader
-
-func generateKeyPair(t KeyType) (p2pcrypto.PrivKey, p2pcrypto.PubKey, error) {
-	return p2pcrypto.GenerateKeyPairWithReader(int(t), 2048, r)
-}
 
 func getKeyType(t string) (KeyType, error) {
 	if v, ok := StringKeyTypes[t]; ok {
@@ -64,10 +60,10 @@ func newIdentityCommand() *cobra.Command {
 
 func embedKey(title string, key []byte) string {
 	return fmt.Sprintf(
-		"-----%s-----\n%s\n-----%s-----",
-		"BEGIN "+title,
+		"-----BEGIN %s-----\n%s\n-----END %s-----",
+		title,
 		base64.StdEncoding.EncodeToString(key),
-		"END "+title)
+		title)
 }
 
 var cryptoCmd = &cobra.Command{
@@ -87,7 +83,7 @@ var cryptoKeyGenerateCmd = &cobra.Command{
 			zap.L().Fatal("Cannot get key type:", zap.String("type", cfgCryptoKeyType), zap.Error(err))
 		}
 
-		priv, pub, err := generateKeyPair(t)
+		priv, pub, err := p2pcrypto.GenerateKeyPairWithReader(int(t), 2048, r)
 		if err != nil {
 			zap.L().Fatal("Error while generating key pair", zap.Error(err))
 		}

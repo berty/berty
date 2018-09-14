@@ -350,7 +350,7 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 		logger().Warn("Provide err", zap.Error(err))
 	}
 
-	logger().Debug("Annoucing", zap.String("id", id))
+	logger().Debug("Announcing", zap.String("id", id))
 
 	// Announce that you are subscribed to this conversation, but don't
 	// broadcast it! in this way, if you die, your announcement will die with you!
