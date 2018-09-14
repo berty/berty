@@ -42,7 +42,7 @@ func (pg *P2Pgrpc) NewListener(proto string) net.Listener {
 	id := getGrpcID(proto)
 
 	if pg.hasProtocol(id) {
-		logger().Warn("Proto already registered", zap.String("pid", id))
+		logger().Warn("protocol already registered", zap.String("pid", id))
 		return nil
 	}
 
@@ -66,11 +66,11 @@ func (pg *P2Pgrpc) NewDialer(proto string) func(string, time.Duration) (net.Conn
 
 		peerID, err := peer.IDB58Decode(target)
 		if err != nil {
-			return nil, fmt.Errorf("Failed to parse `%s`: %s", target, err.Error())
+			return nil, fmt.Errorf("failed to parse `%s`: %s", target, err.Error())
 		}
 
 		// No stream exist, creating a new one
-		logger().Debug("Dialing", zap.String("addr", target))
+		logger().Debug("dialing", zap.String("addr", target))
 
 		s, err := pg.host.NewStream(ctx, peerID, pid)
 		if err != nil {

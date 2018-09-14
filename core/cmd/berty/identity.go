@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"io"
 	"os"
 
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
@@ -40,14 +39,14 @@ var StringKeyTypes = map[string]KeyType{
 	"Secp256k1": Secp256k1,
 }
 
-var r io.Reader = rand.Reader
+var r = rand.Reader
 
 func getKeyType(t string) (KeyType, error) {
 	if v, ok := StringKeyTypes[t]; ok {
 		return v, nil
 	}
 
-	return Unknow, fmt.Errorf("Unknow key type")
+	return Unknow, fmt.Errorf("unknow key type")
 }
 
 func newIdentityCommand() *cobra.Command {
@@ -80,38 +79,38 @@ var cryptoKeyGenerateCmd = &cobra.Command{
 
 		t, err := getKeyType(cfgCryptoKeyType)
 		if err != nil {
-			zap.L().Fatal("Cannot get key type:", zap.String("type", cfgCryptoKeyType), zap.Error(err))
+			zap.L().Fatal("cannot get key type:", zap.String("type", cfgCryptoKeyType), zap.Error(err))
 		}
 
 		priv, pub, err := p2pcrypto.GenerateKeyPairWithReader(int(t), 2048, r)
 		if err != nil {
-			zap.L().Fatal("Error while generating key pair", zap.Error(err))
+			zap.L().Fatal("error while generating key pair", zap.Error(err))
 		}
 
 		bPriv, err := priv.Bytes()
 		if err != nil {
-			zap.L().Fatal("Invalid private key", zap.Error(err))
+			zap.L().Fatal("invalid private key", zap.Error(err))
 		}
 
 		var bPub []byte = []byte{}
 		if cfgCryptoPubKey {
 			bPub, err = pub.Bytes()
 			if err != nil {
-				zap.L().Fatal("Invalid private key", zap.Error(err))
+				zap.L().Fatal("invalid private key", zap.Error(err))
 			}
 		}
 
 		if cfgCryptoRaw {
 			if cfgCryptoPubKey {
 				if _, err = w.Write(bPub); err != nil {
-					zap.L().Fatal("Error while writing output", zap.Error(err))
+					zap.L().Fatal("error while writing output", zap.Error(err))
 				}
 
 				return
 			}
 
 			if _, err := w.Write(bPriv); err != nil {
-				zap.L().Fatal("Error while writing output", zap.Error(err))
+				zap.L().Fatal("error while writing output", zap.Error(err))
 			}
 
 			return
@@ -123,7 +122,7 @@ var cryptoKeyGenerateCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			zap.L().Fatal("Error while writing output", zap.Error(err))
+			zap.L().Fatal("error while writing output", zap.Error(err))
 		}
 	},
 }

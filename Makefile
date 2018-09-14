@@ -18,7 +18,7 @@ lint-dockerfile:
 
 .PHONY: lint-go
 lint-go:
-	gometalinter.v2 ./...
+	golangci-lint run  ./...
 
 .PHONY: lint-editorconfig
 lint-editorconfig:
