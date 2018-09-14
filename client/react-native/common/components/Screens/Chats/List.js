@@ -63,6 +63,8 @@ export default class ListScreen extends PureComponent {
         navigation={navigation}
         title='Chats'
         titleIcon='message-circle'
+        searchBar
+        searchHandler={text => console.log(text)} // Placeholder
       />
     ),
     tabBarVisible: true,
