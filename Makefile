@@ -18,7 +18,7 @@ lint-dockerfile:
 
 .PHONY: lint-go
 lint-go:
-	golangci-lint run  ./...
+	golangci-lint run --verbose  ./...
 
 .PHONY: lint-editorconfig
 lint-editorconfig:
