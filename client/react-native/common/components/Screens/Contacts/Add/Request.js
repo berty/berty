@@ -3,8 +3,10 @@ import { Screen, ContactList } from '../../../Library'
 import { colors } from '../../../../constants'
 import { QueryReducer } from '../../../../relay'
 import { queries, subscriptions } from '../../../../graphql'
+import { borderBottom } from '../../../../styles'
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
-export default class Request extends PureComponent {
+class Request extends PureComponent {
   componentDidMount () {
     this.subscriber = subscriptions.contactRequest.subscribe({
       updater: (store, data) => this.retry && this.retry(),
@@ -17,6 +19,16 @@ export default class Request extends PureComponent {
 
   render () {
     const { navigation } = this.props
+    const {
+      state: { routeName },
+    } = navigation
+
+    const filter = routeName === 'Received' ? 'RequestedMe' : 'IsRequested'
+    const subtitle =
+      routeName === 'Received'
+        ? 'Request received 3 hours ago ...'
+        : 'Request sent 3 hours ago ...' // Placeholder
+
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <QueryReducer query={queries.ContactList}>
@@ -26,10 +38,10 @@ export default class Request extends PureComponent {
               <ContactList
                 list={[]
                   .concat(state.data.ContactList || [])
-                  .filter(entry => entry.status === 'RequestedMe')}
+                  .filter(entry => entry.status === filter)}
                 state={state}
                 retry={retry}
-                subtitle='Request received 3 hours ago ...' // Placeholder
+                subtitle={subtitle}
                 action='RequestValidation'
                 navigation={navigation}
               />
@@ -40,3 +52,32 @@ export default class Request extends PureComponent {
     )
   }
 }
+
+export default createTabNavigator(
+  {
+    Received: Request,
+    Sent: Request,
+  },
+  {
+    initialRouteName: 'Received',
+    swipeEnabled: true,
+    animationEnabled: true,
+    tabBarPosition: 'top',
+
+    tabBarOptions: {
+      labelStyle: {
+        color: colors.black,
+      },
+      indicatorStyle: {
+        backgroundColor: colors.black,
+      },
+      style: [
+        {
+          backgroundColor: colors.white,
+          borderTopWidth: 0,
+        },
+        borderBottom,
+      ],
+    },
+  }
+)
