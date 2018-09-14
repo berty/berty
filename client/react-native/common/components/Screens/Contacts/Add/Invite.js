@@ -1,8 +1,14 @@
 import React, { PureComponent } from 'react'
-import { Text } from '../../../Library'
+import { Text, Flex } from '../../../Library'
 
-export default class ByBump extends PureComponent {
+export default class Invite extends PureComponent {
   render () {
-    return <Text>Invite!</Text>
+    return (
+      <Flex.Cols size={1} align='center' space='between'>
+        <Flex.Rows size={1} align='center' space='between'>
+          <Text big>Invite!</Text>
+        </Flex.Rows>
+      </Flex.Cols>
+    )
   }
 }
