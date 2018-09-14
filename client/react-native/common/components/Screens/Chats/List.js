@@ -1,46 +1,19 @@
 import React, { PureComponent } from 'react'
-import { FlatList, TouchableOpacity, Image } from 'react-native'
-import { Screen, Flex, Text, Separator, Header } from '../../Library'
+import { FlatList } from 'react-native'
+import { Screen, Separator, Header, ListItem } from '../../Library'
 import { colors } from '../../../constants'
-import {
-  paddingLeft,
-  paddingRight,
-} from '../../../styles'
 import { QueryReducer } from '../../../relay'
 import { createFragmentContainer, graphql } from 'react-relay'
 
-class Item extends PureComponent {
+class ListItemWrapper extends PureComponent {
   render () {
     const { data, navigation } = this.props
-    const { title } = data
     return (
-      <TouchableOpacity
+      <ListItem
+        title={data.title}
+        subtitle='Last message sent 3 hours ago...' // Placeholder
         onPress={() => navigation.push('Detail', { conversation: data })}
-        style={{
-          backgroundColor: colors.white,
-          paddingVertical: 16,
-          height: 71,
-        }}
-      >
-        <Flex.Cols align='left'>
-          <Flex.Rows size={1} align='left' style={{ marginLeft: 30 }}>
-            <Image
-              style={{ width: 40, height: 40, borderRadius: 50 }}
-              source={{
-                uri: 'https://api.adorable.io/avatars/285/' + title + '.png',
-              }}
-            />
-          </Flex.Rows>
-          <Flex.Rows size={6} align='left' style={{ marginLeft: 14 }}>
-            <Text color={colors.black} left middle>
-              {title}
-            </Text>
-            <Text color={colors.subtleGrey} tiny>
-              Last message sent 3 hours ago ...
-            </Text>
-          </Flex.Rows>
-        </Flex.Cols>
-      </TouchableOpacity>
+      />
     )
   }
 }
@@ -64,7 +37,6 @@ class List extends PureComponent {
     return (
       <FlatList
         data={data.ConversationList || []}
-        style={[paddingLeft, paddingRight]}
         ItemSeparatorComponent={({ highlighted }) => (
           <Separator highlighted={highlighted} />
         )}
@@ -86,11 +58,13 @@ class List extends PureComponent {
 
 export default class ListScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header
-      navigation={navigation}
-      title='Chats'
-      titleIcon='message-circle'
-    />,
+    header: (
+      <Header
+        navigation={navigation}
+        title='Chats'
+        titleIcon='message-circle'
+      />
+    ),
     tabBarVisible: true,
   })
 
@@ -122,7 +96,7 @@ export default class ListScreen extends PureComponent {
 }
 
 const ItemContainer = createFragmentContainer(
-  Item,
+  ListItemWrapper,
   graphql`
     fragment ListItem on BertyEntityConversation {
       id

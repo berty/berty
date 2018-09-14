@@ -35,12 +35,21 @@ export default class Header extends PureComponent {
       rightBtnIcon,
       onPressRightBtn,
       searchBar,
+      searchHandler,
     } = this.props
 
-    const colorText = this.props.colorText == null ? defaultTextColor : this.props.colorText
-    const colorBack = this.props.colorBack == null ? defaultBackColor : this.props.colorBack
-    const colorBtnLeft = this.props.colorBtnLeft == null ? defaultTextColor : this.props.colorBtnLeft
-    const colorBtnRight = this.props.colorBtnRight == null ? defaultTextColor : this.props.colorBtnRight
+    const colorText =
+      this.props.colorText == null ? defaultTextColor : this.props.colorText
+    const colorBack =
+      this.props.colorBack == null ? defaultBackColor : this.props.colorBack
+    const colorBtnLeft =
+      this.props.colorBtnLeft == null
+        ? defaultTextColor
+        : this.props.colorBtnLeft
+    const colorBtnRight =
+      this.props.colorBtnRight == null
+        ? defaultTextColor
+        : this.props.colorBtnRight
 
     return (
       <View
@@ -58,9 +67,8 @@ export default class Header extends PureComponent {
             size={1}
             align='center'
             space='between'
-            style={[(searchBar ? paddingBottom : {})]}
+            style={[searchBar ? paddingBottom : {}]}
           >
-
             {backBtn === true && (
               <HeaderButton
                 icon='arrow-left'
@@ -69,12 +77,7 @@ export default class Header extends PureComponent {
               />
             )}
 
-            <Text
-              icon={titleIcon}
-              left
-              large
-              color={colorText}
-            >
+            <Text icon={titleIcon} left large color={colorText}>
               {title}
             </Text>
 
@@ -85,7 +88,6 @@ export default class Header extends PureComponent {
                 onPress={onPressRightBtn}
               />
             )}
-
           </Flex.Cols>
 
           {searchBar === true && (
@@ -99,16 +101,16 @@ export default class Header extends PureComponent {
                     backgroundColor: colors.grey7,
                     borderWidth: 0,
                     borderRadius: 18,
-                    ...(Platform.OS === 'web' ?  {outline: 'none'} : {}),
+                    ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
                   },
                   paddingLeft,
                   paddingRight,
                 ]}
                 placeholder='Search...'
+                onChangeText={text => searchHandler({ text })}
               />
             </Flex.Cols>
           )}
-
         </Flex.Rows>
       </View>
     )
