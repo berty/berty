@@ -73,7 +73,7 @@ integration: install
 
 .PHONY: lint
 lint: generate
-	gometalinter.v2 --config=../.gometalinter.json $(TEST_PATHS)
+	golangci-lint run $(TEST_PATHS)
 
 .PHONY: generate
 generate: .generated

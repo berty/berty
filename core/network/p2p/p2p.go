@@ -284,7 +284,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	}
 
 	if len(ss) == 0 {
-		return fmt.Errorf("No subscribers found")
+		return fmt.Errorf("no subscribers found")
 	}
 
 	for _, s := range ss {
@@ -296,19 +296,19 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 			}
 
 			if err := d.Connect(ctx, pi); err != nil {
-				logger().Warn("Failed to connect", zap.String("id", peerID), zap.Error(err))
+				logger().Warn("failed to connect", zap.String("id", peerID), zap.Error(err))
 			}
 
 			c, err := d.ccmanager.GetConn(ctx, peerID)
 			if err != nil {
-				logger().Warn("Failed to dial", zap.String("id", peerID), zap.Error(err))
+				logger().Warn("failed to dial", zap.String("id", peerID), zap.Error(err))
 			}
 
 			sc := p2p.NewServiceClient(c)
 
 			_, err = sc.HandleEnvelope(ctx, e)
 			if err != nil {
-				logger().Error("Failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
+				logger().Error("failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
 			}
 		}(s)
 	}
@@ -322,7 +322,7 @@ func (d *Driver) Announce(ctx context.Context, id string) error {
 
 // FindSubscribers with the given ID
 func (d *Driver) FindSubscribers(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
-	logger().Debug("Looking for", zap.String("id", id))
+	logger().Debug("looking for", zap.String("id", id))
 	c, err := d.createCid(id)
 	if err != nil {
 		return nil, err
@@ -347,10 +347,10 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 	if err := d.dht.Provide(ctx, c, true); err != nil {
 		// stack peer if no peer found
 		d.stackSub(c)
-		logger().Warn("Provide err", zap.Error(err))
+		logger().Warn("provide err", zap.Error(err))
 	}
 
-	logger().Debug("Announcing", zap.String("id", id))
+	logger().Debug("announcing", zap.String("id", id))
 
 	// Announce that you are subscribed to this conversation, but don't
 	// broadcast it! in this way, if you die, your announcement will die with you!
@@ -368,7 +368,7 @@ func (ds *DriverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*
 		return ds.handler(ctx, e)
 	}
 
-	return nil, fmt.Errorf("No handler set")
+	return nil, fmt.Errorf("no handler set")
 }
 
 type DriverDiscoveryNotifee Driver

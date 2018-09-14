@@ -1,0 +1,36 @@
+run:
+  deadline: 1m
+  tests: false
+  skip-files:
+    - ".*\\.pb\\.go"
+    - ".*\\.gen\\.go"
+    - "_test.go:"
+
+linters-settings:
+  golint:
+    min-confidence: 0
+  maligned:
+    suggest-new: true
+  goconst:
+    min-len: 5
+    min-occurrences: 4
+  misspell:
+    locale: US
+
+linters:
+  disable-all: true
+  enable:
+    - goconst
+    - misspell
+    - deadcode
+    - misspell
+    - structcheck
+    - errcheck
+    - unused
+    - varcheck
+    - staticcheck
+    - unconvert
+    - gofmt
+    - goimports
+    - golint
+    - ineffassign
