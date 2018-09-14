@@ -4,9 +4,8 @@ FROM golang:alpine
 RUN apk --no-cache --update add nodejs-npm git make musl-dev gcc g++
 
 # gometalinter
-RUN go get -u gopkg.in/alecthomas/gometalinter.v2 \
-    && gometalinter.v2 -i -u \
-    && ln -s /go/bin/gometalinter.v2 /usr/bin/gometalinter.v2
+RUN go get -u github.com/golangci/golangci-lint/cmd/golangci-lint \
+    && ln -s /go/bin/golangci-lint /usr/bin/golangci-lint
 
 # dockerlint
 RUN npm install --global dockerlint
