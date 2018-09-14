@@ -395,8 +395,8 @@
 		F8799D782136F3EA003B9FD7 /* CoreModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreModule.swift; sourceTree = "<group>"; };
 		F8799E0521395818003B9FD7 /* RNNetworkInfo.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNNetworkInfo.xcodeproj; path = "../../node_modules/react-native-network-info/ios/RNNetworkInfo.xcodeproj"; sourceTree = "<group>"; };
 		F8EF7F472136A10500FDCCB5 /* core.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = core.framework; sourceTree = "<group>"; };
-		F8EF7F7D2136A27E00FDCCB5 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../../../scripts/built/ios/libssl.a; sourceTree = "<group>"; };
-		F8EF7F7F2136A5AA00FDCCB5 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../../../scripts/built/ios/libcrypto.a; sourceTree = "<group>"; };
+		F8EF7F7D2136A27E00FDCCB5 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../../common/openssl/built/ios/libssl.a; sourceTree = "<group>"; };
+		F8EF7F7F2136A5AA00FDCCB5 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../../common/openssl/built/ios/libcrypto.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1394,7 +1394,7 @@
 				);
 				INFOPLIST_FILE = berty/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../../../scripts/built/ios";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/openssl/built/ios";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -1432,7 +1432,7 @@
 				);
 				INFOPLIST_FILE = berty/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../../../scripts/built/ios";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../../common/openssl/built/ios";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
