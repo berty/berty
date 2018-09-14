@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react'
-import { TextInput } from 'react-native'
+import React, { PureComponent, Fragment } from 'react'
+import { TextInput, Clipboard } from 'react-native'
 import { Flex, Screen, Button } from '../../../Library'
 import { colors } from '../../../../constants'
 import {
@@ -55,7 +55,7 @@ class ByPublicKey extends PureComponent {
           {routeName === 'Enter a public key' && (
             <Button
               icon='plus'
-              background='blue'
+              background={colors.blue}
               margin
               padding
               rounded={23}
@@ -76,6 +76,36 @@ class ByPublicKey extends PureComponent {
             >
               ADD THIS KEY
             </Button>
+          )}
+          {routeName === 'View my public key' && (
+            <Fragment>
+              <Button
+                icon='share'
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                onPress={() => { console.log('Share: ', myID) }}
+              >
+                SHARE THE KEY
+              </Button>
+              <Button
+                icon='copy'
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                onPress={() => { Clipboard.setString(myID) }}
+              >
+                COPY THE KEY
+              </Button>
+            </Fragment>
           )}
         </Flex.Rows>
       </Screen>
