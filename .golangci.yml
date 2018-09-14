@@ -4,7 +4,6 @@ run:
   skip-files:
     - ".*\\.pb\\.go"
     - ".*\\.gen\\.go"
-    - "_test.go:"
 
 linters-settings:
   golint:
