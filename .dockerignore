@@ -1,4 +1,5 @@
 .git/
+contrib/
 client/
 node_modules/
 gin-bin
