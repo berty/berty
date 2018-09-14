@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
+
 	// sqlcipher blank import
 	_ "github.com/xeodou/go-sqlcipher"
 )

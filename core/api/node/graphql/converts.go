@@ -48,7 +48,7 @@ func (gid *globalID) FromString(e string) error {
 
 	sid := strings.SplitN(string(bs), ":", 2)
 	if len(sid) != 2 {
-		return fmt.Errorf("Not a valid global id `%s`", bs)
+		return fmt.Errorf("not a valid global id `%s`", bs)
 	}
 
 	if kind, ok := EntityKindMap[sid[0]]; ok {
@@ -57,7 +57,7 @@ func (gid *globalID) FromString(e string) error {
 		return nil
 	}
 
-	return fmt.Errorf("Unknown entity kind `%s`", sid[0])
+	return fmt.Errorf("unknown entity kind `%s`", sid[0])
 }
 
 func convertContactStatus(value entity.Contact_Status) *model.BertyEntityContactStatus {
