@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
@@ -15,12 +16,13 @@ import (
 )
 
 type sqlDumpOptions struct {
-	sql         sqlOptions
-	autoPreload bool
+	sql         sqlOptions `mapstructure:"sql"`
+	autoPreload bool       `mapstructure:"auto-preload"`
 }
 
 func sqlDumpSetupFlags(flags *pflag.FlagSet, opts *sqlDumpOptions) {
 	flags.BoolVar(&opts.autoPreload, "auto-preload", false, "preload associations")
+	_ = viper.BindPFlags(flags)
 }
 
 func newSQLDumpCommand() *cobra.Command {

@@ -16,11 +16,11 @@ import (
 )
 
 type clientOptions struct {
-	endpoint    string
-	nodeAddress string
-	args        []string
-	unarize     bool
-	noIndent    bool
+	endpoint    string   `mapstructure:"endpoint"`
+	nodeAddress string   `mapstructure:"node-address"`
+	args        []string `mapstructure:"args"`
+	unarize     bool     `mapstructure:"unarize"`
+	noIndent    bool     `mapstructure:"no-indent"`
 }
 
 func newClientCommand() *cobra.Command {
