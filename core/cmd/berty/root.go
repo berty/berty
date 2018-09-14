@@ -6,7 +6,9 @@ import (
 	"strings"
 
 	p2plog "github.com/ipfs/go-log"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -57,9 +59,17 @@ func getP2PLogLevel(level zapcore.Level) logging.Level {
 
 func newRootCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:               "berty",
-		Version:           fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version),
-		PersistentPreRunE: setupLogger,
+		Use:     "berty",
+		Version: fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version),
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			if err := setupLogger(cmd, args); err != nil {
+				return err
+			}
+			if err := setupViper(cmd, args); err != nil {
+				return err
+			}
+			return nil
+		},
 	}
 
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
@@ -72,6 +82,9 @@ func newRootCommand() *cobra.Command {
 		newSQLCommand(),
 		newIdentityCommand(),
 	)
+
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 
 	return cmd
 }
@@ -97,7 +110,6 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	}
 
 	// configure zap
-
 	config := zap.NewDevelopmentConfig()
 	config.Level.SetLevel(logLevel)
 	config.DisableStacktrace = true
@@ -132,6 +144,7 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 		})
 	})
 	zap.ReplaceGlobals(l.WithOptions(filtered))
+	logger().Debug("logger initialized")
 
 	// configure p2p log
 	logging.SetBackend(&p2pLogBackendWrapper{
@@ -140,7 +153,17 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	if err := p2plog.SetLogLevel("*", getP2PLogLevel(logLevel).String()); err != nil {
 		logger().Warn("failed to set p2p log level", zap.Error(err))
 	}
+	return nil
+}
 
-	logger().Debug("logger initialized")
+func setupViper(cmd *cobra.Command, args []string) error {
+	// configure viper
+	viper.AddConfigPath(".")
+	viper.SetConfigName(".berty")
+	if err := viper.MergeInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			return errors.Wrap(err, "failed apply viper config")
+		}
+	}
 	return nil
 }
