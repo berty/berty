@@ -80,14 +80,18 @@ type conn struct {
 
 // NewConnFromStream convert a inet.Stream to a net.conn
 func NewConnFromStream(s inet.Stream) (net.Conn, error) {
-	localAddr, err := manet.ToNetAddr(s.Conn().LocalMultiaddr())
+	var localAddr, remoteAddr net.Addr
+	var err error
+
+	pid := s.Protocol()
+	localAddr, err = manet.ToNetAddr(s.Conn().LocalMultiaddr())
 	if err != nil {
-		return nil, err
+		localAddr = &ProtocolAddr{pid}
 	}
 
-	remoteAddr, err := manet.ToNetAddr(s.Conn().RemoteMultiaddr())
+	remoteAddr, err = manet.ToNetAddr(s.Conn().RemoteMultiaddr())
 	if err != nil {
-		return nil, err
+		localAddr = &ProtocolAddr{pid}
 	}
 
 	return &conn{s, localAddr, remoteAddr}, nil

@@ -78,11 +78,6 @@ func (pg *P2Pgrpc) NewDialer(proto string) func(string, time.Duration) (net.Conn
 			return nil, err
 		}
 
-		c, err := p2putil.NewConnFromStream(s)
-		if err != nil {
-			return nil, err
-		}
-
-		return c, nil
+		return p2putil.NewConnFromStream(s)
 	}
 }
