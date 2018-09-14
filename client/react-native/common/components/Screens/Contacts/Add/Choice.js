@@ -12,29 +12,35 @@ export default class Choice extends PureComponent {
         size={1}
         style={[{ backgroundColor: colors.white }, borderTop]}
       >
-        <Flex.Rows size={1} align='center' space='evenly' style={[padding]}>
+        <Flex.Rows size={1} align='center' style={[padding]}>
           <Item
-            color={colors.blue}
+            icon='user-plus'
+            name='Pending requests'
+            link='Request'
+            navigation={navigation}
+          />
+          <Item
+            icon='square'
+            name='QR Code'
+            link='ByQRCode'
+            navigation={navigation}
+          />
+          <Item
+            icon='edit-2'
+            name='Public key'
+            link='ByPublicKey'
+            navigation={navigation}
+          />
+          <Item
+            icon='smartphone'
             name='Bump'
             link='ByBump'
             navigation={navigation}
           />
           <Item
-            color={colors.red}
-            name='Scan a QR Code'
-            link='ByQRCode'
-            navigation={navigation}
-          />
-          <Item
-            color={colors.orange}
-            name='Enter a public key'
-            link='ByPublicKey'
-            navigation={navigation}
-          />
-          <Item
-            color={colors.yellow}
-            name='Pending contact requests'
-            link='Request'
+            icon='mail'
+            name='Invite a friend'
+            link='Invite'
             navigation={navigation}
           />
         </Flex.Rows>
@@ -43,29 +49,26 @@ export default class Choice extends PureComponent {
   }
 }
 
-const Item = ({ color, name, link, navigation }) => (
+const Item = ({ icon, name, link, navigation }) => (
   <TouchableOpacity
     onPress={() => navigation.push(link)}
     style={[
       {
         borderRadius: 8,
-        height: 100,
+        height: 60,
         width: 300,
-        backgroundColor: color,
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: colors.blue,
+        paddingLeft: 24,
+        paddingRight: 8,
+        margin: 10,
       },
     ]}
   >
-    <Text
-      style={[
-        {
-          fontSize: 30,
-          color: colors.white,
-        },
-      ]}
-    >
-      {name}
-    </Text>
+    <Flex.Cols size={1} align='center' space='between'>
+      <Text icon={icon} large color={colors.white}>
+        {name}
+      </Text>
+      <Text icon='chevron-right' large color={colors.white} />
+    </Flex.Cols>
   </TouchableOpacity>
 )
