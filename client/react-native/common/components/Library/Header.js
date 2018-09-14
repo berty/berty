@@ -107,7 +107,7 @@ export default class Header extends PureComponent {
                   paddingRight,
                 ]}
                 placeholder='Search...'
-                onChangeText={text => searchHandler({ text })}
+                onChangeText={text => searchHandler(text)}
               />
             </Flex.Cols>
           )}

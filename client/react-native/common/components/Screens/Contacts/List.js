@@ -17,6 +17,7 @@ export default class List extends PureComponent {
         rightBtnIcon='user-plus'
         onPressRightBtn={() => navigation.push('Add')}
         searchBar
+        searchHandler={navigation.getParam('searchHandler')}
       />
     ),
     tabBarVisible: true,
@@ -44,19 +45,56 @@ export default class List extends PureComponent {
         <QueryReducer query={queries.ContactList}>
           {(state, retry) =>
             (this.retry = retry) && (
-              <ContactList
-                list={[].concat(state.data.ContactList || [])}
-                sortBy='displayName'
+              <ContactListWrapper
                 state={state}
                 retry={retry}
-                subtitle='Last seen 3 hours ago ...' // Placeholder
-                action='Detail'
                 navigation={navigation}
               />
             )
           }
         </QueryReducer>
       </Screen>
+    )
+  }
+}
+
+class ContactListWrapper extends PureComponent {
+  state = {
+    list: [].concat(this.props.state.data.ContactList || []),
+    filtered: [].concat(this.props.state.data.ContactList || []),
+  }
+
+  searchHandler = text => {
+    if (text === '') {
+      this.setState(state => {
+        return { filtered: state.list }
+      })
+    } else {
+      this.setState({
+        filtered: this.state.list.filter(
+          entry =>
+            entry.displayName.toLowerCase().indexOf(text.toLowerCase()) > -1
+        ),
+      })
+    }
+  }
+
+  componentDidMount () {
+    this.props.navigation.setParams({ searchHandler: this.searchHandler })
+  }
+
+  render () {
+    const { state, retry, navigation } = this.props
+    return (
+      <ContactList
+        list={this.state.filtered}
+        sortBy='displayName'
+        state={state}
+        retry={retry}
+        subtitle='Last seen 3 hours ago ...' // Placeholder
+        action='Detail'
+        navigation={navigation}
+      />
     )
   }
 }
