@@ -3,11 +3,9 @@ import { Menu, Header } from '../../Library'
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header
-      navigation={navigation}
-      title='Settings'
-      titleIcon='settings'
-    />,
+    header: (
+      <Header navigation={navigation} title='Settings' titleIcon='settings' />
+    ),
     tabBarVisible: false,
   })
   render () {
