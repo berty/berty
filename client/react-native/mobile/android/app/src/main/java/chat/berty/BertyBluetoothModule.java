@@ -59,7 +59,6 @@ public class BertyBluetoothModule extends ReactContextBaseJavaModule {
 
     public void sendEvent(String eventName,
                            @Nullable WritableMap params) {
-        Log.d(TAG, "sending");
         try {
             MainApplication app = (MainApplication) getCurrentActivity().getApplication();
             app.getReactNativeHost().
@@ -70,8 +69,6 @@ public class BertyBluetoothModule extends ReactContextBaseJavaModule {
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-
-        Log.d(TAG, "seeeeeeeenndded");
     }
 
     @Override

@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.common.ArrayUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -59,8 +60,9 @@ import static android.bluetooth.BluetoothGattDescriptor.PERMISSION_READ;
 import static android.bluetooth.BluetoothGattDescriptor.PERMISSION_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 import static android.content.Context.BLUETOOTH_SERVICE;
+import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
-public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
+public class BertyBluetooth
 {
 	protected String TAG = "BertyBluetooth";
 
@@ -69,6 +71,7 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
     protected HashMap<String, BluetoothDevice> discoveredDevice;
 
 	protected HashMap<String, BertyBluetoothConnection> connectedDevice;
+    protected HashMap<String, BluetoothGatt> connectedDevice2;
 
 	protected BertyBluetoothModule bbm;
 
@@ -76,7 +79,7 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
 
 	protected BluetoothGattServer mBluetoothGattServer;
 
-	protected  UUID CHARACTERISTIC_COUNTER_UUID = UUID.fromString("31517c58-66bf-470c-b662-e352a6c80cba");
+	protected  UUID CHARACTERISTIC_COUNTER_UUID = UUID.fromString("940B721F-E133-41ED-A278-9F78C63A03EF");
 	protected  UUID CHARACTERISTIC_INTERACTOR_UUID = UUID.fromString("C9847BED-C53F-4F89-A6D0-FE1031524A25");
 
 	protected  UUID DESCRIPTOR_CONFIG_UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
@@ -129,35 +132,6 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
 
 
 	private String lastMessage = "";
-
-	@Override
-	public void onLeScan(final BluetoothDevice newDevice, final int newRssi,
-						 final byte[] newScanRecord) {
-
-		String message = new String(newScanRecord);
-//		TextView textViewToChange = (TextView) findViewById(R.id.textView);
-		String oldText = lastMessage;
-		String device = newDevice.getAddress();
-		String rssi = "" + newRssi;
-		Log.e("Device", device);
-
-		if ((!contains(iPhones, device) && message.substring(5,11).equals("iPhone")) || (!message.equals(lastMessage) && contains(iPhones, device))) {
-			if (!contains(iPhones, device))
-			{
-				iPhones[iPhoneIndex] = device;
-				iPhoneIndex++;
-			}
-			Log.e("Device", device);
-			lastMessage = message;
-			Log.e("Rssi", rssi);
-			Log.e("Message", message);
-			String newMessage;
-			if (message.substring(19, 20).equals("-"))
-				newMessage = oldText + message.substring(5, 19);
-			else
-				newMessage = oldText + message.substring(5) + "\n";
-		}
-	}
 
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		public void onReceive(Context context, Intent intent) {
@@ -219,8 +193,9 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
 		bbm = bertyBluetoothModule;
 		discoveredDevice = new HashMap<>();
 		connectedDevice = new HashMap<>();
-		listener = new BertyBluetoothListerner(this);
-		listener.start();
+        connectedDevice2 = new HashMap<>();
+//		listener = new BertyBluetoothListerner(this);
+//		listener.start();
 		BluetoothLeAdvertiser advertiser = bAdapter.getBluetoothLeAdvertiser();
 		AdvertiseCallback advertisingCallback = new AdvertiseCallback() {
 			@Override
@@ -246,12 +221,13 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
 		public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
 			if (newState == BluetoothProfile.STATE_CONNECTED) {
 				Log.i(TAG, "BluetoothDevice CONNECTED: " + device);
+                device.connectGatt(bbm.mReactContext, false, gattCallback, BluetoothDevice.TRANSPORT_LE);
+
 			} else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
 				Log.i(TAG, "BluetoothDevice DISCONNECTED: " + device);
 				// Remove device from any active subscriptions
                 discoveredDevice.remove(device.getAddress());
 				mRegisteredDevices.remove(device);
-
 			}
 		}
 
@@ -277,11 +253,15 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
                     Log.i(TAG, "Write interactor val");
                     Log.i(TAG, new String(value, Charset.forName("UTF-8")));
                 }
-
+                WritableMap event = Arguments.createMap();
+				event.putString("type", device.getAddress());
+				event.putString("msg", new String(value, Charset.forName("UTF-8")));
+                bbm.sendEvent("NEW_MESSAGE", event);
 //				if (mListener != null) {
 //					mListener.onInteractorWritten();
 //				}
-				notifyRegisteredDevices();
+//				notifyRegisteredDevices();
+                mBluetoothGattServer.sendResponse(device, requestId, BluetoothGatt.GATT_SUCCESS, 0, null);
 			} else {
 				// Invalid characteristic
 				Log.w(TAG, "Invalid Characteristic Write: " + characteristic.getUuid());
@@ -390,9 +370,15 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             super.onScanResult(callbackType, result);
+            BluetoothDevice bDevice = result.getDevice();
             String addr = result.getDevice().getAddress();
             if (!discoveredDevice.containsKey(addr)) {
-                BluetoothDevice bDevice = result.getDevice();
+//                StringBuilder sb = new StringBuilder();
+//                for (byte b : result.getScanRecord().getBytes()) {
+//                    sb.append(String.format("%02X ", b));
+//                }
+//                Log.d(TAG, "result " + result.getDevice().getAddress() + " name " + result.getDevice().getName() + " ScanRect" + result.getScanRecord().toString() + " DATA " + sb.toString()) ;
+
                 discoveredDevice.put(addr, result.getDevice());
                 discoveredDevice.put(bDevice.getName(), bDevice);
                 WritableMap event = Arguments.createMap();
@@ -402,7 +388,7 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
                 }
                     event.putString("type", bDevice.getAddress());
                     try {
-                        bDevice.fetchUuidsWithSdp();
+//                        bDevice.fetchUuidsWithSdp();
                         ParcelUuid[] supportedUuids = bDevice.getUuids();
                         if (supportedUuids != null) {
                             WritableArray uuids = Arguments.createArray();
@@ -416,10 +402,18 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
                     }
 
                     bbm.sendEvent("NEW_DEVICE", event);
+//				byte[] service = ArrayUtils.subarray(result.getScanRecord().getBytes(), 13, 13+ 16);
 
-                bDevice.connectGatt(bbm.mReactContext, false, gattCallback);
-                Log.d(TAG, "result " + result.getDevice().getAddress() + " name " + result.getDevice().getName() + " ScanRect" + result.getScanRecord().toString());
+				// The bytes are probably in reverse order, so we need to fix that
+//				ArrayUtils.reverse(service);
+
+				// Get the hex string
+//				String discoveredServiceID = bytesToHex(service);
+
+                bDevice.connectGatt(bbm.mReactContext, false, gattCallback, BluetoothDevice.TRANSPORT_LE);
+
             }
+//            bDevice.connectGatt(bbm.mReactContext, false, gattCallback, BluetoothDevice.TRANSPORT_LE);
         }
 
         @Override
@@ -464,13 +458,14 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
         }
     };
 
-    private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
+	private BluetoothGattCallback gattCallback = new BluetoothGattCallback() {
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
             super.onConnectionStateChange(gatt, status, newState);
+            Log.d(TAG, "device connected test" + gatt.getDevice().getName() + " asd " + gatt.getDevice().getAddress());
             if (BluetoothGatt.GATT_SUCCESS == status) {
                 if (BluetoothProfile.STATE_CONNECTED == newState) {
-//                    connectedDevice.put()
+                    connectedDevice2.put(gatt.getDevice().getAddress(), gatt);
                     gatt.discoverServices();
                     Log.d(TAG, "device connected " + gatt.getDevice().getAddress());
                 } else if (BluetoothProfile.STATE_DISCONNECTED == newState) {
@@ -484,24 +479,7 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             super.onServicesDiscovered(gatt, status);
             List<BluetoothGattService> svcs = gatt.getServices();
-            for (BluetoothGattService svc:
-                 svcs) {
-                Log.d(TAG, "Service disco: " + svc.getUuid());
-                List<BluetoothGattCharacteristic> characteristics = svc.getCharacteristics();
-                if (svc.getUuid().equals(MY_UUID)) {
-                    for (BluetoothGattCharacteristic characteristic :
-                            characteristics) {
-                        Log.d(TAG, "Charact: " + characteristic.getUuid());
-                        gatt.readCharacteristic(characteristic);
-                        if (characteristic.getUuid().equals(UUID.fromString("C9847BED-C53F-4F89-A6D0-FE1031524A25"))) {
-                            Log.d(TAG, "Charact: " + characteristic.getUuid());
-                            characteristic.setValue("TEST");
-                            gatt.writeCharacteristic(characteristic);
-                        }
-//                    characteristic.getValue();
-                    }
-                }
-            }
+            Log.d(TAG, "Service disco");
         }
 
         @Override
@@ -545,6 +523,10 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
         public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
             super.onMtuChanged(gatt, mtu, status);
         }
+
+        public void writeTo(BluetoothGatt gatt, String msg) {
+
+        }
     };
 
     public ScanFilter makeFilter() {
@@ -554,13 +536,14 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
     }
 
 	public synchronized  void startDiscover() {
-        List<ScanFilter> filters = new ArrayList<>();
-        filters.add(makeFilter());
+//        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        ScanFilter filters = makeFilter();
         BluetoothLeScanner scanner = bAdapter.getBluetoothLeScanner();
         ScanSettings settings = new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .build();
-        scanner.startScan(filters, settings, callback);
+        scanner.startScan(Arrays.asList(makeFilter()), settings, callback);
 //		final Activity mActivity = bbm.getCA();
 //		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 //		mActivity.registerReceiver(mReceiver, filter);
@@ -600,8 +583,29 @@ public class BertyBluetooth implements BluetoothAdapter.LeScanCallback
 	}
 
 	public void writeTo(String addr, String msg) {
-//		BertyBluetoothConnection tmp = connectedDevice.get(addr);
-//		tmp.write(msg.getBytes());
+		BluetoothGatt gatt = connectedDevice2.get(addr);
+        List<BluetoothGattService> svcs = gatt.getServices();
+        Log.d(TAG, "Service disco");
+        for (BluetoothGattService svc:
+                svcs) {
+            Log.d(TAG, "Service disco: " + svc.getUuid() +" for " + gatt.getDevice().getAddress());
+            List<BluetoothGattCharacteristic> characteristics = svc.getCharacteristics();
+            if (svc.getUuid().equals(MY_UUID)) {
+                for (BluetoothGattCharacteristic characteristic :
+                        characteristics) {
+                    Log.d(TAG, "Charact: " + characteristic.getUuid());
+                    gatt.readCharacteristic(characteristic);
+
+                    if (characteristic.getUuid().equals(UUID.fromString("C9847BED-C53F-4F89-A6D0-FE1031524A25"))) {
+                        Log.d(TAG, "Charact: " + characteristic.getUuid());
+                        Log.d(TAG, "T0 " + msg);
+                        Log.d(TAG, "T1 " + characteristic.setValue(msg.getBytes(StandardCharsets.UTF_8)));
+                        Log.d(TAG, "T2 " + gatt.writeCharacteristic(characteristic));
+                    }
+//                    characteristic.getValue();
+                }
+            }
+        }
 	}
 
 	private class ConnectThread extends Thread {
