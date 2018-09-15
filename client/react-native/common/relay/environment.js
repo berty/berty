@@ -12,7 +12,10 @@ if (__DEV__) {
 if (Platform.OS === 'web') {
   NativeModules.CoreModule = {
     start: async () => {},
-    getPort: async () => '8700',
+    getPort: async () => {
+      const url = new URL(window.location.href)
+      return url.searchParams.get('gql-port') || '8700'
+    },
   }
 }
 
