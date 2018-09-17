@@ -1,5 +1,10 @@
 package bot
 
+import (
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+)
+
 //
 // Handler
 //
@@ -44,4 +49,25 @@ func (t Trigger) Handle(bot *Bot, event *Event) error {
 		return t.Then(bot, event)
 	}
 	return nil
+}
+
+//
+// MessageHandler
+//
+
+type MessageHandlerFunc func(*Bot, *Event, *entity.Message) error
+
+func (b *Bot) AddMessageHandlerFunc(f MessageHandlerFunc) {
+	b.AddHandler(Trigger{
+		If: func(b *Bot, e *Event) bool {
+			return e.Kind == p2p.Kind_ConversationNewMessage
+		},
+		Then: func(b *Bot, e *Event) error {
+			nm, err := e.GetConversationNewMessageAttrs()
+			if err != nil {
+				return err
+			}
+			return f(b, e, nm.Message)
+		},
+	})
 }
