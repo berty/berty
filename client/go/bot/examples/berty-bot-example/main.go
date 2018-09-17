@@ -2,9 +2,11 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 
 	"berty.tech/client/go/bot"
+	"berty.tech/core/entity"
 )
 
 var addr = flag.String("addr", "127.0.0.1:1337", "daemon gRPC address")
@@ -21,18 +23,8 @@ func main() {
 		panic(err)
 	}
 
-	b.AddHandlerFunc(func(b *bot.Bot, e *bot.Event) error {
-		// do stuff
-		return nil
-	})
-	b.AddHandler(bot.Trigger{
-		If: func(b *bot.Bot, e *bot.Event) bool {
-			return true
-		},
-		Then: func(b *bot.Bot, e *bot.Event) error {
-			// do stuff
-			return nil
-		},
+	b.AddMessageHandlerFunc(func(b *bot.Bot, e *bot.Event, msg *entity.Message) error {
+		return b.Reply(e, &entity.Message{Text: fmt.Sprintf("hello! (%s)", msg.Text)})
 	})
 
 	log.Println("starting bot...")
