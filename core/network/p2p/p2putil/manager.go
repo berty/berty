@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"fmt"
-	"time"
 
 	"github.com/libp2p/go-libp2p-host"
 	"github.com/libp2p/go-libp2p-peer"
@@ -107,11 +106,8 @@ func (m *Manager) GetConn(ctx context.Context, target string) (*grpc.ClientConn,
 	return cl, nil
 }
 
-func NewDialer(host host.Host, pid protocol.ID) func(string, time.Duration) (net.Conn, error) {
-	return func(target string, timeout time.Duration) (net.Conn, error) {
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
-		defer cancel()
-
+func NewDialer(host host.Host, pid protocol.ID) func(context.Context, string) (net.Conn, error) {
+	return func(ctx context.Context, target string) (net.Conn, error) {
 		peerID, err := peer.IDB58Decode(target)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse `%s`: %s", target, err.Error())
@@ -119,14 +115,6 @@ func NewDialer(host host.Host, pid protocol.ID) func(string, time.Duration) (net
 
 		// No stream exist, creating a new one
 		logger().Debug("Dialing", zap.String("addr", target))
-
-		p, err := host.Peerstore().GetProtocols(peerID)
-
-		if err != nil {
-			return nil, errors.Wrap(err, "shit appends while resolving protocols")
-		}
-
-		fmt.Printf("%+v\n\n\n\n\n", p)
 
 		s, err := host.NewStream(ctx, peerID, pid)
 		if err != nil {

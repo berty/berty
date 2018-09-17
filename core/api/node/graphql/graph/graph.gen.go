@@ -1329,6 +1329,49 @@ func (ec *executionContext) _BertyNodeEventStreamInput_filter(ctx context.Contex
 	return ec._BertyP2pEvent(ctx, field.Selections, res)
 }
 
+var bertyNodePingDestinationImplementors = []string{"BertyNodePingDestination"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodePingDestination(ctx context.Context, sel ast.SelectionSet, obj *model.BertyNodePingDestination) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodePingDestinationImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodePingDestination")
+		case "destination":
+			out.Values[i] = ec._BertyNodePingDestination_destination(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodePingDestination_destination(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodePingDestination) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePingDestination"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Destination, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
 var bertyNodeVoidImplementors = []string{"BertyNodeVoid"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -8899,6 +8942,10 @@ enum BertyP2pEventDirection {
 
 
   
+
+type BertyNodePingDestination {
+  destination: String
+} 
 
 type BertyNodeContactRequestInput {
   contact: BertyEntityContact

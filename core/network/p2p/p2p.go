@@ -21,6 +21,7 @@ import (
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -264,8 +265,8 @@ func (d *Driver) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 	return d.host.Connect(ctx, pi)
 }
 
-func (d *Driver) Dial(ctx context.Context, peerId string, timeout time.Duration, pid protocol.ID) (net.Conn, error) {
-	return p2putil.NewDialer(d.host, pid)(peerId, timeout)
+func (d *Driver) Dial(ctx context.Context, peerID string, pid protocol.ID) (net.Conn, error) {
+	return p2putil.NewDialer(d.host, pid)(ctx, peerID)
 }
 
 func (d *Driver) createCid(id string) (*cid.Cid, error) {
@@ -369,6 +370,22 @@ func (d *Driver) OnEnvelopeHandler(f func(context.Context, *p2p.Envelope) (*p2p.
 	d.handler = f
 }
 
+func (d *Driver) PingOtherNode(ctx context.Context, destination string) error {
+	ctx, cancel := context.WithTimeout(ctx, time.Second*5)
+	defer cancel()
+
+	c, err := d.ccmanager.GetConn(ctx, destination)
+	if err != nil {
+		return errors.Wrap(err, "unable to ping")
+	}
+
+	if _, err = p2p.NewServiceClient(c).Ping(ctx, &p2p.Void{}); err != nil {
+		return errors.Wrap(err, "unable to ping")
+	}
+
+	return nil
+}
+
 type DriverService Driver
 
 func (ds *DriverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*p2p.Void, error) {
@@ -379,7 +396,7 @@ func (ds *DriverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*
 	return nil, fmt.Errorf("no handler set")
 }
 
-func (ds *DriverService) Ping(ctx context.Context, e *p2p.PingInput) (*p2p.Void, error) {
+func (ds *DriverService) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
 	return &p2p.Void{}, nil
 }
 
