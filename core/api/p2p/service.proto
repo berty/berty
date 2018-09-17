@@ -10,12 +10,7 @@ service Service {
   // HandleEnvelope is the default p2p handler, it receives an envelope containing an encrypted event
   rpc HandleEnvelope(Envelope) returns (Void) {};
 
-  rpc Ping(PingInput) returns (Void) {};
+  rpc Ping(Void) returns (Void) {};
 }
-
-message PingInput {
-  string destination = 1;
-};
-
 
 message Void {};

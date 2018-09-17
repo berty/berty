@@ -38,7 +38,7 @@ func P2pPing(client *client.Client, ctx context.Context, jsonInput []byte) (inte
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput p2p.PingInput
+	var typedInput p2p.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}

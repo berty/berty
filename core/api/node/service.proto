@@ -107,7 +107,14 @@ service Service {
   rpc GenerateFakeData(Void) returns (Void) {
     option (berty.gql.graphql_type) = "Mutation";
   };
+
+  rpc DebugPing(PingDestination) returns (Void) {};
 }
+
+message PingDestination {
+  string destination = 1;
+}
+
 
 message ContactRequestInput {
   berty.entity.Contact contact = 1;

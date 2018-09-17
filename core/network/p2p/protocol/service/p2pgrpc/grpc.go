@@ -1,11 +1,12 @@
 package p2pgrpc
 
 import (
+	"context"
 	"net"
 	"time"
 
-	host "github.com/libp2p/go-libp2p-host"
-	protocol "github.com/libp2p/go-libp2p-protocol"
+	"github.com/libp2p/go-libp2p-host"
+	"github.com/libp2p/go-libp2p-protocol"
 	"go.uber.org/zap"
 
 	"berty.tech/core/network/p2p/p2putil"
@@ -58,5 +59,10 @@ func (pg *P2Pgrpc) NewListener(proto string) net.Listener {
 func (pg *P2Pgrpc) NewDialer(proto string) func(string, time.Duration) (net.Conn, error) {
 	pid := protocol.ID(GetGrpcID(proto))
 
-	return p2putil.NewDialer(pg.host, pid)
+	return func(target string, timeout time.Duration) (net.Conn, error) {
+		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		defer cancel()
+
+		return p2putil.NewDialer(pg.host, pid)(ctx, target)
+	}
 }

@@ -162,6 +162,7 @@ func daemon(opts *daemonOptions) error {
 	}
 
 	var driver network.Driver
+	driverID := ""
 	if !opts.noP2P {
 		var identity p2p.Option
 		if opts.identity == "" {
@@ -217,7 +218,7 @@ func daemon(opts *daemonOptions) error {
 		}()
 
 		driver = p2pDriver
-		fmt.Printf("driver ID - %s\n", p2pDriver.ID())
+		driverID = p2pDriver.ID()
 	}
 
 	if driver == nil {
@@ -296,6 +297,7 @@ func daemon(opts *daemonOptions) error {
 		zap.String("gql-bind", opts.gqlBind),
 		zap.Int("p2p-api", int(p2papi.Version)),
 		zap.Int("node-api", int(nodeapi.Version)),
+		zap.String("driver-id", driverID),
 		zap.String("version", core.Version),
 	)
 
