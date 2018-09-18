@@ -4,7 +4,7 @@ import { Platform, NativeModules } from 'react-native'
 import { installRelayDevTools } from 'relay-devtools'
 
 // eslint-disable-next-line
-if (__DEV__) {
+if (__DEV__ && (Platform.OS === 'ios' || Platform.OS === 'android')) {
   installRelayDevTools()
 }
 
@@ -88,6 +88,7 @@ const setupSubscription = async (config, variables, cacheConfig, observer) => {
     )
 
     const onNext = result => {
+      console.log(result)
       observer.onNext(result)
     }
 
