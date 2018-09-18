@@ -3,14 +3,27 @@ import { FlatList } from 'react-native'
 import { Screen, Separator, Header, ListItem } from '../../Library'
 import { colors } from '../../../constants'
 import { QueryReducer } from '../../../relay'
+import { subscriptions } from '../../../graphql'
 import { createFragmentContainer, graphql } from 'react-relay'
+
+const getTitle = ({ title, members } = this.props) =>
+  title ||
+  members.map((m, index) => {
+    const displayName =
+      m.contact.status === 'Myself'
+        ? m.contact.status
+        : m.contact.overrideDisplayName || m.contact.displayName
+    const before =
+      index === 0 ? '' : index === members.length - 1 ? ' and ' : ', '
+    return `${before}${displayName}`
+  })
 
 class ListItemWrapper extends PureComponent {
   render () {
     const { data, navigation } = this.props
     return (
       <ListItem
-        title={data.title}
+        title={getTitle(data)}
         subtitle='Last message sent 3 hours ago...' // Placeholder
         onPress={() => navigation.push('Detail', { conversation: data })}
       />
@@ -45,7 +58,7 @@ class List extends PureComponent {
         onRefresh={retry}
         renderItem={data => (
           <ItemContainer
-            key={data.id}
+            key={data.item.id}
             data={data.item}
             separators={data.separators}
             navigation={navigation}
@@ -66,10 +79,19 @@ export default class ListScreen extends PureComponent {
         rightBtnIcon='edit'
         searchBar
         searchHandler={text => console.log(text)} // Placeholder
+        onPressRightBtn={() => navigation.push('Add')}
       />
     ),
     tabBarVisible: true,
   })
+
+  componentDidMount () {
+    this.subscribers = [
+      subscriptions.conversationInvite.subscribe({
+        updater: (store, data) => this.retry && this.retry(),
+      }),
+    ]
+  }
 
   render () {
     const { navigation } = this.props
@@ -84,14 +106,16 @@ export default class ListScreen extends PureComponent {
             }
           `}
         >
-          {(state, retry) => (
-            <List
-              navigation={navigation}
-              data={state.data}
-              loading={state.type === state.loading}
-              retry={retry}
-            />
-          )}
+          {(state, retry) =>
+            (this.retry = retry) && (
+              <List
+                navigation={navigation}
+                data={state.data}
+                loading={state.type === state.loading}
+                retry={retry}
+              />
+            )
+          }
         </QueryReducer>
       </Screen>
     )
@@ -111,6 +135,11 @@ const ItemContainer = createFragmentContainer(
         id
         status
         contactId
+        contact {
+          status
+          displayName
+          overrideDisplayName
+        }
       }
     }
   `

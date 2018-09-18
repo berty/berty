@@ -235,6 +235,27 @@ func convertEventKind(value p2p.Kind) *model.BertyP2pKind {
 	return &ret
 }
 
+// func convertModelToP2pEventKind(value *model.BertyP2pKind) *p2p.Kind {
+// 	ret, ok := map[model.BertyP2pKind]p2p.Kind{
+// 		model.BertyP2pKindUnknown:                p2p.Kind_Unknown,
+// 		model.BertyP2pKindSent:                   p2p.Kind_Sent,
+// 		model.BertyP2pKindAck:                    p2p.Kind_Ack,
+// 		model.BertyP2pKindPing:                   p2p.Kind_Ping,
+// 		model.BertyP2pKindContactRequest:         p2p.Kind_ContactRequest,
+// 		model.BertyP2pKindContactRequestAccepted: p2p.Kind_ContactRequestAccepted,
+// 		model.BertyP2pKindContactShareMe:         p2p.Kind_ContactShareMe,
+// 		model.BertyP2pKindContactShare:           p2p.Kind_ContactShare,
+// 		model.BertyP2pKindConversationInvite:     p2p.Kind_ConversationInvite,
+// 		model.BertyP2pKindConversationNewMessage: p2p.Kind_ConversationNewMessage,
+// 	}[*value]
+//
+// 	if !ok {
+// 		t := p2p.Kind_Unknown
+// 		return &t
+// 	}
+// 	return &ret
+// }
+
 // func convertTime(value *time.Time) *string {
 // 	if value == nil {
 // 		return nil
