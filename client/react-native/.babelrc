@@ -1,5 +1,8 @@
 {
   "presets": ["react-native", "react-app", "stage-0"],
+  "env": {
+    "browser": true
+  },
   "plugins": [
     "relay"
   ]
