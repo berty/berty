@@ -1,51 +1,12 @@
 import React, { PureComponent } from 'react'
-import { FlatList, TouchableOpacity, Image } from 'react-native'
-import { Screen, Flex, Text, Separator } from '../../../Library'
+import { Screen, ContactList } from '../../../Library'
 import { colors } from '../../../../constants'
-import { borderTop, marginHorizontal } from '../../../../styles'
 import { QueryReducer } from '../../../../relay'
 import { queries, subscriptions } from '../../../../graphql'
+import { borderBottom } from '../../../../styles'
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
-const Item = ({
-  data: { id, displayName, overrideDisplayName },
-  navigation,
-}) => (
-  <TouchableOpacity
-    onPress={() => navigation.push('RequestValidation', { id })}
-    style={[
-      {
-        backgroundColor: colors.white,
-        paddingVertical: 16,
-        height: 71,
-      },
-      marginHorizontal,
-    ]}
-  >
-    <Flex.Cols align='left'>
-      <Flex.Rows size={1} align='left' style={{ marginLeft: 30 }}>
-        <Image
-          style={{ width: 40, height: 40, borderRadius: 50 }}
-          source={{
-            uri:
-              'https://api.adorable.io/avatars/285/' +
-              (overrideDisplayName || displayName) +
-              '.png',
-          }}
-        />
-      </Flex.Rows>
-      <Flex.Rows size={6} align='left' style={{ marginLeft: 14 }}>
-        <Text color={colors.black} left middle>
-          {overrideDisplayName || displayName}
-        </Text>
-        <Text color={colors.subtleGrey} tiny>
-          Request received 3 hours ago ...
-        </Text>
-      </Flex.Rows>
-    </Flex.Cols>
-  </TouchableOpacity>
-)
-
-export default class Request extends PureComponent {
+class Request extends PureComponent {
   componentDidMount () {
     this.subscriber = subscriptions.contactRequest.subscribe({
       updater: (store, data) => this.retry && this.retry(),
@@ -58,29 +19,31 @@ export default class Request extends PureComponent {
 
   render () {
     const { navigation } = this.props
+    const {
+      state: { routeName },
+    } = navigation
+
+    const filter = routeName === 'Received' ? 'RequestedMe' : 'IsRequested'
+    const subtitle =
+      routeName === 'Received'
+        ? 'Request received 3 hours ago ...'
+        : 'Request sent 3 hours ago ...' // Placeholder
+
     return (
-      <Screen style={[{ backgroundColor: colors.white }, borderTop]}>
+      <Screen style={[{ backgroundColor: colors.white }]}>
         <QueryReducer query={queries.ContactList}>
           {(state, retry) => {
             this.retry = retry
             return (
-              <FlatList
-                data={[]
+              <ContactList
+                list={[]
                   .concat(state.data.ContactList || [])
-                  .filter(entry => entry.status === 'RequestedMe')}
-                ItemSeparatorComponent={({ highlighted }) => (
-                  <Separator highlighted={highlighted} />
-                )}
-                refreshing={state.type === state.loading}
-                onRefresh={retry}
-                renderItem={data => (
-                  <Item
-                    key={data.id}
-                    data={data.item}
-                    separators={data.separators}
-                    navigation={navigation}
-                  />
-                )}
+                  .filter(entry => entry.status === filter)}
+                state={state}
+                retry={retry}
+                subtitle={subtitle}
+                action='RequestValidation'
+                navigation={navigation}
               />
             )
           }}
@@ -89,3 +52,32 @@ export default class Request extends PureComponent {
     )
   }
 }
+
+export default createTabNavigator(
+  {
+    Received: Request,
+    Sent: Request,
+  },
+  {
+    initialRouteName: 'Received',
+    swipeEnabled: true,
+    animationEnabled: true,
+    tabBarPosition: 'top',
+
+    tabBarOptions: {
+      labelStyle: {
+        color: colors.black,
+      },
+      indicatorStyle: {
+        backgroundColor: colors.black,
+      },
+      style: [
+        {
+          backgroundColor: colors.white,
+          borderTopWidth: 0,
+        },
+        borderBottom,
+      ],
+    },
+  }
+)

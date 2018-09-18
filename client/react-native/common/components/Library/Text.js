@@ -125,6 +125,10 @@ const getColor = ({ background, color }) => ({
     colors[color] || color || (background ? colors.white : colors.textGrey),
 })
 
+const getOpacity = ({ opacity }) => ({
+  opacity: opacity == null ? 1 : opacity,
+})
+
 const getWeight = props => props.bold && bold
 
 const getJustify = (
@@ -174,13 +178,14 @@ export const ForegroundText = props => {
     numberOfLines,
     height,
   } = props
-  const [vertical, horizontal, size, iconSize, weight, color] = [
+  const [vertical, horizontal, size, iconSize, weight, color, opacity] = [
     getVertiAlign(props),
     getHorizAlign(props),
     getSize(props),
     getIconSize(props),
     getWeight(props),
     getColor(props),
+    getOpacity(props),
   ]
   return (
     <View
@@ -197,6 +202,7 @@ export const ForegroundText = props => {
             iconSize,
             weight,
             color,
+            opacity,
             style,
             vertical,
             horizontal,
@@ -214,6 +220,7 @@ export const ForegroundText = props => {
             size,
             weight,
             color,
+            opacity,
             style,
             vertical,
             horizontal,
@@ -229,6 +236,7 @@ export const ForegroundText = props => {
             size,
             weight,
             color,
+            opacity,
             style,
             vertical,
             horizontal,

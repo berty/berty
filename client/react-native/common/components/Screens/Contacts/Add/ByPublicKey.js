@@ -11,7 +11,6 @@ import {
   borderBottom,
 } from '../../../../styles'
 import { mutations } from '../../../../graphql'
-
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
 class ByPublicKey extends PureComponent {
