@@ -18,7 +18,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readwrite, strong) CBPeripheral *peripheral;
 
 - (instancetype)initWithPeripheral:(CBPeripheral *)peripheral;
-- (void)inc;
 
 @end
 
