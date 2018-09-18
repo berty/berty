@@ -56,20 +56,37 @@ let getIP = () =>
     }
   })
 
+const getPort = () =>
+  new Promise(resolve => {
+    let port = 0
+    const interval = setInterval(async () => {
+      try {
+        port = await CoreModule.getPort()
+
+        resolve(port)
+        clearInterval(interval)
+      } catch (error) {
+        console.warn(error)
+      }
+    }, 1000)
+  })
+
 export const fetchQuery = async (operation, variables) => {
   try {
-    const port = await CoreModule.getPort()
-    const response = await fetch(`http://${await getIP()}:${port}/query`, {
-      method: 'POST',
-      headers: {
-        // Add authentication and other headers here
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: operation.text, // GraphQL text from input
-        variables,
-      }),
-    })
+    const response = await fetch(
+      `http://${await getIP()}:${await getPort()}/query`,
+      {
+        method: 'POST',
+        headers: {
+          // Add authentication and other headers here
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: operation.text, // GraphQL text from input
+          variables,
+        }),
+      }
+    )
     return await response.json()
   } catch (err) {
     console.error(err)
@@ -79,9 +96,8 @@ export const fetchQuery = async (operation, variables) => {
 const setupSubscription = async (config, variables, cacheConfig, observer) => {
   try {
     const query = config.text
-    const port = await CoreModule.getPort()
     const subscriptionClient = new SubscriptionClient(
-      `ws://${await getIP()}:${port}/query`,
+      `ws://${await getIP()}:${await getPort()}/query`,
       {
         reconnect: true,
       }
