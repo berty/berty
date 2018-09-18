@@ -25,6 +25,7 @@ lint-editorconfig:
 	@FILES=`find . -type f												\
 			! -name 'Gopkg*'											\
 			! -name 'yarn.lock'											\
+			! -name 'yarn-error.log'									\
 			! -name 'Gemfile.lock'										\
 			! -name '.gitkeep'											\
 			! -name '.generated'										\
@@ -32,14 +33,20 @@ lint-editorconfig:
 			! -name '*.gen.go.tmpl'										\
 			! -name '*.gen.graphql'										\
 			! -name '*.patch'											\
-			! -name 'project.pbxproj'									\
+			! -name '*.vim'												\
 			! -path '*/node_modules/*'									\
 			! -path '*/__generated__/*'									\
+			! -path './client/react-native/common/schema.graphql'		\
 			! -path './client/common/openssl/built/*'					\
+			! -path './client/react-native/mobile/*/Build/*'			\
+			! -path './client/react-native/mobile/*/build/*'			\
+			! -path './client/react-native/mobile/ios/core.framework/*'	\
+			! -path './client/react-native/mobile/android/.gradle/*'	\
+			! -path './client/react-native/mobile/ios/berty.xcodeproj/*'\
 			! -path './.git/*'											\
 			! -path './.github/*'										\
 			! -path './vendor/*'`;										\
-	COUNT=$$(echo "$$FILES" | wc -l | tr -d ' ');						\
+	COUNT=$$(echo "$$FILES" | sed '/^\s*$$/d' | wc -l | tr -d ' ');		\
 	echo "Checking if $$COUNT files comply with EditorConfig rules...";	\
 	eclint check $$FILES
 

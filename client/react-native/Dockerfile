@@ -23,8 +23,7 @@ RUN cd /usr/src/app/web && yarn --silent
 # Install watchman
 RUN mkdir /var/run/watchman
 RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-    apk update && apk upgrade && \
-    apk add --no-cache watchman@testing
+    apk update && apk add --no-cache watchman@testing
 
 # Start app
 WORKDIR /usr/src/app/web
