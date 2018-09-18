@@ -54,7 +54,6 @@ type daemonOptions struct {
 	hideBanner   bool   `mapstructure:"hide-banner"`
 	dropDatabase bool   `mapstructure:"drop-database"`
 	initOnly     bool   `mapstructure:"init-only"`
-	bindgql      string `mapstructure:"gql-bind"`
 
 	// p2p
 	identity  string   `mapstructure:"identity"`
