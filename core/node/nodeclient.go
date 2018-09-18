@@ -40,7 +40,7 @@ func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_Eve
 			}
 			return true
 		},
-		queue: make(chan *p2p.Event, 1),
+		queue: make(chan *p2p.Event, 100),
 	}
 
 	n.clientEventsMutex.Lock()
