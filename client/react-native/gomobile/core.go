@@ -65,7 +65,7 @@ func Start(datastorePath string) error {
 
 func GetPort() (int, error) {
 	if port == 0 {
-		err := errors.New("port == 0")
+		err := errors.New("port is not defined: wait for daemon to start")
 		logger().Error(err.Error())
 		return 0, err
 	}
