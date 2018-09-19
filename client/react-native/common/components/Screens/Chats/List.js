@@ -45,8 +45,40 @@ class List extends PureComponent {
     // )
   }
 
+  state = {
+    search: '',
+  }
+
+  searchHandler = search => this.setState({ search })
+
+  filter = ContactList => {
+    const { search } = this.state
+    if (search === '') {
+      return ContactList
+    } else {
+      return ContactList.filter(
+        entry =>
+          entry.displayName.toLowerCase().indexOf(search.toLowerCase()) > -1
+      )
+    }
+  }
+
+  componentDidMount () {
+    this.props.navigation.setParams({
+      searchHandler: this.searchHandler,
+      retry: () => this.props.retry && this.props.retry(),
+    })
+    this.subscribers = [
+      subscriptions.conversationInvite.subscribe({
+        updater: (store, data) => this.props.retry && this.props.retry(),
+      }),
+    ]
+  }
+
   render () {
-    const { data, navigation, loading, retry } = this.props
+    const { navigation, state, retry } = this.props
+    const { data } = state
+    const loading = state.type === state.loading
     return (
       <FlatList
         data={data.ConversationList || []}
@@ -78,20 +110,20 @@ export default class ListScreen extends PureComponent {
         titleIcon='message-circle'
         rightBtnIcon='edit'
         searchBar
-        searchHandler={text => console.log(text)} // Placeholder
-        onPressRightBtn={() => navigation.push('Add')}
+        searchHandler={navigation.getParam('searchHandler')} // Placeholder
+        onPressRightBtn={() =>
+          navigation.push('Add', {
+            goBack: () => {
+              navigation.goBack(null)
+              const retry = navigation.getParam('retry')
+              retry && retry()
+            },
+          })
+        }
       />
     ),
     tabBarVisible: true,
   })
-
-  componentDidMount () {
-    this.subscribers = [
-      subscriptions.conversationInvite.subscribe({
-        updater: (store, data) => this.retry && this.retry(),
-      }),
-    ]
-  }
 
   render () {
     const { navigation } = this.props
@@ -106,16 +138,9 @@ export default class ListScreen extends PureComponent {
             }
           `}
         >
-          {(state, retry) =>
-            (this.retry = retry) && (
-              <List
-                navigation={navigation}
-                data={state.data}
-                loading={state.type === state.loading}
-                retry={retry}
-              />
-            )
-          }
+          {(state, retry) => {
+            return <List navigation={navigation} state={state} retry={retry} />
+          }}
         </QueryReducer>
       </Screen>
     )

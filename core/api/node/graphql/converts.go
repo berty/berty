@@ -194,6 +194,12 @@ func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
 		ID:   event.ID,
 	}
 
+	conversationGlobalID := globalID{
+		Kind: ConversationKind,
+		ID:   event.ConversationID,
+	}
+	conversationID := conversationGlobalID.String()
+
 	return &model.BertyP2pEvent{
 		ID:                 eventGlobalID.String(),
 		SenderID:           &event.SenderID,
@@ -203,7 +209,7 @@ func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
 		ReceiverID:         &event.ReceiverID,
 		Kind:               convertEventKind(event.Kind),
 		Attributes:         convertBytes(&event.Attributes),
-		ConversationID:     &event.ConversationID,
+		ConversationID:     &conversationID,
 		CreatedAt:          &scalar.DateTime{Value: &event.CreatedAt},
 		UpdatedAt:          &scalar.DateTime{Value: &event.UpdatedAt},
 		DeletedAt:          &scalar.DateTime{Value: event.DeletedAt},
@@ -235,26 +241,26 @@ func convertEventKind(value p2p.Kind) *model.BertyP2pKind {
 	return &ret
 }
 
-// func convertModelToP2pEventKind(value *model.BertyP2pKind) *p2p.Kind {
-// 	ret, ok := map[model.BertyP2pKind]p2p.Kind{
-// 		model.BertyP2pKindUnknown:                p2p.Kind_Unknown,
-// 		model.BertyP2pKindSent:                   p2p.Kind_Sent,
-// 		model.BertyP2pKindAck:                    p2p.Kind_Ack,
-// 		model.BertyP2pKindPing:                   p2p.Kind_Ping,
-// 		model.BertyP2pKindContactRequest:         p2p.Kind_ContactRequest,
-// 		model.BertyP2pKindContactRequestAccepted: p2p.Kind_ContactRequestAccepted,
-// 		model.BertyP2pKindContactShareMe:         p2p.Kind_ContactShareMe,
-// 		model.BertyP2pKindContactShare:           p2p.Kind_ContactShare,
-// 		model.BertyP2pKindConversationInvite:     p2p.Kind_ConversationInvite,
-// 		model.BertyP2pKindConversationNewMessage: p2p.Kind_ConversationNewMessage,
-// 	}[*value]
-//
-// 	if !ok {
-// 		t := p2p.Kind_Unknown
-// 		return &t
-// 	}
-// 	return &ret
-// }
+func convertModelToP2pEventKind(value *model.BertyP2pKind) *p2p.Kind {
+	ret, ok := map[model.BertyP2pKind]p2p.Kind{
+		model.BertyP2pKindUnknown:                p2p.Kind_Unknown,
+		model.BertyP2pKindSent:                   p2p.Kind_Sent,
+		model.BertyP2pKindAck:                    p2p.Kind_Ack,
+		model.BertyP2pKindPing:                   p2p.Kind_Ping,
+		model.BertyP2pKindContactRequest:         p2p.Kind_ContactRequest,
+		model.BertyP2pKindContactRequestAccepted: p2p.Kind_ContactRequestAccepted,
+		model.BertyP2pKindContactShareMe:         p2p.Kind_ContactShareMe,
+		model.BertyP2pKindContactShare:           p2p.Kind_ContactShare,
+		model.BertyP2pKindConversationInvite:     p2p.Kind_ConversationInvite,
+		model.BertyP2pKindConversationNewMessage: p2p.Kind_ConversationNewMessage,
+	}[*value]
+
+	if !ok {
+		t := p2p.Kind_Unknown
+		return &t
+	}
+	return &ret
+}
 
 // func convertTime(value *time.Time) *string {
 // 	if value == nil {

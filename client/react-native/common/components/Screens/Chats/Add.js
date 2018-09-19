@@ -199,7 +199,9 @@ export default class List extends PureComponent {
     try {
       const { contactsID } = this.state
       await mutations.conversationCreate.commit({ contactsID })
-      this.props.navigation.goBack(null)
+      const retry = this.props.navigation.getParam('retry')
+      retry && retry()
+      this.props.navigation.getParam('goBack')()
     } catch (err) {
       console.error(err)
     }
