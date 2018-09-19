@@ -194,6 +194,12 @@ func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
 		ID:   event.ID,
 	}
 
+	conversationGlobalID := globalID{
+		Kind: ConversationKind,
+		ID:   event.ConversationID,
+	}
+	conversationID := conversationGlobalID.String()
+
 	return &model.BertyP2pEvent{
 		ID:                 eventGlobalID.String(),
 		SenderID:           &event.SenderID,
@@ -203,7 +209,7 @@ func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
 		ReceiverID:         &event.ReceiverID,
 		Kind:               convertEventKind(event.Kind),
 		Attributes:         convertBytes(&event.Attributes),
-		ConversationID:     &event.ConversationID,
+		ConversationID:     &conversationID,
 		CreatedAt:          &scalar.DateTime{Value: &event.CreatedAt},
 		UpdatedAt:          &scalar.DateTime{Value: &event.UpdatedAt},
 		DeletedAt:          &scalar.DateTime{Value: event.DeletedAt},

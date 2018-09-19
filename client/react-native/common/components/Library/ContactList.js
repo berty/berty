@@ -4,7 +4,7 @@ import { Separator, ListItem } from '.'
 
 export default class ContactList extends PureComponent {
   sortContacts = (contactList, sortKey) => {
-    return contactList.sort((a, b) => {
+    return contactList.map(_ => _).sort((a, b) => {
       let an = a[sortKey].toLowerCase()
       let bn = b[sortKey].toLowerCase()
       return an < bn ? -1 : an > bn ? 1 : 0

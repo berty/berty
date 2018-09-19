@@ -24,13 +24,51 @@ export default class List extends PureComponent {
     tabBarVisible: true,
   })
 
+  render () {
+    const { navigation } = this.props
+    return (
+      <Screen style={[{ backgroundColor: colors.white }]}>
+        <QueryReducer query={queries.ContactList}>
+          {(state, retry) => (
+            <ContactListWrapper
+              state={state}
+              retry={retry}
+              navigation={navigation}
+            />
+          )}
+        </QueryReducer>
+      </Screen>
+    )
+  }
+}
+
+class ContactListWrapper extends PureComponent {
+  state = {
+    search: '',
+  }
+
+  searchHandler = search => this.setState({ search })
+
+  filter = ContactList => {
+    const { search } = this.state
+    if (search === '') {
+      return ContactList
+    } else {
+      return ContactList.filter(
+        entry =>
+          entry.displayName.toLowerCase().indexOf(search.toLowerCase()) > -1
+      )
+    }
+  }
+
   componentDidMount () {
+    this.props.navigation.setParams({ searchHandler: this.searchHandler })
     this.subscribers = [
       subscriptions.contactRequest.subscribe({
-        updater: (store, data) => this.retry && this.retry(),
+        updater: (store, data) => this.props.retry && this.props.retry(),
       }),
       subscriptions.contactRequestAccepted.subscribe({
-        updater: (store, data) => this.retry && this.retry(),
+        updater: (store, data) => this.props.retry && this.props.retry(),
       }),
     ]
   }
@@ -40,55 +78,10 @@ export default class List extends PureComponent {
   }
 
   render () {
-    const { navigation } = this.props
-    return (
-      <Screen style={[{ backgroundColor: colors.white }]}>
-        <QueryReducer query={queries.ContactList}>
-          {(state, retry) =>
-            (this.retry = retry) && (
-              <ContactListWrapper
-                state={state}
-                retry={retry}
-                navigation={navigation}
-              />
-            )
-          }
-        </QueryReducer>
-      </Screen>
-    )
-  }
-}
-
-class ContactListWrapper extends PureComponent {
-  state = {
-    list: [].concat(this.props.state.data.ContactList || []),
-    filtered: [].concat(this.props.state.data.ContactList || []),
-  }
-
-  searchHandler = text => {
-    if (text === '') {
-      this.setState(state => {
-        return { filtered: state.list }
-      })
-    } else {
-      this.setState({
-        filtered: this.state.list.filter(
-          entry =>
-            entry.displayName.toLowerCase().indexOf(text.toLowerCase()) > -1
-        ),
-      })
-    }
-  }
-
-  componentDidMount () {
-    this.props.navigation.setParams({ searchHandler: this.searchHandler })
-  }
-
-  render () {
     const { state, retry, navigation } = this.props
     return (
       <ContactList
-        list={this.state.filtered}
+        list={this.filter(state.data.ContactList || [])}
         sortBy='displayName'
         state={state}
         retry={retry}
