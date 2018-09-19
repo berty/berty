@@ -47,7 +47,6 @@ func WithAutoAcceptInvites() Option {
 			if e.Kind != p2p.Kind_ContactRequest {
 				return nil
 			}
-
 			_, err := b.client.Node().ContactAcceptRequest(e.ctx, &entity.Contact{
 				ID: e.SenderID,
 			})
