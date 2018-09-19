@@ -1,22 +1,44 @@
 import React, { PureComponent } from 'react'
-import { TouchableOpacity, FlatList } from 'react-native'
+import { FlatList, Text as TextNative } from 'react-native'
 import { colors } from '../../../constants'
 import { queries, mutations, subscriptions } from '../../../graphql'
 import { QueryReducer } from '../../../relay'
-import { Text, Flex, Screen } from '../../Library'
+import { Text, Flex, Screen, Header } from '../../Library'
+import { paddingHorizontal, shadow, textRight, textLeft } from '../../../styles'
 
-const Message = props => (
-  <Text
-    left
-    margin={8}
-    padding={16}
-    color={colors.white}
-    rounded={12}
-    background={colors.grey1}
-  >
-    {atob(props.data.attributes).trim()}
-  </Text>
-)
+const Message = props => {
+  const conversation = props.navigation.getParam('conversation')
+  const contactId = props.data.senderId
+  const isMyself =
+    conversation.members.find(m => m.contactId === contactId).contact.status ===
+    'Myself'
+  return (
+    <Flex.Cols
+      style={{
+        marginTop: 4,
+        marginBottom: 4,
+        marginLeft: isMyself ? 30 : 0,
+        marginRight: isMyself ? 0 : 30,
+      }}
+      justify={isMyself ? 'end' : 'start'}
+    >
+      <TextNative
+        style={[
+          {
+            color: colors.white,
+            backgroundColor: colors.blue,
+            padding: 8,
+            borderRadius: 12,
+            flexWrap: 'wrap',
+          },
+          isMyself ? textRight : textLeft,
+        ]}
+      >
+        {atob(props.data.attributes).trim()}
+      </TextNative>
+    </Flex.Cols>
+  )
+}
 
 const getTitle = ({ title, members } = this.props) =>
   title ||
@@ -31,6 +53,8 @@ const getTitle = ({ title, members } = this.props) =>
   })
 
 class List extends PureComponent {
+  onEndReached = () => {}
+
   componentDidMount () {
     const { id } = this.props.navigation.getParam('conversation')
     this.subscriber = subscriptions.conversationNewMessage.subscribe({
@@ -41,25 +65,29 @@ class List extends PureComponent {
       },
     })
   }
+
   componentWillUnmount () {
     this.subscriber.unsubscribe()
   }
 
   render () {
-    const { data, loading, retry } = this.props
+    const { data, loading } = this.props
     return (
       <FlatList
-        style={{ paddingBottom: 60 }}
-        data={(data.EventList || []).filter(
-          event => event.kind === 'ConversationNewMessage'
-        )}
+        ref={ref => (this.ref = ref)}
+        style={[{ paddingTop: 54 }, paddingHorizontal]}
+        data={(data.EventList || [])
+          .filter(event => event.kind === 'ConversationNewMessage')
+          .reverse()}
+        inverted
         refreshing={loading}
-        onRefresh={retry}
+        onEndReached={this.onEndReached}
         renderItem={data => (
           <Message
             key={data.item.id}
             data={data.item}
             separators={data.separators}
+            navigation={this.props.navigation}
           />
         )}
       />
@@ -72,18 +100,20 @@ class Input extends PureComponent {
     input: '',
   }
 
-  onSubmit = async retry => {
-    try {
-      const conversation = this.props.navigation.getParam('conversation')
-      const { input } = this.state
-      await mutations.conversationAddMessage.commit({
-        conversationID: conversation.id,
-        message: input,
-      })
-      this.props.retry && this.props.retry()
-    } catch (err) {
-      console.error(err)
-    }
+  onSubmit = () => {
+    const { input } = this.state
+    this.setState({ input: '' }, async () => {
+      try {
+        const conversation = this.props.navigation.getParam('conversation')
+        await mutations.conversationAddMessage.commit({
+          conversationID: conversation.id,
+          message: input,
+        })
+        this.props.retry && this.props.retry()
+      } catch (err) {
+        console.error(err)
+      }
+    })
   }
 
   render () {
@@ -100,6 +130,8 @@ class Input extends PureComponent {
           returnKeyType: 'send',
           onChangeText: input => this.setState({ input }),
           placeholder: 'Write a secure message...',
+          autoFocus: true,
+          value: this.state.input,
         }}
         height={36}
         background={colors.grey8}
@@ -112,13 +144,12 @@ class Input extends PureComponent {
 
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    headerTitle: (
-      <Text large>{getTitle(navigation.getParam('conversation'))}</Text>
-    ),
-    headerLeft: (
-      <TouchableOpacity onPress={() => navigation.goBack(null)}>
-        <Text padding large icon='arrow-left' />
-      </TouchableOpacity>
+    header: (
+      <Header
+        navigation={navigation}
+        title={getTitle(navigation.getParam('conversation'))}
+        backBtn
+      />
     ),
   })
 
@@ -131,7 +162,7 @@ export default class Detail extends PureComponent {
           variables={{ conversationID: conversation.id }}
         >
           {(state, retry) => (
-            <Flex.Rows>
+            <Flex.Rows style={{ backgroundColor: colors.white }}>
               <List
                 navigation={this.props.navigation}
                 data={state.data}
@@ -145,10 +176,14 @@ export default class Detail extends PureComponent {
                   left: 0,
                   right: 0,
                   backgroundColor: colors.white,
-                  height: 60,
+                  height: 54,
                 }}
               >
-                <Flex.Cols style={{ height: 60 }} space='center'>
+                <Flex.Cols
+                  style={[{ height: 54 }, shadow]}
+                  justify='center'
+                  align='center'
+                >
                   <Input navigation={this.props.navigation} retry={retry} />
                 </Flex.Cols>
               </Flex.Rows>
