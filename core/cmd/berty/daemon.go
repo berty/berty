@@ -36,6 +36,7 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/network/mock"
+	"berty.tech/core/network/netutil"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
@@ -243,9 +244,12 @@ func daemon(opts *daemonOptions) error {
 		return nil
 	}
 
-	conn, err := grpc.Dial(opts.grpcBind, grpc.WithInsecure())
+	ic := netutil.NewIOGrpc()
+	icdialer := ic.NewDialer()
+
+	conn, err := grpc.Dial("", grpc.WithInsecure(), grpc.WithDialer(icdialer))
 	if err != nil {
-		return errors.Wrap(err, "failed to dial node")
+		return errors.Wrap(err, "failed to dial local node ")
 	}
 
 	resolver := gql.New(nodeapi.NewServiceClient(conn))
@@ -269,6 +273,11 @@ func daemon(opts *daemonOptions) error {
 
 	go func() {
 		errChan <- http.ListenAndServe(opts.gqlBind, handler)
+	}()
+
+	// start local server
+	go func() {
+		errChan <- gs.Serve(ic.Listener())
 	}()
 
 	// start grpc server(s)
