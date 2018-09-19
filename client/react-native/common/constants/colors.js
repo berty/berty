@@ -2,7 +2,7 @@ export default {
   transparent: 'transparent',
   white: '#ffffff',
   black: '#000000',
-  blue: '#2D6FE2',
+  blue: '#407EE9',
   red: '#E94E6B',
   orange: '#F7B352',
   yellow: '#F7E552',

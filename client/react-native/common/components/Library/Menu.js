@@ -25,7 +25,7 @@ export default class Menu extends Component {
       ]}
     >
       <Flex.Cols style={[marginTopLeft]}>
-        <Flex.Cols size={1} space='start'>
+        <Flex.Cols size={1} justify='start'>
           {title && (
             <Text small icon={icon} style={{ marginBottom: 7 }} {...props}>
               {title}
@@ -59,7 +59,7 @@ export default class Menu extends Component {
             onPress={onPress}
           >
             <Flex.Cols>
-              <Flex.Cols style={margin} size={7} space='start'>
+              <Flex.Cols style={margin} size={7} justify='start'>
                 {children || (
                   <Text small left icon={icon} color={color || colors.textGrey}>
                     {title}
@@ -98,7 +98,7 @@ export default class Menu extends Component {
 
   static Input = ({ icon, style, ...props }) => (
     <Fragment>
-      <Flex.Rows size={1} space='start'>
+      <Flex.Rows size={1} justify='start'>
         {icon && <Icon name={icon} style={largeText} />}
         <CustomTextInput
           {...props}

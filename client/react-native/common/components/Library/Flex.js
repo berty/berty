@@ -16,9 +16,9 @@ const getAlign = (
   }
 ) => align[key] || align['center']
 
-const getSpace = (
+const getJustify = (
   key,
-  space = {
+  justify = {
     start: 'flex-start',
     center: 'center',
     end: 'flex-end',
@@ -26,14 +26,14 @@ const getSpace = (
     between: 'space-between',
     evenly: 'space-evenly',
   }
-) => space[key] || space['center']
+) => justify[key] || justify['center']
 
 export const Block = ({
   size = 1,
   direction,
   align,
   self,
-  space,
+  justify,
   children,
   style,
   ...props
@@ -45,7 +45,7 @@ export const Block = ({
         flexDirection: direction && getDirection(direction),
         alignItems: align && getAlign(align),
         alignSelf: self && getAlign(self),
-        justifyContent: space && getSpace(space),
+        justifyContent: justify && getJustify(justify),
       },
       style,
     ]}

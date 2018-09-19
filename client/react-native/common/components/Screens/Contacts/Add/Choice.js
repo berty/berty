@@ -64,7 +64,7 @@ const Item = ({ icon, name, link, navigation }) => (
       },
     ]}
   >
-    <Flex.Cols size={1} align='center' space='between'>
+    <Flex.Cols size={1} align='center' justify='between'>
       <Text icon={icon} large color={colors.white}>
         {name}
       </Text>
