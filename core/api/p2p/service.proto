@@ -9,7 +9,8 @@ import "api/p2p/envelope.proto";
 service Service {
   // HandleEnvelope is the default p2p handler, it receives an envelope containing an encrypted event
   rpc HandleEnvelope(Envelope) returns (Void) {};
-}
 
+  rpc Ping(Void) returns (Void) {};
+}
 
 message Void {};

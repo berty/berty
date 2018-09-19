@@ -162,6 +162,7 @@ func daemon(opts *daemonOptions) error {
 	}
 
 	var driver network.Driver
+	driverID := ""
 	if !opts.noP2P {
 		var identity p2p.Option
 		if opts.identity == "" {
@@ -204,15 +205,20 @@ func daemon(opts *daemonOptions) error {
 			p2pOpts = append(p2pOpts, p2p.WithRelayClient())
 		}
 
-		driver, err = p2p.NewDriver(context.Background(), p2pOpts...)
+		p2pDriver, err := p2p.NewDriver(context.Background(), p2pOpts...)
+
 		if err != nil {
 			return err
 		}
+
 		defer func() {
 			if err := driver.Close(); err != nil {
 				logger().Warn("failed to close network driver", zap.Error(err))
 			}
 		}()
+
+		driver = p2pDriver
+		driverID = p2pDriver.ID()
 	}
 
 	if driver == nil {
@@ -291,6 +297,7 @@ func daemon(opts *daemonOptions) error {
 		zap.String("gql-bind", opts.gqlBind),
 		zap.Int("p2p-api", int(p2papi.Version)),
 		zap.Int("node-api", int(nodeapi.Version)),
+		zap.String("driver-id", driverID),
 		zap.String("version", core.Version),
 	)
 

@@ -2,13 +2,11 @@ package p2pgrpc
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"time"
 
-	host "github.com/libp2p/go-libp2p-host"
-	peer "github.com/libp2p/go-libp2p-peer"
-	protocol "github.com/libp2p/go-libp2p-protocol"
+	"github.com/libp2p/go-libp2p-host"
+	"github.com/libp2p/go-libp2p-protocol"
 	"go.uber.org/zap"
 
 	"berty.tech/core/network/p2p/p2putil"
@@ -16,7 +14,7 @@ import (
 
 const ID = "/berty/grpc"
 
-func getGrpcID(proto string) string {
+func GetGrpcID(proto string) string {
 	return ID + "/" + proto
 }
 
@@ -39,7 +37,7 @@ func (pg *P2Pgrpc) hasProtocol(proto string) bool {
 }
 
 func (pg *P2Pgrpc) NewListener(proto string) net.Listener {
-	id := getGrpcID(proto)
+	id := GetGrpcID(proto)
 
 	if pg.hasProtocol(id) {
 		logger().Warn("protocol already registered", zap.String("pid", id))
@@ -59,25 +57,12 @@ func (pg *P2Pgrpc) NewListener(proto string) net.Listener {
 }
 
 func (pg *P2Pgrpc) NewDialer(proto string) func(string, time.Duration) (net.Conn, error) {
-	pid := protocol.ID(getGrpcID(proto))
+	pid := protocol.ID(GetGrpcID(proto))
+
 	return func(target string, timeout time.Duration) (net.Conn, error) {
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
 
-		peerID, err := peer.IDB58Decode(target)
-		if err != nil {
-			return nil, fmt.Errorf("failed to parse `%s`: %s", target, err.Error())
-		}
-
-		// No stream exist, creating a new one
-		logger().Debug("dialing", zap.String("addr", target))
-
-		s, err := pg.host.NewStream(ctx, peerID, pid)
-		if err != nil {
-			logger().Error("new stream failed ", zap.Error(err))
-			return nil, err
-		}
-
-		return p2putil.NewConnFromStream(s)
+		return p2putil.NewDialer(pg.host, pid)(ctx, target)
 	}
 }

@@ -21,6 +21,10 @@ func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Vo
 	return &p2p.Void{}, n.handleEnvelope(ctx, input)
 }
 
+func (n *Node) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
+	return &p2p.Void{}, nil
+}
+
 func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
 	event, err := n.OpenEnvelope(input)
 	if err != nil {
