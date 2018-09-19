@@ -24,6 +24,7 @@
 @property (nonatomic, strong) CBUUID *serviceUUID;
 @property (nonatomic, strong) CBUUID *readerUUID;
 @property (nonatomic, strong) CBUUID *readerCounterUUID;
+@property (nonatomic, strong) NSMutableArray<NSData*>* toSend;
 @property (nonatomic, weak) id sender;
 
 - (instancetype)initWithSender:(id)sender;

@@ -48,6 +48,28 @@ NSString* const READER_COUNTER_UUID = @"A88D3BEC-7A22-477A-97CC-2E0F784CB517";
   
 }
 
+-(void)sendWhatsLeft {
+  NSMutableArray *toRemove = [[NSMutableArray alloc] initWithCapacity:[self.toSend count]];
+  
+  for (NSData *str in self.toSend) {
+    if ([self.peripheralManager updateValue:str forCharacteristic:self.bertyReaderCharacteristic onSubscribedCentrals:nil] == YES) {
+      [toRemove addObject:str];
+    } else {
+      break;
+    }
+  }
+  
+  for (NSData *str in toRemove) {
+    [self.toSend removeObject:str];
+  }
+}
+
+- (void) updateValue {
+  self.toSend = [NSMutableArray arrayWithArray:@[[@"part1" dataUsingEncoding:NSUTF8StringEncoding], [@"part2" dataUsingEncoding:NSUTF8StringEncoding], [@"" dataUsingEncoding:NSUTF8StringEncoding]]];
+
+  [self sendWhatsLeft];
+}
+
 - (CBCharacteristic *)characteristicWithUUID:(CBUUID *)characteristicUUID forServiceUUID:(CBUUID *)serviceUUID inPeripheral:(CBPeripheral *)peripheral {
   for (CBService *service in peripheral.services) {
     if ([service.UUID isEqual:serviceUUID]) {
@@ -136,7 +158,7 @@ didFailToConnectPeripheral:(CBPeripheral *)peripheral
 didDiscoverServices:(NSError *)error {
   RCTLogInfo(@"didDiscoverServices %@", [peripheral.identifier UUIDString]);
   for (CBService* service in peripheral.services) {
-    [peripheral discoverCharacteristics:@[READER_COUNTER_UUID] forService:service];
+    [peripheral discoverCharacteristics:@[self.readerCounterUUID] forService:service];
   }
 }
 
@@ -149,17 +171,18 @@ didDiscoverIncludedServicesForService:(CBService *)service
 - (void)peripheral:(CBPeripheral *)peripheral
 didDiscoverCharacteristicsForService:(CBService *)service
              error:(NSError *)error {
+  RCTLog(@"didDiscoverCharacteristicsForService %@ %@", [peripheral.identifier UUIDString], [service.UUID UUIDString]);
   if (error == nil) {
     for (CBCharacteristic *characteristic in service.characteristics) {
       if ([characteristic.UUID isEqual:self.readerCounterUUID] && characteristic.isNotifying == false) {
         [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-        [peripheral discoverCharacteristics:@[READER_UUID] forService:service];
+        [peripheral discoverCharacteristics:@[self.readerUUID] forService:service];
       } else if ([characteristic.UUID isEqual:self.readerUUID] && characteristic.isNotifying == false) {
         [peripheral setNotifyValue:YES forCharacteristic:characteristic];
       }
     }
   }
-  RCTLog(@"didDiscoverCharacteristicsForService %@ %@", [peripheral.identifier UUIDString], [service.UUID UUIDString]);
+  
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
@@ -177,7 +200,14 @@ didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedDescription]);
   }
-  RCTLogInfo(@"didUpdateValueForCharacteristic %@", [characteristic.UUID UUIDString]);
+  if (characteristic.value != nil) {
+    BertyDevice *device = [self.connectedDevice objectForKey:[peripheral.identifier UUIDString]];
+    if ([characteristic.value bytes] == nil || ((char*)[characteristic.value bytes])[0] == 0) {
+      RCTLogInfo(@"didUpdateValueForCharacteristic %@ %@", [characteristic.UUID UUIDString], [[NSString alloc] initWithData:device.data encoding:NSUTF8StringEncoding]);
+    } else if (device != nil) {
+      [device.data appendData:characteristic.value];
+    }
+  }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
@@ -316,6 +346,7 @@ didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
 
 - (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral {
   RCTLogInfo(@"peripheralManagerIsReadyToUpdateSubscribers");
+  [self sendWhatsLeft];
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
