@@ -34,7 +34,7 @@ const Header = ({ navigation, onPressRight }) => (
       <Flex.Cols
         size={1}
         align='center'
-        space='between'
+        justify='between'
         style={[paddingBottom]}
       >
         <Text

@@ -98,6 +98,9 @@ const styles = StyleSheet.create({
   textAlignMiddle: {
     textAlignVertical: 'center',
   },
+  textBreak: {
+    flexWrap: 'wrap',
+  },
   row: {
     flex: 1,
     flexDirection: 'row',
@@ -178,6 +181,7 @@ export const {
   textLeft,
   textRight,
   textCenter,
+  textBreak,
   row,
   col,
   rounded,
