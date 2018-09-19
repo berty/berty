@@ -26,7 +26,7 @@ export default class RequestValidation extends PureComponent {
             size={1}
             style={[{ backgroundColor: colors.white }, borderTop]}
           >
-            <Flex.Rows size={1} align='center' space='evenly' style={[padding]}>
+            <Flex.Rows size={1} align='center' justify='evenly' style={[padding]}>
               <TouchableOpacity
                 onPress={this.acceptRequest}
                 style={[

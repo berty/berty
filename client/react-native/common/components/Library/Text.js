@@ -187,16 +187,7 @@ export const BackgroundText = props => {
 }
 
 export const ForegroundText = props => {
-  const {
-    icon,
-    input,
-    style,
-    children,
-    ellipsizeMode,
-    numberOfLines,
-    height,
-    onSubmit,
-  } = props
+  const { icon, input, style, children, height, onSubmit } = props
   const [vertical, horizontal, size, iconSize, weight, color, iconPadding] = [
     getVertiAlign(props),
     getHorizAlign(props),
@@ -211,6 +202,7 @@ export const ForegroundText = props => {
       style={{
         flexDirection: 'row',
         flex: 1,
+        flexWrap: 'wrap',
         justifyContent: getJustify(props),
         alignItems: 'center',
       }}
@@ -226,8 +218,7 @@ export const ForegroundText = props => {
             vertical,
             horizontal,
             iconPadding,
-            { height },
-            { lineHeight: height },
+            { height, lineHeight: height },
           ]}
         />
       ) : (
@@ -263,9 +254,8 @@ export const ForegroundText = props => {
             vertical,
             horizontal,
             { height, lineHeight: height },
+            { flexWrap: 'wrap' },
           ]}
-          ellipsizeMode={ellipsizeMode}
-          numberOfLines={numberOfLines}
         >
           {children}
         </TextNative>

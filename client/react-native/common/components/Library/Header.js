@@ -66,7 +66,7 @@ export default class Header extends PureComponent {
           <Flex.Cols
             size={1}
             align='center'
-            space='between'
+            justify='between'
             style={[searchBar ? paddingBottom : {}]}
           >
             {backBtn === true && (
