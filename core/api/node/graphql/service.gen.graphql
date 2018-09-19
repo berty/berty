@@ -462,6 +462,10 @@ enum BertyP2pEventDirection {
 
   
 
+type BertyNodePingDestination {
+  destination: String
+} 
+
 type BertyNodeContactRequestInput {
   contact: BertyEntityContact
   introText: String

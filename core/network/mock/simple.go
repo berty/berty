@@ -68,6 +68,10 @@ func (d *SimpleDriver) Emit(ctx context.Context, envelope *p2p.Envelope) error {
 	return nil
 }
 
+func (d *SimpleDriver) PingOtherNode(ctx context.Context, destination string) error {
+	return nil
+}
+
 func (d *SimpleDriver) OnEnvelopeHandler(handler func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
 	d.handler = handler
 }

@@ -355,3 +355,12 @@ func (n *Node) GetConversationMember(ctx context.Context, conversationMember *en
 
 	return conversationMember, nil
 }
+
+func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*node.Void, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
+	err := n.networkDriver.PingOtherNode(ctx, input.Destination)
+
+	return &node.Void{}, err
+}

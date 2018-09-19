@@ -14,6 +14,7 @@ import (
 
 func init() {
 	registerUnary("berty.p2p.HandleEnvelope", P2pHandleEnvelope)
+	registerUnary("berty.p2p.Ping", P2pPing)
 }
 
 func P2pHandleEnvelope(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
@@ -28,4 +29,18 @@ func P2pHandleEnvelope(client *client.Client, ctx context.Context, jsonInput []b
 		return nil, err
 	}
 	return client.P2p().HandleEnvelope(ctx, &typedInput)
+}
+
+func P2pPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "Ping"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput p2p.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.P2p().Ping(ctx, &typedInput)
 }
