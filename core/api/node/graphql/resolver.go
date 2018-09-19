@@ -299,15 +299,24 @@ func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error)
 }
 
 func (r *queryResolver) EventList(ctx context.Context, limit *int, kind *model.BertyP2pKind, conversationID *string) ([]*model.BertyP2pEvent, error) {
+	req := &service.EventListInput{}
 
-	var conversationGID globalID
+	if kind != nil || conversationID != nil {
+		req.Filter = &p2p.Event{}
+	}
+
 	if conversationID != nil {
+		var conversationGID globalID
 		if err := conversationGID.FromString(*conversationID); err != nil {
 			return nil, err
 		}
+		req.Filter.ConversationID = conversationGID.ID
 	}
 
-	req := &service.EventListInput{}
+	if kind != nil {
+		req.Filter.Kind = *convertModelToP2pEventKind(kind)
+	}
+
 	if limit != nil {
 		req.Limit = uint32(*limit)
 	}
