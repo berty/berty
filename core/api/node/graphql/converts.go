@@ -174,18 +174,18 @@ func convertUint32(value uint32) *int {
 	return &t
 }
 
-func convertBytes(value *[]byte) *string {
-	if value == nil {
-		return nil
-	}
-
-	encoded := base64.StdEncoding.EncodeToString(*value)
-
-	return &encoded
-}
+// func convertBytes(value *[]byte) *string {
+// 	if value == nil {
+// 		return nil
+// 	}
+//
+// 	encoded := base64.StdEncoding.EncodeToString(*value)
+//
+// 	return &encoded
+// }
 
 func convertAttributes(e *p2p.Event) *string {
-	jsonBytes, err := e.GetJsonAttrs()
+	jsonBytes, err := e.GetJSONAttrs()
 	if err != nil {
 		logger().Error(err.Error())
 		return nil
