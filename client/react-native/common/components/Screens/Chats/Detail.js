@@ -34,7 +34,7 @@ const Message = props => {
           isMyself ? textRight : textLeft,
         ]}
       >
-        {atob(props.data.attributes).trim()}
+        {JSON.parse(props.data.attributes).message.text}
       </TextNative>
     </Flex.Cols>
   )
