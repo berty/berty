@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { TextInput } from 'react-native'
+import { TextInput as TextInputNative } from 'react-native'
 import { Flex, Screen, Button } from '../../../Library'
 import { colors } from '../../../../constants'
 import {
@@ -12,6 +12,31 @@ import {
 } from '../../../../styles'
 import { mutations } from '../../../../graphql'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+
+class TextInputMultilineFix extends PureComponent {
+  state = {
+    multiline: true,
+  }
+
+  render () {
+    return (
+      <TextInputNative
+        onFocus={() =>
+          this.setState({ multiline: false }, () =>
+            this.setState({ multiline: true })
+          )
+        }
+        onBlur={() =>
+          this.setState({ multiline: false }, () =>
+            this.setState({ multiline: true })
+          )
+        }
+        multiline={this.state.multiline}
+        {...this.props}
+      />
+    )
+  }
+}
 
 class ByPublicKey extends PureComponent {
   state = {
@@ -29,20 +54,20 @@ class ByPublicKey extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <Flex.Rows style={[padding]} align='center'>
-          <TextInput
+          <TextInputMultilineFix
             style={[
               {
                 width: 330,
                 height: 330,
                 backgroundColor: colors.grey7,
                 color: colors.black,
+                flexWrap: 'wrap',
               },
               textTiny,
               padding,
               marginTop,
               rounded,
             ]}
-            multiline
             placeholder='Type or copy/paste a berty user public key here'
             value={routeName === 'Enter a public key' ? contactID : myID}
             onChangeText={
@@ -50,11 +75,12 @@ class ByPublicKey extends PureComponent {
                 ? contactID => this.setState({ contactID })
                 : undefined
             }
+            selectTextOnFocus
           />
           {routeName === 'Enter a public key' && (
             <Button
               icon='plus'
-              background='blue'
+              background={colors.blue}
               margin
               padding
               rounded={23}
