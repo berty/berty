@@ -14,7 +14,7 @@ services:
   core-service:
     image: bertychat/berty
     ports:
-      - "8700-8800:8700"
-      - "1337-1437:1337"
+      - "8701-8801:8700"
+      - "1338-1438:1337"
     depends_on:
       - web-service
