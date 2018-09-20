@@ -7,6 +7,7 @@ FCLEAN := $(addsuffix .fclean, $(DIRS) $(ROOT))
 RE := $(addsuffix .re, $(DIRS) $(ROOT))
 START := $(addsuffix .start, $(DIRS) $(ROOT))
 BUILD := $(addsuffix .build, $(DIRS) $(ROOT))
+XCODE_MAJOR := $(shell xcodebuild -version | head -1 | sed 's~^Xcode \(.*\)\..*$$~\1~')
 
 .PHONY: all
 all: $(ROOT) $(DEPS)
@@ -37,8 +38,19 @@ android: mobile
 	make -C gomobile android
 	cd mobile && yarn android && yarn start
 
+
+.PHONY: patch-xcode10
+patch-xcode10:
+ifeq ("$(XCODE_MAJOR)", "10")
+	(patch -N ./node_modules/react-native/scripts/ios-install-third-party.sh ./patch/ios-install-third-party.sh.patch \
+	&& patch -N ./node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj/project.pbxproj ./patch/project.pbxproj.patch \
+	&& cd ./node_modules/react-native && ./scripts/ios-install-third-party.sh) || true
+else
+	@echo "patch-xcode10: skipping patch, using xcode $(XCODE_MAJOR)"
+endif
+
 .PHONY: ios
-ios: mobile
+ios: mobile patch-xcode10
 	make -C gomobile ios
 	cd mobile && yarn ios --device '$(device)' && yarn start
 
