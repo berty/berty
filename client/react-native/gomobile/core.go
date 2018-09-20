@@ -82,7 +82,9 @@ func Start(datastorePath string) error {
 		return nil
 	}
 
-	setupLogger("debug", "*")
+	if err := setupLogger("debug", "*"); err != nil {
+		return err
+	}
 
 	// initialize logger
 	cfg := zap.NewDevelopmentConfig()
