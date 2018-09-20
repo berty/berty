@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"encoding/base64"
 	"fmt"
 	"log"
 	"net"
@@ -11,10 +12,18 @@ import (
 	"syscall"
 
 	gqlhandler "github.com/99designs/gqlgen/handler"
-	"github.com/jinzhu/gorm"
+	"github.com/gorilla/websocket"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
+	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
+	"github.com/rs/cors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
@@ -23,30 +32,57 @@ import (
 	p2papi "berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	"berty.tech/core/network/mock"
+	"berty.tech/core/network/netutil"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
-	reuse "github.com/libp2p/go-reuseport"
-	"github.com/rs/cors"
 )
 
 func logger() *zap.Logger {
 	return zap.L().Named("core.cmd.berty")
 }
 
-var port int
-var unixSockPath string
+type daemonOptions struct {
+	sql sqlOptions `mapstructure:"sql"`
+
+	grpcBind     string `mapstructure:"grpc-bind"`
+	gqlBind      string `mapstructure:"gql-bind"`
+	dropDatabase bool   `mapstructure:"drop-database"`
+	initOnly     bool   `mapstructure:"init-only"`
+
+	// p2p
+	identity  string   `mapstructure:"identity"`
+	bootstrap []string `mapstructure:"bootstrap"`
+	noP2P     bool     `mapstructure:"no-p2p"`
+	bindP2P   []string `mapstructure:"bind-p2p"`
+	hop       bool     `mapstructure:"hop"` // relay hop
+	mdns      bool     `mapstructure:"mdns"`
+}
+
+type sqlOptions struct {
+	path string `mapstructure:"path"`
+	key  string `mapstructure:"key"`
+}
+
+var (
+	alreadyStarted   = false
+	grpcPort         int
+	gqlPort          int
+	defaultBootstrap = []string{
+		"/ip4/104.248.78.238/tcp/4004/ipfs/QmPCbsVWDtLTdCtwfp5ftZ96xccUNe4hegKStgbss8YACT",
+	}
+)
 
 func Start(datastorePath string) error {
 
 	// check if daemon already init
-	if port != 0 {
+	if alreadyStarted {
 		return nil
 	}
-	if unixSockPath != "" {
-		return nil
-	}
+
+	setupLogger("debug", "*")
 
 	// initialize logger
 	cfg := zap.NewDevelopmentConfig()
@@ -57,145 +93,227 @@ func Start(datastorePath string) error {
 	}
 	zap.ReplaceGlobals(l)
 
-	if err := Daemon(datastorePath, []byte("secure"), "bart"); err != nil {
+	if err := setGqlPort(); err != nil {
 		return err
 	}
+
+	if err := setGrpcPort(); err != nil {
+		return err
+	}
+
+	if err := daemon(&daemonOptions{
+		sql: sqlOptions{
+			path: datastorePath + "/berty.sqlcipher",
+			key:  "secure",
+		},
+		dropDatabase: false,
+		initOnly:     false,
+		noP2P:        false,
+		hop:          false,
+		mdns:         false,
+		grpcBind:     fmt.Sprintf(":%d", grpcPort),
+		gqlBind:      fmt.Sprintf(":%d", gqlPort),
+		identity:     "",
+		bootstrap:    defaultBootstrap,
+		bindP2P:      []string{"/ip4/0.0.0.0/tcp/0"},
+	}); err != nil {
+		//	datastorePath, []byte("secure"), "bart"); err != nil {
+		return err
+	}
+	alreadyStarted = true
 	return nil
 }
 
 func GetPort() (int, error) {
-	if port == 0 {
+	if gqlPort == 0 {
 		err := errors.New("port is not defined: wait for daemon to start")
 		logger().Error(err.Error())
 		return 0, err
 	}
-	return port, nil
+	return gqlPort, nil
 }
 
-func GetUnixSockPath() (string, error) {
-	if unixSockPath == "" {
-		err := errors.New("unix socket not initialized")
-		logger().Error(err.Error())
-		return "", err
+func setGqlPort() error {
+	listener, err := reuse.Listen("tcp", "0.0.0.0:0")
+	if err != nil {
+		return err
 	}
-	return unixSockPath, nil
+	gqlPort = listener.Addr().(*net.TCPAddr).Port
+	return nil
 }
 
-func Daemon(datastorePath string, passphrase []byte, deviceName string) error {
-	var (
-		gs       *grpc.Server
-		bind     string
-		listener net.Listener
-		db       *gorm.DB
-		driver   network.Driver
-		conn     *grpc.ClientConn
-		resolver graph.Config
-		mux      *http.ServeMux
-		handler  http.Handler
-		n        *node.Node
-		errChan  chan error
-		err      error
-	)
+func setGrpcPort() error {
+	listener, err := reuse.Listen("tcp", "0.0.0.0:0")
+	if err != nil {
+		return err
+	}
+	grpcPort = listener.Addr().(*net.TCPAddr).Port
+	return nil
+}
 
-	errChan = make(chan error)
+func daemon(opts *daemonOptions) error {
+	errChan := make(chan error)
+
+	interceptors := []grpc.ServerOption{
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_ctxtags.StreamServerInterceptor(),
+			//grpc_opentracing.StreamServerInterceptor(),
+			//grpc_prometheus.StreamServerInterceptor,
+			grpc_zap.StreamServerInterceptor(zap.L()),
+			//grpc_auth.StreamServerInterceptor(myAuthFunction),
+			grpc_recovery.StreamServerInterceptor(),
+		)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_ctxtags.UnaryServerInterceptor(),
+			//grpc_opentracing.UnaryServerInterceptor(),
+			//grpc_prometheus.UnaryServerInterceptor,
+			grpc_zap.UnaryServerInterceptor(zap.L()),
+			//grpc_auth.UnaryServerInterceptor(myAuthFunction),
+			grpc_recovery.UnaryServerInterceptor(),
+		)),
+	}
 
 	// initialize gRPC
-	gs = grpc.NewServer()
+	gs := grpc.NewServer(interceptors...)
+	reflection.Register(gs)
 
-	// listener, err = net.Listen("unix", datastorePath+"/berty.sock")
-	// if err != nil {
-	// 	return err
-	// }
-	// unixSockPath = datastorePath + "/berty.sock"
-
-	listener, err = reuse.Listen("tcp", "0.0.0.0:0")
+	addr, err := net.ResolveTCPAddr("tcp", opts.grpcBind)
 	if err != nil {
 		return err
 	}
 
-	port = listener.Addr().(*net.TCPAddr).Port
-	bind = fmt.Sprintf("127.0.0.1:%d", port)
-	logger().Debug(fmt.Sprintf("Listener address: %s", bind))
+	if addr.IP == nil {
+		addr.IP = net.IP{0, 0, 0, 0}
+	}
+
+	listener, err := reuse.Listen(addr.Network(), fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port))
+	if err != nil {
+		return err
+	}
 
 	// initialize sql
-	db, err = sqlcipher.Open(datastorePath+"/berty.sqlcipher", passphrase)
+	db, err := sqlcipher.Open(opts.sql.path, []byte(opts.sql.key))
 	if err != nil {
 		return errors.Wrap(err, "failed to open sqlcipher")
 	}
 
-	defer db.Close()
 	if db, err = sql.Init(db); err != nil {
 		return errors.Wrap(err, "failed to initialize sql")
+	}
+
+	if opts.dropDatabase {
+		if err = sql.DropDatabase(db); err != nil {
+			return errors.Wrap(err, "failed to drop database")
+		}
 	}
 
 	if err = sql.Migrate(db); err != nil {
 		return errors.Wrap(err, "failed to apply sql migrations")
 	}
 
-	p2pOpts := []p2p.Option{
-		p2p.WithRandomIdentity(),
-		p2p.WithDefaultMuxers(),
-		p2p.WithDefaultPeerstore(),
-		p2p.WithDefaultSecurity(),
-		p2p.WithDefaultTransports(),
-		// @TODO: Allow static identity loaded from a file (useful for relay
-		// server for creating static endpoint for bootstrap)
-		// p2p.WithIdentity(<key>),
-		p2p.WithNATPortMap(), // @TODO: Is this a pb on mobile?
-		p2p.WithListenAddrStrings("/ip4/0.0.0.0/tcp/0"),
-		//p2p.WithBootstrap(opts.bootstrap...),
-		p2p.WithMDNS(),
-		p2p.WithRelayClient(),
+	var driver network.Driver
+	driverID := ""
+	if !opts.noP2P {
+		var identity p2p.Option
+		if opts.identity == "" {
+			identity = p2p.WithRandomIdentity()
+		} else {
+			bytes, err := base64.StdEncoding.DecodeString(opts.identity)
+			if err != nil {
+				return errors.Wrap(err, "failed to decode identity opt, should be base64 encoded")
+			}
+
+			prvKey, err := p2pcrypto.UnmarshalPrivateKey(bytes)
+			if err != nil {
+				return errors.Wrap(err, "failed to unmarshal private key")
+			}
+
+			identity = p2p.WithIdentity(prvKey)
+		}
+
+		p2pOpts := []p2p.Option{
+			p2p.WithDefaultMuxers(),
+			p2p.WithDefaultPeerstore(),
+			p2p.WithDefaultSecurity(),
+			p2p.WithDefaultTransports(),
+			// @TODO: Allow static identity loaded from a file (useful for relay
+			// server for creating static endpoint for bootstrap)
+			// p2p.WithIdentity(<key>),
+			p2p.WithNATPortMap(), // @T\ODO: Is this a pb on mobile?
+			p2p.WithListenAddrStrings(opts.bindP2P...),
+			p2p.WithBootstrap(opts.bootstrap...),
+			identity,
+		}
+
+		if opts.mdns {
+			p2pOpts = append(p2pOpts, p2p.WithMDNS())
+		}
+
+		if opts.hop {
+			p2pOpts = append(p2pOpts, p2p.WithRelayHOP())
+		} else {
+			p2pOpts = append(p2pOpts, p2p.WithRelayClient())
+		}
+
+		p2pDriver, err := p2p.NewDriver(context.Background(), p2pOpts...)
+
+		if err != nil {
+			return err
+		}
+
+		defer func() {
+			if err := driver.Close(); err != nil {
+				logger().Warn("failed to close network driver", zap.Error(err))
+			}
+		}()
+
+		driver = p2pDriver
+		driverID = p2pDriver.ID()
 	}
 
-	driver, err = p2p.NewDriver(context.Background(), p2pOpts...)
-	if err != nil {
-		logger().Error(err.Error())
-		return err
+	if driver == nil {
+		driver = mock.NewEnqueuer()
 	}
 
 	// initialize node
-	n, err = node.New(
+	user := os.Getenv("USER")
+	if user == "" {
+		user = "new-berty-user"
+	}
+	n, err := node.New(
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
 		node.WithSQL(db),
-		node.WithDevice(&entity.Device{Name: deviceName}), // FIXME: get device dynamically
-		node.WithNetworkDriver(driver),                    // FIXME: use a p2p driver instead
+		node.WithDevice(&entity.Device{Name: user}), // FIXME: get device dynamically
+		node.WithNetworkDriver(driver),              // FIXME: use a p2p driver instead
 	)
 	if err != nil {
-		logger().Error(err.Error())
 		return errors.Wrap(err, "failed to initialize node")
 	}
 
-	conn, err = grpc.Dial(bind, grpc.WithInsecure())
-	if err != nil {
-		logger().Error(err.Error())
-		return errors.Wrap(err, "failed to dial node")
+	if opts.initOnly {
+		return nil
 	}
 
-	resolver = gql.New(nodeapi.NewServiceClient(conn))
+	ic := netutil.NewIOGrpc()
+	icdialer := ic.NewDialer()
 
-	// mux = http.NewServeMux()
-	// mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
-	// mux.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver)))
+	conn, err := grpc.Dial("", grpc.WithInsecure(), grpc.WithDialer(icdialer))
+	if err != nil {
+		return errors.Wrap(err, "failed to dial local node ")
+	}
 
-	// handler = cors.New(cors.Options{
-	// 	AllowedOrigins: []string{"*"}, // FIXME: use specific URLs?
-	// 	AllowedMethods: []string{"POST"},
-	// 	//AllowCredentials: true,
-	// 	AllowedHeaders: []string{"authorization", "content-type"},
-	// 	ExposedHeaders: []string{"Access-Control-Allow-Origin"},
-	// 	Debug:          true,
-	// }).Handler(mux)
+	resolver := gql.New(nodeapi.NewServiceClient(conn))
 
-	// http.Handle("/", gqlhandler.Playground("Berty", "/query"))
-	// http.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver)))
-
-	mux = http.NewServeMux()
+	mux := http.NewServeMux()
 	mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
-	mux.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver)))
+	mux.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver), gqlhandler.WebsocketUpgrader(websocket.Upgrader{
+		CheckOrigin: func(*http.Request) bool {
+			return true
+		},
+	})))
 
-	handler = cors.New(cors.Options{
+	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"}, // FIXME: use specific URLs?
 		AllowedMethods: []string{"POST"},
 		//AllowCredentials: true,
@@ -205,35 +323,32 @@ func Daemon(datastorePath string, passphrase []byte, deviceName string) error {
 	}).Handler(mux)
 
 	go func() {
-		if err := http.Serve(listener, handler); err != nil {
-			logger().Error(err.Error())
-			errChan <- fmt.Errorf("http.ListenAndServe: %s", err.Error())
-		}
+		errChan <- http.ListenAndServe(opts.gqlBind, handler)
+	}()
+
+	// start local server
+	go func() {
+		errChan <- gs.Serve(ic.Listener())
 	}()
 
 	// start grpc server(s)
-	// go func() {
-	// 	if err := gs.Serve(listener); err != nil {
-	// 		logger().Error(err.Error())
-	// 		errChan <- fmt.Errorf("gs.Serve: %s", err.Error())
-	// 	}
-	// 	logger().Debug("gs.Serve")
-	// }()
+	go func() {
+		errChan <- gs.Serve(listener)
+	}()
 
 	logger().Info("grpc server started",
 		zap.String("user-id", n.UserID()),
-		zap.String("bind", bind),
+		zap.String("grpc-bind", opts.grpcBind),
+		zap.String("gql-bind", opts.gqlBind),
 		zap.Int("p2p-api", int(p2papi.Version)),
 		zap.Int("node-api", int(nodeapi.Version)),
+		zap.String("driver-id", driverID),
 		zap.String("version", core.Version),
 	)
 
 	// start node
 	go func() {
-		if err := n.Start(); err != nil {
-			logger().Error(err.Error())
-			errChan <- fmt.Errorf("n.Start(): %s", err.Error())
-		}
+		errChan <- n.Start()
 	}()
 
 	// signal handling
@@ -266,7 +381,6 @@ func Daemon(datastorePath string, passphrase []byte, deviceName string) error {
 		}
 	}()
 
-	// tigger first goroutine error
 	go func() {
 		err := <-errChan
 		logger().Panic(err.Error())
