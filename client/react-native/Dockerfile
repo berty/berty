@@ -1,5 +1,5 @@
 # Base image
-FROM node:alpine
+FROM node:10.10.0-alpine
 
 # Create needed directories
 RUN mkdir -p /usr/src/app

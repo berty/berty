@@ -2,7 +2,7 @@
   "name": "@berty/react-native",
   "version": "0.0.1",
   "description": "Berty's react native",
-  "license" : "Beerware",
+  "license": "Beerware",
   "dependencies": {
     "graphql": "^0.13.2",
     "graphql-relay": "^0.5.5",
