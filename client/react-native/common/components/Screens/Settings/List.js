@@ -1,14 +1,9 @@
 import React, { PureComponent } from 'react'
-import { Menu, Header } from '../../Library'
+import { Menu } from '../../Library'
 
 export default class List extends PureComponent {
-  static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Header navigation={navigation} title='Settings' titleIcon='settings' />
-    ),
-    tabBarVisible: false,
-  })
   render () {
+    const { navigation } = this.props
     return (
       <Menu absolute>
         <Menu.Section>
@@ -48,6 +43,11 @@ export default class List extends PureComponent {
           />
         </Menu.Section>
         <Menu.Section>
+          <Menu.Item
+            icon='terminal'
+            title='Dev tools'
+            onPress={() => navigation.push('Devtools')}
+          />
           <Menu.Item
             icon='life-buoy'
             title='Support'
