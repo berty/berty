@@ -19,25 +19,23 @@ NSString* const READER_COUNTER_UUID = @"A88D3BEC-7A22-477A-97CC-2E0F784CB517";
 
 - (instancetype)initWithSender:(id)sender {
   self = [super init];
-    if (self) {
-      self.connectedDevice = [[NSMutableDictionary alloc] init];
-      self.discoveredDevice = [[NSMutableDictionary alloc] init];
-      self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
-      self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
-      self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
-      self.readerUUID = [CBUUID UUIDWithString:READER_UUID];
-      self.readerCounterUUID = [CBUUID UUIDWithString:READER_COUNTER_UUID];
-      self.bertyService = [[CBMutableService alloc] initWithType:self.serviceUUID primary:YES];
-      self.bertyReaderCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.readerUUID properties:CBCharacteristicPropertyRead | CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsReadable];
-      self.bertyCounterReaderCharacteristic =  [[CBMutableCharacteristic alloc] initWithType:self.readerCounterUUID properties:CBCharacteristicPropertyRead | CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsReadable];;
-      self.sender = sender;
-      
-      self.bertyService.characteristics = @[self.bertyReaderCharacteristic, self.bertyCounterReaderCharacteristic];
-
-      [self centralManagerDidUpdateState:self.centralManager];
-    }
-    return self;
+  if (self) {
+    self.connectedDevice = [[NSMutableDictionary alloc] init];
+    self.discoveredDevice = [[NSMutableDictionary alloc] init];
+    self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+    self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
+    self.readerUUID = [CBUUID UUIDWithString:READER_UUID];
+    self.readerCounterUUID = [CBUUID UUIDWithString:READER_COUNTER_UUID];
+    self.bertyService = [[CBMutableService alloc] initWithType:self.serviceUUID primary:YES];
+    self.bertyReaderCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.readerUUID properties:CBCharacteristicPropertyRead | CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsReadable];
+    self.bertyCounterReaderCharacteristic =  [[CBMutableCharacteristic alloc] initWithType:self.readerCounterUUID properties:CBCharacteristicPropertyRead | CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsReadable];;
+    self.sender = sender;
+    self.bertyService.characteristics = @[self.bertyReaderCharacteristic, self.bertyCounterReaderCharacteristic];
+    [self centralManagerDidUpdateState:self.centralManager];
   }
+  return self;
+}
 
 - (void)discover {
   RCTLogInfo(@"Start dicovering");
@@ -45,12 +43,10 @@ NSString* const READER_COUNTER_UUID = @"A88D3BEC-7A22-477A-97CC-2E0F784CB517";
 }
 
 - (void) connect {
-  
 }
 
 -(void)sendWhatsLeft {
   NSMutableArray *toRemove = [[NSMutableArray alloc] initWithCapacity:[self.toSend count]];
-  
   for (NSData *str in self.toSend) {
     if ([self.peripheralManager updateValue:str forCharacteristic:self.bertyReaderCharacteristic onSubscribedCentrals:nil] == YES) {
       [toRemove addObject:str];
@@ -58,7 +54,7 @@ NSString* const READER_COUNTER_UUID = @"A88D3BEC-7A22-477A-97CC-2E0F784CB517";
       break;
     }
   }
-  
+
   for (NSData *str in toRemove) {
     [self.toSend removeObject:str];
   }
@@ -86,9 +82,9 @@ NSString* const READER_COUNTER_UUID = @"A88D3BEC-7A22-477A-97CC-2E0F784CB517";
 - (CBService *)serviceWithUUID:(CBUUID *)serviceUUID forPeripheral:(CBPeripheral *)peripheral {
   for (CBService *service in peripheral.services) {
     if ([service.UUID isEqual:serviceUUID]) {
-        return service;
-        }
-      }
+      return service;
+    }
+  }
   return nil;
 }
 
@@ -102,13 +98,13 @@ NSString* const READER_COUNTER_UUID = @"A88D3BEC-7A22-477A-97CC-2E0F784CB517";
 
 - (void)centralManager:(CBCentralManager *)central
 didDisconnectPeripheral:(CBPeripheral *)peripheral
-                 error:(NSError *)error {
+                    error:(NSError *)error {
   RCTLogInfo(@"didDisConnectPeriheral: %@", [peripheral.identifier UUIDString]);
 }
 
 - (void)centralManager:(CBCentralManager *)central
 didFailToConnectPeripheral:(CBPeripheral *)peripheral
-                 error:(NSError *)error {
+                    error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error %@", [error localizedFailureReason]);
   }
@@ -116,9 +112,9 @@ didFailToConnectPeripheral:(CBPeripheral *)peripheral
 }
 
 - (void)centralManager:(CBCentralManager *)central
- didDiscoverPeripheral:(CBPeripheral *)peripheral
-     advertisementData:(NSDictionary<NSString *,id> *)advertisementData
-                  RSSI:(NSNumber *)RSSI {
+  didDiscoverPeripheral:(CBPeripheral *)peripheral
+      advertisementData:(NSDictionary<NSString *,id> *)advertisementData
+                    RSSI:(NSNumber *)RSSI {
   RCTLogInfo(@"didDiscoverPeripheral: %@", [peripheral.identifier UUIDString]);
   if (![self.discoveredDevice objectForKey:peripheral.identifier]) {
     [self.discoveredDevice setObject:peripheral forKey:peripheral.identifier];
@@ -155,39 +151,46 @@ didFailToConnectPeripheral:(CBPeripheral *)peripheral
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
-didDiscoverServices:(NSError *)error {
+  didDiscoverServices:(NSError *)error {
   RCTLogInfo(@"didDiscoverServices %@", [peripheral.identifier UUIDString]);
   for (CBService* service in peripheral.services) {
-    [peripheral discoverCharacteristics:@[self.readerCounterUUID] forService:service];
+    [peripheral discoverCharacteristics:nil forService:service];
   }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
 didDiscoverIncludedServicesForService:(CBService *)service
-             error:(NSError *)error {
+              error:(NSError *)error {
   RCTLogInfo(@"didDiscoverIncludedServicesForService");
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
-didDiscoverCharacteristicsForService:(CBService *)service
-             error:(NSError *)error {
+  didDiscoverCharacteristicsForService:(CBService *)service
+              error:(NSError *)error {
   RCTLog(@"didDiscoverCharacteristicsForService %@ %@", [peripheral.identifier UUIDString], [service.UUID UUIDString]);
   if (error == nil) {
+    RCTLog(@"ICI123");
     for (CBCharacteristic *characteristic in service.characteristics) {
+      RCTLog(@"ICI123 %@", [characteristic.UUID UUIDString]);
       if ([characteristic.UUID isEqual:self.readerCounterUUID] && characteristic.isNotifying == false) {
-        [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+        //        [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+        RCTLog(@"ICI");
         [peripheral discoverCharacteristics:@[self.readerUUID] forService:service];
+
       } else if ([characteristic.UUID isEqual:self.readerUUID] && characteristic.isNotifying == false) {
+        RCTLog(@"LA");
         [peripheral setNotifyValue:YES forCharacteristic:characteristic];
       }
     }
+  } else {
+    RCTLogWarn(@"error discovering %@ %@", [error localizedFailureReason], [error localizedDescription]);
   }
-  
+
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
-didDiscoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic
-             error:(NSError *)error {
+  didDiscoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic
+              error:(NSError *)error {
   RCTLogInfo(@"didDiscoverDescriptorsForCharacteristic %@", [characteristic.UUID UUIDString]);
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedFailureReason]);
@@ -195,8 +198,8 @@ didDiscoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
-didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
-             error:(NSError *)error {
+  didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
+              error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedDescription]);
   }
@@ -204,6 +207,7 @@ didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
     BertyDevice *device = [self.connectedDevice objectForKey:[peripheral.identifier UUIDString]];
     if ([characteristic.value bytes] == nil || ((char*)[characteristic.value bytes])[0] == 0) {
       RCTLogInfo(@"didUpdateValueForCharacteristic %@ %@", [characteristic.UUID UUIDString], [[NSString alloc] initWithData:device.data encoding:NSUTF8StringEncoding]);
+      [device.data setLength:0];
     } else if (device != nil) {
       [device.data appendData:characteristic.value];
     }
@@ -211,8 +215,8 @@ didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
-didUpdateValueForDescriptor:(CBDescriptor *)descriptor
-             error:(NSError *)error {
+  didUpdateValueForDescriptor:(CBDescriptor *)descriptor
+              error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedFailureReason]);
   }
@@ -221,7 +225,7 @@ didUpdateValueForDescriptor:(CBDescriptor *)descriptor
 
 - (void)peripheral:(CBPeripheral *)peripheral
 didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
-             error:(NSError *)error {
+              error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedFailureReason]);
   }
@@ -230,7 +234,7 @@ didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
 
 - (void)peripheral:(CBPeripheral *)peripheral
 didWriteValueForDescriptor:(CBDescriptor *)descriptor
-             error:(NSError *)error {
+              error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedFailureReason]);
   }
@@ -239,7 +243,7 @@ didWriteValueForDescriptor:(CBDescriptor *)descriptor
 
 - (void)peripheral:(CBPeripheral *)peripheral
 didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
-             error:(NSError *)error {
+              error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedFailureReason]);
   }
@@ -247,8 +251,8 @@ didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
-       didReadRSSI:(NSNumber *)RSSI
-             error:(NSError *)error {
+        didReadRSSI:(NSNumber *)RSSI
+              error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedDescription]);
   }
@@ -260,13 +264,13 @@ didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
- didModifyServices:(NSArray<CBService *> *)invalidatedServices {
+  didModifyServices:(NSArray<CBService *> *)invalidatedServices {
   RCTLogInfo(@"didModifyServices");
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
 didOpenL2CAPChannel:(CBL2CAPChannel *)channel
-             error:(NSError *)error {
+              error:(NSError *)error {
   RCTLogInfo(@"didOpenL2CAPChannel");
 }
 
@@ -308,24 +312,24 @@ didOpenL2CAPChannel:(CBL2CAPChannel *)channel
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
-         willRestoreState:(NSDictionary<NSString *,id> *)dict {
+          willRestoreState:(NSDictionary<NSString *,id> *)dict {
   RCTLogInfo(@"Will restore State invoked");
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
             didAddService:(CBService *)service
-                    error:(NSError *)error {
+                      error:(NSError *)error {
   if (error) {
-    RCTLogWarn(@"fdp: %@", [error localizedFailureReason]);
+    RCTLogWarn(@"error: %@", [error localizedFailureReason]);
   }
   RCTLogInfo(@"service added: %@", [service.UUID UUIDString]);
   [self.peripheralManager startAdvertising:@{
-                                             CBAdvertisementDataServiceUUIDsKey:@[self.serviceUUID]
-                                             }];
+                                                CBAdvertisementDataServiceUUIDsKey:@[self.serviceUUID]
+                                                }];
 }
 
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral
-                                       error:(NSError *)error {
+                                            error:(NSError *)error {
   if (error) {
     RCTLogWarn(@"error: %@", [error localizedFailureReason]);
   }
@@ -333,13 +337,13 @@ didOpenL2CAPChannel:(CBL2CAPChannel *)channel
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
-                  central:(CBCentral *)central
+                    central:(CBCentral *)central
 didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
   RCTLogInfo(@"Subscription to characteristic: %@", characteristic.UUID);
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
-                  central:(CBCentral *)central
+                    central:(CBCentral *)central
 didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
   RCTLogInfo(@"Unsubscribed to characteristic: %@", characteristic.UUID);
 }
