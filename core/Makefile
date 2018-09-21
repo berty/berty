@@ -144,7 +144,6 @@ api/p2p/kind.gen.go: $(PROTOS)
 api/node/graphql/service.gen.graphql: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	cd ./api/node/graphql && $(GQLGEN) -v gen
-	cp api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
 
 ../client/react-native/common/schema.graphql: api/node/graphql/service.gen.graphql
 	cp api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql

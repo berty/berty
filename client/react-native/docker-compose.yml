@@ -12,6 +12,7 @@ services:
       - /usr/src/app/web/node_modules
 
   core-service:
+    build: ../..
     image: bertychat/berty
     ports:
       - "8701-8801:8700"
