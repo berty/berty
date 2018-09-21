@@ -9,6 +9,7 @@ GENERATED_FILES = \
 	$(patsubst %.proto,%.pb.go,$(PROTOS)) \
 	api/node/graphql/service.gen.graphql \
 	api/client/berty.node.service.gen.go \
+	../client/react-native/common/schema.graphql \
 	$(call rwildcard $(CODE_PATHS), *.gen.go) \
 	api/p2p/kind.gen.go
 PROTOC_OPTS = --proto_path=../vendor:../vendor/github.com/gogo/protobuf:.
@@ -143,3 +144,6 @@ api/p2p/kind.gen.go: $(PROTOS)
 api/node/graphql/service.gen.graphql: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	cd ./api/node/graphql && $(GQLGEN) -v gen
+
+../client/react-native/common/schema.graphql: api/node/graphql/service.gen.graphql
+	cp api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql

@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  web-service:
+    build: .
+    image: bertychat/web
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/web/node_modules
+
+  core-service:
+    build: ../..
+    image: bertychat/berty
+    ports:
+      - "8701-8801:8700"
+      - "1338-1438:1337"
+    depends_on:
+      - web-service

@@ -8,6 +8,8 @@ RE := $(addsuffix .re, $(DIRS) $(ROOT))
 START := $(addsuffix .start, $(DIRS) $(ROOT))
 BUILD := $(addsuffix .build, $(DIRS) $(ROOT))
 XCODE_MAJOR := $(shell xcodebuild -version | head -1 | sed 's~^Xcode \(.*\)\..*$$~\1~')
+SCALE ?= 1
+PORT ?= 0
 
 .PHONY: all
 all: $(ROOT) $(DEPS)
@@ -66,3 +68,52 @@ $(START): %.start: %
 
 $(BUILD): %.build: %
 	cd $< && yarn build
+
+webapp.start:
+	@docker-compose up -d --scale core-service=$(SCALE)
+
+webapp.stop:
+	@docker-compose stop -t 42
+
+webapp.list:
+	@docker ps -f name=react-native_core-service --format "{{.Names}}\tid: {{.ID}}\tport: {{.Ports}}" | sort \
+		| sed 's/\(0\.\)\{3\}0:1\([0-9]\)\{3\}->1\([0-9]\)\{3\}\/tcp\, \(0\.\)\{3\}0://g' | sed 's/->.*$$//g'
+
+webapp.logs:
+	@docker-compose logs -f
+
+webapp.open:
+	@GQL_PORTS=`docker ps -f name=react-native_core-service --format "{{.Ports}}" |			\
+				awk 'match($$0,/:8[0-9]{3}->/) {print substr($$0,RSTART+1,RLENGTH-3)}'`;	\
+	COUNT=$$(echo "$$GQL_PORTS" | sed '/^\s*$$/d' | wc -l | tr -d ' ');						\
+	echo "Openning $$COUNT webapp tabs in browser...";										\
+	for PORT in $$GQL_PORTS; do open "http://localhost:3001?gql-port=$$PORT"; done
+
+webapp.gendata:
+	@if [ $(PORT) -eq 0 ]; then																				\
+		CONT_ID=`docker ps -f name=react-native_core-service --format "{{.ID}}"`;							\
+	else																									\
+		CONT_ID=`docker ps --format "{{.ID}}#{{.Ports}}" | grep "0.0.0.0:$(PORT)->8700" | cut -d'#' -f1`;	\
+	fi;																										\
+	COUNT=$$(echo "$$CONT_ID" | sed '/^\s*$$/d' | wc -l | tr -d ' ');										\
+	echo "Generating fake data inside $$COUNT containers...";												\
+	for ID in $$CONT_ID; do docker exec -t $$ID berty client berty.node.GenerateFakeData; done
+
+webapp.reset:
+	@if [ $(PORT) -eq 0 ]; then																				\
+		CONT_ID=`docker ps -f name=react-native_core-service --format "{{.ID}}"`;							\
+	else																									\
+		CONT_ID=`docker ps --format "{{.ID}}#{{.Ports}}" | grep "0.0.0.0:$(PORT)->8700" | cut -d'#' -f1`;	\
+	fi;																										\
+	for ID in $$CONT_ID; do																					\
+		echo "Reset not implemented yet $$ID";																\
+	done
+
+webapp.rebuild:
+	@docker-compose build --pull
+
+webapp.rm:
+	@CONT_ID=`echo $$(docker ps -a -f name=react-native_core-service -q) $$(docker ps -a -f name=react-native_web-service -q)`;	\
+	COUNT=$$(echo "$$CONT_ID" | sed '/^\s*$$/d' | wc -w | tr -d ' ');															\
+	echo "Deleting $$COUNT previously generated containers...";																	\
+	if [ $$COUNT -ne 0 ]; then docker rm $$CONT_ID; fi
