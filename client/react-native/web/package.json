@@ -1,7 +1,7 @@
 {
   "name": "@berty/web",
   "version": "0.0.1",
-  "license": "Beerware",
+  "license": "Apache-2.0",
   "scripts": {
     "postinstall": "mkdir -p node_modules/@berty; ln -fs ../../../common node_modules/@berty",
     "start": "concurrently 'yarn relay --watch' 'node scripts/start.js'",
