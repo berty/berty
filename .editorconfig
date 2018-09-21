@@ -42,3 +42,6 @@ indent_size = 2
 
 [*.diff]
 indent_size = 1
+
+[*.m]
+indent_size = 2
