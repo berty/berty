@@ -263,12 +263,6 @@ func daemon(opts *daemonOptions) error {
 			return err
 		}
 
-		defer func() {
-			if err := driver.Close(); err != nil {
-				logger().Warn("failed to close network driver", zap.Error(err))
-			}
-		}()
-
 		driver = p2pDriver
 		driverID = p2pDriver.ID()
 	}
