@@ -1,8 +1,14 @@
+/* eslint-disable */
+if (!__DEV__) {
+  console.error = console.warn
+}
+
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { NativeModules, Platform, AppRegistry } from 'react-native'
 import App from './components/App'
+/* eslint-enable */
 
 if (Platform.OS === 'web') {
   NativeModules.CoreModule = {

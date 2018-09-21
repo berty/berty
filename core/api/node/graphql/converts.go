@@ -174,14 +174,24 @@ func convertUint32(value uint32) *int {
 	return &t
 }
 
-func convertBytes(value *[]byte) *string {
-	if value == nil {
+// func convertBytes(value *[]byte) *string {
+// 	if value == nil {
+// 		return nil
+// 	}
+//
+// 	encoded := base64.StdEncoding.EncodeToString(*value)
+//
+// 	return &encoded
+// }
+
+func convertAttributes(e *p2p.Event) *string {
+	jsonBytes, err := e.GetJSONAttrs()
+	if err != nil {
+		logger().Error(err.Error())
 		return nil
 	}
-
-	encoded := base64.StdEncoding.EncodeToString(*value)
-
-	return &encoded
+	jsonString := string(jsonBytes)
+	return &jsonString
 }
 
 func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
@@ -208,7 +218,7 @@ func convertEvent(event *p2p.Event) *model.BertyP2pEvent {
 		ReceiverAPIVersion: convertUint32(event.ReceiverAPIVersion),
 		ReceiverID:         &event.ReceiverID,
 		Kind:               convertEventKind(event.Kind),
-		Attributes:         convertBytes(&event.Attributes),
+		Attributes:         convertAttributes(event),
 		ConversationID:     &conversationID,
 		CreatedAt:          &scalar.DateTime{Value: &event.CreatedAt},
 		UpdatedAt:          &scalar.DateTime{Value: &event.UpdatedAt},
