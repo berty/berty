@@ -12,29 +12,19 @@ import {
 } from '../../../../styles'
 import { mutations } from '../../../../graphql'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+import { btoa } from 'b64-lite'
 
 class TextInputMultilineFix extends PureComponent {
   state = {
-    multiline: true,
+    multiline: false,
+  }
+
+  componentDidMount () {
+    this.setState({ multiline: this.props.multiline })
   }
 
   render () {
-    return (
-      <TextInputNative
-        onFocus={() =>
-          this.setState({ multiline: false }, () =>
-            this.setState({ multiline: true })
-          )
-        }
-        onBlur={() =>
-          this.setState({ multiline: false }, () =>
-            this.setState({ multiline: true })
-          )
-        }
-        multiline={this.state.multiline}
-        {...this.props}
-      />
-    )
+    return <TextInputNative {...this.props} multiline={this.state.multiline} />
   }
 }
 
@@ -68,6 +58,7 @@ class ByPublicKey extends PureComponent {
               marginTop,
               rounded,
             ]}
+            multiline
             placeholder='Type or copy/paste a berty user public key here'
             value={routeName === 'Enter a public key' ? contactID : myID}
             onChangeText={
