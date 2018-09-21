@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Berty's react native",
   "dependencies": {
+    "b64-lite": "^1.3.1",
     "graphql": "^0.13.2",
     "graphql-relay": "^0.5.5",
     "isomorphic-fetch": "^2.2.1",
