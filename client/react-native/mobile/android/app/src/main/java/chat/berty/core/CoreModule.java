@@ -41,14 +41,4 @@ public class CoreModule extends ReactContextBaseJavaModule {
             promise.reject(err);
         }
     }
-
-    @ReactMethod
-    public void getUnixSockPath(Promise promise) {
-        try {
-            String unixSockPath = Core.getUnixSockPath();
-            promise.resolve(unixSockPath.toString());
-        } catch (Exception err) {
-            promise.reject(err);
-        }
-    }
 }
