@@ -7,10 +7,8 @@ const getDirection = (key, directions = { rows: 'column', cols: 'row' }) =>
 const getAlign = (
   key,
   align = {
-    top: 'flex-start',
-    left: 'flex-start',
-    right: 'flex-end',
-    bottom: 'flex-end',
+    start: 'flex-start',
+    end: 'flex-end',
     center: 'center',
     stretch: 'stretch',
   }
