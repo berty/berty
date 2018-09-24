@@ -1,6 +1,6 @@
 {
   "name": "@berty/react-native",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Berty's react native",
   "license": "Apache-2.0",
   "dependencies": {

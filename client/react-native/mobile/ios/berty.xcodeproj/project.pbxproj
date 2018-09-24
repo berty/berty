@@ -805,7 +805,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 7A4249AYMN;
+						DevelopmentTeam = WMBQ84HN4T;
 						LastSwiftMigration = 0940;
 						ProvisioningStyle = Manual;
 					};
@@ -1378,11 +1378,12 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: HAL moonwatcher (PAR59Y84D3)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: developer berty (45Q75FHGN2)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: developer berty (45Q75FHGN2)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 7A4249AYMN;
+				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1417,11 +1418,11 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: HAL moonwatcher (PAR59Y84D3)";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Berty technologies (WMBQ84HN4T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Berty technologies (WMBQ84HN4T)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7A4249AYMN;
+				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

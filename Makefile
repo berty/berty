@@ -50,6 +50,11 @@ lint-editorconfig:
 	echo "Checking if $$COUNT files comply with EditorConfig rules...";	\
 	eclint check $$FILES
 
+
+.PHONY: version
+version: version.init $(PACKAGES)
+
+
 .PHONY: _ci_prepare
 _ci_prepare:
 	cd core && make _ci_prepare
