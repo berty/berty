@@ -1378,7 +1378,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: HAL moonwatcher (PAR59Y84D3)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
@@ -1418,6 +1418,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer: HAL moonwatcher (PAR59Y84D3)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7A4249AYMN;
@@ -1440,8 +1441,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.tech;
 				PRODUCT_NAME = berty;
-				PROVISIONING_PROFILE = "4fbc88d4-7149-4f48-ae91-9e6153fcb275";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.tech";
+				PROVISIONING_PROFILE = "4b569825-a062-4e3b-927e-22ea802c7ca3";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.tech";
 				SWIFT_OBJC_BRIDGING_HEADER = "modules/berty-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
