@@ -41,7 +41,7 @@ type listener struct {
 
 func NewListener(fc fclose, pid protocol.ID) (net.Listener, inet.StreamHandler) {
 	l := &listener{
-		cstream: make(chan net.Conn),
+		cstream: make(chan net.Conn, 256), // yamux default pool size
 		addr:    &ProtocolAddr{pid},
 		fc:      fc,
 	}
