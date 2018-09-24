@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { View, TouchableOpacity } from 'react-native'
 
 const getDirection = (key, directions = { rows: 'column', cols: 'row' }) =>
   directions[key] || null
@@ -12,7 +12,7 @@ const getAlign = (
     center: 'center',
     stretch: 'stretch',
   }
-) => align[key] || align['center']
+) => align[key] || align['stretch']
 
 const getJustify = (
   key,
@@ -35,23 +35,27 @@ export const Block = ({
   children,
   style,
   ...props
-}) => (
-  <View
-    style={[
-      {
-        flex: size,
-        flexDirection: direction && getDirection(direction),
-        alignItems: align && getAlign(align),
-        alignSelf: self && getAlign(self),
-        justifyContent: justify && getJustify(justify),
-      },
-      style,
-    ]}
-    {...props}
-  >
-    {children}
-  </View>
-)
+}) => {
+  style = [
+    {
+      flex: size,
+      flexDirection: direction && getDirection(direction),
+      alignItems: align && getAlign(align),
+      alignSelf: self && getAlign(self),
+      justifyContent: justify && getJustify(justify),
+    },
+    style,
+  ]
+  return props.onPress ? (
+    <TouchableOpacity {...props} style={style}>
+      {children}
+    </TouchableOpacity>
+  ) : (
+    <View {...props} style={style}>
+      {children}
+    </View>
+  )
+}
 
 export const Grid = props => <Block {...props} />
 

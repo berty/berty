@@ -6,7 +6,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native'
 import { Icon } from '.'
 import { colors, fonts } from '../../constants'
@@ -28,11 +28,11 @@ type Props = {
   borderRight?: number,
   borderTop?: number,
   borderLeft?: number,
-  value?: string
+  value?: string,
 }
 
 type State = {|
-  passwordVisible: boolean
+  passwordVisible: boolean,
 |}
 
 class CustomTextInput extends React.PureComponent<Props, State> {
@@ -41,11 +41,11 @@ class CustomTextInput extends React.PureComponent<Props, State> {
     borderBottom: 0,
     borderRight: 0,
     borderTop: 0,
-    borderLeft: 0
+    borderLeft: 0,
   }
 
   state = {
-    passwordVisible: false
+    passwordVisible: false,
   }
 
   input: ?TextInput
@@ -60,7 +60,7 @@ class CustomTextInput extends React.PureComponent<Props, State> {
 
   _togglePasswordVisibility = () => {
     this.setState(prevState => ({
-      passwordVisible: !prevState.passwordVisible
+      passwordVisible: !prevState.passwordVisible,
     }))
   }
 
@@ -81,7 +81,7 @@ class CustomTextInput extends React.PureComponent<Props, State> {
 
     const inputPadding = {
       paddingLeft: renderLeft ? 0 : 18,
-      paddingRight: renderRight || this.props.secureTextEntry ? 0 : 18
+      paddingRight: renderRight || this.props.secureTextEntry ? 0 : 18,
     }
 
     return (
@@ -146,7 +146,7 @@ class CustomTextInput extends React.PureComponent<Props, State> {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   input: {
     flex: 1,
@@ -155,25 +155,25 @@ const styles = StyleSheet.create({
     color: colors.textGrey,
     fontSize: 14,
     lineHeight: 24,
-    width: 50
+    width: 50,
   },
   eyeIcon: {
     color: colors.subtleGrey,
     padding: 15,
-    fontSize: 16
+    fontSize: 16,
   },
   errorContainer: {
     backgroundColor: colors.error,
     alignItems: 'flex-start',
     paddingHorizontal: 6,
-    paddingVertical: 4
+    paddingVertical: 4,
   },
   error: {
     color: colors.white,
     fontFamily: fonts.medium,
     fontSize: 10,
-    lineHeight: 12
-  }
+    lineHeight: 12,
+  },
 })
 
 export default CustomTextInput

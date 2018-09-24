@@ -1,81 +1,12 @@
 // TODO: create generic contact list with pagination
 
 import React, { PureComponent } from 'react'
-import {
-  FlatList,
-  TouchableOpacity,
-  TextInput,
-  Image,
-  View,
-} from 'react-native'
-import { Screen, Flex, Text, Separator } from '../../Library'
+import { FlatList, TouchableOpacity, Image, View } from 'react-native'
+import { Screen, Flex, Text, Separator, Header } from '../../Library'
 import { colors } from '../../../constants'
-import {
-  paddingLeft,
-  paddingRight,
-  marginHorizontal,
-  padding,
-  borderBottom,
-  paddingBottom,
-  border,
-} from '../../../styles'
+import { marginHorizontal, border } from '../../../styles'
 import { QueryReducer } from '../../../relay'
 import { queries, subscriptions, mutations } from '../../../graphql'
-
-const Header = ({ navigation, onPressRight }) => (
-  <View
-    style={[
-      { backgroundColor: colors.white, height: 100 },
-      borderBottom,
-      padding,
-    ]}
-  >
-    <Flex.Rows>
-      <Flex.Cols
-        size={1}
-        align='center'
-        justify='between'
-        style={[paddingBottom]}
-      >
-        <Text
-          icon='arrow-left'
-          large
-          right
-          button
-          color={colors.black}
-          onPress={() => navigation.goBack(null)}
-        />
-        <Text icon='feather-users' left large color={colors.black}>
-          Add members
-        </Text>
-        <Text
-          icon='check-circle'
-          large
-          right
-          button
-          color={colors.black}
-          onPress={onPressRight}
-        />
-      </Flex.Cols>
-      <Flex.Cols size={1} style={[paddingBottom]}>
-        <TextInput
-          style={[
-            {
-              height: 36,
-              flex: 1,
-              backgroundColor: colors.grey7,
-              borderWidth: 0,
-              borderRadius: 18,
-            },
-            paddingLeft,
-            paddingRight,
-          ]}
-          placeholder='Search'
-        />
-      </Flex.Cols>
-    </Flex.Rows>
-  </View>
-)
 
 class Item extends PureComponent {
   state = { selected: false }
@@ -102,7 +33,7 @@ class Item extends PureComponent {
         ]}
       >
         <Flex.Cols align='start'>
-          <Flex.Rows size={1} align='start' style={{ marginLeft: 30 }}>
+          <Flex.Rows size={1} align='start'>
             <Image
               style={{ width: 40, height: 40, borderRadius: 50 }}
               source={{
@@ -137,14 +68,7 @@ class Item extends PureComponent {
                 },
               ]}
             >
-              <Text
-                icon='check'
-                padding
-                middle
-                center
-                color={colors.white}
-                button
-              />
+              <Text icon='check' padding middle center color={colors.white} />
             </View>
           </Flex.Rows>
         </Flex.Cols>
@@ -158,7 +82,13 @@ export default class List extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        onPressRight={navigation.getParam('onPressRight')}
+        title='Add members'
+        titleIcon='users'
+        rightBtnIcon='check-circle'
+        searchBar
+        backBtn
+        searchHandler={navigation.getParam('searchHandler')} // Placeholder
+        onPressRightBtn={navigation.getParam('onSubmit')}
       />
     ),
     tabBarVisible: true,
@@ -173,9 +103,16 @@ export default class List extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.navigation.setParams({
-      onPressRight: this.onSubmit,
-    })
+    const onSubmit = this.props.navigation.getParam('onSubmit')
+    if (!onSubmit) {
+      this.props.navigation.setParams({
+        onSubmit: this.onSubmit(this.onDefaultSubmit),
+      })
+    } else {
+      this.props.navigation.setParams({
+        onSubmit: this.onSubmit(onSubmit),
+      })
+    }
 
     this.subscribers = [
       subscriptions.contactRequest.subscribe({
@@ -195,13 +132,16 @@ export default class List extends PureComponent {
     contactsID: [],
   }
 
-  onSubmit = async () => {
+  onDefaultSubmit = async ({ contactsID }) => {
+    const retry = this.props.navigation.getParam('retry')
+    await mutations.conversationCreate.commit({ contactsID })
+    retry && retry()
+    this.props.navigation.goBack(null)
+  }
+
+  onSubmit = onSubmit => async () => {
     try {
-      const { contactsID } = this.state
-      await mutations.conversationCreate.commit({ contactsID })
-      const retry = this.props.navigation.getParam('retry')
-      retry && retry()
-      this.props.navigation.getParam('goBack')()
+      await onSubmit(this.state)
     } catch (err) {
       console.error(err)
     }

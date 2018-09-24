@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Dimensions, View } from 'react-native'
-import { screen } from '../../constants'
+import { screen, colors } from '../../constants'
 
 export default class Screen extends Component {
   state = {
@@ -42,7 +42,7 @@ export default class Screen extends Component {
         style={[
           {
             flex: 1,
-            justifyContent: 'flex-start',
+            backgroundColor: colors.background,
           },
           dimensions,
           style,

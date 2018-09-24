@@ -106,7 +106,6 @@ const setupSubscription = async (config, variables, cacheConfig, observer) => {
     )
 
     const onNext = result => {
-      console.log(result)
       observer.onNext(result)
     }
 
