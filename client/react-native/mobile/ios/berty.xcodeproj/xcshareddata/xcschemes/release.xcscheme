@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0820"
+   LastUpgradeVersion = "0620"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "NO"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D2A28121D9B038B00D4039D"
+               BlueprintIdentifier = "83CBBA2D1A601D0E00E9B192"
                BuildableName = "libReact.a"
-               BlueprintName = "React-tvOS"
+               BlueprintName = "React"
                ReferencedContainer = "container:../node_modules/react-native/React/React.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,23 +28,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "berty-tvOS.app"
-               BlueprintName = "berty-tvOS"
-               ReferencedContainer = "container:berty.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "berty-tvOSTests.xctest"
-               BlueprintName = "berty-tvOSTests"
+               BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+               BuildableName = "berty.app"
+               BlueprintName = "berty"
                ReferencedContainer = "container:berty.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -56,23 +42,13 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "berty-tvOSTests.xctest"
-               BlueprintName = "berty-tvOSTests"
-               ReferencedContainer = "container:berty.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "berty-tvOS.app"
-            BlueprintName = "berty-tvOS"
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "berty.app"
+            BlueprintName = "berty"
             ReferencedContainer = "container:berty.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -80,9 +56,9 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      buildConfiguration = "Release"
+      selectedDebuggerIdentifier = ""
+      selectedLauncherIdentifier = "Xcode.IDEFoundation.Launcher.PosixSpawn"
       launchStyle = "0"
       useCustomWorkingDirectory = "NO"
       ignoresPersistentStateOnLaunch = "NO"
@@ -93,9 +69,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "berty-tvOS.app"
-            BlueprintName = "berty-tvOS"
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "berty.app"
+            BlueprintName = "berty"
             ReferencedContainer = "container:berty.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -112,9 +88,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "berty-tvOS.app"
-            BlueprintName = "berty-tvOS"
+            BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
+            BuildableName = "berty.app"
+            BlueprintName = "berty"
             ReferencedContainer = "container:berty.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
