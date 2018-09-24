@@ -70,7 +70,7 @@ $(BUILD): %.build: %
 	cd $< && yarn build
 
 webapp.start:
-	@docker-compose up -d --scale core-service=$(SCALE)
+	@docker-compose up -d --build --scale core-service=$(SCALE)
 
 webapp.stop:
 	@docker-compose stop -t 42

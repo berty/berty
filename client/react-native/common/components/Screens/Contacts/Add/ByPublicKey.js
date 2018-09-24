@@ -13,7 +13,7 @@ import {
 import { mutations, queries } from '../../../../graphql'
 import { QueryReducer } from '../../../../relay'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
-import { btoa } from 'b64-lite'
+import { btoa, atob } from 'b64-lite'
 
 class TextInputMultilineFix extends PureComponent {
   state = {
@@ -50,7 +50,6 @@ class ByPublicKey extends PureComponent {
   state = {
     contactID: '',
   }
-
   render () {
     const { navigation } = this.props
     const {
@@ -60,8 +59,12 @@ class ByPublicKey extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <QueryReducer query={queries.ContactList}>
-          {(state, retry) =>
-            console.log(state) || (
+          {(state, retry) => {
+            const myself = (state.data.ContactList || []).find(
+              c => c.status === 'Myself'
+            )
+            const myID = myself ? atob(myself.id).split('CONTACT:')[1] : ''
+            return (
               <Flex.Rows style={[padding]} align='center'>
                 <TextInputMultilineFix
                   style={[
@@ -79,13 +82,7 @@ class ByPublicKey extends PureComponent {
                   ]}
                   multiline
                   placeholder='Type or copy/paste a berty user public key here'
-                  value={
-                    routeName === 'Enter a public key'
-                      ? contactID
-                      : (state.data.ContactList || [{ status: 'Myself' }]).find(
-                        c => c.status === 'Myself'
-                      ).id
-                  }
+                  value={routeName === 'Enter a public key' ? contactID : myID}
                   onChangeText={
                     routeName === 'Enter a public key'
                       ? contactID => this.setState({ contactID })
@@ -120,7 +117,7 @@ class ByPublicKey extends PureComponent {
                 )}
               </Flex.Rows>
             )
-          }
+          }}
         </QueryReducer>
       </Screen>
     )
