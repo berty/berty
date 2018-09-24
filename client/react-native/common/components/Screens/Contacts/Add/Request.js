@@ -42,7 +42,7 @@ class Request extends PureComponent {
                 state={state}
                 retry={retry}
                 subtitle={subtitle}
-                action='RequestValidation'
+                action='contacts/add/request-validation'
                 navigation={navigation}
               />
             )

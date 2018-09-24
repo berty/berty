@@ -51,31 +51,26 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     fontSize: 10,
     textAlign: 'center',
-    color: colors.textGrey,
   },
   smallText: {
     lineHeight: 20,
     fontSize: 14,
     textAlign: 'center',
-    color: colors.textGrey,
   },
   mediumText: {
     lineHeight: 20,
     fontSize: 16,
     textAlign: 'center',
-    color: colors.textGrey,
   },
   bigText: {
     lineHeight: 30,
     fontSize: 25,
     textAlign: 'center',
-    color: colors.textGrey,
   },
   largeText: {
     lineHeight: 23,
     fontSize: 18,
     textAlign: 'center',
-    color: colors.textGrey,
   },
   textGrey: {
     color: colors.textGrey,

@@ -16,7 +16,7 @@ export default class List extends PureComponent {
         title='Contacts'
         titleIcon='feather-users'
         rightBtnIcon='user-plus'
-        onPressRightBtn={() => navigation.push('Add')}
+        onPressRightBtn={() => navigation.push('contacts/add')}
         searchBar
         searchHandler={navigation.getParam('searchHandler')}
       />
@@ -86,7 +86,7 @@ class ContactListWrapper extends PureComponent {
         state={state}
         retry={retry}
         subtitle='Last seen 3 hours ago ...' // Placeholder
-        action='Detail'
+        action='contacts/detail'
         navigation={navigation}
       />
     )

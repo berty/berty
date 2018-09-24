@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react'
-import { FlatList, Text as TextNative } from 'react-native'
+import { FlatList } from 'react-native'
 import { colors } from '../../../constants'
 import { queries, mutations, subscriptions } from '../../../graphql'
 import { QueryReducer } from '../../../relay'
 import { Text, Flex, Screen, Header } from '../../Library'
-import { paddingHorizontal, shadow, textRight, textLeft } from '../../../styles'
+import { paddingHorizontal, shadow } from '../../../styles'
+import { conversation as utils } from '../../../utils'
 
 const Message = props => {
   const conversation = props.navigation.getParam('conversation')
@@ -13,44 +14,26 @@ const Message = props => {
     conversation.members.find(m => m.contactId === contactId).contact.status ===
     'Myself'
   return (
-    <Flex.Cols
-      style={{
-        marginTop: 4,
-        marginBottom: 4,
-        marginLeft: isMyself ? 30 : 0,
-        marginRight: isMyself ? 0 : 30,
+    <Text
+      padding={{
+        horizontal: 10,
+        vertical: 6,
       }}
-      justify={isMyself ? 'end' : 'start'}
+      left={!isMyself}
+      right={isMyself}
+      self={isMyself ? 'end' : 'start'}
+      background={colors.blue}
+      color={colors.white}
+      rounded={14.5}
+      margin={{
+        bottom: 16,
+        [isMyself ? 'left' : 'right']: 42,
+      }}
     >
-      <TextNative
-        style={[
-          {
-            color: colors.white,
-            backgroundColor: colors.blue,
-            padding: 8,
-            borderRadius: 12,
-            flexWrap: 'wrap',
-          },
-          isMyself ? textRight : textLeft,
-        ]}
-      >
-        {JSON.parse(props.data.attributes).message.text}
-      </TextNative>
-    </Flex.Cols>
+      {JSON.parse(props.data.attributes).message.text}
+    </Text>
   )
 }
-
-const getTitle = ({ title, members } = this.props) =>
-  title ||
-  members.map((m, index) => {
-    const displayName =
-      m.contact.status === 'Myself'
-        ? m.contact.status
-        : m.contact.overrideDisplayName || m.contact.displayName
-    const before =
-      index === 0 ? '' : index === members.length - 1 ? ' and ' : ', '
-    return `${before}${displayName}`
-  })
 
 class List extends PureComponent {
   onEndReached = () => {}
@@ -123,7 +106,7 @@ class Input extends PureComponent {
         middle
         padding
         margin
-        flex
+        height={36}
         rounded='circle'
         icon='edit-2'
         input={{
@@ -133,7 +116,6 @@ class Input extends PureComponent {
           autoFocus: true,
           value: this.state.input,
         }}
-        height={36}
         background={colors.grey8}
         color={colors.grey5}
         onSubmit={this.onSubmit}
@@ -147,8 +129,14 @@ export default class Detail extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title={getTitle(navigation.getParam('conversation'))}
+        title={utils.getTitle(navigation.getParam('conversation'))}
         backBtn
+        rightBtnIcon='settings'
+        onPressRightBtn={() =>
+          navigation.push('chats/settings', {
+            conversation: navigation.getParam('conversation'),
+          })
+        }
       />
     ),
   })

@@ -17,7 +17,6 @@ const Icon = ({ name, color, rotate, style, ...props }) => {
     name: iconName,
     color: color || colors.textGrey,
     style: [
-      { color: color || colors.textGrey },
       rotate && {
         transform: [
           { rotate: typeof rotate === 'boolean' ? '90deg' : `${rotate}deg` },

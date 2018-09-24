@@ -31,4 +31,6 @@ export default {
   success: '#15D09D',
   warning: '#FFD665',
   error: '#F00062',
+
+  background: '#FAFAFE',
 }
