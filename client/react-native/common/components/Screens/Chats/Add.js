@@ -101,8 +101,8 @@ class Item extends PureComponent {
           marginHorizontal,
         ]}
       >
-        <Flex.Cols align='left'>
-          <Flex.Rows size={1} align='left' style={{ marginLeft: 30 }}>
+        <Flex.Cols align='start'>
+          <Flex.Rows size={1} align='start' style={{ marginLeft: 30 }}>
             <Image
               style={{ width: 40, height: 40, borderRadius: 50 }}
               source={{
@@ -115,7 +115,7 @@ class Item extends PureComponent {
               }}
             />
           </Flex.Rows>
-          <Flex.Rows size={6} align='left' style={{ marginLeft: 14 }}>
+          <Flex.Rows size={6} align='start' style={{ marginLeft: 14 }}>
             <Text color={colors.black} left middle>
               {(status === 'Myself' && status) ||
                 overrideDisplayName ||
@@ -125,7 +125,7 @@ class Item extends PureComponent {
               Last seen 3 hours ago ...
             </Text>
           </Flex.Rows>
-          <Flex.Rows align='right' self='center'>
+          <Flex.Rows align='end' self='center'>
             <View
               style={[
                 selected ? null : border,

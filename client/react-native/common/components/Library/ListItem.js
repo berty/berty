@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../constants'
 import { Flex, Text } from '.'
-import { marginHorizontal } from '../../styles'
+import { marginHorizontal, marginLeft } from '../../styles'
 
 export default class ListItem extends PureComponent {
   render () {
@@ -19,20 +19,25 @@ export default class ListItem extends PureComponent {
           marginHorizontal,
         ]}
       >
-        <Flex.Cols align='left'>
-          <Flex.Rows size={1} align='left' style={{ marginLeft: 30 }}>
+        <Flex.Cols align='start'>
+          <Flex.Rows size={1} align='start' style={[marginLeft]}>
             <Image
-              style={{ width: 40, height: 40, borderRadius: 50 }}
+              style={{ width: 40, height: 40, borderRadius: 20 }}
               source={{
                 uri: 'https://api.adorable.io/avatars/285/' + title + '.png',
               }}
             />
           </Flex.Rows>
-          <Flex.Rows size={6} align='left' style={{ marginLeft: 14 }}>
+          <Flex.Rows
+            size={6}
+            align='start'
+            justify='around'
+            style={{ marginLeft: 14 }}
+          >
             <Text color={colors.black} left middle>
               {title}
             </Text>
-            <Text color={colors.subtleGrey} tiny>
+            <Text color={colors.subtleGrey} tiny middle left>
               {subtitle}
             </Text>
           </Flex.Rows>
