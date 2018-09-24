@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import Screens from './Screens'
 import { NativeModules } from 'react-native'
 import { subscriptions } from '../graphql'
+import { SafeAreaView } from 'react-navigation'
 
 const { CoreModule } = NativeModules
 
@@ -34,6 +35,10 @@ export default class App extends PureComponent {
   }
 
   render () {
-    return <Screens />
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <Screens />
+      </SafeAreaView>
+    )
   }
 }
