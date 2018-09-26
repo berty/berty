@@ -159,4 +159,4 @@ fastlane.ios.build.release: fastlane.setup_circle
 					include_symbols:false
 
 fastlane.ios.release:
-	time bundle exec fastlane run pilot upload --verbose
+	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/berty.ipa skip_waiting_for_build_processing:true

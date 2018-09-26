@@ -230,6 +230,8 @@ jobs:
       xcode: "9.4.1"
     environment:
       FL_OUTPUT_DIR: output
+      FASTLANE_SKIP_UPDATE_CHECK: 1
+      FASTLANE_HIDE_CHANGELOG: 1
     shell: /bin/bash --login -o pipefail
     steps:
       - run:
@@ -282,25 +284,25 @@ jobs:
             make ios
 
       - restore_cache:
-          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/ios/Gemfile.lock" }}-3
+          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
 
       - run:
-          working_directory: ~/go/src/berty.tech/client/react-native/mobile/ios
+          working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             bundle check || bundle install --path vendor/bundle
 
       - save_cache:
-          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/ios/Gemfile.lock" }}-3
+          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
           paths:
-            - client/react-native/mobile/ios/vendor/bundle
+            - client/react-native/vendor/bundle
 
       - run:
           name: build app
-          working_directory: ~/go/src/berty.tech/client/react-native/mobile/ios
+          working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
-            time bundle exec fastlane ios adhoc refresh_certificates:true use_temporary_keychain:true --verbose
+            make fastlane.ios.build.release
 
   client.rn.web:
     working_directory: ~/go/src/berty.tech
