@@ -144,7 +144,10 @@ fastlane.match.adhoc:
 fastlane.match.appstore:
 	time bundle exec fastlane run match type:appstore readonly:true
 
-fastlane.ios.build.release: fastlane.match.appstore
+fastlane.setup_circle:
+	time bundle exec fastlane run setup_circle_ci
+
+fastlane.ios.build.release: fastlane.setup_circle
 	mkdir -p $(BUILD_IOS)
 	time bundle exec fastlane run gym --verbose \
 					clean:true \
