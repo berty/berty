@@ -298,11 +298,19 @@ jobs:
             - client/react-native/vendor/bundle
 
       - run:
+          name: set version
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: |
+            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
+            make version
+
+      - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
-            make fastlane.ios.build.release
+            make fastlane.setup_circle \
+                 fastlane.ios.build.release
 
   client.rn.web:
     working_directory: ~/go/src/berty.tech
