@@ -5,27 +5,16 @@ import { colors } from '../../../constants'
 import { QueryReducer } from '../../../relay'
 import { subscriptions } from '../../../graphql'
 import { createFragmentContainer, graphql } from 'react-relay'
-
-const getTitle = ({ title, members } = this.props) =>
-  title ||
-  members.map((m, index) => {
-    const displayName =
-      m.contact.status === 'Myself'
-        ? m.contact.status
-        : m.contact.overrideDisplayName || m.contact.displayName
-    const before =
-      index === 0 ? '' : index === members.length - 1 ? ' and ' : ', '
-    return `${before}${displayName}`
-  })
+import { conversation as utils } from '../../../utils'
 
 class ListItemWrapper extends PureComponent {
   render () {
     const { data, navigation } = this.props
     return (
       <ListItem
-        title={getTitle(data)}
+        title={utils.getTitle(data)}
         subtitle='Last message sent 3 hours ago...' // Placeholder
-        onPress={() => navigation.push('Detail', { conversation: data })}
+        onPress={() => navigation.push('chats/detail', { conversation: data })}
       />
     )
   }
@@ -112,7 +101,7 @@ export default class ListScreen extends PureComponent {
         searchBar
         searchHandler={navigation.getParam('searchHandler')} // Placeholder
         onPressRightBtn={() =>
-          navigation.push('Add', {
+          navigation.push('chats/add', {
             goBack: () => {
               navigation.goBack(null)
               const retry = navigation.getParam('retry')

@@ -1,12 +1,6 @@
-import React from 'react'
-import {
-  TouchableOpacity,
-  View,
-  Text as TextNative,
-  TextInput,
-  Platform,
-} from 'react-native'
-import { Icon } from '.'
+import React, { Fragment } from 'react'
+import { View, Text as TextNative, TextInput, Platform } from 'react-native'
+import { Icon, Flex } from '.'
 import {
   tinyText,
   smallText,
@@ -22,6 +16,12 @@ import {
   bold,
   shadow,
   margin,
+  marginTop,
+  marginRight,
+  marginLeft,
+  marginBottom,
+  marginHorizontal,
+  marginVertical,
 } from '../../styles'
 import { colors } from '../../constants'
 
@@ -52,8 +52,20 @@ const getPadding = (
   }
 ) => {
   let padding = props.padding
-  if (typeof padding === 'boolean') {
-    padding = find({ inside: props, from: paddings, or: 'small' })
+  switch (typeof padding) {
+    case 'boolean':
+      padding = find({ inside: props, from: paddings, or: 'small' })
+      break
+    case 'string':
+      padding = paddings[padding]
+      break
+    case 'object':
+      return Object.keys(padding).reduce((a, key) => {
+        a[`padding${key.charAt(0).toUpperCase()}${key.slice(1)}`] = padding[key]
+        return a
+      }, {})
+    default:
+      return null
   }
   return {
     paddingVertical: padding / 3,
@@ -63,16 +75,16 @@ const getPadding = (
 
 const getIconPadding = (
   props,
-  paddings = {
-    tiny: 4,
-    small: 6,
+  margins = {
+    tiny: 5,
+    small: 7,
     medium: 8,
     large: 10,
     big: 12,
   }
 ) =>
   (props.children || props.input) && {
-    paddingRight: find({ inside: props, from: paddings, or: 'small' }),
+    marginRight: find({ inside: props, from: margins, or: 'small' }),
   }
 
 const getBorderRadius = (
@@ -151,14 +163,59 @@ const getJustify = (
   props,
   justify = {
     center: 'center',
-    left: 'flex-start',
-    right: 'flex-end',
+    left: 'start',
+    right: 'end',
   }
-) => find({ inside: props, from: justify, or: 'center' })
+) => find({ inside: props, from: justify, or: undefined })
+
+const getAlign = (
+  props,
+  align = {
+    middle: 'center',
+    top: 'start',
+    right: 'end',
+  }
+) => find({ inside: props, from: align, or: undefined })
+
+const getMargin = (
+  props,
+  margins = {
+    top: marginTop,
+    left: marginLeft,
+    right: marginRight,
+    bottom: marginBottom,
+    horizontal: marginHorizontal,
+    vertical: marginVertical,
+  }
+) => {
+  switch (typeof props.margin) {
+    case 'boolean':
+      return margin
+    case 'string':
+      return margins[props.margin]
+    case 'object':
+      return Object.keys(margins).reduce((a, key) => {
+        a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
+          props.margin[key]
+        return a
+      }, {})
+    default:
+      return null
+  }
+}
 
 export const BackgroundText = props => {
-  const { background, children, button, height, onPress } = props
-  const style = [
+  const {
+    background,
+    children,
+    height,
+    size,
+    justify,
+    align,
+    self,
+    onPress,
+  } = props
+  const styleProp = [
     {
       backgroundColor:
         (background === true && colors.blackGrey) ||
@@ -168,26 +225,25 @@ export const BackgroundText = props => {
     },
     getBorderRadius(props),
     getPadding(props),
+    getMargin(props),
     getOpacity(props),
     props.shadow && shadow,
-    props.margin && typeof props.margin === 'boolean'
-      ? margin
-      : { margin: props.margin },
-    props.flex && typeof props.flex === 'boolean'
-      ? { flex: 1 }
-      : { flex: props.flex },
   ]
-  return button ? (
-    <TouchableOpacity style={style} onPress={onPress}>
+  const flexProps = {
+    size,
+    justify: justify || getJustify(props),
+    align: align || getAlign(props),
+    self,
+  }
+  return (
+    <Flex.Cols {...flexProps} style={styleProp} onPress={onPress}>
       {children}
-    </TouchableOpacity>
-  ) : (
-    <View style={style}>{children}</View>
+    </Flex.Cols>
   )
 }
 
 export const ForegroundText = props => {
-  const { icon, input, style, children, height, onSubmit } = props
+  const { icon, input, children, height, ellipsis, onSubmit } = props
   const [vertical, horizontal, size, iconSize, weight, color, iconPadding] = [
     getVertiAlign(props),
     getHorizAlign(props),
@@ -198,15 +254,7 @@ export const ForegroundText = props => {
     getIconPadding(props),
   ]
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        flex: 1,
-        flexWrap: 'wrap',
-        justifyContent: getJustify(props),
-        alignItems: 'center',
-      }}
-    >
+    <Fragment>
       {icon && typeof icon === 'string' ? (
         <Icon
           name={icon}
@@ -214,7 +262,6 @@ export const ForegroundText = props => {
             iconSize,
             weight,
             color,
-            style,
             vertical,
             horizontal,
             iconPadding,
@@ -222,7 +269,7 @@ export const ForegroundText = props => {
           ]}
         />
       ) : (
-        icon
+        icon && <View style={[{ height }, iconPadding]}>{icon}</View>
       )}
       {input ? (
         <TextInput
@@ -231,36 +278,36 @@ export const ForegroundText = props => {
             size,
             weight,
             color,
-            style,
             vertical,
             horizontal,
             { height, lineHeight: height },
             {
-              flex: 1,
               ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
             },
+            { flex: 1 },
           ]}
           placeholder={children || input.placeholder}
-          placeholderTextColor={color}
+          placeholderTextColor={color.color}
           onSubmitEditing={onSubmit}
         />
       ) : (
         <TextNative
+          className={ellipsis ? 'textEllipsis' : 'textBreak'}
           style={[
             size,
             weight,
             color,
-            style,
             vertical,
             horizontal,
             { height, lineHeight: height },
-            { flexWrap: 'wrap' },
           ]}
+          ellipsizeMode={ellipsis && 'tail'}
+          numberOfLines={ellipsis && 1}
         >
           {children}
         </TextNative>
       )}
-    </View>
+    </Fragment>
   )
 }
 

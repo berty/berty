@@ -11,16 +11,16 @@ import { Header } from '../../../Library'
 
 export default createSubStackNavigator(
   {
-    Request,
-    ByQRCode,
-    ByPublicKey,
-    ByBump,
-    Invite,
-    RequestValidation,
-    Choice,
+    'contacts/add/request': Request,
+    'contacts/add/by-qr-code': ByQRCode,
+    'contacts/add/by-public-key': ByPublicKey,
+    'contacts/add/by-bump': ByBump,
+    'contacts/add/invite': Invite,
+    'contacts/add/request-validation': RequestValidation,
+    'contacts/add/choice': Choice,
   },
   {
-    initialRouteName: 'Choice',
+    initialRouteName: 'contacts/add/choice',
     navigationOptions: ({ navigation }) => ({
       header: (
         <Header

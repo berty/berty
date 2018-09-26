@@ -7,12 +7,12 @@ import { borderTop, shadow } from '../../styles'
 
 export default createTabNavigator(
   {
-    Contacts,
-    Chats,
-    Settings,
+    contacts: Contacts,
+    chats: Chats,
+    settings: Settings,
   },
   {
-    initialRouteName: 'Chats',
+    initialRouteName: 'chats',
     swipeEnabled: true,
     animationEnabled: true,
     tabBarPosition: 'bottom',

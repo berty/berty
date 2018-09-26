@@ -12,7 +12,14 @@
         <style>
           html, body { height: 100%; width: 100%; overflow: hidden; }
           .root { height: 100%; overflow: hidden; }
-          div { word-break: break-all; }
+          .textEllipsis {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap,
+          }
+          .textBreak {
+            word-break: break-all;
+          }
         </style>
 </head>
 <body style="height:100%">

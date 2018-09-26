@@ -16,31 +16,31 @@ export default class Choice extends PureComponent {
           <Item
             icon='user-plus'
             name='Pending requests'
-            link='Request'
+            link='contacts/add/request'
             navigation={navigation}
           />
           <Item
             icon='square'
             name='QR Code'
-            link='ByQRCode'
+            link='contacts/add/by-qr-code'
             navigation={navigation}
           />
           <Item
             icon='edit-2'
             name='Public key'
-            link='ByPublicKey'
+            link='contacts/add/by-public-key'
             navigation={navigation}
           />
           <Item
             icon='smartphone'
             name='Bump'
-            link='ByBump'
+            link='contacts/add/by-bump'
             navigation={navigation}
           />
           <Item
             icon='mail'
             name='Invite a friend'
-            link='Invite'
+            link='contacts/add/invite'
             navigation={navigation}
           />
         </Flex.Rows>
@@ -65,10 +65,10 @@ const Item = ({ icon, name, link, navigation }) => (
     ]}
   >
     <Flex.Cols size={1} align='center' justify='between'>
-      <Text icon={icon} large color={colors.white}>
+      <Text icon={icon} large color={colors.white} justify='start' size={6}>
         {name}
       </Text>
-      <Text icon='chevron-right' large color={colors.white} />
+      <Text icon='chevron-right' large color={colors.white} justify='end' />
     </Flex.Cols>
   </TouchableOpacity>
 )

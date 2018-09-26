@@ -12,17 +12,8 @@ import {
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
 
-const HeaderButton = ({ icon, color, onPress }) => {
-  return (
-    <Button
-      icon={icon}
-      large
-      disabled={onPress == null}
-      onPress={onPress}
-      color={color}
-      opacity={onPress == null ? 0.3 : 1}
-    />
-  )
+const HeaderButton = ({ icon, color, style, ...otherProps }) => {
+  return <Button icon={icon} large color={color} {...otherProps} />
 }
 
 export default class Header extends PureComponent {
@@ -65,8 +56,8 @@ export default class Header extends PureComponent {
         <Flex.Rows>
           <Flex.Cols
             size={1}
-            align='center'
             justify='between'
+            align='center'
             style={[searchBar ? paddingBottom : {}]}
           >
             {backBtn === true && (
@@ -74,18 +65,29 @@ export default class Header extends PureComponent {
                 icon='arrow-left'
                 color={colorBtnLeft}
                 onPress={() => navigation.goBack(null)}
+                justify='start'
+                middle
               />
             )}
-
-            <Text icon={titleIcon} left large color={colorText}>
+            <Text
+              icon={titleIcon}
+              left
+              large
+              color={colorText}
+              ellipsis
+              justify={backBtn ? 'center' : 'start'}
+              middle
+              size={5}
+            >
               {title}
             </Text>
-
             {rightBtnIcon !== null && (
               <HeaderButton
                 icon={rightBtnIcon}
                 color={colorBtnRight}
                 onPress={onPressRightBtn}
+                justify='end'
+                middle
               />
             )}
           </Flex.Cols>
