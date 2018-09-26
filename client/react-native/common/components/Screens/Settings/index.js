@@ -9,14 +9,14 @@ import MyQRCode from './MyQRCode'
 
 export default createStackNavigator(
   {
-    List,
-    Devtools,
-    MyAccount,
-    MyPublicKey,
-    MyQRCode,
+    'settings/list': List,
+    'settings/devtools': Devtools,
+    'settings/my-account': MyAccount,
+    'settings/my-public-key': MyPublicKey,
+    'settings/my-qr-code': MyQRCode,
   },
   {
-    initialRouteName: 'List',
+    initialRouteName: 'settings/list',
     navigationOptions: ({ navigation }) => ({
       header: (
         <Header navigation={navigation} title='Settings' titleIcon='settings' />

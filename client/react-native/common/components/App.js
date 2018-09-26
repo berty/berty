@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react'
 import Screens from './Screens'
-import { NativeModules } from 'react-native'
+import { NativeModules, Platform } from 'react-native'
 import { subscriptions } from '../graphql'
 import { SafeAreaView } from 'react-navigation'
-
+import KeyboardSpacer from 'react-native-keyboard-spacer'
 const { CoreModule } = NativeModules
 
 export default class App extends PureComponent {
@@ -38,6 +38,7 @@ export default class App extends PureComponent {
     return (
       <SafeAreaView style={{ flex: 1 }}>
         <Screens />
+        {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>
     )
   }

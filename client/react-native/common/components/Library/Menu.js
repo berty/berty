@@ -1,37 +1,50 @@
 import React, { Component, Fragment } from 'react'
+import { ActivityIndicator, StyleSheet, ScrollView, View } from 'react-native'
+import { Flex, Separator, Text } from '.'
 import {
-  ActivityIndicator,
-  StyleSheet,
-  ScrollView,
-  View,
-  TouchableOpacity,
-} from 'react-native'
-import { Separator, CustomTextInput, Icon, Text } from '.'
-import Flex from './Flex'
-import { largeText, margin, marginTopLeft, marginTop } from '../../styles'
+  marginTopLeft,
+  marginTop,
+  paddingLeft,
+  paddingHorizontal,
+  padding,
+} from '../../styles'
 import { colors } from '../../constants'
 
 export default class Menu extends Component {
-  static Section = ({ icon, title, children, style, ...props }) => (
-    <View
-      style={[
-        {
-          width: '100%',
-          backgroundColor: 'transparent',
-        },
-        marginTop,
-        !icon && !title && { marginTop: 32 },
-        style,
-      ]}
-    >
-      <Flex.Cols style={[marginTopLeft]}>
-        <Flex.Cols size={1} justify='start'>
-          {title && (
-            <Text small icon={icon} style={{ marginBottom: 7 }} {...props}>
-              {title}
+  static Header = ({ icon, title, description }) => (
+    <Flex.Cols style={[{ marginTop: 33 }, paddingHorizontal]} align='center'>
+      {icon && (
+        <Flex.Rows size={1} align={title ? 'end' : 'center'}>
+          {icon}
+        </Flex.Rows>
+      )}
+      {title && (
+        <Flex.Rows
+          size={3}
+          justify='between'
+          style={[paddingLeft, { height: 42 }]}
+        >
+          <Text medium color={colors.black} ellipsis>
+            {title}
+          </Text>
+          {description && (
+            <Text tiny color={colors.subtleGrey} ellipsis>
+              {description}
             </Text>
           )}
-        </Flex.Cols>
+        </Flex.Rows>
+      )}
+    </Flex.Cols>
+  )
+
+  static Section = ({ icon, title, children, style, ...props }) => (
+    <View style={[marginTop, style]}>
+      <Flex.Cols style={[marginTopLeft, { marginBottom: 8, marginTop: 32 }]}>
+        {title && (
+          <Text small icon={icon} {...props}>
+            {title}
+          </Text>
+        )}
       </Flex.Cols>
       <Separator />
       {children}
@@ -50,72 +63,66 @@ export default class Menu extends Component {
       })
 
     render (
-      { icon, title, style, color, children, onPress, onDelete } = this.props
+      { icon, input, title, style, color, children, onPress, onDelete } = this
+        .props
     ) {
       return (
         <Fragment>
-          <TouchableOpacity
-            style={[{ width: '100%', backgroundColor: colors.white }, style]}
+          <Flex.Cols
+            style={[{ backgroundColor: colors.white }, padding]}
             onPress={onPress}
           >
-            <Flex.Cols>
-              <Flex.Cols style={margin} size={7} justify='start'>
-                {children || (
-                  <Text small left icon={icon} color={color || colors.textGrey}>
-                    {title}
-                  </Text>
-                )}
-              </Flex.Cols>
-              {onDelete && (
-                <TouchableOpacity onPress={this._delete(onDelete)}>
-                  <Flex.Rows style={margin} self='right'>
-                    {this.state.delete ? (
-                      <ActivityIndicator color={color || colors.textGrey} />
-                    ) : (
-                      <Icon
-                        name='trash-2'
-                        style={[{ color: color || colors.textGrey }, largeText]}
-                      />
-                    )}
-                  </Flex.Rows>
-                </TouchableOpacity>
-              )}
-              {onPress && (
-                <Flex.Rows style={margin} self='right'>
-                  <Icon
-                    name='chevron-right'
-                    style={{ color: color || colors.textGrey }}
-                  />
-                </Flex.Rows>
+            <Flex.Cols justify='start' size={7}>
+              {children || (
+                <Text
+                  input={input}
+                  left
+                  small
+                  icon={icon}
+                  color={color || colors.textBlack}
+                  align='center'
+                  ellipsis
+                >
+                  {title}
+                </Text>
               )}
             </Flex.Cols>
-          </TouchableOpacity>
+            {onDelete &&
+              (this.state.delete ? (
+                <ActivityIndicator color={color || colors.textGrey} />
+              ) : (
+                <Text
+                  icon='trash-2'
+                  color={color}
+                  large
+                  right
+                  onPress={this.delete(onDelete)}
+                />
+              ))}
+            {onPress && (
+              <Text
+                icon='chevron-right'
+                color={color}
+                large
+                right
+                justify='end'
+              />
+            )}
+          </Flex.Cols>
           <Separator />
         </Fragment>
       )
     }
   }
 
-  static Input = ({ icon, style, ...props }) => (
-    <Fragment>
-      <Flex.Rows size={1} justify='start'>
-        {icon && <Icon name={icon} style={largeText} />}
-        <CustomTextInput
-          {...props}
-          style={[{ width: '100%', backgroundColor: colors.white }, style]}
-        />
-      </Flex.Rows>
-      <Separator />
-    </Fragment>
-  )
+  static Input = ({ ...props }) => <Menu.Item {...props} input />
 
   render () {
     const { style, absolute } = this.props
     return (
-      <ScrollView
-        style={[{ width: '100%' }, style, absolute && StyleSheet.absoluteFill]}
-      >
+      <ScrollView style={[style, absolute && StyleSheet.absoluteFill]}>
         {this.props.children}
+        <View style={[padding]} />
       </ScrollView>
     )
   }

@@ -6,13 +6,13 @@ import List from './List'
 
 export default createSubStackNavigator(
   {
-    List,
-    Add,
-    Detail,
-    Edit,
+    'contacts/list': List,
+    'contacts/add': Add,
+    'contacts/detail': Detail,
+    'contacts/edit': Edit,
   },
   {
-    initialRouteName: 'List',
+    initialRouteName: 'contacts/list',
     hedaer: null,
   }
 )

@@ -91,29 +91,32 @@ class ByPublicKey extends PureComponent {
                   selectTextOnFocus
                 />
                 {routeName === 'Enter a public key' && (
-                  <Button
-                    icon='plus'
-                    background={colors.blue}
-                    margin
-                    padding
-                    rounded={23}
-                    height={24}
-                    medium
-                    middle
-                    onPress={async () => {
-                      try {
-                        await mutations.contactRequest.commit({
-                          contactID: btoa(`CONTACT:${contactID}`),
-                        })
-                        navigation.goBack(null)
-                      } catch (err) {
-                        this.setState({ err })
-                        console.error(err)
-                      }
-                    }}
-                  >
-                    ADD THIS KEY
-                  </Button>
+                  <Flex.Cols>
+                    <Button
+                      icon='plus'
+                      background={colors.blue}
+                      margin
+                      padding
+                      rounded={23}
+                      height={24}
+                      medium
+                      middle
+                      justify='center'
+                      onPress={async () => {
+                        try {
+                          await mutations.contactRequest.commit({
+                            contactID: btoa(`CONTACT:${contactID}`),
+                          })
+                          navigation.goBack(null)
+                        } catch (err) {
+                          this.setState({ err })
+                          console.error(err)
+                        }
+                      }}
+                    >
+                      ADD THIS KEY
+                    </Button>
+                  </Flex.Cols>
                 )}
               </Flex.Rows>
             )
