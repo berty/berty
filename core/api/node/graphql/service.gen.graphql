@@ -417,6 +417,11 @@ type BertyP2pConversationNewMessageAttrs {
   message: BertyEntityMessage
 } 
 
+type BertyP2pDevtoolsMapsetAttrs {
+  key: String
+  val: String
+} 
+
 enum BertyP2pKind {
   Unknown
   Sent
@@ -428,6 +433,7 @@ enum BertyP2pKind {
   ContactShare
   ConversationInvite
   ConversationNewMessage
+  DevtoolsMapset
 } 
 
 

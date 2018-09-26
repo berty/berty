@@ -18,6 +18,8 @@ func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 }
 
 func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {
+	n.asyncWaitGroup.Add(1)
+	defer n.asyncWaitGroup.Done()
 	return &p2p.Void{}, n.handleEnvelope(ctx, input)
 }
 
@@ -26,6 +28,8 @@ func (n *Node) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
 }
 
 func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
+	n.asyncWaitGroup.Add(1)
+	defer n.asyncWaitGroup.Done()
 	event, err := n.OpenEnvelope(input)
 	if err != nil {
 		return err
@@ -34,6 +38,8 @@ func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
 }
 
 func (n *Node) OpenEnvelope(envelope *p2p.Envelope) (*p2p.Event, error) {
+	n.asyncWaitGroup.Add(1)
+	defer n.asyncWaitGroup.Done()
 	event := p2p.Event{}
 	if err := proto.Unmarshal(envelope.EncryptedEvent, &event); err != nil {
 		return nil, err

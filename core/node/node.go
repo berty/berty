@@ -27,6 +27,10 @@ type Node struct {
 	initDevice              *entity.Device
 	handleMutex             sync.Mutex
 	networkDriver           network.Driver
+	asyncWaitGroup          sync.WaitGroup
+	devtools                struct {
+		mapset map[string]string
+	}
 
 	pubkey    []byte // FIXME: use a crypto instance, i.e., enclave
 	b64pubkey string // FIXME: same as above

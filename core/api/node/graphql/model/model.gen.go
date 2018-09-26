@@ -103,6 +103,10 @@ type BertyP2pConversationInviteAttrs struct {
 type BertyP2pConversationNewMessageAttrs struct {
 	Message *BertyEntityMessage `json:"message"`
 }
+type BertyP2pDevtoolsMapsetAttrs struct {
+	Key *string `json:"key"`
+	Val *string `json:"val"`
+}
 type BertyP2pEvent struct {
 	ID                 string                  `json:"id"`
 	SenderID           *string                 `json:"senderId"`
@@ -552,11 +556,12 @@ const (
 	BertyP2pKindContactShare           BertyP2pKind = "ContactShare"
 	BertyP2pKindConversationInvite     BertyP2pKind = "ConversationInvite"
 	BertyP2pKindConversationNewMessage BertyP2pKind = "ConversationNewMessage"
+	BertyP2pKindDevtoolsMapset         BertyP2pKind = "DevtoolsMapset"
 )
 
 func (e BertyP2pKind) IsValid() bool {
 	switch e {
-	case BertyP2pKindUnknown, BertyP2pKindSent, BertyP2pKindAck, BertyP2pKindPing, BertyP2pKindContactRequest, BertyP2pKindContactRequestAccepted, BertyP2pKindContactShareMe, BertyP2pKindContactShare, BertyP2pKindConversationInvite, BertyP2pKindConversationNewMessage:
+	case BertyP2pKindUnknown, BertyP2pKindSent, BertyP2pKindAck, BertyP2pKindPing, BertyP2pKindContactRequest, BertyP2pKindContactRequestAccepted, BertyP2pKindContactShareMe, BertyP2pKindContactShare, BertyP2pKindConversationInvite, BertyP2pKindConversationNewMessage, BertyP2pKindDevtoolsMapset:
 		return true
 	}
 	return false

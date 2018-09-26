@@ -1769,6 +1769,71 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx con
 	return ec._BertyEntityMessage(ctx, field.Selections, res)
 }
 
+var bertyP2pDevtoolsMapsetAttrsImplementors = []string{"BertyP2pDevtoolsMapsetAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs(ctx context.Context, sel ast.SelectionSet, obj *model.BertyP2pDevtoolsMapsetAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pDevtoolsMapsetAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pDevtoolsMapsetAttrs")
+		case "key":
+			out.Values[i] = ec._BertyP2pDevtoolsMapsetAttrs_key(ctx, field, obj)
+		case "val":
+			out.Values[i] = ec._BertyP2pDevtoolsMapsetAttrs_val(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs_key(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pDevtoolsMapsetAttrs) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyP2pDevtoolsMapsetAttrs"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Key, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs_val(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pDevtoolsMapsetAttrs) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyP2pDevtoolsMapsetAttrs"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Val, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
 var bertyP2pEventImplementors = []string{"BertyP2pEvent", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -8898,6 +8963,11 @@ type BertyP2pConversationNewMessageAttrs {
   message: BertyEntityMessage
 } 
 
+type BertyP2pDevtoolsMapsetAttrs {
+  key: String
+  val: String
+} 
+
 enum BertyP2pKind {
   Unknown
   Sent
@@ -8909,6 +8979,7 @@ enum BertyP2pKind {
   ContactShare
   ConversationInvite
   ConversationNewMessage
+  DevtoolsMapset
 } 
 
 
