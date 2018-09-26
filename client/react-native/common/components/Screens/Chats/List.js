@@ -12,6 +12,7 @@ class ListItemWrapper extends PureComponent {
     const { data, navigation } = this.props
     return (
       <ListItem
+        id={data.id}
         title={utils.getTitle(data)}
         subtitle='Last message sent 3 hours ago...' // Placeholder
         onPress={() => navigation.push('chats/detail', { conversation: data })}
