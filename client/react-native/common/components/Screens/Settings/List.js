@@ -1,65 +1,124 @@
 import React, { PureComponent } from 'react'
-import { Menu } from '../../Library'
+import { Image, ActivityIndicator } from 'react-native'
+import { Menu, Text, Screen } from '../../Library'
+import { QueryReducer } from '../../../relay'
+import { queries } from '../../../graphql'
+import { colors } from '../../../constants'
 
 export default class List extends PureComponent {
+  static Menu = ({
+    navigation,
+    data: { displayName, overrideDisplayName },
+  }) => (
+    <Menu absolute>
+      <Menu.Header
+        icon={
+          <Image
+            style={{ width: 78, height: 78, borderRadius: 39 }}
+            source={{
+              uri:
+                'https://api.adorable.io/avatars/285/' +
+                (overrideDisplayName || displayName) +
+                '.png',
+            }}
+          />
+        }
+        title={overrideDisplayName || displayName}
+      />
+      <Menu.Section>
+        <Menu.Item
+          icon='user'
+          title='My account'
+          onPress={() => navigation.push('settings/my-account')}
+        />
+      </Menu.Section>
+      <Menu.Section>
+        <Menu.Item
+          icon='lock'
+          title='Security & privacy'
+          onPress={() => navigation.push('settings/security-and-privacy')}
+        />
+        <Menu.Item
+          icon='send'
+          title='Messages settings'
+          onPress={() => navigation.push('settings/messages-settings')}
+        />
+        <Menu.Item
+          icon='bell'
+          title='Notifications'
+          onPress={() => navigation.push('settings/notifications')}
+        />
+      </Menu.Section>
+      <Menu.Section>
+        <Menu.Item
+          icon='info'
+          title='About berty'
+          onPress={() => navigation.push('settings/security-and-privacy')}
+        />
+        <Menu.Item
+          icon='activity'
+          title='News'
+          onPress={() => navigation.push('settings/news')}
+        />
+      </Menu.Section>
+      <Menu.Section>
+        <Menu.Item
+          icon='terminal'
+          title='Dev tools'
+          onPress={() => this.props.navigation.push('settings/devtools')}
+        />
+        <Menu.Item
+          icon='life-buoy'
+          title='help'
+          onPress={() => console.log('settings/help')}
+        />
+        <Menu.Item
+          icon='layers'
+          title='Legal terms'
+          onPress={() => console.log('settings/legal-terms')}
+        />
+      </Menu.Section>
+    </Menu>
+  )
+
   render () {
     const { navigation } = this.props
     return (
-      <Menu absolute>
-        <Menu.Section>
-          <Menu.Item
-            icon='user'
-            title='My account'
-            onPress={() => console.log('Account')}
-          />
-        </Menu.Section>
-        <Menu.Section>
-          <Menu.Item
-            icon='lock'
-            title='Security & Privacy'
-            onPress={() => console.log('Security')}
-          />
-          <Menu.Item
-            icon='send'
-            title='Message settings'
-            onPress={() => console.log('Message')}
-          />
-          <Menu.Item
-            icon='bell'
-            title='Notifications'
-            onPress={() => console.log('Notifications')}
-          />
-        </Menu.Section>
-        <Menu.Section>
-          <Menu.Item
-            icon='info'
-            title='About Berty'
-            onPress={() => console.log('About')}
-          />
-          <Menu.Item
-            icon='activity'
-            title='News'
-            onPress={() => console.log('News')}
-          />
-        </Menu.Section>
-        <Menu.Section>
-          <Menu.Item
-            icon='terminal'
-            title='Dev tools'
-            onPress={() => navigation.push('settings/devtools')}
-          />
-          <Menu.Item
-            icon='life-buoy'
-            title='Support'
-            onPress={() => console.log('Support')}
-          />
-          <Menu.Item
-            icon='layers'
-            title='Legal mentions'
-            onPress={() => console.log('Legal')}
-          />
-        </Menu.Section>
-      </Menu>
+      <Screen>
+        <QueryReducer query={queries.ContactList}>
+          {(state, retry) => {
+            switch (state.type) {
+              default:
+              case state.loading:
+                return <ActivityIndicator />
+              case state.success:
+                return (
+                  <List.Menu
+                    navigation={navigation}
+                    data={{
+                      ...state.data.ContactList.find(
+                        contact => contact.status === 'Myself'
+                      ),
+                    }}
+                  />
+                )
+              case state.error:
+                return (
+                  <Text
+                    background={colors.error}
+                    color={colors.white}
+                    medium
+                    middle
+                    center
+                    self='center'
+                  >
+                    An unexpected error occured, please restart the application
+                  </Text>
+                )
+            }
+          }}
+        </QueryReducer>
+      </Screen>
     )
   }
 }

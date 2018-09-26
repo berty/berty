@@ -33,6 +33,7 @@ export default class ContactList extends PureComponent {
         onRefresh={retry}
         renderItem={data => (
           <ListItem
+            id={data.item.id}
             title={data.item.overrideDisplayName || data.item.displayName}
             subtitle={subtitle}
             onPress={() => navigation.push(action, { id: data.item.id })}
