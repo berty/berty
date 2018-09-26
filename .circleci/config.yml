@@ -176,6 +176,7 @@ jobs:
       - persist_to_workspace:
           root: ~/go/src/berty.tech
           paths:
+            - client/react-native/common
             - client/react-native/node_modules
             - client/react-native/gomobile/node_modules
             - client/react-native/common/node_modules
@@ -229,9 +230,13 @@ jobs:
     macos:
       xcode: "9.4.1"
     environment:
-      FL_OUTPUT_DIR: output
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
+      SCAN_OUTPUT_DIRECTORY: /tmp/fl/scan
+      GYM_OUTPUT_DIRECTORY: /tmp/fl/gym
+      FL_BUILDLOG_PATH: /tmp/fl/build
+      SCAN_INCLUDE_SIMULATOR_LOGS: true
+
     shell: /bin/bash --login -o pipefail
     steps:
       - run:
@@ -311,6 +316,9 @@ jobs:
             ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             make fastlane.setup_circle \
                  fastlane.ios.build.release
+      - store_artifacts:
+          path: /tmp/fl
+
 
   client.rn.web:
     working_directory: ~/go/src/berty.tech
