@@ -14,12 +14,22 @@ import (
 	"github.com/pkg/errors"
 )
 
+func (n *Node) AsyncWait() {
+	n.asyncWaitGroup.Wait()
+}
+
 // HandleEvent implements berty.p2p.HandleEvent (synchronous unary)
 func (n *Node) HandleEvent(ctx context.Context, input *p2p.Event) (*node.Void, error) {
-	return &node.Void{}, n.handleEvent(ctx, input)
+	n.asyncWaitGroup.Add(1)
+	defer n.asyncWaitGroup.Done()
+	err := n.handleEvent(ctx, input)
+	//time.Sleep(100 * time.Millisecond)
+	return &node.Void{}, err
 }
 
 func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
+	n.asyncWaitGroup.Add(1)
+	defer n.asyncWaitGroup.Done()
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
@@ -69,6 +79,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		p2p.Kind_ContactShareMe:         n.handleContactShareMe,
 		p2p.Kind_ConversationInvite:     n.handleConversationInvite,
 		p2p.Kind_ConversationNewMessage: n.handleConversationNewMessage,
+		p2p.Kind_DevtoolsMapset:         n.handleDevtoolsMapset,
 	}[input.Kind]
 	var handlingError error
 	if !found {

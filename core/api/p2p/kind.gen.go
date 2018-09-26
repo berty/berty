@@ -179,6 +179,25 @@ func (e *Event) SetConversationNewMessageAttrs(attrs *ConversationNewMessageAttr
 	return nil
 }
 
+// GetDevtoolsMapsetAttrs is a typesafe version of GetAttrs
+func (e *Event) GetDevtoolsMapsetAttrs() (*DevtoolsMapsetAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &DevtoolsMapsetAttrs{}, nil
+	}
+	var attrs DevtoolsMapsetAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetDevtoolsMapsetAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetDevtoolsMapsetAttrs(attrs *DevtoolsMapsetAttrs) error {
+	raw, err := proto.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetAttrs parses the embedded attributes
 func (e *Event) GetAttrs() (proto.Message, error) {
 	switch e.Kind {
@@ -200,6 +219,8 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetConversationInviteAttrs()
 	case Kind_ConversationNewMessage:
 		return e.GetConversationNewMessageAttrs()
+	case Kind_DevtoolsMapset:
+		return e.GetDevtoolsMapsetAttrs()
 	}
 	return nil, fmt.Errorf("not supported event kind: %q", e.Kind)
 }
