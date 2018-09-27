@@ -44,9 +44,14 @@ android: mobile
 .PHONY: patch-xcode10
 patch-xcode10:
 ifeq ("$(XCODE_MAJOR)", "10")
-	(patch -N ./node_modules/react-native/scripts/ios-install-third-party.sh ./patch/ios-install-third-party.sh.patch \
-	&& patch -N ./node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj/project.pbxproj ./patch/project.pbxproj.patch \
-	&& cd ./node_modules/react-native && ./scripts/ios-install-third-party.sh) || true
+	cd node_modules/react-native \
+		&& cp scripts/ios-install-third-party.sh . \
+		&& rm -rf third-party \
+		&& ./ios-install-third-party.sh \
+		&& cp scripts/ios-configure-glog.sh third-party/glog-0.3.4 \
+		&& cd third-party/glog-0.3.4 \
+		&& ./ios-configure-glog.sh
+	patch -N ./node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj/project.pbxproj ./patch/project.pbxproj.patch || true
 else
 	@echo "patch-xcode10: skipping patch, using xcode $(XCODE_MAJOR)"
 endif
