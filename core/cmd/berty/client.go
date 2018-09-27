@@ -13,6 +13,9 @@ import (
 
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/client/jsonclient"
+
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 )
 
 type clientOptions struct {
@@ -66,8 +69,21 @@ func newClientCommand() *cobra.Command {
 func clientServerStream(opts *clientOptions) error {
 	ctx := context.Background()
 
+	tracer, closer, err := initTracer("berty-client")
+	if err != nil {
+		return err
+	}
+	defer closer.Close()
+
+	dialopts := []grpc.DialOption{
+		grpc.WithInsecure(),
+		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
+			grpc_opentracing.StreamClientInterceptor(grpc_opentracing.WithTracer(tracer)),
+		)),
+	}
+
 	logger().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
-	conn, err := grpc.Dial(opts.nodeAddress, grpc.WithInsecure())
+	conn, err := grpc.Dial(opts.nodeAddress, dialopts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to dial node")
 	}
@@ -121,8 +137,21 @@ func clientServerStream(opts *clientOptions) error {
 func clientUnary(opts *clientOptions) error {
 	ctx := context.Background()
 
+	tracer, closer, err := initTracer("berty-client")
+	if err != nil {
+		return err
+	}
+	defer closer.Close()
+
+	dialopts := []grpc.DialOption{
+		grpc.WithInsecure(),
+		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+			grpc_opentracing.UnaryClientInterceptor(grpc_opentracing.WithTracer(tracer)),
+		)),
+	}
+
 	logger().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
-	conn, err := grpc.Dial(opts.nodeAddress, grpc.WithInsecure())
+	conn, err := grpc.Dial(opts.nodeAddress, dialopts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to dial node")
 	}
