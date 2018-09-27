@@ -41,6 +41,8 @@ import (
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
+
+	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 )
 
 var defaultBootstrap = []string{
@@ -103,6 +105,12 @@ func newDaemonCommand() *cobra.Command {
 func daemon(opts *daemonOptions) error {
 	errChan := make(chan error)
 
+	tracer, closer, err := initTracer("berty-daemon")
+	if err != nil {
+		return err
+	}
+	defer closer.Close()
+
 	interceptors := []grpc.ServerOption{
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_ctxtags.StreamServerInterceptor(),
@@ -111,6 +119,7 @@ func daemon(opts *daemonOptions) error {
 			grpc_zap.StreamServerInterceptor(zap.L()),
 			//grpc_auth.StreamServerInterceptor(myAuthFunction),
 			grpc_recovery.StreamServerInterceptor(),
+			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(tracer)),
 		)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			grpc_ctxtags.UnaryServerInterceptor(),
@@ -119,6 +128,7 @@ func daemon(opts *daemonOptions) error {
 			grpc_zap.UnaryServerInterceptor(zap.L()),
 			//grpc_auth.UnaryServerInterceptor(myAuthFunction),
 			grpc_recovery.UnaryServerInterceptor(),
+			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(tracer)),
 		)),
 	}
 

@@ -20,6 +20,7 @@ KEYCHAIN_PASSWORD ?= berty_pass
 
 SCALE ?= 1
 PORT ?= 0
+SERV ?=
 
 .PHONY: all
 all: $(ROOT) $(DEPS)
@@ -95,12 +96,16 @@ webapp.list:
 		| sed 's/\(0\.\)\{3\}0:1\([0-9]\)\{3\}->1\([0-9]\)\{3\}\/tcp\, \(0\.\)\{3\}0://g' | sed 's/->.*$$//g'
 
 webapp.logs:
-	@docker-compose logs -f
+	@docker-compose logs -f $(SERV)
 
 webapp.open:
 	@GQL_PORTS=`docker ps -f name=react-native_core-service --format "{{.Ports}}" |			\
 				awk 'match($$0,/:8[0-9]{3}->/) {print substr($$0,RSTART+1,RLENGTH-3)}'`;	\
 	COUNT=$$(echo "$$GQL_PORTS" | sed '/^\s*$$/d' | wc -l | tr -d ' ');						\
+	if [[ $$(docker ps -f name=react-native_tracer-service -q) ]]; then						\
+		COUNT=$$((COUNT+1));																\
+		open "http://localhost:16686";														\
+	fi;																						\
 	echo "Openning $$COUNT webapp tabs in browser...";										\
 	for PORT in $$GQL_PORTS; do open "http://localhost:3001?gql-port=$$PORT"; done
 
@@ -124,13 +129,15 @@ webapp.reset:
 		echo "Reset not implemented yet $$ID";																\
 	done
 
-webapp.rebuild:
+webapp.rebuild: webapp.rm
 	@docker-compose build --pull
 
-webapp.rm:
-	@CONT_ID=`echo $$(docker ps -a -f name=react-native_core-service -q) $$(docker ps -a -f name=react-native_web-service -q)`;	\
-	COUNT=$$(echo "$$CONT_ID" | sed '/^\s*$$/d' | wc -w | tr -d ' ');															\
-	echo "Deleting $$COUNT previously generated containers...";																	\
+webapp.rm: webapp.stop
+	@CONT_ID=`echo $$(docker ps -a -f name=react-native_core-service -q)		\
+					$$(docker ps -a -f name=react-native_tracer-service -q)		\
+					$$(docker ps -a -f name=react-native_web-service -q)`;		\
+	COUNT=$$(echo "$$CONT_ID" | sed '/^\s*$$/d' | wc -w | tr -d ' ');			\
+	echo "Deleting $$COUNT previously generated containers...";					\
 	if [ $$COUNT -ne 0 ]; then docker rm $$CONT_ID; fi
 
 .PHONY: version

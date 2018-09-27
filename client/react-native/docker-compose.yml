@@ -11,11 +11,28 @@ services:
       - /usr/src/app/node_modules
       - /usr/src/app/web/node_modules
 
+  tracer-service:
+    image: jaegertracing/all-in-one:1.6
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
+
   core-service:
     build: ../..
     image: bertychat/berty
+    environment:
+      - JAEGER_AGENT_HOST=react-native_tracer-service_1
+      - JAEGER_AGENT_PORT=6831
     ports:
       - "8701-8801:8700"
       - "1338-1438:1337"
     depends_on:
       - web-service
+      - tracer-service
