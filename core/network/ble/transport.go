@@ -6,15 +6,34 @@ import (
 	"time"
 
 	logging "github.com/ipfs/go-log"
+	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
-	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	manet "github.com/multiformats/go-multiaddr-net"
 	"github.com/satori/go.uuid"
+	"unsafe"
 	mafmt "github.com/whyrusleeping/mafmt"
 )
+
+/*
+#cgo CFLAGS: -x objective-c -Wno-incompatible-pointer-types -Wno-missing-field-initializers -Wno-missing-prototypes -Werror=return-type -Wdocumentation -Wunreachable-code -Wno-implicit-atomic-properties -Werror=deprecated-objc-isa-usage -Wno-objc-interface-ivars -Werror=objc-root-class -Wno-arc-repeated-use-of-weak -Wimplicit-retain-self -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wdeprecated-implementations -DNS_BLOCK_ASSERTIONS=1 -DOBJC_OLD_DISPATCH_PROTOTYPES=0
+#cgo LDFLAGS: -framework Foundation -framework CoreBluetooth
+#import "ble.h"
+*/
+import "C"
+
+func BLEInit() {
+	// go C.init()
+}
+
+func BLEStartAdvertising() {
+	go C.startAdvertising()
+}
+
+func BLEStartDiscover() {
+	go C.startDiscover()
+}
 
 // DefaultConnectTimeout is the (default) maximum amount of time the TCP
 // transport will spend on the initial TCP connect before giving up.
@@ -24,9 +43,7 @@ var log = logging.Logger("ble-tpt")
 
 // BLETransport is the TCP transport.
 type BLETransport struct {
-	// Connection upgrader for upgrading insecure stream connections to
-	// secure multiplex connections.
-	Upgrader *tptu.Upgrader
+	MySelf host.Host
 
 	// Explicitly disable reuseport.
 	DisableReuseport bool
@@ -41,9 +58,9 @@ var _ tpt.Transport = &BLETransport{}
 
 // NewBLETransport creates a tcp transport object that tracks dialers and listeners
 // created. It represents an entire tcp stack (though it might not necessarily be)
-func NewBLETransport(upgrader *tptu.Upgrader) *BLETransport {
+func NewBLETransport(me host.Host) *BLETransport {
 	fmt.Println("1")
-	return &BLETransport{Upgrader: upgrader, ConnectTimeout: DefaultConnectTimeout}
+	return &BLETransport{ConnectTimeout: DefaultConnectTimeout, MySelf: me}
 }
 
 // CanDial returns true if this transport believes it can dial the given
@@ -52,33 +69,14 @@ func (t *BLETransport) CanDial(addr ma.Multiaddr) bool {
 	return mafmt.BLE.Matches(addr)
 }
 
-func (t *BLETransport) maDial(ctx context.Context, raddr ma.Multiaddr) (manet.Conn, error) {
-	fmt.Println("2")
-	// Apply the deadline iff applicable
-	if t.ConnectTimeout > 0 {
-		deadline := time.Now().Add(t.ConnectTimeout)
-		if d, ok := ctx.Deadline(); !ok || deadline.Before(d) {
-			var cancel func()
-			ctx, cancel = context.WithDeadline(ctx, deadline)
-			defer cancel()
-		}
-	}
-
-	if t.UseReuseport() {
-		return t.reuse.DialContext(ctx, raddr)
-	}
-	var d manet.Dialer
-	return d.DialContext(ctx, raddr)
-}
-
-// Dial dials the peer at the remote address.
+// Dial dials the   peer at the remote address.
 func (t *BLETransport) Dial(ctx context.Context, raddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	fmt.Println("3")
-	conn, err := t.maDial(ctx, raddr)
-	if err != nil {
-		return nil, err
-	}
-	return t.Upgrader.UpgradeOutbound(ctx, t, conn, p)
+	// conn, err := t.maDial(ctx, raddr)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	return nil, nil
 }
 
 // UseReuseport returns true if reuseport is enabled and available.
@@ -87,21 +85,25 @@ func (t *BLETransport) UseReuseport() bool {
 	return false
 }
 
-func (t *BLETransport) maListen(laddr ma.Multiaddr) (manet.Listener, error) {
-	fmt.Println("5")
-	if t.UseReuseport() {
-		return t.reuse.Listen(laddr)
-	}
-	return manet.Listen(laddr)
-}
-
 // Listen listens on the given multiaddr.
 func (t *BLETransport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 	fmt.Println("6")
+	peerID := C.CString(t.MySelf.ID().Pretty())
+	go func () {
+		C.init(peerID)
+		C.free(unsafe.Pointer(peerID))
+	}()
+	fmt.Printf("PPPPPPPPPPEEEEEEEEEEEERRRR IIIIIIDDDDDDD %s\n\n\n", t.MySelf.ID().Pretty())
+	// go C.startAdvertising()
+	// go C.startDiscover()
+	
+	
 	id, _ := uuid.NewV4()
 	maaddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d/ble/%s", 1280, id.String()))
+	fmt.Println("returned")
 	return &BLEListener{
-		maAddr: maaddr,
+		maAddr:   maaddr,
+		incoming: make(chan []byte),
 	}, nil
 }
 

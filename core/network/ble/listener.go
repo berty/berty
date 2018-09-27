@@ -12,9 +12,11 @@ import (
 // BLEListener implement ipfs Listener interface
 type BLEListener struct {
 	tpt.Listener
-	addr    string
-	network string
-	maAddr  ma.Multiaddr
+	addr     string
+	network  string
+	incoming chan []byte
+
+	maAddr ma.Multiaddr
 }
 
 func (b *BLEListener) Addr() net.Addr {
@@ -31,6 +33,8 @@ func (b *BLEListener) Multiaddr() ma.Multiaddr {
 
 func (b *BLEListener) Accept() (tpt.Conn, error) {
 	fmt.Println("BLEListener Accept")
+	inc := <-b.incoming
+	fmt.Printf("incoming %+v\n", inc)
 	id, _ := uuid.NewV4()
 	laddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d/ble/%s", 1280, id.String()))
 	rid, _ := uuid.NewV4()
