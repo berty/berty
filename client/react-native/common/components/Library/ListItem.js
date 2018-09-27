@@ -21,7 +21,7 @@ export default class ListItem extends PureComponent {
         <Flex.Cols align='center'>
           <Flex.Rows size={1} align='center'>
             <Image
-              style={{ width: 40, height: 40, borderRadius: 20 }}
+              style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
               source={{
                 uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
               }}
