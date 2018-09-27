@@ -6,7 +6,7 @@ import { marginLeft, padding } from '../../styles'
 
 export default class ListItem extends PureComponent {
   render () {
-    const { title, subtitle, onPress } = this.props
+    const { id, title, subtitle, onPress } = this.props
     return (
       <TouchableOpacity
         onPress={onPress}
@@ -23,7 +23,7 @@ export default class ListItem extends PureComponent {
             <Image
               style={{ width: 40, height: 40, borderRadius: 20 }}
               source={{
-                uri: 'https://api.adorable.io/avatars/285/' + title + '.png',
+                uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
               }}
             />
           </Flex.Rows>

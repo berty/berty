@@ -20,7 +20,7 @@ export default class Choice extends PureComponent {
             navigation={navigation}
           />
           <Item
-            icon='square'
+            icon='material-qrcode-scan'
             name='QR Code'
             link='contacts/add/by-qr-code'
             navigation={navigation}
