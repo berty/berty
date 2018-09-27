@@ -19,79 +19,15 @@ default_platform :ios
 
 platform :ios do
 
-  ####### Certificates #######
-
-  desc "Installs the certificates and profiles locally"
-  lane :certificates do |options|
-    if options[:use_temporary_keychain]
-      create_temporary_keychain
-    end
-
-    readonly = (options[:refresh_certificates] ? false : true)
-    # force_for_new_devices = !readonly
-
-    match(
-      app_identifier: "chat.berty.tech",
-      # team_id: "XXX",
-      type: "development",
-      readonly: true,
-      # force_for_new_devices: force_for_new_devices
-    )
-
-    match(
-      # git_branch: "Company-Enterprise",
-      app_identifier: "chat.berty.tech",
-      # team_id: "XXX",
-      type: "adhoc",
-      readonly: true,
-    )
-
-    if options[:use_temporary_keychain]
-      sh "security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k #{ENV["KEYCHAIN_NAME"]} #{ENV["KEYCHAIN_PASSWORD"]}"
-    end
-  end
-
-  private_lane :create_temporary_keychain do
-    keychain_name = "temporary_keychain"
-    ENV["KEYCHAIN_NAME"] = keychain_name
-    ENV["KEYCHAIN_PASSWORD"] = keychain_name
-    ENV["MATCH_KEYCHAIN_NAME"] = keychain_name
-    ENV["MATCH_KEYCHAIN_PASSWORD"] = keychain_name
-
-    create_keychain(
-      default_keychain: true,
-      unlock: true,
-      timeout: 3600,
-      add_to_search_list: true
-    )
-  end    ####### Builds #######
-
-    desc "Submit a new Alpha Build to Fabric"
-
-    desc "Submit a new build to iTunes Connect"
-    lane :adhoc do |options|
-    certificates(
-        use_temporary_keychain: options[:use_temporary_keychain],
-        refresh_certificates: options[:refresh_certificates]
-    )
-
-    increment_build_number(
-        build_number: ENV["BUILD_NUMBER"]
-    )
-
+  lane :build do |options|
     gym(
-        verbose: true,
-        configuration: "Debug",
-        scheme: "berty",
-        clean: true,
-        include_symbols: true,
-        export_method: "development",
-        export_options: {
-          provisioningProfiles: {
-            "chat.berty.tech" => "match Development chat.berty.tech"
-          }
-        }
+      verbose: true,
+      configuration: "Debug",
+      scheme: "berty",
+      clean: true,
+      include_symbols: true,
+      export_method: "development",
     )
-    end
+  end
 
 end

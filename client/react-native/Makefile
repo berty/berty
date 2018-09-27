@@ -136,19 +136,21 @@ version:
 fastlane.match.development:
 	time bundle exec fastlane run match type:development
 
-fastlane.match.adhoc:
-	time bundle exec fastlane run match type:adhoc
-
 fastlane.match.appstore:
 	time bundle exec fastlane run match type:appstore
 
+fastlane.match.adhoc:
+	time bundle exec fastlane run match type:adhoc
+
+fastlane.match.enterprise:
+	time bundle exec fastlane run match type:enterprise
+
 fastlane.setup_circle:
 	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
-	bundle exec fastlane run match type:development readonly:true keychain_name:$(KEYCHAIN_NAME) keychain_password:$(KEYCHAIN_PASSWORD)
 	bundle exec fastlane run match type:appstore readonly:true keychain_name:$(KEYCHAIN_NAME) keychain_password:$(KEYCHAIN_PASSWORD)
 	security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(KEYCHAIN_PASSWORD) $(KEYCHAIN_NAME)
 
-fastlane.ios.build.release:
+fastlane.ios.build:
 	mkdir -p $(BUILD_IOS)
 	time bundle exec fastlane run gym --verbose \
 					clean:true \
@@ -157,7 +159,7 @@ fastlane.ios.build.release:
 					output_directory:$(BUILD_IOS) \
 					project:mobile/ios/berty.xcodeproj \
 					scheme:release \
-					include_symbols:false
+					include_symbols:false \
 
 fastlane.ios.release:
 	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/berty.ipa skip_waiting_for_build_processing:true
