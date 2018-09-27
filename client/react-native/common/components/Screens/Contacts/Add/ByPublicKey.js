@@ -102,6 +102,7 @@ class ByPublicKey extends PureComponent {
                       medium
                       middle
                       center
+                      self='stretch'
                       onPress={async () => {
                         try {
                           await mutations.contactRequest.commit({
