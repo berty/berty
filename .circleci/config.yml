@@ -315,7 +315,7 @@ jobs:
           command: |
             ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             make fastlane.setup_circle \
-                  fastlane.ios.build.release
+                  fastlane.ios.build
 
       - store_artifacts:
           path: /tmp/fl
