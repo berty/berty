@@ -29,50 +29,56 @@ class ByQRCode extends PureComponent {
           {routeName === 'Scan a QR code' && (
             <Fragment>
               <QRReader />
-              <Button
-                icon='plus'
-                background={colors.blue}
-                margin
-                padding
-                rounded={23}
-                height={24}
-                medium
-                middle
-                onPress={async () => {
-                  try {
-                    console.log(
-                      await commit(mutations.ContactRequest, { contactID })
-                    )
-                    navigation.goBack(null)
-                  } catch (err) {
-                    this.setState({ err })
-                    console.error(err)
-                  }
-                }}
-              >
-                ADD THIS KEY
-              </Button>
+              <Flex.Cols justify='center'>
+                <Button
+                  icon='plus'
+                  background={colors.blue}
+                  margin
+                  padding
+                  rounded={23}
+                  height={24}
+                  medium
+                  middle
+                  center
+                  onPress={async () => {
+                    try {
+                      console.log(
+                        await commit(mutations.ContactRequest, { contactID })
+                      )
+                      navigation.goBack(null)
+                    } catch (err) {
+                      this.setState({ err })
+                      console.error(err)
+                    }
+                  }}
+                >
+                  ADD THIS KEY
+                </Button>
+              </Flex.Cols>
             </Fragment>
           )}
           {routeName === 'View my QR code' &&
             Platform.OS === 'web' && (
             <Fragment>
               <QRCode value={myID} logo={logo} size={256} logoWidth={100} />
-              <Button
-                icon='share'
-                background={colors.blue}
-                margin
-                padding
-                rounded={23}
-                height={24}
-                medium
-                middle
-                onPress={() => {
-                  console.log('Share: ', myID)
-                }}
-              >
-                  SHARE THE KEY
-              </Button>
+              <Flex.Cols justify='center'>
+                <Button
+                  icon='plus'
+                  background={colors.blue}
+                  margin
+                  padding
+                  rounded={23}
+                  height={24}
+                  medium
+                  middle
+                  center
+                  onPress={() => {
+                    console.log('Share: ', myID)
+                  }}
+                >
+                    SHARE THE KEY
+                </Button>
+              </Flex.Cols>
             </Fragment>
           )}
         </Flex.Rows>
