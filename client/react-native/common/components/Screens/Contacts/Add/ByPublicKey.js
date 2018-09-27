@@ -91,7 +91,7 @@ class ByPublicKey extends PureComponent {
                   selectTextOnFocus
                 />
                 {routeName === 'Enter a public key' && (
-                  <Flex.Cols>
+                  <Flex.Cols justify='center'>
                     <Button
                       icon='plus'
                       background={colors.blue}
@@ -101,7 +101,8 @@ class ByPublicKey extends PureComponent {
                       height={24}
                       medium
                       middle
-                      justify='center'
+                      center
+                      self='stretch'
                       onPress={async () => {
                         try {
                           await mutations.contactRequest.commit({

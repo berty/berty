@@ -77,7 +77,10 @@ export default class Settings extends PureComponent {
               <Image
                 style={{ width: 78, height: 78, borderRadius: 39 }}
                 source={{
-                  uri: 'https://api.adorable.io/avatars/285/' + title + '.png',
+                  uri:
+                    'https://api.adorable.io/avatars/285/' +
+                    conversation.id +
+                    '.png',
                 }}
               />
             }

@@ -63,8 +63,17 @@ export default class Menu extends Component {
       })
 
     render (
-      { icon, input, title, style, color, children, onPress, onDelete } = this
-        .props
+      {
+        icon,
+        input,
+        value,
+        title,
+        style,
+        color,
+        children,
+        onPress,
+        onDelete,
+      } = this.props
     ) {
       return (
         <Fragment>
@@ -75,7 +84,11 @@ export default class Menu extends Component {
             <Flex.Cols justify='start' size={7}>
               {children || (
                 <Text
-                  input={input}
+                  input={
+                    input && {
+                      value,
+                    }
+                  }
                   left
                   small
                   icon={icon}
@@ -115,7 +128,7 @@ export default class Menu extends Component {
     }
   }
 
-  static Input = ({ ...props }) => <Menu.Item {...props} input />
+  static Input = props => <Menu.Item {...props} input />
 
   render () {
     const { style, absolute } = this.props

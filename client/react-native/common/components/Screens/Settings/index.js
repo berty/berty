@@ -1,5 +1,5 @@
 import React from 'react'
-import { createStackNavigator } from 'react-navigation'
+import { createSubStackNavigator } from '../../../helpers/react-navigation'
 import { Header } from '../../Library'
 import List from './List'
 import Devtools from './Devtools'
@@ -7,7 +7,7 @@ import MyAccount from './MyAccount'
 import MyPublicKey from './MyPublicKey'
 import MyQRCode from './MyQRCode'
 
-export default createStackNavigator(
+export default createSubStackNavigator(
   {
     'settings/list': List,
     'settings/devtools': Devtools,
