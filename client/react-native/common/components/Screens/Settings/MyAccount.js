@@ -34,53 +34,53 @@ export default class MyAccount extends PureComponent {
     )
   }
 
-  static Menu = ({
-    navigation,
-    data: { id, displayName, overrideDisplayName },
-  }) => (
-    <Menu absolute>
-      <Menu.Header
-        icon={
-          <Image
-            style={{ width: 78, height: 78, borderRadius: 39 }}
-            source={{
-              uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
-            }}
+  static Menu = ({ navigation, data }) => {
+    const { id, displayName, overrideDisplayName } = data
+    return (
+      <Menu absolute>
+        <Menu.Header
+          icon={
+            <Image
+              style={{ width: 78, height: 78, borderRadius: 39 }}
+              source={{
+                uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
+              }}
+            />
+          }
+        />
+        <Menu.Section title='Firstname'>
+          <Menu.Input
+            value={(overrideDisplayName || displayName).split(' ')[0] || ''}
           />
-        }
-      />
-      <Menu.Section title='Firstname'>
-        <Menu.Input
-          value={(overrideDisplayName || displayName).split(' ')[0] || ''}
-        />
-      </Menu.Section>
-      <Menu.Section title='Lastname'>
-        <Menu.Input
-          value={(overrideDisplayName || displayName).split(' ')[1] || ''}
-        />
-      </Menu.Section>
-      <Menu.Section>
-        <Menu.Item
-          icon='awesome-qrcode'
-          title='View QR code'
-          onPress={() => navigation.push('settings/my-account/view-qr-code')}
-        />
-        <Menu.Item
-          icon='eye'
-          title='View public key'
-          onPress={() => navigation.push('settings/my-account/view-public-key')}
-        />
-      </Menu.Section>
-      <Menu.Section>
-        <Menu.Item
-          icon='trash-2'
-          title='Delete my account'
-          color={colors.error}
-          onPress={() => console.error('delete my account: not implemented')}
-        />
-      </Menu.Section>
-    </Menu>
-  )
+        </Menu.Section>
+        <Menu.Section title='Lastname'>
+          <Menu.Input
+            value={(overrideDisplayName || displayName).split(' ')[1] || ''}
+          />
+        </Menu.Section>
+        <Menu.Section>
+          <Menu.Item
+            icon='awesome-qrcode'
+            title='View QR code'
+            onPress={() => navigation.push('settings/my-qr-code', { data })}
+          />
+          <Menu.Item
+            icon='eye'
+            title='View public key'
+            onPress={() => navigation.push('settings/my-public-key', { data })}
+          />
+        </Menu.Section>
+        <Menu.Section>
+          <Menu.Item
+            icon='trash-2'
+            title='Delete my account'
+            color={colors.error}
+            onPress={() => console.error('delete my account: not implemented')}
+          />
+        </Menu.Section>
+      </Menu>
+    )
+  }
 
   render () {
     return (
@@ -94,6 +94,7 @@ export default class MyAccount extends PureComponent {
               case state.success:
                 return (
                   <MyAccount.Menu
+                    navigation={this.props.navigation}
                     data={state.data.ContactList.find(
                       _ => _.status === 'Myself'
                     )}
