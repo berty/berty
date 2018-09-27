@@ -68,7 +68,7 @@ const getPadding = (
       return null
   }
   return {
-    paddingVertical: padding / 3,
+    paddingVertical: props.rounded === 'circle' ? padding : padding / 3,
     paddingHorizontal: padding,
   }
 }
@@ -214,9 +214,12 @@ export const BackgroundText = props => {
     align,
     self,
     onPress,
+    absolute,
   } = props
   const styleProp = [
     {
+      position: absolute && 'absolute',
+      ...(typeof absolute === 'object' ? absolute : {}),
       backgroundColor:
         (background === true && colors.blackGrey) ||
         background ||
