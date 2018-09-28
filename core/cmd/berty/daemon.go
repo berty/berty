@@ -13,10 +13,13 @@ import (
 
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -41,8 +44,6 @@ import (
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
-
-	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 )
 
 var defaultBootstrap = []string{
@@ -111,29 +112,39 @@ func daemon(opts *daemonOptions) error {
 	}
 	defer closer.Close()
 
-	interceptors := []grpc.ServerOption{
+	tracerOpts := grpc_ot.WithTracer(tracer)
+	interceptorsServer := []grpc.ServerOption{
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			// grpc_auth.StreamServerInterceptor(myAuthFunction),
+			// grpc_prometheus.StreamServerInterceptor,
 			grpc_ctxtags.StreamServerInterceptor(),
-			//grpc_opentracing.StreamServerInterceptor(),
-			//grpc_prometheus.StreamServerInterceptor,
-			grpc_zap.StreamServerInterceptor(zap.L()),
-			//grpc_auth.StreamServerInterceptor(myAuthFunction),
+			grpc_zap.StreamServerInterceptor(logger()),
 			grpc_recovery.StreamServerInterceptor(),
-			grpc_opentracing.StreamServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+			grpc_ot.StreamServerInterceptor(tracerOpts),
 		)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			// grpc_prometheus.UnaryServerInterceptor,
+			// grpc_auth.UnaryServerInterceptor(myAuthFunction),
 			grpc_ctxtags.UnaryServerInterceptor(),
-			//grpc_opentracing.UnaryServerInterceptor(),
-			//grpc_prometheus.UnaryServerInterceptor,
-			grpc_zap.UnaryServerInterceptor(zap.L()),
-			//grpc_auth.UnaryServerInterceptor(myAuthFunction),
+			grpc_zap.UnaryServerInterceptor(logger()),
 			grpc_recovery.UnaryServerInterceptor(),
-			grpc_opentracing.UnaryServerInterceptor(grpc_opentracing.WithTracer(tracer)),
+			grpc_ot.UnaryServerInterceptor(tracerOpts),
+		)),
+	}
+
+	interceptorsClient := []grpc.DialOption{
+		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
+			grpc_zap.StreamClientInterceptor(logger()),
+			grpc_ot.StreamClientInterceptor(tracerOpts),
+		)),
+		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+			grpc_zap.UnaryClientInterceptor(logger()),
+			grpc_ot.UnaryClientInterceptor(tracerOpts),
 		)),
 	}
 
 	// initialize gRPC
-	gs := grpc.NewServer(interceptors...)
+	gs := grpc.NewServer(interceptorsServer...)
 	reflection.Register(gs)
 
 	addr, err := net.ResolveTCPAddr("tcp", opts.grpcBind)
@@ -263,7 +274,12 @@ func daemon(opts *daemonOptions) error {
 	ic := netutil.NewIOGrpc()
 	icdialer := ic.NewDialer()
 
-	conn, err := grpc.Dial("", grpc.WithInsecure(), grpc.WithDialer(icdialer))
+	dialOpts := append([]grpc.DialOption{
+		grpc.WithInsecure(),
+		grpc.WithDialer(icdialer),
+	}, interceptorsClient...)
+
+	conn, err := grpc.Dial("", dialOpts...)
 	if err != nil {
 		return errors.Wrap(err, "failed to dial local node ")
 	}
