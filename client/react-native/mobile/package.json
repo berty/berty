@@ -5,7 +5,7 @@
     "postinstall": "mkdir -p node_modules/@berty && yarn link:rn && yarn link:rn-vector-icons && yarn link:rn-net-info && yarn link:berty",
     "start": "rm -rf $TMPDIR/metro-* && react-native start --reset-cache --root $PWD/../common",
     "android": "react-native run-android --no-packager",
-    "ios": "react-native run-ios --no-packager",
+    "ios": "react-native run-ios --no-packager --scheme=debug",
     "debug:relay": "relay-devtools",
     "debug:react-native": "open \"rndebugger://set-debugger-loc?host=localhost&port=8081\"",
     "test": "jest",
