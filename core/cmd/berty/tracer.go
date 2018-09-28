@@ -6,8 +6,9 @@ import (
 	"os"
 
 	opentracing "github.com/opentracing/opentracing-go"
-	jaeger "github.com/uber/jaeger-client-go"
 	config "github.com/uber/jaeger-client-go/config"
+	zap_log "github.com/uber/jaeger-client-go/log/zap"
+	"go.uber.org/zap"
 )
 
 func initTracer(service string) (opentracing.Tracer, io.Closer, error) {
@@ -29,7 +30,8 @@ func initTracer(service string) (opentracing.Tracer, io.Closer, error) {
 		cfg.Reporter.LocalAgentHostPort = fmt.Sprintf("%s:%s", host, port)
 	}
 
-	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
+	jaegerLogger := zap.L().Named("jaeger")
+	tracer, closer, err := cfg.NewTracer(config.Logger(zap_log.NewLogger(jaegerLogger)))
 	if err != nil {
 		return nil, nil, err
 	}
