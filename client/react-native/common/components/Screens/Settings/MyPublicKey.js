@@ -9,6 +9,7 @@ import {
   marginTop,
   rounded,
 } from '../../../styles'
+import { atob } from 'b64-lite'
 
 class TextInputMultilineFix extends PureComponent {
   state = {
