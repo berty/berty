@@ -1,6 +1,6 @@
 --- scripts/ios-install-third-party.sh	2018-09-19 11:51:10.000000000 +0200
 +++ scripts/ios-install-third-party.sh.new	2018-09-19 11:50:05.000000000 +0200
-@@ -59,4 +59,4 @@
+@@ -59,7 +59,7 @@
 
  mkdir -p third-party
 

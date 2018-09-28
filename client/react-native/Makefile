@@ -1,3 +1,7 @@
+IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
+ANDROID_VERSION ?= $(shell git rev-list --all --count)
+XCODE_MAJOR := $(shell xcodebuild -version | head -1 | sed 's~^Xcode \(.*\)\..*$$~\1~')
+
 PWD := $(shell pwd)
 ROOT := $(PWD)
 DIRS := common mobile web gomobile
@@ -6,8 +10,14 @@ CLEAN := $(addsuffix .clean, $(DIRS) $(ROOT))
 FCLEAN := $(addsuffix .fclean, $(DIRS) $(ROOT))
 RE := $(addsuffix .re, $(DIRS) $(ROOT))
 START := $(addsuffix .start, $(DIRS) $(ROOT))
-BUILD := $(addsuffix .build, $(DIRS) $(ROOT))
-XCODE_MAJOR := $(shell xcodebuild -version | head -1 | sed 's~^Xcode \(.*\)\..*$$~\1~')
+
+BUILD := .build
+BUILD_IOS := $(BUILD)/ios
+BUILD_ANDROID := $(BUILD)/android
+
+KEYCHAIN_NAME ?= berty_keychain
+KEYCHAIN_PASSWORD ?= berty_pass
+
 SCALE ?= 1
 PORT ?= 0
 
@@ -122,3 +132,39 @@ webapp.rm:
 	COUNT=$$(echo "$$CONT_ID" | sed '/^\s*$$/d' | wc -w | tr -d ' ');															\
 	echo "Deleting $$COUNT previously generated containers...";																	\
 	if [ $$COUNT -ne 0 ]; then docker rm $$CONT_ID; fi
+
+.PHONY: version
+version:
+	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) mobile/ios/berty/Info.plist
+	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:./mobile/android/app/build.gradle
+
+fastlane.match.development:
+	time bundle exec fastlane run match type:development
+
+fastlane.match.appstore:
+	time bundle exec fastlane run match type:appstore
+
+fastlane.match.adhoc:
+	time bundle exec fastlane run match type:adhoc
+
+fastlane.match.enterprise:
+	time bundle exec fastlane run match type:enterprise
+
+fastlane.setup_circle:
+	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
+	bundle exec fastlane run match type:appstore readonly:true keychain_name:$(KEYCHAIN_NAME) keychain_password:$(KEYCHAIN_PASSWORD)
+	security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(KEYCHAIN_PASSWORD) $(KEYCHAIN_NAME)
+
+fastlane.ios.build:
+	mkdir -p $(BUILD_IOS)
+	time bundle exec fastlane run gym --verbose \
+					clean:true \
+					export_method:app-store \
+					output_name:berty \
+					output_directory:$(BUILD_IOS) \
+					project:mobile/ios/berty.xcodeproj \
+					scheme:release \
+					include_symbols:false \
+
+fastlane.ios.release:
+	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/berty.ipa skip_waiting_for_build_processing:true
