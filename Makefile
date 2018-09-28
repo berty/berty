@@ -23,6 +23,7 @@ lint-go:
 .PHONY: lint-editorconfig
 lint-editorconfig:
 	@FILES=`find . -type f                                                       \
+			! -name '.DS_Store'                                                  \
 			! -name 'Gopkg*'                                                     \
 			! -name 'yarn.lock'                                                  \
 			! -name 'yarn-error.log'                                             \

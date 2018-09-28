@@ -1,4 +1,4 @@
-package main
+package jaeger
 
 import (
 	"fmt"
@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func initTracer(service string) (opentracing.Tracer, io.Closer, error) {
+func InitTracer(service string) (opentracing.Tracer, io.Closer, error) {
 	cfg := &config.Configuration{
 		ServiceName: service,
 		Sampler: &config.SamplerConfig{
