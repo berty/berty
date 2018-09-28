@@ -4,6 +4,7 @@ import { colors } from '../../../constants'
 import { Flex, Screen, Button, Header } from '../../Library'
 import { padding, paddingVertical } from '../../../styles'
 import QRCode from 'qrcode-react'
+import { atob } from 'b64-lite'
 
 export default class MyQRCode extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
