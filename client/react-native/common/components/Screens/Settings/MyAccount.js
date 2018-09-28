@@ -33,7 +33,7 @@ export default class MyAccount extends PureComponent {
     uri: null,
   }
 
-  onChoosePicture = async () => this.setState(await choosePicture())
+  onChoosePicture = async event => this.setState(await choosePicture(event))
 
   onSave = () => {
     this.setState({ edit: false }, () =>

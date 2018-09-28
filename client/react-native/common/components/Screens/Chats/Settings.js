@@ -53,8 +53,8 @@ export default class Settings extends PureComponent {
     )
   }
 
-  onChoosePicture = async () =>
-    this.setState({ ...this.state, ...(await choosePicture()) })
+  onChoosePicture = async event =>
+    this.setState({ ...this.state, ...(await choosePicture(event)) })
 
   addMembers = async ({ contactsID }) => {
     try {
