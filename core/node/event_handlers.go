@@ -131,3 +131,23 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 
 	return nil
 }
+
+//
+// Devtools handlers
+//
+
+func (n *Node) handleDevtoolsMapset(ctx context.Context, input *p2p.Event) error {
+	if n.devtools.mapset == nil {
+		n.devtools.mapset = make(map[string]string)
+	}
+	attrs, err := input.GetDevtoolsMapsetAttrs()
+	if err != nil {
+		return err
+	}
+	n.devtools.mapset[attrs.Key] = attrs.Val
+	return nil
+}
+
+func (n *Node) DevtoolsMapget(key string) string {
+	return n.devtools.mapset[key]
+}

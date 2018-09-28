@@ -63,6 +63,34 @@ func TestWithEnqueuer(t *testing.T) {
 			everythingWentFine()
 		})
 
+		Convey("Test enqueuer system", FailureHalts, func() {
+			shouldIContinue(t)
+
+			for i := 0; i < 100; i++ {
+				{
+					event := alice.node.NewContactEvent(&entity.Contact{ID: bob.node.DeviceID()}, p2p.Kind_DevtoolsMapset)
+					So(event.SetAttrs(&p2p.DevtoolsMapsetAttrs{Key: "test", Val: fmt.Sprintf("%d", i)}), ShouldBeNil)
+					res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
+					So(err, ShouldBeNil)
+					So(res, ShouldResemble, &node.Void{})
+				}
+				{
+					So(bob.node.DevtoolsMapget("test"), ShouldEqual, fmt.Sprintf("%d", i))
+					envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
+					event, err := alice.node.OpenEnvelope(envelope)
+					So(err, ShouldBeNil)
+					So(event.Kind, ShouldEqual, p2p.Kind_Ack)
+					//jsonPrintIndent(event)
+				}
+				{
+					event := <-bob.eventStream
+					So(event.Kind, ShouldEqual, p2p.Kind_DevtoolsMapset)
+					//jsonPrintIndent(event)
+				}
+			}
+			So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
+			everythingWentFine()
+		})
 		Convey("Nodes should be empty when just initialized", FailureHalts, func() {
 			So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
 
@@ -191,6 +219,7 @@ func TestWithEnqueuer(t *testing.T) {
 				//        and automatically mark the event as acked when unary responds
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
 
 				everythingWentFine()
@@ -236,8 +265,9 @@ func TestWithEnqueuer(t *testing.T) {
 				// FIXME: check that event is not acked in db
 				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
 				So(res, ShouldResemble, &node.Void{})
+
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
 				// FIXME: check that event is acked in db
 
 				everythingWentFine()
@@ -330,7 +360,7 @@ func TestWithEnqueuer(t *testing.T) {
 				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
-				time.Sleep(10 * time.Millisecond)
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 0, 0, 0, 0})
 
 				everythingWentFine()
@@ -372,6 +402,7 @@ func TestWithEnqueuer(t *testing.T) {
 				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 1, 0, 0})
 
 				everythingWentFine()
@@ -394,6 +425,7 @@ func TestWithEnqueuer(t *testing.T) {
 				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 1, 0, 0})
 
 				everythingWentFine()
@@ -416,6 +448,7 @@ func TestWithEnqueuer(t *testing.T) {
 				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
 
 				everythingWentFine()
@@ -437,6 +470,7 @@ func TestWithEnqueuer(t *testing.T) {
 				res, err := alice.node.HandleEvent(bob.ctx, event.Copy())
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 1, 0, 0})
 
 				everythingWentFine()
@@ -608,7 +642,6 @@ func TestWithSimpleNetwork(t *testing.T) {
 			network.AddPeer(bobNetwork)
 			network.AddPeer(eveNetwork)
 
-			time.Sleep(10 * time.Millisecond)
 			So(alice.InitEventStream(), ShouldBeNil)
 			So(bob.InitEventStream(), ShouldBeNil)
 			So(eve.InitEventStream(), ShouldBeNil)
