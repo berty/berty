@@ -16,6 +16,7 @@
 void init(char *);
 void startAdvertising();
 void startDiscover();
+extern void* sendAcceptToListenerForPeerID(char *, char *);
 
 @interface BertyCentralManager : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate, CBPeripheralManagerDelegate>
 
@@ -28,6 +29,7 @@ void startDiscover();
 @property (nonatomic, strong) CBMutableCharacteristic *peerIDCharacteristic;
 @property (nonatomic, strong) CBMutableCharacteristic *bertyReaderCharacteristic;
 @property (nonatomic, strong) CBMutableCharacteristic *bertyCounterReaderCharacteristic;
+@property (nonatomic, strong) NSString *peerID;
 @property (nonatomic, strong) CBUUID *serviceUUID;
 @property (nonatomic, strong) CBUUID *peerIDUUID;
 @property (nonatomic, strong) CBUUID *readerUUID;

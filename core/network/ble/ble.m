@@ -39,7 +39,8 @@ NSString* const PEER_ID_READER_UUID = @"9B827770-DC72-4C55-B8AE-0870C7AC15A8";
 - (instancetype)initWithPeerID:(NSString *)peerID {
     self = [super init];
     if (self) {
-		self.serviceAdded = NO;
+        self.serviceAdded = NO;
+				self.peerID = peerID;
         self.connectedDevice = [[NSMutableDictionary alloc] init];
         self.discoveredDevice = [[NSMutableDictionary alloc] init];
         self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
@@ -61,6 +62,10 @@ NSString* const PEER_ID_READER_UUID = @"9B827770-DC72-4C55-B8AE-0870C7AC15A8";
     }
 
     return self;
+}
+
+- (void)sendToAcceptIncomingChannel:(NSString *)newPeerID {
+	sendAcceptToListenerForPeerID([self.peerID UTF8String], [newPeerID UTF8String]);
 }
 
 - (void)startAdvertising {
@@ -385,7 +390,7 @@ didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
     didReceiveReadRequest:(CBATTRequest *)request {
-		[self checkPeripheralAndConnect:request];
+		[self checkPeripheralAndAdd:request];
     NSLog(@"request read %@", request);
 }
 
@@ -409,11 +414,19 @@ didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
 	[super dealloc];
 }
 
-- (void)checkPeripheralAndConnect:(CBATTRequest *)req {
+- (void)checkPeripheralAndAdd:(CBATTRequest *)req {
 	if (self.connectedDevice[[req.central.identifier UUIDString]] == nil) {
 		NSArray<CBPeripheral *>* peripherals = [self.centralManager retrievePeripheralsWithIdentifiers:@[req.central.identifier]];
 		for (CBPeripheral *peripheral in peripherals) {
-			[self.centralManager connectPeripheral:peripheral options:nil];
+			for (CBService *service in peripheral.services) {
+				if ([service.UUID isEqual:self.serviceUUID]) {
+					[self.connectedDevice setValue:
+						[[BertyDevice alloc] initWithPeripheral:peripheral]
+						forKey:[peripheral.identifier UUIDString]
+					];
+				}
+			}
+			[self sendToAcceptIncomingChannel:[req.central.identifier UUIDString]];
 		}
 	}
 }

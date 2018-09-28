@@ -3,20 +3,48 @@ package ble
 import (
 	"fmt"
 	"net"
-
+	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/satori/go.uuid"
 )
+
+import "C"
 
 // BLEListener implement ipfs Listener interface
 type BLEListener struct {
 	tpt.Listener
+	transport *BLETransport
 	addr     string
 	network  string
-	incoming chan []byte
-
+	incoming chan string
+	connected map[string]*BLEConn
 	maAddr ma.Multiaddr
+}
+
+var listeners map[string]*BLEListener = make(map[string]*BLEListener)
+
+//export sendAcceptToListenerForPeerID
+func sendAcceptToListenerForPeerID(peerID *C.char, incoming *C.char) {
+	fmt.Printf(":123090\n\n")
+	if listener, ok := listeners[C.GoString(peerID)]; ok {
+		fmt.Printf(":123090123123\n\n")
+		fmt.Printf(":123090saddddddd\n\n")
+		listener.incoming <- C.GoString(incoming)
+		fmt.Printf(":123090sadddddasfd12344444444444dd\n\n")
+		
+	}
+}
+
+
+func NewListener(maaddr ma.Multiaddr, hostID peer.ID, t *BLETransport) *BLEListener {
+	listerner := &BLEListener{
+		maAddr:   maaddr,
+		incoming: make(chan string),
+		connected: make(map[string]*BLEConn),
+		transport: t,
+	}
+	listeners[hostID.Pretty()] = listerner
+	return listerner
 }
 
 func (b *BLEListener) Addr() net.Addr {
@@ -31,20 +59,33 @@ func (b *BLEListener) Multiaddr() ma.Multiaddr {
 	return b.maAddr
 }
 
+
 func (b *BLEListener) Accept() (tpt.Conn, error) {
-	fmt.Println("BLEListener Accept")
 	inc := <-b.incoming
-	fmt.Printf("incoming %+v\n", inc)
-	id, _ := uuid.NewV4()
-	laddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d/ble/%s", 1280, id.String()))
-	rid, _ := uuid.NewV4()
-	raddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d/ble/%s", 1280, rid.String()))
+	fmt.Println("BLEListener Accept")
+	m1, err := ma.NewMultiaddr("/ble/" +inc)
+	if err != nil {
+		fmt.Printf("end acc1 %+v\n", err)
+		return nil, err
+	}
+	m2, err := ma.NewMultiaddr("/ble/" +b.transport.MySelf.ID().Pretty())
+	if err != nil {
+		fmt.Printf("end acc2 %+v\n", err)
+		return nil, err
+	}
+	rid, err := peer.IDB58Decode("QmS5QmciTXXnCUCyxud5eWFenUMAmvAWSDa1c7dvdXRMZ7")
+	// if err != nil {
+	// 	fmt.Printf("end acc3 %+v\n", err)
+	// 	return nil, err
+	// }	
+	fmt.Printf("end acc\n")
 	return &BLEConn{
-		transport: &BLETransport{},
-		id:        "sacha",
-		rid:       "froment",
-		lAddr:     laddr,
-		rAddr:     raddr,
+		transport: b.transport,
+		lid: b.transport.MySelf.ID(),
+		rid: rid,
+		lAddr: m2,
+		rAddr: m1,
+		opened: true,
 	}, nil
 }
 

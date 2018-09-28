@@ -11,7 +11,6 @@ import (
 	tpt "github.com/libp2p/go-libp2p-transport"
 	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/satori/go.uuid"
 	"unsafe"
 	mafmt "github.com/whyrusleeping/mafmt"
 )
@@ -94,17 +93,11 @@ func (t *BLETransport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 		C.free(unsafe.Pointer(peerID))
 	}()
 	fmt.Printf("PPPPPPPPPPEEEEEEEEEEEERRRR IIIIIIDDDDDDD %s\n\n\n", t.MySelf.ID().Pretty())
-	// go C.startAdvertising()
-	// go C.startDiscover()
-	
-	
-	id, _ := uuid.NewV4()
-	maaddr, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d/ble/%s", 1280, id.String()))
+
+	// id, _ := uuid.NewV4()
+
 	fmt.Println("returned")
-	return &BLEListener{
-		maAddr:   maaddr,
-		incoming: make(chan []byte),
-	}, nil
+	return NewListener(laddr, t.MySelf.ID(), t), nil
 }
 
 // Protocols returns the list of terminal protocols this transport can dial.

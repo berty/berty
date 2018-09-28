@@ -2,6 +2,7 @@ package ble
 
 import (
 	"fmt"
+	"time"
 
 	ic "github.com/libp2p/go-libp2p-crypto"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -14,14 +15,14 @@ type BLEConn struct {
 	tpt.Conn
 	opened    bool
 	transport tpt.Transport
-	id        peer.ID
+	lid       peer.ID
 	rid       peer.ID
 	lAddr     ma.Multiaddr
 	rAddr     ma.Multiaddr
 }
 
 func (b *BLEConn) LocalPeer() peer.ID {
-	return b.id
+	return b.lid
 }
 
 func (b *BLEConn) LocalPrivateKey() ic.PrivKey {
@@ -46,22 +47,26 @@ func (b *BLEConn) RemoteMultiaddr() ma.Multiaddr {
 
 func (b *BLEConn) Transport() tpt.Transport {
 	fmt.Println("BLEConn Transport")
+	time.Sleep(10 * time.Second)
 	return b.transport
 }
 
 func (b *BLEConn) Close() error {
 	fmt.Println("BLEConn Close")
+	time.Sleep(10 * time.Second)
 	return nil
 }
 
 func (b *BLEConn) IsClosed() bool {
 	fmt.Println("BLEConn IsClosed")
+	time.Sleep(10 * time.Second)
 	return b.opened
 }
 
 // OpenStream creates a new stream.
 func (b *BLEConn) OpenStream() (smu.Stream, error) {
 	fmt.Println("BLEConn OpenStream")
+	time.Sleep(10 * time.Second)
 	b.opened = true
 	return &BLEStream{}, nil
 }
@@ -69,5 +74,6 @@ func (b *BLEConn) OpenStream() (smu.Stream, error) {
 // AcceptStream accepts a stream opened by the other side.
 func (b *BLEConn) AcceptStream() (smu.Stream, error) {
 	fmt.Println("BLEConn AcceptStream")
+	time.Sleep(10 * time.Second)
 	return &BLEStream{}, nil
 }
