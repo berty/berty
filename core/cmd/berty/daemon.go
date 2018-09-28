@@ -42,6 +42,7 @@ import (
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/node"
+	"berty.tech/core/pkg/jaeger"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
 )
@@ -106,7 +107,7 @@ func newDaemonCommand() *cobra.Command {
 func daemon(opts *daemonOptions) error {
 	errChan := make(chan error)
 
-	tracer, closer, err := initTracer("berty-daemon")
+	tracer, closer, err := jaeger.InitTracer("berty-daemon")
 	if err != nil {
 		return err
 	}

@@ -3,15 +3,12 @@ package p2p
 import (
 	"context"
 	"fmt"
-	"io"
 	"net"
-	"os"
 	"sync"
 	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 
@@ -29,10 +26,7 @@ import (
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
-	jaeger "github.com/uber/jaeger-client-go"
-	"github.com/uber/jaeger-client-go/config"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
@@ -40,6 +34,7 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p/p2putil"
 	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
+	"berty.tech/core/pkg/jaeger"
 	"github.com/libp2p/go-libp2p-protocol"
 )
 
@@ -77,35 +72,6 @@ type Driver struct {
 
 	// services
 	dht *dht.IpfsDHT
-}
-
-func initTracer(service string) (opentracing.Tracer, io.Closer, error) {
-	cfg := &config.Configuration{
-		ServiceName: service,
-		Sampler: &config.SamplerConfig{
-			Type:  "const",
-			Param: 1,
-		},
-		Reporter: &config.ReporterConfig{
-			LogSpans: true,
-		},
-	}
-
-	host, existHost := os.LookupEnv("JAEGER_AGENT_HOST")
-	port, existPort := os.LookupEnv("JAEGER_AGENT_PORT")
-
-	if existHost && existPort {
-		cfg.Reporter.LocalAgentHostPort = fmt.Sprintf("%s:%s", host, port)
-	}
-
-	tracer, closer, err := cfg.NewTracer(config.Logger(jaeger.StdLogger))
-	if err != nil {
-		return nil, nil, err
-	}
-
-	opentracing.SetGlobalTracer(tracer)
-
-	return tracer, closer, nil
 }
 
 // New create a new driver
@@ -157,28 +123,26 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		}
 	}
 
-	tracer, closer, err := initTracer("berty-p2p")
+	tracer, closer, err := jaeger.InitTracer("berty-p2p")
 	if err != nil {
 		return nil, err
 	}
 
 	tracerOpts := grpc_ot.WithTracer(tracer)
-	interceptorsServer := []grpc.ServerOption{
+	p2pInterceptorsServer := []grpc.ServerOption{
 		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
 			grpc_ctxtags.StreamServerInterceptor(),
 			grpc_zap.StreamServerInterceptor(logger()),
-			grpc_recovery.StreamServerInterceptor(),
 			grpc_ot.StreamServerInterceptor(tracerOpts),
 		)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(logger()),
-			grpc_recovery.UnaryServerInterceptor(),
 			grpc_ot.UnaryServerInterceptor(tracerOpts),
 		)),
 	}
 
-	interceptorsClient := []grpc.DialOption{
+	p2pInterceptorsClient := []grpc.DialOption{
 		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
 			grpc_zap.StreamClientInterceptor(logger()),
 			grpc_ot.StreamClientInterceptor(tracerOpts),
@@ -189,13 +153,13 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		)),
 	}
 
-	gs := grpc.NewServer(interceptorsServer...)
+	gs := grpc.NewServer(p2pInterceptorsServer...)
 	sgrpc := p2pgrpc.NewP2PGrpcService(host)
 
 	dialOpts := append([]grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithDialer(sgrpc.NewDialer(ID)),
-	}, interceptorsClient...)
+	}, p2pInterceptorsClient...)
 	driver.ccmanager = p2putil.NewNetManager(dialOpts...)
 
 	p2p.RegisterServiceServer(gs, (*DriverService)(driver))
