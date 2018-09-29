@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react'
 import { Image } from 'react-native'
-import { Screen, Menu, Header } from '../../Library'
+import { Screen, Menu, Header, Badge } from '../../Library'
 import { colors } from '../../../constants'
 import { conversation as utils } from '../../../utils'
 import { mutations } from '../../../graphql'
+import { choosePicture } from '../../../helpers/react-native-image-picker'
 
 export default class Settings extends PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -52,6 +53,9 @@ export default class Settings extends PureComponent {
     )
   }
 
+  onChoosePicture = async event =>
+    this.setState({ ...this.state, ...(await choosePicture(event)) })
+
   addMembers = async ({ contactsID }) => {
     try {
       const { id } = this.props.navigation.getParam('conversation')
@@ -74,15 +78,23 @@ export default class Settings extends PureComponent {
         <Menu absolute>
           <Menu.Header
             icon={
-              <Image
-                style={{ width: 78, height: 78, borderRadius: 39 }}
-                source={{
-                  uri:
-                    'https://api.adorable.io/avatars/285/' +
-                    conversation.id +
-                    '.png',
-                }}
-              />
+              <Badge
+                background={colors.blue}
+                icon={edit && 'camera'}
+                medium
+                onPress={this.onChoosePicture}
+              >
+                <Image
+                  style={{ width: 78, height: 78, borderRadius: 39 }}
+                  source={{
+                    uri:
+                      this.state.uri ||
+                      'https://api.adorable.io/avatars/285/' +
+                        conversation.id +
+                        '.png',
+                  }}
+                />
+              </Badge>
             }
             title={!edit && title}
             description={!edit && 'Conversation started 2 days ago'}

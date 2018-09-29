@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react'
 import { Image, ActivityIndicator } from 'react-native'
-import { Screen, Menu, Header, Text } from '../../Library'
+import { Screen, Menu, Header, Text, Badge } from '../../Library'
 import { colors } from '../../../constants'
 import { queries } from '../../../graphql'
 import { QueryReducer } from '../../../relay'
+import { choosePicture } from '../../../helpers/react-native-image-picker'
 
 export default class MyAccount extends PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -28,24 +29,39 @@ export default class MyAccount extends PureComponent {
     })
   }
 
+  state = {
+    uri: null,
+  }
+
+  onChoosePicture = async event => this.setState(await choosePicture(event))
+
   onSave = () => {
     this.setState({ edit: false }, () =>
       this.props.navigation.setParams({ state: this.state })
     )
   }
 
-  static Menu = ({ navigation, data }) => {
+  static Menu = ({ navigation, data, state, onChoosePicture }) => {
     const { id, displayName, overrideDisplayName } = data
     return (
       <Menu absolute>
         <Menu.Header
           icon={
-            <Image
-              style={{ width: 78, height: 78, borderRadius: 39 }}
-              source={{
-                uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
-              }}
-            />
+            <Badge
+              background={colors.blue}
+              icon='camera'
+              medium
+              onPress={onChoosePicture}
+            >
+              <Image
+                style={{ width: 78, height: 78, borderRadius: 39 }}
+                source={{
+                  uri:
+                    state.uri ||
+                    `https://api.adorable.io/avatars/285/${id}.png`,
+                }}
+              />
+            </Badge>
           }
         />
         <Menu.Section title='Firstname'>
@@ -98,6 +114,8 @@ export default class MyAccount extends PureComponent {
                     data={state.data.ContactList.find(
                       _ => _.status === 'Myself'
                     )}
+                    state={this.state}
+                    onChoosePicture={this.onChoosePicture}
                   />
                 )
               case state.error:

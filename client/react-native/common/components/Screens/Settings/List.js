@@ -8,7 +8,7 @@ import { colors } from '../../../constants'
 export default class List extends PureComponent {
   static Menu = ({
     navigation,
-    data: { displayName, overrideDisplayName },
+    data: { id, displayName, overrideDisplayName },
   }) => (
     <Menu absolute>
       <Menu.Header
@@ -16,10 +16,7 @@ export default class List extends PureComponent {
           <Image
             style={{ width: 78, height: 78, borderRadius: 39 }}
             source={{
-              uri:
-                'https://api.adorable.io/avatars/285/' +
-                (overrideDisplayName || displayName) +
-                '.png',
+              uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
             }}
           />
         }
@@ -65,17 +62,17 @@ export default class List extends PureComponent {
         <Menu.Item
           icon='terminal'
           title='Dev tools'
-          onPress={() => this.props.navigation.push('settings/devtools')}
+          onPress={() => navigation.push('settings/devtools')}
         />
         <Menu.Item
           icon='life-buoy'
           title='help'
-          onPress={() => console.log('settings/help')}
+          onPress={() => navigation.push('settings/help')}
         />
         <Menu.Item
           icon='layers'
           title='Legal terms'
-          onPress={() => console.log('settings/legal-terms')}
+          onPress={() => navigation.push('settings/layers')}
         />
       </Menu.Section>
     </Menu>
