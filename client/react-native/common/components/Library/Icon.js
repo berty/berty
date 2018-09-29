@@ -4,7 +4,7 @@ import IconAwesome from 'react-native-vector-icons/dist/FontAwesome'
 import IconMatCom from 'react-native-vector-icons/dist/MaterialCommunityIcons'
 import { colors } from '../../constants'
 
-const Icon = ({ name, color, rotate, style, ...props }) => {
+const Icon = ({ name, color, rotate, src, style, ...props }) => {
   if (name == null) return null
   const [type, iconName] = [
     name.split('-', 1)[0],

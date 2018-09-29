@@ -141,6 +141,7 @@ android {
 }
 
 dependencies {
+    api project(':react-native-image-picker')
     api project(':react-native-network-info')
     api project(':react-native-vector-icons')
     api fileTree(dir: "libs", include: ["*.jar"])
