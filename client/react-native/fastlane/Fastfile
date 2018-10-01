@@ -18,16 +18,22 @@ fastlane_version "2.76.1"
 default_platform :ios
 
 platform :ios do
-
   lane :build do |options|
-    gym(
-      verbose: true,
-      configuration: "Debug",
-      scheme: "berty",
-      clean: true,
-      include_symbols: true,
-      export_method: "development",
-    )
-  end
 
+    if ENV['GYM_OPTION_METHOD']
+      gym(
+        # Use env to set more options
+        export_options: {
+          method: "#{ENV['GYM_OPTION_METHOD']}",
+          signingStyle: "#{ENV['GYM_OPTION_SIGNING_STYLE']}",
+          provisioningProfiles: {
+            "#{ENV['GYM_OPTION_APP_ID']}": "#{ENV['GYM_OPTION_PROVISIONING_PROFILE']}"
+          }
+        }
+      )
+    else
+      gym
+    end
+
+  end
 end
