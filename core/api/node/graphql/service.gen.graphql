@@ -491,6 +491,14 @@ type BertyNodeEventListInput {
   filter: BertyP2pEvent
 } 
 
+type BertyNodeContactListInput {
+  filter: BertyEntityContact
+} 
+
+type BertyNodeConversationListInput {
+  filter: BertyEntityConversation
+} 
+
 type BertyNodeConversationManageMembersInput {
   conversation: BertyEntityConversation
   members: [BertyEntityConversationMember]
@@ -622,7 +630,7 @@ type Query {
   
   EventList(limit: Int, kind: BertyP2pKind, conversationID: String): [BertyP2pEvent]
   GetEvent(eventID: String!): BertyP2pEvent
-  ContactList: [BertyEntityContact]
+  ContactList(status: BertyEntityContactStatus): [BertyEntityContact]
   GetContact(contactID: String!): BertyEntityContact
   ConversationList: [BertyEntityConversation]
   GetConversation(conversationID: String!): BertyEntityConversation

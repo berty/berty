@@ -54,7 +54,7 @@ func (c *Client) EventList(ctx context.Context, input *node.EventListInput) ([]*
 	return entries, nil
 }
 
-func (c *Client) ContactList(ctx context.Context, input *node.Void) ([]*entity.Contact, error) {
+func (c *Client) ContactList(ctx context.Context, input *node.ContactListInput) ([]*entity.Contact, error) {
 	stream, err := c.Node().ContactList(ctx, input)
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (c *Client) ContactList(ctx context.Context, input *node.Void) ([]*entity.C
 	return entries, nil
 }
 
-func (c *Client) ConversationList(ctx context.Context, input *node.Void) ([]*entity.Conversation, error) {
+func (c *Client) ConversationList(ctx context.Context, input *node.ConversationListInput) ([]*entity.Conversation, error) {
 	stream, err := c.Node().ConversationList(ctx, input)
 	if err != nil {
 		return nil, err
