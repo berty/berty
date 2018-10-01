@@ -13,6 +13,7 @@ import (
 
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/client/jsonclient"
+	"berty.tech/core/pkg/jaeger"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
@@ -69,7 +70,7 @@ func newClientCommand() *cobra.Command {
 func clientServerStream(opts *clientOptions) error {
 	ctx := context.Background()
 
-	tracer, closer, err := initTracer("berty-client")
+	tracer, closer, err := jaeger.InitTracer("berty-client")
 	if err != nil {
 		return err
 	}
@@ -137,7 +138,7 @@ func clientServerStream(opts *clientOptions) error {
 func clientUnary(opts *clientOptions) error {
 	ctx := context.Background()
 
-	tracer, closer, err := initTracer("berty-client")
+	tracer, closer, err := jaeger.InitTracer("berty-client")
 	if err != nil {
 		return err
 	}
