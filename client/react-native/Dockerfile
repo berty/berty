@@ -16,6 +16,7 @@ RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/
     apk update && apk add --no-cache watchman@testing
 
 # Install common dependencies
+COPY common/schema.graphql /usr/src/app/common/schema.graphql
 COPY package.json /usr/src/app/package.json
 COPY yarn.lock /usr/src/app/yarn.lock
 RUN cd /usr/src/app && yarn --silent
