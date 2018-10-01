@@ -7,6 +7,11 @@ import (
 	"sync"
 	"time"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
+
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
 	syncdatastore "github.com/ipfs/go-datastore/sync"
@@ -29,6 +34,7 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p/p2putil"
 	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
+	"berty.tech/core/pkg/jaeger"
 	"github.com/libp2p/go-libp2p-protocol"
 )
 
@@ -117,25 +123,53 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		}
 	}
 
+	tracer, closer, err := jaeger.InitTracer("berty-p2p")
+	if err != nil {
+		return nil, err
+	}
+
+	tracerOpts := grpc_ot.WithTracer(tracer)
+	p2pInterceptorsServer := []grpc.ServerOption{
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+			grpc_ctxtags.StreamServerInterceptor(),
+			grpc_zap.StreamServerInterceptor(logger()),
+			grpc_ot.StreamServerInterceptor(tracerOpts),
+		)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+			grpc_ctxtags.UnaryServerInterceptor(),
+			grpc_zap.UnaryServerInterceptor(logger()),
+			grpc_ot.UnaryServerInterceptor(tracerOpts),
+		)),
+	}
+
+	p2pInterceptorsClient := []grpc.DialOption{
+		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
+			grpc_zap.StreamClientInterceptor(logger()),
+			grpc_ot.StreamClientInterceptor(tracerOpts),
+		)),
+		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+			grpc_zap.UnaryClientInterceptor(logger()),
+			grpc_ot.UnaryClientInterceptor(tracerOpts),
+		)),
+	}
+
+	gs := grpc.NewServer(p2pInterceptorsServer...)
 	sgrpc := p2pgrpc.NewP2PGrpcService(host)
 
-	dialer := sgrpc.NewDialer(ID)
-	driver.ccmanager = p2putil.NewNetManager(
-		// We dont need security here since it is already handle by
-		// the host
+	dialOpts := append([]grpc.DialOption{
 		grpc.WithInsecure(),
-		grpc.WithDialer(dialer),
-	)
+		grpc.WithDialer(sgrpc.NewDialer(ID)),
+	}, p2pInterceptorsClient...)
+	driver.ccmanager = p2putil.NewNetManager(dialOpts...)
 
-	gs := grpc.NewServer()
 	p2p.RegisterServiceServer(gs, (*DriverService)(driver))
 
 	l := sgrpc.NewListener(ID)
-
 	go func() {
 		if err := gs.Serve(l); err != nil {
 			logger().Error("Listen error", zap.Error(err))
 		}
+		closer.Close()
 	}()
 
 	logger().Debug("Host", zap.String("ID", driver.ID()), zap.Strings("Addrs", driver.Addrs()))
