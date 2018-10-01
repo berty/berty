@@ -137,8 +137,11 @@ webapp.rm:
 
 .PHONY: version
 version:
+	mkdir -p $(BUILD)
+
 	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) mobile/ios/berty/Info.plist
 	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:./mobile/android/app/build.gradle
+	echo "ios:$(IOS_VERSION)\nandroid:$(ANDROID_VERSION)\n" > $(BUILD)/version
 
 fastlane.match.development:
 	time bundle exec fastlane run match type:development
