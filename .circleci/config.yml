@@ -232,10 +232,11 @@ jobs:
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
-      SCAN_OUTPUT_DIRECTORY: /tmp/fl/scan
-      GYM_OUTPUT_DIRECTORY: /tmp/fl/gym
-      FL_BUILDLOG_PATH: /tmp/fl/build
+      SCAN_OUTPUT_DIRECTORY: /tmp/fl/log/scan
+      GYM_OUTPUT_DIRECTORY: /tmp/fl/log/gym
+      FL_BUILDLOG_PATH: /tmp/fl/log/build
       SCAN_INCLUDE_SIMULATOR_LOGS: true
+      BUILD: /tmp/fl/build
 
     shell: /bin/bash --login -o pipefail
     steps:
