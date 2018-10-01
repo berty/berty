@@ -55,6 +55,9 @@ type BertyEntityDevice struct {
 type BertyEntityMessage struct {
 	Text *string `json:"text"`
 }
+type BertyNodeContactListInput struct {
+	Filter *BertyEntityContact `json:"filter"`
+}
 type BertyNodeContactRequestInput struct {
 	Contact   *BertyEntityContact `json:"contact"`
 	IntroText *string             `json:"introText"`
@@ -62,6 +65,9 @@ type BertyNodeContactRequestInput struct {
 type BertyNodeConversationAddMessageInput struct {
 	Conversation *BertyEntityConversation `json:"conversation"`
 	Message      *BertyEntityMessage      `json:"message"`
+}
+type BertyNodeConversationListInput struct {
+	Filter *BertyEntityConversation `json:"filter"`
 }
 type BertyNodeConversationManageMembersInput struct {
 	Conversation *BertyEntityConversation         `json:"conversation"`

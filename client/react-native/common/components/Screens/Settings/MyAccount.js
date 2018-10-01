@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Image, ActivityIndicator } from 'react-native'
-import { Screen, Menu, Header, Text, Badge } from '../../Library'
+import { Screen, Menu, Header, Text, Badge, Flex } from '../../Library'
 import { colors } from '../../../constants'
 import { queries } from '../../../graphql'
 import { QueryReducer } from '../../../relay'
@@ -101,12 +101,19 @@ export default class MyAccount extends PureComponent {
   render () {
     return (
       <Screen>
-        <QueryReducer query={queries.ContactList}>
+        <QueryReducer
+          query={queries.ContactList}
+          variables={{ status: 'Myself' }}
+        >
           {(state, retry) => {
             switch (state.type) {
               default:
               case state.loading:
-                return <ActivityIndicator />
+                return (
+                  <Flex.Rows justify='center' align='center'>
+                    <ActivityIndicator size='large' />
+                  </Flex.Rows>
+                )
               case state.success:
                 return (
                   <MyAccount.Menu

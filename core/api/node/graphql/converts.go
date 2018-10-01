@@ -1,5 +1,7 @@
 package graphql
 
+//TODO: generate this file
+
 import (
 	"encoding/base64"
 	"fmt"
@@ -79,6 +81,23 @@ func convertContactStatus(value entity.Contact_Status) *model.BertyEntityContact
 	return &ret
 }
 
+func convertGQLToEntityContactStatus(value *model.BertyEntityContactStatus) (*entity.Contact_Status, error) {
+	ret, ok := map[model.BertyEntityContactStatus]entity.Contact_Status{
+		model.BertyEntityContactStatusUnknown:         entity.Contact_Unknown,
+		model.BertyEntityContactStatusIsFriend:        entity.Contact_IsFriend,
+		model.BertyEntityContactStatusIsTrustedFriend: entity.Contact_IsTrustedFriend,
+		model.BertyEntityContactStatusIsRequested:     entity.Contact_IsRequested,
+		model.BertyEntityContactStatusRequestedMe:     entity.Contact_RequestedMe,
+		model.BertyEntityContactStatusIsBlocked:       entity.Contact_IsBlocked,
+		model.BertyEntityContactStatusMyself:          entity.Contact_Myself,
+	}[*value]
+	if !ok {
+		t := entity.Contact_Unknown
+		return &t, nil
+	}
+	return &ret, nil
+}
+
 func convertContact(contact *entity.Contact) *model.BertyEntityContact {
 	if contact == nil {
 		return &model.BertyEntityContact{}
@@ -99,6 +118,32 @@ func convertContact(contact *entity.Contact) *model.BertyEntityContact {
 	}
 }
 
+// func convertGQLToEntityContact(contact *model.BertyEntityContact) (*entity.Contact, error) {
+// 	if contact == nil {
+// 		return &entity.Contact{}, nil
+// 	}
+//
+// 	var gID globalID
+// 	err := gID.FromString(contact.ID)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+//
+// 	ret := &entity.Contact{
+// 		ID:          gID.ID,
+// 		DisplayName: *contact.DisplayName,
+// 		CreatedAt:   *contact.CreatedAt.Value,
+// 		UpdatedAt:   *contact.UpdatedAt.Value,
+// 		DeletedAt:   contact.DeletedAt.Value,
+// 	}
+// 	status, err := convertGQLToEntityContactStatus(contact.Status)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	ret.Status = *status
+// 	return ret, nil
+// }
+
 func convertConversationMemberStatus(value entity.ConversationMember_Status) *model.BertyEntityConversationMemberStatus {
 	ret, ok := map[entity.ConversationMember_Status]model.BertyEntityConversationMemberStatus{
 		entity.ConversationMember_Unknown: model.BertyEntityConversationMemberStatusUnknown,
@@ -114,6 +159,26 @@ func convertConversationMemberStatus(value entity.ConversationMember_Status) *mo
 
 	return &ret
 }
+
+// func convertGQLToEntityConversationMemberStatus(status *model.BertyEntityConversationMemberStatus) (*entity.ConversationMember_Status, error) {
+// 	if status == nil {
+// 		t := entity.ConversationMember_Unknown
+// 		return &t, nil
+// 	}
+//
+// 	ret, ok := map[model.BertyEntityConversationMemberStatus]entity.ConversationMember_Status{
+// 		model.BertyEntityConversationMemberStatusUnknown: entity.ConversationMember_Unknown,
+// 		model.BertyEntityConversationMemberStatusOwner:   entity.ConversationMember_Owner,
+// 		model.BertyEntityConversationMemberStatusActive:  entity.ConversationMember_Active,
+// 		model.BertyEntityConversationMemberStatusBlocked: entity.ConversationMember_Blocked,
+// 	}[*status]
+//
+// 	if !ok {
+// 		t := entity.ConversationMember_Unknown
+// 		return &t, nil
+// 	}
+// 	return &ret, nil
+// }
 
 func convertConversationMember(conversationMember *entity.ConversationMember) *model.BertyEntityConversationMember {
 	if conversationMember == nil {
@@ -136,6 +201,40 @@ func convertConversationMember(conversationMember *entity.ConversationMember) *m
 		DeletedAt:      &scalar.DateTime{Value: conversationMember.DeletedAt},
 	}
 }
+
+// func convertGQLToEntityConversationMember(conversationMember *model.BertyEntityConversationMember) (*entity.ConversationMember, error) {
+// 	if conversationMember == nil {
+// 		return &entity.ConversationMember{}, nil
+// 	}
+//
+// 	var gID globalID
+// 	if err := gID.FromString(conversationMember.ID); err != nil {
+// 		return nil, err
+// 	}
+//
+// 	ret := &entity.ConversationMember{
+// 		ID:             gID.ID,
+// 		ConversationID: *conversationMember.ConversationID,
+// 		ContactID:      *conversationMember.ContactID,
+// 		CreatedAt:      *conversationMember.CreatedAt.Value,
+// 		UpdatedAt:      *conversationMember.UpdatedAt.Value,
+// 		DeletedAt:      conversationMember.DeletedAt.Value,
+// 	}
+//
+// 	status, err := convertGQLToEntityConversationMemberStatus(conversationMember.Status)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	ret.Status = *status
+//
+// 	contact, err := convertGQLToEntityContact(conversationMember.Contact)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	ret.Contact = contact
+//
+// 	return ret, nil
+// }
 
 func convertConversation(conversation *entity.Conversation) *model.BertyEntityConversation {
 	if conversation == nil {
@@ -167,6 +266,39 @@ func convertConversation(conversation *entity.Conversation) *model.BertyEntityCo
 		DeletedAt: &scalar.DateTime{Value: conversation.DeletedAt},
 	}
 }
+
+// func convertGQLToEntityConversation(conversation *model.BertyEntityConversation) (*entity.Conversation, error) {
+// 	if conversation == nil {
+// 		return &entity.Conversation{}, nil
+// 	}
+//
+// 	var members []*entity.ConversationMember
+// 	for i := range conversation.Members {
+// 		member := conversation.Members[i]
+// 		if member == nil {
+// 			continue
+// 		}
+// 		entity, err := convertGQLToEntityConversationMember(member)
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 		members = append(members, entity)
+// 	}
+//
+// 	var gID globalID
+// 	if err := gID.FromString(conversation.ID); err != nil {
+// 		return nil, err
+// 	}
+// 	return &entity.Conversation{
+// 		ID:        gID.ID,
+// 		Title:     *conversation.Title,
+// 		Topic:     *conversation.Topic,
+// 		Members:   members,
+// 		CreatedAt: *conversation.CreatedAt.Value,
+// 		UpdatedAt: *conversation.UpdatedAt.Value,
+// 		DeletedAt: conversation.DeletedAt.Value,
+// 	}, nil
+// }
 
 func convertUint32(value uint32) *int {
 	t := int(value)
