@@ -16,18 +16,11 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## iOS
-### ios certificates
+### ios build
 ```
-fastlane ios certificates
+fastlane ios build
 ```
-Installs the certificates and profiles locally
-### ios adhoc
-```
-fastlane ios adhoc
-```
-Submit a new Alpha Build to Fabric
 
-Submit a new build to iTunes Connect
 
 ----
 

@@ -11,9 +11,11 @@ FCLEAN := $(addsuffix .fclean, $(DIRS) $(ROOT))
 RE := $(addsuffix .re, $(DIRS) $(ROOT))
 START := $(addsuffix .start, $(DIRS) $(ROOT))
 
-BUILD := .build
-BUILD_IOS := $(BUILD)/ios
-BUILD_ANDROID := $(BUILD)/android
+# build related env
+NAME ?= berty
+BUILD ?= .build
+BUILD_IOS ?= $(BUILD)/ios
+BUILD_ANDROID ?= $(BUILD)/android
 
 KEYCHAIN_NAME ?= berty_keychain
 KEYCHAIN_PASSWORD ?= berty_pass
@@ -142,8 +144,11 @@ webapp.rm: webapp.stop
 
 .PHONY: version
 version:
+	mkdir -p $(BUILD)
+
 	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) mobile/ios/berty/Info.plist
 	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:./mobile/android/app/build.gradle
+	echo "ios:$(IOS_VERSION)\nandroid:$(ANDROID_VERSION)\n" > $(BUILD)/version
 
 fastlane.match.development:
 	time bundle exec fastlane run match type:development
@@ -152,7 +157,7 @@ fastlane.match.appstore:
 	time bundle exec fastlane run match type:appstore
 
 fastlane.match.adhoc:
-	time bundle exec fastlane run match type:adhoc
+	time bundle exec fastlane run match force_for_new_devices:true type:adhoc
 
 fastlane.match.enterprise:
 	time bundle exec fastlane run match type:enterprise
@@ -160,18 +165,25 @@ fastlane.match.enterprise:
 fastlane.setup_circle:
 	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
 	bundle exec fastlane run match type:appstore readonly:true keychain_name:$(KEYCHAIN_NAME) keychain_password:$(KEYCHAIN_PASSWORD)
+	bundle exec fastlane run match type:adhoc readonly:true keychain_name:$(KEYCHAIN_NAME) keychain_password:$(KEYCHAIN_PASSWORD)
 	security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(KEYCHAIN_PASSWORD) $(KEYCHAIN_NAME)
 
 fastlane.ios.build:
 	mkdir -p $(BUILD_IOS)
-	time bundle exec fastlane run gym --verbose \
-					clean:true \
-					export_method:app-store \
-					output_name:berty \
-					output_directory:$(BUILD_IOS) \
-					project:mobile/ios/berty.xcodeproj \
-					scheme:release \
-					include_symbols:false \
+
+	GYM_CLEAN=false \
+	GYM_OPTION_METHOD=ad-hoc \
+	GYM_OPTION_APP_ID=chat.berty.ios \
+	GYM_OPTION_PROVISIONING_PROFILE='match AdHoc chat.berty.ios' \
+	GYM_OUTPUT_NAME=$(NAME) \
+	GYM_OUTPUT_DIRECTORY=$(BUILD_IOS) \
+	GYM_PROJECT=mobile/ios/berty.xcodeproj \
+	GYM_SCHEME=adhoc \
+	GYM_INCLUDE_SYMBOLS=false \
+		time bundle exec fastlane ios build --verbose
+
+	# extract build informations
+	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt || true
 
 fastlane.ios.release:
 	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/berty.ipa skip_waiting_for_build_processing:true
