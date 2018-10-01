@@ -11,6 +11,8 @@ FCLEAN := $(addsuffix .fclean, $(DIRS) $(ROOT))
 RE := $(addsuffix .re, $(DIRS) $(ROOT))
 START := $(addsuffix .start, $(DIRS) $(ROOT))
 
+# build related env
+NAME ?= berty
 BUILD ?= .build
 BUILD_IOS ?= $(BUILD)/ios
 BUILD_ANDROID ?= $(BUILD)/android
@@ -163,11 +165,15 @@ fastlane.ios.build:
 	GYM_OPTION_METHOD=ad-hoc \
 	GYM_OPTION_APP_ID=chat.berty.ios \
 	GYM_OPTION_PROVISIONING_PROFILE='match AdHoc chat.berty.ios' \
-	GYM_OUTPUT_NAME=berty \
+	GYM_OUTPUT_NAME=$(NAME) \
+	GYM_OUTPUT_DIRECTORY=$(BUILD_IOS) \
 	GYM_PROJECT=mobile/ios/berty.xcodeproj \
 	GYM_SCHEME=adhoc \
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
+
+	# extract build informations
+	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt || true
 
 fastlane.ios.release:
 	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/berty.ipa skip_waiting_for_build_processing:true
