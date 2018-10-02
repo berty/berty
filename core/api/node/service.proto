@@ -51,7 +51,8 @@ service Service {
     option (berty.gql.graphql_fields) = "contactID: String!, displayName: String";
     option (berty.gql.graphql_type) = "Mutation";
   };
-  rpc ContactList(Void) returns (stream berty.entity.Contact) {
+  rpc ContactList(ContactListInput) returns (stream berty.entity.Contact) {
+    option (berty.gql.graphql_fields) = "status: BertyEntityContactStatus";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc GetContact(berty.entity.Contact) returns (berty.entity.Contact) {
@@ -67,7 +68,7 @@ service Service {
     option (berty.gql.graphql_fields) = "contactsID: [String!]!";
     option (berty.gql.graphql_type) = "Mutation";
   };
-  rpc ConversationList(Void) returns (stream berty.entity.Conversation) {
+  rpc ConversationList(ConversationListInput) returns (stream berty.entity.Conversation) {
     option (berty.gql.graphql_type) = "Query";
   };
   rpc ConversationInvite(ConversationManageMembersInput) returns (berty.entity.Conversation) {
@@ -133,6 +134,14 @@ message EventStreamInput {
 message EventListInput {
   uint32 limit = 1;
   berty.p2p.Event filter = 2;
+}
+
+message ContactListInput {
+  berty.entity.Contact filter = 1;
+}
+
+message ConversationListInput {
+  berty.entity.Conversation filter = 1;
 }
 
 message ConversationManageMembersInput {

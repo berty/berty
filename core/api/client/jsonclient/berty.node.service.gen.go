@@ -177,7 +177,7 @@ func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byt
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput node.Void
+	var typedInput node.ContactListInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -237,7 +237,7 @@ func NodeConversationList(client *client.Client, ctx context.Context, jsonInput 
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput node.Void
+	var typedInput node.ConversationListInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}

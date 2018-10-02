@@ -31,15 +31,15 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 	Convey("Nodes should be empty when just initialized", FailureHalts, func() {
 		shouldIContinue(t)
 
-		contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
+		contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
 		So(err, ShouldBeNil)
 		So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
-		contacts, err = bob.client.ContactList(internalCtx, &node.Void{})
+		contacts, err = bob.client.ContactList(internalCtx, &node.ContactListInput{})
 		So(err, ShouldBeNil)
 		So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
-		contacts, err = eve.client.ContactList(internalCtx, &node.Void{})
+		contacts, err = eve.client.ContactList(internalCtx, &node.ContactListInput{})
 		So(err, ShouldBeNil)
 		So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
@@ -76,7 +76,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Alice has Bob as friend", FailureHalts, func() {
 			shouldIContinue(t)
 
-			contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
+			contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2)
 
@@ -95,7 +95,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Bob has Alice as friend", FailureHalts, func() {
 			shouldIContinue(t)
 
-			contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
+			contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2)
 
@@ -114,7 +114,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Eve has no friend", FailureHalts, func() {
 			shouldIContinue(t)
 
-			contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
+			contacts, err := eve.client.ContactList(internalCtx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 1)
 		})
@@ -126,7 +126,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Bob has no conversation", FailureHalts, func() {
 			shouldIContinue(t)
 
-			conversations, err := bob.client.ConversationList(internalCtx, &node.Void{})
+			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
 
@@ -135,7 +135,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Alice has no conversation", FailureHalts, func() {
 			shouldIContinue(t)
 
-			conversations, err := alice.client.ConversationList(internalCtx, &node.Void{})
+			conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
 
@@ -144,7 +144,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Eve has no conversation", FailureHalts, func() {
 			shouldIContinue(t)
 
-			conversations, err := eve.client.ConversationList(internalCtx, &node.Void{})
+			conversations, err := eve.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
 
@@ -170,7 +170,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Bob has a conversation with Alice", FailureHalts, func() {
 			shouldIContinue(t)
 
-			conversations, err := bob.client.ConversationList(internalCtx, &node.Void{})
+			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
@@ -186,7 +186,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Alice has the conversation with Bob", FailureHalts, func() {
 			shouldIContinue(t)
 
-			conversations, err := alice.client.ConversationList(internalCtx, &node.Void{})
+			conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
@@ -207,7 +207,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Eve has no conversation (again)", FailureHalts, func() {
 			shouldIContinue(t)
 
-			conversations, err := eve.client.ConversationList(internalCtx, &node.Void{})
+			conversations, err := eve.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 0)
 		})

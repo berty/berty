@@ -362,8 +362,21 @@ func (r *queryResolver) GetEvent(ctx context.Context, eventID string) (*model.Be
 	return convertEvent(event), err
 }
 
-func (r *queryResolver) ContactList(ctx context.Context) ([]*model.BertyEntityContact, error) {
-	req := &service.Void{}
+func (r *queryResolver) ContactList(ctx context.Context, status *model.BertyEntityContactStatus) ([]*model.BertyEntityContact, error) {
+
+	var err error
+
+	req := &service.ContactListInput{}
+
+	if status != nil {
+		req.Filter = &entity.Contact{}
+		filterStatus, err := convertGQLToEntityContactStatus(status)
+		req.Filter.Status = *filterStatus
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	stream, err := r.client.ContactList(ctx, req)
 	if err != nil {
 		return nil, err
@@ -424,7 +437,11 @@ func (r *queryResolver) GetConversation(ctx context.Context, conversationID stri
 }
 
 func (r *queryResolver) ConversationList(ctx context.Context) ([]*model.BertyEntityConversation, error) {
-	req := &service.Void{}
+
+	var err error
+
+	req := &service.ConversationListInput{}
+
 	stream, err := r.client.ConversationList(ctx, req)
 	if err != nil {
 		return nil, err

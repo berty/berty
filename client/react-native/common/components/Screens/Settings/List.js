@@ -82,7 +82,10 @@ export default class List extends PureComponent {
     const { navigation } = this.props
     return (
       <Screen>
-        <QueryReducer query={queries.ContactList}>
+        <QueryReducer
+          query={queries.ContactList}
+          variables={{ status: 'Myself' }}
+        >
           {(state, retry) => {
             switch (state.type) {
               default:
@@ -92,11 +95,7 @@ export default class List extends PureComponent {
                 return (
                   <List.Menu
                     navigation={navigation}
-                    data={{
-                      ...state.data.ContactList.find(
-                        contact => contact.status === 'Myself'
-                      ),
-                    }}
+                    data={state.data.ContactList[0]}
                   />
                 )
               case state.error:
