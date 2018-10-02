@@ -1,12 +1,8 @@
 import { graphql } from 'react-relay'
 
 export default graphql`
-  query EventListQuery(
-    $limit: Int
-    $kind: BertyP2pKind
-    $conversationID: String
-  ) {
-    EventList(limit: $limit, kind: $kind, conversationID: $conversationID) {
+  query EventListQuery($limit: Uint32!, $filter: BertyP2pEventInput) {
+    EventList(limit: $limit, filter: $filter) {
       id
       senderId
       createdAt

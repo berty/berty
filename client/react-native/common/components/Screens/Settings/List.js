@@ -84,7 +84,16 @@ export default class List extends PureComponent {
       <Screen>
         <QueryReducer
           query={queries.ContactList}
-          variables={{ status: 'Myself' }}
+          variables={{
+            filter: {
+              id: '',
+              status: 42,
+              displayName: '',
+              displayStatus: '',
+              overrideDisplayName: '',
+              overrideDisplayStatus: '',
+            },
+          }}
         >
           {(state, retry) => {
             switch (state.type) {

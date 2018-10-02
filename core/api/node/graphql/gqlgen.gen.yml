@@ -1,0 +1,1240 @@
+# GENERATED CODE -- DO NOT EDIT!
+
+schema: service.gen.graphql
+
+
+# Let gqlgen know where to put the generated server
+exec:
+  filename: graph/generated/generated.go
+  package: generated
+
+# Let gqlgen know where to the generated models (if any)
+model:
+  filename: models/generated.go
+  package: models
+
+# Optional, turns on resolver stub generation
+resolver:
+  filename: resolver.go # where to write them
+  type: Resolver  # whats the resolver root implementation type called?
+
+# Tell gqlgen about any existing models you want to reuse for
+# graphql. These normally come from the db or a remote api.
+models:
+  ID:
+    model: berty.tech/core/api/node/graphql/models.ID
+  Enum:
+    model: berty.tech/core/api/node/graphql/models.Enum
+  Double:
+    model: berty.tech/core/api/node/graphql/models.Double
+  Int64:
+    model: berty.tech/core/api/node/graphql/models.Int64
+  Uint64:
+    model: berty.tech/core/api/node/graphql/models.Uint64
+  Int32:
+    model: berty.tech/core/api/node/graphql/models.Int32
+  Uint32:
+    model: berty.tech/core/api/node/graphql/models.Uint32
+  SInt32:
+    model: berty.tech/core/api/node/graphql/models.SInt32
+  SInt64:
+    model: berty.tech/core/api/node/graphql/models.SInt64
+  Fixed64:
+    model: berty.tech/core/api/node/graphql/models.Fixed64
+  Fixed32:
+    model: berty.tech/core/api/node/graphql/models.Fixed32
+  Bool:
+    model: berty.tech/core/api/node/graphql/models.Bool
+  Byte:
+    model: berty.tech/core/api/node/graphql/models.Byte
+  SFixed64:
+    model: berty.tech/core/api/node/graphql/models.SFixed64
+  SFixed32:
+    model: berty.tech/core/api/node/graphql/models.SFixed32
+  GoogleProtobufTimestamp:
+    model: berty.tech/core/api/node/graphql/models.Time
+  GoogleProtobufTimestampInput:
+    model: berty.tech/core/api/node/graphql/models.Time
+  GoogleProtobufTimestampPayload:
+    model: berty.tech/core/api/node/graphql/models.Time
+
+
+  GoogleProtobufFileDescriptorSet:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileDescriptorSet
+    fields:
+      file:
+  GoogleProtobufFileDescriptorSetInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileDescriptorSet
+    fields:
+      file:
+  GoogleProtobufFileDescriptorSetPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileDescriptorSet
+    fields:
+      file:
+
+  GoogleProtobufFileDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileDescriptorProto
+    fields:
+      name:
+      package:
+      dependency:
+      publicDependency:
+      weakDependency:
+      messageType:
+      enumType:
+      service:
+      extension:
+      options:
+      sourceCodeInfo:
+      syntax:
+  GoogleProtobufFileDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileDescriptorProto
+    fields:
+      name:
+      package:
+      dependency:
+      publicDependency:
+      weakDependency:
+      messageType:
+      enumType:
+      service:
+      extension:
+      options:
+      sourceCodeInfo:
+      syntax:
+  GoogleProtobufFileDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileDescriptorProto
+    fields:
+      name:
+      package:
+      dependency:
+      publicDependency:
+      weakDependency:
+      messageType:
+      enumType:
+      service:
+      extension:
+      options:
+      sourceCodeInfo:
+      syntax:
+
+  GoogleProtobufDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto
+    fields:
+      name:
+      field:
+      extension:
+      nestedType:
+      enumType:
+      extensionRange:
+      oneofDecl:
+      options:
+      reservedRange:
+      reservedName:
+  GoogleProtobufDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto
+    fields:
+      name:
+      field:
+      extension:
+      nestedType:
+      enumType:
+      extensionRange:
+      oneofDecl:
+      options:
+      reservedRange:
+      reservedName:
+  GoogleProtobufDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto
+    fields:
+      name:
+      field:
+      extension:
+      nestedType:
+      enumType:
+      extensionRange:
+      oneofDecl:
+      options:
+      reservedRange:
+      reservedName:
+
+  GoogleProtobufDescriptorProtoExtensionRange:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto_ExtensionRange
+    fields:
+      start:
+      end:
+      options:
+  GoogleProtobufExtensionRangeInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto_ExtensionRange
+    fields:
+      start:
+      end:
+      options:
+  GoogleProtobufExtensionRangePayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto_ExtensionRange
+    fields:
+      start:
+      end:
+      options:
+
+  GoogleProtobufDescriptorProtoReservedRange:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto_ReservedRange
+    fields:
+      start:
+      end:
+  GoogleProtobufReservedRangeInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto_ReservedRange
+    fields:
+      start:
+      end:
+  GoogleProtobufReservedRangePayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.DescriptorProto_ReservedRange
+    fields:
+      start:
+      end:
+
+  GoogleProtobufExtensionRangeOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ExtensionRangeOptions
+    fields:
+      uninterpretedOption:
+  GoogleProtobufExtensionRangeOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ExtensionRangeOptions
+    fields:
+      uninterpretedOption:
+  GoogleProtobufExtensionRangeOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ExtensionRangeOptions
+    fields:
+      uninterpretedOption:
+
+  GoogleProtobufFieldDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldDescriptorProto
+    fields:
+      name:
+      number:
+      label:
+      type:
+      typeName:
+      extendee:
+      defaultValue:
+      oneofIndex:
+      jsonName:
+      options:
+  GoogleProtobufFieldDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldDescriptorProto
+    fields:
+      name:
+      number:
+      label:
+      type:
+      typeName:
+      extendee:
+      defaultValue:
+      oneofIndex:
+      jsonName:
+      options:
+  GoogleProtobufFieldDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldDescriptorProto
+    fields:
+      name:
+      number:
+      label:
+      type:
+      typeName:
+      extendee:
+      defaultValue:
+      oneofIndex:
+      jsonName:
+      options:
+
+  GoogleProtobufOneofDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.OneofDescriptorProto
+    fields:
+      name:
+      options:
+  GoogleProtobufOneofDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.OneofDescriptorProto
+    fields:
+      name:
+      options:
+  GoogleProtobufOneofDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.OneofDescriptorProto
+    fields:
+      name:
+      options:
+
+  GoogleProtobufEnumDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumDescriptorProto
+    fields:
+      name:
+      value:
+      options:
+      reservedRange:
+      reservedName:
+  GoogleProtobufEnumDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumDescriptorProto
+    fields:
+      name:
+      value:
+      options:
+      reservedRange:
+      reservedName:
+  GoogleProtobufEnumDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumDescriptorProto
+    fields:
+      name:
+      value:
+      options:
+      reservedRange:
+      reservedName:
+
+  GoogleProtobufEnumDescriptorProtoEnumReservedRange:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumDescriptorProto_EnumReservedRange
+    fields:
+      start:
+      end:
+  GoogleProtobufEnumReservedRangeInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumDescriptorProto_EnumReservedRange
+    fields:
+      start:
+      end:
+  GoogleProtobufEnumReservedRangePayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumDescriptorProto_EnumReservedRange
+    fields:
+      start:
+      end:
+
+  GoogleProtobufEnumValueDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumValueDescriptorProto
+    fields:
+      name:
+      number:
+      options:
+  GoogleProtobufEnumValueDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumValueDescriptorProto
+    fields:
+      name:
+      number:
+      options:
+  GoogleProtobufEnumValueDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumValueDescriptorProto
+    fields:
+      name:
+      number:
+      options:
+
+  GoogleProtobufServiceDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ServiceDescriptorProto
+    fields:
+      name:
+      method:
+      options:
+  GoogleProtobufServiceDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ServiceDescriptorProto
+    fields:
+      name:
+      method:
+      options:
+  GoogleProtobufServiceDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ServiceDescriptorProto
+    fields:
+      name:
+      method:
+      options:
+
+  GoogleProtobufMethodDescriptorProto:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodDescriptorProto
+    fields:
+      name:
+      inputType:
+      outputType:
+      options:
+      clientStreaming:
+      serverStreaming:
+  GoogleProtobufMethodDescriptorProtoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodDescriptorProto
+    fields:
+      name:
+      inputType:
+      outputType:
+      options:
+      clientStreaming:
+      serverStreaming:
+  GoogleProtobufMethodDescriptorProtoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodDescriptorProto
+    fields:
+      name:
+      inputType:
+      outputType:
+      options:
+      clientStreaming:
+      serverStreaming:
+
+  GoogleProtobufFileOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileOptions
+    fields:
+      javaPackage:
+      javaOuterClassname:
+      javaMultipleFiles:
+      javaGenerateEqualsAndHash:
+      javaStringCheckUtf8:
+      optimizeFor:
+      goPackage:
+      ccGenericServices:
+      javaGenericServices:
+      pyGenericServices:
+      phpGenericServices:
+      deprecated:
+      ccEnableArenas:
+      objcClassPrefix:
+      csharpNamespace:
+      swiftPrefix:
+      phpClassPrefix:
+      phpNamespace:
+      uninterpretedOption:
+  GoogleProtobufFileOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileOptions
+    fields:
+      javaPackage:
+      javaOuterClassname:
+      javaMultipleFiles:
+      javaGenerateEqualsAndHash:
+      javaStringCheckUtf8:
+      optimizeFor:
+      goPackage:
+      ccGenericServices:
+      javaGenericServices:
+      pyGenericServices:
+      phpGenericServices:
+      deprecated:
+      ccEnableArenas:
+      objcClassPrefix:
+      csharpNamespace:
+      swiftPrefix:
+      phpClassPrefix:
+      phpNamespace:
+      uninterpretedOption:
+  GoogleProtobufFileOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileOptions
+    fields:
+      javaPackage:
+      javaOuterClassname:
+      javaMultipleFiles:
+      javaGenerateEqualsAndHash:
+      javaStringCheckUtf8:
+      optimizeFor:
+      goPackage:
+      ccGenericServices:
+      javaGenericServices:
+      pyGenericServices:
+      phpGenericServices:
+      deprecated:
+      ccEnableArenas:
+      objcClassPrefix:
+      csharpNamespace:
+      swiftPrefix:
+      phpClassPrefix:
+      phpNamespace:
+      uninterpretedOption:
+
+  GoogleProtobufMessageOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MessageOptions
+    fields:
+      messageSetWireFormat:
+      noStandardDescriptorAccessor:
+      deprecated:
+      mapEntry:
+      uninterpretedOption:
+  GoogleProtobufMessageOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MessageOptions
+    fields:
+      messageSetWireFormat:
+      noStandardDescriptorAccessor:
+      deprecated:
+      mapEntry:
+      uninterpretedOption:
+  GoogleProtobufMessageOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MessageOptions
+    fields:
+      messageSetWireFormat:
+      noStandardDescriptorAccessor:
+      deprecated:
+      mapEntry:
+      uninterpretedOption:
+
+  GoogleProtobufFieldOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldOptions
+    fields:
+      ctype:
+      packed:
+      jstype:
+      lazy:
+      deprecated:
+      weak:
+      uninterpretedOption:
+  GoogleProtobufFieldOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldOptions
+    fields:
+      ctype:
+      packed:
+      jstype:
+      lazy:
+      deprecated:
+      weak:
+      uninterpretedOption:
+  GoogleProtobufFieldOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.FieldOptions
+    fields:
+      ctype:
+      packed:
+      jstype:
+      lazy:
+      deprecated:
+      weak:
+      uninterpretedOption:
+
+  GoogleProtobufOneofOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.OneofOptions
+    fields:
+      uninterpretedOption:
+  GoogleProtobufOneofOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.OneofOptions
+    fields:
+      uninterpretedOption:
+  GoogleProtobufOneofOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.OneofOptions
+    fields:
+      uninterpretedOption:
+
+  GoogleProtobufEnumOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumOptions
+    fields:
+      allowAlias:
+      deprecated:
+      uninterpretedOption:
+  GoogleProtobufEnumOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumOptions
+    fields:
+      allowAlias:
+      deprecated:
+      uninterpretedOption:
+  GoogleProtobufEnumOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumOptions
+    fields:
+      allowAlias:
+      deprecated:
+      uninterpretedOption:
+
+  GoogleProtobufEnumValueOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumValueOptions
+    fields:
+      deprecated:
+      uninterpretedOption:
+  GoogleProtobufEnumValueOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumValueOptions
+    fields:
+      deprecated:
+      uninterpretedOption:
+  GoogleProtobufEnumValueOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.EnumValueOptions
+    fields:
+      deprecated:
+      uninterpretedOption:
+
+  GoogleProtobufServiceOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ServiceOptions
+    fields:
+      deprecated:
+      uninterpretedOption:
+  GoogleProtobufServiceOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ServiceOptions
+    fields:
+      deprecated:
+      uninterpretedOption:
+  GoogleProtobufServiceOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.ServiceOptions
+    fields:
+      deprecated:
+      uninterpretedOption:
+
+  GoogleProtobufMethodOptions:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodOptions
+    fields:
+      deprecated:
+      idempotencyLevel:
+      uninterpretedOption:
+  GoogleProtobufMethodOptionsInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodOptions
+    fields:
+      deprecated:
+      idempotencyLevel:
+      uninterpretedOption:
+  GoogleProtobufMethodOptionsPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.MethodOptions
+    fields:
+      deprecated:
+      idempotencyLevel:
+      uninterpretedOption:
+
+  GoogleProtobufUninterpretedOption:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.UninterpretedOption
+    fields:
+      name:
+      identifierValue:
+      positiveIntValue:
+      negativeIntValue:
+      doubleValue:
+      stringValue:
+      aggregateValue:
+  GoogleProtobufUninterpretedOptionInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.UninterpretedOption
+    fields:
+      name:
+      identifierValue:
+      positiveIntValue:
+      negativeIntValue:
+      doubleValue:
+      stringValue:
+      aggregateValue:
+  GoogleProtobufUninterpretedOptionPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.UninterpretedOption
+    fields:
+      name:
+      identifierValue:
+      positiveIntValue:
+      negativeIntValue:
+      doubleValue:
+      stringValue:
+      aggregateValue:
+
+  GoogleProtobufUninterpretedOptionNamePart:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.UninterpretedOption_NamePart
+    fields:
+      namePart:
+      isExtension:
+  GoogleProtobufNamePartInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.UninterpretedOption_NamePart
+    fields:
+      namePart:
+      isExtension:
+  GoogleProtobufNamePartPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.UninterpretedOption_NamePart
+    fields:
+      namePart:
+      isExtension:
+
+  GoogleProtobufSourceCodeInfo:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.SourceCodeInfo
+    fields:
+      location:
+  GoogleProtobufSourceCodeInfoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.SourceCodeInfo
+    fields:
+      location:
+  GoogleProtobufSourceCodeInfoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.SourceCodeInfo
+    fields:
+      location:
+
+  GoogleProtobufSourceCodeInfoLocation:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.SourceCodeInfo_Location
+    fields:
+      path:
+      span:
+      leadingComments:
+      trailingComments:
+      leadingDetachedComments:
+  GoogleProtobufLocationInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.SourceCodeInfo_Location
+    fields:
+      path:
+      span:
+      leadingComments:
+      trailingComments:
+      leadingDetachedComments:
+  GoogleProtobufLocationPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.SourceCodeInfo_Location
+    fields:
+      path:
+      span:
+      leadingComments:
+      trailingComments:
+      leadingDetachedComments:
+
+  GoogleProtobufGeneratedCodeInfo:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.GeneratedCodeInfo
+    fields:
+      annotation:
+  GoogleProtobufGeneratedCodeInfoInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.GeneratedCodeInfo
+    fields:
+      annotation:
+  GoogleProtobufGeneratedCodeInfoPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.GeneratedCodeInfo
+    fields:
+      annotation:
+
+  GoogleProtobufGeneratedCodeInfoAnnotation:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.GeneratedCodeInfo_Annotation
+    fields:
+      path:
+      sourceFile:
+      begin:
+      end:
+  GoogleProtobufAnnotationInput:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.GeneratedCodeInfo_Annotation
+    fields:
+      path:
+      sourceFile:
+      begin:
+      end:
+  GoogleProtobufAnnotationPayload:
+    model: github.com/golang/protobuf/protoc-gen-go/descriptor.GeneratedCodeInfo_Annotation
+    fields:
+      path:
+      sourceFile:
+      begin:
+      end:
+
+
+
+
+
+  BertyEntityDevice:
+    model: berty.tech/core/entity.Device
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      name:
+      status:
+      apiVersion:
+      contactId:
+  BertyEntityDeviceInput:
+    model: berty.tech/core/entity.Device
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      name:
+      status:
+      apiVersion:
+      contactId:
+  BertyEntityDevicePayload:
+    model: berty.tech/core/entity.Device
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      name:
+      status:
+      apiVersion:
+      contactId:
+
+
+  BertyEntityContact:
+    model: berty.tech/core/entity.Contact
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      sigchain:
+      status:
+      devices:
+      displayName:
+      displayStatus:
+      overrideDisplayName:
+      overrideDisplayStatus:
+  BertyEntityContactInput:
+    model: berty.tech/core/entity.Contact
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      sigchain:
+      status:
+      devices:
+      displayName:
+      displayStatus:
+      overrideDisplayName:
+      overrideDisplayStatus:
+  BertyEntityContactPayload:
+    model: berty.tech/core/entity.Contact
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      sigchain:
+      status:
+      devices:
+      displayName:
+      displayStatus:
+      overrideDisplayName:
+      overrideDisplayStatus:
+
+
+  BertyEntityConversation:
+    model: berty.tech/core/entity.Conversation
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      title:
+      topic:
+      members:
+  BertyEntityConversationInput:
+    model: berty.tech/core/entity.Conversation
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      title:
+      topic:
+      members:
+  BertyEntityConversationPayload:
+    model: berty.tech/core/entity.Conversation
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      title:
+      topic:
+      members:
+
+  BertyEntityConversationMember:
+    model: berty.tech/core/entity.ConversationMember
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      status:
+      contact:
+      conversationId:
+      contactId:
+  BertyEntityConversationMemberInput:
+    model: berty.tech/core/entity.ConversationMember
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      status:
+      contact:
+      conversationId:
+      contactId:
+  BertyEntityConversationMemberPayload:
+    model: berty.tech/core/entity.ConversationMember
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deletedAt:
+      status:
+      contact:
+      conversationId:
+      contactId:
+
+
+  BertyEntityMessage:
+    model: berty.tech/core/entity.Message
+    fields:
+      text:
+  BertyEntityMessageInput:
+    model: berty.tech/core/entity.Message
+    fields:
+      text:
+  BertyEntityMessagePayload:
+    model: berty.tech/core/entity.Message
+    fields:
+      text:
+
+
+  BertyEntitySenderAlias:
+    model: berty.tech/core/entity.SenderAlias
+    fields:
+      id:
+      createdAt:
+      updatedAt:
+      deletedAt:
+      status:
+      originDeviceId:
+      contactId:
+      conversationId:
+      aliasIdentifier:
+      used:
+  BertyEntitySenderAliasInput:
+    model: berty.tech/core/entity.SenderAlias
+    fields:
+      id:
+      createdAt:
+      updatedAt:
+      deletedAt:
+      status:
+      originDeviceId:
+      contactId:
+      conversationId:
+      aliasIdentifier:
+      used:
+  BertyEntitySenderAliasPayload:
+    model: berty.tech/core/entity.SenderAlias
+    fields:
+      id:
+      createdAt:
+      updatedAt:
+      deletedAt:
+      status:
+      originDeviceId:
+      contactId:
+      conversationId:
+      aliasIdentifier:
+      used:
+
+
+  BertyP2pSentAttrs:
+    model: berty.tech/core/api/p2p.SentAttrs
+    fields:
+      ids:
+  BertyP2pSentAttrsInput:
+    model: berty.tech/core/api/p2p.SentAttrs
+    fields:
+      ids:
+  BertyP2pSentAttrsPayload:
+    model: berty.tech/core/api/p2p.SentAttrs
+    fields:
+      ids:
+
+  BertyP2pAckAttrs:
+    model: berty.tech/core/api/p2p.AckAttrs
+    fields:
+      ids:
+      errMsg:
+  BertyP2pAckAttrsInput:
+    model: berty.tech/core/api/p2p.AckAttrs
+    fields:
+      ids:
+      errMsg:
+  BertyP2pAckAttrsPayload:
+    model: berty.tech/core/api/p2p.AckAttrs
+    fields:
+      ids:
+      errMsg:
+
+  BertyP2pPingAttrs:
+    model: berty.tech/core/api/p2p.PingAttrs
+    fields:
+      t:
+  BertyP2pPingAttrsInput:
+    model: berty.tech/core/api/p2p.PingAttrs
+    fields:
+      t:
+  BertyP2pPingAttrsPayload:
+    model: berty.tech/core/api/p2p.PingAttrs
+    fields:
+      t:
+
+  BertyP2pContactRequestAttrs:
+    model: berty.tech/core/api/p2p.ContactRequestAttrs
+    fields:
+      me:
+      introText:
+  BertyP2pContactRequestAttrsInput:
+    model: berty.tech/core/api/p2p.ContactRequestAttrs
+    fields:
+      me:
+      introText:
+  BertyP2pContactRequestAttrsPayload:
+    model: berty.tech/core/api/p2p.ContactRequestAttrs
+    fields:
+      me:
+      introText:
+
+  BertyP2pContactRequestAcceptedAttrs:
+    model: berty.tech/core/api/p2p.ContactRequestAcceptedAttrs
+    fields:
+      t:
+  BertyP2pContactRequestAcceptedAttrsInput:
+    model: berty.tech/core/api/p2p.ContactRequestAcceptedAttrs
+    fields:
+      t:
+  BertyP2pContactRequestAcceptedAttrsPayload:
+    model: berty.tech/core/api/p2p.ContactRequestAcceptedAttrs
+    fields:
+      t:
+
+  BertyP2pContactShareMeAttrs:
+    model: berty.tech/core/api/p2p.ContactShareMeAttrs
+    fields:
+      me:
+  BertyP2pContactShareMeAttrsInput:
+    model: berty.tech/core/api/p2p.ContactShareMeAttrs
+    fields:
+      me:
+  BertyP2pContactShareMeAttrsPayload:
+    model: berty.tech/core/api/p2p.ContactShareMeAttrs
+    fields:
+      me:
+
+  BertyP2pContactShareAttrs:
+    model: berty.tech/core/api/p2p.ContactShareAttrs
+    fields:
+      contact:
+  BertyP2pContactShareAttrsInput:
+    model: berty.tech/core/api/p2p.ContactShareAttrs
+    fields:
+      contact:
+  BertyP2pContactShareAttrsPayload:
+    model: berty.tech/core/api/p2p.ContactShareAttrs
+    fields:
+      contact:
+
+  BertyP2pConversationInviteAttrs:
+    model: berty.tech/core/api/p2p.ConversationInviteAttrs
+    fields:
+      conversation:
+  BertyP2pConversationInviteAttrsInput:
+    model: berty.tech/core/api/p2p.ConversationInviteAttrs
+    fields:
+      conversation:
+  BertyP2pConversationInviteAttrsPayload:
+    model: berty.tech/core/api/p2p.ConversationInviteAttrs
+    fields:
+      conversation:
+
+  BertyP2pConversationNewMessageAttrs:
+    model: berty.tech/core/api/p2p.ConversationNewMessageAttrs
+    fields:
+      message:
+  BertyP2pConversationNewMessageAttrsInput:
+    model: berty.tech/core/api/p2p.ConversationNewMessageAttrs
+    fields:
+      message:
+  BertyP2pConversationNewMessageAttrsPayload:
+    model: berty.tech/core/api/p2p.ConversationNewMessageAttrs
+    fields:
+      message:
+
+  BertyP2pDevtoolsMapsetAttrs:
+    model: berty.tech/core/api/p2p.DevtoolsMapsetAttrs
+    fields:
+      key:
+      val:
+  BertyP2pDevtoolsMapsetAttrsInput:
+    model: berty.tech/core/api/p2p.DevtoolsMapsetAttrs
+    fields:
+      key:
+      val:
+  BertyP2pDevtoolsMapsetAttrsPayload:
+    model: berty.tech/core/api/p2p.DevtoolsMapsetAttrs
+    fields:
+      key:
+      val:
+
+  BertyP2pSenderAliasUpdateAttrs:
+    model: berty.tech/core/api/p2p.SenderAliasUpdateAttrs
+    fields:
+      aliases:
+  BertyP2pSenderAliasUpdateAttrsInput:
+    model: berty.tech/core/api/p2p.SenderAliasUpdateAttrs
+    fields:
+      aliases:
+  BertyP2pSenderAliasUpdateAttrsPayload:
+    model: berty.tech/core/api/p2p.SenderAliasUpdateAttrs
+    fields:
+      aliases:
+
+
+  BertyP2pEvent:
+    model: berty.tech/core/api/p2p.Event
+    fields:
+      id:
+        resolver: true
+      senderId:
+      createdAt:
+      updatedAt:
+      deletedAt:
+      sentAt:
+      receivedAt:
+      ackedAt:
+      direction:
+      senderApiVersion:
+      receiverApiVersion:
+      receiverId:
+      kind:
+      attributes:
+        resolver: true
+      conversationId:
+        resolver: true
+  BertyP2pEventInput:
+    model: berty.tech/core/api/p2p.Event
+    fields:
+      id:
+        resolver: true
+      senderId:
+      createdAt:
+      updatedAt:
+      deletedAt:
+      sentAt:
+      receivedAt:
+      ackedAt:
+      direction:
+      senderApiVersion:
+      receiverApiVersion:
+      receiverId:
+      kind:
+      attributes:
+        resolver: true
+      conversationId:
+        resolver: true
+  BertyP2pEventPayload:
+    model: berty.tech/core/api/p2p.Event
+    fields:
+      id:
+        resolver: true
+      senderId:
+      createdAt:
+      updatedAt:
+      deletedAt:
+      sentAt:
+      receivedAt:
+      ackedAt:
+      direction:
+      senderApiVersion:
+      receiverApiVersion:
+      receiverId:
+      kind:
+      attributes:
+        resolver: true
+      conversationId:
+        resolver: true
+
+
+  BertyNodePingDestination:
+    model: berty.tech/core/api/node.PingDestination
+    fields:
+      destination:
+  BertyNodePingDestinationInput:
+    model: berty.tech/core/api/node.PingDestination
+    fields:
+      destination:
+  BertyNodePingDestinationPayload:
+    model: berty.tech/core/api/node.PingDestination
+    fields:
+      destination:
+
+  BertyNodeContactRequestInput:
+    model: berty.tech/core/api/node.ContactRequestInput
+    fields:
+      contact:
+      introText:
+  BertyNodeContactRequestInputPayload:
+    model: berty.tech/core/api/node.ContactRequestInput
+    fields:
+      contact:
+      introText:
+
+  BertyNodeConversationAddMessageInput:
+    model: berty.tech/core/api/node.ConversationAddMessageInput
+    fields:
+      conversation:
+      message:
+  BertyNodeConversationAddMessageInputPayload:
+    model: berty.tech/core/api/node.ConversationAddMessageInput
+    fields:
+      conversation:
+      message:
+
+  BertyNodeEventStreamInput:
+    model: berty.tech/core/api/node.EventStreamInput
+    fields:
+      filter:
+  BertyNodeEventStreamInputPayload:
+    model: berty.tech/core/api/node.EventStreamInput
+    fields:
+      filter:
+
+  BertyNodeEventListInput:
+    model: berty.tech/core/api/node.EventListInput
+    fields:
+      limit:
+      filter:
+  BertyNodeEventListInputPayload:
+    model: berty.tech/core/api/node.EventListInput
+    fields:
+      limit:
+      filter:
+
+  BertyNodeContactListInput:
+    model: berty.tech/core/api/node.ContactListInput
+    fields:
+      filter:
+  BertyNodeContactListInputPayload:
+    model: berty.tech/core/api/node.ContactListInput
+    fields:
+      filter:
+
+  BertyNodeConversationListInput:
+    model: berty.tech/core/api/node.ConversationListInput
+    fields:
+      filter:
+  BertyNodeConversationListInputPayload:
+    model: berty.tech/core/api/node.ConversationListInput
+    fields:
+      filter:
+
+  BertyNodeConversationCreateInput:
+    model: berty.tech/core/api/node.ConversationCreateInput
+    fields:
+      contacts:
+      title:
+      topic:
+  BertyNodeConversationCreateInputPayload:
+    model: berty.tech/core/api/node.ConversationCreateInput
+    fields:
+      contacts:
+      title:
+      topic:
+
+  BertyNodeConversationManageMembersInput:
+    model: berty.tech/core/api/node.ConversationManageMembersInput
+    fields:
+      conversation:
+      members:
+  BertyNodeConversationManageMembersInputPayload:
+    model: berty.tech/core/api/node.ConversationManageMembersInput
+    fields:
+      conversation:
+      members:
+
+  BertyNodeVoid:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:
+  BertyNodeVoidInput:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:
+  BertyNodeVoidPayload:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:

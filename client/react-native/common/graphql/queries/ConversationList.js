@@ -1,8 +1,8 @@
 import { graphql } from 'react-relay'
 
 export default graphql`
-  query ConversationListQuery {
-    ConversationList {
+  query ConversationListQuery ($filter: BertyEntityConversationInput) {
+    ConversationList (filter: $filter) {
       id
       createdAt
       updatedAt

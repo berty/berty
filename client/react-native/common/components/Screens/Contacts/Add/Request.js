@@ -23,7 +23,7 @@ class Request extends PureComponent {
       state: { routeName },
     } = navigation
 
-    const filter = routeName === 'Received' ? 'RequestedMe' : 'IsRequested'
+    const filter = routeName === 'Received' ? 4 : 3 // RequestedMe || isRequested
     const subtitle =
       routeName === 'Received'
         ? 'Request received 3 hours ago ...'

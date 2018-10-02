@@ -39,7 +39,7 @@ class Item extends PureComponent {
               source={{
                 uri:
                   'https://api.adorable.io/avatars/285/' +
-                  ((status === 'Myself' && status) ||
+                  ((status === 42 && 'Myself') ||
                     overrideDisplayName ||
                     displayName) +
                   '.png',
@@ -48,7 +48,7 @@ class Item extends PureComponent {
           </Flex.Rows>
           <Flex.Rows size={6} align='start' style={{ marginLeft: 14 }}>
             <Text color={colors.black} left middle>
-              {(status === 'Myself' && status) ||
+              {(status === 42 && 'Myself') ||
                 overrideDisplayName ||
                 displayName}
             </Text>
@@ -134,7 +134,17 @@ export default class List extends PureComponent {
 
   onDefaultSubmit = async ({ contactsID }) => {
     const retry = this.props.navigation.getParam('retry')
-    await mutations.conversationCreate.commit({ contactsID })
+    await mutations.conversationCreate.commit({
+      title: '',
+      topic: '',
+      contacts: contactsID.map(id => ({
+        id,
+        displayName: '',
+        displayStatus: '',
+        overrideDisplayName: '',
+        overrideDisplayStatus: '',
+      })),
+    })
     retry && retry()
     this.props.navigation.goBack(null)
   }

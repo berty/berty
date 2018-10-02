@@ -223,7 +223,7 @@ func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInpu
 		zap.String("input", string(jsonInput)),
 	)
 
-	var typedInput entity.Conversation
+	var typedInput node.ConversationCreateInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}

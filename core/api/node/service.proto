@@ -64,7 +64,7 @@ service Service {
   // Conversations
   //
 
-  rpc ConversationCreate(berty.entity.Conversation) returns (berty.entity.Conversation) {
+  rpc ConversationCreate(ConversationCreateInput) returns (berty.entity.Conversation) {
     option (berty.gql.graphql_fields) = "contactsID: [String!]!";
     option (berty.gql.graphql_type) = "Mutation";
   };
@@ -144,9 +144,17 @@ message ConversationListInput {
   berty.entity.Conversation filter = 1;
 }
 
+message ConversationCreateInput {
+  repeated berty.entity.Contact contacts = 1;
+  string title = 2;
+  string topic = 3;
+}
+
 message ConversationManageMembersInput {
   berty.entity.Conversation conversation = 1;
   repeated berty.entity.ConversationMember members = 2;
 }
 
-message Void {}
+message Void {
+  bool T = 1;
+}
