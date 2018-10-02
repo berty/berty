@@ -52,7 +52,7 @@ type QueryResolver interface {
 	Node(ctx context.Context, id string) (model.Node, error)
 	EventList(ctx context.Context, limit *int, kind *model.BertyP2pKind, conversationID *string) ([]*model.BertyP2pEvent, error)
 	GetEvent(ctx context.Context, eventID string) (*model.BertyP2pEvent, error)
-	ContactList(ctx context.Context) ([]*model.BertyEntityContact, error)
+	ContactList(ctx context.Context, status *model.BertyEntityContactStatus) ([]*model.BertyEntityContact, error)
 	GetContact(ctx context.Context, contactID string) (*model.BertyEntityContact, error)
 	ConversationList(ctx context.Context) ([]*model.BertyEntityConversation, error)
 	GetConversation(ctx context.Context, conversationID string) (*model.BertyEntityConversation, error)
@@ -1017,6 +1017,49 @@ func (ec *executionContext) _BertyEntityMessage_text(ctx context.Context, field 
 	return graphql.MarshalString(*res)
 }
 
+var bertyNodeContactListInputImplementors = []string{"BertyNodeContactListInput"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeContactListInput(ctx context.Context, sel ast.SelectionSet, obj *model.BertyNodeContactListInput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeContactListInputImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeContactListInput")
+		case "filter":
+			out.Values[i] = ec._BertyNodeContactListInput_filter(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeContactListInput_filter(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeContactListInput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeContactListInput"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Filter, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityContact)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
 var bertyNodeContactRequestInputImplementors = []string{"BertyNodeContactRequestInput"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -1145,6 +1188,49 @@ func (ec *executionContext) _BertyNodeConversationAddMessageInput_message(ctx co
 		return graphql.Null
 	}
 	return ec._BertyEntityMessage(ctx, field.Selections, res)
+}
+
+var bertyNodeConversationListInputImplementors = []string{"BertyNodeConversationListInput"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeConversationListInput(ctx context.Context, sel ast.SelectionSet, obj *model.BertyNodeConversationListInput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationListInputImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeConversationListInput")
+		case "filter":
+			out.Values[i] = ec._BertyNodeConversationListInput_filter(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeConversationListInput_filter(ctx context.Context, field graphql.CollectedField, obj *model.BertyNodeConversationListInput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeConversationListInput"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Filter, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntityConversation)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
 }
 
 var bertyNodeConversationManageMembersInputImplementors = []string{"BertyNodeConversationManageMembersInput"}
@@ -7016,9 +7102,26 @@ func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.C
 }
 
 func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 *model.BertyEntityContactStatus
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 model.BertyEntityContactStatus
+		if tmp != nil {
+			err = (&ptr1).UnmarshalGQL(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["status"] = arg0
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
 		Object: "Query",
-		Args:   nil,
+		Args:   args,
 		Field:  field,
 	})
 	return graphql.Defer(func() (ret graphql.Marshaler) {
@@ -7031,7 +7134,7 @@ func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphq
 		}()
 
 		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().ContactList(ctx)
+			return ec.resolvers.Query().ContactList(ctx, args["status"].(*model.BertyEntityContactStatus))
 		})
 		if resTmp == nil {
 			return graphql.Null
@@ -9037,6 +9140,14 @@ type BertyNodeEventListInput {
   filter: BertyP2pEvent
 } 
 
+type BertyNodeContactListInput {
+  filter: BertyEntityContact
+} 
+
+type BertyNodeConversationListInput {
+  filter: BertyEntityConversation
+} 
+
 type BertyNodeConversationManageMembersInput {
   conversation: BertyEntityConversation
   members: [BertyEntityConversationMember]
@@ -9168,7 +9279,7 @@ type Query {
   
   EventList(limit: Int, kind: BertyP2pKind, conversationID: String): [BertyP2pEvent]
   GetEvent(eventID: String!): BertyP2pEvent
-  ContactList: [BertyEntityContact]
+  ContactList(status: BertyEntityContactStatus): [BertyEntityContact]
   GetContact(contactID: String!): BertyEntityContact
   ConversationList: [BertyEntityConversation]
   GetConversation(conversationID: String!): BertyEntityConversation

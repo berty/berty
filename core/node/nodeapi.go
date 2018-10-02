@@ -178,13 +178,20 @@ func (n *Node) ContactRemove(_ context.Context, contact *entity.Contact) (*entit
 }
 
 // ContactList implements berty.node.ContactList
-func (n *Node) ContactList(_ *node.Void, stream node.Service_ContactListServer) error {
+func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_ContactListServer) error {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
 	var contacts []*entity.Contact
-	if err := n.sql.Find(&contacts).Error; err != nil {
-		return errors.Wrap(err, "failed to get contacts from database")
+
+	var err error
+	if input.Filter != nil {
+		err = n.sql.Where(input.Filter).Find(&contacts).Error
+	} else {
+		err = n.sql.Find(&contacts).Error
+	}
+	if err != nil {
+		return errors.Wrap(err, "failed get contacts from database")
 	}
 
 	for _, contact := range contacts {
@@ -299,12 +306,12 @@ func (n *Node) ConversationExclude(context.Context, *node.ConversationManageMemb
 	return nil, ErrNotImplemented
 }
 
-func (n *Node) ConversationList(_ *node.Void, stream node.Service_ConversationListServer) error {
+func (n *Node) ConversationList(input *node.ConversationListInput, stream node.Service_ConversationListServer) error {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
 	var conversations []*entity.Conversation
-	if err := n.sql.Find(&conversations).Error; err != nil {
+	if err := n.sql.Where(input.Filter).Find(&conversations).Error; err != nil {
 		return errors.Wrap(err, "failed to get conversations from database")
 	}
 
