@@ -97,7 +97,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice should only know itself", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
@@ -117,7 +117,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob should only know itself", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
@@ -137,7 +137,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Eve should only know itself", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := eve.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
@@ -180,7 +180,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice has en entry in sql for Bob", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -275,7 +275,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob has en entry in sql for Alice", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -498,7 +498,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice has Bob as friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -520,7 +520,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob has Alice as friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 2)
 
@@ -542,7 +542,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Eve has no friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := eve.client.ContactList(internalCtx, &node.Void{})
+				contacts, err := eve.client.ContactList(internalCtx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1)
 			})
