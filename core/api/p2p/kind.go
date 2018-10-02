@@ -16,10 +16,7 @@ func (e *Event) SetAttrs(attrs proto.Message) error {
 }
 
 func (e *Event) GetJSONAttrs() ([]byte, error) {
-	attrs, err := e.GetAttrs()
-	if err != nil {
-		return nil, err
-	}
+	attrs := e.GetAttributes()
 
 	json, err := json.Marshal(attrs)
 	if err != nil {

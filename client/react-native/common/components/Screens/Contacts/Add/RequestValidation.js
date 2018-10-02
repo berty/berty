@@ -10,7 +10,13 @@ export default class RequestValidation extends PureComponent {
   acceptRequest = async () => {
     try {
       const contactID = this.props.navigation.getParam('id')
-      await mutations.contactAcceptRequest.commit({ contactID })
+      await mutations.contactAcceptRequest.commit({
+        id: contactID,
+        displayName: '',
+        displayStatus: '',
+        overrideDisplayName: '',
+        overrideDisplayStatus: '',
+      })
       this.props.navigation.goBack(null)
     } catch (err) {
       console.error(err)
@@ -26,7 +32,12 @@ export default class RequestValidation extends PureComponent {
             size={1}
             style={[{ backgroundColor: colors.white }, borderTop]}
           >
-            <Flex.Rows size={1} align='center' justify='evenly' style={[padding]}>
+            <Flex.Rows
+              size={1}
+              align='center'
+              justify='evenly'
+              style={[padding]}
+            >
               <TouchableOpacity
                 onPress={this.acceptRequest}
                 style={[

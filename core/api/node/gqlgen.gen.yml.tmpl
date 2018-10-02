@@ -1,0 +1,184 @@
+{{- /* . | prettyjson */ -}}
+{{- /* Default content */ -}}
+{{- if not (getStore "gqlgen.gen.headerSet") -}}
+# GENERATED CODE -- DO NOT EDIT!
+
+schema: service.gen.graphql
+
+
+# Let gqlgen know where to put the generated server
+exec:
+  filename: graph/generated/generated.go
+  package: generated
+
+# Let gqlgen know where to the generated models (if any)
+model:
+  filename: models/generated.go
+  package: models
+
+# Optional, turns on resolver stub generation
+resolver:
+  filename: resolver.go # where to write them
+  type: Resolver  # whats the resolver root implementation type called?
+
+# Tell gqlgen about any existing models you want to reuse for
+# graphql. These normally come from the db or a remote api.
+models:
+  ID:
+    model: berty.tech/core/api/node/graphql/models.ID
+  Enum:
+    model: berty.tech/core/api/node/graphql/models.Enum
+  Double:
+    model: berty.tech/core/api/node/graphql/models.Double
+  Int64:
+    model: berty.tech/core/api/node/graphql/models.Int64
+  Uint64:
+    model: berty.tech/core/api/node/graphql/models.Uint64
+  Int32:
+    model: berty.tech/core/api/node/graphql/models.Int32
+  Uint32:
+    model: berty.tech/core/api/node/graphql/models.Uint32
+  SInt32:
+    model: berty.tech/core/api/node/graphql/models.SInt32
+  SInt64:
+    model: berty.tech/core/api/node/graphql/models.SInt64
+  Fixed64:
+    model: berty.tech/core/api/node/graphql/models.Fixed64
+  Fixed32:
+    model: berty.tech/core/api/node/graphql/models.Fixed32
+  Bool:
+    model: berty.tech/core/api/node/graphql/models.Bool
+  Byte:
+    model: berty.tech/core/api/node/graphql/models.Byte
+  SFixed64:
+    model: berty.tech/core/api/node/graphql/models.SFixed64
+  SFixed32:
+    model: berty.tech/core/api/node/graphql/models.SFixed32
+  GoogleProtobufTimestamp:
+    model: berty.tech/core/api/node/graphql/models.Time
+  GoogleProtobufTimestampInput:
+    model: berty.tech/core/api/node/graphql/models.Time
+  GoogleProtobufTimestampPayload:
+    model: berty.tech/core/api/node/graphql/models.Time
+{{setStore "gqlgen.gen.headerSet" true}}
+{{- end}}
+
+{{- $PackageName := .File.Package | replace "." "_" | camelCase}}
+{{- $FilePackageName := .File.Package | replace "." "/" }}
+{{- setStore "packageName" $PackageName}}
+{{- setStore "filePackageName" $FilePackageName}}
+{{- setStore "namespace" "" }}
+{{- setStore "goPackage" (splitArray ";" .File.Options.GoPackage | first) }}
+
+{{- define "inputName" }}
+  {{- $type := .}}
+  {{- if $type}}
+    {{- $typeName := .Name | replace "." "_" | camelCase | replace "_" ""}}
+    {{- if $typeName | regexMatch ".*Input"}}
+      {{- $typeName}}
+    {{- else}}
+      {{- $typeName}}Input
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "payloadName" }}
+  {{- $type := .}}
+  {{- if $type}}
+    {{- $typeName := .Name | replace "." "_" | camelCase | replace "_" ""}}
+    {{- if $typeName | regexMatch ".*Ouput"}}
+      {{- $typeName | replace "Output" "Payload"}}
+    {{- else}}
+      {{- $typeName}}Payload
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "enumType"}}
+  {{- $package := getStore "packageName"}}
+  {{- $message := getStore "namespace"}}
+
+  {{- range .}}
+    {{- $enum := .Name}}
+    {{- $goPackage := getStore "goPackage"}}
+    {{- if eq (concat $message "") ""}}
+      {{- setStore "GoEnumName" .Name}}
+    {{- else}}
+      {{- setStore "GoEnumName" (concat $message "_" .Name)}}
+    {{- end}}
+    {{- $goEnumName := getStore "GoEnumName"}}
+    {{- $model := concat $package $message $enum }}
+  {{$model}}:
+    model: berty.tech/core/api/node/graphql/models.Enum
+  {{- end}}
+{{- end}}
+
+{{- /* Associate GraphQL type with internal Go type */ -}}
+{{- define "nestedType"}}
+    {{- $PackageName := getStore "packageName"}}
+    {{- $GoPackage := getStore "goPackage"}}
+    {{- $FilePackageName := getStore "filePackageName"}}
+    {{- range .}}
+        {{- $backup := getStore "namespace"}}
+        {{- $name := concat $backup .Name}}
+        {{- setStore "name" $name }}
+        {{- if $backup }}
+            {{- $name := concat $backup "_" .Name}}
+            {{- setStore "name" $name}}
+        {{- end}}
+
+        {{- $name := getStore "name"}}
+        {{- setStore "namespace" $name}}
+        {{- if eq (eq (concat $PackageName $name) "GoogleProtobufTimestamp") false}}
+          {{- $modelName := concat $PackageName ($name | replace "_" "")}}
+          {{- if getStore $modelName }}
+          {{- else}}
+
+  {{$modelName}}:
+    model: {{$GoPackage}}.{{$name}}
+    fields:
+            {{- range .Field}}
+      {{.Name | lowerCamelCase}}:
+              {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+        resolver: true
+              {{- end}}
+            {{- end}}
+            {{- if eq ($modelName | regexMatch ".*Input$") false}}
+  {{$PackageName}}{{template "inputName" .}}:
+    model: {{$GoPackage}}.{{$name}}
+    fields:
+              {{- range .Field}}
+      {{.Name | lowerCamelCase}}:
+                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+        resolver: true
+                {{- end}}
+              {{- end}}
+            {{- end}}
+            {{- if eq ($modelName | regexMatch ".*Payload$") false}}
+  {{$PackageName}}{{template "payloadName" .}}:
+    model: {{$GoPackage}}.{{$name}}
+    fields:
+              {{- range .Field}}
+      {{.Name | lowerCamelCase}}:
+                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+        resolver: true
+                {{- end}}
+              {{- end}}
+            {{- end}}
+            {{- setStore $modelName true}}
+          {{- end}}
+
+
+        {{- end}}
+
+        {{- setStore "namespace" .Name}}
+        {{- if .NestedType}}
+            {{- template "nestedType" .NestedType}}
+        {{- end}}
+        {{- setStore "namespace" $backup}}
+    {{- end}}
+{{- end}}
+
+
+{{- /* Top level thingy */ -}}
+{{- template "nestedType" .File.MessageType }}

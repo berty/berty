@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react'
-import { Platform, TextInput as TextInputNative } from 'react-native'
-import { Flex, Screen, Button } from '../../../Library'
+import {
+  Platform,
+  TextInput as TextInputNative,
+  ActivityIndicator,
+} from 'react-native'
+import { Flex, Screen, Button, Text } from '../../../Library'
 import { colors } from '../../../../constants'
 import {
   padding,
@@ -58,69 +62,108 @@ class ByPublicKey extends PureComponent {
     const { contactID } = this.state
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
-        <QueryReducer query={queries.ContactList}>
+        <QueryReducer
+          query={queries.ContactList}
+          variables={{
+            filter: {
+              id: '',
+              status: 42,
+              displayName: '',
+              displayStatus: '',
+              overrideDisplayName: '',
+              overrideDisplayStatus: '',
+            },
+          }}
+        >
           {(state, retry) => {
-            const myself = (state.data.ContactList || []).find(
-              c => c.status === 'Myself'
-            )
-            const myID = myself ? atob(myself.id).split('CONTACT:')[1] : ''
-            return (
-              <Flex.Rows style={[padding]} align='center'>
-                <TextInputMultilineFix
-                  style={[
-                    {
-                      width: 330,
-                      height: 330,
-                      backgroundColor: colors.grey7,
-                      color: colors.black,
-                      flexWrap: 'wrap',
-                    },
-                    textTiny,
-                    padding,
-                    marginTop,
-                    rounded,
-                  ]}
-                  multiline
-                  placeholder='Type or copy/paste a berty user public key here'
-                  value={routeName === 'Enter a public key' ? contactID : myID}
-                  onChangeText={
-                    routeName === 'Enter a public key'
-                      ? contactID => this.setState({ contactID })
-                      : undefined
-                  }
-                  selectTextOnFocus
-                />
-                {routeName === 'Enter a public key' && (
-                  <Flex.Cols justify='center'>
-                    <Button
-                      icon='plus'
-                      background={colors.blue}
-                      margin
-                      padding
-                      rounded={23}
-                      height={24}
-                      medium
-                      middle
-                      center
-                      self='stretch'
-                      onPress={async () => {
-                        try {
-                          await mutations.contactRequest.commit({
-                            contactID: btoa(`CONTACT:${contactID}`),
-                          })
-                          navigation.goBack(null)
-                        } catch (err) {
-                          this.setState({ err })
-                          console.error(err)
-                        }
-                      }}
-                    >
-                      ADD THIS KEY
-                    </Button>
-                  </Flex.Cols>
-                )}
-              </Flex.Rows>
-            )
+            switch (state.type) {
+              default:
+              case state.loading:
+                return <ActivityIndicator />
+              case state.success: {
+                const myself = state.data.ContactList[0]
+                const myID = myself ? atob(myself.id).split('contact:')[1] : ''
+                return (
+                  <Flex.Rows style={[padding]} align='center'>
+                    <TextInputMultilineFix
+                      style={[
+                        {
+                          width: 330,
+                          height: 330,
+                          backgroundColor: colors.grey7,
+                          color: colors.black,
+                          flexWrap: 'wrap',
+                        },
+                        textTiny,
+                        padding,
+                        marginTop,
+                        rounded,
+                      ]}
+                      multiline
+                      placeholder='Type or copy/paste a berty user public key here'
+                      value={
+                        routeName === 'Enter a public key' ? contactID : myID
+                      }
+                      onChangeText={
+                        routeName === 'Enter a public key'
+                          ? contactID => this.setState({ contactID })
+                          : undefined
+                      }
+                      selectTextOnFocus
+                    />
+                    {routeName === 'Enter a public key' && (
+                      <Flex.Cols justify='center'>
+                        <Button
+                          icon='plus'
+                          background={colors.blue}
+                          margin
+                          padding
+                          rounded={23}
+                          height={24}
+                          medium
+                          middle
+                          center
+                          self='stretch'
+                          onPress={async () => {
+                            try {
+                              await mutations.contactRequest.commit({
+                                contact: {
+                                  id: btoa(`contact:${contactID}`),
+                                  displayName: '',
+                                  displayStatus: '',
+                                  overrideDisplayName: '',
+                                  overrideDisplayStatus: '',
+                                },
+                                introText: '',
+                              })
+                              navigation.goBack(null)
+                            } catch (err) {
+                              this.setState({ err })
+                              console.error(err)
+                            }
+                          }}
+                        >
+                          ADD THIS KEY
+                        </Button>
+                      </Flex.Cols>
+                    )}
+                  </Flex.Rows>
+                )
+              }
+              case state.error:
+                return (
+                  <Text
+                    background={colors.error}
+                    color={colors.white}
+                    medium
+                    middle
+                    center
+                    self='center'
+                  >
+                    An unexpected error occured, please restart the application
+                  </Text>
+                )
+            }
           }}
         </QueryReducer>
       </Screen>

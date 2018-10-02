@@ -1,522 +1,346 @@
-//go:generate gorunpkg github.com/99designs/gqlgen
-
 package graphql
 
 import (
-	"context"
-	"errors"
-	"fmt"
+	context "context"
+	json "encoding/json"
 	"io"
+	"strings"
+	time "time"
 
-	"go.uber.org/zap"
-
-	service "berty.tech/core/api/node"
-	"berty.tech/core/api/node/graphql/graph"
-	"berty.tech/core/api/node/graphql/model"
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/entity"
+	node "berty.tech/core/api/node"
+	generated "berty.tech/core/api/node/graphql/graph/generated"
+	models "berty.tech/core/api/node/graphql/models"
+	p2p "berty.tech/core/api/p2p"
+	entity "berty.tech/core/entity"
+	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
 )
 
 type Resolver struct {
-	client service.ServiceClient
+	client node.ServiceClient
 }
 
-func New(client service.ServiceClient) graph.Config {
-	return graph.Config{
+func New(client node.ServiceClient) generated.Config {
+	return generated.Config{
 		Resolvers: &Resolver{client},
 	}
 }
 
-func (r *Resolver) Mutation() graph.MutationResolver {
+func (r *Resolver) BertyEntityContact() generated.BertyEntityContactResolver {
+	return &bertyEntityContactResolver{r}
+}
+func (r *Resolver) BertyEntityContactPayload() generated.BertyEntityContactPayloadResolver {
+	return &bertyEntityContactResolver{r}
+}
+func (r *Resolver) BertyEntityConversation() generated.BertyEntityConversationResolver {
+	return &bertyEntityConversationResolver{r}
+}
+func (r *Resolver) BertyEntityConversationMember() generated.BertyEntityConversationMemberResolver {
+	return &bertyEntityConversationMemberResolver{r}
+}
+func (r *Resolver) BertyEntityConversationMemberPayload() generated.BertyEntityConversationMemberPayloadResolver {
+	return &bertyEntityConversationMemberResolver{r}
+}
+func (r *Resolver) BertyEntityConversationPayload() generated.BertyEntityConversationPayloadResolver {
+	return &bertyEntityConversationResolver{r}
+}
+func (r *Resolver) BertyEntityDevice() generated.BertyEntityDeviceResolver {
+	return &bertyEntityDeviceResolver{r}
+}
+func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
+	return &bertyP2pEventResolver{r}
+}
+func (r *Resolver) BertyP2pEventPayload() generated.BertyP2pEventPayloadResolver {
+	return &bertyP2pEventResolver{r}
+}
+func (r *Resolver) GoogleProtobufFieldDescriptorProto() generated.GoogleProtobufFieldDescriptorProtoResolver {
+	return &googleProtobufFieldDescriptorProtoResolver{r}
+}
+func (r *Resolver) GoogleProtobufFieldOptions() generated.GoogleProtobufFieldOptionsResolver {
+	return &googleProtobufFieldOptionsResolver{r}
+}
+func (r *Resolver) GoogleProtobufFileOptions() generated.GoogleProtobufFileOptionsResolver {
+	return &googleProtobufFileOptionsResolver{r}
+}
+func (r *Resolver) GoogleProtobufMethodOptions() generated.GoogleProtobufMethodOptionsResolver {
+	return &googleProtobufMethodOptionsResolver{r}
+}
+
+func (r *Resolver) Mutation() generated.MutationResolver {
 	return &mutationResolver{r}
 }
-
-func (r *Resolver) Query() graph.QueryResolver {
+func (r *Resolver) Query() generated.QueryResolver {
 	return &queryResolver{r}
 }
-
-func (r *Resolver) Subscription() graph.SubscriptionResolver {
+func (r *Resolver) Subscription() generated.SubscriptionResolver {
 	return &subscriptionResolver{r}
+}
+
+type bertyEntityContactResolver struct{ *Resolver }
+
+func (r *bertyEntityContactResolver) ID(ctx context.Context, obj *entity.Contact) (string, error) {
+	return "contact:" + obj.ID, nil
+}
+
+type bertyEntityConversationResolver struct{ *Resolver }
+
+func (r *bertyEntityConversationResolver) ID(ctx context.Context, obj *entity.Conversation) (string, error) {
+	return "conversation:" + obj.ID, nil
+}
+
+type bertyEntityConversationMemberResolver struct{ *Resolver }
+
+func (r *bertyEntityConversationMemberResolver) ID(ctx context.Context, obj *entity.ConversationMember) (string, error) {
+	return "conversation_member:" + obj.ID, nil
+}
+
+type bertyEntityDeviceResolver struct{ *Resolver }
+
+func (r *bertyEntityDeviceResolver) ID(ctx context.Context, obj *entity.Device) (string, error) {
+	return "device:" + obj.ID, nil
+}
+
+type bertyP2pEventResolver struct{ *Resolver }
+
+func (r *bertyP2pEventResolver) ID(ctx context.Context, obj *p2p.Event) (string, error) {
+	return "event:" + obj.ID, nil
+}
+func (r *bertyP2pEventResolver) ConversationID(ctx context.Context, obj *p2p.Event) (string, error) {
+	return "conversation:" + obj.ConversationID, nil
+}
+func (r *bertyP2pEventResolver) Attributes(ctx context.Context, obj *p2p.Event) ([]byte, error) {
+	attrs, err := obj.GetAttrs()
+	if err != nil {
+		return nil, err
+	}
+	return json.Marshal(attrs)
+}
+
+type googleProtobufFieldDescriptorProtoResolver struct{ *Resolver }
+
+func (r *googleProtobufFieldDescriptorProtoResolver) Label(ctx context.Context, obj *descriptor.FieldDescriptorProto) (*int32, error) {
+	ret := int32(*obj.Label)
+	return &ret, nil
+}
+func (r *googleProtobufFieldDescriptorProtoResolver) Type(ctx context.Context, obj *descriptor.FieldDescriptorProto) (*int32, error) {
+	ret := int32(*obj.Type)
+	return &ret, nil
+}
+
+type googleProtobufFieldOptionsResolver struct{ *Resolver }
+
+func (r *googleProtobufFieldOptionsResolver) Ctype(ctx context.Context, obj *descriptor.FieldOptions) (*int32, error) {
+	ret := int32(*obj.Ctype)
+	return &ret, nil
+}
+func (r *googleProtobufFieldOptionsResolver) Jstype(ctx context.Context, obj *descriptor.FieldOptions) (*int32, error) {
+	ret := int32(*obj.Jstype)
+	return &ret, nil
+}
+
+type googleProtobufFileOptionsResolver struct{ *Resolver }
+
+func (r *googleProtobufFileOptionsResolver) OptimizeFor(ctx context.Context, obj *descriptor.FileOptions) (*int32, error) {
+	ret := int32(*obj.OptimizeFor)
+	return &ret, nil
+}
+
+type googleProtobufMethodOptionsResolver struct{ *Resolver }
+
+func (r *googleProtobufMethodOptionsResolver) IdempotencyLevel(ctx context.Context, obj *descriptor.MethodOptions) (*int32, error) {
+	ret := int32(*obj.IdempotencyLevel)
+	return &ret, nil
 }
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) ContactRequest(ctx context.Context, input model.ContactRequestInput) (*model.ContactRequestPayload, error) {
-	// @TODO: Find a way to properly handle defaults values
-	if input.IntroText == nil {
-		tmp := "Hi, I'd like to add you to my professional network on Berty"
-		input.IntroText = &tmp
-	}
-
-	var contactGlobalID globalID
-	err := contactGlobalID.FromString(input.ContactID)
-	if err != nil {
-		return nil, err
-	}
-
-	req := &service.ContactRequestInput{
-		Contact: &entity.Contact{
-			ID: contactGlobalID.ID,
-		},
-		IntroText: *input.IntroText,
-	}
-
-	contact, err := r.client.ContactRequest(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ContactRequestPayload{
-		BertyEntityContact: convertContact(contact),
-		ClientMutationID:   input.ClientMutationID,
-	}, nil
+func (r *mutationResolver) ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error) {
+	// logger().Debug("CONTACT_REQUEST_RESOLVER")
+	contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
+	return r.client.ContactRequest(ctx, &node.ContactRequestInput{
+		Contact:   contact,
+		IntroText: introText,
+	})
 }
-
-func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, input model.ContactAcceptRequestInput) (*model.ContactAcceptRequestPayload, error) {
-	// @TODO: Find a way to properly handle defaults values
-	var contactGlobalID globalID
-	err := contactGlobalID.FromString(input.ContactID)
-	if err != nil {
-		return nil, err
-	}
-
-	req := &entity.Contact{
-		ID: contactGlobalID.ID,
-	}
-
-	contact, err := r.client.ContactAcceptRequest(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ContactAcceptRequestPayload{
-		BertyEntityContact: convertContact(contact),
-		ClientMutationID:   input.ClientMutationID,
-	}, nil
+func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+	// logger().Debug("CONTACT_ACCEPT_REQUEST_RESOLVER")
+	return r.client.ContactAcceptRequest(ctx, &entity.Contact{
+		ID: strings.SplitN(id, ":", 2)[1],
+	})
 }
-
-func (r *mutationResolver) ContactRemove(ctx context.Context, input model.ContactRemoveInput) (*model.ContactRemovePayload, error) {
-	var contactGlobalID globalID
-	err := contactGlobalID.FromString(input.ContactID)
-	if err != nil {
-		return nil, err
-	}
-
-	req := &entity.Contact{
-		ID: contactGlobalID.ID,
-	}
-
-	contact, err := r.client.ContactRemove(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ContactRemovePayload{
-		BertyEntityContact: convertContact(contact),
-		ClientMutationID:   input.ClientMutationID,
-	}, nil
+func (r *mutationResolver) ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+	return r.client.ContactRemove(ctx, &entity.Contact{
+		ID: strings.SplitN(id, ":", 2)[1],
+	})
 }
-
-func (r *mutationResolver) ContactUpdate(ctx context.Context, input model.ContactUpdateInput) (*model.ContactUpdatePayload, error) {
-	if input.DisplayName == nil {
-		return nil, errors.New("contact update without a displayName is not currently supported")
-	}
-
-	var contactGlobalID globalID
-	err := contactGlobalID.FromString(input.ContactID)
-	if err != nil {
-		return nil, err
-	}
-
-	req := entity.Contact{
-		ID:          contactGlobalID.ID,
-		DisplayName: *input.DisplayName,
-	}
-
-	contact, err := r.client.ContactUpdate(ctx, &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ContactUpdatePayload{
-		BertyEntityContact: convertContact(contact),
-		ClientMutationID:   input.ClientMutationID,
-	}, nil
+func (r *mutationResolver) ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+	return r.client.ContactUpdate(ctx, &entity.Contact{
+		ID: strings.SplitN(id, ":", 2)[1],
+	})
 }
-
-func (r *mutationResolver) ConversationCreate(ctx context.Context, input model.ConversationCreateInput) (*model.ConversationCreatePayload, error) {
-	membersID := make([]string, len(input.ContactsID))
-	for i, cid := range input.ContactsID {
-		gid := globalID{}
-		err := gid.FromString(cid)
-		if err != nil {
-			return nil, err
+func (r *mutationResolver) ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error) {
+	if contacts != nil {
+		for i, contact := range contacts {
+			contacts[i].ID = strings.SplitN(contact.ID, ":", 2)[1]
 		}
-
-		membersID[i] = gid.ID
 	}
-
-	members, err := memberSliceFromContactIds(input.ContactsID)
-	if err != nil {
-		return nil, err
-	}
-
-	req := &entity.Conversation{
-		Members: members,
-	}
-
-	conversation, err := r.client.ConversationCreate(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ConversationCreatePayload{
-		BertyEntityConversation: convertConversation(conversation),
-		ClientMutationID:        input.ClientMutationID,
-	}, nil
+	return r.client.ConversationCreate(ctx, &node.ConversationCreateInput{
+		Contacts: contacts,
+		Title:    title,
+		Topic:    topic,
+	})
 }
+func (r *mutationResolver) ConversationInvite(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error) {
 
-func (r *mutationResolver) ConversationInvite(ctx context.Context, input model.ConversationInviteInput) (*model.ConversationInvitePayload, error) {
-	var conversationGlobalID globalID
-	err := conversationGlobalID.FromString(input.ConversationID)
-	if err != nil {
-		return nil, err
-	}
-
-	members, err := memberSliceFromContactIds(input.ContactsID)
-	if err != nil {
-		return nil, err
-	}
-
-	req := &service.ConversationManageMembersInput{
-		Conversation: &entity.Conversation{
-			ID: conversationGlobalID.ID,
-		},
-		Members: members,
-	}
-
-	conversation, err := r.client.ConversationInvite(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ConversationInvitePayload{
-		BertyEntityConversation: convertConversation(conversation),
-		ClientMutationID:        input.ClientMutationID,
-	}, nil
+	return r.client.ConversationInvite(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Members: members})
 }
-
-func (r *mutationResolver) ConversationExclude(ctx context.Context, input model.ConversationExcludeInput) (*model.ConversationExcludePayload, error) {
-	var conversationGlobalID globalID
-	err := conversationGlobalID.FromString(input.ConversationID)
-	if err != nil {
-		return nil, err
-	}
-
-	members, err := memberSliceFromContactIds(input.ContactsID)
-	if err != nil {
-		return nil, err
-	}
-
-	req := &service.ConversationManageMembersInput{
-		Conversation: &entity.Conversation{
-			ID: input.ConversationID,
-		},
-		Members: members,
-	}
-
-	conversation, err := r.client.ConversationExclude(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ConversationExcludePayload{
-		BertyEntityConversation: convertConversation(conversation),
-		ClientMutationID:        input.ClientMutationID,
-	}, nil
+func (r *mutationResolver) ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error) {
+	return r.client.ConversationExclude(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Members: members})
 }
-
-func (r *mutationResolver) ConversationAddMessage(ctx context.Context, input model.ConversationAddMessageInput) (*model.ConversationAddMessagePayload, error) {
-	var conversationGlobalID globalID
-	err := conversationGlobalID.FromString(input.ConversationID)
-	if err != nil {
-		return nil, err
+func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error) {
+	if conversation != nil {
+		if conversation.ID != "" {
+			conversation.ID = strings.SplitN(conversation.ID, ":", 2)[1]
+		}
 	}
-
-	req := &service.ConversationAddMessageInput{
-		Conversation: &entity.Conversation{
-			ID: conversationGlobalID.ID,
-		},
-		Message: &entity.Message{
-			Text: input.Message,
-		},
-	}
-
-	event, err := r.client.ConversationAddMessage(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &model.ConversationAddMessagePayload{
-		BertyP2pEvent:    convertEvent(event),
-		ClientMutationID: input.ClientMutationID,
-	}, nil
+	return r.client.ConversationAddMessage(ctx, &node.ConversationAddMessageInput{Conversation: conversation, Message: message})
 }
-
-func (r *mutationResolver) GenerateFakeData(ctx context.Context, input model.GenerateFakeDataInput) (*model.GenerateFakeDataPayload, error) {
-	req := &service.Void{}
-
-	_, err := r.client.GenerateFakeData(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return &model.GenerateFakeDataPayload{
-		BertyNodeVoid:    &model.BertyNodeVoid{},
-		ClientMutationID: input.ClientMutationID,
-	}, err
+func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.GenerateFakeData(ctx, &node.Void{T: T})
 }
 
 type queryResolver struct{ *Resolver }
 
-func (r *queryResolver) Node(ctx context.Context, id string) (model.Node, error) {
-	var gid globalID
-	if err := gid.FromString(id); err != nil {
-		return nil, err
+func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error) {
+	gID := strings.SplitN(id, ":", 2)
+	switch gID[0] {
+	case "contact":
+		return r.client.GetContact(ctx, &entity.Contact{ID: id})
+	case "conversation":
+		return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
+	case "conversation_member":
+		return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
+	// case "device":
+	// 	return r.client.GetDevice(ctx, &entity.Device{ID: id}onta
+	case "event":
+		return r.client.GetEvent(ctx, &p2p.Event{ID: id})
 	}
-
-	switch gid.Kind {
-	case EventKind:
-		return r.GetEvent(ctx, id)
-	case ContactKind:
-		return r.GetContact(ctx, id)
-	case ConversationKind:
-		return r.GetConversation(ctx, id)
-	case ConversationMemberKind:
-		return r.GetConversationMember(ctx, id)
-	}
-
-	return nil, fmt.Errorf("`%s:%s` unknown kind (%s)", string(gid.Kind), gid.ID, string(gid.Kind))
+	return nil, nil
 }
+func (r *queryResolver) EventList(ctx context.Context, limit uint32, filter *p2p.Event) ([]*p2p.Event, error) {
 
-func (r *queryResolver) EventList(ctx context.Context, limit *int, kind *model.BertyP2pKind, conversationID *string) ([]*model.BertyP2pEvent, error) {
-	req := &service.EventListInput{}
-
-	if kind != nil || conversationID != nil {
-		req.Filter = &p2p.Event{}
-	}
-
-	if conversationID != nil {
-		var conversationGID globalID
-		if err := conversationGID.FromString(*conversationID); err != nil {
-			return nil, err
+	var list []*p2p.Event
+	if filter != nil {
+		if filter.ConversationID != "" {
+			filter.ConversationID = strings.SplitN(filter.ConversationID, ":", 2)[1]
 		}
-		req.Filter.ConversationID = conversationGID.ID
 	}
-
-	if kind != nil {
-		req.Filter.Kind = *convertModelToP2pEventKind(kind)
-	}
-
-	if limit != nil {
-		req.Limit = uint32(*limit)
-	}
-
-	stream, err := r.client.EventList(ctx, req)
+	stream, err := r.client.EventList(ctx, &node.EventListInput{Limit: limit, Filter: &p2p.Event{
+		ConversationID: filter.ConversationID,
+	}})
 	if err != nil {
 		return nil, err
 	}
-
-	var entries []*model.BertyP2pEvent
 	for {
-		entry, err := stream.Recv()
+		elem, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
-
 		if err != nil {
 			return nil, err
 		}
-
-		c := convertEvent(entry)
-		entries = append(entries, c)
+		list = append(list, elem)
 	}
-
-	return entries, nil
+	return list, nil
 }
-
-func (r *queryResolver) GetEvent(ctx context.Context, eventID string) (*model.BertyP2pEvent, error) {
-	var gid globalID
-	if err := gid.FromString(eventID); err != nil {
-		return nil, err
-	}
-
-	req := &p2p.Event{
-		ID: gid.ID,
-	}
-
-	event, err := r.client.GetEvent(ctx, req)
+func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
+	return r.client.GetEvent(ctx, &p2p.Event{
+		ID: strings.SplitN(id, ":", 2)[1],
+	})
+}
+func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact) ([]*entity.Contact, error) {
+	var list []*entity.Contact
+	stream, err := r.client.ContactList(ctx, &node.ContactListInput{Filter: filter})
 	if err != nil {
 		return nil, err
 	}
-
-	return convertEvent(event), err
-}
-
-func (r *queryResolver) ContactList(ctx context.Context, status *model.BertyEntityContactStatus) ([]*model.BertyEntityContact, error) {
-
-	var err error
-
-	req := &service.ContactListInput{}
-
-	if status != nil {
-		req.Filter = &entity.Contact{}
-		filterStatus, err := convertGQLToEntityContactStatus(status)
-		req.Filter.Status = *filterStatus
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	stream, err := r.client.ContactList(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	var entries []*model.BertyEntityContact
 	for {
-		entry, err := stream.Recv()
+		elem, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
-
 		if err != nil {
 			return nil, err
 		}
-
-		c := convertContact(entry)
-		entries = append(entries, c)
+		list = append(list, elem)
 	}
-
-	return entries, nil
+	return list, nil
 }
+func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+	return r.client.GetContact(ctx, &entity.Contact{ID: id})
+}
+func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation) ([]*entity.Conversation, error) {
+	var list []*entity.Conversation
 
-func (r *queryResolver) GetContact(ctx context.Context, contactID string) (*model.BertyEntityContact, error) {
-	var gid globalID
-	if err := gid.FromString(contactID); err != nil {
-		return nil, err
+	if filter != nil {
+		if filter.ID != "" {
+			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+		}
+		if filter.Members != nil {
+			for _, m := range filter.Members {
+				if m.ID != "" {
+					m.ID = strings.SplitN(m.ID, ":", 2)[1]
+				}
+				if m.Contact != nil && m.Contact.ID != "" {
+					m.Contact.ID = strings.SplitN(m.Contact.ID, ":", 2)[1]
+				}
+			}
+		}
 	}
-
-	req := &entity.Contact{
-		ID: gid.ID,
-	}
-
-	contact, err := r.client.GetContact(ctx, req)
+	stream, err := r.client.ConversationList(ctx, &node.ConversationListInput{Filter: filter})
 	if err != nil {
 		return nil, err
 	}
-
-	return convertContact(contact), err
-}
-
-func (r *queryResolver) GetConversation(ctx context.Context, conversationID string) (*model.BertyEntityConversation, error) {
-	var gid globalID
-	if err := gid.FromString(conversationID); err != nil {
-		return nil, err
-	}
-
-	req := &entity.Conversation{
-		ID: gid.ID,
-	}
-
-	conversation, err := r.client.GetConversation(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return convertConversation(conversation), err
-}
-
-func (r *queryResolver) ConversationList(ctx context.Context) ([]*model.BertyEntityConversation, error) {
-
-	var err error
-
-	req := &service.ConversationListInput{}
-
-	stream, err := r.client.ConversationList(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	var entries []*model.BertyEntityConversation
 	for {
-		entry, err := stream.Recv()
+		elem, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
-
 		if err != nil {
 			return nil, err
 		}
-
-		c := convertConversation(entry)
-		entries = append(entries, c)
+		list = append(list, elem)
 	}
-
-	return entries, nil
+	return list, nil
 }
-
-func (r *queryResolver) GetConversationMember(ctx context.Context, conversationMemberID string) (*model.BertyEntityConversationMember, error) {
-	var gid globalID
-	if err := gid.FromString(conversationMemberID); err != nil {
-		return nil, err
-	}
-
-	req := &entity.ConversationMember{
-		ID: gid.ID,
-	}
-
-	conversationMember, err := r.client.GetConversationMember(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-
-	return convertConversationMember(conversationMember), err
+func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
+}
+func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
+	return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
 }
 
 type subscriptionResolver struct{ *Resolver }
 
-func (r *subscriptionResolver) EventStream(ctx context.Context, kind *string, conversationID *string) (<-chan *model.BertyP2pEvent, error) {
-	ce := make(chan *model.BertyP2pEvent)
+func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error) {
+	stream, err := r.client.EventStream(ctx, &node.EventStreamInput{Filter: filter})
+	channel := make(chan *p2p.Event, 1)
 
-	req := &service.EventStreamInput{}
-	if kind != nil || conversationID != nil {
-		req.Filter = &p2p.Event{
-			// Kind: , @TODO: need converter for kind filter
-			ConversationID: *conversationID,
-		}
-	}
-
-	stream, err := r.client.EventStream(ctx, req)
 	if err != nil {
 		return nil, err
 	}
-
 	go func() {
 		for {
-			entry, err := stream.Recv()
-
-			// if err == io.EOF {
-			//      break
-			// }
-
-			if err != nil {
-				logger().Error("EventStream error", zap.Error(err))
+			elem, err := stream.Recv()
+			if err == io.EOF {
 				break
 			}
-
-			ce <- convertEvent(entry)
+			if err != nil {
+				// logger().Error(err.Error())
+				break
+			}
+			channel <- elem
 		}
 	}()
+	return channel, nil
 
-	return ce, nil
 }

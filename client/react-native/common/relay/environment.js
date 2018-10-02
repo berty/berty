@@ -71,6 +71,7 @@ const getPort = () =>
     }, 1000)
   })
 
+getIP().then(console.log)
 getPort().then(console.log)
 
 export const fetchQuery = async (operation, variables) => {

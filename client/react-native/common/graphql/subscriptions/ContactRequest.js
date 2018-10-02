@@ -10,7 +10,7 @@ export default {
           try {
             while (true) {
               const response = yield
-              if (response.EventStream.kind === 'ContactRequest') {
+              if (response.EventStream.kind === 201) {
                 iterator.next(response.EventStream)
               }
             }
@@ -22,7 +22,7 @@ export default {
       updater:
         updater &&
         ((store, data) => {
-          if (data.EventStream.kind === 'ContactRequest') {
+          if (data.EventStream.kind === 201) {
             return updater(store, data.EventStream)
           }
         }),

@@ -55,7 +55,7 @@ export default class MyPublicKey extends PureComponent {
 
   render () {
     const { id } = this.props.navigation.getParam('data')
-    const myID = atob(id).split('CONTACT:')[1]
+    const myID = atob(id).split('contact:')[1]
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <Flex.Rows style={[padding]} align='center'>

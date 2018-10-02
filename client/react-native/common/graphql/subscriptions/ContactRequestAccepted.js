@@ -10,7 +10,7 @@ export default {
           try {
             while (true) {
               const response = yield
-              if (response.EventStream.kind === 'ContactRequestAccepted') {
+              if (response.EventStream.kind === 202) {
                 iterator.next(response.EventStream)
               }
             }
@@ -22,7 +22,7 @@ export default {
       updater:
         updater &&
         ((store, data) => {
-          if (data.EventStream.kind === 'ContactRequestAccepted') {
+          if (data.EventStream.kind === 202) {
             return updater(store, data.EventStream)
           }
         }),
