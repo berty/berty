@@ -62,6 +62,19 @@ func nodeChansLens(apps ...*AppMock) []int {
 		app.node.AsyncWait()
 		out = append(out, len(app.networkDriver.(*mock.Enqueuer).Queue()))
 		out = append(out, len(app.eventStream))
+		if len(app.eventStream) > 99 {
+			log.Println("!! QUEUE SHOULD NOT BE AS MUCH FILLED !!")
+			log.Println("--- queue")
+			for len(app.networkDriver.(*mock.Enqueuer).Queue()) > 0 {
+				event := <-app.networkDriver.(*mock.Enqueuer).Queue()
+				jsonPrint(event)
+			}
+			log.Println("--- eventStream")
+			for len(app.eventStream) > 0 {
+				event := <-app.eventStream
+				jsonPrint(event)
+			}
+		}
 	}
 	return out
 }
