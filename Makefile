@@ -22,8 +22,9 @@ lint-go:
 
 .PHONY: lint-editorconfig
 lint-editorconfig:
-	@FILES=`find . -type f                                                       \
+	@FILES=`find . -type f                                                               \
 			! -name '.DS_Store'                                                  \
+			! -name 'LICENSE'                                                    \
 			! -name 'Gopkg*'                                                     \
 			! -name 'yarn.lock'                                                  \
 			! -name 'yarn-error.log'                                             \
@@ -48,8 +49,8 @@ lint-editorconfig:
 			! -path './.github/*'                                                \
 			! -path './vendor/*'                                                 \
 			! -path './client/react-native/mobile/ios/berty/Images.xcassets/*'`; \
-	COUNT=$$(echo "$$FILES" | sed '/^\s*$$/d' | wc -l | tr -d ' ');              \
-	echo "Checking if $$COUNT files comply with EditorConfig rules...";          \
+	COUNT=$$(echo "$$FILES" | sed '/^\s*$$/d' | wc -l | tr -d ' ');                      \
+	echo "Checking if $$COUNT files comply with EditorConfig rules...";                  \
 	eclint check $$FILES
 
 
