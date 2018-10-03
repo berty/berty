@@ -66,7 +66,7 @@ export default class List extends PureComponent {
         />
         <Menu.Item
           icon='life-buoy'
-          title='help'
+          title='Help'
           onPress={() => navigation.push('settings/help')}
         />
         <Menu.Item

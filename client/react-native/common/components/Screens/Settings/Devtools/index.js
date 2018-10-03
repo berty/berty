@@ -4,12 +4,14 @@ import { Header } from '../../../Library'
 import List from './List'
 import Database from './Database'
 import Network from './Network'
+import EventList from './EventList'
 
 export default createSubStackNavigator(
   {
     'devtools/list': List,
     'devtools/database': Database,
     'devtools/network': Network,
+    'devtools/events': EventList,
   },
   {
     initialRouteName: 'devtools/list',
