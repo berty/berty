@@ -549,11 +549,14 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
-	EventList(ctx context.Context, limit uint32, filter *p2p.Event) ([]*p2p.Event, error)
+	EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error)
+	EventListPaginated(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) (*node.EventListOutput, error)
 	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
-	ContactList(ctx context.Context, filter *entity.Contact) ([]*entity.Contact, error)
+	ContactList(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) ([]*entity.Contact, error)
+	ContactListPaginated(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) (*node.ContactListOutput, error)
 	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
-	ConversationList(ctx context.Context, filter *entity.Conversation) ([]*entity.Conversation, error)
+	ConversationList(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) ([]*entity.Conversation, error)
+	ConversationListPaginated(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) (*node.ConversationListOutput, error)
 	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
 }
@@ -6146,6 +6149,665 @@ func (ec *executionContext) _BertyEntitySenderAlias_used(ctx context.Context, fi
 	res := resTmp.(bool)
 	rctx.Result = res
 	return models.MarshalBool(res)
+}
+
+var bertyNodeContactEdgeImplementors = []string{"BertyNodeContactEdge"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeContactEdge(ctx context.Context, sel ast.SelectionSet, obj *node.ContactEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeContactEdgeImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeContactEdge")
+		case "node":
+			out.Values[i] = ec._BertyNodeContactEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._BertyNodeContactEdge_cursor(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeContactEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.ContactEdge) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeContactEdge"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Node, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Contact)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BertyNodeContactEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.ContactEdge) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeContactEdge"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Cursor, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var bertyNodeContactListOutputPayloadImplementors = []string{"BertyNodeContactListOutputPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeContactListOutputPayload(ctx context.Context, sel ast.SelectionSet, obj *node.ContactListOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeContactListOutputPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeContactListOutputPayload")
+		case "edges":
+			out.Values[i] = ec._BertyNodeContactListOutputPayload_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._BertyNodeContactListOutputPayload_pageInfo(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeContactListOutputPayload_edges(ctx context.Context, field graphql.CollectedField, obj *node.ContactListOutput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeContactListOutputPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Edges, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*node.ContactEdge)
+	arr1 := graphql.Array{}
+	for idx1 := range res {
+		arr1 = append(arr1, func() graphql.Marshaler {
+			rctx := graphql.GetResolverContext(ctx)
+			rctx.PushIndex(idx1)
+			defer rctx.Pop()
+			if res[idx1] == nil {
+				return graphql.Null
+			}
+			return ec._BertyNodeContactEdge(ctx, field.Selections, res[idx1])
+		}())
+	}
+	return arr1
+}
+
+func (ec *executionContext) _BertyNodeContactListOutputPayload_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.ContactListOutput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeContactListOutputPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.PageInfo, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.PageInfo)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyNodePageInfo(ctx, field.Selections, res)
+}
+
+var bertyNodeConversationEdgeImplementors = []string{"BertyNodeConversationEdge"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeConversationEdge(ctx context.Context, sel ast.SelectionSet, obj *node.ConversationEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationEdgeImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeConversationEdge")
+		case "node":
+			out.Values[i] = ec._BertyNodeConversationEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._BertyNodeConversationEdge_cursor(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeConversationEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.ConversationEdge) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeConversationEdge"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Node, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BertyNodeConversationEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.ConversationEdge) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeConversationEdge"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Cursor, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var bertyNodeConversationListOutputPayloadImplementors = []string{"BertyNodeConversationListOutputPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeConversationListOutputPayload(ctx context.Context, sel ast.SelectionSet, obj *node.ConversationListOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationListOutputPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeConversationListOutputPayload")
+		case "edges":
+			out.Values[i] = ec._BertyNodeConversationListOutputPayload_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._BertyNodeConversationListOutputPayload_pageInfo(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeConversationListOutputPayload_edges(ctx context.Context, field graphql.CollectedField, obj *node.ConversationListOutput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeConversationListOutputPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Edges, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*node.ConversationEdge)
+	arr1 := graphql.Array{}
+	for idx1 := range res {
+		arr1 = append(arr1, func() graphql.Marshaler {
+			rctx := graphql.GetResolverContext(ctx)
+			rctx.PushIndex(idx1)
+			defer rctx.Pop()
+			if res[idx1] == nil {
+				return graphql.Null
+			}
+			return ec._BertyNodeConversationEdge(ctx, field.Selections, res[idx1])
+		}())
+	}
+	return arr1
+}
+
+func (ec *executionContext) _BertyNodeConversationListOutputPayload_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.ConversationListOutput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeConversationListOutputPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.PageInfo, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.PageInfo)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyNodePageInfo(ctx, field.Selections, res)
+}
+
+var bertyNodeEventEdgeImplementors = []string{"BertyNodeEventEdge"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeEventEdge(ctx context.Context, sel ast.SelectionSet, obj *node.EventEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeEventEdgeImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeEventEdge")
+		case "node":
+			out.Values[i] = ec._BertyNodeEventEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._BertyNodeEventEdge_cursor(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeEventEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.EventEdge) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeEventEdge"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Node, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyP2pEvent(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _BertyNodeEventEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.EventEdge) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeEventEdge"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Cursor, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+var bertyNodeEventListOutputPayloadImplementors = []string{"BertyNodeEventListOutputPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeEventListOutputPayload(ctx context.Context, sel ast.SelectionSet, obj *node.EventListOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeEventListOutputPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeEventListOutputPayload")
+		case "edges":
+			out.Values[i] = ec._BertyNodeEventListOutputPayload_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._BertyNodeEventListOutputPayload_pageInfo(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodeEventListOutputPayload_edges(ctx context.Context, field graphql.CollectedField, obj *node.EventListOutput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeEventListOutputPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Edges, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*node.EventEdge)
+	arr1 := graphql.Array{}
+	for idx1 := range res {
+		arr1 = append(arr1, func() graphql.Marshaler {
+			rctx := graphql.GetResolverContext(ctx)
+			rctx.PushIndex(idx1)
+			defer rctx.Pop()
+			if res[idx1] == nil {
+				return graphql.Null
+			}
+			return ec._BertyNodeEventEdge(ctx, field.Selections, res[idx1])
+		}())
+	}
+	return arr1
+}
+
+func (ec *executionContext) _BertyNodeEventListOutputPayload_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.EventListOutput) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodeEventListOutputPayload"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.PageInfo, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.PageInfo)
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._BertyNodePageInfo(ctx, field.Selections, res)
+}
+
+var bertyNodePageInfoImplementors = []string{"BertyNodePageInfo"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodePageInfo(ctx context.Context, sel ast.SelectionSet, obj *node.PageInfo) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodePageInfoImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodePageInfo")
+		case "startCursor":
+			out.Values[i] = ec._BertyNodePageInfo_startCursor(ctx, field, obj)
+		case "endCursor":
+			out.Values[i] = ec._BertyNodePageInfo_endCursor(ctx, field, obj)
+		case "hasNextPage":
+			out.Values[i] = ec._BertyNodePageInfo_hasNextPage(ctx, field, obj)
+		case "hasPreviousPage":
+			out.Values[i] = ec._BertyNodePageInfo_hasPreviousPage(ctx, field, obj)
+		case "count":
+			out.Values[i] = ec._BertyNodePageInfo_count(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodePageInfo_startCursor(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePageInfo"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.StartCursor, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _BertyNodePageInfo_endCursor(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePageInfo"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.EndCursor, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _BertyNodePageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePageInfo"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.HasNextPage, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	return models.MarshalBool(res)
+}
+
+func (ec *executionContext) _BertyNodePageInfo_hasPreviousPage(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePageInfo"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.HasPreviousPage, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	return models.MarshalBool(res)
+}
+
+func (ec *executionContext) _BertyNodePageInfo_count(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePageInfo"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Count, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(uint32)
+	return models.MarshalUint32(res)
+}
+
+var bertyNodePaginationImplementors = []string{"BertyNodePagination"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodePagination(ctx context.Context, sel ast.SelectionSet, obj *node.Pagination) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodePaginationImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodePagination")
+		case "orderBy":
+			out.Values[i] = ec._BertyNodePagination_orderBy(ctx, field, obj)
+		case "orderDesc":
+			out.Values[i] = ec._BertyNodePagination_orderDesc(ctx, field, obj)
+		case "first":
+			out.Values[i] = ec._BertyNodePagination_first(ctx, field, obj)
+		case "after":
+			out.Values[i] = ec._BertyNodePagination_after(ctx, field, obj)
+		case "last":
+			out.Values[i] = ec._BertyNodePagination_last(ctx, field, obj)
+		case "before":
+			out.Values[i] = ec._BertyNodePagination_before(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyNodePagination_orderBy(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePagination"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.OrderBy, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _BertyNodePagination_orderDesc(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePagination"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.OrderDesc, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	return models.MarshalBool(res)
+}
+
+func (ec *executionContext) _BertyNodePagination_first(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePagination"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.First, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	return models.MarshalInt32(res)
+}
+
+func (ec *executionContext) _BertyNodePagination_after(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePagination"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.After, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
+}
+
+func (ec *executionContext) _BertyNodePagination_last(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePagination"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Last, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	return models.MarshalInt32(res)
+}
+
+func (ec *executionContext) _BertyNodePagination_before(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyNodePagination"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Before, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	return graphql.MarshalString(res)
 }
 
 var bertyNodePingDestinationImplementors = []string{"BertyNodePingDestination"}
@@ -13392,6 +14054,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 		switch field.Name {
 		case "__typename":
+<<<<<<< HEAD
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "ContactRequest":
 			out.Values[i] = ec._Mutation_ContactRequest(ctx, field)
@@ -13411,6 +14074,35 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_ConversationAddMessage(ctx, field)
 		case "GenerateFakeData":
 			out.Values[i] = ec._Mutation_GenerateFakeData(ctx, field)
+=======
+			out.Values[i] = graphql.MarshalString("Query")
+		case "Node":
+			out.Values[i] = ec._Query_Node(ctx, field)
+		case "EventList":
+			out.Values[i] = ec._Query_EventList(ctx, field)
+		case "EventListPaginated":
+			out.Values[i] = ec._Query_EventListPaginated(ctx, field)
+		case "GetEvent":
+			out.Values[i] = ec._Query_GetEvent(ctx, field)
+		case "ContactList":
+			out.Values[i] = ec._Query_ContactList(ctx, field)
+		case "ContactListPaginated":
+			out.Values[i] = ec._Query_ContactListPaginated(ctx, field)
+		case "GetContact":
+			out.Values[i] = ec._Query_GetContact(ctx, field)
+		case "ConversationList":
+			out.Values[i] = ec._Query_ConversationList(ctx, field)
+		case "ConversationListPaginated":
+			out.Values[i] = ec._Query_ConversationListPaginated(ctx, field)
+		case "GetConversation":
+			out.Values[i] = ec._Query_GetConversation(ctx, field)
+		case "GetConversationMember":
+			out.Values[i] = ec._Query_GetConversationMember(ctx, field)
+		case "__type":
+			out.Values[i] = ec._Query___type(ctx, field)
+		case "__schema":
+			out.Values[i] = ec._Query___schema(ctx, field)
+>>>>>>> feat: add relay pagination
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13440,21 +14132,173 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().ContactRequest(rctx, args["contact"].(*entity.Contact), args["introText"].(string))
 	})
+<<<<<<< HEAD
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
 	rctx.Result = res
+=======
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().Node(ctx, args["id"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(models.Node)
+		return ec._Node(ctx, field.Selections, &res)
+	})
+}
+
+func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 *p2p.Event
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 p2p.Event
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyP2pEventInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
+			arg1 = &ptr1
+		}
+>>>>>>> feat: add relay pagination
 
 	if res == nil {
 		return graphql.Null
 	}
+<<<<<<< HEAD
 
 	return ec._BertyEntityContactPayload(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
 func (ec *executionContext) _Mutation_ContactAcceptRequest(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+=======
+	args["paginate"] = arg1
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().EventList(ctx, args["filter"].(*p2p.Event), args["paginate"].(*node.Pagination))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.([]*p2p.Event)
+		arr1 := graphql.Array{}
+		for idx1 := range res {
+			arr1 = append(arr1, func() graphql.Marshaler {
+				rctx := graphql.GetResolverContext(ctx)
+				rctx.PushIndex(idx1)
+				defer rctx.Pop()
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+				return ec._BertyP2pEventPayload(ctx, field.Selections, res[idx1])
+			}())
+		}
+		return arr1
+	})
+}
+
+func (ec *executionContext) _Query_EventListPaginated(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 *p2p.Event
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 p2p.Event
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyP2pEventInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["paginate"] = arg1
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().EventListPaginated(ctx, args["filter"].(*p2p.Event), args["paginate"].(*node.Pagination))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(*node.EventListOutput)
+		if res == nil {
+			return graphql.Null
+		}
+		return ec._BertyNodeEventListOutputPayload(ctx, field.Selections, res)
+	})
+}
+
+func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+>>>>>>> feat: add relay pagination
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args, err := field_Mutation_ContactAcceptRequest_args(rawArgs)
 	if err != nil {
@@ -13585,8 +14429,29 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
+<<<<<<< HEAD
 	rctx := &graphql.ResolverContext{
 		Object: "Mutation",
+=======
+	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["paginate"] = arg1
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+>>>>>>> feat: add relay pagination
 		Args:   args,
 		Field:  field,
 	}
@@ -13601,6 +14466,7 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 	res := resTmp.(*entity.Conversation)
 	rctx.Result = res
 
+<<<<<<< HEAD
 	if res == nil {
 		return graphql.Null
 	}
@@ -13610,6 +14476,93 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 
 // nolint: vetshadow
 func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+=======
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().ContactList(ctx, args["filter"].(*entity.Contact), args["paginate"].(*node.Pagination))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.([]*entity.Contact)
+		arr1 := graphql.Array{}
+		for idx1 := range res {
+			arr1 = append(arr1, func() graphql.Marshaler {
+				rctx := graphql.GetResolverContext(ctx)
+				rctx.PushIndex(idx1)
+				defer rctx.Pop()
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+				return ec._BertyEntityContactPayload(ctx, field.Selections, res[idx1])
+			}())
+		}
+		return arr1
+	})
+}
+
+func (ec *executionContext) _Query_ContactListPaginated(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 *entity.Contact
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 entity.Contact
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["paginate"] = arg1
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().ContactListPaginated(ctx, args["filter"].(*entity.Contact), args["paginate"].(*node.Pagination))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(*node.ContactListOutput)
+		if res == nil {
+			return graphql.Null
+		}
+		return ec._BertyNodeContactListOutputPayload(ctx, field.Selections, res)
+	})
+}
+
+func (ec *executionContext) _Query_GetContact(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+>>>>>>> feat: add relay pagination
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args, err := field_Mutation_ConversationExclude_args(rawArgs)
 	if err != nil {
@@ -13818,7 +14771,27 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
+<<<<<<< HEAD
 	rctx := &graphql.ResolverContext{
+=======
+	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["paginate"] = arg1
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+>>>>>>> feat: add relay pagination
 		Object: "Query",
 		Args:   args,
 		Field:  field,
@@ -13855,9 +14828,117 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
+<<<<<<< HEAD
 				if res[idx1] == nil {
 					return graphql.Null
 				}
+=======
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().ConversationList(ctx, args["filter"].(*entity.Conversation), args["paginate"].(*node.Pagination))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.([]*entity.Conversation)
+		arr1 := graphql.Array{}
+		for idx1 := range res {
+			arr1 = append(arr1, func() graphql.Marshaler {
+				rctx := graphql.GetResolverContext(ctx)
+				rctx.PushIndex(idx1)
+				defer rctx.Pop()
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+				return ec._BertyEntityConversationPayload(ctx, field.Selections, res[idx1])
+			}())
+		}
+		return arr1
+	})
+}
+
+func (ec *executionContext) _Query_ConversationListPaginated(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 *entity.Conversation
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 entity.Conversation
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["paginate"] = arg1
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().ConversationListPaginated(ctx, args["filter"].(*entity.Conversation), args["paginate"].(*node.Pagination))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(*node.ConversationListOutput)
+		if res == nil {
+			return graphql.Null
+		}
+		return ec._BertyNodeConversationListOutputPayload(ctx, field.Selections, res)
+	})
+}
+
+func (ec *executionContext) _Query_GetConversation(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+>>>>>>> feat: add relay pagination
 
 				return ec._BertyP2pEventPayload(ctx, field.Selections, res[idx1])
 			}()
@@ -15916,6 +16997,54 @@ func UnmarshalBertyEntityMessageInput(v interface{}) (entity.Message, error) {
 	return it, nil
 }
 
+func UnmarshalBertyNodePaginationInput(v interface{}) (node.Pagination, error) {
+	var it node.Pagination
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "orderBy":
+			var err error
+			it.OrderBy, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "orderDesc":
+			var err error
+			it.OrderDesc, err = models.UnmarshalBool(v)
+			if err != nil {
+				return it, err
+			}
+		case "first":
+			var err error
+			it.First, err = models.UnmarshalInt32(v)
+			if err != nil {
+				return it, err
+			}
+		case "after":
+			var err error
+			it.After, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "last":
+			var err error
+			it.Last, err = models.UnmarshalInt32(v)
+			if err != nil {
+				return it, err
+			}
+		case "before":
+			var err error
+			it.Before, err = graphql.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func UnmarshalBertyP2pEventInput(v interface{}) (p2p.Event, error) {
 	var it p2p.Event
 	var asMap = v.(map[string]interface{})
@@ -16455,8 +17584,35 @@ type BertyP2pEvent implements Node {
 type BertyNodePingDestination  {
       destination: String!
 }
+type BertyNodeEventEdge  {
+    node: BertyP2pEvent
+      cursor: String!
+}
+type BertyNodeContactEdge  {
+    node: BertyEntityContact
+      cursor: String!
+}
+type BertyNodeConversationEdge  {
+    node: BertyEntityConversation
+      cursor: String!
+}
 type BertyNodeVoid  {
       T: Bool!
+}
+type BertyNodePagination  {
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32!
+      after: String!
+      last: Int32!
+      before: String!
+}
+type BertyNodePageInfo  {
+      startCursor: String!
+      endCursor: String!
+      hasNextPage: Bool!
+      hasPreviousPage: Bool!
+      count: Uint32!
 }
 input BertyP2pEventInput {
     id: ID!
@@ -16491,6 +17647,18 @@ type BertyP2pEventPayload {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+}
+input BertyNodePaginationInput {
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32!
+      after: String!
+      last: Int32!
+      before: String!
+}
+type BertyNodeEventListOutputPayload {
+    edges: [BertyNodeEventEdge]
+    pageInfo: BertyNodePageInfo
 }
 input BertyEntityDeviceInput {
     id: ID!
@@ -16528,6 +17696,10 @@ type BertyEntityContactPayload {
       overrideDisplayName: String!
       overrideDisplayStatus: String!
 }
+type BertyNodeContactListOutputPayload {
+    edges: [BertyNodeContactEdge]
+    pageInfo: BertyNodePageInfo
+}
 type BertyEntityConversationPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
@@ -16556,6 +17728,10 @@ input BertyEntityConversationInput {
       topic: String!
     members: [BertyEntityConversationMemberInput]
 }
+type BertyNodeConversationListOutputPayload {
+    edges: [BertyNodeConversationEdge]
+    pageInfo: BertyNodePageInfo
+}
 input BertyEntityMessageInput {
       text: String!
 }
@@ -16576,9 +17752,13 @@ type BertyNodeVoidPayload {
 type Query {
   Node(id: ID!): Node
   EventList(
-      limit: Uint32!
     filter: BertyP2pEventInput
+    paginate: BertyNodePaginationInput
   ): [BertyP2pEventPayload]
+  EventListPaginated(
+    filter: BertyP2pEventInput
+    paginate: BertyNodePaginationInput
+  ): BertyNodeEventListOutputPayload
   GetEvent(
     id: ID!
       senderId: String!
@@ -16598,7 +17778,12 @@ type Query {
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput
+    paginate: BertyNodePaginationInput
   ): [BertyEntityContactPayload]
+  ContactListPaginated(
+    filter: BertyEntityContactInput
+    paginate: BertyNodePaginationInput
+  ): BertyNodeContactListOutputPayload
   GetContact(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
@@ -16614,7 +17799,12 @@ type Query {
   ): BertyEntityContactPayload
   ConversationList(
     filter: BertyEntityConversationInput
+    paginate: BertyNodePaginationInput
   ): [BertyEntityConversationPayload]
+  ConversationListPaginated(
+    filter: BertyEntityConversationInput
+    paginate: BertyNodePaginationInput
+  ): BertyNodeConversationListOutputPayload
   GetConversation(
     id: ID!
     createdAt: GoogleProtobufTimestampInput

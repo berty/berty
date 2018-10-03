@@ -233,15 +233,14 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	}
 	return nil, nil
 }
-func (r *queryResolver) EventList(ctx context.Context, limit uint32, filter *p2p.Event) ([]*p2p.Event, error) {
-
+func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error) {
 	var list []*p2p.Event
 	if filter != nil {
 		if filter.ConversationID != "" {
 			filter.ConversationID = strings.SplitN(filter.ConversationID, ":", 2)[1]
 		}
 	}
-	stream, err := r.client.EventList(ctx, &node.EventListInput{Limit: limit, Filter: &p2p.Event{
+	stream, err := r.client.EventList(ctx, &node.EventListInput{Paginate: paginate, Filter: &p2p.Event{
 		ConversationID: filter.ConversationID,
 	}})
 	if err != nil {
@@ -259,14 +258,23 @@ func (r *queryResolver) EventList(ctx context.Context, limit uint32, filter *p2p
 	}
 	return list, nil
 }
+func (r *queryResolver) EventListPaginated(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) (*node.EventListOutput, error) {
+	if filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+	}
+	return r.client.EventListPaginated(ctx, &node.EventListInput{Filter: filter, Paginate: paginate})
+}
 func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact) ([]*entity.Contact, error) {
+func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) ([]*entity.Contact, error) {
+	if filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+	}
 	var list []*entity.Contact
-	stream, err := r.client.ContactList(ctx, &node.ContactListInput{Filter: filter})
+	stream, err := r.client.ContactList(ctx, &node.ContactListInput{Filter: filter, Paginate: paginate})
 	if err != nil {
 		return nil, err
 	}
@@ -282,10 +290,16 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact)
 	}
 	return list, nil
 }
+func (r *queryResolver) ContactListPaginated(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) (*node.ContactListOutput, error) {
+	if filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+	}
+	return r.client.ContactListPaginated(ctx, &node.ContactListInput{Filter: filter, Paginate: paginate})
+}
 func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.GetContact(ctx, &entity.Contact{ID: id})
 }
-func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation) ([]*entity.Conversation, error) {
+func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) ([]*entity.Conversation, error) {
 	var list []*entity.Conversation
 
 	if filter != nil {
@@ -303,7 +317,7 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 			}
 		}
 	}
-	stream, err := r.client.ConversationList(ctx, &node.ConversationListInput{Filter: filter})
+	stream, err := r.client.ConversationList(ctx, &node.ConversationListInput{Filter: filter, Paginate: paginate})
 	if err != nil {
 		return nil, err
 	}
@@ -318,6 +332,12 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 		list = append(list, elem)
 	}
 	return list, nil
+}
+func (r *queryResolver) ConversationListPaginated(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) (*node.ConversationListOutput, error) {
+	if filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+	}
+	return r.client.ConversationListPaginated(ctx, &node.ConversationListInput{Filter: filter, Paginate: paginate})
 }
 func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})

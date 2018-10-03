@@ -26,6 +26,10 @@ service Service {
     option (berty.gql.graphql_fields) = "limit: Int, kind: BertyP2pKind, conversationID: String";
     option (berty.gql.graphql_type) = "Query";
   };
+  rpc EventListPaginated(EventListInput) returns (EventListOutput) {
+    option (berty.gql.graphql_fields) = "limit: Int, kind: BertyP2pKind, conversationID: String";
+    option (berty.gql.graphql_type) = "Query";
+  };
   rpc GetEvent(berty.p2p.Event) returns (berty.p2p.Event) {
     option (berty.gql.graphql_fields) = "eventID: String!";
     option (berty.gql.graphql_type) = "Query";
@@ -55,6 +59,10 @@ service Service {
     option (berty.gql.graphql_fields) = "status: BertyEntityContactStatus";
     option (berty.gql.graphql_type) = "Query";
   };
+  rpc ContactListPaginated(ContactListInput) returns (ContactListOutput) {
+    option (berty.gql.graphql_fields) = "status: BertyEntityContactStatus";
+    option (berty.gql.graphql_type) = "Query";
+  };
   rpc GetContact(berty.entity.Contact) returns (berty.entity.Contact) {
     option (berty.gql.graphql_fields) = "contactID: String!";
     option (berty.gql.graphql_type) = "Query";
@@ -69,6 +77,9 @@ service Service {
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationList(ConversationListInput) returns (stream berty.entity.Conversation) {
+    option (berty.gql.graphql_type) = "Query";
+  };
+  rpc ConversationListPaginated(ConversationListInput) returns (ConversationListOutput) {
     option (berty.gql.graphql_type) = "Query";
   };
   rpc ConversationInvite(ConversationManageMembersInput) returns (berty.entity.Conversation) {
@@ -116,7 +127,6 @@ message PingDestination {
   string destination = 1;
 }
 
-
 message ContactRequestInput {
   berty.entity.Contact contact = 1;
   string intro_text = 2;
@@ -132,16 +142,42 @@ message EventStreamInput {
 }
 
 message EventListInput {
-  uint32 limit = 1;
-  berty.p2p.Event filter = 2;
+  berty.p2p.Event filter = 1;
+  Pagination paginate = 99;
+}
+message EventEdge {
+  berty.p2p.Event node = 1;
+  string cursor = 2;
+}
+message EventListOutput {
+  repeated EventEdge edges = 1;
+  PageInfo page_info = 99;
 }
 
 message ContactListInput {
   berty.entity.Contact filter = 1;
+  Pagination paginate = 99;
+}
+message ContactEdge {
+  berty.entity.Contact node = 1;
+  string cursor = 2;
+}
+message ContactListOutput {
+  repeated ContactEdge edges = 1;
+  PageInfo page_info = 99;
 }
 
 message ConversationListInput {
   berty.entity.Conversation filter = 1;
+  Pagination paginate = 99;
+}
+message ConversationEdge {
+  berty.entity.Conversation node = 1;
+  string cursor = 2;
+}
+message ConversationListOutput {
+  repeated ConversationEdge edges = 1;
+  PageInfo page_info = 99;
 }
 
 message ConversationCreateInput {
@@ -155,6 +191,32 @@ message ConversationManageMembersInput {
   repeated berty.entity.ConversationMember members = 2;
 }
 
+//
+// common
+//
+
 message Void {
   bool T = 1;
+}
+
+message Pagination {
+  // argument definition
+  string order_by = 1;
+  bool order_desc = 2;
+
+  // feed definition
+  int32 first = 11;
+  string after = 12;
+  int32 last = 13;
+  string before = 14;
+}
+
+message PageInfo {
+  string start_cursor = 1;
+  string end_cursor = 2;
+  bool has_next_page = 3;
+  bool has_previous_page = 4;
+
+  // non-standard
+  uint32 count = 5;
 }
