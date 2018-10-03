@@ -30,6 +30,7 @@ lint-editorconfig:
 			! -name 'yarn-error.log'                                             \
 			! -name 'Gemfile.lock'                                               \
 			! -name '.gitkeep'                                                   \
+			! -name 'README.md'                                                  \
 			! -name '.generated'                                                 \
 			! -name '*.gen.go'                                                   \
 			! -name '*.gen.go.tmpl'                                              \
