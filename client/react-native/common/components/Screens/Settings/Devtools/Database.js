@@ -1,8 +1,18 @@
 import React, { PureComponent } from 'react'
-import { Menu } from '../../../Library'
+import { Menu, Header } from '../../../Library'
 import { mutations } from '../../../../graphql'
 
 export default class Database extends PureComponent {
+  static navigationOptions = ({ navigation }) => ({
+    header: (
+      <Header
+        navigation={navigation}
+        title='Database'
+        titleIcon='database'
+        backBtn
+      />
+    ),
+  })
   render () {
     return (
       <Menu absolute>

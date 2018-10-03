@@ -1,7 +1,17 @@
 import React, { PureComponent } from 'react'
-import { Menu } from '../../../Library'
+import { Menu, Header } from '../../../Library'
 
 export default class Network extends PureComponent {
+  static navigationOptions = ({ navigation }) => ({
+    header: (
+      <Header
+        navigation={navigation}
+        title='Network'
+        titleIcon='activity'
+        backBtn
+      />
+    ),
+  })
   render () {
     return (
       <Menu absolute>

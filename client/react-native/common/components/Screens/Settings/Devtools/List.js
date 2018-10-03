@@ -14,6 +14,11 @@ export default class List extends PureComponent {
               console.log('Restart')
             }}
           />
+          <Menu.Item
+            icon='list'
+            title='List events'
+            onPress={() => navigation.push('devtools/events')}
+          />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
