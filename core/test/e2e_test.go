@@ -623,8 +623,12 @@ func TestWithSimpleNetwork(t *testing.T) {
 		}
 	}()
 
+	everythingWentFine()
+
 	Convey("End-to-end test (with simple network mock)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
+			shouldIContinue(t)
+
 			network := mock.NewSimple()
 			aliceNetwork := network.Driver()
 			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, aliceNetwork)
@@ -645,6 +649,8 @@ func TestWithSimpleNetwork(t *testing.T) {
 			So(alice.InitEventStream(), ShouldBeNil)
 			So(bob.InitEventStream(), ShouldBeNil)
 			So(eve.InitEventStream(), ShouldBeNil)
+
+			everythingWentFine()
 		})
 		scenario(t, alice, bob, eve)
 	})
@@ -656,8 +662,13 @@ func TestNodesWithP2PNetwork(t *testing.T) {
 		alice, bob, eve                      *AppMock
 		err                                  error
 	)
+
+	everythingWentFine()
+
 	Convey("End-to-end test (with p2p network)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
+			shouldIContinue(t)
+
 			aliceNetwork, err = setupP2PNetwork()
 			So(err, ShouldBeNil)
 
@@ -678,6 +689,8 @@ func TestNodesWithP2PNetwork(t *testing.T) {
 			So(bob.InitEventStream(), ShouldBeNil)
 			So(alice.InitEventStream(), ShouldBeNil)
 			So(eve.InitEventStream(), ShouldBeNil)
+
+			everythingWentFine()
 		})
 		scenario(t, alice, bob, eve)
 	})
