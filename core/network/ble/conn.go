@@ -1,6 +1,7 @@
 package ble
 
 import (
+	"C"
 	"fmt"
 	"time"
 
@@ -13,12 +14,40 @@ import (
 
 type BLEConn struct {
 	tpt.Conn
-	opened    bool
-	transport tpt.Transport
-	lid       peer.ID
-	rid       peer.ID
-	lAddr     ma.Multiaddr
-	rAddr     ma.Multiaddr
+	opened         bool
+	transport      *BLETransport
+	lid            peer.ID
+	rid            peer.ID
+	lAddr          ma.Multiaddr
+	rAddr          ma.Multiaddr
+	incomingStream BLEStream
+	outgoingStream BLEStream
+	incomingOpen   chan struct{}
+	outgoingOpen   chan struct{}
+	accept         chan string
+}
+
+var conns map[string]*BLEConn = make(map[string]*BLEConn)
+
+func NewConn(transport *BLETransport, lid, rid peer.ID, lAddr, rAddr ma.Multiaddr) BLEConn {
+	conn := BLEConn{
+		opened:       true,
+		transport:    transport,
+		lid:          lid,
+		rid:          rid,
+		lAddr:        lAddr,
+		rAddr:        rAddr,
+		incomingOpen: make(chan struct{}, 1),
+		outgoingOpen: make(chan struct{}, 1),
+	}
+	fmt.Println("BLEConn new,")
+
+	conn.incomingOpen <- struct{}{}
+	conn.outgoingOpen <- struct{}{}
+	st, _ := rAddr.ValueForProtocol(ma.P_RAW)
+	conns[st] = &conn
+	fmt.Println("BLEConn new fishish")
+	return conn
 }
 
 func (b *BLEConn) LocalPeer() peer.ID {
@@ -30,7 +59,11 @@ func (b *BLEConn) LocalPrivateKey() ic.PrivKey {
 }
 
 func (b *BLEConn) RemotePeer() peer.ID {
-	return b.rid
+	v, _ := b.rAddr.ValueForProtocol(ma.P_RAW)
+	rid := getPeerID(v)
+	rID, _ := peer.IDB58Decode(rid)
+
+	return rID
 }
 
 func (b *BLEConn) RemotePublicKey() ic.PubKey {
@@ -65,15 +98,16 @@ func (b *BLEConn) IsClosed() bool {
 
 // OpenStream creates a new stream.
 func (b *BLEConn) OpenStream() (smu.Stream, error) {
-	fmt.Println("BLEConn OpenStream")
-	time.Sleep(10 * time.Second)
-	b.opened = true
-	return &BLEStream{}, nil
+	fmt.Println("Out Accept Stream")
+	<-b.outgoingOpen
+	fmt.Println("Out Accept S")
+	return NewStream(b.rAddr), nil
 }
 
 // AcceptStream accepts a stream opened by the other side.
 func (b *BLEConn) AcceptStream() (smu.Stream, error) {
-	fmt.Println("BLEConn AcceptStream")
-	time.Sleep(10 * time.Second)
-	return &BLEStream{}, nil
+	fmt.Println("Inc Accept Stream")
+	<-b.incomingOpen
+	fmt.Println("Inc Accept S")
+	return NewStream(b.rAddr), nil
 }

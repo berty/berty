@@ -7,24 +7,78 @@
 //
 
 #import "ble.h"
+#include "_cgo_export.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <Foundation/Foundation.h>
 
 static BertyCentralManager *bcm;
 
-void init(char *peerID) {
+void init(char *ma, char *peerID) {
 	NSLog(@"peeeeeeeeeerrrrrrrrrrrrr ID asdkljsadl %s", peerID);
 	NSLog(@"peeeeeeeeeerrrrrrrrrrrrr ID %@", [NSString stringWithUTF8String:peerID]);
-	bcm = [[BertyCentralManager alloc] initWithPeerID:[NSString stringWithUTF8String:peerID]];
+	bcm = [[BertyCentralManager alloc] initWithMa:[NSString stringWithUTF8String:ma] AndPeerID:[NSString stringWithUTF8String:peerID]];
 }
 
-void startDiscover() {
-    [bcm startDiscover];
+int startDiscover() {
+	if (![bcm.centralManager isScanning]) {
+    	[bcm startDiscover];
+		return 1;
+	}
+	return 0;
 }
 
-void startAdvertising() {
-    [bcm startAdvertising];
+int isDiscovering() {
+	return (int)[bcm.centralManager isScanning];
 }
+
+int isAdvertising() {
+	return (int)[bcm.peripheralManager isAdvertising];
+}
+
+int startAdvertising() {
+	if (![bcm.peripheralManager isAdvertising]) {
+		NSLog(@"Start advertising called");
+    	[bcm startAdvertising];
+		return 1;
+	}
+	return 0;
+}
+
+NSData *Bytes2NSData(void *bytes, int length) { return [NSData dataWithBytes:bytes length:length]; }
+
+void writeNSData(NSData *data) {
+	[bcm write:data];
+}
+
+int checkDeviceConnected(char *peerID) {
+	NSLog(@"bcm.connected %@ %@",[NSString stringWithUTF8String:peerID], bcm.connectedPeer );
+	if ([bcm.connectedPeer objectForKey:[NSString stringWithUTF8String:peerID]]) {
+			return 1;
+	}
+	return 0;
+}
+
+char *readPeerID(char *peerID) {
+	return [bcm readPeerID:[NSString stringWithUTF8String:peerID]];
+}
+
+@interface MyDefer : NSObject
++ (instancetype)block:(void(^)())block;
+@end
+@implementation MyDefer {
+   @private void(^_deferBlock)();
+}
++ (instancetype)block:(void (^)())block {
+   MyDefer *_d = [MyDefer new];
+   _d->_deferBlock = block ?: ^{};
+   return _d;
+}
+- (void)dealloc {
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+   		_deferBlock();
+    });
+}
+@end
 
 @implementation BertyCentralManager
 
@@ -34,38 +88,77 @@ NSString* const READER_UUID = @"000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C";
 
 NSString* const READER_COUNTER_UUID = @"A88D3BEC-7A22-477A-97CC-2E0F784CB517";
 
-NSString* const PEER_ID_READER_UUID = @"9B827770-DC72-4C55-B8AE-0870C7AC15A8";
+NSString* const MA_READER_UUID = @"9B827770-DC72-4C55-B8AE-0870C7AC15A8";
 
-- (instancetype)initWithPeerID:(NSString *)peerID {
+NSString* const PEER_ID_READER_UUID = @"0EF50D30-E208-4315-B323-D05E0A23E6B3";
+
+- (instancetype)initWithMa:(NSString *)ma AndPeerID:(NSString *)peerID{
     self = [super init];
     if (self) {
         self.serviceAdded = NO;
-				self.peerID = peerID;
+        self.ma = ma;
+		self.peerID = peerID;
         self.connectedDevice = [[NSMutableDictionary alloc] init];
+        self.connectedPeer = [[NSMutableDictionary alloc] init];
+		self.peripheralToPeerID = [[NSMutableDictionary alloc] init];
         self.discoveredDevice = [[NSMutableDictionary alloc] init];
+		self.peerIDToPeripheral = [[NSMutableDictionary alloc] init];
         self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
-        self.peerIDUUID = [CBUUID UUIDWithString:PEER_ID_READER_UUID];
+        self.maUUID = [CBUUID UUIDWithString:MA_READER_UUID];
+		self.peerUUID = [CBUUID UUIDWithString:PEER_ID_READER_UUID];
         self.readerUUID = [CBUUID UUIDWithString:READER_UUID];
         self.readerCounterUUID = [CBUUID UUIDWithString:READER_COUNTER_UUID];
         self.bertyService = [[CBMutableService alloc] initWithType:self.serviceUUID primary:YES];
-        self.peerIDCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.peerIDUUID properties:CBCharacteristicPropertyRead value:[peerID dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
+        self.maCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.maUUID properties:CBCharacteristicPropertyRead value:[ma dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
+		self.peerIDCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.peerUUID properties:CBCharacteristicPropertyRead value:[peerID dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
         self.bertyReaderCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.readerUUID properties:CBCharacteristicPropertyRead | CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsReadable];
         self.bertyCounterReaderCharacteristic =  [[CBMutableCharacteristic alloc] initWithType:self.readerCounterUUID properties:CBCharacteristicPropertyRead | CBCharacteristicPropertyNotify value:nil permissions:CBAttributePermissionsReadable];;
         // self.sender = sender;
 
-        self.bertyService.characteristics = @[self.bertyReaderCharacteristic, self.bertyCounterReaderCharacteristic, self.peerIDCharacteristic];
-        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
-        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+        self.bertyService.characteristics = @[self.bertyReaderCharacteristic, self.bertyCounterReaderCharacteristic, self.maCharacteristic, self.peerIDCharacteristic];
+        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0) options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0) options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
         self.centralManager.delegate = self;
         self.peripheralManager.delegate = self;
-
     }
 
+	NSLog(@"init finished");
+	[self startAdvertising];
+	[self startDiscover];
     return self;
 }
 
+- (void)write:(NSData *)data {
+	NSLog(@"writing.... %@", self.bertyReaderCharacteristic.subscribedCentrals);
+	self.toSend = [NSMutableArray arrayWithArray:@[data]];
+	[self sendWhatsLeft];
+	// [self.peripheralManager updateValue:data forCharacteristic:self.bertyReaderCharacteristic onSubscribedCentrals:self.bertyReaderCharacteristic.subscribedCentrals];
+}
+
 - (void)sendToAcceptIncomingChannel:(NSString *)newPeerID {
-	sendAcceptToListenerForPeerID([self.peerID UTF8String], [newPeerID UTF8String]);
+	NSLog(@"Just ACCEPPPPPPPPTTTTT");
+	sendAcceptToListenerForPeerID([self.ma UTF8String], [newPeerID UTF8String]);
+}
+
+- (char *)readPeerID:(NSString *)ma {
+	NSLog(@"laaa");
+	NSLog(@"laaa %@", ma);
+	CBCharacteristic *characteristic = [self characteristicWithUUID:self.peerUUID
+		forServiceUUID:self.serviceUUID inPeripheral:[self.peerIDToPeripheral objectForKey:ma]];
+	// NSLog(@"ICI %@ %@ %@ %@ %@", [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding], [characteristic.value bytes], [characteristic.UUID UUIDString], ma, self.peerIDToPeripheral);
+	return [[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding] UTF8String];
+}
+
+- (NSString *)getPeerIDForPeripheral:(CBPeripheral *)peripheral {
+	while (YES) {
+		NSString *str = [bcm.peripheralToPeerID objectForKey:peripheral.identifier];
+		NSLog(@"lalalal %@ %@", [peripheral.identifier UUIDString], bcm.peripheralToPeerID);
+		if (str != nil && ![str isEqual:@""]) {
+			return str;
+		}
+		[NSThread sleepForTimeInterval:.5];
+	}
+	return nil;
 }
 
 - (void)startAdvertising {
@@ -153,9 +246,10 @@ didFailToConnectPeripheral:(CBPeripheral *)peripheral
     NSLog(@"didDiscoverPeripheral: %@", [peripheral.identifier UUIDString]);
     if (![self.discoveredDevice objectForKey:peripheral.identifier]) {
         [self.discoveredDevice setObject:peripheral forKey:peripheral.identifier];
-    }
+
     [peripheral setDelegate:self];
     [self.centralManager connectPeripheral:peripheral options:nil];
+	}
 }
 
 - (void)centralManagerDidUpdateState:(CBCentralManager *)central {
@@ -201,18 +295,19 @@ didDiscoverCharacteristicsForService:(CBService *)service
              error:(NSError *)error {
     NSLog(@"didDiscoverCharacteristicsForService %@ %@", [peripheral.identifier UUIDString], [service.UUID UUIDString]);
     if (error == nil) {
-        NSLog(@"ICI123");
         for (CBCharacteristic *characteristic in service.characteristics) {
-            NSLog(@"ICI123 %@", [characteristic.UUID UUIDString]);
-            if ([characteristic.UUID isEqual:self.readerCounterUUID] && characteristic.isNotifying == false) {
-                //        [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-                NSLog(@"ICI");
-                [peripheral discoverCharacteristics:@[self.readerUUID] forService:service];
-
+			NSLog(@"didDiscoverCharacteristicsForService %@ %@ %@", [peripheral.identifier UUIDString], [service.UUID UUIDString], [characteristic.UUID UUIDString]);
+            if ([characteristic.UUID isEqual:self.maUUID]) {
+				NSLog(@"ICICICICICI %@", [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]);
+                [self.peripheralToPeerID setObject:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding] forKey:peripheral.identifier];
+				NSLog(@"ICICICICICI %@", self.peripheralToPeerID);
+                [peripheral readValueForCharacteristic:characteristic];
             } else if ([characteristic.UUID isEqual:self.readerUUID] && characteristic.isNotifying == false) {
                 NSLog(@"LA");
                 [peripheral setNotifyValue:YES forCharacteristic:characteristic];
-            }
+            } else if ([characteristic.UUID isEqual:self.peerUUID]) {
+				[peripheral readValueForCharacteristic:characteristic];
+			}
         }
     } else {
         NSLog(@"error discovering %@ %@", [error localizedFailureReason], [error localizedDescription]);
@@ -232,13 +327,21 @@ didDiscoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic
 - (void)peripheral:(CBPeripheral *)peripheral
 didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
              error:(NSError *)error {
+    if ([characteristic.UUID isEqual:self.maUUID]) {
+		// [self.subscribedPeer setValue:[self getPeerIDForPeripheral:peripheral] forKey:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]];
+        // [self sendToAcceptIncomingChannel:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]];
+    }
     if (error) {
         NSLog(@"error: %@", [error localizedDescription]);
     }
-    if (characteristic.value != nil) {
+	NSLog(@"writing to reader2 %@ %@ %d %@\n\n", [characteristic.UUID UUIDString],characteristic.value, [characteristic.UUID isEqual:self.readerUUID], [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]);
+    if (characteristic.value != nil && [characteristic.UUID isEqual:self.readerUUID]) {
+		NSLog(@"writing to reader");
+
+		sendBytesToStream([[[NSString alloc] initWithData:[self characteristicWithUUID:self.maUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral].value encoding:NSUTF8StringEncoding] UTF8String], [characteristic.value bytes], [characteristic.value length]);
         // BertyDevice *device = [self.connectedDevice objectForKey:[peripheral.identifier UUIDString]];
         // if ([characteristic.value bytes] == nil || ((char*)[characteristic.value bytes])[0] == 0) {
-        //   NSLog(@"didUpdateValueForCharacteristic %@ %@", [characteristic.UUID UUIDString], [[NSString alloc] initWithData:device.data encoding:NSUTF8StringEncoding]);
+        //   NSLog(@"didUpdateValueForCharacteristic %@ %@", [characteristic.UUID UUIDString], [[NSString alloc] initWithData:[self characteristicWithUUID:self.maUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral].value encoding:NSUTF8StringEncoding]);
         //   [device.data setLength:0];
         // } else if (device != nil) {
         //   [device.data appendData:characteristic.value];
@@ -277,8 +380,10 @@ didWriteValueForDescriptor:(CBDescriptor *)descriptor
 didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
              error:(NSError *)error {
     if (error) {
+
         NSLog(@"error: %@", [error localizedFailureReason]);
     }
+
     NSLog(@"didUpdateNotificationStateForCharacteristic %@", [characteristic.UUID UUIDString]);
 }
 
@@ -357,9 +462,7 @@ didOpenL2CAPChannel:(CBL2CAPChannel *)channel
         NSLog(@"error: %@", [error localizedFailureReason]);
     }
     NSLog(@"service added: %@", [service.UUID UUIDString]);
-    [self.peripheralManager startAdvertising:@{
-                                               CBAdvertisementDataServiceUUIDsKey:@[self.serviceUUID]
-                                               }];
+	[self startAdvertising];
 }
 
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral
@@ -374,6 +477,29 @@ didOpenL2CAPChannel:(CBL2CAPChannel *)channel
                   central:(CBCentral *)central
 didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
 	// [self checkPeripheralAndConnect:peripheral];
+	NSArray<CBPeripheral *>* peripherals = [self.centralManager retrievePeripheralsWithIdentifiers:@[central.identifier]];
+	for (CBPeripheral *dperipheral in peripherals) {
+		if ([dperipheral.identifier isEqual:central.identifier]) {
+			NSLog(@"REICEVE READ REQ");
+			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+				NSString *str = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
+				// if (![str isEqual:@""]) {
+					NSString *peerID = [self getPeerIDForPeripheral:dperipheral];
+					[self.connectedPeer setValue:@"connected" forKey:peerID];
+					[self.peerIDToPeripheral setValue:dperipheral forKey:peerID];
+					[self sendToAcceptIncomingChannel:peerID];
+				// }
+   				NSLog(@"Deferring 1");
+			});
+			//
+			[dperipheral setDelegate:self];
+			if (![self.discoveredDevice objectForKey:dperipheral.identifier]) {
+				[self.discoveredDevice setObject:dperipheral forKey:dperipheral.identifier];
+			}
+			[self.centralManager connectPeripheral:dperipheral options:nil];
+			[dperipheral discoverServices:@[self.serviceUUID]];
+		}
+	}
     NSLog(@"Subscription to characteristic: %@", characteristic.UUID);
 }
 
@@ -390,8 +516,16 @@ didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
     didReceiveReadRequest:(CBATTRequest *)request {
-		[self checkPeripheralAndAdd:request];
-    NSLog(@"request read %@", request);
+		NSLog(@"REICEVE READ REQ");
+    if ([request.characteristic.UUID isEqual:self.maUUID]) {
+        NSArray<CBPeripheral *>* peripherals = [self.centralManager retrievePeripheralsWithIdentifiers:@[request.central.identifier]];
+        for (CBPeripheral *peripheral in peripherals) {
+			if ([peripheral.identifier isEqual:request.central.identifier]) {
+                NSLog(@"REICEVE READ REQ");
+				[peripheral discoverServices:@[self.serviceUUID]];
+            }
+        }
+    }
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
@@ -402,16 +536,6 @@ didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
 
 - (void)discoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic {
     NSLog(@"disco for charact %@", characteristic.UUID);
-}
-
-- (void) release {
-	// NSLog(@"\n\n\n\n\n\n\nrelease\n\n\n\n");
-	// [super release];
-}
-
-- (void) dealloc {
-	NSLog(@"\n\n\n\n\n\n\nDealllloooooocatteee\n\n\n\n");
-	[super dealloc];
 }
 
 - (void)checkPeripheralAndAdd:(CBATTRequest *)req {
@@ -426,7 +550,6 @@ didUnsubscribeFromCharacteristic:(CBCharacteristic *)characteristic {
 					];
 				}
 			}
-			[self sendToAcceptIncomingChannel:[req.central.identifier UUIDString]];
 		}
 	}
 }

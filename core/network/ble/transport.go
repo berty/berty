@@ -5,13 +5,14 @@ import (
 	"fmt"
 	"time"
 
+	"unsafe"
+
 	logging "github.com/ipfs/go-log"
 	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	"unsafe"
 	mafmt "github.com/whyrusleeping/mafmt"
 )
 
@@ -21,6 +22,44 @@ import (
 #import "ble.h"
 */
 import "C"
+
+func checkDevice(id string) {
+	peerID := C.CString(id)
+	defer C.free(unsafe.Pointer(peerID))
+	for int(C.checkDeviceConnected(peerID)) != 1 {
+	}
+}
+
+func getPeerID(id string) string {
+	peerID := C.CString(id)
+	defer C.free(unsafe.Pointer(peerID))
+	return C.GoString(C.readPeerID(peerID))
+}
+
+// var TranscoderBLE = ma.NewTranscoderFromFunctions(bleStB, bleBtS, nil)
+
+// func bleStB(s string) ([]byte, error) {
+// 	// id, err := uuid.FromString(s)
+// 	// if err != nil {
+// 	// 	return nil, err
+// 	// }
+// 	fmt.Println("ICI")
+// 	return []byte(s), nil
+// }
+
+// func bleBtS(b []byte) (string, error) {
+// 	fmt.Println("LA")
+// 	return string(b[:]), nil
+// }
+
+// var ProtoBLE = ma.Protocol{
+// 	Name:       "ble",
+// 	Code:       ma.P_RAW,
+// 	Path:       true,
+// 	Size:       ma.LengthPrefixedVarSize,
+// 	VCode:      ma.CodeToVarint(ma.P_RAW),
+// 	Transcoder: TranscoderBLE,
+// }
 
 func BLEInit() {
 	// go C.init()
@@ -47,6 +86,11 @@ type BLETransport struct {
 	// Explicitly disable reuseport.
 	DisableReuseport bool
 
+	//
+	ID string
+
+	lAddr ma.Multiaddr
+
 	// TCP connect timeout
 	ConnectTimeout time.Duration
 
@@ -57,25 +101,69 @@ var _ tpt.Transport = &BLETransport{}
 
 // NewBLETransport creates a tcp transport object that tracks dialers and listeners
 // created. It represents an entire tcp stack (though it might not necessarily be)
-func NewBLETransport(me host.Host) *BLETransport {
-	fmt.Println("1")
-	return &BLETransport{ConnectTimeout: DefaultConnectTimeout, MySelf: me}
+func NewBLETransport(ID string, lAddr ma.Multiaddr) func(me host.Host) *BLETransport {
+	return func(me host.Host) *BLETransport {
+		fmt.Println("1")
+		ma := C.CString(ID)
+		peerID := C.CString(me.ID().Pretty())
+		defer C.free(unsafe.Pointer(ma))
+		defer C.free(unsafe.Pointer(peerID))
+		C.init(ma, peerID)
+		time.Sleep(1 * time.Second)
+		// for int(C.isAdvertising()) != 1 {
+		// 	fmt.Printf("%d\n", int(C.isAdvertising()))
+		C.startAdvertising()
+		// 	time.Sleep(1 * time.Second)
+		// }
+		C.startDiscover()
+
+		return &BLETransport{ConnectTimeout: DefaultConnectTimeout, MySelf: me, ID: ID, lAddr: lAddr}
+	}
 }
 
 // CanDial returns true if this transport believes it can dial the given
 // multiaddr.
 func (t *BLETransport) CanDial(addr ma.Multiaddr) bool {
+	fmt.Printf("BLETransport CanDial %s\n", addr.String())
 	return mafmt.BLE.Matches(addr)
 }
 
 // Dial dials the   peer at the remote address.
-func (t *BLETransport) Dial(ctx context.Context, raddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
-	fmt.Println("3")
-	// conn, err := t.maDial(ctx, raddr)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	return nil, nil
+func (t *BLETransport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
+	if int(C.isDiscovering()) != 1 {
+		C.startDiscover()
+	}
+	s, err := rAddr.ValueForProtocol(ma.P_RAW)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("remote addr %s %+v\n", s, err)
+	peerID := C.CString(s)
+	defer C.free(unsafe.Pointer(peerID))
+	for {
+		if conn, ok := conns[s]; ok {
+			return conn, nil
+		} else if int(C.checkDeviceConnected(peerID)) == 1 {
+			c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr)
+			fmt.Printf("BLEListener conn OK finished DIALING %s\n", p.Pretty())
+			return &c, nil
+		}
+		fmt.Println("BLEDIALLER %d", int(C.checkDeviceConnected(peerID)))
+		time.Sleep(1 * time.Second)
+	}
+	// return conn, nil
+	// fmt.Printf("Need to try dial\n")
+	// // for int(C.isAdvertising()) != 1 {
+	// // 	fmt.Printf("%d\n", int(C.isAdvertising()))
+	// // 	C.startAdvertising()
+	// // 	time.Sleep(1 * time.Second)
+	// // }
+	// <-make(chan struct{})
+	// // conn, err := t.maDial(ctx, raddr)
+	// // if err != nil {
+	// // 	return nil, err
+	// // }
+	// return nil, nil
 }
 
 // UseReuseport returns true if reuseport is enabled and available.
@@ -87,11 +175,7 @@ func (t *BLETransport) UseReuseport() bool {
 // Listen listens on the given multiaddr.
 func (t *BLETransport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 	fmt.Println("6")
-	peerID := C.CString(t.MySelf.ID().Pretty())
-	go func () {
-		C.init(peerID)
-		C.free(unsafe.Pointer(peerID))
-	}()
+
 	fmt.Printf("PPPPPPPPPPEEEEEEEEEEEERRRR IIIIIIDDDDDDD %s\n\n\n", t.MySelf.ID().Pretty())
 
 	// id, _ := uuid.NewV4()
