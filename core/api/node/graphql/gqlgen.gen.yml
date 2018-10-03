@@ -1182,31 +1182,131 @@ models:
   BertyNodeEventListInput:
     model: berty.tech/core/api/node.EventListInput
     fields:
-      limit:
       filter:
+      paginate:
   BertyNodeEventListInputPayload:
     model: berty.tech/core/api/node.EventListInput
     fields:
-      limit:
       filter:
+      paginate:
+
+  BertyNodeEventEdge:
+    model: berty.tech/core/api/node.EventEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeEventEdgeInput:
+    model: berty.tech/core/api/node.EventEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeEventEdgePayload:
+    model: berty.tech/core/api/node.EventEdge
+    fields:
+      node:
+      cursor:
+
+  BertyNodeEventListOutput:
+    model: berty.tech/core/api/node.EventListOutput
+    fields:
+      edges:
+      pageInfo:
+  BertyNodeEventListOutputInput:
+    model: berty.tech/core/api/node.EventListOutput
+    fields:
+      edges:
+      pageInfo:
+  BertyNodeEventListOutputPayload:
+    model: berty.tech/core/api/node.EventListOutput
+    fields:
+      edges:
+      pageInfo:
 
   BertyNodeContactListInput:
     model: berty.tech/core/api/node.ContactListInput
     fields:
       filter:
+      paginate:
   BertyNodeContactListInputPayload:
     model: berty.tech/core/api/node.ContactListInput
     fields:
       filter:
+      paginate:
+
+  BertyNodeContactEdge:
+    model: berty.tech/core/api/node.ContactEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeContactEdgeInput:
+    model: berty.tech/core/api/node.ContactEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeContactEdgePayload:
+    model: berty.tech/core/api/node.ContactEdge
+    fields:
+      node:
+      cursor:
+
+  BertyNodeContactListOutput:
+    model: berty.tech/core/api/node.ContactListOutput
+    fields:
+      edges:
+      pageInfo:
+  BertyNodeContactListOutputInput:
+    model: berty.tech/core/api/node.ContactListOutput
+    fields:
+      edges:
+      pageInfo:
+  BertyNodeContactListOutputPayload:
+    model: berty.tech/core/api/node.ContactListOutput
+    fields:
+      edges:
+      pageInfo:
 
   BertyNodeConversationListInput:
     model: berty.tech/core/api/node.ConversationListInput
     fields:
       filter:
+      paginate:
   BertyNodeConversationListInputPayload:
     model: berty.tech/core/api/node.ConversationListInput
     fields:
       filter:
+      paginate:
+
+  BertyNodeConversationEdge:
+    model: berty.tech/core/api/node.ConversationEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeConversationEdgeInput:
+    model: berty.tech/core/api/node.ConversationEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeConversationEdgePayload:
+    model: berty.tech/core/api/node.ConversationEdge
+    fields:
+      node:
+      cursor:
+
+  BertyNodeConversationListOutput:
+    model: berty.tech/core/api/node.ConversationListOutput
+    fields:
+      edges:
+      pageInfo:
+  BertyNodeConversationListOutputInput:
+    model: berty.tech/core/api/node.ConversationListOutput
+    fields:
+      edges:
+      pageInfo:
+  BertyNodeConversationListOutputPayload:
+    model: berty.tech/core/api/node.ConversationListOutput
+    fields:
+      edges:
+      pageInfo:
 
   BertyNodeConversationCreateInput:
     model: berty.tech/core/api/node.ConversationCreateInput
@@ -1244,3 +1344,56 @@ models:
     model: berty.tech/core/api/node.Void
     fields:
       t:
+
+  BertyNodePagination:
+    model: berty.tech/core/api/node.Pagination
+    fields:
+      orderBy:
+      orderDesc:
+      first:
+      after:
+      last:
+      before:
+  BertyNodePaginationInput:
+    model: berty.tech/core/api/node.Pagination
+    fields:
+      orderBy:
+      orderDesc:
+      first:
+      after:
+      last:
+      before:
+  BertyNodePaginationPayload:
+    model: berty.tech/core/api/node.Pagination
+    fields:
+      orderBy:
+      orderDesc:
+      first:
+      after:
+      last:
+      before:
+
+  BertyNodePageInfo:
+    model: berty.tech/core/api/node.PageInfo
+    fields:
+      startCursor:
+      endCursor:
+      hasNextPage:
+      hasPreviousPage:
+      count:
+  BertyNodePageInfoInput:
+    model: berty.tech/core/api/node.PageInfo
+    fields:
+      startCursor:
+      endCursor:
+      hasNextPage:
+      hasPreviousPage:
+      count:
+  BertyNodePageInfoPayload:
+    model: berty.tech/core/api/node.PageInfo
+    fields:
+      startCursor:
+      endCursor:
+      hasNextPage:
+      hasPreviousPage:
+      count:

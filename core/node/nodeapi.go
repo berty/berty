@@ -45,6 +45,10 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
+func (n *Node) EventListPaginated(ctx context.Context, input *node.EventListInput) (*node.EventListOutput, error) {
+	return nil, ErrNotImplemented
+}
+
 // GetEvent implements berty.node.GetEvent
 func (n *Node) GetEvent(ctx context.Context, event *p2p.Event) (*p2p.Event, error) {
 	n.handleMutex.Lock()
@@ -183,7 +187,6 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	defer n.handleMutex.Unlock()
 
 	var contacts []*entity.Contact
-
 	var err error
 	if input.Filter != nil {
 		err = n.sql.Where(input.Filter).Find(&contacts).Error
@@ -200,6 +203,67 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 		}
 	}
 	return nil
+}
+
+// ContactListPaginated implements berty.node.ContactListPaginated
+func (n *Node) ContactListPaginated(ctx context.Context, input *node.ContactListInput) (*node.ContactListOutput, error) {
+	n.handleMutex.Lock()
+	defer n.handleMutex.Unlock()
+
+	output := &node.ContactListOutput{
+		Edges: []*node.ContactEdge{},
+	}
+
+	var count uint32
+	countQuery := n.sql.Model(entity.Contact{}).Where(input.Filter)
+	if err := countQuery.Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	// apply defaults to paginate
+	if input.Paginate == nil {
+		input.Paginate = &node.Pagination{}
+	}
+	if input.Paginate.First == 0 {
+		input.Paginate.First = 10
+	}
+	if input.Paginate.OrderBy == "" {
+		input.Paginate.OrderBy = "id"
+	}
+
+	// build the query
+	fetchQuery := countQuery.Limit(input.Paginate.First).Order(input.Paginate.OrderBy, input.Paginate.OrderDesc)
+
+	if input.Paginate.Last > 0 {
+		return nil, errors.Wrap(ErrNotImplemented, "input.Paginate.Last not supported")
+	}
+	if input.Paginate.Before != "" {
+		return nil, errors.Wrap(ErrNotImplemented, "input.Paginate.Before not supported")
+	}
+	if input.Paginate.After != "" {
+		fetchQuery = fetchQuery.Where("id > ?", input.Paginate.After)
+	}
+
+	var nodes []*entity.Contact
+	if err := fetchQuery.Find(&nodes).Error; err != nil {
+		return nil, err
+	}
+
+	for _, n := range nodes {
+		output.Edges = append(output.Edges, &node.ContactEdge{
+			Node:   n,
+			Cursor: n.ID,
+		})
+	}
+
+	output.PageInfo = &node.PageInfo{
+		StartCursor:     output.Edges[0].Cursor,
+		EndCursor:       output.Edges[len(output.Edges)-1].Cursor,
+		HasPreviousPage: input.Paginate.After != "",
+		HasNextPage:     len(output.Edges) == int(input.Paginate.First),
+		Count:           count,
+	}
+	return output, nil
 }
 
 // GetContact implements berty.node.GetContact
@@ -315,6 +379,10 @@ func (n *Node) ConversationList(input *node.ConversationListInput, stream node.S
 		}
 	}
 	return nil
+}
+
+func (n *Node) ConversationListPaginated(ctx context.Context, input *node.ConversationListInput) (*node.ConversationListOutput, error) {
+	return nil, ErrNotImplemented
 }
 
 func (n *Node) ConversationAddMessage(_ context.Context, input *node.ConversationAddMessageInput) (*p2p.Event, error) {

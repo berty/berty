@@ -16,15 +16,18 @@ import (
 func init() {
 	registerServerStream("berty.node.EventStream", NodeEventStream)
 	registerServerStream("berty.node.EventList", NodeEventList)
+	registerUnary("berty.node.EventListPaginated", NodeEventListPaginated)
 	registerUnary("berty.node.GetEvent", NodeGetEvent)
 	registerUnary("berty.node.ContactRequest", NodeContactRequest)
 	registerUnary("berty.node.ContactAcceptRequest", NodeContactAcceptRequest)
 	registerUnary("berty.node.ContactRemove", NodeContactRemove)
 	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
 	registerServerStream("berty.node.ContactList", NodeContactList)
+	registerUnary("berty.node.ContactListPaginated", NodeContactListPaginated)
 	registerUnary("berty.node.GetContact", NodeGetContact)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
+	registerUnary("berty.node.ConversationListPaginated", NodeConversationListPaginated)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
 	registerUnary("berty.node.ConversationExclude", NodeConversationExclude)
 	registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
@@ -97,6 +100,20 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 	}()
 
 	return streamProxy, nil
+}
+
+func NodeEventListPaginated(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "EventListPaginated"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.EventListInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().EventListPaginated(ctx, &typedInput)
 }
 
 func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
@@ -201,6 +218,20 @@ func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byt
 	return streamProxy, nil
 }
 
+func NodeContactListPaginated(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ContactListPaginated"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.ContactListInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ContactListPaginated(ctx, &typedInput)
+}
+
 func NodeGetContact(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
 		zap.String("service", "Service"),
@@ -259,6 +290,20 @@ func NodeConversationList(client *client.Client, ctx context.Context, jsonInput 
 	}()
 
 	return streamProxy, nil
+}
+
+func NodeConversationListPaginated(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationListPaginated"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.ConversationListInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ConversationListPaginated(ctx, &typedInput)
 }
 
 func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
