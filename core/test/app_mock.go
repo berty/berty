@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"strings"
@@ -125,8 +126,13 @@ func (a *AppMock) InitEventStream() error {
 	go func() {
 		for {
 			data, err := stream.Recv()
+			if err == io.EOF {
+				logger().Warn("eventstream EOF", zap.Error(err))
+				return
+			}
 			if err != nil {
-				logger().Debug("failed to receive stream data", zap.Error(err))
+				logger().Warn("failed to receive stream data", zap.Error(err))
+				return
 			}
 			a.eventStream <- data
 		}
