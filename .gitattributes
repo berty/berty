@@ -5,6 +5,7 @@
 *.gen.go linguist-generated
 *.gen.graphql linguist-generated
 *.pb.go linguist-generated
+client/react-native/common/schema.graphql linguist-generated
 
 # Reduce conflicts on markdown files
 *.md merge=union
