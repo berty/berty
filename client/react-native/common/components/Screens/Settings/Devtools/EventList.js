@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
-import { TouchableOpacity, FlatList } from 'react-native'
-import { Flex, Header, Screen, Separator, Text } from '../../../Library'
+import { TouchableOpacity, FlatList, Text } from 'react-native'
+import { Flex, Header, Screen, Separator } from '../../../Library'
 import { queries } from '../../../../graphql'
 import { QueryReducer } from '../../../../relay'
 import { colors } from '../../../../constants'
@@ -72,22 +72,31 @@ class List extends PureComponent {
                 justify='center'
                 style={[marginLeft]}
               >
-                <Text color={colors.black} left middle ellipsis>
-                  <Text bold color={colors.black}>
-                    Kind
-                  </Text>
+                <Text
+                  ellipsizeMode='tail'
+                  numberOfLines={1}
+                  className='textEllipsis'
+                  style={{ color: colors.black }}
+                >
+                  <Text style={{ fontWeight: 'bold' }}>Kind</Text>
                   {' ' + data.item.kind}
                 </Text>
-                <Text tiny middle left ellipsis>
-                  <Text tiny bold>
-                    ID
-                  </Text>
+                <Text
+                  ellipsizeMode='tail'
+                  numberOfLines={1}
+                  className='textEllipsis'
+                  style={{ color: colors.blackGrey, fontSize: 12 }}
+                >
+                  <Text style={{ fontWeight: 'bold' }}>ID</Text>
                   {' ' + data.item.id}
                 </Text>
-                <Text tiny middle left ellipsis>
-                  <Text tiny bold>
-                    Created
-                  </Text>
+                <Text
+                  ellipsizeMode='tail'
+                  numberOfLines={1}
+                  className='textEllipsis'
+                  style={{ color: colors.blackGrey, fontSize: 12 }}
+                >
+                  <Text style={{ fontWeight: 'bold' }}>Created</Text>
                   {' ' + data.item.createdAt}
                 </Text>
               </Flex.Rows>
