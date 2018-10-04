@@ -95,6 +95,7 @@ export default class Header extends PureComponent {
           {searchBar === true && (
             <Flex.Cols size={1} style={[paddingBottom]}>
               <TextInput
+                underlineColorAndroid='transparent'
                 autoCorrect={false}
                 style={[
                   {
