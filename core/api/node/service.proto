@@ -150,3 +150,13 @@ message ConversationManageMembersInput {
 }
 
 message Void {}
+
+message PagerInput {
+  int page_size = 1;
+  string sort_by = 2;
+  string cursor = 3;
+}
+
+message PagerOutput {
+  string next_cursor = 1;
+}
