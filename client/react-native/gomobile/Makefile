@@ -44,8 +44,6 @@ ios: $(IOS_BUILD_PATH)/core.framework/Core
 
 $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 	mkdir -p $(IOS_BUILD_PATH)
-	ls $(PWD)/../../common/openssl/built/include
-	ls $(LIBS_PATH)/ios
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
 		gomobile bind -v -target=ios -o $(IOS_BUILD_PATH)/core.framework .
 
