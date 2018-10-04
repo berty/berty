@@ -1,7 +1,19 @@
 import React, { PureComponent } from 'react'
-import { Menu } from '../../../Library'
+import { Header, Menu } from '../../../Library'
 
 export default class List extends PureComponent {
+  static navigationOptions = ({ navigation }) => ({
+    header: (
+      <Header
+        navigation={navigation}
+        title='Developer Tools'
+        titleIcon='terminal'
+        backBtn
+      />
+    ),
+    tabBarVisible: false,
+  })
+
   render () {
     const { navigation } = this.props
     return (
@@ -17,7 +29,7 @@ export default class List extends PureComponent {
           <Menu.Item
             icon='list'
             title='List events'
-            onPress={() => navigation.push('devtools/events')}
+            onPress={() => navigation.push('devtools/eventlist')}
           />
         </Menu.Section>
         <Menu.Section>
