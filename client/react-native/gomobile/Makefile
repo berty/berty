@@ -9,7 +9,7 @@ CGO_CPPFLAGS ?=		-I$(PWD)/../../common/openssl/built/include
 LIBS_PATH :=		$(PWD)/../../common/openssl/built
 
 IOS_BUILD_PATH :=	$(PWD)/../mobile/ios
-IOS_LDFLAGS :=		-L $(LIBS_PATH)/ios
+IOS_LDFLAGS :=		-L$(LIBS_PATH)/ios
 
 ANDROID_NDK_HOME := 	/usr/local/share/android-ndk/
 ANDROID_ARCHS := 	aarch64 arm x86_64 x86
@@ -30,7 +30,7 @@ deps:
 	cd $(GOPATH)/src/golang.org/x/mobile \
 		&& (git remote add upstream git@github.com:sfroment/mobile || true) \
 		&& git fetch upstream \
-		&& (git cherry-pick 1b1535a2ec50640fac08cd318cf1d557e198e94d || true)
+		&& (git cherry-pick af3c051e0603af005260579c432830164f68933b || true)
 	go install golang.org/x/mobile/cmd/gomobile
 	go get -v golang.org/x/mobile/cmd/gobind
 	gomobile init
