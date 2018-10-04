@@ -40,7 +40,7 @@ class List extends PureComponent {
   componentWillUnmount () {}
 
   render () {
-    const { data, retry, loading } = this.props
+    const { data, retry, loading, navigation } = this.props
     return (
       <FlatList
         data={this.filter(data.EventList || [])}
@@ -50,9 +50,13 @@ class List extends PureComponent {
         onEndReached={this.onEndReached}
         refreshing={loading}
         onRefresh={retry}
+        navigation={navigation}
         renderItem={data => (
           <TouchableOpacity
-            onPress={() => console.log('Pressed')}
+            onPress={() => {
+              console.log(data.item)
+              navigation.push('devtools/eventdetails', { details: data.item })
+            }}
             style={[
               {
                 backgroundColor: colors.white,
