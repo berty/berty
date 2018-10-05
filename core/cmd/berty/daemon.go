@@ -323,6 +323,7 @@ func daemon(opts *daemonOptions) error {
 
 	logger().Info("grpc server started",
 		zap.String("user-id", n.UserID()),
+		zap.String("pubkey", n.PubKey()),
 		zap.String("grpc-bind", opts.grpcBind),
 		zap.String("gql-bind", opts.gqlBind),
 		zap.Int("p2p-api", int(p2papi.Version)),
