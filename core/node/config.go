@@ -10,6 +10,7 @@ import (
 	"berty.tech/core/entity"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
 )
 
 func WithInitConfig() NewNodeOption {
@@ -17,11 +18,19 @@ func WithInitConfig() NewNodeOption {
 		// get config from sql
 		config, err := n.Config()
 		if err != nil {
-			config = &entity.Config{}
+			ID, err := uuid.NewV4()
+
+			if err != nil {
+				logger().Error("node.WithInitConfig", zap.Error(errors.Wrap(err, "failed to save empty config")))
+				return
+			}
+
+			config = &entity.Config{
+				ID: ID.String(),
+			}
 
 			if err = n.sql.Create(config).Error; err != nil {
-				zap.Error(errors.Wrap(err, "failed to save empty config"))
-
+				logger().Error("node.WithInitConfig", zap.Error(errors.Wrap(err, "failed to save empty config")))
 				return
 			}
 		}
@@ -50,10 +59,15 @@ func WithConfig() NewNodeOption {
 			}
 		}
 
-		config, _ = n.Config()
+		config, err = n.Config()
+
+		if err != nil {
+			logger().Error("WithConfig", zap.Error(errors.Wrap(err, "unable to load node config")))
+			return
+		}
 
 		if err = config.Validate(); err != nil {
-			zap.Error(errors.Wrap(err, "node config is invalid"))
+			logger().Error("WithConfig", zap.Error(errors.Wrap(err, "node config is invalid")))
 			return
 		}
 
@@ -62,6 +76,10 @@ func WithConfig() NewNodeOption {
 }
 
 func (n *Node) initConfig() (*entity.Config, error) {
+	if n.crypto == nil {
+		return nil, errors.New("unable to get crypto instance")
+	}
+
 	pubBytes, err := n.crypto.GetPubKey()
 
 	if err != nil {
@@ -72,18 +90,6 @@ func (n *Node) initConfig() (*entity.Config, error) {
 
 	if err := sc.Init(n.crypto, string(pubBytes)); err != nil {
 		return nil, errors.Wrap(err, "failed to initialize sigchain")
-	}
-
-	// db object
-	currentDevice := &entity.Device{
-		Status:     entity.Device_Myself,
-		ID:         base64.StdEncoding.EncodeToString(pubBytes),
-		Name:       n.initDevice.Name,
-		ApiVersion: p2p.Version,
-	}
-
-	if err := n.sql.Create(currentDevice).Error; err != nil {
-		return nil, errors.Wrap(err, "unable to save config")
 	}
 
 	scBytes, err := proto.Marshal(&sc)
@@ -102,7 +108,18 @@ func (n *Node) initConfig() (*entity.Config, error) {
 		return nil, errors.Wrap(err, "unable to save myself")
 	}
 
-	n.sql.Model(&myself).Association("Devices").Append(currentDevice)
+	// db object
+	currentDevice := &entity.Device{
+		Status:     entity.Device_Myself,
+		ID:         base64.StdEncoding.EncodeToString(pubBytes),
+		Name:       n.initDevice.Name,
+		ApiVersion: p2p.Version,
+		ContactID:  myself.ID,
+	}
+
+	if err := n.sql.Create(currentDevice).Error; err != nil {
+		return nil, errors.Wrap(err, "unable to save config")
+	}
 
 	n.config.CurrentDevice = currentDevice
 	n.config.CurrentDeviceID = n.config.CurrentDevice.ID
@@ -110,8 +127,6 @@ func (n *Node) initConfig() (*entity.Config, error) {
 	n.config.MyselfID = n.config.Myself.ID
 
 	if err := n.sql.
-		Set("gorm:association_autocreate", true).
-		Set("gorm:association_autoupdate", true).
 		Save(&n.config).
 		Error; err != nil {
 		return nil, errors.Wrap(err, "failed to save config")
@@ -133,5 +148,7 @@ func (n *Node) Config() (*entity.Config, error) {
 		return nil, errors.New("config not found")
 	}
 
-	return config[0], nil
+	n.config = config[0]
+
+	return n.config, nil
 }

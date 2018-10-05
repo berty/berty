@@ -62,7 +62,14 @@ func New(opts ...NewNodeOption) (*Node, error) {
 	if err := proto.Unmarshal(n.config.Myself.Sigchain, &sc); err != nil {
 		return nil, errors.Wrap(err, "cannot get sigchain")
 	}
-	n.pubkey = []byte(sc.UserId)
+
+	pubKey, err := n.crypto.GetPubKey()
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to retrieve public key")
+	}
+
+	n.pubkey = pubKey
 	n.b64pubkey = base64.StdEncoding.EncodeToString(n.pubkey)
 
 	n.sigchain = &sc
@@ -119,4 +126,8 @@ func (n *Node) DeviceID() string {
 
 func (n *Node) UserID() string {
 	return n.config.Myself.ID
+}
+
+func (n *Node) PubKey() string {
+	return n.b64pubkey
 }

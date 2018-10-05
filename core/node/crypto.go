@@ -23,11 +23,6 @@ func WithSoftwareCrypto() NewNodeOption {
 	return func(n *Node) {
 		var privBytes []byte
 
-		if n.config == nil {
-			zap.Error(errors.New("unable to fetch existing config"))
-			return
-		}
-
 		if bytes.Compare(n.config.CryptoParams, []byte{}) == 0 {
 			// FIXME: setting default keysize to 1024 to speedup development (tests), we need to increase the security before the release
 			priv, err := rsa.GenerateKey(rand.Reader, 1024)
@@ -44,17 +39,19 @@ func WithSoftwareCrypto() NewNodeOption {
 
 			n.config.CryptoParams = privBytes
 			if err = n.sql.Save(n.config).Error; err != nil {
-				zap.Error(errors.Wrap(err, "failed to save RSA key"))
+				err := errors.Wrap(err, "failed to save RSA key")
+				logger().Error("node.WithSoftwareCrypto", zap.Error(err))
 				return
+
 			}
 		}
 
-		cryptoImpl := keypair.InsecureCrypto{}
+		cryptoImpl := &keypair.InsecureCrypto{}
 		if err := cryptoImpl.SetPrivateKeyData(n.config.CryptoParams); err != nil {
 			zap.Error(errors.Wrap(err, "failed to set private key in keypair"))
 			return
 		}
 
-		n.crypto = &cryptoImpl
+		n.crypto = cryptoImpl
 	}
 }
