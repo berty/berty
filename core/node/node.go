@@ -8,9 +8,10 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
-	uuid "github.com/satori/go.uuid"
+	"github.com/satori/go.uuid"
 
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
@@ -34,6 +35,8 @@ type Node struct {
 
 	pubkey    []byte // FIXME: use a crypto instance, i.e., enclave
 	b64pubkey string // FIXME: same as above
+	sigchain  *sigchain.SigChain
+	crypto    keypair.Interface
 }
 
 // New initializes a new Node object
@@ -54,26 +57,15 @@ func New(opts ...NewNodeOption) (*Node, error) {
 		return nil, errors.Wrap(err, "node is misconfigured")
 	}
 
-	// get config from sql
-	config, err := n.Config()
-	if err != nil {
-		logger().Debug("config is missing from sql, creating a new one")
-		if config, err = n.initConfig(); err != nil {
-			return nil, errors.Wrap(err, "failed to initialize config")
-		}
-	}
-	if err = config.Validate(); err != nil {
-		return nil, errors.Wrap(err, "node config is invalid")
-	}
-	n.config = config
-
 	// cache the signing pubkey
 	var sc sigchain.SigChain
-	if err := proto.Unmarshal(config.Myself.Sigchain, &sc); err != nil {
+	if err := proto.Unmarshal(n.config.Myself.Sigchain, &sc); err != nil {
 		return nil, errors.Wrap(err, "cannot get sigchain")
 	}
 	n.pubkey = []byte(sc.UserId)
 	n.b64pubkey = base64.StdEncoding.EncodeToString(n.pubkey)
+
+	n.sigchain = &sc
 
 	// configure network
 	if n.networkDriver != nil {
@@ -94,9 +86,22 @@ func (n *Node) Close() error {
 
 // Validate returns an error if object is invalid
 func (n *Node) Validate() error {
-	if n == nil || n.sql == nil || n.initDevice == nil || n.networkDriver == nil {
-		return errors.New("missing required fields to create a new Node")
+	if n == nil {
+		return errors.New("missing required fields (node) to create a new Node")
+	} else if n.sql == nil {
+		return errors.New("missing required fields (gorm) to create a new Node")
+	} else if n.initDevice == nil {
+		return errors.New("missing required fields (initDevice) to create a new Node")
+	} else if n.networkDriver == nil {
+		return errors.New("missing required fields (networkDriver) to create a new Node")
+	} else if n.crypto == nil {
+		return errors.New("missing required fields (crypto) to create a new Node")
+	} else if n.config == nil {
+		return errors.New("missing required fields (config) to create a new Node")
+	} else if n.config.Myself == nil {
+		return errors.New(fmt.Sprintf("missing required fields (config.Myself) to create a new Node %+v\n\n\n\n", n.config))
 	}
+
 	return nil
 }
 

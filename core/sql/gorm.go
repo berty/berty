@@ -33,6 +33,7 @@ func Migrate(db *gorm.DB) error {
 					entity.ConversationMember{},
 					entity.Device{},
 					entity.Config{},
+					entity.SenderAlias{},
 				).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
