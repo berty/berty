@@ -3,7 +3,6 @@ package ble
 import (
 	"fmt"
 	"time"
-
 	"unsafe"
 
 	smu "github.com/libp2p/go-stream-muxer"
@@ -30,11 +29,12 @@ type BLEStream struct {
 var streams map[string]*BLEStream = make(map[string]*BLEStream)
 
 //export sendBytesToStream
-func sendBytesToStream(peerID *C.char, bytes unsafe.Pointer, length C.int) {
-	fmt.Printf("TYING TO SEND TO STREAM %s %s %d mapsstream%+v\n", C.GoString(peerID), string(C.GoBytes(bytes, length)), length, streams)
-	if stream, ok := streams[C.GoString(peerID)]; ok {
-		fmt.Println("SENDING")
-		stream.incoming <- C.GoBytes(bytes, length)
+func sendBytesToStream(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
+	for {
+		if stream, ok := streams[C.GoString(bleUUID)]; ok {
+			stream.incoming <- C.GoBytes(bytes, length)
+			return
+		}
 	}
 }
 
@@ -50,68 +50,63 @@ func NewStream(rAddr ma.Multiaddr) *BLEStream {
 	return s
 }
 
+func helper(dst, src []byte) int {
+	lDst := len(dst)
+	lSrc := len(src)
+	if len(dst) >= len(src) {
+		copy(dst, src)
+		copy(src, src[:0])
+		return lSrc
+	} else {
+		copy(dst, src[:len(dst)])
+		copy(src, src[len(dst):])
+		return lDst
+	}
+}
+
 func (b *BLEStream) Read(p []byte) (n int, err error) {
-	fmt.Printf("BLEStream Reading %d %d\n\n", len(p), len(b.notFinishedToRead))
+	// fmt.Printf("BLEStream Reading %d %d\n\n", len(p), len(b.notFinishedToRead))
 	if len(b.notFinishedToRead) != 0 {
-		var lenToWrite int
-		if len(p) <= len(b.notFinishedToRead) {
-			fmt.Println("123")
-			lenToWrite = len(p)
-			copy(p, b.notFinishedToRead)
-			if lenToWrite == len(b.notFinishedToRead) {
-				b.notFinishedToRead = b.notFinishedToRead[:0]
-			} else {
-				b.notFinishedToRead = append(b.notFinishedToRead[:lenToWrite], b.notFinishedToRead[lenToWrite+1:]...)
-			}
-			fmt.Printf("BLEStream Readed %s $$$$$$$\n\n\n", string(p))
-			return len(p), nil
-		} else {
-			fmt.Println("1234")
-			lenToWrite = len(b.notFinishedToRead)
+		if len(p) >= len(b.notFinishedToRead) {
 			copy(p, b.notFinishedToRead)
 			b.notFinishedToRead = b.notFinishedToRead[:0]
-			fmt.Printf("BLEStream Readed %s $$$$$$$\n\n\n", string(p))
-			return lenToWrite, nil
+			return len(p), nil
+		} else {
+			copy(p, b.notFinishedToRead[:len(p)])
+			b.notFinishedToRead = b.notFinishedToRead[len(p):]
+			return len(p), nil
 		}
+		// ret := helper(p, b.notFinishedToRead)
+
+		// return ret, nil
 	}
 
 	b.notFinishedToRead = <-b.incoming
 	if len(b.notFinishedToRead) != 0 {
-		var lenToWrite int
-		if len(p) <= len(b.notFinishedToRead) {
-			fmt.Println("12345")
-			lenToWrite = len(p)
-			copy(p, b.notFinishedToRead)
-			if lenToWrite == len(b.notFinishedToRead) {
-				b.notFinishedToRead = b.notFinishedToRead[:0]
-			} else {
-				b.notFinishedToRead = append(b.notFinishedToRead[:lenToWrite], b.notFinishedToRead[lenToWrite+1:]...)
-			}
-			fmt.Printf("BLEStream Readed %s $$$$$$$\n\n\n", string(p))
-			return len(p), nil
-		} else {
-			fmt.Println("12356")
-			lenToWrite = len(b.notFinishedToRead)
+		if len(p) >= len(b.notFinishedToRead) {
 			copy(p, b.notFinishedToRead)
 			b.notFinishedToRead = b.notFinishedToRead[:0]
-			fmt.Printf("BLEStream Readed %s $$$$$$$\n\n\n", string(p))
-			return lenToWrite, nil
+			return len(p), nil
+		} else {
+			copy(p, b.notFinishedToRead[:len(p)])
+			b.notFinishedToRead = b.notFinishedToRead[len(p):]
+			return len(p), nil
 		}
+		// fmt.Printf("BLEStream Reading %+v %+v\n\n", p, b.notFinishedToRead)
+		// return ret2, nil
 	}
-	fmt.Printf("BLEStream Readeded %+v %+v\n\n\n", p, b.notFinishedToRead)
 
 	return len(p), nil
 }
 
 func (b *BLEStream) Write(p []byte) (n int, err error) {
-	fmt.Printf("BLEStream Write %s FINISHED\n\n\n", string(p))
 	C.writeNSData(
 		C.Bytes2NSData(
 			unsafe.Pointer(&p[0]),
 			C.int(len(p)),
 		),
 	)
-	return 0, nil
+	return len(p), nil
 }
 
 func (b *BLEStream) Close() error {

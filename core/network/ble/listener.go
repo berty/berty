@@ -14,31 +14,36 @@ import "C"
 // BLEListener implement ipfs Listener interface
 type BLEListener struct {
 	tpt.Listener
-	transport *BLETransport
-	addr      string
-	network   string
-	incoming  chan string
-	connected map[string]*BLEConn
-	lAddr     ma.Multiaddr
+	transport       *BLETransport
+	addr            string
+	network         string
+	incomingBLEUUID chan string
+	incomingPeerID  chan string
+	connected       map[string]*BLEConn
+	lAddr           ma.Multiaddr
 }
 
 var listeners map[string]*BLEListener = make(map[string]*BLEListener)
 
 //export sendAcceptToListenerForPeerID
-func sendAcceptToListenerForPeerID(peerID *C.char, incoming *C.char) {
+func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.char) {
 	fmt.Printf("W8 for %s listenersssssss %+v\n", listeners, C.GoString(peerID))
 	if listener, ok := listeners[C.GoString(peerID)]; ok {
-		listener.incoming <- C.GoString(incoming)
+		defer func() {
+			listener.incomingBLEUUID <- C.GoString(ble)
+			listener.incomingPeerID <- C.GoString(incPeerID)
+		}()
 	}
 }
 
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *BLETransport) *BLEListener {
 	fmt.Printf("NEW LISTENER %s\n", hostID.Pretty())
 	listerner := &BLEListener{
-		lAddr:     lAddr,
-		incoming:  make(chan string),
-		connected: make(map[string]*BLEConn),
-		transport: t,
+		lAddr:           lAddr,
+		incomingBLEUUID: make(chan string),
+		incomingPeerID:  make(chan string),
+		connected:       make(map[string]*BLEConn),
+		transport:       t,
 	}
 	listeners[t.ID] = listerner
 	return listerner
@@ -59,18 +64,20 @@ func (b *BLEListener) Multiaddr() ma.Multiaddr {
 func (b *BLEListener) Accept() (tpt.Conn, error) {
 	fmt.Println("BLEListener Accept loop start")
 	for {
-		inc := <-b.incoming
-		fmt.Printf("BLEListener Accept inc %s\n\n\n", inc)
-		if _, ok := conns[inc]; !ok {
-			rAddr, err := ma.NewMultiaddr("/ble/" + inc)
+		bleUUID := <-b.incomingBLEUUID
+		peerIDb58 := <-b.incomingPeerID
+		if _, ok := conns[bleUUID]; !ok {
+			rAddr, err := ma.NewMultiaddr("/ble/" + bleUUID)
 			if err != nil {
 				fmt.Printf("end acc1 %+v\n", err)
 				return nil, err
 			}
-			rid := getPeerID(inc)
-			rID, err := peer.IDB58Decode(rid)
-			fmt.Printf("ris %s\n", rid)
-			c := NewConn(b.transport, b.transport.MySelf.ID(), rID, b.lAddr, rAddr)
+			rID, err := peer.IDB58Decode(peerIDb58)
+			if err != nil {
+				fmt.Printf("end acc2 %+v\n", err)
+				return nil, err
+			}
+			c := NewConn(b.transport, b.transport.MySelf.ID(), rID, b.lAddr, rAddr, 1)
 			fmt.Println("BLEListener Accept finished")
 			return &c, nil
 		}

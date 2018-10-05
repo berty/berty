@@ -15,9 +15,16 @@
 @interface BertyDevice : NSObject
 
 @property (nonatomic, readwrite, strong) NSMutableData *data;
+@property (nonatomic, readonly, strong) NSString *peerID;
+@property (nonatomic, readonly, strong) NSString *ma;
+@property (nonatomic, readwrite, assign) BOOL isReady;
+@property (nonatomic, readwrite, assign) BOOL isSubscribe;
 @property (nonatomic, readwrite, strong) CBPeripheral *peripheral;
 
 - (instancetype)initWithPeripheral:(CBPeripheral *)peripheral;
+- (void)setPeerID:(NSString*)p;
+- (void)setMa:(NSString*)a;
+- (void)setIsSubscribe:(BOOL)v;
 
 @end
 

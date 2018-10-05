@@ -29,7 +29,7 @@ type BLEConn struct {
 
 var conns map[string]*BLEConn = make(map[string]*BLEConn)
 
-func NewConn(transport *BLETransport, lid, rid peer.ID, lAddr, rAddr ma.Multiaddr) BLEConn {
+func NewConn(transport *BLETransport, lid, rid peer.ID, lAddr, rAddr ma.Multiaddr, dir int) BLEConn {
 	conn := BLEConn{
 		opened:       true,
 		transport:    transport,
@@ -42,8 +42,11 @@ func NewConn(transport *BLETransport, lid, rid peer.ID, lAddr, rAddr ma.Multiadd
 	}
 	fmt.Println("BLEConn new,")
 
-	conn.incomingOpen <- struct{}{}
-	conn.outgoingOpen <- struct{}{}
+	if dir == 1 {
+		conn.incomingOpen <- struct{}{}
+	} else {
+		conn.outgoingOpen <- struct{}{}
+	}
 	st, _ := rAddr.ValueForProtocol(ma.P_RAW)
 	conns[st] = &conn
 	fmt.Println("BLEConn new fishish")
@@ -59,11 +62,7 @@ func (b *BLEConn) LocalPrivateKey() ic.PrivKey {
 }
 
 func (b *BLEConn) RemotePeer() peer.ID {
-	v, _ := b.rAddr.ValueForProtocol(ma.P_RAW)
-	rid := getPeerID(v)
-	rID, _ := peer.IDB58Decode(rid)
-
-	return rID
+	return b.rid
 }
 
 func (b *BLEConn) RemotePublicKey() ic.PubKey {

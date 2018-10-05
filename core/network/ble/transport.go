@@ -110,11 +110,7 @@ func NewBLETransport(ID string, lAddr ma.Multiaddr) func(me host.Host) *BLETrans
 		defer C.free(unsafe.Pointer(peerID))
 		C.init(ma, peerID)
 		time.Sleep(1 * time.Second)
-		// for int(C.isAdvertising()) != 1 {
-		// 	fmt.Printf("%d\n", int(C.isAdvertising()))
 		C.startAdvertising()
-		// 	time.Sleep(1 * time.Second)
-		// }
 		C.startDiscover()
 
 		return &BLETransport{ConnectTimeout: DefaultConnectTimeout, MySelf: me, ID: ID, lAddr: lAddr}
@@ -138,32 +134,16 @@ func (t *BLETransport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) 
 		return nil, err
 	}
 	fmt.Printf("remote addr %s %+v\n", s, err)
-	peerID := C.CString(s)
+	peerID := C.CString(p.Pretty())
 	defer C.free(unsafe.Pointer(peerID))
-	for {
-		if conn, ok := conns[s]; ok {
-			return conn, nil
-		} else if int(C.checkDeviceConnected(peerID)) == 1 {
-			c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr)
-			fmt.Printf("BLEListener conn OK finished DIALING %s\n", p.Pretty())
-			return &c, nil
-		}
-		fmt.Println("BLEDIALLER %d", int(C.checkDeviceConnected(peerID)))
-		time.Sleep(1 * time.Second)
+	C.dialPeer(peerID)
+
+	if conn, ok := conns[s]; ok {
+		return conn, nil
 	}
-	// return conn, nil
-	// fmt.Printf("Need to try dial\n")
-	// // for int(C.isAdvertising()) != 1 {
-	// // 	fmt.Printf("%d\n", int(C.isAdvertising()))
-	// // 	C.startAdvertising()
-	// // 	time.Sleep(1 * time.Second)
-	// // }
-	// <-make(chan struct{})
-	// // conn, err := t.maDial(ctx, raddr)
-	// // if err != nil {
-	// // 	return nil, err
-	// // }
-	// return nil, nil
+	c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr, 0)
+	fmt.Printf("BLEListener conn OK finished DIALING %s\n", p.Pretty())
+	return &c, nil
 }
 
 // UseReuseport returns true if reuseport is enabled and available.
