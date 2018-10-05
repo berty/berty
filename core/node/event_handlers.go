@@ -2,6 +2,11 @@ package node
 
 import (
 	"context"
+	"time"
+
+	"github.com/satori/go.uuid"
+
+	"go.uber.org/zap"
 
 	"github.com/pkg/errors"
 
@@ -150,4 +155,106 @@ func (n *Node) handleDevtoolsMapset(ctx context.Context, input *p2p.Event) error
 
 func (n *Node) DevtoolsMapget(key string) string {
 	return n.devtools.mapset[key]
+}
+
+func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) error {
+	aliasesList, err := input.GetSenderAliasUpdateAttrs()
+
+	if err != nil {
+		return errors.Wrap(err, "unable to unmarshal aliases list")
+	}
+
+	for i := range aliasesList.Aliases {
+		alias := aliasesList.Aliases[i]
+
+		ID, err := uuid.NewV4()
+
+		if err != nil {
+			return errors.Wrap(err, "unable to generate a uuid")
+		}
+
+		alias.ID = ID.String()
+		alias.Status = entity.SenderAlias_RECEIVED
+
+		n.sql.Save(&alias)
+	}
+
+	return nil
+}
+
+func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
+	ackCount := 0
+	ackAttrs, err := input.GetAckAttrs()
+
+	if err != nil {
+		return errors.Wrap(err, "unable to unmarshal ack attrs")
+	}
+
+	if err = n.sql.
+		Model(&p2p.Event{}).
+		Where("id in (?)", ackAttrs.IDs).
+		Count(&ackCount).
+		UpdateColumn("acked_at", time.Now()).
+		Error; err != nil {
+		return errors.Wrap(err, "unable to mark events as acked")
+	}
+
+	if ackCount == 0 {
+		return errors.Wrap(err, "no events to ack found")
+	}
+
+	if err := n.handleAckSenderAlias(ctx, ackAttrs); err != nil {
+		return errors.Wrap(err, "error while acking alias updates")
+	}
+
+	return nil
+}
+
+func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs) error {
+	var events []*p2p.Event
+
+	err := n.sql.
+		Model(&p2p.Event{}).
+		Where("id in (?)", ackAttrs.IDs).
+		Where(p2p.Event{Kind: p2p.Kind_SenderAliasUpdate}).
+		Find(&events).
+		Error
+
+	if err != nil {
+		err := errors.Wrap(err, "unable to fetch acked alias updates")
+		zap.Error(err)
+		return err
+	}
+
+	for _, event := range events {
+		attrs, err := event.GetSenderAliasUpdateAttrs()
+
+		if err != nil {
+			return errors.Wrap(err, "unable to unmarshal alias update attrs")
+		}
+
+		for _, alias := range attrs.Aliases {
+			aliasesCount := 0
+
+			err = n.sql.
+				Model(&entity.SenderAlias{}).
+				Where(&entity.SenderAlias{
+					ConversationID:  alias.ConversationID,
+					ContactID:       alias.ContactID,
+					AliasIdentifier: alias.AliasIdentifier,
+					Status:          entity.SenderAlias_SENT,
+				}).
+				Count(&aliasesCount).
+				UpdateColumn("status", entity.SenderAlias_SENT_AND_ACKED).
+				Error
+
+			if err != nil {
+				zap.Error(errors.Wrap(err, "unable to ack alias"))
+			} else if aliasesCount == 0 {
+				zap.Error(errors.New("unable to ack alias"))
+			}
+		}
+	}
+
+	return nil
 }

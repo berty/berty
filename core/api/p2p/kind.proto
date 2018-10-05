@@ -5,6 +5,7 @@ package berty.p2p;
 import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
+import "entity/sender_alias.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "berty.tech/core/api/p2p";
@@ -43,6 +44,12 @@ enum Kind {
 
   // Devtool events
   DevtoolsMapset = 401;
+
+  //
+  // SenderAlias events
+  //
+
+  SenderAliasUpdate = 501;
 }
 
 //
@@ -74,3 +81,9 @@ message ConversationNewMessageAttrs { berty.entity.Message message = 1; }
 //
 
 message DevtoolsMapsetAttrs { string key = 1; string val = 2; }
+
+//
+// SenderAlias events
+//
+
+message SenderAliasUpdateAttrs { repeated berty.entity.SenderAlias aliases = 1; }

@@ -41,3 +41,14 @@ func (n *Node) contactShareMe(to *entity.Contact) error {
 	}
 	return nil
 }
+
+func (n *Node) NewSenderAliasEvent(destination string, aliases []*entity.SenderAlias) (*p2p.Event, error) {
+	event := p2p.NewOutgoingEvent(n.b64pubkey, destination, p2p.Kind_SenderAliasUpdate)
+	event.ID = n.NewID()
+	if err := event.SetAttrs(&p2p.SenderAliasUpdateAttrs{Aliases: aliases}); err != nil {
+		return nil, err
+	}
+
+	return event, nil
+
+}

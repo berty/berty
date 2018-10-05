@@ -7,8 +7,9 @@ import (
 	"crypto/elliptic"
 	"crypto/rsa"
 	"crypto/x509"
-	"errors"
 	"math/big"
+
+	"github.com/pkg/errors"
 
 	"encoding/binary"
 )
@@ -93,13 +94,7 @@ func (m *Revocation) GetSignedValue() SignableValue {
 	return m.Content
 }
 
-func CheckSignature(signedValue SignedValue, signer *Certificate) error {
-	pubKey, err := x509.ParsePKIXPublicKey(signer.Content.PublicKey)
-
-	if err != nil {
-		return err
-	}
-
+func CheckSignature(signedValue SignedValue, pubKey crypto.PublicKey) error {
 	hashFunc, err := signedValue.GetSignature().SignatureAlgorithm.GetHashFunction()
 
 	if err != nil {
@@ -161,6 +156,17 @@ func CheckSignature(signedValue SignedValue, signer *Certificate) error {
 	}
 
 	return errors.New("unsupported key")
+
+}
+
+func CheckSignatureUsingCert(signedValue SignedValue, signer *Certificate) error {
+	pubKey, err := x509.ParsePKIXPublicKey(signer.Content.PublicKey)
+
+	if err != nil {
+		return errors.Wrap(err, "signature check failed")
+	}
+
+	return CheckSignature(signedValue, pubKey)
 }
 
 func IntToBytes(input uint64) []byte {
@@ -197,4 +203,23 @@ func GetHashFuncForKey(pub crypto.PublicKey) (crypto.Hash, error) {
 
 func (m *Certificate) GetPubKey() (interface{}, error) {
 	return x509.ParsePKIXPublicKey(m.Content.PublicKey)
+}
+
+func Sign(keyPairImpl Interface, e SignableValue) (*Signature, error) {
+	dataToSign, err := e.GetDataToSign()
+
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to get date to sign")
+	}
+
+	signatureBytes, err := keyPairImpl.Sign(dataToSign)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "unable to sign value")
+	}
+
+	return &Signature{
+		Signature:          signatureBytes,
+		SignatureAlgorithm: keyPairImpl.SignatureAlgorithm(),
+	}, nil
 }

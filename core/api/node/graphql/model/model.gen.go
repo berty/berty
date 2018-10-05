@@ -55,6 +55,18 @@ type BertyEntityDevice struct {
 type BertyEntityMessage struct {
 	Text *string `json:"text"`
 }
+type BertyEntitySenderAlias struct {
+	ID              *string                       `json:"id"`
+	CreatedAt       *scalar.DateTime              `json:"createdAt"`
+	UpdatedAt       *scalar.DateTime              `json:"updatedAt"`
+	DeletedAt       *scalar.DateTime              `json:"deletedAt"`
+	Status          *BertyEntitySenderAliasStatus `json:"status"`
+	OriginDeviceID  *string                       `json:"originDeviceId"`
+	ContactID       *string                       `json:"contactId"`
+	ConversationID  *string                       `json:"conversationId"`
+	AliasIdentifier *string                       `json:"aliasIdentifier"`
+	Used            *bool                         `json:"used"`
+}
 type BertyNodeContactListInput struct {
 	Filter *BertyEntityContact `json:"filter"`
 }
@@ -132,6 +144,9 @@ type BertyP2pEvent struct {
 }
 type BertyP2pPingAttrs struct {
 	T *bool `json:"T"`
+}
+type BertyP2pSenderAliasUpdateAttrs struct {
+	Aliases []*BertyEntitySenderAlias `json:"aliases"`
 }
 type BertyP2pSentAttrs struct {
 	Ids []*string `json:"ids"`
@@ -512,6 +527,44 @@ func (e BertyEntityDeviceStatus) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
 }
 
+type BertyEntitySenderAliasStatus string
+
+const (
+	BertyEntitySenderAliasStatusUnknown      BertyEntitySenderAliasStatus = "UNKNOWN"
+	BertyEntitySenderAliasStatusSent         BertyEntitySenderAliasStatus = "SENT"
+	BertyEntitySenderAliasStatusSentAndAcked BertyEntitySenderAliasStatus = "SENT_AND_ACKED"
+	BertyEntitySenderAliasStatusReceived     BertyEntitySenderAliasStatus = "RECEIVED"
+)
+
+func (e BertyEntitySenderAliasStatus) IsValid() bool {
+	switch e {
+	case BertyEntitySenderAliasStatusUnknown, BertyEntitySenderAliasStatusSent, BertyEntitySenderAliasStatusSentAndAcked, BertyEntitySenderAliasStatusReceived:
+		return true
+	}
+	return false
+}
+
+func (e BertyEntitySenderAliasStatus) String() string {
+	return string(e)
+}
+
+func (e *BertyEntitySenderAliasStatus) UnmarshalGQL(v interface{}) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = BertyEntitySenderAliasStatus(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid BertyEntitySenderAliasStatus", str)
+	}
+	return nil
+}
+
+func (e BertyEntitySenderAliasStatus) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
 type BertyP2pEventDirection string
 
 const (
@@ -563,11 +616,12 @@ const (
 	BertyP2pKindConversationInvite     BertyP2pKind = "ConversationInvite"
 	BertyP2pKindConversationNewMessage BertyP2pKind = "ConversationNewMessage"
 	BertyP2pKindDevtoolsMapset         BertyP2pKind = "DevtoolsMapset"
+	BertyP2pKindSenderAliasUpdate      BertyP2pKind = "SenderAliasUpdate"
 )
 
 func (e BertyP2pKind) IsValid() bool {
 	switch e {
-	case BertyP2pKindUnknown, BertyP2pKindSent, BertyP2pKindAck, BertyP2pKindPing, BertyP2pKindContactRequest, BertyP2pKindContactRequestAccepted, BertyP2pKindContactShareMe, BertyP2pKindContactShare, BertyP2pKindConversationInvite, BertyP2pKindConversationNewMessage, BertyP2pKindDevtoolsMapset:
+	case BertyP2pKindUnknown, BertyP2pKindSent, BertyP2pKindAck, BertyP2pKindPing, BertyP2pKindContactRequest, BertyP2pKindContactRequestAccepted, BertyP2pKindContactShareMe, BertyP2pKindContactShare, BertyP2pKindConversationInvite, BertyP2pKindConversationNewMessage, BertyP2pKindDevtoolsMapset, BertyP2pKindSenderAliasUpdate:
 		return true
 	}
 	return false

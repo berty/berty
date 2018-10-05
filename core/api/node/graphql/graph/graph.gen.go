@@ -1017,6 +1017,247 @@ func (ec *executionContext) _BertyEntityMessage_text(ctx context.Context, field 
 	return graphql.MarshalString(*res)
 }
 
+var bertyEntitySenderAliasImplementors = []string{"BertyEntitySenderAlias"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntitySenderAlias(ctx context.Context, sel ast.SelectionSet, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntitySenderAliasImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntitySenderAlias")
+		case "id":
+			out.Values[i] = ec._BertyEntitySenderAlias_id(ctx, field, obj)
+		case "createdAt":
+			out.Values[i] = ec._BertyEntitySenderAlias_createdAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._BertyEntitySenderAlias_updatedAt(ctx, field, obj)
+		case "deletedAt":
+			out.Values[i] = ec._BertyEntitySenderAlias_deletedAt(ctx, field, obj)
+		case "status":
+			out.Values[i] = ec._BertyEntitySenderAlias_status(ctx, field, obj)
+		case "originDeviceId":
+			out.Values[i] = ec._BertyEntitySenderAlias_originDeviceId(ctx, field, obj)
+		case "contactId":
+			out.Values[i] = ec._BertyEntitySenderAlias_contactId(ctx, field, obj)
+		case "conversationId":
+			out.Values[i] = ec._BertyEntitySenderAlias_conversationId(ctx, field, obj)
+		case "aliasIdentifier":
+			out.Values[i] = ec._BertyEntitySenderAlias_aliasIdentifier(ctx, field, obj)
+		case "used":
+			out.Values[i] = ec._BertyEntitySenderAlias_used(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_id(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.CreatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalar.DateTime)
+	if res == nil {
+		return graphql.Null
+	}
+	return *res
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.UpdatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalar.DateTime)
+	if res == nil {
+		return graphql.Null
+	}
+	return *res
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.DeletedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*scalar.DateTime)
+	if res == nil {
+		return graphql.Null
+	}
+	return *res
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_status(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Status, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.BertyEntitySenderAliasStatus)
+	if res == nil {
+		return graphql.Null
+	}
+	return *res
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_originDeviceId(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.OriginDeviceID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_contactId(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ContactID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_conversationId(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.ConversationID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_aliasIdentifier(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.AliasIdentifier, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _BertyEntitySenderAlias_used(ctx context.Context, field graphql.CollectedField, obj *model.BertyEntitySenderAlias) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyEntitySenderAlias"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Used, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	if res == nil {
+		return graphql.Null
+	}
+	return graphql.MarshalBoolean(*res)
+}
+
 var bertyNodeContactListInputImplementors = []string{"BertyNodeContactListInput"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -2309,6 +2550,58 @@ func (ec *executionContext) _BertyP2pPingAttrs_T(ctx context.Context, field grap
 		return graphql.Null
 	}
 	return graphql.MarshalBoolean(*res)
+}
+
+var bertyP2pSenderAliasUpdateAttrsImplementors = []string{"BertyP2pSenderAliasUpdateAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pSenderAliasUpdateAttrs(ctx context.Context, sel ast.SelectionSet, obj *model.BertyP2pSenderAliasUpdateAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pSenderAliasUpdateAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pSenderAliasUpdateAttrs")
+		case "aliases":
+			out.Values[i] = ec._BertyP2pSenderAliasUpdateAttrs_aliases(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _BertyP2pSenderAliasUpdateAttrs_aliases(ctx context.Context, field graphql.CollectedField, obj *model.BertyP2pSenderAliasUpdateAttrs) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "BertyP2pSenderAliasUpdateAttrs"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+		return obj.Aliases, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.BertyEntitySenderAlias)
+	arr1 := graphql.Array{}
+	for idx1 := range res {
+		arr1 = append(arr1, func() graphql.Marshaler {
+			rctx := graphql.GetResolverContext(ctx)
+			rctx.PushIndex(idx1)
+			defer rctx.Pop()
+			if res[idx1] == nil {
+				return graphql.Null
+			}
+			return ec._BertyEntitySenderAlias(ctx, field.Selections, res[idx1])
+		}())
+	}
+	return arr1
 }
 
 var bertyP2pSentAttrsImplementors = []string{"BertyP2pSentAttrs"}
@@ -9028,6 +9321,30 @@ type BertyEntityMessage {
 
   
 
+type BertyEntitySenderAlias {
+  id: String
+  createdAt: DateTime
+  updatedAt: DateTime
+  deletedAt: DateTime
+  status: BertyEntitySenderAliasStatus
+  originDeviceId: String
+  contactId: String
+  conversationId: String
+  aliasIdentifier: String
+  used: Boolean
+}
+
+enum BertyEntitySenderAliasStatus {
+  UNKNOWN
+  SENT
+  SENT_AND_ACKED
+  RECEIVED
+}  
+
+
+
+  
+
 type BertyP2pSentAttrs {
   ids: [String]
 } 
@@ -9071,6 +9388,10 @@ type BertyP2pDevtoolsMapsetAttrs {
   val: String
 } 
 
+type BertyP2pSenderAliasUpdateAttrs {
+  aliases: [BertyEntitySenderAlias]
+} 
+
 enum BertyP2pKind {
   Unknown
   Sent
@@ -9083,6 +9404,7 @@ enum BertyP2pKind {
   ConversationInvite
   ConversationNewMessage
   DevtoolsMapset
+  SenderAliasUpdate
 } 
 
 

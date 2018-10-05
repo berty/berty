@@ -198,6 +198,25 @@ func (e *Event) SetDevtoolsMapsetAttrs(attrs *DevtoolsMapsetAttrs) error {
 	return nil
 }
 
+// GetSenderAliasUpdateAttrs is a typesafe version of GetAttrs
+func (e *Event) GetSenderAliasUpdateAttrs() (*SenderAliasUpdateAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &SenderAliasUpdateAttrs{}, nil
+	}
+	var attrs SenderAliasUpdateAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetSenderAliasUpdateAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetSenderAliasUpdateAttrs(attrs *SenderAliasUpdateAttrs) error {
+	raw, err := proto.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetAttrs parses the embedded attributes
 func (e *Event) GetAttrs() (proto.Message, error) {
 	switch e.Kind {
@@ -221,6 +240,8 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetConversationNewMessageAttrs()
 	case Kind_DevtoolsMapset:
 		return e.GetDevtoolsMapsetAttrs()
+	case Kind_SenderAliasUpdate:
+		return e.GetSenderAliasUpdateAttrs()
 	}
 	return nil, fmt.Errorf("not supported event kind: %q", e.Kind)
 }

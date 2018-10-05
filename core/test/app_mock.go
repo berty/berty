@@ -8,6 +8,10 @@ import (
 	"net"
 	"strings"
 
+	"berty.tech/core/test/mock"
+
+	"berty.tech/core/crypto/keypair"
+
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -24,6 +28,8 @@ import (
 	"berty.tech/core/sql/sqlcipher"
 )
 
+type AppMockOption func(*AppMock) error
+
 type AppMock struct {
 	dbPath        string
 	listener      net.Listener
@@ -34,11 +40,35 @@ type AppMock struct {
 	ctx           context.Context
 	device        *entity.Device
 	networkDriver network.Driver
+	crypto        keypair.Interface
 	eventStream   chan *p2p.Event
 	cancel        func()
+	options       []AppMockOption
 }
 
-func NewAppMock(device *entity.Device, networkDriver network.Driver) (*AppMock, error) {
+func WithUnencryptedDb() AppMockOption {
+	return func(a *AppMock) error {
+		if err := a.db.Close(); err != nil {
+			return err
+		}
+
+		entities := entity.AllEntities()
+		entities = append(entities, &p2p.Event{})
+
+		path, db, err := mock.GetMockedDb(entities...)
+
+		if err != nil {
+			return err
+		}
+
+		a.dbPath = path
+		a.db = db
+
+		return nil
+	}
+}
+
+func NewAppMock(device *entity.Device, networkDriver network.Driver, options ...AppMockOption) (*AppMock, error) {
 	tmpFile, err := ioutil.TempFile("", "sqlite")
 	if err != nil {
 		return nil, err
@@ -48,6 +78,8 @@ func NewAppMock(device *entity.Device, networkDriver network.Driver) (*AppMock, 
 		dbPath:        tmpFile.Name(),
 		device:        device,
 		networkDriver: networkDriver,
+		crypto:        &keypair.InsecureCrypto{},
+		options:       options,
 	}
 
 	if err := a.Open(); err != nil {
@@ -80,12 +112,21 @@ func (a *AppMock) Open() error {
 		return err
 	}
 
+	for _, opt := range a.options {
+		if err := opt(a); err != nil {
+			return err
+		}
+	}
+
 	if a.node, err = node.New(
 		node.WithSQL(a.db),
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
 		node.WithDevice(a.device),
 		node.WithNetworkDriver(a.networkDriver),
+		node.WithInitConfig(),
+		node.WithSoftwareCrypto(),
+		node.WithConfig(),
 	); err != nil {
 		return err
 	}

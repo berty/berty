@@ -184,13 +184,13 @@ func TestCertificateCheckSignature(t *testing.T) {
 	c := &keypair.Certificate{}
 	c.Unmarshal(sc.Events[0].Payload)
 
-	if err := keypair.CheckSignature(c, c); err != nil {
+	if err := keypair.CheckSignatureUsingCert(c, c); err != nil {
 		t.Errorf("signature should be valid")
 	}
 
 	c.Signature.Signature = []byte("oops")
 
-	if err := keypair.CheckSignature(c, c); err == nil {
+	if err := keypair.CheckSignatureUsingCert(c, c); err == nil {
 		t.Errorf("signature should not be valid")
 	}
 }
@@ -214,13 +214,13 @@ func TestRevocationCheckSignature(t *testing.T) {
 	r := &keypair.Revocation{}
 	r.Unmarshal(sc.Events[1].Payload)
 
-	if err := keypair.CheckSignature(r, c); err != nil {
+	if err := keypair.CheckSignatureUsingCert(r, c); err != nil {
 		t.Errorf("signature should be valid")
 	}
 
 	r.Signature.Signature = []byte("oops")
 
-	if err := keypair.CheckSignature(r, c); err == nil {
+	if err := keypair.CheckSignatureUsingCert(r, c); err == nil {
 		t.Errorf("signature should not be valid")
 	}
 }

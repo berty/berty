@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/crypto/keypair"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 )
@@ -19,18 +20,29 @@ func (n *Node) Start() error {
 			if err != nil {
 				logger().Warn("failed to marshal outgoing event", zap.Error(err))
 			}
+
+			event.SenderID = n.b64pubkey
+
 			switch {
 			case event.ReceiverID != "": // ContactEvent
+				envelope.Source = n.aliasEnvelopeForContact(&envelope, event)
 				envelope.ChannelID = event.ReceiverID
 				envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
-				envelope.SignerPublicKey = n.pubkey
+
 			case event.ConversationID != "": //ConversationEvent
+				envelope.Source = n.aliasEnvelopeForConversation(&envelope, event)
 				envelope.ChannelID = event.ConversationID
 				envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
-				envelope.SignerPublicKey = n.pubkey  // FIXME: use a signature instead of exposing the pubkey
+
 			default:
 				logger().Error("unhandled event type")
 			}
+
+			if envelope.Signature, err = keypair.Sign(n.crypto, &envelope); err != nil {
+				logger().Error("failed to sign envelope", zap.Error(err))
+				continue
+			}
+
 			if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
 				logger().Error("failed to emit envelope on network", zap.Error(err))
 			}
