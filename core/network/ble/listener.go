@@ -1,3 +1,5 @@
+// +build darwin
+
 package ble
 
 import (
@@ -17,18 +19,6 @@ import (
 #import "ble.h"
 */
 import "C"
-
-// BLEListener implement ipfs Listener interface
-type BLEListener struct {
-	tpt.Listener
-	transport       *BLETransport
-	addr            string
-	network         string
-	incomingBLEUUID chan string
-	incomingPeerID  chan string
-	connected       map[string]*BLEConn
-	lAddr           ma.Multiaddr
-}
 
 var listeners map[string]*BLEListener = make(map[string]*BLEListener)
 
