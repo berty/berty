@@ -11,7 +11,6 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
-
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
 	syncdatastore "github.com/ipfs/go-datastore/sync"
@@ -24,6 +23,7 @@ import (
 	"github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
+
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/pkg/errors"
