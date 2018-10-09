@@ -2,47 +2,47 @@ import { graphql } from 'react-relay'
 import { commit } from '../../relay'
 
 const ConversationInviteMutation = graphql`
-  mutation ConversationInviteMutation($input: ConversationInviteInput!) {
-    ConversationInvite(input: $input) {
-      clientMutationId
-      bertyEntityConversation {
+  mutation ConversationInviteMutation(
+    $conversation: BertyEntityConversationInput
+    $members: [BertyEntityConversationMemberInput]
+  ) {
+    ConversationInvite(conversation: $conversation, members: $members) {
+      id
+      createdAt
+      updatedAt
+      deletedAt
+      title
+      topic
+      members {
         id
         createdAt
         updatedAt
         deletedAt
-        title
-        topic
-        members {
+        status
+        contact {
           id
           createdAt
           updatedAt
           deletedAt
+          sigchain
           status
-          contact {
+          devices {
             id
             createdAt
             updatedAt
             deletedAt
-            sigchain
+            name
             status
-            devices {
-              id
-              createdAt
-              updatedAt
-              deletedAt
-              name
-              status
-              apiVersion
-              contactId
-            }
-            displayName
-            displayStatus
-            overrideDisplayName
-            overrideDisplayStatus
+            apiVersion
+            contactId
           }
-          conversationId
-          contactId
+          displayName
+          displayStatus
+          overrideDisplayName
+          overrideDisplayStatus
         }
+        conversationId
+        contactId
       }
     }
   }

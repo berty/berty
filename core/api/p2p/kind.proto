@@ -58,14 +58,14 @@ enum Kind {
 
 message SentAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
 message AckAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; string ErrMsg = 2; }
-message PingAttrs {}
+message PingAttrs { bool T = 1; }
 
 //
 // Contact events
 //
 
 message ContactRequestAttrs { berty.entity.Contact me = 1; string intro_text = 2; }
-message ContactRequestAcceptedAttrs { }
+message ContactRequestAcceptedAttrs { bool T = 1; }
 message ContactShareMeAttrs { berty.entity.Contact me = 1; }
 message ContactShareAttrs { berty.entity.Contact contact = 1; }
 

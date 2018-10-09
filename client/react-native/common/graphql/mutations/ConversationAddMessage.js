@@ -3,27 +3,25 @@ import { commit } from '../../relay'
 
 const ConversationAddMessageMutation = graphql`
   mutation ConversationAddMessageMutation(
-    $input: ConversationAddMessageInput!
+    $conversation: BertyEntityConversationInput
+    $message: BertyEntityMessageInput
   ) {
-    ConversationAddMessage(input: $input) {
-      clientMutationId
-      bertyP2pEvent {
-        id
-        senderId
-        createdAt
-        updatedAt
-        deletedAt
-        sentAt
-        receivedAt
-        ackedAt
-        direction
-        senderApiVersion
-        receiverApiVersion
-        receiverId
-        kind
-        attributes
-        conversationId
-      }
+    ConversationAddMessage(conversation: $conversation, message: $message) {
+      id
+      senderId
+      createdAt
+      updatedAt
+      deletedAt
+      sentAt
+      receivedAt
+      ackedAt
+      direction
+      senderApiVersion
+      receiverApiVersion
+      receiverId
+      kind
+      attributes
+      conversationId
     }
   }
 `

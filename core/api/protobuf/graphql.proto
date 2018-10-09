@@ -14,4 +14,5 @@ extend google.protobuf.MethodOptions {
 
 extend google.protobuf.FieldOptions {
   bool graphql_id = 53004;
+  bool graphql_resolver = 53005;
 }

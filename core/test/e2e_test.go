@@ -661,11 +661,11 @@ func TestAliasesFlow(t *testing.T) {
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2)
 
-			_, err = bob.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+			_, err = bob.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
 				Title: "Alice & Bob",
 				Topic: "hey!",
-				Members: []*entity.ConversationMember{
-					{ContactID: alice.node.UserID()},
+				Contacts: []*entity.Contact{
+					{ID: alice.node.UserID()},
 				},
 			})
 
@@ -702,11 +702,11 @@ func TestAliasesFlow(t *testing.T) {
 
 			time.Sleep(timeBetweenSteps)
 
-			_, err = alice.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+			_, err = alice.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
 				Title: "Alice & Bob 2",
 				Topic: "hey! oh!",
-				Members: []*entity.ConversationMember{
-					{ContactID: bob.node.UserID()},
+				Contacts: []*entity.Contact{
+					{ID: bob.node.UserID()},
 				},
 			})
 
@@ -733,11 +733,11 @@ func TestAliasesFlow(t *testing.T) {
 
 			time.Sleep(timeBetweenSteps)
 
-			_, err = alice.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+			_, err = alice.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
 				Title: "Alice & Bob 3",
 				Topic: "hey! oh! let's go",
-				Members: []*entity.ConversationMember{
-					{ContactID: bob.node.UserID()},
+				Contacts: []*entity.Contact{
+					{ID: bob.node.UserID()},
 				},
 			})
 

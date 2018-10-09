@@ -54,11 +54,11 @@ message Event {
   // Kind is an enum defining the event type.
   Kind kind = 13;
 
-  // Attributes is a nested protobuf message containing per-event-type additional attributes.
-  bytes attributes = 14;
+  // Attributes is a nested protobuf message containing per-event-type additional attributes, stored in db.
+  bytes attributes = 14 [(berty.gql.graphql_resolver) = true];
 
   // ConversationID needs to be set if the event belongs to a conversation.
-  string conversation_id = 15 [(gogoproto.customname) = "ConversationID"];
+  string conversation_id = 15 [(berty.gql.graphql_id) = true, (gogoproto.customname) = "ConversationID"];
 
   //
   // enums

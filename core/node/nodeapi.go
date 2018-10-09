@@ -218,14 +218,9 @@ func (n *Node) GetContact(ctx context.Context, contact *entity.Contact) (*entity
 // Conversation
 //
 
-func (n *Node) ConversationCreate(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+func (n *Node) ConversationCreate(ctx context.Context, input *node.ConversationCreateInput) (*entity.Conversation, error) {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
-
-	input.ID = n.NewID()
-	if err := input.Validate(); err != nil {
-		return nil, err
-	}
 
 	members := []*entity.ConversationMember{
 		{
@@ -234,17 +229,17 @@ func (n *Node) ConversationCreate(ctx context.Context, input *entity.Conversatio
 			Status:    entity.ConversationMember_Owner,
 		},
 	}
-	for _, member := range input.Members {
+	for _, contact := range input.Contacts {
 		members = append(members, &entity.ConversationMember{
 			ID:        n.NewID(),
-			ContactID: member.ContactID,
+			ContactID: contact.ID,
 			Status:    entity.ConversationMember_Active,
 		})
 	}
 
 	// save new conversation
 	createConversation := &entity.Conversation{
-		ID:      input.ID,
+		ID:      n.NewID(),
 		Members: members,
 		Title:   input.Title,
 		Topic:   input.Topic,
@@ -263,7 +258,6 @@ func (n *Node) ConversationCreate(ctx context.Context, input *entity.Conversatio
 	if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
 		return nil, err
 	}
-
 	// send invite to peers
 	filtered := conversation.Filtered()
 	for _, member := range conversation.Members {

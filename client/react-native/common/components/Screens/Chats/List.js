@@ -140,7 +140,7 @@ export default class ListScreen extends PureComponent {
 const ItemContainer = createFragmentContainer(
   ListItemWrapper,
   graphql`
-    fragment ListItem on BertyEntityConversation {
+    fragment ListItem on BertyEntityConversationPayload {
       id
       createdAt
       updatedAt

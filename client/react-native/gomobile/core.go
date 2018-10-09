@@ -28,7 +28,7 @@ import (
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	gql "berty.tech/core/api/node/graphql"
-	graph "berty.tech/core/api/node/graphql/graph"
+	graph "berty.tech/core/api/node/graphql/graph/generated"
 	p2papi "berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
