@@ -6,6 +6,7 @@ github.com/99designs/gqlgen v0.4.4 h1:PizqWc/bsp/2msJOCsaxHaSLZj0y6HRnZ2RriKYxH8
 github.com/99designs/gqlgen v0.4.4/go.mod h1:KSQDfLlTTGmzlRgLGm6HeKKKo598l5E2svEM6Nz2Jnw=
 github.com/99designs/gqlgen v0.6.0 h1:gg+WRRW2A+XldwDRcwkgBh0wffvyZlcQX8WUu+4rKd0=
 github.com/99designs/gqlgen v0.6.0/go.mod h1:KSQDfLlTTGmzlRgLGm6HeKKKo598l5E2svEM6Nz2Jnw=
+github.com/99designs/gqlgen v0.6.0/go.mod h1:p6RS1iWLR+HVU1U2lU6vWgLjXSBtD0hRubzDWKhXFhY=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 h1:w1UutsfOrms1J05zt7ISrnJIXKzwaspym5BTKGx93EI=
 github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412/go.mod h1:WPjqKcmVOxf0XSf3YxCJs6N6AOSrOx3obionmG7T0y0=
@@ -290,7 +291,6 @@ github.com/uber/jaeger-client-go v2.15.0+incompatible h1:NP3qsSqNxh8VYr956ur1N/1
 github.com/uber/jaeger-client-go v2.15.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMWRy2pZqQJSXxYSwNYOkTr/Z6d3Kk=
 github.com/uber/jaeger-lib v1.5.0 h1:OHbgr8l656Ub3Fw5k9SWnBfIEwvoHQ+W2y+Aa9D1Uyo=
 github.com/uber/jaeger-lib v1.5.0/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
-github.com/vektah/gqlgen v0.6.0/go.mod h1:p6RS1iWLR+HVU1U2lU6vWgLjXSBtD0hRubzDWKhXFhY=
 github.com/vektah/gqlparser v0.0.0-20181002002754-f119686bf1d4 h1:HOJJtIE3gsOqjNxZF8LZ0pVMC7VGJgZlTSUbMCoQvTA=
 github.com/vektah/gqlparser v0.0.0-20181002002754-f119686bf1d4/go.mod h1:K4QdSSpS2XiHHwzb18kWh3iBljB8rLC8okGXsnQy3Nc=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc h1:BCPnHtcboadS0DvysUuJXZ4lWVv5Bh5i7+tbIyi+ck4=

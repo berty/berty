@@ -37,6 +37,5 @@ func Open(source interface{}, key []byte) (*gorm.DB, error) {
 	if err := db.Exec("SELECT 1 FROM sqlite_master").Error; err != nil {
 		return nil, errors.Wrap(err, "invalid sqlcipher encryption key")
 	}
-
 	return db, nil
 }
