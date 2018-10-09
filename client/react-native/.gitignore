@@ -1,5 +1,8 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
+# Fastlane
+.build
+
 # junk files
 #
 *~
@@ -14,8 +17,8 @@ gin-bin
 
 ## Gomobile
 #
-mobile/ios/core.framework
-mobile/android/app/libs/core.aar
+ios/core.framework
+android/app/libs/core.aar
 
 # Xcode
 #
@@ -84,14 +87,14 @@ fastlane/Appfile
 fastlane/Matchfile
 
 # Gomobile
-mobile/android/app/libs/*.aar
-mobile/android/app/libs/*-sources.jar
+android/app/libs/*.aar
+android/app/libs/*-sources.jar
 gomobile/vendor
 gomobile/bin
 gomobile/_vendor-*
 gomobile/tags
-mobile/android/libs/
-mobile/ios/libs/
+android/libs/
+ios/libs/
 
 # mobile
 shim.js
