@@ -76,7 +76,6 @@ var (
 )
 
 func Start(datastorePath string) error {
-
 	// check if daemon already init
 	if alreadyStarted {
 		return nil
