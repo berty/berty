@@ -1,6 +1,7 @@
 package ble
 
 import (
+	"fmt"
 	"net"
 	"time"
 
@@ -8,24 +9,25 @@ import (
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	rtpt "github.com/libp2p/go-reuseport-transport"
+	smu "github.com/libp2p/go-stream-muxer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/satori/go.uuid"
 	mafmt "github.com/whyrusleeping/mafmt"
-	yamux "github.com/whyrusleeping/yamux"
 )
 
 type BLEConn struct {
 	tpt.Conn
-	opened            bool
-	transport         *BLETransport
-	lID               peer.ID
-	rID               peer.ID
-	lAddr             ma.Multiaddr
-	rAddr             ma.Multiaddr
-	notFinishedToRead []byte
-	incoming          chan []byte
-	sess              *yamux.Session
-	accept            chan string
+	opened         bool
+	transport      *BLETransport
+	lid            peer.ID
+	rid            peer.ID
+	lAddr          ma.Multiaddr
+	rAddr          ma.Multiaddr
+	incomingStream BLEStream
+	outgoingStream BLEStream
+	incomingOpen   chan struct{}
+	outgoingOpen   chan struct{}
+	accept         chan string
 }
 
 // BLETransport is the TCP transport.
@@ -48,7 +50,17 @@ type BLETransport struct {
 
 type BLEAddr struct {
 	net.Addr
-	Address string
+	addr string
+}
+
+type BLEStream struct {
+	smu.Stream
+	rAddr             ma.Multiaddr
+	deadline          time.Time
+	rdeadline         time.Time
+	wdeadline         time.Time
+	notFinishedToRead []byte
+	incoming          chan []byte
 }
 
 // BLEListener implement ipfs Listener interface
@@ -95,5 +107,6 @@ func bleBtS(b []byte) (string, error) {
 }
 
 func init() {
+	fmt.Println("PROTOCOL BLE DEFINED")
 	ma.AddProtocol(protoBLE)
 }

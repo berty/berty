@@ -4,13 +4,16 @@ package ble
 
 import (
 	"C"
-	"context"
 
 	host "github.com/libp2p/go-libp2p-host"
+	"github.com/pkg/errors"
+)
+import (
+	"context"
+
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/pkg/errors"
 )
 
 var ErrNotImplemented = errors.New("not implemented yet")
@@ -49,9 +52,11 @@ func (t *BLETransport) Protocols() []int {
 
 // Proxy always returns false for the TCP transport.
 func (t *BLETransport) Proxy() bool {
+
 	return false
 }
 
 func (t *BLETransport) String() string {
-	return "ble"
+
+	return "BLE"
 }

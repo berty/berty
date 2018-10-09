@@ -1,3 +1,4 @@
+// +build darwin
 //
 //  BertyDevice.m
 //  bluetooth
@@ -7,6 +8,7 @@
 //
 
 #import "BertyDevice.h"
+#include "_cgo_export.h"
 
 @implementation BertyDevice
 
@@ -131,6 +133,8 @@
   }
 	if (self.ma != nil && self.peerID != nil) {
         self.isReady = YES;
+        NSLog(@"ADD TO PEER STORE");
+        AddToPeerStore([self.peerID UTF8String], [self.ma UTF8String]);
         NSLog(@"RDY");
     }
 }
@@ -158,7 +162,6 @@
       dispatch_semaphore_signal(self.maSema);
     });
     if (self.peerID != nil && self.isSubscribe == YES) {
-		NSLog(@"RDY");
         self.isReady = YES;
         NSLog(@"ADD TO PEER STORE");
         NSLog(@"RDY");

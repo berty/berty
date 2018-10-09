@@ -1,3 +1,4 @@
+// +build darwin
 //
 //  main.m
 //  kjh
@@ -16,7 +17,9 @@ static BertyCentralManager *bcm;
 void init(char *ma, char *peerID) {
 	NSLog(@"peeeeeeeeeerrrrrrrrrrrrr ID asdkljsadl %s", peerID);
 	NSLog(@"peeeeeeeeeerrrrrrrrrrrrr ID %@", [NSString stringWithUTF8String:peerID]);
-	bcm = [[BertyCentralManager alloc] initWithMa:[NSString stringWithUTF8String:ma] AndPeerID:[NSString stringWithUTF8String:peerID]];
+  if (bcm == nil) {
+    bcm = [[BertyCentralManager alloc] initWithMa:[NSString stringWithUTF8String:ma] AndPeerID:[NSString stringWithUTF8String:peerID]];
+  }
 }
 
 int startDiscover() {
@@ -146,12 +149,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
             dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
             [self.acceptSemaphore setObject:semaphore forKey:device.peripheral.identifier];
             NSLog(@"device123Found %@", device);
-            CBCharacteristic *charact = nil;
-            while (charact == nil) {
-              NSLog(@"device123Found");
-              charact = [self getAcceptForPeripheral:device.peripheral];
-            }
-            [device.peripheral writeValue:[[NSData alloc] init] forCharacteristic:charact type:CBCharacteristicWriteWithResponse];
+            [device.peripheral writeValue:[[NSData alloc] init] forCharacteristic:[self characteristicWithUUID:self.acceptUUID forServiceUUID:self.serviceUUID inPeripheral:device.peripheral] type:CBCharacteristicWriteWithResponse];
             dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
             dispatch_release(semaphore);
             return 1;
@@ -198,6 +196,22 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
 - (void)startDiscover {
     NSLog(@"Start dicovering");
     [self.centralManager scanForPeripheralsWithServices: @[self.serviceUUID] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@NO}];
+}
+
+-(void)sendWhatsLeft {
+    NSMutableArray *toRemove = [[NSMutableArray alloc] initWithCapacity:[self.toSend count]];
+
+    for (NSData *str in self.toSend) {
+        if ([self.peripheralManager updateValue:str forCharacteristic:self.bertyReaderCharacteristic onSubscribedCentrals:nil] == YES) {
+            [toRemove addObject:str];
+        } else {
+            break;
+        }
+    }
+
+    for (NSData *str in toRemove) {
+        [self.toSend removeObject:str];
+    }
 }
 
 - (CBCharacteristic *)characteristicWithUUID:(CBUUID *)characteristicUUID forServiceUUID:(CBUUID *)serviceUUID inPeripheral:(CBPeripheral *)peripheral {
@@ -302,29 +316,26 @@ didDiscoverIncludedServicesForService:(CBService *)service
 - (void)peripheral:(CBPeripheral *)peripheral
 didDiscoverCharacteristicsForService:(CBService *)service
              error:(NSError *)error {
-  if (error != nil) {
-    NSLog(@"error discovering characteristic %@ %@", [error localizedFailureReason], [error localizedDescription]);
-    return ;
-  }
-  for (CBCharacteristic *characteristic in service.characteristics) {
-      if ([characteristic.UUID isEqual:self.maUUID]) {
-        NSLog(@"Try reading ma");
-        [peripheral readValueForCharacteristic:characteristic];
-        NSLog(@"readed ma");
-      } else if ([characteristic.UUID isEqual:self.writerUUID]) {
-        BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-        NSLog(@"release writer sema");
-        [device releaseWriterSema];
-      } else if ([characteristic.UUID isEqual:self.peerUUID]) {
-        NSLog(@"Try reading peer");
-        [peripheral readValueForCharacteristic:characteristic];
-        NSLog(@"readed peer");
-      } else if ([characteristic.UUID isEqual:self.acceptUUID]) {
-        BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-        NSLog(@"release sema");
-        [device releaseAcceptSema];
-      }
-  }
+    NSLog(@"didDiscoverCharacteristicsForService %@ %@", [peripheral.identifier UUIDString], [service.UUID UUIDString]);
+    if (error == nil) {
+        for (CBCharacteristic *characteristic in service.characteristics) {
+                NSLog(@"didDiscoverCharacteristicsForService %@ %@ %@", [peripheral.identifier UUIDString], [service.UUID UUIDString], [characteristic.UUID UUIDString]);
+            if ([characteristic.UUID isEqual:self.maUUID]) {
+                // [self.peripheralToPeerID setObject:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding] forKey:peripheral.identifier];
+                NSLog(@"Try reading ma");
+                [peripheral readValueForCharacteristic:characteristic];
+            } else if ([characteristic.UUID isEqual:self.readerUUID]) {
+                NSLog(@"Try subscribe to reader %d", [characteristic isNotifying]);
+                [peripheral setNotifyValue:YES forCharacteristic:characteristic];
+            } else if ([characteristic.UUID isEqual:self.peerUUID]) {
+                NSLog(@"Try reading peer");
+                [peripheral readValueForCharacteristic:characteristic];
+            }
+        }
+    } else {
+        NSLog(@"error discovering %@ %@", [error localizedFailureReason], [error localizedDescription]);
+    }
+
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
@@ -413,7 +424,12 @@ didUpdateNotificationStateForCharacteristic:(CBCharacteristic *)characteristic
 
 - (void)peripheral:(CBPeripheral *)peripheral
  didModifyServices:(NSArray<CBService *> *)invalidatedServices {
-    NSLog(@"didModifyServices");
+    NSLog(@"didModifyServices %@", invalidatedServices);
+    for (CBService* svc in invalidatedServices) {
+        if ([svc.UUID isEqual:self.serviceUUID]) {
+          [self.centralManager cancelPeripheralConnection:peripheral];
+        }
+    }
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral

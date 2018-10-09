@@ -1,6 +1,7 @@
 package netutil
 
 import (
+	"fmt"
 	"io"
 	"net"
 	"time"
@@ -120,6 +121,7 @@ func (ic *ioConn) LocalAddr() net.Addr {
 
 // RemoteAddr returns the remote network address.
 func (ic *ioConn) RemoteAddr() net.Addr {
+	fmt.Printf("IOADDR %+v\n", ioaddr)
 	return ioaddr
 }
 
