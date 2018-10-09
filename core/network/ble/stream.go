@@ -45,7 +45,7 @@ func NewStream(rAddr ma.Multiaddr) *BLEStream {
 		notFinishedToRead: make([]byte, 0),
 		rAddr:             rAddr,
 	}
-	st, _ := rAddr.ValueForProtocol(ma.P_RAW)
+	st, _ := rAddr.ValueForProtocol(P_BLE)
 	streams[st] = s
 	return s
 }
@@ -115,7 +115,7 @@ func (b *BLEStream) Close() error {
 }
 
 func (b *BLEStream) Reset() error {
-	st, _ := b.rAddr.ValueForProtocol(ma.P_RAW)
+	st, _ := b.rAddr.ValueForProtocol(P_BLE)
 	delete(streams, st)
 	fmt.Println("BLEStream Reset")
 	return nil

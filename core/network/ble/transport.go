@@ -13,7 +13,6 @@ import (
 	tpt "github.com/libp2p/go-libp2p-transport"
 	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	mafmt "github.com/whyrusleeping/mafmt"
 )
 
 /*
@@ -121,7 +120,7 @@ func NewBLETransport(ID string, lAddr ma.Multiaddr) func(me host.Host) *BLETrans
 // multiaddr.
 func (t *BLETransport) CanDial(addr ma.Multiaddr) bool {
 	fmt.Printf("BLETransport CanDial %s\n", addr.String())
-	return mafmt.BLE.Matches(addr)
+	return BLE.Matches(addr)
 }
 
 // Dial dials the   peer at the remote address.
@@ -129,7 +128,7 @@ func (t *BLETransport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) 
 	if int(C.isDiscovering()) != 1 {
 		C.startDiscover()
 	}
-	s, err := rAddr.ValueForProtocol(ma.P_RAW)
+	s, err := rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +166,7 @@ func (t *BLETransport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 // Protocols returns the list of terminal protocols this transport can dial.
 func (t *BLETransport) Protocols() []int {
 	fmt.Println("7")
-	return []int{ma.P_RAW}
+	return []int{P_BLE}
 }
 
 // Proxy always returns false for the TCP transport.

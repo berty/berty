@@ -20,17 +20,6 @@ import (
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 
-	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
-	reuse "github.com/libp2p/go-reuseport"
-	"github.com/pkg/errors"
-	"github.com/rs/cors"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
-
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	gql "berty.tech/core/api/node/graphql"
@@ -38,6 +27,7 @@ import (
 	p2papi "berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	"berty.tech/core/network/ble"
 	"berty.tech/core/network/mock"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/network/p2p"
@@ -45,6 +35,18 @@ import (
 	"berty.tech/core/pkg/jaeger"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
+	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
+	reuse "github.com/libp2p/go-reuseport"
+	ma "github.com/multiformats/go-multiaddr"
+	"github.com/pkg/errors"
+	"github.com/rs/cors"
+	"github.com/satori/go.uuid"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 var defaultBootstrap = []string{
@@ -69,7 +71,15 @@ type daemonOptions struct {
 	mdns      bool     `mapstructure:"mdns"`
 }
 
+var id uuid.UUID
+
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
+	var err error
+	id, err = uuid.NewV4()
+	if err != nil {
+		panic(err)
+	}
+
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
@@ -80,7 +90,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", fmt.Sprintf("/ble/%s", id.String())}, "p2p listening address")
 	_ = viper.BindPFlags(flags)
 }
 
@@ -207,7 +217,7 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithDefaultMuxers(),
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
-			p2p.WithDefaultTransports(),
+			// p2p.WithDefaultTransports(),
 			// @TODO: Allow static identity loaded from a file (useful for relay
 			// server for creating static endpoint for bootstrap)
 			// p2p.WithIdentity(<key>),
@@ -227,6 +237,14 @@ func daemon(opts *daemonOptions) error {
 			p2pOpts = append(p2pOpts, p2p.WithRelayClient())
 		}
 
+		id, err := uuid.NewV4()
+		if err != nil {
+			panic(err)
+		}
+		sourceMultiAddr, err := ma.NewMultiaddr(opts.bindP2P[1])
+		fun := ble.NewBLETransport(id.String(), sourceMultiAddr)
+
+		p2pOpts = append(p2pOpts, p2p.WithTransport(fun))
 		p2pDriver, err := p2p.NewDriver(context.Background(), p2pOpts...)
 
 		if err != nil {

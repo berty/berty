@@ -47,7 +47,7 @@ func NewConn(transport *BLETransport, lid, rid peer.ID, lAddr, rAddr ma.Multiadd
 	} else {
 		conn.outgoingOpen <- struct{}{}
 	}
-	st, _ := rAddr.ValueForProtocol(ma.P_RAW)
+	st, _ := rAddr.ValueForProtocol(P_BLE)
 	conns[st] = &conn
 	fmt.Println("BLEConn new fishish")
 	return conn
