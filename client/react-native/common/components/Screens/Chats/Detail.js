@@ -12,7 +12,7 @@ const Message = props => {
   const contactId = props.data.senderId
   const isMyself =
     conversation.members.find(m => m.contactId === contactId).contact.status ===
-    'Myself'
+    42
   return (
     <Text
       padding={{
@@ -30,7 +30,10 @@ const Message = props => {
         [isMyself ? 'left' : 'right']: 42,
       }}
     >
-      {JSON.parse(props.data.attributes).message.text}
+      {
+        JSON.parse(String.fromCharCode.apply(null, props.data.attributes))
+          .message.text
+      }
     </Text>
   )
 }
@@ -60,7 +63,7 @@ class List extends PureComponent {
         ref={ref => (this.ref = ref)}
         style={[{ paddingTop: 54 }, paddingHorizontal]}
         data={(data.EventList || [])
-          .filter(event => event.kind === 'ConversationNewMessage')
+          .filter(event => event.kind === 302) // CONVERSATION_NEW_MESSAGE
           .reverse()}
         inverted
         refreshing={loading}
@@ -89,8 +92,14 @@ class Input extends PureComponent {
       try {
         const conversation = this.props.navigation.getParam('conversation')
         await mutations.conversationAddMessage.commit({
-          conversationID: conversation.id,
-          message: input,
+          conversation: {
+            id: conversation.id,
+            title: '',
+            topic: '',
+          },
+          message: {
+            text: input,
+          },
         })
         this.props.retry && this.props.retry()
       } catch (err) {
@@ -147,7 +156,19 @@ export default class Detail extends PureComponent {
       <Screen style={{ backgroundColor: colors.white }}>
         <QueryReducer
           query={queries.EventList}
-          variables={{ conversationID: conversation.id }}
+          variables={{
+            limit: 0,
+            filter: {
+              id: '',
+              conversationId: conversation.id,
+              senderId: '',
+              receiverId: '',
+              ackedAt: '',
+              sentAt: '',
+              senderApiVersion: '',
+              receiverApiVersion: '',
+            },
+          }}
         >
           {(state, retry) => (
             <Flex.Rows style={{ backgroundColor: colors.white }}>

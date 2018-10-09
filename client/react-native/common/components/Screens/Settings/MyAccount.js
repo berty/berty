@@ -103,7 +103,16 @@ export default class MyAccount extends PureComponent {
       <Screen>
         <QueryReducer
           query={queries.ContactList}
-          variables={{ status: 'Myself' }}
+          variables={{
+            filter: {
+              id: '',
+              status: 42,
+              displayName: '',
+              displayStatus: '',
+              overrideDisplayName: '',
+              overrideDisplayStatus: '',
+            },
+          }}
         >
           {(state, retry) => {
             switch (state.type) {
@@ -118,9 +127,7 @@ export default class MyAccount extends PureComponent {
                 return (
                   <MyAccount.Menu
                     navigation={this.props.navigation}
-                    data={state.data.ContactList.find(
-                      _ => _.status === 'Myself'
-                    )}
+                    data={state.data.ContactList.find(_ => _.status === 42)}
                     state={this.state}
                     onChoosePicture={this.onChoosePicture}
                   />

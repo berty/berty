@@ -1,12 +1,28 @@
 import { graphql } from 'react-relay'
 
 export default graphql`
-  query ContactListQuery($status: BertyEntityContactStatus) {
-    ContactList(status: $status) {
+  query ContactListQuery($filter: BertyEntityContactInput) {
+    ContactList(filter: $filter) {
       id
-      displayName
-      overrideDisplayName
+      createdAt
+      updatedAt
+      deletedAt
+      sigchain
       status
+      devices {
+        id
+        createdAt
+        updatedAt
+        deletedAt
+        name
+        status
+        apiVersion
+        contactId
+      }
+      displayName
+      displayStatus
+      overrideDisplayName
+      overrideDisplayStatus
     }
   }
 `

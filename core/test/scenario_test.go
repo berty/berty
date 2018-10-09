@@ -153,11 +153,11 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Bob creates a conversation with Alice", FailureHalts, func() {
 			shouldIContinue(t)
 
-			res, err := bob.client.Node().ConversationCreate(internalCtx, &entity.Conversation{
+			res, err := bob.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
 				Title: "Alice & Bob",
 				Topic: "hey!",
-				Members: []*entity.ConversationMember{
-					{ContactID: alice.node.UserID()},
+				Contacts: []*entity.Contact{
+					{ID: alice.node.UserID()},
 				},
 			})
 			So(err, ShouldBeNil)

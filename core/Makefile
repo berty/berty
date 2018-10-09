@@ -141,9 +141,11 @@ api/p2p/kind.gen.go: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
 	goimports -w ./api/p2p
 
-api/node/graphql/service.gen.graphql: $(PROTOS)
+
+generate.graphql api/node/graphql/service.gen.graphql: $(PROTOS)
+	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
-	cd ./api/node/graphql && $(GQLGEN) -v gen
+	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
 
 ../client/react-native/common/schema.graphql: api/node/graphql/service.gen.graphql
 	cp api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql

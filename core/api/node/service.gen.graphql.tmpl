@@ -1,255 +1,331 @@
-{{if not (getStore "headerSet")}}
+{{- if not (getStore "service.gen.graphql.header") -}}
 # GENERATED CODE -- DO NOT EDIT!
 
-scalar DateTime
+scalar Enum
+scalar Double
+scalar Int64
+scalar Uint64
+scalar Int32
+scalar Byte
+scalar Fixed64
+scalar Fixed32
+scalar Bool
+scalar Uint32
+scalar SFixed64
+scalar SFixed32
+scalar SInt32
+scalar SInt64
+scalar GoogleProtobufTimestamp
+scalar GoogleProtobufTimestampInput
+scalar GoogleProtobufTimestampPayload
 
 interface Node {
   id: ID!
 }
-
-{{setStore "headerSet" true}}
-{{end}}
-
-{{- $Package := .File.Package}}
-{{- $PackageName := .File.Package | replace "." "_" | camelCase}}
-
-{{- setStore "fileName" (trimstr ".proto" (splitArray "/" .File.Name | last)) }}
-{{- setStore "namespace" ""}}
-{{- setStore "packageName" $PackageName}}
-
-
-{{/* BLOCK TYPE */}}
-
-{{- define "type"}}
-{{- setStore "type" "" -}}
-{{- $isID := boolFieldExtension 53004 . -}}
-{{- if $isID }} {{ setStore "type" "ID!"}}
-{{- else if (eq (.Type | string)	"TYPE_DOUBLE")   }} {{ setStore "type" "Float" }}
-{{- else if (eq (.Type | string)	"TYPE_FLOAT")    }} {{ setStore "type" "Float" }}
-{{- else if (eq (.Type | string)	"TYPE_INT64")    }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_UINT64")   }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_INT32")    }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_FIXED64")  }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_FIXED32")  }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_BOOL")     }} {{ setStore "type" "Boolean" }}
-{{- else if (eq (.Type | string)	"TYPE_STRING")   }} {{ setStore "type" "String" }}
-{{- else if (eq (.Type | string)	"TYPE_GROUP")    }} {{ setStore "type" "INVALID" }}
-{{- else if (eq (.Type | string)	"TYPE_MESSAGE")  }} {{ setStore "type" "INVALID" }}
-{{- else if (eq (.Type | string)	"TYPE_BYTES")    }} {{ setStore "type" "String" }}
-{{- else if (eq (.Type | string)	"TYPE_UINT32")   }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_ENUM")     }} {{ setStore "type" "INVALID" }}
-{{- else if (eq (.Type | string)	"TYPE_SFIXED32") }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_SFIXED64") }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_SINT32")   }} {{ setStore "type" "Int" }}
-{{- else if (eq (.Type | string)	"TYPE_SINT64")   }} {{ setStore "type" "Int" }}
-{{- end -}}
-{{- if (and (isFieldRepeated .) (not $isID)) -}} {{- printf "[%s]" (getStore "type") -}}
-{{- else -}} {{- getStore "type" -}}
-{{- end -}} {{- end -}}
-
-
-{{/* BLOCK NESTED MESSAGE */}}
-
-{{- define "nestedType"}} {{/* @args: NestedType */}}
-{{- $PackageName := getStore "packageName"}}
-{{- range .}}
-
-{{- $backupName := getStore "namespace"}}
-{{- $name := concat $backupName .Name -}}
-{{- setStore "namespace" $name -}}
-
-{{- if .NestedType}}
-{{- template "nestedType" .NestedType}}
+{{setStore "service.gen.graphql.header" true}}
 {{- end}}
 
-{{- if .Field}}
+{{- setStore "file" .File}}
+{{- $file := getStore "file"}}
 
-type {{concat $PackageName $backupName .Name}} {
+{{- range .File.MessageType }}
+  {{- setStore (concat "." $file.Package "." .Name) .}}
+{{- end}}
+
+{{- range .File.EnumType}}
+  {{/* - template "Enum" . */}}
+{{- end}}
+
+{{- range .File.MessageType}}
+  {{- if .EnumType}}
+    {{- setStore "message_name" .Name}}
+    {{- range .EnumType}}
+      {{/* - template "Enum" . */}}
+    {{- end}}
+  {{- end}}
+  {{- if .NestedType}}
+    {{ setStore "message_name" .Name}}
+    {{- range .NestedType}}
+      {{- template "Type" .}}
+    {{- end}}
+  {{- end}}
+  {{- setStore "message_name" ""}}
+  {{- template "Type" .}}
+{{- end}}
+
+{{- define "ImplementNode"}}
+  {{- setStore "implement_node" false}}
   {{- range .Field}}
-  {{- if (or (eq (.Type | string) "TYPE_MESSAGE") (eq (.Type | string) "TYPE_ENUM"))}}
-  {{.JsonName}}: {{ .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+    {{- if (boolFieldExtension 53004 .)}}
+      {{- setStore "implement_node" true}}
+    {{- end}}
+  {{- end}}
+  {{- if (getStore "implement_node") -}}
+    implements Node
+  {{- end}}
+{{- end}}
+
+{{- define "ScalarField"}}
+  {{- if (boolFieldExtension 53004 .)}}
+    {{.JsonName}}: ID!
   {{- else}}
-  {{.JsonName}}: {{- template "type" .}}
-  {{- end}}{{end}}
-}
-{{- else}}
-
-type {{$PackageName}}{{$backupName}}{{.Name}} = {  # Can't make empty type
-  T: Boolean
-}
-{{- end}}
-
-{{- if .EnumType}}
-{{- range .EnumType}}
-enum {{concat $PackageName $backupName .Name}} = {
-  {{- range .Value}}
-  {{.Name}}
+    {{- if eq (.Type | string) "TYPE_BYTES"}}
+      {{.JsonName}}: [Byte!],
+    {{- else}}
+      {{- $typeName := .Type | string | replace "TYPE_" "" | lower | camelCase}}
+      {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
+    {{- end}}
   {{- end}}
-}
 {{- end}}
 
+{{- define "EnumField"}}
+  {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[Enum]{{else}}Enum{{end}}
 {{- end}}
-{{- setStore "namespace" $backupName -}}
-{{- end}}{{end -}}
 
+{{- define "Field"}}
+  {{- $messageName := getStore "message_name"}}
 
-{{/* BLOCK MESSAGE */}}
-
-{{- block "messageType" .File.MessageType}} {{/* @args: messageType */}}
-{{- $PackageName := getStore "packageName"}}
-{{- $FileName := getStore "fileName" | camelCase}}
-
-{{- range .}} {{setStore "namespace" .Name}}
-{{- with .NestedType}}{{template "nestedType" .}}{{end}}
-{{- $MessageName := .Name}}
-
-{{- setStore "isNode" false -}}
-{{range .Field}}
-{{- $isID := boolFieldExtension 53004 . -}}
-{{- if $isID }} {{ setStore "isNode" true}} {{end -}}
-{{- end -}}
-
-{{- $isNode := getStore "isNode" -}}
-{{- if .Field}}
-
-{{- if $isNode }}
-
-type {{concat $PackageName .Name}} implements Node {
-{{- else}}
-
-type {{concat $PackageName .Name}} {
-{{- end -}}
-  {{- range .Field}}
-  {{- if (or (eq (.Type | string) "TYPE_MESSAGE") (eq (.Type | string) "TYPE_ENUM"))}}
-  {{$type := .TypeName | replace "." "_" | camelCase | replace "_" "" -}}
-  {{- setStore "attrType" $type}}
-  {{- if (eq $type "GoogleProtobufTimestamp") -}}
-  {{- setStore "attrType" "DateTime" -}}
-  {{- end }}
-  {{- $type := getStore "attrType" -}}
-  {{.JsonName}}:
-  {{- if (isFieldRepeated .)}} {{printf "[%s]" $type}}
-  {{- else}} {{$type}}{{- end}}
+  {{- if .}}
+    {{- range .}}
+      {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+        {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}]{{else}}{{$typeName}}{{end}}
+      {{- else if (eq (.Type | string) "TYPE_ENUM")}}
+        {{- template "EnumField" .}}
+      {{- else }}
+        {{- template "ScalarField" .}}
+      {{- end}}
+    {{- end}}
   {{- else}}
-  {{.JsonName}}: {{- template "type" .}}
-  {{- end}}{{- end}}
-}
-{{- else}}
+    T: Boolean
+  {{- end}}
+{{- end}}
 
-type {{concat $PackageName .Name}} { # Can't make empty type
-  T: Boolean
-}
-{{- end -}}
+{{- define "ArgumentScalarField"}}
+  {{- if (boolFieldExtension 53004 .)}}
+    {{.JsonName}}: ID!
+  {{- else}}
+    {{- if eq (.Type | string) "TYPE_BYTES"}}
+      {{.JsonName}}: [Byte!],
+    {{- else}}
+      {{- $typeName := .Type | string | replace "TYPE_" "" | lower | camelCase}}
+      {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}{{end}}
+    {{- end}}
+  {{- end}}
+{{- end}}
 
-{{- if .EnumType}}
-{{- range .EnumType}}
+{{- define "InputField"}}
+  {{- $messageName := getStore "message_name"}}
 
-enum {{concat $PackageName $MessageName .Name}} {
+  {{- if .}}
+    {{- range .}}
+      {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+        {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
+      {{- else if (eq (.Type | string) "TYPE_ENUM")}}
+        {{- template "EnumField" .}}
+      {{- else }}
+        {{- template "ScalarField" .}}
+      {{- end}}
+    {{- end}}
+  {{- else}}
+    T: Boolean
+  {{- end}}
+{{- end}}
+
+{{- define "Enum"}}
+  {{- $file := getStore "file"}}
+  {{- $messageName := getStore "message_name"}}
+
+enum {{$file.Package | replace "." "_" | camelCase}}{{$messageName}}{{.Name}} {
   {{- range .Value}}
   {{.Name}}
   {{- end}}
 }
-{{- end -}}{{- end -}}
-{{- end -}}{{- end -}}
+{{- end}}
 
-{{- block "enum" .File.EnumType}} {{/* @args: enum */}}
-{{- $PackageName := getStore "packageName"}}
-{{- range .}}
+{{- define "Type"}}
+  {{- $file := getStore "file"}}
+  {{- $messageName := getStore "message_name"}}
+  {{- if eq (concat .Name "") "Timestamp"}}
+  {{- else if (and (eq (.Name | regexMatch ".*Input") false) (eq (.Name | regexMatch ".*Output") false)) }}
+type {{$file.Package | replace "." "_" | camelCase}}{{$messageName}}{{.Name}} {{template "ImplementNode" .}} {
+  {{- template "Field" .Field}}
+}
+  {{- end}}
+{{- end}}
 
-enum {{$PackageName}}{{.Name}} {
-  {{- range .Value}}
+{{- define "Input"}}
+  {{- $type := getStore .}}
+  {{- if $type}}
+    {{- if eq (concat $type.Name "") "Timestamp"}}
+    {{- else}}
+input {{template "InputName" .}} {
+    {{- template "InputField" $type.Field}}
+}
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "Payload"}}
+  {{- $type := getStore .}}
+  {{- if $type}}
+    {{- if eq (concat $type.Name "") "Timestamp"}}
+    {{- else }}
+      {{- template "ImplementNode"}}
+type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
+    {{- template "Field" $type.Field}}
+}
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "InputName" }}
+  {{- $type := getStore .}}
+  {{- if $type}}
+    {{- $typeName := . | replace "." "_" | camelCase | replace "_" ""}}
+    {{- if $typeName | regexMatch ".*Input"}}
+      {{- $typeName}}
+    {{- else}}
+      {{- $typeName}}Input
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "PayloadName" }}
+  {{- $type := getStore .}}
+  {{- if $type}}
+    {{- $typeName := . | replace "." "_" | camelCase | replace "_" ""}}
+    {{- if $typeName | regexMatch ".*Ouput"}}
+      {{- $typeName | replace "Output" "Payload"}}
+    {{- else}}
+      {{- $typeName}}Payload
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "RecursiveInput"}}
+  {{- $type := getStore .}}
+  {{- if $type}}
+    {{- range $type.Field}}
+      {{- $typeName := .TypeName}}
+      {{- if $typeName}}
+        {{- $type := getStore $typeName}}
+        {{- $alreadyDefinedKey := concat $typeName ".InputAlreadyDefined"}}
+        {{- $alreadyDefined := getStore $alreadyDefinedKey}}
+        {{- if $alreadyDefined}}
+        {{- else}}
+          {{- template "RecursiveInput" $typeName}}
+          {{- template "Input" $typeName}}
+        {{- end}}
+        {{- setStore $alreadyDefinedKey true}}
+      {{- end}}
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- block "InputPayload" .File.Service}}
+  {{- $file := getStore "file"}}
+  {{- range .}}
+    {{- range .Method}}
+      {{- $methodName := .Name}}
+      {{- if .InputType}}
+        {{- template "RecursiveInput" .InputType}}
+      {{- end}}
+      {{- if .OutputType}}
+        {{- $type := getStore .OutputType}}
+        {{- $alreadyDefinedKey := concat .OutputType ".PayloadAlreadyDefined"}}
+        {{- $alreadyDefined := getStore $alreadyDefinedKey}}
+        {{- if $alreadyDefined}}
+        {{- else}}
+          {{- template "Payload" .OutputType}}
+        {{- end}}
+        {{- setStore $alreadyDefinedKey true}}
+      {{- end}}
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "Method"}}
   {{.Name}}
+  {{- if .InputType -}}
+  (
+    {{- template "Arguments" (getStore .InputType).Field}}
+  )
   {{- end}}
-}
-{{- end -}}
-{{- end -}}
-
-
-{{/* SERVICE BLOCK */}}
-
-{{- block "service" .File.Service}} {{/* @args: service */}}
-{{- $PackageName := getStore "packageName"}}
-
-{{- range .}}
-{{- $name := .Name}}
-
-
-{{/* CREATE MUTATION TYPE */}}
-
-{{- range .Method}}
-{{- $type := stringMethodOptionsExtension 53002 . -}}
-{{- if (eq $type "Mutation") }}
-{{- $fields := stringMethodOptionsExtension 53001 .}}
-
-input {{ .Name }}Input {
-  {{- range ($fields | splitArray "," )}}
-  {{. | trimstr " "}}
+  {{- if .OutputType}}
+    {{- if .ServerStreaming -}}
+      : [{{template "PayloadName" .OutputType}}]
+    {{- else -}}
+      : {{template "PayloadName" .OutputType}}
+    {{- end}}
   {{- end}}
-  clientMutationId: String!
-}
+{{- end}}
 
-type {{ .Name }}Payload {
-  {{- $response :=  .OutputType | replace "." "_" | camelCase | replace "_" "" }}
-  {{ $response | lowerCamelCase }}: {{ $response}}
-  clientMutationId: String!
-}
-{{- end -}}
-{{- end -}}
+{{- define "Arguments"}}
+  {{- $messageName := getStore "message_name"}}
 
-{{- $methods := .Method }}
+  {{- if .}}
+    {{- range .}}
+      {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
+      {{- else if (eq (.Type | string) "TYPE_ENUM")}}
+        {{- template "EnumField" .}}
+      {{- else }}
+        {{- template "ScalarField" .}}
+      {{- end}}
+    {{- end}}
+  {{- else}}
+      T: Boolean
+  {{- end}}
+{{- end}}
 
+{{- block "Query" .File.Service}}
+  {{$file := getStore "file"}}
 
-{{/* CREATE MUTATION SERVICE */}}
-
-type Mutation {
-  {{- range .Method -}}
-  {{- $type := stringMethodOptionsExtension 53002 . -}}
-
-  {{- if (eq $type "Mutation") -}}
-  {{- $fields := stringMethodOptionsExtension 53001 . -}}
-  {{- if (eq $fields "")}}{{setStore "args" "" -}}
-  {{- else}}{{setStore "args" (concat "(" $fields ")")}}{{end}}
-  {{.Name}}(input: {{.Name}}Input!): {{.Name}}Payload
-  {{- end -}}
-  {{- end }}
-}
-
-
-{{/* CREATE QUERY SERVICE */}}
-
+  {{- range .}}
 type Query {
-  # Root field
-  node(id: ID!): Node
-
-  {{ range .Method -}}
-  {{- $type := stringMethodOptionsExtension 53002 . -}}
-  {{- if (eq $type "Query") -}}
-  {{- $fields := stringMethodOptionsExtension 53001 . -}}
-  {{- if (eq $fields "")}}{{setStore "args" "" -}}
-  {{- else}}{{setStore "args" (concat "(" $fields ")")}}{{end}}
-
-  {{- if .ServerStreaming }}
-  {{.Name}}{{getStore "args"}}: [{{ .OutputType | replace "." "_" | camelCase | replace "_" "" }}]
-  {{- else }}
-  {{.Name}}{{getStore "args"}}: {{ .OutputType | replace "." "_" | camelCase | replace "_" "" }}
-  {{- end -}}
-
-  {{- end -}}
-  {{- end }}
+  Node(id: ID!): Node
+    {{- range .Method}}
+      {{- if eq (stringMethodOptionsExtension 53002 . | lower) "query"}}
+        {{- template "Method" .}}
+      {{- end}}
+    {{- end}}
 }
+  {{- end}}
+{{- end}}
 
+{{- block "Mutation" .File.Service}}
+  {{$file := getStore "file"}}
 
-{{/* CREATE SUBSCRIPTION SERVICE */}}
+  {{- range .}}
+type Mutation {
+    {{- range .Method}}
+      {{- if eq (stringMethodOptionsExtension 53002 . | lower) "mutation"}}
+        {{- template "Method" .}}
+      {{- end}}
+    {{- end}}
+}
+  {{- end}}
+{{- end}}
 
+{{- block "Subscription" .File.Service}}
+  {{$file := getStore "file"}}
+
+  {{- range .}}
 type Subscription {
-  {{ range .Method -}}
-  {{- $type := stringMethodOptionsExtension 53002 . -}}
-  {{- if (eq $type "Subscription") -}}
-  {{- $fields := stringMethodOptionsExtension 53001 . -}}
-  {{- if (eq $fields "")}}{{setStore "args" "" -}}
-  {{- else}}{{setStore "args" (concat "(" $fields ")")}}{{end}}
-  {{.Name}}{{getStore "args"}}: {{ .OutputType | replace "." "_" | camelCase | replace "_" "" }}
-  {{- end -}}
-  {{- end }}
+    {{- range .Method}}
+      {{- if eq (stringMethodOptionsExtension 53002 . | lower) "subscription"}}
+  {{.Name}}
+  {{- if .InputType -}}
+  (
+    {{- template "Arguments" (getStore .InputType).Field}}
+  )
+  {{- end}}
+  {{- if .OutputType}}: {{template "PayloadName" .OutputType}}{{- end}}
+      {{- end}}
+    {{- end}}
 }
-{{end}}{{end}}
+  {{- end}}
+{{- end}}

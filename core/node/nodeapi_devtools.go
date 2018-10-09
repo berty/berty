@@ -80,16 +80,16 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 	}
 
 	for i := 0; i < 10; i++ {
-		members := []*entity.ConversationMember{}
+		contactsMembers := []*entity.Contact{}
 		for j := 0; j < rand.Intn(2)+1; j++ {
-			members = append(members, &entity.ConversationMember{
-				ContactID: contacts[rand.Intn(len(contacts))].ID,
+			contactsMembers = append(contactsMembers, &entity.Contact{
+				ID: contacts[rand.Intn(len(contacts))].ID,
 			})
 		}
-		if _, err := n.ConversationCreate(context.Background(), &entity.Conversation{
-			Members: members,
-			Title:   strings.Title(fmt.Sprintf("%s %s", gofakeit.HipsterWord(), gofakeit.HackerNoun())),
-			Topic:   gofakeit.HackerPhrase(),
+		if _, err := n.ConversationCreate(context.Background(), &node.ConversationCreateInput{
+			Contacts: contactsMembers,
+			Title:    strings.Title(fmt.Sprintf("%s %s", gofakeit.HipsterWord(), gofakeit.HackerNoun())),
+			Topic:    gofakeit.HackerPhrase(),
 		}); err != nil {
 			return nil, errors.Wrap(err, "failed to create conversation")
 		}

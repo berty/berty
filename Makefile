@@ -37,6 +37,8 @@ lint-editorconfig:
 			! -name '*.gen.graphql'                                              \
 			! -name '*.patch'                                                    \
 			! -name '*.vim'                                                      \
+			! -name '*.generated.go'											 \
+			! -path '*/generated/*'												 \
 			! -path '*/node_modules/*'                                           \
 			! -path '*/__generated__/*'                                          \
 			! -path './client/react-native/common/schema.graphql'                \

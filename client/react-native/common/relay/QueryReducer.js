@@ -11,10 +11,10 @@ const handleChildren = (children, state, retry) => {
   )
 }
 
-const QueryReducer = ({ children, ...props }) => (
+const QueryReducer = ({ children, variables, ...props }) => (
   <Relay.QueryRenderer
     environment={environment}
-    variables={{}}
+    variables={variables || {}}
     {...props}
     render={({ error, props, retry }) => {
       if (!error && !props) {
