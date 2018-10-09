@@ -1,5 +1,7 @@
 package chat.berty.core;
 
+import android.util.Log;
+
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
@@ -34,12 +36,12 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getPort(Promise promise) {
+    public void getPort(Promise promise) throws Exception {
         try {
-            Long port = Core.getPort();
-            promise.resolve(port.toString());
+            Long data = Core.getPort();
+            promise.resolve(data.toString());
         } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to get port", err);
+            this.logger.format(Level.ERROR, this.getName(), "Unable to get port :%s", err);
             promise.reject(err);
         }
     }

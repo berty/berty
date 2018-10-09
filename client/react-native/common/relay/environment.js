@@ -3,7 +3,10 @@ import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { Platform, NativeModules } from 'react-native'
 import { installRelayDevTools } from 'relay-devtools'
 
-installRelayDevTools()
+// eslint-disable-next-line
+if (__DEV__) {
+  installRelayDevTools()
+}
 
 // @TODO: patch web CoreModule
 if (Platform.OS === 'web') {
@@ -45,15 +48,15 @@ let getIP = () =>
     if (Platform.OS === 'web') {
       return resolve(window.location.hostname)
     }
-
-    if (__DEV__) { // eslint-disable-line
-      return require('react-native-network-info').NetworkInfo.getIPV4Address(ip => resolve(ip))
+    // eslint-disable-next-line
+    if (__DEV__) {
+      return require('react-native-network-info').NetworkInfo.getIPV4Address(
+        ip => resolve(ip)
+      )
     }
-
     if (Platform.OS === 'ios') {
       return resolve('127.0.0.1')
     }
-
     if (Platform.OS === 'android') {
       return resolve('10.0.2.2')
     }

@@ -13,7 +13,7 @@ RUN     go get -u -v \
         moul.io/protoc-gen-gotemplate \
         golang.org/x/tools/cmd/goimports \
         github.com/99designs/gqlgen \
-        github.com/vektah/gorunpkg \
+        github.com/99designs/gorunpkg \
         github.com/spf13/cobra
 
 RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.6.0 && go install github.com/99designs/gqlgen
