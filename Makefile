@@ -30,6 +30,7 @@ lint-editorconfig:
 		! -name '*.patch' \
 		! -name '*.diff' \
 		! -name '*.vim' \
+		! -name '*.bat' \
 		! -name '.DS_Store' \
 		! -name '.generated' \
 		! -name '.gitkeep' \
@@ -48,12 +49,13 @@ lint-editorconfig:
 		! -path './.github/*' \
 		! -path './client/common/openssl/built/*' \
 		! -path './client/react-native/common/schema.graphql' \
-		! -path './client/react-native/mobile/*/Build/*' \
-		! -path './client/react-native/mobile/*/build/*' \
-		! -path './client/react-native/mobile/android/.gradle/*' \
-		! -path './client/react-native/mobile/ios/berty.xcodeproj/*' \
-		! -path './client/react-native/mobile/ios/berty/Images.xcassets/*' \
-		! -path './client/react-native/mobile/ios/core.framework/*' \
+		! -path './client/react-native/*/Build/*' \
+		! -path './client/react-native/*/build/*' \
+		! -path './client/react-native/android/.idea/*' \
+		! -path './client/react-native/android/.gradle/*' \
+		! -path './client/react-native/ios/Berty.xcodeproj/*' \
+		! -path './client/react-native/ios/Berty/Images.xcassets/*' \
+		! -path './client/react-native/ios/core.framework/*' \
 		! -path './vendor/*' \
 	`; \
 	COUNT=$$(echo "$$FILES" | sed '/^\s*$$/d' | wc -l | tr -d ' '); \

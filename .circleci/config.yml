@@ -177,7 +177,10 @@ jobs:
       - restore_cache:
           key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
 
-      - run: cd client/react-native && make deps
+      - run:
+          name: install react-native deps
+          command: |
+            cd client/react-native && make deps
 
       - save_cache:
           key: yarn-v1-{{ checksum "client/react-native/yarn.lock" }}-{{ arch }}
@@ -194,12 +197,9 @@ jobs:
           paths:
             - client/react-native/common
             - client/react-native/node_modules
-            - client/react-native/gomobile/node_modules
-            - client/react-native/common/node_modules
-            - client/react-native/mobile/node_modules
 
   client.rn.android:
-    working_directory: ~/go/src/berty.tech/client/react-native/mobile/android
+    working_directory: ~/go/src/berty.tech/client/react-native/android
     docker:
       - image: bertychat/android-ci:latest
     steps:
@@ -212,14 +212,12 @@ jobs:
       - run:
           name: setup golang environment
           command: |
-            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build
           command: |
-            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
-            env && cd ../../gomobile && make android
+            env && cd ../gomobile && make build.android
 
       - restore_cache:
           key: android-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/android/Gemfile.lock" }}
@@ -227,7 +225,6 @@ jobs:
       - run:
           name: install bundle
           command: |
-            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             bundle check || bundle install --path vendor/bundle
 
       - save_cache:
@@ -238,7 +235,6 @@ jobs:
       - run:
           name: build app
           command: |
-            ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             time bundle exec fastlane android beta
 
   client.rn.ios:
@@ -265,13 +261,13 @@ jobs:
       - attach_workspace:
           at: ~/go/src/berty.tech/
 
-      # - restore_cache:
-      #     key: ios-golang-{{ .Environment.GOVERSION }}-2
+      # if build breaks, increment vX in both restore_cache and save_cache
+      - restore_cache:
+          key: v1-ios-golang-{{ .Environment.GOVERSION }}-2
 
       - run:
           name: install-go
           command: |
-            # ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             if [ ! -f ~/go-install/go/bin/go ]; then
               cd ~ && git clone https://github.com/udhos/update-golang
               cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install ./update-golang.sh
@@ -281,7 +277,6 @@ jobs:
       - run:
           name: install gomobile
           command: |
-            # ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             if [ ! -f ~/go/bin/gomobile ]; then
               go get golang.org/x/mobile/cmd/gomobile
               cd ~/go/src/golang.org/x/mobile
@@ -292,47 +287,49 @@ jobs:
               gomobile init
             fi
 
-      # - save_cache:
-      #     key: ios-golang-{{ .Environment.GOVERSION }}-2
-      #     paths:
-      #       - ~/go
-      #       - ~/go-install
+      - save_cache:
+          key: v1-ios-golang-{{ .Environment.GOVERSION }}-2
+          paths:
+            - ~/go
+            - ~/go-install
 
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
           command: |
-            # ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
-            make ios
+            make build.ios
 
-      # - restore_cache:
-      #     key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+      - restore_cache:
+          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
 
       - run:
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            # ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             bundle check || bundle install --path vendor/bundle
 
-      # - save_cache:
-      #     key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
-      #     paths:
-      #       - client/react-native/vendor/bundle
+      - save_cache:
+          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+          paths:
+            - client/react-native/vendor/bundle
 
       - run:
           name: set version
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            # ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             make version
+
+      - run:
+          name: install fsevents
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: |
+            yarn add fsevents
 
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            # ~/go/src/berty.tech/.circleci/paths_changed ^client ^.circle || exit 0
             make fastlane.setup_circle \
-                  fastlane.ios.build
+              fastlane.ios.build
 
       - store_artifacts:
           path: /tmp/fl
@@ -349,29 +346,29 @@ jobs:
           at: ~/go/src/berty.tech/
 
 
-      - restore_cache:
-          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+  #     - restore_cache:
+  #         key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
 
-      - restore_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+  #     - restore_cache:
+  #         key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
 
-      - run: cd client/react-native/web && yarn
+  #     - run: cd client/react-native/web && yarn
 
-      - save_cache:
-          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
-          paths:
-            - ~/.cache/yarn
+  #     - save_cache:
+  #         key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+  #         paths:
+  #           - ~/.cache/yarn
 
-      - save_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
-          paths:
-            - node_modules
+  #     - save_cache:
+  #         key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+  #         paths:
+  #           - node_modules
 
-      - run:
-          name: build web app
-          working_directory: ~/go/src/berty.tech/client/react-native/web
-          command: |
-            yarn build
+  #     - run:
+  #         name: build web app
+  #         working_directory: ~/go/src/berty.tech/client/react-native/web
+  #         command: |
+  #           yarn build
 
 workflows:
   version: 2

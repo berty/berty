@@ -9,7 +9,7 @@ ANDROID := $(ROOT)/android
 IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 ANDROID_VERSION ?= $(shell git rev-list --all --count)
 
-NAME ?= berty
+NAME ?= Berty
 BUILD ?= .build
 BUILD_IOS ?= $(BUILD)/ios
 BUILD_ANDROID ?= $(BUILD)/android
@@ -59,8 +59,7 @@ deps.web: deps
 ### Build release/debug part ###
 .PHONY: debug.android
 debug.android: deps.android
-	cd $(ROOT) && react-native run-android --no-packager	\
-		&& react-native start --reset-cache
+	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-android --no-packager' 'yarn start'
 
 .PHONY: release.android
 release.android: deps.android
@@ -68,8 +67,7 @@ release.android: deps.android
 
 .PHONY: debug.ios
 debug.ios: deps.ios
-	cd $(ROOT) && react-native run-ios --no-packager --configuration=Debug --scheme=debug --device '$(device)'	\
-		&& react-native start --reset-cache
+	cd $(ROOT) && ./node_modules/.bin/concurrently "react-native run-ios --no-packager --configuration=Debug --scheme=debug --device '$(device)'" 'yarn start'
 
 .PHONY: release.ios
 release.ios: deps.ios
@@ -195,7 +193,7 @@ webapp.rm: webapp.stop
 version:
 	mkdir -p $(BUILD)
 
-	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/berty/Info.plist
+	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
 	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:$(ANDROID)/app/build.gradle
 	echo "ios:$(IOS_VERSION)\nandroid:$(ANDROID_VERSION)\n" > $(BUILD)/version
 
@@ -226,14 +224,14 @@ fastlane.ios.build:
 	GYM_OPTION_PROVISIONING_PROFILE='match AdHoc chat.berty.ios' \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(BUILD_IOS) \
-	GYM_PROJECT=ios/berty.xcodeproj \
+	GYM_PROJECT=ios/Berty.xcodeproj \
 	GYM_SCHEME=adhoc \
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
 
 	# extract build informations
-	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt || true
+	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt || true
 
 fastlane.ios.release:
-	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/berty.ipa skip_waiting_for_build_processing:true
+	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/Berty.ipa skip_waiting_for_build_processing:true
 ##############################
