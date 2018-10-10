@@ -1465,7 +1465,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.Berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1482,7 +1482,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
@@ -1508,10 +1508,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.Berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "4b569825-a062-4e3b-927e-22ea802c7ca3";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.Berty.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
 				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1703,7 +1703,7 @@
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
@@ -1729,10 +1729,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.Berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "8cb57e8b-642d-4c1f-b5b3-0acde7d99f";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.Berty.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios";
 				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";

@@ -2,7 +2,7 @@ module berty.tech/client/react-native/gomobile
 
 require (
 	berty.tech/core v0.0.0
-	github.com/99designs/gqlgen v0.4.4
+	github.com/99designs/gqlgen v0.6.0
 	github.com/gorilla/websocket v1.4.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
 	github.com/ipfs/go-log v1.5.7

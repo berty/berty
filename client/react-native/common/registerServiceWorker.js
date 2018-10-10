@@ -9,8 +9,8 @@
 // This link also includes instructions on opting out of this behavior.
 
 /**
- * @jest-environment jsdom
- */
+* @jest-environment jsdom
+*/
 
 import fetch from 'whatwg-fetch'
 
