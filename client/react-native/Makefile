@@ -83,7 +83,7 @@ debug.web: deps.web
 
 ### Clean dependencies part ###
 .PHONY: clean
-clean:
+clean.bundler_and_pkgs:
 	cd $(ROOT)					\
 		&& rm -rf node_modules	\
 		&& yarn cache clean		\
@@ -93,30 +93,42 @@ clean:
 	rm -rf $$TMPDIR/haste-*
 
 .PHONY: clean.android
-clean.android: clean
+clean.android:
 	$(MAKE) -C $(GOMOB) clean.android
-	cd $(ANDROID) && rm -rf build && ./gradlew clean
+	cd $(ANDROID) && rm -rf app/build && ./gradlew clean
 
 .PHONY: clean.ios
-clean.ios: clean
+clean.ios:
 	$(MAKE) -C $(GOMOB) clean.ios
 	cd $(IOS) && rm -rf build && xcodebuild clean
 
 .PHONY: clean.web
-clean.web: clean
+clean.web:
 	cd $(WEB)					\
 		&& rm -rf node_modules	\
 		&& yarn cache clean		\
 		&& watchman watch-del-all
 
+.PHONY: fclean.android
+fclean.android: clean.android clean.bundler_and_pkgs
+
+.PHONY: fclean.ios
+fclean.ios: clean.ios clean.bundler_and_pkgs
+
+.PHONY: fclean.web
+fclean.web: clean.web clean.bundler_and_pkgs
+
+.PHONY: fclean
+fclean: clean.android clean.ios clean.web clean.bundler_and_pkgs
+
 .PHONY: re.android
-re.android: clean.android debug.android
+re.android: fclean.android debug.android
 
 .PHONY: re.ios
-re.ios: clean.ios debug.ios
+re.ios: fclean.ios debug.ios
 
 .PHONY: re.web
-re.web: clean.web debug.web
+re.web: fclean.web debug.web
 ##############################
 
 
