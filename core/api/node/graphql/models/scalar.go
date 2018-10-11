@@ -125,6 +125,8 @@ func UnmarshalInt32(v interface{}) (int32, error) {
 	case int:
 	case int32:
 		return v, nil
+	case int64:
+		return int32(v), nil
 	default:
 		return 0, fmt.Errorf("%T is not an int32", v)
 	}
@@ -176,6 +178,8 @@ func UnmarshalUint32(v interface{}) (uint32, error) {
 		return uint32(v), nil
 	case uint32:
 		return v, nil
+	case uint64:
+		return uint32(v), nil
 	default:
 		return 0, fmt.Errorf("%T is not an uint64", v)
 	}
