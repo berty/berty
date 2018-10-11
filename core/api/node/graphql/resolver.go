@@ -259,7 +259,7 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, pagina
 	return list, nil
 }
 func (r *queryResolver) EventListPaginated(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) (*node.EventListOutput, error) {
-	if filter.ID != "" {
+	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
 	return r.client.EventListPaginated(ctx, &node.EventListInput{Filter: filter, Paginate: paginate})
@@ -270,7 +270,7 @@ func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string
 	})
 }
 func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) ([]*entity.Contact, error) {
-	if filter.ID != "" {
+	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
 	var list []*entity.Contact
@@ -291,7 +291,7 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	return list, nil
 }
 func (r *queryResolver) ContactListPaginated(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) (*node.ContactListOutput, error) {
-	if filter.ID != "" {
+	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
 	return r.client.ContactListPaginated(ctx, &node.ContactListInput{Filter: filter, Paginate: paginate})
@@ -334,7 +334,7 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 	return list, nil
 }
 func (r *queryResolver) ConversationListPaginated(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) (*node.ConversationListOutput, error) {
-	if filter.ID != "" {
+	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
 	return r.client.ConversationListPaginated(ctx, &node.ConversationListInput{Filter: filter, Paginate: paginate})
