@@ -2,8 +2,8 @@ import React, { PureComponent } from 'react'
 import { Image, ActivityIndicator } from 'react-native'
 import { Menu, Text, Screen } from '../../Library'
 import { QueryReducer } from '../../../relay'
-import { queries } from '../../../graphql'
 import { colors } from '../../../constants'
+import { graphql } from 'react-relay'
 
 export default class List extends PureComponent {
   static Menu = ({
@@ -83,7 +83,24 @@ export default class List extends PureComponent {
     return (
       <Screen>
         <QueryReducer
-          query={queries.ContactList}
+          query={graphql`
+            query ListSettingsQuery($filter: BertyEntityContactInput) {
+              ContactList(
+                filter: $filter
+                first: 1
+                orderBy: ""
+                orderDesc: false
+              ) {
+                edges {
+                  node {
+                    id
+                    displayName
+                    overrideDisplayName
+                  }
+                }
+              }
+            }
+          `}
           variables={{
             filter: {
               id: '',
@@ -104,7 +121,7 @@ export default class List extends PureComponent {
                 return (
                   <List.Menu
                     navigation={navigation}
-                    data={state.data.ContactList[0]}
+                    data={state.data.ContactList.edges[0].node}
                   />
                 )
               case state.error:

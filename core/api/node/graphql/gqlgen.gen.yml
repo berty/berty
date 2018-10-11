@@ -23,6 +23,8 @@ resolver:
 models:
   ID:
     model: berty.tech/core/api/node/graphql/models.ID
+  String:
+    model: berty.tech/core/api/node/graphql/models.String
   Enum:
     model: berty.tech/core/api/node/graphql/models.Enum
   Double:
@@ -1249,18 +1251,13 @@ models:
       node:
       cursor:
 
-  BertyNodeContactListOutput:
-    model: berty.tech/core/api/node.ContactListOutput
+  BertyNodeContactListConnection:
+    model: berty.tech/core/api/node.ContactListConnection
     fields:
       edges:
       pageInfo:
-  BertyNodeContactListOutputInput:
-    model: berty.tech/core/api/node.ContactListOutput
-    fields:
-      edges:
-      pageInfo:
-  BertyNodeContactListPayload:
-    model: berty.tech/core/api/node.ContactListOutput
+  BertyNodeContactListConnectionInput:
+    model: berty.tech/core/api/node.ContactListConnection
     fields:
       edges:
       pageInfo:

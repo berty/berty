@@ -10,14 +10,46 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	"go.uber.org/zap"
 )
+
+// type ID struct {
+// 	Table string
+// 	ID    string
+// }
+//
+// func (id *ID) MarshalID(w io.Writer) {
+// 	w.Write([]byte(base64.StdEncoding.EncodeToString([]byte(id.Table + ":" + id.ID))))
+// }
+//
+// func (id *ID) UnmarshalID(v interface{}) error {
+// 	logger().Debug("UnmarshalID", zap.String("v", fmt.Sprintf("%+v\n", v)))
+// 	switch v := v.(type) {
+// 	case nil:
+// 		return nil
+// 	case string:
+// 		decodedID, err := base64.StdEncoding.DecodeString(v)
+// 		if err != nil {
+// 			return err
+// 		}
+// 		splitedID := strings.SplitN(string(decodedID), ":", 2)
+// 		id.Table = splitedID[0]
+// 		id.ID = splitedID[1]
+// 		return nil
+// 	default:
+// 		return nil
+// 	}
+// }
 
 func MarshalID(v string) graphql.Marshaler {
 	return graphql.MarshalID(base64.StdEncoding.EncodeToString([]byte(v)))
 }
 
 func UnmarshalID(v interface{}) (string, error) {
+	logger().Debug("UnmarshalID", zap.String("v", fmt.Sprintf("%+v\n", v)))
 	switch v := v.(type) {
+	case nil:
+		return "", nil
 	case string:
 		id, err := base64.StdEncoding.DecodeString(v)
 		if err != nil {
@@ -29,11 +61,26 @@ func UnmarshalID(v interface{}) (string, error) {
 	}
 }
 
+func MarshalString(v string) graphql.Marshaler {
+	return graphql.MarshalString(v)
+}
+
+func UnmarshalString(v interface{}) (string, error) {
+	logger().Debug("UnmarshalString", zap.String("v", fmt.Sprintf("%+v\n", v)))
+	switch v := v.(type) {
+	case nil:
+		return "", nil
+	default:
+		return graphql.UnmarshalString(v)
+	}
+}
+
 func MarshalTime(t time.Time) graphql.Marshaler {
 	return graphql.MarshalTime(t)
 }
 
 func UnmarshalTime(v interface{}) (time.Time, error) {
+	logger().Debug("UnmarshalTime", zap.String("v", fmt.Sprintf("%+v\n", v)))
 	switch v := v.(type) {
 	case nil:
 		return time.Time{}, nil
@@ -54,7 +101,10 @@ func MarshalEnum(v int32) graphql.Marshaler {
 }
 
 func UnmarshalEnum(v interface{}) (int32, error) {
+	logger().Debug("UnmarshalEnum", zap.String("v", fmt.Sprintf("%+v\n", v)))
 	switch v := v.(type) {
+	case nil:
+		return 0, nil
 	case int64:
 	case int:
 		return int32(v), nil
@@ -78,7 +128,13 @@ func MarshalDouble(v float64) graphql.Marshaler {
 }
 
 func UnmarshalDouble(v interface{}) (float64, error) {
-	return graphql.UnmarshalFloat(v)
+	logger().Debug("UnmarshalDouble", zap.String("v", fmt.Sprintf("%+v\n", v)))
+	switch v := v.(type) {
+	case nil:
+		return 0.0, nil
+	default:
+		return graphql.UnmarshalFloat(v)
+	}
 }
 
 func MarshalInt64(v int64) graphql.Marshaler {
@@ -92,7 +148,10 @@ func MarshalInt64(v int64) graphql.Marshaler {
 }
 
 func UnmarshalInt64(v interface{}) (int64, error) {
+	logger().Debug("UnmarshalInt64", zap.String("v", fmt.Sprintf("%+v\n", v)))
 	switch v := v.(type) {
+	case nil:
+		return 0, nil
 	case string:
 	case json.Number:
 		return strconv.ParseInt(string(v), 10, 64)
@@ -117,7 +176,10 @@ func MarshalInt32(v int32) graphql.Marshaler {
 }
 
 func UnmarshalInt32(v interface{}) (int32, error) {
+	logger().Debug("UnmarshalInt32", zap.String("v", fmt.Sprintf("%+v\n", v)))
 	switch v := v.(type) {
+	case nil:
+		return 0, nil
 	case string:
 	case json.Number:
 		i, err := strconv.Atoi(string(v))
@@ -143,7 +205,10 @@ func MarshalUint64(v uint64) graphql.Marshaler {
 }
 
 func UnmarshalUint64(v interface{}) (uint64, error) {
+	logger().Debug("UnmarshalUint64", zap.String("v", fmt.Sprintf("%+v\n", v)))
 	switch v := v.(type) {
+	case nil:
+		return 0, nil
 	case string:
 	case json.Number:
 		return strconv.ParseUint(string(v), 10, 64)
@@ -169,7 +234,10 @@ func MarshalUint32(v uint32) graphql.Marshaler {
 }
 
 func UnmarshalUint32(v interface{}) (uint32, error) {
+	logger().Debug("UnmarshalUint32", zap.String("v", fmt.Sprintf("%+v\n", v)))
 	switch v := v.(type) {
+	case nil:
+		return 0, nil
 	case string:
 	case json.Number:
 		i, err := strconv.ParseUint(string(v), 10, 32)
@@ -215,7 +283,13 @@ func MarshalBool(b bool) graphql.Marshaler {
 }
 
 func UnmarshalBool(v interface{}) (bool, error) {
-	return graphql.UnmarshalBoolean(v)
+	logger().Debug("UnmarshalBool", zap.String("v", fmt.Sprintf("%+v\n", v)))
+	switch v := v.(type) {
+	case nil:
+		return false, nil
+	default:
+		return graphql.UnmarshalBoolean(v)
+	}
 }
 
 func MarshalByte(v byte) graphql.Marshaler {
@@ -229,9 +303,14 @@ func MarshalByte(v byte) graphql.Marshaler {
 }
 
 func UnmarshalByte(v interface{}) (byte, error) {
-	i, err := strconv.ParseInt(string(v.(json.Number)), 10, 8)
-	if err != nil {
-		return 0, err
+	logger().Debug("UnmarshalByte", zap.String("v", fmt.Sprintf("%+v\n", v)))
+	switch v := v.(type) {
+	default:
+		i, err := strconv.ParseInt(string(v.(json.Number)), 10, 8)
+		if err != nil {
+			return 0, err
+		}
+		return byte(i), nil
 	}
-	return byte(i), nil
+
 }

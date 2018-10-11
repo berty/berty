@@ -45,7 +45,7 @@ service Service {
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactList(ContactListInput) returns (stream berty.entity.Contact) {
-    option (berty.gql.graphql_output) = ".berty.node.ContactListOutput";
+    option (berty.gql.graphql_output) = ".berty.node.ContactListConnection";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc GetContact(berty.entity.Contact) returns (berty.entity.Contact) {
@@ -129,6 +129,10 @@ message EventListOutput {
   PageInfo page_info = 99;
 }
 
+
+//
+// ContactList
+//
 message ContactListInput {
   berty.entity.Contact filter = 1;
   Pagination paginate = 99 [(berty.gql.graphql_spread) = true];
@@ -137,11 +141,15 @@ message ContactEdge {
   berty.entity.Contact node = 1;
   string cursor = 2;
 }
-message ContactListOutput {
+message ContactListConnection {
   repeated ContactEdge edges = 1;
-  PageInfo page_info = 99;
+  PageInfo page_info = 99 [(berty.gql.graphql_non_nullable) = true];
 }
 
+
+//
+// ConversationList
+//
 message ConversationListInput {
   berty.entity.Conversation filter = 1;
   Pagination paginate = 99;
@@ -180,10 +188,10 @@ message Pagination {
   bool order_desc = 2;
 
   // feed definition
-  int32 first = 11;
-  string after = 12;
-  int32 last = 13;
-  string before = 14;
+  int32 first = 11 [(berty.gql.graphql_nullable) = true];
+  string after = 12 [(berty.gql.graphql_nullable) = true];
+  int32 last = 13 [(berty.gql.graphql_nullable) = true];
+  string before = 14 [(berty.gql.graphql_nullable) = true];
 }
 
 message PageInfo {
