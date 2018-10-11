@@ -17,4 +17,6 @@ extend google.protobuf.FieldOptions {
   bool graphql_id = 53004;
   bool graphql_resolver = 53005;
   bool graphql_spread = 53006;
+  bool graphql_nullable = 53008;
+  bool graphql_non_nullable = 53009;
 }

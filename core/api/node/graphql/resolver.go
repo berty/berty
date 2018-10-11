@@ -3,7 +3,6 @@ package graphql
 import (
 	context "context"
 	json "encoding/json"
-	"fmt"
 	"io"
 	"strings"
 	time "time"
@@ -235,6 +234,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 		return nil, nil
 	}
 }
+
 func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error) {
 	var list []*p2p.Event
 	if filter != nil {
@@ -266,26 +266,23 @@ func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) (*node.ContactListOutput, error) {
+func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error) {
 	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
-	output := &node.ContactListOutput{
-		Edges: []*node.ContactEdge{},
+
+	input := &node.ContactListInput{
+		Filter:   filter,
+		Paginate: getPagination(first, after, last, before),
 	}
-	stream, err := r.client.ContactList(ctx, &node.ContactListInput{
-		Filter: filter,
-		Paginate: &node.Pagination{
-			OrderBy:   orderBy,
-			OrderDesc: orderDesc,
-			First:     first,
-			After:     after,
-			Last:      last,
-			Before:    before,
-		},
-	})
+
+	stream, err := r.client.ContactList(ctx, input)
 	if err != nil {
 		return nil, err
+	}
+
+	output := &node.ContactListConnection{
+		Edges: []*node.ContactEdge{},
 	}
 	for {
 		n, err := stream.Recv()
@@ -304,11 +301,10 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output.PageInfo = &node.PageInfo{
 		StartCursor:     output.Edges[0].Cursor,
 		EndCursor:       output.Edges[len(output.Edges)-1].Cursor,
-		HasPreviousPage: after != "",
-		HasNextPage:     len(output.Edges) == int(first),
+		HasPreviousPage: input.Paginate.After != "",
+		HasNextPage:     len(output.Edges) == int(input.Paginate.First),
 		Count:           uint32(len(output.Edges)),
 	}
-	logger().Debug("ContactListPaginatedOutput", zap.String("output", fmt.Sprintf("%+v", output)))
 	return output, nil
 }
 func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
@@ -378,4 +374,30 @@ func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Even
 		}
 	}()
 	return channel, nil
+}
+
+// Helpers
+func getPagination(first *int32, after *string, last *int32, before *string) *node.Pagination {
+	pagination := &node.Pagination{}
+	if first == nil {
+		pagination.First = 0
+	} else {
+		pagination.First = *first
+	}
+	if after == nil {
+		pagination.After = ""
+	} else {
+		pagination.After = *after
+	}
+	if last == nil {
+		pagination.Last = 0
+	} else {
+		pagination.Last = *last
+	}
+	if before == nil {
+		pagination.Before = ""
+	} else {
+		pagination.Before = *before
+	}
+	return pagination
 }

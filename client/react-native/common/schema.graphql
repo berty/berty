@@ -382,6 +382,10 @@ type BertyNodeContactEdge  {
     node: BertyEntityContact
       cursor: String!
 }
+type BertyNodeContactListConnection  {
+    edges: [BertyNodeContactEdge]
+    pageInfo: BertyNodePageInfo!
+}
 type BertyNodeConversationEdge  {
     node: BertyEntityConversation
       cursor: String!
@@ -392,10 +396,10 @@ type BertyNodeVoid  {
 type BertyNodePagination  {
       orderBy: String!
       orderDesc: Bool!
-      first: Int32!
-      after: String!
-      last: Int32!
-      before: String!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
 }
 type BertyNodePageInfo  {
       startCursor: String!
@@ -441,10 +445,10 @@ type BertyP2pEventPayload {
 input BertyNodePaginationInput {
       orderBy: String!
       orderDesc: Bool!
-      first: Int32!
-      after: String!
-      last: Int32!
-      before: String!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
 }
 input BertyEntityDeviceInput {
     id: ID!
@@ -481,10 +485,6 @@ type BertyEntityContactPayload {
       displayStatus: String!
       overrideDisplayName: String!
       overrideDisplayStatus: String!
-}
-type BertyNodeContactListPayload {
-    edges: [BertyNodeContactEdge]
-    pageInfo: BertyNodePageInfo
 }
 type BertyEntityConversationPayload {
     id: ID!
@@ -532,7 +532,7 @@ type BertyNodeVoidPayload {
 }
   
 type Query {
-  Node(id: ID!): Node
+  node(id: ID!): Node
   EventList(
     filter: BertyP2pEventInput
     paginate: BertyNodePaginationInput
@@ -558,12 +558,11 @@ type Query {
     filter: BertyEntityContactInput
       orderBy: String!
       orderDesc: Bool!
-      first: Int32!
-      after: String!
-      last: Int32!
-      before: String!
-  )
-      : BertyNodeContactListPayload
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+  ): BertyNodeContactListConnection
   GetContact(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
