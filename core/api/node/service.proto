@@ -18,20 +18,13 @@ service Service {
 
   // yield new events in real-time
   rpc EventStream(EventStreamInput) returns (stream berty.p2p.Event) {
-    option (berty.gql.graphql_fields) = "kind: String, conversationID: String";
     option (berty.gql.graphql_type) = "Subscription";
   };
   // list old events
   rpc EventList(EventListInput) returns (stream berty.p2p.Event) {
-    option (berty.gql.graphql_fields) = "limit: Int, kind: BertyP2pKind, conversationID: String";
-    option (berty.gql.graphql_type) = "Query";
-  };
-  rpc EventListPaginated(EventListInput) returns (EventListOutput) {
-    option (berty.gql.graphql_fields) = "limit: Int, kind: BertyP2pKind, conversationID: String";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc GetEvent(berty.p2p.Event) returns (berty.p2p.Event) {
-    option (berty.gql.graphql_fields) = "eventID: String!";
     option (berty.gql.graphql_type) = "Query";
   };
 
@@ -40,31 +33,22 @@ service Service {
   //
 
   rpc ContactRequest(ContactRequestInput) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_fields) = "contactID: String!, introText: String";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactAcceptRequest(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_fields) = "contactID: String!";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactRemove(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_fields) = "contactID: String!";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactUpdate(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_fields) = "contactID: String!, displayName: String";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ContactList(ContactListInput) returns (stream berty.entity.Contact) {
-    option (berty.gql.graphql_fields) = "status: BertyEntityContactStatus";
-    option (berty.gql.graphql_type) = "Query";
-  };
-  rpc ContactListPaginated(ContactListInput) returns (ContactListOutput) {
-    option (berty.gql.graphql_fields) = "status: BertyEntityContactStatus";
+    option (berty.gql.graphql_output) = ".berty.node.ContactListOutput";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc GetContact(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_fields) = "contactID: String!";
     option (berty.gql.graphql_type) = "Query";
   };
 
@@ -73,33 +57,24 @@ service Service {
   //
 
   rpc ConversationCreate(ConversationCreateInput) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_fields) = "contactsID: [String!]!";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationList(ConversationListInput) returns (stream berty.entity.Conversation) {
     option (berty.gql.graphql_type) = "Query";
   };
-  rpc ConversationListPaginated(ConversationListInput) returns (ConversationListOutput) {
-    option (berty.gql.graphql_type) = "Query";
-  };
   rpc ConversationInvite(ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_fields) = "conversationID: String!, contactsID: [String!]!";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationExclude(ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_fields) = "conversationID: String!, contactsID: [String!]!";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event) {
-    option (berty.gql.graphql_fields) = "conversationID: String!, message: String!";
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc GetConversation(berty.entity.Conversation) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_fields) = "conversationID: String!";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc GetConversationMember(berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
-    option (berty.gql.graphql_fields) = "conversationMemberID: String!";
     option (berty.gql.graphql_type) = "Query";
   };
 

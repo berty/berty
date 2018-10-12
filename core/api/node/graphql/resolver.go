@@ -3,6 +3,7 @@ package graphql
 import (
 	context "context"
 	json "encoding/json"
+	"fmt"
 	"io"
 	"strings"
 	time "time"
@@ -13,6 +14,7 @@ import (
 	p2p "berty.tech/core/api/p2p"
 	entity "berty.tech/core/entity"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"go.uber.org/zap"
 )
 
 type Resolver struct {
@@ -258,22 +260,19 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, pagina
 	}
 	return list, nil
 }
-func (r *queryResolver) EventListPaginated(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) (*node.EventListOutput, error) {
-	if filter != nil && filter.ID != "" {
-		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
-	}
-	return r.client.EventListPaginated(ctx, &node.EventListInput{Filter: filter, Paginate: paginate})
-}
+
 func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) ([]*entity.Contact, error) {
+func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) (*node.ContactListOutput, error) {
 	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
-	var list []*entity.Contact
+	output := &node.ContactListOutput{
+		Edges: []*node.ContactEdge{},
+	}
 	stream, err := r.client.ContactList(ctx, &node.ContactListInput{
 		Filter: filter,
 		Paginate: &node.Pagination{
@@ -289,33 +288,28 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		return nil, err
 	}
 	for {
-		elem, err := stream.Recv()
+		n, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			return nil, err
 		}
-		list = append(list, elem)
-	}
-	return list, nil
-}
-func (r *queryResolver) ContactListPaginated(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) (*node.ContactListOutput, error) {
-	if filter != nil && filter.ID != "" {
-		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+		output.Edges = append(output.Edges, &node.ContactEdge{
+			Node:   n,
+			Cursor: n.ID,
+		})
 	}
 
-	return r.client.ContactListPaginated(ctx, &node.ContactListInput{
-		Filter: filter,
-		Paginate: &node.Pagination{
-			OrderBy:   orderBy,
-			OrderDesc: orderDesc,
-			First:     first,
-			After:     after,
-			Last:      last,
-			Before:    before,
-		},
-	})
+	output.PageInfo = &node.PageInfo{
+		StartCursor:     output.Edges[0].Cursor,
+		EndCursor:       output.Edges[len(output.Edges)-1].Cursor,
+		HasPreviousPage: after != "",
+		HasNextPage:     len(output.Edges) == int(first),
+		Count:           uint32(len(output.Edges)),
+	}
+	logger().Debug("ContactListPaginatedOutput", zap.String("output", fmt.Sprintf("%+v", output)))
+	return output, nil
 }
 func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.GetContact(ctx, &entity.Contact{ID: id})
@@ -353,12 +347,6 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 		list = append(list, elem)
 	}
 	return list, nil
-}
-func (r *queryResolver) ConversationListPaginated(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) (*node.ConversationListOutput, error) {
-	if filter != nil && filter.ID != "" {
-		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
-	}
-	return r.client.ConversationListPaginated(ctx, &node.ConversationListInput{Filter: filter, Paginate: paginate})
 }
 func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
