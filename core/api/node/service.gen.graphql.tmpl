@@ -205,7 +205,7 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
   {{- $type := getStore .}}
   {{- if $type}}
     {{- $typeName := . | replace "." "_" | camelCase | replace "_" ""}}
-    {{- if $typeName | regexMatch ".*Ouput"}}
+    {{- if $typeName | regexMatch ".*Output"}}
       {{- $typeName | replace "Output" "Payload"}}
     {{- else}}
       {{- $typeName}}Payload
@@ -241,13 +241,22 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
       {{- if .InputType}}
         {{- template "RecursiveInput" .InputType}}
       {{- end}}
-      {{- if .OutputType}}
+      {{- if (stringMethodOptionsExtension 53007 .)}}
+        {{- $type := getStore (stringMethodOptionsExtension 53007 .)}}
+        {{- $alreadyDefinedKey := concat (stringMethodOptionsExtension 53007 .) ".PayloadAlreadyDefined"}}
+        {{- $alreadyDefined := getStore $alreadyDefinedKey}}
+        {{- if $alreadyDefined}}
+        {{- else}}
+            {{- template "Payload" (stringMethodOptionsExtension 53007 .)}}
+        {{- end}}
+        {{- setStore $alreadyDefinedKey true}}
+      {{- else if .OutputType}}
         {{- $type := getStore .OutputType}}
         {{- $alreadyDefinedKey := concat .OutputType ".PayloadAlreadyDefined"}}
         {{- $alreadyDefined := getStore $alreadyDefinedKey}}
         {{- if $alreadyDefined}}
         {{- else}}
-          {{- template "Payload" .OutputType}}
+            {{- template "Payload" .OutputType}}
         {{- end}}
         {{- setStore $alreadyDefinedKey true}}
       {{- end}}
@@ -262,7 +271,9 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
     {{- template "Arguments" (getStore .InputType).Field}}
   )
   {{- end}}
-  {{- if .OutputType}}
+  {{- if (stringMethodOptionsExtension 53007 .)}}
+      : {{template "PayloadName" (stringMethodOptionsExtension 53007 .)}}
+  {{- else if .OutputType}}
     {{- if .ServerStreaming -}}
       : [{{template "PayloadName" .OutputType}}]
     {{- else -}}

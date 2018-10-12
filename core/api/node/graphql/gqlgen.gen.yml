@@ -1216,7 +1216,7 @@ models:
     fields:
       edges:
       pageInfo:
-  BertyNodeEventListOutputPayload:
+  BertyNodeEventListPayload:
     model: berty.tech/core/api/node.EventListOutput
     fields:
       edges:
@@ -1259,7 +1259,7 @@ models:
     fields:
       edges:
       pageInfo:
-  BertyNodeContactListOutputPayload:
+  BertyNodeContactListPayload:
     model: berty.tech/core/api/node.ContactListOutput
     fields:
       edges:
@@ -1302,7 +1302,7 @@ models:
     fields:
       edges:
       pageInfo:
-  BertyNodeConversationListOutputPayload:
+  BertyNodeConversationListPayload:
     model: berty.tech/core/api/node.ConversationListOutput
     fields:
       edges:

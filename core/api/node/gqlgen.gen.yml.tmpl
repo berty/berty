@@ -86,7 +86,7 @@ models:
   {{- $type := .}}
   {{- if $type}}
     {{- $typeName := .Name | replace "." "_" | camelCase | replace "_" ""}}
-    {{- if $typeName | regexMatch ".*Ouput"}}
+    {{- if $typeName | regexMatch ".*Output"}}
       {{- $typeName | replace "Output" "Payload"}}
     {{- else}}
       {{- $typeName}}Payload
