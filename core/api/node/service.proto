@@ -156,7 +156,7 @@ message EventListOutput {
 
 message ContactListInput {
   berty.entity.Contact filter = 1;
-  Pagination paginate = 99;
+  Pagination paginate = 99 [(berty.gql.graphql_spread) = true];
 }
 message ContactEdge {
   berty.entity.Contact node = 1;

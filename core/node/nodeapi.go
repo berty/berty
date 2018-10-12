@@ -2,8 +2,10 @@ package node
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"berty.tech/core/api/node"
@@ -263,6 +265,7 @@ func (n *Node) ContactListPaginated(ctx context.Context, input *node.ContactList
 		HasNextPage:     len(output.Edges) == int(input.Paginate.First),
 		Count:           count,
 	}
+	logger().Debug("ContactListPaginatedOutput", zap.String("output", fmt.Sprintf("%+v", output)))
 	return output, nil
 }
 

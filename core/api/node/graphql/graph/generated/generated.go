@@ -552,8 +552,8 @@ type QueryResolver interface {
 	EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error)
 	EventListPaginated(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) (*node.EventListOutput, error)
 	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
-	ContactList(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) ([]*entity.Contact, error)
-	ContactListPaginated(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) (*node.ContactListOutput, error)
+	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) ([]*entity.Contact, error)
+	ContactListPaginated(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) (*node.ContactListOutput, error)
 	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) ([]*entity.Conversation, error)
 	ConversationListPaginated(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) (*node.ConversationListOutput, error)
@@ -13699,6 +13699,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
+<<<<<<< HEAD
 
 	if invalid {
 		return graphql.Null
@@ -13711,6 +13712,72 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_name(ctx context.
 	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufUninterpretedOption",
 		Args:   nil,
+=======
+	args["filter"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		var err error
+		arg1, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["orderBy"] = arg1
+	var arg2 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg2, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["orderDesc"] = arg2
+	var arg3 int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		arg3, err = models.UnmarshalInt32(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["first"] = arg3
+	var arg4 string
+	if tmp, ok := rawArgs["after"]; ok {
+		var err error
+		arg4, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["after"] = arg4
+	var arg5 int32
+	if tmp, ok := rawArgs["last"]; ok {
+		var err error
+		arg5, err = models.UnmarshalInt32(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["last"] = arg5
+	var arg6 string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		arg6, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["before"] = arg6
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+>>>>>>> feat(core): add gql spread extension for pagination
 		Field:  field,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
@@ -13745,6 +13812,22 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_name(ctx context.
 			}
 			arr1[idx1] = func() graphql.Marshaler {
 
+<<<<<<< HEAD
+=======
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().ContactList(ctx, args["filter"].(*entity.Contact), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(int32), args["after"].(string), args["last"].(int32), args["before"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.([]*entity.Contact)
+		arr1 := graphql.Array{}
+		for idx1 := range res {
+			arr1 = append(arr1, func() graphql.Marshaler {
+				rctx := graphql.GetResolverContext(ctx)
+				rctx.PushIndex(idx1)
+				defer rctx.Pop()
+>>>>>>> feat(core): add gql spread extension for pagination
 				if res[idx1] == nil {
 					return graphql.Null
 				}
@@ -13790,6 +13873,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_identifierValue(c
 		}
 		return graphql.Null
 	}
+<<<<<<< HEAD
 	return graphql.MarshalString(*res)
 }
 
@@ -13817,9 +13901,30 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_positiveIntValue(
 	if res == nil {
 		if !ec.HasError(rctx) {
 			ec.Errorf(ctx, "must not be null")
+=======
+	args["filter"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		var err error
+		arg1, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["orderBy"] = arg1
+	var arg2 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg2, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+>>>>>>> feat(core): add gql spread extension for pagination
 		}
 		return graphql.Null
 	}
+<<<<<<< HEAD
 	return models.MarshalUint64(*res)
 }
 
@@ -13828,6 +13933,52 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_negativeIntValue(
 	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufUninterpretedOption",
 		Args:   nil,
+=======
+	args["orderDesc"] = arg2
+	var arg3 int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		arg3, err = models.UnmarshalInt32(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["first"] = arg3
+	var arg4 string
+	if tmp, ok := rawArgs["after"]; ok {
+		var err error
+		arg4, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["after"] = arg4
+	var arg5 int32
+	if tmp, ok := rawArgs["last"]; ok {
+		var err error
+		arg5, err = models.UnmarshalInt32(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["last"] = arg5
+	var arg6 string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		arg6, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			ec.Error(ctx, err)
+			return graphql.Null
+		}
+	}
+	args["before"] = arg6
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+>>>>>>> feat(core): add gql spread extension for pagination
 		Field:  field,
 	}
 	ctx = graphql.WithResolverContext(ctx, rctx)
@@ -13835,9 +13986,26 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_negativeIntValue(
 		ctx = rctx // use context from middleware stack in children
 		return obj.NegativeIntValue, nil
 	})
+<<<<<<< HEAD
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
 			ec.Errorf(ctx, "must not be null")
+=======
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.Query().ContactListPaginated(ctx, args["filter"].(*entity.Contact), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(int32), args["after"].(string), args["last"].(int32), args["before"].(string))
+		})
+		if resTmp == nil {
+			return graphql.Null
+>>>>>>> feat(core): add gql spread extension for pagination
 		}
 		return graphql.Null
 	}
@@ -17778,11 +17946,21 @@ type Query {
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput
-    paginate: BertyNodePaginationInput
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32!
+      after: String!
+      last: Int32!
+      before: String!
   ): [BertyEntityContactPayload]
   ContactListPaginated(
     filter: BertyEntityContactInput
-    paginate: BertyNodePaginationInput
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32!
+      after: String!
+      last: Int32!
+      before: String!
   ): BertyNodeContactListOutputPayload
   GetContact(
     id: ID!
