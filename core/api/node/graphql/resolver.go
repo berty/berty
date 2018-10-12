@@ -212,7 +212,7 @@ func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversat
 	return r.client.ConversationAddMessage(ctx, &node.ConversationAddMessageInput{Conversation: conversation, Message: message})
 }
 func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.Void, error) {
-	return r.client.GenerateFakeData(ctx, &node.Void{T: T})
+	return r.client.GenerateFakeData(ctx, &node.Void{T: true})
 }
 
 type queryResolver struct{ *Resolver }
@@ -269,12 +269,22 @@ func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) ([]*entity.Contact, error) {
+func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) ([]*entity.Contact, error) {
 	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
 	var list []*entity.Contact
-	stream, err := r.client.ContactList(ctx, &node.ContactListInput{Filter: filter, Paginate: paginate})
+	stream, err := r.client.ContactList(ctx, &node.ContactListInput{
+		Filter: filter,
+		Paginate: &node.Pagination{
+			OrderBy:   orderBy,
+			OrderDesc: orderDesc,
+			First:     first,
+			After:     after,
+			Last:      last,
+			Before:    before,
+		},
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -290,11 +300,22 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	}
 	return list, nil
 }
-func (r *queryResolver) ContactListPaginated(ctx context.Context, filter *entity.Contact, paginate *node.Pagination) (*node.ContactListOutput, error) {
+func (r *queryResolver) ContactListPaginated(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first int32, after string, last int32, before string) (*node.ContactListOutput, error) {
 	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
-	return r.client.ContactListPaginated(ctx, &node.ContactListInput{Filter: filter, Paginate: paginate})
+
+	return r.client.ContactListPaginated(ctx, &node.ContactListInput{
+		Filter: filter,
+		Paginate: &node.Pagination{
+			OrderBy:   orderBy,
+			OrderDesc: orderDesc,
+			First:     first,
+			After:     after,
+			Last:      last,
+			Before:    before,
+		},
+	})
 }
 func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.GetContact(ctx, &entity.Contact{ID: id})

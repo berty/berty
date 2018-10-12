@@ -89,8 +89,12 @@ interface Node {
   {{- if .}}
     {{- range .}}
       {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+        {{- if (boolFieldExtension 53006 .)}}
+          {{- template "InputField" (getStore .TypeName).Field}}
+        {{- else}}
         {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
     {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}]{{else}}{{$typeName}}{{end}}
+        {{- end}}
       {{- else if (eq (.Type | string) "TYPE_ENUM")}}
         {{- template "EnumField" .}}
       {{- else }}
@@ -121,8 +125,12 @@ interface Node {
   {{- if .}}
     {{- range .}}
       {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+        {{- if (boolFieldExtension 53006 .)}}
+          {{- template "InputField" (getStore .TypeName).Field}}
+        {{- else}}
         {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
     {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
+        {{- end}}
       {{- else if (eq (.Type | string) "TYPE_ENUM")}}
         {{- template "EnumField" .}}
       {{- else }}
@@ -269,7 +277,11 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
   {{- if .}}
     {{- range .}}
       {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+        {{- if (boolFieldExtension 53006 .)}}
+          {{- template "Arguments" (getStore .TypeName).Field}}
+        {{- else}}
     {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
+        {{- end}}
       {{- else if (eq (.Type | string) "TYPE_ENUM")}}
         {{- template "EnumField" .}}
       {{- else }}
