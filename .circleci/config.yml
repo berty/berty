@@ -5,21 +5,25 @@ version: 2
   environment:
     GOPATH: /go
     GOTEST_TIMEOUT: 5m
+    GOPROXY: http://goproxy.berty.io:3000/
+    GO111MODULE: "on"
   docker:
     - image: circleci/golang:latest
 
 jobs:
   lint:
+    <<: *golang_workspace
     docker:
       - image: bertychat/linter:latest
-    working_directory: /go/src/berty.tech
-    environment:
-      GOPATH: /go
     steps:
       - checkout
       - restore_cache:
           keys:
             - v1-go-cache
+      - run:
+          name: fetch deps
+          command: |
+            cd core; go mod download
       - run:
           name: prepare CI
           command: |
@@ -34,7 +38,7 @@ jobs:
 
   generate:
     docker:
-      - image: bertychat/protoc:latest
+      - image: bertychat/protoc:v2
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -47,10 +51,19 @@ jobs:
             cd core
             make clean
       - run:
+          name: make generate_prepare
+          command: |
+            cd core
+            make generate_prepare
+      - run:
           name: make generate_local
           command: |
             cd core
             make generate_local
+      - run:
+          name: ignore some files
+          command: |
+            git checkout core/go.mod # this file regularly changes with useless information (adding `// indirect`)
       - run:
           name: check if files changed
           command: |
@@ -123,15 +136,18 @@ jobs:
       - run:
           name: test client (bot)
           command: |
-            cd client/go
-            go test -v ./... | tee /tmp/test-results/go-test-report.out
-            go install -v ./...
+            cd client/go/bot
+            go test -v . | tee /tmp/test-results/go-test-report.out
+            go install -v .
+            cd ./examples/berty-bot-example
+            go test -v . | tee /tmp/test-results/go-test-report.out
+            go install -v .
       - run:
           name: test gomobile
           command: |
             cd client/react-native/gomobile
-            go test -v ./... | tee /tmp/test-results/go-test-report.out
-            GOARCH=386 go test -v ./... | tee /tmp/test-results/go-test-report.out
+            go test -v . | tee /tmp/test-results/go-test-report.out
+            GOARCH=386 go test -v . | tee /tmp/test-results/go-test-report.out
       - run:
           name: integration core
           command: |

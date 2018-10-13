@@ -390,6 +390,8 @@ models:
       swiftPrefix:
       phpClassPrefix:
       phpNamespace:
+      phpMetadataNamespace:
+      rubyPackage:
       uninterpretedOption:
   GoogleProtobufFileOptionsInput:
     model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileOptions
@@ -412,6 +414,8 @@ models:
       swiftPrefix:
       phpClassPrefix:
       phpNamespace:
+      phpMetadataNamespace:
+      rubyPackage:
       uninterpretedOption:
   GoogleProtobufFileOptionsPayload:
     model: github.com/golang/protobuf/protoc-gen-go/descriptor.FileOptions
@@ -434,6 +438,8 @@ models:
       swiftPrefix:
       phpClassPrefix:
       phpNamespace:
+      phpMetadataNamespace:
+      rubyPackage:
       uninterpretedOption:
 
   GoogleProtobufMessageOptions:

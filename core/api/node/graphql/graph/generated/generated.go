@@ -98,6 +98,9 @@ type GoogleProtobufFieldOptionsResolver interface {
 }
 type GoogleProtobufFileOptionsResolver interface {
 	OptimizeFor(ctx context.Context, obj *descriptor.FileOptions) (*int32, error)
+
+	PhpMetadataNamespace(ctx context.Context, obj *descriptor.FileOptions) (string, error)
+	RubyPackage(ctx context.Context, obj *descriptor.FileOptions) (string, error)
 }
 type GoogleProtobufMethodOptionsResolver interface {
 	IdempotencyLevel(ctx context.Context, obj *descriptor.MethodOptions) (*int32, error)
@@ -5160,6 +5163,10 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 			out.Values[i] = ec._GoogleProtobufFileOptions_phpClassPrefix(ctx, field, obj)
 		case "phpNamespace":
 			out.Values[i] = ec._GoogleProtobufFileOptions_phpNamespace(ctx, field, obj)
+		case "phpMetadataNamespace":
+			out.Values[i] = ec._GoogleProtobufFileOptions_phpMetadataNamespace(ctx, field, obj)
+		case "rubyPackage":
+			out.Values[i] = ec._GoogleProtobufFileOptions_rubyPackage(ctx, field, obj)
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufFileOptions_uninterpretedOption(ctx, field, obj)
 		default:
@@ -5537,6 +5544,58 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpNamespace(ctx context.
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
+}
+
+func (ec *executionContext) _GoogleProtobufFileOptions_phpMetadataNamespace(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.GoogleProtobufFileOptions().PhpMetadataNamespace(ctx, obj)
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(string)
+		return graphql.MarshalString(res)
+	})
+}
+
+func (ec *executionContext) _GoogleProtobufFileOptions_rubyPackage(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	})
+	return graphql.Defer(func() (ret graphql.Marshaler) {
+		defer func() {
+			if r := recover(); r != nil {
+				userErr := ec.Recover(ctx, r)
+				ec.Error(ctx, userErr)
+				ret = graphql.Null
+			}
+		}()
+
+		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+			return ec.resolvers.GoogleProtobufFileOptions().RubyPackage(ctx, obj)
+		})
+		if resTmp == nil {
+			return graphql.Null
+		}
+		res := resTmp.(string)
+		return graphql.MarshalString(res)
+	})
 }
 
 func (ec *executionContext) _GoogleProtobufFileOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
@@ -10369,6 +10428,8 @@ type GoogleProtobufFileOptions  {
       swiftPrefix: String!
       phpClassPrefix: String!
       phpNamespace: String!
+      phpMetadataNamespace: String!
+      rubyPackage: String!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufMessageOptions  {

@@ -11,9 +11,15 @@ gin-bin
 
 # emacs
 .projectile
+*~
+*#
+.#*
 
 # sub projects
 /depviz/
 
 # version
 ./package.json
+
+# go
+vendor/
