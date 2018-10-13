@@ -2,14 +2,13 @@ package p2putil
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"sync"
 
-	"fmt"
-
-	"github.com/libp2p/go-libp2p-host"
-	"github.com/libp2p/go-libp2p-peer"
-	"github.com/libp2p/go-libp2p-protocol"
+	host "github.com/libp2p/go-libp2p-host"
+	peer "github.com/libp2p/go-libp2p-peer"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

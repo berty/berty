@@ -5,8 +5,8 @@ import (
 	"net"
 	"time"
 
-	"github.com/libp2p/go-libp2p-host"
-	"github.com/libp2p/go-libp2p-protocol"
+	host "github.com/libp2p/go-libp2p-host"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	"go.uber.org/zap"
 
 	"berty.tech/core/network/p2p/p2putil"

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/libp2p/go-libp2p-kad-dht"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 
 	"berty.tech/core/api/node"

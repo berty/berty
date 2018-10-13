@@ -4,18 +4,19 @@ BIN = $(GOPATH)/bin/berty
 SOURCES = $(call rwildcard, $(CODE_PATHS), *.go)
 CODE_PATHS = $(filter-out node_modules/,$(wildcard */))
 PROTOS = $(call rwildcard, $(CODE_PATHS), *.proto)
+OUR_PROTOS = $(filter-out $(call rwildcard,vendor//, *.proto),$(PROTOS))
+PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_FILES = \
-	$(patsubst %.proto,%.pb.go,$(PROTOS)) \
+	$(patsubst %.proto,%.pb.go,$(OUR_PROTOS)) \
 	api/node/graphql/service.gen.graphql \
 	api/client/berty.node.service.gen.go \
 	../client/react-native/common/schema.graphql \
 	$(call rwildcard $(CODE_PATHS), *.gen.go) \
 	api/p2p/kind.gen.go
-PROTOC_OPTS = --proto_path=../vendor:../vendor/github.com/gogo/protobuf:.
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
-BUILD_ENV ?= CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
+BUILD_ENV ?= GO111MODULE=on CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
@@ -83,15 +84,14 @@ generate: .generated
 
 .generated: $(PROTOS)
 	rm -f $(GENERATED_FILES)
+	make generate_prepare
 	docker run \
 		--user="$(shell id -u)" \
-		--volume="$(GOPATH)/src:$(GOPATH)/src" \
-		--env="GOPATH=$(GOPATH)" \
-		--volume="$(PWD)/..:$(PWD)/.." \
-		--workdir="$(PWD)" \
+		--volume="$(PWD)/..:/go/src/berty.tech" \
+		--workdir="/go/src/berty.tech/core" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc \
+		bertychat/protoc:v2 \
 		-xec 'make generate_local'
 	touch $@
 
@@ -101,6 +101,10 @@ clean:
 
 .PHONY: generate_local
 generate_local: $(GENERATED_FILES)
+
+.PHONY: generate_prepare
+generate_prepare:
+	$(BUILD_ENV) go mod vendor
 
 .PHONY: _ci_prepare
 _ci_prepare:
@@ -136,6 +140,8 @@ api/client/berty.node.service.gen.go: $(PROTOS)
 		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
 	); done
 	goimports -w ./api/client
+	sed -i'' '/^$$/d' api/client/*.gen.go
+	goimports -w ./api/client
 
 api/p2p/kind.gen.go: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
@@ -145,6 +151,7 @@ api/p2p/kind.gen.go: $(PROTOS)
 generate.graphql api/node/graphql/service.gen.graphql: $(PROTOS)
 	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
+	goimports -w ./api/node/graphql
 	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
 
 ../client/react-native/common/schema.graphql: api/node/graphql/service.gen.graphql

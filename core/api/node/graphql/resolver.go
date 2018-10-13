@@ -139,6 +139,13 @@ func (r *googleProtobufFieldOptionsResolver) Jstype(ctx context.Context, obj *de
 
 type googleProtobufFileOptionsResolver struct{ *Resolver }
 
+func (r *googleProtobufFileOptionsResolver) PhpMetadataNamespace(ctx context.Context, obj *descriptor.FileOptions) (string, error) {
+	return "", nil
+}
+func (r *googleProtobufFileOptionsResolver) RubyPackage(ctx context.Context, obj *descriptor.FileOptions) (string, error) {
+	return "", nil
+}
+
 func (r *googleProtobufFileOptionsResolver) OptimizeFor(ctx context.Context, obj *descriptor.FileOptions) (*int32, error) {
 	ret := int32(*obj.OptimizeFor)
 	return &ret, nil
@@ -342,5 +349,4 @@ func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Even
 		}
 	}()
 	return channel, nil
-
 }

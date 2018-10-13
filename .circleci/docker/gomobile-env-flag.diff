@@ -1,9 +1,9 @@
---- env.go      2018-08-02 10:10:17.801306783 +0000
-+++ env.go.orig 2018-08-02 10:14:56.172659686 +0000
-@@ -129,7 +129,7 @@
-                        "CC="+clang,
-                        "CXX="+clang,
+--- env.go
++++ env.go
+@@ -130,7 +130,7 @@ func envInit() (err error) {
+                        "CXX="+clang+"++",
                         "CGO_CFLAGS="+cflags+" -arch "+archClang(arch),
+                        "CGO_CXXFLAGS="+cflags+" -arch "+archClang(arch),
 -                       "CGO_LDFLAGS="+cflags+" -arch "+archClang(arch),
 +                       "CGO_LDFLAGS="+cflags+" -arch "+archClang(arch)+" "+os.Getenv("CGO_LDFLAGS"),
                         "CGO_ENABLED=1",
