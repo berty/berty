@@ -1,6 +1,7 @@
 module berty.tech/core
 
 require (
+	github.com/0xAX/notificator v0.0.0-20171022182052-88d57ee9043b // indirect
 	github.com/99designs/gqlgen v0.6.0
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
@@ -9,6 +10,8 @@ require (
 	github.com/brianvoe/gofakeit v3.12.1+incompatible
 	github.com/btcsuite/btcd v0.0.0-20180924021209-2a560b2036be // indirect
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
+	github.com/codegangsta/envy v0.0.0-20141216192214-4b78388c8ce4 // indirect
+	github.com/codegangsta/gin v0.0.0-20171026143024-cafe2ce98974 // indirect
 	github.com/coreos/go-semver v0.2.0 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20180901172138-1eb28afdf9b6 // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
@@ -85,6 +88,7 @@ require (
 	github.com/libp2p/go-ws-transport v2.0.14+incompatible // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
+	github.com/mattn/go-shellwords v1.0.3 // indirect
 	github.com/mattn/go-sqlite3 v1.9.0 // indirect
 	github.com/miekg/dns v1.0.13 // indirect
 	github.com/minio/blake2b-simd v0.0.0-20160723061019-3f5f724cb5b1 // indirect
@@ -130,7 +134,8 @@ require (
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20181009213950-7c1a557ab941 // indirect
-	golang.org/x/net v0.0.0-20181005035420-146acd28ed58 // indirect
+	golang.org/x/net v0.0.0-20181005035420-146acd28ed58
 	google.golang.org/grpc v1.15.0
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
+	gopkg.in/urfave/cli.v1 v1.20.0 // indirect
 )
