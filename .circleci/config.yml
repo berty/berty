@@ -38,7 +38,7 @@ jobs:
 
   generate:
     docker:
-      - image: bertychat/protoc:v2
+      - image: bertychat/protoc:v3
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go

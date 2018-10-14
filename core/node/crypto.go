@@ -6,10 +6,10 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"berty.tech/core/crypto/keypair"
-	"github.com/pkg/errors"
 )
 
 // WithCrypto set the underlying crypto (keypair.Interface) object inside Node

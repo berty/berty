@@ -16,7 +16,7 @@ RUN     go get -u -v \
         github.com/vektah/gorunpkg \
         github.com/spf13/cobra
 
-RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.4.4 && go install github.com/99designs/gqlgen
+RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.6.0 && go install github.com/99designs/gqlgen
 RUN     rm -f /go/bin/web-editor
 
 FROM    golang:1.11-alpine
