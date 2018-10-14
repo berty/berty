@@ -3,10 +3,11 @@
 package generated
 
 import (
-	"bytes"
+	bytes "bytes"
 	context "context"
 	fmt "fmt"
 	strconv "strconv"
+	sync "sync"
 	time "time"
 
 	node "berty.tech/core/api/node"
@@ -25,12 +26,14 @@ func NewExecutableSchema(cfg Config) graphql.ExecutableSchema {
 	return &executableSchema{
 		resolvers:  cfg.Resolvers,
 		directives: cfg.Directives,
+		complexity: cfg.Complexity,
 	}
 }
 
 type Config struct {
 	Resolvers  ResolverRoot
 	Directives DirectiveRoot
+	Complexity ComplexityRoot
 }
 
 type ResolverRoot interface {
@@ -54,6 +57,434 @@ type ResolverRoot interface {
 
 type DirectiveRoot struct {
 }
+
+type ComplexityRoot struct {
+	BertyEntityContact struct {
+		Id                    func(childComplexity int) int
+		CreatedAt             func(childComplexity int) int
+		UpdatedAt             func(childComplexity int) int
+		DeletedAt             func(childComplexity int) int
+		Sigchain              func(childComplexity int) int
+		Status                func(childComplexity int) int
+		Devices               func(childComplexity int) int
+		DisplayName           func(childComplexity int) int
+		DisplayStatus         func(childComplexity int) int
+		OverrideDisplayName   func(childComplexity int) int
+		OverrideDisplayStatus func(childComplexity int) int
+	}
+
+	BertyEntityContactPayload struct {
+		Id                    func(childComplexity int) int
+		CreatedAt             func(childComplexity int) int
+		UpdatedAt             func(childComplexity int) int
+		DeletedAt             func(childComplexity int) int
+		Sigchain              func(childComplexity int) int
+		Status                func(childComplexity int) int
+		Devices               func(childComplexity int) int
+		DisplayName           func(childComplexity int) int
+		DisplayStatus         func(childComplexity int) int
+		OverrideDisplayName   func(childComplexity int) int
+		OverrideDisplayStatus func(childComplexity int) int
+	}
+
+	BertyEntityConversation struct {
+		Id        func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Title     func(childComplexity int) int
+		Topic     func(childComplexity int) int
+		Members   func(childComplexity int) int
+	}
+
+	BertyEntityConversationMember struct {
+		Id             func(childComplexity int) int
+		CreatedAt      func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
+		DeletedAt      func(childComplexity int) int
+		Status         func(childComplexity int) int
+		Contact        func(childComplexity int) int
+		ConversationId func(childComplexity int) int
+		ContactId      func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberPayload struct {
+		Id             func(childComplexity int) int
+		CreatedAt      func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
+		DeletedAt      func(childComplexity int) int
+		Status         func(childComplexity int) int
+		Contact        func(childComplexity int) int
+		ConversationId func(childComplexity int) int
+		ContactId      func(childComplexity int) int
+	}
+
+	BertyEntityConversationPayload struct {
+		Id        func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Title     func(childComplexity int) int
+		Topic     func(childComplexity int) int
+		Members   func(childComplexity int) int
+	}
+
+	BertyEntityDevice struct {
+		Id         func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+		DeletedAt  func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Status     func(childComplexity int) int
+		ApiVersion func(childComplexity int) int
+		ContactId  func(childComplexity int) int
+	}
+
+	BertyEntityMessage struct {
+		Text func(childComplexity int) int
+	}
+
+	BertyEntitySenderAlias struct {
+		Id              func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		DeletedAt       func(childComplexity int) int
+		Status          func(childComplexity int) int
+		OriginDeviceId  func(childComplexity int) int
+		ContactId       func(childComplexity int) int
+		ConversationId  func(childComplexity int) int
+		AliasIdentifier func(childComplexity int) int
+		Used            func(childComplexity int) int
+	}
+
+	BertyNodePingDestination struct {
+		Destination func(childComplexity int) int
+	}
+
+	BertyNodeVoid struct {
+		T func(childComplexity int) int
+	}
+
+	BertyNodeVoidPayload struct {
+		T func(childComplexity int) int
+	}
+
+	BertyP2pAckAttrs struct {
+		Ids    func(childComplexity int) int
+		ErrMsg func(childComplexity int) int
+	}
+
+	BertyP2pContactRequestAcceptedAttrs struct {
+		T func(childComplexity int) int
+	}
+
+	BertyP2pContactRequestAttrs struct {
+		Me        func(childComplexity int) int
+		IntroText func(childComplexity int) int
+	}
+
+	BertyP2pContactShareAttrs struct {
+		Contact func(childComplexity int) int
+	}
+
+	BertyP2pContactShareMeAttrs struct {
+		Me func(childComplexity int) int
+	}
+
+	BertyP2pConversationInviteAttrs struct {
+		Conversation func(childComplexity int) int
+	}
+
+	BertyP2pConversationNewMessageAttrs struct {
+		Message func(childComplexity int) int
+	}
+
+	BertyP2pDevtoolsMapsetAttrs struct {
+		Key func(childComplexity int) int
+		Val func(childComplexity int) int
+	}
+
+	BertyP2pEvent struct {
+		Id                 func(childComplexity int) int
+		SenderId           func(childComplexity int) int
+		CreatedAt          func(childComplexity int) int
+		UpdatedAt          func(childComplexity int) int
+		DeletedAt          func(childComplexity int) int
+		SentAt             func(childComplexity int) int
+		ReceivedAt         func(childComplexity int) int
+		AckedAt            func(childComplexity int) int
+		Direction          func(childComplexity int) int
+		SenderApiVersion   func(childComplexity int) int
+		ReceiverApiVersion func(childComplexity int) int
+		ReceiverId         func(childComplexity int) int
+		Kind               func(childComplexity int) int
+		Attributes         func(childComplexity int) int
+		ConversationId     func(childComplexity int) int
+	}
+
+	BertyP2pEventPayload struct {
+		Id                 func(childComplexity int) int
+		SenderId           func(childComplexity int) int
+		CreatedAt          func(childComplexity int) int
+		UpdatedAt          func(childComplexity int) int
+		DeletedAt          func(childComplexity int) int
+		SentAt             func(childComplexity int) int
+		ReceivedAt         func(childComplexity int) int
+		AckedAt            func(childComplexity int) int
+		Direction          func(childComplexity int) int
+		SenderApiVersion   func(childComplexity int) int
+		ReceiverApiVersion func(childComplexity int) int
+		ReceiverId         func(childComplexity int) int
+		Kind               func(childComplexity int) int
+		Attributes         func(childComplexity int) int
+		ConversationId     func(childComplexity int) int
+	}
+
+	BertyP2pPingAttrs struct {
+		T func(childComplexity int) int
+	}
+
+	BertyP2pSenderAliasUpdateAttrs struct {
+		Aliases func(childComplexity int) int
+	}
+
+	BertyP2pSentAttrs struct {
+		Ids func(childComplexity int) int
+	}
+
+	GoogleProtobufDescriptorProto struct {
+		Name           func(childComplexity int) int
+		Field          func(childComplexity int) int
+		Extension      func(childComplexity int) int
+		NestedType     func(childComplexity int) int
+		EnumType       func(childComplexity int) int
+		ExtensionRange func(childComplexity int) int
+		OneofDecl      func(childComplexity int) int
+		Options        func(childComplexity int) int
+		ReservedRange  func(childComplexity int) int
+		ReservedName   func(childComplexity int) int
+	}
+
+	GoogleProtobufDescriptorProtoExtensionRange struct {
+		Start   func(childComplexity int) int
+		End     func(childComplexity int) int
+		Options func(childComplexity int) int
+	}
+
+	GoogleProtobufDescriptorProtoReservedRange struct {
+		Start func(childComplexity int) int
+		End   func(childComplexity int) int
+	}
+
+	GoogleProtobufEnumDescriptorProto struct {
+		Name          func(childComplexity int) int
+		Value         func(childComplexity int) int
+		Options       func(childComplexity int) int
+		ReservedRange func(childComplexity int) int
+		ReservedName  func(childComplexity int) int
+	}
+
+	GoogleProtobufEnumDescriptorProtoEnumReservedRange struct {
+		Start func(childComplexity int) int
+		End   func(childComplexity int) int
+	}
+
+	GoogleProtobufEnumOptions struct {
+		AllowAlias          func(childComplexity int) int
+		Deprecated          func(childComplexity int) int
+		UninterpretedOption func(childComplexity int) int
+	}
+
+	GoogleProtobufEnumValueDescriptorProto struct {
+		Name    func(childComplexity int) int
+		Number  func(childComplexity int) int
+		Options func(childComplexity int) int
+	}
+
+	GoogleProtobufEnumValueOptions struct {
+		Deprecated          func(childComplexity int) int
+		UninterpretedOption func(childComplexity int) int
+	}
+
+	GoogleProtobufExtensionRangeOptions struct {
+		UninterpretedOption func(childComplexity int) int
+	}
+
+	GoogleProtobufFieldDescriptorProto struct {
+		Name         func(childComplexity int) int
+		Number       func(childComplexity int) int
+		Label        func(childComplexity int) int
+		Type         func(childComplexity int) int
+		TypeName     func(childComplexity int) int
+		Extendee     func(childComplexity int) int
+		DefaultValue func(childComplexity int) int
+		OneofIndex   func(childComplexity int) int
+		JsonName     func(childComplexity int) int
+		Options      func(childComplexity int) int
+	}
+
+	GoogleProtobufFieldOptions struct {
+		Ctype               func(childComplexity int) int
+		Packed              func(childComplexity int) int
+		Jstype              func(childComplexity int) int
+		Lazy                func(childComplexity int) int
+		Deprecated          func(childComplexity int) int
+		Weak                func(childComplexity int) int
+		UninterpretedOption func(childComplexity int) int
+	}
+
+	GoogleProtobufFileDescriptorProto struct {
+		Name             func(childComplexity int) int
+		Package          func(childComplexity int) int
+		Dependency       func(childComplexity int) int
+		PublicDependency func(childComplexity int) int
+		WeakDependency   func(childComplexity int) int
+		MessageType      func(childComplexity int) int
+		EnumType         func(childComplexity int) int
+		Service          func(childComplexity int) int
+		Extension        func(childComplexity int) int
+		Options          func(childComplexity int) int
+		SourceCodeInfo   func(childComplexity int) int
+		Syntax           func(childComplexity int) int
+	}
+
+	GoogleProtobufFileDescriptorSet struct {
+		File func(childComplexity int) int
+	}
+
+	GoogleProtobufFileOptions struct {
+		JavaPackage               func(childComplexity int) int
+		JavaOuterClassname        func(childComplexity int) int
+		JavaMultipleFiles         func(childComplexity int) int
+		JavaGenerateEqualsAndHash func(childComplexity int) int
+		JavaStringCheckUtf8       func(childComplexity int) int
+		OptimizeFor               func(childComplexity int) int
+		GoPackage                 func(childComplexity int) int
+		CcGenericServices         func(childComplexity int) int
+		JavaGenericServices       func(childComplexity int) int
+		PyGenericServices         func(childComplexity int) int
+		PhpGenericServices        func(childComplexity int) int
+		Deprecated                func(childComplexity int) int
+		CcEnableArenas            func(childComplexity int) int
+		ObjcClassPrefix           func(childComplexity int) int
+		CsharpNamespace           func(childComplexity int) int
+		SwiftPrefix               func(childComplexity int) int
+		PhpClassPrefix            func(childComplexity int) int
+		PhpNamespace              func(childComplexity int) int
+		PhpMetadataNamespace      func(childComplexity int) int
+		RubyPackage               func(childComplexity int) int
+		UninterpretedOption       func(childComplexity int) int
+	}
+
+	GoogleProtobufGeneratedCodeInfo struct {
+		Annotation func(childComplexity int) int
+	}
+
+	GoogleProtobufGeneratedCodeInfoAnnotation struct {
+		Path       func(childComplexity int) int
+		SourceFile func(childComplexity int) int
+		Begin      func(childComplexity int) int
+		End        func(childComplexity int) int
+	}
+
+	GoogleProtobufMessageOptions struct {
+		MessageSetWireFormat         func(childComplexity int) int
+		NoStandardDescriptorAccessor func(childComplexity int) int
+		Deprecated                   func(childComplexity int) int
+		MapEntry                     func(childComplexity int) int
+		UninterpretedOption          func(childComplexity int) int
+	}
+
+	GoogleProtobufMethodDescriptorProto struct {
+		Name            func(childComplexity int) int
+		InputType       func(childComplexity int) int
+		OutputType      func(childComplexity int) int
+		Options         func(childComplexity int) int
+		ClientStreaming func(childComplexity int) int
+		ServerStreaming func(childComplexity int) int
+	}
+
+	GoogleProtobufMethodOptions struct {
+		Deprecated          func(childComplexity int) int
+		IdempotencyLevel    func(childComplexity int) int
+		UninterpretedOption func(childComplexity int) int
+	}
+
+	GoogleProtobufOneofDescriptorProto struct {
+		Name    func(childComplexity int) int
+		Options func(childComplexity int) int
+	}
+
+	GoogleProtobufOneofOptions struct {
+		UninterpretedOption func(childComplexity int) int
+	}
+
+	GoogleProtobufServiceDescriptorProto struct {
+		Name    func(childComplexity int) int
+		Method  func(childComplexity int) int
+		Options func(childComplexity int) int
+	}
+
+	GoogleProtobufServiceOptions struct {
+		Deprecated          func(childComplexity int) int
+		UninterpretedOption func(childComplexity int) int
+	}
+
+	GoogleProtobufSourceCodeInfo struct {
+		Location func(childComplexity int) int
+	}
+
+	GoogleProtobufSourceCodeInfoLocation struct {
+		Path                    func(childComplexity int) int
+		Span                    func(childComplexity int) int
+		LeadingComments         func(childComplexity int) int
+		TrailingComments        func(childComplexity int) int
+		LeadingDetachedComments func(childComplexity int) int
+	}
+
+	GoogleProtobufUninterpretedOption struct {
+		Name             func(childComplexity int) int
+		IdentifierValue  func(childComplexity int) int
+		PositiveIntValue func(childComplexity int) int
+		NegativeIntValue func(childComplexity int) int
+		DoubleValue      func(childComplexity int) int
+		StringValue      func(childComplexity int) int
+		AggregateValue   func(childComplexity int) int
+	}
+
+	GoogleProtobufUninterpretedOptionNamePart struct {
+		NamePart    func(childComplexity int) int
+		IsExtension func(childComplexity int) int
+	}
+
+	Mutation struct {
+		ContactRequest         func(childComplexity int, contact *entity.Contact, introText string) int
+		ContactAcceptRequest   func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactRemove          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactUpdate          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ConversationCreate     func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
+		ConversationInvite     func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
+		ConversationExclude    func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
+		ConversationAddMessage func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
+		GenerateFakeData       func(childComplexity int, T bool) int
+	}
+
+	Query struct {
+		Node                  func(childComplexity int, id string) int
+		EventList             func(childComplexity int, limit uint32, filter *p2p.Event) int
+		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
+		ContactList           func(childComplexity int, filter *entity.Contact) int
+		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ConversationList      func(childComplexity int, filter *entity.Conversation) int
+		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
+		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+	}
+
+	Subscription struct {
+		EventStream func(childComplexity int, filter *p2p.Event) int
+	}
+}
+
 type BertyEntityContactResolver interface {
 	ID(ctx context.Context, obj *entity.Contact) (string, error)
 }
@@ -130,13 +561,3292 @@ type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
 }
 
+func field_Mutation_ContactRequest_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Contact
+	if tmp, ok := rawArgs["contact"]; ok {
+		var err error
+		var ptr1 entity.Contact
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["contact"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["introText"]; ok {
+		var err error
+		arg1, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["introText"] = arg1
+	return args, nil
+
+}
+
+func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["deletedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deletedAt"] = arg3
+	var arg4 []byte
+	if tmp, ok := rawArgs["sigchain"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg4 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sigchain"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg5
+	var arg6 []*entity.Device
+	if tmp, ok := rawArgs["devices"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg6 = make([]*entity.Device, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.Device
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
+				arg6[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["devices"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg7, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg7
+	var arg8 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
+		var err error
+		arg8, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayStatus"] = arg8
+	var arg9 string
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+		var err error
+		arg9, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayName"] = arg9
+	var arg10 string
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
+		var err error
+		arg10, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayStatus"] = arg10
+	return args, nil
+
+}
+
+func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["deletedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deletedAt"] = arg3
+	var arg4 []byte
+	if tmp, ok := rawArgs["sigchain"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg4 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sigchain"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg5
+	var arg6 []*entity.Device
+	if tmp, ok := rawArgs["devices"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg6 = make([]*entity.Device, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.Device
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
+				arg6[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["devices"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg7, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg7
+	var arg8 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
+		var err error
+		arg8, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayStatus"] = arg8
+	var arg9 string
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+		var err error
+		arg9, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayName"] = arg9
+	var arg10 string
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
+		var err error
+		arg10, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayStatus"] = arg10
+	return args, nil
+
+}
+
+func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["deletedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deletedAt"] = arg3
+	var arg4 []byte
+	if tmp, ok := rawArgs["sigchain"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg4 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sigchain"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg5
+	var arg6 []*entity.Device
+	if tmp, ok := rawArgs["devices"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg6 = make([]*entity.Device, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.Device
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
+				arg6[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["devices"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg7, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg7
+	var arg8 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
+		var err error
+		arg8, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayStatus"] = arg8
+	var arg9 string
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+		var err error
+		arg9, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayName"] = arg9
+	var arg10 string
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
+		var err error
+		arg10, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayStatus"] = arg10
+	return args, nil
+
+}
+
+func field_Mutation_ConversationCreate_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 []*entity.Contact
+	if tmp, ok := rawArgs["contacts"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg0 = make([]*entity.Contact, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.Contact
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityContactInput(rawIf1[idx1])
+				arg0[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["contacts"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["title"]; ok {
+		var err error
+		arg1, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["title"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["topic"]; ok {
+		var err error
+		arg2, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topic"] = arg2
+	return args, nil
+
+}
+
+func field_Mutation_ConversationInvite_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Conversation
+	if tmp, ok := rawArgs["conversation"]; ok {
+		var err error
+		var ptr1 entity.Conversation
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["conversation"] = arg0
+	var arg1 []*entity.ConversationMember
+	if tmp, ok := rawArgs["members"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg1 = make([]*entity.ConversationMember, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.ConversationMember
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
+				arg1[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["members"] = arg1
+	return args, nil
+
+}
+
+func field_Mutation_ConversationExclude_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Conversation
+	if tmp, ok := rawArgs["conversation"]; ok {
+		var err error
+		var ptr1 entity.Conversation
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["conversation"] = arg0
+	var arg1 []*entity.ConversationMember
+	if tmp, ok := rawArgs["members"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg1 = make([]*entity.ConversationMember, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.ConversationMember
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
+				arg1[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["members"] = arg1
+	return args, nil
+
+}
+
+func field_Mutation_ConversationAddMessage_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Conversation
+	if tmp, ok := rawArgs["conversation"]; ok {
+		var err error
+		var ptr1 entity.Conversation
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["conversation"] = arg0
+	var arg1 *entity.Message
+	if tmp, ok := rawArgs["message"]; ok {
+		var err error
+		var ptr1 entity.Message
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityMessageInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["message"] = arg1
+	return args, nil
+
+}
+
+func field_Mutation_GenerateFakeData_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_Node_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+
+}
+
+func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 uint32
+	if tmp, ok := rawArgs["limit"]; ok {
+		var err error
+		arg0, err = models.UnmarshalUint32(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["limit"] = arg0
+	var arg1 *p2p.Event
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 p2p.Event
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyP2pEventInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg1
+	return args, nil
+
+}
+
+func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["senderId"]; ok {
+		var err error
+		arg1, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["senderId"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg3
+	var arg4 *time.Time
+	if tmp, ok := rawArgs["deletedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deletedAt"] = arg4
+	var arg5 *time.Time
+	if tmp, ok := rawArgs["sentAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sentAt"] = arg5
+	var arg6 *time.Time
+	if tmp, ok := rawArgs["receivedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg6 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["receivedAt"] = arg6
+	var arg7 *time.Time
+	if tmp, ok := rawArgs["ackedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg7 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["ackedAt"] = arg7
+	var arg8 *int32
+	if tmp, ok := rawArgs["direction"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg8 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["direction"] = arg8
+	var arg9 uint32
+	if tmp, ok := rawArgs["senderApiVersion"]; ok {
+		var err error
+		arg9, err = models.UnmarshalUint32(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["senderApiVersion"] = arg9
+	var arg10 uint32
+	if tmp, ok := rawArgs["receiverApiVersion"]; ok {
+		var err error
+		arg10, err = models.UnmarshalUint32(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["receiverApiVersion"] = arg10
+	var arg11 string
+	if tmp, ok := rawArgs["receiverId"]; ok {
+		var err error
+		arg11, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["receiverId"] = arg11
+	var arg12 *int32
+	if tmp, ok := rawArgs["kind"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg12 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["kind"] = arg12
+	var arg13 []byte
+	if tmp, ok := rawArgs["attributes"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg13 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg13[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["attributes"] = arg13
+	var arg14 string
+	if tmp, ok := rawArgs["conversationId"]; ok {
+		var err error
+		arg14, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["conversationId"] = arg14
+	return args, nil
+
+}
+
+func field_Query_ContactList_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Contact
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 entity.Contact
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	return args, nil
+
+}
+
+func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["deletedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deletedAt"] = arg3
+	var arg4 []byte
+	if tmp, ok := rawArgs["sigchain"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg4 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sigchain"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg5
+	var arg6 []*entity.Device
+	if tmp, ok := rawArgs["devices"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg6 = make([]*entity.Device, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.Device
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
+				arg6[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["devices"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg7, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg7
+	var arg8 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
+		var err error
+		arg8, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayStatus"] = arg8
+	var arg9 string
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+		var err error
+		arg9, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayName"] = arg9
+	var arg10 string
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
+		var err error
+		arg10, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayStatus"] = arg10
+	return args, nil
+
+}
+
+func field_Query_ConversationList_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Conversation
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 entity.Conversation
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	return args, nil
+
+}
+
+func field_Query_GetConversation_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["deletedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deletedAt"] = arg3
+	var arg4 string
+	if tmp, ok := rawArgs["title"]; ok {
+		var err error
+		arg4, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["title"] = arg4
+	var arg5 string
+	if tmp, ok := rawArgs["topic"]; ok {
+		var err error
+		arg5, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topic"] = arg5
+	var arg6 []*entity.ConversationMember
+	if tmp, ok := rawArgs["members"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg6 = make([]*entity.ConversationMember, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.ConversationMember
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
+				arg6[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["members"] = arg6
+	return args, nil
+
+}
+
+func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["deletedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deletedAt"] = arg3
+	var arg4 *int32
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg4
+	var arg5 *entity.Contact
+	if tmp, ok := rawArgs["contact"]; ok {
+		var err error
+		var ptr1 entity.Contact
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["contact"] = arg5
+	var arg6 string
+	if tmp, ok := rawArgs["conversationId"]; ok {
+		var err error
+		arg6, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["conversationId"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["contactId"]; ok {
+		var err error
+		arg7, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["contactId"] = arg7
+	return args, nil
+
+}
+
+func field_Query___type_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+
+}
+
+func field_Subscription_EventStream_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *p2p.Event
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 p2p.Event
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyP2pEventInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	return args, nil
+
+}
+
+func field___Type_fields_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalBoolean(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["includeDeprecated"] = arg0
+	return args, nil
+
+}
+
+func field___Type_enumValues_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["includeDeprecated"]; ok {
+		var err error
+		arg0, err = graphql.UnmarshalBoolean(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["includeDeprecated"] = arg0
+	return args, nil
+
+}
+
 type executableSchema struct {
 	resolvers  ResolverRoot
 	directives DirectiveRoot
+	complexity ComplexityRoot
 }
 
 func (e *executableSchema) Schema() *ast.Schema {
 	return parsedSchema
+}
+
+func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]interface{}) (int, bool) {
+	switch typeName + "." + field {
+
+	case "BertyEntityContact.id":
+		if e.complexity.BertyEntityContact.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.Id(childComplexity), true
+
+	case "BertyEntityContact.createdAt":
+		if e.complexity.BertyEntityContact.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.CreatedAt(childComplexity), true
+
+	case "BertyEntityContact.updatedAt":
+		if e.complexity.BertyEntityContact.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.UpdatedAt(childComplexity), true
+
+	case "BertyEntityContact.deletedAt":
+		if e.complexity.BertyEntityContact.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.DeletedAt(childComplexity), true
+
+	case "BertyEntityContact.sigchain":
+		if e.complexity.BertyEntityContact.Sigchain == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.Sigchain(childComplexity), true
+
+	case "BertyEntityContact.status":
+		if e.complexity.BertyEntityContact.Status == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.Status(childComplexity), true
+
+	case "BertyEntityContact.devices":
+		if e.complexity.BertyEntityContact.Devices == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.Devices(childComplexity), true
+
+	case "BertyEntityContact.displayName":
+		if e.complexity.BertyEntityContact.DisplayName == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.DisplayName(childComplexity), true
+
+	case "BertyEntityContact.displayStatus":
+		if e.complexity.BertyEntityContact.DisplayStatus == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.DisplayStatus(childComplexity), true
+
+	case "BertyEntityContact.overrideDisplayName":
+		if e.complexity.BertyEntityContact.OverrideDisplayName == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.OverrideDisplayName(childComplexity), true
+
+	case "BertyEntityContact.overrideDisplayStatus":
+		if e.complexity.BertyEntityContact.OverrideDisplayStatus == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContact.OverrideDisplayStatus(childComplexity), true
+
+	case "BertyEntityContactPayload.id":
+		if e.complexity.BertyEntityContactPayload.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.Id(childComplexity), true
+
+	case "BertyEntityContactPayload.createdAt":
+		if e.complexity.BertyEntityContactPayload.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.CreatedAt(childComplexity), true
+
+	case "BertyEntityContactPayload.updatedAt":
+		if e.complexity.BertyEntityContactPayload.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.UpdatedAt(childComplexity), true
+
+	case "BertyEntityContactPayload.deletedAt":
+		if e.complexity.BertyEntityContactPayload.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.DeletedAt(childComplexity), true
+
+	case "BertyEntityContactPayload.sigchain":
+		if e.complexity.BertyEntityContactPayload.Sigchain == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.Sigchain(childComplexity), true
+
+	case "BertyEntityContactPayload.status":
+		if e.complexity.BertyEntityContactPayload.Status == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.Status(childComplexity), true
+
+	case "BertyEntityContactPayload.devices":
+		if e.complexity.BertyEntityContactPayload.Devices == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.Devices(childComplexity), true
+
+	case "BertyEntityContactPayload.displayName":
+		if e.complexity.BertyEntityContactPayload.DisplayName == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.DisplayName(childComplexity), true
+
+	case "BertyEntityContactPayload.displayStatus":
+		if e.complexity.BertyEntityContactPayload.DisplayStatus == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.DisplayStatus(childComplexity), true
+
+	case "BertyEntityContactPayload.overrideDisplayName":
+		if e.complexity.BertyEntityContactPayload.OverrideDisplayName == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.OverrideDisplayName(childComplexity), true
+
+	case "BertyEntityContactPayload.overrideDisplayStatus":
+		if e.complexity.BertyEntityContactPayload.OverrideDisplayStatus == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityContactPayload.OverrideDisplayStatus(childComplexity), true
+
+	case "BertyEntityConversation.id":
+		if e.complexity.BertyEntityConversation.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.Id(childComplexity), true
+
+	case "BertyEntityConversation.createdAt":
+		if e.complexity.BertyEntityConversation.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.CreatedAt(childComplexity), true
+
+	case "BertyEntityConversation.updatedAt":
+		if e.complexity.BertyEntityConversation.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.UpdatedAt(childComplexity), true
+
+	case "BertyEntityConversation.deletedAt":
+		if e.complexity.BertyEntityConversation.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.DeletedAt(childComplexity), true
+
+	case "BertyEntityConversation.title":
+		if e.complexity.BertyEntityConversation.Title == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.Title(childComplexity), true
+
+	case "BertyEntityConversation.topic":
+		if e.complexity.BertyEntityConversation.Topic == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.Topic(childComplexity), true
+
+	case "BertyEntityConversation.members":
+		if e.complexity.BertyEntityConversation.Members == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.Members(childComplexity), true
+
+	case "BertyEntityConversationMember.id":
+		if e.complexity.BertyEntityConversationMember.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.Id(childComplexity), true
+
+	case "BertyEntityConversationMember.createdAt":
+		if e.complexity.BertyEntityConversationMember.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.CreatedAt(childComplexity), true
+
+	case "BertyEntityConversationMember.updatedAt":
+		if e.complexity.BertyEntityConversationMember.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.UpdatedAt(childComplexity), true
+
+	case "BertyEntityConversationMember.deletedAt":
+		if e.complexity.BertyEntityConversationMember.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.DeletedAt(childComplexity), true
+
+	case "BertyEntityConversationMember.status":
+		if e.complexity.BertyEntityConversationMember.Status == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.Status(childComplexity), true
+
+	case "BertyEntityConversationMember.contact":
+		if e.complexity.BertyEntityConversationMember.Contact == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.Contact(childComplexity), true
+
+	case "BertyEntityConversationMember.conversationId":
+		if e.complexity.BertyEntityConversationMember.ConversationId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.ConversationId(childComplexity), true
+
+	case "BertyEntityConversationMember.contactId":
+		if e.complexity.BertyEntityConversationMember.ContactId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.ContactId(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.id":
+		if e.complexity.BertyEntityConversationMemberPayload.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.createdAt":
+		if e.complexity.BertyEntityConversationMemberPayload.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.CreatedAt(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.updatedAt":
+		if e.complexity.BertyEntityConversationMemberPayload.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.UpdatedAt(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.deletedAt":
+		if e.complexity.BertyEntityConversationMemberPayload.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.DeletedAt(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.status":
+		if e.complexity.BertyEntityConversationMemberPayload.Status == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.Status(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.contact":
+		if e.complexity.BertyEntityConversationMemberPayload.Contact == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.Contact(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.conversationId":
+		if e.complexity.BertyEntityConversationMemberPayload.ConversationId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.ConversationId(childComplexity), true
+
+	case "BertyEntityConversationMemberPayload.contactId":
+		if e.complexity.BertyEntityConversationMemberPayload.ContactId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberPayload.ContactId(childComplexity), true
+
+	case "BertyEntityConversationPayload.id":
+		if e.complexity.BertyEntityConversationPayload.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationPayload.Id(childComplexity), true
+
+	case "BertyEntityConversationPayload.createdAt":
+		if e.complexity.BertyEntityConversationPayload.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationPayload.CreatedAt(childComplexity), true
+
+	case "BertyEntityConversationPayload.updatedAt":
+		if e.complexity.BertyEntityConversationPayload.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationPayload.UpdatedAt(childComplexity), true
+
+	case "BertyEntityConversationPayload.deletedAt":
+		if e.complexity.BertyEntityConversationPayload.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationPayload.DeletedAt(childComplexity), true
+
+	case "BertyEntityConversationPayload.title":
+		if e.complexity.BertyEntityConversationPayload.Title == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationPayload.Title(childComplexity), true
+
+	case "BertyEntityConversationPayload.topic":
+		if e.complexity.BertyEntityConversationPayload.Topic == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationPayload.Topic(childComplexity), true
+
+	case "BertyEntityConversationPayload.members":
+		if e.complexity.BertyEntityConversationPayload.Members == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationPayload.Members(childComplexity), true
+
+	case "BertyEntityDevice.id":
+		if e.complexity.BertyEntityDevice.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.Id(childComplexity), true
+
+	case "BertyEntityDevice.createdAt":
+		if e.complexity.BertyEntityDevice.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.CreatedAt(childComplexity), true
+
+	case "BertyEntityDevice.updatedAt":
+		if e.complexity.BertyEntityDevice.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.UpdatedAt(childComplexity), true
+
+	case "BertyEntityDevice.deletedAt":
+		if e.complexity.BertyEntityDevice.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.DeletedAt(childComplexity), true
+
+	case "BertyEntityDevice.name":
+		if e.complexity.BertyEntityDevice.Name == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.Name(childComplexity), true
+
+	case "BertyEntityDevice.status":
+		if e.complexity.BertyEntityDevice.Status == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.Status(childComplexity), true
+
+	case "BertyEntityDevice.apiVersion":
+		if e.complexity.BertyEntityDevice.ApiVersion == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.ApiVersion(childComplexity), true
+
+	case "BertyEntityDevice.contactId":
+		if e.complexity.BertyEntityDevice.ContactId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.ContactId(childComplexity), true
+
+	case "BertyEntityMessage.text":
+		if e.complexity.BertyEntityMessage.Text == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityMessage.Text(childComplexity), true
+
+	case "BertyEntitySenderAlias.id":
+		if e.complexity.BertyEntitySenderAlias.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.Id(childComplexity), true
+
+	case "BertyEntitySenderAlias.createdAt":
+		if e.complexity.BertyEntitySenderAlias.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.CreatedAt(childComplexity), true
+
+	case "BertyEntitySenderAlias.updatedAt":
+		if e.complexity.BertyEntitySenderAlias.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.UpdatedAt(childComplexity), true
+
+	case "BertyEntitySenderAlias.deletedAt":
+		if e.complexity.BertyEntitySenderAlias.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.DeletedAt(childComplexity), true
+
+	case "BertyEntitySenderAlias.status":
+		if e.complexity.BertyEntitySenderAlias.Status == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.Status(childComplexity), true
+
+	case "BertyEntitySenderAlias.originDeviceId":
+		if e.complexity.BertyEntitySenderAlias.OriginDeviceId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.OriginDeviceId(childComplexity), true
+
+	case "BertyEntitySenderAlias.contactId":
+		if e.complexity.BertyEntitySenderAlias.ContactId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.ContactId(childComplexity), true
+
+	case "BertyEntitySenderAlias.conversationId":
+		if e.complexity.BertyEntitySenderAlias.ConversationId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.ConversationId(childComplexity), true
+
+	case "BertyEntitySenderAlias.aliasIdentifier":
+		if e.complexity.BertyEntitySenderAlias.AliasIdentifier == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.AliasIdentifier(childComplexity), true
+
+	case "BertyEntitySenderAlias.used":
+		if e.complexity.BertyEntitySenderAlias.Used == nil {
+			break
+		}
+
+		return e.complexity.BertyEntitySenderAlias.Used(childComplexity), true
+
+	case "BertyNodePingDestination.destination":
+		if e.complexity.BertyNodePingDestination.Destination == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePingDestination.Destination(childComplexity), true
+
+	case "BertyNodeVoid.T":
+		if e.complexity.BertyNodeVoid.T == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeVoid.T(childComplexity), true
+
+	case "BertyNodeVoidPayload.T":
+		if e.complexity.BertyNodeVoidPayload.T == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeVoidPayload.T(childComplexity), true
+
+	case "BertyP2pAckAttrs.ids":
+		if e.complexity.BertyP2pAckAttrs.Ids == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pAckAttrs.Ids(childComplexity), true
+
+	case "BertyP2pAckAttrs.ErrMsg":
+		if e.complexity.BertyP2pAckAttrs.ErrMsg == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pAckAttrs.ErrMsg(childComplexity), true
+
+	case "BertyP2pContactRequestAcceptedAttrs.T":
+		if e.complexity.BertyP2pContactRequestAcceptedAttrs.T == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pContactRequestAcceptedAttrs.T(childComplexity), true
+
+	case "BertyP2pContactRequestAttrs.me":
+		if e.complexity.BertyP2pContactRequestAttrs.Me == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pContactRequestAttrs.Me(childComplexity), true
+
+	case "BertyP2pContactRequestAttrs.introText":
+		if e.complexity.BertyP2pContactRequestAttrs.IntroText == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pContactRequestAttrs.IntroText(childComplexity), true
+
+	case "BertyP2pContactShareAttrs.contact":
+		if e.complexity.BertyP2pContactShareAttrs.Contact == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pContactShareAttrs.Contact(childComplexity), true
+
+	case "BertyP2pContactShareMeAttrs.me":
+		if e.complexity.BertyP2pContactShareMeAttrs.Me == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pContactShareMeAttrs.Me(childComplexity), true
+
+	case "BertyP2pConversationInviteAttrs.conversation":
+		if e.complexity.BertyP2pConversationInviteAttrs.Conversation == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pConversationInviteAttrs.Conversation(childComplexity), true
+
+	case "BertyP2pConversationNewMessageAttrs.message":
+		if e.complexity.BertyP2pConversationNewMessageAttrs.Message == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pConversationNewMessageAttrs.Message(childComplexity), true
+
+	case "BertyP2pDevtoolsMapsetAttrs.key":
+		if e.complexity.BertyP2pDevtoolsMapsetAttrs.Key == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pDevtoolsMapsetAttrs.Key(childComplexity), true
+
+	case "BertyP2pDevtoolsMapsetAttrs.val":
+		if e.complexity.BertyP2pDevtoolsMapsetAttrs.Val == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pDevtoolsMapsetAttrs.Val(childComplexity), true
+
+	case "BertyP2pEvent.id":
+		if e.complexity.BertyP2pEvent.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.Id(childComplexity), true
+
+	case "BertyP2pEvent.senderId":
+		if e.complexity.BertyP2pEvent.SenderId == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.SenderId(childComplexity), true
+
+	case "BertyP2pEvent.createdAt":
+		if e.complexity.BertyP2pEvent.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.CreatedAt(childComplexity), true
+
+	case "BertyP2pEvent.updatedAt":
+		if e.complexity.BertyP2pEvent.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.UpdatedAt(childComplexity), true
+
+	case "BertyP2pEvent.deletedAt":
+		if e.complexity.BertyP2pEvent.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.DeletedAt(childComplexity), true
+
+	case "BertyP2pEvent.sentAt":
+		if e.complexity.BertyP2pEvent.SentAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.SentAt(childComplexity), true
+
+	case "BertyP2pEvent.receivedAt":
+		if e.complexity.BertyP2pEvent.ReceivedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.ReceivedAt(childComplexity), true
+
+	case "BertyP2pEvent.ackedAt":
+		if e.complexity.BertyP2pEvent.AckedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.AckedAt(childComplexity), true
+
+	case "BertyP2pEvent.direction":
+		if e.complexity.BertyP2pEvent.Direction == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.Direction(childComplexity), true
+
+	case "BertyP2pEvent.senderApiVersion":
+		if e.complexity.BertyP2pEvent.SenderApiVersion == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.SenderApiVersion(childComplexity), true
+
+	case "BertyP2pEvent.receiverApiVersion":
+		if e.complexity.BertyP2pEvent.ReceiverApiVersion == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.ReceiverApiVersion(childComplexity), true
+
+	case "BertyP2pEvent.receiverId":
+		if e.complexity.BertyP2pEvent.ReceiverId == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.ReceiverId(childComplexity), true
+
+	case "BertyP2pEvent.kind":
+		if e.complexity.BertyP2pEvent.Kind == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.Kind(childComplexity), true
+
+	case "BertyP2pEvent.attributes":
+		if e.complexity.BertyP2pEvent.Attributes == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.Attributes(childComplexity), true
+
+	case "BertyP2pEvent.conversationId":
+		if e.complexity.BertyP2pEvent.ConversationId == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.ConversationId(childComplexity), true
+
+	case "BertyP2pEventPayload.id":
+		if e.complexity.BertyP2pEventPayload.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.Id(childComplexity), true
+
+	case "BertyP2pEventPayload.senderId":
+		if e.complexity.BertyP2pEventPayload.SenderId == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.SenderId(childComplexity), true
+
+	case "BertyP2pEventPayload.createdAt":
+		if e.complexity.BertyP2pEventPayload.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.CreatedAt(childComplexity), true
+
+	case "BertyP2pEventPayload.updatedAt":
+		if e.complexity.BertyP2pEventPayload.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.UpdatedAt(childComplexity), true
+
+	case "BertyP2pEventPayload.deletedAt":
+		if e.complexity.BertyP2pEventPayload.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.DeletedAt(childComplexity), true
+
+	case "BertyP2pEventPayload.sentAt":
+		if e.complexity.BertyP2pEventPayload.SentAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.SentAt(childComplexity), true
+
+	case "BertyP2pEventPayload.receivedAt":
+		if e.complexity.BertyP2pEventPayload.ReceivedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.ReceivedAt(childComplexity), true
+
+	case "BertyP2pEventPayload.ackedAt":
+		if e.complexity.BertyP2pEventPayload.AckedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.AckedAt(childComplexity), true
+
+	case "BertyP2pEventPayload.direction":
+		if e.complexity.BertyP2pEventPayload.Direction == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.Direction(childComplexity), true
+
+	case "BertyP2pEventPayload.senderApiVersion":
+		if e.complexity.BertyP2pEventPayload.SenderApiVersion == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.SenderApiVersion(childComplexity), true
+
+	case "BertyP2pEventPayload.receiverApiVersion":
+		if e.complexity.BertyP2pEventPayload.ReceiverApiVersion == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.ReceiverApiVersion(childComplexity), true
+
+	case "BertyP2pEventPayload.receiverId":
+		if e.complexity.BertyP2pEventPayload.ReceiverId == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.ReceiverId(childComplexity), true
+
+	case "BertyP2pEventPayload.kind":
+		if e.complexity.BertyP2pEventPayload.Kind == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.Kind(childComplexity), true
+
+	case "BertyP2pEventPayload.attributes":
+		if e.complexity.BertyP2pEventPayload.Attributes == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.Attributes(childComplexity), true
+
+	case "BertyP2pEventPayload.conversationId":
+		if e.complexity.BertyP2pEventPayload.ConversationId == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.ConversationId(childComplexity), true
+
+	case "BertyP2pPingAttrs.T":
+		if e.complexity.BertyP2pPingAttrs.T == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPingAttrs.T(childComplexity), true
+
+	case "BertyP2pSenderAliasUpdateAttrs.aliases":
+		if e.complexity.BertyP2pSenderAliasUpdateAttrs.Aliases == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pSenderAliasUpdateAttrs.Aliases(childComplexity), true
+
+	case "BertyP2pSentAttrs.ids":
+		if e.complexity.BertyP2pSentAttrs.Ids == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pSentAttrs.Ids(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.name":
+		if e.complexity.GoogleProtobufDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.field":
+		if e.complexity.GoogleProtobufDescriptorProto.Field == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.Field(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.extension":
+		if e.complexity.GoogleProtobufDescriptorProto.Extension == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.Extension(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.nestedType":
+		if e.complexity.GoogleProtobufDescriptorProto.NestedType == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.NestedType(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.enumType":
+		if e.complexity.GoogleProtobufDescriptorProto.EnumType == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.EnumType(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.extensionRange":
+		if e.complexity.GoogleProtobufDescriptorProto.ExtensionRange == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.ExtensionRange(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.oneofDecl":
+		if e.complexity.GoogleProtobufDescriptorProto.OneofDecl == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.OneofDecl(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.options":
+		if e.complexity.GoogleProtobufDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.reservedRange":
+		if e.complexity.GoogleProtobufDescriptorProto.ReservedRange == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.ReservedRange(childComplexity), true
+
+	case "GoogleProtobufDescriptorProto.reservedName":
+		if e.complexity.GoogleProtobufDescriptorProto.ReservedName == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProto.ReservedName(childComplexity), true
+
+	case "GoogleProtobufDescriptorProtoExtensionRange.start":
+		if e.complexity.GoogleProtobufDescriptorProtoExtensionRange.Start == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProtoExtensionRange.Start(childComplexity), true
+
+	case "GoogleProtobufDescriptorProtoExtensionRange.end":
+		if e.complexity.GoogleProtobufDescriptorProtoExtensionRange.End == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProtoExtensionRange.End(childComplexity), true
+
+	case "GoogleProtobufDescriptorProtoExtensionRange.options":
+		if e.complexity.GoogleProtobufDescriptorProtoExtensionRange.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProtoExtensionRange.Options(childComplexity), true
+
+	case "GoogleProtobufDescriptorProtoReservedRange.start":
+		if e.complexity.GoogleProtobufDescriptorProtoReservedRange.Start == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProtoReservedRange.Start(childComplexity), true
+
+	case "GoogleProtobufDescriptorProtoReservedRange.end":
+		if e.complexity.GoogleProtobufDescriptorProtoReservedRange.End == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufDescriptorProtoReservedRange.End(childComplexity), true
+
+	case "GoogleProtobufEnumDescriptorProto.name":
+		if e.complexity.GoogleProtobufEnumDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufEnumDescriptorProto.value":
+		if e.complexity.GoogleProtobufEnumDescriptorProto.Value == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumDescriptorProto.Value(childComplexity), true
+
+	case "GoogleProtobufEnumDescriptorProto.options":
+		if e.complexity.GoogleProtobufEnumDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufEnumDescriptorProto.reservedRange":
+		if e.complexity.GoogleProtobufEnumDescriptorProto.ReservedRange == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumDescriptorProto.ReservedRange(childComplexity), true
+
+	case "GoogleProtobufEnumDescriptorProto.reservedName":
+		if e.complexity.GoogleProtobufEnumDescriptorProto.ReservedName == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumDescriptorProto.ReservedName(childComplexity), true
+
+	case "GoogleProtobufEnumDescriptorProtoEnumReservedRange.start":
+		if e.complexity.GoogleProtobufEnumDescriptorProtoEnumReservedRange.Start == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumDescriptorProtoEnumReservedRange.Start(childComplexity), true
+
+	case "GoogleProtobufEnumDescriptorProtoEnumReservedRange.end":
+		if e.complexity.GoogleProtobufEnumDescriptorProtoEnumReservedRange.End == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumDescriptorProtoEnumReservedRange.End(childComplexity), true
+
+	case "GoogleProtobufEnumOptions.allowAlias":
+		if e.complexity.GoogleProtobufEnumOptions.AllowAlias == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumOptions.AllowAlias(childComplexity), true
+
+	case "GoogleProtobufEnumOptions.deprecated":
+		if e.complexity.GoogleProtobufEnumOptions.Deprecated == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumOptions.Deprecated(childComplexity), true
+
+	case "GoogleProtobufEnumOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufEnumOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufEnumValueDescriptorProto.name":
+		if e.complexity.GoogleProtobufEnumValueDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumValueDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufEnumValueDescriptorProto.number":
+		if e.complexity.GoogleProtobufEnumValueDescriptorProto.Number == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumValueDescriptorProto.Number(childComplexity), true
+
+	case "GoogleProtobufEnumValueDescriptorProto.options":
+		if e.complexity.GoogleProtobufEnumValueDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumValueDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufEnumValueOptions.deprecated":
+		if e.complexity.GoogleProtobufEnumValueOptions.Deprecated == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumValueOptions.Deprecated(childComplexity), true
+
+	case "GoogleProtobufEnumValueOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufEnumValueOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufEnumValueOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufExtensionRangeOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufExtensionRangeOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufExtensionRangeOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.name":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.number":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.Number == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.Number(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.label":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.Label == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.Label(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.type":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.Type == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.Type(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.typeName":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.TypeName == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.TypeName(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.extendee":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.Extendee == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.Extendee(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.defaultValue":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.DefaultValue == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.DefaultValue(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.oneofIndex":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.OneofIndex == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.OneofIndex(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.jsonName":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.JsonName == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.JsonName(childComplexity), true
+
+	case "GoogleProtobufFieldDescriptorProto.options":
+		if e.complexity.GoogleProtobufFieldDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufFieldOptions.ctype":
+		if e.complexity.GoogleProtobufFieldOptions.Ctype == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldOptions.Ctype(childComplexity), true
+
+	case "GoogleProtobufFieldOptions.packed":
+		if e.complexity.GoogleProtobufFieldOptions.Packed == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldOptions.Packed(childComplexity), true
+
+	case "GoogleProtobufFieldOptions.jstype":
+		if e.complexity.GoogleProtobufFieldOptions.Jstype == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldOptions.Jstype(childComplexity), true
+
+	case "GoogleProtobufFieldOptions.lazy":
+		if e.complexity.GoogleProtobufFieldOptions.Lazy == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldOptions.Lazy(childComplexity), true
+
+	case "GoogleProtobufFieldOptions.deprecated":
+		if e.complexity.GoogleProtobufFieldOptions.Deprecated == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldOptions.Deprecated(childComplexity), true
+
+	case "GoogleProtobufFieldOptions.weak":
+		if e.complexity.GoogleProtobufFieldOptions.Weak == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldOptions.Weak(childComplexity), true
+
+	case "GoogleProtobufFieldOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufFieldOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFieldOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.name":
+		if e.complexity.GoogleProtobufFileDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.package":
+		if e.complexity.GoogleProtobufFileDescriptorProto.Package == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.Package(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.dependency":
+		if e.complexity.GoogleProtobufFileDescriptorProto.Dependency == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.Dependency(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.publicDependency":
+		if e.complexity.GoogleProtobufFileDescriptorProto.PublicDependency == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.PublicDependency(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.weakDependency":
+		if e.complexity.GoogleProtobufFileDescriptorProto.WeakDependency == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.WeakDependency(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.messageType":
+		if e.complexity.GoogleProtobufFileDescriptorProto.MessageType == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.MessageType(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.enumType":
+		if e.complexity.GoogleProtobufFileDescriptorProto.EnumType == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.EnumType(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.service":
+		if e.complexity.GoogleProtobufFileDescriptorProto.Service == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.Service(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.extension":
+		if e.complexity.GoogleProtobufFileDescriptorProto.Extension == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.Extension(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.options":
+		if e.complexity.GoogleProtobufFileDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.sourceCodeInfo":
+		if e.complexity.GoogleProtobufFileDescriptorProto.SourceCodeInfo == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.SourceCodeInfo(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorProto.syntax":
+		if e.complexity.GoogleProtobufFileDescriptorProto.Syntax == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorProto.Syntax(childComplexity), true
+
+	case "GoogleProtobufFileDescriptorSet.file":
+		if e.complexity.GoogleProtobufFileDescriptorSet.File == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileDescriptorSet.File(childComplexity), true
+
+	case "GoogleProtobufFileOptions.javaPackage":
+		if e.complexity.GoogleProtobufFileOptions.JavaPackage == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.JavaPackage(childComplexity), true
+
+	case "GoogleProtobufFileOptions.javaOuterClassname":
+		if e.complexity.GoogleProtobufFileOptions.JavaOuterClassname == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.JavaOuterClassname(childComplexity), true
+
+	case "GoogleProtobufFileOptions.javaMultipleFiles":
+		if e.complexity.GoogleProtobufFileOptions.JavaMultipleFiles == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.JavaMultipleFiles(childComplexity), true
+
+	case "GoogleProtobufFileOptions.javaGenerateEqualsAndHash":
+		if e.complexity.GoogleProtobufFileOptions.JavaGenerateEqualsAndHash == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.JavaGenerateEqualsAndHash(childComplexity), true
+
+	case "GoogleProtobufFileOptions.javaStringCheckUtf8":
+		if e.complexity.GoogleProtobufFileOptions.JavaStringCheckUtf8 == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.JavaStringCheckUtf8(childComplexity), true
+
+	case "GoogleProtobufFileOptions.optimizeFor":
+		if e.complexity.GoogleProtobufFileOptions.OptimizeFor == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.OptimizeFor(childComplexity), true
+
+	case "GoogleProtobufFileOptions.goPackage":
+		if e.complexity.GoogleProtobufFileOptions.GoPackage == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.GoPackage(childComplexity), true
+
+	case "GoogleProtobufFileOptions.ccGenericServices":
+		if e.complexity.GoogleProtobufFileOptions.CcGenericServices == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.CcGenericServices(childComplexity), true
+
+	case "GoogleProtobufFileOptions.javaGenericServices":
+		if e.complexity.GoogleProtobufFileOptions.JavaGenericServices == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.JavaGenericServices(childComplexity), true
+
+	case "GoogleProtobufFileOptions.pyGenericServices":
+		if e.complexity.GoogleProtobufFileOptions.PyGenericServices == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.PyGenericServices(childComplexity), true
+
+	case "GoogleProtobufFileOptions.phpGenericServices":
+		if e.complexity.GoogleProtobufFileOptions.PhpGenericServices == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.PhpGenericServices(childComplexity), true
+
+	case "GoogleProtobufFileOptions.deprecated":
+		if e.complexity.GoogleProtobufFileOptions.Deprecated == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.Deprecated(childComplexity), true
+
+	case "GoogleProtobufFileOptions.ccEnableArenas":
+		if e.complexity.GoogleProtobufFileOptions.CcEnableArenas == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.CcEnableArenas(childComplexity), true
+
+	case "GoogleProtobufFileOptions.objcClassPrefix":
+		if e.complexity.GoogleProtobufFileOptions.ObjcClassPrefix == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.ObjcClassPrefix(childComplexity), true
+
+	case "GoogleProtobufFileOptions.csharpNamespace":
+		if e.complexity.GoogleProtobufFileOptions.CsharpNamespace == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.CsharpNamespace(childComplexity), true
+
+	case "GoogleProtobufFileOptions.swiftPrefix":
+		if e.complexity.GoogleProtobufFileOptions.SwiftPrefix == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.SwiftPrefix(childComplexity), true
+
+	case "GoogleProtobufFileOptions.phpClassPrefix":
+		if e.complexity.GoogleProtobufFileOptions.PhpClassPrefix == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.PhpClassPrefix(childComplexity), true
+
+	case "GoogleProtobufFileOptions.phpNamespace":
+		if e.complexity.GoogleProtobufFileOptions.PhpNamespace == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.PhpNamespace(childComplexity), true
+
+	case "GoogleProtobufFileOptions.phpMetadataNamespace":
+		if e.complexity.GoogleProtobufFileOptions.PhpMetadataNamespace == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.PhpMetadataNamespace(childComplexity), true
+
+	case "GoogleProtobufFileOptions.rubyPackage":
+		if e.complexity.GoogleProtobufFileOptions.RubyPackage == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.RubyPackage(childComplexity), true
+
+	case "GoogleProtobufFileOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufFileOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufFileOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufGeneratedCodeInfo.annotation":
+		if e.complexity.GoogleProtobufGeneratedCodeInfo.Annotation == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufGeneratedCodeInfo.Annotation(childComplexity), true
+
+	case "GoogleProtobufGeneratedCodeInfoAnnotation.path":
+		if e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.Path == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.Path(childComplexity), true
+
+	case "GoogleProtobufGeneratedCodeInfoAnnotation.sourceFile":
+		if e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.SourceFile == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.SourceFile(childComplexity), true
+
+	case "GoogleProtobufGeneratedCodeInfoAnnotation.begin":
+		if e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.Begin == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.Begin(childComplexity), true
+
+	case "GoogleProtobufGeneratedCodeInfoAnnotation.end":
+		if e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.End == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufGeneratedCodeInfoAnnotation.End(childComplexity), true
+
+	case "GoogleProtobufMessageOptions.messageSetWireFormat":
+		if e.complexity.GoogleProtobufMessageOptions.MessageSetWireFormat == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMessageOptions.MessageSetWireFormat(childComplexity), true
+
+	case "GoogleProtobufMessageOptions.noStandardDescriptorAccessor":
+		if e.complexity.GoogleProtobufMessageOptions.NoStandardDescriptorAccessor == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMessageOptions.NoStandardDescriptorAccessor(childComplexity), true
+
+	case "GoogleProtobufMessageOptions.deprecated":
+		if e.complexity.GoogleProtobufMessageOptions.Deprecated == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMessageOptions.Deprecated(childComplexity), true
+
+	case "GoogleProtobufMessageOptions.mapEntry":
+		if e.complexity.GoogleProtobufMessageOptions.MapEntry == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMessageOptions.MapEntry(childComplexity), true
+
+	case "GoogleProtobufMessageOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufMessageOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMessageOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufMethodDescriptorProto.name":
+		if e.complexity.GoogleProtobufMethodDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufMethodDescriptorProto.inputType":
+		if e.complexity.GoogleProtobufMethodDescriptorProto.InputType == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodDescriptorProto.InputType(childComplexity), true
+
+	case "GoogleProtobufMethodDescriptorProto.outputType":
+		if e.complexity.GoogleProtobufMethodDescriptorProto.OutputType == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodDescriptorProto.OutputType(childComplexity), true
+
+	case "GoogleProtobufMethodDescriptorProto.options":
+		if e.complexity.GoogleProtobufMethodDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufMethodDescriptorProto.clientStreaming":
+		if e.complexity.GoogleProtobufMethodDescriptorProto.ClientStreaming == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodDescriptorProto.ClientStreaming(childComplexity), true
+
+	case "GoogleProtobufMethodDescriptorProto.serverStreaming":
+		if e.complexity.GoogleProtobufMethodDescriptorProto.ServerStreaming == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodDescriptorProto.ServerStreaming(childComplexity), true
+
+	case "GoogleProtobufMethodOptions.deprecated":
+		if e.complexity.GoogleProtobufMethodOptions.Deprecated == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodOptions.Deprecated(childComplexity), true
+
+	case "GoogleProtobufMethodOptions.idempotencyLevel":
+		if e.complexity.GoogleProtobufMethodOptions.IdempotencyLevel == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodOptions.IdempotencyLevel(childComplexity), true
+
+	case "GoogleProtobufMethodOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufMethodOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufMethodOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufOneofDescriptorProto.name":
+		if e.complexity.GoogleProtobufOneofDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufOneofDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufOneofDescriptorProto.options":
+		if e.complexity.GoogleProtobufOneofDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufOneofDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufOneofOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufOneofOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufOneofOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufServiceDescriptorProto.name":
+		if e.complexity.GoogleProtobufServiceDescriptorProto.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufServiceDescriptorProto.Name(childComplexity), true
+
+	case "GoogleProtobufServiceDescriptorProto.method":
+		if e.complexity.GoogleProtobufServiceDescriptorProto.Method == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufServiceDescriptorProto.Method(childComplexity), true
+
+	case "GoogleProtobufServiceDescriptorProto.options":
+		if e.complexity.GoogleProtobufServiceDescriptorProto.Options == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufServiceDescriptorProto.Options(childComplexity), true
+
+	case "GoogleProtobufServiceOptions.deprecated":
+		if e.complexity.GoogleProtobufServiceOptions.Deprecated == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufServiceOptions.Deprecated(childComplexity), true
+
+	case "GoogleProtobufServiceOptions.uninterpretedOption":
+		if e.complexity.GoogleProtobufServiceOptions.UninterpretedOption == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufServiceOptions.UninterpretedOption(childComplexity), true
+
+	case "GoogleProtobufSourceCodeInfo.location":
+		if e.complexity.GoogleProtobufSourceCodeInfo.Location == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufSourceCodeInfo.Location(childComplexity), true
+
+	case "GoogleProtobufSourceCodeInfoLocation.path":
+		if e.complexity.GoogleProtobufSourceCodeInfoLocation.Path == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufSourceCodeInfoLocation.Path(childComplexity), true
+
+	case "GoogleProtobufSourceCodeInfoLocation.span":
+		if e.complexity.GoogleProtobufSourceCodeInfoLocation.Span == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufSourceCodeInfoLocation.Span(childComplexity), true
+
+	case "GoogleProtobufSourceCodeInfoLocation.leadingComments":
+		if e.complexity.GoogleProtobufSourceCodeInfoLocation.LeadingComments == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufSourceCodeInfoLocation.LeadingComments(childComplexity), true
+
+	case "GoogleProtobufSourceCodeInfoLocation.trailingComments":
+		if e.complexity.GoogleProtobufSourceCodeInfoLocation.TrailingComments == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufSourceCodeInfoLocation.TrailingComments(childComplexity), true
+
+	case "GoogleProtobufSourceCodeInfoLocation.leadingDetachedComments":
+		if e.complexity.GoogleProtobufSourceCodeInfoLocation.LeadingDetachedComments == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufSourceCodeInfoLocation.LeadingDetachedComments(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOption.name":
+		if e.complexity.GoogleProtobufUninterpretedOption.Name == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOption.Name(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOption.identifierValue":
+		if e.complexity.GoogleProtobufUninterpretedOption.IdentifierValue == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOption.IdentifierValue(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOption.positiveIntValue":
+		if e.complexity.GoogleProtobufUninterpretedOption.PositiveIntValue == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOption.PositiveIntValue(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOption.negativeIntValue":
+		if e.complexity.GoogleProtobufUninterpretedOption.NegativeIntValue == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOption.NegativeIntValue(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOption.doubleValue":
+		if e.complexity.GoogleProtobufUninterpretedOption.DoubleValue == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOption.DoubleValue(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOption.stringValue":
+		if e.complexity.GoogleProtobufUninterpretedOption.StringValue == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOption.StringValue(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOption.aggregateValue":
+		if e.complexity.GoogleProtobufUninterpretedOption.AggregateValue == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOption.AggregateValue(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOptionNamePart.namePart":
+		if e.complexity.GoogleProtobufUninterpretedOptionNamePart.NamePart == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOptionNamePart.NamePart(childComplexity), true
+
+	case "GoogleProtobufUninterpretedOptionNamePart.isExtension":
+		if e.complexity.GoogleProtobufUninterpretedOptionNamePart.IsExtension == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufUninterpretedOptionNamePart.IsExtension(childComplexity), true
+
+	case "Mutation.ContactRequest":
+		if e.complexity.Mutation.ContactRequest == nil {
+			break
+		}
+
+		args, err := field_Mutation_ContactRequest_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ContactRequest(childComplexity, args["contact"].(*entity.Contact), args["introText"].(string)), true
+
+	case "Mutation.ContactAcceptRequest":
+		if e.complexity.Mutation.ContactAcceptRequest == nil {
+			break
+		}
+
+		args, err := field_Mutation_ContactAcceptRequest_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ContactAcceptRequest(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+
+	case "Mutation.ContactRemove":
+		if e.complexity.Mutation.ContactRemove == nil {
+			break
+		}
+
+		args, err := field_Mutation_ContactRemove_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ContactRemove(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+
+	case "Mutation.ContactUpdate":
+		if e.complexity.Mutation.ContactUpdate == nil {
+			break
+		}
+
+		args, err := field_Mutation_ContactUpdate_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ContactUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+
+	case "Mutation.ConversationCreate":
+		if e.complexity.Mutation.ConversationCreate == nil {
+			break
+		}
+
+		args, err := field_Mutation_ConversationCreate_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ConversationCreate(childComplexity, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string)), true
+
+	case "Mutation.ConversationInvite":
+		if e.complexity.Mutation.ConversationInvite == nil {
+			break
+		}
+
+		args, err := field_Mutation_ConversationInvite_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ConversationInvite(childComplexity, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember)), true
+
+	case "Mutation.ConversationExclude":
+		if e.complexity.Mutation.ConversationExclude == nil {
+			break
+		}
+
+		args, err := field_Mutation_ConversationExclude_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ConversationExclude(childComplexity, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember)), true
+
+	case "Mutation.ConversationAddMessage":
+		if e.complexity.Mutation.ConversationAddMessage == nil {
+			break
+		}
+
+		args, err := field_Mutation_ConversationAddMessage_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ConversationAddMessage(childComplexity, args["conversation"].(*entity.Conversation), args["message"].(*entity.Message)), true
+
+	case "Mutation.GenerateFakeData":
+		if e.complexity.Mutation.GenerateFakeData == nil {
+			break
+		}
+
+		args, err := field_Mutation_GenerateFakeData_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.GenerateFakeData(childComplexity, args["T"].(bool)), true
+
+	case "Query.Node":
+		if e.complexity.Query.Node == nil {
+			break
+		}
+
+		args, err := field_Query_Node_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Node(childComplexity, args["id"].(string)), true
+
+	case "Query.EventList":
+		if e.complexity.Query.EventList == nil {
+			break
+		}
+
+		args, err := field_Query_EventList_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.EventList(childComplexity, args["limit"].(uint32), args["filter"].(*p2p.Event)), true
+
+	case "Query.GetEvent":
+		if e.complexity.Query.GetEvent == nil {
+			break
+		}
+
+		args, err := field_Query_GetEvent_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string)), true
+
+	case "Query.ContactList":
+		if e.complexity.Query.ContactList == nil {
+			break
+		}
+
+		args, err := field_Query_ContactList_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ContactList(childComplexity, args["filter"].(*entity.Contact)), true
+
+	case "Query.GetContact":
+		if e.complexity.Query.GetContact == nil {
+			break
+		}
+
+		args, err := field_Query_GetContact_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetContact(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+
+	case "Query.ConversationList":
+		if e.complexity.Query.ConversationList == nil {
+			break
+		}
+
+		args, err := field_Query_ConversationList_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ConversationList(childComplexity, args["filter"].(*entity.Conversation)), true
+
+	case "Query.GetConversation":
+		if e.complexity.Query.GetConversation == nil {
+			break
+		}
+
+		args, err := field_Query_GetConversation_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetConversation(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember)), true
+
+	case "Query.GetConversationMember":
+		if e.complexity.Query.GetConversationMember == nil {
+			break
+		}
+
+		args, err := field_Query_GetConversationMember_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
+
+	case "Subscription.EventStream":
+		if e.complexity.Subscription.EventStream == nil {
+			break
+		}
+
+		args, err := field_Subscription_EventStream_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.EventStream(childComplexity, args["filter"].(*p2p.Event)), true
+
+	}
+	return 0, false
 }
 
 func (e *executableSchema) Query(ctx context.Context, op *ast.OperationDefinition) *graphql.Response {
@@ -150,9 +3860,9 @@ func (e *executableSchema) Query(ctx context.Context, op *ast.OperationDefinitio
 	})
 
 	return &graphql.Response{
-		Data:   buf,
-		Errors: ec.Errors,
-	}
+		Data:       buf,
+		Errors:     ec.Errors,
+		Extensions: ec.Extensions}
 }
 
 func (e *executableSchema) Mutation(ctx context.Context, op *ast.OperationDefinition) *graphql.Response {
@@ -166,8 +3876,9 @@ func (e *executableSchema) Mutation(ctx context.Context, op *ast.OperationDefini
 	})
 
 	return &graphql.Response{
-		Data:   buf,
-		Errors: ec.Errors,
+		Data:       buf,
+		Errors:     ec.Errors,
+		Extensions: ec.Extensions,
 	}
 }
 
@@ -192,9 +3903,14 @@ func (e *executableSchema) Subscription(ctx context.Context, op *ast.OperationDe
 			return buf.Bytes()
 		})
 
+		if buf == nil {
+			return nil
+		}
+
 		return &graphql.Response{
-			Data:   buf,
-			Errors: ec.Errors,
+			Data:       buf,
+			Errors:     ec.Errors,
+			Extensions: ec.Extensions,
 		}
 	}
 }
@@ -210,7 +3926,9 @@ var bertyEntityContactImplementors = []string{"BertyEntityContact", "Node"}
 func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.SelectionSet, obj *entity.Contact) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyEntityContactImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -218,7 +3936,14 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyEntityContact")
 		case "id":
-			out.Values[i] = ec._BertyEntityContact_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityContact_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "createdAt":
 			out.Values[i] = ec._BertyEntityContact_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -233,237 +3958,317 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 			out.Values[i] = ec._BertyEntityContact_devices(ctx, field, obj)
 		case "displayName":
 			out.Values[i] = ec._BertyEntityContact_displayName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "displayStatus":
 			out.Values[i] = ec._BertyEntityContact_displayStatus(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "overrideDisplayName":
 			out.Values[i] = ec._BertyEntityContact_overrideDisplayName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "overrideDisplayStatus":
 			out.Values[i] = ec._BertyEntityContact_overrideDisplayStatus(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_id(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityContact",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityContact().ID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyEntityContact().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_sigchain(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Sigchain, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalByte(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_status(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(entity.Contact_Status)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_devices(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Devices, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*entity.Device)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._BertyEntityDevice(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntityDevice(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_displayName(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DisplayName, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_displayStatus(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DisplayStatus, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_overrideDisplayName(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OverrideDisplayName, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContact_overrideDisplayStatus(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContact"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContact",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OverrideDisplayStatus, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -473,7 +4278,9 @@ var bertyEntityContactPayloadImplementors = []string{"BertyEntityContactPayload"
 func (ec *executionContext) _BertyEntityContactPayload(ctx context.Context, sel ast.SelectionSet, obj *entity.Contact) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyEntityContactPayloadImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -481,7 +4288,14 @@ func (ec *executionContext) _BertyEntityContactPayload(ctx context.Context, sel 
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyEntityContactPayload")
 		case "id":
-			out.Values[i] = ec._BertyEntityContactPayload_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityContactPayload_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "createdAt":
 			out.Values[i] = ec._BertyEntityContactPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -496,237 +4310,317 @@ func (ec *executionContext) _BertyEntityContactPayload(ctx context.Context, sel 
 			out.Values[i] = ec._BertyEntityContactPayload_devices(ctx, field, obj)
 		case "displayName":
 			out.Values[i] = ec._BertyEntityContactPayload_displayName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "displayStatus":
 			out.Values[i] = ec._BertyEntityContactPayload_displayStatus(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "overrideDisplayName":
 			out.Values[i] = ec._BertyEntityContactPayload_overrideDisplayName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "overrideDisplayStatus":
 			out.Values[i] = ec._BertyEntityContactPayload_overrideDisplayStatus(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_id(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityContactPayload",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityContactPayload().ID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyEntityContactPayload().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_sigchain(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Sigchain, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalByte(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_status(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(entity.Contact_Status)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_devices(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Devices, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*entity.Device)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._BertyEntityDevice(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntityDevice(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_displayName(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DisplayName, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_displayStatus(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DisplayStatus, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_overrideDisplayName(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OverrideDisplayName, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityContactPayload_overrideDisplayStatus(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityContactPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityContactPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OverrideDisplayStatus, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -736,7 +4630,9 @@ var bertyEntityConversationImplementors = []string{"BertyEntityConversation", "N
 func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel ast.SelectionSet, obj *entity.Conversation) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -744,7 +4640,14 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyEntityConversation")
 		case "id":
-			out.Values[i] = ec._BertyEntityConversation_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityConversation_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "createdAt":
 			out.Values[i] = ec._BertyEntityConversation_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -753,158 +4656,214 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 			out.Values[i] = ec._BertyEntityConversation_deletedAt(ctx, field, obj)
 		case "title":
 			out.Values[i] = ec._BertyEntityConversation_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "topic":
 			out.Values[i] = ec._BertyEntityConversation_topic(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "members":
 			out.Values[i] = ec._BertyEntityConversation_members(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_id(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConversation",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityConversation().ID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyEntityConversation().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_title(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Title, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_topic(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Topic, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_members(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Members, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*entity.ConversationMember)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._BertyEntityConversationMember(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntityConversationMember(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -914,7 +4873,9 @@ var bertyEntityConversationMemberImplementors = []string{"BertyEntityConversatio
 func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMember) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -922,7 +4883,14 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyEntityConversationMember")
 		case "id":
-			out.Values[i] = ec._BertyEntityConversationMember_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityConversationMember_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "createdAt":
 			out.Values[i] = ec._BertyEntityConversationMember_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -935,164 +4903,200 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 			out.Values[i] = ec._BertyEntityConversationMember_contact(ctx, field, obj)
 		case "conversationId":
 			out.Values[i] = ec._BertyEntityConversationMember_conversationId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "contactId":
 			out.Values[i] = ec._BertyEntityConversationMember_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConversationMember",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityConversationMember().ID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyEntityConversationMember().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_status(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(entity.ConversationMember_Status)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_contact(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Contact, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContact(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ConversationID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMember"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ContactID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -1102,7 +5106,9 @@ var bertyEntityConversationMemberPayloadImplementors = []string{"BertyEntityConv
 func (ec *executionContext) _BertyEntityConversationMemberPayload(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMember) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberPayloadImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1110,7 +5116,14 @@ func (ec *executionContext) _BertyEntityConversationMemberPayload(ctx context.Co
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberPayload")
 		case "id":
-			out.Values[i] = ec._BertyEntityConversationMemberPayload_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityConversationMemberPayload_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "createdAt":
 			out.Values[i] = ec._BertyEntityConversationMemberPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -1123,164 +5136,200 @@ func (ec *executionContext) _BertyEntityConversationMemberPayload(ctx context.Co
 			out.Values[i] = ec._BertyEntityConversationMemberPayload_contact(ctx, field, obj)
 		case "conversationId":
 			out.Values[i] = ec._BertyEntityConversationMemberPayload_conversationId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "contactId":
 			out.Values[i] = ec._BertyEntityConversationMemberPayload_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConversationMemberPayload",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityConversationMemberPayload().ID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyEntityConversationMemberPayload().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMemberPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMemberPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMemberPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_status(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMemberPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(entity.ConversationMember_Status)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_contact(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMemberPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Contact, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContact(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_conversationId(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMemberPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ConversationID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationMemberPayload_contactId(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationMemberPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ContactID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -1290,7 +5339,9 @@ var bertyEntityConversationPayloadImplementors = []string{"BertyEntityConversati
 func (ec *executionContext) _BertyEntityConversationPayload(ctx context.Context, sel ast.SelectionSet, obj *entity.Conversation) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationPayloadImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1298,7 +5349,14 @@ func (ec *executionContext) _BertyEntityConversationPayload(ctx context.Context,
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyEntityConversationPayload")
 		case "id":
-			out.Values[i] = ec._BertyEntityConversationPayload_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityConversationPayload_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "createdAt":
 			out.Values[i] = ec._BertyEntityConversationPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -1307,158 +5365,214 @@ func (ec *executionContext) _BertyEntityConversationPayload(ctx context.Context,
 			out.Values[i] = ec._BertyEntityConversationPayload_deletedAt(ctx, field, obj)
 		case "title":
 			out.Values[i] = ec._BertyEntityConversationPayload_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "topic":
 			out.Values[i] = ec._BertyEntityConversationPayload_topic(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "members":
 			out.Values[i] = ec._BertyEntityConversationPayload_members(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationPayload_id(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConversationPayload",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityConversationPayload().ID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyEntityConversationPayload().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationPayload_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationPayload_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationPayload_title(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Title, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationPayload_topic(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Topic, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversationPayload_members(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityConversationPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Members, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*entity.ConversationMember)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._BertyEntityConversationMember(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntityConversationMember(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -1468,7 +5582,9 @@ var bertyEntityDeviceImplementors = []string{"BertyEntityDevice", "Node"}
 func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.SelectionSet, obj *entity.Device) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyEntityDeviceImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1476,7 +5592,14 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyEntityDevice")
 		case "id":
-			out.Values[i] = ec._BertyEntityDevice_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityDevice_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "createdAt":
 			out.Values[i] = ec._BertyEntityDevice_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -1485,165 +5608,205 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 			out.Values[i] = ec._BertyEntityDevice_deletedAt(ctx, field, obj)
 		case "name":
 			out.Values[i] = ec._BertyEntityDevice_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "status":
 			out.Values[i] = ec._BertyEntityDevice_status(ctx, field, obj)
 		case "apiVersion":
 			out.Values[i] = ec._BertyEntityDevice_apiVersion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "contactId":
 			out.Values[i] = ec._BertyEntityDevice_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_id(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityDevice",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityDevice().ID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyEntityDevice().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_name(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_status(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(entity.Device_Status)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_apiVersion(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ApiVersion, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(uint32)
+	rctx.Result = res
 	return models.MarshalUint32(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityDevice_contactId(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityDevice"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ContactID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -1654,6 +5817,7 @@ func (ec *executionContext) _BertyEntityMessage(ctx context.Context, sel ast.Sel
 	fields := graphql.CollectFields(ctx, sel, bertyEntityMessageImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1662,28 +5826,40 @@ func (ec *executionContext) _BertyEntityMessage(ctx context.Context, sel ast.Sel
 			out.Values[i] = graphql.MarshalString("BertyEntityMessage")
 		case "text":
 			out.Values[i] = ec._BertyEntityMessage_text(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityMessage_text(ctx context.Context, field graphql.CollectedField, obj *entity.Message) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntityMessage"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityMessage",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Text, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -1694,6 +5870,7 @@ func (ec *executionContext) _BertyEntitySenderAlias(ctx context.Context, sel ast
 	fields := graphql.CollectFields(ctx, sel, bertyEntitySenderAliasImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1702,6 +5879,9 @@ func (ec *executionContext) _BertyEntitySenderAlias(ctx context.Context, sel ast
 			out.Values[i] = graphql.MarshalString("BertyEntitySenderAlias")
 		case "id":
 			out.Values[i] = ec._BertyEntitySenderAlias_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "createdAt":
 			out.Values[i] = ec._BertyEntitySenderAlias_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -1712,192 +5892,259 @@ func (ec *executionContext) _BertyEntitySenderAlias(ctx context.Context, sel ast
 			out.Values[i] = ec._BertyEntitySenderAlias_status(ctx, field, obj)
 		case "originDeviceId":
 			out.Values[i] = ec._BertyEntitySenderAlias_originDeviceId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "contactId":
 			out.Values[i] = ec._BertyEntitySenderAlias_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "conversationId":
 			out.Values[i] = ec._BertyEntitySenderAlias_conversationId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "aliasIdentifier":
 			out.Values[i] = ec._BertyEntitySenderAlias_aliasIdentifier(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "used":
 			out.Values[i] = ec._BertyEntitySenderAlias_used(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_id(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_status(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Status, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(entity.SenderAlias_Status)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_originDeviceId(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OriginDeviceID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_contactId(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ContactID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_conversationId(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ConversationID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_aliasIdentifier(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.AliasIdentifier, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntitySenderAlias_used(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyEntitySenderAlias"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntitySenderAlias",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Used, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
+	rctx.Result = res
 	return models.MarshalBool(res)
 }
 
@@ -1908,6 +6155,7 @@ func (ec *executionContext) _BertyNodePingDestination(ctx context.Context, sel a
 	fields := graphql.CollectFields(ctx, sel, bertyNodePingDestinationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1916,28 +6164,40 @@ func (ec *executionContext) _BertyNodePingDestination(ctx context.Context, sel a
 			out.Values[i] = graphql.MarshalString("BertyNodePingDestination")
 		case "destination":
 			out.Values[i] = ec._BertyNodePingDestination_destination(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyNodePingDestination_destination(ctx context.Context, field graphql.CollectedField, obj *node.PingDestination) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodePingDestination"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePingDestination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Destination, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -1948,6 +6208,7 @@ func (ec *executionContext) _BertyNodeVoid(ctx context.Context, sel ast.Selectio
 	fields := graphql.CollectFields(ctx, sel, bertyNodeVoidImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1956,28 +6217,40 @@ func (ec *executionContext) _BertyNodeVoid(ctx context.Context, sel ast.Selectio
 			out.Values[i] = graphql.MarshalString("BertyNodeVoid")
 		case "T":
 			out.Values[i] = ec._BertyNodeVoid_T(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyNodeVoid_T(ctx context.Context, field graphql.CollectedField, obj *node.Void) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeVoid"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeVoid",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.T, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
+	rctx.Result = res
 	return models.MarshalBool(res)
 }
 
@@ -1988,6 +6261,7 @@ func (ec *executionContext) _BertyNodeVoidPayload(ctx context.Context, sel ast.S
 	fields := graphql.CollectFields(ctx, sel, bertyNodeVoidPayloadImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -1996,28 +6270,40 @@ func (ec *executionContext) _BertyNodeVoidPayload(ctx context.Context, sel ast.S
 			out.Values[i] = graphql.MarshalString("BertyNodeVoidPayload")
 		case "T":
 			out.Values[i] = ec._BertyNodeVoidPayload_T(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyNodeVoidPayload_T(ctx context.Context, field graphql.CollectedField, obj *node.Void) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyNodeVoidPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeVoidPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.T, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
+	rctx.Result = res
 	return models.MarshalBool(res)
 }
 
@@ -2028,6 +6314,7 @@ func (ec *executionContext) _BertyP2pAckAttrs(ctx context.Context, sel ast.Selec
 	fields := graphql.CollectFields(ctx, sel, bertyP2pAckAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2038,54 +6325,69 @@ func (ec *executionContext) _BertyP2pAckAttrs(ctx context.Context, sel ast.Selec
 			out.Values[i] = ec._BertyP2pAckAttrs_ids(ctx, field, obj)
 		case "ErrMsg":
 			out.Values[i] = ec._BertyP2pAckAttrs_ErrMsg(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pAckAttrs_ids(ctx context.Context, field graphql.CollectedField, obj *p2p.AckAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pAckAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pAckAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.IDs, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]string)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return graphql.MarshalString(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pAckAttrs_ErrMsg(ctx context.Context, field graphql.CollectedField, obj *p2p.AckAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pAckAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pAckAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ErrMsg, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -2096,6 +6398,7 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactRequestAcceptedAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2104,28 +6407,40 @@ func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs(ctx context.Con
 			out.Values[i] = graphql.MarshalString("BertyP2pContactRequestAcceptedAttrs")
 		case "T":
 			out.Values[i] = ec._BertyP2pContactRequestAcceptedAttrs_T(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pContactRequestAcceptedAttrs_T(ctx context.Context, field graphql.CollectedField, obj *p2p.ContactRequestAcceptedAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactRequestAcceptedAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactRequestAcceptedAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.T, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
+	rctx.Result = res
 	return models.MarshalBool(res)
 }
 
@@ -2136,6 +6451,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactRequestAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2146,48 +6462,65 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs(ctx context.Context, se
 			out.Values[i] = ec._BertyP2pContactRequestAttrs_me(ctx, field, obj)
 		case "introText":
 			out.Values[i] = ec._BertyP2pContactRequestAttrs_introText(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pContactRequestAttrs_me(ctx context.Context, field graphql.CollectedField, obj *p2p.ContactRequestAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactRequestAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactRequestAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Me, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContact(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pContactRequestAttrs_introText(ctx context.Context, field graphql.CollectedField, obj *p2p.ContactRequestAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactRequestAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactRequestAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.IntroText, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -2198,6 +6531,7 @@ func (ec *executionContext) _BertyP2pContactShareAttrs(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactShareAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2211,26 +6545,34 @@ func (ec *executionContext) _BertyP2pContactShareAttrs(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pContactShareAttrs_contact(ctx context.Context, field graphql.CollectedField, obj *p2p.ContactShareAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactShareAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactShareAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Contact, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContact(ctx, field.Selections, res)
 }
 
@@ -2241,6 +6583,7 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, bertyP2pContactShareMeAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2254,26 +6597,34 @@ func (ec *executionContext) _BertyP2pContactShareMeAttrs(ctx context.Context, se
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pContactShareMeAttrs_me(ctx context.Context, field graphql.CollectedField, obj *p2p.ContactShareMeAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pContactShareMeAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pContactShareMeAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Me, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContact(ctx, field.Selections, res)
 }
 
@@ -2284,6 +6635,7 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, bertyP2pConversationInviteAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2297,26 +6649,34 @@ func (ec *executionContext) _BertyP2pConversationInviteAttrs(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pConversationInviteAttrs_conversation(ctx context.Context, field graphql.CollectedField, obj *p2p.ConversationInviteAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pConversationInviteAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pConversationInviteAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Conversation, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityConversation(ctx, field.Selections, res)
 }
 
@@ -2327,6 +6687,7 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, bertyP2pConversationNewMessageAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2340,26 +6701,34 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx context.Context, field graphql.CollectedField, obj *p2p.ConversationNewMessageAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pConversationNewMessageAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pConversationNewMessageAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Message, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Message)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityMessage(ctx, field.Selections, res)
 }
 
@@ -2370,6 +6739,7 @@ func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs(ctx context.Context, se
 	fields := graphql.CollectFields(ctx, sel, bertyP2pDevtoolsMapsetAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2378,47 +6748,68 @@ func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs(ctx context.Context, se
 			out.Values[i] = graphql.MarshalString("BertyP2pDevtoolsMapsetAttrs")
 		case "key":
 			out.Values[i] = ec._BertyP2pDevtoolsMapsetAttrs_key(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "val":
 			out.Values[i] = ec._BertyP2pDevtoolsMapsetAttrs_val(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs_key(ctx context.Context, field graphql.CollectedField, obj *p2p.DevtoolsMapsetAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pDevtoolsMapsetAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pDevtoolsMapsetAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Key, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs_val(ctx context.Context, field graphql.CollectedField, obj *p2p.DevtoolsMapsetAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pDevtoolsMapsetAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pDevtoolsMapsetAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Val, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -2428,7 +6819,9 @@ var bertyP2pEventImplementors = []string{"BertyP2pEvent", "Node"}
 func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.SelectionSet, obj *p2p.Event) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyP2pEventImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2436,9 +6829,19 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyP2pEvent")
 		case "id":
-			out.Values[i] = ec._BertyP2pEvent_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyP2pEvent_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "senderId":
 			out.Values[i] = ec._BertyP2pEvent_senderId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "createdAt":
 			out.Values[i] = ec._BertyP2pEvent_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -2455,325 +6858,388 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 			out.Values[i] = ec._BertyP2pEvent_direction(ctx, field, obj)
 		case "senderApiVersion":
 			out.Values[i] = ec._BertyP2pEvent_senderApiVersion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "receiverApiVersion":
 			out.Values[i] = ec._BertyP2pEvent_receiverApiVersion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "receiverId":
 			out.Values[i] = ec._BertyP2pEvent_receiverId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "kind":
 			out.Values[i] = ec._BertyP2pEvent_kind(ctx, field, obj)
 		case "attributes":
-			out.Values[i] = ec._BertyP2pEvent_attributes(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyP2pEvent_attributes(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "conversationId":
-			out.Values[i] = ec._BertyP2pEvent_conversationId(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyP2pEvent_conversationId(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_id(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyP2pEvent",
 		Args:   nil,
 		Field:  field,
-	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyP2pEvent().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
-}
-
-func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return obj.SenderID, nil
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyP2pEvent().ID(rctx, obj)
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SenderID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_createdAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_sentAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SentAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_receivedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReceivedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_ackedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.AckedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_direction(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Direction, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(p2p.Event_Direction)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_senderApiVersion(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SenderAPIVersion, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(uint32)
+	rctx.Result = res
 	return models.MarshalUint32(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_receiverApiVersion(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReceiverAPIVersion, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(uint32)
+	rctx.Result = res
 	return models.MarshalUint32(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_receiverId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReceiverID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_kind(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEvent"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Kind, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(p2p.Kind)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_attributes(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyP2pEvent",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyP2pEvent().Attributes(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyP2pEvent().Attributes(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.([]byte)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
-				return models.MarshalByte(res[idx1])
-			}())
-		}
-		return arr1
-	})
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEvent_conversationId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyP2pEvent",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyP2pEvent().ConversationID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyP2pEvent().ConversationID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
 var bertyP2pEventPayloadImplementors = []string{"BertyP2pEventPayload"}
@@ -2782,7 +7248,9 @@ var bertyP2pEventPayloadImplementors = []string{"BertyP2pEventPayload"}
 func (ec *executionContext) _BertyP2pEventPayload(ctx context.Context, sel ast.SelectionSet, obj *p2p.Event) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, bertyP2pEventPayloadImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -2790,9 +7258,19 @@ func (ec *executionContext) _BertyP2pEventPayload(ctx context.Context, sel ast.S
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("BertyP2pEventPayload")
 		case "id":
-			out.Values[i] = ec._BertyP2pEventPayload_id(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyP2pEventPayload_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "senderId":
 			out.Values[i] = ec._BertyP2pEventPayload_senderId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "createdAt":
 			out.Values[i] = ec._BertyP2pEventPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
@@ -2809,325 +7287,388 @@ func (ec *executionContext) _BertyP2pEventPayload(ctx context.Context, sel ast.S
 			out.Values[i] = ec._BertyP2pEventPayload_direction(ctx, field, obj)
 		case "senderApiVersion":
 			out.Values[i] = ec._BertyP2pEventPayload_senderApiVersion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "receiverApiVersion":
 			out.Values[i] = ec._BertyP2pEventPayload_receiverApiVersion(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "receiverId":
 			out.Values[i] = ec._BertyP2pEventPayload_receiverId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "kind":
 			out.Values[i] = ec._BertyP2pEventPayload_kind(ctx, field, obj)
 		case "attributes":
-			out.Values[i] = ec._BertyP2pEventPayload_attributes(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyP2pEventPayload_attributes(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "conversationId":
-			out.Values[i] = ec._BertyP2pEventPayload_conversationId(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyP2pEventPayload_conversationId(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_id(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyP2pEventPayload",
 		Args:   nil,
 		Field:  field,
-	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyP2pEventPayload().ID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
-}
-
-func (ec *executionContext) _BertyP2pEventPayload_senderId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return obj.SenderID, nil
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyP2pEventPayload().ID(rctx, obj)
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pEventPayload_senderId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SenderID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_createdAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CreatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_updatedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(time.Time)
+	rctx.Result = res
 	return models.MarshalTime(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeletedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_sentAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SentAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_receivedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReceivedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_ackedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.AckedAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*time.Time)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return models.MarshalTime(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_direction(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Direction, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(p2p.Event_Direction)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_senderApiVersion(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SenderAPIVersion, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(uint32)
+	rctx.Result = res
 	return models.MarshalUint32(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_receiverApiVersion(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReceiverAPIVersion, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(uint32)
+	rctx.Result = res
 	return models.MarshalUint32(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_receiverId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReceiverID, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_kind(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pEventPayload"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Kind, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(p2p.Kind)
+	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_attributes(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyP2pEventPayload",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyP2pEventPayload().Attributes(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyP2pEventPayload().Attributes(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.([]byte)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
-				return models.MarshalByte(res[idx1])
-			}())
-		}
-		return arr1
-	})
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pEventPayload_conversationId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "BertyP2pEventPayload",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyP2pEventPayload().ConversationID(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.BertyP2pEventPayload().ConversationID(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return models.MarshalID(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
 var bertyP2pPingAttrsImplementors = []string{"BertyP2pPingAttrs"}
@@ -3137,6 +7678,7 @@ func (ec *executionContext) _BertyP2pPingAttrs(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyP2pPingAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3145,28 +7687,40 @@ func (ec *executionContext) _BertyP2pPingAttrs(ctx context.Context, sel ast.Sele
 			out.Values[i] = graphql.MarshalString("BertyP2pPingAttrs")
 		case "T":
 			out.Values[i] = ec._BertyP2pPingAttrs_T(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pPingAttrs_T(ctx context.Context, field graphql.CollectedField, obj *p2p.PingAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pPingAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPingAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.T, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
+	rctx.Result = res
 	return models.MarshalBool(res)
 }
 
@@ -3177,6 +7731,7 @@ func (ec *executionContext) _BertyP2pSenderAliasUpdateAttrs(ctx context.Context,
 	fields := graphql.CollectFields(ctx, sel, bertyP2pSenderAliasUpdateAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3190,35 +7745,66 @@ func (ec *executionContext) _BertyP2pSenderAliasUpdateAttrs(ctx context.Context,
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pSenderAliasUpdateAttrs_aliases(ctx context.Context, field graphql.CollectedField, obj *p2p.SenderAliasUpdateAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pSenderAliasUpdateAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pSenderAliasUpdateAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Aliases, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*entity.SenderAlias)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._BertyEntitySenderAlias(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntitySenderAlias(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -3229,6 +7815,7 @@ func (ec *executionContext) _BertyP2pSentAttrs(ctx context.Context, sel ast.Sele
 	fields := graphql.CollectFields(ctx, sel, bertyP2pSentAttrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3242,32 +7829,38 @@ func (ec *executionContext) _BertyP2pSentAttrs(ctx context.Context, sel ast.Sele
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _BertyP2pSentAttrs_ids(ctx context.Context, field graphql.CollectedField, obj *p2p.SentAttrs) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "BertyP2pSentAttrs"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pSentAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.IDs, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]string)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return graphql.MarshalString(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
@@ -3278,6 +7871,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto(ctx context.Context, 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3286,6 +7880,9 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto(ctx context.Context, 
 			out.Values[i] = graphql.MarshalString("GoogleProtobufDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "field":
 			out.Values[i] = ec._GoogleProtobufDescriptorProto_field(ctx, field, obj)
 		case "extension":
@@ -3309,275 +7906,492 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto(ctx context.Context, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_field(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Field, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.FieldDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufFieldDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufFieldDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_extension(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Extension, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.FieldDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufFieldDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufFieldDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_nestedType(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.NestedType, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.DescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_enumType(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.EnumType, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.EnumDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufEnumDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufEnumDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_extensionRange(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ExtensionRange, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.DescriptorProto_ExtensionRange)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufDescriptorProtoExtensionRange(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufDescriptorProtoExtensionRange(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_oneofDecl(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OneofDecl, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.OneofDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufOneofDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufOneofDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.MessageOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufMessageOptions(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedRange(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReservedRange, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.DescriptorProto_ReservedRange)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufDescriptorProtoReservedRange(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufDescriptorProtoReservedRange(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedName(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReservedName, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]string)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return graphql.MarshalString(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
@@ -3588,6 +8402,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange(ctx con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoExtensionRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3596,8 +8411,14 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange(ctx con
 			out.Values[i] = graphql.MarshalString("GoogleProtobufDescriptorProtoExtensionRange")
 		case "start":
 			out.Values[i] = ec._GoogleProtobufDescriptorProtoExtensionRange_start(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "end":
 			out.Values[i] = ec._GoogleProtobufDescriptorProtoExtensionRange_end(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "options":
 			out.Values[i] = ec._GoogleProtobufDescriptorProtoExtensionRange_options(ctx, field, obj)
 		default:
@@ -3605,66 +8426,94 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange(ctx con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_start(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto_ExtensionRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoExtensionRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoExtensionRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Start, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_end(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto_ExtensionRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoExtensionRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoExtensionRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.End, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProtoExtensionRange_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto_ExtensionRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoExtensionRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoExtensionRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.ExtensionRangeOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufExtensionRangeOptions(ctx, field.Selections, res)
 }
 
@@ -3675,6 +8524,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange(ctx cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufDescriptorProtoReservedRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3683,51 +8533,80 @@ func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange(ctx cont
 			out.Values[i] = graphql.MarshalString("GoogleProtobufDescriptorProtoReservedRange")
 		case "start":
 			out.Values[i] = ec._GoogleProtobufDescriptorProtoReservedRange_start(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "end":
 			out.Values[i] = ec._GoogleProtobufDescriptorProtoReservedRange_end(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_start(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto_ReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Start, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufDescriptorProtoReservedRange_end(ctx context.Context, field graphql.CollectedField, obj *descriptor.DescriptorProto_ReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufDescriptorProtoReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufDescriptorProtoReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.End, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
@@ -3740,6 +8619,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3748,6 +8628,9 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto(ctx context.Conte
 			out.Values[i] = graphql.MarshalString("GoogleProtobufEnumDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufEnumDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "value":
 			out.Values[i] = ec._GoogleProtobufEnumDescriptorProto_value(ctx, field, obj)
 		case "options":
@@ -3761,130 +8644,207 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto(ctx context.Conte
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_value(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Value, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.EnumValueDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufEnumValueDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufEnumValueDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.EnumOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufEnumOptions(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedRange(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReservedRange, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.EnumDescriptorProto_EnumReservedRange)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufEnumDescriptorProtoEnumReservedRange(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufEnumDescriptorProtoEnumReservedRange(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedName(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ReservedName, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]string)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return graphql.MarshalString(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
@@ -3895,6 +8855,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange(
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumDescriptorProtoEnumReservedRangeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3903,51 +8864,80 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange(
 			out.Values[i] = graphql.MarshalString("GoogleProtobufEnumDescriptorProtoEnumReservedRange")
 		case "start":
 			out.Values[i] = ec._GoogleProtobufEnumDescriptorProtoEnumReservedRange_start(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "end":
 			out.Values[i] = ec._GoogleProtobufEnumDescriptorProtoEnumReservedRange_end(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_start(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumDescriptorProto_EnumReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProtoEnumReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProtoEnumReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Start, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumDescriptorProtoEnumReservedRange_end(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumDescriptorProto_EnumReservedRange) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumDescriptorProtoEnumReservedRange"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumDescriptorProtoEnumReservedRange",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.End, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
@@ -3960,6 +8950,7 @@ func (ec *executionContext) _GoogleProtobufEnumOptions(ctx context.Context, sel 
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -3968,8 +8959,14 @@ func (ec *executionContext) _GoogleProtobufEnumOptions(ctx context.Context, sel 
 			out.Values[i] = graphql.MarshalString("GoogleProtobufEnumOptions")
 		case "allowAlias":
 			out.Values[i] = ec._GoogleProtobufEnumOptions_allowAlias(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecated":
 			out.Values[i] = ec._GoogleProtobufEnumOptions_deprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufEnumOptions_uninterpretedOption(ctx, field, obj)
 		default:
@@ -3977,75 +8974,126 @@ func (ec *executionContext) _GoogleProtobufEnumOptions(ctx context.Context, sel 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumOptions_allowAlias(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.AllowAlias, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Deprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -4056,6 +9104,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto(ctx context.
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumValueDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4064,8 +9113,14 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto(ctx context.
 			out.Values[i] = graphql.MarshalString("GoogleProtobufEnumValueDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufEnumValueDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "number":
 			out.Values[i] = ec._GoogleProtobufEnumValueDescriptorProto_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "options":
 			out.Values[i] = ec._GoogleProtobufEnumValueDescriptorProto_options(ctx, field, obj)
 		default:
@@ -4073,66 +9128,94 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto(ctx context.
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumValueDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_number(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumValueDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Number, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumValueDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.EnumValueOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufEnumValueOptions(ctx, field.Selections, res)
 }
 
@@ -4143,6 +9226,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions(ctx context.Context,
 	fields := graphql.CollectFields(ctx, sel, googleProtobufEnumValueOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4151,6 +9235,9 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions(ctx context.Context,
 			out.Values[i] = graphql.MarshalString("GoogleProtobufEnumValueOptions")
 		case "deprecated":
 			out.Values[i] = ec._GoogleProtobufEnumValueOptions_deprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufEnumValueOptions_uninterpretedOption(ctx, field, obj)
 		default:
@@ -4158,55 +9245,96 @@ func (ec *executionContext) _GoogleProtobufEnumValueOptions(ctx context.Context,
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumValueOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumValueOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Deprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufEnumValueOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.EnumValueOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufEnumValueOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufEnumValueOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -4217,6 +9345,7 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufExtensionRangeOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4230,35 +9359,66 @@ func (ec *executionContext) _GoogleProtobufExtensionRangeOptions(ctx context.Con
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufExtensionRangeOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.ExtensionRangeOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufExtensionRangeOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufExtensionRangeOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -4268,7 +9428,9 @@ var googleProtobufFieldDescriptorProtoImplementors = []string{"GoogleProtobufFie
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto(ctx context.Context, sel ast.SelectionSet, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFieldDescriptorProtoImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4277,247 +9439,344 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto(ctx context.Cont
 			out.Values[i] = graphql.MarshalString("GoogleProtobufFieldDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "number":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_number(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "label":
-			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_label(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_label(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "type":
-			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_type(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_type(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "typeName":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_typeName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "extendee":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_extendee(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "defaultValue":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_defaultValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "oneofIndex":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_oneofIndex(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "jsonName":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_jsonName(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "options":
 			out.Values[i] = ec._GoogleProtobufFieldDescriptorProto_options(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_number(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Number, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_label(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufFieldDescriptorProto",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufFieldDescriptorProto().Label(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufFieldDescriptorProto().Label(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*int32)
-		if res == nil {
-			return graphql.Null
-		}
-		return models.MarshalEnum(*res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalEnum(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_type(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufFieldDescriptorProto",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufFieldDescriptorProto().Type(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufFieldDescriptorProto().Type(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*int32)
-		if res == nil {
-			return graphql.Null
-		}
-		return models.MarshalEnum(*res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalEnum(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_typeName(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.TypeName, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_extendee(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Extendee, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_defaultValue(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DefaultValue, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_oneofIndex(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OneofIndex, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_jsonName(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.JsonName, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.FieldOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufFieldOptions(ctx, field.Selections, res)
 }
 
@@ -4527,7 +9786,9 @@ var googleProtobufFieldOptionsImplementors = []string{"GoogleProtobufFieldOption
 func (ec *executionContext) _GoogleProtobufFieldOptions(ctx context.Context, sel ast.SelectionSet, obj *descriptor.FieldOptions) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFieldOptionsImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4535,191 +9796,272 @@ func (ec *executionContext) _GoogleProtobufFieldOptions(ctx context.Context, sel
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("GoogleProtobufFieldOptions")
 		case "ctype":
-			out.Values[i] = ec._GoogleProtobufFieldOptions_ctype(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufFieldOptions_ctype(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "packed":
 			out.Values[i] = ec._GoogleProtobufFieldOptions_packed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "jstype":
-			out.Values[i] = ec._GoogleProtobufFieldOptions_jstype(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufFieldOptions_jstype(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "lazy":
 			out.Values[i] = ec._GoogleProtobufFieldOptions_lazy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecated":
 			out.Values[i] = ec._GoogleProtobufFieldOptions_deprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "weak":
 			out.Values[i] = ec._GoogleProtobufFieldOptions_weak(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufFieldOptions_uninterpretedOption(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldOptions_ctype(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldOptions) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufFieldOptions",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufFieldOptions().Ctype(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufFieldOptions().Ctype(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*int32)
-		if res == nil {
-			return graphql.Null
-		}
-		return models.MarshalEnum(*res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalEnum(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldOptions_packed(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Packed, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldOptions_jstype(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldOptions) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufFieldOptions",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufFieldOptions().Jstype(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufFieldOptions().Jstype(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*int32)
-		if res == nil {
-			return graphql.Null
-		}
-		return models.MarshalEnum(*res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalEnum(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldOptions_lazy(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Lazy, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Deprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldOptions_weak(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Weak, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFieldOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.FieldOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFieldOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFieldOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -4730,6 +10072,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -4738,8 +10081,14 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto(ctx context.Conte
 			out.Values[i] = graphql.MarshalString("GoogleProtobufFileDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufFileDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "package":
 			out.Values[i] = ec._GoogleProtobufFileDescriptorProto_package(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "dependency":
 			out.Values[i] = ec._GoogleProtobufFileDescriptorProto_dependency(ctx, field, obj)
 		case "publicDependency":
@@ -4760,303 +10109,470 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto(ctx context.Conte
 			out.Values[i] = ec._GoogleProtobufFileDescriptorProto_sourceCodeInfo(ctx, field, obj)
 		case "syntax":
 			out.Values[i] = ec._GoogleProtobufFileDescriptorProto_syntax(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_package(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Package, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_dependency(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Dependency, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]string)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return graphql.MarshalString(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_publicDependency(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.PublicDependency, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]int32)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalInt32(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_weakDependency(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.WeakDependency, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]int32)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalInt32(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_messageType(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.MessageType, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.DescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_enumType(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.EnumType, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.EnumDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufEnumDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufEnumDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_service(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Service, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.ServiceDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufServiceDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufServiceDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_extension(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Extension, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.FieldDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufFieldDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufFieldDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.FileOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufFileOptions(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_sourceCodeInfo(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SourceCodeInfo, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.SourceCodeInfo)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufSourceCodeInfo(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorProto_syntax(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Syntax, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
@@ -5069,6 +10585,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileDescriptorSetImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5082,35 +10599,66 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorSet(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileDescriptorSet_file(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileDescriptorSet) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileDescriptorSet"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileDescriptorSet",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.File, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.FileDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufFileDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufFileDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -5120,7 +10668,9 @@ var googleProtobufFileOptionsImplementors = []string{"GoogleProtobufFileOptions"
 func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel ast.SelectionSet, obj *descriptor.FileOptions) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, googleProtobufFileOptionsImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5129,501 +10679,760 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 			out.Values[i] = graphql.MarshalString("GoogleProtobufFileOptions")
 		case "javaPackage":
 			out.Values[i] = ec._GoogleProtobufFileOptions_javaPackage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "javaOuterClassname":
 			out.Values[i] = ec._GoogleProtobufFileOptions_javaOuterClassname(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "javaMultipleFiles":
 			out.Values[i] = ec._GoogleProtobufFileOptions_javaMultipleFiles(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "javaGenerateEqualsAndHash":
 			out.Values[i] = ec._GoogleProtobufFileOptions_javaGenerateEqualsAndHash(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "javaStringCheckUtf8":
 			out.Values[i] = ec._GoogleProtobufFileOptions_javaStringCheckUtf8(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "optimizeFor":
-			out.Values[i] = ec._GoogleProtobufFileOptions_optimizeFor(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufFileOptions_optimizeFor(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "goPackage":
 			out.Values[i] = ec._GoogleProtobufFileOptions_goPackage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "ccGenericServices":
 			out.Values[i] = ec._GoogleProtobufFileOptions_ccGenericServices(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "javaGenericServices":
 			out.Values[i] = ec._GoogleProtobufFileOptions_javaGenericServices(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "pyGenericServices":
 			out.Values[i] = ec._GoogleProtobufFileOptions_pyGenericServices(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "phpGenericServices":
 			out.Values[i] = ec._GoogleProtobufFileOptions_phpGenericServices(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecated":
 			out.Values[i] = ec._GoogleProtobufFileOptions_deprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "ccEnableArenas":
 			out.Values[i] = ec._GoogleProtobufFileOptions_ccEnableArenas(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "objcClassPrefix":
 			out.Values[i] = ec._GoogleProtobufFileOptions_objcClassPrefix(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "csharpNamespace":
 			out.Values[i] = ec._GoogleProtobufFileOptions_csharpNamespace(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "swiftPrefix":
 			out.Values[i] = ec._GoogleProtobufFileOptions_swiftPrefix(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "phpClassPrefix":
 			out.Values[i] = ec._GoogleProtobufFileOptions_phpClassPrefix(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "phpNamespace":
 			out.Values[i] = ec._GoogleProtobufFileOptions_phpNamespace(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "phpMetadataNamespace":
-			out.Values[i] = ec._GoogleProtobufFileOptions_phpMetadataNamespace(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufFileOptions_phpMetadataNamespace(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "rubyPackage":
-			out.Values[i] = ec._GoogleProtobufFileOptions_rubyPackage(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufFileOptions_rubyPackage(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufFileOptions_uninterpretedOption(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_javaPackage(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.JavaPackage, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_javaOuterClassname(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.JavaOuterClassname, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_javaMultipleFiles(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.JavaMultipleFiles, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_javaGenerateEqualsAndHash(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.JavaGenerateEqualsAndHash, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_javaStringCheckUtf8(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.JavaStringCheckUtf8, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_optimizeFor(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufFileOptions",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufFileOptions().OptimizeFor(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufFileOptions().OptimizeFor(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*int32)
-		if res == nil {
-			return graphql.Null
-		}
-		return models.MarshalEnum(*res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalEnum(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_goPackage(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.GoPackage, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_ccGenericServices(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CcGenericServices, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_javaGenericServices(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.JavaGenericServices, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_pyGenericServices(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.PyGenericServices, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_phpGenericServices(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.PhpGenericServices, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Deprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_ccEnableArenas(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CcEnableArenas, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_objcClassPrefix(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ObjcClassPrefix, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_csharpNamespace(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.CsharpNamespace, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_swiftPrefix(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SwiftPrefix, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_phpClassPrefix(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.PhpClassPrefix, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_phpNamespace(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.PhpNamespace, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_phpMetadataNamespace(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufFileOptions",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufFileOptions().PhpMetadataNamespace(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufFileOptions().PhpMetadataNamespace(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return graphql.MarshalString(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_rubyPackage(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufFileOptions",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufFileOptions().RubyPackage(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
-
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufFileOptions().RubyPackage(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
 		}
-		res := resTmp.(string)
-		return graphql.MarshalString(res)
-	})
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufFileOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.FileOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufFileOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufFileOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -5634,6 +11443,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo(ctx context.Context
 	fields := graphql.CollectFields(ctx, sel, googleProtobufGeneratedCodeInfoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5647,35 +11457,66 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo(ctx context.Context
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfo_annotation(ctx context.Context, field graphql.CollectedField, obj *descriptor.GeneratedCodeInfo) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfo"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Annotation, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.GeneratedCodeInfo_Annotation)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufGeneratedCodeInfoAnnotation(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufGeneratedCodeInfoAnnotation(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -5686,6 +11527,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation(ctx conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufGeneratedCodeInfoAnnotationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5696,99 +11538,144 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation(ctx conte
 			out.Values[i] = ec._GoogleProtobufGeneratedCodeInfoAnnotation_path(ctx, field, obj)
 		case "sourceFile":
 			out.Values[i] = ec._GoogleProtobufGeneratedCodeInfoAnnotation_sourceFile(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "begin":
 			out.Values[i] = ec._GoogleProtobufGeneratedCodeInfoAnnotation_begin(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "end":
 			out.Values[i] = ec._GoogleProtobufGeneratedCodeInfoAnnotation_end(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_path(ctx context.Context, field graphql.CollectedField, obj *descriptor.GeneratedCodeInfo_Annotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Path, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]int32)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalInt32(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_sourceFile(ctx context.Context, field graphql.CollectedField, obj *descriptor.GeneratedCodeInfo_Annotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SourceFile, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_begin(ctx context.Context, field graphql.CollectedField, obj *descriptor.GeneratedCodeInfo_Annotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Begin, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_end(ctx context.Context, field graphql.CollectedField, obj *descriptor.GeneratedCodeInfo_Annotation) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufGeneratedCodeInfoAnnotation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufGeneratedCodeInfoAnnotation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.End, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int32)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt32(*res)
@@ -5801,6 +11688,7 @@ func (ec *executionContext) _GoogleProtobufMessageOptions(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMessageOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5809,12 +11697,24 @@ func (ec *executionContext) _GoogleProtobufMessageOptions(ctx context.Context, s
 			out.Values[i] = graphql.MarshalString("GoogleProtobufMessageOptions")
 		case "messageSetWireFormat":
 			out.Values[i] = ec._GoogleProtobufMessageOptions_messageSetWireFormat(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "noStandardDescriptorAccessor":
 			out.Values[i] = ec._GoogleProtobufMessageOptions_noStandardDescriptorAccessor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecated":
 			out.Values[i] = ec._GoogleProtobufMessageOptions_deprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "mapEntry":
 			out.Values[i] = ec._GoogleProtobufMessageOptions_mapEntry(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufMessageOptions_uninterpretedOption(ctx, field, obj)
 		default:
@@ -5822,115 +11722,186 @@ func (ec *executionContext) _GoogleProtobufMessageOptions(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMessageOptions_messageSetWireFormat(ctx context.Context, field graphql.CollectedField, obj *descriptor.MessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.MessageSetWireFormat, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMessageOptions_noStandardDescriptorAccessor(ctx context.Context, field graphql.CollectedField, obj *descriptor.MessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.NoStandardDescriptorAccessor, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMessageOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *descriptor.MessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Deprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMessageOptions_mapEntry(ctx context.Context, field graphql.CollectedField, obj *descriptor.MessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.MapEntry, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMessageOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.MessageOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMessageOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMessageOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -5941,6 +11912,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto(ctx context.Con
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMethodDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -5949,139 +11921,212 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto(ctx context.Con
 			out.Values[i] = graphql.MarshalString("GoogleProtobufMethodDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufMethodDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "inputType":
 			out.Values[i] = ec._GoogleProtobufMethodDescriptorProto_inputType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "outputType":
 			out.Values[i] = ec._GoogleProtobufMethodDescriptorProto_outputType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "options":
 			out.Values[i] = ec._GoogleProtobufMethodDescriptorProto_options(ctx, field, obj)
 		case "clientStreaming":
 			out.Values[i] = ec._GoogleProtobufMethodDescriptorProto_clientStreaming(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "serverStreaming":
 			out.Values[i] = ec._GoogleProtobufMethodDescriptorProto_serverStreaming(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_inputType(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.InputType, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_outputType(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OutputType, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.MethodOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufMethodOptions(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_clientStreaming(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ClientStreaming, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_serverStreaming(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.ServerStreaming, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
@@ -6093,7 +12138,9 @@ var googleProtobufMethodOptionsImplementors = []string{"GoogleProtobufMethodOpti
 func (ec *executionContext) _GoogleProtobufMethodOptions(ctx context.Context, sel ast.SelectionSet, obj *descriptor.MethodOptions) graphql.Marshaler {
 	fields := graphql.CollectFields(ctx, sel, googleProtobufMethodOptionsImplementors)
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6102,93 +12149,136 @@ func (ec *executionContext) _GoogleProtobufMethodOptions(ctx context.Context, se
 			out.Values[i] = graphql.MarshalString("GoogleProtobufMethodOptions")
 		case "deprecated":
 			out.Values[i] = ec._GoogleProtobufMethodOptions_deprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "idempotencyLevel":
-			out.Values[i] = ec._GoogleProtobufMethodOptions_idempotencyLevel(ctx, field, obj)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GoogleProtobufMethodOptions_idempotencyLevel(ctx, field, obj)
+				wg.Done()
+			}(i, field)
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufMethodOptions_uninterpretedOption(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Deprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodOptions_idempotencyLevel(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodOptions) graphql.Marshaler {
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "GoogleProtobufMethodOptions",
 		Args:   nil,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GoogleProtobufMethodOptions().IdempotencyLevel(rctx, obj)
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int32)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.GoogleProtobufMethodOptions().IdempotencyLevel(ctx, obj)
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*int32)
-		if res == nil {
-			return graphql.Null
-		}
-		return models.MarshalEnum(*res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalEnum(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufMethodOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.MethodOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufMethodOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufMethodOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -6199,6 +12289,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto(ctx context.Cont
 	fields := graphql.CollectFields(ctx, sel, googleProtobufOneofDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6207,6 +12298,9 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto(ctx context.Cont
 			out.Values[i] = graphql.MarshalString("GoogleProtobufOneofDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufOneofDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "options":
 			out.Values[i] = ec._GoogleProtobufOneofDescriptorProto_options(ctx, field, obj)
 		default:
@@ -6214,46 +12308,64 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto(ctx context.Cont
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.OneofDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufOneofDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufOneofDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.OneofDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufOneofDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufOneofDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.OneofOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufOneofOptions(ctx, field.Selections, res)
 }
 
@@ -6264,6 +12376,7 @@ func (ec *executionContext) _GoogleProtobufOneofOptions(ctx context.Context, sel
 	fields := graphql.CollectFields(ctx, sel, googleProtobufOneofOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6277,35 +12390,66 @@ func (ec *executionContext) _GoogleProtobufOneofOptions(ctx context.Context, sel
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufOneofOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.OneofOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufOneofOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufOneofOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -6316,6 +12460,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, googleProtobufServiceDescriptorProtoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6324,6 +12469,9 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto(ctx context.Co
 			out.Values[i] = graphql.MarshalString("GoogleProtobufServiceDescriptorProto")
 		case "name":
 			out.Values[i] = ec._GoogleProtobufServiceDescriptorProto_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "method":
 			out.Values[i] = ec._GoogleProtobufServiceDescriptorProto_method(ctx, field, obj)
 		case "options":
@@ -6333,75 +12481,121 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.ServiceDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_method(ctx context.Context, field graphql.CollectedField, obj *descriptor.ServiceDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Method, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.MethodDescriptorProto)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufMethodDescriptorProto(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufMethodDescriptorProto(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_options(ctx context.Context, field graphql.CollectedField, obj *descriptor.ServiceDescriptorProto) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceDescriptorProto"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceDescriptorProto",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Options, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*descriptor.ServiceOptions)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._GoogleProtobufServiceOptions(ctx, field.Selections, res)
 }
 
@@ -6412,6 +12606,7 @@ func (ec *executionContext) _GoogleProtobufServiceOptions(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufServiceOptionsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6420,6 +12615,9 @@ func (ec *executionContext) _GoogleProtobufServiceOptions(ctx context.Context, s
 			out.Values[i] = graphql.MarshalString("GoogleProtobufServiceOptions")
 		case "deprecated":
 			out.Values[i] = ec._GoogleProtobufServiceOptions_deprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufServiceOptions_uninterpretedOption(ctx, field, obj)
 		default:
@@ -6427,55 +12625,96 @@ func (ec *executionContext) _GoogleProtobufServiceOptions(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufServiceOptions_deprecated(ctx context.Context, field graphql.CollectedField, obj *descriptor.ServiceOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Deprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufServiceOptions_uninterpretedOption(ctx context.Context, field graphql.CollectedField, obj *descriptor.ServiceOptions) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufServiceOptions"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufServiceOptions",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.UninterpretedOption, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOption(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -6486,6 +12725,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo(ctx context.Context, s
 	fields := graphql.CollectFields(ctx, sel, googleProtobufSourceCodeInfoImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6499,35 +12739,66 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfo(ctx context.Context, s
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufSourceCodeInfo_location(ctx context.Context, field graphql.CollectedField, obj *descriptor.SourceCodeInfo) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfo"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Location, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.SourceCodeInfo_Location)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufSourceCodeInfoLocation(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufSourceCodeInfoLocation(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -6538,6 +12809,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation(ctx context.Co
 	fields := graphql.CollectFields(ctx, sel, googleProtobufSourceCodeInfoLocationImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6550,8 +12822,14 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation(ctx context.Co
 			out.Values[i] = ec._GoogleProtobufSourceCodeInfoLocation_span(ctx, field, obj)
 		case "leadingComments":
 			out.Values[i] = ec._GoogleProtobufSourceCodeInfoLocation_leadingComments(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "trailingComments":
 			out.Values[i] = ec._GoogleProtobufSourceCodeInfoLocation_trailingComments(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "leadingDetachedComments":
 			out.Values[i] = ec._GoogleProtobufSourceCodeInfoLocation_leadingDetachedComments(ctx, field, obj)
 		default:
@@ -6559,124 +12837,156 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation(ctx context.Co
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_path(ctx context.Context, field graphql.CollectedField, obj *descriptor.SourceCodeInfo_Location) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Path, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]int32)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalInt32(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_span(ctx context.Context, field graphql.CollectedField, obj *descriptor.SourceCodeInfo_Location) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Span, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]int32)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalInt32(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingComments(ctx context.Context, field graphql.CollectedField, obj *descriptor.SourceCodeInfo_Location) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.LeadingComments, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_trailingComments(ctx context.Context, field graphql.CollectedField, obj *descriptor.SourceCodeInfo_Location) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.TrailingComments, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingDetachedComments(ctx context.Context, field graphql.CollectedField, obj *descriptor.SourceCodeInfo_Location) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufSourceCodeInfoLocation"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufSourceCodeInfoLocation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.LeadingDetachedComments, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]string)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return graphql.MarshalString(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
@@ -6687,6 +12997,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufUninterpretedOptionImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6697,174 +13008,273 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_name(ctx, field, obj)
 		case "identifierValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_identifierValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "positiveIntValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_positiveIntValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "negativeIntValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_negativeIntValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "doubleValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_doubleValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "stringValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_stringValue(ctx, field, obj)
 		case "aggregateValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_aggregateValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_name(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]*descriptor.UninterpretedOption_NamePart)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._GoogleProtobufUninterpretedOptionNamePart(ctx, field.Selections, res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._GoogleProtobufUninterpretedOptionNamePart(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_identifierValue(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.IdentifierValue, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_positiveIntValue(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.PositiveIntValue, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*uint64)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalUint64(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_negativeIntValue(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.NegativeIntValue, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*int64)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalInt64(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_doubleValue(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DoubleValue, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*float64)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalDouble(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_stringValue(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.StringValue, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return models.MarshalByte(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOption_aggregateValue(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOption"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOption",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.AggregateValue, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
@@ -6877,6 +13287,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart(ctx conte
 	fields := graphql.CollectFields(ctx, sel, googleProtobufUninterpretedOptionNamePartImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6885,51 +13296,80 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart(ctx conte
 			out.Values[i] = graphql.MarshalString("GoogleProtobufUninterpretedOptionNamePart")
 		case "namePart":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOptionNamePart_namePart(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "isExtension":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOptionNamePart_isExtension(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_namePart(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption_NamePart) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOptionNamePart"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOptionNamePart",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.NamePart, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_isExtension(ctx context.Context, field graphql.CollectedField, obj *descriptor.UninterpretedOption_NamePart) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "GoogleProtobufUninterpretedOptionNamePart"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufUninterpretedOptionNamePart",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.IsExtension, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*bool)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
@@ -6946,6 +13386,7 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 	})
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -6975,862 +13416,288 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 *entity.Contact
-	if tmp, ok := rawArgs["contact"]; ok {
-		var err error
-		var ptr1 entity.Contact
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg0 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ContactRequest_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["contact"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["introText"]; ok {
-		var err error
-		arg1, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["introText"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactRequest(ctx, args["contact"].(*entity.Contact), args["introText"].(string))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ContactRequest(rctx, args["contact"].(*entity.Contact), args["introText"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContactPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ContactAcceptRequest(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ContactAcceptRequest_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
-	if tmp, ok := rawArgs["sigchain"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg4 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["sigchain"] = arg4
-	var arg5 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
-	if tmp, ok := rawArgs["devices"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg6 = make([]*entity.Device, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.Device
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["devices"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["displayName"]; ok {
-		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayName"] = arg7
-	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
-		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayStatus"] = arg8
-	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
-		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactAcceptRequest(ctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ContactAcceptRequest(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContactPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ContactRemove_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
-	if tmp, ok := rawArgs["sigchain"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg4 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["sigchain"] = arg4
-	var arg5 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
-	if tmp, ok := rawArgs["devices"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg6 = make([]*entity.Device, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.Device
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["devices"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["displayName"]; ok {
-		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayName"] = arg7
-	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
-		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayStatus"] = arg8
-	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
-		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactRemove(ctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ContactRemove(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContactPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ContactUpdate_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
-	if tmp, ok := rawArgs["sigchain"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg4 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["sigchain"] = arg4
-	var arg5 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
-	if tmp, ok := rawArgs["devices"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg6 = make([]*entity.Device, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.Device
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["devices"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["displayName"]; ok {
-		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayName"] = arg7
-	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
-		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayStatus"] = arg8
-	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
-		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ContactUpdate(ctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ContactUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityContactPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 []*entity.Contact
-	if tmp, ok := rawArgs["contacts"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg0 = make([]*entity.Contact, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.Contact
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityContactInput(rawIf1[idx1])
-				arg0[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ConversationCreate_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["contacts"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["title"]; ok {
-		var err error
-		arg1, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["title"] = arg1
-	var arg2 string
-	if tmp, ok := rawArgs["topic"]; ok {
-		var err error
-		arg2, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["topic"] = arg2
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationCreate(ctx, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ConversationCreate(rctx, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityConversationPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 *entity.Conversation
-	if tmp, ok := rawArgs["conversation"]; ok {
-		var err error
-		var ptr1 entity.Conversation
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
-			arg0 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ConversationInvite_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["conversation"] = arg0
-	var arg1 []*entity.ConversationMember
-	if tmp, ok := rawArgs["members"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg1 = make([]*entity.ConversationMember, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.ConversationMember
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
-				arg1[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["members"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationInvite(ctx, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ConversationInvite(rctx, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityConversationPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 *entity.Conversation
-	if tmp, ok := rawArgs["conversation"]; ok {
-		var err error
-		var ptr1 entity.Conversation
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
-			arg0 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ConversationExclude_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["conversation"] = arg0
-	var arg1 []*entity.ConversationMember
-	if tmp, ok := rawArgs["members"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg1 = make([]*entity.ConversationMember, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.ConversationMember
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
-				arg1[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["members"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationExclude(ctx, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ConversationExclude(rctx, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyEntityConversationPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_ConversationAddMessage(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 *entity.Conversation
-	if tmp, ok := rawArgs["conversation"]; ok {
-		var err error
-		var ptr1 entity.Conversation
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
-			arg0 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_ConversationAddMessage_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["conversation"] = arg0
-	var arg1 *entity.Message
-	if tmp, ok := rawArgs["message"]; ok {
-		var err error
-		var ptr1 entity.Message
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityMessageInput(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
 	}
-	args["message"] = arg1
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().ConversationAddMessage(ctx, args["conversation"].(*entity.Conversation), args["message"].(*entity.Message))
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ConversationAddMessage(rctx, args["conversation"].(*entity.Conversation), args["message"].(*entity.Message))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*p2p.Event)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyP2pEventPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_GenerateFakeData(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 bool
-	if tmp, ok := rawArgs["T"]; ok {
-		var err error
-		arg0, err = models.UnmarshalBool(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Mutation_GenerateFakeData_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["T"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Mutation"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation().GenerateFakeData(ctx, args["T"].(bool))
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().GenerateFakeData(rctx, args["T"].(bool))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*node.Void)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec._BertyNodeVoidPayload(ctx, field.Selections, res)
 }
 
@@ -7844,7 +13711,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		Object: "Query",
 	})
 
+	var wg sync.WaitGroup
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -7852,21 +13721,53 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
 		case "Node":
-			out.Values[i] = ec._Query_Node(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_Node(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "EventList":
-			out.Values[i] = ec._Query_EventList(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_EventList(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "GetEvent":
-			out.Values[i] = ec._Query_GetEvent(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_GetEvent(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "ContactList":
-			out.Values[i] = ec._Query_ContactList(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ContactList(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "GetContact":
-			out.Values[i] = ec._Query_GetContact(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_GetContact(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "ConversationList":
-			out.Values[i] = ec._Query_ConversationList(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ConversationList(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "GetConversation":
-			out.Values[i] = ec._Query_GetConversation(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_GetConversation(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "GetConversationMember":
-			out.Values[i] = ec._Query_GetConversationMember(ctx, field)
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_GetConversationMember(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -7875,958 +13776,406 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
-
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_Node(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_Node_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Node(rctx, args["id"].(string))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(models.Node)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().Node(ctx, args["id"].(string))
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(models.Node)
-		return ec._Node(ctx, field.Selections, &res)
-	})
+	return ec._Node(ctx, field.Selections, &res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 uint32
-	if tmp, ok := rawArgs["limit"]; ok {
-		var err error
-		arg0, err = models.UnmarshalUint32(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_EventList_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["limit"] = arg0
-	var arg1 *p2p.Event
-	if tmp, ok := rawArgs["filter"]; ok {
-		var err error
-		var ptr1 p2p.Event
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyP2pEventInput(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["filter"] = arg1
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().EventList(rctx, args["limit"].(uint32), args["filter"].(*p2p.Event))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*p2p.Event)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().EventList(ctx, args["limit"].(uint32), args["filter"].(*p2p.Event))
-		})
-		if resTmp == nil {
-			return graphql.Null
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
 		}
-		res := resTmp.([]*p2p.Event)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
 				if res[idx1] == nil {
 					return graphql.Null
 				}
+
 				return ec._BertyP2pEventPayload(ctx, field.Selections, res[idx1])
-			}())
+			}()
 		}
-		return arr1
-	})
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_GetEvent_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["senderId"]; ok {
-		var err error
-		arg1, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["senderId"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["createdAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["updatedAt"] = arg3
-	var arg4 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["deletedAt"] = arg4
-	var arg5 *time.Time
-	if tmp, ok := rawArgs["sentAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg5 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["sentAt"] = arg5
-	var arg6 *time.Time
-	if tmp, ok := rawArgs["receivedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg6 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["receivedAt"] = arg6
-	var arg7 *time.Time
-	if tmp, ok := rawArgs["ackedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg7 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["ackedAt"] = arg7
-	var arg8 *int32
-	if tmp, ok := rawArgs["direction"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg8 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["direction"] = arg8
-	var arg9 uint32
-	if tmp, ok := rawArgs["senderApiVersion"]; ok {
-		var err error
-		arg9, err = models.UnmarshalUint32(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["senderApiVersion"] = arg9
-	var arg10 uint32
-	if tmp, ok := rawArgs["receiverApiVersion"]; ok {
-		var err error
-		arg10, err = models.UnmarshalUint32(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["receiverApiVersion"] = arg10
-	var arg11 string
-	if tmp, ok := rawArgs["receiverId"]; ok {
-		var err error
-		arg11, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["receiverId"] = arg11
-	var arg12 *int32
-	if tmp, ok := rawArgs["kind"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg12 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["kind"] = arg12
-	var arg13 []byte
-	if tmp, ok := rawArgs["attributes"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg13 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg13[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["attributes"] = arg13
-	var arg14 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
-		var err error
-		arg14, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["conversationId"] = arg14
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetEvent(rctx, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().GetEvent(ctx, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string))
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*p2p.Event)
-		if res == nil {
-			return graphql.Null
-		}
-		return ec._BertyP2pEventPayload(ctx, field.Selections, res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pEventPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 *entity.Contact
-	if tmp, ok := rawArgs["filter"]; ok {
-		var err error
-		var ptr1 entity.Contact
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg0 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_ContactList_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["filter"] = arg0
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ContactList(rctx, args["filter"].(*entity.Contact))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.Contact)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().ContactList(ctx, args["filter"].(*entity.Contact))
-		})
-		if resTmp == nil {
-			return graphql.Null
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
 		}
-		res := resTmp.([]*entity.Contact)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
 				if res[idx1] == nil {
 					return graphql.Null
 				}
+
 				return ec._BertyEntityContactPayload(ctx, field.Selections, res[idx1])
-			}())
+			}()
 		}
-		return arr1
-	})
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_GetContact(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_GetContact_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
-	if tmp, ok := rawArgs["sigchain"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg4 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["sigchain"] = arg4
-	var arg5 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
-	if tmp, ok := rawArgs["devices"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg6 = make([]*entity.Device, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.Device
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["devices"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["displayName"]; ok {
-		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayName"] = arg7
-	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
-		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["displayStatus"] = arg8
-	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
-		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetContact(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Contact)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().GetContact(ctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*entity.Contact)
-		if res == nil {
-			return graphql.Null
-		}
-		return ec._BertyEntityContactPayload(ctx, field.Selections, res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityContactPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_ConversationList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 *entity.Conversation
-	if tmp, ok := rawArgs["filter"]; ok {
-		var err error
-		var ptr1 entity.Conversation
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityConversationInput(tmp)
-			arg0 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_ConversationList_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["filter"] = arg0
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ConversationList(rctx, args["filter"].(*entity.Conversation))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.Conversation)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().ConversationList(ctx, args["filter"].(*entity.Conversation))
-		})
-		if resTmp == nil {
-			return graphql.Null
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
 		}
-		res := resTmp.([]*entity.Conversation)
-		arr1 := graphql.Array{}
-		for idx1 := range res {
-			arr1 = append(arr1, func() graphql.Marshaler {
-				rctx := graphql.GetResolverContext(ctx)
-				rctx.PushIndex(idx1)
-				defer rctx.Pop()
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
 				if res[idx1] == nil {
 					return graphql.Null
 				}
+
 				return ec._BertyEntityConversationPayload(ctx, field.Selections, res[idx1])
-			}())
+			}()
 		}
-		return arr1
-	})
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_GetConversation(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_GetConversation_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 string
-	if tmp, ok := rawArgs["title"]; ok {
-		var err error
-		arg4, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["title"] = arg4
-	var arg5 string
-	if tmp, ok := rawArgs["topic"]; ok {
-		var err error
-		arg5, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["topic"] = arg5
-	var arg6 []*entity.ConversationMember
-	if tmp, ok := rawArgs["members"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg6 = make([]*entity.ConversationMember, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.ConversationMember
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["members"] = arg6
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetConversation(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().GetConversation(ctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember))
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*entity.Conversation)
-		if res == nil {
-			return graphql.Null
-		}
-		return ec._BertyEntityConversationPayload(ctx, field.Selections, res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversationPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query_GetConversationMember(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query_GetConversationMember_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["status"] = arg4
-	var arg5 *entity.Contact
-	if tmp, ok := rawArgs["contact"]; ok {
-		var err error
-		var ptr1 entity.Contact
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg5 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["contact"] = arg5
-	var arg6 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
-		var err error
-		arg6, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["conversationId"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["contactId"]; ok {
-		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
-	}
-	args["contactId"] = arg7
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+	rctx := &graphql.ResolverContext{
 		Object: "Query",
 		Args:   args,
 		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetConversationMember(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string))
 	})
-	return graphql.Defer(func() (ret graphql.Marshaler) {
-		defer func() {
-			if r := recover(); r != nil {
-				userErr := ec.Recover(ctx, r)
-				ec.Error(ctx, userErr)
-				ret = graphql.Null
-			}
-		}()
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.ConversationMember)
+	rctx.Result = res
 
-		resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query().GetConversationMember(ctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string))
-		})
-		if resTmp == nil {
-			return graphql.Null
-		}
-		res := resTmp.(*entity.ConversationMember)
-		if res == nil {
-			return graphql.Null
-		}
-		return ec._BertyEntityConversationMemberPayload(ctx, field.Selections, res)
-	})
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversationMemberPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["name"]; ok {
-		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field_Query___type_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["name"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Query"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return ec.introspectType(args["name"].(string)), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec.___Type(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Query"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return ec.introspectSchema(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Schema)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec.___Schema(ctx, field.Selections, res)
 }
 
@@ -8853,24 +14202,16 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 
 func (ec *executionContext) _Subscription_EventStream(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 *p2p.Event
-	if tmp, ok := rawArgs["filter"]; ok {
-		var err error
-		var ptr1 p2p.Event
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyP2pEventInput(tmp)
-			arg0 = &ptr1
-		}
-
-		if err != nil {
-			ec.Error(ctx, err)
-			return nil
-		}
+	args, err := field_Subscription_EventStream_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
 	}
-	args["filter"] = arg0
-	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{Field: field})
-	results, err := ec.resolvers.Subscription().EventStream(ctx, args["filter"].(*p2p.Event))
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Field: field,
+	})
+	rctx := ctx // FIXME: subscriptions are missing request middleware stack https://github.com/99designs/gqlgen/issues/259
+	results, err := ec.resolvers.Subscription().EventStream(rctx, args["filter"].(*p2p.Event))
 	if err != nil {
 		ec.Error(ctx, err)
 		return nil
@@ -8885,6 +14226,7 @@ func (ec *executionContext) _Subscription_EventStream(ctx context.Context, field
 			if res == nil {
 				return graphql.Null
 			}
+
 			return ec._BertyP2pEventPayload(ctx, field.Selections, res)
 		}())
 		return &out
@@ -8898,6 +14240,7 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 	fields := graphql.CollectFields(ctx, sel, __DirectiveImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -8906,103 +14249,160 @@ func (ec *executionContext) ___Directive(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("__Directive")
 		case "name":
 			out.Values[i] = ec.___Directive_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___Directive_description(ctx, field, obj)
 		case "locations":
 			out.Values[i] = ec.___Directive_locations(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "args":
 			out.Values[i] = ec.___Directive_args(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Directive_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Description, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Directive_locations(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Locations, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]string)
-	arr1 := graphql.Array{}
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
 	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
+		arr1[idx1] = func() graphql.Marshaler {
 			return graphql.MarshalString(res[idx1])
-		}())
+		}()
 	}
+
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Directive_args(ctx context.Context, field graphql.CollectedField, obj *introspection.Directive) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Directive"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Directive",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Args, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.InputValue)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___InputValue(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___InputValue(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -9013,6 +14413,7 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 	fields := graphql.CollectFields(ctx, sel, __EnumValueImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -9021,10 +14422,16 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = graphql.MarshalString("__EnumValue")
 		case "name":
 			out.Values[i] = ec.___EnumValue_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___EnumValue_description(ctx, field, obj)
 		case "isDeprecated":
 			out.Values[i] = ec.___EnumValue_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecationReason":
 			out.Values[i] = ec.___EnumValue_deprecationReason(ctx, field, obj)
 		default:
@@ -9032,74 +14439,95 @@ func (ec *executionContext) ___EnumValue(ctx context.Context, sel ast.SelectionS
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___EnumValue_description(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Description, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___EnumValue_isDeprecated(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.IsDeprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
+	rctx.Result = res
 	return graphql.MarshalBoolean(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, field graphql.CollectedField, obj *introspection.EnumValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__EnumValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__EnumValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeprecationReason, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -9110,6 +14538,7 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 	fields := graphql.CollectFields(ctx, sel, __FieldImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -9118,14 +14547,26 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 			out.Values[i] = graphql.MarshalString("__Field")
 		case "name":
 			out.Values[i] = ec.___Field_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___Field_description(ctx, field, obj)
 		case "args":
 			out.Values[i] = ec.___Field_args(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "type":
 			out.Values[i] = ec.___Field_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "isDeprecated":
 			out.Values[i] = ec.___Field_isDeprecated(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "deprecationReason":
 			out.Values[i] = ec.___Field_deprecationReason(ctx, field, obj)
 		default:
@@ -9133,120 +14574,182 @@ func (ec *executionContext) ___Field(ctx context.Context, sel ast.SelectionSet, 
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Field_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Description, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Field_args(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Args, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.InputValue)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___InputValue(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___InputValue(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Field_type(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
+
 	return ec.___Type(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Field_isDeprecated(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.IsDeprecated, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(bool)
+	rctx.Result = res
 	return graphql.MarshalBoolean(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, field graphql.CollectedField, obj *introspection.Field) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Field"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Field",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DeprecationReason, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
@@ -9257,6 +14760,7 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 	fields := graphql.CollectFields(ctx, sel, __InputValueImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -9265,10 +14769,16 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 			out.Values[i] = graphql.MarshalString("__InputValue")
 		case "name":
 			out.Values[i] = ec.___InputValue_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "description":
 			out.Values[i] = ec.___InputValue_description(ctx, field, obj)
 		case "type":
 			out.Values[i] = ec.___InputValue_type(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "defaultValue":
 			out.Values[i] = ec.___InputValue_defaultValue(ctx, field, obj)
 		default:
@@ -9276,77 +14786,104 @@ func (ec *executionContext) ___InputValue(ctx context.Context, sel ast.Selection
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___InputValue_description(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Description, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___InputValue_type(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Type, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
+
 	return ec.___Type(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, field graphql.CollectedField, obj *introspection.InputValue) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__InputValue"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__InputValue",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.DefaultValue, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
@@ -9360,6 +14897,7 @@ func (ec *executionContext) ___Schema(ctx context.Context, sel ast.SelectionSet,
 	fields := graphql.CollectFields(ctx, sel, __SchemaImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -9368,131 +14906,224 @@ func (ec *executionContext) ___Schema(ctx context.Context, sel ast.SelectionSet,
 			out.Values[i] = graphql.MarshalString("__Schema")
 		case "types":
 			out.Values[i] = ec.___Schema_types(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "queryType":
 			out.Values[i] = ec.___Schema_queryType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "mutationType":
 			out.Values[i] = ec.___Schema_mutationType(ctx, field, obj)
 		case "subscriptionType":
 			out.Values[i] = ec.___Schema_subscriptionType(ctx, field, obj)
 		case "directives":
 			out.Values[i] = ec.___Schema_directives(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Schema_types(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Types(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Type)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___Type(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___Type(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Schema_queryType(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.QueryType(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+	rctx.Result = res
+
 	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
+
 	return ec.___Type(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Schema_mutationType(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.MutationType(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec.___Type(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Schema_subscriptionType(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.SubscriptionType(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec.___Type(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Schema_directives(ctx context.Context, field graphql.CollectedField, obj *introspection.Schema) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Schema"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Schema",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Directives(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Directive)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___Directive(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___Directive(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
@@ -9503,6 +15134,7 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 	fields := graphql.CollectFields(ctx, sel, __TypeImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
 	for i, field := range fields {
 		out.Keys[i] = field.Alias
 
@@ -9511,6 +15143,9 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 			out.Values[i] = graphql.MarshalString("__Type")
 		case "kind":
 			out.Values[i] = ec.___Type_kind(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "name":
 			out.Values[i] = ec.___Type_name(ctx, field, obj)
 		case "description":
@@ -9532,234 +15167,378 @@ func (ec *executionContext) ___Type(ctx context.Context, sel ast.SelectionSet, o
 		}
 	}
 
+	if invalid {
+		return graphql.Null
+	}
 	return out
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_kind(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Kind(), nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Name(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*string)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
 	return graphql.MarshalString(*res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_description(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Description(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(string)
+	rctx.Result = res
 	return graphql.MarshalString(res)
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_fields(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 bool
-	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		var err error
-		arg0, err = graphql.UnmarshalBoolean(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field___Type_fields_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["includeDeprecated"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Fields(args["includeDeprecated"].(bool)), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Field)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___Field(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___Field(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_interfaces(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.Interfaces(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Type)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___Type(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___Type(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_possibleTypes(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.PossibleTypes(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.Type)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___Type(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___Type(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_enumValues(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args := map[string]interface{}{}
-	var arg0 bool
-	if tmp, ok := rawArgs["includeDeprecated"]; ok {
-		var err error
-		arg0, err = graphql.UnmarshalBoolean(tmp)
-		if err != nil {
-			ec.Error(ctx, err)
-			return graphql.Null
-		}
+	args, err := field___Type_enumValues_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
 	}
-	args["includeDeprecated"] = arg0
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = args
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.EnumValues(args["includeDeprecated"].(bool)), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.EnumValue)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___EnumValue(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___EnumValue(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_inputFields(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.InputFields(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.([]introspection.InputValue)
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec.___InputValue(ctx, field.Selections, &res[idx1])
-		}())
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
 	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: &res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				return ec.___InputValue(ctx, field.Selections, &res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
 	return arr1
 }
 
+// nolint: vetshadow
 func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.CollectedField, obj *introspection.Type) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "__Type"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	resTmp := ec.FieldMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
+	rctx := &graphql.ResolverContext{
+		Object: "__Type",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
 		return obj.OfType(), nil
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
 	res := resTmp.(*introspection.Type)
+	rctx.Result = res
+
 	if res == nil {
 		return graphql.Null
 	}
+
 	return ec.___Type(ctx, field.Selections, res)
 }
 
@@ -10276,7 +16055,13 @@ func UnmarshalBertyP2pEventInput(v interface{}) (p2p.Event, error) {
 	return it, nil
 }
 
-func (ec *executionContext) FieldMiddleware(ctx context.Context, next graphql.Resolver) interface{} {
+func (ec *executionContext) FieldMiddleware(ctx context.Context, obj interface{}, next graphql.Resolver) (ret interface{}) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = nil
+		}
+	}()
 	res, err := ec.ResolverMiddleware(ctx, next)
 	if err != nil {
 		ec.Error(ctx, err)

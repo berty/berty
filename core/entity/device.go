@@ -11,3 +11,5 @@ func (d *Device) Username() string {
 	name = strings.Replace(name, "'s iPhone", "", -1)
 	return name
 }
+
+func (d Device) IsNode() {} // required by gqlgen
