@@ -1,8 +1,8 @@
-FROM moul/protoc-gen-gotemplate as pgg
+FROM moul/protoc-gen-gotemplate:latest as pgg
 
 FROM    golang:1.11-alpine as builder
 
-RUN     apk --update add make git go rsync libc-dev openssh docker
+RUN     apk --no-cache add make git go rsync libc-dev openssh docker
 
 RUN     go get -u -v \
         github.com/gogo/protobuf/proto \
@@ -20,7 +20,7 @@ RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.6.0 && go inst
 RUN     rm -f /go/bin/web-editor
 
 FROM    golang:1.11-alpine
-RUN     apk --update add git make protobuf gcc libc-dev && mkdir -p /.cache/go-build && chmod -R 777 /.cache
+RUN     apk --no-cache add git make protobuf gcc libc-dev && mkdir -p /.cache/go-build && chmod -R 777 /.cache
 COPY    --from=pgg /go/bin/* /go/bin/
 COPY    --from=builder /go/bin/* /go/bin/
 COPY    --from=pgg /protobuf /protobuf
