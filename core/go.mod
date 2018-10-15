@@ -1,7 +1,7 @@
 module berty.tech/core
 
 require (
-	github.com/99designs/gqlgen v0.4.4
+	github.com/99designs/gqlgen v0.6.0
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/agnivade/levenshtein v1.0.1 // indirect
@@ -130,7 +130,7 @@ require (
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20181009213950-7c1a557ab941 // indirect
-	golang.org/x/net v0.0.0-20181005035420-146acd28ed58
+	golang.org/x/net v0.0.0-20181005035420-146acd28ed58 // indirect
 	google.golang.org/grpc v1.15.0
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
 )

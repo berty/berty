@@ -91,7 +91,7 @@ generate: .generated
 		--workdir="/go/src/berty.tech/core" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v2 \
+		bertychat/protoc:v3 \
 		-xec 'make generate_local'
 	touch $@
 

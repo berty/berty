@@ -2,4 +2,6 @@
 
 package models
 
-type Node interface{}
+type Node interface {
+	IsNode()
+}
