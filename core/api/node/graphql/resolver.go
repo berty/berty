@@ -228,12 +228,12 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 		return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
 	case "conversation_member":
 		return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
-	// case "device":
-	// 	return r.client.GetDevice(ctx, &entity.Device{ID: id}onta
 	case "event":
 		return r.client.GetEvent(ctx, &p2p.Event{ID: id})
+	default:
+		logger().Warn("unknown node type", zap.String("node_type", gID[0]))
+		return nil, nil
 	}
-	return nil, nil
 }
 func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error) {
 	var list []*p2p.Event
