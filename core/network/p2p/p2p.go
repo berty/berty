@@ -66,7 +66,7 @@ type Driver struct {
 	ccmanager *p2putil.Manager
 	handler   func(context.Context, *p2p.Envelope) (*p2p.Void, error)
 
-	subsStack []*cid.Cid
+	subsStack []cid.Cid
 	muSubs    sync.Mutex
 
 	// services
@@ -302,10 +302,10 @@ func (d *Driver) Dial(ctx context.Context, peerID string, pid protocol.ID) (net.
 	return p2putil.NewDialer(d.host, pid)(ctx, peerID)
 }
 
-func (d *Driver) createCid(id string) (*cid.Cid, error) {
+func (d *Driver) createCid(id string) (cid.Cid, error) {
 	h, err := mh.Sum([]byte(id), mh.SHA2_256, -1)
 	if err != nil {
-		return nil, err
+		return cid.Cid{}, err
 	}
 
 	return cid.NewCidV0(h), nil
@@ -373,7 +373,7 @@ func (d *Driver) FindSubscribers(ctx context.Context, id string) ([]pstore.PeerI
 	return d.dht.FindProviders(ctx, c)
 }
 
-func (d *Driver) stackSub(c *cid.Cid) {
+func (d *Driver) stackSub(c cid.Cid) {
 	d.muSubs.Lock()
 	d.subsStack = append(d.subsStack, c)
 	d.muSubs.Unlock()
@@ -456,7 +456,7 @@ func (ddn *DriverDiscoveryNotifee) ClosedStream(net inet.Network, s inet.Stream)
 func (ddn *DriverDiscoveryNotifee) Connected(s inet.Network, c inet.Conn) {
 	go func(id peer.ID) {
 		if len(ddn.subsStack) > 0 {
-			var newSubsStack []*cid.Cid
+			var newSubsStack []cid.Cid
 			for _, c := range ddn.subsStack {
 				if err := ddn.dht.Provide(context.Background(), c, true); err != nil {
 					// stack peer if no peer found
