@@ -3,6 +3,7 @@ PWD :=			$(shell pwd)
 CORE_PACKAGE :=		$(PWD)/../../../core
 CORE_SOURCES :=		$(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 			$(shell find . -type f -name "*.go")
+BUILD_PATCH_PATH :=	$(PWD)/../../../.circleci/docker
 
 GOPATH ?=		$(HOME)/go
 
@@ -29,10 +30,7 @@ deps-osx:
 .PHONY: deps
 deps:
 	GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
-	cd $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile \
-		&& (git remote add upstream git@github.com:sfroment/mobile || true) \
-		&& git fetch upstream \
-		&& (git cherry-pick af3c051e0603af005260579c432830164f68933b || true)
+	patch -N ~/go/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff || true
 	go install golang.org/x/mobile/cmd/gomobile
 	go get -v golang.org/x/mobile/cmd/gobind
 	gomobile init
