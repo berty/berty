@@ -51,3 +51,5 @@ func (e Event) ToJSON() string {
 	out, _ := json.Marshal(e)
 	return string(out)
 }
+
+func (e Event) IsNode() {} // required by gqlgen

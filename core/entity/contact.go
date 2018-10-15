@@ -19,3 +19,5 @@ func (c Contact) Filtered() *Contact {
 func (c Contact) PeerID() string {
 	return c.ID // FIXME: use sigchain
 }
+
+func (c Contact) IsNode() {} // required by gqlgen
