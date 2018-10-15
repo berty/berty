@@ -9,17 +9,17 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
+	graphql "github.com/99designs/gqlgen/graphql"
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
-
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
-
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
@@ -292,11 +292,27 @@ func daemon(opts *daemonOptions) error {
 
 	mux := http.NewServeMux()
 	mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
-	mux.Handle("/query", gqlhandler.GraphQL(graph.NewExecutableSchema(resolver), gqlhandler.WebsocketUpgrader(websocket.Upgrader{
-		CheckOrigin: func(*http.Request) bool {
-			return true
-		},
-	})))
+	gqlLogger := zap.L().Named("vendor.graphql")
+	mux.Handle("/query", gqlhandler.GraphQL(
+		graph.NewExecutableSchema(resolver),
+		gqlhandler.WebsocketUpgrader(websocket.Upgrader{
+			CheckOrigin: func(*http.Request) bool {
+				return true
+			},
+		}),
+		gqlhandler.RequestMiddleware(func(ctx context.Context, next func(ctx context.Context) []byte) []byte {
+			req := graphql.GetRequestContext(ctx)
+			//verb := strings.TrimSpace(strings.Split(req.RawQuery, "{")[1]) // verb can be used to filter-out
+			gqlLogger.Debug(
+				"gql query",
+				zap.String(
+					"query",
+					strings.Replace(req.RawQuery, "\n", "", -1),
+				),
+			)
+			return next(ctx)
+		}),
+	))
 
 	handler := cors.New(cors.Options{
 		AllowedOrigins: []string{"*"}, // FIXME: use specific URLs?
