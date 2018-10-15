@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"path"
 	"strings"
 
@@ -75,6 +76,7 @@ func newRootCommand() *cobra.Command {
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
 	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
+	cmd.PersistentFlags().Int64P("rand-seed", "", 0, "seed used to initialize the default rand source")
 
 	cmd.AddCommand(
 		newDaemonCommand(),
@@ -90,6 +92,14 @@ func newRootCommand() *cobra.Command {
 }
 
 func setupLogger(cmd *cobra.Command, args []string) error {
+	randSeed, err := cmd.Flags().GetInt64("rand-seed")
+	if err != nil {
+		return err
+	}
+	if randSeed != 0 {
+		rand.Seed(randSeed)
+	}
+
 	cfgLogLevel, err := cmd.Flags().GetString("log-level")
 	if err != nil {
 		return err
