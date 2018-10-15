@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_opentracing "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
@@ -14,9 +16,6 @@ import (
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/client/jsonclient"
 	"berty.tech/core/pkg/jaeger"
-
-	"github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 )
 
 type clientOptions struct {

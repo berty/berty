@@ -132,6 +132,8 @@ type GoogleProtobufFileOptions  {
       swiftPrefix: String!
       phpClassPrefix: String!
       phpNamespace: String!
+      phpMetadataNamespace: String!
+      rubyPackage: String!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufMessageOptions  {
