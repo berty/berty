@@ -1,18 +1,15 @@
+# Deps / build related
+ROOT := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+WEB := $(ROOT)/web
+GOMOB := $(ROOT)/gomobile
+IOS := $(ROOT)/ios
+ANDROID := $(ROOT)/android
+
+# Fastlane build related
 IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 ANDROID_VERSION ?= $(shell git rev-list --all --count)
-XCODE_MAJOR := $(shell xcodebuild -version | head -1 | sed 's~^Xcode \(.*\)\..*$$~\1~')
 
-PWD := $(shell pwd)
-ROOT := $(PWD)
-DIRS := common mobile web gomobile
-DEPS := $(addsuffix /node_modules, $(DIRS) $(ROOT))
-CLEAN := $(addsuffix .clean, $(DIRS) $(ROOT))
-FCLEAN := $(addsuffix .fclean, $(DIRS) $(ROOT))
-RE := $(addsuffix .re, $(DIRS) $(ROOT))
-START := $(addsuffix .start, $(DIRS) $(ROOT))
-
-# build related env
-NAME ?= berty
+NAME ?= Berty
 BUILD ?= .build
 BUILD_IOS ?= $(BUILD)/ios
 BUILD_ANDROID ?= $(BUILD)/android
@@ -20,73 +17,120 @@ BUILD_ANDROID ?= $(BUILD)/android
 KEYCHAIN_NAME ?= berty_keychain
 KEYCHAIN_PASSWORD ?= berty_pass
 
+# Dockerised webapp related
 SCALE ?= 1
 PORT ?= 0
 SERV ?=
-
-.PHONY: all
-all: $(ROOT) $(DEPS)
 
 .PHONY: help
 help:
 	@echo "React-Native commands:"
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | grep -v / | sed 's/^/  $(HELP_MSG_PREFIX)make /'
 
+
+### Dependencies part ###
 .PHONY: deps
-deps: $(DEPS)
+deps:
+	cd $(ROOT) && yarn
+
+.PHONY: deps.android
+deps.android: deps
+	$(MAKE) -C $(GOMOB) build.android
+	cd $(ROOT) && react-native link
+
+.PHONY: deps.ios
+deps.ios: deps
+	$(MAKE) -C $(GOMOB) build.ios
+	if [ ! -e $(ROOT)/node_modules/react-native/third-party/glog-0.*/Makefile ]; then	\
+		cd $(ROOT)/node_modules/react-native											\
+			&& rm -rf third-party														\
+			&& ./scripts/ios-install-third-party.sh										\
+			&& cd third-party/glog-0.*													\
+			&& ../../scripts/ios-configure-glog.sh;										\
+	fi
+	cd $(ROOT) && react-native link
+
+.PHONY: deps.web
+deps.web: deps
+	cd $(WEB) && yarn
+##############################
+
+
+### Build release/debug part ###
+.PHONY: debug.android
+debug.android: deps.android
+	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-android --no-packager' 'yarn start'
+
+.PHONY: release.android
+release.android: deps.android
+	@echo "Not implemented yet"
+
+.PHONY: debug.ios
+debug.ios: deps.ios
+	cd $(ROOT) && ./node_modules/.bin/concurrently "react-native run-ios --no-packager --configuration=Debug --scheme=debug --device '$(device)'" 'yarn start'
+
+.PHONY: release.ios
+release.ios: deps.ios
+	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=release --device '$(device)'
+
+.PHONY: debug.web
+debug.web: deps.web
+	@echo "Not implemented yet"
+##############################
+
+
+### Clean dependencies part ###
+.PHONY: clean
+clean.bundler_and_pkgs:
+	cd $(ROOT)					\
+		&& rm -rf node_modules	\
+		&& yarn cache clean		\
+		&& watchman watch-del-all
+	rm -rf $$TMPDIR/metro-*
+	rm -rf $$TMPDIR/react-*
+	rm -rf $$TMPDIR/haste-*
+
+.PHONY: clean.android
+clean.android:
+	$(MAKE) -C $(GOMOB) clean.android
+	cd $(ANDROID) && rm -rf app/build && ./gradlew clean
+
+.PHONY: clean.ios
+clean.ios:
+	$(MAKE) -C $(GOMOB) clean.ios
+	cd $(IOS) && rm -rf build && xcodebuild clean
+
+.PHONY: clean.web
+clean.web:
+	cd $(WEB)					\
+		&& rm -rf node_modules	\
+		&& yarn cache clean		\
+		&& watchman watch-del-all
+
+.PHONY: fclean.android
+fclean.android: clean.android clean.bundler_and_pkgs
+
+.PHONY: fclean.ios
+fclean.ios: clean.ios clean.bundler_and_pkgs
+
+.PHONY: fclean.web
+fclean.web: clean.web clean.bundler_and_pkgs
 
 .PHONY: fclean
-fclean: $(FCLEAN)
-	yarn cache clean && watchman watch-del-all
+fclean: clean.android clean.ios clean.web clean.bundler_and_pkgs
 
-.PHONY: re
-re: $(RE)
+.PHONY: re.android
+re.android: fclean.android debug.android
 
-$(DEPS): %/node_modules: %/package.json
-	cd $(dir $@) && yarn
+.PHONY: re.ios
+re.ios: fclean.ios debug.ios
 
-.PHONY: $(DIRS)
-$(DIRS): %: %/node_modules $(ROOT)/node_modules
-
-.PHONY: android
-android: mobile
-	make -C gomobile android
-	cd mobile && yarn android && yarn start
+.PHONY: re.web
+re.web: fclean.web debug.web
+##############################
 
 
-.PHONY: patch-xcode10
-patch-xcode10:
-ifeq ("$(XCODE_MAJOR)", "10")
-	cd node_modules/react-native \
-		&& cp scripts/ios-install-third-party.sh . \
-		&& rm -rf third-party \
-		&& ./ios-install-third-party.sh \
-		&& cp scripts/ios-configure-glog.sh third-party/glog-0.3.4 \
-		&& cd third-party/glog-0.3.4 \
-		&& ./ios-configure-glog.sh
-	patch -N ./node_modules/react-native/Libraries/WebSocket/RCTWebSocket.xcodeproj/project.pbxproj ./patch/project.pbxproj.patch || true
-else
-	@echo "patch-xcode10: skipping patch, using xcode $(XCODE_MAJOR)"
-endif
-
-.PHONY: ios
-ios: mobile patch-xcode10
-	make -C gomobile ios
-	cd mobile && yarn ios --device '$(device)' && yarn start
-
-.PHONY: $(FCLEAN)
-$(FCLEAN):
-	rm -rf $(basename $@)/node_modules
-
-.PHONY: $(RE)
-$(RE): %.re: %.fclean %/node_modules
-
-$(START): %.start: %
-	cd $< && yarn start
-
-$(BUILD): %.build: %
-	cd $< && yarn build
-
+### Dockerized webapp part ###
 webapp.start:
 	@docker-compose up -d --build --scale core-service=$(SCALE)
 
@@ -141,13 +185,16 @@ webapp.rm: webapp.stop
 	COUNT=$$(echo "$$CONT_ID" | sed '/^\s*$$/d' | wc -w | tr -d ' ');			\
 	echo "Deleting $$COUNT previously generated containers...";					\
 	if [ $$COUNT -ne 0 ]; then docker rm $$CONT_ID; fi
+##############################
 
+
+### Fastlane build part ###
 .PHONY: version
 version:
 	mkdir -p $(BUILD)
 
-	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) mobile/ios/berty/Info.plist
-	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:./mobile/android/app/build.gradle
+	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
+	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:$(ANDROID)/app/build.gradle
 	echo "ios:$(IOS_VERSION)\nandroid:$(ANDROID_VERSION)\n" > $(BUILD)/version
 
 fastlane.match.development:
@@ -177,13 +224,14 @@ fastlane.ios.build:
 	GYM_OPTION_PROVISIONING_PROFILE='match AdHoc chat.berty.ios' \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(BUILD_IOS) \
-	GYM_PROJECT=mobile/ios/berty.xcodeproj \
+	GYM_PROJECT=ios/Berty.xcodeproj \
 	GYM_SCHEME=adhoc \
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
 
 	# extract build informations
-	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt || true
+	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt || true
 
 fastlane.ios.release:
-	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/berty.ipa skip_waiting_for_build_processing:true
+	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/Berty.ipa skip_waiting_for_build_processing:true
+##############################
