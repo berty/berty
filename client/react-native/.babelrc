@@ -1,9 +1,8 @@
 {
-  "presets": ["react-native", "react-app", "stage-0"],
-  "env": {
-    "browser": true
-  },
+  "presets": ["module:metro-react-native-babel-preset"],
   "plugins": [
+    "module:@babel/plugin-syntax-export-namespace-from",
+    "transform-export-extensions",
     "relay"
   ]
 }

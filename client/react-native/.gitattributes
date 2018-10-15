@@ -1,0 +1,2 @@
+*.pbxproj -text
+*.bat eol=crlf
