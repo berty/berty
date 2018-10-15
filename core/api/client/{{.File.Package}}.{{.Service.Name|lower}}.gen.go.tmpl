@@ -6,13 +6,10 @@ package client
 
 import (
        "context"
-
-        "berty.tech/core/{{.File.Name|dir}}"
+        {{- range .File.Dependency -}}{{- $dependency := . | getProtoFile}}
+        "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
+        {{ end -}}
 	"berty.tech/core/api/client"
-        {{- range .File.Dependency}}
-          {{- $dependency := . | getProtoFile}}
-          "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
-        {{- end}}
 )
 
 {{- range $svc := .File.Service}}

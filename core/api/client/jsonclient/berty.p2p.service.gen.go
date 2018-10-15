@@ -6,10 +6,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"go.uber.org/zap"
-
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/p2p"
+	"go.uber.org/zap"
 )
 
 func init() {

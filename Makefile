@@ -22,38 +22,41 @@ lint-go:
 
 .PHONY: lint-editorconfig
 lint-editorconfig:
-	@FILES=`find . -type f                                                               \
-			! -name '.DS_Store'                                                  \
-			! -name 'LICENSE'                                                    \
-			! -name 'Gopkg*'                                                     \
-			! -name 'yarn.lock'                                                  \
-			! -name 'yarn-error.log'                                             \
-			! -name 'Gemfile.lock'                                               \
-			! -name '.gitkeep'                                                   \
-			! -name 'README.md'                                                  \
-			! -name '.generated'                                                 \
-			! -name '*.gen.go'                                                   \
-			! -name '*.gen.go.tmpl'                                              \
-			! -name '*.gen.graphql'                                              \
-			! -name '*.patch'                                                    \
-			! -name '*.vim'                                                      \
-			! -name '*.generated.go'											 \
-			! -path '*/generated/*'												 \
-			! -path '*/node_modules/*'                                           \
-			! -path '*/__generated__/*'                                          \
-			! -path './client/react-native/common/schema.graphql'                \
-			! -path './client/common/openssl/built/*'                            \
-			! -path './client/react-native/mobile/*/Build/*'                     \
-			! -path './client/react-native/mobile/*/build/*'                     \
-			! -path './client/react-native/mobile/ios/core.framework/*'          \
-			! -path './client/react-native/mobile/android/.gradle/*'             \
-			! -path './client/react-native/mobile/ios/berty.xcodeproj/*'         \
-			! -path './.git/*'                                                   \
-			! -path './.github/*'                                                \
-			! -path './vendor/*'                                                 \
-			! -path './client/react-native/mobile/ios/berty/Images.xcassets/*'`; \
-	COUNT=$$(echo "$$FILES" | sed '/^\s*$$/d' | wc -l | tr -d ' ');                      \
-	echo "Checking if $$COUNT files comply with EditorConfig rules...";                  \
+	@FILES=`find . -type f \
+		! -name '*.gen.go' \
+		! -name '*.gen.go.tmpl' \
+		! -name '*.gen.graphql' \
+		! -name '*.generated.go' \
+		! -name '*.patch' \
+		! -name '*.vim' \
+		! -name '.DS_Store' \
+		! -name '.generated' \
+		! -name '.gitkeep' \
+		! -name 'Gemfile.lock' \
+		! -name 'Gopkg*' \
+		! -name 'LICENSE' \
+		! -name 'README.md' \
+		! -name 'go.mod' \
+		! -name 'go.sum' \
+		! -name 'yarn-error.log' \
+		! -name 'yarn.lock' \
+		! -path '*/__generated__/*' \
+		! -path '*/generated/*' \
+		! -path '*/node_modules/*' \
+		! -path './.git/*' \
+		! -path './.github/*' \
+		! -path './client/common/openssl/built/*' \
+		! -path './client/react-native/common/schema.graphql' \
+		! -path './client/react-native/mobile/*/Build/*' \
+		! -path './client/react-native/mobile/*/build/*' \
+		! -path './client/react-native/mobile/android/.gradle/*' \
+		! -path './client/react-native/mobile/ios/berty.xcodeproj/*' \
+		! -path './client/react-native/mobile/ios/berty/Images.xcassets/*' \
+		! -path './client/react-native/mobile/ios/core.framework/*' \
+		! -path './vendor/*' \
+	`; \
+	COUNT=$$(echo "$$FILES" | sed '/^\s*$$/d' | wc -l | tr -d ' '); \
+	echo "Checking if $$COUNT files comply with EditorConfig rules..."; \
 	eclint check $$FILES
 
 

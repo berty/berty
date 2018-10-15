@@ -1,4 +1,6 @@
-FROM moul/protoc-gen-gotemplate
+FROM moul/protoc-gen-gotemplate as pgg
+
+FROM    golang:1.11-alpine as builder
 
 RUN     apk --update add make git go rsync libc-dev openssh docker
 
@@ -15,6 +17,13 @@ RUN     go get -u -v \
         github.com/spf13/cobra
 
 RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.4.4 && go install github.com/99designs/gqlgen
+RUN     rm -f /go/bin/web-editor
 
-ENV	GOPATH=/go \
-        PATH=/go/bin:${PATH}
+FROM    golang:1.11-alpine
+RUN     apk --update add git make protobuf gcc libc-dev && mkdir -p /.cache/go-build && chmod -R 777 /.cache
+COPY    --from=pgg /go/bin/* /go/bin/
+COPY    --from=builder /go/bin/* /go/bin/
+COPY    --from=pgg /protobuf /protobuf
+ENV     GOPATH=/go \
+        PATH=/go/bin:${PATH} \
+        GOROOT=/usr/local/go

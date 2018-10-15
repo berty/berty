@@ -4,11 +4,9 @@ import (
 	"context"
 	"time"
 
-	"github.com/satori/go.uuid"
-
-	"go.uber.org/zap"
-
 	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
+	"go.uber.org/zap"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"

@@ -1,6 +1,7 @@
 .git/
 contrib/
 client/
+vendor/
 node_modules/
 gin-bin
 !client/go

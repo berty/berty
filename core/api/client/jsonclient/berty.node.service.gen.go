@@ -6,12 +6,11 @@ import (
 	"context"
 	"encoding/json"
 
-	"go.uber.org/zap"
-
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"go.uber.org/zap"
 )
 
 func init() {

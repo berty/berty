@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/whyrusleeping/go-logging"
+	logging "github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 

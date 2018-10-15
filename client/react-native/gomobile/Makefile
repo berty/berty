@@ -4,6 +4,8 @@ CORE_PACKAGE :=		$(PWD)/../../../core
 CORE_SOURCES :=		$(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 			$(shell find . -type f -name "*.go")
 
+GOPATH ?=		$(HOME)/go
+
 CGO_CPPFLAGS ?=		-I$(PWD)/../../common/openssl/built/include
 
 LIBS_PATH :=		$(PWD)/../../common/openssl/built
@@ -26,8 +28,8 @@ deps-osx:
 
 .PHONY: deps
 deps:
-	go get -v golang.org/x/mobile/cmd/gomobile
-	cd $(GOPATH)/src/golang.org/x/mobile \
+	GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
+	cd $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile \
 		&& (git remote add upstream git@github.com:sfroment/mobile || true) \
 		&& git fetch upstream \
 		&& (git cherry-pick af3c051e0603af005260579c432830164f68933b || true)
@@ -43,6 +45,7 @@ init: deps
 ios: $(IOS_BUILD_PATH)/core.framework/Core
 
 $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
+	GO111MODULE=on go mod vendor
 	mkdir -p $(IOS_BUILD_PATH)
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
 		gomobile bind -v -target=ios -o $(IOS_BUILD_PATH)/core.framework .
@@ -51,6 +54,7 @@ $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 android: $(ANDROID_BUILD_PATH)/core.aar
 
 $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
+	GO111MODULE=on go mod vendor
 	mkdir -p $(ANDROID_BUILD_PATH)
 	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
 		gomobile bind -v -target=android -o $(ANDROID_BUILD_PATH)/core.aar .
