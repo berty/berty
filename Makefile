@@ -28,6 +28,7 @@ lint-editorconfig:
 		! -name '*.gen.graphql' \
 		! -name '*.generated.go' \
 		! -name '*.patch' \
+		! -name '*.diff' \
 		! -name '*.vim' \
 		! -name '.DS_Store' \
 		! -name '.generated' \
