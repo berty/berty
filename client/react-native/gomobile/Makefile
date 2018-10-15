@@ -3,7 +3,7 @@ PWD :=			$(shell pwd)
 CORE_PACKAGE :=		$(PWD)/../../../core
 CORE_SOURCES :=		$(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 			$(shell find . -type f -name "*.go")
-BUILD_PATCH_PATH :=	$(PWD)/../../../.circleci/docker
+BUILD_PATCH_PATH :=	$(PWD)/../../../build/docker/android-ci
 
 GOPATH ?=		$(HOME)/go
 
