@@ -1,13 +1,12 @@
 import React, { PureComponent } from 'react'
-import { Platform } from 'react-native'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { colors } from '../../../../constants'
 import { Flex, Screen, Button } from '../../../Library'
 import { padding, paddingVertical, borderBottom } from '../../../../styles'
 import { commit } from '../../../../relay'
 import { mutations } from '../../../../graphql'
-import QRCode from 'qrcode-react'
-import QRReader from './QRReader/QRReader'
+import QRGenerator from '../../../Library/QRGenerator/QRGenerator'
+import QRReader from '../../../Library/QRReader/QRReader'
 
 // TODO: get contact with status == 'myself' to get real id
 
@@ -50,9 +49,8 @@ class ByQRCode extends PureComponent {
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <Flex.Rows style={[padding]} align='center'>
           {scan && <QRReader />}
-          {share &&
-            Platform.OS === 'web' && (
-            <QRCode value={myID} logo={logo} size={256} logoWidth={100} />
+          {share && (
+            <QRGenerator value={myID} logo={logo} size={256} logoWidth={100} />
           )}
           <Flex.Cols justify='center'>
             <Button
