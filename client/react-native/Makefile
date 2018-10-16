@@ -75,12 +75,12 @@ release.ios: deps.ios
 
 .PHONY: debug.web
 debug.web: deps.web
-	@echo "Not implemented yet"
+	cd $(WEB) && yarn start
 ##############################
 
 
 ### Clean dependencies part ###
-.PHONY: clean
+.PHONY: clean.bundler_and_pkgs
 clean.bundler_and_pkgs:
 	cd $(ROOT)					\
 		&& rm -rf node_modules	\
