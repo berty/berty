@@ -17,7 +17,6 @@
     "graphql": "^14.0.2",
     "graphql-relay": "^0.5.5",
     "isomorphic-fetch": "^2.2.1",
-    "qrcode-react": "^0.1.16",
     "react": "16.5.0",
     "react-dom": "16.4.2",
     "react-native": "^0.57.3",

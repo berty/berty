@@ -1,5 +1,6 @@
 import { PureComponent } from 'react'
-export default class QRReader extends PureComponent {
+
+export default class QRGenerator extends PureComponent {
   render () {
     return null
   }
