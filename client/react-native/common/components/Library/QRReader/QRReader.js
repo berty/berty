@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import QrReader from 'react-qr-reader'
+
 export default class QRReader extends PureComponent {
   render () {
     return (

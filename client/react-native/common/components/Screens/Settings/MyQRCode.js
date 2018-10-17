@@ -1,9 +1,8 @@
 import React, { PureComponent } from 'react'
-import { Platform } from 'react-native'
 import { colors } from '../../../constants'
 import { Flex, Screen, Button, Header } from '../../Library'
 import { padding, paddingVertical } from '../../../styles'
-import QRCode from 'qrcode-react'
+import QRGenerator from '../../Library/QRGenerator/QRGenerator'
 import { atob } from 'b64-lite'
 
 export default class MyQRCode extends PureComponent {
@@ -30,9 +29,7 @@ export default class MyQRCode extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <Flex.Rows style={[padding]} align='center'>
-          {Platform.OS === 'web' && (
-            <QRCode value={myID} logo={logo} size={256} logoWidth={100} />
-          )}
+          <QRGenerator value={myID} logo={logo} size={256} logoWidth={100} />
           <Flex.Cols justify='center'>
             <Button
               icon={'share'}
