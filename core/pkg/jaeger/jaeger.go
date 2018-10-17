@@ -1,18 +1,22 @@
 package jaeger
 
 import (
-	"fmt"
 	"io"
-	"os"
 
 	opentracing "github.com/opentracing/opentracing-go"
 	config "github.com/uber/jaeger-client-go/config"
 	"go.uber.org/zap"
 )
 
+var Config struct {
+	Address  string
+	Disabled bool
+}
+
 func InitTracer(service string) (opentracing.Tracer, io.Closer, error) {
 	cfg := &config.Configuration{
 		ServiceName: service,
+		Disabled:    Config.Disabled,
 		Sampler: &config.SamplerConfig{
 			Type:  "const",
 			Param: 1,
@@ -22,11 +26,8 @@ func InitTracer(service string) (opentracing.Tracer, io.Closer, error) {
 		},
 	}
 
-	host, existHost := os.LookupEnv("JAEGER_AGENT_HOST")
-	port, existPort := os.LookupEnv("JAEGER_AGENT_PORT")
-
-	if existHost && existPort {
-		cfg.Reporter.LocalAgentHostPort = fmt.Sprintf("%s:%s", host, port)
+	if Config.Disabled == false {
+		cfg.Reporter.LocalAgentHostPort = Config.Address
 	}
 
 	tracer, closer, err := cfg.NewTracer(

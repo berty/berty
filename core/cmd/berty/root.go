@@ -17,6 +17,7 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/pkg/filteredzap"
+	"berty.tech/core/pkg/jaeger"
 )
 
 type p2pLogBackendWrapper struct {
@@ -65,6 +66,9 @@ func newRootCommand() *cobra.Command {
 			if err := setupLogger(cmd, args); err != nil {
 				return err
 			}
+			if err := setupJaeger(cmd, args); err != nil {
+				return err
+			}
 			if err := setupViper(cmd, args); err != nil {
 				return err
 			}
@@ -75,6 +79,7 @@ func newRootCommand() *cobra.Command {
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
 	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
+	cmd.PersistentFlags().StringP("jaeger-address", "", "", "ip address / hostname and port of jaeger-agent: <hostname>:<port>")
 	cmd.PersistentFlags().Int64P("rand-seed", "", 0, "seed used to initialize the default rand source")
 
 	cmd.AddCommand(
@@ -146,6 +151,23 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	if err := p2plog.SetLogLevel("*", getP2PLogLevel(logLevel).String()); err != nil {
 		logger().Warn("failed to set p2p log level", zap.Error(err))
 	}
+	return nil
+}
+
+func setupJaeger(cmd *cobra.Command, args []string) error {
+	jaegerAddr, err := cmd.Flags().GetString("jaeger-address")
+	if err != nil {
+		return err
+	}
+
+	jaegerDisabled := false
+	if jaegerAddr == "" {
+		jaegerDisabled = true
+	}
+
+	jaeger.Config.Address = jaegerAddr
+	jaeger.Config.Disabled = jaegerDisabled
+
 	return nil
 }
 
