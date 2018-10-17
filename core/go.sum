@@ -306,6 +306,8 @@ github.com/uber/jaeger-client-go v2.15.0+incompatible h1:NP3qsSqNxh8VYr956ur1N/1
 github.com/uber/jaeger-client-go v2.15.0+incompatible/go.mod h1:WVhlPFC8FDjOFMMWRy2pZqQJSXxYSwNYOkTr/Z6d3Kk=
 github.com/uber/jaeger-lib v1.5.0 h1:OHbgr8l656Ub3Fw5k9SWnBfIEwvoHQ+W2y+Aa9D1Uyo=
 github.com/uber/jaeger-lib v1.5.0/go.mod h1:ComeNDZlWwrWnDv8aPp0Ba6+uUTzImX/AauajbLI56U=
+github.com/vektah/gqlgen v0.6.0 h1:+yiUtfKzp+l+9s34rF5BwqGsmc2uLDfOD6UEDfjgiGw=
+github.com/vektah/gqlgen v0.6.0/go.mod h1:p6RS1iWLR+HVU1U2lU6vWgLjXSBtD0hRubzDWKhXFhY=
 github.com/vektah/gqlparser v0.0.0-20181002002754-f119686bf1d4 h1:HOJJtIE3gsOqjNxZF8LZ0pVMC7VGJgZlTSUbMCoQvTA=
 github.com/vektah/gqlparser v0.0.0-20181002002754-f119686bf1d4/go.mod h1:K4QdSSpS2XiHHwzb18kWh3iBljB8rLC8okGXsnQy3Nc=
 github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc h1:BCPnHtcboadS0DvysUuJXZ4lWVv5Bh5i7+tbIyi+ck4=
