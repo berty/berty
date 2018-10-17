@@ -13,6 +13,7 @@ import (
 	p2p "berty.tech/core/api/p2p"
 	entity "berty.tech/core/entity"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"go.uber.org/zap"
 )
 
 type Resolver struct {
@@ -212,7 +213,7 @@ func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversat
 	return r.client.ConversationAddMessage(ctx, &node.ConversationAddMessageInput{Conversation: conversation, Message: message})
 }
 func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.Void, error) {
-	return r.client.GenerateFakeData(ctx, &node.Void{T: T})
+	return r.client.GenerateFakeData(ctx, &node.Void{T: true})
 }
 
 type queryResolver struct{ *Resolver }
@@ -226,22 +227,22 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 		return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
 	case "conversation_member":
 		return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
-	// case "device":
-	// 	return r.client.GetDevice(ctx, &entity.Device{ID: id}onta
 	case "event":
 		return r.client.GetEvent(ctx, &p2p.Event{ID: id})
+	default:
+		logger().Warn("unknown node type", zap.String("node_type", gID[0]))
+		return nil, nil
 	}
-	return nil, nil
 }
-func (r *queryResolver) EventList(ctx context.Context, limit uint32, filter *p2p.Event) ([]*p2p.Event, error) {
 
+func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error) {
 	var list []*p2p.Event
 	if filter != nil {
 		if filter.ConversationID != "" {
 			filter.ConversationID = strings.SplitN(filter.ConversationID, ":", 2)[1]
 		}
 	}
-	stream, err := r.client.EventList(ctx, &node.EventListInput{Limit: limit, Filter: &p2p.Event{
+	stream, err := r.client.EventList(ctx, &node.EventListInput{Paginate: paginate, Filter: &p2p.Event{
 		ConversationID: filter.ConversationID,
 	}})
 	if err != nil {
@@ -259,33 +260,57 @@ func (r *queryResolver) EventList(ctx context.Context, limit uint32, filter *p2p
 	}
 	return list, nil
 }
+
 func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact) ([]*entity.Contact, error) {
-	var list []*entity.Contact
-	stream, err := r.client.ContactList(ctx, &node.ContactListInput{Filter: filter})
+func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error) {
+	if filter != nil && filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+	}
+
+	input := &node.ContactListInput{
+		Filter:   filter,
+		Paginate: getPagination(first, after, last, before),
+	}
+
+	stream, err := r.client.ContactList(ctx, input)
 	if err != nil {
 		return nil, err
 	}
+
+	output := &node.ContactListConnection{
+		Edges: []*node.ContactEdge{},
+	}
 	for {
-		elem, err := stream.Recv()
+		n, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			return nil, err
 		}
-		list = append(list, elem)
+		output.Edges = append(output.Edges, &node.ContactEdge{
+			Node:   n,
+			Cursor: n.ID,
+		})
 	}
-	return list, nil
+
+	output.PageInfo = &node.PageInfo{
+		StartCursor:     output.Edges[0].Cursor,
+		EndCursor:       output.Edges[len(output.Edges)-1].Cursor,
+		HasPreviousPage: input.Paginate.After != "",
+		HasNextPage:     len(output.Edges) == int(input.Paginate.First),
+		Count:           uint32(len(output.Edges)),
+	}
+	return output, nil
 }
 func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.GetContact(ctx, &entity.Contact{ID: id})
 }
-func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation) ([]*entity.Conversation, error) {
+func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) ([]*entity.Conversation, error) {
 	var list []*entity.Conversation
 
 	if filter != nil {
@@ -303,7 +328,7 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 			}
 		}
 	}
-	stream, err := r.client.ConversationList(ctx, &node.ConversationListInput{Filter: filter})
+	stream, err := r.client.ConversationList(ctx, &node.ConversationListInput{Filter: filter, Paginate: paginate})
 	if err != nil {
 		return nil, err
 	}
@@ -349,4 +374,30 @@ func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Even
 		}
 	}()
 	return channel, nil
+}
+
+// Helpers
+func getPagination(first *int32, after *string, last *int32, before *string) *node.Pagination {
+	pagination := &node.Pagination{}
+	if first == nil {
+		pagination.First = 0
+	} else {
+		pagination.First = *first
+	}
+	if after == nil {
+		pagination.After = ""
+	} else {
+		pagination.After = *after
+	}
+	if last == nil {
+		pagination.Last = 0
+	} else {
+		pagination.Last = *last
+	}
+	if before == nil {
+		pagination.Before = ""
+	} else {
+		pagination.Before = *before
+	}
+	return pagination
 }

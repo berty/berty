@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react'
 import { Image, ActivityIndicator } from 'react-native'
 import { Screen, Menu, Header, Text, Badge, Flex } from '../../Library'
 import { colors } from '../../../constants'
-import { queries } from '../../../graphql'
 import { QueryReducer } from '../../../relay'
 import { choosePicture } from '../../../helpers/react-native-image-picker'
+import { graphql } from 'react-relay'
 
 export default class MyAccount extends PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -102,7 +102,24 @@ export default class MyAccount extends PureComponent {
     return (
       <Screen>
         <QueryReducer
-          query={queries.ContactList}
+          query={graphql`
+            query MyAccountSettingsQuery($filter: BertyEntityContactInput) {
+              ContactList(
+                filter: $filter
+                first: 1
+                orderBy: ""
+                orderDesc: false
+              ) {
+                edges {
+                  node {
+                    id
+                    displayName
+                    overrideDisplayName
+                  }
+                }
+              }
+            }
+          `}
           variables={{
             filter: {
               id: '',
@@ -127,7 +144,7 @@ export default class MyAccount extends PureComponent {
                 return (
                   <MyAccount.Menu
                     navigation={this.props.navigation}
-                    data={state.data.ContactList.find(_ => _.status === 42)}
+                    data={state.data.ContactList.edges[0].node}
                     state={this.state}
                     onChoosePicture={this.onChoosePicture}
                   />

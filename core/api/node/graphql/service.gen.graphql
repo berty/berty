@@ -374,8 +374,39 @@ type BertyP2pEvent implements Node {
 type BertyNodePingDestination  {
       destination: String!
 }
+type BertyNodeEventEdge  {
+    node: BertyP2pEvent
+      cursor: String!
+}
+type BertyNodeContactEdge  {
+    node: BertyEntityContact
+      cursor: String!
+}
+type BertyNodeContactListConnection  {
+    edges: [BertyNodeContactEdge]
+    pageInfo: BertyNodePageInfo!
+}
+type BertyNodeConversationEdge  {
+    node: BertyEntityConversation
+      cursor: String!
+}
 type BertyNodeVoid  {
       T: Bool!
+}
+type BertyNodePagination  {
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+}
+type BertyNodePageInfo  {
+      startCursor: String!
+      endCursor: String!
+      hasNextPage: Bool!
+      hasPreviousPage: Bool!
+      count: Uint32!
 }
 input BertyP2pEventInput {
     id: ID!
@@ -410,6 +441,14 @@ type BertyP2pEventPayload {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+}
+input BertyNodePaginationInput {
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
 }
 input BertyEntityDeviceInput {
     id: ID!
@@ -493,10 +532,10 @@ type BertyNodeVoidPayload {
 }
   
 type Query {
-  Node(id: ID!): Node
+  node(id: ID!): Node
   EventList(
-      limit: Uint32!
     filter: BertyP2pEventInput
+    paginate: BertyNodePaginationInput
   ): [BertyP2pEventPayload]
   GetEvent(
     id: ID!
@@ -517,7 +556,13 @@ type Query {
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput
-  ): [BertyEntityContactPayload]
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+  ): BertyNodeContactListConnection
   GetContact(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
@@ -533,6 +578,7 @@ type Query {
   ): BertyEntityContactPayload
   ConversationList(
     filter: BertyEntityConversationInput
+    paginate: BertyNodePaginationInput
   ): [BertyEntityConversationPayload]
   GetConversation(
     id: ID!

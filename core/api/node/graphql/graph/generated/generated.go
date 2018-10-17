@@ -157,6 +157,43 @@ type ComplexityRoot struct {
 		Used            func(childComplexity int) int
 	}
 
+	BertyNodeContactEdge struct {
+		Node   func(childComplexity int) int
+		Cursor func(childComplexity int) int
+	}
+
+	BertyNodeContactListConnection struct {
+		Edges    func(childComplexity int) int
+		PageInfo func(childComplexity int) int
+	}
+
+	BertyNodeConversationEdge struct {
+		Node   func(childComplexity int) int
+		Cursor func(childComplexity int) int
+	}
+
+	BertyNodeEventEdge struct {
+		Node   func(childComplexity int) int
+		Cursor func(childComplexity int) int
+	}
+
+	BertyNodePageInfo struct {
+		StartCursor     func(childComplexity int) int
+		EndCursor       func(childComplexity int) int
+		HasNextPage     func(childComplexity int) int
+		HasPreviousPage func(childComplexity int) int
+		Count           func(childComplexity int) int
+	}
+
+	BertyNodePagination struct {
+		OrderBy   func(childComplexity int) int
+		OrderDesc func(childComplexity int) int
+		First     func(childComplexity int) int
+		After     func(childComplexity int) int
+		Last      func(childComplexity int) int
+		Before    func(childComplexity int) int
+	}
+
 	BertyNodePingDestination struct {
 		Destination func(childComplexity int) int
 	}
@@ -471,11 +508,11 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Node                  func(childComplexity int, id string) int
-		EventList             func(childComplexity int, limit uint32, filter *p2p.Event) int
+		EventList             func(childComplexity int, filter *p2p.Event, paginate *node.Pagination) int
 		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
-		ContactList           func(childComplexity int, filter *entity.Contact) int
+		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ConversationList      func(childComplexity int, filter *entity.Conversation) int
+		ConversationList      func(childComplexity int, filter *entity.Conversation, paginate *node.Pagination) int
 		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
 		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
 	}
@@ -549,11 +586,11 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
-	EventList(ctx context.Context, limit uint32, filter *p2p.Event) ([]*p2p.Event, error)
+	EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error)
 	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
-	ContactList(ctx context.Context, filter *entity.Contact) ([]*entity.Contact, error)
+	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
 	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
-	ConversationList(ctx context.Context, filter *entity.Conversation) ([]*entity.Conversation, error)
+	ConversationList(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) ([]*entity.Conversation, error)
 	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
 }
@@ -580,7 +617,7 @@ func field_Mutation_ContactRequest_args(rawArgs map[string]interface{}) (map[str
 	var arg1 string
 	if tmp, ok := rawArgs["introText"]; ok {
 		var err error
-		arg1, err = graphql.UnmarshalString(tmp)
+		arg1, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -704,7 +741,7 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 	var arg7 string
 	if tmp, ok := rawArgs["displayName"]; ok {
 		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
+		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -713,7 +750,7 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 	var arg8 string
 	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
+		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -722,7 +759,7 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 	var arg9 string
 	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
+		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -731,7 +768,7 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 	var arg10 string
 	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
+		arg10, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -855,7 +892,7 @@ func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[stri
 	var arg7 string
 	if tmp, ok := rawArgs["displayName"]; ok {
 		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
+		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -864,7 +901,7 @@ func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[stri
 	var arg8 string
 	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
+		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -873,7 +910,7 @@ func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[stri
 	var arg9 string
 	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
+		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -882,7 +919,7 @@ func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[stri
 	var arg10 string
 	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
+		arg10, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1006,7 +1043,7 @@ func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[stri
 	var arg7 string
 	if tmp, ok := rawArgs["displayName"]; ok {
 		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
+		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1015,7 +1052,7 @@ func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[stri
 	var arg8 string
 	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
+		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1024,7 +1061,7 @@ func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[stri
 	var arg9 string
 	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
+		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1033,7 +1070,7 @@ func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[stri
 	var arg10 string
 	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
+		arg10, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1072,7 +1109,7 @@ func field_Mutation_ConversationCreate_args(rawArgs map[string]interface{}) (map
 	var arg1 string
 	if tmp, ok := rawArgs["title"]; ok {
 		var err error
-		arg1, err = graphql.UnmarshalString(tmp)
+		arg1, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1081,7 +1118,7 @@ func field_Mutation_ConversationCreate_args(rawArgs map[string]interface{}) (map
 	var arg2 string
 	if tmp, ok := rawArgs["topic"]; ok {
 		var err error
-		arg2, err = graphql.UnmarshalString(tmp)
+		arg2, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1228,7 +1265,7 @@ func field_Mutation_GenerateFakeData_args(rawArgs map[string]interface{}) (map[s
 
 }
 
-func field_Query_Node_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func field_Query_node_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
@@ -1245,21 +1282,26 @@ func field_Query_Node_args(rawArgs map[string]interface{}) (map[string]interface
 
 func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
-	var arg0 uint32
-	if tmp, ok := rawArgs["limit"]; ok {
-		var err error
-		arg0, err = models.UnmarshalUint32(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["limit"] = arg0
-	var arg1 *p2p.Event
+	var arg0 *p2p.Event
 	if tmp, ok := rawArgs["filter"]; ok {
 		var err error
 		var ptr1 p2p.Event
 		if tmp != nil {
 			ptr1, err = UnmarshalBertyP2pEventInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
 			arg1 = &ptr1
 		}
 
@@ -1267,7 +1309,7 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 			return nil, err
 		}
 	}
-	args["filter"] = arg1
+	args["paginate"] = arg1
 	return args, nil
 
 }
@@ -1286,7 +1328,7 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 	var arg1 string
 	if tmp, ok := rawArgs["senderId"]; ok {
 		var err error
-		arg1, err = graphql.UnmarshalString(tmp)
+		arg1, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1411,7 +1453,7 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 	var arg11 string
 	if tmp, ok := rawArgs["receiverId"]; ok {
 		var err error
-		arg11, err = graphql.UnmarshalString(tmp)
+		arg11, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1480,6 +1522,80 @@ func field_Query_ContactList_args(rawArgs map[string]interface{}) (map[string]in
 		}
 	}
 	args["filter"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		var err error
+		arg1, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg1
+	var arg2 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg2, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderDesc"] = arg2
+	var arg3 *int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg3
+	var arg4 *string
+	if tmp, ok := rawArgs["after"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["last"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg6 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg6
 	return args, nil
 
 }
@@ -1598,7 +1714,7 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 	var arg7 string
 	if tmp, ok := rawArgs["displayName"]; ok {
 		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
+		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1607,7 +1723,7 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 	var arg8 string
 	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
-		arg8, err = graphql.UnmarshalString(tmp)
+		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1616,7 +1732,7 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 	var arg9 string
 	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
-		arg9, err = graphql.UnmarshalString(tmp)
+		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1625,7 +1741,7 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 	var arg10 string
 	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
-		arg10, err = graphql.UnmarshalString(tmp)
+		arg10, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1651,6 +1767,20 @@ func field_Query_ConversationList_args(rawArgs map[string]interface{}) (map[stri
 		}
 	}
 	args["filter"] = arg0
+	var arg1 *node.Pagination
+	if tmp, ok := rawArgs["paginate"]; ok {
+		var err error
+		var ptr1 node.Pagination
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["paginate"] = arg1
 	return args, nil
 
 }
@@ -1711,7 +1841,7 @@ func field_Query_GetConversation_args(rawArgs map[string]interface{}) (map[strin
 	var arg4 string
 	if tmp, ok := rawArgs["title"]; ok {
 		var err error
-		arg4, err = graphql.UnmarshalString(tmp)
+		arg4, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1720,7 +1850,7 @@ func field_Query_GetConversation_args(rawArgs map[string]interface{}) (map[strin
 	var arg5 string
 	if tmp, ok := rawArgs["topic"]; ok {
 		var err error
-		arg5, err = graphql.UnmarshalString(tmp)
+		arg5, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1838,7 +1968,7 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 	var arg6 string
 	if tmp, ok := rawArgs["conversationId"]; ok {
 		var err error
-		arg6, err = graphql.UnmarshalString(tmp)
+		arg6, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1847,7 +1977,7 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 	var arg7 string
 	if tmp, ok := rawArgs["contactId"]; ok {
 		var err error
-		arg7, err = graphql.UnmarshalString(tmp)
+		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1862,7 +1992,7 @@ func field_Query___type_args(rawArgs map[string]interface{}) (map[string]interfa
 	var arg0 string
 	if tmp, ok := rawArgs["name"]; ok {
 		var err error
-		arg0, err = graphql.UnmarshalString(tmp)
+		arg0, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2431,6 +2561,139 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntitySenderAlias.Used(childComplexity), true
+
+	case "BertyNodeContactEdge.node":
+		if e.complexity.BertyNodeContactEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeContactEdge.Node(childComplexity), true
+
+	case "BertyNodeContactEdge.cursor":
+		if e.complexity.BertyNodeContactEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeContactEdge.Cursor(childComplexity), true
+
+	case "BertyNodeContactListConnection.edges":
+		if e.complexity.BertyNodeContactListConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeContactListConnection.Edges(childComplexity), true
+
+	case "BertyNodeContactListConnection.pageInfo":
+		if e.complexity.BertyNodeContactListConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeContactListConnection.PageInfo(childComplexity), true
+
+	case "BertyNodeConversationEdge.node":
+		if e.complexity.BertyNodeConversationEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeConversationEdge.Node(childComplexity), true
+
+	case "BertyNodeConversationEdge.cursor":
+		if e.complexity.BertyNodeConversationEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeConversationEdge.Cursor(childComplexity), true
+
+	case "BertyNodeEventEdge.node":
+		if e.complexity.BertyNodeEventEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeEventEdge.Node(childComplexity), true
+
+	case "BertyNodeEventEdge.cursor":
+		if e.complexity.BertyNodeEventEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeEventEdge.Cursor(childComplexity), true
+
+	case "BertyNodePageInfo.startCursor":
+		if e.complexity.BertyNodePageInfo.StartCursor == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePageInfo.StartCursor(childComplexity), true
+
+	case "BertyNodePageInfo.endCursor":
+		if e.complexity.BertyNodePageInfo.EndCursor == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePageInfo.EndCursor(childComplexity), true
+
+	case "BertyNodePageInfo.hasNextPage":
+		if e.complexity.BertyNodePageInfo.HasNextPage == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePageInfo.HasNextPage(childComplexity), true
+
+	case "BertyNodePageInfo.hasPreviousPage":
+		if e.complexity.BertyNodePageInfo.HasPreviousPage == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePageInfo.HasPreviousPage(childComplexity), true
+
+	case "BertyNodePageInfo.count":
+		if e.complexity.BertyNodePageInfo.Count == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePageInfo.Count(childComplexity), true
+
+	case "BertyNodePagination.orderBy":
+		if e.complexity.BertyNodePagination.OrderBy == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePagination.OrderBy(childComplexity), true
+
+	case "BertyNodePagination.orderDesc":
+		if e.complexity.BertyNodePagination.OrderDesc == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePagination.OrderDesc(childComplexity), true
+
+	case "BertyNodePagination.first":
+		if e.complexity.BertyNodePagination.First == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePagination.First(childComplexity), true
+
+	case "BertyNodePagination.after":
+		if e.complexity.BertyNodePagination.After == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePagination.After(childComplexity), true
+
+	case "BertyNodePagination.last":
+		if e.complexity.BertyNodePagination.Last == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePagination.Last(childComplexity), true
+
+	case "BertyNodePagination.before":
+		if e.complexity.BertyNodePagination.Before == nil {
+			break
+		}
+
+		return e.complexity.BertyNodePagination.Before(childComplexity), true
 
 	case "BertyNodePingDestination.destination":
 		if e.complexity.BertyNodePingDestination.Destination == nil {
@@ -3737,12 +4000,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.GenerateFakeData(childComplexity, args["T"].(bool)), true
 
-	case "Query.Node":
+	case "Query.node":
 		if e.complexity.Query.Node == nil {
 			break
 		}
 
-		args, err := field_Query_Node_args(rawArgs)
+		args, err := field_Query_node_args(rawArgs)
 		if err != nil {
 			return 0, false
 		}
@@ -3759,7 +4022,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.EventList(childComplexity, args["limit"].(uint32), args["filter"].(*p2p.Event)), true
+		return e.complexity.Query.EventList(childComplexity, args["filter"].(*p2p.Event), args["paginate"].(*node.Pagination)), true
 
 	case "Query.GetEvent":
 		if e.complexity.Query.GetEvent == nil {
@@ -3783,7 +4046,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ContactList(childComplexity, args["filter"].(*entity.Contact)), true
+		return e.complexity.Query.ContactList(childComplexity, args["filter"].(*entity.Contact), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
 
 	case "Query.GetContact":
 		if e.complexity.Query.GetContact == nil {
@@ -3807,7 +4070,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ConversationList(childComplexity, args["filter"].(*entity.Conversation)), true
+		return e.complexity.Query.ConversationList(childComplexity, args["filter"].(*entity.Conversation), args["paginate"].(*node.Pagination)), true
 
 	case "Query.GetConversation":
 		if e.complexity.Query.GetConversation == nil {
@@ -4200,7 +4463,7 @@ func (ec *executionContext) _BertyEntityContact_displayName(ctx context.Context,
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -4223,7 +4486,7 @@ func (ec *executionContext) _BertyEntityContact_displayStatus(ctx context.Contex
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -4246,7 +4509,7 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayName(ctx context.
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -4269,7 +4532,7 @@ func (ec *executionContext) _BertyEntityContact_overrideDisplayStatus(ctx contex
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyEntityContactPayloadImplementors = []string{"BertyEntityContactPayload"}
@@ -4552,7 +4815,7 @@ func (ec *executionContext) _BertyEntityContactPayload_displayName(ctx context.C
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -4575,7 +4838,7 @@ func (ec *executionContext) _BertyEntityContactPayload_displayStatus(ctx context
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -4598,7 +4861,7 @@ func (ec *executionContext) _BertyEntityContactPayload_overrideDisplayName(ctx c
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -4621,7 +4884,7 @@ func (ec *executionContext) _BertyEntityContactPayload_overrideDisplayStatus(ctx
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyEntityConversationImplementors = []string{"BertyEntityConversation", "Node"}
@@ -4784,7 +5047,7 @@ func (ec *executionContext) _BertyEntityConversation_title(ctx context.Context, 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -4807,7 +5070,7 @@ func (ec *executionContext) _BertyEntityConversation_topic(ctx context.Context, 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -5074,7 +5337,7 @@ func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx co
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -5097,7 +5360,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyEntityConversationMemberPayloadImplementors = []string{"BertyEntityConversationMemberPayload"}
@@ -5307,7 +5570,7 @@ func (ec *executionContext) _BertyEntityConversationMemberPayload_conversationId
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -5330,7 +5593,7 @@ func (ec *executionContext) _BertyEntityConversationMemberPayload_contactId(ctx 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyEntityConversationPayloadImplementors = []string{"BertyEntityConversationPayload"}
@@ -5493,7 +5756,7 @@ func (ec *executionContext) _BertyEntityConversationPayload_title(ctx context.Co
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -5516,7 +5779,7 @@ func (ec *executionContext) _BertyEntityConversationPayload_topic(ctx context.Co
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -5741,7 +6004,7 @@ func (ec *executionContext) _BertyEntityDevice_name(ctx context.Context, field g
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -5807,7 +6070,7 @@ func (ec *executionContext) _BertyEntityDevice_contactId(ctx context.Context, fi
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyEntityMessageImplementors = []string{"BertyEntityMessage"}
@@ -5860,7 +6123,7 @@ func (ec *executionContext) _BertyEntityMessage_text(ctx context.Context, field 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyEntitySenderAliasImplementors = []string{"BertyEntitySenderAlias"}
@@ -5946,7 +6209,7 @@ func (ec *executionContext) _BertyEntitySenderAlias_id(ctx context.Context, fiel
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -6053,7 +6316,7 @@ func (ec *executionContext) _BertyEntitySenderAlias_originDeviceId(ctx context.C
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -6076,7 +6339,7 @@ func (ec *executionContext) _BertyEntitySenderAlias_contactId(ctx context.Contex
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -6099,7 +6362,7 @@ func (ec *executionContext) _BertyEntitySenderAlias_conversationId(ctx context.C
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -6122,7 +6385,7 @@ func (ec *executionContext) _BertyEntitySenderAlias_aliasIdentifier(ctx context.
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -6146,6 +6409,700 @@ func (ec *executionContext) _BertyEntitySenderAlias_used(ctx context.Context, fi
 	res := resTmp.(bool)
 	rctx.Result = res
 	return models.MarshalBool(res)
+}
+
+var bertyNodeContactEdgeImplementors = []string{"BertyNodeContactEdge"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeContactEdge(ctx context.Context, sel ast.SelectionSet, obj *node.ContactEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeContactEdgeImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeContactEdge")
+		case "node":
+			out.Values[i] = ec._BertyNodeContactEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._BertyNodeContactEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeContactEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.ContactEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeContactEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeContactEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.ContactEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeContactEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyNodeContactListConnectionImplementors = []string{"BertyNodeContactListConnection"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeContactListConnection(ctx context.Context, sel ast.SelectionSet, obj *node.ContactListConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeContactListConnectionImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeContactListConnection")
+		case "edges":
+			out.Values[i] = ec._BertyNodeContactListConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._BertyNodeContactListConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeContactListConnection_edges(ctx context.Context, field graphql.CollectedField, obj *node.ContactListConnection) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeContactListConnection",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*node.ContactEdge)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyNodeContactEdge(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeContactListConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.ContactListConnection) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeContactListConnection",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*node.PageInfo)
+	rctx.Result = res
+
+	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+
+	return ec._BertyNodePageInfo(ctx, field.Selections, res)
+}
+
+var bertyNodeConversationEdgeImplementors = []string{"BertyNodeConversationEdge"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeConversationEdge(ctx context.Context, sel ast.SelectionSet, obj *node.ConversationEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationEdgeImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeConversationEdge")
+		case "node":
+			out.Values[i] = ec._BertyNodeConversationEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._BertyNodeConversationEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeConversationEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.ConversationEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeConversationEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.ConversationEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyNodeEventEdgeImplementors = []string{"BertyNodeEventEdge"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeEventEdge(ctx context.Context, sel ast.SelectionSet, obj *node.EventEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeEventEdgeImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeEventEdge")
+		case "node":
+			out.Values[i] = ec._BertyNodeEventEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._BertyNodeEventEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeEventEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.EventEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeEventEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pEvent(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeEventEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.EventEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeEventEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyNodePageInfoImplementors = []string{"BertyNodePageInfo"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodePageInfo(ctx context.Context, sel ast.SelectionSet, obj *node.PageInfo) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodePageInfoImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodePageInfo")
+		case "startCursor":
+			out.Values[i] = ec._BertyNodePageInfo_startCursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "endCursor":
+			out.Values[i] = ec._BertyNodePageInfo_endCursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "hasNextPage":
+			out.Values[i] = ec._BertyNodePageInfo_hasNextPage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "hasPreviousPage":
+			out.Values[i] = ec._BertyNodePageInfo_hasPreviousPage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "count":
+			out.Values[i] = ec._BertyNodePageInfo_count(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePageInfo_startCursor(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePageInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartCursor, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePageInfo_endCursor(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePageInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EndCursor, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePageInfo_hasNextPage(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePageInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasNextPage, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	return models.MarshalBool(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePageInfo_hasPreviousPage(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePageInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.HasPreviousPage, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	return models.MarshalBool(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePageInfo_count(ctx context.Context, field graphql.CollectedField, obj *node.PageInfo) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePageInfo",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Count, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(uint32)
+	rctx.Result = res
+	return models.MarshalUint32(res)
+}
+
+var bertyNodePaginationImplementors = []string{"BertyNodePagination"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodePagination(ctx context.Context, sel ast.SelectionSet, obj *node.Pagination) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodePaginationImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodePagination")
+		case "orderBy":
+			out.Values[i] = ec._BertyNodePagination_orderBy(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "orderDesc":
+			out.Values[i] = ec._BertyNodePagination_orderDesc(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "first":
+			out.Values[i] = ec._BertyNodePagination_first(ctx, field, obj)
+		case "after":
+			out.Values[i] = ec._BertyNodePagination_after(ctx, field, obj)
+		case "last":
+			out.Values[i] = ec._BertyNodePagination_last(ctx, field, obj)
+		case "before":
+			out.Values[i] = ec._BertyNodePagination_before(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePagination_orderBy(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePagination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OrderBy, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePagination_orderDesc(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePagination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.OrderDesc, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	return models.MarshalBool(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePagination_first(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePagination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.First, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	rctx.Result = res
+	return models.MarshalInt32(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePagination_after(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePagination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.After, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePagination_last(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePagination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Last, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	rctx.Result = res
+	return models.MarshalInt32(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodePagination_before(ctx context.Context, field graphql.CollectedField, obj *node.Pagination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodePagination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Before, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
 }
 
 var bertyNodePingDestinationImplementors = []string{"BertyNodePingDestination"}
@@ -6198,7 +7155,7 @@ func (ec *executionContext) _BertyNodePingDestination_destination(ctx context.Co
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyNodeVoidImplementors = []string{"BertyNodeVoid"}
@@ -6361,7 +7318,7 @@ func (ec *executionContext) _BertyP2pAckAttrs_ids(ctx context.Context, field gra
 
 	for idx1 := range res {
 		arr1[idx1] = func() graphql.Marshaler {
-			return graphql.MarshalString(res[idx1])
+			return models.MarshalString(res[idx1])
 		}()
 	}
 
@@ -6388,7 +7345,7 @@ func (ec *executionContext) _BertyP2pAckAttrs_ErrMsg(ctx context.Context, field 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyP2pContactRequestAcceptedAttrsImplementors = []string{"BertyP2pContactRequestAcceptedAttrs"}
@@ -6521,7 +7478,7 @@ func (ec *executionContext) _BertyP2pContactRequestAttrs_introText(ctx context.C
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyP2pContactShareAttrsImplementors = []string{"BertyP2pContactShareAttrs"}
@@ -6787,7 +7744,7 @@ func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs_key(ctx context.Context
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -6810,7 +7767,7 @@ func (ec *executionContext) _BertyP2pDevtoolsMapsetAttrs_val(ctx context.Context
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var bertyP2pEventImplementors = []string{"BertyP2pEvent", "Node"}
@@ -6942,7 +7899,7 @@ func (ec *executionContext) _BertyP2pEvent_senderId(ctx context.Context, field g
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -7167,7 +8124,7 @@ func (ec *executionContext) _BertyP2pEvent_receiverId(ctx context.Context, field
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -7371,7 +8328,7 @@ func (ec *executionContext) _BertyP2pEventPayload_senderId(ctx context.Context, 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -7596,7 +8553,7 @@ func (ec *executionContext) _BertyP2pEventPayload_receiverId(ctx context.Context
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -7857,7 +8814,7 @@ func (ec *executionContext) _BertyP2pSentAttrs_ids(ctx context.Context, field gr
 
 	for idx1 := range res {
 		arr1[idx1] = func() graphql.Marshaler {
-			return graphql.MarshalString(res[idx1])
+			return models.MarshalString(res[idx1])
 		}()
 	}
 
@@ -7939,7 +8896,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_name(ctx context.Cont
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -8388,7 +9345,7 @@ func (ec *executionContext) _GoogleProtobufDescriptorProto_reservedName(ctx cont
 
 	for idx1 := range res {
 		arr1[idx1] = func() graphql.Marshaler {
-			return graphql.MarshalString(res[idx1])
+			return models.MarshalString(res[idx1])
 		}()
 	}
 
@@ -8677,7 +9634,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_name(ctx context.
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -8841,7 +9798,7 @@ func (ec *executionContext) _GoogleProtobufEnumDescriptorProto_reservedName(ctx 
 
 	for idx1 := range res {
 		arr1[idx1] = func() graphql.Marshaler {
-			return graphql.MarshalString(res[idx1])
+			return models.MarshalString(res[idx1])
 		}()
 	}
 
@@ -9161,7 +10118,7 @@ func (ec *executionContext) _GoogleProtobufEnumValueDescriptorProto_name(ctx con
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -9524,7 +10481,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_name(ctx context
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -9632,7 +10589,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_typeName(ctx con
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -9662,7 +10619,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_extendee(ctx con
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -9692,7 +10649,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_defaultValue(ctx
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -9752,7 +10709,7 @@ func (ec *executionContext) _GoogleProtobufFieldDescriptorProto_jsonName(ctx con
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -10150,7 +11107,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_name(ctx context.
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -10180,7 +11137,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_package(ctx conte
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -10205,7 +11162,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_dependency(ctx co
 
 	for idx1 := range res {
 		arr1[idx1] = func() graphql.Marshaler {
-			return graphql.MarshalString(res[idx1])
+			return models.MarshalString(res[idx1])
 		}()
 	}
 
@@ -10575,7 +11532,7 @@ func (ec *executionContext) _GoogleProtobufFileDescriptorProto_syntax(ctx contex
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 var googleProtobufFileDescriptorSetImplementors = []string{"GoogleProtobufFileDescriptorSet"}
@@ -10826,7 +11783,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaPackage(ctx context.C
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -10856,7 +11813,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_javaOuterClassname(ctx co
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11000,7 +11957,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_goPackage(ctx context.Con
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11210,7 +12167,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_objcClassPrefix(ctx conte
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11240,7 +12197,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_csharpNamespace(ctx conte
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11270,7 +12227,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_swiftPrefix(ctx context.C
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11300,7 +12257,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpClassPrefix(ctx contex
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11330,7 +12287,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpNamespace(ctx context.
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11353,7 +12310,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpMetadataNamespace(ctx 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -11376,7 +12333,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_rubyPackage(ctx context.C
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -11618,7 +12575,7 @@ func (ec *executionContext) _GoogleProtobufGeneratedCodeInfoAnnotation_sourceFil
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -11984,7 +12941,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_name(ctx contex
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -12014,7 +12971,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_inputType(ctx c
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -12044,7 +13001,7 @@ func (ec *executionContext) _GoogleProtobufMethodDescriptorProto_outputType(ctx 
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -12341,7 +13298,7 @@ func (ec *executionContext) _GoogleProtobufOneofDescriptorProto_name(ctx context
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -12514,7 +13471,7 @@ func (ec *executionContext) _GoogleProtobufServiceDescriptorProto_name(ctx conte
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -12928,7 +13885,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingComment
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -12958,7 +13915,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_trailingCommen
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -12983,7 +13940,7 @@ func (ec *executionContext) _GoogleProtobufSourceCodeInfoLocation_leadingDetache
 
 	for idx1 := range res {
 		arr1[idx1] = func() graphql.Marshaler {
-			return graphql.MarshalString(res[idx1])
+			return models.MarshalString(res[idx1])
 		}()
 	}
 
@@ -13128,7 +14085,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_identifierValue(c
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -13277,7 +14234,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_aggregateValue(ct
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 var googleProtobufUninterpretedOptionNamePartImplementors = []string{"GoogleProtobufUninterpretedOptionNamePart"}
@@ -13342,7 +14299,7 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_namePart(
 		}
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -13720,10 +14677,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "Node":
+		case "node":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._Query_Node(ctx, field)
+				out.Values[i] = ec._Query_node(ctx, field)
 				wg.Done()
 			}(i, field)
 		case "EventList":
@@ -13784,9 +14741,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _Query_Node(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Query_node(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := field_Query_Node_args(rawArgs)
+	args, err := field_Query_node_args(rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -13826,7 +14783,7 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().EventList(rctx, args["limit"].(uint32), args["filter"].(*p2p.Event))
+		return ec.resolvers.Query().EventList(rctx, args["filter"].(*p2p.Event), args["paginate"].(*node.Pagination))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -13920,51 +14877,19 @@ func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphq
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ContactList(rctx, args["filter"].(*entity.Contact))
+		return ec.resolvers.Query().ContactList(rctx, args["filter"].(*entity.Contact), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*entity.Contact)
+	res := resTmp.(*node.ContactListConnection)
 	rctx.Result = res
 
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
+	if res == nil {
+		return graphql.Null
 	}
 
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyEntityContactPayload(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
+	return ec._BertyNodeContactListConnection(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -14014,7 +14939,7 @@ func (ec *executionContext) _Query_ConversationList(ctx context.Context, field g
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ConversationList(rctx, args["filter"].(*entity.Conversation))
+		return ec.resolvers.Query().ConversationList(rctx, args["filter"].(*entity.Conversation), args["paginate"].(*node.Pagination))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -14295,7 +15220,7 @@ func (ec *executionContext) ___Directive_name(ctx context.Context, field graphql
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14315,7 +15240,7 @@ func (ec *executionContext) ___Directive_description(ctx context.Context, field 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14465,7 +15390,7 @@ func (ec *executionContext) ___EnumValue_name(ctx context.Context, field graphql
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14485,7 +15410,7 @@ func (ec *executionContext) ___EnumValue_description(ctx context.Context, field 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14528,7 +15453,7 @@ func (ec *executionContext) ___EnumValue_deprecationReason(ctx context.Context, 
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var __FieldImplementors = []string{"__Field"}
@@ -14600,7 +15525,7 @@ func (ec *executionContext) ___Field_name(ctx context.Context, field graphql.Col
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14620,7 +15545,7 @@ func (ec *executionContext) ___Field_description(ctx context.Context, field grap
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14750,7 +15675,7 @@ func (ec *executionContext) ___Field_deprecationReason(ctx context.Context, fiel
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 var __InputValueImplementors = []string{"__InputValue"}
@@ -14812,7 +15737,7 @@ func (ec *executionContext) ___InputValue_name(ctx context.Context, field graphq
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14832,7 +15757,7 @@ func (ec *executionContext) ___InputValue_description(ctx context.Context, field
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -14887,7 +15812,7 @@ func (ec *executionContext) ___InputValue_defaultValue(ctx context.Context, fiel
 	if res == nil {
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 var __SchemaImplementors = []string{"__Schema"}
@@ -15217,7 +16142,7 @@ func (ec *executionContext) ___Type_name(ctx context.Context, field graphql.Coll
 	if res == nil {
 		return graphql.Null
 	}
-	return graphql.MarshalString(*res)
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -15237,7 +16162,7 @@ func (ec *executionContext) ___Type_description(ctx context.Context, field graph
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return graphql.MarshalString(res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -15655,25 +16580,25 @@ func UnmarshalBertyEntityContactInput(v interface{}) (entity.Contact, error) {
 			}
 		case "displayName":
 			var err error
-			it.DisplayName, err = graphql.UnmarshalString(v)
+			it.DisplayName, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
 		case "displayStatus":
 			var err error
-			it.DisplayStatus, err = graphql.UnmarshalString(v)
+			it.DisplayStatus, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
 		case "overrideDisplayName":
 			var err error
-			it.OverrideDisplayName, err = graphql.UnmarshalString(v)
+			it.OverrideDisplayName, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
 		case "overrideDisplayStatus":
 			var err error
-			it.OverrideDisplayStatus, err = graphql.UnmarshalString(v)
+			it.OverrideDisplayStatus, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -15720,13 +16645,13 @@ func UnmarshalBertyEntityConversationInput(v interface{}) (entity.Conversation, 
 			}
 		case "title":
 			var err error
-			it.Title, err = graphql.UnmarshalString(v)
+			it.Title, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
 		case "topic":
 			var err error
-			it.Topic, err = graphql.UnmarshalString(v)
+			it.Topic, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -15814,13 +16739,13 @@ func UnmarshalBertyEntityConversationMemberInput(v interface{}) (entity.Conversa
 			}
 		case "conversationId":
 			var err error
-			it.ConversationID, err = graphql.UnmarshalString(v)
+			it.ConversationID, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
 		case "contactId":
 			var err error
-			it.ContactID, err = graphql.UnmarshalString(v)
+			it.ContactID, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -15867,7 +16792,7 @@ func UnmarshalBertyEntityDeviceInput(v interface{}) (entity.Device, error) {
 			}
 		case "name":
 			var err error
-			it.Name, err = graphql.UnmarshalString(v)
+			it.Name, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -15888,7 +16813,7 @@ func UnmarshalBertyEntityDeviceInput(v interface{}) (entity.Device, error) {
 			}
 		case "contactId":
 			var err error
-			it.ContactID, err = graphql.UnmarshalString(v)
+			it.ContactID, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -15906,7 +16831,55 @@ func UnmarshalBertyEntityMessageInput(v interface{}) (entity.Message, error) {
 		switch k {
 		case "text":
 			var err error
-			it.Text, err = graphql.UnmarshalString(v)
+			it.Text, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalBertyNodePaginationInput(v interface{}) (node.Pagination, error) {
+	var it node.Pagination
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "orderBy":
+			var err error
+			it.OrderBy, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "orderDesc":
+			var err error
+			it.OrderDesc, err = models.UnmarshalBool(v)
+			if err != nil {
+				return it, err
+			}
+		case "first":
+			var err error
+			it.First, err = models.UnmarshalInt32(v)
+			if err != nil {
+				return it, err
+			}
+		case "after":
+			var err error
+			it.After, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "last":
+			var err error
+			it.Last, err = models.UnmarshalInt32(v)
+			if err != nil {
+				return it, err
+			}
+		case "before":
+			var err error
+			it.Before, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -15930,7 +16903,7 @@ func UnmarshalBertyP2pEventInput(v interface{}) (p2p.Event, error) {
 			}
 		case "senderId":
 			var err error
-			it.SenderID, err = graphql.UnmarshalString(v)
+			it.SenderID, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -16013,7 +16986,7 @@ func UnmarshalBertyP2pEventInput(v interface{}) (p2p.Event, error) {
 			}
 		case "receiverId":
 			var err error
-			it.ReceiverID, err = graphql.UnmarshalString(v)
+			it.ReceiverID, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -16455,8 +17428,39 @@ type BertyP2pEvent implements Node {
 type BertyNodePingDestination  {
       destination: String!
 }
+type BertyNodeEventEdge  {
+    node: BertyP2pEvent
+      cursor: String!
+}
+type BertyNodeContactEdge  {
+    node: BertyEntityContact
+      cursor: String!
+}
+type BertyNodeContactListConnection  {
+    edges: [BertyNodeContactEdge]
+    pageInfo: BertyNodePageInfo!
+}
+type BertyNodeConversationEdge  {
+    node: BertyEntityConversation
+      cursor: String!
+}
 type BertyNodeVoid  {
       T: Bool!
+}
+type BertyNodePagination  {
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+}
+type BertyNodePageInfo  {
+      startCursor: String!
+      endCursor: String!
+      hasNextPage: Bool!
+      hasPreviousPage: Bool!
+      count: Uint32!
 }
 input BertyP2pEventInput {
     id: ID!
@@ -16491,6 +17495,14 @@ type BertyP2pEventPayload {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+}
+input BertyNodePaginationInput {
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
 }
 input BertyEntityDeviceInput {
     id: ID!
@@ -16574,10 +17586,10 @@ type BertyNodeVoidPayload {
 }
   
 type Query {
-  Node(id: ID!): Node
+  node(id: ID!): Node
   EventList(
-      limit: Uint32!
     filter: BertyP2pEventInput
+    paginate: BertyNodePaginationInput
   ): [BertyP2pEventPayload]
   GetEvent(
     id: ID!
@@ -16598,7 +17610,13 @@ type Query {
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput
-  ): [BertyEntityContactPayload]
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+  ): BertyNodeContactListConnection
   GetContact(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
@@ -16614,6 +17632,7 @@ type Query {
   ): BertyEntityContactPayload
   ConversationList(
     filter: BertyEntityConversationInput
+    paginate: BertyNodePaginationInput
   ): [BertyEntityConversationPayload]
   GetConversation(
     id: ID!

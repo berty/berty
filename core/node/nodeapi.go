@@ -182,18 +182,36 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
+	countQuery := n.sql.Model(entity.Contact{}).Where(input.Filter)
+
+	// apply defaults to paginate
+	if input.Paginate == nil {
+		input.Paginate = &node.Pagination{}
+	}
+	if input.Paginate.First == 0 {
+		input.Paginate.First = 10
+	}
+	if input.Paginate.OrderBy == "" {
+		input.Paginate.OrderBy = "id"
+	}
+
+	// build the query
+	fetchQuery := countQuery.Limit(input.Paginate.First).Order(input.Paginate.OrderBy, input.Paginate.OrderDesc)
+
+	if input.Paginate.Last > 0 {
+		return errors.Wrap(ErrNotImplemented, "input.Paginate.Last not supported")
+	}
+	if input.Paginate.Before != "" {
+		return errors.Wrap(ErrNotImplemented, "input.Paginate.Before not supported")
+	}
+	if input.Paginate.After != "" {
+		fetchQuery = fetchQuery.Where("id > ?", input.Paginate.After)
+	}
+
 	var contacts []*entity.Contact
-
-	var err error
-	if input.Filter != nil {
-		err = n.sql.Where(input.Filter).Find(&contacts).Error
-	} else {
-		err = n.sql.Find(&contacts).Error
+	if err := fetchQuery.Find(&contacts).Error; err != nil {
+		return err
 	}
-	if err != nil {
-		return errors.Wrap(err, "failed get contacts from database")
-	}
-
 	for _, contact := range contacts {
 		if err := stream.Send(contact); err != nil {
 			return err

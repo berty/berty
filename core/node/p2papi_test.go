@@ -40,7 +40,7 @@ func generateDevice(contactID []byte) (keypair.Interface, *entity.Device) {
 	return cryptoImpl, device
 }
 
-func testNode(t *testing.T) (*Node, error) {
+func testNode(t *testing.T, opts ...NewNodeOption) (*Node, error) {
 	_, device := generateDevice([]byte{})
 
 	_, db, err := mock.GetMockedDb(entity.AllEntities()...)
@@ -50,15 +50,14 @@ func testNode(t *testing.T) (*Node, error) {
 	}
 
 	netDriver := &netmock.SimpleDriver{}
+	opts = append(opts, WithSQL(db))
+	opts = append(opts, WithDevice(device))
+	opts = append(opts, WithNetworkDriver(netDriver))
+	opts = append(opts, WithInitConfig())
+	opts = append(opts, WithSoftwareCrypto())
+	opts = append(opts, WithConfig())
 
-	node, err := New(
-		WithSQL(db),
-		WithDevice(device),
-		WithNetworkDriver(netDriver),
-		WithInitConfig(),
-		WithSoftwareCrypto(),
-		WithConfig(),
-	)
+	node, err := New(opts...)
 
 	if err != nil {
 		t.Fatalf("%s", err)

@@ -17,7 +17,7 @@ const QueryReducer = ({ children, variables, ...props }) => (
     variables={variables || {}}
     {...props}
     render={({ error, props, retry }) => {
-      if (!error && !props) {
+      if (error == null && props == null) {
         return handleChildren(
           children,
           {
@@ -28,7 +28,7 @@ const QueryReducer = ({ children, variables, ...props }) => (
           retry
         )
       }
-      if (!error) {
+      if (error == null) {
         return handleChildren(
           children,
           {
@@ -39,7 +39,7 @@ const QueryReducer = ({ children, variables, ...props }) => (
           retry
         )
       }
-      if (!props) {
+      if (props == null) {
         return handleChildren(
           children,
           {

@@ -181,16 +181,18 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice has en entry in sql for Bob", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{
+					Filter: &entity.Contact{Status: entity.Contact_IsRequested},
+				})
 				So(err, ShouldBeNil)
-				So(len(contacts), ShouldEqual, 2)
+				So(len(contacts), ShouldEqual, 1)
 
-				So(contacts[1].DisplayName, ShouldBeEmpty)
-				So(contacts[1].OverrideDisplayName, ShouldEqual, "Bob from school")
-				So(contacts[1].ID, ShouldEqual, bob.node.UserID())
-				So(contacts[1].DisplayStatus, ShouldBeEmpty)
-				So(contacts[1].Status, ShouldEqual, entity.Contact_IsRequested)
-				So(len(contacts[1].Devices), ShouldEqual, 0)
+				So(contacts[0].DisplayName, ShouldBeEmpty)
+				So(contacts[0].OverrideDisplayName, ShouldEqual, "Bob from school")
+				So(contacts[0].ID, ShouldEqual, bob.node.UserID())
+				So(contacts[0].DisplayStatus, ShouldBeEmpty)
+				So(contacts[0].Status, ShouldEqual, entity.Contact_IsRequested)
+				So(len(contacts[0].Devices), ShouldEqual, 0)
 
 				everythingWentFine()
 			})
@@ -276,16 +278,18 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob has en entry in sql for Alice", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{
+					Filter: &entity.Contact{DisplayName: "Alice"},
+				})
 				So(err, ShouldBeNil)
-				So(len(contacts), ShouldEqual, 2)
+				So(len(contacts), ShouldEqual, 1)
 
-				So(contacts[1].DisplayName, ShouldEqual, "Alice")
-				So(contacts[1].OverrideDisplayName, ShouldBeEmpty)
-				So(contacts[1].ID, ShouldEqual, alice.node.UserID())
-				So(contacts[1].DisplayStatus, ShouldBeEmpty)
-				So(contacts[1].Status, ShouldEqual, entity.Contact_RequestedMe)
-				So(len(contacts[1].Devices), ShouldEqual, 1)
+				So(contacts[0].DisplayName, ShouldEqual, "Alice")
+				So(contacts[0].OverrideDisplayName, ShouldBeEmpty)
+				So(contacts[0].ID, ShouldEqual, alice.node.UserID())
+				So(contacts[0].DisplayStatus, ShouldBeEmpty)
+				So(contacts[0].Status, ShouldEqual, entity.Contact_RequestedMe)
+				So(len(contacts[0].Devices), ShouldEqual, 1)
 
 				everythingWentFine()
 			})
@@ -502,43 +506,39 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice has Bob as friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{
+					Filter: &entity.Contact{Status: entity.Contact_IsFriend},
+				})
 				So(err, ShouldBeNil)
-				So(len(contacts), ShouldEqual, 2)
-
-				// myself
-				So(contacts[0].DisplayName, ShouldEqual, "Alice")
-				So(contacts[0].Status, ShouldEqual, entity.Contact_Myself)
+				So(len(contacts), ShouldEqual, 1)
 
 				// bob
-				So(contacts[1].ID, ShouldNotBeEmpty)
-				So(contacts[1].DisplayName, ShouldEqual, "Bob")
-				So(contacts[1].OverrideDisplayName, ShouldEqual, "Bob from school")
-				//So(contacts[1].Devices[0].ID, ShouldEqual, bob.node.UserID())
-				So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
-				So(contacts[1].DisplayStatus, ShouldBeEmpty)
-				//So(contacts[1].Devices[0].Key, ShouldNotBeNil)
+				So(contacts[0].ID, ShouldNotBeEmpty)
+				So(contacts[0].DisplayName, ShouldEqual, "Bob")
+				So(contacts[0].OverrideDisplayName, ShouldEqual, "Bob from school")
+				//So(contacts[0].Devices[0].ID, ShouldEqual, bob.node.UserID())
+				So(contacts[0].Status, ShouldEqual, entity.Contact_IsFriend)
+				So(contacts[0].DisplayStatus, ShouldBeEmpty)
+				//So(contacts[0].Devices[0].Key, ShouldNotBeNil)
 
 				everythingWentFine()
 			})
 			Convey("Bob has Alice as friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{
+					Filter: &entity.Contact{Status: entity.Contact_IsFriend},
+				})
 				So(err, ShouldBeNil)
-				So(len(contacts), ShouldEqual, 2)
-
-				// myself
-				So(contacts[0].DisplayName, ShouldEqual, "Bob")
-				So(contacts[0].Status, ShouldEqual, entity.Contact_Myself)
+				So(len(contacts), ShouldEqual, 1)
 
 				// alice
-				So(contacts[1].ID, ShouldNotBeEmpty)
-				So(contacts[1].DisplayName, ShouldEqual, "Alice")
-				So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
-				So(contacts[1].DisplayStatus, ShouldBeEmpty)
-				So(contacts[1].OverrideDisplayName, ShouldBeEmpty)
-				So(contacts[1].Devices[0].ID, ShouldEqual, alice.node.UserID())
+				So(contacts[0].ID, ShouldNotBeEmpty)
+				So(contacts[0].DisplayName, ShouldEqual, "Alice")
+				So(contacts[0].Status, ShouldEqual, entity.Contact_IsFriend)
+				So(contacts[0].DisplayStatus, ShouldBeEmpty)
+				So(contacts[0].OverrideDisplayName, ShouldBeEmpty)
+				So(contacts[0].Devices[0].ID, ShouldEqual, alice.node.UserID())
 				//So(contacts[1].Devices[0].Key, ShouldNotBeNil)
 
 				everythingWentFine()

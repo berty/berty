@@ -256,14 +256,15 @@ jobs:
           name: set Ruby version
           command:  echo "ruby-2.4" > ~/.ruby-version
 
-      - checkout
+      - checkout:
+          path: ~/go/src/berty.tech/
 
       - attach_workspace:
           at: ~/go/src/berty.tech/
 
       # if build breaks, increment vX in both restore_cache and save_cache
       - restore_cache:
-          key: v1-ios-golang-{{ .Environment.GOVERSION }}-2
+          key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
 
       - run:
           name: install-go
@@ -288,9 +289,10 @@ jobs:
             fi
 
       - save_cache:
-          key: v1-ios-golang-{{ .Environment.GOVERSION }}-2
+          key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
           paths:
-            - ~/go
+            - ~/go/pkg
+            - ~/go/src/github.com
             - ~/go-install
 
       - run:
