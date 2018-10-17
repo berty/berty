@@ -76,47 +76,45 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Alice has Bob as friend", FailureHalts, func() {
 			shouldIContinue(t)
 
-			contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{
+				Filter: &entity.Contact{Status: entity.Contact_IsFriend},
+			})
 			So(err, ShouldBeNil)
-			So(len(contacts), ShouldEqual, 2)
-
-			// myself
-			So(contacts[0].DisplayName, ShouldEqual, "Alice")
-			So(contacts[0].Status, ShouldEqual, entity.Contact_Myself)
+			So(len(contacts), ShouldEqual, 1)
 
 			// bob
-			So(contacts[1].ID, ShouldNotBeEmpty)
-			So(contacts[1].DisplayName, ShouldEqual, "Bob")
-			So(contacts[1].OverrideDisplayName, ShouldEqual, "Bob from school")
-			So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
+			So(contacts[0].ID, ShouldNotBeEmpty)
+			So(contacts[0].DisplayName, ShouldEqual, "Bob")
+			So(contacts[0].OverrideDisplayName, ShouldEqual, "Bob from school")
+			So(contacts[0].Status, ShouldEqual, entity.Contact_IsFriend)
 
 			everythingWentFine()
 		})
 		Convey("Bob has Alice as friend", FailureHalts, func() {
 			shouldIContinue(t)
 
-			contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{
+				Filter: &entity.Contact{Status: entity.Contact_IsFriend},
+			})
 			So(err, ShouldBeNil)
-			So(len(contacts), ShouldEqual, 2)
-
-			// myself
-			So(contacts[0].DisplayName, ShouldEqual, "Bob")
-			So(contacts[0].Status, ShouldEqual, entity.Contact_Myself)
+			So(len(contacts), ShouldEqual, 1)
 
 			// alice
-			So(contacts[1].ID, ShouldNotBeEmpty)
-			So(contacts[1].DisplayName, ShouldEqual, "Alice")
-			So(contacts[1].Status, ShouldEqual, entity.Contact_IsFriend)
-			So(contacts[1].Devices[0].ID, ShouldEqual, alice.node.UserID())
+			So(contacts[0].ID, ShouldNotBeEmpty)
+			So(contacts[0].DisplayName, ShouldEqual, "Alice")
+			So(contacts[0].Status, ShouldEqual, entity.Contact_IsFriend)
+			So(contacts[0].Devices[0].ID, ShouldEqual, alice.node.UserID())
 
 			everythingWentFine()
 		})
 		Convey("Eve has no friend", FailureHalts, func() {
 			shouldIContinue(t)
 
-			contacts, err := eve.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err := eve.client.ContactList(internalCtx, &node.ContactListInput{
+				Filter: &entity.Contact{Status: entity.Contact_IsFriend},
+			})
 			So(err, ShouldBeNil)
-			So(len(contacts), ShouldEqual, 1)
+			So(len(contacts), ShouldEqual, 0)
 		})
 
 		everythingWentFine()
@@ -220,7 +218,6 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
-				Limit: 10,
 				Filter: &p2p.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},
@@ -236,7 +233,6 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
-				Limit: 10,
 				Filter: &p2p.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},
@@ -270,7 +266,6 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := bob.client.EventList(internalCtx, &node.EventListInput{
-				Limit: 10,
 				Filter: &p2p.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},
@@ -292,7 +287,6 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := alice.client.EventList(internalCtx, &node.EventListInput{
-				Limit: 10,
 				Filter: &p2p.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},

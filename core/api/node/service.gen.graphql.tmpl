@@ -73,7 +73,11 @@ interface Node {
       {{.JsonName}}: [Byte!],
     {{- else}}
       {{- $typeName := .Type | string | replace "TYPE_" "" | lower | camelCase}}
+      {{- if (boolFieldExtension 53008 .) true}}
+      {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}{{end}}
+      {{- else}}
       {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
+      {{- end}}
     {{- end}}
   {{- end}}
 {{- end}}
@@ -89,8 +93,16 @@ interface Node {
   {{- if .}}
     {{- range .}}
       {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
-        {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+        {{- if (boolFieldExtension 53006 .)}}
+          {{- template "Field" (getStore .TypeName).Field}}
+        {{- else}}
+          {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+          {{- if eq (boolFieldExtension 53009 .) true}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
+          {{- else}}
     {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}]{{else}}{{$typeName}}{{end}}
+          {{- end}}
+        {{- end}}
       {{- else if (eq (.Type | string) "TYPE_ENUM")}}
         {{- template "EnumField" .}}
       {{- else }}
@@ -121,8 +133,16 @@ interface Node {
   {{- if .}}
     {{- range .}}
       {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+        {{- if (boolFieldExtension 53006 .)}}
+          {{- template "InputField" (getStore .TypeName).Field}}
+        {{- else}}
         {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+          {{- if eq (boolFieldExtension 53009 .) true}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}!]{{else}}{{template "InputName" .TypeName}}!{{end}}
+          {{- else}}
     {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
+          {{- end}}
+        {{- end}}
       {{- else if (eq (.Type | string) "TYPE_ENUM")}}
         {{- template "EnumField" .}}
       {{- else }}
@@ -197,7 +217,9 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
   {{- $type := getStore .}}
   {{- if $type}}
     {{- $typeName := . | replace "." "_" | camelCase | replace "_" ""}}
-    {{- if $typeName | regexMatch ".*Ouput"}}
+    {{- if $typeName | regexMatch ".*Connection"}}
+      {{- $typeName}}
+    {{- else if $typeName | regexMatch ".*Output"}}
       {{- $typeName | replace "Output" "Payload"}}
     {{- else}}
       {{- $typeName}}Payload
@@ -233,15 +255,27 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
       {{- if .InputType}}
         {{- template "RecursiveInput" .InputType}}
       {{- end}}
-      {{- if .OutputType}}
-        {{- $type := getStore .OutputType}}
-        {{- $alreadyDefinedKey := concat .OutputType ".PayloadAlreadyDefined"}}
-        {{- $alreadyDefined := getStore $alreadyDefinedKey}}
-        {{- if $alreadyDefined}}
-        {{- else}}
-          {{- template "Payload" .OutputType}}
+      {{- if (stringMethodOptionsExtension 53007 .)}}
+        {{- if eq ((stringMethodOptionsExtension 53007 .) | regexMatch ".*(Payload|Connection)$") false}}
+          {{- $type := getStore (stringMethodOptionsExtension 53007 .)}}
+          {{- $alreadyDefinedKey := concat (stringMethodOptionsExtension 53007 .) ".PayloadAlreadyDefined"}}
+          {{- $alreadyDefined := getStore $alreadyDefinedKey}}
+          {{- if $alreadyDefined}}
+          {{- else}}
+              {{- template "Payload" (stringMethodOptionsExtension 53007 .)}}
+          {{- end}}
+          {{- setStore $alreadyDefinedKey true}}
         {{- end}}
-        {{- setStore $alreadyDefinedKey true}}
+      {{- else if .OutputType}}
+        {{- if eq (.OutputType | regexMatch ".*(Payload|Connection)$") false}}
+          {{- $alreadyDefinedKey := concat .OutputType ".PayloadAlreadyDefined"}}
+          {{- $alreadyDefined := getStore $alreadyDefinedKey}}
+          {{- if $alreadyDefined}}
+          {{- else}}
+              {{- template "Payload" .OutputType}}
+          {{- end}}
+          {{- setStore $alreadyDefinedKey true}}
+        {{- end}}
       {{- end}}
     {{- end}}
   {{- end}}
@@ -254,7 +288,9 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
     {{- template "Arguments" (getStore .InputType).Field}}
   )
   {{- end}}
-  {{- if .OutputType}}
+  {{- if (stringMethodOptionsExtension 53007 .) -}}
+      : {{template "PayloadName" (stringMethodOptionsExtension 53007 .)}}
+  {{- else if .OutputType}}
     {{- if .ServerStreaming -}}
       : [{{template "PayloadName" .OutputType}}]
     {{- else -}}
@@ -269,7 +305,11 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
   {{- if .}}
     {{- range .}}
       {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+        {{- if (boolFieldExtension 53006 .)}}
+          {{- template "Arguments" (getStore .TypeName).Field}}
+        {{- else}}
     {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
+        {{- end}}
       {{- else if (eq (.Type | string) "TYPE_ENUM")}}
         {{- template "EnumField" .}}
       {{- else }}
@@ -286,7 +326,7 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
 
   {{- range .}}
 type Query {
-  Node(id: ID!): Node
+  node(id: ID!): Node
     {{- range .Method}}
       {{- if eq (stringMethodOptionsExtension 53002 . | lower) "query"}}
         {{- template "Method" .}}

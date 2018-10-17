@@ -3,10 +3,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws'
 import { Platform, NativeModules } from 'react-native'
 import { installRelayDevTools } from 'relay-devtools'
 
-// eslint-disable-next-line
-if (__DEV__ && (Platform.OS === 'ios' || Platform.OS === 'android')) {
-  installRelayDevTools()
-}
+installRelayDevTools()
 
 // @TODO: patch web CoreModule
 if (Platform.OS === 'web') {

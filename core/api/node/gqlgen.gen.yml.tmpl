@@ -26,6 +26,8 @@ resolver:
 models:
   ID:
     model: berty.tech/core/api/node/graphql/models.ID
+  String:
+    model: berty.tech/core/api/node/graphql/models.String
   Enum:
     model: berty.tech/core/api/node/graphql/models.Enum
   Double:
@@ -86,7 +88,7 @@ models:
   {{- $type := .}}
   {{- if $type}}
     {{- $typeName := .Name | replace "." "_" | camelCase | replace "_" ""}}
-    {{- if $typeName | regexMatch ".*Ouput"}}
+    {{- if $typeName | regexMatch ".*Output"}}
       {{- $typeName | replace "Output" "Payload"}}
     {{- else}}
       {{- $typeName}}Payload
@@ -154,7 +156,7 @@ models:
                 {{- end}}
               {{- end}}
             {{- end}}
-            {{- if eq ($modelName | regexMatch ".*Payload$") false}}
+            {{- if eq ($modelName | regexMatch ".*(Payload|Connection)$") false}}
   {{$PackageName}}{{template "payloadName" .}}:
     model: {{$GoPackage}}.{{$name}}
     fields:

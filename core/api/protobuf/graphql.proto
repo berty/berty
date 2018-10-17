@@ -10,9 +10,13 @@ extend google.protobuf.MethodOptions {
   string graphql_fields = 53001;
   string graphql_type = 53002;
   string graphql_interface = 53003;
+  string graphql_output = 53007;
 }
 
 extend google.protobuf.FieldOptions {
   bool graphql_id = 53004;
   bool graphql_resolver = 53005;
+  bool graphql_spread = 53006;
+  bool graphql_nullable = 53008;
+  bool graphql_non_nullable = 53009;
 }
