@@ -346,29 +346,29 @@ jobs:
           at: ~/go/src/berty.tech/
 
 
-  #     - restore_cache:
-  #         key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+      - restore_cache:
+          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
 
-  #     - restore_cache:
-  #         key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+      - restore_cache:
+          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
 
-  #     - run: cd client/react-native/web && yarn
+      - run: cd client/react-native/web && yarn
 
-  #     - save_cache:
-  #         key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
-  #         paths:
-  #           - ~/.cache/yarn
+      - save_cache:
+          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+          paths:
+            - ~/.cache/yarn
 
-  #     - save_cache:
-  #         key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
-  #         paths:
-  #           - node_modules
+      - save_cache:
+          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+          paths:
+            - node_modules
 
-  #     - run:
-  #         name: build web app
-  #         working_directory: ~/go/src/berty.tech/client/react-native/web
-  #         command: |
-  #           yarn build
+      - run:
+          name: build web app
+          working_directory: ~/go/src/berty.tech/client/react-native/web
+          command: |
+            yarn build
 
 workflows:
   version: 2
