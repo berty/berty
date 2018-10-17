@@ -75,25 +75,25 @@ var (
 	}
 )
 
-func Start(datastorePath string) error {
+func Start(datastorePath string, logger Logger) error {
 
 	// check if daemon already init
 	if alreadyStarted {
 		return nil
 	}
 
-	if err := setupLogger("debug", "*"); err != nil {
+	if err := setupLogger("debug", logger); err != nil {
 		return err
 	}
 
-	// initialize logger
-	cfg := zap.NewDevelopmentConfig()
-	cfg.Level.SetLevel(zap.DebugLevel)
-	l, err := cfg.Build()
-	if err != nil {
-		panic(err)
-	}
-	zap.ReplaceGlobals(l)
+	// // initialize logger
+	// cfg := zap.NewDevelopmentConfig()
+	// cfg.Level.SetLevel(zap.DebugLevel)
+	// l, err := cfg.Build()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// zap.ReplaceGlobals(l)
 
 	if err := setGqlPort(); err != nil {
 		return err
@@ -185,7 +185,7 @@ func daemon(opts *daemonOptions) error {
 	}
 
 	if addr.IP == nil {
-		addr.IP = net.IP{0, 0, 0, 0}
+		addr.IP = net.IP{127, 0, 0, 1}
 	}
 
 	listener, err := reuse.Listen(addr.Network(), fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port))

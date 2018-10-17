@@ -2,16 +2,53 @@ package core
 
 import (
 	"fmt"
-	"path"
-	"strings"
 
 	p2plog "github.com/ipfs/go-log"
 	"github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-
-	"berty.tech/core/pkg/filteredzap"
 )
+
+type Logger interface {
+	Log(level, namespace, message string) error
+	LevelEnabler(level string) bool
+}
+
+type mobileCore struct {
+	zapcore.Core
+	enc zapcore.Encoder
+	l   Logger
+}
+
+func newMobileCore(next zapcore.Core, encoder zapcore.Encoder, l Logger) zapcore.Core {
+	return &mobileCore{next, encoder, l}
+}
+
+func (mc *mobileCore) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcore.CheckedEntry {
+	if mc.l.LevelEnabler(entry.Level.CapitalString()) {
+		return checked.AddCore(entry, mc)
+	}
+
+	return checked
+}
+
+func (mc *mobileCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
+	var out string
+
+	out = entry.Message
+	if len(fields) > 0 {
+		out += ": { "
+		for i, f := range fields {
+			out += f.Key + ": " + f.String
+			if i < len(fields)-1 {
+				out += ", "
+			}
+		}
+		out += " }"
+	}
+
+	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, out)
+}
 
 type p2pLogBackendWrapper struct {
 	logger *zap.Logger
@@ -51,7 +88,7 @@ func getP2PLogLevel(level zapcore.Level) logging.Level {
 	return logging.CRITICAL
 }
 
-func setupLogger(logLevel, logNamespaces string) error {
+func setupLogger(logLevel string, mlogger Logger) error {
 	var zapLogLevel zapcore.Level
 	switch logLevel {
 	case "debug":
@@ -75,32 +112,13 @@ func setupLogger(logLevel, logNamespaces string) error {
 	if err != nil {
 		return err
 	}
-	filtered := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
-		matchMap := map[string]bool{}
-		patternsString := logNamespaces
-		if err != nil {
-			panic(err)
-		}
-		patterns := strings.Split(patternsString, ",")
-		return filteredzap.NewFilteringCore(core, func(entry zapcore.Entry, fields []zapcore.Field) bool {
-			// always print error messages
-			if entry.Level >= zapcore.ErrorLevel {
-				return true
-			}
-			// only show debug,info,warn messages for enabled --log-namespaces
-			if _, found := matchMap[entry.LoggerName]; !found {
-				matchMap[entry.LoggerName] = false
-				for _, pattern := range patterns {
-					if matched, _ := path.Match(pattern, entry.LoggerName); matched {
-						matchMap[entry.LoggerName] = true
-						break
-					}
-				}
-			}
-			return matchMap[entry.LoggerName]
-		})
+
+	consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
+	mobile := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+		return newMobileCore(core, consoleEncoder, mlogger)
 	})
-	zap.ReplaceGlobals(l.WithOptions(filtered))
+
+	zap.ReplaceGlobals(l.WithOptions(mobile))
 	logger().Debug("logger initialized")
 
 	// configure p2p log

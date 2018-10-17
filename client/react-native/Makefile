@@ -73,6 +73,9 @@ debug.ios: deps.ios
 release.ios: deps.ios
 	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=release --device '$(device)'
 
+adhoc.ios: deps.ios
+	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=adhoc --device '$(device)'
+
 .PHONY: debug.web
 debug.web: deps.web
 	cd $(WEB) && yarn start
