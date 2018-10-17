@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   textBottom: {
     textAlignVertical: 'bottom',
   },
-  textAlignMiddle: {
+  textMiddle: {
     textAlignVertical: 'center',
   },
   textBreak: {
@@ -176,6 +176,7 @@ export const {
   textLeft,
   textRight,
   textCenter,
+  textMiddle,
   textBreak,
   row,
   col,
