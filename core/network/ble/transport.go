@@ -13,6 +13,7 @@ import (
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	tpt "github.com/libp2p/go-libp2p-transport"
+	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
@@ -25,6 +26,19 @@ import (
 import "C"
 
 var peerAdder chan *pstore.PeerInfo = make(chan *pstore.PeerInfo)
+
+// BLETransport is the TCP transport.
+type Transport struct {
+	MySelf host.Host
+	// Explicitly disable reuseport.
+	DisableReuseport bool
+	// ID
+	ID    string
+	lAddr ma.Multiaddr
+	// TCP connect timeout
+	ConnectTimeout time.Duration
+	reuse          rtpt.Transport
+}
 
 //export AddToPeerStore
 func AddToPeerStore(peerID *C.char, rAddr *C.char) {
@@ -46,13 +60,6 @@ func AddToPeerStore(peerID *C.char, rAddr *C.char) {
 	}()
 }
 
-func checkDevice(id string) {
-	peerID := C.CString(id)
-	defer C.free(unsafe.Pointer(peerID))
-	for int(C.checkDeviceConnected(peerID)) != 1 {
-	}
-}
-
 func getPeerID(id string) string {
 	peerID := C.CString(id)
 	defer C.free(unsafe.Pointer(peerID))
@@ -65,20 +72,20 @@ var DefaultConnectTimeout = 5 * time.Second
 
 var log = logging.Logger("ble-tpt")
 
-var _ tpt.Transport = &BLETransport{}
+var _ tpt.Transport = &Transport{}
 
 // NewBLETransport creates a tcp transport object that tracks dialers and listeners
 // created. It represents an entire tcp stack (though it might not necessarily be)
-func NewBLETransport(ID string, lAddr ma.Multiaddr) func(me host.Host) *BLETransport {
-	return func(me host.Host) *BLETransport {
+func NewBLETransport(ID string, lAddr ma.Multiaddr) func(me host.Host) *Transport {
+	return func(me host.Host) *Transport {
 		logger().Debug("BLETransport NewBLETransport")
-		ret := &BLETransport{ConnectTimeout: DefaultConnectTimeout, MySelf: me, ID: ID, lAddr: lAddr}
+		ret := &Transport{ConnectTimeout: DefaultConnectTimeout, MySelf: me, ID: ID, lAddr: lAddr}
 		go ret.ListenNewPeer()
 		return ret
 	}
 }
 
-func (t *BLETransport) ListenNewPeer() {
+func (t *Transport) ListenNewPeer() {
 	for {
 		pi := <-peerAdder
 		t.MySelf.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
@@ -96,11 +103,11 @@ func (t *BLETransport) ListenNewPeer() {
 		if lVal < rVal {
 			t.MySelf.Connect(context.Background(), *pi)
 		} else {
-			val, err := pi.Addrs[0].ValueForProtocol(P_BLE)
+			val, err := pi.Addrs[0].ValueForProtocol(PBle)
 			if err != nil {
 				panic(err)
 			}
-			val2, err := t.lAddr.ValueForProtocol(P_BLE)
+			val2, err := t.lAddr.ValueForProtocol(PBle)
 			if err != nil {
 				panic(err)
 			}
@@ -112,18 +119,18 @@ func (t *BLETransport) ListenNewPeer() {
 
 // CanDial returns true if this transport believes it can dial the given
 // multiaddr.
-func (t *BLETransport) CanDial(addr ma.Multiaddr) bool {
+func (t *Transport) CanDial(addr ma.Multiaddr) bool {
 	logger().Debug("BLETransport CanDial", zap.String("peer", addr.String()))
 	return BLE.Matches(addr)
 }
 
 // Dial dials the   peer at the remote address.
-func (t *BLETransport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
+func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	if int(C.isDiscovering()) != 1 {
 		go C.startDiscover()
 	}
 	logging.SetDebugLogging()
-	s, err := rAddr.ValueForProtocol(P_BLE)
+	s, err := rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		return nil, err
 	}
@@ -140,30 +147,30 @@ func (t *BLETransport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) 
 }
 
 // UseReuseport returns true if reuseport is enabled and available.
-func (t *BLETransport) UseReuseport() bool {
+func (t *Transport) UseReuseport() bool {
 	logger().Debug("BLETransport Reuseport")
 	return false
 }
 
 // Listen listens on the given multiaddr.
-func (t *BLETransport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
+func (t *Transport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 	logger().Debug("BLETransport Listen")
 	return NewListener(laddr, t.MySelf.ID(), t), nil
 }
 
 // Protocols returns the list of terminal protocols this transport can dial.
-func (t *BLETransport) Protocols() []int {
+func (t *Transport) Protocols() []int {
 	logger().Debug("BLETransport Protocols")
-	return []int{P_BLE}
+	return []int{PBle}
 }
 
 // Proxy always returns false for the TCP transport.
-func (t *BLETransport) Proxy() bool {
+func (t *Transport) Proxy() bool {
 	logger().Debug("BLETransport Proxy")
 	return false
 }
 
-func (t *BLETransport) String() string {
+func (t *Transport) String() string {
 	logger().Debug("BLETransport String")
 	return "ble"
 }

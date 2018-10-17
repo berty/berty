@@ -225,7 +225,7 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithDefaultMuxers(),
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
-			// p2p.WithDefaultTransports(),
+			p2p.WithDefaultTransports(),
 			// @TODO: Allow static identity loaded from a file (useful for relay
 			// server for creating static endpoint for bootstrap)
 			// p2p.WithIdentity(<key>),
@@ -254,6 +254,18 @@ func daemon(opts *daemonOptions) error {
 			tracerOpts := grpc_ot.WithTracer(tracer)
 
 			p2pOpts = append(p2pOpts, p2p.WithJaeger(&tracerOpts))
+		}
+
+		for _, v := range opts.bindP2P {
+			if strings.HasPrefix(v, "/ble/") {
+				// bleUUID := strings.TrimPrefix(v, "/ble/")
+				sourceMultiAddr, err := ma.NewMultiaddr(v)
+				if err != nil {
+					return err
+				}
+				bleTPT := ble.NewBLETransport(id.String(), sourceMultiAddr)
+				p2pOpts = append(p2pOpts, p2p.WithTransport(bleTPT))
+			}
 		}
 
 		p2pDriver, err := p2p.NewDriver(context.Background(), p2pOpts...)

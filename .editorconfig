@@ -44,4 +44,5 @@ indent_size = 2
 indent_size = 1
 
 [*.m]
-indent_size = 2
+indent_size = 4
+indent_style = space

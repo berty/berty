@@ -20,7 +20,19 @@ import (
 */
 import "C"
 
-var listeners map[string]*BLEListener = make(map[string]*BLEListener)
+// Listener implement ipfs Listener interface
+type Listener struct {
+	tpt.Listener
+	transport       *Transport
+	addr            string
+	network         string
+	incomingBLEUUID chan string
+	incomingPeerID  chan string
+	connected       map[string]*Conn
+	lAddr           ma.Multiaddr
+}
+
+var listeners map[string]*Listener = make(map[string]*Listener)
 
 //export sendAcceptToListenerForPeerID
 func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.char) {
@@ -41,8 +53,8 @@ func RealAcceptSender(peerID string, ble string, incPeerID string) {
 	}
 }
 
-func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *BLETransport) *BLEListener {
-	m, _ := lAddr.ValueForProtocol(P_BLE)
+func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
+	m, _ := lAddr.ValueForProtocol(PBle)
 	val := C.CString(m)
 	peerID := C.CString(hostID.Pretty())
 	defer C.free(unsafe.Pointer(val))
@@ -51,30 +63,30 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *BLETransport) *BLEListen
 	time.Sleep(1 * time.Second)
 	go C.startAdvertising()
 	go C.startDiscover()
-	listerner := &BLEListener{
+	listerner := &Listener{
 		lAddr:           lAddr,
 		incomingBLEUUID: make(chan string),
 		incomingPeerID:  make(chan string),
-		connected:       make(map[string]*BLEConn),
+		connected:       make(map[string]*Conn),
 		transport:       t,
 	}
 	listeners[t.ID] = listerner
 	return listerner
 }
 
-func (b *BLEListener) Addr() net.Addr {
-	m, _ := b.lAddr.ValueForProtocol(P_BLE)
-	return &BLEAddr{
+func (b *Listener) Addr() net.Addr {
+	m, _ := b.lAddr.ValueForProtocol(PBle)
+	return &Addr{
 		Address: m,
 	}
 }
 
-func (b *BLEListener) Multiaddr() ma.Multiaddr {
+func (b *Listener) Multiaddr() ma.Multiaddr {
 	logger().Debug("BLEListener Multiaddr")
 	return b.lAddr
 }
 
-func (b *BLEListener) Accept() (tpt.Conn, error) {
+func (b *Listener) Accept() (tpt.Conn, error) {
 	for {
 		bleUUID := <-b.incomingBLEUUID
 		peerIDb58 := <-b.incomingPeerID
@@ -95,11 +107,10 @@ func (b *BLEListener) Accept() (tpt.Conn, error) {
 			}
 		}
 	}
-	return nil, nil
 }
 
 // Close TODO: stop advertising release object etc...
-func (b *BLEListener) Close() error {
+func (b *Listener) Close() error {
 	logger().Debug("BLEListener Close")
 	return nil
 }
