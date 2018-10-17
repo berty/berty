@@ -12,7 +12,6 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "BertyDevice.h"
-#import "MyDefer.h"
 
 void init(char *ma, char *peerID);
 int startAdvertising();
@@ -20,17 +19,13 @@ int startDiscover();
 int isDiscovering();
 int isAdvertising();
 int dialPeer(char *peerID);
-int checkDeviceConnected(char *peerID);
 char *readPeerID(char *peerID);
 NSData *Bytes2NSData(void *bytes, int length);
 void writeNSData(NSData *data, char *ma);
-// extern void* sendAcceptToListenerForPeerID(char *, char *);
 
 @interface BertyCentralManager : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate, CBPeripheralManagerDelegate>
 
 @property (nonatomic, assign) BOOL serviceAdded;
-@property (nonatomic, strong) NSMutableDictionary *connectedDevice;
-@property (nonatomic, strong) NSMutableDictionary *connectedPeer;
 @property (nonatomic, strong) NSMutableDictionary *discoveredDevice;
 @property (nonatomic, strong) NSMutableDictionary *peripheralToPeerID;
 @property (nonatomic, strong) NSMutableDictionary *peerIDToPeripheral;
@@ -55,6 +50,10 @@ void writeNSData(NSData *data, char *ma);
 
 - (void)startAdvertising;
 - (void)startDiscover;
+- (instancetype)initWithMa:(NSString *)ma AndPeerID:(NSString *)peerID;
+- (void)write:(NSData *)data forMa:(NSString *)ma;
+- (char *)readPeerID:(NSString *)ma;
+- (int)dialPeer:(NSString *)peerID;
 
 @end
 

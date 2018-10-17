@@ -21,7 +21,6 @@ import (
 	syncdatastore "github.com/ipfs/go-datastore/sync"
 	ipfsaddr "github.com/ipfs/go-ipfs-addr"
 	libp2p "github.com/libp2p/go-libp2p"
-	crypto "github.com/libp2p/go-libp2p-crypto"
 	host "github.com/libp2p/go-libp2p-host"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"

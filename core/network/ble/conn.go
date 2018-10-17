@@ -15,7 +15,28 @@ import (
 	yamux "github.com/whyrusleeping/yamux"
 )
 
-var conns map[string]*BLEConn = make(map[string]*BLEConn)
+/*
+#cgo darwin CFLAGS: -x objective-c -Wno-incompatible-pointer-types -Wno-missing-field-initializers -Wno-missing-prototypes -Werror=return-type -Wdocumentation -Wunreachable-code -Wno-implicit-atomic-properties -Werror=deprecated-objc-isa-usage -Wno-objc-interface-ivars -Werror=objc-root-class -Wno-arc-repeated-use-of-weak -Wimplicit-retain-self -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wdeprecated-implementations -DNS_BLOCK_ASSERTIONS=1 -DOBJC_OLD_DISPATCH_PROTOTYPES=0
+#cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
+#import "ble.h"
+*/
+import "C"
+
+type Conn struct {
+	tpt.Conn
+	opened            bool
+	transport         *Transport
+	lID               peer.ID
+	rID               peer.ID
+	lAddr             ma.Multiaddr
+	rAddr             ma.Multiaddr
+	notFinishedToRead []byte
+	incoming          chan []byte
+	sess              *yamux.Session
+	accept            chan string
+}
+
+var conns map[string]*Conn = make(map[string]*Conn)
 
 //export sendBytesToConn
 func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
@@ -32,8 +53,8 @@ func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
 	}(goBleUUID, b)
 }
 
-func NewConn(transport *BLETransport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, dir int) BLEConn {
-	conn := BLEConn{
+func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, dir int) Conn {
+	conn := Conn{
 		opened:            true,
 		transport:         transport,
 		incoming:          make(chan []byte),
@@ -56,12 +77,12 @@ func NewConn(transport *BLETransport, lID, rID peer.ID, lAddr, rAddr ma.Multiadd
 		panic(err)
 	}
 
-	st, _ := rAddr.ValueForProtocol(P_BLE)
+	st, _ := rAddr.ValueForProtocol(PBle)
 	conns[st] = &conn
 	return conn
 }
 
-func (b *BLEConn) Read(p []byte) (n int, err error) {
+func (b *Conn) Read(p []byte) (n int, err error) {
 	if b.notFinishedToRead != nil && len(b.notFinishedToRead) > 0 {
 		// Read remaining data left in last call.
 		copied := copy(p, b.notFinishedToRead)
@@ -75,8 +96,8 @@ func (b *BLEConn) Read(p []byte) (n int, err error) {
 	return copied, nil
 }
 
-func (b *BLEConn) Write(p []byte) (n int, err error) {
-	val, err := b.rAddr.ValueForProtocol(P_BLE)
+func (b *Conn) Write(p []byte) (n int, err error) {
+	val, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		return 0, err
 	}
@@ -94,52 +115,52 @@ func (b *BLEConn) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-func (b *BLEConn) LocalPeer() peer.ID {
+func (b *Conn) LocalPeer() peer.ID {
 	return b.lID
 }
 
-func (b *BLEConn) LocalPrivateKey() ic.PrivKey {
+func (b *Conn) LocalPrivateKey() ic.PrivKey {
 	return nil
 }
 
-func (b *BLEConn) RemotePeer() peer.ID {
+func (b *Conn) RemotePeer() peer.ID {
 	return b.rID
 }
 
-func (b *BLEConn) RemotePublicKey() ic.PubKey {
+func (b *Conn) RemotePublicKey() ic.PubKey {
 	return nil
 }
 
-func (b *BLEConn) LocalMultiaddr() ma.Multiaddr {
+func (b *Conn) LocalMultiaddr() ma.Multiaddr {
 	return b.lAddr
 }
 
-func (b *BLEConn) RemoteMultiaddr() ma.Multiaddr {
+func (b *Conn) RemoteMultiaddr() ma.Multiaddr {
 	return b.rAddr
 }
 
-func (b *BLEConn) Transport() tpt.Transport {
+func (b *Conn) Transport() tpt.Transport {
 	logger().Debug("BLEConn Transport")
 	return b.transport
 }
 
-func (b *BLEConn) Close() error {
+func (b *Conn) Close() error {
 	logger().Debug("BLEConn Close")
 	time.Sleep(10 * time.Second)
 	return nil
 }
 
-func (b *BLEConn) IsClosed() bool {
+func (b *Conn) IsClosed() bool {
 	logger().Debug("BLEConn IsClosed")
 	return b.sess.IsClosed()
 }
 
 // OpenStream creates a new stream.
-func (b *BLEConn) OpenStream() (smu.Stream, error) {
+func (b *Conn) OpenStream() (smu.Stream, error) {
 	return b.sess.OpenStream()
 }
 
 // AcceptStream accepts a stream opened by the other side.
-func (b *BLEConn) AcceptStream() (smu.Stream, error) {
+func (b *Conn) AcceptStream() (smu.Stream, error) {
 	return b.sess.AcceptStream()
 }
