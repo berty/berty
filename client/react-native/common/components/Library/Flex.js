@@ -26,49 +26,54 @@ const getJustify = (
   }
 ) => justify[key] || justify['center']
 
-export const Block = ({
+const getStyle = ({ size = 1, direction, align, self, justify, style }) => [
+  {
+    flex: size,
+    flexDirection: direction && getDirection(direction),
+    alignItems: align && getAlign(align),
+    alignSelf: self && getAlign(self),
+    justifyContent: justify && getJustify(justify),
+  },
+  style,
+]
+
+const getProps = ({
   size = 1,
   direction,
   align,
   self,
   justify,
-  children,
   style,
   ...props
-}) => {
-  style = [
-    {
-      flex: size,
-      flexDirection: direction && getDirection(direction),
-      alignItems: align && getAlign(align),
-      alignSelf: self && getAlign(self),
-      justifyContent: justify && getJustify(justify),
-    },
-    style,
-  ]
+}) => props
+
+export const Block = props => {
   return props.onPress ? (
-    <TouchableOpacity {...props} style={style}>
-      {children}
-    </TouchableOpacity>
+    <TouchableOpacity {...getProps(props)} style={getStyle(props)} />
   ) : (
-    <View {...props} style={style}>
-      {children}
-    </View>
+    <View {...getProps(props)} style={getStyle(props)} />
   )
 }
 
-export const Grid = props => <Block {...props} />
+export const Rows = ({ direction, ...props }) => {
+  props.direction = 'rows'
+  return props.onPress ? (
+    <TouchableOpacity {...getProps(props)} style={getStyle(props)} />
+  ) : (
+    <View {...getProps(props)} style={getStyle(props)} />
+  )
+}
 
-export const Rows = ({ direction, ...props }) => (
-  <Block direction='rows' {...props} />
-)
-
-export const Cols = ({ direction, ...props }) => (
-  <Block direction='cols' {...props} />
-)
+export const Cols = ({ direction, ...props }) => {
+  props.direction = 'cols'
+  return props.onPress ? (
+    <TouchableOpacity {...getProps(props)} style={getStyle(props)} />
+  ) : (
+    <View {...getProps(props)} style={getStyle(props)} />
+  )
+}
 
 export default {
-  Grid,
   Rows,
   Cols,
   Block,
