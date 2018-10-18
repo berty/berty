@@ -114,11 +114,11 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	}
 
 	if cfg.enableMDNS {
-		// sa, err := mdns.NewMdnsService(ctx, host, time.Second, "berty")
+		sa, err := mdns.NewMdnsService(ctx, host, time.Second, "berty")
 		if err != nil {
 			logger().Warn("Failed to enable MDNS", zap.Error(err))
 		} else {
-			// sa.RegisterNotifee((*DriverDiscoveryNotifee)(driver))
+			sa.RegisterNotifee((*DriverDiscoveryNotifee)(driver))
 		}
 	}
 
@@ -280,7 +280,6 @@ func (d *Driver) BootstrapPeer(ctx context.Context, bootstrapAddr string) error 
 // given peer.ID.
 func (d *Driver) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 	// first, check if we're already connected.
-	fmt.Printf("LALALALALLLLLLLLAAAAAAAAAA\n\n\n\n\n\n")
 	if d.host.Network().Connectedness(pi.ID) == inet.Connected {
 		return nil
 	}
@@ -294,9 +293,7 @@ func (d *Driver) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 	if len(addrs) < 1 {
 		// no addrs? find some with the routing system.
 		var err error
-		fmt.Printf("LALALALA\n")
 		pi, err = d.dht.FindPeer(ctx, pi.ID)
-		fmt.Printf("LALALALA %+v\n", pi)
 		if err != nil {
 			return err
 		}
@@ -331,29 +328,6 @@ func (d *Driver) Emit(ctx context.Context, e *p2p.Envelope) error {
 }
 
 func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) error {
-	fmt.Printf("ici %s\n", channel)
-	ntk := d.host.Network().(*swarm.Swarm)
-	fmt.Printf("new net %+v\n", ntk)
-	fmt.Printf("addrs %+v\n", d.host.Addrs())
-	// block, _ := pem.Decode([]byte(channel))
-	// if block == nil {
-	// 	panic("failed to parse PEM block containing the public key")
-	// }
-
-	// pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-	// if err != nil {
-	// 	panic("failed to parse DER encoded public key: " + err.Error())
-	// }
-	// pk1, err := crypto.UnmarshalECDSAPublicKey([]byte(channel))
-	// fmt.Printf("pk1 %+v %+v\n", pk1, err)
-	pk2, err := crypto.UnmarshalEd25519PublicKey([]byte(channel))
-	fmt.Printf("pk2 %+v %+v\n", pk2, err)
-	pk3, err := crypto.UnmarshalRsaPublicKey([]byte(channel))
-	fmt.Printf("pk3 %+v %+v\n", pk3, err)
-	cid, _ := d.createCid(channel)
-	fmt.Printf("CID %+v\n", cid)
-	// fmt.Printf("transport %+v %+v\n", pk, err)
-	// pID, err := peer.IDB58Decode(channel)
 	ss, err := d.FindSubscribers(ctx, channel)
 	if err != nil {
 		return err

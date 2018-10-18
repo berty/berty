@@ -70,15 +70,7 @@ type daemonOptions struct {
 	mdns      bool     `mapstructure:"mdns"`
 }
 
-var id uuid.UUID
-
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
-	var err error
-	id, err = uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
-
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
@@ -89,7 +81,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", fmt.Sprintf("/ble/%s", id.String())}, "p2p listening address")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
 	_ = viper.BindPFlags(flags)
 }
 
@@ -258,12 +250,21 @@ func daemon(opts *daemonOptions) error {
 
 		for _, v := range opts.bindP2P {
 			if strings.HasPrefix(v, "/ble/") {
-				// bleUUID := strings.TrimPrefix(v, "/ble/")
-				sourceMultiAddr, err := ma.NewMultiaddr(v)
+				var conf entity.Config
+				err = db.First(&conf).Error
+				if err != nil {
+					id, err := uuid.NewV4()
+					if err != nil {
+						return err
+					}
+					conf.ID = id.String()
+				}
+				opts.bindP2P[i] = fmt.Sprintf("/ble/%s", conf.ID)
+				sourceMultiAddr, err := ma.NewMultiaddr(opts.bindP2P[i])
 				if err != nil {
 					return err
 				}
-				bleTPT := ble.NewBLETransport(id.String(), sourceMultiAddr)
+				bleTPT := ble.NewBLETransport(conf.ID, sourceMultiAddr)
 				p2pOpts = append(p2pOpts, p2p.WithTransport(bleTPT))
 			}
 		}
