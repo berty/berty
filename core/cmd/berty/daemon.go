@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -303,12 +304,24 @@ func daemon(opts *daemonOptions) error {
 		gqlhandler.RequestMiddleware(func(ctx context.Context, next func(ctx context.Context) []byte) []byte {
 			req := graphql.GetRequestContext(ctx)
 			//verb := strings.TrimSpace(strings.Split(req.RawQuery, "{")[1]) // verb can be used to filter-out
+			variables := ""
+			if req.Variables != nil && len(req.Variables) > 0 {
+				out, _ := json.Marshal(req.Variables)
+				variables = string(out)
+			}
+			extensions := ""
+			if req.Extensions != nil && len(req.Extensions) > 0 {
+				out, _ := json.Marshal(req.Extensions)
+				extensions = string(out)
+			}
 			gqlLogger.Debug(
 				"gql query",
 				zap.String(
 					"query",
 					strings.Replace(req.RawQuery, "\n", "", -1),
 				),
+				zap.String("variables", variables),
+				zap.String("extensions", extensions),
 			)
 			return next(ctx)
 		}),
