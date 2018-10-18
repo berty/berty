@@ -3,6 +3,9 @@ package filteredzap
 // based on https://github.com/tchap/zapext/blob/a5d992351555de581c6d36e2829287a6d1c2f16a/middleware/core_filtering.go
 
 import (
+	"path"
+	"strings"
+
 	"go.uber.org/zap/zapcore"
 )
 
@@ -34,4 +37,27 @@ func (core *filteringCore) Write(entry zapcore.Entry, fields []zapcore.Field) er
 		return nil
 	}
 	return core.Core.Write(entry, fields)
+}
+
+func FilterByNamespace(core zapcore.Core, namespaces string) zapcore.Core {
+	matchMap := map[string]bool{}
+	patternsString := namespaces
+	patterns := strings.Split(patternsString, ",")
+	return NewFilteringCore(core, func(entry zapcore.Entry, fields []zapcore.Field) bool {
+		// always print error messages
+		if entry.Level >= zapcore.ErrorLevel {
+			return true
+		}
+		// only show debug,info,warn messages for enabled --log-namespaces
+		if _, found := matchMap[entry.LoggerName]; !found {
+			matchMap[entry.LoggerName] = false
+			for _, pattern := range patterns {
+				if matched, _ := path.Match(pattern, entry.LoggerName); matched {
+					matchMap[entry.LoggerName] = true
+					break
+				}
+			}
+		}
+		return matchMap[entry.LoggerName]
+	})
 }

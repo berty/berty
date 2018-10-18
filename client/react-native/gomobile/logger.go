@@ -3,6 +3,7 @@ package core
 import (
 	"fmt"
 
+	"berty.tech/core/pkg/filteredzap"
 	p2plog "github.com/ipfs/go-log"
 	"github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
@@ -111,12 +112,14 @@ func setupLogger(logLevel string, mlogger Logger) error {
 		return err
 	}
 
-	consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
-	mobileCore := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
-		return newMobileCore(core, consoleEncoder, mlogger)
+	core := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+		consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
+		mobileCore := newMobileCore(core, consoleEncoder, mlogger)
+		filteredCore := filteredzap.FilterByNamespace(mobileCore, "*")
+		return filteredCore
 	})
 
-	zap.ReplaceGlobals(l.WithOptions(mobileCore))
+	zap.ReplaceGlobals(l.WithOptions(core))
 	logger().Debug("logger initialized")
 
 	// configure p2p log
