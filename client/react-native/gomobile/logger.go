@@ -33,21 +33,12 @@ func (mc *mobileCore) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) 
 }
 
 func (mc *mobileCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
-	var out string
-
-	out = entry.Message
-	if len(fields) > 0 {
-		out += ": { "
-		for i, f := range fields {
-			out += f.Key + ": " + f.String
-			if i < len(fields)-1 {
-				out += ", "
-			}
-		}
-		out += " }"
+	buff, err := mc.enc.EncodeEntry(entry, fields)
+	if err != nil {
+		return err
 	}
 
-	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, out)
+	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
 type p2pLogBackendWrapper struct {
@@ -107,18 +98,25 @@ func setupLogger(logLevel string, mlogger Logger) error {
 	config := zap.NewDevelopmentConfig()
 	config.Level.SetLevel(zapLogLevel)
 	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+
+	// configure log encoder
+	// disable unwanted info
+	config.EncoderConfig.LevelKey = ""
+	config.EncoderConfig.TimeKey = ""
+	config.EncoderConfig.NameKey = ""
+	config.EncoderConfig.CallerKey = ""
+
 	l, err := config.Build()
 	if err != nil {
 		return err
 	}
 
 	consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
-	mobile := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+	mobileCore := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
 		return newMobileCore(core, consoleEncoder, mlogger)
 	})
 
-	zap.ReplaceGlobals(l.WithOptions(mobile))
+	zap.ReplaceGlobals(l.WithOptions(mobileCore))
 	logger().Debug("logger initialized")
 
 	// configure p2p log
