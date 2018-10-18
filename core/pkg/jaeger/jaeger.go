@@ -8,26 +8,17 @@ import (
 	"go.uber.org/zap"
 )
 
-var Config struct {
-	Address  string
-	Disabled bool
-}
-
-func InitTracer(service string) (opentracing.Tracer, io.Closer, error) {
+func InitTracer(address, service string) (opentracing.Tracer, io.Closer, error) {
 	cfg := &config.Configuration{
 		ServiceName: service,
-		Disabled:    Config.Disabled,
 		Sampler: &config.SamplerConfig{
 			Type:  "const",
 			Param: 1,
 		},
 		Reporter: &config.ReporterConfig{
-			LogSpans: true,
+			LogSpans:           true,
+			LocalAgentHostPort: address,
 		},
-	}
-
-	if Config.Disabled == false {
-		cfg.Reporter.LocalAgentHostPort = Config.Address
 	}
 
 	tracer, closer, err := cfg.NewTracer(

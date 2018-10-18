@@ -17,7 +17,6 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/pkg/filteredzap"
-	"berty.tech/core/pkg/jaeger"
 )
 
 type p2pLogBackendWrapper struct {
@@ -154,21 +153,11 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func setupJaeger(cmd *cobra.Command, args []string) error {
-	jaegerAddr, err := cmd.Flags().GetString("jaeger-address")
-	if err != nil {
-		return err
-	}
+var jaegerAddr string
 
-	jaegerDisabled := false
-	if jaegerAddr == "" {
-		jaegerDisabled = true
-	}
-
-	jaeger.Config.Address = jaegerAddr
-	jaeger.Config.Disabled = jaegerDisabled
-
-	return nil
+func setupJaeger(cmd *cobra.Command, args []string) (err error) {
+	jaegerAddr, err = cmd.Flags().GetString("jaeger-address")
+	return
 }
 
 func setupViper(cmd *cobra.Command, args []string) error {
