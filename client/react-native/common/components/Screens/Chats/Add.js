@@ -1,13 +1,7 @@
 // TODO: create generic contact list with pagination
 
 import React, { PureComponent } from 'react'
-import {
-  FlatList,
-  TouchableOpacity,
-  Image,
-  View,
-  ActivityIndicator,
-} from 'react-native'
+import { FlatList, Image, View, ActivityIndicator } from 'react-native'
 import { Screen, Flex, Text, Separator, Header } from '../../Library'
 import { colors } from '../../../constants'
 import { marginHorizontal, border } from '../../../styles'
@@ -28,7 +22,8 @@ const Item = fragments.Contact(
       } = this.props
       const { selected } = this.state
       return (
-        <TouchableOpacity
+        <Flex.Cols
+          align='start'
           onPress={this.onPress}
           style={[
             {
@@ -39,47 +34,45 @@ const Item = fragments.Contact(
             marginHorizontal,
           ]}
         >
-          <Flex.Cols align='start'>
-            <Flex.Rows size={1} align='start'>
-              <Image
-                style={{ width: 40, height: 40, borderRadius: 50 }}
-                source={{
-                  uri:
-                    'https://api.adorable.io/avatars/285/' +
-                    ((status === 42 && 'Myself') ||
-                      overrideDisplayName ||
-                      displayName) +
-                    '.png',
-                }}
-              />
-            </Flex.Rows>
-            <Flex.Rows size={6} align='start' style={{ marginLeft: 14 }}>
-              <Text color={colors.black} left middle>
-                {(status === 42 && 'Myself') ||
-                  overrideDisplayName ||
-                  displayName}
-              </Text>
-              <Text color={colors.subtleGrey} tiny>
-                {displayStatus}
-              </Text>
-            </Flex.Rows>
-            <Flex.Rows align='end' self='center'>
-              <View
-                style={[
-                  selected ? null : border,
-                  {
-                    height: 18,
-                    width: 18,
-                    backgroundColor: selected ? colors.blue : colors.white,
-                    borderRadius: 9,
-                  },
-                ]}
-              >
-                <Text icon='check' padding middle center color={colors.white} />
-              </View>
-            </Flex.Rows>
-          </Flex.Cols>
-        </TouchableOpacity>
+          <Flex.Rows size={1} align='start'>
+            <Image
+              style={{ width: 40, height: 40, borderRadius: 50 }}
+              source={{
+                uri:
+                  'https://api.adorable.io/avatars/285/' +
+                  ((status === 42 && 'Myself') ||
+                    overrideDisplayName ||
+                    displayName) +
+                  '.png',
+              }}
+            />
+          </Flex.Rows>
+          <Flex.Rows size={6} align='start' style={{ marginLeft: 14 }}>
+            <Text color={colors.black} left middle>
+              {(status === 42 && 'Myself') ||
+                overrideDisplayName ||
+                displayName}
+            </Text>
+            <Text color={colors.subtleGrey} tiny>
+              {displayStatus}
+            </Text>
+          </Flex.Rows>
+          <Flex.Rows align='end' self='center'>
+            <View
+              style={[
+                selected ? null : border,
+                {
+                  height: 18,
+                  width: 18,
+                  backgroundColor: selected ? colors.blue : colors.white,
+                  borderRadius: 9,
+                },
+              ]}
+            >
+              <Text icon='check' padding middle center color={colors.white} />
+            </View>
+          </Flex.Rows>
+        </Flex.Cols>
       )
     }
   }
@@ -199,7 +192,6 @@ export default class ListScreen extends PureComponent {
 
   render () {
     const { navigation } = this.props
-    console.log(this.props)
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <QueryReducer
