@@ -28,15 +28,26 @@ func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 
 // EventList implements berty.node.EventList
 func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventListServer) error {
+	// prepare query
+	query := n.sql.Model(p2p.Event{}).Where(input.Filter)
+
+	// pagination
+	var err error
+	query, err = paginate(query, input.Paginate)
+	if err != nil {
+		return errors.Wrap(err, "pagination error")
+	}
+
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
+	// perform query
 	var events []*p2p.Event
-
-	if err := n.sql.Where(input.Filter).Find(&events).Error; err != nil {
-		return err
+	if err := query.Find(&events).Error; err != nil {
+		return errors.Wrap(err, "failed to get events from database")
 	}
 
+	// stream results
 	for _, event := range events {
 		if err := stream.Send(event); err != nil {
 			return err
@@ -179,39 +190,26 @@ func (n *Node) ContactRemove(_ context.Context, contact *entity.Contact) (*entit
 
 // ContactList implements berty.node.ContactList
 func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_ContactListServer) error {
+	// prepare query
+	query := n.sql.Model(entity.Contact{}).Where(input.Filter)
+
+	// pagination
+	var err error
+	query, err = paginate(query, input.Paginate)
+	if err != nil {
+		return errors.Wrap(err, "pagination error")
+	}
+
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
-	countQuery := n.sql.Model(entity.Contact{}).Where(input.Filter)
-
-	// apply defaults to paginate
-	if input.Paginate == nil {
-		input.Paginate = &node.Pagination{}
-	}
-	if input.Paginate.First == 0 {
-		input.Paginate.First = 10
-	}
-	if input.Paginate.OrderBy == "" {
-		input.Paginate.OrderBy = "id"
-	}
-
-	// build the query
-	fetchQuery := countQuery.Limit(input.Paginate.First).Order(input.Paginate.OrderBy, input.Paginate.OrderDesc)
-
-	if input.Paginate.Last > 0 {
-		return errors.Wrap(ErrNotImplemented, "input.Paginate.Last not supported")
-	}
-	if input.Paginate.Before != "" {
-		return errors.Wrap(ErrNotImplemented, "input.Paginate.Before not supported")
-	}
-	if input.Paginate.After != "" {
-		fetchQuery = fetchQuery.Where("id > ?", input.Paginate.After)
-	}
-
+	// perform query
 	var contacts []*entity.Contact
-	if err := fetchQuery.Find(&contacts).Error; err != nil {
-		return err
+	if err := query.Find(&contacts).Error; err != nil {
+		return errors.Wrap(err, "failed to get contacts from database")
 	}
+
+	// stream results
 	for _, contact := range contacts {
 		if err := stream.Send(contact); err != nil {
 			return err
@@ -319,14 +317,26 @@ func (n *Node) ConversationExclude(context.Context, *node.ConversationManageMemb
 }
 
 func (n *Node) ConversationList(input *node.ConversationListInput, stream node.Service_ConversationListServer) error {
+	// prepare query
+	query := n.sql.Model(entity.Conversation{}).Where(input.Filter)
+
+	// pagination
+	var err error
+	query, err = paginate(query, input.Paginate)
+	if err != nil {
+		return errors.Wrap(err, "pagination error")
+	}
+
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
+	// perform query
 	var conversations []*entity.Conversation
-	if err := n.sql.Where(input.Filter).Find(&conversations).Error; err != nil {
+	if err := query.Find(&conversations).Error; err != nil {
 		return errors.Wrap(err, "failed to get conversations from database")
 	}
 
+	// stream results
 	for _, conversation := range conversations {
 		if err := stream.Send(conversation); err != nil {
 			return err
