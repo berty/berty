@@ -106,43 +106,52 @@ func newDaemonCommand() *cobra.Command {
 }
 
 func daemon(opts *daemonOptions) error {
-	errChan := make(chan error)
-
-	tracer, closer, err := jaeger.InitTracer("berty-daemon")
-	if err != nil {
-		return err
-	}
-	defer closer.Close()
-
-	tracerOpts := grpc_ot.WithTracer(tracer)
-	interceptorsServer := []grpc.ServerOption{
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+	var (
+		errChan          = make(chan error)
+		serverStreamOpts = []grpc.StreamServerInterceptor{
 			// grpc_auth.StreamServerInterceptor(myAuthFunction),
 			// grpc_prometheus.StreamServerInterceptor,
 			grpc_ctxtags.StreamServerInterceptor(),
 			grpc_zap.StreamServerInterceptor(logger()),
 			grpc_recovery.StreamServerInterceptor(),
-			grpc_ot.StreamServerInterceptor(tracerOpts),
-		)),
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+		}
+		serverUnaryOpts = []grpc.UnaryServerInterceptor{
 			// grpc_prometheus.UnaryServerInterceptor,
 			// grpc_auth.UnaryServerInterceptor(myAuthFunction),
 			grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(logger()),
 			grpc_recovery.UnaryServerInterceptor(),
-			grpc_ot.UnaryServerInterceptor(tracerOpts),
-		)),
+		}
+		clientStreamOpts = []grpc.StreamClientInterceptor{
+			grpc_zap.StreamClientInterceptor(logger()),
+		}
+		clientUnaryOpts = []grpc.UnaryClientInterceptor{
+			grpc_zap.UnaryClientInterceptor(logger()),
+		}
+	)
+
+	if jaegerAddr != "" {
+		tracer, closer, err := jaeger.InitTracer(jaegerAddr, "berty-daemon")
+		if err != nil {
+			return err
+		}
+		defer closer.Close()
+
+		tracerOpts := grpc_ot.WithTracer(tracer)
+		serverStreamOpts = append(serverStreamOpts, grpc_ot.StreamServerInterceptor(tracerOpts))
+		serverUnaryOpts = append(serverUnaryOpts, grpc_ot.UnaryServerInterceptor(tracerOpts))
+		clientStreamOpts = append(clientStreamOpts, grpc_ot.StreamClientInterceptor(tracerOpts))
+		clientUnaryOpts = append(clientUnaryOpts, grpc_ot.UnaryClientInterceptor(tracerOpts))
+	}
+
+	interceptorsServer := []grpc.ServerOption{
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
 	}
 
 	interceptorsClient := []grpc.DialOption{
-		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
-			grpc_zap.StreamClientInterceptor(logger()),
-			grpc_ot.StreamClientInterceptor(tracerOpts),
-		)),
-		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
-			grpc_zap.UnaryClientInterceptor(logger()),
-			grpc_ot.UnaryClientInterceptor(tracerOpts),
-		)),
+		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(clientStreamOpts...)),
+		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(clientUnaryOpts...)),
 	}
 
 	// initialize gRPC
@@ -226,6 +235,17 @@ func daemon(opts *daemonOptions) error {
 			p2pOpts = append(p2pOpts, p2p.WithRelayHOP())
 		} else {
 			p2pOpts = append(p2pOpts, p2p.WithRelayClient())
+		}
+
+		if jaegerAddr != "" {
+			tracer, closer, err := jaeger.InitTracer(jaegerAddr, "berty-p2p")
+			if err != nil {
+				return err
+			}
+			defer closer.Close()
+			tracerOpts := grpc_ot.WithTracer(tracer)
+
+			p2pOpts = append(p2pOpts, p2p.WithJaeger(&tracerOpts))
 		}
 
 		p2pDriver, err := p2p.NewDriver(context.Background(), p2pOpts...)

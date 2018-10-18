@@ -34,7 +34,6 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p/p2putil"
 	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
-	"berty.tech/core/pkg/jaeger"
 )
 
 const ID = "api/p2p/methods"
@@ -44,6 +43,8 @@ var ProtocolID = protocol.ID(p2pgrpc.GetGrpcID(ID))
 // driverConfig configure the driver
 type driverConfig struct {
 	libp2pOpt []libp2p.Option
+
+	jaeger *grpc_ot.Option
 
 	bootstrap     []string
 	bootstrapSync bool
@@ -122,34 +123,38 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		}
 	}
 
-	tracer, closer, err := jaeger.InitTracer("berty-p2p")
-	if err != nil {
-		return nil, err
-	}
-
-	tracerOpts := grpc_ot.WithTracer(tracer)
-	p2pInterceptorsServer := []grpc.ServerOption{
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(
+	var (
+		serverStreamOpts = []grpc.StreamServerInterceptor{
 			grpc_ctxtags.StreamServerInterceptor(),
 			grpc_zap.StreamServerInterceptor(logger()),
-			grpc_ot.StreamServerInterceptor(tracerOpts),
-		)),
-		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
+		}
+		serverUnaryOpts = []grpc.UnaryServerInterceptor{
 			grpc_ctxtags.UnaryServerInterceptor(),
 			grpc_zap.UnaryServerInterceptor(logger()),
-			grpc_ot.UnaryServerInterceptor(tracerOpts),
-		)),
+		}
+		clientStreamOpts = []grpc.StreamClientInterceptor{
+			grpc_zap.StreamClientInterceptor(logger()),
+		}
+		clientUnaryOpts = []grpc.UnaryClientInterceptor{
+			grpc_zap.UnaryClientInterceptor(logger()),
+		}
+	)
+
+	if cfg.jaeger != nil {
+		serverStreamOpts = append(serverStreamOpts, grpc_ot.StreamServerInterceptor(*cfg.jaeger))
+		serverUnaryOpts = append(serverUnaryOpts, grpc_ot.UnaryServerInterceptor(*cfg.jaeger))
+		clientStreamOpts = append(clientStreamOpts, grpc_ot.StreamClientInterceptor(*cfg.jaeger))
+		clientUnaryOpts = append(clientUnaryOpts, grpc_ot.UnaryClientInterceptor(*cfg.jaeger))
+	}
+
+	p2pInterceptorsServer := []grpc.ServerOption{
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
 	}
 
 	p2pInterceptorsClient := []grpc.DialOption{
-		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
-			grpc_zap.StreamClientInterceptor(logger()),
-			grpc_ot.StreamClientInterceptor(tracerOpts),
-		)),
-		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
-			grpc_zap.UnaryClientInterceptor(logger()),
-			grpc_ot.UnaryClientInterceptor(tracerOpts),
-		)),
+		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(clientStreamOpts...)),
+		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(clientUnaryOpts...)),
 	}
 
 	gs := grpc.NewServer(p2pInterceptorsServer...)
@@ -168,7 +173,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		if err := gs.Serve(l); err != nil {
 			logger().Error("Listen error", zap.Error(err))
 		}
-		closer.Close()
 	}()
 
 	logger().Debug("Host", zap.String("ID", driver.ID()), zap.Strings("Addrs", driver.Addrs()))

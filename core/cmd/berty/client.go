@@ -69,17 +69,20 @@ func newClientCommand() *cobra.Command {
 func clientServerStream(opts *clientOptions) error {
 	ctx := context.Background()
 
-	tracer, closer, err := jaeger.InitTracer("berty-client")
-	if err != nil {
-		return err
-	}
-	defer closer.Close()
-
 	dialopts := []grpc.DialOption{
 		grpc.WithInsecure(),
-		grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
+	}
+
+	if jaegerAddr != "" {
+		tracer, closer, err := jaeger.InitTracer(jaegerAddr, "berty-client")
+		if err != nil {
+			return err
+		}
+		defer closer.Close()
+
+		dialopts = append(dialopts, grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(
 			grpc_opentracing.StreamClientInterceptor(grpc_opentracing.WithTracer(tracer)),
-		)),
+		)))
 	}
 
 	logger().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))
@@ -137,17 +140,20 @@ func clientServerStream(opts *clientOptions) error {
 func clientUnary(opts *clientOptions) error {
 	ctx := context.Background()
 
-	tracer, closer, err := jaeger.InitTracer("berty-client")
-	if err != nil {
-		return err
-	}
-	defer closer.Close()
-
 	dialopts := []grpc.DialOption{
 		grpc.WithInsecure(),
-		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
+	}
+
+	if jaegerAddr != "" {
+		tracer, closer, err := jaeger.InitTracer(jaegerAddr, "berty-client")
+		if err != nil {
+			return err
+		}
+		defer closer.Close()
+
+		dialopts = append(dialopts, grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(
 			grpc_opentracing.UnaryClientInterceptor(grpc_opentracing.WithTracer(tracer)),
-		)),
+		)))
 	}
 
 	logger().Debug("dialing node", zap.String("addr", opts.nodeAddress), zap.String("protocol", "gRPC"))

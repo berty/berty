@@ -5,6 +5,7 @@ package p2p
 import (
 	"fmt"
 
+	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"
@@ -57,6 +58,14 @@ func WithDHTBoostrapConfig(bc *dht.BootstrapConfig) Option {
 func WithBootstrap(addrs ...string) Option {
 	return func(dc *driverConfig) error {
 		dc.bootstrap = addrs
+		return nil
+	}
+}
+
+// WithJaeger configure boostrap connection
+func WithJaeger(jaeger *grpc_ot.Option) Option {
+	return func(dc *driverConfig) error {
+		dc.jaeger = jaeger
 		return nil
 	}
 }
