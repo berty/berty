@@ -22,7 +22,7 @@ export default class Database extends PureComponent {
             title='Generate fake data'
             onPress={async () => {
               try {
-                await mutations.generateFakeData.commit({})
+                await mutations.generateFakeData.commit({ t: true })
               } catch (err) {
                 this.setState({ err })
                 console.error(err)
