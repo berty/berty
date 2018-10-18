@@ -1418,3 +1418,37 @@ models:
       hasNextPage:
       hasPreviousPage:
       count:
+
+  BertyNodeIntegrationTestInput:
+    model: berty.tech/core/api/node.IntegrationTestInput
+    fields:
+      name:
+  BertyNodeIntegrationTestInputPayload:
+    model: berty.tech/core/api/node.IntegrationTestInput
+    fields:
+      name:
+
+  BertyNodeIntegrationTestOutput:
+    model: berty.tech/core/api/node.IntegrationTestOutput
+    fields:
+      name:
+      success:
+      verbose:
+      startedAt:
+      finishedAt:
+  BertyNodeIntegrationTestOutputInput:
+    model: berty.tech/core/api/node.IntegrationTestOutput
+    fields:
+      name:
+      success:
+      verbose:
+      startedAt:
+      finishedAt:
+  BertyNodeIntegrationTestPayload:
+    model: berty.tech/core/api/node.IntegrationTestOutput
+    fields:
+      name:
+      success:
+      verbose:
+      startedAt:
+      finishedAt:

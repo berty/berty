@@ -5,7 +5,7 @@ package enclave
 /*
 #cgo CFLAGS: -x objective-c -Wno-incompatible-pointer-types
 #cgo LDFLAGS: -framework Foundation -framework Security
-#import "platform_api/darwin/DarwinInterface.m"
+#import "DarwinInterface.h"
 
 // Functions used to bind NSData* with golang
 const void *dataPointer(NSData *data) { return [data bytes]; }

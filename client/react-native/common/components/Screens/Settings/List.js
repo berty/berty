@@ -134,7 +134,7 @@ export default class List extends PureComponent {
                     center
                     self='center'
                   >
-                    An unexpected error occured, please restart the application
+                    An unexpected error occurred, please restart the application
                   </Text>
                 )
             }
