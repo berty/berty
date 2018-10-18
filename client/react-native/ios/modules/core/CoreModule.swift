@@ -3,10 +3,12 @@
 //  berty
 //
 //  Created by Godefroy Ponsinet on 29/08/2018.
-//  Copyright © 2018 Facebook. All rights reserved.
 //
 
 import Foundation
+import os
+
+var logger = Logger("chat.berty.io", "CoreModule")
 
 @objc(CoreModule)
 class CoreModule: NSObject {
@@ -14,22 +16,22 @@ class CoreModule: NSObject {
         var err: NSError?
 
         let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-        if filesDir == nil {
-            reject("\(String(describing: err?.code))", err?.userInfo.description, err)
-        }
-
         let filesPath = filesDir?.path
         let fileExist = FileManager.default.fileExists(atPath: filesPath!)
+
         if fileExist == false {
             do {
                 try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)
-            } catch {
-                reject("\(String(describing: err?.code))", err?.userInfo.description, err)
+            } catch let error as NSError {
+                logger.format("create directory error: ", level: .Error, error.userInfo.description)
+                reject("\(String(describing: error.code))", error.userInfo.description, error)
             }
         }
-        CoreStart(filesPath, &err)
-        if err != nil {
-            reject("\(String(describing: err?.code))", err?.userInfo.description, err)
+
+        CoreStart(filesPath, logger, &err)
+        if let error = err {
+            logger.format("core module init error: %@", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
         resolve(nil)
     }
@@ -39,8 +41,9 @@ class CoreModule: NSObject {
         var port: Int = 0
 
         CoreGetPort(&port, &err)
-        if err != nil {
-            reject("\(String(describing: err?.code))", err?.userInfo.description, err)
+        if let error = err {
+            logger.format("get port error: ", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
         resolve(port)
     }

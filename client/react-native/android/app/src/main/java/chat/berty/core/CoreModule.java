@@ -8,7 +8,7 @@ import com.facebook.react.bridge.ReactMethod;
 import core.Core;
 
 public class CoreModule extends ReactContextBaseJavaModule {
-
+    private Logger logger = new Logger("chat.berty.io");
     private String filesDir = "";
     private ReactApplicationContext reactContext;
 
@@ -23,11 +23,12 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void start(Promise promise) {
+    public void start(Promise promise) throws Exception {
         try {
-            Core.start(this.filesDir);
+            Core.start(this.filesDir, this.logger);
             promise.resolve(null);
         } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to start core: %s", err);
             promise.reject(err);
         }
     }
@@ -38,6 +39,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
             Long port = Core.getPort();
             promise.resolve(port.toString());
         } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to get port", err);
             promise.reject(err);
         }
     }

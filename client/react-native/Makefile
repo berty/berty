@@ -53,6 +53,11 @@ deps.ios: deps
 .PHONY: deps.web
 deps.web: deps
 	cd $(WEB) && yarn
+
+.PHONY: deps.logs
+deps.logs:
+	brew install --HEAD pidcat
+
 ##############################
 
 
@@ -73,9 +78,25 @@ debug.ios: deps.ios
 release.ios: deps.ios
 	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=release --device '$(device)'
 
+adhoc.ios: deps.ios
+	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=adhoc --device '$(device)'
+
 .PHONY: debug.web
 debug.web: deps.web
 	cd $(WEB) && yarn start
+##############################
+
+
+### Logs part ###
+.PHONY: log.android
+log.android:
+	@(command -v pidcat > /dev/null && pidcat --always-display-tags -t chat.berty.*) || \
+	(echo "Consider to install pidcat (brew install pidcat) for a better logging experience" && sleep 2 && adb logcat)
+
+.PHONY: log.ios
+log.ios:
+	@open '/Applications/Utilities/Console.app'
+
 ##############################
 
 
