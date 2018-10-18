@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"math/rand"
-	"path"
 	"strings"
 
 	p2plog "github.com/ipfs/go-log"
@@ -128,30 +127,14 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+
+	patternsString, err := cmd.Flags().GetString("log-namespaces")
+	if err != nil {
+		panic(err)
+	}
+
 	filtered := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
-		matchMap := map[string]bool{}
-		patternsString, err := cmd.Flags().GetString("log-namespaces")
-		if err != nil {
-			panic(err)
-		}
-		patterns := strings.Split(patternsString, ",")
-		return filteredzap.NewFilteringCore(core, func(entry zapcore.Entry, fields []zapcore.Field) bool {
-			// always print error messages
-			if entry.Level >= zapcore.ErrorLevel {
-				return true
-			}
-			// only show debug,info,warn messages for enabled --log-namespaces
-			if _, found := matchMap[entry.LoggerName]; !found {
-				matchMap[entry.LoggerName] = false
-				for _, pattern := range patterns {
-					if matched, _ := path.Match(pattern, entry.LoggerName); matched {
-						matchMap[entry.LoggerName] = true
-						break
-					}
-				}
-			}
-			return matchMap[entry.LoggerName]
-		})
+		return filteredzap.FilterByNamespace(core, patternsString)
 	})
 	zap.ReplaceGlobals(l.WithOptions(filtered))
 	logger().Debug("logger initialized")

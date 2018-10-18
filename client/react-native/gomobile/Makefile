@@ -39,7 +39,6 @@ deps:
 	patch -N ~/go/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff || true
 	go install golang.org/x/mobile/cmd/gomobile
 	go get -v golang.org/x/mobile/cmd/gobind
-	gomobile init
 
 .PHONY: init
 init: deps
