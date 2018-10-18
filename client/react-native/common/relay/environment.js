@@ -43,13 +43,19 @@ const { CoreModule } = NativeModules
 let getIP = () =>
   new Promise(resolve => {
     if (Platform.OS === 'web') {
-      resolve(window.location.hostname)
-    } else {
-      return __DEV__ // eslint-disable-line
-        ? require('react-native-network-info').NetworkInfo.getIPV4Address(ip =>
-          resolve(ip)
-        )
-        : resolve('0.0.0.0')
+      return resolve(window.location.hostname)
+    }
+
+    if (__DEV__) { // eslint-disable-line
+      return require('react-native-network-info').NetworkInfo.getIPV4Address(ip => resolve(ip))
+    }
+
+    if (Platform.OS === 'ios') {
+      return resolve('127.0.0.1')
+    }
+
+    if (Platform.OS === 'android') {
+      return resolve('10.0.2.2')
     }
   })
 
