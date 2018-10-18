@@ -10,12 +10,14 @@ import (
 	"math/rand"
 	"runtime"
 	"strings"
+	"time"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
+	"berty.tech/core/testrunner"
 	"github.com/brianvoe/gofakeit"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
@@ -104,6 +106,28 @@ func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInf
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "OS", Value: runtime.GOOS})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Arch", Value: runtime.GOARCH})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go version", Value: runtime.Version()})
+
+	return output, nil
+}
+
+func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationTestInput) (*node.IntegrationTestOutput, error) {
+	tests := listIntegrationTests()
+
+	output := &node.IntegrationTestOutput{
+		StartedAt: time.Now(),
+		Name:      input.Name,
+	}
+
+	testFunc, ok := tests[input.Name]
+
+	if ok == false {
+		output.Success = false
+		output.Verbose = "Test not found"
+	} else {
+		output.Success, output.Verbose = testrunner.TestRunner(input.Name, testFunc)
+	}
+
+	output.FinishedAt = time.Now()
 
 	return output, nil
 }

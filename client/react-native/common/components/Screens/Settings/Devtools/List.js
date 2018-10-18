@@ -50,6 +50,11 @@ export default class List extends PureComponent {
             title='Network'
             onPress={() => navigation.push('devtools/network')}
           />
+          <Menu.Item
+            icon='check-circle'
+            title='Integration tests'
+            onPress={() => navigation.push('devtools/tests')}
+          />
         </Menu.Section>
       </Menu>
     )

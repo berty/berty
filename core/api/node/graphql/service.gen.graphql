@@ -538,6 +538,13 @@ type BertyEntityConversationMemberPayload {
 type BertyNodeVoidPayload {
       T: Bool!
 }
+type BertyNodeIntegrationTestPayload {
+      name: String!
+      success: Bool!
+      verbose: String!
+    startedAt: GoogleProtobufTimestamp
+    finishedAt: GoogleProtobufTimestamp
+}
 type BertyNodeDeviceInfosPayload {
     infos: [BertyNodeDeviceInfo]
 }
@@ -684,6 +691,9 @@ type Mutation {
   GenerateFakeData(
       T: Bool!
   ): BertyNodeVoidPayload
+  RunIntegrationTests(
+      name: String!
+  ): BertyNodeIntegrationTestPayload
 }
   
 type Subscription {

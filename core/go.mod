@@ -140,7 +140,6 @@ require (
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e // indirect
 	golang.org/x/lint v0.0.0-20181011164241-5906bd5c48cd // indirect
-	golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1
 	golang.org/x/oauth2 v0.0.0-20181003184128-c57b0facaced // indirect
 	golang.org/x/sys v0.0.0-20181011152604-fa43e7bc11ba // indirect
 	golang.org/x/tools v0.0.0-20181013182035-5e66757b835f // indirect

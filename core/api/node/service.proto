@@ -8,6 +8,10 @@ import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
 
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+
 option go_package = "berty.tech/core/api/node";
 
 service Service {
@@ -93,6 +97,10 @@ service Service {
   rpc HandleEvent(berty.p2p.Event) returns (Void) {};
 
   rpc GenerateFakeData(Void) returns (Void) {
+    option (berty.gql.graphql_type) = "Mutation";
+  };
+
+  rpc RunIntegrationTests(IntegrationTestInput) returns (IntegrationTestOutput) {
     option (berty.gql.graphql_type) = "Mutation";
   };
 
@@ -216,4 +224,16 @@ message PageInfo {
 
   // non-standard
   uint32 count = 5;
+}
+
+message IntegrationTestInput {
+  string name = 1;
+}
+
+message IntegrationTestOutput {
+  string name = 1;
+  bool success = 2;
+  string verbose = 3;
+  google.protobuf.Timestamp started_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp finished_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 }
