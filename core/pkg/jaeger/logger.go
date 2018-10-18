@@ -1,6 +1,11 @@
 package jaeger
 
-import "go.uber.org/zap"
+import (
+	"go.uber.org/zap"
+	"strings"
+)
+
+var connectionFailedOnce = false
 
 // jaegerLogger is an implementation of the Logger interface that delegates to traefik log
 type jaegerLogger struct {
@@ -8,6 +13,12 @@ type jaegerLogger struct {
 }
 
 func (l *jaegerLogger) Error(msg string) {
+	if strings.Contains(msg, "error when flushing the buffer: write udp") {
+		if connectionFailedOnce == true {
+			return
+		}
+		connectionFailedOnce = true
+	}
 	l.logger.Error("jaeger tracing error", zap.String("error", msg))
 }
 

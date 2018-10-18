@@ -65,6 +65,9 @@ func newRootCommand() *cobra.Command {
 			if err := setupLogger(cmd, args); err != nil {
 				return err
 			}
+			if err := setupJaeger(cmd, args); err != nil {
+				return err
+			}
 			if err := setupViper(cmd, args); err != nil {
 				return err
 			}
@@ -75,6 +78,7 @@ func newRootCommand() *cobra.Command {
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
 	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
+	cmd.PersistentFlags().StringP("jaeger-address", "", "", "ip address / hostname and port of jaeger-agent: <hostname>:<port>")
 	cmd.PersistentFlags().Int64P("rand-seed", "", 0, "seed used to initialize the default rand source")
 
 	cmd.AddCommand(
@@ -147,6 +151,13 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 		logger().Warn("failed to set p2p log level", zap.Error(err))
 	}
 	return nil
+}
+
+var jaegerAddr string
+
+func setupJaeger(cmd *cobra.Command, args []string) (err error) {
+	jaegerAddr, err = cmd.Flags().GetString("jaeger-address")
+	return
 }
 
 func setupViper(cmd *cobra.Command, args []string) error {
