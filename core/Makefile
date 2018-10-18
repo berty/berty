@@ -2,6 +2,7 @@ rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subs
 GOPATH ?= $(HOME)/go
 BIN = $(GOPATH)/bin/berty
 SOURCES = $(call rwildcard, $(CODE_PATHS), *.go)
+OUR_SOURCES = $(filter-out $(call rwildcard,vendor//, *.go),$(SOURCES))
 CODE_PATHS = $(filter-out node_modules/,$(wildcard */))
 PROTOS = $(call rwildcard, $(CODE_PATHS), *.proto)
 OUR_PROTOS = $(filter-out $(call rwildcard,vendor//, *.proto),$(PROTOS))
@@ -47,7 +48,7 @@ run: $(BIN)
 .PHONY: install
 install: $(BIN)
 
-$(BIN): generate $(SOURCES)
+$(BIN): generate $(OUR_SOURCES)
 	$(BUILD_ENV) go install -v ./cmd/...
 
 .PHONY: testwatch
