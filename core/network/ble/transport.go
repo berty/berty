@@ -76,13 +76,13 @@ var _ tpt.Transport = &Transport{}
 
 // NewBLETransport creates a tcp transport object that tracks dialers and listeners
 // created. It represents an entire tcp stack (though it might not necessarily be)
-func NewBLETransport(ID string, lAddr ma.Multiaddr) func(me host.Host) *Transport {
+func NewBLETransport(ID string, lAddr ma.Multiaddr) (func(me host.Host) *Transport, error) {
 	return func(me host.Host) *Transport {
 		logger().Debug("BLETransport NewBLETransport")
 		ret := &Transport{ConnectTimeout: DefaultConnectTimeout, MySelf: me, ID: ID, lAddr: lAddr}
 		go ret.ListenNewPeer()
 		return ret
-	}
+	}, nil
 }
 
 func (t *Transport) ListenNewPeer() {

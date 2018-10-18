@@ -18,10 +18,8 @@ type Transport struct {
 
 var ErrNotImplemented = errors.New("not implemented yet")
 
-func NewBLETransport(ID string, lAddr ma.Multiaddr) func(me host.Host) (*Transport, error) {
-	return func(me host.Host) (*Transport, error) {
-		return nil, errors.Wrap(ErrNotImplemented, "NewTransport")
-	}
+func NewBLETransport(ID string, lAddr ma.Multiaddr) (func(me host.Host) *Transport, error) {
+	return nil, errors.Wrap(ErrNotImplemented, "NewTransport")
 }
 
 // CanDial returns true if this transport believes it can dial the given
