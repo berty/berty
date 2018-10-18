@@ -264,7 +264,10 @@ func daemon(opts *daemonOptions) error {
 				if err != nil {
 					return err
 				}
-				bleTPT := ble.NewBLETransport(conf.ID, sourceMultiAddr)
+				bleTPT, err := ble.NewBLETransport(conf.ID, sourceMultiAddr)
+				if err != nil {
+					break
+				}
 				p2pOpts = append(p2pOpts, p2p.WithTransport(bleTPT))
 			}
 		}
