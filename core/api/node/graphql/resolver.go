@@ -276,6 +276,11 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		Paginate: getPagination(first, after, last, before),
 	}
 
+	input.Paginate.OrderBy = orderBy
+	input.Paginate.OrderDesc = orderDesc
+
+	input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
+
 	stream, err := r.client.ContactList(ctx, input)
 	if err != nil {
 		return nil, err
@@ -284,6 +289,8 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output := &node.ContactListConnection{
 		Edges: []*node.ContactEdge{},
 	}
+	count := int32(0)
+	hasNextPage := false
 	for {
 		n, err := stream.Recv()
 		if err == io.EOF {
@@ -292,9 +299,25 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		if err != nil {
 			return nil, err
 		}
+		if count == *first {
+			hasNextPage = true
+			break
+		}
+		count++
+
+		var cursor string
+		switch orderBy {
+		case "", "id":
+			cursor = n.ID
+		case "created_at":
+			cursor = n.CreatedAt.String()
+		case "updated_at":
+			cursor = n.UpdatedAt.String()
+		}
+
 		output.Edges = append(output.Edges, &node.ContactEdge{
 			Node:   n,
-			Cursor: n.ID,
+			Cursor: cursor,
 		})
 	}
 
@@ -302,8 +325,7 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		StartCursor:     output.Edges[0].Cursor,
 		EndCursor:       output.Edges[len(output.Edges)-1].Cursor,
 		HasPreviousPage: input.Paginate.After != "",
-		HasNextPage:     len(output.Edges) == int(input.Paginate.First),
-		Count:           uint32(len(output.Edges)),
+		HasNextPage:     hasNextPage,
 	}
 	return output, nil
 }
