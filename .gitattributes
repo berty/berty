@@ -2,6 +2,9 @@
 * text=auto
 
 # Collapse generated files on GitHub
+vendor/* linguist-vendored
+*/vendor/* linguist-vendored
+client/common/openssl/built/* linguist-vendored
 *.gen.go linguist-generated
 *.gen.yml linguist-generated
 *.gen.graphql linguist-generated
