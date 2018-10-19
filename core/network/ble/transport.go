@@ -129,7 +129,6 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 	if int(C.isDiscovering()) != 1 {
 		go C.startDiscover()
 	}
-	logging.SetDebugLogging()
 	s, err := rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		return nil, err

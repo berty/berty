@@ -11,7 +11,6 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p/p2putil"
 	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
-	"berty.tech/core/pkg/jaeger"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -34,11 +33,6 @@ import (
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/network"
-	"berty.tech/core/network/p2p/p2putil"
-	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
 )
 
 const ID = "api/p2p/methods"

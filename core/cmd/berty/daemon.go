@@ -257,30 +257,6 @@ func daemon(opts *daemonOptions) error {
 			p2pOpts = append(p2pOpts, p2p.WithJaeger(&tracerOpts))
 		}
 
-		for _, v := range opts.bindP2P {
-			if strings.HasPrefix(v, "/ble/") {
-				var conf entity.Config
-				err = db.First(&conf).Error
-				if err != nil {
-					id, err := uuid.NewV4()
-					if err != nil {
-						return err
-					}
-					conf.ID = id.String()
-				}
-				opts.bindP2P[i] = fmt.Sprintf("/ble/%s", conf.ID)
-				sourceMultiAddr, err := ma.NewMultiaddr(opts.bindP2P[i])
-				if err != nil {
-					return err
-				}
-				bleTPT, err := ble.NewBLETransport(conf.ID, sourceMultiAddr)
-				if err != nil {
-					break
-				}
-				p2pOpts = append(p2pOpts, p2p.WithTransport(bleTPT))
-			}
-		}
-
 		p2pDriver, err := p2p.NewDriver(context.Background(), p2pOpts...)
 
 		if err != nil {
