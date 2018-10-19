@@ -2,7 +2,6 @@
 
 package ble
 
-import "C"
 import (
 	"context"
 
