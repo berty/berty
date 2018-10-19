@@ -13,6 +13,20 @@ import (
 	"strings"
 	"syscall"
 
+	"berty.tech/core"
+	nodeapi "berty.tech/core/api/node"
+	gql "berty.tech/core/api/node/graphql"
+	graph "berty.tech/core/api/node/graphql/graph/generated"
+	p2papi "berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+	"berty.tech/core/network"
+	"berty.tech/core/network/mock"
+	"berty.tech/core/network/netutil"
+	"berty.tech/core/network/p2p"
+	"berty.tech/core/node"
+	"berty.tech/core/pkg/jaeger"
+	"berty.tech/core/sql"
+	"berty.tech/core/sql/sqlcipher"
 	graphql "github.com/99designs/gqlgen/graphql"
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
@@ -31,21 +45,6 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-
-	"berty.tech/core"
-	nodeapi "berty.tech/core/api/node"
-	gql "berty.tech/core/api/node/graphql"
-	graph "berty.tech/core/api/node/graphql/graph/generated"
-	p2papi "berty.tech/core/api/p2p"
-	"berty.tech/core/entity"
-	"berty.tech/core/network"
-	"berty.tech/core/network/mock"
-	"berty.tech/core/network/netutil"
-	"berty.tech/core/network/p2p"
-	"berty.tech/core/node"
-	"berty.tech/core/pkg/jaeger"
-	"berty.tech/core/sql"
-	"berty.tech/core/sql/sqlcipher"
 )
 
 var defaultBootstrap = []string{
@@ -62,12 +61,13 @@ type daemonOptions struct {
 	initOnly     bool   `mapstructure:"init-only"`
 
 	// p2p
-	identity  string   `mapstructure:"identity"`
-	bootstrap []string `mapstructure:"bootstrap"`
-	noP2P     bool     `mapstructure:"no-p2p"`
-	bindP2P   []string `mapstructure:"bind-p2p"`
-	hop       bool     `mapstructure:"hop"` // relay hop
-	mdns      bool     `mapstructure:"mdns"`
+	identity     string   `mapstructure:"identity"`
+	bootstrap    []string `mapstructure:"bootstrap"`
+	noP2P        bool     `mapstructure:"no-p2p"`
+	bindP2P      []string `mapstructure:"bind-p2p"`
+	transportP2P []string `mapstructure:"transport-p2p"`
+	hop          bool     `mapstructure:"hop"` // relay hop
+	mdns         bool     `mapstructure:"mdns"`
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
@@ -81,7 +81,8 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default", "ble"}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
 }
 
@@ -217,7 +218,6 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithDefaultMuxers(),
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
-			p2p.WithDefaultTransports(),
 			// @TODO: Allow static identity loaded from a file (useful for relay
 			// server for creating static endpoint for bootstrap)
 			// p2p.WithIdentity(<key>),
@@ -225,6 +225,15 @@ func daemon(opts *daemonOptions) error {
 			p2p.WithListenAddrStrings(opts.bindP2P...),
 			p2p.WithBootstrap(opts.bootstrap...),
 			identity,
+		}
+
+		for _, v := range opts.transportP2P {
+			switch v {
+			case "default":
+				p2pOpts = append(p2pOpts, p2p.WithDefaultTransports())
+			case "ble":
+				p2pOpts = append(p2pOpts, p2p.WithTransportBle(opts.bindP2P, db))
+			}
 		}
 
 		if opts.mdns {

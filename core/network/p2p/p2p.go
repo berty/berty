@@ -7,6 +7,10 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/network"
+	"berty.tech/core/network/p2p/p2putil"
+	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -22,18 +26,13 @@ import (
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
-	protocol "github.com/libp2p/go-libp2p-protocol"
+	"github.com/libp2p/go-libp2p-protocol"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/network"
-	"berty.tech/core/network/p2p/p2putil"
-	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
 )
 
 const ID = "api/p2p/methods"
@@ -278,7 +277,6 @@ func (d *Driver) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 	if d.host.Network().Connectedness(pi.ID) == inet.Connected {
 		return nil
 	}
-
 	// if we were given some addresses, keep + use them.
 	if len(pi.Addrs) > 0 {
 		d.host.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
@@ -336,7 +334,6 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	for _, s := range ss {
 		go func(pi pstore.PeerInfo) {
 			peerID := pi.ID.Pretty()
-
 			if pi.ID.Pretty() == d.ID() {
 				return
 			}

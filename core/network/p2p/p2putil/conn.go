@@ -7,7 +7,6 @@ import (
 	inet "github.com/libp2p/go-libp2p-net"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	manet "github.com/multiformats/go-multiaddr-net"
-
 	"go.uber.org/zap"
 )
 
@@ -17,7 +16,7 @@ var _ net.Addr = (*ProtocolAddr)(nil)
 // ProtocolAddr implement net.Addr for protocol.ID
 // this doesn't really make sense, only there for implementation purpose of net.Addr
 type ProtocolAddr struct {
-	pid protocol.ID
+	Address string
 }
 
 func (pa *ProtocolAddr) Network() string {
@@ -25,7 +24,7 @@ func (pa *ProtocolAddr) Network() string {
 }
 
 func (pa *ProtocolAddr) String() string {
-	return string(pa.pid)
+	return string(pa.Address)
 }
 
 // conn must implement net.conn
@@ -42,7 +41,7 @@ type listener struct {
 func NewListener(fc fclose, pid protocol.ID) (net.Listener, inet.StreamHandler) {
 	l := &listener{
 		cstream: make(chan net.Conn, 256), // yamux default pool size
-		addr:    &ProtocolAddr{pid},
+		addr:    &ProtocolAddr{Address: string(pid)},
 		fc:      fc,
 	}
 	return l, l.handleStream
@@ -83,15 +82,14 @@ func NewConnFromStream(s inet.Stream) (net.Conn, error) {
 	var localAddr, remoteAddr net.Addr
 	var err error
 
-	pid := s.Protocol()
 	localAddr, err = manet.ToNetAddr(s.Conn().LocalMultiaddr())
-	if err != nil {
-		localAddr = &ProtocolAddr{pid}
+	if err != nil || localAddr.String() == "" {
+		localAddr = &ProtocolAddr{Address: s.Conn().LocalMultiaddr().String()}
 	}
 
 	remoteAddr, err = manet.ToNetAddr(s.Conn().RemoteMultiaddr())
-	if err != nil {
-		localAddr = &ProtocolAddr{pid}
+	if err != nil || remoteAddr.String() == "" {
+		remoteAddr = &ProtocolAddr{Address: s.Conn().RemoteMultiaddr().String()}
 	}
 
 	return &conn{s, localAddr, remoteAddr}, nil

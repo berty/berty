@@ -3,8 +3,13 @@ package p2p
 // This file wraps all libp2p configuration options
 
 import (
+	"fmt"
 	"net"
+	"strings"
 
+	"berty.tech/core/entity"
+	"berty.tech/core/network/ble"
+	"github.com/jinzhu/gorm"
 	libp2p "github.com/libp2p/go-libp2p"
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	crypto "github.com/libp2p/go-libp2p-crypto"
@@ -14,6 +19,7 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	"github.com/libp2p/go-libp2p/config"
 	ma "github.com/multiformats/go-multiaddr"
+	"github.com/satori/go.uuid"
 )
 
 func WithLibp2pOption(opts ...libp2p.Option) Option {
@@ -178,4 +184,34 @@ func WithDefaultTransports() Option {
 // WithDefaults Fallback on default values with above options if not defined
 func WithDefaults() Option {
 	return WithLibp2pOption(libp2p.FallbackDefaults)
+}
+
+// WithTransportBle create ble transport
+func WithTransportBle(maSlice []string, db *gorm.DB) Option {
+	return func(dc *driverConfig) error {
+		for i, v := range maSlice {
+			if strings.HasPrefix(v, "/ble/") {
+				var conf entity.Config
+				err := db.First(&conf).Error
+				if err != nil {
+					id, err := uuid.NewV4()
+					if err != nil {
+						return err
+					}
+					conf.ID = id.String()
+				}
+				maSlice[i] = fmt.Sprintf("/ble/%s", conf.ID)
+				sourceMultiAddr, err := ma.NewMultiaddr(maSlice[i])
+				if err != nil {
+					return err
+				}
+				bleTPT, err := ble.NewBLETransport(conf.ID, sourceMultiAddr)
+				if err != nil {
+					break
+				}
+				dc.libp2pOpt = append(dc.libp2pOpt, libp2p.Transport(bleTPT))
+			}
+		}
+		return nil
+	}
 }
