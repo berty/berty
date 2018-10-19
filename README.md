@@ -46,6 +46,8 @@
 
 ## Install
 
+[![GuardRails badge](https://badges.production.guardrails.io/berty/berty.svg?token=5d4123f5b6ddd263177b7754fbb8f5474a6d787b85e9eb049c04d88ae18a91ee&ts=1539942936197)](https://www.guardrails.io)
+
 `go get berty.tech`
 
 ## Licensing
