@@ -195,6 +195,11 @@ type ComplexityRoot struct {
 		Cursor func(childComplexity int) int
 	}
 
+	BertyNodeEventListConnection struct {
+		Edges    func(childComplexity int) int
+		PageInfo func(childComplexity int) int
+	}
+
 	BertyNodeIntegrationTestPayload struct {
 		Name       func(childComplexity int) int
 		Success    func(childComplexity int) int
@@ -535,7 +540,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Node                  func(childComplexity int, id string) int
-		EventList             func(childComplexity int, filter *p2p.Event, paginate *node.Pagination) int
+		EventList             func(childComplexity int, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
 		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
@@ -616,7 +621,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
-	EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error)
+	EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
 	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
 	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
@@ -1343,20 +1348,80 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 		}
 	}
 	args["filter"] = arg0
-	var arg1 *node.Pagination
-	if tmp, ok := rawArgs["paginate"]; ok {
+	var arg1 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
 		var err error
-		var ptr1 node.Pagination
+		arg1, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg1
+	var arg2 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg2, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderDesc"] = arg2
+	var arg3 *int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
-			arg1 = &ptr1
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg3 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["paginate"] = arg1
+	args["first"] = arg3
+	var arg4 *string
+	if tmp, ok := rawArgs["after"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["last"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg6 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg6
 	return args, nil
 
 }
@@ -2796,6 +2861,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeEventEdge.Cursor(childComplexity), true
+
+	case "BertyNodeEventListConnection.edges":
+		if e.complexity.BertyNodeEventListConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeEventListConnection.Edges(childComplexity), true
+
+	case "BertyNodeEventListConnection.pageInfo":
+		if e.complexity.BertyNodeEventListConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeEventListConnection.PageInfo(childComplexity), true
 
 	case "BertyNodeIntegrationTestPayload.name":
 		if e.complexity.BertyNodeIntegrationTestPayload.Name == nil {
@@ -4248,7 +4327,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.EventList(childComplexity, args["filter"].(*p2p.Event), args["paginate"].(*node.Pagination)), true
+		return e.complexity.Query.EventList(childComplexity, args["filter"].(*p2p.Event), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
 
 	case "Query.GetEvent":
 		if e.complexity.Query.GetEvent == nil {
@@ -7357,6 +7436,126 @@ func (ec *executionContext) _BertyNodeEventEdge_cursor(ctx context.Context, fiel
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var bertyNodeEventListConnectionImplementors = []string{"BertyNodeEventListConnection"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeEventListConnection(ctx context.Context, sel ast.SelectionSet, obj *node.EventListConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeEventListConnectionImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeEventListConnection")
+		case "edges":
+			out.Values[i] = ec._BertyNodeEventListConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._BertyNodeEventListConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeEventListConnection_edges(ctx context.Context, field graphql.CollectedField, obj *node.EventListConnection) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeEventListConnection",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*node.EventEdge)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyNodeEventEdge(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeEventListConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.EventListConnection) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeEventListConnection",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*node.PageInfo)
+	rctx.Result = res
+
+	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+
+	return ec._BertyNodePageInfo(ctx, field.Selections, res)
 }
 
 var bertyNodeIntegrationTestPayloadImplementors = []string{"BertyNodeIntegrationTestPayload"}
@@ -15569,51 +15768,19 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().EventList(rctx, args["filter"].(*p2p.Event), args["paginate"].(*node.Pagination))
+		return ec.resolvers.Query().EventList(rctx, args["filter"].(*p2p.Event), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*p2p.Event)
+	res := resTmp.(*node.EventListConnection)
 	rctx.Result = res
 
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
+	if res == nil {
+		return graphql.Null
 	}
 
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyP2pEventPayload(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
+	return ec._BertyNodeEventListConnection(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -18252,6 +18419,10 @@ type BertyNodeEventEdge  {
     node: BertyP2pEvent
       cursor: String!
 }
+type BertyNodeEventListConnection  {
+    edges: [BertyNodeEventEdge]
+    pageInfo: BertyNodePageInfo!
+}
 type BertyNodeContactEdge  {
     node: BertyEntityContact
       cursor: String!
@@ -18426,8 +18597,13 @@ type Query {
   node(id: ID!): Node
   EventList(
     filter: BertyP2pEventInput
-    paginate: BertyNodePaginationInput
-  ): [BertyP2pEventPayload]
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+  ): BertyNodeEventListConnection
   GetEvent(
     id: ID!
       senderId: String!

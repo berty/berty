@@ -1,4 +1,6 @@
 import { graphql } from 'react-relay'
+import { contact } from '../../utils'
+import { merge } from '../../helpers'
 
 const ContactList = graphql`
   query ContactListQuery(
@@ -22,14 +24,12 @@ ContactList.Received = graphql`
 `
 
 ContactList.Received.defaultVariables = {
-  filter: {
-    id: '',
-    status: 4,
-    displayName: '',
-    displayStatus: '',
-    overrideDisplayName: '',
-    overrideDisplayStatus: '',
-  },
+  filter: merge([
+    contact.default,
+    {
+      status: 4,
+    },
+  ]),
   count: 10,
   cursor: '',
 }
@@ -46,14 +46,7 @@ ContactList.Sent = graphql`
 `
 
 ContactList.Sent.defaultVariables = {
-  filter: {
-    id: '',
-    status: 3,
-    displayName: '',
-    displayStatus: '',
-    overrideDisplayName: '',
-    overrideDisplayStatus: '',
-  },
+  filter: merge([contact.default, { status: 3 }]),
   count: 10,
   cursor: '',
 }

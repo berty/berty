@@ -26,6 +26,7 @@ service Service {
   };
   // list old events
   rpc EventList(EventListInput) returns (stream berty.p2p.Event) {
+    option (berty.gql.graphql_output) = ".berty.node.EventListConnection";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc GetEvent(berty.p2p.Event) returns (berty.p2p.Event) {
@@ -146,17 +147,21 @@ message EventStreamInput {
   berty.p2p.Event filter = 1;
 }
 
+
+//
+// EventList
+//
 message EventListInput {
   berty.p2p.Event filter = 1;
-  Pagination paginate = 99;
+  Pagination paginate = 99 [(berty.gql.graphql_spread) = true];
 }
 message EventEdge {
   berty.p2p.Event node = 1;
   string cursor = 2;
 }
-message EventListOutput {
+message EventListConnection {
   repeated EventEdge edges = 1;
-  PageInfo page_info = 99;
+  PageInfo page_info = 99 [(berty.gql.graphql_non_nullable) = true];
 }
 
 

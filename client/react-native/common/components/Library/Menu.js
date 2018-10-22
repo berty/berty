@@ -23,11 +23,11 @@ export default class Menu extends Component {
           justify='between'
           style={[paddingLeft, { height: 42 }]}
         >
-          <Text medium color={colors.black} ellipsis>
+          <Text medium color={colors.black}>
             {title}
           </Text>
           {description && (
-            <Text tiny color={colors.subtleGrey} ellipsis>
+            <Text tiny color={colors.subtleGrey}>
               {description}
             </Text>
           )}
@@ -113,7 +113,6 @@ export default class Menu extends Component {
                   color={color || colors.textBlack}
                   align='center'
                   bold={boldLeft ? true : null}
-                  ellipsis
                 >
                   {title}
                 </Text>

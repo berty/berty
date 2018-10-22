@@ -24,7 +24,7 @@ TEST_OPTS ?= -v
 TEST_CMD ?= go test -test.timeout 3m $(TEST_OPTS) $(TEST_PATHS)
 PROTOC ?= protoc
 GQLGEN ?= gqlgen
-GIN_OPTS ?= --immediate --port=2999 --appPort=1337 --build=./cmd/berty
+GIN_OPTS ?= --immediate --port=2999 --appPort=1337 --build=./cmd/berty --excludeDir vendor
 
 
 ##
