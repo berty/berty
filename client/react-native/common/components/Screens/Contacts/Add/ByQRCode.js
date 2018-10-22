@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import { Clipboard } from 'react-native'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { colors } from '../../../../constants'
 import { Flex, Screen, Button } from '../../../Library'
@@ -52,21 +53,39 @@ class ByQRCode extends PureComponent {
           {share && (
             <QRGenerator value={myID} logo={logo} size={256} logoWidth={100} />
           )}
-          <Flex.Cols justify='center'>
-            <Button
-              icon={scan ? 'plus' : 'share'}
-              background={colors.blue}
-              margin
-              padding
-              rounded={23}
-              height={24}
-              medium
-              middle
-              center
-              onPress={scan ? this.scan : this.share}
-            >
-              {scan ? 'ADD THIS KEY' : 'SHARE THE KEY'}
-            </Button>
+          <Flex.Cols align='start'>
+            <Flex.Rows>
+              <Button
+                icon={scan ? 'plus' : 'share'}
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                center
+                onPress={scan ? this.scan : this.share}
+              >
+                {scan ? 'ADD THIS KEY' : 'SHARE THE KEY'}
+              </Button>
+              {!scan && (
+                <Button
+                  icon='copy'
+                  background={colors.blue}
+                  margin
+                  padding
+                  rounded={23}
+                  height={24}
+                  medium
+                  middle
+                  center
+                  onPress={() => Clipboard.setString(myID)}
+                >
+                  COPY THE CODE
+                </Button>
+              )}
+            </Flex.Rows>
           </Flex.Cols>
         </Flex.Rows>
       </Screen>

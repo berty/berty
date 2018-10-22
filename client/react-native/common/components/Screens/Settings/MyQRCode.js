@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react'
+import { Clipboard } from 'react-native'
 import { colors } from '../../../constants'
 import { Flex, Screen, Button, Header } from '../../Library'
 import { padding, paddingVertical } from '../../../styles'
@@ -30,21 +31,37 @@ export default class MyQRCode extends PureComponent {
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <Flex.Rows style={[padding]} align='center'>
           <QRGenerator value={myID} logo={logo} size={256} logoWidth={100} />
-          <Flex.Cols justify='center'>
-            <Button
-              icon={'share'}
-              background={colors.blue}
-              margin
-              padding
-              rounded={23}
-              height={24}
-              medium
-              middle
-              center
-              onPress={this.share}
-            >
-              SHARE THE KEY
-            </Button>
+          <Flex.Cols align='start'>
+            <Flex.Rows>
+              <Button
+                icon={'share'}
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                center
+                onPress={this.share}
+              >
+                SHARE THE KEY
+              </Button>
+              <Button
+                icon='copy'
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                center
+                onPress={() => Clipboard.setString(myID)}
+              >
+                COPY THE CODE
+              </Button>
+            </Flex.Rows>
           </Flex.Cols>
         </Flex.Rows>
       </Screen>
