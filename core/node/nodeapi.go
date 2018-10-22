@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/sql"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
 )
 
 // Node implements ServiceServer
