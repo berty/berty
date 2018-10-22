@@ -43,3 +43,7 @@ func (e *Enqueuer) PingOtherNode(ctx context.Context, destination string) error 
 func (e *Enqueuer) Join(_ context.Context, _ string) error {
 	return nil
 }
+
+func (e *Enqueuer) Close() error {
+	return nil
+}
