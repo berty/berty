@@ -11,6 +11,10 @@ export default (mutation, clientMutationId, input = {}, configs) => {
           reject(errs)
           return
         }
+        if (res && res.errors) {
+          reject(res.erros)
+          return
+        }
         resolve(res)
       },
       onError: reject,

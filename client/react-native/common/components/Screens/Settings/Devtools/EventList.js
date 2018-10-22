@@ -1,113 +1,122 @@
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
 import React, { PureComponent } from 'react'
-import { TouchableOpacity, FlatList, Text } from 'react-native'
+
 import { Flex, Header, Screen, Separator } from '../../../Library'
-import { queries } from '../../../../graphql'
 import { QueryReducer } from '../../../../relay'
 import { colors } from '../../../../constants'
 import { marginLeft, padding } from '../../../../styles'
+import { queries, fragments } from '../../../../graphql'
 
-class List extends PureComponent {
-  onEndReached = () => {}
+const Item = fragments.Event(({ data, navigation }) => (
+  <TouchableOpacity
+    onPress={() => {
+      navigation.push('devtools/eventdetails', { details: data })
+    }}
+    style={[
+      {
+        backgroundColor: colors.white,
+        height: 72,
+      },
+      padding,
+    ]}
+  >
+    <Flex.Cols align='center'>
+      <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
+        <Text
+          ellipsizeMode='tail'
+          numberOfLines={1}
+          className='textEllipsis'
+          style={{ color: colors.black }}
+        >
+          <Text style={{ fontWeight: 'bold' }}>Kind</Text>
+          {' ' + data.kind}
+        </Text>
+        <Text
+          ellipsizeMode='tail'
+          numberOfLines={1}
+          className='textEllipsis'
+          style={{ color: colors.blackGrey, fontSize: 12 }}
+        >
+          <Text style={{ fontWeight: 'bold' }}>ID</Text>
+          {' ' + data.id}
+        </Text>
+        <Text
+          ellipsizeMode='tail'
+          numberOfLines={1}
+          className='textEllipsis'
+          style={{ color: colors.blackGrey, fontSize: 12 }}
+        >
+          <Text style={{ fontWeight: 'bold' }}>Created</Text>
+          {' ' + data.createdAt}
+        </Text>
+      </Flex.Rows>
+    </Flex.Cols>
+  </TouchableOpacity>
+))
 
-  state = {
-    search: '',
-  }
+const List = fragments.EventList(
+  class List extends PureComponent {
+    onEndReached = () => {}
 
-  searchHandler = search => this.setState({ search })
+    state = {
+      search: '',
+    }
 
-  filter = EventList => {
-    const { search } = this.state
-    if (search === '') {
-      return EventList
-    } else {
-      return EventList.filter(
-        entry =>
-          entry.id.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-          entry.kind.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-          entry.createdAt.toLowerCase().indexOf(search.toLowerCase()) > -1
+    searchHandler = search => this.setState({ search })
+
+    filter = EventList => {
+      const { search } = this.state
+      if (search === '') {
+        return EventList
+      } else {
+        return EventList.filter(
+          entry =>
+            entry.id.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+            entry.kind.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+            entry.createdAt.toLowerCase().indexOf(search.toLowerCase()) > -1
+        )
+      }
+    }
+
+    componentDidMount () {
+      this.props.navigation.setParams({ searchHandler: this.searchHandler })
+      this.props.navigation.setParams({
+        searchHandler: this.searchHandler,
+        retry: () => this.props.retry && this.props.retry(),
+      })
+    }
+
+    componentWillUnmount () {}
+
+    render () {
+      const { data, retry, loading, navigation } = this.props
+      return (
+        <FlatList
+          data={this.filter(data.EventList.edges || [])}
+          ItemSeparatorComponent={({ highlighted }) => (
+            <Separator highlighted={highlighted} />
+          )}
+          onEndReached={this.onEndReached}
+          refreshing={loading}
+          onRefresh={retry}
+          navigation={navigation}
+          renderItem={data => (
+            <Item
+              key={data.item.node.id}
+              data={data.item.node}
+              navigation={navigation}
+            />
+          )}
+        />
       )
     }
   }
-
-  componentDidMount () {
-    this.props.navigation.setParams({ searchHandler: this.searchHandler })
-    this.props.navigation.setParams({
-      searchHandler: this.searchHandler,
-      retry: () => this.props.retry && this.props.retry(),
-    })
-  }
-
-  componentWillUnmount () {}
-
-  render () {
-    const { data, retry, loading, navigation } = this.props
-    return (
-      <FlatList
-        data={this.filter(data.EventList || [])}
-        ItemSeparatorComponent={({ highlighted }) => (
-          <Separator highlighted={highlighted} />
-        )}
-        onEndReached={this.onEndReached}
-        refreshing={loading}
-        onRefresh={retry}
-        navigation={navigation}
-        renderItem={data => (
-          <TouchableOpacity
-            onPress={() => {
-              console.log(data.item)
-              navigation.push('devtools/eventdetails', { details: data.item })
-            }}
-            style={[
-              {
-                backgroundColor: colors.white,
-                height: 72,
-              },
-              padding,
-            ]}
-          >
-            <Flex.Cols align='center'>
-              <Flex.Rows
-                size={7}
-                align='stretch'
-                justify='center'
-                style={[marginLeft]}
-              >
-                <Text
-                  ellipsizeMode='tail'
-                  numberOfLines={1}
-                  className='textEllipsis'
-                  style={{ color: colors.black }}
-                >
-                  <Text style={{ fontWeight: 'bold' }}>Kind</Text>
-                  {' ' + data.item.kind}
-                </Text>
-                <Text
-                  ellipsizeMode='tail'
-                  numberOfLines={1}
-                  className='textEllipsis'
-                  style={{ color: colors.blackGrey, fontSize: 12 }}
-                >
-                  <Text style={{ fontWeight: 'bold' }}>ID</Text>
-                  {' ' + data.item.id}
-                </Text>
-                <Text
-                  ellipsizeMode='tail'
-                  numberOfLines={1}
-                  className='textEllipsis'
-                  style={{ color: colors.blackGrey, fontSize: 12 }}
-                >
-                  <Text style={{ fontWeight: 'bold' }}>Created</Text>
-                  {' ' + data.item.createdAt}
-                </Text>
-              </Flex.Rows>
-            </Flex.Cols>
-          </TouchableOpacity>
-        )}
-      />
-    )
-  }
-}
-
+)
 export default class EventList extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -125,17 +134,33 @@ export default class EventList extends PureComponent {
     const { navigation } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white }}>
-        <QueryReducer query={queries.EventList}>
-          {(state, retry) => (
-            <Flex.Rows style={{ backgroundColor: colors.white }}>
-              <List
-                data={state.data}
-                loading={state.type === state.loading}
-                retry={retry}
-                navigation={navigation}
-              />
-            </Flex.Rows>
-          )}
+        <QueryReducer
+          query={queries.EventList}
+          variables={queries.EventList.defaultVariables}
+        >
+          {(state, retry) => {
+            console.log(state)
+            switch (state.type) {
+              default:
+              case state.loading:
+                return (
+                  <Flex.Rows>
+                    <ActivityIndicator size='large' />
+                  </Flex.Rows>
+                )
+              case state.success:
+                return (
+                  <List
+                    data={state.data}
+                    loading={state.type === state.loading}
+                    retry={retry}
+                    navigation={navigation}
+                  />
+                )
+              case state.error:
+                return null
+            }
+          }}
         </QueryReducer>
       </Screen>
     )

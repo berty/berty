@@ -9,7 +9,7 @@ import (
 func NewOutgoingEvent(sender, receiver string, kind Kind) *Event {
 	return &Event{
 		SenderAPIVersion: Version,
-		CreatedAt:        time.Now(),
+		CreatedAt:        time.Now().UTC(),
 		Kind:             kind,
 		SenderID:         sender,
 		ReceiverID:       receiver,

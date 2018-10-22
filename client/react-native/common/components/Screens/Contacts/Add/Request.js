@@ -66,13 +66,7 @@ const Item = fragments.Contact(
               }}
             />
             <Flex.Rows>
-              <Text
-                color={colors.black}
-                left
-                middle
-                ellipsis
-                margin={{ left: 16 }}
-              >
+              <Text color={colors.black} left middle margin={{ left: 16 }}>
                 {overrideDisplayName || displayName}
               </Text>
             </Flex.Rows>

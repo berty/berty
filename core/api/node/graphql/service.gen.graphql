@@ -382,6 +382,10 @@ type BertyNodeEventEdge  {
     node: BertyP2pEvent
       cursor: String!
 }
+type BertyNodeEventListConnection  {
+    edges: [BertyNodeEventEdge]
+    pageInfo: BertyNodePageInfo!
+}
 type BertyNodeContactEdge  {
     node: BertyEntityContact
       cursor: String!
@@ -556,8 +560,13 @@ type Query {
   node(id: ID!): Node
   EventList(
     filter: BertyP2pEventInput
-    paginate: BertyNodePaginationInput
-  ): [BertyP2pEventPayload]
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+  ): BertyNodeEventListConnection
   GetEvent(
     id: ID!
       senderId: String!

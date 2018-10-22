@@ -85,7 +85,7 @@ func (m *SigChain) Init(cryptoImpl keypair.Interface, identityID string) error {
 		EventType: SigEvent_INIT_CHAIN,
 		Payload:   payload,
 		PublicKey: signedCertificate.Content.PublicKey,
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
 		Issuer:    identityID,
 		Subject:   identityID,
 	}
@@ -146,7 +146,7 @@ func (m *SigChain) AddDevice(cryptoImpl keypair.Interface, selfIdentityID, ident
 		ParentHash: m.Events[len(m.Events)-1].Hash,
 		Payload:    payload,
 		PublicKey:  publicKey,
-		CreatedAt:  time.Now(),
+		CreatedAt:  time.Now().UTC(),
 		Issuer:     currentDevice.Content.Issuer,
 		Subject:    identityID,
 	}
@@ -194,7 +194,7 @@ func (m *SigChain) RemoveDevice(cryptoImpl keypair.Interface, selfIdentityID, id
 		ParentHash: m.Events[len(m.Events)-1].Hash,
 		Payload:    payload,
 		PublicKey:  certificate.Content.PublicKey,
-		CreatedAt:  time.Now(),
+		CreatedAt:  time.Now().UTC(),
 		Issuer:     currentCertificate.Content.Subject,
 		Subject:    certificate.Content.Subject,
 	}

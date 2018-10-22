@@ -49,7 +49,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		return fmt.Errorf("event already handled")
 	}
 
-	now := time.Now()
+	now := time.Now().UTC()
 	input.Direction = p2p.Event_Incoming   // set direction to incoming
 	input.ReceivedAt = &now                // set current date
 	input.ReceiverAPIVersion = p2p.Version // it's important to keep our current version to be able to apply per-message migrations in the future

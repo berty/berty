@@ -3,8 +3,9 @@ linters:
     fixer: false
   shellcheck:
     shell: bash
-  eslint:
-    config: './client/react-native/.eslintrc'
+  # eslint:
+  #  config: './client/react-native/.eslintrc'
+  #  install_plugins: true
   swiftlint: {  }
 files:
   ignore:

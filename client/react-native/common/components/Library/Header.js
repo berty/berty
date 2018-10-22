@@ -74,7 +74,6 @@ export default class Header extends PureComponent {
               left
               large
               color={colorText}
-              ellipsis
               justify={backBtn ? 'center' : 'start'}
               middle
               size={5}

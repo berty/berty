@@ -1,3 +1,9 @@
+export default {
+  id: '',
+  title: '',
+  topic: '',
+}
+
 export const getTitle = ({ title, members } = this.props) =>
   (title && title !== '' && title) ||
   members

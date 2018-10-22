@@ -144,7 +144,7 @@ func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationT
 	tests := listIntegrationTests()
 
 	output := &node.IntegrationTestOutput{
-		StartedAt: time.Now(),
+		StartedAt: time.Now().UTC(),
 		Name:      input.Name,
 	}
 
@@ -157,7 +157,7 @@ func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationT
 		output.Success, output.Verbose = testrunner.TestRunner(input.Name, testFunc)
 	}
 
-	output.FinishedAt = time.Now()
+	output.FinishedAt = time.Now().UTC()
 
 	return output, nil
 }

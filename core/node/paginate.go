@@ -21,9 +21,11 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 	switch paginate.OrderBy {
 	case "":
 		paginate.OrderBy = "id"
+		break
 	case "id":
 	case "created_at":
 	case "updated_at":
+		break
 	default:
 		return nil, errors.Wrap(ErrNotImplemented, "'OrderBy' is only supported for 'id', 'created_at', 'updated_at'")
 	}

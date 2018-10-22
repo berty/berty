@@ -192,7 +192,7 @@ func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
 		Model(&p2p.Event{}).
 		Where("id in (?)", ackAttrs.IDs).
 		Count(&ackCount).
-		UpdateColumn("acked_at", time.Now()).
+		UpdateColumn("acked_at", time.Now().UTC()).
 		Error; err != nil {
 		return errors.Wrap(err, "unable to mark events as acked")
 	}

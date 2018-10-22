@@ -239,30 +239,78 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	}
 }
 
-func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, paginate *node.Pagination) ([]*p2p.Event, error) {
-	var list []*p2p.Event
+func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
 	if filter != nil {
+		if filter.ID != "" {
+			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+		}
 		if filter.ConversationID != "" {
 			filter.ConversationID = strings.SplitN(filter.ConversationID, ":", 2)[1]
 		}
 	}
-	stream, err := r.client.EventList(ctx, &node.EventListInput{Paginate: paginate, Filter: &p2p.Event{
-		ConversationID: filter.ConversationID,
-	}})
+
+	input := &node.EventListInput{
+		Filter:   filter,
+		Paginate: getPagination(first, after, last, before),
+	}
+
+	input.Paginate.OrderBy = orderBy
+	input.Paginate.OrderDesc = orderDesc
+
+	input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
+
+	stream, err := r.client.EventList(ctx, input)
 	if err != nil {
 		return nil, err
 	}
+
+	output := &node.EventListConnection{
+		Edges: []*node.EventEdge{},
+	}
+	count := int32(0)
+	hasNextPage := false
 	for {
-		elem, err := stream.Recv()
+		n, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			return nil, err
 		}
-		list = append(list, elem)
+		if count >= input.Paginate.First-1 { // related to input.Paginate.First++
+			hasNextPage = true
+			break
+		}
+		count++
+
+		var cursor string
+		switch orderBy {
+		case "", "id":
+			cursor = n.ID
+		case "created_at":
+			cursor = n.CreatedAt.String()
+		case "updated_at":
+			cursor = n.UpdatedAt.String()
+		}
+
+		output.Edges = append(output.Edges, &node.EventEdge{
+			Node:   n,
+			Cursor: cursor,
+		})
 	}
-	return list, nil
+
+	output.PageInfo = &node.PageInfo{}
+	if len(output.Edges) == 0 {
+		output.PageInfo.StartCursor = ""
+		output.PageInfo.EndCursor = ""
+	} else {
+		output.PageInfo.StartCursor = output.Edges[0].Cursor
+		output.PageInfo.EndCursor = output.Edges[len(output.Edges)-1].Cursor
+	}
+
+	output.PageInfo.HasPreviousPage = input.Paginate.After != ""
+	output.PageInfo.HasNextPage = hasNextPage
+	return output, nil
 }
 
 func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
@@ -270,6 +318,7 @@ func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
+
 func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error) {
 	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
