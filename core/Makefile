@@ -125,7 +125,7 @@ dev-deps:
 		moul/protoc-gen-gotemplate \
 		golang.org/x/tools/cmd/goimports \
 		github.com/99designs/gqlgen \
-		github.com/vektah/gorunpkg
+		github.com/99designs/gorunpkg
 
 ##
 ## file-based rules

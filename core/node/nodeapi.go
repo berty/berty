@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -18,6 +19,7 @@ var _ node.ServiceServer = (*Node)(nil)
 // WithNodeGrpcServer registers the Node as a 'berty.node' protobuf server implementation
 func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 	return func(n *Node) {
+		fmt.Printf("NODE_REGISTER_SERVICE")
 		node.RegisterServiceServer(gs, n)
 	}
 }
