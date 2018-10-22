@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
-import { Platform, TextInput as TextInputNative } from 'react-native'
+import { Platform, TextInput as TextInputNative, Clipboard } from 'react-native'
 import { colors } from '../../../constants'
-import { Flex, Screen, Header } from '../../Library'
+import { Flex, Screen, Header, Button } from '../../Library'
 import {
   padding,
   paddingVertical,
@@ -45,7 +45,7 @@ class TextInputMultilineFix extends PureComponent {
 export default class MyPublicKey extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     tabBarVisible: false,
-    header: <Header navigation={navigation} title='My QR code' backBtn />,
+    header: <Header navigation={navigation} title='My public key' backBtn />,
   })
 
   share = () => {
@@ -78,6 +78,38 @@ export default class MyPublicKey extends PureComponent {
             value={myID}
             selectTextOnFocus
           />
+          <Flex.Cols align='start'>
+            <Flex.Rows>
+              <Button
+                icon={'share'}
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                center
+                onPress={this.share}
+              >
+                SHARE THE KEY
+              </Button>
+              <Button
+                icon='copy'
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                center
+                onPress={() => Clipboard.setString(myID)}
+              >
+                COPY THE KEY
+              </Button>
+            </Flex.Rows>
+          </Flex.Cols>
         </Flex.Rows>
       </Screen>
     )

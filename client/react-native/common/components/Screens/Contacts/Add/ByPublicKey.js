@@ -3,6 +3,7 @@ import {
   Platform,
   TextInput as TextInputNative,
   ActivityIndicator,
+  Clipboard,
 } from 'react-native'
 import { Flex, Screen, Button, Text } from '../../../Library'
 import { colors } from '../../../../constants'
@@ -89,7 +90,7 @@ const ByPublicKey = fragments.Contact(
             }
             selectTextOnFocus
           />
-          {routeName === 'Enter a public key' && (
+          {routeName === 'Enter a public key' ? (
             <Flex.Cols justify='center'>
               <Button
                 icon='plus'
@@ -122,6 +123,24 @@ const ByPublicKey = fragments.Contact(
                 }}
               >
                 ADD THIS KEY
+              </Button>
+            </Flex.Cols>
+          ) : (
+            <Flex.Cols justify='center'>
+              <Button
+                icon='copy'
+                background={colors.blue}
+                margin
+                padding
+                rounded={23}
+                height={24}
+                medium
+                middle
+                center
+                self='stretch'
+                onPress={() => Clipboard.setString(myID)}
+              >
+                COPY THE KEY
               </Button>
             </Flex.Cols>
           )}
