@@ -1289,18 +1289,13 @@ models:
       node:
       cursor:
 
-  BertyNodeConversationListOutput:
-    model: berty.tech/core/api/node.ConversationListOutput
+  BertyNodeConversationListConnection:
+    model: berty.tech/core/api/node.ConversationListConnection
     fields:
       edges:
       pageInfo:
-  BertyNodeConversationListOutputInput:
-    model: berty.tech/core/api/node.ConversationListOutput
-    fields:
-      edges:
-      pageInfo:
-  BertyNodeConversationListPayload:
-    model: berty.tech/core/api/node.ConversationListOutput
+  BertyNodeConversationListConnectionInput:
+    model: berty.tech/core/api/node.ConversationListConnection
     fields:
       edges:
       pageInfo:

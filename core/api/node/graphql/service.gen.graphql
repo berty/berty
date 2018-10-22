@@ -390,6 +390,10 @@ type BertyNodeConversationEdge  {
     node: BertyEntityConversation
       cursor: String!
 }
+type BertyNodeConversationListConnection  {
+    edges: [BertyNodeConversationEdge]
+    pageInfo: BertyNodePageInfo!
+}
 type BertyNodeVoid  {
       T: Bool!
 }
@@ -578,8 +582,13 @@ type Query {
   ): BertyEntityContactPayload
   ConversationList(
     filter: BertyEntityConversationInput
-    paginate: BertyNodePaginationInput
-  ): [BertyEntityConversationPayload]
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+  ): BertyNodeConversationListConnection
   GetConversation(
     id: ID!
     createdAt: GoogleProtobufTimestampInput

@@ -172,6 +172,11 @@ type ComplexityRoot struct {
 		Cursor func(childComplexity int) int
 	}
 
+	BertyNodeConversationListConnection struct {
+		Edges    func(childComplexity int) int
+		PageInfo func(childComplexity int) int
+	}
+
 	BertyNodeEventEdge struct {
 		Node   func(childComplexity int) int
 		Cursor func(childComplexity int) int
@@ -512,7 +517,7 @@ type ComplexityRoot struct {
 		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
 		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ConversationList      func(childComplexity int, filter *entity.Conversation, paginate *node.Pagination) int
+		ConversationList      func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
 		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
 	}
@@ -590,7 +595,7 @@ type QueryResolver interface {
 	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
 	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
-	ConversationList(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) ([]*entity.Conversation, error)
+	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
 	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
 }
@@ -1767,20 +1772,80 @@ func field_Query_ConversationList_args(rawArgs map[string]interface{}) (map[stri
 		}
 	}
 	args["filter"] = arg0
-	var arg1 *node.Pagination
-	if tmp, ok := rawArgs["paginate"]; ok {
+	var arg1 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
 		var err error
-		var ptr1 node.Pagination
+		arg1, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg1
+	var arg2 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg2, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderDesc"] = arg2
+	var arg3 *int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = UnmarshalBertyNodePaginationInput(tmp)
-			arg1 = &ptr1
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg3 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["paginate"] = arg1
+	args["first"] = arg3
+	var arg4 *string
+	if tmp, ok := rawArgs["after"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["last"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg6 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg6
 	return args, nil
 
 }
@@ -2603,6 +2668,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeConversationEdge.Cursor(childComplexity), true
+
+	case "BertyNodeConversationListConnection.edges":
+		if e.complexity.BertyNodeConversationListConnection.Edges == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeConversationListConnection.Edges(childComplexity), true
+
+	case "BertyNodeConversationListConnection.pageInfo":
+		if e.complexity.BertyNodeConversationListConnection.PageInfo == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeConversationListConnection.PageInfo(childComplexity), true
 
 	case "BertyNodeEventEdge.node":
 		if e.complexity.BertyNodeEventEdge.Node == nil {
@@ -4070,7 +4149,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ConversationList(childComplexity, args["filter"].(*entity.Conversation), args["paginate"].(*node.Pagination)), true
+		return e.complexity.Query.ConversationList(childComplexity, args["filter"].(*entity.Conversation), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
 
 	case "Query.GetConversation":
 		if e.complexity.Query.GetConversation == nil {
@@ -6689,6 +6768,126 @@ func (ec *executionContext) _BertyNodeConversationEdge_cursor(ctx context.Contex
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var bertyNodeConversationListConnectionImplementors = []string{"BertyNodeConversationListConnection"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeConversationListConnection(ctx context.Context, sel ast.SelectionSet, obj *node.ConversationListConnection) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationListConnectionImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeConversationListConnection")
+		case "edges":
+			out.Values[i] = ec._BertyNodeConversationListConnection_edges(ctx, field, obj)
+		case "pageInfo":
+			out.Values[i] = ec._BertyNodeConversationListConnection_pageInfo(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeConversationListConnection_edges(ctx context.Context, field graphql.CollectedField, obj *node.ConversationListConnection) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationListConnection",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*node.ConversationEdge)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyNodeConversationEdge(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeConversationListConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.ConversationListConnection) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeConversationListConnection",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PageInfo, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*node.PageInfo)
+	rctx.Result = res
+
+	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+
+	return ec._BertyNodePageInfo(ctx, field.Selections, res)
 }
 
 var bertyNodeEventEdgeImplementors = []string{"BertyNodeEventEdge"}
@@ -14939,51 +15138,19 @@ func (ec *executionContext) _Query_ConversationList(ctx context.Context, field g
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ConversationList(rctx, args["filter"].(*entity.Conversation), args["paginate"].(*node.Pagination))
+		return ec.resolvers.Query().ConversationList(rctx, args["filter"].(*entity.Conversation), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*entity.Conversation)
+	res := resTmp.(*node.ConversationListConnection)
 	rctx.Result = res
 
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
+	if res == nil {
+		return graphql.Null
 	}
 
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyEntityConversationPayload(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
+	return ec._BertyNodeConversationListConnection(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -17444,6 +17611,10 @@ type BertyNodeConversationEdge  {
     node: BertyEntityConversation
       cursor: String!
 }
+type BertyNodeConversationListConnection  {
+    edges: [BertyNodeConversationEdge]
+    pageInfo: BertyNodePageInfo!
+}
 type BertyNodeVoid  {
       T: Bool!
 }
@@ -17632,8 +17803,13 @@ type Query {
   ): BertyEntityContactPayload
   ConversationList(
     filter: BertyEntityConversationInput
-    paginate: BertyNodePaginationInput
-  ): [BertyEntityConversationPayload]
+      orderBy: String!
+      orderDesc: Bool!
+      first: Int32
+      after: String
+      last: Int32
+      before: String
+  ): BertyNodeConversationListConnection
   GetConversation(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
