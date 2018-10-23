@@ -62,8 +62,15 @@ deps.logs:
 
 
 ### Build release/debug part ###
+.PHONY: patch.android
+patch.android:
+	@if [ -z "$$(sed -n 4p node_modules/react-native-network-info/android/build.gradle | grep 'url \"https://maven.google.com\"')" ]; then \
+		mv $(ROOT)/node_modules/react-native-network-info/android/build.gradle $(ROOT)/node_modules/react-native-network-info/android/build.gradle_topatch; \
+		patch $(ROOT)/node_modules/react-native-network-info/android/build.gradle_topatch -i $(ROOT)/patch/gradle.patch -o $(ROOT)/node_modules/react-native-network-info/android/build.gradle; \
+	fi
+
 .PHONY: debug.android
-debug.android: deps.android
+debug.android: deps.android patch.android
 	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-android --no-packager' 'yarn start'
 
 .PHONY: release.android
