@@ -15,11 +15,6 @@ gin-bin
 #
 .DS_Store
 
-## Gomobile
-#
-ios/core.framework
-android/app/libs/core.aar
-
 # Xcode
 #
 build/
