@@ -462,7 +462,7 @@ didDiscoverServices:(NSError *)error {
             break;
         case CBManagerStatePoweredOn:
             stateString = @"CBManagerStatePoweredOn";
-            if (self.centralManager.state == CBManagerStatePoweredOn && self.serviceAdded == NO) {
+            if (self.serviceAdded == NO) {
                 self.serviceAdded = YES;
                 [self.peripheralManager addService:self.bertyService];
             }
