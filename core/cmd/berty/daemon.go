@@ -105,6 +105,7 @@ func daemon(opts *daemonOptions) error {
 				Bootstrap: opts.bootstrap,
 				MDNS:      opts.mdns,
 				Relay:     opts.hop,
+				Metrics:   true,
 				Identity:  opts.identity,
 			},
 		))

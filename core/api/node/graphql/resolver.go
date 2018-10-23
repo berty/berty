@@ -50,6 +50,13 @@ func (r *Resolver) BertyEntityDevice() generated.BertyEntityDeviceResolver {
 func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
 	return &bertyP2pEventResolver{r}
 }
+
+// func (r *Resolver) BertyP2pPeer() generated.BertyP2pPeerResolver {
+// 	return &bertyP2pPeerResolver{r}
+// }
+// func (r *Resolver) BertyP2pPeerPayload() generated.BertyP2pPeerPayloadResolver {
+// 	return &bertyP2pPeerResolver{r}
+// }
 func (r *Resolver) BertyP2pEventPayload() generated.BertyP2pEventPayloadResolver {
 	return &bertyP2pEventResolver{r}
 }
@@ -115,6 +122,12 @@ func (r *bertyP2pEventResolver) Attributes(ctx context.Context, obj *p2p.Event) 
 	}
 	return json.Marshal(attrs)
 }
+
+// type bertyP2pPeerResolver struct{ *Resolver }
+
+// func (r *bertyP2pPeerResolver) Addrs(ctx context.Context, obj *p2p.Peer) ([]byte, error) {
+// 	return json.Marshal(obj.GetAddrs())
+// }
 
 type googleProtobufFieldDescriptorProtoResolver struct{ *Resolver }
 
@@ -474,11 +487,38 @@ func (r *queryResolver) Panic(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.Panic(ctx, &node.Void{})
 }
 
+func (r *queryResolver) Peers(ctx context.Context, _ bool) (*p2p.Peers, error) {
+	return r.client.Peers(ctx, &node.Void{})
+}
+
 type subscriptionResolver struct{ *Resolver }
 
 func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error) {
 	stream, err := r.client.EventStream(ctx, &node.EventStreamInput{Filter: filter})
 	channel := make(chan *p2p.Event, 1)
+
+	if err != nil {
+		return nil, err
+	}
+	go func() {
+		for {
+			elem, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				// logger().Error(err.Error())
+				break
+			}
+			channel <- elem
+		}
+	}()
+	return channel, nil
+}
+
+func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *p2p.Peer, error) {
+	stream, err := r.client.MonitorPeers(ctx, &node.Void{})
+	channel := make(chan *p2p.Peer, 10)
 
 	if err != nil {
 		return nil, err

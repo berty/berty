@@ -128,6 +128,7 @@ func daemon(datastorePath string, loggerNative Logger) error {
 				Bootstrap: defaultBootstrap,
 				MDNS:      false,
 				Relay:     false,
+				Metrics:   true,
 				Identity:  "",
 			},
 		),

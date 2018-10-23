@@ -29,7 +29,6 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	"github.com/libp2p/go-libp2p-protocol"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
-	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -60,10 +59,8 @@ type driverConfig struct {
 // Driver is a network.Driver
 var _ network.Driver = (*Driver)(nil)
 
-// Driver ...
 type Driver struct {
-	host host.Host
-
+	host      host.Host
 	ccmanager *p2putil.Manager
 	handler   func(context.Context, *p2p.Envelope) (*p2p.Void, error)
 
@@ -78,6 +75,18 @@ type Driver struct {
 
 	serverTracerClose io.Closer
 	dialTracerCloser  io.Closer
+}
+
+// Driver is a network.Driver
+var _ network.Driver = (*Driver)(nil)
+
+func NewDriver(ctx context.Context, opts ...Option) (*Driver, error) {
+	var cfg driverConfig
+	if err := cfg.Apply(opts...); err != nil {
+		return nil, err
+	}
+
+	return newDriver(ctx, cfg)
 }
 
 // New create a new driver
@@ -119,7 +128,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		if err != nil {
 			logger().Warn("Failed to enable MDNS", zap.Error(err))
 		} else {
-			sa.RegisterNotifee((*DriverDiscoveryNotifee)(driver))
+			sa.RegisterNotifee(DiscoveryNotify(driver))
 		}
 	}
 
@@ -172,11 +181,18 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	}, p2pInterceptorsClient...)
 	driver.ccmanager = p2putil.NewNetManager(dialOpts...)
 
-	p2p.RegisterServiceServer(driver.gs, (*DriverService)(driver))
+	p2p.RegisterServiceServer(driver.gs, ServiceServer(driver))
+
+	l := sgrpc.NewListener(ID)
+	go func() {
+		if err := driver.gs.Serve(l); err != nil {
+			logger().Error("Listen error", zap.Error(err))
+		}
+	}()
 
 	driver.listener = sgrpc.NewListener(ID)
-	logger().Debug("Host", zap.String("ID", driver.ID()), zap.Strings("Addrs", driver.Addrs()))
 
+	driver.logHostInfos()
 	return driver, nil
 }
 
@@ -209,6 +225,17 @@ func (d *Driver) Addrs() []string {
 	}
 
 	return addrs
+}
+
+func (d *Driver) logHostInfos() {
+
+	var addrs []string
+
+	for _, addr := range d.host.Addrs() {
+		addrs = append(addrs, addr.String())
+	}
+
+	logger().Debug("Host", zap.String("ID", d.host.ID().Pretty()), zap.Strings("Addrs", addrs))
 }
 
 func (d *Driver) getPeerInfo(addr string) (*pstore.PeerInfo, error) {
@@ -356,7 +383,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	for _, s := range ss {
 		go func(pi pstore.PeerInfo) {
 			peerID := pi.ID.Pretty()
-			if pi.ID.Pretty() == d.ID() {
+			if pi.ID == d.host.ID() {
 				return
 			}
 
@@ -441,58 +468,3 @@ func (d *Driver) PingOtherNode(ctx context.Context, destination string) error {
 
 	return nil
 }
-
-type DriverService Driver
-
-func (ds *DriverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*p2p.Void, error) {
-	if ds.handler != nil {
-		return ds.handler(ctx, e)
-	}
-
-	return nil, fmt.Errorf("no handler set")
-}
-
-func (ds *DriverService) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
-	return &p2p.Void{}, nil
-}
-
-type DriverDiscoveryNotifee Driver
-
-func (ddn *DriverDiscoveryNotifee) HandlePeerFound(pi pstore.PeerInfo) {
-	if err := ddn.host.Connect(context.Background(), pi); err != nil {
-		logger().Warn("mdns discovery failed", zap.String("remoteID", pi.ID.Pretty()), zap.Error(err))
-	} else {
-		// absorb addresses into peerstore
-		ddn.host.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.PermanentAddrTTL)
-	}
-}
-
-func (ddn *DriverDiscoveryNotifee) Driver() *Driver {
-	return (*Driver)(ddn)
-}
-
-func (ddn *DriverDiscoveryNotifee) Listen(net inet.Network, a ma.Multiaddr)      {}
-func (ddn *DriverDiscoveryNotifee) ListenClose(net inet.Network, a ma.Multiaddr) {}
-func (ddn *DriverDiscoveryNotifee) OpenedStream(net inet.Network, s inet.Stream) {}
-func (ddn *DriverDiscoveryNotifee) ClosedStream(net inet.Network, s inet.Stream) {}
-
-func (ddn *DriverDiscoveryNotifee) Connected(s inet.Network, c inet.Conn) {
-	go func(id peer.ID) {
-		if len(ddn.subsStack) > 0 {
-			var newSubsStack []cid.Cid
-			for _, c := range ddn.subsStack {
-				if err := ddn.dht.Provide(context.Background(), c, true); err != nil {
-					// stack peer if no peer found
-					logger().Warn("Provide err", zap.Error(err))
-					newSubsStack = append(newSubsStack, c)
-				}
-			}
-
-			ddn.muSubs.Lock()
-			ddn.subsStack = newSubsStack
-			ddn.muSubs.Unlock()
-		}
-	}(c.RemotePeer())
-}
-
-func (ddn *DriverDiscoveryNotifee) Disconnected(s inet.Network, c inet.Conn) {}

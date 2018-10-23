@@ -86,3 +86,21 @@ func (c *Client) ConversationList(ctx context.Context, input *node.ConversationL
 	}
 	return entries, nil
 }
+func (c *Client) MonitorPeers(ctx context.Context, input *node.Void) ([]*p2p.Peer, error) {
+	stream, err := c.Node().MonitorPeers(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*p2p.Peer
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
