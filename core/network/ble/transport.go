@@ -103,16 +103,15 @@ func (t *Transport) ListenNewPeer() {
 		if lVal < rVal {
 			t.MySelf.Connect(context.Background(), *pi)
 		} else {
-			val, err := pi.Addrs[0].ValueForProtocol(PBle)
+			bleUUID, err := pi.Addrs[0].ValueForProtocol(PBle)
 			if err != nil {
 				panic(err)
 			}
-			val2, err := t.lAddr.ValueForProtocol(PBle)
+			lBleUUID, err := t.lAddr.ValueForProtocol(PBle)
 			if err != nil {
 				panic(err)
 			}
-			RealAcceptSender(val2, val, peerID)
-			t.MySelf.Connect(context.Background(), *pi)
+			RealAcceptSender(lBleUUID, bleUUID, peerID)
 		}
 	}
 }
