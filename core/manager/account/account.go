@@ -79,6 +79,8 @@ func (a *Account) Validate() error {
 		return errors.New("missing required field (Passphrase) for account")
 	} else if a.dbPath == "" {
 		return errors.New("missing required field (dbPath) for account")
+	} else if a.db == nil {
+		return errors.New("connecting to the db failed with the provided (dbPath/Passphrase) for account")
 	} else if a.network == nil {
 		return errors.New("missing required field (network) for account")
 	} else if a.grpcServer == nil {
