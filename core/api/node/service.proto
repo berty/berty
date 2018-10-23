@@ -60,6 +60,7 @@ service Service {
     option (berty.gql.graphql_type) = "Mutation";
   };
   rpc ConversationList(ConversationListInput) returns (stream berty.entity.Conversation) {
+    option (berty.gql.graphql_output) = ".berty.node.ConversationListConnection";
     option (berty.gql.graphql_type) = "Query";
   };
   rpc ConversationInvite(ConversationManageMembersInput) returns (berty.entity.Conversation) {
@@ -152,15 +153,15 @@ message ContactListConnection {
 //
 message ConversationListInput {
   berty.entity.Conversation filter = 1;
-  Pagination paginate = 99;
+  Pagination paginate = 99 [(berty.gql.graphql_spread) = true];
 }
 message ConversationEdge {
   berty.entity.Conversation node = 1;
   string cursor = 2;
 }
-message ConversationListOutput {
+message ConversationListConnection{
   repeated ConversationEdge edges = 1;
-  PageInfo page_info = 99;
+  PageInfo page_info = 99 [(berty.gql.graphql_non_nullable) = true];
 }
 
 message ConversationCreateInput {
