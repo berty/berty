@@ -15,23 +15,20 @@
 @interface BertyDevice : NSObject
 
 @property (nonatomic, readwrite, strong) NSMutableArray *toSend;
-@property (nonatomic, readonly, strong) NSString *peerID;
-@property (nonatomic, readonly, strong) NSString *ma;
+@property (nonatomic, readwrite, strong) NSString *peerID;
+@property (nonatomic, readwrite, strong) NSString *ma;
 @property (nonatomic, readwrite, assign) BOOL isWaiting;
 @property (nonatomic, readwrite, strong) CBPeripheral *peripheral;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t acceptSema;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t maSema;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t peerIDSema;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t readerSema;
+@property (atomic, readwrite, strong) dispatch_semaphore_t connSema;
+@property (atomic, readwrite, strong) dispatch_semaphore_t svcSema;
+@property (atomic, readwrite, strong) dispatch_semaphore_t acceptSema;
+@property (atomic, readwrite, strong) dispatch_semaphore_t maSema;
+@property (atomic, readwrite, strong) dispatch_semaphore_t peerIDSema;
+@property (atomic, readwrite, strong) dispatch_semaphore_t writerSema;
 
 - (instancetype)initWithPeripheral:(CBPeripheral *)peripheral;
-- (void)setPeerID:(NSString*)p;
-- (void)setMa:(NSString*)a;
 - (void)write:(NSData *)data;
 - (void)checkAndWrite;
-- (void)waitDeviceRdy;
-- (void)releaseAcceptSema;
-- (void)releaseWriterSema;
 - (void)popToSend;
 
 @end

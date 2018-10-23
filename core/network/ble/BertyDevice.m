@@ -17,14 +17,12 @@
     self.peripheral = peripheral;
     self.toSend = [[NSMutableArray alloc]init];
     self.isWaiting = NO;
+    self.connSema = dispatch_semaphore_create(0);
+    self.svcSema = dispatch_semaphore_create(0);
     self.acceptSema = dispatch_semaphore_create(0);
     self.maSema = dispatch_semaphore_create(0);
     self.peerIDSema = dispatch_semaphore_create(0);
-    self.readerSema = dispatch_semaphore_create(0);
-    NSLog(@"INIT PERIPHERAL %@", [peripheral.identifier UUIDString]);
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self waitDeviceRdy];
-    });
+    self.writerSema = dispatch_semaphore_create(0);
     return self;
 }
 
@@ -93,43 +91,5 @@
     }
 }
 
-- (void)waitDeviceRdy {
-    dispatch_semaphore_wait(self.maSema, DISPATCH_TIME_FOREVER);
-    dispatch_semaphore_wait(self.peerIDSema, DISPATCH_TIME_FOREVER);
-    dispatch_semaphore_wait(self.readerSema, DISPATCH_TIME_FOREVER);
-    dispatch_semaphore_wait(self.acceptSema, DISPATCH_TIME_FOREVER);
-    AddToPeerStore([self.peerID UTF8String], [self.ma UTF8String]);
-    NSLog(@"Device REALLY rdy");
-}
-
-- (void)releaseAcceptSema {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"unlock accept peer");
-        dispatch_semaphore_signal(self.acceptSema);
-    });
-}
-
-- (void)releaseWriterSema {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"unlock read peer");
-        dispatch_semaphore_signal(self.readerSema);
-    });
-}
-
-- (void)setPeerID:(NSString*)p {
-    _peerID = p;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"unlock peer");
-        dispatch_semaphore_signal(self.peerIDSema);
-    });
-}
-
-- (void)setMa:(NSString*)a {
-    _ma = a;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        NSLog(@"unlock ma");
-        dispatch_semaphore_signal(self.maSema);
-    });
-}
 
 @end

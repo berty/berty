@@ -99,10 +99,76 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         self.peripheralManager.delegate = self;
     }
 
-    NSLog(@"init finished");
-    [self startAdvertising];
-    [self startDiscover];
+    NSLog(@"init finished %@", [self.centralManager retrieveConnectedPeripheralsWithServices:@[self.serviceUUID]]);
+    for (CBPeripheral *peripheral in [self.centralManager retrieveConnectedPeripheralsWithServices:@[self.serviceUUID]]) {
+        [self newDevice:peripheral];
+    }
+
     return self;
+}
+
+- (void)checkDiscoverBertyDeviceCharacteristic:(BertyDevice *)device {
+    for (CBCharacteristic *characteristic in [self getSvcForPeripheral:device.peripheral].characteristics) {
+        if ([characteristic.UUID isEqual:self.maUUID] || [characteristic.UUID isEqual:self.peerUUID]) {
+            [device.peripheral readValueForCharacteristic:characteristic];
+        } else if ([characteristic.UUID isEqual:self.acceptUUID]) {
+            dispatch_semaphore_signal(device.acceptSema);
+        } else if ([characteristic.UUID isEqual:self.writerUUID]) {
+            dispatch_semaphore_signal(device.writerSema);
+        }
+    }
+}
+
+- (void)checkUpdateValueCharacteristic:(CBCharacteristic *)charact ForDevice:(BertyDevice *)device {
+    if ([charact.UUID isEqual:self.maUUID]) {
+        device.ma = [[NSString alloc] initWithData:charact.value encoding:NSUTF8StringEncoding];
+        dispatch_semaphore_signal(device.maSema);
+    } else if ([charact.UUID isEqual:self.peerUUID]) {
+        device.peerID = [[NSString alloc] initWithData:charact.value encoding:NSUTF8StringEncoding];
+        dispatch_semaphore_signal(device.peerIDSema);
+    }
+}
+
+- (BertyDevice *)newDevice:(CBPeripheral *)peripheral {
+    BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
+    [peripheral setDelegate:self];
+
+    if (device == nil) {
+        device = [[BertyDevice alloc] initWithPeripheral:peripheral];
+        @synchronized (self.bertyDevices) {
+            [self.bertyDevices setObject:device forKey:[peripheral.identifier UUIDString]];
+        }
+    }
+
+    [self.centralManager connectPeripheral:device.peripheral options:nil];
+
+    // once device we have the device init dispact a block that will wait for the connection
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_semaphore_wait(device.connSema, DISPATCH_TIME_FOREVER);
+        [peripheral discoverServices:@[self.serviceUUID]];
+        dispatch_semaphore_wait(device.svcSema, DISPATCH_TIME_FOREVER);
+
+        // once service is disco asked for charact retrieve
+        [device.peripheral discoverCharacteristics:@[self.peerUUID, self.maUUID, self.writerUUID, self.acceptUUID]
+                            forService:[self getSvcForPeripheral:device.peripheral]];
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            dispatch_semaphore_wait(device.writerSema, DISPATCH_TIME_FOREVER);
+        });
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            dispatch_semaphore_wait(device.acceptSema, DISPATCH_TIME_FOREVER);
+        });
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            dispatch_semaphore_wait(device.maSema, DISPATCH_TIME_FOREVER);
+        });
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+            dispatch_semaphore_wait(device.peerIDSema, DISPATCH_TIME_FOREVER);
+        });
+        dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
+        NSLog(@"READY device %@", peripheral);
+    });
+
+    return device;
 }
 
 - (CBCharacteristic *)getWriterForPeripheral:(CBPeripheral *)peripheral {
@@ -119,6 +185,10 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
 
 - (CBCharacteristic *)getMaForPeripheral:(CBPeripheral *)peripheral {
     return [self characteristicWithUUID:self.maUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
+}
+
+- (CBService *)getSvcForPeripheral:(CBPeripheral *)peripheral {
+    return [self serviceWithUUID:self.serviceUUID forPeripheral:peripheral];
 }
 
 - (int)dialPeer:(NSString *)peerID {
@@ -189,13 +259,15 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
             return service;
         }
     }
+
     return nil;
 }
 
 - (void)centralManager:(CBCentralManager *)central
     didConnectPeripheral:(CBPeripheral *)peripheral {
     NSLog(@"didConnectPeriheral: %@", [peripheral.identifier UUIDString]);
-    [peripheral discoverServices:@[self.serviceUUID]];
+    BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
+    dispatch_semaphore_signal(device.connSema);
 }
 
 - (void)centralManager:(CBCentralManager *)central
@@ -218,12 +290,9 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
     didDiscoverPeripheral:(CBPeripheral *)peripheral
     advertisementData:(NSDictionary<NSString *,id> *)advertisementData
                     RSSI:(NSNumber *)RSSI {
-    if (![self.discoveredDevice objectForKey:peripheral.identifier]) {
+    if (![self getDeviceFromPeripheral:peripheral]) {
         NSLog(@"didDiscoverPeripheral: %@", [peripheral.identifier UUIDString]);
-        [peripheral setDelegate:self];
-        [self.bertyDevices setObject:[[BertyDevice alloc]initWithPeripheral:peripheral] forKey:[peripheral.identifier UUIDString]];
-        [self.centralManager connectPeripheral:peripheral options:nil];
-        [self.discoveredDevice setObject:peripheral forKey:peripheral.identifier];
+        [self newDevice:peripheral];
     }
 }
 
@@ -254,13 +323,8 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
 - (void)peripheral:(CBPeripheral *)peripheral
 didDiscoverServices:(NSError *)error {
     NSLog(@"didDiscoverServices %@", [peripheral.identifier UUIDString]);
-    for (CBService* service in peripheral.services) {
-        if ([service.UUID isEqual:self.serviceUUID]) {
-            NSLog(@"try discovering charact");
-            [peripheral discoverCharacteristics:@[self.peerUUID, self.writerUUID, self.maUUID, self.acceptUUID] forService:service];
-            return ;
-        }
-    }
+    BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
+    dispatch_semaphore_signal(device.svcSema);
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
@@ -276,25 +340,7 @@ didDiscoverServices:(NSError *)error {
         NSLog(@"error discovering characteristic %@ %@", [error localizedFailureReason], [error localizedDescription]);
         return ;
     }
-    for (CBCharacteristic *characteristic in service.characteristics) {
-        if ([characteristic.UUID isEqual:self.maUUID]) {
-            NSLog(@"Try reading ma");
-            [peripheral readValueForCharacteristic:characteristic];
-            NSLog(@"readed ma");
-        } else if ([characteristic.UUID isEqual:self.writerUUID]) {
-            BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-            NSLog(@"release writer sema");
-            [device releaseWriterSema];
-        } else if ([characteristic.UUID isEqual:self.peerUUID]) {
-            NSLog(@"Try reading peer");
-            [peripheral readValueForCharacteristic:characteristic];
-            NSLog(@"readed peer");
-        } else if ([characteristic.UUID isEqual:self.acceptUUID]) {
-            BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-            NSLog(@"release sema");
-            [device releaseAcceptSema];
-        }
-    }
+    [self checkDiscoverBertyDeviceCharacteristic:[self getDeviceFromPeripheral:peripheral]];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
@@ -309,13 +355,9 @@ didDiscoverServices:(NSError *)error {
 - (void)peripheral:(CBPeripheral *)peripheral
     didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
             error:(NSError *)error {
-    NSLog(@"getting value");
+    NSLog(@"didUpdateValueForCharacteristic %@ %@", [peripheral.identifier], [characteristic.UUID]);
     BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-    if ([characteristic.UUID isEqual:self.maUUID] && device != nil) {
-        [device setMa:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]];
-    } else if ([characteristic.UUID isEqual:self.peerUUID] && device != nil) {
-        [device setPeerID:[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding]];
-    }
+    [self checkUpdateValueCharacteristic:characteristic ForDevice:device];
 
     if (error) {
         NSLog(@"error: %@", [error localizedDescription]);
