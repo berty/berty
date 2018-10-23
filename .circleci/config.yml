@@ -220,17 +220,24 @@ jobs:
             env && cd ../gomobile && make build.android
 
       - restore_cache:
-          key: android-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/android/Gemfile.lock" }}
+          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
 
       - run:
           name: install bundle
+          working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             bundle check || bundle install --path vendor/bundle
 
       - save_cache:
-          key: android-gems-{{ checksum "~/go/src/berty.tech/client/react-native/mobile/android/Gemfile.lock" }}
+          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
           paths:
-            - vendor/bundle
+            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+
+      - run:
+          name: patch android repo
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: |
+            make patch.android
 
       - run:
           name: build app
@@ -302,17 +309,18 @@ jobs:
             make build.ios
 
       - restore_cache:
-          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
 
       - run:
+          name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             bundle check || bundle install --path vendor/bundle
 
       - save_cache:
-          key: ios-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
           paths:
-            - client/react-native/vendor/bundle
+            - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: set version
