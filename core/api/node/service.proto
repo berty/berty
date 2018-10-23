@@ -4,6 +4,7 @@ package berty.node;
 
 import "api/protobuf/graphql/graphql.proto";
 import "api/p2p/event.proto";
+import "api/p2p/peer.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
@@ -104,17 +105,21 @@ service Service {
     option (gql.graphql_type) = "Mutation";
   };
 
-  // //
-  // // Metrics
-  // //
+  //
+  // Metrics
+  //
+
+  // Yield new peers in real-time
+  rpc MonitorPeers(Void) returns (stream p2p.Peer) {
+    option (gql.graphql_type) = "Subscription";
+  };
+
+  rpc Peers(Void) returns (p2p.Peers) {
+    option (gql.graphql_type) = "Query";
+  };
 
   // // yield new connection in real-time
-  // rpc Peers(EventStreamInput) returns (libp2p.Peers) {
-  //   option (gql.graphql_type) = "Query";
-  // };
-
-  // // yield new connection in real-time
-  // rpc NotifeePeers(EventStreamInput) returns (stream libp2p.Peer) {
+  // rpc MonitorConnection(EventStreamInput) returns (stream libp2p.Peer) {
   //   option (gql.graphql_type) = "Subscription";
   // };
 

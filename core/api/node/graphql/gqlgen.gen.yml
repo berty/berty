@@ -1137,6 +1137,39 @@ models:
         resolver: true
 
 
+  BertyP2pPeer:
+    model: berty.tech/core/api/p2p.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+  BertyP2pPeerInput:
+    model: berty.tech/core/api/p2p.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+  BertyP2pPeerPayload:
+    model: berty.tech/core/api/p2p.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+
+  BertyP2pPeers:
+    model: berty.tech/core/api/p2p.Peers
+    fields:
+      list:
+  BertyP2pPeersInput:
+    model: berty.tech/core/api/p2p.Peers
+    fields:
+      list:
+  BertyP2pPeersPayload:
+    model: berty.tech/core/api/p2p.Peers
+    fields:
+      list:
+
+
   BertyNodeDeviceInfosOutput:
     model: berty.tech/core/api/node.DeviceInfosOutput
     fields:

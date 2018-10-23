@@ -308,6 +308,26 @@ type ComplexityRoot struct {
 		ConversationId     func(childComplexity int) int
 	}
 
+	BertyP2pPeer struct {
+		Id         func(childComplexity int) int
+		Addrs      func(childComplexity int) int
+		Connection func(childComplexity int) int
+	}
+
+	BertyP2pPeerPayload struct {
+		Id         func(childComplexity int) int
+		Addrs      func(childComplexity int) int
+		Connection func(childComplexity int) int
+	}
+
+	BertyP2pPeers struct {
+		List func(childComplexity int) int
+	}
+
+	BertyP2pPeersPayload struct {
+		List func(childComplexity int) int
+	}
+
 	BertyP2pPingAttrs struct {
 		T func(childComplexity int) int
 	}
@@ -547,13 +567,15 @@ type ComplexityRoot struct {
 		ConversationList      func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
 		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+		Peers                 func(childComplexity int, T bool) int
 		DeviceInfos           func(childComplexity int, T bool) int
 		AppVersion            func(childComplexity int, T bool) int
 		Panic                 func(childComplexity int, T bool) int
 	}
 
 	Subscription struct {
-		EventStream func(childComplexity int, filter *p2p.Event) int
+		EventStream  func(childComplexity int, filter *p2p.Event) int
+		MonitorPeers func(childComplexity int, T bool) int
 	}
 }
 
@@ -629,12 +651,14 @@ type QueryResolver interface {
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
 	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
+	Peers(ctx context.Context, T bool) (*p2p.Peers, error)
 	DeviceInfos(ctx context.Context, T bool) (*node.DeviceInfosOutput, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
 	Panic(ctx context.Context, T bool) (*node.Void, error)
 }
 type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
+	MonitorPeers(ctx context.Context, T bool) (<-chan *p2p.Peer, error)
 }
 
 func field_Mutation_ContactRequest_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
@@ -2161,6 +2185,21 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 
 }
 
+func field_Query_Peers_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
 func field_Query_DeviceInfos_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 bool
@@ -2237,6 +2276,21 @@ func field_Subscription_EventStream_args(rawArgs map[string]interface{}) (map[st
 		}
 	}
 	args["filter"] = arg0
+	return args, nil
+
+}
+
+func field_Subscription_MonitorPeers_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
 	return args, nil
 
 }
@@ -3312,6 +3366,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyP2pEventPayload.ConversationId(childComplexity), true
+
+	case "BertyP2pPeer.id":
+		if e.complexity.BertyP2pPeer.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeer.Id(childComplexity), true
+
+	case "BertyP2pPeer.addrs":
+		if e.complexity.BertyP2pPeer.Addrs == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeer.Addrs(childComplexity), true
+
+	case "BertyP2pPeer.connection":
+		if e.complexity.BertyP2pPeer.Connection == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeer.Connection(childComplexity), true
+
+	case "BertyP2pPeerPayload.id":
+		if e.complexity.BertyP2pPeerPayload.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeerPayload.Id(childComplexity), true
+
+	case "BertyP2pPeerPayload.addrs":
+		if e.complexity.BertyP2pPeerPayload.Addrs == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeerPayload.Addrs(childComplexity), true
+
+	case "BertyP2pPeerPayload.connection":
+		if e.complexity.BertyP2pPeerPayload.Connection == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeerPayload.Connection(childComplexity), true
+
+	case "BertyP2pPeers.list":
+		if e.complexity.BertyP2pPeers.List == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeers.List(childComplexity), true
+
+	case "BertyP2pPeersPayload.list":
+		if e.complexity.BertyP2pPeersPayload.List == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pPeersPayload.List(childComplexity), true
 
 	case "BertyP2pPingAttrs.T":
 		if e.complexity.BertyP2pPingAttrs.T == nil {
@@ -4418,6 +4528,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
 
+	case "Query.Peers":
+		if e.complexity.Query.Peers == nil {
+			break
+		}
+
+		args, err := field_Query_Peers_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Peers(childComplexity, args["T"].(bool)), true
+
 	case "Query.DeviceInfos":
 		if e.complexity.Query.DeviceInfos == nil {
 			break
@@ -4465,6 +4587,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Subscription.EventStream(childComplexity, args["filter"].(*p2p.Event)), true
+
+	case "Subscription.MonitorPeers":
+		if e.complexity.Subscription.MonitorPeers == nil {
+			break
+		}
+
+		args, err := field_Subscription_MonitorPeers_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.MonitorPeers(childComplexity, args["T"].(bool)), true
 
 	}
 	return 0, false
@@ -9595,6 +9729,386 @@ func (ec *executionContext) _BertyP2pEventPayload_conversationId(ctx context.Con
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalID(res)
+}
+
+var bertyP2pPeerImplementors = []string{"BertyP2pPeer"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pPeer(ctx context.Context, sel ast.SelectionSet, obj *p2p.Peer) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pPeerImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pPeer")
+		case "id":
+			out.Values[i] = ec._BertyP2pPeer_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "addrs":
+			out.Values[i] = ec._BertyP2pPeer_addrs(ctx, field, obj)
+		case "connection":
+			out.Values[i] = ec._BertyP2pPeer_connection(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeer_id(ctx context.Context, field graphql.CollectedField, obj *p2p.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeer",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeer_addrs(ctx context.Context, field graphql.CollectedField, obj *p2p.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeer",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Addrs, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalString(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeer_connection(ctx context.Context, field graphql.CollectedField, obj *p2p.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeer",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Connection, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(p2p.ConnectionType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyP2pPeerPayloadImplementors = []string{"BertyP2pPeerPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pPeerPayload(ctx context.Context, sel ast.SelectionSet, obj *p2p.Peer) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pPeerPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pPeerPayload")
+		case "id":
+			out.Values[i] = ec._BertyP2pPeerPayload_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "addrs":
+			out.Values[i] = ec._BertyP2pPeerPayload_addrs(ctx, field, obj)
+		case "connection":
+			out.Values[i] = ec._BertyP2pPeerPayload_connection(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeerPayload_id(ctx context.Context, field graphql.CollectedField, obj *p2p.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeerPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeerPayload_addrs(ctx context.Context, field graphql.CollectedField, obj *p2p.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeerPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Addrs, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalString(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeerPayload_connection(ctx context.Context, field graphql.CollectedField, obj *p2p.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeerPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Connection, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(p2p.ConnectionType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyP2pPeersImplementors = []string{"BertyP2pPeers"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pPeers(ctx context.Context, sel ast.SelectionSet, obj *p2p.Peers) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pPeersImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pPeers")
+		case "list":
+			out.Values[i] = ec._BertyP2pPeers_list(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeers_list(ctx context.Context, field graphql.CollectedField, obj *p2p.Peers) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeers",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.List, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*p2p.Peer)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyP2pPeer(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
+}
+
+var bertyP2pPeersPayloadImplementors = []string{"BertyP2pPeersPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pPeersPayload(ctx context.Context, sel ast.SelectionSet, obj *p2p.Peers) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pPeersPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pPeersPayload")
+		case "list":
+			out.Values[i] = ec._BertyP2pPeersPayload_list(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pPeersPayload_list(ctx context.Context, field graphql.CollectedField, obj *p2p.Peers) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pPeersPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.List, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*p2p.Peer)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyP2pPeer(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
 }
 
 var bertyP2pPingAttrsImplementors = []string{"BertyP2pPingAttrs"}
@@ -15727,6 +16241,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_GetConversationMember(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "Peers":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_Peers(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "DeviceInfos":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -16005,6 +16525,37 @@ func (ec *executionContext) _Query_GetConversationMember(ctx context.Context, fi
 }
 
 // nolint: vetshadow
+func (ec *executionContext) _Query_Peers(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_Peers_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Peers(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Peers)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pPeersPayload(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
 func (ec *executionContext) _Query_DeviceInfos(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args, err := field_Query_DeviceInfos_args(rawArgs)
@@ -16169,6 +16720,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	switch fields[0].Name {
 	case "EventStream":
 		return ec._Subscription_EventStream(ctx, fields[0])
+	case "MonitorPeers":
+		return ec._Subscription_MonitorPeers(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
 	}
@@ -16202,6 +16755,39 @@ func (ec *executionContext) _Subscription_EventStream(ctx context.Context, field
 			}
 
 			return ec._BertyP2pEventPayload(ctx, field.Selections, res)
+		}())
+		return &out
+	}
+}
+
+func (ec *executionContext) _Subscription_MonitorPeers(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Subscription_MonitorPeers_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Field: field,
+	})
+	rctx := ctx // FIXME: subscriptions are missing request middleware stack https://github.com/99designs/gqlgen/issues/259
+	results, err := ec.resolvers.Subscription().MonitorPeers(rctx, args["T"].(bool))
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-results
+		if !ok {
+			return nil
+		}
+		var out graphql.OrderedMap
+		out.Add(field.Alias, func() graphql.Marshaler {
+			if res == nil {
+				return graphql.Null
+			}
+
+			return ec._BertyP2pPeerPayload(ctx, field.Selections, res)
 		}())
 		return &out
 	}
@@ -18474,6 +19060,19 @@ type BertyP2pEvent implements Node {
   
   
 
+  
+type BertyP2pPeer  {
+      id: String!
+      addrs: [String!]
+    connection: Enum
+}
+type BertyP2pPeers  {
+    list: [BertyP2pPeer]
+}
+  
+  
+  
+
 type BertyNodeDeviceInfo  {
       key: String!
       value: String!
@@ -18652,6 +19251,14 @@ type BertyNodeIntegrationTestPayload {
     startedAt: GoogleProtobufTimestamp
     finishedAt: GoogleProtobufTimestamp
 }
+type BertyP2pPeerPayload {
+      id: String!
+      addrs: [String!]
+    connection: Enum
+}
+type BertyP2pPeersPayload {
+    list: [BertyP2pPeer]
+}
 type BertyNodeDeviceInfosPayload {
     infos: [BertyNodeDeviceInfo]
 }
@@ -18737,6 +19344,9 @@ type Query {
       conversationId: String!
       contactId: String!
   ): BertyEntityConversationMemberPayload
+  Peers(
+      T: Bool!
+  ): BertyP2pPeersPayload
   DeviceInfos(
       T: Bool!
   ): BertyNodeDeviceInfosPayload
@@ -18821,6 +19431,9 @@ type Subscription {
   EventStream(
     filter: BertyP2pEventInput
   ): BertyP2pEventPayload
+  MonitorPeers(
+      T: Bool!
+  ): BertyP2pPeerPayload
 }
 `},
 )

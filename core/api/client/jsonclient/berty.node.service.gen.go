@@ -11,6 +11,8 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"go.uber.org/zap"
+
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -33,6 +35,8 @@ func init() {
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
 	registerUnary("berty.node.RunIntegrationTests", NodeRunIntegrationTests)
+	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
+	registerUnary("berty.node.Peers", NodePeers)
 	registerUnary("berty.node.DebugPing", NodeDebugPing)
 	registerUnary("berty.node.DeviceInfos", NodeDeviceInfos)
 	registerUnary("berty.node.AppVersion", NodeAppVersion)
@@ -375,6 +379,52 @@ func NodeRunIntegrationTests(client *client.Client, ctx context.Context, jsonInp
 		return nil, err
 	}
 	return client.Node().RunIntegrationTests(ctx, &typedInput)
+}
+
+func NodeMonitorPeers(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "MonitorPeers"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().MonitorPeers(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+
+	return streamProxy, nil
+}
+
+func NodePeers(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "Peers"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().Peers(ctx, &typedInput)
 }
 
 func NodeDebugPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {

@@ -8,6 +8,16 @@ import (
 	protocol "github.com/libp2p/go-libp2p-protocol"
 )
 
+type Metrics interface {
+	// Return a list of peers
+	Peers() *p2p.Peers
+
+	// Monitor connected/disconnected peers
+	MonitorPeers(func(*p2p.Peer) error)
+
+	// MonitorBandwith(func(*p2p.Peers))
+}
+
 type Driver interface {
 	// Emit sends an envelope to a channel
 	Emit(context.Context, *p2p.Envelope) error
