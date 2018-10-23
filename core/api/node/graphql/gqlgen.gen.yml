@@ -1361,19 +1361,6 @@ models:
       conversation:
       members:
 
-  BertyNodeVoid:
-    model: berty.tech/core/api/node.Void
-    fields:
-      t:
-  BertyNodeVoidInput:
-    model: berty.tech/core/api/node.Void
-    fields:
-      t:
-  BertyNodeVoidPayload:
-    model: berty.tech/core/api/node.Void
-    fields:
-      t:
-
   BertyNodePagination:
     model: berty.tech/core/api/node.Pagination
     fields:
@@ -1460,3 +1447,16 @@ models:
       verbose:
       startedAt:
       finishedAt:
+
+  BertyNodeVoid:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:
+  BertyNodeVoidInput:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:
+  BertyNodeVoidPayload:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:
