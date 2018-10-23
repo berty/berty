@@ -166,6 +166,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         });
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
         NSLog(@"READY device %@", peripheral);
+        AddToPeerStore([device.peerID UTF8String], [device.ma UTF8String]);
     });
 
     return device;
