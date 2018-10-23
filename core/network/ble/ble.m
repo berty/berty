@@ -355,7 +355,7 @@ didDiscoverServices:(NSError *)error {
 - (void)peripheral:(CBPeripheral *)peripheral
     didUpdateValueForCharacteristic:(CBCharacteristic *)characteristic
             error:(NSError *)error {
-    NSLog(@"didUpdateValueForCharacteristic %@ %@", [peripheral.identifier], [characteristic.UUID]);
+    NSLog(@"didUpdateValueForCharacteristic %@ %@", [peripheral.identifier UUIDString], [characteristic.UUID UUIDString]);
     BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
     [self checkUpdateValueCharacteristic:characteristic ForDevice:device];
 
@@ -463,7 +463,6 @@ didDiscoverServices:(NSError *)error {
             stateString = @"CBManagerStatePoweredOn";
             if (self.centralManager.state == CBManagerStatePoweredOn && self.serviceAdded == NO) {
                 self.serviceAdded = YES;
-                NSLog(@"ICI %@", self.bertyService);
                 [self.peripheralManager addService:self.bertyService];
             }
             break;
@@ -501,13 +500,7 @@ didDiscoverServices:(NSError *)error {
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
                     central:(CBCentral *)central
     didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
-    // [self checkPeripheralAndConnect:peripheral];
-    // if ([characteristic.UUID isEqual:self.readerUUID]) {
-    //   NSLog(@"Subscription to characteristic");
-    // 	BertyDevice *device = [self getDeviceFromUUID:[central.identifier UUIDString]];
-    // 	[device setIsSubscribe:YES];
-    // }
-    //   NSLog(@"Subscription to characteristic: %@", characteristic.UUID);
+    NSLog(@"Subscription to characteristic: %@", characteristic.UUID);
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
@@ -532,10 +525,6 @@ didDiscoverServices:(NSError *)error {
         request.value = self.peerIDCharacteristic.value;
         [self.peripheralManager respondToRequest:request withResult:CBATTErrorSuccess];
     }
-    // else if ([request.characteristic.UUID isEqual:self.readerUUID]) {
-    //   NSLog(@"REICEVE READ REQ reader");
-    //   [self.peripheralManager respondToRequest:request withResult:CBATTErrorSuccess];
-    // }
     else {
         NSLog(@"REICEVE READ REQ unknow");
     }
@@ -565,7 +554,7 @@ didDiscoverServices:(NSError *)error {
             [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
         }
         else {
-            [peripheral respondToRequest:request withResult:CBATTErrorInsufficientAuthorization ];
+            [peripheral respondToRequest:request withResult:CBATTErrorInsufficientAuthorization];
         }
     }
 }
