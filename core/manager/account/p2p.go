@@ -11,6 +11,7 @@ import (
 
 type P2PNetworkOptions struct {
 	Bind             []string
+	Transport        []string
 	Bootstrap        []string
 	DefaultBootstrap bool
 	MDNS             bool
@@ -61,11 +62,19 @@ func WithP2PNetwork(opts *P2PNetworkOptions) NewOption {
 			identity = p2p.WithIdentity(prvKey)
 		}
 
+		for _, v := range opts.Transport {
+			switch v {
+			case "default":
+				p2pOptions = append(p2pOptions, p2p.WithDefaultTransports())
+			case "ble":
+				p2pOptions = append(p2pOptions, p2p.WithTransportBle(opts.Bind, a.db))
+			}
+		}
+
 		p2pOptions = append(p2pOptions,
 			p2p.WithDefaultMuxers(),
 			p2p.WithDefaultPeerstore(),
 			p2p.WithDefaultSecurity(),
-			p2p.WithDefaultTransports(),
 			// @TODO: Allow static identity loaded from a file (useful for relay
 			// server for creating static endpoint for bootstrap)
 			// p2p.WithIdentity(<key>),
