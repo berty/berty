@@ -88,9 +88,6 @@ func (a *Account) Validate() error {
 }
 
 func (a *Account) Open() error {
-	if err := a.openDatabase(); err != nil {
-		return err
-	}
 	if err := a.initNode(); err != nil {
 		return err
 	}

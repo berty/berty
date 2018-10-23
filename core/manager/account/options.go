@@ -65,6 +65,9 @@ func WithDatabase(opts *DatabaseOptions) NewOption {
 		}
 
 		a.dbDrop = opts.Drop
+		if err := a.openDatabase(); err != nil {
+			return err
+		}
 		return nil
 	}
 }
