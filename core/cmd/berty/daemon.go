@@ -93,6 +93,7 @@ func daemon(opts *daemonOptions) error {
 		accountOptions = append(accountOptions, account.WithP2PNetwork(
 			&account.P2PNetworkOptions{
 				Bind:      opts.bindP2P,
+				Transport: opts.transportP2P,
 				Bootstrap: opts.bootstrap,
 				MDNS:      opts.mdns,
 				Relay:     opts.hop,
