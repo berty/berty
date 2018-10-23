@@ -6,14 +6,13 @@ import (
 	"fmt"
 	"testing"
 
-	. "github.com/smartystreets/goconvey/convey"
-	"google.golang.org/grpc"
-
 	nodeapi "berty.tech/core/api/node"
 	"berty.tech/core/api/node/graphql"
 	gqlgen "berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/entity"
 	"berty.tech/core/network/netutil"
+	. "github.com/smartystreets/goconvey/convey"
+	"google.golang.org/grpc"
 )
 
 func TestPagination(t *testing.T) {
