@@ -18505,9 +18505,6 @@ type BertyNodeConversationListConnection  {
     edges: [BertyNodeConversationEdge]
     pageInfo: BertyNodePageInfo!
 }
-type BertyNodeVoid  {
-      T: Bool!
-}
 type BertyNodePagination  {
       orderBy: String!
       orderDesc: Bool!
@@ -18522,6 +18519,9 @@ type BertyNodePageInfo  {
       hasNextPage: Bool!
       hasPreviousPage: Bool!
       count: Uint32!
+}
+type BertyNodeVoid  {
+      T: Bool!
 }
 input BertyP2pEventInput {
     id: ID!

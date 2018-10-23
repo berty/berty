@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package berty.gql;
+package gql;
 
 import "google/protobuf/descriptor.proto";
 
-option go_package = "berty.tech/core/api/protobuf";
+option go_package = "berty.tech/core/api/protobuf/graphql";
 
 extend google.protobuf.MethodOptions {
   string graphql_fields = 53001;

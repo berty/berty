@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package berty.node;
 
-import "api/protobuf/graphql.proto";
+import "api/protobuf/graphql/graphql.proto";
 import "api/p2p/event.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
@@ -22,15 +22,15 @@ service Service {
 
   // yield new events in real-time
   rpc EventStream(EventStreamInput) returns (stream berty.p2p.Event) {
-    option (berty.gql.graphql_type) = "Subscription";
+    option (gql.graphql_type) = "Subscription";
   };
   // list old events
   rpc EventList(EventListInput) returns (stream berty.p2p.Event) {
-    option (berty.gql.graphql_output) = ".berty.node.EventListConnection";
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_output) = ".berty.node.EventListConnection";
+    option (gql.graphql_type) = "Query";
   };
   rpc GetEvent(berty.p2p.Event) returns (berty.p2p.Event) {
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_type) = "Query";
   };
 
   //
@@ -38,23 +38,23 @@ service Service {
   //
 
   rpc ContactRequest(ContactRequestInput) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc ContactAcceptRequest(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc ContactRemove(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc ContactUpdate(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc ContactList(ContactListInput) returns (stream berty.entity.Contact) {
-    option (berty.gql.graphql_output) = ".berty.node.ContactListConnection";
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_output) = ".berty.node.ContactListConnection";
+    option (gql.graphql_type) = "Query";
   };
   rpc GetContact(berty.entity.Contact) returns (berty.entity.Contact) {
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_type) = "Query";
   };
 
   //
@@ -62,28 +62,27 @@ service Service {
   //
 
   rpc ConversationCreate(ConversationCreateInput) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc ConversationList(ConversationListInput) returns (stream berty.entity.Conversation) {
-    option (berty.gql.graphql_output) = ".berty.node.ConversationListConnection";
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_output) = ".berty.node.ConversationListConnection";
+    option (gql.graphql_type) = "Query";
   };
   rpc ConversationInvite(ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc ConversationExclude(ConversationManageMembersInput) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
   rpc GetConversation(berty.entity.Conversation) returns (berty.entity.Conversation) {
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_type) = "Query";
   };
   rpc GetConversationMember(berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_type) = "Query";
   };
-
 
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
@@ -98,25 +97,39 @@ service Service {
   rpc HandleEvent(berty.p2p.Event) returns (Void) {};
 
   rpc GenerateFakeData(Void) returns (Void) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
 
   rpc RunIntegrationTests(IntegrationTestInput) returns (IntegrationTestOutput) {
-    option (berty.gql.graphql_type) = "Mutation";
+    option (gql.graphql_type) = "Mutation";
   };
+
+  // //
+  // // Metrics
+  // //
+
+  // // yield new connection in real-time
+  // rpc Peers(EventStreamInput) returns (libp2p.Peers) {
+  //   option (gql.graphql_type) = "Query";
+  // };
+
+  // // yield new connection in real-time
+  // rpc NotifeePeers(EventStreamInput) returns (stream libp2p.Peer) {
+  //   option (gql.graphql_type) = "Subscription";
+  // };
 
   rpc DebugPing(PingDestination) returns (Void) {};
 
   rpc DeviceInfos(Void) returns (DeviceInfosOutput) {
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_type) = "Query";
   };
 
   rpc AppVersion(Void) returns (AppVersionOutput) {
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_type) = "Query";
   };
 
   rpc Panic(Void) returns (Void) {
-    option (berty.gql.graphql_type) = "Query";
+    option (gql.graphql_type) = "Query";
   };
 }
 
@@ -158,7 +171,7 @@ message EventStreamInput {
 //
 message EventListInput {
   berty.p2p.Event filter = 1;
-  Pagination paginate = 99 [(berty.gql.graphql_spread) = true];
+  Pagination paginate = 99 [(gql.graphql_spread) = true];
 }
 message EventEdge {
   berty.p2p.Event node = 1;
@@ -166,16 +179,17 @@ message EventEdge {
 }
 message EventListConnection {
   repeated EventEdge edges = 1;
-  PageInfo page_info = 99 [(berty.gql.graphql_non_nullable) = true];
+  PageInfo page_info = 99 [(gql.graphql_non_nullable) = true];
 }
 
 
 //
 // ContactList
 //
+
 message ContactListInput {
   berty.entity.Contact filter = 1;
-  Pagination paginate = 99 [(berty.gql.graphql_spread) = true];
+  Pagination paginate = 99 [(gql.graphql_spread) = true];
 }
 message ContactEdge {
   berty.entity.Contact node = 1;
@@ -183,16 +197,17 @@ message ContactEdge {
 }
 message ContactListConnection {
   repeated ContactEdge edges = 1;
-  PageInfo page_info = 99 [(berty.gql.graphql_non_nullable) = true];
+  PageInfo page_info = 99 [(gql.graphql_non_nullable) = true];
 }
 
 
 //
 // ConversationList
 //
+
 message ConversationListInput {
   berty.entity.Conversation filter = 1;
-  Pagination paginate = 99 [(berty.gql.graphql_spread) = true];
+  Pagination paginate = 99 [(gql.graphql_spread) = true];
 }
 message ConversationEdge {
   berty.entity.Conversation node = 1;
@@ -200,7 +215,7 @@ message ConversationEdge {
 }
 message ConversationListConnection{
   repeated ConversationEdge edges = 1;
-  PageInfo page_info = 99 [(berty.gql.graphql_non_nullable) = true];
+  PageInfo page_info = 99 [(gql.graphql_non_nullable) = true];
 }
 
 message ConversationCreateInput {
@@ -218,20 +233,16 @@ message ConversationManageMembersInput {
 // common
 //
 
-message Void {
-  bool T = 1;
-}
-
 message Pagination {
   // argument definition
   string order_by = 1;
   bool order_desc = 2;
 
   // feed definition
-  int32 first = 11 [(berty.gql.graphql_nullable) = true];
-  string after = 12 [(berty.gql.graphql_nullable) = true];
-  int32 last = 13 [(berty.gql.graphql_nullable) = true];
-  string before = 14 [(berty.gql.graphql_nullable) = true];
+  int32 first = 11 [(gql.graphql_nullable) = true];
+  string after = 12 [(gql.graphql_nullable) = true];
+  int32 last = 13 [(gql.graphql_nullable) = true];
+  string before = 14 [(gql.graphql_nullable) = true];
 }
 
 message PageInfo {
@@ -254,4 +265,8 @@ message IntegrationTestOutput {
   string verbose = 3;
   google.protobuf.Timestamp started_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp finished_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+
+message Void {
+  bool T = 1;
 }
