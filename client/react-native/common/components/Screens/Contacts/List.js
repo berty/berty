@@ -6,30 +6,35 @@ import { queries, fragments, subscriptions } from '../../../graphql'
 import { QueryReducer } from '../../../relay'
 import { marginLeft, padding } from '../../../styles'
 
-const Item = ({
-  data: { id, overrideDisplayName, displayName, displayStatus },
-  onPress,
-}) => (
-  <Flex.Cols align='center' onPress={onPress} style={[{ height: 72 }, padding]}>
-    <Flex.Rows size={1} align='center'>
-      <Image
-        style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
-        source={{
-          uri: 'https://api.adorable.io/avatars/40/' + id + '.png',
-        }}
-      />
-    </Flex.Rows>
-    <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
-      <Text color={colors.black} left middle ellipsis>
-        {overrideDisplayName || displayName}
-      </Text>
-      <Text color={colors.subtleGrey} tiny middle left ellipsis>
-        {displayStatus}
-      </Text>
-    </Flex.Rows>
-  </Flex.Cols>
+const Item = fragments.Contact(
+  ({
+    data: { id, overrideDisplayName, displayName, displayStatus },
+    onPress,
+  }) => (
+    <Flex.Cols
+      align='center'
+      onPress={onPress}
+      style={[{ height: 72 }, padding]}
+    >
+      <Flex.Rows size={1} align='center'>
+        <Image
+          style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
+          source={{
+            uri: 'https://api.adorable.io/avatars/40/' + id + '.png',
+          }}
+        />
+      </Flex.Rows>
+      <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
+        <Text color={colors.black} left middle ellipsis>
+          {overrideDisplayName || displayName}
+        </Text>
+        <Text color={colors.subtleGrey} tiny middle left ellipsis>
+          {displayStatus}
+        </Text>
+      </Flex.Rows>
+    </Flex.Cols>
+  )
 )
-const ItemContainer = fragments.Contact(Item)
 
 const List = fragments.ContactList(
   class List extends PureComponent {
@@ -73,7 +78,7 @@ const List = fragments.ContactList(
           onEndReached={this.onEndReached}
           keyExtractor={this.props.keyExtractor}
           renderItem={({ item: { node, cursor } }) => (
-            <ItemContainer data={node} onPress={this.onPressItem(node.id)} />
+            <Item data={node} onPress={this.onPressItem(node.id)} />
           )}
         />
       )

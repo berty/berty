@@ -321,50 +321,89 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		})
 	}
 
-	output.PageInfo = &node.PageInfo{
-		StartCursor:     output.Edges[0].Cursor,
-		EndCursor:       output.Edges[len(output.Edges)-1].Cursor,
-		HasPreviousPage: input.Paginate.After != "",
-		HasNextPage:     hasNextPage,
+	output.PageInfo = &node.PageInfo{}
+	if len(output.Edges) == 0 {
+		output.PageInfo.StartCursor = ""
+		output.PageInfo.EndCursor = ""
+	} else {
+		output.PageInfo.StartCursor = output.Edges[0].Cursor
+		output.PageInfo.EndCursor = output.Edges[len(output.Edges)-1].Cursor
 	}
+
+	output.PageInfo.HasPreviousPage = input.Paginate.After != ""
+	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
 func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.GetContact(ctx, &entity.Contact{ID: id})
 }
-func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, paginate *node.Pagination) ([]*entity.Conversation, error) {
-	var list []*entity.Conversation
-
-	if filter != nil {
-		if filter.ID != "" {
-			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
-		}
-		if filter.Members != nil {
-			for _, m := range filter.Members {
-				if m.ID != "" {
-					m.ID = strings.SplitN(m.ID, ":", 2)[1]
-				}
-				if m.Contact != nil && m.Contact.ID != "" {
-					m.Contact.ID = strings.SplitN(m.Contact.ID, ":", 2)[1]
-				}
-			}
-		}
+func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {
+	if filter != nil && filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
-	stream, err := r.client.ConversationList(ctx, &node.ConversationListInput{Filter: filter, Paginate: paginate})
+
+	input := &node.ConversationListInput{
+		Filter:   filter,
+		Paginate: getPagination(first, after, last, before),
+	}
+
+	input.Paginate.OrderBy = orderBy
+	input.Paginate.OrderDesc = orderDesc
+
+	input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
+
+	stream, err := r.client.ConversationList(ctx, input)
 	if err != nil {
 		return nil, err
 	}
+
+	output := &node.ConversationListConnection{
+		Edges: []*node.ConversationEdge{},
+	}
+	count := int32(0)
+	hasNextPage := false
 	for {
-		elem, err := stream.Recv()
+		n, err := stream.Recv()
 		if err == io.EOF {
 			break
 		}
 		if err != nil {
 			return nil, err
 		}
-		list = append(list, elem)
+		if count >= input.Paginate.First-1 { // related to input.Paginate.First++
+			hasNextPage = true
+			break
+		}
+		count++
+
+		var cursor string
+		switch orderBy {
+		case "", "id":
+			cursor = n.ID
+		case "created_at":
+			cursor = n.CreatedAt.String()
+		case "updated_at":
+			cursor = n.UpdatedAt.String()
+		}
+
+		output.Edges = append(output.Edges, &node.ConversationEdge{
+			Node:   n,
+			Cursor: cursor,
+		})
 	}
-	return list, nil
+
+	output.PageInfo = &node.PageInfo{}
+	if len(output.Edges) == 0 {
+		output.PageInfo.StartCursor = ""
+		output.PageInfo.EndCursor = ""
+	} else {
+		output.PageInfo.StartCursor = output.Edges[0].Cursor
+		output.PageInfo.EndCursor = output.Edges[len(output.Edges)-1].Cursor
+	}
+
+	output.PageInfo.HasPreviousPage = input.Paginate.After != ""
+	output.PageInfo.HasNextPage = hasNextPage
+	return output, nil
 }
 func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
