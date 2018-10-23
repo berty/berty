@@ -299,7 +299,7 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		if err != nil {
 			return nil, err
 		}
-		if count == input.Paginate.First {
+		if count >= input.Paginate.First-1 { // related to input.Paginate.First++
 			hasNextPage = true
 			break
 		}
