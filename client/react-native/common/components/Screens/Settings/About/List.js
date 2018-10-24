@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
-import { Image } from 'react-native'
-import { Header, Menu, Flex } from '../../../Library'
+import { View, Image } from 'react-native'
+import { Header, Menu } from '../../../Library'
 import { AppVersion } from '../../../../graphql/queries'
 
 export default class List extends PureComponent {
@@ -23,36 +23,34 @@ export default class List extends PureComponent {
     const { navigation } = this.props
     const { version } = this.state
     return (
-      <Menu style={{ marginTop: 42 }}>
-        <Flex.Cols size={1} align='center' justify='between'>
-          <Flex.Rows size={1} align='center' justify='between'>
-            <Image
-              resizeMode='contain'
-              style={{ width: 300, height: 300 }}
-              source={require('../../../../static/img/square_about.png')}
+      <View style={{ flex: 1 }}>
+        <Image
+          resizeMode='contain'
+          style={{ flex: 3, width: null, height: null, marginTop: 42 }}
+          source={require('../../../../static/img/square_about.png')}
+        />
+        <Menu>
+          <Menu.Section>
+            <Menu.Item
+              icon='smartphone'
+              title='App version'
+              description={version}
             />
-          </Flex.Rows>
-        </Flex.Cols>
-        <Menu.Section>
-          <Menu.Item
-            icon='smartphone'
-            title='App version'
-            description={version}
-          />
-          <Menu.Item
-            icon='check-circle'
-            title='Changelog'
-            onPress={() => navigation.push('about/changelog')}
-          />
-        </Menu.Section>
-        <Menu.Section>
-          <Menu.Item
-            icon='info'
-            title='Learn more about Berty'
-            onPress={() => navigation.push('about/more')}
-          />
-        </Menu.Section>
-      </Menu>
+            <Menu.Item
+              icon='check-circle'
+              title='Changelog'
+              onPress={() => navigation.push('about/changelog')}
+            />
+          </Menu.Section>
+          <Menu.Section>
+            <Menu.Item
+              icon='info'
+              title='Learn more about Berty'
+              onPress={() => navigation.push('about/more')}
+            />
+          </Menu.Section>
+        </Menu>
+      </View>
     )
   }
 }
