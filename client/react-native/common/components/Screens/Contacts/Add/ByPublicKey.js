@@ -1,11 +1,10 @@
 import React, { PureComponent } from 'react'
 import {
   Platform,
-  TextInput as TextInputNative,
   ActivityIndicator,
-  Clipboard,
+  Share,
 } from 'react-native'
-import { Flex, Screen, Button, Text } from '../../../Library'
+import { Flex, Screen, Button, Text, ModalScreen, TextInputMultilineFix } from '../../../Library'
 import { colors } from '../../../../constants'
 import {
   padding,
@@ -20,137 +19,126 @@ import { QueryReducer } from '../../../../relay'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { btoa, atob } from 'b64-lite'
 
-class TextInputMultilineFix extends PureComponent {
+const requestContact = async (contactId, navigation, errorHandler) => {
+  try {
+    await mutations.contactRequest.commit({
+      contact: {
+        id: btoa(`contact:${contactId}`),
+        displayName: '',
+        displayStatus: '',
+        overrideDisplayName: '',
+        overrideDisplayStatus: '',
+      },
+      introText: '',
+    })
+    navigation.goBack(null)
+  } catch (err) {
+    errorHandler(err)
+  }
+}
+
+const ActionButton = props => <Button
+  icon={props.icon}
+  background={colors.blue}
+  margin
+  padding
+  rounded={23}
+  height={24}
+  medium
+  middle
+  center
+  self='stretch'
+  onPress={props.onPress}
+>
+  {props.label}
+</Button>
+
+const AddButton = ({ contactId, navigation, errorHandler }) => <ActionButton
+  icon='plus'
+  onPress={() => requestContact(contactId, navigation, errorHandler)}
+  label={'Add this key'}
+/>
+
+const ShareMyKey = ({ contactId }) => <ActionButton
+  icon='plus'
+  onPress={() => Share.share({ message: contactId }).catch(() => null)}
+  label={'Share my key'}
+/>
+
+class ByPublicKeyComponent extends PureComponent {
   state = {
-    multiline: false,
+    contactId: '',
+  }
+
+  constructor (props) {
+    super(props)
+
+    if (props.initialKey !== undefined) {
+      this.state.contactId = props.initialKey
+    } else if (props.data !== undefined) {
+      try {
+        this.state.contactId = atob(props.data.id).split('contact:')[1]
+      } catch (e) {
+        console.error(e)
+      }
+    }
   }
 
   render () {
+    const { navigation, shareButton, addButton, readOnly } = this.props
+    const { contactId } = this.state
+
     return (
-      <TextInputNative
-        {...this.props}
-        onFocus={() => {
-          Platform.OS === 'android' &&
-            this.props.multiline &&
-            this.setState({ multiline: true })
-          return this.props.onFocus && this.props.onFocus()
-        }}
-        onBlur={() => {
-          Platform.OS === 'android' &&
-            this.props.multiline &&
-            this.setState({ multiline: true })
-          return this.props.onBlur && this.props.onBlur()
-        }}
-        multiline={
-          Platform.OS === 'android'
-            ? this.state.multiline
-            : this.props.multiline
-        }
-      />
+      <Flex.Rows style={[padding]} align='center'>
+        <TextInputMultilineFix
+          style={[
+            {
+              width: 330,
+              height: 330,
+              backgroundColor: colors.grey7,
+              color: colors.black,
+              flexWrap: 'wrap',
+              fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+            },
+            textTiny,
+            padding,
+            marginTop,
+            rounded,
+          ]}
+          multiline
+          placeholder='Type or copy/paste a berty user public key here'
+          value={contactId}
+          onChangeText={contactId => this.setState({ contactId })}
+          editable={!readOnly}
+          selectTextOnFocus
+        />
+
+        <Flex.Cols justify='center'>
+          {shareButton ? <ShareMyKey contactId={contactId} /> : null}
+          {addButton ? <AddButton
+            contactId={contactId}
+            navigation={navigation}
+            errorHandler={err => {
+              this.setState({ err })
+              console.error(err)
+            }} /> : null}
+        </Flex.Cols>
+      </Flex.Rows>
     )
   }
 }
 
-const ByPublicKey = fragments.Contact(
-  class ByPublicKey extends PureComponent {
-    state = {
-      contactId: '',
-    }
-    render () {
-      const { data, navigation } = this.props
-      const {
-        state: { routeName },
-      } = navigation
-      const { contactId } = this.state
-      const myself = data
-      const myID = myself ? atob(myself.id).split('contact:')[1] : ''
-      return (
-        <Flex.Rows style={[padding]} align='center'>
-          <TextInputMultilineFix
-            style={[
-              {
-                width: 330,
-                height: 330,
-                backgroundColor: colors.grey7,
-                color: colors.black,
-                flexWrap: 'wrap',
-              },
-              textTiny,
-              padding,
-              marginTop,
-              rounded,
-            ]}
-            multiline
-            placeholder='Type or copy/paste a berty user public key here'
-            value={routeName === 'Enter a public key' ? contactId : myID}
-            onChangeText={
-              routeName === 'Enter a public key'
-                ? contactId => this.setState({ contactId })
-                : undefined
-            }
-            selectTextOnFocus
-          />
-          {routeName === 'Enter a public key' ? (
-            <Flex.Cols justify='center'>
-              <Button
-                icon='plus'
-                background={colors.blue}
-                margin
-                padding
-                rounded={23}
-                height={24}
-                medium
-                middle
-                center
-                self='stretch'
-                onPress={async () => {
-                  try {
-                    await mutations.contactRequest.commit({
-                      contact: {
-                        id: btoa(`contact:${contactId}`),
-                        displayName: '',
-                        displayStatus: '',
-                        overrideDisplayName: '',
-                        overrideDisplayStatus: '',
-                      },
-                      introText: '',
-                    })
-                    navigation.goBack(null)
-                  } catch (err) {
-                    this.setState({ err })
-                    console.error(err)
-                  }
-                }}
-              >
-                ADD THIS KEY
-              </Button>
-            </Flex.Cols>
-          ) : (
-            <Flex.Cols justify='center'>
-              <Button
-                icon='copy'
-                background={colors.blue}
-                margin
-                padding
-                rounded={23}
-                height={24}
-                medium
-                middle
-                center
-                self='stretch'
-                onPress={() => Clipboard.setString(myID)}
-              >
-                COPY THE KEY
-              </Button>
-            </Flex.Cols>
-          )}
-        </Flex.Rows>
-      )
-    }
-  }
-)
+const ByPublicKey = fragments.Contact(ByPublicKeyComponent)
 
-class ByPublicKeyScreen extends PureComponent {
+const AddByPublicKeyScreen = props => <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
+  <ByPublicKeyComponent
+    navigation={props.navigation}
+    initialKey={''}
+    addButton
+  />
+</Screen>
+
+class SharePublicKeyScreen extends PureComponent {
   render () {
     const { navigation } = this.props
     return (
@@ -177,6 +165,8 @@ class ByPublicKeyScreen extends PureComponent {
                 return (
                   <ByPublicKey
                     navigation={navigation}
+                    readOnly
+                    shareButton
                     data={state.data.ContactList.edges[0].node}
                   />
                 )
@@ -191,7 +181,7 @@ class ByPublicKeyScreen extends PureComponent {
                     center
                     self='center'
                   >
-                    An unexpected error occured, please restart the application
+                    An unexpected error occurred, please restart the application
                   </Text>
                 )
             }
@@ -204,8 +194,8 @@ class ByPublicKeyScreen extends PureComponent {
 
 export default createTabNavigator(
   {
-    'Enter a public key': ByPublicKeyScreen,
-    'View my public key': ByPublicKeyScreen,
+    'Enter a public key': AddByPublicKeyScreen,
+    'View my public key': SharePublicKeyScreen,
   },
   {
     initialRouteName: 'Enter a public key',
@@ -228,5 +218,9 @@ export default createTabNavigator(
         borderBottom,
       ],
     },
-  }
+  },
 )
+
+export const ByPublicKeyModal = props => <ModalScreen navigation={props.navigation}>
+  <ByPublicKeyComponent addButton initialKey={props.navigation.getParam('initialKey', '')} {...props} />
+</ModalScreen>
