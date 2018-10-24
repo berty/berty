@@ -168,7 +168,6 @@ func (r *mutationResolver) RunIntegrationTests(ctx context.Context, name string)
 }
 
 func (r *mutationResolver) ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error) {
-	// logger().Debug("CONTACT_REQUEST_RESOLVER")
 	contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
 	return r.client.ContactRequest(ctx, &node.ContactRequestInput{
 		Contact:   contact,
@@ -176,7 +175,6 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, contact *entity.C
 	})
 }
 func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
-	// logger().Debug("CONTACT_ACCEPT_REQUEST_RESOLVER")
 	return r.client.ContactAcceptRequest(ctx, &entity.Contact{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})

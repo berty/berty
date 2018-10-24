@@ -27,6 +27,11 @@ const ConversationAddMessageMutation = graphql`
 `
 
 export default {
-  commit: input =>
-    commit(ConversationAddMessageMutation, 'ConversationAddMessage', input),
+  commit: (input, configs) =>
+    commit(
+      ConversationAddMessageMutation,
+      'ConversationAddMessage',
+      input,
+      configs
+    ),
 }
