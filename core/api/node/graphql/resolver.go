@@ -161,6 +161,12 @@ func (r *googleProtobufMethodOptionsResolver) IdempotencyLevel(ctx context.Conte
 
 type mutationResolver struct{ *Resolver }
 
+func (r *mutationResolver) RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error) {
+	return r.client.RunIntegrationTests(ctx, &node.IntegrationTestInput{
+		Name: name,
+	})
+}
+
 func (r *mutationResolver) ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error) {
 	// logger().Debug("CONTACT_REQUEST_RESOLVER")
 	contact.ID = strings.SplitN(contact.ID, ":", 2)[1]

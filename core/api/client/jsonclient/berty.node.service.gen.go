@@ -32,6 +32,7 @@ func init() {
 	registerUnary("berty.node.GetConversationMember", NodeGetConversationMember)
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
+	registerUnary("berty.node.RunIntegrationTests", NodeRunIntegrationTests)
 	registerUnary("berty.node.DebugPing", NodeDebugPing)
 	registerUnary("berty.node.DeviceInfos", NodeDeviceInfos)
 }
@@ -358,6 +359,20 @@ func NodeGenerateFakeData(client *client.Client, ctx context.Context, jsonInput 
 		return nil, err
 	}
 	return client.Node().GenerateFakeData(ctx, &typedInput)
+}
+
+func NodeRunIntegrationTests(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "RunIntegrationTests"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.IntegrationTestInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().RunIntegrationTests(ctx, &typedInput)
 }
 
 func NodeDebugPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {

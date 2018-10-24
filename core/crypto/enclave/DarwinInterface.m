@@ -1,3 +1,5 @@
+// +build darwin
+
 #import "DarwinInterface.h"
 
 // Define label and tag for keychain entry
