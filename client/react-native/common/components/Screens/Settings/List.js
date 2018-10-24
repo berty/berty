@@ -60,11 +60,6 @@ export default class List extends PureComponent {
       </Menu.Section>
       <Menu.Section>
         <Menu.Item
-          icon='terminal'
-          title='Dev tools'
-          onPress={() => navigation.push('settings/devtools')}
-        />
-        <Menu.Item
           icon='life-buoy'
           title='Help'
           onPress={() => navigation.push('settings/help')}
@@ -72,7 +67,14 @@ export default class List extends PureComponent {
         <Menu.Item
           icon='layers'
           title='Legal terms'
-          onPress={() => navigation.push('settings/layers')}
+          onPress={() => navigation.push('settings/legal')}
+        />
+      </Menu.Section>
+      <Menu.Section>
+        <Menu.Item
+          icon='terminal'
+          title='Dev tools'
+          onPress={() => navigation.push('settings/devtools')}
         />
       </Menu.Section>
     </Menu>
