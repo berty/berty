@@ -167,7 +167,6 @@ ContactList.Sent = component =>
     {
       direction: 'forward',
       getConnectionFromProps: props => {
-        console.log(props)
         return props.data.ContactList
       },
       getFragmentVariables: (prevVars, totalCount) => {
