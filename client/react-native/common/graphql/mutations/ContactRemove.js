@@ -1,6 +1,7 @@
 import { graphql } from 'react-relay'
 import { commit } from '../../relay'
 import { contact } from '../../utils'
+import { fragments } from '../../graphql'
 
 const ContactRemoveMutation = graphql`
   mutation ContactRemoveMutation(
@@ -41,15 +42,21 @@ const ContactRemoveMutation = graphql`
   }
 `
 
-export default {
-  commit: (input, configs) =>
-    commit(
-      ContactRemoveMutation,
-      'ContactRemove',
-      {
-        ...contact.default,
-        ...input,
+export default (input, configs) =>
+  commit(
+    ContactRemoveMutation,
+    'ContactRemove',
+    {
+      ...contact.default,
+      ...input,
+    },
+    {
+      updater: (store, data) => {
+        fragments.ContactList.Received.updater(store).delete(
+          data.ContactRemove.id
+        )
+        fragments.ContactList.Sent.updater(store).delete(data.ContactRemove.id)
       },
-      configs
-    ),
-}
+      ...configs,
+    }
+  )

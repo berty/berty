@@ -13,7 +13,6 @@ import {
   queries,
   subscriptions,
 } from '../../../../graphql'
-import { ConnectionHandler } from 'relay-runtime'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -27,23 +26,7 @@ const Item = fragments.Contact(
           data: { id },
         } = this.props
         try {
-          await mutations.contactAcceptRequest.commit(
-            { id },
-            {
-              updater: (store, data) => {
-                const root = store.getRoot()
-                const connection = ConnectionHandler.getConnection(
-                  root,
-                  'ContactListReceived_ContactList',
-                  fragments.ContactList.Received.defaultArguments
-                )
-                ConnectionHandler.deleteNode(
-                  connection,
-                  data.ContactAcceptRequest.id
-                )
-              },
-            }
-          )
+          await mutations.contactAcceptRequest({ id })
         } catch (err) {
           console.error(err)
         }
@@ -54,20 +37,7 @@ const Item = fragments.Contact(
       this.setState({ isLoading: true }, async () => {
         const { id } = this.props.data
         try {
-          await mutations.contactRemove.commit(
-            { id },
-            {
-              updater: (store, data) => {
-                const root = store.getRoot()
-                const connection = ConnectionHandler.getConnection(
-                  root,
-                  'ContactListReceived_ContactList',
-                  fragments.ContactList.Received.defaultArguments
-                )
-                ConnectionHandler.deleteNode(connection, data.ContactRemove.id)
-              },
-            }
-          )
+          await mutations.contactRemove({ id })
         } catch (err) {
           console.error(err)
         }
@@ -78,20 +48,7 @@ const Item = fragments.Contact(
       this.setState({ isLoading: true }, async () => {
         const { id } = this.props.data
         try {
-          await mutations.contactRemove.commit(
-            { id },
-            {
-              updater: (store, data) => {
-                const root = store.getRoot()
-                const connection = ConnectionHandler.getConnection(
-                  root,
-                  'ContactListSent_ContactList',
-                  fragments.ContactList.Sent.defaultArguments
-                )
-                ConnectionHandler.deleteNode(connection, data.ContactRemove.id)
-              },
-            }
-          )
+          await mutations.contactRemove({ id })
         } catch (err) {
           console.error(err)
         }
