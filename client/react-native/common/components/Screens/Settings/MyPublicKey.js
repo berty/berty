@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
-import { Platform, TextInput as TextInputNative, Clipboard } from 'react-native'
+import { Clipboard } from 'react-native'
 import { colors } from '../../../constants'
-import { Flex, Screen, Header, Button } from '../../Library'
+import { Flex, Screen, Header, Button, TextInputMultilineFix } from '../../Library'
 import {
   padding,
   paddingVertical,
@@ -10,37 +10,6 @@ import {
   rounded,
 } from '../../../styles'
 import { atob } from 'b64-lite'
-
-class TextInputMultilineFix extends PureComponent {
-  state = {
-    multiline: false,
-  }
-
-  render () {
-    return (
-      <TextInputNative
-        {...this.props}
-        onFocus={() => {
-          Platform.OS === 'android' &&
-            this.props.multiline &&
-            this.setState({ multiline: true })
-          return this.props.onFocus && this.props.onFocus()
-        }}
-        onBlur={() => {
-          Platform.OS === 'android' &&
-            this.props.multiline &&
-            this.setState({ multiline: true })
-          return this.props.onBlur && this.props.onBlur()
-        }}
-        multiline={
-          Platform.OS === 'android'
-            ? this.state.multiline
-            : this.props.multiline
-        }
-      />
-    )
-  }
-}
 
 export default class MyPublicKey extends PureComponent {
   static navigationOptions = ({ navigation }) => ({

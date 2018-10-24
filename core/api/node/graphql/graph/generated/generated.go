@@ -191,6 +191,14 @@ type ComplexityRoot struct {
 		Cursor func(childComplexity int) int
 	}
 
+	BertyNodeIntegrationTestPayload struct {
+		Name       func(childComplexity int) int
+		Success    func(childComplexity int) int
+		Verbose    func(childComplexity int) int
+		StartedAt  func(childComplexity int) int
+		FinishedAt func(childComplexity int) int
+	}
+
 	BertyNodePageInfo struct {
 		StartCursor     func(childComplexity int) int
 		EndCursor       func(childComplexity int) int
@@ -518,6 +526,7 @@ type ComplexityRoot struct {
 		ConversationExclude    func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
 		ConversationAddMessage func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
 		GenerateFakeData       func(childComplexity int, T bool) int
+		RunIntegrationTests    func(childComplexity int, name string) int
 	}
 
 	Query struct {
@@ -598,6 +607,7 @@ type MutationResolver interface {
 	ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error)
 	GenerateFakeData(ctx context.Context, T bool) (*node.Void, error)
+	RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
@@ -1277,6 +1287,21 @@ func field_Mutation_GenerateFakeData_args(rawArgs map[string]interface{}) (map[s
 		}
 	}
 	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_RunIntegrationTests_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		var err error
+		arg0, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
 	return args, nil
 
 }
@@ -2744,6 +2769,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNodeEventEdge.Cursor(childComplexity), true
 
+	case "BertyNodeIntegrationTestPayload.name":
+		if e.complexity.BertyNodeIntegrationTestPayload.Name == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeIntegrationTestPayload.Name(childComplexity), true
+
+	case "BertyNodeIntegrationTestPayload.success":
+		if e.complexity.BertyNodeIntegrationTestPayload.Success == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeIntegrationTestPayload.Success(childComplexity), true
+
+	case "BertyNodeIntegrationTestPayload.verbose":
+		if e.complexity.BertyNodeIntegrationTestPayload.Verbose == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeIntegrationTestPayload.Verbose(childComplexity), true
+
+	case "BertyNodeIntegrationTestPayload.startedAt":
+		if e.complexity.BertyNodeIntegrationTestPayload.StartedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeIntegrationTestPayload.StartedAt(childComplexity), true
+
+	case "BertyNodeIntegrationTestPayload.finishedAt":
+		if e.complexity.BertyNodeIntegrationTestPayload.FinishedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeIntegrationTestPayload.FinishedAt(childComplexity), true
+
 	case "BertyNodePageInfo.startCursor":
 		if e.complexity.BertyNodePageInfo.StartCursor == nil {
 			break
@@ -4125,6 +4185,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.GenerateFakeData(childComplexity, args["T"].(bool)), true
+
+	case "Mutation.RunIntegrationTests":
+		if e.complexity.Mutation.RunIntegrationTests == nil {
+			break
+		}
+
+		args, err := field_Mutation_RunIntegrationTests_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RunIntegrationTests(childComplexity, args["name"].(string)), true
 
 	case "Query.node":
 		if e.complexity.Query.Node == nil {
@@ -7192,6 +7264,159 @@ func (ec *executionContext) _BertyNodeEventEdge_cursor(ctx context.Context, fiel
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var bertyNodeIntegrationTestPayloadImplementors = []string{"BertyNodeIntegrationTestPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeIntegrationTestPayload(ctx context.Context, sel ast.SelectionSet, obj *node.IntegrationTestOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeIntegrationTestPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeIntegrationTestPayload")
+		case "name":
+			out.Values[i] = ec._BertyNodeIntegrationTestPayload_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "success":
+			out.Values[i] = ec._BertyNodeIntegrationTestPayload_success(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "verbose":
+			out.Values[i] = ec._BertyNodeIntegrationTestPayload_verbose(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "startedAt":
+			out.Values[i] = ec._BertyNodeIntegrationTestPayload_startedAt(ctx, field, obj)
+		case "finishedAt":
+			out.Values[i] = ec._BertyNodeIntegrationTestPayload_finishedAt(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeIntegrationTestPayload_name(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeIntegrationTestPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeIntegrationTestPayload_success(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeIntegrationTestPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Success, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	return models.MarshalBool(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeIntegrationTestPayload_verbose(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeIntegrationTestPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Verbose, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeIntegrationTestPayload_startedAt(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeIntegrationTestPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeIntegrationTestPayload_finishedAt(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeIntegrationTestPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.FinishedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
 }
 
 var bertyNodePageInfoImplementors = []string{"BertyNodePageInfo"}
@@ -14791,6 +15016,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_ConversationAddMessage(ctx, field)
 		case "GenerateFakeData":
 			out.Values[i] = ec._Mutation_GenerateFakeData(ctx, field)
+		case "RunIntegrationTests":
+			out.Values[i] = ec._Mutation_RunIntegrationTests(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -15079,6 +15306,37 @@ func (ec *executionContext) _Mutation_GenerateFakeData(ctx context.Context, fiel
 	}
 
 	return ec._BertyNodeVoidPayload(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_RunIntegrationTests(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_RunIntegrationTests_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RunIntegrationTests(rctx, args["name"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.IntegrationTestOutput)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeIntegrationTestPayload(ctx, field.Selections, res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -18020,6 +18278,13 @@ type BertyEntityConversationMemberPayload {
 type BertyNodeVoidPayload {
       T: Bool!
 }
+type BertyNodeIntegrationTestPayload {
+      name: String!
+      success: Bool!
+      verbose: String!
+    startedAt: GoogleProtobufTimestamp
+    finishedAt: GoogleProtobufTimestamp
+}
 type BertyNodeDeviceInfosPayload {
     infos: [BertyNodeDeviceInfo]
 }
@@ -18166,6 +18431,9 @@ type Mutation {
   GenerateFakeData(
       T: Bool!
   ): BertyNodeVoidPayload
+  RunIntegrationTests(
+      name: String!
+  ): BertyNodeIntegrationTestPayload
 }
   
 type Subscription {

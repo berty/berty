@@ -6,7 +6,9 @@ import (
 	"testing"
 	"time"
 
-	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"berty.tech/core/testrunner"
+
+	"github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 
 	"berty.tech/core/api/node"
@@ -18,7 +20,7 @@ import (
 )
 
 func init() {
-	InitLogger()
+	testrunner.InitLogger()
 }
 
 func TestWithEnqueuer(t *testing.T) {

@@ -4,10 +4,11 @@ import (
 	"runtime"
 	"testing"
 
+	"berty.tech/core/testrunner"
+
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/public"
 	"berty.tech/core/crypto/sigchain"
-	"berty.tech/core/test"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -17,7 +18,7 @@ func verifyPubKey(pk []byte) error {
 }
 
 func TestEnclave(t *testing.T) {
-	test.InitLogger()
+	testrunner.InitLogger()
 
 	Convey("Test enclave library", t, func() {
 		Convey("Generated keypairs satisfy keypair.Interface and return valid pubkeys", func() {
