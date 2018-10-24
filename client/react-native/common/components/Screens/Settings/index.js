@@ -5,8 +5,9 @@ import List from './List'
 import MyAccount from './MyAccount'
 import MyPublicKey from './MyPublicKey'
 import MyQRCode from './MyQRCode'
-import Devtools from './Devtools/index.js'
 import About from './About/index.js'
+import Help from './Help/index.js'
+import Devtools from './Devtools/index.js'
 
 export default createSubStackNavigator(
   {
@@ -15,6 +16,7 @@ export default createSubStackNavigator(
     'settings/my-account/my-public-key': MyPublicKey,
     'settings/my-account/my-qr-code': MyQRCode,
     'settings/about': About,
+    'settings/help': Help,
     'settings/devtools': Devtools,
   },
   {
