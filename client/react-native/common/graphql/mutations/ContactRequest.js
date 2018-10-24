@@ -1,5 +1,6 @@
 import { graphql } from 'react-relay'
 import { commit } from '../../relay'
+import { contact } from '../../utils'
 
 const ContactRequestMutation = graphql`
   mutation ContactRequestMutation(
@@ -30,7 +31,15 @@ const ContactRequestMutation = graphql`
     }
   }
 `
-
 export default {
-  commit: input => commit(ContactRequestMutation, 'ContactRequest', input),
+  commit: (input, configs) =>
+    commit(
+      ContactRequestMutation,
+      'ContactRequest',
+      {
+        ...contact.default,
+        ...input,
+      },
+      configs
+    ),
 }

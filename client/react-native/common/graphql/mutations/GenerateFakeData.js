@@ -10,5 +10,5 @@ const GenerateFakeDataMutation = graphql`
 `
 
 export default {
-  commit: input => commit(GenerateFakeDataMutation, 'GenerateFakeData', input),
+  commit: (input, configs) => commit(GenerateFakeDataMutation, 'GenerateFakeData', input, configs),
 }

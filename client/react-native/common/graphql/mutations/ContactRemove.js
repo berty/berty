@@ -3,15 +3,15 @@ import { commit } from '../../relay'
 import { contact } from '../../utils'
 import { fragments } from '../../graphql'
 
-const ContactAcceptRequestMutation = graphql`
-  mutation ContactAcceptRequestMutation(
+const ContactRemoveMutation = graphql`
+  mutation ContactRemoveMutation(
     $id: ID!
     $displayName: String!
     $displayStatus: String!
     $overrideDisplayName: String!
     $overrideDisplayStatus: String!
   ) {
-    ContactAcceptRequest(
+    ContactRemove(
       id: $id
       displayName: $displayName
       displayStatus: $displayStatus
@@ -44,18 +44,19 @@ const ContactAcceptRequestMutation = graphql`
 
 export default (input, configs) =>
   commit(
-    ContactAcceptRequestMutation,
-    'ContactAcceptRequest',
+    ContactRemoveMutation,
+    'ContactRemove',
     {
       ...contact.default,
       ...input,
     },
-
     {
-      updater: (store, data) =>
+      updater: (store, data) => {
         fragments.ContactList.Received.updater(store).delete(
-          data.ContactAcceptRequest.id
-        ),
+          data.ContactRemove.id
+        )
+        fragments.ContactList.Sent.updater(store).delete(data.ContactRemove.id)
+      },
       ...configs,
     }
   )
