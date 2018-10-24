@@ -109,6 +109,10 @@ service Service {
   rpc DeviceInfos(Void) returns (DeviceInfosOutput) {
     option (berty.gql.graphql_type) = "Query";
   };
+
+  rpc AppVersion(Void) returns (AppVersionOutput) {
+    option (berty.gql.graphql_type) = "Query";
+  };
 }
 
 message DeviceInfosOutput {
@@ -118,6 +122,10 @@ message DeviceInfosOutput {
 message DeviceInfo {
   string key = 1;
   string value = 2;
+}
+
+message AppVersionOutput {
+  string version = 1;
 }
 
 message PingDestination {

@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"berty.tech/core"
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
@@ -159,4 +160,8 @@ func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationT
 	output.FinishedAt = time.Now()
 
 	return output, nil
+}
+
+func (n *Node) AppVersion(_ context.Context, input *node.Void) (*node.AppVersionOutput, error) {
+	return &node.AppVersionOutput{Version: core.Version}, nil
 }
