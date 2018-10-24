@@ -420,6 +420,9 @@ func (r *queryResolver) GetConversationMember(ctx context.Context, id string, cr
 func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*node.DeviceInfosOutput, error) {
 	return r.client.DeviceInfos(ctx, &node.Void{T: true})
 }
+func (r *queryResolver) AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error) {
+	return r.client.AppVersion(ctx, &node.Void{T: true})
+}
 
 type subscriptionResolver struct{ *Resolver }
 

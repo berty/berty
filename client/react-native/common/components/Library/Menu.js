@@ -73,6 +73,7 @@ export default class Menu extends Component {
         children,
         onPress,
         onDelete,
+        description,
       } = this.props
     ) {
       return (
@@ -120,6 +121,16 @@ export default class Menu extends Component {
                 right
                 justify='end'
               />
+            )}
+            {description && (
+              <Text
+                color={color}
+                small
+                right
+                justify='end'
+              >
+                {description}
+              </Text>
             )}
           </Flex.Cols>
           <Separator />

@@ -78,12 +78,16 @@ export default class MyAccount extends PureComponent {
           <Menu.Item
             icon='awesome-qrcode'
             title='View QR code'
-            onPress={() => navigation.push('settings/my-qr-code', { data })}
+            onPress={() =>
+              navigation.push('settings/my-account/my-qr-code', { data })
+            }
           />
           <Menu.Item
             icon='eye'
             title='View public key'
-            onPress={() => navigation.push('settings/my-public-key', { data })}
+            onPress={() =>
+              navigation.push('settings/my-account/my-public-key', { data })
+            }
           />
         </Menu.Section>
         <Menu.Section>

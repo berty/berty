@@ -1166,6 +1166,19 @@ models:
       key:
       value:
 
+  BertyNodeAppVersionOutput:
+    model: berty.tech/core/api/node.AppVersionOutput
+    fields:
+      version:
+  BertyNodeAppVersionOutputInput:
+    model: berty.tech/core/api/node.AppVersionOutput
+    fields:
+      version:
+  BertyNodeAppVersionPayload:
+    model: berty.tech/core/api/node.AppVersionOutput
+    fields:
+      version:
+
   BertyNodePingDestination:
     model: berty.tech/core/api/node.PingDestination
     fields:

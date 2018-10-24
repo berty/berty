@@ -548,6 +548,9 @@ type BertyNodeIntegrationTestPayload {
 type BertyNodeDeviceInfosPayload {
     infos: [BertyNodeDeviceInfo]
 }
+type BertyNodeAppVersionPayload {
+      version: String!
+}
   
 type Query {
   node(id: ID!): Node
@@ -625,6 +628,9 @@ type Query {
   DeviceInfos(
       T: Bool!
   ): BertyNodeDeviceInfosPayload
+  AppVersion(
+      T: Bool!
+  ): BertyNodeAppVersionPayload
 }
   
 type Mutation {
