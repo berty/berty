@@ -17,7 +17,7 @@ export default class List extends PureComponent {
             <Image
               resizeMode='contain'
               style={{ width: 300, height: 300 }}
-              source={require('../../../../static/img/square_legal.svg')}
+              source={require('../../../../static/img/square_legal.png')}
             />
           </Flex.Rows>
         </Flex.Cols>
