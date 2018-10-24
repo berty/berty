@@ -5,7 +5,7 @@ import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/cr
 
 import { Flex, Screen, Separator, Text } from '../../../Library'
 import { QueryReducer } from '../../../../relay'
-import { borderBottom, marginLeft, padding } from '../../../../styles'
+import { borderBottom, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import {
   mutations,
@@ -13,129 +13,187 @@ import {
   queries,
   subscriptions,
 } from '../../../../graphql'
+import { ConnectionHandler } from 'relay-runtime'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
-    onAccept = async () => {
-      const { id } = this.props.data
-      try {
-        await mutations.contactAcceptRequest.commit({ id })
-        this.props.navigation.goBack(null)
-      } catch (err) {
-        console.error(err)
-      }
+    state = {
+      isLoading: false,
     }
 
-    onDecline = async () => {
-      const { id } = this.props.data
-      try {
-        await mutations.contactRemove.commit({ id })
-        this.props.navigation.goBack(null)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-    onRemove = async () => {
-      const { id } = this.props.data
-      try {
-        await mutations.contactRemove.commit({ id })
-        this.props.navigation.goBack(null)
-      } catch (err) {
-        console.error(err)
-      }
-    }
+    onAccept = () =>
+      this.setState({ isLoading: true }, async () => {
+        const {
+          data: { id },
+        } = this.props
+        try {
+          await mutations.contactAcceptRequest.commit(
+            { id },
+            {
+              updater: (store, data) => {
+                const root = store.getRoot()
+                const connection = ConnectionHandler.getConnection(
+                  root,
+                  'ContactListReceived_ContactList',
+                  fragments.ContactList.Received.defaultArguments
+                )
+                ConnectionHandler.deleteNode(
+                  connection,
+                  data.ContactAcceptRequest.id
+                )
+              },
+            }
+          )
+        } catch (err) {
+          console.error(err)
+        }
+        this.setState({ isLoading: false })
+      })
+
+    onDecline = () =>
+      this.setState({ isLoading: true }, async () => {
+        const { id } = this.props.data
+        try {
+          await mutations.contactRemove.commit(
+            { id },
+            {
+              updater: (store, data) => {
+                const root = store.getRoot()
+                const connection = ConnectionHandler.getConnection(
+                  root,
+                  'ContactListReceived_ContactList',
+                  fragments.ContactList.Received.defaultArguments
+                )
+                ConnectionHandler.deleteNode(connection, data.ContactRemove.id)
+              },
+            }
+          )
+        } catch (err) {
+          console.error(err)
+        }
+        this.setState({ isLoading: false })
+      })
+
+    onRemove = () =>
+      this.setState({ isLoading: true }, async () => {
+        const { id } = this.props.data
+        try {
+          await mutations.contactRemove.commit(
+            { id },
+            {
+              updater: (store, data) => {
+                const root = store.getRoot()
+                const connection = ConnectionHandler.getConnection(
+                  root,
+                  'ContactListSent_ContactList',
+                  fragments.ContactList.Sent.defaultArguments
+                )
+                ConnectionHandler.deleteNode(connection, data.ContactRemove.id)
+              },
+            }
+          )
+        } catch (err) {
+          console.error(err)
+        }
+        this.setState({ isLoading: false })
+      })
+
     render () {
       const {
-        data: { id, overrideDisplayName, displayName, displayStatus },
+        data: { id, overrideDisplayName, displayName },
         navigation,
       } = this.props
-
+      const { isLoading } = this.state
       return (
         <Flex.Cols align='center' style={[{ height: 72 }, padding]}>
-          <Flex.Rows size={1} align='center'>
+          <Flex.Cols size={4} justify='start'>
             <Image
               style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
               source={{
                 uri: 'https://api.adorable.io/avatars/40/' + id + '.png',
               }}
             />
-          </Flex.Rows>
-          <Flex.Rows
-            size={3}
-            align='stretch'
-            justify='center'
-            style={[marginLeft]}
-          >
-            <Text color={colors.black} left middle ellipsis>
-              {overrideDisplayName || displayName}
-            </Text>
-            <Text color={colors.subtleGrey} tiny middle left ellipsis>
-              {displayStatus}
-            </Text>
-          </Flex.Rows>
-          {navigation.state.routeName === 'Received' ? (
-            <Flex.Cols size={4}>
+            <Flex.Rows>
               <Text
-                icon='check'
-                background={colors.blue}
-                color={colors.white}
-                margin={{ left: 8 }}
-                padding={{
-                  vertical: 6,
-                  horizontal: 4,
-                }}
+                color={colors.black}
+                left
                 middle
-                center
-                shadow
-                tiny
-                rounded={22}
-                onPress={this.onAccept}
+                ellipsis
+                margin={{ left: 16 }}
               >
-                ACCEPT
+                {overrideDisplayName || displayName}
               </Text>
-              <Text
-                icon='x'
-                background={colors.white}
-                color={colors.subtleGrey}
-                margin={{ left: 8 }}
-                padding={{
-                  vertical: 6,
-                  horizontal: 4,
-                }}
-                middle
-                center
-                tiny
-                shadow
-                self='end'
-                rounded={22}
-                onPress={this.onDecline}
-              >
-                DECLINE
-              </Text>
-            </Flex.Cols>
-          ) : (
-            <Flex.Cols size={1.6}>
-              <Text
-                icon='x'
-                background={colors.white}
-                color={colors.subtleGrey}
-                margin={{ left: 8 }}
-                padding={{
-                  vertical: 6,
-                  horizontal: 4,
-                }}
-                middle
-                center
-                tiny
-                shadow
-                self='end'
-                rounded={22}
-                onPress={this.onRemove}
-              >
-                REMOVE
-              </Text>
+            </Flex.Rows>
+          </Flex.Cols>
+          {isLoading && (
+            <Flex.Cols size={1} justify='end'>
+              <ActivityIndicator />
             </Flex.Cols>
           )}
+          {!isLoading &&
+            (navigation.state.routeName === 'Received' ? (
+              <Flex.Cols size={4}>
+                <Text
+                  icon='check'
+                  background={colors.blue}
+                  color={colors.white}
+                  margin={{ left: 8 }}
+                  padding={{
+                    vertical: 6,
+                    horizontal: 4,
+                  }}
+                  middle
+                  center
+                  shadow
+                  tiny
+                  rounded={22}
+                  onPress={this.onAccept}
+                >
+                  ACCEPT
+                </Text>
+                <Text
+                  icon='x'
+                  background={colors.white}
+                  color={colors.subtleGrey}
+                  margin={{ left: 8 }}
+                  padding={{
+                    vertical: 6,
+                    horizontal: 4,
+                  }}
+                  middle
+                  center
+                  tiny
+                  shadow
+                  self='end'
+                  rounded={22}
+                  onPress={this.onDecline}
+                >
+                  DECLINE
+                </Text>
+              </Flex.Cols>
+            ) : (
+              <Flex.Cols size={1.6}>
+                <Text
+                  icon='x'
+                  background={colors.white}
+                  color={colors.subtleGrey}
+                  margin={{ left: 8 }}
+                  padding={{
+                    vertical: 6,
+                    horizontal: 4,
+                  }}
+                  middle
+                  center
+                  tiny
+                  shadow
+                  self='end'
+                  rounded={22}
+                  onPress={this.onRemove}
+                >
+                  REMOVE
+                </Text>
+              </Flex.Cols>
+            ))}
         </Flex.Cols>
       )
     }

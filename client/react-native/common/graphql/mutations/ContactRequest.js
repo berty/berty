@@ -32,9 +32,14 @@ const ContactRequestMutation = graphql`
   }
 `
 export default {
-  commit: input =>
-    commit(ContactRequestMutation, 'ContactRequest', {
-      ...contact.default,
-      input,
-    }),
+  commit: (input, configs) =>
+    commit(
+      ContactRequestMutation,
+      'ContactRequest',
+      {
+        ...contact.default,
+        ...input,
+      },
+      configs
+    ),
 }

@@ -1,5 +1,6 @@
 import { graphql, createPaginationContainer } from 'react-relay'
 import * as queries from '../queries'
+import { contact } from '../../utils'
 
 const ContactList = component =>
   createPaginationContainer(
@@ -52,6 +53,11 @@ const ContactList = component =>
       query: queries.ContactList,
     }
   )
+ContactList.defaultArguments = {
+  filter: contact.default,
+  orderBy: '',
+  orderDesc: false,
+}
 
 ContactList.Received = component =>
   createPaginationContainer(
@@ -104,6 +110,14 @@ ContactList.Received = component =>
       query: queries.ContactList.Received,
     }
   )
+ContactList.Received.defaultArguments = {
+  filter: {
+    ...contact.default,
+    status: 4,
+  },
+  orderBy: '',
+  orderDesc: false,
+}
 
 ContactList.Sent = component =>
   createPaginationContainer(
@@ -142,6 +156,7 @@ ContactList.Sent = component =>
     {
       direction: 'forward',
       getConnectionFromProps: props => {
+        console.log(props)
         return props.data.ContactList
       },
       getFragmentVariables: (prevVars, totalCount) => {
@@ -156,5 +171,13 @@ ContactList.Sent = component =>
       query: queries.ContactList.Sent,
     }
   )
+ContactList.Sent.defaultArguments = {
+  filter: {
+    ...contact.default,
+    status: 3,
+  },
+  orderBy: '',
+  orderDesc: false,
+}
 
 export default ContactList

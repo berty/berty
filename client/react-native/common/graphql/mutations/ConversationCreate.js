@@ -50,6 +50,6 @@ const ConversationCreateMutation = graphql`
 `
 
 export default {
-  commit: input =>
-    commit(ConversationCreateMutation, 'ConversationCreate', input),
+  commit: (input, configs) =>
+    commit(ConversationCreateMutation, 'ConversationCreate', input, configs),
 }
