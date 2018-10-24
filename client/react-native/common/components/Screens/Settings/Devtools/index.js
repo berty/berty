@@ -4,6 +4,7 @@ import Database from './Database'
 import Network from './Network'
 import EventList from './EventList'
 import EventDetails from './EventDetails'
+import DeviceInfos from './DeviceInfos'
 
 export default createSubStackNavigator(
   {
@@ -12,6 +13,7 @@ export default createSubStackNavigator(
     'devtools/network': Network,
     'devtools/eventlist': EventList,
     'devtools/eventdetails': EventDetails,
+    'devtools/deviceinfos': DeviceInfos,
   },
   {
     initialRouteName: 'devtools/list',

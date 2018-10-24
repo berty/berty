@@ -8,6 +8,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math/rand"
+	"runtime"
 	"strings"
 
 	"berty.tech/core/api/node"
@@ -96,4 +97,13 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 	}
 
 	return &node.Void{}, nil
+}
+
+func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInfosOutput, error) {
+	output := &node.DeviceInfosOutput{}
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "OS", Value: runtime.GOOS})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Arch", Value: runtime.GOARCH})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go version", Value: runtime.Version()})
+
+	return output, nil
 }

@@ -371,6 +371,10 @@ type BertyP2pEvent implements Node {
   
   
 
+type BertyNodeDeviceInfo  {
+      key: String!
+      value: String!
+}
 type BertyNodePingDestination  {
       destination: String!
 }
@@ -534,6 +538,9 @@ type BertyEntityConversationMemberPayload {
 type BertyNodeVoidPayload {
       T: Bool!
 }
+type BertyNodeDeviceInfosPayload {
+    infos: [BertyNodeDeviceInfo]
+}
   
 type Query {
   node(id: ID!): Node
@@ -608,6 +615,9 @@ type Query {
       conversationId: String!
       contactId: String!
   ): BertyEntityConversationMemberPayload
+  DeviceInfos(
+      T: Bool!
+  ): BertyNodeDeviceInfosPayload
 }
   
 type Mutation {

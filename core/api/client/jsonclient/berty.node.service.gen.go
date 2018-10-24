@@ -33,6 +33,7 @@ func init() {
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
 	registerUnary("berty.node.DebugPing", NodeDebugPing)
+	registerUnary("berty.node.DeviceInfos", NodeDeviceInfos)
 }
 
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
@@ -371,4 +372,18 @@ func NodeDebugPing(client *client.Client, ctx context.Context, jsonInput []byte)
 		return nil, err
 	}
 	return client.Node().DebugPing(ctx, &typedInput)
+}
+
+func NodeDeviceInfos(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "DeviceInfos"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().DeviceInfos(ctx, &typedInput)
 }

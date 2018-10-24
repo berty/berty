@@ -1137,6 +1137,35 @@ models:
         resolver: true
 
 
+  BertyNodeDeviceInfosOutput:
+    model: berty.tech/core/api/node.DeviceInfosOutput
+    fields:
+      infos:
+  BertyNodeDeviceInfosOutputInput:
+    model: berty.tech/core/api/node.DeviceInfosOutput
+    fields:
+      infos:
+  BertyNodeDeviceInfosPayload:
+    model: berty.tech/core/api/node.DeviceInfosOutput
+    fields:
+      infos:
+
+  BertyNodeDeviceInfo:
+    model: berty.tech/core/api/node.DeviceInfo
+    fields:
+      key:
+      value:
+  BertyNodeDeviceInfoInput:
+    model: berty.tech/core/api/node.DeviceInfo
+    fields:
+      key:
+      value:
+  BertyNodeDeviceInfoPayload:
+    model: berty.tech/core/api/node.DeviceInfo
+    fields:
+      key:
+      value:
+
   BertyNodePingDestination:
     model: berty.tech/core/api/node.PingDestination
     fields:
