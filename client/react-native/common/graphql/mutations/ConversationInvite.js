@@ -49,6 +49,6 @@ const ConversationInviteMutation = graphql`
 `
 
 export default {
-  commit: input =>
-    commit(ConversationInviteMutation, 'ConversationInvite', input),
+  commit: (input, configs) =>
+    commit(ConversationInviteMutation, 'ConversationInvite', input, configs),
 }
