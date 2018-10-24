@@ -8,8 +8,10 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math/rand"
+	"os"
 	"runtime"
 	"strings"
+	"time"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
@@ -101,9 +103,37 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 
 func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInfosOutput, error) {
 	output := &node.DeviceInfosOutput{}
+
+	// system, platform, os, etc
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "uptime", Value: fmt.Sprintf("%s", time.Since(n.createdAt))})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "OS", Value: runtime.GOOS})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Arch", Value: runtime.GOARCH})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "CPUs", Value: fmt.Sprintf("%d", runtime.NumCPU())})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go version", Value: runtime.Version()})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go compiler", Value: runtime.Compiler})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go 'cgo' calls", Value: fmt.Sprintf("%d", runtime.NumCgoCall())})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go routines", Value: fmt.Sprintf("%d", runtime.NumGoroutine())})
+	if hn, err := os.Hostname(); err != nil {
+		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Hostname", Value: hn})
+	}
+	if exe, err := os.Executable(); err != nil {
+		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Executable", Value: exe})
+	}
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "pid", Value: fmt.Sprintf("%d", os.Getpid())})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "uid", Value: fmt.Sprintf("%d", os.Geteuid())})
+	if wd, err := os.Getwd(); err != nil {
+		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "pwd", Value: wd})
+	}
+
+	// queues
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: client events", Value: fmt.Sprintf("%d", len(n.clientEvents))})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: clients", Value: fmt.Sprintf("%d", len(n.clientEventsSubscribers))})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: outgoing events", Value: fmt.Sprintf("%d", len(n.outgoingEvents))})
+
+	// env
+	for _, env := range os.Environ() {
+		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "env", Value: env})
+	}
 
 	return output, nil
 }

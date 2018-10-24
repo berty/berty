@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
@@ -29,14 +30,14 @@ type Node struct {
 	handleMutex             sync.Mutex
 	networkDriver           network.Driver
 	asyncWaitGroup          sync.WaitGroup
+	pubkey                  []byte // FIXME: use a crypto instance, i.e., enclave
+	b64pubkey               string // FIXME: same as above
+	sigchain                *sigchain.SigChain
+	crypto                  keypair.Interface
+	createdAt               time.Time // used for uptime calculation
 	devtools                struct {
 		mapset map[string]string
 	}
-
-	pubkey    []byte // FIXME: use a crypto instance, i.e., enclave
-	b64pubkey string // FIXME: same as above
-	sigchain  *sigchain.SigChain
-	crypto    keypair.Interface
 }
 
 // New initializes a new Node object
@@ -45,6 +46,7 @@ func New(opts ...NewNodeOption) (*Node, error) {
 		// FIXME: fetch myself from db
 		outgoingEvents: make(chan *p2p.Event, 100),
 		clientEvents:   make(chan *p2p.Event, 100),
+		createdAt:      time.Now(),
 	}
 
 	// apply optioners
