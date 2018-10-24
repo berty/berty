@@ -267,13 +267,13 @@ export class BackgroundText extends PureComponent {
       self,
     }
     return (
-      <Flex.Block
+      <Flex.Cols
         {...flexProps}
         style={BackgroundText.getStyles(this.props)}
         onPress={this.props.onPress}
       >
         {children}
-      </Flex.Block>
+      </Flex.Cols>
     )
   }
 }
