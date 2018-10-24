@@ -7,6 +7,7 @@ import MyPublicKey from './MyPublicKey'
 import MyQRCode from './MyQRCode'
 import About from './About/index.js'
 import Help from './Help/index.js'
+import Legal from './Legal/index.js'
 import Devtools from './Devtools/index.js'
 
 export default createSubStackNavigator(
@@ -17,6 +18,7 @@ export default createSubStackNavigator(
     'settings/my-account/my-qr-code': MyQRCode,
     'settings/about': About,
     'settings/help': Help,
+    'settings/legal': Legal,
     'settings/devtools': Devtools,
   },
   {
