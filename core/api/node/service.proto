@@ -97,6 +97,19 @@ service Service {
   };
 
   rpc DebugPing(PingDestination) returns (Void) {};
+
+  rpc DeviceInfos(Void) returns (DeviceInfosOutput) {
+    option (berty.gql.graphql_type) = "Query";
+  };
+}
+
+message DeviceInfosOutput {
+  repeated DeviceInfo infos = 1;
+}
+
+message DeviceInfo {
+  string key = 1;
+  string value = 2;
 }
 
 message PingDestination {

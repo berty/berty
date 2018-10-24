@@ -20,6 +20,13 @@ export default class List extends PureComponent {
       <Menu absolute>
         <Menu.Section>
           <Menu.Item
+            icon='info'
+            title='Device infos'
+            onPress={() => navigation.push('devtools/deviceinfos')}
+          />
+        </Menu.Section>
+        <Menu.Section>
+          <Menu.Item
             icon='refresh-ccw'
             title='Restart daemon (not implemented)'
             onPress={() => {
