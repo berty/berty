@@ -16,51 +16,46 @@ import {
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
-    state = {
-      isLoading: false,
+    static isLoading = {}
+
+    onAccept = async () => {
+      const { id } = this.props.data
+      Item.isLoading[id] = true
+      this.forceUpdate()
+      try {
+        await mutations.contactAcceptRequest({ id })
+      } catch (err) {
+        console.error(err)
+      }
     }
 
-    onAccept = () =>
-      this.setState({ isLoading: true }, async () => {
-        const {
-          data: { id },
-        } = this.props
-        try {
-          await mutations.contactAcceptRequest({ id })
-        } catch (err) {
-          console.error(err)
-        }
-        this.setState({ isLoading: false })
-      })
+    onDecline = async () => {
+      const { id } = this.props.data
+      Item.isLoading[id] = true
+      this.forceUpdate()
+      try {
+        await mutations.contactRemove({ id })
+      } catch (err) {
+        console.error(err)
+      }
+    }
 
-    onDecline = () =>
-      this.setState({ isLoading: true }, async () => {
-        const { id } = this.props.data
-        try {
-          await mutations.contactRemove({ id })
-        } catch (err) {
-          console.error(err)
-        }
-        this.setState({ isLoading: false })
-      })
-
-    onRemove = () =>
-      this.setState({ isLoading: true }, async () => {
-        const { id } = this.props.data
-        try {
-          await mutations.contactRemove({ id })
-        } catch (err) {
-          console.error(err)
-        }
-        this.setState({ isLoading: false })
-      })
+    onRemove = async () => {
+      const { id } = this.props.data
+      Item.isLoading[id] = true
+      this.forceUpdate()
+      try {
+        await mutations.contactRemove({ id })
+      } catch (err) {
+        console.error(err)
+      }
+    }
 
     render () {
       const {
         data: { id, overrideDisplayName, displayName },
         navigation,
       } = this.props
-      const { isLoading } = this.state
       return (
         <Flex.Cols align='center' style={[{ height: 72 }, padding]}>
           <Flex.Cols size={4} justify='start'>
@@ -82,12 +77,12 @@ const Item = fragments.Contact(
               </Text>
             </Flex.Rows>
           </Flex.Cols>
-          {isLoading && (
+          {Item.isLoading[id] && (
             <Flex.Cols size={1} justify='end'>
               <ActivityIndicator />
             </Flex.Cols>
           )}
-          {!isLoading &&
+          {!Item.isLoading[id] &&
             (navigation.state.routeName === 'Received' ? (
               <Flex.Cols size={4}>
                 <Text
@@ -184,7 +179,6 @@ class List extends PureComponent {
   componentWillUnmount () {
     this.subscribers.forEach(subscriber => subscriber.unsubscribe())
   }
-
   render () {
     const { data, relay, navigation } = this.props
     const edges = (data && data.ContactList && data.ContactList.edges) || []

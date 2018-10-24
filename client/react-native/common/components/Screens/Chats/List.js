@@ -22,7 +22,6 @@ const List = fragments.ConversationList(
   class List extends PureComponent {
     searchHandler = search => this.setState({ search })
     onEndReached = () => {
-      console.log(this.props.relay.hasMore(), this.props.relay.isLoading())
       if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
         return
       }
