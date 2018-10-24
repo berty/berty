@@ -5,7 +5,6 @@ import ByQRCode from './ByQRCode'
 import ByPublicKey from './ByPublicKey'
 import ByBump from './ByBump'
 import Invite from './Invite'
-import RequestValidation from './RequestValidation'
 import React from 'react'
 import { Header } from '../../../Library'
 
@@ -16,7 +15,6 @@ export default createSubStackNavigator(
     'contacts/add/by-public-key': ByPublicKey,
     'contacts/add/by-bump': ByBump,
     'contacts/add/invite': Invite,
-    'contacts/add/request-validation': RequestValidation,
     'contacts/add/choice': Choice,
   },
   {
