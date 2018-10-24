@@ -1,22 +1,146 @@
-import { ActivityIndicator, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, Image } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
-import { ListItem, Screen, Separator } from '../../../Library'
+import { Flex, Screen, Separator, Text } from '../../../Library'
 import { QueryReducer } from '../../../../relay'
-import { borderBottom } from '../../../../styles'
+import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { fragments, queries, subscriptions } from '../../../../graphql'
+import {
+  mutations,
+  fragments,
+  queries,
+  subscriptions,
+} from '../../../../graphql'
 
-const Item = fragments.Contact(({ data, onPress }) => (
-  <ListItem
-    id={data.id}
-    title={data.overrideDisplayName || data.displayName}
-    subtitle=''
-    onPress={onPress}
-  />
-))
+const Item = fragments.Contact(
+  class Item extends PureComponent {
+    onAccept = async () => {
+      const { id } = this.props.data
+      try {
+        await mutations.contactAcceptRequest.commit({ id })
+        this.props.navigation.goBack(null)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    onDecline = async () => {
+      const { id } = this.props.data
+      try {
+        await mutations.contactRemove.commit({ id })
+        this.props.navigation.goBack(null)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    onRemove = async () => {
+      const { id } = this.props.data
+      try {
+        await mutations.contactRemove.commit({ id })
+        this.props.navigation.goBack(null)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+    render () {
+      const {
+        data: { id, overrideDisplayName, displayName, displayStatus },
+        navigation,
+      } = this.props
+
+      return (
+        <Flex.Cols align='center' style={[{ height: 72 }, padding]}>
+          <Flex.Rows size={1} align='center'>
+            <Image
+              style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
+              source={{
+                uri: 'https://api.adorable.io/avatars/40/' + id + '.png',
+              }}
+            />
+          </Flex.Rows>
+          <Flex.Rows
+            size={3}
+            align='stretch'
+            justify='center'
+            style={[marginLeft]}
+          >
+            <Text color={colors.black} left middle ellipsis>
+              {overrideDisplayName || displayName}
+            </Text>
+            <Text color={colors.subtleGrey} tiny middle left ellipsis>
+              {displayStatus}
+            </Text>
+          </Flex.Rows>
+          {navigation.state.routeName === 'Received' ? (
+            <Flex.Cols size={4}>
+              <Text
+                icon='check'
+                background={colors.blue}
+                color={colors.white}
+                margin={{ left: 8 }}
+                padding={{
+                  vertical: 6,
+                  horizontal: 4,
+                }}
+                middle
+                center
+                shadow
+                tiny
+                rounded={22}
+                onPress={this.onAccept}
+              >
+                ACCEPT
+              </Text>
+              <Text
+                icon='x'
+                background={colors.white}
+                color={colors.subtleGrey}
+                margin={{ left: 8 }}
+                padding={{
+                  vertical: 6,
+                  horizontal: 4,
+                }}
+                middle
+                center
+                tiny
+                shadow
+                self='end'
+                rounded={22}
+                onPress={this.onDecline}
+              >
+                DECLINE
+              </Text>
+            </Flex.Cols>
+          ) : (
+            <Flex.Cols size={1.6}>
+              <Text
+                icon='x'
+                background={colors.white}
+                color={colors.subtleGrey}
+                margin={{ left: 8 }}
+                padding={{
+                  vertical: 6,
+                  horizontal: 4,
+                }}
+                middle
+                center
+                tiny
+                shadow
+                self='end'
+                rounded={22}
+                onPress={this.onRemove}
+              >
+                REMOVE
+              </Text>
+            </Flex.Cols>
+          )}
+        </Flex.Cols>
+      )
+    }
+  }
+)
 
 class List extends PureComponent {
   onEndReached = () => {
@@ -46,12 +170,8 @@ class List extends PureComponent {
     this.subscribers.forEach(subscriber => subscriber.unsubscribe())
   }
 
-  onPressItem = id => () => {
-    this.props.navigation.push('contacts/add/request-validation', { id })
-  }
-
   render () {
-    const { data, relay } = this.props
+    const { data, relay, navigation } = this.props
     const edges = (data && data.ContactList && data.ContactList.edges) || []
     return (
       <FlatList
@@ -63,7 +183,7 @@ class List extends PureComponent {
         onEndReached={this.onEndReached}
         keyExtractor={this.props.keyExtractor}
         renderItem={({ item: { node, cursor } }) => (
-          <Item data={node} onPress={this.onPressItem(node.id)} />
+          <Item data={node} navigation={navigation} />
         )}
       />
     )

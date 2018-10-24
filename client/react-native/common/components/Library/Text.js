@@ -105,6 +105,8 @@ const getBorderRadius = (
   let borderRadius = props.rounded || 0
   if (borderRadius === 'circle') {
     borderRadius = props.height / 2
+  } else if (typeof props.rounded === 'number') {
+    borderRadius = props.rounded
   } else if (typeof borderRadius === 'boolean') {
     borderRadius = find({ inside: props, from: radiuses, or: 'small' })
   }
@@ -173,6 +175,7 @@ const getJustify = (
     center: 'center',
     left: 'start',
     right: 'end',
+    stretch: 'stretch',
   }
 ) => find({ inside: props, from: justify, or: undefined })
 
@@ -182,6 +185,7 @@ const getAlign = (
     middle: 'center',
     top: 'start',
     right: 'end',
+    stretch: 'stretch',
   }
 ) => find({ inside: props, from: align, or: undefined })
 
@@ -263,13 +267,13 @@ export class BackgroundText extends PureComponent {
       self,
     }
     return (
-      <Flex.Cols
+      <Flex.Block
         {...flexProps}
         style={BackgroundText.getStyles(this.props)}
         onPress={this.props.onPress}
       >
         {children}
-      </Flex.Cols>
+      </Flex.Block>
     )
   }
 }
