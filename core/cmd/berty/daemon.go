@@ -28,9 +28,14 @@ type daemonOptions struct {
 	transportP2P []string `mapstructure:"transport-p2p"`
 	hop          bool     `mapstructure:"hop"` // relay hop
 	mdns         bool     `mapstructure:"mdns"`
+
+	nickname string `mapstructure:"nickname"`
+	password string `mapstructure:"password"`
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
+	flags.StringVar(&opts.nickname, "nickname", "berty-daemon", "set account nickname")
+	flags.StringVar(&opts.password, "password", "secure", "set account password")
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
@@ -71,8 +76,8 @@ func daemon(opts *daemonOptions) error {
 	a := &account.Account{}
 
 	accountOptions := account.Options{
-		account.WithName("berty-daemon"),
-		account.WithPassphrase("secure"),
+		account.WithName(opts.nickname),
+		account.WithPassphrase(opts.password),
 		account.WithDatabase(&account.DatabaseOptions{
 			Path: "/tmp",
 			Drop: opts.dropDatabase,
