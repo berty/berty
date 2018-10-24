@@ -411,6 +411,9 @@ func (r *queryResolver) GetConversation(ctx context.Context, id string, createdA
 func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
 	return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
 }
+func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*node.DeviceInfosOutput, error) {
+	return r.client.DeviceInfos(ctx, &node.Void{T: true})
+}
 
 type subscriptionResolver struct{ *Resolver }
 
