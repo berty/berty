@@ -5,6 +5,7 @@ package filteredzap
 import (
 	"path"
 	"strings"
+	"sync"
 
 	"go.uber.org/zap/zapcore"
 )
@@ -40,6 +41,7 @@ func (core *filteringCore) Write(entry zapcore.Entry, fields []zapcore.Field) er
 }
 
 func FilterByNamespace(core zapcore.Core, namespaces string) zapcore.Core {
+	var mutex sync.Mutex
 	matchMap := map[string]bool{}
 	patternsString := namespaces
 	patterns := strings.Split(patternsString, ",")
@@ -48,6 +50,10 @@ func FilterByNamespace(core zapcore.Core, namespaces string) zapcore.Core {
 		if entry.Level >= zapcore.ErrorLevel {
 			return true
 		}
+
+		mutex.Lock()
+		defer mutex.Unlock()
+
 		// only show debug,info,warn messages for enabled --log-namespaces
 		if _, found := matchMap[entry.LoggerName]; !found {
 			matchMap[entry.LoggerName] = false
