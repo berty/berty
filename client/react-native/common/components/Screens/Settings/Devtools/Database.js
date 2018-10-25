@@ -15,8 +15,8 @@ export default class Database extends PureComponent {
   })
   render () {
     return (
-      <Menu absolute>
-        <Menu.Section>
+      <Menu>
+        <Menu.Section customMarginTop={1}>
           <Menu.Item
             icon='database'
             title='Generate fake data'

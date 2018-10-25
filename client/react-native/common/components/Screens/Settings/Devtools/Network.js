@@ -14,8 +14,8 @@ export default class Network extends PureComponent {
   })
   render () {
     return (
-      <Menu absolute>
-        <Menu.Section>
+      <Menu>
+        <Menu.Section customMarginTop={1}>
           <Menu.Item
             icon='list'
             title='List peers (not implemented)'
