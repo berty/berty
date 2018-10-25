@@ -3,7 +3,7 @@ import { Switch, Text } from 'react-native'
 import { Header, Menu } from '../../../Library'
 import { colors } from '../../../../constants'
 
-export default class FAQ extends PureComponent {
+export default class Notifications extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: <Header navigation={navigation} title='Notifications' backBtn />,
   })
