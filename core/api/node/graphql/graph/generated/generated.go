@@ -229,6 +229,10 @@ type ComplexityRoot struct {
 		Destination func(childComplexity int) int
 	}
 
+	BertyNodeProtocolsPayload struct {
+		Protocols func(childComplexity int) int
+	}
+
 	BertyNodeVoid struct {
 		T func(childComplexity int) int
 	}
@@ -240,6 +244,24 @@ type ComplexityRoot struct {
 	BertyP2pAckAttrs struct {
 		Ids    func(childComplexity int) int
 		ErrMsg func(childComplexity int) int
+	}
+
+	BertyP2pBandwidthStats struct {
+		Id       func(childComplexity int) int
+		TotalIn  func(childComplexity int) int
+		TotalOut func(childComplexity int) int
+		RateIn   func(childComplexity int) int
+		RateOut  func(childComplexity int) int
+		Type     func(childComplexity int) int
+	}
+
+	BertyP2pBandwidthStatsPayload struct {
+		Id       func(childComplexity int) int
+		TotalIn  func(childComplexity int) int
+		TotalOut func(childComplexity int) int
+		RateIn   func(childComplexity int) int
+		RateOut  func(childComplexity int) int
+		Type     func(childComplexity int) int
 	}
 
 	BertyP2pContactRequestAcceptedAttrs struct {
@@ -560,6 +582,7 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Node                  func(childComplexity int, id string) int
+		Id                    func(childComplexity int, T bool) int
 		EventList             func(childComplexity int, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
 		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
@@ -567,15 +590,17 @@ type ComplexityRoot struct {
 		ConversationList      func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
 		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
-		Peers                 func(childComplexity int, T bool) int
 		DeviceInfos           func(childComplexity int, T bool) int
 		AppVersion            func(childComplexity int, T bool) int
+		Peers                 func(childComplexity int, T bool) int
+		Protocols             func(childComplexity int, id string, addrs []string, connection *int32) int
 		Panic                 func(childComplexity int, T bool) int
 	}
 
 	Subscription struct {
-		EventStream  func(childComplexity int, filter *p2p.Event) int
-		MonitorPeers func(childComplexity int, T bool) int
+		EventStream      func(childComplexity int, filter *p2p.Event) int
+		MonitorBandwidth func(childComplexity int, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) int
+		MonitorPeers     func(childComplexity int, T bool) int
 	}
 }
 
@@ -644,6 +669,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
+	ID(ctx context.Context, T bool) (*p2p.Peer, error)
 	EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
 	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
@@ -651,13 +677,15 @@ type QueryResolver interface {
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
 	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
-	Peers(ctx context.Context, T bool) (*p2p.Peers, error)
 	DeviceInfos(ctx context.Context, T bool) (*node.DeviceInfosOutput, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
+	Peers(ctx context.Context, T bool) (*p2p.Peers, error)
+	Protocols(ctx context.Context, id string, addrs []string, connection *int32) (*node.ProtocolsOutput, error)
 	Panic(ctx context.Context, T bool) (*node.Void, error)
 }
 type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
+	MonitorBandwidth(ctx context.Context, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) (<-chan *p2p.BandwidthStats, error)
 	MonitorPeers(ctx context.Context, T bool) (<-chan *p2p.Peer, error)
 }
 
@@ -1354,6 +1382,21 @@ func field_Query_node_args(rawArgs map[string]interface{}) (map[string]interface
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+
+}
+
+func field_Query_ID_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
 	return args, nil
 
 }
@@ -2185,21 +2228,6 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 
 }
 
-func field_Query_Peers_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	args := map[string]interface{}{}
-	var arg0 bool
-	if tmp, ok := rawArgs["T"]; ok {
-		var err error
-		arg0, err = models.UnmarshalBool(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["T"] = arg0
-	return args, nil
-
-}
-
 func field_Query_DeviceInfos_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 bool
@@ -2226,6 +2254,70 @@ func field_Query_AppVersion_args(rawArgs map[string]interface{}) (map[string]int
 		}
 	}
 	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_Peers_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_Protocols_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 []string
+	if tmp, ok := rawArgs["addrs"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg1 = make([]string, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg1[idx1], err = models.UnmarshalString(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["addrs"] = arg1
+	var arg2 *int32
+	if tmp, ok := rawArgs["connection"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["connection"] = arg2
 	return args, nil
 
 }
@@ -2276,6 +2368,96 @@ func field_Subscription_EventStream_args(rawArgs map[string]interface{}) (map[st
 		}
 	}
 	args["filter"] = arg0
+	return args, nil
+
+}
+
+func field_Subscription_MonitorBandwidth_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *int64
+	if tmp, ok := rawArgs["totalIn"]; ok {
+		var err error
+		var ptr1 int64
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt64(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["totalIn"] = arg1
+	var arg2 *int64
+	if tmp, ok := rawArgs["totalOut"]; ok {
+		var err error
+		var ptr1 int64
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt64(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["totalOut"] = arg2
+	var arg3 *float64
+	if tmp, ok := rawArgs["rateIn"]; ok {
+		var err error
+		var ptr1 float64
+		if tmp != nil {
+			ptr1, err = models.UnmarshalDouble(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["rateIn"] = arg3
+	var arg4 *float64
+	if tmp, ok := rawArgs["rateOut"]; ok {
+		var err error
+		var ptr1 float64
+		if tmp != nil {
+			ptr1, err = models.UnmarshalDouble(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["rateOut"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["type"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["type"] = arg5
 	return args, nil
 
 }
@@ -3066,6 +3248,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNodePingDestination.Destination(childComplexity), true
 
+	case "BertyNodeProtocolsPayload.protocols":
+		if e.complexity.BertyNodeProtocolsPayload.Protocols == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeProtocolsPayload.Protocols(childComplexity), true
+
 	case "BertyNodeVoid.T":
 		if e.complexity.BertyNodeVoid.T == nil {
 			break
@@ -3093,6 +3282,90 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyP2pAckAttrs.ErrMsg(childComplexity), true
+
+	case "BertyP2pBandwidthStats.id":
+		if e.complexity.BertyP2pBandwidthStats.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStats.Id(childComplexity), true
+
+	case "BertyP2pBandwidthStats.totalIn":
+		if e.complexity.BertyP2pBandwidthStats.TotalIn == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStats.TotalIn(childComplexity), true
+
+	case "BertyP2pBandwidthStats.totalOut":
+		if e.complexity.BertyP2pBandwidthStats.TotalOut == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStats.TotalOut(childComplexity), true
+
+	case "BertyP2pBandwidthStats.rateIn":
+		if e.complexity.BertyP2pBandwidthStats.RateIn == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStats.RateIn(childComplexity), true
+
+	case "BertyP2pBandwidthStats.rateOut":
+		if e.complexity.BertyP2pBandwidthStats.RateOut == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStats.RateOut(childComplexity), true
+
+	case "BertyP2pBandwidthStats.type":
+		if e.complexity.BertyP2pBandwidthStats.Type == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStats.Type(childComplexity), true
+
+	case "BertyP2pBandwidthStatsPayload.id":
+		if e.complexity.BertyP2pBandwidthStatsPayload.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStatsPayload.Id(childComplexity), true
+
+	case "BertyP2pBandwidthStatsPayload.totalIn":
+		if e.complexity.BertyP2pBandwidthStatsPayload.TotalIn == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStatsPayload.TotalIn(childComplexity), true
+
+	case "BertyP2pBandwidthStatsPayload.totalOut":
+		if e.complexity.BertyP2pBandwidthStatsPayload.TotalOut == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStatsPayload.TotalOut(childComplexity), true
+
+	case "BertyP2pBandwidthStatsPayload.rateIn":
+		if e.complexity.BertyP2pBandwidthStatsPayload.RateIn == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStatsPayload.RateIn(childComplexity), true
+
+	case "BertyP2pBandwidthStatsPayload.rateOut":
+		if e.complexity.BertyP2pBandwidthStatsPayload.RateOut == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStatsPayload.RateOut(childComplexity), true
+
+	case "BertyP2pBandwidthStatsPayload.type":
+		if e.complexity.BertyP2pBandwidthStatsPayload.Type == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pBandwidthStatsPayload.Type(childComplexity), true
 
 	case "BertyP2pContactRequestAcceptedAttrs.T":
 		if e.complexity.BertyP2pContactRequestAcceptedAttrs.T == nil {
@@ -4444,6 +4717,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Node(childComplexity, args["id"].(string)), true
 
+	case "Query.ID":
+		if e.complexity.Query.Id == nil {
+			break
+		}
+
+		args, err := field_Query_ID_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Id(childComplexity, args["T"].(bool)), true
+
 	case "Query.EventList":
 		if e.complexity.Query.EventList == nil {
 			break
@@ -4528,18 +4813,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
 
-	case "Query.Peers":
-		if e.complexity.Query.Peers == nil {
-			break
-		}
-
-		args, err := field_Query_Peers_args(rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Peers(childComplexity, args["T"].(bool)), true
-
 	case "Query.DeviceInfos":
 		if e.complexity.Query.DeviceInfos == nil {
 			break
@@ -4564,6 +4837,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AppVersion(childComplexity, args["T"].(bool)), true
 
+	case "Query.Peers":
+		if e.complexity.Query.Peers == nil {
+			break
+		}
+
+		args, err := field_Query_Peers_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Peers(childComplexity, args["T"].(bool)), true
+
+	case "Query.Protocols":
+		if e.complexity.Query.Protocols == nil {
+			break
+		}
+
+		args, err := field_Query_Protocols_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Protocols(childComplexity, args["id"].(string), args["addrs"].([]string), args["connection"].(*int32)), true
+
 	case "Query.Panic":
 		if e.complexity.Query.Panic == nil {
 			break
@@ -4587,6 +4884,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Subscription.EventStream(childComplexity, args["filter"].(*p2p.Event)), true
+
+	case "Subscription.MonitorBandwidth":
+		if e.complexity.Subscription.MonitorBandwidth == nil {
+			break
+		}
+
+		args, err := field_Subscription_MonitorBandwidth_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.MonitorBandwidth(childComplexity, args["id"].(*string), args["totalIn"].(*int64), args["totalOut"].(*int64), args["rateIn"].(*float64), args["rateOut"].(*float64), args["type"].(*int32)), true
 
 	case "Subscription.MonitorPeers":
 		if e.complexity.Subscription.MonitorPeers == nil {
@@ -8261,6 +8570,62 @@ func (ec *executionContext) _BertyNodePingDestination_destination(ctx context.Co
 	return models.MarshalString(res)
 }
 
+var bertyNodeProtocolsPayloadImplementors = []string{"BertyNodeProtocolsPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeProtocolsPayload(ctx context.Context, sel ast.SelectionSet, obj *node.ProtocolsOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeProtocolsPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeProtocolsPayload")
+		case "protocols":
+			out.Values[i] = ec._BertyNodeProtocolsPayload_protocols(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeProtocolsPayload_protocols(ctx context.Context, field graphql.CollectedField, obj *node.ProtocolsOutput) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeProtocolsPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Protocols, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalString(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
 var bertyNodeVoidImplementors = []string{"BertyNodeVoid"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -8449,6 +8814,320 @@ func (ec *executionContext) _BertyP2pAckAttrs_ErrMsg(ctx context.Context, field 
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var bertyP2pBandwidthStatsImplementors = []string{"BertyP2pBandwidthStats"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pBandwidthStats(ctx context.Context, sel ast.SelectionSet, obj *p2p.BandwidthStats) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pBandwidthStatsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pBandwidthStats")
+		case "id":
+			out.Values[i] = ec._BertyP2pBandwidthStats_id(ctx, field, obj)
+		case "totalIn":
+			out.Values[i] = ec._BertyP2pBandwidthStats_totalIn(ctx, field, obj)
+		case "totalOut":
+			out.Values[i] = ec._BertyP2pBandwidthStats_totalOut(ctx, field, obj)
+		case "rateIn":
+			out.Values[i] = ec._BertyP2pBandwidthStats_rateIn(ctx, field, obj)
+		case "rateOut":
+			out.Values[i] = ec._BertyP2pBandwidthStats_rateOut(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._BertyP2pBandwidthStats_type(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStats_id(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStats_totalIn(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalIn, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	return models.MarshalInt64(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStats_totalOut(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalOut, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	return models.MarshalInt64(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStats_rateIn(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RateIn, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	rctx.Result = res
+	return models.MarshalDouble(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStats_rateOut(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RateOut, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	rctx.Result = res
+	return models.MarshalDouble(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStats_type(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(p2p.MetricsType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyP2pBandwidthStatsPayloadImplementors = []string{"BertyP2pBandwidthStatsPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pBandwidthStatsPayload(ctx context.Context, sel ast.SelectionSet, obj *p2p.BandwidthStats) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pBandwidthStatsPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pBandwidthStatsPayload")
+		case "id":
+			out.Values[i] = ec._BertyP2pBandwidthStatsPayload_id(ctx, field, obj)
+		case "totalIn":
+			out.Values[i] = ec._BertyP2pBandwidthStatsPayload_totalIn(ctx, field, obj)
+		case "totalOut":
+			out.Values[i] = ec._BertyP2pBandwidthStatsPayload_totalOut(ctx, field, obj)
+		case "rateIn":
+			out.Values[i] = ec._BertyP2pBandwidthStatsPayload_rateIn(ctx, field, obj)
+		case "rateOut":
+			out.Values[i] = ec._BertyP2pBandwidthStatsPayload_rateOut(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._BertyP2pBandwidthStatsPayload_type(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStatsPayload_id(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStatsPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStatsPayload_totalIn(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStatsPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalIn, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	return models.MarshalInt64(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStatsPayload_totalOut(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStatsPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalOut, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	return models.MarshalInt64(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStatsPayload_rateIn(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStatsPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RateIn, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	rctx.Result = res
+	return models.MarshalDouble(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStatsPayload_rateOut(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStatsPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RateOut, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	rctx.Result = res
+	return models.MarshalDouble(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pBandwidthStatsPayload_type(ctx context.Context, field graphql.CollectedField, obj *p2p.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pBandwidthStatsPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(p2p.MetricsType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
 }
 
 var bertyP2pContactRequestAcceptedAttrsImplementors = []string{"BertyP2pContactRequestAcceptedAttrs"}
@@ -16199,6 +16878,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_node(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "ID":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ID(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "EventList":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -16241,12 +16926,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_GetConversationMember(ctx, field)
 				wg.Done()
 			}(i, field)
-		case "Peers":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._Query_Peers(ctx, field)
-				wg.Done()
-			}(i, field)
 		case "DeviceInfos":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -16257,6 +16936,18 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
 				out.Values[i] = ec._Query_AppVersion(ctx, field)
+				wg.Done()
+			}(i, field)
+		case "Peers":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_Peers(ctx, field)
+				wg.Done()
+			}(i, field)
+		case "Protocols":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_Protocols(ctx, field)
 				wg.Done()
 			}(i, field)
 		case "Panic":
@@ -16305,6 +16996,37 @@ func (ec *executionContext) _Query_node(ctx context.Context, field graphql.Colle
 	rctx.Result = res
 
 	return ec._Node(ctx, field.Selections, &res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_ID(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_ID_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ID(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Peer)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pPeerPayload(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -16525,37 +17247,6 @@ func (ec *executionContext) _Query_GetConversationMember(ctx context.Context, fi
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _Query_Peers(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
-	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := field_Query_Peers_args(rawArgs)
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	rctx := &graphql.ResolverContext{
-		Object: "Query",
-		Args:   args,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Peers(rctx, args["T"].(bool))
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*p2p.Peers)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-
-	return ec._BertyP2pPeersPayload(ctx, field.Selections, res)
-}
-
-// nolint: vetshadow
 func (ec *executionContext) _Query_DeviceInfos(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args, err := field_Query_DeviceInfos_args(rawArgs)
@@ -16615,6 +17306,68 @@ func (ec *executionContext) _Query_AppVersion(ctx context.Context, field graphql
 	}
 
 	return ec._BertyNodeAppVersionPayload(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_Peers(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_Peers_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Peers(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Peers)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pPeersPayload(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_Protocols(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_Protocols_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Protocols(rctx, args["id"].(string), args["addrs"].([]string), args["connection"].(*int32))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.ProtocolsOutput)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeProtocolsPayload(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -16720,6 +17473,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	switch fields[0].Name {
 	case "EventStream":
 		return ec._Subscription_EventStream(ctx, fields[0])
+	case "MonitorBandwidth":
+		return ec._Subscription_MonitorBandwidth(ctx, fields[0])
 	case "MonitorPeers":
 		return ec._Subscription_MonitorPeers(ctx, fields[0])
 	default:
@@ -16755,6 +17510,39 @@ func (ec *executionContext) _Subscription_EventStream(ctx context.Context, field
 			}
 
 			return ec._BertyP2pEventPayload(ctx, field.Selections, res)
+		}())
+		return &out
+	}
+}
+
+func (ec *executionContext) _Subscription_MonitorBandwidth(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Subscription_MonitorBandwidth_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Field: field,
+	})
+	rctx := ctx // FIXME: subscriptions are missing request middleware stack https://github.com/99designs/gqlgen/issues/259
+	results, err := ec.resolvers.Subscription().MonitorBandwidth(rctx, args["id"].(*string), args["totalIn"].(*int64), args["totalOut"].(*int64), args["rateIn"].(*float64), args["rateOut"].(*float64), args["type"].(*int32))
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-results
+		if !ok {
+			return nil
+		}
+		var out graphql.OrderedMap
+		out.Add(field.Alias, func() graphql.Marshaler {
+			if res == nil {
+				return graphql.Null
+			}
+
+			return ec._BertyP2pBandwidthStatsPayload(ctx, field.Selections, res)
 		}())
 		return &out
 	}
@@ -19061,6 +19849,19 @@ type BertyP2pEvent implements Node {
   
 
   
+type BertyP2pBandwidthStats  {
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+}
+  
+  
+  
+
+  
 type BertyP2pPeer  {
       id: String!
       addrs: [String!]
@@ -19121,6 +19922,11 @@ type BertyNodePageInfo  {
 }
 type BertyNodeVoid  {
       T: Bool!
+}
+type BertyP2pPeerPayload {
+      id: String!
+      addrs: [String!]
+    connection: Enum
 }
 input BertyP2pEventInput {
     id: ID!
@@ -19251,23 +20057,32 @@ type BertyNodeIntegrationTestPayload {
     startedAt: GoogleProtobufTimestamp
     finishedAt: GoogleProtobufTimestamp
 }
-type BertyP2pPeerPayload {
-      id: String!
-      addrs: [String!]
-    connection: Enum
-}
-type BertyP2pPeersPayload {
-    list: [BertyP2pPeer]
-}
 type BertyNodeDeviceInfosPayload {
     infos: [BertyNodeDeviceInfo]
 }
 type BertyNodeAppVersionPayload {
       version: String!
 }
+type BertyP2pPeersPayload {
+    list: [BertyP2pPeer]
+}
+type BertyNodeProtocolsPayload {
+      protocols: [String!]
+}
+type BertyP2pBandwidthStatsPayload {
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+}
   
 type Query {
   node(id: ID!): Node
+  ID(
+      T: Bool!
+  ): BertyP2pPeerPayload
   EventList(
     filter: BertyP2pEventInput
       orderBy: String!
@@ -19344,15 +20159,20 @@ type Query {
       conversationId: String!
       contactId: String!
   ): BertyEntityConversationMemberPayload
-  Peers(
-      T: Bool!
-  ): BertyP2pPeersPayload
   DeviceInfos(
       T: Bool!
   ): BertyNodeDeviceInfosPayload
   AppVersion(
       T: Bool!
   ): BertyNodeAppVersionPayload
+  Peers(
+      T: Bool!
+  ): BertyP2pPeersPayload
+  Protocols(
+      id: String!
+      addrs: [String!]
+    connection: Enum
+  ): BertyNodeProtocolsPayload
   Panic(
       T: Bool!
   ): BertyNodeVoidPayload
@@ -19431,6 +20251,14 @@ type Subscription {
   EventStream(
     filter: BertyP2pEventInput
   ): BertyP2pEventPayload
+  MonitorBandwidth(
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+  ): BertyP2pBandwidthStatsPayload
   MonitorPeers(
       T: Bool!
   ): BertyP2pPeerPayload

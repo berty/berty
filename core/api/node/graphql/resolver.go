@@ -252,6 +252,16 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	}
 }
 
+func (r *queryResolver) ID(ctx context.Context, T bool) (*p2p.Peer, error) {
+	return r.client.ID(ctx, &node.Void{T: T})
+}
+
+func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ *int32) (*node.ProtocolsOutput, error) {
+	return r.client.Protocols(ctx, &p2p.Peer{
+		ID: id,
+	})
+}
+
 func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
 	if filter != nil {
 		if filter.ID != "" {
@@ -536,6 +546,45 @@ func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan
 			channel <- elem
 		}
 	}()
+	return channel, nil
+}
+
+func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string, _ *int64, _ *int64, _ *float64, _ *float64, mtype *int32) (<-chan *p2p.BandwidthStats, error) {
+	if mtype == nil {
+		_mtype := int32(p2p.MetricsType_GLOBAL)
+		mtype = &_mtype
+	}
+
+	if id == nil {
+		var _id string
+		id = &_id
+	}
+
+	stream, err := r.client.MonitorBandwidth(ctx, &p2p.BandwidthStats{
+		ID:   *id,
+		Type: p2p.MetricsType(*mtype),
+	})
+
+	if err != nil {
+
+		return nil, err
+	}
+
+	channel := make(chan *p2p.BandwidthStats, 10)
+	go func() {
+		for {
+			elem, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				// logger().Error(err.Error())
+				break
+			}
+			channel <- elem
+		}
+	}()
+
 	return channel, nil
 }
 

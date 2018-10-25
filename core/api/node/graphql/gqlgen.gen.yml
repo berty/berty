@@ -1137,6 +1137,35 @@ models:
         resolver: true
 
 
+  BertyP2pBandwidthStats:
+    model: berty.tech/core/api/p2p.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyP2pBandwidthStatsInput:
+    model: berty.tech/core/api/p2p.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyP2pBandwidthStatsPayload:
+    model: berty.tech/core/api/p2p.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+
+
   BertyP2pPeer:
     model: berty.tech/core/api/p2p.Peer
     fields:
@@ -1182,6 +1211,19 @@ models:
     model: berty.tech/core/api/node.DeviceInfosOutput
     fields:
       infos:
+
+  BertyNodeProtocolsOutput:
+    model: berty.tech/core/api/node.ProtocolsOutput
+    fields:
+      protocols:
+  BertyNodeProtocolsOutputInput:
+    model: berty.tech/core/api/node.ProtocolsOutput
+    fields:
+      protocols:
+  BertyNodeProtocolsPayload:
+    model: berty.tech/core/api/node.ProtocolsOutput
+    fields:
+      protocols:
 
   BertyNodeDeviceInfo:
     model: berty.tech/core/api/node.DeviceInfo

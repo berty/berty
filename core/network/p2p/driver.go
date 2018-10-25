@@ -247,6 +247,28 @@ func (d *Driver) getPeerInfo(addr string) (*pstore.PeerInfo, error) {
 	return pstore.InfoFromP2pAddr(iaddr.Multiaddr())
 }
 
+func (d *Driver) Protocols(p *p2p.Peer) ([]string, error) {
+	peerid, err := peer.IDB58Decode(p.ID)
+	if err != nil {
+		return nil, fmt.Errorf("get protocols error: `%s`", err)
+	}
+
+	return d.host.Peerstore().GetProtocols(peerid)
+}
+
+func (d *Driver) ID() *p2p.Peer {
+	addrs := make([]string, len(d.host.Addrs()))
+	for i, addr := range d.host.Addrs() {
+		addrs[i] = addr.String()
+	}
+
+	return &p2p.Peer{
+		ID:         d.host.ID().Pretty(),
+		Addrs:      addrs,
+		Connection: p2p.ConnectionType_CONNECTED,
+	}
+}
+
 func (d *Driver) Close() error {
 	// FIXME: save cache to speedup next connections
 	var err error
