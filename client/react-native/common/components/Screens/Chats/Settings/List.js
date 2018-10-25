@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import { Image } from 'react-native'
-import { Screen, Menu, Header, Badge } from '../../Library'
-import { colors } from '../../../constants'
-import { conversation as utils } from '../../../utils'
-import { mutations } from '../../../graphql'
-import { choosePicture } from '../../../helpers/react-native-image-picker'
+import { Screen, Menu, Header, Badge } from '../../../Library'
+import { colors } from '../../../../constants'
+import { conversation as utils } from '../../../../utils'
+import { mutations } from '../../../../graphql'
+import { choosePicture } from '../../../../helpers/react-native-image-picker'
 
-export default class Settings extends PureComponent {
+export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const [conversation, { edit }, onEdit, onSave] = [
       navigation.getParam('conversation') || { members: [] },
@@ -70,6 +70,7 @@ export default class Settings extends PureComponent {
   }
 
   render () {
+    const { navigation } = this.props
     const { edit } = this.state
     const conversation = this.props.navigation.getParam('conversation')
     const title = utils.getTitle(conversation)
@@ -109,7 +110,7 @@ export default class Settings extends PureComponent {
               <Menu.Item
                 icon='bell'
                 title='Notifications'
-                onPress={() => console.log('Notifications')}
+                onPress={() => navigation.push('settings/notifications')}
               />
               <Menu.Item
                 icon='clock'

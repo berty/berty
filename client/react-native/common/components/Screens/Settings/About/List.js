@@ -34,7 +34,7 @@ export default class List extends PureComponent {
             <Menu.Item
               icon='smartphone'
               title='App version'
-              description={version}
+              textRight={version}
             />
             <Menu.Item
               icon='check-circle'
