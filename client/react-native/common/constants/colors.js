@@ -33,4 +33,6 @@ export default {
   error: '#F00062',
 
   background: '#FAFAFE',
+
+  transparentGrey: 'rgba(36, 49, 50, 0.8)', // based on grey 1
 }
