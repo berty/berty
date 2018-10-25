@@ -13,9 +13,11 @@ import Devtools from './Devtools/index.js'
 export default createSubStackNavigator(
   {
     'settings/list': List,
+    // Should be better to put MyAccount related files in a subfolder
     'settings/my-account': MyAccount,
     'settings/my-account/my-public-key': MyPublicKey,
     'settings/my-account/my-qr-code': MyQRCode,
+    // ////////////////////////////////////
     'settings/about': About,
     'settings/help': Help,
     'settings/legal': Legal,
