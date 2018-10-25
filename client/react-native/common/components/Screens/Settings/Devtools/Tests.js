@@ -76,8 +76,8 @@ export default class Tests extends PureComponent {
 
   render () {
     return (
-      <Menu absolute>
-        <Menu.Section>
+      <Menu>
+        <Menu.Section customMarginTop={1}>
           <React.Fragment>
             {testScenarios.map(({ key, icon, title }) =>
               <Menu.Item

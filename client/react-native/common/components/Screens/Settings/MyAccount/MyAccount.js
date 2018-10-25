@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react'
 import { Image, ActivityIndicator } from 'react-native'
-import { Screen, Menu, Header, Text, Badge, Flex } from '../../Library'
-import { colors } from '../../../constants'
-import { QueryReducer } from '../../../relay'
-import { choosePicture } from '../../../helpers/react-native-image-picker'
+import { Screen, Menu, Header, Text, Badge, Flex } from '../../../Library'
+import { colors } from '../../../../constants'
+import { QueryReducer } from '../../../../relay'
+import { choosePicture } from '../../../../helpers/react-native-image-picker'
 import { graphql } from 'react-relay'
 
 export default class MyAccount extends PureComponent {
@@ -78,16 +78,12 @@ export default class MyAccount extends PureComponent {
           <Menu.Item
             icon='awesome-qrcode'
             title='View QR code'
-            onPress={() =>
-              navigation.push('settings/my-account/my-qr-code', { data })
-            }
+            onPress={() => navigation.push('my-account/my-qrcode', { data })}
           />
           <Menu.Item
             icon='eye'
             title='View public key'
-            onPress={() =>
-              navigation.push('settings/my-account/my-public-key', { data })
-            }
+            onPress={() => navigation.push('my-account/my-publickey', { data })}
           />
         </Menu.Section>
         <Menu.Section>

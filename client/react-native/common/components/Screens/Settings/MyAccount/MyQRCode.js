@@ -1,52 +1,36 @@
 import React, { PureComponent } from 'react'
 import { Clipboard } from 'react-native'
-import { colors } from '../../../constants'
-import { Flex, Screen, Header, Button, TextInputMultilineFix } from '../../Library'
-import {
-  padding,
-  paddingVertical,
-  textTiny,
-  marginTop,
-  rounded,
-} from '../../../styles'
+import { colors } from '../../../../constants'
+import { Flex, Screen, Button, Header } from '../../../Library'
+import { padding, paddingVertical } from '../../../../styles'
+import QRGenerator from '../../../Library/QRGenerator/QRGenerator'
 import { atob } from 'b64-lite'
 
-export default class MyPublicKey extends PureComponent {
+export default class MyQRCode extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     tabBarVisible: false,
-    header: <Header navigation={navigation} title='My public key' backBtn />,
+    header: <Header navigation={navigation} title='My QR code' backBtn />,
   })
 
+  state = {
+    myID:
+      'MEkwEwYHKoZIzj0CAQYIKoZIzj0DAQMDMgAE+Y+qPqI3geo2hQH8eK7Rn+YWG09TejZ5QFoj9fmxFrUyYhFap6XmTdJtEi8myBmW',
+    logo: require('../../../../static/img/logo-border.png'),
+  }
+
   share = () => {
-    const { id } = this.props.navigation.getParam('data')
-    console.log('Share: ', id)
+    console.error('share: not implemented')
   }
 
   render () {
+    const { logo } = this.state
     const { id } = this.props.navigation.getParam('data')
     const myID = atob(id).split('contact:')[1]
+
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <Flex.Rows style={[padding]} align='center'>
-          <TextInputMultilineFix
-            style={[
-              {
-                width: 330,
-                height: 330,
-                backgroundColor: colors.grey7,
-                color: colors.black,
-                flexWrap: 'wrap',
-              },
-              textTiny,
-              padding,
-              marginTop,
-              rounded,
-            ]}
-            multiline
-            placeholder='Type or copy/paste a berty user public key here'
-            value={myID}
-            selectTextOnFocus
-          />
+          <QRGenerator value={myID} logo={logo} size={256} logoWidth={100} />
           <Flex.Cols align='start'>
             <Flex.Rows>
               <Button
@@ -75,7 +59,7 @@ export default class MyPublicKey extends PureComponent {
                 center
                 onPress={() => Clipboard.setString(myID)}
               >
-                COPY THE KEY
+                COPY THE CODE
               </Button>
             </Flex.Rows>
           </Flex.Cols>

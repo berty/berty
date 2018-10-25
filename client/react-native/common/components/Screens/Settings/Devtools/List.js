@@ -17,8 +17,8 @@ export default class List extends PureComponent {
   render () {
     const { navigation } = this.props
     return (
-      <Menu absolute>
-        <Menu.Section>
+      <Menu>
+        <Menu.Section customMarginTop={1}>
           <Menu.Item
             icon='info'
             title='Device infos'

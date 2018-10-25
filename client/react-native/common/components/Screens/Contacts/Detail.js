@@ -8,8 +8,8 @@ export default class Detail extends PureComponent {
   })
   render () {
     return (
-      <Menu absolute>
-        <Menu.Section>
+      <Menu>
+        <Menu.Section customMarginTop={1}>
           <Menu.Item
             icon='message-circle'
             title='Send a message'
