@@ -382,12 +382,8 @@ jobs:
 
 workflows:
   version: 2
-  commit:
+  build-client:
     jobs:
-      - lint
-      - generate
-      - core.go.test
-      - docker.build
       - client.rn.node
       - client.rn.android:
           requires:
@@ -398,3 +394,10 @@ workflows:
       - client.rn.web:
           requires:
             - client.rn.node
+  check-quality:
+    jobs:
+      - lint
+      - generate
+      - core.go.test
+      - docker.build
+  # todo later: build-services
