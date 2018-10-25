@@ -3,7 +3,6 @@ import { ActivityIndicator, StyleSheet, ScrollView, View } from 'react-native'
 import { Flex, Separator, Text } from '.'
 import {
   marginTopLeft,
-  marginTop,
   paddingLeft,
   paddingHorizontal,
   padding,
@@ -37,9 +36,24 @@ export default class Menu extends Component {
     </Flex.Cols>
   )
 
-  static Section = ({ icon, title, children, style, ...props }) => (
-    <View style={[marginTop, style]}>
-      <Flex.Cols style={[marginTopLeft, { marginBottom: 8, marginTop: 32 }]}>
+  static Section = ({
+    icon,
+    title,
+    children,
+    style,
+    customMarginTop,
+    ...props
+  }) => (
+    <View style={[style]}>
+      <Flex.Cols
+        style={[
+          marginTopLeft,
+          {
+            marginBottom: 8,
+            marginTop: customMarginTop || 32,
+          },
+        ]}
+      >
         {title && (
           <Text small icon={icon} {...props}>
             {title}
@@ -73,7 +87,10 @@ export default class Menu extends Component {
         children,
         onPress,
         onDelete,
-        description,
+        boldLeft,
+        boldRight,
+        textRight,
+        customRight,
       } = this.props
     ) {
       return (
@@ -82,7 +99,7 @@ export default class Menu extends Component {
             style={[{ backgroundColor: colors.white }, padding]}
             onPress={onPress}
           >
-            <Flex.Cols justify='start' size={7}>
+            <Flex.Cols justify='start' size={5}>
               {children || (
                 <Text
                   input={
@@ -95,6 +112,7 @@ export default class Menu extends Component {
                   icon={icon}
                   color={color || colors.textBlack}
                   align='center'
+                  bold={boldLeft ? true : null}
                   ellipsis
                 >
                   {title}
@@ -119,19 +137,23 @@ export default class Menu extends Component {
                 color={color}
                 large
                 right
+                bold={boldRight ? true : null}
                 justify='end'
               />
             )}
-            {description && (
+            {textRight && (
               <Text
                 color={color}
                 small
                 right
                 justify='end'
+                bold={boldRight ? true : null}
+                ellipsis
               >
-                {description}
+                {textRight}
               </Text>
             )}
+            {customRight}
           </Flex.Cols>
           <Separator />
         </Fragment>
