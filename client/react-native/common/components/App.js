@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react'
 import Screens from './Screens'
-import { NativeModules, Platform, ActivityIndicator } from 'react-native'
+import { NativeModules, Platform, ActivityIndicator, Linking } from 'react-native'
 import { Flex } from './Library'
 import { subscriptions } from '../graphql'
-import { SafeAreaView } from 'react-navigation'
+import { SafeAreaView, NavigationActions } from 'react-navigation'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
+
 const { CoreModule } = NativeModules
 
 export default class App extends PureComponent {
@@ -13,9 +14,15 @@ export default class App extends PureComponent {
     success: false,
     error: false,
   }
+
   async componentDidMount () {
     try {
       await CoreModule.start()
+    } catch (e) {
+      console.warn(e)
+    }
+
+    try {
       subscriptions.eventStream.subscribe({
         iterator: function * () {
           try {
@@ -44,10 +51,45 @@ export default class App extends PureComponent {
       console.error(err)
       subscriptions.eventStream.dispose()
     }
+
+    if (this._handleOpenURL === undefined) {
+      this._handleOpenURL = this.handleOpenURL.bind(this)
+    }
+
+    Linking.addEventListener('url', this._handleOpenURL)
   }
 
   componentWillUnmount () {
     subscriptions.eventStream.dispose()
+
+    if (this._handleOpenURL !== undefined) {
+      Linking.removeEventListener('url', this._handleOpenURL)
+    }
+  }
+
+  handleOpenURL (event) {
+    const prefixes = ['berty:']
+    let url = event.url
+
+    for (let prefix of prefixes) {
+      if (url.indexOf(prefix) === 0) {
+        url = url.substr(prefix.length)
+        break
+      }
+    }
+
+    const urlParts = url.split('/')
+
+    if (urlParts.length === 3 && urlParts[0] === 'add-contact' && urlParts[1] === 'public-key') {
+      console.log('Adding new contact via public key')
+
+      this.navigation.dispatch(
+        NavigationActions.navigate({
+          routeName: 'modal/contacts/add/by-public-key',
+          params: { initialKey: urlParts[2] },
+        }),
+      )
+    }
   }
 
   render () {
@@ -59,7 +101,7 @@ export default class App extends PureComponent {
             <ActivityIndicator size='large' />
           </Flex.Rows>
         )}
-        {success && <Screens />}
+        {success && <Screens ref={nav => { this.navigation = nav }} />}
         {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>
     )
