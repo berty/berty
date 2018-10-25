@@ -4,6 +4,7 @@ package berty.node;
 
 import "api/protobuf/graphql/graphql.proto";
 import "api/p2p/event.proto";
+import "api/p2p/metrics.proto";
 import "api/p2p/peer.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
@@ -16,6 +17,10 @@ import "google/protobuf/timestamp.proto";
 option go_package = "berty.tech/core/api/node";
 
 service Service {
+  // return node current ID
+  rpc ID(Void) returns (berty.p2p.Peer) {
+    option (gql.graphql_type) = "Query";
+  };
 
   //
   // Events
@@ -105,24 +110,6 @@ service Service {
     option (gql.graphql_type) = "Mutation";
   };
 
-  //
-  // Metrics
-  //
-
-  // Yield new peers in real-time
-  rpc MonitorPeers(Void) returns (stream p2p.Peer) {
-    option (gql.graphql_type) = "Subscription";
-  };
-
-  rpc Peers(Void) returns (p2p.Peers) {
-    option (gql.graphql_type) = "Query";
-  };
-
-  // // yield new connection in real-time
-  // rpc MonitorConnection(EventStreamInput) returns (stream libp2p.Peer) {
-  //   option (gql.graphql_type) = "Subscription";
-  // };
-
   rpc DebugPing(PingDestination) returns (Void) {};
 
   rpc DeviceInfos(Void) returns (DeviceInfosOutput) {
@@ -131,6 +118,28 @@ service Service {
 
   rpc AppVersion(Void) returns (AppVersionOutput) {
     option (gql.graphql_type) = "Query";
+  };
+
+  rpc Peers(Void) returns (p2p.Peers) {
+    option (gql.graphql_type) = "Query";
+  };
+
+  rpc Protocols(p2p.Peer) returns (ProtocolsOutput) {
+    option (gql.graphql_type) = "Query";
+  };
+
+  //
+  // Metrics
+  //
+
+  // Yield bandwidth in real-time
+  rpc MonitorBandwidth(berty.p2p.BandwidthStats) returns (stream berty.p2p.BandwidthStats) {
+    option (gql.graphql_type) = "Subscription";
+  };
+
+    // Yield new peers in real-time
+  rpc MonitorPeers(Void) returns (stream p2p.Peer) {
+    option (gql.graphql_type) = "Subscription";
   };
 
   rpc Panic(Void) returns (Void) {
@@ -142,6 +151,10 @@ service Service {
 message DeviceInfosOutput {
   repeated DeviceInfo infos = 1;
 }
+
+message ProtocolsOutput {
+  repeated string protocols = 1;
+};
 
 message DeviceInfo {
   string key = 1;
