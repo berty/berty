@@ -1,0 +1,16 @@
+linters:
+  golint:
+    fixer: false
+  shellcheck:
+    shell: bash
+  eslint:
+    config: './client/react-native/.eslintrc'
+  swiftlint: {  }
+files:
+  ignore:
+    - 'bower_components/*'
+    - 'node_modules/*'
+    - 'vendor/*'
+    - '*.gen.*'
+fixers:
+  enable: true
