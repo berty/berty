@@ -52,6 +52,12 @@ export default class App extends PureComponent {
       subscriptions.eventStream.dispose()
     }
 
+    Linking.getInitialURL().then(url => {
+      if (url !== null) {
+        this.handleOpenURL({ url })
+      }
+    }).catch(() => {})
+
     if (this._handleOpenURL === undefined) {
       this._handleOpenURL = this.handleOpenURL.bind(this)
     }
@@ -68,7 +74,7 @@ export default class App extends PureComponent {
   }
 
   handleOpenURL (event) {
-    const prefixes = ['berty:']
+    const prefixes = ['berty://']
     let url = event.url
 
     for (let prefix of prefixes) {
