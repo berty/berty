@@ -132,21 +132,21 @@ jobs:
           name: test core
           command: |
             cd core
-            TEST_SLEEP_BETWEEN_STEPS=1s make test | tee /tmp/test-results/go-test-report.out
+            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="-coverprofile=profile.out -covermode=count" make test | tee /tmp/test-results/go-test-report.out
       - run:
           name: test client (bot)
           command: |
             cd client/go/bot
-            go test -v . | tee /tmp/test-results/go-test-report.out
+            go test -coverprofile=profile.out -covermode=count -v . | tee /tmp/test-results/go-test-report.out
             go install -v .
             cd ./examples/berty-bot-example
-            go test -v . | tee /tmp/test-results/go-test-report.out
+            go test -coverprofile=profile.out -covermode=count -v . | tee /tmp/test-results/go-test-report.out
             go install -v .
       - run:
           name: test gomobile
           command: |
             cd client/react-native/gomobile
-            go test -v . | tee /tmp/test-results/go-test-report.out
+            go test -coverprofile=profile.out -covermode=count -v . | tee /tmp/test-results/go-test-report.out
             GOARCH=386 go test -v . | tee /tmp/test-results/go-test-report.out
       - run:
           name: integration core
@@ -161,6 +161,11 @@ jobs:
           key: v1-go-cache
           paths:
             - "/go/pkg"
+      - run:
+          name: aggretate coverage
+          command: |
+            cat `find . -name profile.out` > coverage.txt
+            bash <(curl -s https://codecov.io/bash) -t 1eefe35e-d1a9-45f3-910d-3e84db1ec04c
       - store_test_results:
           path: /tmp/test-results
 
