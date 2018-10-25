@@ -7,6 +7,7 @@ version: 2
     GOTEST_TIMEOUT: 5m
     GOPROXY: http://goproxy.berty.io:3000/
     GO111MODULE: "on"
+    TEST_OPTS: "-coverprofile=profile.out -covermode=count -coverpkg=berty.tech/core/..."
   docker:
     - image: circleci/golang:latest
 
@@ -132,21 +133,21 @@ jobs:
           name: test core
           command: |
             cd core
-            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="-coverprofile=profile.out -covermode=count" make test | tee /tmp/test-results/go-test-report.out
+            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" make test | tee /tmp/test-results/go-test-report.out
       - run:
           name: test client (bot)
           command: |
             cd client/go/bot
-            go test -coverprofile=profile.out -covermode=count -v . | tee /tmp/test-results/go-test-report.out
+            go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
             go install -v .
             cd ./examples/berty-bot-example
-            go test -coverprofile=profile.out -covermode=count -v . | tee /tmp/test-results/go-test-report.out
+            go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
             go install -v .
       - run:
           name: test gomobile
           command: |
             cd client/react-native/gomobile
-            go test -coverprofile=profile.out -covermode=count -v . | tee /tmp/test-results/go-test-report.out
+            go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
             GOARCH=386 go test -v . | tee /tmp/test-results/go-test-report.out
       - run:
           name: integration core
