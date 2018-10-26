@@ -1,20 +1,20 @@
 import React, { PureComponent } from 'react'
 import { Clipboard } from 'react-native'
-import { colors } from '../../../constants'
+import { colors } from '../../../../constants'
 import {
   Flex,
   Screen,
   Header,
   Button,
   TextInputMultilineFix,
-} from '../../Library'
+} from '../../../Library'
 import {
   padding,
   paddingVertical,
   textTiny,
   marginTop,
   rounded,
-} from '../../../styles'
+} from '../../../../styles'
 
 export default class DetailPublicKey extends PureComponent {
   static navigationOptions = ({ navigation }) => ({

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Image, Share } from 'react-native'
-import { Menu, Header, Screen } from '../../Library'
-import { colors } from '../../../constants'
+import { Menu, Header, Screen } from '../../../Library'
+import { colors } from '../../../../constants'
 
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -11,7 +11,7 @@ export default class Detail extends PureComponent {
         title='Contact details'
         rightBtnIcon={'edit-2'}
         onPressRightBtn={() =>
-          navigation.push('contacts/detail/edit', {
+          navigation.push('detail/edit', {
             contact: navigation.getParam('contact'),
           })
         }
@@ -56,7 +56,7 @@ export default class Detail extends PureComponent {
               icon='eye'
               title='View public key'
               onPress={() =>
-                navigation.push('contacts/detail/publickey', { id: contact.id })
+                navigation.push('detail/publickey', { id: contact.id })
               }
             />
             <Menu.Item
