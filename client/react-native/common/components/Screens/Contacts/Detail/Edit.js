@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 import { Image } from 'react-native'
-import { Header, Menu, Badge } from '../../Library'
-import { colors } from '../../../constants'
-import { choosePicture } from '../../../helpers/react-native-image-picker'
+import { Header, Menu, Badge } from '../../../Library'
+import { colors } from '../../../../constants'
+import { choosePicture } from '../../../../helpers/react-native-image-picker'
 
 export default class Edit extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
