@@ -16,8 +16,8 @@ export default class MyAccount extends PureComponent {
           navigation={navigation}
           title='My account'
           rightBtnIcon={'save'}
-          backBtn
           onPressRightBtn={onSave}
+          backBtn
         />
       ),
     }

@@ -9,11 +9,19 @@ import { marginLeft, padding } from '../../../styles'
 const Item = fragments.Contact(
   ({
     data: { id, overrideDisplayName, displayName, displayStatus },
-    onPress,
+    navigation,
   }) => (
     <Flex.Cols
       align='center'
-      onPress={onPress}
+      onPress={() => {
+        navigation.push('contacts/detail', {
+          contact: {
+            id,
+            overrideDisplayName,
+            displayName,
+          },
+        })
+      }}
       style={[{ height: 72 }, padding]}
     >
       <Flex.Rows size={1} align='center'>
@@ -60,8 +68,6 @@ const List = fragments.ContactList(
       this.subscribers.forEach(subscriber => subscriber.unsubscribe())
     }
 
-    onPressItem = id => () =>
-      this.props.navigation.push('contacts/detail', { id })
     keyExtractor = item => item.node.id
 
     render () {
@@ -78,7 +84,7 @@ const List = fragments.ContactList(
           onEndReached={this.onEndReached}
           keyExtractor={this.props.keyExtractor}
           renderItem={({ item: { node, cursor } }) => (
-            <Item data={node} onPress={this.onPressItem(node.id)} />
+            <Item data={node} navigation={this.props.navigation} />
           )}
         />
       )
