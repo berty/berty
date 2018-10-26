@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Image, Share } from 'react-native'
+import { Image, Share, ActionSheetIOS, Platform, Alert } from 'react-native'
 import { Menu, Header, Screen } from '../../../Library'
 import { colors } from '../../../../constants'
 
@@ -19,6 +19,49 @@ export default class Detail extends PureComponent {
       />
     ),
   })
+
+  blockContact = () => {
+    console.log('Block')
+  }
+
+  blockConfirm = () => {
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['Block this contact', 'Cancel'],
+          destructiveButtonIndex: 0,
+          cancelButtonIndex: 1,
+        },
+        buttonIndex => {
+          if (buttonIndex === 1) {
+            this.blockContact()
+          }
+        }
+      )
+    } else if (Platform.OS === 'android') {
+      Alert.alert(
+        'Confirm',
+        'Are you sure you want to block this contact?',
+        [
+          {
+            text: 'Block it',
+            onPress: () => this.blockContact(),
+            style: 'destructive',
+          },
+          {
+            text: 'Cancel',
+            onPress: () => this.blockContact(),
+            style: 'cancel',
+          },
+        ],
+        { cancelable: false }
+      )
+    } else {
+      console.warn('TODO: implement alert')
+      this.blockContact()
+    }
+  }
+
   render () {
     const { navigation } = this.props
     const contact = navigation.getParam('contact')
@@ -72,7 +115,7 @@ export default class Detail extends PureComponent {
               icon='slash'
               title='Block this contact'
               color={colors.error}
-              onPress={() => console.log('Block')}
+              onPress={() => this.blockConfirm()}
             />
           </Menu.Section>
         </Menu>
