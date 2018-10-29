@@ -10,6 +10,7 @@ package ble
 import "C"
 
 import (
+	"fmt"
 	"time"
 	"unsafe"
 
@@ -19,11 +20,12 @@ import (
 	smu "github.com/libp2p/go-stream-muxer"
 	ma "github.com/multiformats/go-multiaddr"
 	yamux "github.com/whyrusleeping/yamux"
+	"go.uber.org/zap"
 )
 
 type Conn struct {
 	tpt.Conn
-	opened            bool
+	closed            bool
 	transport         *Transport
 	lID               peer.ID
 	rID               peer.ID
@@ -33,6 +35,10 @@ type Conn struct {
 	incoming          chan []byte
 	sess              *yamux.Session
 	accept            chan string
+}
+
+type ConnForSmux struct {
+	*Conn
 }
 
 var conns map[string]*Conn = make(map[string]*Conn)
@@ -52,9 +58,28 @@ func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
 	}(goBleUUID, b)
 }
 
+//export setConnClosed
+func setConnClosed(bleUUID *C.char) {
+	goBleUUID := C.GoString(bleUUID)
+	if conn, ok := conns[goBleUUID]; ok {
+		delete(conns, goBleUUID)
+		conn.closed = true
+		conn.sess.Close()
+	}
+}
+
+//export callConnClose
+func callConnClose(bleUUID *C.char) {
+	goBleUUID := C.GoString(bleUUID)
+	if conn, ok := conns[goBleUUID]; ok {
+		delete(conns, goBleUUID)
+		conn.sess.Close()
+	}
+}
+
 func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, dir int) Conn {
 	conn := Conn{
-		opened:            true,
+		closed:            false,
 		transport:         transport,
 		incoming:          make(chan []byte),
 		lID:               lID,
@@ -64,13 +89,19 @@ func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, 
 		notFinishedToRead: make([]byte, 0),
 	}
 	var err error
+	connForSmux := ConnForSmux{
+		&conn,
+	}
+	configDefault := yamux.DefaultConfig()
+	// configDefault.ConnectionWriteTimeout = 120 * time.Second
+	// configDefault.KeepAliveInterval = 240 * time.Second
 
 	if dir == 1 {
 		//server side
-		conn.sess, err = yamux.Server(&conn, yamux.DefaultConfig())
+		conn.sess, err = yamux.Server(&connForSmux, configDefault)
 	} else {
 		// cli side
-		conn.sess, err = yamux.Client(&conn, yamux.DefaultConfig())
+		conn.sess, err = yamux.Client(&connForSmux, configDefault)
 	}
 	if err != nil {
 		panic(err)
@@ -96,6 +127,9 @@ func (b *Conn) Read(p []byte) (n int, err error) {
 }
 
 func (b *Conn) Write(p []byte) (n int, err error) {
+	if b.IsClosed() {
+		return 0, fmt.Errorf("conn already closed")
+	}
 	val, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		return 0, err
@@ -103,6 +137,7 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 
 	ma := C.CString(val)
 	defer C.free(unsafe.Pointer(ma))
+
 	C.writeNSData(
 		C.Bytes2NSData(
 			unsafe.Pointer(&p[0]),
@@ -110,7 +145,6 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 		),
 		ma,
 	)
-
 	return len(p), nil
 }
 
@@ -145,21 +179,49 @@ func (b *Conn) Transport() tpt.Transport {
 
 func (b *Conn) Close() error {
 	logger().Debug("BLEConn Close")
-	time.Sleep(10 * time.Second)
+	b.closed = true
+	val, err := b.rAddr.ValueForProtocol(PBle)
+	if err != nil {
+		logger().Debug("BLEConn close", zap.Error(err))
+		return err
+	}
+	ma := C.CString(val)
+	defer C.free(unsafe.Pointer(ma))
+	C.closeConn(ma)
+	return nil
+}
+
+func (b *ConnForSmux) Close() error {
+	logger().Debug("BLEConnForSmux Close")
 	return nil
 }
 
 func (b *Conn) IsClosed() bool {
-	logger().Debug("BLEConn IsClosed")
-	return b.sess.IsClosed()
+	val, err := b.rAddr.ValueForProtocol(PBle)
+	if err != nil {
+		logger().Debug("BLEConn IsClosed", zap.Error(err))
+		return true
+	}
+	ma := C.CString(val)
+	defer C.free(unsafe.Pointer(ma))
+
+	return b.closed
 }
 
 // OpenStream creates a new stream.
 func (b *Conn) OpenStream() (smu.Stream, error) {
-	return b.sess.OpenStream()
+	s, err := b.sess.OpenStream()
+	if err != nil {
+		logger().Error("BLEConn OpenStream", zap.Error(err))
+	}
+	return s, err
 }
 
 // AcceptStream accepts a stream opened by the other side.
 func (b *Conn) AcceptStream() (smu.Stream, error) {
-	return b.sess.AcceptStream()
+	s, err := b.sess.AcceptStream()
+	if err != nil {
+		logger().Error("BLEConn AcceptStream", zap.Error(err))
+	}
+	return s, err
 }

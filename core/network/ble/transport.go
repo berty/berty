@@ -60,12 +60,6 @@ func AddToPeerStore(peerID *C.char, rAddr *C.char) {
 	}()
 }
 
-func getPeerID(id string) string {
-	peerID := C.CString(id)
-	defer C.free(unsafe.Pointer(peerID))
-	return C.GoString(C.readPeerID(peerID))
-}
-
 // DefaultConnectTimeout is the (default) maximum amount of time the TCP
 // transport will spend on the initial TCP connect before giving up.
 var DefaultConnectTimeout = 5 * time.Second
@@ -89,30 +83,29 @@ func (t *Transport) ListenNewPeer() {
 	for {
 		pi := <-peerAdder
 		t.MySelf.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
-		peerID := pi.ID.Pretty()
-		mPeerID := t.MySelf.ID().Pretty()
+		bleUUID, err := pi.Addrs[0].ValueForProtocol(PBle)
+		if err != nil {
+			panic(err)
+		}
+		lBleUUID, err := t.lAddr.ValueForProtocol(PBle)
+		if err != nil {
+			panic(err)
+		}
 		rVal := 0
-		for _, i := range peerID {
+		for _, i := range bleUUID {
 			rVal += int(i)
 		}
 		lVal := 0
-		for _, i := range mPeerID {
+		for _, i := range lBleUUID {
 			lVal += int(i)
 		}
 
 		if lVal < rVal {
-			t.MySelf.Connect(context.Background(), *pi)
+			err := t.MySelf.Connect(context.Background(), *pi)
+			logger().Error("BLETransport Error connecting", zap.Error(err))
 		} else {
-			val, err := pi.Addrs[0].ValueForProtocol(PBle)
-			if err != nil {
-				panic(err)
-			}
-			val2, err := t.lAddr.ValueForProtocol(PBle)
-			if err != nil {
-				panic(err)
-			}
-			RealAcceptSender(val2, val, peerID)
-			t.MySelf.Connect(context.Background(), *pi)
+			peerID := pi.ID.Pretty()
+			RealAcceptSender(lBleUUID, bleUUID, peerID)
 		}
 	}
 }
@@ -134,11 +127,14 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 		return nil, err
 	}
 
-	peerID := C.CString(p.Pretty())
-	defer C.free(unsafe.Pointer(peerID))
-	go C.dialPeer(peerID)
+	ma := C.CString(s)
+	defer C.free(unsafe.Pointer(ma))
+	if C.dialPeer(ma) == 0 {
+		return nil, fmt.Errorf("error dialing ble")
+	}
 
 	if conn, ok := conns[s]; ok {
+		conn.closed = false
 		return conn, nil
 	}
 	c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr, 0)
