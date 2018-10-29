@@ -1,7 +1,8 @@
 import { NativeModules, Platform } from 'react-native'
 import { Environment, Network, RecordSource, Store } from 'relay-runtime'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { installRelayDevTools } from 'relay-devtools'
+import { Platform, NativeModules } from 'react-native'
+// import { installRelayDevTools } from 'relay-devtools'
 import {
   RelayNetworkLayer,
   retryMiddleware,
@@ -17,9 +18,9 @@ const logStyle = {
 }
 
 // eslint-disable-next-line
-if (__DEV__) {
-  installRelayDevTools()
-}
+// if (__DEV__) {
+//   installRelayDevTools()
+// }
 
 // @TODO: patch web CoreModule
 if (Platform.OS === 'web') {
@@ -80,7 +81,6 @@ let getIP = () =>
     }
   })
 
-
 const getPort = () => CoreModule.getPort()
 
 const setupSubscription = async (config, variables, cacheConfig, observer) => {
@@ -114,7 +114,6 @@ const setupSubscription = async (config, variables, cacheConfig, observer) => {
   // client.unsubscribe()
 }
 
-// const logger = data => console.log('%c RELAY %c %s', logStyle.relay, logStyle.title, data)
 const perfLogger = (msg, req, res) => {
   try {
     if (res.ok) {
@@ -167,12 +166,11 @@ let middlewares = [
     beforeRetry: ({ forceRetry, abort, delay, attempt, lastError, req }) => {
       // Unlock query
       queryLock = false
-
       if (attempt > 10) abort()
-      window.forceRelayRetry = forceRetry
 
       // eslint-disable-next-line
       if (__DEV__) {
+        window.forceRelayRetry = forceRetry
         console.warn('call `forceRelayRetry()` for immediately retry! Or wait ' + delay + ' ms.')
       }
     },
