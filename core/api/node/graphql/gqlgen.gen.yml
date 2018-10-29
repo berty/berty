@@ -1250,18 +1250,13 @@ models:
       node:
       cursor:
 
-  BertyNodeEventListOutput:
-    model: berty.tech/core/api/node.EventListOutput
+  BertyNodeEventListConnection:
+    model: berty.tech/core/api/node.EventListConnection
     fields:
       edges:
       pageInfo:
-  BertyNodeEventListOutputInput:
-    model: berty.tech/core/api/node.EventListOutput
-    fields:
-      edges:
-      pageInfo:
-  BertyNodeEventListPayload:
-    model: berty.tech/core/api/node.EventListOutput
+  BertyNodeEventListConnectionInput:
+    model: berty.tech/core/api/node.EventListConnection
     fields:
       edges:
       pageInfo:

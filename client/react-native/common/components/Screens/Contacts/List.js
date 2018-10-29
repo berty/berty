@@ -25,10 +25,10 @@ const Item = fragments.Contact(
         />
       </Flex.Rows>
       <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
-        <Text color={colors.black} left middle ellipsis>
+        <Text color={colors.black} left middle>
           {overrideDisplayName || displayName}
         </Text>
-        <Text color={colors.subtleGrey} tiny middle left ellipsis>
+        <Text color={colors.subtleGrey} tiny middle left>
           {displayStatus}
         </Text>
       </Flex.Rows>

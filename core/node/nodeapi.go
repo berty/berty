@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"fmt"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
@@ -18,7 +17,6 @@ var _ node.ServiceServer = (*Node)(nil)
 // WithNodeGrpcServer registers the Node as a 'berty.node' protobuf server implementation
 func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 	return func(n *Node) {
-		fmt.Printf("NODE_REGISTER_SERVICE")
 		node.RegisterServiceServer(gs, n)
 	}
 }

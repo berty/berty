@@ -1,5 +1,9 @@
 import { graphql } from 'react-relay'
+
 import { commit } from '../../relay'
+import { conversation } from '../../utils'
+import { fragments } from '../../graphql'
+import { merge } from '../../helpers'
 
 const ConversationAddMessageMutation = graphql`
   mutation ConversationAddMessageMutation(
@@ -26,12 +30,25 @@ const ConversationAddMessageMutation = graphql`
   }
 `
 
-export default {
-  commit: (input, configs) =>
-    commit(
-      ConversationAddMessageMutation,
-      'ConversationAddMessage',
+export default (input, configs) =>
+  commit(
+    ConversationAddMessageMutation,
+    'ConversationAddMessage',
+    merge([
+      { conversation: conversation.default, message: { text: '' } },
       input,
-      configs
-    ),
-}
+    ]),
+    {
+      updater: (store, data) => {
+        fragments.EventList.updater(store, {
+          filter: {
+            conversationId: data.ConversationAddMessage.conversationId,
+            kind: data.ConversationAddMessage.kind,
+          },
+        })
+          .add('EventEdge', data.ConversationAddMessage.id)
+          .before()
+      },
+      ...configs,
+    }
+  )
