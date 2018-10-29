@@ -1,9 +1,16 @@
+import {
+  Clipboard,
+  RefreshControl,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
 import React, { PureComponent } from 'react'
-import { Text, ScrollView, TouchableOpacity, Clipboard } from 'react-native'
+
+import { GetDeviceInfos } from '../../../../graphql/queries'
 import { Header } from '../../../Library'
 import { colors } from '../../../../constants'
 import { padding } from '../../../../styles'
-import { GetDeviceInfos } from '../../../../graphql/queries'
 
 export default class DeviceInfos extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -19,12 +26,19 @@ export default class DeviceInfos extends PureComponent {
 
   state = {
     infos: {},
+    refreshing: false,
+  }
+
+  fetch = () => {
+    this.setState({ refreshing: true }, () =>
+      GetDeviceInfos.then(data => {
+        this.setState({ infos: data.DeviceInfos.infos, refreshing: false })
+      })
+    )
   }
 
   componentDidMount () {
-    GetDeviceInfos.then(data => {
-      this.setState({ infos: data.DeviceInfos.infos })
-    })
+    this.fetch()
   }
 
   render () {
@@ -60,7 +74,15 @@ export default class DeviceInfos extends PureComponent {
     }
 
     return (
-      <ScrollView style={{ backgroundColor: colors.background }}>
+      <ScrollView
+        style={{ backgroundColor: colors.background }}
+        refreshControl={
+          <RefreshControl
+            refreshing={this.state.refreshing}
+            onRefresh={this.fetch}
+          />
+        }
+      >
         {fields}
       </ScrollView>
     )
