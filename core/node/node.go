@@ -46,7 +46,7 @@ func New(opts ...NewNodeOption) (*Node, error) {
 		// FIXME: fetch myself from db
 		outgoingEvents: make(chan *p2p.Event, 100),
 		clientEvents:   make(chan *p2p.Event, 100),
-		createdAt:      time.Now(),
+		createdAt:      time.Now().UTC(),
 	}
 
 	// apply optioners

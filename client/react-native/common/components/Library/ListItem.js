@@ -33,10 +33,10 @@ export default class ListItem extends PureComponent {
             justify='center'
             style={[marginLeft]}
           >
-            <Text color={colors.black} left middle ellipsis>
+            <Text color={colors.black} left middle>
               {title}
             </Text>
-            <Text color={colors.subtleGrey} tiny middle left ellipsis>
+            <Text color={colors.subtleGrey} tiny middle left>
               {subtitle}
             </Text>
           </Flex.Rows>

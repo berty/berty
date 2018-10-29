@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	rand.Seed(time.Now().UTC().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 
 	rootCmd := newRootCommand()
 	if err := rootCmd.Execute(); err != nil {

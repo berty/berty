@@ -109,30 +109,30 @@ func TestSenderAliasGetCandidates(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		for j := 1; j < 5; j++ {
 			time.Sleep(time.Millisecond)
-			db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasA%d", i), Status: SenderAlias_RECEIVED})
+			db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasA%d", i), Status: SenderAlias_RECEIVED})
 			time.Sleep(time.Millisecond)
-			db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceB%d", j), ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasB%d", i), Status: SenderAlias_RECEIVED})
+			db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceB%d", j), ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasB%d", i), Status: SenderAlias_RECEIVED})
 			time.Sleep(time.Millisecond)
-			db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceC%d", j), ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasC%d", i), Status: SenderAlias_RECEIVED})
+			db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceC%d", j), ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasC%d", i), Status: SenderAlias_RECEIVED})
 
 			time.Sleep(time.Millisecond)
-			db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "ConversationA", AliasIdentifier: fmt.Sprintf("AliasConversationA%d", i), Status: SenderAlias_RECEIVED})
+			db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "ConversationA", AliasIdentifier: fmt.Sprintf("AliasConversationA%d", i), Status: SenderAlias_RECEIVED})
 			time.Sleep(time.Millisecond)
-			db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "ConversationAB", AliasIdentifier: fmt.Sprintf("AliasConversationAB%d", i), Status: SenderAlias_RECEIVED})
+			db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "ConversationAB", AliasIdentifier: fmt.Sprintf("AliasConversationAB%d", i), Status: SenderAlias_RECEIVED})
 			time.Sleep(time.Millisecond)
-			db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "ConversationABC", AliasIdentifier: fmt.Sprintf("AliasConversationABC%d", i), Status: SenderAlias_RECEIVED})
+			db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "ConversationABC", AliasIdentifier: fmt.Sprintf("AliasConversationABC%d", i), Status: SenderAlias_RECEIVED})
 
 			time.Sleep(time.Millisecond)
-			db.Save(&SenderAlias{CreatedAt: time.Now(), ContactID: "ContactA", ConversationID: "", AliasIdentifier: fmt.Sprintf("SentAliasA%d", i), Status: SenderAlias_SENT})
+			db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), ContactID: "ContactA", ConversationID: "", AliasIdentifier: fmt.Sprintf("SentAliasA%d", i), Status: SenderAlias_SENT})
 		}
 
 	}
 
 	for j := 1; j < 5; j++ {
 		time.Sleep(time.Millisecond)
-		db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "", AliasIdentifier: "duplicatedAlias", Status: SenderAlias_RECEIVED})
+		db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceA%d", j), ConversationID: "", AliasIdentifier: "duplicatedAlias", Status: SenderAlias_RECEIVED})
 		time.Sleep(time.Millisecond)
-		db.Save(&SenderAlias{CreatedAt: time.Now(), OriginDeviceID: fmt.Sprintf("DeviceC%d", j), ConversationID: "ConversationABC", AliasIdentifier: "duplicatedAlias", Status: SenderAlias_RECEIVED})
+		db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), OriginDeviceID: fmt.Sprintf("DeviceC%d", j), ConversationID: "ConversationABC", AliasIdentifier: "duplicatedAlias", Status: SenderAlias_RECEIVED})
 	}
 
 	results, err := SenderAliasGetCandidates(db, "AliasA1")
@@ -220,13 +220,13 @@ func TestGetAliasForContact(t *testing.T) {
 
 	for i := 0; i < 3; i++ {
 		time.Sleep(time.Millisecond)
-		db.Save(&SenderAlias{CreatedAt: time.Now(), ContactID: "ContactA", ConversationID: "", AliasIdentifier: fmt.Sprintf("Alias-A%d", i), Status: SenderAlias_SENT})
+		db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), ContactID: "ContactA", ConversationID: "", AliasIdentifier: fmt.Sprintf("Alias-A%d", i), Status: SenderAlias_SENT})
 		time.Sleep(time.Millisecond)
-		db.Save(&SenderAlias{CreatedAt: time.Now(), ContactID: "ContactA", ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasA%d", i), Status: SenderAlias_SENT_AND_ACKED})
+		db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), ContactID: "ContactA", ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasA%d", i), Status: SenderAlias_SENT_AND_ACKED})
 		time.Sleep(time.Millisecond)
-		db.Save(&SenderAlias{CreatedAt: time.Now(), ContactID: "ContactB", ConversationID: "", AliasIdentifier: fmt.Sprintf("Alias-B%d", i), Status: SenderAlias_SENT})
+		db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), ContactID: "ContactB", ConversationID: "", AliasIdentifier: fmt.Sprintf("Alias-B%d", i), Status: SenderAlias_SENT})
 		time.Sleep(time.Millisecond)
-		db.Save(&SenderAlias{CreatedAt: time.Now(), ContactID: "ContactB", ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasB%d", i), Status: SenderAlias_SENT_AND_ACKED})
+		db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), ContactID: "ContactB", ConversationID: "", AliasIdentifier: fmt.Sprintf("AliasB%d", i), Status: SenderAlias_SENT_AND_ACKED})
 	}
 
 	alias, err = GetAliasForContact(db, "ContactB")
@@ -253,7 +253,7 @@ func TestGetAliasForConversation(t *testing.T) {
 	}
 	for i := 0; i < 3; i++ {
 		time.Sleep(time.Millisecond)
-		db.Save(&SenderAlias{CreatedAt: time.Now(), ContactID: "", ConversationID: "ConversationAB", AliasIdentifier: fmt.Sprintf("ConversationAB%d", i), Status: SenderAlias_SENT_AND_ACKED})
+		db.Save(&SenderAlias{CreatedAt: time.Now().UTC(), ContactID: "", ConversationID: "ConversationAB", AliasIdentifier: fmt.Sprintf("ConversationAB%d", i), Status: SenderAlias_SENT_AND_ACKED})
 	}
 
 	alias, err = GetAliasForConversation(db, "ConversationAB")

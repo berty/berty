@@ -1,32 +1,32 @@
 import { graphql, createPaginationContainer } from 'react-relay'
 
-import { conversation } from '../../utils'
+import { event } from '../../utils'
 import { merge } from '../../helpers'
 import { queries } from '../../graphql'
 import { updater } from '../../relay'
 
-const ConversationList = component =>
+const EventList = component =>
   createPaginationContainer(
     component,
     graphql`
-      fragment ConversationList on Query
+      fragment EventList on Query
         @argumentDefinitions(
-          filter: { type: BertyEntityConversationInput }
+          filter: { type: BertyP2pEventInput }
           count: { type: "Int32" }
           cursor: { type: "String" }
         ) {
-        ConversationList(
+        EventList(
           filter: $filter
           first: $count
           after: $cursor
-          orderBy: ""
-          orderDesc: false
-        ) @connection(key: "ConversationList_ConversationList") {
+          orderBy: "created_at"
+          orderDesc: true
+        ) @connection(key: "EventList_EventList") {
           edges {
             cursor
             node {
               id
-              ...Conversation
+              ...Event
             }
           }
           pageInfo {
@@ -42,7 +42,7 @@ const ConversationList = component =>
     {
       direction: 'forward',
       getConnectionFromProps (props) {
-        return props.data.ConversationList
+        return props.data.EventList
       },
       getFragmentVariables (prevVars, totalCount) {
         return {
@@ -51,20 +51,26 @@ const ConversationList = component =>
         }
       },
       getVariables (props, { count, cursor }, fragmentVariables) {
-        return { count, cursor }
+        return {
+          ...fragmentVariables,
+          count,
+          cursor:
+            props.data.EventList.edges[props.data.EventList.edges.length - 1]
+              .cursor,
+        }
       },
-      query: queries.ConversationList,
+      query: queries.EventList,
     }
   )
-ConversationList.defaultArguments = {
-  filter: conversation.default,
-  orderBy: '',
-  orederDesc: false,
+EventList.defaultArguments = {
+  filter: event.default,
+  orderBy: 'created_at',
+  orderDesc: true,
 }
-ConversationList.updater = (store, args = {}) =>
+EventList.updater = (store, args = {}) =>
   updater(store).connection(
-    'ConversationList_ConversationList',
-    merge([ConversationList.defaultArguments, args])
+    'EventList_EventList',
+    merge([EventList.defaultArguments, args])
   )
 
-export default ConversationList
+export default EventList

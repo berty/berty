@@ -13,7 +13,7 @@ import (
 )
 
 func init() {
-	rand.Seed(time.Now().UTC().UnixNano())
+	rand.Seed(time.Now().UnixNano())
 }
 
 //
@@ -41,7 +41,7 @@ func printDuration(key string) {
 		durations = make(map[string][]time.Time)
 	}
 	_, fn, line, _ := runtime.Caller(1)
-	now := time.Now()
+	now := time.Now().UTC()
 	if _, found := durations[key]; found {
 		log.Printf("\n[duration] %s: %s:%d diff=%s total=%s\n", key, fn, line, now.Sub(durations[key][1]), now.Sub(durations[key][0]))
 		durations[key][1] = now

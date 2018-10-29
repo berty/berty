@@ -216,10 +216,23 @@ const getMargin = (
   }
 }
 
-const getHeight = props =>
-  StyleSheet.create({
-    height: { height: props.height, lineHeight: props.height },
+const getHeight = props => {
+  let { multiline, height, lineHeight } = props
+
+  if (!height && !lineHeight) {
+    return null
+  } else if (!lineHeight && typeof multiline === 'number') {
+    lineHeight = height / multiline
+  } else if (!lineHeight && !multiline) {
+    lineHeight = height
+  }
+  return StyleSheet.create({
+    height: {
+      height,
+      lineHeight,
+    },
   }).height
+}
 
 export class BackgroundText extends PureComponent {
   static styles = {}
@@ -330,7 +343,8 @@ export class ForegroundText extends PureComponent {
   }
 
   render () {
-    const { icon, input, children, ellipsis, onSubmit } = this.props
+    const { icon, input, children, multiline, onSubmit } = this.props
+    const numberOfLines = typeof multiline === 'number' ? multiline : undefined
 
     const styles = ForegroundText.getStyles(this.props)
     return (
@@ -347,13 +361,15 @@ export class ForegroundText extends PureComponent {
             placeholder={children || input.placeholder}
             placeholderTextColor={colors.subtleGrey}
             onSubmitEditing={onSubmit}
+            multiline={!!multiline}
+            numberOfLines={numberOfLines}
           />
         ) : (
           <TextNative
-            className={ellipsis ? 'textEllipsis' : 'textBreak'}
+            className={multiline ? 'textBreak' : 'textEllipsis'}
             style={styles.text}
-            ellipsizeMode={ellipsis && 'tail'}
-            numberOfLines={ellipsis && 1}
+            ellipsizeMode={!multiline && 'tail'}
+            numberOfLines={numberOfLines}
           >
             {children}
           </TextNative>
