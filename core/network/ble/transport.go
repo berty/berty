@@ -19,7 +19,7 @@ import (
 )
 
 /*
-#cgo darwin CFLAGS: -x objective-c -Wno-incompatible-pointer-types -Wno-missing-field-initializers -Wno-missing-prototypes -Werror=return-type -Wdocumentation -Wunreachable-code -Wno-implicit-atomic-properties -Werror=deprecated-objc-isa-usage -Wno-objc-interface-ivars -Werror=objc-root-class -Wno-arc-repeated-use-of-weak -Wimplicit-retain-self -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wdeprecated-implementations -DNS_BLOCK_ASSERTIONS=1 -DOBJC_OLD_DISPATCH_PROTOTYPES=0
+#cgo darwin CFLAGS: -x objective-c
 #cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
 #import "ble.h"
 */
@@ -60,12 +60,6 @@ func AddToPeerStore(peerID *C.char, rAddr *C.char) {
 	}()
 }
 
-func getPeerID(id string) string {
-	peerID := C.CString(id)
-	defer C.free(unsafe.Pointer(peerID))
-	return C.GoString(C.readPeerID(peerID))
-}
-
 // DefaultConnectTimeout is the (default) maximum amount of time the TCP
 // transport will spend on the initial TCP connect before giving up.
 var DefaultConnectTimeout = 5 * time.Second
@@ -89,28 +83,28 @@ func (t *Transport) ListenNewPeer() {
 	for {
 		pi := <-peerAdder
 		t.MySelf.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
-		peerID := pi.ID.Pretty()
-		mPeerID := t.MySelf.ID().Pretty()
+		bleUUID, err := pi.Addrs[0].ValueForProtocol(PBle)
+		if err != nil {
+			panic(err)
+		}
+		lBleUUID, err := t.lAddr.ValueForProtocol(PBle)
+		if err != nil {
+			panic(err)
+		}
 		rVal := 0
-		for _, i := range peerID {
+		for _, i := range bleUUID {
 			rVal += int(i)
 		}
 		lVal := 0
-		for _, i := range mPeerID {
+		for _, i := range lBleUUID {
 			lVal += int(i)
 		}
 
 		if lVal < rVal {
-			t.MySelf.Connect(context.Background(), *pi)
+			err := t.MySelf.Connect(context.Background(), *pi)
+			logger().Error("BLETransport Error connecting", zap.Error(err))
 		} else {
-			bleUUID, err := pi.Addrs[0].ValueForProtocol(PBle)
-			if err != nil {
-				panic(err)
-			}
-			lBleUUID, err := t.lAddr.ValueForProtocol(PBle)
-			if err != nil {
-				panic(err)
-			}
+			peerID := pi.ID.Pretty()
 			RealAcceptSender(lBleUUID, bleUUID, peerID)
 		}
 	}
