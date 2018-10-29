@@ -51,12 +51,16 @@ void writeNSData(NSData *data, char *ma) {
     [bcm write:data forMa: [NSString stringWithUTF8String:ma]];
 }
 
-char *readPeerID(char *peerID) {
-    return [bcm readPeerID:[NSString stringWithUTF8String:peerID]];
-}
-
 int dialPeer(char *peerID) {
     return [bcm dialPeer:[NSString stringWithUTF8String:peerID]];
+}
+
+void closeConn(char *ma) {
+    [bcm close:[NSString stringWithUTF8String:ma]];
+}
+
+int isClosed(char *ma) {
+    return [bcm isClosed:[NSString stringWithUTF8String:ma]];
 }
 
 @implementation BertyCentralManager
@@ -64,6 +68,10 @@ int dialPeer(char *peerID) {
 NSString* const SERVICE_UUID = @"A06C6AB8-886F-4D56-82FC-2CF8610D6663";
 
 NSString* const WRITER_UUID = @"000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C";
+
+NSString* const CLOSER_UUID = @"AD127A46-D065-4D72-B15A-EB2B3DA20561";
+
+NSString* const IS_READY_UUID = @"D27DE0B5-2170-4C59-9C0B-750C760C74E6";
 
 NSString* const MA_READER_UUID = @"9B827770-DC72-4C55-B8AE-0870C7AC15A8";
 
@@ -77,24 +85,29 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         self.serviceAdded = NO;
         self.ma = ma;
         self.peerID = peerID;
-        self.discoveredDevice = [[NSMutableDictionary alloc] init];
         self.bertyDevices = [[NSMutableDictionary alloc] init];
-        self.acceptSemaphore = [[NSMutableDictionary alloc] init];
-        self.peerIDToPeripheral = [[NSMutableDictionary alloc] init];
+        self.oldDevices = [[NSMutableDictionary alloc] init];
         self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
         self.maUUID = [CBUUID UUIDWithString:MA_READER_UUID];
         self.peerUUID = [CBUUID UUIDWithString:PEER_ID_READER_UUID];
         self.writerUUID = [CBUUID UUIDWithString:WRITER_UUID];
         self.acceptUUID = [CBUUID UUIDWithString:ACCEPT_UUID];
+        self.closerUUID = [CBUUID UUIDWithString:CLOSER_UUID];
+        self.isRdyUUID = [CBUUID UUIDWithString:IS_READY_UUID];
         self.bertyService = [[CBMutableService alloc] initWithType:self.serviceUUID primary:YES];
         self.acceptCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.acceptUUID properties:CBCharacteristicPropertyRead | CBCharacteristicPropertyWrite value:nil permissions:CBAttributePermissionsReadable | CBAttributePermissionsWriteable];
         self.maCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.maUUID properties:CBCharacteristicPropertyRead value:[ma dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
         self.peerIDCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.peerUUID properties:CBCharacteristicPropertyRead value:[peerID dataUsingEncoding:NSUTF8StringEncoding] permissions:CBAttributePermissionsReadable];
         self.writerCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.writerUUID properties:CBCharacteristicPropertyWrite value:nil permissions:CBAttributePermissionsWriteable];
+        self.isRdyCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.isRdyUUID properties:CBCharacteristicPropertyWrite value:nil permissions:CBAttributePermissionsWriteable];
+        self.closerCharacteristic = [[CBMutableCharacteristic alloc] initWithType:self.closerUUID properties:CBCharacteristicPropertyWrite value:nil permissions:CBAttributePermissionsWriteable];
 
-        self.bertyService.characteristics = @[self.writerCharacteristic, self.acceptCharacteristic, self.maCharacteristic, self.peerIDCharacteristic];
-        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0) options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
-        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0) options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+        self.bertyService.characteristics = @[self.isRdyCharacteristic, self.closerCharacteristic, self.writerCharacteristic, self.acceptCharacteristic, self.maCharacteristic, self.peerIDCharacteristic];
+        self.centralWaiter = dispatch_semaphore_create(0);
+
+        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+
         self.centralManager.delegate = self;
         self.peripheralManager.delegate = self;
     }
@@ -107,112 +120,177 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
     return self;
 }
 
-- (void)checkDiscoverBertyDeviceCharacteristic:(BertyDevice *)device {
-    for (CBCharacteristic *characteristic in [self getSvcForPeripheral:device.peripheral].characteristics) {
-        if ([characteristic.UUID isEqual:self.maUUID] || [characteristic.UUID isEqual:self.peerUUID]) {
-            [device.peripheral readValueForCharacteristic:characteristic];
-        } else if ([characteristic.UUID isEqual:self.acceptUUID]) {
-            dispatch_semaphore_signal(device.acceptSema);
-        } else if ([characteristic.UUID isEqual:self.writerUUID]) {
-            dispatch_semaphore_signal(device.writerSema);
-        }
+- (void)dispatchCharacteristics:(CBCharacteristic *)characteristic forDevice:(BertyDevice *)device {
+    if ([characteristic.UUID isEqual:self.maUUID] || [characteristic.UUID isEqual:self.peerUUID]) {
+        [device.peripheral readValueForCharacteristic:characteristic];
+        [self checkUpdateValueCharacteristic:characteristic forDevice:device];
+    } else if ([characteristic.UUID isEqual:self.acceptUUID]) {
+        device.accepter = characteristic;
+        dispatch_semaphore_signal(device.acceptSema);
+    } else if ([characteristic.UUID isEqual:self.writerUUID]) {
+        device.writer = characteristic;
+        dispatch_semaphore_signal(device.writerSema);
+    } else if ([characteristic.UUID isEqual:self.closerUUID]) {
+        device.closer = characteristic;
+        dispatch_semaphore_signal(device.closerSema);
+    } else if ([characteristic.UUID isEqual:self.isRdyUUID]) {
+        device.isRdy = characteristic;
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            while (device.didRdySema == NO) {
+                [device.peripheral writeValue:[[NSData alloc] init] forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
+                [NSThread sleepForTimeInterval:1.0f];
+            }
+        });
     }
 }
 
-- (void)checkUpdateValueCharacteristic:(CBCharacteristic *)charact ForDevice:(BertyDevice *)device {
-    if ([charact.UUID isEqual:self.maUUID]) {
+- (void)checkDiscoverBertyDeviceCharacteristic:(BertyDevice *)device {
+    NSArray *needToDiscover = @[self.maUUID, self.peerUUID, self.acceptUUID, self.writerUUID, self.closerUUID, self.isRdyUUID];
+    NSArray *toDiscover = [[NSArray alloc] init];
+    CBCharacteristic *characteristic;
+
+    for (CBUUID *uuid in needToDiscover) {
+        characteristic = [self characteristicWithUUID:uuid forServiceUUID:self.serviceUUID inPeripheral:device.peripheral];
+        if (characteristic == nil) {
+            toDiscover = [toDiscover arrayByAddingObject: uuid];
+        } else {
+            [self dispatchCharacteristics:characteristic forDevice:device];
+        }
+    }
+
+    if (toDiscover.count > 0) {
+        [device.peripheral discoverCharacteristics:toDiscover
+                            forService:device.svc];
+    }
+}
+
+- (void)checkUpdateValueCharacteristic:(CBCharacteristic *)charact forDevice:(BertyDevice *)device {
+    if ([charact.UUID isEqual:self.maUUID] && charact.value != nil) {
+        NSLog(@"val ma");
         device.ma = [[NSString alloc] initWithData:charact.value encoding:NSUTF8StringEncoding];
         dispatch_semaphore_signal(device.maSema);
-    } else if ([charact.UUID isEqual:self.peerUUID]) {
+    } else if ([charact.UUID isEqual:self.peerUUID] && charact.value != nil) {
+        NSLog(@"val peer");
         device.peerID = [[NSString alloc] initWithData:charact.value encoding:NSUTF8StringEncoding];
         dispatch_semaphore_signal(device.peerIDSema);
     }
 }
 
-- (BertyDevice *)newDevice:(CBPeripheral *)peripheral {
-    BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-    [peripheral setDelegate:self];
-
-    if (device == nil) {
-        device = [[BertyDevice alloc] initWithPeripheral:peripheral];
-        @synchronized (self.bertyDevices) {
-            [self.bertyDevices setObject:device forKey:[peripheral.identifier UUIDString]];
-        }
+- (void)checkConnectBertyDevice:(BertyDevice *)device {
+    if (device.peripheral.state == CBPeripheralStateConnected) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_semaphore_signal(device.connSema);
+        });
+    } else {
+        [self.centralManager connectPeripheral:device.peripheral options:nil];
     }
+}
 
-    [self.centralManager connectPeripheral:device.peripheral options:nil];
+- (void)checkSvcBertyDevice:(BertyDevice *)device {
+    CBService *service = [self getSvcForPeripheral:device.peripheral];
+    NSLog(@"service %@", service);
+    if (service != nil) {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            device.svc = service;
+            dispatch_semaphore_signal(device.svcSema);
+        });
+    } else {
+        [device.peripheral discoverServices:@[self.serviceUUID]];
+    }
+}
 
-    // once device we have the device init dispact a block that will wait for the connection
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"state"]) {
+        NSLog(@"OBJECT OBS %@", object);
+        return ;
+    }
+    [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+}
+
+- (BertyDevice *)waiterForDeviceRdy:(BertyDevice *)device {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self checkConnectBertyDevice:device];
         dispatch_semaphore_wait(device.connSema, DISPATCH_TIME_FOREVER);
-        [peripheral discoverServices:@[self.serviceUUID]];
+        NSLog(@"device conn released");
+        [self checkSvcBertyDevice:device];
+        NSLog(@"device svc disco launched");
         dispatch_semaphore_wait(device.svcSema, DISPATCH_TIME_FOREVER);
+        NSLog(@"device svc released");
 
         // once service is disco asked for charact retrieve
-        [device.peripheral discoverCharacteristics:@[self.peerUUID, self.maUUID, self.writerUUID, self.acceptUUID]
-                            forService:[self getSvcForPeripheral:device.peripheral]];
+        [self checkDiscoverBertyDeviceCharacteristic:device];
         dispatch_group_t group = dispatch_group_create();
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_semaphore_wait(device.writerSema, DISPATCH_TIME_FOREVER);
+            NSLog(@"READ writerSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_semaphore_wait(device.acceptSema, DISPATCH_TIME_FOREVER);
+            NSLog(@"READ acceptSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_semaphore_wait(device.maSema, DISPATCH_TIME_FOREVER);
+            NSLog(@"READ maSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             dispatch_semaphore_wait(device.peerIDSema, DISPATCH_TIME_FOREVER);
+            NSLog(@"READ peerIDSema %@", device);
+        });
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_semaphore_wait(device.closerSema, DISPATCH_TIME_FOREVER);
+            NSLog(@"READ cloSema %@", device);
+        });
+        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_semaphore_wait(device.isRdySema, DISPATCH_TIME_FOREVER);
+            NSLog(@"READ rdySema %@", device);
         });
         dispatch_group_wait(group, DISPATCH_TIME_FOREVER);
-        NSLog(@"READY device %@", peripheral);
+        NSLog(@"READY device %@", device.peripheral);
         AddToPeerStore([device.peerID UTF8String], [device.ma UTF8String]);
     });
 
     return device;
 }
 
-- (CBCharacteristic *)getWriterForPeripheral:(CBPeripheral *)peripheral {
-    return [self characteristicWithUUID:self.writerUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
-}
+- (BertyDevice *)newDevice:(CBPeripheral *)peripheral {
+    [peripheral setDelegate:self];
+    BertyDevice *device = [[BertyDevice alloc] initWithPeripheral:peripheral];
 
-- (CBCharacteristic *)getAcceptForPeripheral:(CBPeripheral *)peripheral {
-    return [self characteristicWithUUID:self.acceptUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
-}
-
-- (CBCharacteristic *)getPeerForPeripheral:(CBPeripheral *)peripheral {
-    return [self characteristicWithUUID:self.peerUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
-}
-
-- (CBCharacteristic *)getMaForPeripheral:(CBPeripheral *)peripheral {
-    return [self characteristicWithUUID:self.maUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
-}
-
-- (CBService *)getSvcForPeripheral:(CBPeripheral *)peripheral {
-    return [self serviceWithUUID:self.serviceUUID forPeripheral:peripheral];
-}
-
-- (int)dialPeer:(NSString *)peerID {
-    BertyDevice *device = nil;
-    while (device == nil) {
-        device = [self getDeviceFromPeerID:peerID];
-        if (device != nil) {
-            NSLog(@"device123 waaaaaaaait %@", device);
-            // [device waitDeviceRdy];
-            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-            [self.acceptSemaphore setObject:semaphore forKey:device.peripheral.identifier];
-            NSLog(@"device123Found %@", device);
-            CBCharacteristic *charact = nil;
-            while (charact == nil) {
-                NSLog(@"device123Found");
-                charact = [self getAcceptForPeripheral:device.peripheral];
-            }
-            [device.peripheral writeValue:[[NSData alloc] init] forCharacteristic:charact type:CBCharacteristicWriteWithResponse];
-            dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-            dispatch_release(semaphore);
-            return 1;
-        }
+    @synchronized (self.bertyDevices) {
+        [self.bertyDevices setObject:device forKey:[peripheral.identifier UUIDString]];
     }
+
+    [peripheral addObserver:self forKeyPath:@"state" options:0 context:nil];
+    [self waiterForDeviceRdy:device];
+    return device;
+}
+
+- (int)dialPeer:(NSString *)ma {
+    BertyDevice *device = [self getDeviceFromMa:ma];
+    NSLog(@"DIAL PEER %@", ma);
+    if (device == nil) {
+        __block NSString *identifier;
+        @synchronized (self.oldDevices) {
+            identifier = [self.oldDevices objectForKey:ma];
+        }
+        NSArray<CBPeripheral *> *peripherals = [self.centralManager retrievePeripheralsWithIdentifiers:@[
+                [CBUUID UUIDWithString:identifier]
+            ]
+        ];
+        if (peripherals.count == 0) {
+            return 0;
+        }
+        NSLog(@"TRYING TO MAKE NEW PEER %@", peripherals);
+        device = [self newDevice:peripherals[0]];
+    }
+    if (device != nil) {
+        NSLog(@"device123Found %@", device);
+        // [device.peripheral writeValue:[[NSData alloc] init] forCharacteristic:device.accepter type:CBCharacteristicWriteWithResponse];
+        // dispatch_semaphore_wait(device.acceptWaiterSema, DISPATCH_TIME_FOREVER);
+        return 1;
+    }
+
     return 0;
 }
 
@@ -221,14 +299,30 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
     [device write:data];
 }
 
-- (void)sendToAcceptIncomingChannel:(BertyDevice*)device {
-    sendAcceptToListenerForPeerID([self.ma UTF8String], [device.ma UTF8String], [device.peerID UTF8String]);
+- (int)isClosed:(NSString *)ma {
+    BertyDevice *device = [self getDeviceFromMa:ma];
+    if (device.peripheral.state == CBPeripheralStateConnected) {
+        return 0;
+    }
+    return 1;
 }
 
-- (char *)readPeerID:(NSString *)ma {
-    CBCharacteristic *characteristic = [self characteristicWithUUID:self.peerUUID
-                                                    forServiceUUID:self.serviceUUID inPeripheral:[self.peerIDToPeripheral objectForKey:ma]];
-    return [[[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding] UTF8String];
+- (void)close:(NSString *)ma {
+    BertyDevice *device = [self getDeviceFromMa:ma];
+    NSLog(@"TRY CLOSING %@ %@", device, [self.centralManager retrieveConnectedPeripheralsWithServices:@[self.serviceUUID]]);
+    if (device != nil && device.peripheral != nil && device.closed == NO) {
+        device.closed = YES;
+        [device checkAndWrite];
+        [self removeBertyDevice:device];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            setConnClosed([device.ma UTF8String]);
+        });
+        dispatch_semaphore_wait(device.closerWaiterSema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC * 10)));
+    }
+}
+
+- (void)sendToAcceptIncomingChannel:(BertyDevice*)device {
+    sendAcceptToListenerForPeerID([self.ma UTF8String], [device.ma UTF8String], [device.peerID UTF8String]);
 }
 
 - (void)startAdvertising {
@@ -254,7 +348,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
     return nil;
 }
 
-- (CBService *)serviceWithUUID:(CBUUID *)serviceUUID forPeripheral:(CBPeripheral *)peripheral {
+- (nullable CBService *)serviceWithUUID:(CBUUID *)serviceUUID forPeripheral:(CBPeripheral *)peripheral {
     for (CBService *service in peripheral.services) {
         if ([service.UUID isEqual:serviceUUID]) {
             return service;
@@ -266,16 +360,24 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
 
 - (void)centralManager:(CBCentralManager *)central
     didConnectPeripheral:(CBPeripheral *)peripheral {
-    NSLog(@"didConnectPeriheral: %@", [peripheral.identifier UUIDString]);
     BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
+    if (device == nil) {
+        NSLog(@"didConnectPeripheral: %@", [peripheral.identifier UUIDString]);
+        [self newDevice:peripheral];
+    }
+    NSLog(@"didConnectPeriheral: %@ %@", [peripheral.identifier UUIDString], device);
     dispatch_semaphore_signal(device.connSema);
 }
 
 - (void)centralManager:(CBCentralManager *)central
     didDisconnectPeripheral:(CBPeripheral *)peripheral
                 error:(NSError *)error {
-    [self.bertyDevices removeObjectForKey:[peripheral.identifier UUIDString]];
-    NSLog(@"didDisConnectPeriheral: %@", [peripheral.identifier UUIDString]);
+    BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
+    [self removeBertyDevice:device];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        setConnClosed([device.ma UTF8String]);
+    });
+    NSLog(@"didDisConnectPeriheral: %@ %@", [peripheral.identifier UUIDString], error);
 }
 
 - (void)centralManager:(CBCentralManager *)central
@@ -291,6 +393,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
     didDiscoverPeripheral:(CBPeripheral *)peripheral
     advertisementData:(NSDictionary<NSString *,id> *)advertisementData
                     RSSI:(NSNumber *)RSSI {
+    [peripheral setDelegate:self];
     if (![self getDeviceFromPeripheral:peripheral]) {
         NSLog(@"didDiscoverPeripheral: %@", [peripheral.identifier UUIDString]);
         [self newDevice:peripheral];
@@ -312,6 +415,9 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
             break;
         case CBManagerStatePoweredOn:
             stateString = @"Bluetooth is currently powered on and available to use.";
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_semaphore_signal(self.centralWaiter);
+            });
             break;
         default:
             stateString = @"State unknown, update imminent.";
@@ -325,7 +431,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
 didDiscoverServices:(NSError *)error {
     NSLog(@"didDiscoverServices %@", [peripheral.identifier UUIDString]);
     BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-    dispatch_semaphore_signal(device.svcSema);
+    [self checkSvcBertyDevice:device];
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral
@@ -358,7 +464,7 @@ didDiscoverServices:(NSError *)error {
             error:(NSError *)error {
     NSLog(@"didUpdateValueForCharacteristic %@ %@", [peripheral.identifier UUIDString], [characteristic.UUID UUIDString]);
     BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
-    [self checkUpdateValueCharacteristic:characteristic ForDevice:device];
+    [self checkUpdateValueCharacteristic:characteristic forDevice:device];
 
     if (error) {
         NSLog(@"error: %@", [error localizedDescription]);
@@ -377,13 +483,19 @@ didDiscoverServices:(NSError *)error {
 - (void)peripheral:(CBPeripheral *)peripheral
     didWriteValueForCharacteristic:(CBCharacteristic *)characteristic
             error:(NSError *)error {
-    if ([characteristic.UUID isEqual:self.acceptUUID]) {
-        dispatch_semaphore_signal([self.acceptSemaphore objectForKey:peripheral.identifier]);
+    BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
+    if (device == nil) {
+        device = [self newDevice:peripheral];
     }
-    if ([characteristic.UUID isEqual:self.writerUUID]) {
-        BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
+    if ([characteristic.UUID isEqual:self.closerUUID]) {
+        dispatch_semaphore_signal(device.closerWaiterSema);
+    } else if ([characteristic.UUID isEqual:self.acceptUUID]) {
+        dispatch_semaphore_signal(device.acceptWaiterSema);
+    } else if ([characteristic.UUID isEqual:self.writerUUID]) {
         [device popToSend];
         [device checkAndWrite];
+    } else if ([characteristic.UUID isEqual:self.isRdyUUID]) {
+        device.didRdySema = YES;
     }
     if (error) {
         NSLog(@"error: %@", [error localizedFailureReason]);
@@ -426,7 +538,7 @@ didDiscoverServices:(NSError *)error {
     NSLog(@"didModifyServices %@", invalidatedServices);
     for (CBService* svc in invalidatedServices) {
         if ([svc.UUID isEqual:self.serviceUUID]) {
-            [self.centralManager cancelPeripheralConnection:peripheral];
+            // [self.centralManager cancelPeripheralConnection:peripheral force:YES];
         }
     }
 }
@@ -462,9 +574,12 @@ didDiscoverServices:(NSError *)error {
             break;
         case CBManagerStatePoweredOn:
             stateString = @"CBManagerStatePoweredOn";
-            if (self.centralManager.state == CBManagerStatePoweredOn && self.serviceAdded == NO) {
-                self.serviceAdded = YES;
-                [self.peripheralManager addService:self.bertyService];
+            if (self.serviceAdded == NO) {
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                    dispatch_semaphore_wait(self.centralWaiter, DISPATCH_TIME_FOREVER);
+                    self.serviceAdded = YES;
+                    [self.peripheralManager addService:self.bertyService];
+                });
             }
             break;
         default:
@@ -475,10 +590,6 @@ didDiscoverServices:(NSError *)error {
     NSLog(@"State change peripheral manager: %@", stateString);
 }
 
-- (void)peripheralManager:(CBPeripheralManager *)peripheral
-        willRestoreState:(NSDictionary<NSString *,id> *)dict {
-    NSLog(@"Will restore State invoked");
-}
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
             didAddService:(CBService *)service
@@ -499,6 +610,174 @@ didDiscoverServices:(NSError *)error {
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
+    didReceiveReadRequest:(CBATTRequest *)request {
+    if ([request.characteristic.UUID isEqual:self.maUUID]) {
+        request.value = self.maCharacteristic.value;
+        [self.peripheralManager respondToRequest:request withResult:CBATTErrorSuccess];
+    } else if ([request.characteristic.UUID isEqual:self.peerUUID]) {
+        request.value = self.peerIDCharacteristic.value;
+        [self.peripheralManager respondToRequest:request withResult:CBATTErrorSuccess];
+    }
+    else {
+        NSLog(@"REICEVE READ REQ unknow");
+    }
+
+    [self.peripheralManager respondToRequest:request withResult:CBATTErrorInvalidHandle];
+}
+
+- (void)acceptRequest:(CBPeripheralManager *)peripheral
+            req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
+    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
+}
+
+- (void)writeRequest:(CBPeripheralManager *)peripheral
+            req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
+    if (request.value != nil) {
+        sendBytesToConn([device.ma UTF8String], [request.value bytes], (int)[request.value length]);
+    }
+    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
+}
+
+- (void)closeRequest:(CBPeripheralManager *)peripheral
+            req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
+    device.closedSend = YES;
+    device.closed = YES;
+    [self removeBertyDevice:device];
+    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        setConnClosed([device.ma UTF8String]);
+    });
+}
+
+- (void)isRdyRequest:(CBPeripheralManager *)peripheral
+            req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
+    dispatch_semaphore_signal(device.isRdySema);
+    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
+}
+
+- (void)peripheralManager:(CBPeripheralManager *)pm
+    didReceiveWriteRequests:(NSArray<CBATTRequest *> *)requests {
+    for (CBATTRequest *request in requests) {
+        BertyDevice *device = [self
+            getDeviceFromUUID:[request.central.identifier UUIDString]];
+        if (device == nil) {
+            NSArray<CBPeripheral *> *peripherals = [self.centralManager retrievePeripheralsWithIdentifiers:@[request.central.identifier]];
+            if (peripherals.count == 0) {
+                continue;
+            }
+            device = [self newDevice:peripherals[0]];
+        }
+
+        if ([request.characteristic.UUID isEqual:self.acceptUUID]) {
+            [self acceptRequest:pm req:request forDevice:device];
+        } else if ([request.characteristic.UUID isEqual:self.writerUUID]) {
+            [self writeRequest:pm req:request forDevice:device];
+        } else if ([request.characteristic.UUID isEqual:self.closerUUID]) {
+            [self closeRequest:pm req:request forDevice:device];
+        } else if ([request.characteristic.UUID isEqual:self.isRdyUUID]) {
+            [self isRdyRequest:pm req:request forDevice:device];
+        } else {
+            [pm respondToRequest:request withResult:CBATTErrorInsufficientAuthorization];
+        }
+    }
+}
+
+- (void)discoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic {
+    NSLog(@"disco for charact %@", characteristic.UUID);
+}
+
+- (void)removeBertyDevice:(BertyDevice *)device {
+    @synchronized (self.bertyDevices) {
+        if ([self.bertyDevices objectForKey:[device.peripheral.identifier UUIDString]]) {
+            [self.bertyDevices removeObjectForKey:[device.peripheral.identifier UUIDString]];
+        }
+    }
+    @synchronized (self.oldDevices) {
+        if (device.ma != nil) {
+            [self.oldDevices setObject:[device.peripheral.identifier UUIDString] forKey:device.ma];
+        }
+    }
+}
+
+- (nullable BertyDevice*)getDeviceFromPeerID:(NSString*)peerID {
+    __block BertyDevice* device;
+    @synchronized (self.bertyDevices) {
+        for (NSString *key in self.bertyDevices.allKeys) {
+            device = [self.bertyDevices objectForKey:key];
+            if (device.peerID != nil && ([device.peerID isEqual:peerID])) {
+                return device;
+            }
+        }
+    }
+    return nil;
+}
+
+- (nullable BertyDevice*)getDeviceFromMa:(NSString*)ma {
+    __block BertyDevice* device;
+    @synchronized (self.bertyDevices) {
+        for (NSString *key in self.bertyDevices.allKeys) {
+            device = [self.bertyDevices objectForKey:key];
+            if (device.ma != nil && [device.ma isEqual:ma]) {
+                return device;
+            }
+        }
+    }
+    return nil;
+}
+
+- (nullable BertyDevice*)getDeviceFromPeripheral:(CBPeripheral*)peripheral {
+    __block BertyDevice *device;
+    @synchronized (self.bertyDevices) {
+        device = [self.bertyDevices objectForKey:[peripheral.identifier UUIDString]];
+    }
+    if (device != nil) {
+        return device;
+    }
+    return nil;
+}
+
+- (nullable BertyDevice*)getDeviceFromUUID:(NSString*)key {
+    __block BertyDevice *device;
+    @synchronized (self.bertyDevices) {
+        device = [self.bertyDevices objectForKey:key];
+    }
+
+    return device;
+}
+
+- (CBCharacteristic *)getIsRdyForPeripheral:(CBPeripheral *)peripheral {
+    return [self characteristicWithUUID:self.isRdyUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
+}
+
+- (CBCharacteristic *)getCloserForPeripheral:(CBPeripheral *)peripheral {
+    return [self characteristicWithUUID:self.closerUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
+}
+
+- (CBCharacteristic *)getWriterForPeripheral:(CBPeripheral *)peripheral {
+    return [self characteristicWithUUID:self.writerUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
+}
+
+- (CBCharacteristic *)getAcceptForPeripheral:(CBPeripheral *)peripheral {
+    return [self characteristicWithUUID:self.acceptUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
+}
+
+- (CBCharacteristic *)getPeerForPeripheral:(CBPeripheral *)peripheral {
+    return [self characteristicWithUUID:self.peerUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
+}
+
+- (CBCharacteristic *)getMaForPeripheral:(CBPeripheral *)peripheral {
+    return [self characteristicWithUUID:self.maUUID forServiceUUID:self.serviceUUID inPeripheral:peripheral];
+}
+
+- (CBService *)getSvcForPeripheral:(CBPeripheral *)peripheral {
+    return [self serviceWithUUID:self.serviceUUID forPeripheral:peripheral];
+}
+
+- (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral {
+    NSLog(@"peripheralManagerIsReadyToUpdateSubscribers");
+}
+
+- (void)peripheralManager:(CBPeripheralManager *)peripheral
                     central:(CBCentral *)central
     didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
     NSLog(@"Subscription to characteristic: %@", characteristic.UUID);
@@ -510,116 +789,9 @@ didDiscoverServices:(NSError *)error {
     NSLog(@"Unsubscribed to characteristic: %@", characteristic.UUID);
 }
 
-- (void)peripheralManagerIsReadyToUpdateSubscribers:(CBPeripheralManager *)peripheral {
-    NSLog(@"peripheralManagerIsReadyToUpdateSubscribers");
-}
-
 - (void)peripheralManager:(CBPeripheralManager *)peripheral
-    didReceiveReadRequest:(CBATTRequest *)request {
-    NSLog(@"REICEVE READ REQ");
-    if ([request.characteristic.UUID isEqual:self.maUUID]) {
-        request.value = self.maCharacteristic.value;
-        NSLog(@"REICEVE READ REQ ma");
-        [self.peripheralManager respondToRequest:request withResult:CBATTErrorSuccess];
-    } else if ([request.characteristic.UUID isEqual:self.peerUUID]) {
-        NSLog(@"REICEVE READ REQ peer");
-        request.value = self.peerIDCharacteristic.value;
-        [self.peripheralManager respondToRequest:request withResult:CBATTErrorSuccess];
-    }
-    else {
-        NSLog(@"REICEVE READ REQ unknow");
-    }
-
-    [self.peripheralManager respondToRequest:request withResult:CBATTErrorInvalidHandle];
-}
-
-- (void)peripheralManager:(CBPeripheralManager *)peripheral
-    didReceiveWriteRequests:(NSArray<CBATTRequest *> *)requests {
-    // NSLog(@"REQUEST WRITE");
-    for (CBATTRequest *request in requests) {
-        if ([request.characteristic.UUID isEqual:self.acceptUUID]) {
-            [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-            BertyDevice *device = nil;
-            while (device == nil) {
-                device = [self getDeviceFromUUID:[request.central.identifier UUIDString]];
-            }
-            // NSLog(@"request ACEEPT");
-            // [device wai]
-            // [self sendToAcceptIncomingChannel:device];
-            [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-        } else if ([request.characteristic.UUID isEqual:self.writerUUID]) {
-            BertyDevice *device = [self getDeviceFromUUID:[request.central.identifier UUIDString]];
-            if (request.value != nil) {
-                sendBytesToConn([device.ma UTF8String], [request.value bytes], (int)[request.value length]);
-            }
-            [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-        }
-        else {
-            [peripheral respondToRequest:request withResult:CBATTErrorInsufficientAuthorization];
-        }
-    }
-}
-
-- (void)discoverDescriptorsForCharacteristic:(CBCharacteristic *)characteristic {
-    NSLog(@"disco for charact %@", characteristic.UUID);
-}
-
-- (nullable BertyDevice*)getDeviceFromPeerID:(NSString*)peerID {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    __block BertyDevice* device;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        for (NSString *key in self.bertyDevices.allKeys) {
-            device = [self.bertyDevices objectForKey:key];
-            NSLog(@"FRom peer %@ %@", device.peerID, peerID);
-            if (device.peerID != nil && [device.peerID isEqual:peerID]) {
-                dispatch_semaphore_signal(semaphore);
-                return ;
-            }
-            [NSThread sleepForTimeInterval:.5];
-        }
-        device = nil;
-        dispatch_semaphore_signal(semaphore);
-    });
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    dispatch_release(semaphore);
-    return device;
-}
-
-- (nullable BertyDevice*)getDeviceFromMa:(NSString*)ma {
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    __block BertyDevice* device;
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        for (NSString *key in self.bertyDevices.allKeys) {
-            device = [self.bertyDevices objectForKey:key];
-            if (device.ma != nil && [device.ma isEqual:ma]) {
-                dispatch_semaphore_signal(semaphore);
-                return ;
-            }
-            [NSThread sleepForTimeInterval:.5];
-
-        }
-        device = nil;
-        dispatch_semaphore_signal(semaphore);
-    });
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    dispatch_release(semaphore);
-    return device;
-}
-
-- (BertyDevice*)getDeviceFromPeripheral:(CBPeripheral*)peripheral {
-    BertyDevice *device = [self.bertyDevices objectForKey:[peripheral.identifier UUIDString]];
-    if (device != nil) {
-        return device;
-    }
-    return nil;
-}
-
-- (nullable BertyDevice*)getDeviceFromUUID:(NSString*)key {
-    BertyDevice *device = [self.bertyDevices objectForKey:key];
-    if (device != nil) {
-        return device;
-    }
-    return nil;
+        willRestoreState:(NSDictionary<NSString *,id> *)dict {
+    NSLog(@"Will restore State invoked");
 }
 
 @end
