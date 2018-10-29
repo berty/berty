@@ -70,6 +70,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
 		connected:       make(map[string]*Conn),
 		transport:       t,
 	}
+
 	listeners[t.ID] = listerner
 	return listerner
 }

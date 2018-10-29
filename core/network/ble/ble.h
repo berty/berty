@@ -22,15 +22,14 @@ int dialPeer(char *peerID);
 char *readPeerID(char *peerID);
 NSData *Bytes2NSData(void *bytes, int length);
 void writeNSData(NSData *data, char *ma);
+void closeConn(char *ma);
+int isClosed(char *ma);
 
 @interface BertyCentralManager : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate, CBPeripheralManagerDelegate>
 
 @property (nonatomic, assign) BOOL serviceAdded;
-@property (nonatomic, strong) NSMutableDictionary *discoveredDevice;
-@property (nonatomic, strong) NSMutableDictionary *peripheralToPeerID;
-@property (nonatomic, strong) NSMutableDictionary *peerIDToPeripheral;
 @property (nonatomic, strong) NSMutableDictionary *bertyDevices;
-@property (nonatomic, strong) NSMutableDictionary *acceptSemaphore;
+@property (nonatomic, strong) NSMutableDictionary *oldDevices;
 @property (nonatomic, strong) CBCentralManager *centralManager;
 @property (nonatomic, strong) CBPeripheralManager *peripheralManager;
 @property (nonatomic, strong) CBMutableService *bertyService;
@@ -38,6 +37,8 @@ void writeNSData(NSData *data, char *ma);
 @property (nonatomic, strong) CBMutableCharacteristic *maCharacteristic;
 @property (nonatomic, strong) CBMutableCharacteristic *peerIDCharacteristic;
 @property (nonatomic, strong) CBMutableCharacteristic *writerCharacteristic;
+@property (nonatomic, strong) CBMutableCharacteristic *isRdyCharacteristic;
+@property (nonatomic, strong) CBMutableCharacteristic *closerCharacteristic;
 @property (nonatomic, strong) NSString *ma;
 @property (nonatomic, strong) NSString *peerID;
 @property (nonatomic, strong) CBUUID *serviceUUID;
@@ -45,15 +46,19 @@ void writeNSData(NSData *data, char *ma);
 @property (nonatomic, strong) CBUUID *peerUUID;
 @property (nonatomic, strong) CBUUID *dialUUID;
 @property (nonatomic, strong) CBUUID *writerUUID;
+@property (nonatomic, strong) CBUUID *isRdyUUID;
+@property (nonatomic, strong) CBUUID *closerUUID;
 @property (nonatomic, strong) CBUUID *acceptUUID;
 @property (nonatomic, strong) NSMutableArray<NSData*>* toSend;
+@property (atomic, readwrite, strong) dispatch_semaphore_t centralWaiter;
 
 - (void)startAdvertising;
 - (void)startDiscover;
 - (instancetype)initWithMa:(NSString *)ma AndPeerID:(NSString *)peerID;
 - (void)write:(NSData *)data forMa:(NSString *)ma;
-- (char *)readPeerID:(NSString *)ma;
 - (int)dialPeer:(NSString *)peerID;
+- (void)close:(NSString *)ma;
+- (int)isClosed:(NSString *)ma;
 
 @end
 

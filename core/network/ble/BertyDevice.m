@@ -16,9 +16,17 @@
     self = [super init];
     self.peripheral = peripheral;
     self.toSend = [[NSMutableArray alloc]init];
+    self.closed = NO;
     self.isWaiting = NO;
+    self.closedSend = NO;
+    self.didRdySema = NO;
     self.connSema = dispatch_semaphore_create(0);
+    self.closerWaiterSema = dispatch_semaphore_create(0);
+    self.acceptWaiterSema = dispatch_semaphore_create(0);
+    self.closerSema = dispatch_semaphore_create(0);
+    self.writeWaiter = dispatch_semaphore_create(0);
     self.svcSema = dispatch_semaphore_create(0);
+    self.isRdySema = dispatch_semaphore_create(0);
     self.acceptSema = dispatch_semaphore_create(0);
     self.maSema = dispatch_semaphore_create(0);
     self.peerIDSema = dispatch_semaphore_create(0);
@@ -63,9 +71,11 @@
             [self.toSend addObject:chunk];
         } while (offset < length);
     }
+
     if (self.isWaiting  == NO) {
         self.isWaiting = YES;
-        [self.peripheral writeValue:self.toSend[0] forCharacteristic:[self getWriter] type:CBCharacteristicWriteWithResponse];
+        [self.peripheral writeValue:self.toSend[0] forCharacteristic:self.writer type:CBCharacteristicWriteWithResponse];
+        dispatch_semaphore_wait(self.writeWaiter, DISPATCH_TIME_FOREVER);
     }
 }
 
@@ -76,17 +86,20 @@
         }
         if ([self.toSend count] == 0) {
             self.isWaiting = NO;
+            dispatch_semaphore_signal(self.writeWaiter);
         }
     }
 }
 
 - (void)checkAndWrite {
+    if (self.closed == YES && self.closedSend == NO) {
+        self.closedSend = YES;
+        [self.peripheral writeValue:[[NSData alloc] init] forCharacteristic:self.closer type:CBCharacteristicWriteWithResponse];
+    }
     @synchronized (self.toSend) {
         if ([self.toSend count] >= 1) {
-            @synchronized (self.toSend) {
-                NSData *data = self.toSend[0];
-                [self.peripheral writeValue:data forCharacteristic:[self getWriter] type:CBCharacteristicWriteWithResponse];
-            }
+            NSData *data = self.toSend[0];
+            [self.peripheral writeValue:data forCharacteristic:self.writer type:CBCharacteristicWriteWithResponse];
         }
     }
 }
