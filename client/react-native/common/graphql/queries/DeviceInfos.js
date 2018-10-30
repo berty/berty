@@ -12,4 +12,8 @@ const query = graphql`
   }
 `
 
-export default fetchQuery(environment, query, { t: true })
+export default {
+  ...query,
+  fetch: (variables = {}) =>
+    fetchQuery(environment, query, { t: true, ...variables }),
+}
