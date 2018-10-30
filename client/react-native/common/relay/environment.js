@@ -10,7 +10,7 @@ if (__DEV__) {
 
 // @TODO: patch web CoreModule
 if (Platform.OS === 'web') {
-  NativeModules.CoreModule = {
+  const CoreModule = {
     start: async () => {},
     restart: async () => {},
     getPort: async () => {
@@ -18,6 +18,7 @@ if (Platform.OS === 'web') {
       return url.searchParams.get('gql-port') || '8700'
     },
   }
+  NativeModules.CoreModule = CoreModule
 }
 
 const { CoreModule } = NativeModules
@@ -63,20 +64,18 @@ let getIP = () =>
     }
   })
 
-const getPort = () =>
-  new Promise(resolve => {
-    let port = 0
-    const interval = setInterval(async () => {
-      try {
-        port = await CoreModule.getPort()
-
-        resolve(port)
-        clearInterval(interval)
-      } catch (error) {
-        console.warn(error)
-      }
+const getPortInterval = async resolve => {
+  try {
+    const port = await CoreModule.getPort()
+    resolve(port)
+  } catch (error) {
+    console.warn(error)
+    setTimeout(() => {
+      getPortInterval(resolve)
     }, 1000)
-  })
+  }
+}
+const getPort = () => new Promise(resolve => getPortInterval(resolve))
 
 getIP().then(console.log)
 getPort().then(console.log)

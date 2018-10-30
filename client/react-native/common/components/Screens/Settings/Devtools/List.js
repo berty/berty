@@ -1,9 +1,14 @@
+import { ActivityIndicator, NativeModules } from 'react-native'
 import React, { PureComponent } from 'react'
-import { Header, Menu } from '../../../Library'
+
+import { Flex, Header, Menu, Screen, Text } from '../../../Library'
+import { colors } from '../../../../constants'
+
+const { CoreModule } = NativeModules
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: (
+    header: navigation.getParam('restartDaemon') ? null : (
       <Header
         navigation={navigation}
         title='Developer Tools'
@@ -14,8 +19,43 @@ export default class List extends PureComponent {
     tabBarVisible: false,
   })
 
+  state = {
+    restartDaemon: false,
+  }
+
+  restartDaemon = async () => {
+    this.props.navigation.setParams({ restartDaemon: true })
+    this.setState({ restartDaemon: true }, async () => {
+      try {
+        await CoreModule.restart()
+        this.props.navigation.setParams({
+          restartDaemon: false,
+        })
+        this.setState({ restartDaemon: false })
+      } catch (err) {
+        console.error(err)
+      }
+    })
+  }
+
   render () {
     const { navigation } = this.props
+    console.log(navigation)
+    const { restartDaemon } = this.state
+    if (restartDaemon) {
+      return (
+        <Screen style={{ backgroundColor: colors.white }}>
+          <Flex.Rows align='center'>
+            <Flex.Cols align='end'>
+              <ActivityIndicator size='large' />
+            </Flex.Cols>
+            <Text center margin align='start'>
+              Daemon is restarting, please wait ...
+            </Text>
+          </Flex.Rows>
+        </Screen>
+      )
+    }
     return (
       <Menu>
         <Menu.Section customMarginTop={1}>
@@ -28,10 +68,8 @@ export default class List extends PureComponent {
         <Menu.Section>
           <Menu.Item
             icon='refresh-ccw'
-            title='Restart daemon (not implemented)'
-            onPress={() => {
-              console.log('Restart')
-            }}
+            title='Restart daemon'
+            onPress={this.restartDaemon}
           />
           <Menu.Item
             icon='list'
