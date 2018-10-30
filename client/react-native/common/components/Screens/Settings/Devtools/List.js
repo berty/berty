@@ -40,7 +40,6 @@ export default class List extends PureComponent {
 
   render () {
     const { navigation } = this.props
-    console.log(navigation)
     const { restartDaemon } = this.state
     if (restartDaemon) {
       return (

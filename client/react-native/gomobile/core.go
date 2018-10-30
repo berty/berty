@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	account "berty.tech/core/manager/account"
 	reuse "github.com/libp2p/go-reuseport"
@@ -56,11 +57,11 @@ func GetPort() (int, error) {
 	return strconv.Atoi(strings.Split(currentAccount.GQLBind, ":")[1])
 }
 
-func Start(datastorePath string, logger Logger) error {
+func Start(datastorePath string, loggerNative Logger) error {
 	if currentAccount != nil {
 		return errors.New("daemon already started")
 	}
-	if err := initLogger(logger); err != nil {
+	if err := initLogger(loggerNative); err != nil {
 		return err
 	}
 
@@ -113,6 +114,24 @@ func Start(datastorePath string, logger Logger) error {
 		currentAccount = nil
 		return err
 	}
+
+	go func() {
+		err := <-currentAccount.ErrChan()
+		logger().Error("handle account error, try to restart", zap.Error(err))
+		for {
+			if currentAccount == nil {
+				err = Start(datastorePath, loggerNative)
+			} else {
+				err = Restart(datastorePath, loggerNative)
+			}
+			if err != nil {
+				logger().Error("restart error", zap.Error(err))
+				time.Sleep(time.Second)
+				continue
+			}
+			break
+		}
+	}()
 
 	return nil
 }

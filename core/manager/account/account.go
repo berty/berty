@@ -19,6 +19,7 @@ import (
 	"github.com/jinzhu/gorm"
 	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -169,10 +170,12 @@ func (a *Account) startGrpcServer() error {
 
 	a.grpcListener, err = reuse.Listen(addr.Network(), fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port))
 	if err != nil {
+		defer a.panicHandler()
 		return err
 	}
 
 	go func() {
+		defer a.panicHandler()
 		a.errChan <- a.grpcServer.Serve(a.grpcListener)
 	}()
 
@@ -187,6 +190,7 @@ func (a *Account) startGQL() error {
 	}
 
 	go func() {
+		defer a.panicHandler()
 		a.errChan <- a.grpcServer.Serve(a.ioGrpc.Listener())
 	}()
 
@@ -210,6 +214,7 @@ func (a *Account) startGQL() error {
 
 	// start gql server
 	go func() {
+		defer a.panicHandler()
 		a.errChan <- http.Serve(a.gqlListener, a.gqlHandler)
 	}()
 	return nil
@@ -238,7 +243,9 @@ func (a *Account) initNode() error {
 func (a *Account) startNode() error {
 	// start node
 	go func() {
+		defer a.panicHandler()
 		a.errChan <- a.node.Start()
+
 	}()
 
 	// show banner
@@ -281,4 +288,12 @@ func (a *Account) startNode() error {
 
 func (a *Account) ErrChan() chan error {
 	return a.errChan
+}
+
+func (a *Account) panicHandler() {
+	if r := recover(); r != nil {
+		err := errors.New(fmt.Sprintf("%+v", r))
+		logger().Error("panic handler: panic received, send error to errChan", zap.Error(err))
+		a.errChan <- err
+	}
 }
