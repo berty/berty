@@ -1,6 +1,6 @@
 export ConversationList from './ConversationList'
 export ContactList from './ContactList'
 export Contact from './Contact'
-export GetDeviceInfos from './DeviceInfos'
+export DeviceInfos from './DeviceInfos'
 export AppVersion from './AppVersion'
 export EventList from './EventList'
