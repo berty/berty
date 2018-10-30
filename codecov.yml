@@ -1,0 +1,5 @@
+ignore:
+  - "**/*.gen.go"
+  - "**/generated.go"
+  - "**/*.pb.go"
+  - "**/gen/**"
