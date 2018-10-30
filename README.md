@@ -30,6 +30,9 @@
     <img src="https://godoc.org/berty.tech/core?status.svg"
          alt="GoDoc">
   </a>
+  <a href="https://codecov.io/gh/berty/berty">
+    <img src="https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow" />
+  </a>
 </p>
 <p align="center">
   <a href="https://waffle.io/berty/berty">
