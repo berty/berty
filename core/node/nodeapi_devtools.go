@@ -107,12 +107,22 @@ func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInf
 	output := &node.DeviceInfosOutput{}
 
 	// system, platform, os, etc
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "uptime", Value: fmt.Sprintf("%s", time.Since(n.createdAt))})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "OS", Value: runtime.GOOS})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Arch", Value: runtime.GOARCH})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Uptime", Value: fmt.Sprintf("%s", time.Since(n.createdAt))})
+
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Memory", Value: fmt.Sprintf(
+		"Alloc=%vMiB, TotalAlloc=%vMiB, Sys=%vMiB, NumGC=%v",
+		m.Alloc/1024/1024,
+		m.TotalAlloc/1024/1024,
+		m.Sys/1024/1024,
+		m.NumGC,
+	)})
+
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Versions", Value: fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version)})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Platform", Value: fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "CPUs", Value: fmt.Sprintf("%d", runtime.NumCPU())})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go version", Value: runtime.Version()})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go compiler", Value: runtime.Compiler})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go version", Value: fmt.Sprintf("%s (compiler: %s)", runtime.Version(), runtime.Compiler)})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go 'cgo' calls", Value: fmt.Sprintf("%d", runtime.NumCgoCall())})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go routines", Value: fmt.Sprintf("%d", runtime.NumGoroutine())})
 	if hn, err := os.Hostname(); err != nil {
