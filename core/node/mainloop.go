@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"time"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
@@ -9,9 +10,56 @@ import (
 	"go.uber.org/zap"
 )
 
+// EventRetry sends events which lack an AckedAt value emitted before the supplied time value
+func (n *Node) EventRetry(before time.Time) ([]*p2p.Event, error) {
+	var retriedEvents []*p2p.Event
+	destinations, err := p2p.FindNonAcknowledgedEventDestinations(n.sql, before)
+
+	if err != nil {
+		return nil, err
+	}
+
+	for _, destination := range destinations {
+		events, err := p2p.FindNonAcknowledgedEventsForDestination(n.sql, destination)
+
+		if err != nil {
+			logger().Error("error while retrieving events for dst", zap.Error(err))
+			continue
+		}
+
+		for _, event := range events {
+			now := time.Now()
+			event.SentAt = &now
+			if err := n.sql.Save(event).Error; err != nil {
+				logger().Error("error while updating SentAt on event", zap.Error(err))
+				continue
+			}
+			n.outgoingEvents <- event
+
+			retriedEvents = append(retriedEvents, event)
+		}
+	}
+
+	return retriedEvents, nil
+}
+
 // Start is the node's mainloop
 func (n *Node) Start() error {
 	ctx := context.Background()
+
+	go func() {
+		for true {
+			before := time.Now().Add(-time.Second * 60 * 10)
+			_, err := n.EventRetry(before)
+
+			if err != nil {
+				logger().Error("error while retrieving non acked destinations", zap.Error(err))
+			}
+
+			time.Sleep(time.Second * 60)
+		}
+	}()
+
 	for {
 		select {
 		case event := <-n.outgoingEvents:
