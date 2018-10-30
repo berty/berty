@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { GetDeviceInfos } from '../../../../graphql/queries'
+import { DeviceInfos as GetDeviceInfos } from '../../../../graphql/queries'
 import { Header } from '../../../Library'
 import { colors } from '../../../../constants'
 import { padding } from '../../../../styles'
@@ -30,11 +30,10 @@ export default class DeviceInfos extends PureComponent {
   }
 
   fetch = () => {
-    this.setState({ refreshing: true }, () =>
-      GetDeviceInfos.then(data => {
-        this.setState({ infos: data.DeviceInfos.infos, refreshing: false })
-      })
-    )
+    this.setState({ refreshing: true }, async () => {
+      const data = await GetDeviceInfos.fetch()
+      this.setState({ infos: data.DeviceInfos.infos, refreshing: false })
+    })
   }
 
   componentDidMount () {
