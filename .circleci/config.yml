@@ -7,7 +7,7 @@ version: 2
     GOTEST_TIMEOUT: 5m
     GOPROXY: http://goproxy.berty.io:3000/
     GO111MODULE: "on"
-    TEST_OPTS: "-coverprofile=profile.out -covermode=count -coverpkg=berty.tech/core/..."
+    TEST_OPTS: "-coverprofile=profile.out -covermode=count"
   docker:
     - image: circleci/golang:latest
 
@@ -49,7 +49,7 @@ jobs:
       - run:
           name: cleanup existing generated files
           command: |
-            cd core
+           cd core
             make clean
       - run:
           name: make generate_prepare
