@@ -116,3 +116,12 @@ func Start(datastorePath string, logger Logger) error {
 
 	return nil
 }
+
+func Restart(datastorePath string, logger Logger) error {
+	if currentAccount == nil {
+		return errors.New("daemon not started")
+	}
+	currentAccount.Close()
+	currentAccount = nil
+	return Start(datastorePath, logger)
+}
