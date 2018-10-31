@@ -1,6 +1,7 @@
 berty.tech v0.0.0-20181022155922-f32cfaad3875 h1:idZm5uDumAQzxQHAfTnmaxGqFOO6KC6/qHIEo0pyX1w=
 berty.tech v0.0.0-20181023103937-6f6ce2eea59a h1:5XLFVgNTFR7/oD1a6amaLQ5oCOXteavfPzwm9vwljF4=
 berty.tech v0.0.0-20181023133502-f897998c663b h1:H1iL7aMkf5y+JE8z2e63xM3ceJYDSwVsXET5kNXyGss=
+berty.tech v0.0.0-20181031153117-b329d9e0528f h1:4MN99eOxuAzwg+Po0PNDVD7EFtV44h9Tc3YCY8vCGSw=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.30.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 github.com/0xAX/notificator v0.0.0-20171022182052-88d57ee9043b/go.mod h1:NtXa9WwQsukMHZpjNakTTz0LArxvGYdPA9CjIcUSZ6s=
