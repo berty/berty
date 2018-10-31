@@ -112,7 +112,7 @@ func (m *Metrics) MonitorBandwidthProtocol(id string, interval time.Duration, ha
 func (m *Metrics) MonitorBandwidthPeer(id string, interval time.Duration, handler func(*p2p.BandwidthStats, error) error) {
 	peerid, err := peer.IDFromString(id)
 	if err != nil {
-		handler(nil, fmt.Errorf("monitor bandwidth peer", err))
+		handler(nil, fmt.Errorf("monitor bandwidth peer: %s", err))
 		return
 	}
 

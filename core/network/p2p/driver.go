@@ -29,6 +29,7 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	"github.com/libp2p/go-libp2p-protocol"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
+	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -183,13 +184,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 
 	p2p.RegisterServiceServer(driver.gs, ServiceServer(driver))
 
-	l := sgrpc.NewListener(ID)
-	go func() {
-		if err := driver.gs.Serve(l); err != nil {
-			logger().Error("Listen error", zap.Error(err))
-		}
-	}()
-
 	driver.listener = sgrpc.NewListener(ID)
 
 	driver.logHostInfos()
@@ -204,31 +198,7 @@ func (d *Driver) Start() error {
 	return nil
 }
 
-func NewDriver(ctx context.Context, opts ...Option) (*Driver, error) {
-	var cfg driverConfig
-	if err := cfg.Apply(opts...); err != nil {
-		return nil, err
-	}
-
-	return newDriver(ctx, cfg)
-}
-
-func (d *Driver) ID() string {
-	return d.host.ID().Pretty()
-}
-
-func (d *Driver) Addrs() []string {
-	var addrs []string
-
-	for _, addr := range d.host.Addrs() {
-		addrs = append(addrs, addr.String())
-	}
-
-	return addrs
-}
-
 func (d *Driver) logHostInfos() {
-
 	var addrs []string
 
 	for _, addr := range d.host.Addrs() {
@@ -254,6 +224,10 @@ func (d *Driver) Protocols(p *p2p.Peer) ([]string, error) {
 	}
 
 	return d.host.Peerstore().GetProtocols(peerid)
+}
+
+func (d *Driver) Addrs() []ma.Multiaddr {
+	return d.host.Addrs()
 }
 
 func (d *Driver) ID() *p2p.Peer {

@@ -11,8 +11,6 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"go.uber.org/zap"
-
-	"go.uber.org/zap"
 )
 
 func init() {
