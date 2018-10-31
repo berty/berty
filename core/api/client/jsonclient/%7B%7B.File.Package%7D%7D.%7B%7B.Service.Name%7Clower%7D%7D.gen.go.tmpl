@@ -7,14 +7,12 @@ package jsonclient
 import (
         "context"
         "encoding/json"
-
-        "go.uber.org/zap"
-
-	"berty.tech/core/api/client"
+        "berty.tech/core/api/client"
         "berty.tech/core/{{.File.Name|dir}}"
-        {{- range .File.Dependency}}
-          {{- $dependency := . | getProtoFile}}
+        {{- range .File.Dependency := . | getProtoFile}}
+          {{ if (regexMatch "\"berTy[^\"]+\"" ($dependency|string)) }}
           "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
+          {{ end }}
         {{- end}}
 )
 
