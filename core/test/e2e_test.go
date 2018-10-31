@@ -6,17 +6,16 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/core/testrunner"
-
-	"github.com/libp2p/go-libp2p-kad-dht"
-	. "github.com/smartystreets/goconvey/convey"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/errorcodes"
 	"berty.tech/core/network/mock"
 	p2pnet "berty.tech/core/network/p2p"
+	"berty.tech/core/testrunner"
+	"github.com/libp2p/go-libp2p-kad-dht"
+	. "github.com/smartystreets/goconvey/convey"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -793,6 +792,11 @@ func setupP2PNetwork(bootstrap ...string) (*p2pnet.Driver, error) {
 	if err != nil {
 		return nil, err
 	}
+	go func() {
+		if err := driver.Start(); err != nil {
+			logger().Error("driver start error", zap.Error(err))
+		}
+	}()
 	return driver, nil
 }
 

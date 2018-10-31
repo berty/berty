@@ -52,6 +52,8 @@ type Account struct {
 	errChan chan error
 }
 
+var list []*Account
+
 type NewOption func(*Account) error
 type Options []NewOption
 
@@ -70,7 +72,35 @@ func New(opts ...NewOption) (*Account, error) {
 		return nil, err
 	}
 
+	Add(a)
 	return a, nil
+}
+
+func Get(name string) (*Account, error) {
+	for _, account := range list {
+		if account != nil && account.Name == name {
+			return account, nil
+		}
+	}
+	return nil, errors.New("account with name " + name + " isn't opened")
+}
+
+func Add(a *Account) {
+	list = append(list, a)
+}
+
+func Remove(a *Account) {
+	ForEach(func(i int, current *Account) {
+		if a == current {
+			list = append(list[:i], list[i+1:]...)
+		}
+	})
+}
+
+func ForEach(callback func(int, *Account)) {
+	for index, account := range list {
+		callback(index, account)
+	}
 }
 
 func (a *Account) Validate() error {
@@ -96,6 +126,11 @@ func (a *Account) Open() error {
 	}
 	if a.initOnly {
 		return nil
+	}
+
+	// start
+	if err := a.startNetwork(); err != nil {
+		return err
 	}
 	if err := a.startGrpcServer(); err != nil {
 		return err
@@ -131,6 +166,7 @@ func (a *Account) Close() {
 	if a.grpcListener != nil {
 		a.grpcListener.Close()
 	}
+
 }
 
 // Database
@@ -156,6 +192,14 @@ func (a *Account) openDatabase() error {
 	return nil
 }
 
+func (a *Account) startNetwork() error {
+	go func() {
+		defer a.PanicHandler()
+		a.errChan <- a.network.Start()
+	}()
+	return nil
+}
+
 func (a *Account) startGrpcServer() error {
 	var err error
 
@@ -170,12 +214,12 @@ func (a *Account) startGrpcServer() error {
 
 	a.grpcListener, err = reuse.Listen(addr.Network(), fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port))
 	if err != nil {
-		defer a.panicHandler()
+		defer a.PanicHandler()
 		return err
 	}
 
 	go func() {
-		defer a.panicHandler()
+		defer a.PanicHandler()
 		a.errChan <- a.grpcServer.Serve(a.grpcListener)
 	}()
 
@@ -190,7 +234,7 @@ func (a *Account) startGQL() error {
 	}
 
 	go func() {
-		defer a.panicHandler()
+		defer a.PanicHandler()
 		a.errChan <- a.grpcServer.Serve(a.ioGrpc.Listener())
 	}()
 
@@ -214,7 +258,6 @@ func (a *Account) startGQL() error {
 
 	// start gql server
 	go func() {
-		defer a.panicHandler()
 		a.errChan <- http.Serve(a.gqlListener, a.gqlHandler)
 	}()
 	return nil
@@ -241,9 +284,10 @@ func (a *Account) initNode() error {
 }
 
 func (a *Account) startNode() error {
+
 	// start node
 	go func() {
-		defer a.panicHandler()
+		defer a.PanicHandler()
 		a.errChan <- a.node.Start()
 
 	}()
@@ -290,8 +334,9 @@ func (a *Account) ErrChan() chan error {
 	return a.errChan
 }
 
-func (a *Account) panicHandler() {
-	if r := recover(); r != nil {
+func (a *Account) PanicHandler() {
+	r := recover()
+	if r != nil {
 		err := errors.New(fmt.Sprintf("%+v", r))
 		logger().Error("panic handler: panic received, send error to errChan", zap.Error(err))
 		a.errChan <- err
