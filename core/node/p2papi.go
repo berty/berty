@@ -41,21 +41,7 @@ func (n *Node) Protocols(ctx context.Context, p *p2p.Peer) (*node.ProtocolsOutpu
 	}, nil
 }
 
-ffunc (n *Node) ID(ctx context.Context, _ *node.Void) (*p2p.Peer, error) {
-	return n.networkDriver.ID(), nil
-}
-
-func (n *Node) Protocols(ctx context.Context, p *p2p.Peer) (*node.ProtocolsOutput, error) {
-	pids, err := n.networkDriver.Protocols(p)
-	if err != nil {
-		return nil, err
-	}
-
-	return &node.ProtocolsOutput{
-		Protocols: pids,
-	}, nil
-}
-unc (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {
+func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {
 	n.asyncWaitGroup.Add(1)
 	defer n.asyncWaitGroup.Done()
 	return &p2p.Void{}, n.handleEnvelope(ctx, input)

@@ -1,7 +1,6 @@
 import { NativeModules, Platform } from 'react-native'
-import { Environment, Network, RecordSource, Store } from 'relay-runtime'
+import { Environment, RecordSource, Store } from 'relay-runtime'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { Platform, NativeModules } from 'react-native'
 // import { installRelayDevTools } from 'relay-devtools'
 import {
   RelayNetworkLayer,
