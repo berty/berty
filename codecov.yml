@@ -1,3 +1,15 @@
+coverage:
+  status:
+    project:
+      default:
+        #target: 42%
+        threshold: 10%
+    patch:
+      default:
+        #target: 42%
+        threshold: 10%
+    changes: no
+
 ignore:
   - "**/*.gen.go"
   - "**/generated.go"
