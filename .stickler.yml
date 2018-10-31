@@ -1,12 +1,18 @@
 linters:
-  golint:
-    fixer: false
+
+  # disabling golint while stickler doesn't support excluding some rules
+  #golint:
+  #  fixer: false
+
   shellcheck:
     shell: bash
+
   # eslint:
   #  config: './client/react-native/.eslintrc'
   #  install_plugins: true
+
   swiftlint: {  }
+
 files:
   ignore:
     - 'bower_components/*'
