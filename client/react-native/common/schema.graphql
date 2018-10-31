@@ -640,6 +640,9 @@ type Query {
   AppVersion(
       T: Bool!
   ): BertyNodeAppVersionPayload
+  Panic(
+      T: Bool!
+  ): BertyNodeVoidPayload
 }
   
 type Mutation {

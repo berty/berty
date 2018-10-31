@@ -107,22 +107,27 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 			opts = &GrpcServerOptions{}
 		}
 
-		interceptors := []grpc.ServerOption{}
+		serverStreamOpts := []grpc.StreamServerInterceptor{
+			grpc_recovery.StreamServerInterceptor(),
+		}
+		serverUnaryOpts := []grpc.UnaryServerInterceptor{
+			grpc_recovery.UnaryServerInterceptor(),
+		}
 		if opts.Interceptors {
-			serverStreamOpts := []grpc.StreamServerInterceptor{
+			serverStreamOpts = append(serverStreamOpts,
 				// grpc_auth.StreamServerInterceptor(myAuthFunction),
 				// grpc_prometheus.StreamServerInterceptor,
 				grpc_ctxtags.StreamServerInterceptor(),
 				grpc_zap.StreamServerInterceptor(logger()),
 				grpc_recovery.StreamServerInterceptor(),
-			}
-			serverUnaryOpts := []grpc.UnaryServerInterceptor{
+			)
+			serverUnaryOpts = append(serverUnaryOpts,
 				// grpc_prometheus.UnaryServerInterceptor,
 				// grpc_auth.UnaryServerInterceptor(myAuthFunction),
 				grpc_ctxtags.UnaryServerInterceptor(),
 				grpc_zap.UnaryServerInterceptor(logger()),
 				grpc_recovery.UnaryServerInterceptor(),
-			}
+			)
 
 			if opts.JaegerAddr != "" {
 				var tracer opentracing.Tracer
@@ -136,12 +141,12 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 				serverUnaryOpts = append(serverUnaryOpts, grpc_ot.UnaryServerInterceptor(tracerOpts))
 			}
 
-			interceptors = []grpc.ServerOption{
-				grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
-				grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
-			}
-
 		}
+		interceptors := []grpc.ServerOption{
+			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
+			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
+		}
+
 		a.grpcServer = grpc.NewServer(interceptors...)
 		reflection.Register(a.grpcServer)
 
@@ -239,7 +244,6 @@ func WithGQL(opts *GQLOptions) NewOption {
 						),
 					)
 					return next(ctx)
-
 				},
 			),
 		))

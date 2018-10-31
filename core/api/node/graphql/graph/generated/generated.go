@@ -549,6 +549,7 @@ type ComplexityRoot struct {
 		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
 		DeviceInfos           func(childComplexity int, T bool) int
 		AppVersion            func(childComplexity int, T bool) int
+		Panic                 func(childComplexity int, T bool) int
 	}
 
 	Subscription struct {
@@ -630,6 +631,7 @@ type QueryResolver interface {
 	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
 	DeviceInfos(ctx context.Context, T bool) (*node.DeviceInfosOutput, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
+	Panic(ctx context.Context, T bool) (*node.Void, error)
 }
 type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
@@ -2175,6 +2177,21 @@ func field_Query_DeviceInfos_args(rawArgs map[string]interface{}) (map[string]in
 }
 
 func field_Query_AppVersion_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_Panic_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 bool
 	if tmp, ok := rawArgs["T"]; ok {
@@ -4424,6 +4441,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.AppVersion(childComplexity, args["T"].(bool)), true
+
+	case "Query.Panic":
+		if e.complexity.Query.Panic == nil {
+			break
+		}
+
+		args, err := field_Query_Panic_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Panic(childComplexity, args["T"].(bool)), true
 
 	case "Subscription.EventStream":
 		if e.complexity.Subscription.EventStream == nil {
@@ -15710,6 +15739,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_AppVersion(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "Panic":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_Panic(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -16029,6 +16064,37 @@ func (ec *executionContext) _Query_AppVersion(ctx context.Context, field graphql
 	}
 
 	return ec._BertyNodeAppVersionPayload(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_Panic(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_Panic_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Panic(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Void)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeVoidPayload(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -18677,6 +18743,9 @@ type Query {
   AppVersion(
       T: Bool!
   ): BertyNodeAppVersionPayload
+  Panic(
+      T: Bool!
+  ): BertyNodeVoidPayload
 }
   
 type Mutation {

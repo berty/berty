@@ -4,9 +4,8 @@ import (
 	"context"
 	"net"
 
-	protocol "github.com/libp2p/go-libp2p-protocol"
-
 	"berty.tech/core/api/p2p"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 )
 
 type Driver interface {
@@ -24,6 +23,9 @@ type Driver interface {
 
 	// PingOtherNode send a ping message to another node
 	PingOtherNode(ctx context.Context, destination string) error
+
+	// Start start service listener
+	Start() error
 
 	// Close cleanups things
 	Close() error

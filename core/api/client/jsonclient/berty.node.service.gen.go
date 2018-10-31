@@ -36,6 +36,7 @@ func init() {
 	registerUnary("berty.node.DebugPing", NodeDebugPing)
 	registerUnary("berty.node.DeviceInfos", NodeDeviceInfos)
 	registerUnary("berty.node.AppVersion", NodeAppVersion)
+	registerUnary("berty.node.Panic", NodePanic)
 }
 
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
@@ -416,4 +417,18 @@ func NodeAppVersion(client *client.Client, ctx context.Context, jsonInput []byte
 		return nil, err
 	}
 	return client.Node().AppVersion(ctx, &typedInput)
+}
+
+func NodePanic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "Panic"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().Panic(ctx, &typedInput)
 }
