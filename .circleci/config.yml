@@ -16,9 +16,10 @@ references:
     run:
       name: install retry
       command: |
-        sudo curl -L "https://github.com/moul/retry/releases/download/v0.4.0/retry_$(uname -s)_$(uname -m)" -o /usr/local/bin/retry
-        sudo chmod +x /usr/local/bin/retry
-        retry --version
+        command -v wget &>/dev/null && wget -O /tmp/retry "https://github.com/moul/retry/releases/download/v0.4.0/retry_$(uname -s)_$(uname -m)" || true
+        if [ ! -f /tmp/retry ]; then command -v curl &>/dev/null && curl -L -o /tmp/retry "https://github.com/moul/retry/releases/download/v0.4.0/retry_$(uname -s)_$(uname -m)"; fi
+        chmod +x /tmp/retry
+        /tmp/retry --version
 
 jobs:
   lint:
@@ -34,14 +35,14 @@ jobs:
       - run:
           name: fetch deps
           command: |
-            cd core; retry -m 3 go mod download
+            cd core; /tmp/retry -m 3 go mod download
       - run:
           name: prepare CI
           command: |
             make _ci_prepare
       - run:
           name: lint
-          command: retry -m 3 make lint
+          command: /tmp/retry -m 3 make lint
       - save_cache:
           key: v1-go-cache
           paths:
@@ -71,7 +72,7 @@ jobs:
           name: make generate_local
           command: |
             cd core
-            retry -m 3 make generate_local
+            /tmp/retry -m 3 make generate_local
       - run:
           name: ignore some files
           command: |
@@ -87,6 +88,9 @@ jobs:
     docker:
       - image: docker:17.05.0-ce-git
     steps:
+      - run:
+          name: install ca-certificates
+          command: apk --no-cache add openssl
       - *install_retry
       - checkout
       - setup_remote_docker
@@ -103,11 +107,11 @@ jobs:
       - run:
           name: Build application Docker image
           command: |
-            retry -m 3 docker build --cache-from=berty -t berty .
+            /tmp/retry -m 3 docker build --cache-from=berty -t berty .
       - run:
           name: Run application within Docker
           command: |
-            retry -m 3 docker run --rm berty daemon --init-only --no-p2p
+            /tmp/retry -m 3 docker run --rm berty daemon --init-only --no-p2p
       - run:
           name: Save Docker image layer cache
           command: |
@@ -141,33 +145,33 @@ jobs:
           name: install core
           command: |
             cd core
-            retry -m 3 make install
+            /tmp/retry -m 3 make install
       - run:
           name: test core
           command: |
             cd core
-            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" retry -m 3 make test | tee /tmp/test-results/go-test-report.out
+            TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" /tmp/retry -m 3 make test | tee /tmp/test-results/go-test-report.out
       - run:
           name: test client (bot)
           command: |
             cd client/go/bot
-            retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
-            retry -m 3 go install -v .
+            /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
+            /tmp/retry -m 3 go install -v .
 
             cd ./examples/berty-bot-example
-            retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
-            retry -m 3 go install -v .
+            /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
+            /tmp/retry -m 3 go install -v .
       - run:
           name: test gomobile
           command: |
             cd client/react-native/gomobile
-            retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
-            GOARCH=386 retry -m 3 go test -v . | tee /tmp/test-results/go-test-report.out
+            /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
+            GOARCH=386 /tmp/retry -m 3 go test -v . | tee /tmp/test-results/go-test-report.out
       - run:
           name: integration core
           command: |
             cd core
-            retry -m 3 make integration
+            /tmp/retry -m 3 make integration
       - run:
           name: junit-report
           command: |
@@ -202,7 +206,7 @@ jobs:
           name: install react-native deps
           command: |
             cd client/react-native
-            retry -m 3 make deps
+            /tmp/retry -m 3 make deps
 
       - save_cache:
           key: yarn-v1-{{ checksum "client/react-native/yarn.lock" }}-{{ arch }}
@@ -225,12 +229,13 @@ jobs:
     docker:
       - image: bertychat/android-ci:v2
     steps:
-      - *install_retry
       - checkout:
           path: ~/go/src/berty.tech/
 
       - attach_workspace:
           at: ~/go/src/berty.tech/
+
+      - *install_retry
 
       - run:
           name: setup golang environment
@@ -242,7 +247,7 @@ jobs:
           command: |
             env
             cd ../gomobile
-            retry -m 3 make build.android
+            /tmp/retry -m 3 make build.android
 
       - restore_cache:
           key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
@@ -251,7 +256,7 @@ jobs:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            bundle check || retry -m 3 bundle install --path vendor/bundle
+            bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - save_cache:
           key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
@@ -267,7 +272,7 @@ jobs:
       - run:
           name: build app
           command: |
-            retry -m 3 bundle exec fastlane android beta
+            /tmp/retry -m 3 bundle exec fastlane android beta
 
   client.rn.ios:
     working_directory: ~/go/src/berty.tech
@@ -332,7 +337,7 @@ jobs:
           name: install core
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
           command: |
-            retry -m 3 make build.ios
+            /tmp/retry -m 3 make build.ios
 
       - restore_cache:
           key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
@@ -341,7 +346,7 @@ jobs:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            bundle check || retry -m 3 bundle install --path vendor/bundle
+            bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - save_cache:
           key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
@@ -358,14 +363,14 @@ jobs:
           name: install fsevents
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            retry -m 3 yarn add fsevents
+            /tmp/retry -m 3 yarn add fsevents
 
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            retry -m 3 make fastlane.setup_circle
-            retry -m 3 make fastlane.ios.build
+            /tmp/retry -m 3 make fastlane.setup_circle
+            /tmp/retry -m 3 make fastlane.ios.build
 
       - store_artifacts:
           path: /tmp/fl
@@ -389,7 +394,7 @@ jobs:
       - restore_cache:
           key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
 
-      - run: cd client/react-native/web && retry -m 3 yarn
+      - run: cd client/react-native/web && /tmp/retry -m 3 yarn
 
       - save_cache:
           key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
@@ -405,7 +410,7 @@ jobs:
           name: build web app
           working_directory: ~/go/src/berty.tech/client/react-native/web
           command: |
-            retry -m 3 yarn build
+            /tmp/retry -m 3 yarn build
 
 workflows:
   version: 2
