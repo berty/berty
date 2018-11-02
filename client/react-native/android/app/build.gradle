@@ -141,6 +141,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-fs')
+    compile project(':react-native-restart')
     compile project(':react-native-vector-icons')
     compile project(':react-native-network-info')
     compile project(':react-native-image-picker')

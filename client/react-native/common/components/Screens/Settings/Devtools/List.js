@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react'
+import { Platform } from 'react-native'
+import { RNRestart } from 'react-native-restart'
 import { Header, Menu } from '../../../Library'
 
 export default class List extends PureComponent {
@@ -26,13 +28,15 @@ export default class List extends PureComponent {
           />
         </Menu.Section>
         <Menu.Section>
-          <Menu.Item
-            icon='refresh-ccw'
-            title='Restart daemon (not implemented)'
-            onPress={() => {
-              console.log('Restart')
-            }}
-          />
+          {Platform.OS !== 'web' && (
+            <Menu.Item
+              icon='refresh-ccw'
+              title='Restart app'
+              onPress={() => {
+                RNRestart.Restart()
+              }}
+            />
+          )}
           <Menu.Item
             icon='list'
             title='List events'
