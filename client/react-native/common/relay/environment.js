@@ -64,13 +64,6 @@ let getIP = () =>
       return resolve(window.location.hostname)
     }
 
-    // eslint-disable-next-line
-    if (__DEV__) {
-      return require('react-native-network-info').NetworkInfo.getIPV4Address(
-        ip => resolve(ip)
-      )
-    }
-
     if (Platform.OS === 'ios') {
       return resolve('127.0.0.1')
     }
@@ -124,8 +117,14 @@ const perfLogger = (msg, req, res) => {
       console.error(errorReason)
     }
 
-    console.dir(req)
-    console.dir(res)
+    if (typeof req !== 'undefined') {
+      console.dir(req)
+    }
+
+    if (typeof res !== 'undefined') {
+      console.dir(res)
+    }
+
     console.groupEnd()
   } catch (_) {
     console.log('[RELAY_NETWORK]', msg, req, res)
