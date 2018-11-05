@@ -1,6 +1,7 @@
 package chat.berty.ble;
 
 import android.app.Activity;
+import android.arch.core.util.Function;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
@@ -32,6 +33,8 @@ public class Manager {
     private static Manager instance = null;
 
     private Context mContext;
+
+    private ActivityGetter mReactContext;
 
     final static int BLUETOOTH_ENABLE_REQUEST = 1;
 
@@ -66,6 +69,10 @@ public class Manager {
     protected BluetoothGattCharacteristic isRdyCharacteristic;
     protected BluetoothGattCharacteristic closerCharacteristic;
 
+    public interface ActivityGetter {
+        Activity getCurrentActivity();
+    }
+
     private Manager() {
         super();
         Log.e(TAG, "BLEManager init");
@@ -74,6 +81,11 @@ public class Manager {
     public void setmContext(Context ctx) {
         Log.e(TAG, "BLEManager context set");
         mContext = ctx;
+    }
+
+    public void setmReactContext(Object rCtx) {
+        Log.e(TAG, "BLEManager ReactContext set");
+        mReactContext = (ActivityGetter)rCtx;
     }
 
     public static Manager getInstance() {
@@ -205,16 +217,12 @@ public class Manager {
     public String realTest() {
         Log.e(TAG, "THIS IS REAL SHIT GUY");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//        if (!mBluetoothAdapter.isEnabled()) {
+        if (!mBluetoothAdapter.isEnabled()) {
             Log.e(TAG, "NEED TO ENABLE");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            if (mContext instanceof Activity) {
-                        ((Activity)mContext).startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
-            } else {
-                Log.e(TAG, "mContext should be an instanceof Activity.");
-            }
-//        ((Activity)mContext).startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
-//        }
+            mReactContext.getCurrentActivity().startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             Log.e(TAG, "THIS IS REAL SHIT GUY2");
             initGattServerCallBack();
