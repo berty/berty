@@ -152,16 +152,6 @@ jobs:
             cd core
             TEST_SLEEP_BETWEEN_STEPS=1s TEST_OPTS="$TEST_OPTS" /tmp/retry -m 3 make test | tee /tmp/test-results/go-test-report.out
       - run:
-          name: test client (bot)
-          command: |
-            cd client/go/bot
-            /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
-            /tmp/retry -m 3 go install -v .
-
-            cd ./examples/berty-bot-example
-            /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
-            /tmp/retry -m 3 go install -v .
-      - run:
           name: test gomobile
           command: |
             cd client/react-native/gomobile
