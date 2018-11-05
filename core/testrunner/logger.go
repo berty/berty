@@ -26,21 +26,21 @@ type Interface interface {
 // That must not cause a race detector failure,
 // although it will still result in limited visibility
 // into exactly what those goroutines do.
-var logger atomic.Value
+var alogger atomic.Value
 
 // SetLogger sets the test logger implementation for the current process.
 // It must be called only once, at process startup.
 func SetLogger(impl Interface) {
-	if logger.Load() != nil {
+	if alogger.Load() != nil {
 		panic("testlog: SetLogger must be called only once")
 	}
-	logger.Store(&impl)
+	alogger.Store(&impl)
 }
 
 // Logger returns the current test logger implementation.
-// It returns nil if there is no logger.
+// It returns nil if there is no alogger.
 func Logger() Interface {
-	impl := logger.Load()
+	impl := alogger.Load()
 	if impl == nil {
 		return nil
 	}

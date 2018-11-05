@@ -2,8 +2,8 @@ package bot
 
 import (
 	"encoding/json"
-	"log"
 
+	"go.uber.org/zap"
 	grpc "google.golang.org/grpc"
 
 	"berty.tech/core/api/client"
@@ -56,11 +56,18 @@ func WithAutoAcceptInvites() Option {
 	}
 }
 
+func WithMessageHandlerFunc(f MessageHandlerFunc) Option {
+	return func(b *Bot) error {
+		b.AddMessageHandlerFunc(f)
+		return nil
+	}
+}
+
 func WithLogger() Option {
 	return func(b *Bot) error {
 		b.AddHandlerFunc(func(_ *Bot, e *Event) error {
 			out, _ := json.Marshal(e)
-			log.Println("received event", string(out))
+			logger().Debug("received event", zap.String("event", string(out)))
 			return nil
 		})
 		return nil

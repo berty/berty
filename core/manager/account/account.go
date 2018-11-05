@@ -3,13 +3,16 @@ package account
 import (
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"berty.tech/core"
+	nodeapi "berty.tech/core/api/node"
+	p2papi "berty.tech/core/api/p2p"
+	"berty.tech/core/bot"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/network/netutil"
@@ -29,7 +32,7 @@ type Account struct {
 	banner     string
 
 	db     *gorm.DB
-	dbPath string
+	dbDir  string
 	dbDrop bool
 
 	gqlHandler  http.Handler
@@ -46,6 +49,7 @@ type Account struct {
 
 	node     *node.Node
 	initOnly bool
+	withBot  bool
 
 	serverTracerCloser io.Closer
 	dialTracerCloser   io.Closer
@@ -109,10 +113,10 @@ func (a *Account) Validate() error {
 		return errors.New("missing required field (Name) for account")
 	} else if a.Passphrase == "" {
 		return errors.New("missing required field (Passphrase) for account")
-	} else if a.dbPath == "" {
-		return errors.New("missing required field (dbPath) for account")
+	} else if a.dbDir == "" {
+		return errors.New("missing required field (dbDir) for account")
 	} else if a.db == nil {
-		return errors.New("connecting to the db failed with the provided (dbPath/Passphrase) for account")
+		return errors.New("connecting to the db failed with the provided (dbDir/Passphrase) for account")
 	} else if a.network == nil {
 		return errors.New("missing required field (network) for account")
 	} else if a.grpcServer == nil {
@@ -142,6 +146,23 @@ func (a *Account) Open() error {
 	if err := a.startNode(); err != nil {
 		return err
 	}
+	if a.withBot {
+		if err := a.startBot(); err != nil {
+			return err
+		}
+	}
+
+	logger().Info("account started",
+		zap.String("pubkey", a.node.PubKey()),
+		zap.String("grpc-bind", a.GrpcBind),
+		zap.String("gql-bind", a.GQLBind),
+		zap.Int("p2p-api", int(p2papi.Version)),
+		zap.Int("node-api", int(nodeapi.Version)),
+		zap.String("version", core.Version),
+		zap.String("db", a.dbPath()),
+		zap.String("name", a.Name),
+	)
+
 	return nil
 }
 
@@ -171,9 +192,14 @@ func (a *Account) Close() {
 }
 
 // Database
+
+func (a *Account) dbPath() string {
+	return a.dbDir + "/berty." + a.Name + ".db"
+}
+
 func (a *Account) openDatabase() error {
 	var err error
-	a.db, err = sqlcipher.Open(a.dbPath+"/berty."+a.Name+".db", []byte(a.Passphrase))
+	a.db, err = sqlcipher.Open(a.dbPath(), []byte(a.Passphrase))
 	if err != nil {
 		return errors.Wrap(err, "failed to open sqlcipher")
 	}
@@ -222,6 +248,31 @@ func (a *Account) startGrpcServer() error {
 	go func() {
 		defer a.PanicHandler()
 		a.errChan <- a.grpcServer.Serve(a.grpcListener)
+	}()
+
+	return nil
+}
+
+func (a *Account) startBot() error {
+	options := append(
+		[]bot.Option{
+			bot.WithTCPDaemon(a.GrpcBind),
+			bot.WithLogger(),
+		},
+		bot.GenericOptions()...,
+	)
+	b, err := bot.New(options...)
+	if err != nil {
+		return errors.Wrap(err, "failed to initialize bot")
+	}
+
+	go func() {
+		logger().Debug("starting bot...")
+		if err := b.Start(); err != nil {
+			logger().Error("bot error", zap.Error(err))
+			defer a.PanicHandler()
+			a.errChan <- err
+		}
 	}()
 
 	return nil
@@ -313,15 +364,15 @@ func (a *Account) startNode() error {
 			s := <-signalChan
 			switch s {
 			case syscall.SIGHUP: // kill -SIGHUP XXXX
-				log.Println("sighup received")
+				logger().Info("sighup received")
 			case syscall.SIGINT: // kill -SIGINT XXXX or Ctrl+c
-				log.Println("sigint received")
+				logger().Info("sigint received")
 				a.errChan <- nil
 			case syscall.SIGTERM: // kill -SIGTERM XXXX (force stop)
-				log.Println("sigterm received")
+				logger().Info("sigterm received")
 				a.errChan <- nil
 			case syscall.SIGQUIT: // kill -SIGQUIT XXXX (stop and core dump)
-				log.Println("sigquit received")
+				logger().Info("sigquit received")
 				a.errChan <- nil
 			default:
 				a.errChan <- fmt.Errorf("unknown signal received")
