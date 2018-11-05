@@ -5,7 +5,7 @@ import { Flex } from '.'
 import { colors } from '../../constants'
 import { paddingBottom, paddingLeft, paddingRight } from '../../styles'
 
-export default props => (
+const SearchBar = props => (
   <Flex.Cols size={1} style={[paddingBottom]}>
     <TextInput
       underlineColorAndroid='transparent'
@@ -33,3 +33,5 @@ export default props => (
     {props.children}
   </Flex.Cols>
 )
+
+export default SearchBar

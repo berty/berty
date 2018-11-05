@@ -233,6 +233,13 @@ func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversat
 func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.GenerateFakeData(ctx, &node.Void{T: true})
 }
+func (r *mutationResolver) DebugRequeueEvent(ctx context.Context, eventID string) (*p2p.Event, error) {
+	eventID = strings.SplitN(eventID, ":", 2)[1]
+
+	return r.client.DebugRequeueEvent(ctx, &node.DebugEventRequeueInput{
+		EventID: eventID,
+	})
+}
 
 type queryResolver struct{ *Resolver }
 
@@ -279,16 +286,15 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	}
 
 	input := &node.EventListInput{
-		Filter:   filter,
-		Paginate: getPagination(first, after, last, before),
+		Filter:             filter,
+		Paginate:           getPagination(first, after, last, before),
+		OnlyWithoutAckedAt: onlyWithoutAckedAt,
 	}
 
 	input.Paginate.OrderBy = orderBy
 	input.Paginate.OrderDesc = orderDesc
 
 	input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
-
-	input.OnlyWithoutAckedAt = onlyWithoutAckedAt
 
 	stream, err := r.client.EventList(ctx, input)
 

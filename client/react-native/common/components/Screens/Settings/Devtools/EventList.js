@@ -8,6 +8,8 @@ import {
   Screen,
   SearchBar,
   Separator,
+  Icon,
+  Text as LibText,
 } from '../../../Library'
 import { QueryReducer } from '../../../../relay'
 import { colors } from '../../../../constants'
@@ -37,6 +39,10 @@ const Item = fragments.Event(({ data, navigation }) => (
         >
           <Text style={{ fontWeight: 'bold' }}>Kind</Text>
           {' ' + data.kind}
+          {data.ackedAt !== null
+            ? <Icon name={'check-circle'} color={colors.green} />
+            : <Icon name={'arrow-up-circle'} color={colors.orange} />
+          }
         </Text>
         <Text
           ellipsizeMode='tail'
@@ -132,13 +138,11 @@ const List = fragments.EventList(
   },
 )
 export default class EventList extends PureComponent {
-  constructor (props) {
-    super(props)
-  }
-
   componentWillMount () {
     this.props.navigation.setParams({
-      filters: {},
+      filters: {
+        onlyWithoutAckedAt: 0,
+      },
     })
   }
 
@@ -151,7 +155,7 @@ export default class EventList extends PureComponent {
           titleIcon='list'
           searchBar={
             <SearchBar onChangeText={navigation.getParam('searchHandler')}>
-              <Text
+              <LibText
                 size={0}
                 height={34}
                 icon='filter'

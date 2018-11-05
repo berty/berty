@@ -777,6 +777,9 @@ type Mutation {
   RunIntegrationTests(
       name: String!
   ): BertyNodeIntegrationTestPayload
+  DebugRequeueEvent(
+    eventId: ID!
+  ): BertyP2pEventPayload
 }
   
 type Subscription {
