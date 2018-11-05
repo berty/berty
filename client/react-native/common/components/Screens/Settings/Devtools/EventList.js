@@ -1,16 +1,12 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  Text,
-  TouchableOpacity,
-} from 'react-native'
+import { ActivityIndicator, FlatList, Text, TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Screen, Separator } from '../../../Library'
+import { Flex, Header, Icon, Screen, SearchBar, Separator } from '../../../Library'
 import { QueryReducer } from '../../../../relay'
 import { colors } from '../../../../constants'
 import { marginLeft, padding } from '../../../../styles'
-import { queries, fragments } from '../../../../graphql'
+import { fragments, queries } from '../../../../graphql'
+import { FilterModal, PickerFilter } from '../../../Library/Filters'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
@@ -78,7 +74,7 @@ const List = fragments.EventList(
           entry =>
             entry.id.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
             entry.kind.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            entry.createdAt.toLowerCase().indexOf(search.toLowerCase()) > -1
+            entry.createdAt.toLowerCase().indexOf(search.toLowerCase()) > -1,
         )
       }
     }
@@ -115,28 +111,63 @@ const List = fragments.EventList(
         />
       )
     }
-  }
+  },
 )
 export default class EventList extends PureComponent {
-  static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Header
-        navigation={navigation}
-        title='List events'
-        titleIcon='list'
-        searchBar
-        searchHandler={navigation.getParam('searchHandler')}
-        backBtn
-      />
-    ),
-  })
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      filters: {},
+    }
+  }
+
+  componentWillMount () {
+    this.props.navigation.setParams({
+      component: this,
+    })
+  }
+
+  static navigationOptions ({ navigation }) {
+    return {
+      header: (
+        <Header
+          navigation={navigation}
+          title='List events'
+          titleIcon='list'
+          searchBar={
+            <SearchBar onChangeText={navigation.getParam('searchHandler')}>
+              <TouchableOpacity onPress={() => {
+                navigation.push('modal/devtools/event/list/filters', {
+                  defaultData: navigation.getParam('component').state.filters,
+                  onSave: filters => navigation.getParam('component').setState({ filters: filters }),
+                })
+              }}>
+                <Icon name={'filter'} style={{ fontSize: 24 }} />
+              </TouchableOpacity>
+            </SearchBar>
+          }
+          backBtn
+        />
+      ),
+    }
+  }
+
   render () {
+    console.log(['EventListFilter', {
+      ...queries.EventList.defaultVariables,
+      ...this.state.filters,
+    }])
+
     const { navigation } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <QueryReducer
           query={queries.EventList}
-          variables={queries.EventList.defaultVariables}
+          variables={{
+            ...queries.EventList.defaultVariables,
+            ...this.state.filters,
+          }}
         >
           {(state, retry) => {
             console.log(state)
@@ -166,3 +197,14 @@ export default class EventList extends PureComponent {
     )
   }
 }
+
+export const EventListFilterModal = ({ navigation }) =>
+  <FilterModal title={'Filter events'} navigation={navigation} defaultData={navigation.getParam('defaultData')}>
+    <PickerFilter
+      name='onlyWithoutAckedAt'
+      choices={[
+        { value: 0, label: 'All values' },
+        { value: 1, label: 'Acked at is defined' },
+        { value: 2, label: 'Acked at is not defined' },
+      ]} />
+  </FilterModal>

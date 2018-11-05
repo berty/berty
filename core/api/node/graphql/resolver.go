@@ -263,7 +263,12 @@ func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ 
 	})
 }
 
-func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
+func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
+	onlyWithoutAckedAt := node.NullableTrueFalse_Null
+	if rawOnlyWithoutAckedAt != nil {
+		onlyWithoutAckedAt = node.NullableTrueFalse(*rawOnlyWithoutAckedAt)
+	}
+
 	if filter != nil {
 		if filter.ID != "" {
 			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
@@ -283,7 +288,10 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderB
 
 	input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
 
+	input.OnlyWithoutAckedAt = onlyWithoutAckedAt
+
 	stream, err := r.client.EventList(ctx, input)
+
 	if err != nil {
 		return nil, err
 	}

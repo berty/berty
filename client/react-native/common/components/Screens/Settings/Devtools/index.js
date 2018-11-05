@@ -2,7 +2,7 @@ import { createSubStackNavigator } from '../../../../helpers/react-navigation'
 import List from './List'
 import Database from './Database'
 import Network from './Network'
-import EventList from './EventList'
+import EventList, { EventListFilterModal } from './EventList'
 import EventDetails from './EventDetails'
 import DeviceInfos from './DeviceInfos'
 import Tests from './Tests'
@@ -14,6 +14,7 @@ export default createSubStackNavigator(
     'devtools/database': Database,
     'devtools/network': Network,
     'devtools/eventlist': EventList,
+    'devtools/eventlistfilter': EventListFilterModal,
     'devtools/eventdetails': EventDetails,
     'devtools/deviceinfos': DeviceInfos,
     'devtools/tests': Tests,

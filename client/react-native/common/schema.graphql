@@ -408,6 +408,7 @@ type BertyPkgDeviceinfoDeviceInfo  {
   
   
 
+  
 type BertyNodePingDestination  {
       destination: String!
 }
@@ -615,6 +616,7 @@ type Query {
   ): BertyP2pPeerPayload
   EventList(
     filter: BertyP2pEventInput
+    onlyWithoutAckedAt: Enum
       orderBy: String!
       orderDesc: Bool!
       first: Int32
