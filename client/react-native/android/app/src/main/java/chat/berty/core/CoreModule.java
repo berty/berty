@@ -1,12 +1,10 @@
 package chat.berty.core;
 
-import android.util.Log;
-
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
-
+import chat.berty.ble.Manager;
 import core.Core;
 
 public class CoreModule extends ReactContextBaseJavaModule {

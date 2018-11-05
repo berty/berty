@@ -5,7 +5,21 @@ CORE_MOBILE := $(MAKEFILE_DIR)/core
 CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 				$(shell find $(CORE_MOBILE) -type f -name "*.go")
 
+<<<<<<< HEAD
 BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../build/docker/patch
+||||||| parent of 6ef2cd9... feat(java): basic ble service in java
+BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../.circleci/docker
+
+GOPATH ?=		$(HOME)/go
+=======
+BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../.circleci/docker
+
+ANDROID_PATH := $(MAKEFILE_DIR)/../android
+BLE_JAR_PATH := $(MAKEFILE_DIR)/../android/ble/build/libs/ble.jar
+BLE_BIND_PATH := /tmp/ble
+
+GOPATH ?=		$(HOME)/go
+>>>>>>> 6ef2cd9... feat(java): basic ble service in java
 
 CGO_CPPFLAGS ?= -I$(MAKEFILE_DIR)/../../common/openssl/built/include
 
@@ -53,9 +67,11 @@ build.android: $(ANDROID_BUILD_PATH)/core.aar
 
 $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
+	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
+	mkdir -p $(BLE_BIND_PATH)
 	mkdir -p $(ANDROID_BUILD_PATH)
-	cd $(CORE_MOBILE) && CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
-		gomobile bind -v -target=android -o $(ANDROID_BUILD_PATH)/core.aar .
+	cd $(CORE_MOBILE) && GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
+		gomobile bind -v -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android -o $(ANDROID_BUILD_PATH)/core.aar .
 
 .PHONY: build.ios
 build.ios: $(IOS_BUILD_PATH)/core.framework/Core

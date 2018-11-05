@@ -145,6 +145,7 @@ dependencies {
     compile project(':react-native-network-info')
     compile project(':react-native-image-picker')
     implementation fileTree(dir: "libs", include: ["*.jar", "core.aar"])
+    implementation project(":ble")
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation "com.facebook.react:react-native:+"  // From node_modules
 }
