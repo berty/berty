@@ -1,8 +1,9 @@
 package jaeger
 
 import (
-	"go.uber.org/zap"
 	"strings"
+
+	"go.uber.org/zap"
 )
 
 var connectionFailedOnce = false
