@@ -175,3 +175,7 @@ func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationT
 func (n *Node) AppVersion(_ context.Context, input *node.Void) (*node.AppVersionOutput, error) {
 	return &node.AppVersionOutput{Version: core.Version}, nil
 }
+
+func (n *Node) Panic(_ context.Context, input *node.Void) (*node.Void, error) {
+	panic("panic from client")
+}

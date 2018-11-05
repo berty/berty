@@ -3,6 +3,7 @@ package p2p
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"sync"
 	"time"
@@ -71,6 +72,12 @@ type Driver struct {
 
 	// services
 	dht *dht.IpfsDHT
+
+	listener net.Listener
+	gs       *grpc.Server
+
+	serverTracerClose io.Closer
+	dialTracerCloser  io.Closer
 }
 
 // New create a new driver
@@ -156,7 +163,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(clientUnaryOpts...)),
 	}
 
-	gs := grpc.NewServer(p2pInterceptorsServer...)
+	driver.gs = grpc.NewServer(p2pInterceptorsServer...)
 	sgrpc := p2pgrpc.NewP2PGrpcService(host)
 
 	dialOpts := append([]grpc.DialOption{
@@ -165,18 +172,20 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	}, p2pInterceptorsClient...)
 	driver.ccmanager = p2putil.NewNetManager(dialOpts...)
 
-	p2p.RegisterServiceServer(gs, (*DriverService)(driver))
+	p2p.RegisterServiceServer(driver.gs, (*DriverService)(driver))
 
-	l := sgrpc.NewListener(ID)
-	go func() {
-		if err := gs.Serve(l); err != nil {
-			logger().Error("Listen error", zap.Error(err))
-		}
-	}()
-
+	driver.listener = sgrpc.NewListener(ID)
 	logger().Debug("Host", zap.String("ID", driver.ID()), zap.Strings("Addrs", driver.Addrs()))
 
 	return driver, nil
+}
+
+func (d *Driver) Start() error {
+	if err := d.gs.Serve(d.listener); err != nil {
+		logger().Error("Listen error", zap.Error(err))
+		return err
+	}
+	return nil
 }
 
 func NewDriver(ctx context.Context, opts ...Option) (*Driver, error) {
@@ -213,15 +222,28 @@ func (d *Driver) getPeerInfo(addr string) (*pstore.PeerInfo, error) {
 
 func (d *Driver) Close() error {
 	// FIXME: save cache to speedup next connections
-
+	var err error
 	// close dht
-	err := d.dht.Close()
-	if err != nil {
-		return err
+	if d.dht != nil {
+		err = d.dht.Close()
+		if err != nil {
+			logger().Error("p2p close error", zap.Error(err))
+		}
 	}
 
 	// close host
-	return d.host.Close()
+	if d.host != nil {
+		err = d.host.Close()
+		if err != nil {
+			logger().Error("p2p close error", zap.Error(err))
+		}
+	}
+
+	if d.listener != nil {
+		d.listener.Close()
+	}
+
+	return nil
 }
 
 func (d *Driver) Peerstore() pstore.Peerstore {

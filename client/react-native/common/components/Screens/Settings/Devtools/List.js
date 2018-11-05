@@ -1,21 +1,82 @@
+import { ActivityIndicator, NativeModules } from 'react-native'
 import React, { PureComponent } from 'react'
-import { Header, Menu } from '../../../Library'
+
+import { Flex, Header, Menu, Screen, Text } from '../../../Library'
+import { colors } from '../../../../constants'
+import { queries } from '../../../../graphql'
+
+const { CoreModule } = NativeModules
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Header
-        navigation={navigation}
-        title='Developer Tools'
-        titleIcon='terminal'
-        backBtn
-      />
-    ),
+    header:
+      navigation.getParam('restartDaemon') ||
+      navigation.getParam('panic') ? null : (
+          <Header
+            navigation={navigation}
+            title='Developer Tools'
+            titleIcon='terminal'
+            backBtn
+          />
+        ),
     tabBarVisible: false,
   })
 
+  state = {
+    restartDaemon: false,
+    panic: false,
+  }
+
+  restartDaemon = async () => {
+    this.props.navigation.setParams({ restartDaemon: true })
+    this.setState({ restartDaemon: true }, async () => {
+      try {
+        await CoreModule.restart()
+        await CoreModule.getPort()
+        this.props.navigation.setParams({
+          restartDaemon: false,
+        })
+        this.setState({ restartDaemon: false })
+      } catch (err) {
+        console.error(err)
+      }
+    })
+  }
+
+  panic = async () => {
+    this.props.navigation.setParams({ panic: true })
+    this.setState({ panic: true }, async () => {
+      try {
+        queries.Panic.fetch()
+        await CoreModule.getPort()
+        this.props.navigation.setParams({
+          panic: false,
+        })
+        this.setState({ panic: false })
+      } catch (err) {
+        console.error(err)
+      }
+    })
+  }
+
   render () {
     const { navigation } = this.props
+    const { restartDaemon, panic } = this.state
+    if (restartDaemon || panic) {
+      return (
+        <Screen style={{ backgroundColor: colors.white }}>
+          <Flex.Rows align='center'>
+            <Flex.Cols align='end'>
+              <ActivityIndicator size='large' />
+            </Flex.Cols>
+            <Text center margin align='start'>
+              {restartDaemon && 'Daemon is restarting, please wait ...'}
+              {panic && 'Daemon has been panicked, please wait ...'}
+            </Text>
+          </Flex.Rows>
+        </Screen>
+      )
+    }
     return (
       <Menu>
         <Menu.Section customMarginTop={1}>
@@ -28,11 +89,10 @@ export default class List extends PureComponent {
         <Menu.Section>
           <Menu.Item
             icon='refresh-ccw'
-            title='Restart daemon (not implemented)'
-            onPress={() => {
-              console.log('Restart')
-            }}
+            title='Restart daemon'
+            onPress={this.restartDaemon}
           />
+          <Menu.Item icon='alert-triangle' title='Panic' onPress={this.panic} />
           <Menu.Item
             icon='list'
             title='List events'

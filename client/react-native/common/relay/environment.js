@@ -1,7 +1,8 @@
-import { Environment, Network, RecordSource, Store } from 'relay-runtime'
+import { NativeModules, Platform } from 'react-native'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { Platform, NativeModules } from 'react-native'
 import { installRelayDevTools } from 'relay-devtools'
+
+import { Environment, Network, RecordSource, Store } from 'relay-runtime'
 
 // eslint-disable-next-line
 if (__DEV__) {
@@ -10,13 +11,15 @@ if (__DEV__) {
 
 // @TODO: patch web CoreModule
 if (Platform.OS === 'web') {
-  NativeModules.CoreModule = {
+  const CoreModule = {
     start: async () => {},
+    restart: async () => console.warn('not implemented in web'),
     getPort: async () => {
       const url = new URL(window.location.href)
       return url.searchParams.get('gql-port') || '8700'
     },
   }
+  NativeModules.CoreModule = CoreModule
 }
 
 const { CoreModule } = NativeModules
@@ -62,28 +65,12 @@ let getIP = () =>
     }
   })
 
-const getPort = () =>
-  new Promise(resolve => {
-    let port = 0
-    const interval = setInterval(async () => {
-      try {
-        port = await CoreModule.getPort()
-
-        resolve(port)
-        clearInterval(interval)
-      } catch (error) {
-        console.warn(error)
-      }
-    }, 1000)
-  })
-
 getIP().then(console.log)
-getPort().then(console.log)
 
 export const fetchQuery = async (operation, variables) => {
   try {
     const response = await fetch(
-      `http://${await getIP()}:${await getPort()}/query`,
+      `http://${await getIP()}:${await CoreModule.getPort()}/query`,
       {
         method: 'POST',
         headers: {
@@ -106,7 +93,7 @@ const setupSubscription = async (config, variables, cacheConfig, observer) => {
   try {
     const query = config.text
     const subscriptionClient = new SubscriptionClient(
-      `ws://${await getIP()}:${await getPort()}/query`,
+      `ws://${await getIP()}:${await CoreModule.getPort()}/query`,
       {
         reconnect: true,
       }

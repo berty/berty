@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	account "berty.tech/core/manager/account"
 	reuse "github.com/libp2p/go-reuseport"
@@ -21,7 +21,7 @@ var (
 	defaultBootstrap = []string{
 		"/ip4/104.248.78.238/tcp/4004/ipfs/QmPCbsVWDtLTdCtwfp5ftZ96xccUNe4hegKStgbss8YACT",
 	}
-	currentAccount *account.Account
+	accountName = "new-berty-user"
 )
 
 func initLogger(logger Logger) error {
@@ -50,24 +50,61 @@ func getRandomPort() (int, error) {
 }
 
 func GetPort() (int, error) {
+	currentAccount, _ := account.Get(accountName)
 	if currentAccount == nil || currentAccount.GQLBind == "" {
-		return 0, errors.New("wait for daemon to start")
+		logger().Debug("waiting for daemon to start")
+		time.Sleep(time.Second)
+		return GetPort()
 	}
 	return strconv.Atoi(strings.Split(currentAccount.GQLBind, ":")[1])
 }
 
-func Start(datastorePath string, logger Logger) error {
-	if currentAccount != nil {
-		return errors.New("daemon already started")
-	}
-	if err := initLogger(logger); err != nil {
+func Start(datastorePath string, loggerNative Logger) error {
+	if err := initLogger(loggerNative); err != nil {
 		return err
 	}
-
-	name := os.Getenv("USER")
-	if name == "" {
-		name = "new-berty-user"
+	a, _ := account.Get(accountName)
+	if a != nil {
+		return errors.New("daemon already started")
 	}
+	go func() {
+		for {
+			err := daemon(datastorePath, loggerNative)
+			if err != nil {
+				logger().Error("handle error, try to restart", zap.Error(err))
+			} else {
+				logger().Info("restarting daemon")
+			}
+		}
+	}()
+	return nil
+}
+
+func Restart(datastorePath string, loggerNative Logger) error {
+	currentAccount, _ := account.Get(accountName)
+	if currentAccount != nil {
+		currentAccount.Close()
+		account.Remove(currentAccount)
+		currentAccount = nil
+	} else {
+		go func() {
+			for {
+				err := daemon(datastorePath, loggerNative)
+				if err != nil {
+					logger().Error("handle error, try to restart", zap.Error(err))
+				} else {
+					logger().Info("restarting daemon")
+				}
+			}
+		}()
+	}
+	return nil
+}
+
+func daemon(datastorePath string, loggerNative Logger) error {
+
+	a := &account.Account{}
+	defer a.PanicHandler()
 
 	grpcPort, err := getRandomPort()
 	if err != nil {
@@ -78,8 +115,8 @@ func Start(datastorePath string, logger Logger) error {
 		return err
 	}
 
-	currentAccount, err = account.New(
-		account.WithName(name),
+	a, err = account.New(
+		account.WithName(accountName),
 		account.WithPassphrase("secure"),
 		account.WithDatabase(&account.DatabaseOptions{
 			Path: datastorePath,
@@ -107,12 +144,12 @@ func Start(datastorePath string, logger Logger) error {
 		return err
 	}
 
-	err = currentAccount.Open()
+	err = a.Open()
 	if err != nil {
-		currentAccount.Close()
-		currentAccount = nil
+		a.Close()
+		account.Remove(a)
+		a = nil
 		return err
 	}
-
-	return nil
+	return <-a.ErrChan()
 }
