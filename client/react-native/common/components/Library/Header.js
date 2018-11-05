@@ -1,10 +1,8 @@
 import React, { PureComponent } from 'react'
-import { TextInput, View, Platform } from 'react-native'
-import { Button, Flex, Text } from '.'
+import { View } from 'react-native'
+import { Button, Flex, Text, SearchBar } from '.'
 import { colors } from '../../constants'
 import {
-  paddingLeft,
-  paddingRight,
   padding,
   borderBottom,
   paddingBottom,
@@ -41,6 +39,13 @@ export default class Header extends PureComponent {
       this.props.colorBtnRight == null
         ? defaultTextColor
         : this.props.colorBtnRight
+
+    let searchBarComponent = null
+    if (searchBar === true) {
+      searchBarComponent = <SearchBar onChangeText={text => searchHandler(text)} />
+    } else if (searchBar !== undefined && searchBar !== false) {
+      searchBarComponent = searchBar
+    }
 
     return (
       <View
@@ -91,28 +96,7 @@ export default class Header extends PureComponent {
             )}
           </Flex.Cols>
 
-          {searchBar === true && (
-            <Flex.Cols size={1} style={[paddingBottom]}>
-              <TextInput
-                underlineColorAndroid='transparent'
-                autoCorrect={false}
-                style={[
-                  {
-                    height: 36,
-                    flex: 1,
-                    backgroundColor: colors.grey7,
-                    borderWidth: 0,
-                    borderRadius: 18,
-                    ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
-                  },
-                  paddingLeft,
-                  paddingRight,
-                ]}
-                placeholder='Search...'
-                onChangeText={text => searchHandler(text)}
-              />
-            </Flex.Cols>
-          )}
+          {searchBarComponent}
         </Flex.Rows>
       </View>
     )

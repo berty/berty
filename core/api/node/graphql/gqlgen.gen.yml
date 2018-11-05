@@ -1303,11 +1303,13 @@ models:
     model: berty.tech/core/api/node.EventListInput
     fields:
       filter:
+      onlyWithoutAckedAt:
       paginate:
   BertyNodeEventListInputPayload:
     model: berty.tech/core/api/node.EventListInput
     fields:
       filter:
+      onlyWithoutAckedAt:
       paginate:
 
   BertyNodeEventEdge:

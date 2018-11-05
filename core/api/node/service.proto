@@ -180,6 +180,7 @@ message EventStreamInput {
 //
 message EventListInput {
   berty.p2p.Event filter = 1;
+  NullableTrueFalse only_without_acked_at = 2;
   Pagination paginate = 99 [(gql.graphql_spread) = true];
 }
 message EventEdge {
@@ -278,4 +279,10 @@ message IntegrationTestOutput {
 
 message Void {
   bool T = 1;
+}
+
+enum NullableTrueFalse {
+  Null = 0;
+  True = 1;
+  False = 2;
 }

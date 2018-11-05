@@ -7,6 +7,7 @@ import Settings from './Settings'
 import { colors } from '../../constants'
 import { borderTop, shadow } from '../../styles'
 import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
+import { EventListFilterModal } from './Settings/Devtools/EventList'
 
 export const mainTabs = createTabNavigator(
   {
@@ -45,6 +46,9 @@ export default createStackNavigator(
     },
     'modal/contacts/add/by-public-key': {
       screen: ByPublicKeyModal,
+    },
+    'modal/devtools/event/list/filters': {
+      screen: EventListFilterModal,
     },
   },
   {
