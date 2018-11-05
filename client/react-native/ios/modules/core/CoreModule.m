@@ -19,4 +19,11 @@ RCT_EXTERN_METHOD(restart:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(getPort:(RCTPromiseResolveBlock)resolve
                     reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(getNetworkConfig:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(updateNetworkConfig:(NSString *)config
+                    resolve:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
 @end
