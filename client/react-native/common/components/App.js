@@ -82,7 +82,11 @@ export default class App extends PureComponent {
   }
 
   handleOpenURL (event) {
-    const prefixes = ['berty://']
+    const prefixes = [
+      'https://berty.tech/',
+      'berty://',
+    ]
+
     let url = event.url
 
     for (let prefix of prefixes) {
@@ -92,19 +96,14 @@ export default class App extends PureComponent {
       }
     }
 
-    const urlParts = url.split('/')
-
-    if (
-      urlParts.length === 3 &&
-      urlParts[0] === 'add-contact' &&
-      urlParts[1] === 'public-key'
-    ) {
+    if (url.indexOf('add-contact#public-key=') === 0) {
+      const initialKey = url.substr('add-contact#public-key='.length)
       console.log('Adding new contact via public key')
 
       this.navigation.dispatch(
         NavigationActions.navigate({
           routeName: 'modal/contacts/add/by-public-key',
-          params: { initialKey: urlParts[2] },
+          params: { initialKey: initialKey },
         })
       )
     }
