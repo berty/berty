@@ -1,13 +1,14 @@
+codecov:
+  notify:
+    require_ci_to_pass: yes
+
 coverage:
+  precision: 2
+  round: down
+  range: "1...100"
   status:
-    project:
-      default:
-        #target: 42%
-        threshold: 10%
-    patch:
-      default:
-        #target: 42%
-        threshold: 10%
+    project: no
+    patch: no
     changes: no
 
 ignore:
