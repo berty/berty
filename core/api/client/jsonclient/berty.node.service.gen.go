@@ -14,6 +14,7 @@ import (
 )
 
 func init() {
+	registerUnary("berty.node.ID", NodeID)
 	registerServerStream("berty.node.EventStream", NodeEventStream)
 	registerServerStream("berty.node.EventList", NodeEventList)
 	registerUnary("berty.node.GetEvent", NodeGetEvent)
@@ -36,7 +37,25 @@ func init() {
 	registerUnary("berty.node.DebugPing", NodeDebugPing)
 	registerUnary("berty.node.DeviceInfos", NodeDeviceInfos)
 	registerUnary("berty.node.AppVersion", NodeAppVersion)
+	registerUnary("berty.node.Peers", NodePeers)
+	registerUnary("berty.node.Protocols", NodeProtocols)
+	registerServerStream("berty.node.MonitorBandwidth", NodeMonitorBandwidth)
+	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
 	registerUnary("berty.node.Panic", NodePanic)
+}
+
+func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ID"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ID(ctx, &typedInput)
 }
 
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
@@ -417,6 +436,98 @@ func NodeAppVersion(client *client.Client, ctx context.Context, jsonInput []byte
 		return nil, err
 	}
 	return client.Node().AppVersion(ctx, &typedInput)
+}
+
+func NodePeers(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "Peers"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().Peers(ctx, &typedInput)
+}
+
+func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "Protocols"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput p2p.Peer
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().Protocols(ctx, &typedInput)
+}
+
+func NodeMonitorBandwidth(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "MonitorBandwidth"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput p2p.BandwidthStats
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().MonitorBandwidth(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+
+	return streamProxy, nil
+}
+
+func NodeMonitorPeers(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "MonitorPeers"),
+		zap.String("input", string(jsonInput)),
+	)
+
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().MonitorPeers(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+
+	return streamProxy, nil
 }
 
 func NodePanic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {

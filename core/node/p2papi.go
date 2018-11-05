@@ -14,6 +14,7 @@ import (
 
 	"crypto/x509"
 
+	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 )
@@ -23,6 +24,21 @@ func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 	return func(n *Node) {
 		p2p.RegisterServiceServer(gs, n)
 	}
+}
+
+func (n *Node) ID(ctx context.Context, _ *node.Void) (*p2p.Peer, error) {
+	return n.networkDriver.ID(), nil
+}
+
+func (n *Node) Protocols(ctx context.Context, p *p2p.Peer) (*node.ProtocolsOutput, error) {
+	pids, err := n.networkDriver.Protocols(p)
+	if err != nil {
+		return nil, err
+	}
+
+	return &node.ProtocolsOutput{
+		Protocols: pids,
+	}, nil
 }
 
 func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {

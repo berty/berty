@@ -42,6 +42,7 @@ type Account struct {
 	grpcListener net.Listener
 
 	network network.Driver
+	metrics network.Metrics
 
 	node     *node.Node
 	initOnly bool
@@ -273,6 +274,7 @@ func (a *Account) initNode() error {
 		node.WithSQL(a.db),
 		node.WithDevice(&entity.Device{Name: a.Name}),
 		node.WithNetworkDriver(a.network),
+		node.WithNetworkMetrics(a.metrics),
 		node.WithInitConfig(),
 		node.WithSoftwareCrypto(), // FIXME: use hardware impl if available
 		node.WithConfig(),

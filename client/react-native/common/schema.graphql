@@ -371,6 +371,32 @@ type BertyP2pEvent implements Node {
   
   
 
+  
+type BertyP2pBandwidthStats  {
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+}
+  
+  
+  
+
+  
+type BertyP2pPeer  {
+      id: String!
+      addrs: [String!]
+    connection: Enum
+}
+type BertyP2pPeers  {
+    list: [BertyP2pPeer]
+}
+  
+  
+  
+
 type BertyNodeDeviceInfo  {
       key: String!
       value: String!
@@ -402,9 +428,6 @@ type BertyNodeConversationListConnection  {
     edges: [BertyNodeConversationEdge]
     pageInfo: BertyNodePageInfo!
 }
-type BertyNodeVoid  {
-      T: Bool!
-}
 type BertyNodePagination  {
       orderBy: String!
       orderDesc: Bool!
@@ -419,6 +442,14 @@ type BertyNodePageInfo  {
       hasNextPage: Bool!
       hasPreviousPage: Bool!
       count: Uint32!
+}
+type BertyNodeVoid  {
+      T: Bool!
+}
+type BertyP2pPeerPayload {
+      id: String!
+      addrs: [String!]
+    connection: Enum
 }
 input BertyP2pEventInput {
     id: ID!
@@ -555,9 +586,26 @@ type BertyNodeDeviceInfosPayload {
 type BertyNodeAppVersionPayload {
       version: String!
 }
+type BertyP2pPeersPayload {
+    list: [BertyP2pPeer]
+}
+type BertyNodeProtocolsPayload {
+      protocols: [String!]
+}
+type BertyP2pBandwidthStatsPayload {
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+}
   
 type Query {
   node(id: ID!): Node
+  ID(
+      T: Bool!
+  ): BertyP2pPeerPayload
   EventList(
     filter: BertyP2pEventInput
       orderBy: String!
@@ -640,6 +688,14 @@ type Query {
   AppVersion(
       T: Bool!
   ): BertyNodeAppVersionPayload
+  Peers(
+      T: Bool!
+  ): BertyP2pPeersPayload
+  Protocols(
+      id: String!
+      addrs: [String!]
+    connection: Enum
+  ): BertyNodeProtocolsPayload
   Panic(
       T: Bool!
   ): BertyNodeVoidPayload
@@ -718,4 +774,15 @@ type Subscription {
   EventStream(
     filter: BertyP2pEventInput
   ): BertyP2pEventPayload
+  MonitorBandwidth(
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+  ): BertyP2pBandwidthStatsPayload
+  MonitorPeers(
+      T: Bool!
+  ): BertyP2pPeerPayload
 }

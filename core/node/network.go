@@ -14,6 +14,12 @@ func WithNetworkDriver(driver network.Driver) NewNodeOption {
 	}
 }
 
+func WithNetworkMetrics(metrics network.Metrics) NewNodeOption {
+	return func(n *Node) {
+		n.networkMetrics = metrics
+	}
+}
+
 func (n *Node) UseNetworkDriver(driver network.Driver) error {
 	// FIXME: use a locking system
 
