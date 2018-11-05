@@ -59,8 +59,8 @@ func WithDatabase(opts *DatabaseOptions) NewOption {
 			opts = &DatabaseOptions{}
 		}
 
-		a.dbPath = opts.Path
-		if a.dbPath == "" {
+		a.dbDir = opts.Path
+		if a.dbDir == "" {
 			return errors.New("cannot have empty database path")
 		}
 
@@ -114,18 +114,19 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 			grpc_recovery.UnaryServerInterceptor(),
 		}
 		if opts.Interceptors {
+			gqlLogger := zap.L().Named("vendor.grpc")
 			serverStreamOpts = append(serverStreamOpts,
 				// grpc_auth.StreamServerInterceptor(myAuthFunction),
 				// grpc_prometheus.StreamServerInterceptor,
 				grpc_ctxtags.StreamServerInterceptor(),
-				grpc_zap.StreamServerInterceptor(logger()),
+				grpc_zap.StreamServerInterceptor(gqlLogger),
 				grpc_recovery.StreamServerInterceptor(),
 			)
 			serverUnaryOpts = append(serverUnaryOpts,
 				// grpc_prometheus.UnaryServerInterceptor,
 				// grpc_auth.UnaryServerInterceptor(myAuthFunction),
 				grpc_ctxtags.UnaryServerInterceptor(),
-				grpc_zap.UnaryServerInterceptor(logger()),
+				grpc_zap.UnaryServerInterceptor(gqlLogger),
 				grpc_recovery.UnaryServerInterceptor(),
 			)
 
@@ -172,12 +173,13 @@ func WithGQL(opts *GQLOptions) NewOption {
 		}
 
 		interceptors := []grpc.DialOption{}
+		gqlLogger := zap.L().Named("vendor.graphql")
 		if opts.Interceptors {
 			clientStreamOpts := []grpc.StreamClientInterceptor{
-				grpc_zap.StreamClientInterceptor(logger()),
+				grpc_zap.StreamClientInterceptor(gqlLogger),
 			}
 			clientUnaryOpts := []grpc.UnaryClientInterceptor{
-				grpc_zap.UnaryClientInterceptor(logger()),
+				grpc_zap.UnaryClientInterceptor(gqlLogger),
 			}
 
 			if opts.JaegerAddr != "" {
@@ -215,7 +217,6 @@ func WithGQL(opts *GQLOptions) NewOption {
 
 		mux := http.NewServeMux()
 		mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
-		gqlLogger := zap.L().Named("vendor.graphql")
 		mux.Handle("/query", gqlhandler.GraphQL(
 			graph.NewExecutableSchema(resolver),
 			gqlhandler.WebsocketUpgrader(websocket.Upgrader{
@@ -261,6 +262,13 @@ func WithGQL(opts *GQLOptions) NewOption {
 			//Debug:            true,
 		}).Handler(mux)
 
+		return nil
+	}
+}
+
+func WithBot() NewOption {
+	return func(a *Account) error {
+		a.withBot = true
 		return nil
 	}
 }
