@@ -114,7 +114,12 @@ service Service {
   rpc AppVersion(Void) returns (AppVersionOutput) {
     option (berty.gql.graphql_type) = "Query";
   };
+
+  rpc Panic(Void) returns (Void) {
+    option (berty.gql.graphql_type) = "Query";
+  };
 }
+
 
 message DeviceInfosOutput {
   repeated DeviceInfo infos = 1;

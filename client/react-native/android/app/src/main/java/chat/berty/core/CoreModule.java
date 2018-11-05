@@ -25,7 +25,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void start(Promise promise) throws Exception {
+    public void start(Promise promise) {
         try {
             Core.start(this.filesDir, this.logger);
             promise.resolve(null);
@@ -36,7 +36,18 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getPort(Promise promise) throws Exception {
+    public void restart(Promise promise) {
+        try {
+            Core.restart(this.filesDir, this.logger);
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to restart core: %s", err);
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void getPort(Promise promise) {
         try {
             Long data = Core.getPort();
             promise.resolve(data.toString());

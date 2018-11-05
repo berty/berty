@@ -33,7 +33,7 @@ func getBoostrap(d *p2p.Driver) []string {
 }
 
 func setupDriver(bootstrap ...string) (*p2p.Driver, error) {
-	return p2p.NewDriver(
+	driver, err := p2p.NewDriver(
 		context.Background(),
 		p2p.WithRandomIdentity(),
 		p2p.WithDefaultMuxers(),
@@ -45,6 +45,15 @@ func setupDriver(bootstrap ...string) (*p2p.Driver, error) {
 		p2p.WithListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
 		p2p.WithBootstrapSync(bootstrap...),
 	)
+	if err != nil {
+		return nil, err
+	}
+	go func() {
+		if err = driver.Start(); err != nil {
+			logger().Error("driver start error", zap.Error(err))
+		}
+	}()
+	return driver, err
 }
 
 func setupTestLogging() {

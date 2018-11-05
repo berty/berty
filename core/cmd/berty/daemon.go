@@ -72,8 +72,11 @@ func newDaemonCommand() *cobra.Command {
 }
 
 func daemon(opts *daemonOptions) error {
+
 	var err error
 	a := &account.Account{}
+
+	defer a.PanicHandler()
 
 	accountOptions := account.Options{
 		account.WithName(opts.nickname),
@@ -85,7 +88,7 @@ func daemon(opts *daemonOptions) error {
 		account.WithBanner(banner),
 		account.WithGrpcServer(&account.GrpcServerOptions{
 			Bind:         opts.grpcBind,
-			Interceptors: false,
+			Interceptors: true,
 			JaegerAddr:   jaegerAddr,
 		}),
 		account.WithGQL(&account.GQLOptions{

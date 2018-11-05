@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react'
 import Screens from './Screens'
-import { NativeModules, Platform, ActivityIndicator, Linking } from 'react-native'
+import {
+  NativeModules,
+  Platform,
+  ActivityIndicator,
+  Linking,
+} from 'react-native'
 import { Flex } from './Library'
 import { subscriptions } from '../graphql'
 import { SafeAreaView, NavigationActions } from 'react-navigation'
@@ -18,11 +23,7 @@ export default class App extends PureComponent {
   async componentDidMount () {
     try {
       await CoreModule.start()
-    } catch (e) {
-      console.warn(e)
-    }
-
-    try {
+      await CoreModule.getPort()
       subscriptions.eventStream.subscribe({
         iterator: function * () {
           try {
@@ -52,11 +53,13 @@ export default class App extends PureComponent {
       subscriptions.eventStream.dispose()
     }
 
-    Linking.getInitialURL().then(url => {
-      if (url !== null) {
-        this.handleOpenURL({ url })
-      }
-    }).catch(() => {})
+    Linking.getInitialURL()
+      .then(url => {
+        if (url !== null) {
+          this.handleOpenURL({ url })
+        }
+      })
+      .catch(() => {})
 
     if (this._handleOpenURL === undefined) {
       this._handleOpenURL = this.handleOpenURL.bind(this)
@@ -86,14 +89,18 @@ export default class App extends PureComponent {
 
     const urlParts = url.split('/')
 
-    if (urlParts.length === 3 && urlParts[0] === 'add-contact' && urlParts[1] === 'public-key') {
+    if (
+      urlParts.length === 3 &&
+      urlParts[0] === 'add-contact' &&
+      urlParts[1] === 'public-key'
+    ) {
       console.log('Adding new contact via public key')
 
       this.navigation.dispatch(
         NavigationActions.navigate({
           routeName: 'modal/contacts/add/by-public-key',
           params: { initialKey: urlParts[2] },
-        }),
+        })
       )
     }
   }
@@ -107,7 +114,13 @@ export default class App extends PureComponent {
             <ActivityIndicator size='large' />
           </Flex.Rows>
         )}
-        {success && <Screens ref={nav => { this.navigation = nav }} />}
+        {success && (
+          <Screens
+            ref={nav => {
+              this.navigation = nav
+            }}
+          />
+        )}
         {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>
     )

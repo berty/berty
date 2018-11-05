@@ -470,6 +470,9 @@ func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*node.DeviceIn
 func (r *queryResolver) AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error) {
 	return r.client.AppVersion(ctx, &node.Void{T: true})
 }
+func (r *queryResolver) Panic(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.Panic(ctx, &node.Void{})
+}
 
 type subscriptionResolver struct{ *Resolver }
 
