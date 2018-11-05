@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
-import { Menu, Header } from '../../../Library'
+import { Platform } from 'react-native'
+import { Menu, Header } from '../../../../Library'
 
 export default class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -13,17 +14,29 @@ export default class Network extends PureComponent {
     ),
   })
   render () {
+    const { navigation } = this.props
     return (
       <Menu>
         <Menu.Section customMarginTop={1}>
           <Menu.Item
             icon='list'
-            title='List peers (not implemented)'
+            title='List peers'
             onPress={() => {
-              console.log('List')
+              navigation.push('network/peers')
             }}
           />
         </Menu.Section>
+        {Platform.OS !== 'web' && (
+          <Menu.Section>
+            <Menu.Item
+              icon='sliders'
+              title='Network configuration'
+              onPress={() => {
+                navigation.push('network/config')
+              }}
+            />
+          </Menu.Section>
+        )}
       </Menu>
     )
   }
