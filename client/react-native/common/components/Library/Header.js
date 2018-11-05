@@ -1,12 +1,8 @@
-import React, { PureComponent } from 'react'
 import { View } from 'react-native'
+import React, { PureComponent } from 'react'
 import { Button, Flex, Text, SearchBar } from '.'
 import { colors } from '../../constants'
-import {
-  padding,
-  borderBottom,
-  paddingBottom,
-} from '../../styles'
+import { padding, borderBottom, paddingBottom } from '../../styles'
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
 
@@ -42,7 +38,9 @@ export default class Header extends PureComponent {
 
     let searchBarComponent = null
     if (searchBar === true) {
-      searchBarComponent = <SearchBar onChangeText={text => searchHandler(text)} />
+      searchBarComponent = (
+        <SearchBar onChangeText={text => searchHandler(text)} />
+      )
     } else if (searchBar !== undefined && searchBar !== false) {
       searchBarComponent = searchBar
     }

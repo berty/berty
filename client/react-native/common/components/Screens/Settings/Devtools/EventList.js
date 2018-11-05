@@ -1,12 +1,18 @@
 import { ActivityIndicator, FlatList, Text, TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Icon, Screen, SearchBar, Separator } from '../../../Library'
+import { FilterModal, PickerFilter } from '../../../Library/Filters'
+import {
+  Flex,
+  Header,
+  Screen,
+  SearchBar,
+  Separator,
+} from '../../../Library'
 import { QueryReducer } from '../../../../relay'
 import { colors } from '../../../../constants'
-import { marginLeft, padding } from '../../../../styles'
 import { fragments, queries } from '../../../../graphql'
-import { FilterModal, PickerFilter } from '../../../Library/Filters'
+import { marginLeft, padding } from '../../../../styles'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
@@ -57,8 +63,6 @@ const Item = fragments.Event(({ data, navigation }) => (
 
 const List = fragments.EventList(
   class List extends PureComponent {
-    onEndReached = () => {}
-
     state = {
       search: '',
     }
@@ -79,27 +83,41 @@ const List = fragments.EventList(
       }
     }
 
+    onEndReached = () => {
+      if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
+        return
+      }
+      this.props.relay.loadMore(10, console.error)
+    }
+
+    refetch = () => {
+      this.props.relay.refetchConnection(10, console.error, {
+        // TODO: change filter field based on this.props.navigation.getParam('filters')
+        ...queries.EventList.defaultVariables,
+      })
+    }
+
     componentDidMount () {
       this.props.navigation.setParams({ searchHandler: this.searchHandler })
       this.props.navigation.setParams({
         searchHandler: this.searchHandler,
-        retry: () => this.props.retry && this.props.retry(),
+        retry: this.refetch,
       })
     }
 
     componentWillUnmount () {}
 
     render () {
-      const { data, retry, loading, navigation } = this.props
+      const { data, navigation } = this.props
       return (
         <FlatList
-          data={this.filter(data.EventList.edges || [])}
+          data={data.EventList.edges || []}
           ItemSeparatorComponent={({ highlighted }) => (
             <Separator highlighted={highlighted} />
           )}
           onEndReached={this.onEndReached}
-          refreshing={loading}
-          onRefresh={retry}
+          refreshing={this.props.relay.isLoading()}
+          onRefresh={this.refetch}
           navigation={navigation}
           renderItem={data => (
             <Item
@@ -116,19 +134,15 @@ const List = fragments.EventList(
 export default class EventList extends PureComponent {
   constructor (props) {
     super(props)
-
-    this.state = {
-      filters: {},
-    }
   }
 
   componentWillMount () {
     this.props.navigation.setParams({
-      component: this,
+      filters: {},
     })
   }
 
-  static navigationOptions ({ navigation }) {
+  static navigationOptions = ({ navigation }) => {
     return {
       header: (
         <Header
@@ -137,14 +151,20 @@ export default class EventList extends PureComponent {
           titleIcon='list'
           searchBar={
             <SearchBar onChangeText={navigation.getParam('searchHandler')}>
-              <TouchableOpacity onPress={() => {
-                navigation.push('modal/devtools/event/list/filters', {
-                  defaultData: navigation.getParam('component').state.filters,
-                  onSave: filters => navigation.getParam('component').setState({ filters: filters }),
-                })
-              }}>
-                <Icon name={'filter'} style={{ fontSize: 24 }} />
-              </TouchableOpacity>
+              <Text
+                size={0}
+                height={34}
+                icon='filter'
+                padding
+                middle
+                large
+                onPress={() =>
+                  navigation.push('modal/devtools/event/list/filters', {
+                    defaultData: navigation.getParam('filters'),
+                    onSave: filters => navigation.setParams({ filters }),
+                  })
+                }
+              />
             </SearchBar>
           }
           backBtn
@@ -154,23 +174,14 @@ export default class EventList extends PureComponent {
   }
 
   render () {
-    console.log(['EventListFilter', {
-      ...queries.EventList.defaultVariables,
-      ...this.state.filters,
-    }])
-
     const { navigation } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <QueryReducer
           query={queries.EventList}
-          variables={{
-            ...queries.EventList.defaultVariables,
-            ...this.state.filters,
-          }}
+          variables={queries.EventList.defaultVariables}
         >
           {(state, retry) => {
-            console.log(state)
             switch (state.type) {
               default:
               case state.loading:
@@ -180,14 +191,7 @@ export default class EventList extends PureComponent {
                   </Flex.Rows>
                 )
               case state.success:
-                return (
-                  <List
-                    data={state.data}
-                    loading={state.type === state.loading}
-                    retry={retry}
-                    navigation={navigation}
-                  />
-                )
+                return <List data={state.data} navigation={navigation} />
               case state.error:
                 return null
             }
@@ -206,5 +210,6 @@ export const EventListFilterModal = ({ navigation }) =>
         { value: 0, label: 'All values' },
         { value: 1, label: 'Acked at is defined' },
         { value: 2, label: 'Acked at is not defined' },
-      ]} />
+      ]}
+    />
   </FilterModal>
