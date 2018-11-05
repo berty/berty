@@ -19,6 +19,12 @@ func logger() *zap.Logger {
 
 var accountName = "new-berty-user"
 
+func panicHandler() {
+	if r := recover(); r != nil {
+		logger().Error(fmt.Sprintf("%+v", r))
+	}
+}
+
 func getRandomPort() (int, error) {
 	listener, err := reuse.Listen("tcp", "0.0.0.0:0")
 	if err != nil {
@@ -29,16 +35,18 @@ func getRandomPort() (int, error) {
 }
 
 func GetPort() (int, error) {
-	currentAccount, _ := account.Get(accountName)
-	if currentAccount == nil || currentAccount.GQLBind == "" {
-		logger().Debug("waiting for daemon to start")
-		time.Sleep(time.Second)
-		return GetPort()
-	}
-	return strconv.Atoi(strings.Split(currentAccount.GQLBind, ":")[1])
+
+	defer panicHandler()
+
+	waitDaemon()
+	a, _ := account.Get(accountName)
+	return strconv.Atoi(strings.Split(a.GQLBind, ":")[1])
 }
 
 func Start(datastorePath string, loggerNative Logger) error {
+
+	defer panicHandler()
+
 	if err := setupLogger("debug", loggerNative); err != nil {
 		return err
 	}
@@ -47,23 +55,36 @@ func Start(datastorePath string, loggerNative Logger) error {
 		return errors.New("daemon already started")
 	}
 	run(datastorePath, loggerNative)
-	GetPort()
+	waitDaemon()
 	return nil
 }
 
-func Restart(datastorePath string, loggerNative Logger) error {
-	logger().Debug("restart called")
+func Restart(datastorePath string) error {
+
+	defer panicHandler()
+
 	currentAccount, _ := account.Get(accountName)
 	if currentAccount != nil {
-		logger().Debug("currentAccount", zap.String("account", fmt.Sprintf("%+v\n", currentAccount)))
 		currentAccount.ErrChan() <- nil
 	}
-	port, err := GetPort()
+
+	waitDaemon()
+	return nil
+}
+
+func DropDatabase(datastorePath string) error {
+
+	defer panicHandler()
+
+	currentAccount, err := account.Get(accountName)
 	if err != nil {
 		return err
 	}
-	logger().Debug("GetPort", zap.String("port", fmt.Sprintf("%+v", port)))
-	return nil
+	err = currentAccount.DropDatabase()
+	if err != nil {
+		return err
+	}
+	return Restart(datastorePath)
 }
 
 func run(datastorePath string, loggerNative Logger) {
@@ -80,7 +101,18 @@ func run(datastorePath string, loggerNative Logger) {
 	}()
 }
 
+func waitDaemon() {
+	currentAccount, _ := account.Get(accountName)
+	if currentAccount == nil || currentAccount.GQLBind == "" {
+		logger().Debug("waiting for daemon to start")
+		time.Sleep(time.Second)
+		waitDaemon()
+	}
+}
+
 func daemon(datastorePath string, loggerNative Logger) error {
+
+	defer panicHandler()
 
 	grpcPort, err := getRandomPort()
 	if err != nil {
@@ -120,6 +152,5 @@ func daemon(datastorePath string, loggerNative Logger) error {
 	}
 	defer a.Close()
 
-	defer a.PanicHandler()
 	return <-a.ErrChan()
 }
