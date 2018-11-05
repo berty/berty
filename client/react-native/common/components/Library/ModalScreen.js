@@ -14,8 +14,8 @@ const ModalScreen = props => {
   return <View
     style={[{
       backgroundColor: colors.white,
-      marginLeft: 5,
-      marginRight: 5,
+      left: 5,
+      right: 5,
       marginBottom: 30,
       marginTop: 30,
       position: 'absolute',
@@ -28,12 +28,12 @@ const ModalScreen = props => {
       flex: 1,
     }}>
       <Button onPress={() => {
-        navigation.dispatch(StackActions.pop({
-          n: 1,
-        }))
-
-        if (this.props.onDismiss !== undefined) {
-          this.props.onDismiss()
+        if (props.onDismiss !== undefined) {
+          props.onDismiss()
+        } else {
+          navigation.dispatch(StackActions.pop({
+            n: 1,
+          }))
         }
       }}>Dismiss</Button>
     </View>

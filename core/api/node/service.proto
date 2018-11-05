@@ -19,7 +19,7 @@ option go_package = "berty.tech/core/api/node";
 
 service Service {
   // return node current ID
-  rpc ID(Void) returns (berty.p2p.Peer) {
+  rpc ID (Void) returns (berty.p2p.Peer) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -28,15 +28,15 @@ service Service {
   //
 
   // yield new events in real-time
-  rpc EventStream(EventStreamInput) returns (stream berty.p2p.Event) {
+  rpc EventStream (EventStreamInput) returns (stream berty.p2p.Event) {
     option (gql.graphql_type) = "Subscription";
   };
   // list old events
-  rpc EventList(EventListInput) returns (stream berty.p2p.Event) {
+  rpc EventList (EventListInput) returns (stream berty.p2p.Event) {
     option (gql.graphql_output) = ".berty.node.EventListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc GetEvent(berty.p2p.Event) returns (berty.p2p.Event) {
+  rpc GetEvent (berty.p2p.Event) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -44,23 +44,23 @@ service Service {
   // Contacts
   //
 
-  rpc ContactRequest(ContactRequestInput) returns (berty.entity.Contact) {
+  rpc ContactRequest (ContactRequestInput) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ContactAcceptRequest(berty.entity.Contact) returns (berty.entity.Contact) {
+  rpc ContactAcceptRequest (berty.entity.Contact) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ContactRemove(berty.entity.Contact) returns (berty.entity.Contact) {
+  rpc ContactRemove (berty.entity.Contact) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ContactUpdate(berty.entity.Contact) returns (berty.entity.Contact) {
+  rpc ContactUpdate (berty.entity.Contact) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ContactList(ContactListInput) returns (stream berty.entity.Contact) {
+  rpc ContactList (ContactListInput) returns (stream berty.entity.Contact) {
     option (gql.graphql_output) = ".berty.node.ContactListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc GetContact(berty.entity.Contact) returns (berty.entity.Contact) {
+  rpc GetContact (berty.entity.Contact) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -68,26 +68,26 @@ service Service {
   // Conversations
   //
 
-  rpc ConversationCreate(ConversationCreateInput) returns (berty.entity.Conversation) {
+  rpc ConversationCreate (ConversationCreateInput) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ConversationList(ConversationListInput) returns (stream berty.entity.Conversation) {
+  rpc ConversationList (ConversationListInput) returns (stream berty.entity.Conversation) {
     option (gql.graphql_output) = ".berty.node.ConversationListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc ConversationInvite(ConversationManageMembersInput) returns (berty.entity.Conversation) {
+  rpc ConversationInvite (ConversationManageMembersInput) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ConversationExclude(ConversationManageMembersInput) returns (berty.entity.Conversation) {
+  rpc ConversationExclude (ConversationManageMembersInput) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ConversationAddMessage(ConversationAddMessageInput) returns (berty.p2p.Event) {
+  rpc ConversationAddMessage (ConversationAddMessageInput) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc GetConversation(berty.entity.Conversation) returns (berty.entity.Conversation) {
+  rpc GetConversation (berty.entity.Conversation) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Query";
   };
-  rpc GetConversationMember(berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
+  rpc GetConversationMember (berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -101,31 +101,37 @@ service Service {
 
   // HandleEvent is the unencrypted (and unsafe) version of HandleEnvelope.
   // it's only exposed over the node API, it should be completely deactivated in public releases
-  rpc HandleEvent(berty.p2p.Event) returns (Void) {};
+  rpc HandleEvent (berty.p2p.Event) returns (Void) {
+  };
 
-  rpc GenerateFakeData(Void) returns (Void) {
+  rpc GenerateFakeData (Void) returns (Void) {
     option (gql.graphql_type) = "Mutation";
   };
 
-  rpc RunIntegrationTests(IntegrationTestInput) returns (IntegrationTestOutput) {
+  rpc RunIntegrationTests (IntegrationTestInput) returns (IntegrationTestOutput) {
     option (gql.graphql_type) = "Mutation";
   };
 
-  rpc DebugPing(PingDestination) returns (Void) {};
+  rpc DebugPing (PingDestination) returns (Void) {
+  };
 
-  rpc DeviceInfos(Void) returns (berty.pkg.deviceinfo.DeviceInfos) {
+  rpc DebugRequeueEvent (DebugEventRequeueInput) returns (p2p.Event) {
+    option (gql.graphql_type) = "Mutation";
+  };
+
+  rpc DeviceInfos (Void) returns (berty.pkg.deviceinfo.DeviceInfos) {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc AppVersion(Void) returns (AppVersionOutput) {
+  rpc AppVersion (Void) returns (AppVersionOutput) {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc Peers(Void) returns (p2p.Peers) {
+  rpc Peers (Void) returns (p2p.Peers) {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc Protocols(p2p.Peer) returns (ProtocolsOutput) {
+  rpc Protocols (p2p.Peer) returns (ProtocolsOutput) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -134,16 +140,16 @@ service Service {
   //
 
   // Yield bandwidth in real-time
-  rpc MonitorBandwidth(berty.p2p.BandwidthStats) returns (stream berty.p2p.BandwidthStats) {
+  rpc MonitorBandwidth (berty.p2p.BandwidthStats) returns (stream berty.p2p.BandwidthStats) {
     option (gql.graphql_type) = "Subscription";
   };
 
-    // Yield new peers in real-time
-  rpc MonitorPeers(Void) returns (stream p2p.Peer) {
+  // Yield new peers in real-time
+  rpc MonitorPeers (Void) returns (stream p2p.Peer) {
     option (gql.graphql_type) = "Subscription";
   };
 
-  rpc Panic(Void) returns (Void) {
+  rpc Panic (Void) returns (Void) {
     option (gql.graphql_type) = "Query";
   };
 }
@@ -285,4 +291,9 @@ enum NullableTrueFalse {
   Null = 0;
   True = 1;
   False = 2;
+}
+
+
+message DebugEventRequeueInput {
+  string event_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "EventID"];
 }

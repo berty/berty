@@ -583,6 +583,7 @@ type ComplexityRoot struct {
 		ConversationAddMessage func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
 		GenerateFakeData       func(childComplexity int, T bool) int
 		RunIntegrationTests    func(childComplexity int, name string) int
+		DebugRequeueEvent      func(childComplexity int, eventId string) int
 	}
 
 	Query struct {
@@ -671,6 +672,7 @@ type MutationResolver interface {
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error)
 	GenerateFakeData(ctx context.Context, T bool) (*node.Void, error)
 	RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error)
+	DebugRequeueEvent(ctx context.Context, eventId string) (*p2p.Event, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
@@ -1372,6 +1374,21 @@ func field_Mutation_RunIntegrationTests_args(rawArgs map[string]interface{}) (ma
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_DebugRequeueEvent_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["eventId"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["eventId"] = arg0
 	return args, nil
 
 }
@@ -4730,6 +4747,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RunIntegrationTests(childComplexity, args["name"].(string)), true
+
+	case "Mutation.DebugRequeueEvent":
+		if e.complexity.Mutation.DebugRequeueEvent == nil {
+			break
+		}
+
+		args, err := field_Mutation_DebugRequeueEvent_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DebugRequeueEvent(childComplexity, args["eventId"].(string)), true
 
 	case "Query.node":
 		if e.complexity.Query.Node == nil {
@@ -16642,6 +16671,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_GenerateFakeData(ctx, field)
 		case "RunIntegrationTests":
 			out.Values[i] = ec._Mutation_RunIntegrationTests(ctx, field)
+		case "DebugRequeueEvent":
+			out.Values[i] = ec._Mutation_DebugRequeueEvent(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -16961,6 +16992,37 @@ func (ec *executionContext) _Mutation_RunIntegrationTests(ctx context.Context, f
 	}
 
 	return ec._BertyNodeIntegrationTestPayload(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_DebugRequeueEvent(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_DebugRequeueEvent_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DebugRequeueEvent(rctx, args["eventId"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pEventPayload(ctx, field.Selections, res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -20364,6 +20426,9 @@ type Mutation {
   RunIntegrationTests(
       name: String!
   ): BertyNodeIntegrationTestPayload
+  DebugRequeueEvent(
+    eventId: ID!
+  ): BertyP2pEventPayload
 }
   
 type Subscription {
