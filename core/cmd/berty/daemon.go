@@ -19,6 +19,7 @@ type daemonOptions struct {
 	hideBanner   bool   `mapstructure:"hide-banner"`
 	dropDatabase bool   `mapstructure:"drop-database"`
 	initOnly     bool   `mapstructure:"init-only"`
+	withBot      bool   `mapstructure:"with-bot"`
 
 	// p2p
 	identity     string   `mapstructure:"identity"`
@@ -41,6 +42,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
+	flags.BoolVar(&opts.withBot, "bot", false, "enable bot")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
@@ -110,6 +112,10 @@ func daemon(opts *daemonOptions) error {
 		))
 	} else {
 		accountOptions = append(accountOptions, account.WithEnqueurNetwork())
+	}
+
+	if opts.withBot {
+		accountOptions = append(accountOptions, account.WithBot())
 	}
 
 	if opts.initOnly {

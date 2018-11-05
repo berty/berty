@@ -2,6 +2,7 @@ package bot
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"time"
 
@@ -39,7 +40,10 @@ func (b *Bot) Start() error {
 		return err
 	}
 	for {
+		fmt.Println("for")
+		time.Sleep(1000 * time.Millisecond)
 		event, err := stream.Recv()
+		fmt.Println("event", event, err)
 		if err == io.EOF {
 			break
 		}
