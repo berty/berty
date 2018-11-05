@@ -50,6 +50,13 @@ func (r *Resolver) BertyEntityDevice() generated.BertyEntityDeviceResolver {
 func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
 	return &bertyP2pEventResolver{r}
 }
+
+// func (r *Resolver) BertyP2pPeer() generated.BertyP2pPeerResolver {
+// 	return &bertyP2pPeerResolver{r}
+// }
+// func (r *Resolver) BertyP2pPeerPayload() generated.BertyP2pPeerPayloadResolver {
+// 	return &bertyP2pPeerResolver{r}
+// }
 func (r *Resolver) BertyP2pEventPayload() generated.BertyP2pEventPayloadResolver {
 	return &bertyP2pEventResolver{r}
 }
@@ -115,6 +122,12 @@ func (r *bertyP2pEventResolver) Attributes(ctx context.Context, obj *p2p.Event) 
 	}
 	return json.Marshal(attrs)
 }
+
+// type bertyP2pPeerResolver struct{ *Resolver }
+
+// func (r *bertyP2pPeerResolver) Addrs(ctx context.Context, obj *p2p.Peer) ([]byte, error) {
+// 	return json.Marshal(obj.GetAddrs())
+// }
 
 type googleProtobufFieldDescriptorProtoResolver struct{ *Resolver }
 
@@ -237,6 +250,16 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 		logger().Warn("unknown node type", zap.String("node_type", gID[0]))
 		return nil, nil
 	}
+}
+
+func (r *queryResolver) ID(ctx context.Context, T bool) (*p2p.Peer, error) {
+	return r.client.ID(ctx, &node.Void{T: T})
+}
+
+func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ *int32) (*node.ProtocolsOutput, error) {
+	return r.client.Protocols(ctx, &p2p.Peer{
+		ID: id,
+	})
 }
 
 func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
@@ -474,6 +497,10 @@ func (r *queryResolver) Panic(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.Panic(ctx, &node.Void{})
 }
 
+func (r *queryResolver) Peers(ctx context.Context, _ bool) (*p2p.Peers, error) {
+	return r.client.Peers(ctx, &node.Void{})
+}
+
 type subscriptionResolver struct{ *Resolver }
 
 func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error) {
@@ -496,6 +523,68 @@ func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Even
 			channel <- elem
 		}
 	}()
+	return channel, nil
+}
+
+func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *p2p.Peer, error) {
+	stream, err := r.client.MonitorPeers(ctx, &node.Void{})
+	channel := make(chan *p2p.Peer, 10)
+
+	if err != nil {
+		return nil, err
+	}
+	go func() {
+		for {
+			elem, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				// logger().Error(err.Error())
+				break
+			}
+			channel <- elem
+		}
+	}()
+	return channel, nil
+}
+
+func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string, _ *int64, _ *int64, _ *float64, _ *float64, mtype *int32) (<-chan *p2p.BandwidthStats, error) {
+	if mtype == nil {
+		_mtype := int32(p2p.MetricsType_GLOBAL)
+		mtype = &_mtype
+	}
+
+	if id == nil {
+		var _id string
+		id = &_id
+	}
+
+	stream, err := r.client.MonitorBandwidth(ctx, &p2p.BandwidthStats{
+		ID:   *id,
+		Type: p2p.MetricsType(*mtype),
+	})
+
+	if err != nil {
+
+		return nil, err
+	}
+
+	channel := make(chan *p2p.BandwidthStats, 10)
+	go func() {
+		for {
+			elem, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				// logger().Error(err.Error())
+				break
+			}
+			channel <- elem
+		}
+	}()
+
 	return channel, nil
 }
 

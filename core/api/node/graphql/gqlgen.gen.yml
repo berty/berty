@@ -1137,6 +1137,68 @@ models:
         resolver: true
 
 
+  BertyP2pBandwidthStats:
+    model: berty.tech/core/api/p2p.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyP2pBandwidthStatsInput:
+    model: berty.tech/core/api/p2p.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyP2pBandwidthStatsPayload:
+    model: berty.tech/core/api/p2p.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+
+
+  BertyP2pPeer:
+    model: berty.tech/core/api/p2p.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+  BertyP2pPeerInput:
+    model: berty.tech/core/api/p2p.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+  BertyP2pPeerPayload:
+    model: berty.tech/core/api/p2p.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+
+  BertyP2pPeers:
+    model: berty.tech/core/api/p2p.Peers
+    fields:
+      list:
+  BertyP2pPeersInput:
+    model: berty.tech/core/api/p2p.Peers
+    fields:
+      list:
+  BertyP2pPeersPayload:
+    model: berty.tech/core/api/p2p.Peers
+    fields:
+      list:
+
+
   BertyNodeDeviceInfosOutput:
     model: berty.tech/core/api/node.DeviceInfosOutput
     fields:
@@ -1149,6 +1211,19 @@ models:
     model: berty.tech/core/api/node.DeviceInfosOutput
     fields:
       infos:
+
+  BertyNodeProtocolsOutput:
+    model: berty.tech/core/api/node.ProtocolsOutput
+    fields:
+      protocols:
+  BertyNodeProtocolsOutputInput:
+    model: berty.tech/core/api/node.ProtocolsOutput
+    fields:
+      protocols:
+  BertyNodeProtocolsPayload:
+    model: berty.tech/core/api/node.ProtocolsOutput
+    fields:
+      protocols:
 
   BertyNodeDeviceInfo:
     model: berty.tech/core/api/node.DeviceInfo
@@ -1361,19 +1436,6 @@ models:
       conversation:
       members:
 
-  BertyNodeVoid:
-    model: berty.tech/core/api/node.Void
-    fields:
-      t:
-  BertyNodeVoidInput:
-    model: berty.tech/core/api/node.Void
-    fields:
-      t:
-  BertyNodeVoidPayload:
-    model: berty.tech/core/api/node.Void
-    fields:
-      t:
-
   BertyNodePagination:
     model: berty.tech/core/api/node.Pagination
     fields:
@@ -1460,3 +1522,16 @@ models:
       verbose:
       startedAt:
       finishedAt:
+
+  BertyNodeVoid:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:
+  BertyNodeVoidInput:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:
+  BertyNodeVoidPayload:
+    model: berty.tech/core/api/node.Void
+    fields:
+      t:

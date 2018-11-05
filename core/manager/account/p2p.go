@@ -16,6 +16,7 @@ type P2PNetworkOptions struct {
 	DefaultBootstrap bool
 	MDNS             bool
 	Relay            bool
+	Metrics          bool
 	Identity         string
 }
 
@@ -78,7 +79,7 @@ func WithP2PNetwork(opts *P2PNetworkOptions) NewOption {
 			// @TODO: Allow static identity loaded from a file (useful for relay
 			// server for creating static endpoint for bootstrap)
 			// p2p.WithIdentity(<key>),
-			p2p.WithNATPortMap(), // @T\ODO: Is this a pb on mobile?
+			p2p.WithNATPortMap(), // @TODO: Is this a pb on mobile?
 			p2p.WithListenAddrStrings(opts.Bind...),
 			p2p.WithBootstrap(opts.Bootstrap...),
 			identity,
@@ -94,9 +95,14 @@ func WithP2PNetwork(opts *P2PNetworkOptions) NewOption {
 			p2pOptions = append(p2pOptions, p2p.WithRelayClient())
 		}
 
-		a.network, err = p2p.NewDriver(context.Background(), p2pOptions...)
+		driver, err := p2p.NewDriver(context.Background(), p2pOptions...)
 		if err != nil {
 			return err
+		}
+
+		a.network = driver
+		if opts.Metrics {
+			a.metrics = p2p.NewMetrics(driver)
 		}
 
 		return nil

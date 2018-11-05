@@ -46,8 +46,9 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", defaultBootstrap, "boostrap peers")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
-	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default", "ble"}, "p2p transport to enable")
+	//	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
+	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default"}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
 }
 
@@ -105,6 +106,7 @@ func daemon(opts *daemonOptions) error {
 				Bootstrap: opts.bootstrap,
 				MDNS:      opts.mdns,
 				Relay:     opts.hop,
+				Metrics:   true,
 				Identity:  opts.identity,
 			},
 		))
