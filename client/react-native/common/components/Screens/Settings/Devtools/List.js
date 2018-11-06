@@ -32,14 +32,13 @@ export default class List extends PureComponent {
     this.setState({ restartDaemon: true }, async () => {
       try {
         await CoreModule.restart()
-        console.log(await CoreModule.getPort())
-        this.props.navigation.setParams({
-          restartDaemon: false,
-        })
-        this.setState({ restartDaemon: false })
       } catch (err) {
         console.error(err)
       }
+      this.props.navigation.setParams({
+        restartDaemon: false,
+      })
+      this.setState({ restartDaemon: false })
     })
   }
 
@@ -47,15 +46,14 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ panic: true })
     this.setState({ panic: true }, async () => {
       try {
-        queries.Panic.fetch()
-        await CoreModule.getPort()
-        this.props.navigation.setParams({
-          panic: false,
-        })
-        this.setState({ panic: false })
+        await queries.Panic.fetch()
       } catch (err) {
         console.error(err)
       }
+      this.props.navigation.setParams({
+        panic: false,
+      })
+      this.setState({ panic: false })
     })
   }
 

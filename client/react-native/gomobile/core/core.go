@@ -38,8 +38,10 @@ func GetPort() (int, error) {
 
 	defer panicHandler()
 
-	waitDaemon()
-	a, _ := account.Get(accountName)
+	a, err := account.Get(accountName)
+	if err != nil {
+		return 0, err
+	}
 	return strconv.Atoi(strings.Split(a.GQLBind, ":")[1])
 }
 

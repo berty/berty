@@ -45,17 +45,8 @@ let getIP = () =>
     if (Platform.OS === 'web') {
       return resolve(window.location.hostname)
     }
-
-    if (Platform.OS === 'ios') {
-      return resolve('127.0.0.1')
-    }
-
-    if (Platform.OS === 'android') {
-      return resolve('10.0.2.2')
-    }
+    return resolve('127.0.0.1')
   })
-
-const getPort = () => CoreModule.getPort()
 
 const setupSubscription = async (config, variables, cacheConfig, observer) => {
   try {
@@ -121,19 +112,22 @@ const perfLogger = (msg, req, res) => {
 }
 
 const _fetchQuery = async req => {
-  const query = `http://${await getIP()}:${await getPort()}/query`
+  try {
+    const query = `http://${await getIP()}:${await CoreModule.getPort()}/query`
 
-  // eslint-disable-next-line
-  if (__DEV__) {
-    console.log(
-      '%c RELAY %c relay query: %s',
-      logStyle.relayOK,
-      logStyle.title,
-      query
-    )
+    // eslint-disable-next-line
+    if (__DEV__) {
+      console.log(
+        '%c RELAY %c relay query: %s',
+        logStyle.relayOK,
+        logStyle.title,
+        query
+      )
+    }
+    return query
+  } catch (err) {
+    console.warn(err)
   }
-
-  return query
 }
 
 // @TODO: Do something better to cache this
