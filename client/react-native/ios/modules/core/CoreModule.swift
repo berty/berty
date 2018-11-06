@@ -66,4 +66,26 @@ class CoreModule: NSObject {
         }
         resolve(port)
     }
+
+    @objc func getNetworkConfig(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        var err: NSError?
+
+        let config: String = CoreGetNetworkConfig(&err)
+        if let error = err {
+            logger.format("get network config error: ", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+        resolve(config)
+    }
+
+    @objc func updateNetworkConfig(_ config: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        var err: NSError?
+
+        CoreUpdateNetworkConfig(config, &err)
+        if let error = err {
+            logger.format("update network config error: ", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+        resolve(nil)
+    }
 }
