@@ -257,8 +257,11 @@ fastlane.ios.build:
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
 
+	# test if ipa has been correctly exported
+	test -f $(BUILD_IOS)/$(NAME).ipa
+
 	# extract build informations
-	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt || true
+	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt
 
 fastlane.ios.release:
 	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/Berty.ipa skip_waiting_for_build_processing:true
