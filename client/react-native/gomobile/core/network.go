@@ -2,6 +2,7 @@ package core
 
 import (
 	"encoding/json"
+	"errors"
 
 	account "berty.tech/core/manager/account"
 )
