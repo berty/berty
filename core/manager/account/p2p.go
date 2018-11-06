@@ -41,7 +41,7 @@ func createP2PNetwork(opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, net
 	if opts.DefaultBootstrap {
 		opts.Bootstrap = append(
 			opts.Bootstrap,
-			"/ip4/104.248.78.238/tcp/4004/ipfs/QmPCbsVWDtLTdCtwfp5ftZ96xccUNe4hegKStgbss8YACT",
+			p2p.DefaultBootstrap,
 		)
 	}
 
