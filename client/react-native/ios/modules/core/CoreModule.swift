@@ -35,7 +35,7 @@ class CoreModule: NSObject {
             }
             resolve(nil)
         } catch let error as NSError {
-            logger.format("core module start error: %@", level: .Error, error.userInfo.description)
+            logger.format("unable to start core: %@", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
@@ -44,15 +44,30 @@ class CoreModule: NSObject {
       var err: NSError?
       
       do {
-          CoreRestart(try self.getFilesDir(), logger, &err)
+          CoreRestart(try self.getFilesDir(), &err)
           if let error = err {
               throw error
           }
           resolve(nil)
       } catch let error as NSError {
-          logger.format("core module restart error: %@", level: .Error, error.userInfo.description)
+          logger.format("unable to restart core: %@", level: .Error, error.userInfo.description)
           reject("\(String(describing: error.code))", error.userInfo.description, error)
       }
+    }
+  
+    @objc func dropDatabase(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
+        var err: NSError?
+    
+        do {
+            CoreDropDatabase(try self.getFilesDir(), &err)
+            if let error = err {
+                throw error
+            }
+            resolve(nil)
+        } catch let error as NSError {
+            logger.format("unable to drop database: %@", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
     }
   
     @objc func getPort(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
@@ -61,7 +76,7 @@ class CoreModule: NSObject {
 
         CoreGetPort(&port, &err)
         if let error = err {
-            logger.format("get port error: ", level: .Error, error.userInfo.description)
+            logger.format("unable to get port: ", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
         resolve(port)

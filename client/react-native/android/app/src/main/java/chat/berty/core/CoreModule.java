@@ -38,13 +38,25 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void restart(Promise promise) {
         try {
-            Core.restart(this.filesDir, this.logger);
+            Core.restart(this.filesDir);
             promise.resolve(null);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to restart core: %s", err);
             promise.reject(err);
         }
     }
+
+    @ReactMethod
+    public void dropDatabase(Promise promise) {
+        try {
+            Core.dropDatabase(this.filesDir);
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to drop database: %s", err);
+            promise.reject(err);
+        }
+    }
+
 
     @ReactMethod
     public void getPort(Promise promise) {
