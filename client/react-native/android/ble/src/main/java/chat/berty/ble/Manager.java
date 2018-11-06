@@ -37,6 +37,7 @@ import android.Manifest;
 
 import java.lang.reflect.Array;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +47,8 @@ import android.bluetooth.BluetoothGatt;
 
 import static android.bluetooth.BluetoothGattCharacteristic.*;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
+import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
+import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 import static android.content.Context.BLUETOOTH_SERVICE;
 
 public class Manager {
@@ -203,7 +206,9 @@ public class Manager {
             mGattServerCallback = new BluetoothGattServerCallback() {
                 @Override
                 public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
-
+                    BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
+                    handleConnectionStateChange(bDevice, status, newState);
+                    Log.e(TAG, "new coob " + device.getAddress());
                 }
 
                 @Override
@@ -310,10 +315,9 @@ public class Manager {
                     String addr = device.getAddress();
                     synchronized (bertyDevices) {
                         if (!bertyDevices.containsKey(addr)) {
-                            BertyDevice bDevice = new BertyDevice(device, addr);
+                            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback);
+                            BertyDevice bDevice = new BertyDevice(device, gatt, addr);
                             bertyDevices.put(addr, bDevice);
-                            device.connectGatt(mContext, false, mGattCallback);
-                            Log.e(TAG, "connecting to " + addr);
                         }
                     }
                 }
@@ -408,6 +412,16 @@ public class Manager {
 
     protected BluetoothGattCallback mGattCallback;
 
+    public @Nullable BertyDevice getDeviceFromAddr(String addr) {
+        synchronized (bertyDevices) {
+            if (bertyDevices.containsKey(addr)) {
+                return bertyDevices.get(addr);
+            }
+        }
+
+        return null;
+    }
+
     public void initGattCallback() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             mGattCallback = new BluetoothGattCallback() {
@@ -423,16 +437,25 @@ public class Manager {
 
                 @Override
                 public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                    handleConnectionStateChange(bDevice, status, newState);
                     super.onConnectionStateChange(gatt, status, newState);
                 }
 
                 @Override
                 public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                    BluetoothGattService svc = gatt.getService(SERVICE_UUID);
+                    gatt.readCharacteristic(svc.getCharacteristic(MA_UUID));
+                    gatt.readCharacteristic(svc.getCharacteristic(PEER_ID_UUID));
+
                     super.onServicesDiscovered(gatt, status);
                 }
 
                 @Override
                 public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                    Log.e(TAG, "charact discovered " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
+                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                    handleReadCharact(bDevice, characteristic);
                     super.onCharacteristicRead(gatt, characteristic, status);
                 }
 
@@ -443,6 +466,9 @@ public class Manager {
 
                 @Override
                 public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                    Log.e(TAG, "charact changed " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
+                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                    handleReadCharact(bDevice, characteristic);
                     super.onCharacteristicChanged(gatt, characteristic);
                 }
 
@@ -471,6 +497,46 @@ public class Manager {
                     super.onMtuChanged(gatt, mtu, status);
                 }
             };
+        }
+    }
+
+    public void handleMaRead(BertyDevice device, BluetoothGattCharacteristic characteristic) {
+        String newMa = new String(characteristic.getValue(), Charset.forName("UTF-8"));
+        if (device.ma == null || device.ma == "" || !device.ma.equals(newMa)) {
+            device.ma = newMa;
+            if (device.peerID == null || device.peerID == "" || !device.ma.equals(newMa)) {
+                device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(PEER_ID_UUID));
+            }
+        }
+    }
+
+    public void handlePeerIDRead(BertyDevice device, BluetoothGattCharacteristic characteristic) {
+        String newPeerID = new String(characteristic.getValue(), Charset.forName("UTF-8"));
+        if (device.peerID == null || device.peerID == "" || !device.peerID.equals(newPeerID)) {
+            device.peerID = newPeerID;
+            if (device.ma == null || device.ma == "" || !device.peerID.equals(newPeerID)) {
+                device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(MA_UUID));
+            }
+        }
+    }
+
+    public void handleReadCharact(BertyDevice device, BluetoothGattCharacteristic characteristic) {
+        UUID charID = characteristic.getUuid();
+        if (charID.equals(MA_UUID)) {
+            handleMaRead(device, characteristic);
+        } else if (charID.equals(PEER_ID_UUID)) {
+            handlePeerIDRead(device, characteristic);
+        }
+    }
+
+    public void handleConnectionStateChange(BertyDevice device, int status, int newState) {
+        if (newState == STATE_CONNECTED) {
+            Log.e(TAG, "new newly connected device " + device.gatt);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                device.gatt.discoverServices();
+            }
+        } else if (newState == STATE_DISCONNECTED) {
+            Log.e(TAG, "disconnected device " + device.addr);
         }
     }
 }
