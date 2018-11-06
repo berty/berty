@@ -52,7 +52,29 @@ public class CoreModule extends ReactContextBaseJavaModule {
             Long data = Core.getPort();
             promise.resolve(data.toString());
         } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to get port :%s", err);
+            this.logger.format(Level.ERROR, this.getName(), "Unable to get port: %s", err);
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void getNetworkConfig(Promise promise) {
+        try {
+            String config = Core.getNetworkConfig();
+            promise.resolve(config);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to get network config: %s", err);
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void updateNetworkConfig(String config, Promise promise) {
+        try {
+            Core.updateNetworkConfig(config);
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to update network config: %s", err);
             promise.reject(err);
         }
     }

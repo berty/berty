@@ -17,12 +17,7 @@ func logger() *zap.Logger {
 	return zap.L().Named("client.rn.gomobile")
 }
 
-var (
-	defaultBootstrap = []string{
-		"/ip4/104.248.78.238/tcp/4004/ipfs/QmPCbsVWDtLTdCtwfp5ftZ96xccUNe4hegKStgbss8YACT",
-	}
-	accountName = "new-berty-user"
-)
+var accountName = "new-berty-user"
 
 func getRandomPort() (int, error) {
 	listener, err := reuse.Listen("tcp", "0.0.0.0:0")
@@ -104,16 +99,7 @@ func daemon(datastorePath string, loggerNative Logger) error {
 			Path: datastorePath,
 			Drop: false,
 		}),
-		account.WithP2PNetwork(
-			&account.P2PNetworkOptions{
-				Bind:      nil,
-				Bootstrap: defaultBootstrap,
-				MDNS:      false,
-				Relay:     false,
-				Metrics:   true,
-				Identity:  "",
-			},
-		),
+		account.WithP2PNetwork(createNetworkConfig()),
 		account.WithGrpcServer(&account.GrpcServerOptions{
 			Bind:         fmt.Sprintf(":%d", grpcPort),
 			Interceptors: false,

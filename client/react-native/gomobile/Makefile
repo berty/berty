@@ -1,8 +1,9 @@
 MAKEFILE_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 CORE_PACKAGE := $(MAKEFILE_DIR)/../../../core
+CORE_MOBILE := $(MAKEFILE_DIR)/core
 CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
-				$(shell find . -type f -name "*.go")
+				$(shell find $(CORE_MOBILE) -type f -name "*.go")
 
 BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../.circleci/docker
 
@@ -46,7 +47,7 @@ init: deps
 
 .PHONY: test
 test:
-	go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
+	cd $(CORE_MOBILE) && go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
 .PHONY: build.android
 build.android: $(ANDROID_BUILD_PATH)/core.aar
@@ -54,7 +55,7 @@ build.android: $(ANDROID_BUILD_PATH)/core.aar
 $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	mkdir -p $(ANDROID_BUILD_PATH)
-	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
+	cd $(CORE_MOBILE) && CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
 		gomobile bind -v -target=android -o $(ANDROID_BUILD_PATH)/core.aar .
 
 .PHONY: build.ios
@@ -63,7 +64,7 @@ build.ios: $(IOS_BUILD_PATH)/core.framework/Core
 $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	mkdir -p $(IOS_BUILD_PATH)
-	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
+	cd $(CORE_MOBILE) && CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
 		gomobile bind -v -target=ios -o $(IOS_BUILD_PATH)/core.framework .
 
 .PHONY: build
