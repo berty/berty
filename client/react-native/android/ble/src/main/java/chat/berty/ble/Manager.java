@@ -1,9 +1,12 @@
 package chat.berty.ble;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.arch.core.util.Function;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
@@ -14,13 +17,26 @@ import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanSettings;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
+import android.Manifest;
+
+import java.nio.charset.Charset;
+import java.util.List;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothGatt;
@@ -35,6 +51,8 @@ public class Manager {
     private Context mContext;
 
     private ActivityGetter mReactContext;
+
+    private Object RmReactContext;
 
     final static int BLUETOOTH_ENABLE_REQUEST = 1;
 
@@ -60,6 +78,8 @@ public class Manager {
 
     protected BluetoothLeAdvertiser mBluetoothLeAdvertiser;
 
+    protected BluetoothLeScanner mBluetoothLeScanner;
+
     protected BluetoothGattService mService;
 
     protected BluetoothGattCharacteristic acceptCharacteristic;
@@ -70,7 +90,7 @@ public class Manager {
     protected BluetoothGattCharacteristic closerCharacteristic;
 
     public interface ActivityGetter {
-        Activity getCurrentActivity();
+        @Nullable Activity getCurrentActivity();
     }
 
     private Manager() {
@@ -83,8 +103,9 @@ public class Manager {
         mContext = ctx;
     }
 
-    public void setmReactContext(Object rCtx) {
+    public void setmReactContext(Object rCtx, Object t) {
         Log.e(TAG, "BLEManager ReactContext set");
+        RmReactContext = t;
         mReactContext = (ActivityGetter)rCtx;
     }
 
@@ -98,7 +119,19 @@ public class Manager {
             }
         }
 
+        Log.e(TAG, "ALL INSTANCES " + instance);
         return instance;
+    }
+    public boolean isRunning(Context ctx) {
+        ActivityManager activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
+
+        for (ActivityManager.RunningTaskInfo task : tasks) {
+            if (ctx.getPackageName().equalsIgnoreCase(task.baseActivity.getPackageName()))
+                return true;
+        }
+
+        return false;
     }
 
     public static AdvertiseSettings createAdvSettings(boolean connectable, int timeoutMillis) {
@@ -201,12 +234,37 @@ public class Manager {
             mAdvertisingCallback = new AdvertiseCallback() {
                 @Override
                 public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                    Log.e( "BLE", "Advertising onStartFai: " + settingsInEffect);
+                    Log.e( "BLE", "Advertising onStartSuccess: " + settingsInEffect);
                     super.onStartSuccess(settingsInEffect);
                 }
                 @Override
                 public void onStartFailure(int errorCode) {
-                    Log.e( "BLE", "Advertising onStartFailure: " + errorCode );
+                    String errorString;
+                    switch (errorCode) {
+                        case ADVERTISE_FAILED_DATA_TOO_LARGE: errorString = "ADVERTISE_FAILED_DATA_TOO_LARGE";
+                        break;
+
+                        case ADVERTISE_FAILED_TOO_MANY_ADVERTISERS: errorString = "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
+                        break;
+
+                        case ADVERTISE_FAILED_ALREADY_STARTED: errorString = "ADVERTISE_FAILED_ALREADY_STARTED";
+                        break;
+
+                        case ADVERTISE_FAILED_INTERNAL_ERROR: errorString = "ADVERTISE_FAILED_INTERNAL_ERROR";
+                        break;
+
+                        case ADVERTISE_FAILED_FEATURE_UNSUPPORTED: errorString = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
+                        break;
+
+                        default: errorString = "UNKNOWN ADVERTISE FAILURE";
+                        break;
+                    }
+                    Log.e(TAG, "Advertising onStartFailure: " + errorString);
+                    if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR) {
+//                        mBluetoothAdapter.getBluetoothLeAdvertiser().stopAdvertising(mAdvertisingCallback);
+//                        mBluetoothLeAdvertiser.startAdvertising(createAdvSettings(
+//                                true, 300), makeAdvertiseData(), mAdvertisingCallback);
+                    }
                     super.onStartFailure(errorCode);
                 }
             };
@@ -217,28 +275,28 @@ public class Manager {
     public String realTest() {
         Log.e(TAG, "THIS IS REAL SHIT GUY");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Activity curActivity = mReactContext.getCurrentActivity();
         if (!mBluetoothAdapter.isEnabled()) {
             Log.e(TAG, "NEED TO ENABLE");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            mReactContext.getCurrentActivity().startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
+            curActivity.startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            Log.e(TAG, "THIS IS REAL SHIT GUY2");
             initGattServerCallBack();
-            Log.e(TAG, "THIS IS REAL SHIT GUY3");
+            initGattCallback();
+            initAdvertiseCallback();
             BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
-            Log.e(TAG, "THIS IS REAL SHIT GUY5");
-            mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
-            Log.e(TAG, "THIS IS REAL SHIT GUY4");
-            mBluetoothGattServer.addService(createService());
-            Log.e(TAG, "THIS IS REAL SHIT GUY6");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                initAdvertiseCallback();
-                Log.e(TAG, "THIS IS REAL SHIT GUY7");
                 mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
-                Log.e(TAG, "THIS IS REAL SHIT GUY8");
-                mBluetoothLeAdvertiser.startAdvertising(createAdvSettings(true, 300), makeAdvertiseData(), mAdvertisingCallback);
+                mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+
+                mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
+                mBluetoothGattServer.addService(createService());
+
+                AdvertiseSettings settings = createAdvSettings(true, 0);
+                AdvertiseData advData = makeAdvertiseData();
+                mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
             }
         }
         return "COMING FROM THAT MOTHA FUCKING JAVA";
