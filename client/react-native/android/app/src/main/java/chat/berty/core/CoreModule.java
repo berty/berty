@@ -25,7 +25,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
             }
         };
 
-        Manager.getInstance().setmReactContext(o);
+        Manager.getInstance().setmReactContext(o, reactContext);
     }
 
     public String getName() {
