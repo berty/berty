@@ -193,7 +193,6 @@ func (a *Account) Close() {
 }
 
 // Database
-
 func (a *Account) dbPath() string {
 	return a.dbDir + "/berty." + a.Name + ".db"
 }
@@ -209,8 +208,8 @@ func (a *Account) openDatabase() error {
 		return errors.Wrap(err, "failed to initialize sql")
 	}
 	if a.dbDrop {
-		if err = sql.DropDatabase(a.db); err != nil {
-			return errors.Wrap(err, "failed to drop database")
+		if err = a.DropDatabase(); err != nil {
+			return err
 		}
 	}
 	err = sql.Migrate(a.db)
@@ -218,6 +217,15 @@ func (a *Account) openDatabase() error {
 		return errors.Wrap(err, "failed to apply sql migrations")
 	}
 	return nil
+}
+
+func (a *Account) DropDatabase() error {
+	var err error
+
+	if err = sql.DropDatabase(a.db); err != nil {
+		return errors.Wrap(err, "failed to drop database")
+	}
+	return a.openDatabase()
 }
 
 func (a *Account) startNetwork() error {
