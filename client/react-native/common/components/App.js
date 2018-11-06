@@ -23,7 +23,7 @@ export default class App extends PureComponent {
   async componentDidMount () {
     try {
       await CoreModule.start()
-      await CoreModule.getPort()
+      console.log(await CoreModule.getPort())
       subscriptions.eventStream.subscribe({
         iterator: function * () {
           try {

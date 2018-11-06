@@ -32,7 +32,7 @@ export default class List extends PureComponent {
     this.setState({ restartDaemon: true }, async () => {
       try {
         await CoreModule.restart()
-        await CoreModule.getPort()
+        console.log(await CoreModule.getPort())
         this.props.navigation.setParams({
           restartDaemon: false,
         })
