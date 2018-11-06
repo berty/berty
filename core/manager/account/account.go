@@ -73,7 +73,7 @@ func New(opts ...NewOption) (*Account, error) {
 		return nil, err
 	}
 
-	Add(a)
+	list = append(list, a)
 	return a, nil
 }
 
@@ -86,11 +86,7 @@ func Get(name string) (*Account, error) {
 	return nil, errors.New("account with name " + name + " isn't opened")
 }
 
-func Add(a *Account) {
-	list = append(list, a)
-}
-
-func Remove(a *Account) {
+func Delete(a *Account) {
 	ForEach(func(i int, current *Account) {
 		if a == current {
 			list = append(list[:i], list[i+1:]...)
@@ -123,6 +119,7 @@ func (a *Account) Validate() error {
 
 func (a *Account) Open() error {
 	if err := a.initNode(); err != nil {
+		a.Close()
 		return err
 	}
 	if a.initOnly {
@@ -131,15 +128,19 @@ func (a *Account) Open() error {
 
 	// start
 	if err := a.startNetwork(); err != nil {
+		a.Close()
 		return err
 	}
 	if err := a.startGrpcServer(); err != nil {
+		a.Close()
 		return err
 	}
 	if err := a.startGQL(); err != nil {
+		a.Close()
 		return err
 	}
 	if err := a.startNode(); err != nil {
+		a.Close()
 		return err
 	}
 	return nil
@@ -259,6 +260,7 @@ func (a *Account) startGQL() error {
 
 	// start gql server
 	go func() {
+		defer a.PanicHandler()
 		a.errChan <- http.Serve(a.gqlListener, a.gqlHandler)
 	}()
 	return nil

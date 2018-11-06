@@ -24,22 +24,6 @@ var (
 	accountName = "new-berty-user"
 )
 
-func initLogger(logger Logger) error {
-	if err := setupLogger("debug", logger); err != nil {
-		return err
-	}
-
-	// initialize logger
-	cfg := zap.NewDevelopmentConfig()
-	cfg.Level.SetLevel(zap.DebugLevel)
-	l, err := cfg.Build()
-	if err != nil {
-		return err
-	}
-	zap.ReplaceGlobals(l)
-	return nil
-}
-
 func getRandomPort() (int, error) {
 	listener, err := reuse.Listen("tcp", "0.0.0.0:0")
 	if err != nil {
@@ -60,51 +44,48 @@ func GetPort() (int, error) {
 }
 
 func Start(datastorePath string, loggerNative Logger) error {
-	if err := initLogger(loggerNative); err != nil {
+	if err := setupLogger("debug", loggerNative); err != nil {
 		return err
 	}
 	a, _ := account.Get(accountName)
 	if a != nil {
 		return errors.New("daemon already started")
 	}
+	run(datastorePath, loggerNative)
+	GetPort()
+	return nil
+}
+
+func Restart(datastorePath string, loggerNative Logger) error {
+	logger().Debug("restart called")
+	currentAccount, _ := account.Get(accountName)
+	if currentAccount != nil {
+		logger().Debug("currentAccount", zap.String("account", fmt.Sprintf("%+v\n", currentAccount)))
+		currentAccount.ErrChan() <- nil
+	}
+	port, err := GetPort()
+	if err != nil {
+		return err
+	}
+	logger().Debug("GetPort", zap.String("port", fmt.Sprintf("%+v", port)))
+	return nil
+}
+
+func run(datastorePath string, loggerNative Logger) {
 	go func() {
 		for {
 			err := daemon(datastorePath, loggerNative)
 			if err != nil {
 				logger().Error("handle error, try to restart", zap.Error(err))
+				time.Sleep(time.Second)
 			} else {
 				logger().Info("restarting daemon")
 			}
 		}
 	}()
-	return nil
-}
-
-func Restart(datastorePath string, loggerNative Logger) error {
-	currentAccount, _ := account.Get(accountName)
-	if currentAccount != nil {
-		currentAccount.Close()
-		account.Remove(currentAccount)
-		currentAccount = nil
-	} else {
-		go func() {
-			for {
-				err := daemon(datastorePath, loggerNative)
-				if err != nil {
-					logger().Error("handle error, try to restart", zap.Error(err))
-				} else {
-					logger().Info("restarting daemon")
-				}
-			}
-		}()
-	}
-	return nil
 }
 
 func daemon(datastorePath string, loggerNative Logger) error {
-
-	a := &account.Account{}
-	defer a.PanicHandler()
 
 	grpcPort, err := getRandomPort()
 	if err != nil {
@@ -115,6 +96,7 @@ func daemon(datastorePath string, loggerNative Logger) error {
 		return err
 	}
 
+	var a *account.Account
 	a, err = account.New(
 		account.WithName(accountName),
 		account.WithPassphrase("secure"),
@@ -144,13 +126,14 @@ func daemon(datastorePath string, loggerNative Logger) error {
 	if err != nil {
 		return err
 	}
+	defer account.Delete(a)
 
 	err = a.Open()
 	if err != nil {
-		a.Close()
-		account.Remove(a)
-		a = nil
 		return err
 	}
+	defer a.Close()
+
+	defer a.PanicHandler()
 	return <-a.ErrChan()
 }
