@@ -35,8 +35,10 @@ type Node struct {
 	b64pubkey               string // FIXME: same as above
 	sigchain                *sigchain.SigChain
 	crypto                  keypair.Interface
-	createdAt               time.Time // used for uptime calculation
-	devtools                struct {
+
+	// devtools
+	createdAt time.Time // used for uptime calculation
+	devtools  struct {
 		mapset map[string]string
 	}
 }

@@ -397,10 +397,17 @@ type BertyP2pPeers  {
   
   
 
-type BertyNodeDeviceInfo  {
+type BertyPkgDeviceinfoDeviceInfos  {
+    infos: [BertyPkgDeviceinfoDeviceInfo]
+}
+type BertyPkgDeviceinfoDeviceInfo  {
       key: String!
       value: String!
 }
+  
+  
+  
+
 type BertyNodePingDestination  {
       destination: String!
 }
@@ -580,8 +587,8 @@ type BertyNodeIntegrationTestPayload {
     startedAt: GoogleProtobufTimestamp
     finishedAt: GoogleProtobufTimestamp
 }
-type BertyNodeDeviceInfosPayload {
-    infos: [BertyNodeDeviceInfo]
+type BertyPkgDeviceinfoDeviceInfosPayload {
+    infos: [BertyPkgDeviceinfoDeviceInfo]
 }
 type BertyNodeAppVersionPayload {
       version: String!
@@ -684,7 +691,7 @@ type Query {
   ): BertyEntityConversationMemberPayload
   DeviceInfos(
       T: Bool!
-  ): BertyNodeDeviceInfosPayload
+  ): BertyPkgDeviceinfoDeviceInfosPayload
   AppVersion(
       T: Bool!
   ): BertyNodeAppVersionPayload

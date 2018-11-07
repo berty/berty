@@ -88,7 +88,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 
 	sc := sigchain.SigChain{}
 
-	if err := sc.Init(n.crypto, string(pubBytes)); err != nil {
+	if err := sc.Init(n.crypto, pubBytes); err != nil {
 		return nil, errors.Wrap(err, "failed to initialize sigchain")
 	}
 
