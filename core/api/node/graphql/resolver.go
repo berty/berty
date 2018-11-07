@@ -1,18 +1,19 @@
 package graphql
 
 import (
-	context "context"
-	json "encoding/json"
+	"context"
+	"encoding/json"
 	"io"
 	"strings"
-	time "time"
+	"time"
 
-	node "berty.tech/core/api/node"
-	generated "berty.tech/core/api/node/graphql/graph/generated"
-	models "berty.tech/core/api/node/graphql/models"
-	p2p "berty.tech/core/api/p2p"
-	entity "berty.tech/core/entity"
-	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"berty.tech/core/api/node"
+	"berty.tech/core/api/node/graphql/graph/generated"
+	"berty.tech/core/api/node/graphql/models"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+	"berty.tech/core/pkg/deviceinfo"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"go.uber.org/zap"
 )
 
@@ -487,7 +488,7 @@ func (r *queryResolver) GetConversation(ctx context.Context, id string, createdA
 func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
 	return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
 }
-func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*node.DeviceInfosOutput, error) {
+func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error) {
 	return r.client.DeviceInfos(ctx, &node.Void{T: true})
 }
 func (r *queryResolver) AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error) {

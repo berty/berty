@@ -34,7 +34,7 @@ func keychainTests(t *testing.T) {
 
 				// the keypair should satisfy keypair.Interface and return a valid pubkey
 				sc := sigchain.SigChain{}
-				c.So(sc.Init(kp, "Test1"), c.ShouldBeNil)
+				c.So(sc.Init(kp, []byte("Test1")), c.ShouldBeNil)
 				pub, err := kp.GetPubKey()
 				c.So(err, c.ShouldBeNil)
 				c.So(pub, c.ShouldNotBeNil)

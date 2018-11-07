@@ -9,6 +9,12 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/jinzhu/gorm"
+	reuse "github.com/libp2p/go-reuseport"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
+
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	p2papi "berty.tech/core/api/p2p"
@@ -19,16 +25,28 @@ import (
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
-	"github.com/jinzhu/gorm"
-	reuse "github.com/libp2p/go-reuseport"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
+
+// Info is used in berty.node.DeviceInfos
+func Info() map[string]string {
+	if len(list) < 1 {
+		return map[string]string{"accounts": "none!"}
+	}
+	a := list[0] // FIXME: support multi accounts
+	return map[string]string{
+		"manager: accounts":  fmt.Sprintf("%d accounts", len(list)),
+		"manager: gql-bind":  a.GQLBind,
+		"manager: grpc-bind": a.GrpcBind,
+		"manager: db":        a.dbPath(),
+		"manager: name":      a.Name,
+		"manager: with-bot":  fmt.Sprintf("%v", a.withBot),
+		// FIXME: retrieve info from manager's DB
+	}
+}
 
 type Account struct {
 	Name       string
-	Passphrase string
+	Passphrase string // passphrase should not be stored in this structure (this memory is too easy to read)
 	banner     string
 
 	db     *gorm.DB

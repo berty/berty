@@ -8,8 +8,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"math/rand"
-	"os"
-	"runtime"
 	"strings"
 	"time"
 
@@ -19,6 +17,7 @@ import (
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/sql"
 	"berty.tech/core/testrunner"
 	"github.com/brianvoe/gofakeit"
@@ -58,7 +57,7 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 			return nil, errors.Wrap(err, "failed to set private key in kp")
 		}
 		sc := sigchain.SigChain{}
-		if err := sc.Init(&kp, string(pubBytes)); err != nil {
+		if err := sc.Init(&kp, pubBytes); err != nil {
 			return nil, errors.Wrap(err, "failed to init sigchain")
 		}
 		scBytes, err := proto.Marshal(&sc)
@@ -104,67 +103,47 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 	return &node.Void{}, nil
 }
 
-func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInfosOutput, error) {
-	output := &node.DeviceInfosOutput{}
+func (n *Node) NodeInfos() (map[string]string, error) {
+	infos := map[string]string{}
 
-	// system, platform, os, etc
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Node lifetime (uptime)", Value: fmt.Sprintf("%s", time.Since(n.createdAt))})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Config lifetime", Value: fmt.Sprintf("%s", time.Since(n.config.CreatedAt))})
+	infos["runtime: versions"] = fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version)
 
-	var m runtime.MemStats
-	runtime.ReadMemStats(&m)
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Memory", Value: fmt.Sprintf(
-		"Alloc=%vMiB, TotalAlloc=%vMiB, Sys=%vMiB, NumGC=%v",
-		m.Alloc/1024/1024,
-		m.TotalAlloc/1024/1024,
-		m.Sys/1024/1024,
-		m.NumGC,
-	)})
+	infos["time: node uptime"] = fmt.Sprintf("%s", time.Since(n.createdAt))
+	infos["time: node db creation"] = fmt.Sprintf("%s", time.Since(n.config.CreatedAt))
 
+	sqlStats := []string{}
 	for _, table := range sql.AllTables() {
 		var count uint32
 		if err := n.sql.Table(table).Count(&count).Error; err != nil {
-			output.Infos = append(output.Infos, &node.DeviceInfo{
-				Key:   fmt.Sprintf("sql: %s (error)", table),
-				Value: err.Error(),
-			})
+			sqlStats = append(sqlStats, fmt.Sprintf("%s: %v", table, err))
 		} else {
-			output.Infos = append(output.Infos, &node.DeviceInfo{
-				Key:   fmt.Sprintf("sql: %s", table),
-				Value: fmt.Sprintf("%d entries", count),
-			})
+			sqlStats = append(sqlStats, fmt.Sprintf("%s: %d", table, count))
 		}
 	}
+	infos["sql: entries"] = strings.Join(sqlStats, "\n")
 
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Versions", Value: fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version)})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Platform", Value: fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "CPUs", Value: fmt.Sprintf("%d", runtime.NumCPU())})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go version", Value: fmt.Sprintf("%s (compiler: %s)", runtime.Version(), runtime.Compiler)})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go 'cgo' calls", Value: fmt.Sprintf("%d", runtime.NumCgoCall())})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go routines", Value: fmt.Sprintf("%d", runtime.NumGoroutine())})
-	if hn, err := os.Hostname(); err != nil {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Hostname", Value: hn})
-	}
-	if exe, err := os.Executable(); err != nil {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Executable", Value: exe})
-	}
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "pid", Value: fmt.Sprintf("%d", os.Getpid())})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "uid", Value: fmt.Sprintf("%d", os.Geteuid())})
-	if wd, err := os.Getwd(); err != nil {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "pwd", Value: wd})
-	}
+	infos["queues: client events"] = fmt.Sprintf("%d", len(n.clientEvents))
+	infos["queues: clients"] = fmt.Sprintf("%d", len(n.clientEventsSubscribers))
+	infos["queues: outgoing events"] = fmt.Sprintf("%d", len(n.outgoingEvents))
 
-	// queues
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: client events", Value: fmt.Sprintf("%d", len(n.clientEvents))})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: clients", Value: fmt.Sprintf("%d", len(n.clientEventsSubscribers))})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: outgoing events", Value: fmt.Sprintf("%d", len(n.outgoingEvents))})
+	infos["node: pubkey"] = n.b64pubkey
+	infos["node: sigchain"] = n.sigchain.ToJSON()
 
-	// env
-	for _, env := range os.Environ() {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "env", Value: env})
+	return infos, nil
+}
+
+func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*deviceinfo.DeviceInfos, error) {
+	entries, err := n.NodeInfos()
+	if err != nil {
+		return nil, err
 	}
 
-	return output, nil
+	// append runtime
+	for key, value := range deviceinfo.Runtime() {
+		entries[key] = value
+	}
+
+	return deviceinfo.FromMap(entries), nil
 }
 
 func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationTestInput) (*node.IntegrationTestOutput, error) {
