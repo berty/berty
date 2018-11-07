@@ -10,6 +10,7 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
+	"sort"
 	"strings"
 	"time"
 
@@ -104,65 +105,82 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 	return &node.Void{}, nil
 }
 
-func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInfosOutput, error) {
-	output := &node.DeviceInfosOutput{}
+func (n *Node) DeviceInfosMap() (map[string]string, error) {
+	infos := map[string]string{}
 
 	// system, platform, os, etc
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Node lifetime (uptime)", Value: fmt.Sprintf("%s", time.Since(n.createdAt))})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Config lifetime", Value: fmt.Sprintf("%s", time.Since(n.config.CreatedAt))})
+	infos["time: node uptime"] = fmt.Sprintf("%s", time.Since(n.createdAt))
+	infos["time: node db creation"] = fmt.Sprintf("%s", time.Since(n.config.CreatedAt))
 
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Memory", Value: fmt.Sprintf(
+	infos["runtime: memory"] = fmt.Sprintf(
 		"Alloc=%vMiB, TotalAlloc=%vMiB, Sys=%vMiB, NumGC=%v",
 		m.Alloc/1024/1024,
 		m.TotalAlloc/1024/1024,
 		m.Sys/1024/1024,
 		m.NumGC,
-	)})
+	)
 
 	for _, table := range sql.AllTables() {
 		var count uint32
 		if err := n.sql.Table(table).Count(&count).Error; err != nil {
-			output.Infos = append(output.Infos, &node.DeviceInfo{
-				Key:   fmt.Sprintf("sql: %s (error)", table),
-				Value: err.Error(),
-			})
+			infos[fmt.Sprintf("sql: %s (error)", table)] = err.Error()
 		} else {
-			output.Infos = append(output.Infos, &node.DeviceInfo{
-				Key:   fmt.Sprintf("sql: %s", table),
-				Value: fmt.Sprintf("%d entries", count),
-			})
+			infos[fmt.Sprintf("sql: %s", table)] = fmt.Sprintf("%d entries", count)
 		}
 	}
 
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Versions", Value: fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version)})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Platform", Value: fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "CPUs", Value: fmt.Sprintf("%d", runtime.NumCPU())})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go version", Value: fmt.Sprintf("%s (compiler: %s)", runtime.Version(), runtime.Compiler)})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go 'cgo' calls", Value: fmt.Sprintf("%d", runtime.NumCgoCall())})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Go routines", Value: fmt.Sprintf("%d", runtime.NumGoroutine())})
+	infos["runtime: versions"] = fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version)
+	infos["runtime: platform"] = fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)
+	infos["runtime: CPUs"] = fmt.Sprintf("%d", runtime.NumCPU())
+	infos["build: GO version"] = fmt.Sprintf("%s (compiler: %s)", runtime.Version(), runtime.Compiler)
+	infos["runtime: CGO calls"] = fmt.Sprintf("%d", runtime.NumCgoCall())
+	infos["runtime: Go routines"] = fmt.Sprintf("%d", runtime.NumGoroutine())
 	if hn, err := os.Hostname(); err != nil {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Hostname", Value: hn})
+		infos["Hostname"] = hn
 	}
 	if exe, err := os.Executable(); err != nil {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Executable", Value: exe})
+		infos["Executable"] = exe
 	}
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "pid", Value: fmt.Sprintf("%d", os.Getpid())})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "uid", Value: fmt.Sprintf("%d", os.Geteuid())})
+	infos["runtime: pid"] = fmt.Sprintf("%d", os.Getpid())
+	infos["runtime: uid"] = fmt.Sprintf("%d", os.Geteuid())
 	if wd, err := os.Getwd(); err != nil {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "pwd", Value: wd})
+		infos["pwd"] = wd
 	}
 
 	// queues
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: client events", Value: fmt.Sprintf("%d", len(n.clientEvents))})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: clients", Value: fmt.Sprintf("%d", len(n.clientEventsSubscribers))})
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "queues: outgoing events", Value: fmt.Sprintf("%d", len(n.outgoingEvents))})
+	infos["queues: client events"] = fmt.Sprintf("%d", len(n.clientEvents))
+	infos["queues: clients"] = fmt.Sprintf("%d", len(n.clientEventsSubscribers))
+	infos["queues: outgoing events"] = fmt.Sprintf("%d", len(n.outgoingEvents))
 
 	// env
 	for _, env := range os.Environ() {
-		output.Infos = append(output.Infos, &node.DeviceInfo{Key: "env", Value: env})
+		infos["env"] = env
 	}
+
+	return infos, nil
+}
+
+func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInfosOutput, error) {
+	output := &node.DeviceInfosOutput{}
+
+	entries, err := n.DeviceInfosMap()
+	if err != nil {
+		return nil, err
+	}
+	for key, value := range entries {
+		output.Infos = append(
+			output.Infos,
+			&node.DeviceInfo{
+				Key:   key,
+				Value: value,
+			},
+		)
+
+	}
+
+	sort.Sort(node.SortableDeviceInfos(output.Infos))
 
 	return output, nil
 }
