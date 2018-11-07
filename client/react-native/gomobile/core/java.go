@@ -20,26 +20,32 @@ func initBleFunc() {
 }
 
 func JavaToGo() string {
+	defer panicHandler()
 	return "COMING FROM GOLANG"
 }
 
 func ConnClose(bleUUID string) {
+	defer panicHandler()
 	ble.ConnClose(bleUUID)
 }
 
 func ConnClosed(bleUUID string) {
+	defer panicHandler()
 	ble.ConnClosed(bleUUID)
 }
 
 func BytesToConn(bleUUID string, b []byte) {
+	defer panicHandler()
 	fmt.Printf("BYTES TO CONN FROM JAVA %+v\n", b)
 	ble.BytesToConn(bleUUID, b)
 }
 
 func RealAcceptSender(peerID string, bleUUID string, incPeerID string) {
+	defer panicHandler()
 	ble.RealAcceptSender(peerID, bleUUID, incPeerID)
 }
 
 func AddToPeerStore(peerID string, rAddr string) {
+	defer panicHandler()
 	ble.AddToPeerStore(peerID, rAddr)
 }

@@ -78,6 +78,17 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void panic(Promise promise) throws Exception {
+        Core.panic();
+        promise.resolve(null);
+    }
+
+    @ReactMethod
+    public void throwException() throws Exception {
+        throw new Exception("thrown exception");
+    }
+
+    @ReactMethod
     public void dropDatabase(Promise promise) {
         try {
             Core.dropDatabase(this.filesDir);

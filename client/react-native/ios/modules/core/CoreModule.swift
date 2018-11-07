@@ -14,20 +14,20 @@ var logger = Logger("chat.berty.io", "CoreModule")
 class CoreModule: NSObject {
 
     func getFilesDir() throws -> String {
-      let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-      let filesPath = filesDir?.path
-      let fileExist = FileManager.default.fileExists(atPath: filesPath!)
+        let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+        let filesPath = filesDir?.path
+        let fileExist = FileManager.default.fileExists(atPath: filesPath!)
 
-      if fileExist == false {
-          try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)
-      }
+        if fileExist == false {
+            try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)
+        }
 
-      return filesPath!
+        return filesPath!
     }
-  
+
     @objc func initialize(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
         var err: NSError?
-    
+
         do {
             CoreInitialize(logger, &err)
             if let error = err {
@@ -39,10 +39,10 @@ class CoreModule: NSObject {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
-  
+
     @objc func listAccounts(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
         var err: NSError?
-    
+
         do {
             let list = CoreListAccounts(try self.getFilesDir(), &err)
             if let error = err {
@@ -54,8 +54,8 @@ class CoreModule: NSObject {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
-  
-    @objc func start(_ nickname: NSString, resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
+
+    @objc func start(_ nickname: NSString, resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
         var err: NSError?
 
         do {
@@ -71,18 +71,23 @@ class CoreModule: NSObject {
     }
 
     @objc func restart(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
-      var err: NSError?
+        var err: NSError?
 
-      do {
-          CoreRestart(&err)
-          if let error = err {
-              throw error
-          }
-          resolve(nil)
-      } catch let error as NSError {
-          logger.format("unable to restart core: %@", level: .Error, error.userInfo.description)
-          reject("\(String(describing: error.code))", error.localizedDescription, error)
-      }
+        do {
+            CoreRestart(&err)
+            if let error = err {
+                throw error
+            }
+            resolve(nil)
+        } catch let error as NSError {
+            logger.format("unable to restart core: %@", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
+        }
+    }
+
+    @objc func panic(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
+        CorePanic()
+        resolve(nil)
     }
 
     @objc func dropDatabase(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
@@ -109,6 +114,7 @@ class CoreModule: NSObject {
         if let error = err {
             logger.format("unable to get port: ", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
+            return
         }
         resolve(port)
     }

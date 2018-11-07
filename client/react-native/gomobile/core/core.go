@@ -8,10 +8,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pkg/errors"
-
 	account "berty.tech/core/manager/account"
 	reuse "github.com/libp2p/go-reuseport"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -26,7 +25,16 @@ func logger() *zap.Logger {
 
 func panicHandler() {
 	if r := recover(); r != nil {
-		logger().Error(fmt.Sprintf("%+v", r))
+		panicErr := errors.New(fmt.Sprintf("panic from global export: %+v", r))
+		logger().Error(panicErr.Error())
+		if accountName == "" {
+			return
+		}
+		a, err := account.Get(accountName)
+		if err != nil {
+			return
+		}
+		a.ErrChan() <- panicErr
 	}
 }
 
@@ -37,6 +45,10 @@ func getRandomPort() (int, error) {
 	}
 	port := listener.Addr().(*net.TCPAddr).Port
 	return port, nil
+}
+
+func Panic() {
+	panic(nil)
 }
 
 func GetPort() (int, error) {
@@ -51,11 +63,13 @@ func GetPort() (int, error) {
 }
 
 func Initialize(loggerNative Logger) error {
+
 	defer panicHandler()
 
 	if err := setupLogger("debug", loggerNative); err != nil {
 		return err
 	}
+
 	return nil
 }
 

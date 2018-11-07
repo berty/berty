@@ -2,10 +2,10 @@ package core
 
 import (
 	"encoding/json"
-	"github.com/pkg/errors"
 
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/network/p2p"
+	"github.com/pkg/errors"
 )
 
 type networkConfig struct {
@@ -19,6 +19,7 @@ type networkConfig struct {
 }
 
 func createNetworkConfig() (*account.P2PNetworkOptions, error) {
+	defer panicHandler()
 	var (
 		netConf   networkConfig
 		bind      []string
@@ -58,10 +59,12 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 }
 
 func GetNetworkConfig() string {
+	defer panicHandler()
 	return string(appConfig.JSONNetConf)
 }
 
 func UpdateNetworkConfig(jsonConf string) error {
+	defer panicHandler()
 	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 

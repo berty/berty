@@ -31,7 +31,7 @@ export default class App extends PureComponent {
   setStateError = () =>
     this.setState({ loading: false, success: false, error: true })
 
-  init = async () => {
+  initialize = async () => {
     if (Platform.OS === 'web') {
       this.setState({ nickname: '' })
       return this.start()
@@ -111,8 +111,8 @@ export default class App extends PureComponent {
     Linking.addEventListener('url', this._handleOpenURL)
   }
 
-  async componentDidMount () {
-    this.init()
+  componentDidMount () {
+    this.initialize()
   }
 
   componentWillUnmount () {
