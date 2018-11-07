@@ -26,15 +26,7 @@ func Migrate(db *gorm.DB) error {
 		{
 			ID: "1",
 			Migrate: func(tx *gorm.DB) error {
-				return tx.AutoMigrate(
-					p2p.Event{},
-					entity.Contact{},
-					entity.Conversation{},
-					entity.ConversationMember{},
-					entity.Device{},
-					entity.Config{},
-					entity.SenderAlias{},
-				).Error
+				return tx.AutoMigrate(append(entity.AllEntities(), p2p.Event{})...).Error
 			},
 			Rollback: func(tx *gorm.DB) error {
 				return DropDatabase(tx)
@@ -49,13 +41,9 @@ func Migrate(db *gorm.DB) error {
 }
 
 func DropDatabase(db *gorm.DB) error {
-	return db.DropTableIfExists(
-		// base entities
-		"config", "contact", "event", "device", "conversation", "conversation_member",
-
-		// association tables
-
-		// internal
-		"migrations",
-	).Error
+	var tables []interface{}
+	for _, table := range AllTables() {
+		tables = append(tables, table)
+	}
+	return db.DropTableIfExists(tables...).Error
 }
