@@ -5,7 +5,17 @@ package core
 import (
 	"Java/chat/berty/ble/Manager"
 	"fmt"
+
+	"berty.tech/core/network/ble"
 )
+
+func initBleFunc() {
+	// fmt.Printf("INSTANCE: %+v\n\n\n\n\n", Manager.GetInstance())
+	ble.SetMa = Manager.GetInstance().SetMa
+	ble.SetPeerID = Manager.GetInstance().SetPeerID
+	ble.StartScanning = Manager.GetInstance().StartScanning
+	ble.StartAdvertising = Manager.GetInstance().StartAdvertising
+}
 
 func JavaExportTestFunc() {
 	fmt.Printf("LALALALLA %+v\n\n\n", Manager.GetInstance())
@@ -31,8 +41,8 @@ func BytesToConn(bleUUID string, b []byte) {
 	ble.BytesToConn(bleUUID, b)
 }
 
-func RealAcceptSender(peerID string, ble string, incPeerID string) {
-	ble.RealAcceptSender(peerID, ble, incPeerID)
+func RealAcceptSender(peerID string, bleUUID string, incPeerID string) {
+	ble.RealAcceptSender(peerID, bleUUID, incPeerID)
 }
 
 func AddToPeerStore(peerID string, rAddr string) {

@@ -1,4 +1,4 @@
-// +build darwin
+// +build android darwin
 
 package ble
 

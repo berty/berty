@@ -9,7 +9,7 @@ import (
 	"unsafe"
 
 	peer "github.com/libp2p/go-libp2p-peer"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
+	
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
@@ -29,43 +29,16 @@ func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
 	BytesToConn(goBleUUID, b)
 }
 
-func BytesToConn(bleUUID string, b []byte) {
-	go func(bleUUID string, b []byte) {
-		for {
-			if conn, ok := conns[bleUUID]; ok {
-				conn.incoming <- b
-				return
-			}
-			time.Sleep(1 * time.Second)
-		}
-	}(bleUUID, b)
-}
-
 //export setConnClosed
 func setConnClosed(bleUUID *C.char) {
 	goBleUUID := C.GoString(bleUUID)
 	ConnClosed(goBleUUID)
 }
 
-func ConnClosed(bleUUID string) {
-	if conn, ok := conns[bleUUID]; ok {
-		delete(conns, bleUUID)
-		conn.closed = true
-		conn.sess.Close()
-	}
-}
-
 //export callConnClose
 func callConnClose(bleUUID *C.char) {
 	goBleUUID := C.GoString(bleUUID)
 	ConnClose(goBleUUID)
-}
-
-func ConnClose(bleUUID string) {
-	if conn, ok := conns[bleUUID]; ok {
-		delete(conns, bleUUID)
-		conn.sess.Close()
-	}
 }
 
 func (b *Conn) IsClosed() bool {
@@ -146,7 +119,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
 	return listerner
 }
 
-// Dial dials the   peer at the remote address.
+// Dial dials the peer at the remote address.
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	if int(C.isDiscovering()) != 1 {
 		go C.startDiscover()
@@ -175,23 +148,4 @@ func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
 	goPeerID := C.GoString(peerID)
 	goRAddr := C.GoString(rAddr)
 	AddToPeerStore(goPeerID, goRAddr)
-}
-
-func AddToPeerStore(peerID string, rAddr string) {
-	pID, err := peer.IDB58Decode(peerID)
-	if err != nil {
-		panic(err)
-	}
-	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", rAddr))
-	if err != nil {
-		panic(err)
-	}
-	pi := &pstore.PeerInfo{
-		ID:    pID,
-		Addrs: []ma.Multiaddr{rMa},
-	}
-	defer func() {
-		peerAdder <- pi
-		logger().Debug("SENDED TO PEERADDER\n")
-	}()
 }
