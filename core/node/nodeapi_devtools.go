@@ -19,6 +19,7 @@ import (
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
+	"berty.tech/core/sql"
 	"berty.tech/core/testrunner"
 	"github.com/brianvoe/gofakeit"
 	"github.com/gogo/protobuf/proto"
@@ -118,6 +119,21 @@ func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInf
 		m.Sys/1024/1024,
 		m.NumGC,
 	)})
+
+	for _, table := range sql.AllTables() {
+		var count uint32
+		if err := n.sql.Table(table).Count(&count).Error; err != nil {
+			output.Infos = append(output.Infos, &node.DeviceInfo{
+				Key:   fmt.Sprintf("sql: %s (error)", table),
+				Value: err.Error(),
+			})
+		} else {
+			output.Infos = append(output.Infos, &node.DeviceInfo{
+				Key:   fmt.Sprintf("sql: %s", table),
+				Value: fmt.Sprintf("%d entries", count),
+			})
+		}
+	}
 
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Versions", Value: fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version)})
 	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Platform", Value: fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)})
