@@ -67,7 +67,9 @@ type Account struct {
 
 	node     *node.Node
 	initOnly bool
-	withBot  bool
+
+	withBot    bool
+	BotRunning bool
 
 	serverTracerCloser io.Closer
 	dialTracerCloser   io.Closer
@@ -166,7 +168,7 @@ func (a *Account) Open() error {
 		return err
 	}
 	if a.withBot {
-		if err := a.startBot(); err != nil {
+		if err := a.StartBot(); err != nil {
 			return err
 		}
 	}
@@ -207,7 +209,9 @@ func (a *Account) Close() {
 	if a.grpcListener != nil {
 		a.grpcListener.Close()
 	}
-
+	if a.BotRunning {
+		_ = a.StopBot()
+	}
 }
 
 // Database
@@ -280,7 +284,7 @@ func (a *Account) startGrpcServer() error {
 	return nil
 }
 
-func (a *Account) startBot() error {
+func (a *Account) StartBot() error {
 	options := append(
 		[]bot.Option{
 			bot.WithTCPDaemon(a.GrpcBind),
@@ -292,17 +296,25 @@ func (a *Account) startBot() error {
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize bot")
 	}
+	a.BotRunning = true
 
 	go func() {
 		logger().Debug("starting bot...")
 		if err := b.Start(); err != nil {
 			logger().Error("bot error", zap.Error(err))
+			a.BotRunning = false
 			defer a.PanicHandler()
 			a.errChan <- err
 		}
 	}()
 
 	return nil
+}
+
+func (a *Account) StopBot() error {
+	// TODO: implement bot closing function
+	// Then set a.BotRunning = false
+	return errors.New("stop bot not implemented yet")
 }
 
 func (a *Account) startGQL() error {
