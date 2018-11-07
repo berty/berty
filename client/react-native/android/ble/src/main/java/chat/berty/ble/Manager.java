@@ -2,8 +2,6 @@ package chat.berty.ble;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.arch.core.util.Function;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCallback;
@@ -23,25 +21,23 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import android.Manifest;
-
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import android.bluetooth.BluetoothGatt;
 
@@ -445,8 +441,45 @@ public class Manager {
                 @Override
                 public void onServicesDiscovered(BluetoothGatt gatt, int status) {
                     BluetoothGattService svc = gatt.getService(SERVICE_UUID);
-                    gatt.readCharacteristic(svc.getCharacteristic(MA_UUID));
-                    gatt.readCharacteristic(svc.getCharacteristic(PEER_ID_UUID));
+                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                    ExecutorService es = Executors.newFixedThreadPool(6);
+                    List<PopulateCharacteristic> todo = new ArrayList<PopulateCharacteristic>(6);
+
+                    todo.add(new PopulateCharacteristic(MA_UUID, bDevice));
+                    todo.add(new PopulateCharacteristic(PEER_ID_UUID, bDevice));
+                    todo.add(new PopulateCharacteristic(CLOSER_UUID, bDevice));
+                    todo.add(new PopulateCharacteristic(WRITER_UUID, bDevice));
+                    todo.add(new PopulateCharacteristic(IS_READY_UUID, bDevice));
+                    todo.add(new PopulateCharacteristic(ACCEPT_UUID, bDevice));
+
+                    try {
+                        List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
+                        for (Future<BluetoothGattCharacteristic> future:answers) {
+                            BluetoothGattCharacteristic c = future.get();
+                            if (c.getUuid().equals(MA_UUID)) {
+                                bDevice.maCharacteristic = c;
+                            } else if (c.getUuid().equals(PEER_ID_UUID)) {
+                                bDevice.peerIDCharacteristic = c;
+                            } else if (c.getUuid().equals(CLOSER_UUID)) {
+                                bDevice.closerCharacteristic = c;
+                            } else if (c.getUuid().equals(WRITER_UUID)) {
+                                bDevice.writerCharacteristic = c;
+                            } else if (c.getUuid().equals(IS_READY_UUID)) {
+                                bDevice.isRdyCharacteristic = c;
+                            } else if (c.getUuid().equals(ACCEPT_UUID)) {
+                                bDevice.acceptCharacteristic = c;
+                            } else {
+                                Log.e(TAG, "UNKNOW CHARACT");
+                            }
+
+                            Log.e(TAG, "UUID "+c.getUuid());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    gatt.readCharacteristic(bDevice.maCharacteristic);
+                    gatt.readCharacteristic(bDevice.peerIDCharacteristic);
 
                     super.onServicesDiscovered(gatt, status);
                 }
@@ -537,6 +570,27 @@ public class Manager {
             }
         } else if (newState == STATE_DISCONNECTED) {
             Log.e(TAG, "disconnected device " + device.addr);
+            synchronized (bertyDevices) {
+                bertyDevices.remove(device.addr);
+            }
+        }
+    }
+
+    public class PopulateCharacteristic implements Callable<BluetoothGattCharacteristic> {
+        private UUID uuid;
+        private BertyDevice device;
+
+        public PopulateCharacteristic(UUID charactUUID, BertyDevice bDevice) {
+            uuid = charactUUID;
+            device = bDevice;
+        }
+
+        public @Nullable BluetoothGattCharacteristic call() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                return device.gatt.getService(SERVICE_UUID).getCharacteristic(uuid);
+            }
+
+            return null;
         }
     }
 }
