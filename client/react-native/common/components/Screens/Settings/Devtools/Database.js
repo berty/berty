@@ -33,8 +33,6 @@ export default class Database extends PureComponent {
     this.props.navigation.setParams({ dropDatabase: true })
     try {
       await CoreModule.dropDatabase()
-      await CoreModule.restart()
-      await CoreModule.getPort()
     } catch (err) {
       Alert.alert('An error occured, please, kill and restart the app')
       console.error(err)

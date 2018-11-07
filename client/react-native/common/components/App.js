@@ -1,15 +1,18 @@
-import React, { PureComponent } from 'react'
-import Screens from './Screens'
 import {
-  NativeModules,
-  Platform,
   ActivityIndicator,
   Linking,
+  NativeModules,
+  Platform,
+  TextInput,
 } from 'react-native'
-import { Flex } from './Library'
-import { subscriptions } from '../graphql'
 import { SafeAreaView, NavigationActions } from 'react-navigation'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
+import React, { PureComponent } from 'react'
+
+import { Flex, Screen } from './Library'
+import { colors } from '../constants'
+import { subscriptions } from '../graphql'
+import Screens from './Screens'
 
 const { CoreModule } = NativeModules
 
@@ -18,16 +21,51 @@ export default class App extends PureComponent {
     loading: true,
     success: false,
     error: false,
+    nickname: null,
   }
 
-  async componentDidMount () {
-    try {
-      await CoreModule.start()
-      await CoreModule.getPort()
-    } catch (err) {
-      console.warn(err.message)
-    }
+  setStateLoading = () =>
+    this.setState({ loading: true, success: false, error: false })
+  setStateSuccess = () =>
+    this.setState({ loading: false, success: true, error: false })
+  setStateError = () =>
+    this.setState({ loading: false, success: false, error: true })
 
+  init = async () => {
+    if (Platform.OS === 'web') {
+      this.setState({ nickname: '' })
+      return this.start()
+    }
+    try {
+      await CoreModule.initialize()
+      let accounts = await CoreModule.listAccounts()
+      if (accounts === '') {
+        accounts = []
+      } else {
+        accounts = accounts.split(':')
+      }
+      const nickname = accounts.length > 0 ? accounts[0] : null
+      this.setState({
+        nickname,
+      })
+      if (nickname != null) {
+        await this.start(nickname)
+      } else {
+        this.setStateSuccess()
+      }
+    } catch (error) {
+      console.error(error)
+      this.setStateError()
+    }
+  }
+
+  start = async () => {
+    this.setStateLoading()
+    try {
+      await CoreModule.start(this.state.nickname)
+    } catch (err) {
+      console.warn(err)
+    }
     try {
       subscriptions.eventStream.subscribe({
         iterator: function * () {
@@ -73,6 +111,10 @@ export default class App extends PureComponent {
     Linking.addEventListener('url', this._handleOpenURL)
   }
 
+  async componentDidMount () {
+    this.init()
+  }
+
   componentWillUnmount () {
     subscriptions.eventStream.dispose()
 
@@ -82,10 +124,7 @@ export default class App extends PureComponent {
   }
 
   handleOpenURL (event) {
-    const prefixes = [
-      'https://berty.tech/',
-      'berty://',
-    ]
+    const prefixes = ['https://berty.tech/', 'berty://']
 
     let url = event.url
 
@@ -110,7 +149,7 @@ export default class App extends PureComponent {
   }
 
   render () {
-    const { loading, success } = this.state
+    const { loading, success, nickname } = this.state
     return (
       <SafeAreaView style={{ flex: 1 }}>
         {loading && (
@@ -118,13 +157,30 @@ export default class App extends PureComponent {
             <ActivityIndicator size='large' />
           </Flex.Rows>
         )}
-        {success && (
+        {success && nickname != null ? (
           <Screens
             ref={nav => {
               this.navigation = nav
             }}
           />
-        )}
+        ) : null}
+        {success && nickname == null ? (
+          <Screen style={{ backgroundColor: colors.white }}>
+            <Flex.Rows align='center' justify='center'>
+              <Flex.Cols align='center' justify='center'>
+                <TextInput
+                  style={{ flex: 1 }}
+                  placeholder='Enter a nickname'
+                  onSubmitEditing={({ nativeEvent }) =>
+                    this.setState({ nickname: nativeEvent.text }, () =>
+                      this.start()
+                    )
+                  }
+                />
+              </Flex.Cols>
+            </Flex.Rows>
+          </Screen>
+        ) : null}
         {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>
     )

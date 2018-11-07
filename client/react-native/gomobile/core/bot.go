@@ -7,14 +7,14 @@ import (
 )
 
 func IsBotRunning() bool {
-	waitDaemon()
+	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 
 	return currentAccount.BotRunning
 }
 
 func StartBot() error {
-	waitDaemon()
+	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 
 	if currentAccount.BotRunning {
@@ -25,7 +25,7 @@ func StartBot() error {
 }
 
 func StopBot() error {
-	waitDaemon()
+	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 
 	if !currentAccount.BotRunning {
