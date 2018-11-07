@@ -23,6 +23,14 @@ RCT_EXTERN_METHOD(start:(NSString)nickname
 RCT_EXTERN_METHOD(restart:(RCTPromiseResolveBlock)resolve
                     reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(panic:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXPORT_METHOD(throwException)
+{
+    @throw [NSException exceptionWithName:@"throw exception" reason:@"throw native exception" userInfo:nil];
+}
+
 RCT_EXTERN_METHOD(dropDatabase:(RCTPromiseResolveBlock)resolve
                     reject:(RCTPromiseRejectBlock)reject);
 
