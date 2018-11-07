@@ -9,6 +9,7 @@ import "api/p2p/peer.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
+import "pkg/deviceinfo/deviceinfo.proto";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
@@ -112,7 +113,7 @@ service Service {
 
   rpc DebugPing(PingDestination) returns (Void) {};
 
-  rpc DeviceInfos(Void) returns (DeviceInfosOutput) {
+  rpc DeviceInfos(Void) returns (berty.pkg.deviceinfo.DeviceInfos) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -147,19 +148,9 @@ service Service {
   };
 }
 
-
-message DeviceInfosOutput {
-  repeated DeviceInfo infos = 1;
-}
-
 message ProtocolsOutput {
   repeated string protocols = 1;
 };
-
-message DeviceInfo {
-  string key = 1;
-  string value = 2;
-}
 
 message AppVersionOutput {
   string version = 1;
