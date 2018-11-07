@@ -12,14 +12,13 @@ import (
 )
 
 type P2PNetworkOptions struct {
-	Bind             []string
-	Transport        []string
-	Bootstrap        []string
-	DefaultBootstrap bool
-	MDNS             bool
-	Relay            bool
-	Metrics          bool
-	Identity         string
+	Bind      []string
+	Transport []string
+	Bootstrap []string
+	MDNS      bool
+	Relay     bool
+	Metrics   bool
+	Identity  string
 }
 
 func createP2PNetwork(opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, network.Metrics, error) {
@@ -32,17 +31,6 @@ func createP2PNetwork(opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, net
 	// Bind
 	if opts.Bind == nil {
 		opts.Bind = []string{"/ip4/0.0.0.0/tcp/0"}
-	}
-
-	// Bootstrap
-	if opts.Bootstrap == nil {
-		opts.Bootstrap = []string{}
-	}
-	if opts.DefaultBootstrap {
-		opts.Bootstrap = append(
-			opts.Bootstrap,
-			p2p.DefaultBootstrap,
-		)
 	}
 
 	var identity p2p.Option
