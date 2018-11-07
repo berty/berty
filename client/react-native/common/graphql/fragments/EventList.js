@@ -14,11 +14,13 @@ const EventList = component =>
           filter: { type: BertyP2pEventInput }
           count: { type: "Int32" }
           cursor: { type: "String" }
+          onlyWithoutAckedAt: { type: "Enum" }
         ) {
         EventList(
           filter: $filter
           first: $count
           after: $cursor
+          onlyWithoutAckedAt: $onlyWithoutAckedAt
           orderBy: "created_at"
           orderDesc: true
         ) @connection(key: "EventList_EventList") {

@@ -3,6 +3,7 @@ package graphql
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 	"time"
@@ -274,6 +275,7 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	onlyWithoutAckedAt := node.NullableTrueFalse_Null
 	if rawOnlyWithoutAckedAt != nil {
 		onlyWithoutAckedAt = node.NullableTrueFalse(*rawOnlyWithoutAckedAt)
+		logger().Info(fmt.Sprintf("raw value %+v parsed value %+v", rawOnlyWithoutAckedAt, onlyWithoutAckedAt))
 	}
 
 	if filter != nil {

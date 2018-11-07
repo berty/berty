@@ -98,13 +98,12 @@ const List = fragments.EventList(
 
     refetch = () => {
       this.props.relay.refetchConnection(10, console.error, {
-        // TODO: change filter field based on this.props.navigation.getParam('filters')
         ...queries.EventList.defaultVariables,
+        ...this.props.navigation.getParam('filters'),
       })
     }
 
     componentDidMount () {
-      this.props.navigation.setParams({ searchHandler: this.searchHandler })
       this.props.navigation.setParams({
         searchHandler: this.searchHandler,
         retry: this.refetch,
@@ -183,7 +182,10 @@ export default class EventList extends PureComponent {
       <Screen style={{ backgroundColor: colors.white }}>
         <QueryReducer
           query={queries.EventList}
-          variables={queries.EventList.defaultVariables}
+          variables={{
+            ...queries.EventList.defaultVariables,
+            ...navigation.getParam('filters'),
+          }}
         >
           {(state, retry) => {
             switch (state.type) {
@@ -212,8 +214,8 @@ export const EventListFilterModal = ({ navigation }) =>
       name='onlyWithoutAckedAt'
       choices={[
         { value: 0, label: 'All values' },
-        { value: 1, label: 'Acked at is defined' },
-        { value: 2, label: 'Acked at is not defined' },
+        { value: 1, label: 'AckedAt is not defined' },
+        { value: 2, label: 'AckedAt is defined' },
       ]}
     />
   </FilterModal>

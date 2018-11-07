@@ -105,22 +105,27 @@ func UnmarshalEnum(v interface{}) (int32, error) {
 	switch v := v.(type) {
 	case nil:
 		return 0, nil
-	case int64:
 	case int:
+		return int32(v), nil
+	case int64:
 		return int32(v), nil
 	case int32:
 		return v, nil
 	case string:
-	case json.Number:
-		res, err := strconv.ParseInt(string(v), 10, 32)
+		res, err := strconv.ParseInt(v, 10, 32)
 		if err != nil {
 			return 0, err
 		}
 		return int32(res), nil
-	default:
-		return 0, errors.New("not an enum")
+	case json.Number:
+		res, err := strconv.ParseInt(v.String(), 10, 32)
+		if err != nil {
+			return 0, err
+		}
+		return int32(res), nil
 	}
-	return int32(v.(int64)), nil
+
+	return 0, errors.New("not an enum")
 }
 
 func MarshalDouble(v float64) graphql.Marshaler {
