@@ -29,4 +29,13 @@ RCT_EXTERN_METHOD(updateNetworkConfig:(NSString *)config
                     resolve:(RCTPromiseResolveBlock)resolve
                     reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(isBotRunning:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(startBot:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(stopBot:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
 @end
