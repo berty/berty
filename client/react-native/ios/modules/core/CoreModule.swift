@@ -17,14 +17,14 @@ class CoreModule: NSObject {
       let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
       let filesPath = filesDir?.path
       let fileExist = FileManager.default.fileExists(atPath: filesPath!)
-      
+
       if fileExist == false {
           try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)
       }
-  
+
       return filesPath!
     }
-  
+
     @objc func start(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
         var err: NSError?
 
@@ -39,10 +39,10 @@ class CoreModule: NSObject {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
-  
+
     @objc func restart(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
       var err: NSError?
-      
+
       do {
           CoreRestart(try self.getFilesDir(), &err)
           if let error = err {
@@ -54,10 +54,10 @@ class CoreModule: NSObject {
           reject("\(String(describing: error.code))", error.userInfo.description, error)
       }
     }
-  
+
     @objc func dropDatabase(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
         var err: NSError?
-    
+
         do {
             CoreDropDatabase(try self.getFilesDir(), &err)
             if let error = err {
@@ -69,7 +69,7 @@ class CoreModule: NSObject {
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
-  
+
     @objc func getPort(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
         var err: NSError?
         var port: Int = 0
@@ -99,6 +99,32 @@ class CoreModule: NSObject {
         CoreUpdateNetworkConfig(config, &err)
         if let error = err {
             logger.format("update network config error: ", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+        resolve(nil)
+    }
+
+    @objc func isBotRunning(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(CoreIsBotRunning())
+    }
+
+    @objc func startBot(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        var err: NSError?
+
+        CoreStartBot(&err)
+        if let error = err {
+            logger.format("start bot error: ", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+        resolve(nil)
+    }
+
+    @objc func stopBot(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        var err: NSError?
+
+        CoreStopBot(&err)
+        if let error = err {
+            logger.format("stop bot error: ", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
         resolve(nil)

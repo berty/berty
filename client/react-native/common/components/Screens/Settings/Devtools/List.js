@@ -1,4 +1,4 @@
-import { ActivityIndicator, NativeModules } from 'react-native'
+import { ActivityIndicator, NativeModules, Switch, Alert } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
@@ -25,6 +25,8 @@ export default class List extends PureComponent {
   state = {
     restartDaemon: false,
     panic: false,
+    botStateLoaded: false,
+    botRunning: false,
   }
 
   restartDaemon = async () => {
@@ -57,6 +59,40 @@ export default class List extends PureComponent {
     })
   }
 
+  getBotState = async () => {
+    let running = await CoreModule.isBotRunning()
+
+    this.setState({
+      botRunning: running,
+      botStateLoaded: true,
+    })
+  }
+
+  antispam = false
+
+  toggleBotState = async () => {
+    if (!this.antispam) {
+      this.antispam = true
+      try {
+        if (this.state.botRunning === true) {
+          await CoreModule.stopBot()
+        } else {
+          await CoreModule.startBot()
+        }
+
+        this.setState({ botRunning: !this.state.botRunning })
+        this.antispam = false
+      } catch (err) {
+        Alert.alert('Error', `${err}`)
+        this.antispam = false
+      }
+    }
+  }
+
+  componentDidMount () {
+    this.getBotState()
+  }
+
   render () {
     const { navigation } = this.props
     const { restartDaemon, panic } = this.state
@@ -85,6 +121,18 @@ export default class List extends PureComponent {
           />
         </Menu.Section>
         <Menu.Section>
+          <Menu.Item
+            icon='cpu'
+            title='Bot mode'
+            customRight={
+              <Switch
+                justify='end'
+                disabled={!this.state.botStateLoaded}
+                value={this.state.botRunning}
+                onValueChange={this.toggleBotState}
+              />
+            }
+          />
           <Menu.Item
             icon='refresh-ccw'
             title='Restart daemon'

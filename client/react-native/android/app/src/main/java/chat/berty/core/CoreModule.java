@@ -90,4 +90,31 @@ public class CoreModule extends ReactContextBaseJavaModule {
             promise.reject(err);
         }
     }
+
+    @ReactMethod
+    public void isBotRunning(Promise promise) {
+        promise.resolve(Core.isBotRunning());
+    }
+
+    @ReactMethod
+    public void startBot(Promise promise) {
+        try {
+            Core.startBot();
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to update start bot: %s", err);
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void stopBot(Promise promise) {
+        try {
+            Core.stopBot();
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to update stop bot: %s", err);
+            promise.reject(err);
+        }
+    }
 }
