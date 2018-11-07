@@ -26,22 +26,30 @@ import "C"
 func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
 	goBleUUID := C.GoString(bleUUID)
 	b := C.GoBytes(bytes, length)
-	go func(goBleUUID string, b []byte) {
+	BytesToConn(goBleUUID, b)
+}
+
+func BytesToConn(bleUUID string, b []byte) {
+	go func(bleUUID string, b []byte) {
 		for {
-			if conn, ok := conns[goBleUUID]; ok {
+			if conn, ok := conns[bleUUID]; ok {
 				conn.incoming <- b
 				return
 			}
 			time.Sleep(1 * time.Second)
 		}
-	}(goBleUUID, b)
+	}(bleUUID, b)
 }
 
 //export setConnClosed
 func setConnClosed(bleUUID *C.char) {
 	goBleUUID := C.GoString(bleUUID)
-	if conn, ok := conns[goBleUUID]; ok {
-		delete(conns, goBleUUID)
+	ConnClosed(goBleUUID)
+}
+
+func ConnClosed(bleUUID string) {
+	if conn, ok := conns[bleUUID]; ok {
+		delete(conns, bleUUID)
 		conn.closed = true
 		conn.sess.Close()
 	}
@@ -50,8 +58,12 @@ func setConnClosed(bleUUID *C.char) {
 //export callConnClose
 func callConnClose(bleUUID *C.char) {
 	goBleUUID := C.GoString(bleUUID)
-	if conn, ok := conns[goBleUUID]; ok {
-		delete(conns, goBleUUID)
+	ConnClose(goBleUUID)
+}
+
+func ConnClose(bleUUID string) {
+	if conn, ok := conns[bleUUID]; ok {
+		delete(conns, bleUUID)
 		conn.sess.Close()
 	}
 }
@@ -158,13 +170,19 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 	return &c, nil
 }
 
-//export AddToPeerStore
-func AddToPeerStore(peerID *C.char, rAddr *C.char) {
-	pID, err := peer.IDB58Decode(C.GoString(peerID))
+//export AddToPeerStoreC
+func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
+	goPeerID := C.GoString(peerID)
+	goRAddr := C.GoString(rAddr)
+	AddToPeerStore(goPeerID, goRAddr)
+}
+
+func AddToPeerStore(peerID string, rAddr string) {
+	pID, err := peer.IDB58Decode(peerID)
 	if err != nil {
 		panic(err)
 	}
-	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", C.GoString(rAddr)))
+	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", rAddr))
 	if err != nil {
 		panic(err)
 	}
