@@ -108,7 +108,8 @@ func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*node.DeviceInf
 	output := &node.DeviceInfosOutput{}
 
 	// system, platform, os, etc
-	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Uptime", Value: fmt.Sprintf("%s", time.Since(n.createdAt))})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Node lifetime (uptime)", Value: fmt.Sprintf("%s", time.Since(n.createdAt))})
+	output.Infos = append(output.Infos, &node.DeviceInfo{Key: "Config lifetime", Value: fmt.Sprintf("%s", time.Since(n.config.CreatedAt))})
 
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
