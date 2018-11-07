@@ -1,10 +1,8 @@
-// +build darwin
+// +build android darwin
 
 package ble
 
 import (
-	"C"
-
 	ic "github.com/libp2p/go-libp2p-crypto"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
@@ -13,6 +11,7 @@ import (
 	yamux "github.com/whyrusleeping/yamux"
 	"go.uber.org/zap"
 )
+import "time"
 
 type Conn struct {
 	tpt.Conn
@@ -33,6 +32,33 @@ type ConnForSmux struct {
 }
 
 var conns map[string]*Conn = make(map[string]*Conn)
+
+func BytesToConn(bleUUID string, b []byte) {
+	go func(bleUUID string, b []byte) {
+		for {
+			if conn, ok := conns[bleUUID]; ok {
+				conn.incoming <- b
+				return
+			}
+			time.Sleep(1 * time.Second)
+		}
+	}(bleUUID, b)
+}
+
+func ConnClosed(bleUUID string) {
+	if conn, ok := conns[bleUUID]; ok {
+		delete(conns, bleUUID)
+		conn.closed = true
+		conn.sess.Close()
+	}
+}
+
+func ConnClose(bleUUID string) {
+	if conn, ok := conns[bleUUID]; ok {
+		delete(conns, bleUUID)
+		conn.sess.Close()
+	}
+}
 
 func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, dir int) Conn {
 	conn := Conn{

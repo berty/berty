@@ -1,13 +1,15 @@
-// +build darwin
+// +build android darwin
 
 package ble
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	logging "github.com/ipfs/go-log"
 	host "github.com/libp2p/go-libp2p-host"
+	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	rtpt "github.com/libp2p/go-reuseport-transport"
@@ -37,6 +39,25 @@ var DefaultConnectTimeout = 5 * time.Second
 var log = logging.Logger("ble-tpt")
 
 var _ tpt.Transport = &Transport{}
+
+func AddToPeerStore(peerID string, rAddr string) {
+	pID, err := peer.IDB58Decode(peerID)
+	if err != nil {
+		panic(err)
+	}
+	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", rAddr))
+	if err != nil {
+		panic(err)
+	}
+	pi := &pstore.PeerInfo{
+		ID:    pID,
+		Addrs: []ma.Multiaddr{rMa},
+	}
+	defer func() {
+		peerAdder <- pi
+		logger().Debug("SENDED TO PEERADDER\n")
+	}()
+}
 
 // NewBLETransport creates a tcp transport object that tracks dialers and listeners
 // created. It represents an entire tcp stack (though it might not necessarily be)

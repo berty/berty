@@ -1,10 +1,9 @@
-// +build !darwin
+// +build !darwin,!android
 
 package ble
 
 import (
 	"context"
-	"fmt"
 	"runtime"
 
 	host "github.com/libp2p/go-libp2p-host"

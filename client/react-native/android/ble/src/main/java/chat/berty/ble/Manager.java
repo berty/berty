@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
@@ -34,14 +35,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import android.bluetooth.BluetoothGatt;
+import core.Core;
 
-import static android.bluetooth.BluetoothGattCharacteristic.*;
+import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
+import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
+import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
+import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
+import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
@@ -58,19 +63,27 @@ public class Manager {
 
     final static int BLUETOOTH_ENABLE_REQUEST = 1;
 
-    protected UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6664");
+    final static UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6664");
 
-    protected UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C");
+    final static UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C");
 
-    protected UUID CLOSER_UUID = UUID.fromString("AD127A46-D065-4D72-B15A-EB2B3DA20561");
+    final static UUID CLOSER_UUID = UUID.fromString("AD127A46-D065-4D72-B15A-EB2B3DA20561");
 
-    protected UUID IS_READY_UUID = UUID.fromString("D27DE0B5-2170-4C59-9C0B-750C760C74E6");
+    final static UUID IS_READY_UUID = UUID.fromString("D27DE0B5-2170-4C59-9C0B-750C760C74E6");
 
-    protected UUID MA_UUID = UUID.fromString("9B827770-DC72-4C55-B8AE-0870C7AC15A8");
+    final static UUID MA_UUID = UUID.fromString("9B827770-DC72-4C55-B8AE-0870C7AC15A8");
 
-    protected UUID PEER_ID_UUID = UUID.fromString("0EF50D30-E208-4315-B323-D05E0A23E6B3");
+    final static UUID PEER_ID_UUID = UUID.fromString("0EF50D30-E208-4315-B323-D05E0A23E6B3");
 
-    protected UUID ACCEPT_UUID = UUID.fromString("6F110ECA-9FCC-4BB3-AB45-6F13565E2E34");
+    final static UUID ACCEPT_UUID = UUID.fromString("6F110ECA-9FCC-4BB3-AB45-6F13565E2E34");
+
+    public enum CHARACT_UUIDS  {
+        WRITER_UUID, CLOSER_UUID, IS_READY_UUID, MA_UUID, PEER_ID_UUID, ACCEPT_UUID
+    }
+
+    public String ma;
+
+    public String peerID;
 
     public static String TAG = "chat.berty.ble.Manager";
 
@@ -105,6 +118,16 @@ public class Manager {
     public void setmContext(Context ctx) {
         Log.e(TAG, "BLEManager context set");
         mContext = ctx;
+    }
+
+    public void setMa(String ma) {
+        this.ma = ma;
+        Log.e(TAG, "BLE MA " + ma);
+    }
+
+    public void setPeerID(String peerID) {
+        this.peerID = peerID;
+        Log.e(TAG, "BLE PEERID " + peerID);
     }
 
     public void setmReactContext(Object rCtx, Object t) {
@@ -203,33 +226,70 @@ public class Manager {
                 @Override
                 public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
                     BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
+                    if (bDevice == null) {
+                        synchronized (bertyDevices) {
+                            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback);
+                            bDevice = new BertyDevice(device, gatt, device.getAddress());
+                            bertyDevices.put(device.getAddress(), bDevice);
+                        }
+                    }
                     handleConnectionStateChange(bDevice, status, newState);
-                    Log.e(TAG, "new coob " + device.getAddress());
+                    super.onConnectionStateChange(device, status, newState);
+                    Log.e(TAG, "new coon " + device.getAddress());
                 }
 
                 @Override
                 public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
-
+                    UUID charID = characteristic.getUuid();
+                    Log.e(TAG, "READ");
+                    if (charID.equals(MA_UUID)) {
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, ma.getBytes(Charset.forName("UTF-8")));
+                    } else if (charID.equals(PEER_ID_UUID)) {
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, peerID.getBytes(Charset.forName("UTF-8")));
+                    } else {
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
+                    }
                 }
 
                 @Override
                 public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
+                    UUID charID = characteristic.getUuid();
+                    BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
+                    Log.e(TAG, "WRITE");
+                    if (charID.equals(ACCEPT_UUID)) {
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
+                    } else if (charID.equals(WRITER_UUID)) {
+                        Core.bytesToConn(bDevice.ma, value);
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
+                    } else if (charID.equals(CLOSER_UUID)) {
+                        // TODO
+                    } else if (charID.equals(IS_READY_UUID)) {
+                        // dispatch sema
+                        Log.e(TAG, "OTHER DEVICE IS RDY");
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
+                    } else {
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
+                    }
 
+                    super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
                 }
 
                 @Override
                 public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
-
+                    super.onDescriptorReadRequest(device, requestId, offset, descriptor);
                 }
 
                 @Override
                 public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
-
+                    super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
                 }
 
                 @Override
                 public void onMtuChanged(BluetoothDevice device, int mtu) {
                     Log.d(TAG, "new mtu is: " + mtu);
+                    BertyDevice bertyDevice = getDeviceFromAddr(device.getAddress());
+                    bertyDevice.mtu = mtu;
+                    super.onMtuChanged(device, mtu);
                 }
             };
         }
@@ -400,7 +460,7 @@ public class Manager {
                 mBluetoothGattServer.addService(createService());
 
 //                startAdvertising();
-                startScanning();
+//                startScanning();
             }
         }
         return "COMING FROM THAT MOTHA FUCKING JAVA";
@@ -434,6 +494,13 @@ public class Manager {
                 @Override
                 public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                     BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                    if (bDevice == null) {
+                        synchronized (bertyDevices) {
+                            BluetoothDevice device = gatt.getDevice();
+                            bDevice = new BertyDevice(device, gatt, device.getAddress());
+                            bertyDevices.put(device.getAddress(), bDevice);
+                        }
+                    }
                     handleConnectionStateChange(bDevice, status, newState);
                     super.onConnectionStateChange(gatt, status, newState);
                 }
@@ -527,6 +594,8 @@ public class Manager {
 
                 @Override
                 public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+                    BertyDevice bertyDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                    bertyDevice.mtu = mtu;
                     super.onMtuChanged(gatt, mtu, status);
                 }
             };
@@ -534,27 +603,42 @@ public class Manager {
     }
 
     public void handleMaRead(BertyDevice device, BluetoothGattCharacteristic characteristic) {
-        String newMa = new String(characteristic.getValue(), Charset.forName("UTF-8"));
+        String newMa = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            newMa = new String(characteristic.getValue(), Charset.forName("UTF-8"));
+        }
         if (device.ma == null || device.ma == "" || !device.ma.equals(newMa)) {
             device.ma = newMa;
             if (device.peerID == null || device.peerID == "" || !device.ma.equals(newMa)) {
-                device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(PEER_ID_UUID));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(PEER_ID_UUID));
+                }
             }
+            device.waitReady.countDown();
         }
     }
 
     public void handlePeerIDRead(BertyDevice device, BluetoothGattCharacteristic characteristic) {
-        String newPeerID = new String(characteristic.getValue(), Charset.forName("UTF-8"));
+        String newPeerID = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            newPeerID = new String(characteristic.getValue(), Charset.forName("UTF-8"));
+        }
         if (device.peerID == null || device.peerID == "" || !device.peerID.equals(newPeerID)) {
             device.peerID = newPeerID;
             if (device.ma == null || device.ma == "" || !device.peerID.equals(newPeerID)) {
-                device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(MA_UUID));
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(MA_UUID));
+                }
             }
+            device.waitReady.countDown();
         }
     }
 
     public void handleReadCharact(BertyDevice device, BluetoothGattCharacteristic characteristic) {
-        UUID charID = characteristic.getUuid();
+        UUID charID = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            charID = characteristic.getUuid();
+        }
         if (charID.equals(MA_UUID)) {
             handleMaRead(device, characteristic);
         } else if (charID.equals(PEER_ID_UUID)) {
