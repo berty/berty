@@ -264,7 +264,17 @@ public class Manager {
                     } else if (charID.equals(CLOSER_UUID)) {
                         // TODO
                     } else if (charID.equals(IS_READY_UUID)) {
-                        // dispatch sema
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    bDevice.waitReady.await();
+                                    Core.addToPeerStore(bDevice.peerID, bDevice.ma);
+                                } catch (InterruptedException e) {
+                                    Log.e(TAG, "error waiting/writing new peer " + e.getMessage());
+                                }
+                            }
+                        }).start();
                         Log.e(TAG, "OTHER DEVICE IS RDY");
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
                     } else {
