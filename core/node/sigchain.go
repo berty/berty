@@ -6,7 +6,7 @@ import (
 )
 
 func (n *Node) RegisterDevice(device *entity.Device) error {
-	err := n.sigchain.AddDevice(n.crypto, string(n.pubkey), device.ID, []byte(device.ID))
+	err := n.sigchain.AddDevice(n.crypto, n.pubkey, []byte(device.ID), []byte(device.ID))
 
 	if err != nil {
 		return errors.Wrap(err, "unable to add device to sigchain")

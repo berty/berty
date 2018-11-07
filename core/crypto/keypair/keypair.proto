@@ -60,8 +60,8 @@ message CertificateContent {
     PublicKeyAlgorithm public_key_algorithm = 2;
     bytes public_key = 3;
 
-    string issuer = 4;
-    string subject = 5;
+    bytes issuer = 4;
+    bytes subject = 5;
     google.protobuf.Timestamp not_before = 6  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
     google.protobuf.Timestamp not_after = 7 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
@@ -78,8 +78,8 @@ message Certificate {
 message RevocationContent {
     CertRevocationVersions version = 1;
 
-    string issuer = 2;
-    string subject = 3;
+    bytes issuer = 2;
+    bytes subject = 3;
     google.protobuf.Timestamp issued_on = 4  [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
     bytes extension = 5;

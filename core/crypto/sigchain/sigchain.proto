@@ -22,8 +22,8 @@ message SigEvent {
     bytes                           payload = 4;
     bytes                           public_key = 5;
     google.protobuf.Timestamp       created_at = 6 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-    string                          issuer = 7;
-    string                          subject = 8;
+    bytes                           issuer = 7;
+    bytes                           subject = 8;
 
 
     enum SigEventType {
@@ -35,7 +35,7 @@ message SigEvent {
 
 
 message SigChain {
-    string                          user_id = 1;
+    bytes                           user_id = 1;
     repeated SigEvent               events = 2;
 }
 

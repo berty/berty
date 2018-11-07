@@ -1199,18 +1199,35 @@ models:
       list:
 
 
-  BertyNodeDeviceInfosOutput:
-    model: berty.tech/core/api/node.DeviceInfosOutput
+  BertyPkgDeviceinfoDeviceInfos:
+    model: berty.tech/core/pkg/deviceinfo.DeviceInfos
     fields:
       infos:
-  BertyNodeDeviceInfosOutputInput:
-    model: berty.tech/core/api/node.DeviceInfosOutput
+  BertyPkgDeviceinfoDeviceInfosInput:
+    model: berty.tech/core/pkg/deviceinfo.DeviceInfos
     fields:
       infos:
-  BertyNodeDeviceInfosPayload:
-    model: berty.tech/core/api/node.DeviceInfosOutput
+  BertyPkgDeviceinfoDeviceInfosPayload:
+    model: berty.tech/core/pkg/deviceinfo.DeviceInfos
     fields:
       infos:
+
+  BertyPkgDeviceinfoDeviceInfo:
+    model: berty.tech/core/pkg/deviceinfo.DeviceInfo
+    fields:
+      key:
+      value:
+  BertyPkgDeviceinfoDeviceInfoInput:
+    model: berty.tech/core/pkg/deviceinfo.DeviceInfo
+    fields:
+      key:
+      value:
+  BertyPkgDeviceinfoDeviceInfoPayload:
+    model: berty.tech/core/pkg/deviceinfo.DeviceInfo
+    fields:
+      key:
+      value:
+
 
   BertyNodeProtocolsOutput:
     model: berty.tech/core/api/node.ProtocolsOutput
@@ -1224,22 +1241,6 @@ models:
     model: berty.tech/core/api/node.ProtocolsOutput
     fields:
       protocols:
-
-  BertyNodeDeviceInfo:
-    model: berty.tech/core/api/node.DeviceInfo
-    fields:
-      key:
-      value:
-  BertyNodeDeviceInfoInput:
-    model: berty.tech/core/api/node.DeviceInfo
-    fields:
-      key:
-      value:
-  BertyNodeDeviceInfoPayload:
-    model: berty.tech/core/api/node.DeviceInfo
-    fields:
-      key:
-      value:
 
   BertyNodeAppVersionOutput:
     model: berty.tech/core/api/node.AppVersionOutput
