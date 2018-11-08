@@ -114,9 +114,9 @@ class CoreModule: NSObject {
         if let error = err {
             logger.format("unable to get port: ", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
-            return
+        } else {
+            resolve(port)
         }
-        resolve(port)
     }
 
     @objc func getNetworkConfig(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
@@ -130,8 +130,9 @@ class CoreModule: NSObject {
         if let error = err {
             logger.format("update network config error: ", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
+        } else {
+            resolve(nil)
         }
-        resolve(nil)
     }
 
     @objc func isBotRunning(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
@@ -145,8 +146,9 @@ class CoreModule: NSObject {
         if let error = err {
             logger.format("start bot error: ", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
+        } else {
+            resolve(nil)
         }
-        resolve(nil)
     }
 
     @objc func stopBot(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
@@ -156,7 +158,8 @@ class CoreModule: NSObject {
         if let error = err {
             logger.format("stop bot error: ", level: .Error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
+        } else {
+            resolve(nil)
         }
-        resolve(nil)
     }
 }
