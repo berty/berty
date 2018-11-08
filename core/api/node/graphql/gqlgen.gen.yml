@@ -1303,11 +1303,13 @@ models:
     model: berty.tech/core/api/node.EventListInput
     fields:
       filter:
+      onlyWithoutAckedAt:
       paginate:
   BertyNodeEventListInputPayload:
     model: berty.tech/core/api/node.EventListInput
     fields:
       filter:
+      onlyWithoutAckedAt:
       paginate:
 
   BertyNodeEventEdge:
@@ -1536,3 +1538,14 @@ models:
     model: berty.tech/core/api/node.Void
     fields:
       t:
+
+  BertyNodeDebugEventRequeueInput:
+    model: berty.tech/core/api/node.DebugEventRequeueInput
+    fields:
+      eventId:
+        resolver: true
+  BertyNodeDebugEventRequeueInputPayload:
+    model: berty.tech/core/api/node.DebugEventRequeueInput
+    fields:
+      eventId:
+        resolver: true

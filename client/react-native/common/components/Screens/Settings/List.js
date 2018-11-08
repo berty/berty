@@ -31,6 +31,13 @@ export default class List extends PureComponent {
       </Menu.Section>
       <Menu.Section>
         <Menu.Item
+          icon='terminal'
+          title='Dev tools'
+          onPress={() => navigation.push('settings/devtools')}
+        />
+      </Menu.Section>
+      <Menu.Section>
+        <Menu.Item
           icon='lock'
           title='Security & privacy'
           onPress={() => navigation.push('settings/security-and-privacy')}
@@ -68,13 +75,6 @@ export default class List extends PureComponent {
           icon='layers'
           title='Legal terms'
           onPress={() => navigation.push('settings/legal')}
-        />
-      </Menu.Section>
-      <Menu.Section>
-        <Menu.Item
-          icon='terminal'
-          title='Dev tools'
-          onPress={() => navigation.push('settings/devtools')}
         />
       </Menu.Section>
     </Menu>

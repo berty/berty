@@ -3,6 +3,7 @@ package graphql
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 	"time"
@@ -233,6 +234,13 @@ func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversat
 func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.GenerateFakeData(ctx, &node.Void{T: true})
 }
+func (r *mutationResolver) DebugRequeueEvent(ctx context.Context, eventID string) (*p2p.Event, error) {
+	eventID = strings.SplitN(eventID, ":", 2)[1]
+
+	return r.client.DebugRequeueEvent(ctx, &node.DebugEventRequeueInput{
+		EventID: eventID,
+	})
+}
 
 type queryResolver struct{ *Resolver }
 
@@ -263,7 +271,13 @@ func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ 
 	})
 }
 
-func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
+func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
+	onlyWithoutAckedAt := node.NullableTrueFalse_Null
+	if rawOnlyWithoutAckedAt != nil {
+		onlyWithoutAckedAt = node.NullableTrueFalse(*rawOnlyWithoutAckedAt)
+		logger().Info(fmt.Sprintf("raw value %+v parsed value %+v", rawOnlyWithoutAckedAt, onlyWithoutAckedAt))
+	}
+
 	if filter != nil {
 		if filter.ID != "" {
 			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
@@ -274,8 +288,9 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderB
 	}
 
 	input := &node.EventListInput{
-		Filter:   filter,
-		Paginate: getPagination(first, after, last, before),
+		Filter:             filter,
+		Paginate:           getPagination(first, after, last, before),
+		OnlyWithoutAckedAt: onlyWithoutAckedAt,
 	}
 
 	input.Paginate.OrderBy = orderBy
@@ -284,6 +299,7 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, orderB
 	input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
 
 	stream, err := r.client.EventList(ctx, input)
+
 	if err != nil {
 		return nil, err
 	}

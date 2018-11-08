@@ -30,6 +30,12 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	// prepare query
 	query := n.sql.Model(p2p.Event{}).Where(input.Filter)
 
+	if input.OnlyWithoutAckedAt == node.NullableTrueFalse_True {
+		query = query.Where("acked_at IS NULL")
+	} else if input.OnlyWithoutAckedAt == node.NullableTrueFalse_False {
+		query = query.Where("acked_at IS NOT NULL")
+	}
+
 	// pagination
 	var err error
 	query, err = paginate(query, input.Paginate)

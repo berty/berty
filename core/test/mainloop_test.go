@@ -54,7 +54,7 @@ func TestEventRetry(t *testing.T) {
 		"Event8": false,
 	}
 
-	events, err := appMock.node.EventRetry(now)
+	events, err := appMock.node.EventsRetry(now)
 
 	if err != nil {
 		t.Error(err)
