@@ -2,7 +2,7 @@
 if (!__DEV__) {
   console.error = console.warn
 }
-
+console.warn = () => {}
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { NativeModules, Platform, AppRegistry } from 'react-native'
