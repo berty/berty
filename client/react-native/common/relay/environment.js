@@ -34,6 +34,11 @@ if (Platform.OS === 'web') {
       const url = new URL(window.location.href)
       return url.searchParams.get('gql-port') || '8700'
     },
+    isBotRunning: async () => console.warn('not implemented in web'),
+    startBot: async () => console.warn('not implemented in web'),
+    stopBot: async () => console.warn('not implemented in web'),
+    getNetworkConfig: async () => console.warn('not implemented in web'),
+    updateNetworkConfig: async () => console.warn('not implemented in web'),
   }
   NativeModules.CoreModule = CoreModule
 }
