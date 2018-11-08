@@ -1,3 +1,4 @@
+import React, { Fragment, PureComponent } from 'react'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { Animated, Easing } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
@@ -5,9 +6,10 @@ import Contacts from './Contacts'
 import Chats from './Chats'
 import Settings from './Settings'
 import { colors } from '../../constants'
-import { borderTop, shadow } from '../../styles'
 import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
+import IconFeather from 'react-native-vector-icons/dist/Feather'
+
 
 export const mainTabs = createTabNavigator(
   {
@@ -20,19 +22,41 @@ export const mainTabs = createTabNavigator(
     swipeEnabled: true,
     animationEnabled: true,
     tabBarPosition: 'bottom',
-    tabBarOptions: {
-      labelStyle: {
-        color: colors.black,
+    navigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
+        let iconName;
+        if (routeName === 'contacts') {
+          iconName = 'users';
+        } else if (routeName === 'chats') {
+          iconName = 'message-circle';
+        } else if (routeName === 'settings') {
+          iconName = 'settings';
+        }
+        return <IconFeather name={iconName} size={25} color={tintColor} />;
       },
+    }),
+    tabBarTextFontSize: 22,
+    tabBarOptions: {
+      activeTintColor: colors.fakeBlack,
+      inactiveTintColor: colors.lightGrey,
       indicatorStyle: {
-        backgroundColor: colors.black,
+        backgroundColor: colors.fakeBlack,
       },
       style: [
         {
           backgroundColor: colors.white,
+          paddingTop: 8,
+          paddingBottom:10,
+          fontSize: 50,
+          height:63,
+          borderTopWidth: 0.5,
+          borderTopColor: colors.borderGrey,
+          shadowColor: colors.shadowGrey,
+          shadowOffset: { height: -5, width: 0 },
+          shadowOpacity: 0.2,
+          shadowRadius: 5,
         },
-        borderTop,
-        shadow,
       ],
     },
   },
