@@ -5,9 +5,7 @@ CORE_MOBILE := $(MAKEFILE_DIR)/core
 CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 				$(shell find $(CORE_MOBILE) -type f -name "*.go")
 
-BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../.circleci/docker
-
-GOPATH ?=		$(HOME)/go
+BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../build/docker/patch
 
 CGO_CPPFLAGS ?= -I$(MAKEFILE_DIR)/../../common/openssl/built/include
 
@@ -36,10 +34,11 @@ deps-osx:
 
 .PHONY: deps
 deps:
-	GO111MODULE=off go get golang.org/x/mobile/cmd/gomobile
-	patch -N ~/go/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff || true
+	rm -rf $(GOPATH)/src/golang.org/x/mobile
+	GO111MODULE=off go get -u golang.org/x/mobile/cmd/gomobile
+	go get -u golang.org/x/mobile/cmd/gobind
+	patch -N $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff || true
 	go install golang.org/x/mobile/cmd/gomobile
-	go get -v golang.org/x/mobile/cmd/gobind
 
 .PHONY: init
 init: deps
