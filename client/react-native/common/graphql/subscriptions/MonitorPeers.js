@@ -3,7 +3,7 @@ import { subscriber } from '../../relay'
 
 const MonitorPeers = graphql`
   subscription MonitorPeersSubscription {
-    MonitorPeers {
+    MonitorPeers (T: true) {
       id
       addrs
       connection

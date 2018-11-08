@@ -2,8 +2,15 @@ import React, { PureComponent } from 'react'
 import { Text, View, ActivityIndicator } from 'react-native'
 import { Header, Screen } from '../../../../Library'
 import { QueryReducer } from '../../../../../relay'
-import { queries } from '../../../../../graphql'
+import { queries, subscriptions } from '../../../../../graphql'
 import { colors } from '../../../../../constants'
+
+const Connection = {
+  'NOT_CONNECTED': 0,
+  'CONNECTED': 1,
+  'CAN_CONNECT': 2,
+  'CANNOT_CONNECT': 3,
+}
 
 export default class Peers extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -17,26 +24,64 @@ export default class Peers extends PureComponent {
     ),
   })
 
+  state = {
+    peers: [],
+  }
+
+  componentWillMount() {
+    subscriptions.monitorPeers.subscribe({
+      iterator: undefined,
+      updater: (store, data) => {
+        console.log(data)
+        const peer = data.MonitorPeers
+
+        switch (peer.connection) {
+        case Connection.CONNECTED:
+          this.addPeer(peer)
+          break
+        case Connection.NOT_CONNECTED:
+          this.removePeer(peer)
+          break
+        default:
+          break
+        }
+      },
+    })
+
+    subscriptions.monitorPeers.start()
+  }
+
+  componentDidMount() {
+    queries.Peers.fetch().then(data => {
+      this.setState({
+        peers: data.Peers.list,
+      })
+    })
+  }
+
+  removePeer = peer => {
+    this.setState(prevState => ({
+      peers: prevState.peers.filter(p => p.id !== peer.id),
+    }))
+  }
+
+  addPeer = peer => {
+    this.setState(prevState => ({
+      peers: [peer, ...prevState.peers],
+    }))
+  }
+
+
   render () {
+    console.log(this.state.peers)
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <QueryReducer query={queries.Peers}>
-          {(state, retry) => {
-            console.log('state:', state)
-            switch (state.type) {
-              case state.success:
-                return (
-                  <View>
-                    {state.data.Peers.list.map((peer, i) => (
-                      <Text key={i}>{peer.id}</Text>
-                    ))}
-                  </View>
-                )
-              default:
-                return <ActivityIndicator />
-            }
-          }}
-        </QueryReducer>
+        <Text>Number of Peers: {this.state.peers.length}</Text>
+        <View>
+          {this.state.peers.map((peer, i) => (
+            <Text key={i}>{peer.id}</Text>
+          ))}
+        </View>
       </Screen>
     )
   }
