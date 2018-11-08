@@ -6,8 +6,9 @@ const EventList = graphql`
     $filter: BertyP2pEventInput
     $count: Int32
     $cursor: String
+    $onlyWithoutAckedAt: Enum
   ) {
-    ...EventList @arguments(filter: $filter, count: $count, cursor: $cursor)
+    ...EventList @arguments(filter: $filter, count: $count, cursor: $cursor, onlyWithoutAckedAt: $onlyWithoutAckedAt)
   }
 `
 

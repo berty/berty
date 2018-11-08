@@ -583,12 +583,13 @@ type ComplexityRoot struct {
 		ConversationAddMessage func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
 		GenerateFakeData       func(childComplexity int, T bool) int
 		RunIntegrationTests    func(childComplexity int, name string) int
+		DebugRequeueEvent      func(childComplexity int, eventId string) int
 	}
 
 	Query struct {
 		Node                  func(childComplexity int, id string) int
 		Id                    func(childComplexity int, T bool) int
-		EventList             func(childComplexity int, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
+		EventList             func(childComplexity int, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
 		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
@@ -671,11 +672,12 @@ type MutationResolver interface {
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error)
 	GenerateFakeData(ctx context.Context, T bool) (*node.Void, error)
 	RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error)
+	DebugRequeueEvent(ctx context.Context, eventId string) (*p2p.Event, error)
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
 	ID(ctx context.Context, T bool) (*p2p.Peer, error)
-	EventList(ctx context.Context, filter *p2p.Event, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
+	EventList(ctx context.Context, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
 	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
 	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
@@ -1376,6 +1378,21 @@ func field_Mutation_RunIntegrationTests_args(rawArgs map[string]interface{}) (ma
 
 }
 
+func field_Mutation_DebugRequeueEvent_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["eventId"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["eventId"] = arg0
+	return args, nil
+
+}
+
 func field_Query_node_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1422,44 +1439,44 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 		}
 	}
 	args["filter"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["orderBy"]; ok {
-		var err error
-		arg1, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderBy"] = arg1
-	var arg2 bool
-	if tmp, ok := rawArgs["orderDesc"]; ok {
-		var err error
-		arg2, err = models.UnmarshalBool(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderDesc"] = arg2
-	var arg3 *int32
-	if tmp, ok := rawArgs["first"]; ok {
+	var arg1 *int32
+	if tmp, ok := rawArgs["onlyWithoutAckedAt"]; ok {
 		var err error
 		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalInt32(tmp)
-			arg3 = &ptr1
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg1 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["first"] = arg3
-	var arg4 *string
-	if tmp, ok := rawArgs["after"]; ok {
+	args["onlyWithoutAckedAt"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
 		var err error
-		var ptr1 string
+		arg2, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg2
+	var arg3 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg3, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderDesc"] = arg3
+	var arg4 *int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalString(tmp)
+			ptr1, err = models.UnmarshalInt32(tmp)
 			arg4 = &ptr1
 		}
 
@@ -1467,13 +1484,13 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 			return nil, err
 		}
 	}
-	args["after"] = arg4
-	var arg5 *int32
-	if tmp, ok := rawArgs["last"]; ok {
+	args["first"] = arg4
+	var arg5 *string
+	if tmp, ok := rawArgs["after"]; ok {
 		var err error
-		var ptr1 int32
+		var ptr1 string
 		if tmp != nil {
-			ptr1, err = models.UnmarshalInt32(tmp)
+			ptr1, err = models.UnmarshalString(tmp)
 			arg5 = &ptr1
 		}
 
@@ -1481,13 +1498,13 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 			return nil, err
 		}
 	}
-	args["last"] = arg5
-	var arg6 *string
-	if tmp, ok := rawArgs["before"]; ok {
+	args["after"] = arg5
+	var arg6 *int32
+	if tmp, ok := rawArgs["last"]; ok {
 		var err error
-		var ptr1 string
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalString(tmp)
+			ptr1, err = models.UnmarshalInt32(tmp)
 			arg6 = &ptr1
 		}
 
@@ -1495,7 +1512,21 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 			return nil, err
 		}
 	}
-	args["before"] = arg6
+	args["last"] = arg6
+	var arg7 *string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg7 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg7
 	return args, nil
 
 }
@@ -4717,6 +4748,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RunIntegrationTests(childComplexity, args["name"].(string)), true
 
+	case "Mutation.DebugRequeueEvent":
+		if e.complexity.Mutation.DebugRequeueEvent == nil {
+			break
+		}
+
+		args, err := field_Mutation_DebugRequeueEvent_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DebugRequeueEvent(childComplexity, args["eventId"].(string)), true
+
 	case "Query.node":
 		if e.complexity.Query.Node == nil {
 			break
@@ -4751,7 +4794,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.EventList(childComplexity, args["filter"].(*p2p.Event), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
+		return e.complexity.Query.EventList(childComplexity, args["filter"].(*p2p.Event), args["onlyWithoutAckedAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
 
 	case "Query.GetEvent":
 		if e.complexity.Query.GetEvent == nil {
@@ -16628,6 +16671,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_GenerateFakeData(ctx, field)
 		case "RunIntegrationTests":
 			out.Values[i] = ec._Mutation_RunIntegrationTests(ctx, field)
+		case "DebugRequeueEvent":
+			out.Values[i] = ec._Mutation_DebugRequeueEvent(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -16949,6 +16994,37 @@ func (ec *executionContext) _Mutation_RunIntegrationTests(ctx context.Context, f
 	return ec._BertyNodeIntegrationTestPayload(ctx, field.Selections, res)
 }
 
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_DebugRequeueEvent(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_DebugRequeueEvent_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DebugRequeueEvent(rctx, args["eventId"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pEventPayload(ctx, field.Selections, res)
+}
+
 var queryImplementors = []string{"Query"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -17141,7 +17217,7 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().EventList(rctx, args["filter"].(*p2p.Event), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
+		return ec.resolvers.Query().EventList(rctx, args["filter"].(*p2p.Event), args["onlyWithoutAckedAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19981,6 +20057,7 @@ type BertyPkgDeviceinfoDeviceInfo  {
   
   
 
+  
 type BertyNodePingDestination  {
       destination: String!
 }
@@ -20188,6 +20265,7 @@ type Query {
   ): BertyP2pPeerPayload
   EventList(
     filter: BertyP2pEventInput
+    onlyWithoutAckedAt: Enum
       orderBy: String!
       orderDesc: Bool!
       first: Int32
@@ -20348,6 +20426,9 @@ type Mutation {
   RunIntegrationTests(
       name: String!
   ): BertyNodeIntegrationTestPayload
+  DebugRequeueEvent(
+    eventId: ID!
+  ): BertyP2pEventPayload
 }
   
 type Subscription {

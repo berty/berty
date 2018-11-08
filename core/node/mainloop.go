@@ -4,14 +4,28 @@ import (
 	"context"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 )
 
-// EventRetry sends events which lack an AckedAt value emitted before the supplied time value
-func (n *Node) EventRetry(before time.Time) ([]*p2p.Event, error) {
+// EventsRetry updates SentAt and requeue an event
+func (n *Node) EventRequeue(event *p2p.Event) error {
+	now := time.Now()
+	event.SentAt = &now
+	if err := n.sql.Save(event).Error; err != nil {
+		return errors.Wrap(err, "error while updating SentAt on event")
+	}
+	n.outgoingEvents <- event
+
+	return nil
+}
+
+// EventsRetry sends events which lack an AckedAt value emitted before the supplied time value
+func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
 	var retriedEvents []*p2p.Event
 	destinations, err := p2p.FindNonAcknowledgedEventDestinations(n.sql, before)
 
@@ -28,14 +42,12 @@ func (n *Node) EventRetry(before time.Time) ([]*p2p.Event, error) {
 		}
 
 		for _, event := range events {
-			now := time.Now()
-			event.SentAt = &now
-			if err := n.sql.Save(event).Error; err != nil {
-				logger().Error("error while updating SentAt on event", zap.Error(err))
+			err := n.EventRequeue(event)
+
+			if err != nil {
+				logger().Error("error while enqueuing event", zap.Error(err))
 				continue
 			}
-			n.outgoingEvents <- event
-
 			retriedEvents = append(retriedEvents, event)
 		}
 	}
@@ -50,7 +62,7 @@ func (n *Node) Start() error {
 	go func() {
 		for true {
 			before := time.Now().Add(-time.Second * 60 * 10)
-			_, err := n.EventRetry(before)
+			_, err := n.EventsRetry(before)
 
 			if err != nil {
 				logger().Error("error while retrieving non acked destinations", zap.Error(err))

@@ -175,3 +175,17 @@ func (n *Node) AppVersion(_ context.Context, input *node.Void) (*node.AppVersion
 func (n *Node) Panic(_ context.Context, input *node.Void) (*node.Void, error) {
 	panic("panic from client")
 }
+
+func (n *Node) DebugRequeueEvent(_ context.Context, input *node.DebugEventRequeueInput) (*p2p.Event, error) {
+	event := p2p.Event{}
+
+	if err := n.sql.First(&event, "ID = ?", input.EventID).Error; err != nil {
+		return nil, errors.Wrap(err, "unable to fetch event")
+	}
+
+	if err := n.EventRequeue(&event); err != nil {
+		return nil, errors.Wrap(err, "unable to requeue event")
+	}
+
+	return &event, nil
+}
