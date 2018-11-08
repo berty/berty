@@ -18,6 +18,22 @@ const Item = fragments.Contact(
   class Item extends PureComponent {
     static isLoading = {}
 
+    onResend = async () => {
+      const { id } = this.props.data
+      Item.isLoading[id] = true
+      this.forceUpdate()
+      try {
+        await mutations.contactRequest.commit({
+          contact: this.props.data,
+          introText: '',
+        })
+      } catch (err) {
+        console.error(err)
+      }
+      Item.isLoading[id] = false
+      this.forceUpdate()
+    }
+
     onAccept = async () => {
       const { id } = this.props.data
       Item.isLoading[id] = true
@@ -118,7 +134,25 @@ const Item = fragments.Contact(
                 </Text>
               </Flex.Cols>
             ) : (
-              <Flex.Cols size={1.6}>
+              <Flex.Cols size={4}>
+                <Text
+                  icon='send'
+                  background={colors.green}
+                  color={colors.white}
+                  margin={{ left: 8 }}
+                  padding={{
+                    vertical: 6,
+                    horizontal: 4,
+                  }}
+                  middle
+                  center
+                  shadow
+                  tiny
+                  rounded={22}
+                  onPress={this.onResend}
+                >
+                  RESEND
+                </Text>
                 <Text
                   icon='x'
                   background={colors.white}

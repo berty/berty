@@ -125,16 +125,14 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	}
 
 	// check for duplicate
-	_, err := sql.FindContact(n.sql, req.Contact)
-	if err == nil {
-		return nil, ErrEntityAlreadyExists
-	}
-
-	// save contact in database
-	contact := req.Contact
-	contact.Status = entity.Contact_IsRequested
-	if err = n.sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to save contact")
+	contact, err := sql.FindContact(n.sql, req.Contact)
+	if err != nil {
+		// save contact in database
+		contact = req.Contact
+		contact.Status = entity.Contact_IsRequested
+		if err = n.sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
+			return nil, errors.Wrap(err, "failed to save contact")
+		}
 	}
 
 	// send request to peer
