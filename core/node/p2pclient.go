@@ -1,10 +1,9 @@
 package node
 
 import (
-	"github.com/pkg/errors"
-
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"github.com/pkg/errors"
 )
 
 func (n *Node) NewContactEvent(destination *entity.Contact, kind p2p.Kind) *p2p.Event {
@@ -50,5 +49,4 @@ func (n *Node) NewSenderAliasEvent(destination string, aliases []*entity.SenderA
 	}
 
 	return event, nil
-
 }
