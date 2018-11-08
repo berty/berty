@@ -4,13 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/pkg/errors"
-	uuid "github.com/satori/go.uuid"
-	"go.uber.org/zap"
-
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/sql"
+	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
+	"go.uber.org/zap"
 )
 
 type EventHandler func(context.Context, *p2p.Event) error
@@ -26,7 +25,10 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	}
 	// FIXME: validate input
 
-	// FIXME: check if contact is not already known
+	_, err = sql.FindContact(n.sql, &entity.Contact{ID: attrs.Me.ID})
+	if err == nil {
+		return errors.New("contact already known")
+	}
 
 	// save requester in db
 	requester := attrs.Me
