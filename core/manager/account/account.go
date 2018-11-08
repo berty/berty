@@ -7,13 +7,9 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"strings"
 	"syscall"
-
-	"github.com/jinzhu/gorm"
-	reuse "github.com/libp2p/go-reuseport"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
 
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
@@ -25,6 +21,11 @@ import (
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
+	"github.com/jinzhu/gorm"
+	reuse "github.com/libp2p/go-reuseport"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 // Info is used in berty.node.DeviceInfos
@@ -108,6 +109,28 @@ func Get(name string) (*Account, error) {
 		}
 	}
 	return nil, errors.New("account with name " + name + " isn't opened")
+}
+
+func List(datastorePath string) ([]string, error) {
+	var names []string
+
+	err := filepath.Walk(datastorePath, func(path string, info os.FileInfo, err error) error {
+		logger().Debug("List", zap.String("path", path))
+		name := filepath.Base(path)
+		match, _ := filepath.Match("berty.*.db", name)
+		if match {
+			logger().Debug("List", zap.Bool("match", match))
+			name = strings.Split(name, ".")[1]
+			logger().Debug("List", zap.String("name", name))
+			names = append(names, name)
+			logger().Debug("List", zap.Strings("names", names))
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return names, nil
 }
 
 func Delete(a *Account) {

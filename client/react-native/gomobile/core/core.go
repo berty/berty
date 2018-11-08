@@ -17,7 +17,7 @@ func logger() *zap.Logger {
 	return zap.L().Named("client.rn.gomobile")
 }
 
-var accountName = "new-berty-user"
+var accountName = ""
 
 func panicHandler() {
 	if r := recover(); r != nil {
@@ -45,23 +45,43 @@ func GetPort() (int, error) {
 	return strconv.Atoi(strings.Split(a.GQLBind, ":")[1])
 }
 
-func Start(datastorePath string, loggerNative Logger) error {
-
+func Initialize(loggerNative Logger) error {
 	defer panicHandler()
 
 	if err := setupLogger("debug", loggerNative); err != nil {
 		return err
 	}
-	a, _ := account.Get(accountName)
-	if a != nil {
-		return errors.New("daemon already started")
-	}
-	run(datastorePath, loggerNative)
-	waitDaemon()
 	return nil
 }
 
-func Restart(datastorePath string) error {
+func ListAccounts(datastorePath string) (string, error) {
+
+	defer panicHandler()
+
+	accounts, err := account.List(datastorePath)
+	if err != nil {
+		return "", err
+	}
+	logger().Debug("ListAccounts", zap.Strings("acccounts", accounts))
+	return strings.Join(accounts, ":"), nil
+}
+
+func Start(nickname, datastorePath string, loggerNative Logger) error {
+
+	defer panicHandler()
+
+	accountName = nickname
+
+	a, _ := account.Get(nickname)
+	if a != nil {
+		return errors.New("daemon already started")
+	}
+	run(nickname, datastorePath, loggerNative)
+	waitDaemon(nickname)
+	return nil
+}
+
+func Restart() error {
 
 	defer panicHandler()
 
@@ -70,7 +90,7 @@ func Restart(datastorePath string) error {
 		currentAccount.ErrChan() <- nil
 	}
 
-	waitDaemon()
+	waitDaemon(accountName)
 	return nil
 }
 
@@ -86,13 +106,13 @@ func DropDatabase(datastorePath string) error {
 	if err != nil {
 		return err
 	}
-	return Restart(datastorePath)
+	return Restart()
 }
 
-func run(datastorePath string, loggerNative Logger) {
+func run(nickname, datastorePath string, loggerNative Logger) {
 	go func() {
 		for {
-			err := daemon(datastorePath, loggerNative)
+			err := daemon(nickname, datastorePath, loggerNative)
 			if err != nil {
 				logger().Error("handle error, try to restart", zap.Error(err))
 				time.Sleep(time.Second)
@@ -103,16 +123,16 @@ func run(datastorePath string, loggerNative Logger) {
 	}()
 }
 
-func waitDaemon() {
-	currentAccount, _ := account.Get(accountName)
+func waitDaemon(nickname string) {
+	currentAccount, _ := account.Get(nickname)
 	if currentAccount == nil || currentAccount.GQLBind == "" {
 		logger().Debug("waiting for daemon to start")
 		time.Sleep(time.Second)
-		waitDaemon()
+		waitDaemon(nickname)
 	}
 }
 
-func daemon(datastorePath string, loggerNative Logger) error {
+func daemon(nickname, datastorePath string, loggerNative Logger) error {
 
 	defer panicHandler()
 
@@ -127,7 +147,7 @@ func daemon(datastorePath string, loggerNative Logger) error {
 
 	var a *account.Account
 	a, err = account.New(
-		account.WithName(accountName),
+		account.WithName(nickname),
 		account.WithPassphrase("secure"),
 		account.WithDatabase(&account.DatabaseOptions{
 			Path: datastorePath,
