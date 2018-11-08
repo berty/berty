@@ -25,9 +25,32 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void start(Promise promise) {
+    public void listAccounts(Promise promise) {
         try {
-            Core.start(this.filesDir, this.logger);
+            String data = Core.listAccounts(this.filesDir);
+            promise.resolve(data);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to list accounts: %s", err);
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void initialize(Promise promise) {
+        try {
+            Core.initialize(this.logger);
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to init core: %s", err);
+            promise.reject(err);
+        }
+    }
+
+
+    @ReactMethod
+    public void start(String nickname, Promise promise) {
+        try {
+            Core.start(nickname, this.filesDir, this.logger);
             promise.resolve(null);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to start core: %s", err);
@@ -38,7 +61,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void restart(Promise promise) {
         try {
-            Core.restart(this.filesDir);
+            Core.restart();
             promise.resolve(null);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to restart core: %s", err);

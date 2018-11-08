@@ -24,12 +24,42 @@ class CoreModule: NSObject {
 
       return filesPath!
     }
-
-    @objc func start(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
+  
+    @objc func initialize(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
+        var err: NSError?
+    
+        do {
+            CoreInitialize(logger, &err)
+            if let error = err {
+                throw error
+            }
+            resolve(nil)
+        } catch let error as NSError {
+            logger.format("unable to init core: %@", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+    }
+  
+    @objc func listAccounts(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
+        var err: NSError?
+    
+        do {
+            let list = CoreListAccounts(try self.getFilesDir(), &err)
+            if let error = err {
+                throw error
+            }
+            resolve(list)
+        } catch let error as NSError {
+            logger.format("unable to list accounts: %@", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.userInfo.description, error)
+        }
+    }
+  
+    @objc func start(_ nickname: NSString, resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
         var err: NSError?
 
         do {
-            CoreStart(try self.getFilesDir(), logger, &err)
+            CoreStart(nickname as String, try self.getFilesDir(), logger, &err)
             if let error = err {
                 throw error
             }
@@ -44,7 +74,7 @@ class CoreModule: NSObject {
       var err: NSError?
 
       do {
-          CoreRestart(try self.getFilesDir(), &err)
+          CoreRestart(&err)
           if let error = err {
               throw error
           }
@@ -56,6 +86,7 @@ class CoreModule: NSObject {
     }
 
     @objc func dropDatabase(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
+
         var err: NSError?
 
         do {
