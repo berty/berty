@@ -119,6 +119,10 @@ service Service {
     option (gql.graphql_type) = "Mutation";
   };
 
+  rpc DebugRequeueAll (Void) returns (Void) {
+    option (gql.graphql_type) = "Mutation";
+  };
+
   rpc DeviceInfos (Void) returns (berty.pkg.deviceinfo.DeviceInfos) {
     option (gql.graphql_type) = "Query";
   };
