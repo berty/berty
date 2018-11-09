@@ -44,19 +44,19 @@ func TestFlow(t *testing.T) {
 	}
 
 	sc := SigChain{}
-	err = sc.Init(&cryptoImpl, "Test1")
+	err = sc.Init(&cryptoImpl, []byte("Test1"))
 
 	if err != nil {
 		t.Errorf("unable to init sigchain : %s", err)
 	}
 
-	err = sc.AddDevice(&cryptoImpl, "Test1", "Test2", pubBytes2)
+	err = sc.AddDevice(&cryptoImpl, []byte("Test1"), []byte("Test2"), pubBytes2)
 
 	if err != nil {
 		t.Errorf("unable to add device %s", err)
 	}
 
-	err = sc.RemoveDevice(&cryptoImpl, "Test1", "Test2")
+	err = sc.RemoveDevice(&cryptoImpl, []byte("Test1"), []byte("Test2"))
 
 	if err != nil {
 		t.Errorf("unable to remove device %s", err)
@@ -74,7 +74,7 @@ func TestFlow(t *testing.T) {
 }
 
 func TestInit(t *testing.T) {
-	firstDevice := "Test1"
+	firstDevice := []byte("Test1")
 
 	p, _ := rsa.GenerateKey(rand.Reader, 2048)
 	privBytes, _ := x509.MarshalPKCS8PrivateKey(p)
@@ -91,22 +91,22 @@ func TestInit(t *testing.T) {
 		t.Errorf("wrong number of devices %d expected %d received", len(devices), 1)
 	}
 
-	if devices[firstDevice].Content.Issuer != firstDevice {
-		t.Errorf("issuer is not self device received: %s expected %s", devices[firstDevice].Content.Issuer, firstDevice)
+	if !bytes.Equal(devices[string(firstDevice)].Content.Issuer, firstDevice) {
+		t.Errorf("issuer is not self device received: %s expected %s", devices[string(firstDevice)].Content.Issuer, firstDevice)
 	}
 
-	if devices[firstDevice].Content.Subject != firstDevice {
-		t.Errorf("subject is not self device received: %s expected %s", devices[firstDevice].Content.Subject, firstDevice)
+	if !bytes.Equal(devices[string(firstDevice)].Content.Subject, firstDevice) {
+		t.Errorf("subject is not self device received: %s expected %s", devices[string(firstDevice)].Content.Subject, firstDevice)
 	}
 
-	if bytes.Compare(devices[firstDevice].Content.PublicKey, pubBytes) != 0 {
+	if bytes.Compare(devices[string(firstDevice)].Content.PublicKey, pubBytes) != 0 {
 		t.Errorf("public key not included in certificate")
 	}
 }
 
 func TestAdd(t *testing.T) {
-	firstDevice := "Test1"
-	secondDevice := "Test2"
+	firstDevice := []byte("Test1")
+	secondDevice := []byte("Test2")
 
 	p, _ := rsa.GenerateKey(rand.Reader, 2048)
 	privByte, _ := x509.MarshalPKCS8PrivateKey(p)
@@ -127,22 +127,22 @@ func TestAdd(t *testing.T) {
 		t.Errorf("wrong number of devices %d expected %d received", len(devices), 2)
 	}
 
-	if devices[secondDevice].Content.Issuer != firstDevice {
-		t.Errorf("issuer is not self device received: %s expected %s", devices[secondDevice].Content.Issuer, firstDevice)
+	if !bytes.Equal(devices[string(secondDevice)].Content.Issuer, firstDevice) {
+		t.Errorf("issuer is not self device received: %s expected %s", devices[string(secondDevice)].Content.Issuer, firstDevice)
 	}
 
-	if devices[secondDevice].Content.Subject != secondDevice {
-		t.Errorf("subject is not self device received: %s expected %s", devices[secondDevice].Content.Subject, secondDevice)
+	if !bytes.Equal(devices[string(secondDevice)].Content.Subject, secondDevice) {
+		t.Errorf("subject is not self device received: %s expected %s", devices[string(secondDevice)].Content.Subject, secondDevice)
 	}
 
-	if bytes.Compare(devices[secondDevice].Content.PublicKey, pub2Byte) != 0 {
+	if bytes.Compare(devices[string(secondDevice)].Content.PublicKey, pub2Byte) != 0 {
 		t.Errorf("public key not included in certificate")
 	}
 }
 
 func TestRemove(t *testing.T) {
-	firstDevice := "Test1"
-	secondDevice := "Test2"
+	firstDevice := []byte("Test1")
+	secondDevice := []byte("Test2")
 
 	p, _ := rsa.GenerateKey(rand.Reader, 2048)
 	privByte, _ := x509.MarshalPKCS8PrivateKey(p)
@@ -164,13 +164,13 @@ func TestRemove(t *testing.T) {
 		t.Errorf("wrong number of devices %d expected %d received", len(devices), 1)
 	}
 
-	if _, ok := devices[secondDevice]; ok == true {
+	if _, ok := devices[string(secondDevice)]; ok == true {
 		t.Errorf("second device should not be present")
 	}
 }
 
 func TestCertificateCheckSignature(t *testing.T) {
-	firstDevice := "Test1"
+	firstDevice := []byte("Test1")
 
 	p, _ := rsa.GenerateKey(rand.Reader, 2048)
 	privBytes, _ := x509.MarshalPKCS8PrivateKey(p)
@@ -196,7 +196,7 @@ func TestCertificateCheckSignature(t *testing.T) {
 }
 
 func TestRevocationCheckSignature(t *testing.T) {
-	firstDevice := "Test1"
+	firstDevice := []byte("Test1")
 
 	p, _ := rsa.GenerateKey(rand.Reader, 2048)
 	privBytes, _ := x509.MarshalPKCS8PrivateKey(p)

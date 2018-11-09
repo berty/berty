@@ -4,14 +4,12 @@ package ble
 
 import (
 	"context"
-	"runtime"
 
 	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 type Transport struct {

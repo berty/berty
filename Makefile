@@ -41,6 +41,7 @@ lint-editorconfig:
 		! -ipath "*/built/*" \
 		! -ipath "*/vendor/*" \
 		! -ipath '*/node_modules/*' \
+		! -ipath '*/core/cmd/berty/banner.go' \
 		! -name "*.gen.*" \
 		! -name "*.generated.go" \
 		! -name "*generated*" \
