@@ -71,15 +71,14 @@ public class BertyDevice {
         waitReady.await();
         synchronized (toSend) {
 
-             int length = p.length;
-             int offset = 0;
-             do {
-                 int chunckSize = length - offset > mtu ? mtu : length - offset;
-                 byte[] chunck = Arrays.copyOfRange(p, offset, chunckSize);
-                 offset += chunckSize;
-                 toSend.add(chunck);
-             } while (offset < length);
-
+            int length = p.length;
+            int offset = 0;
+            do {
+                int chunckSize = length - offset > mtu ? mtu : length - offset;
+                byte[] chunck = Arrays.copyOfRange(p, offset, chunckSize);
+                offset += chunckSize;
+                toSend.add(chunck);
+            } while (offset < length);
 
             while (!toSend.isEmpty()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {

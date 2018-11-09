@@ -8,7 +8,7 @@ import (
 	"berty.tech/core/api/p2p"
 )
 
-const BANDWIDTH_INTERVAL = time.Second
+const BandwidthInterval = time.Second
 
 // Return a list of peers
 func (n *Node) Peers(_ context.Context, _ *node.Void) (*p2p.Peers, error) {
@@ -54,11 +54,11 @@ func (n *Node) MonitorBandwidth(input *p2p.BandwidthStats, stream node.Service_M
 
 	switch input.Type {
 	case p2p.MetricsType_PEER:
-		n.networkMetrics.MonitorBandwidthPeer(input.ID, BANDWIDTH_INTERVAL, handler)
+		n.networkMetrics.MonitorBandwidthPeer(input.ID, BandwidthInterval, handler)
 	case p2p.MetricsType_PROTOCOL:
-		n.networkMetrics.MonitorBandwidthProtocol(input.ID, BANDWIDTH_INTERVAL, handler)
+		n.networkMetrics.MonitorBandwidthProtocol(input.ID, BandwidthInterval, handler)
 	case p2p.MetricsType_GLOBAL:
-		n.networkMetrics.MonitorBandwidth(BANDWIDTH_INTERVAL, handler)
+		n.networkMetrics.MonitorBandwidth(BandwidthInterval, handler)
 	}
 
 	return <-cerr

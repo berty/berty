@@ -34,7 +34,7 @@ func TestEnclave(t *testing.T) {
 
 				// the keypair should satisfy keypair.Interface and return a valid pubkey
 				sc := sigchain.SigChain{}
-				So(sc.Init(kp, "Test1"), ShouldBeNil)
+				So(sc.Init(kp, []byte("Test1")), ShouldBeNil)
 				pub, err := kp.GetPubKey()
 				So(err, ShouldBeNil)
 				So(verifyPubKey(pub), ShouldBeNil)
@@ -52,7 +52,7 @@ func TestEnclave(t *testing.T) {
 
 				// the keypair should satisfy keypair.Interface and return a valid pubkey
 				sc := sigchain.SigChain{}
-				So(sc.Init(kp, "Test1"), ShouldBeNil)
+				So(sc.Init(kp, []byte("Test1")), ShouldBeNil)
 				pub, err := kp.GetPubKey()
 				So(err, ShouldBeNil)
 				So(verifyPubKey(pub), ShouldBeNil)
@@ -69,7 +69,7 @@ func TestEnclave(t *testing.T) {
 				So(kp.PublicKeyAlgorithm(), ShouldEqual, keypair.PublicKeyAlgorithm_RSA)
 				So(kp.SignatureAlgorithm(), ShouldEqual, keypair.SignatureAlgorithm_SHA512_WITH_RSA)
 				sc := sigchain.SigChain{}
-				So(sc.Init(kp, "Test1"), ShouldBeNil)
+				So(sc.Init(kp, []byte("Test1")), ShouldBeNil)
 				pub, err := kp.GetPubKey()
 				So(err, ShouldBeNil)
 				So(verifyPubKey(pub), ShouldBeNil)
@@ -91,7 +91,7 @@ func TestEnclave(t *testing.T) {
 				So(kp.PublicKeyAlgorithm(), ShouldEqual, keypair.PublicKeyAlgorithm_RSA)
 				So(kp.SignatureAlgorithm(), ShouldEqual, keypair.SignatureAlgorithm_SHA512_WITH_RSA)
 				sc := sigchain.SigChain{}
-				So(sc.Init(kp, "Test1"), ShouldBeNil)
+				So(sc.Init(kp, []byte("Test1")), ShouldBeNil)
 				pub, err := kp.GetPubKey()
 				So(err, ShouldBeNil)
 				So(verifyPubKey(pub), ShouldBeNil)
