@@ -31,7 +31,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 		return nil, fmt.Errorf("error dialing ble")
 	}
 
-	if conn, ok := conns[s]; ok {
+	if conn, ok := getConn(s); ok {
 		conn.closed = false
 		return conn, nil
 	}
