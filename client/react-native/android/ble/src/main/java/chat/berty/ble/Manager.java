@@ -458,7 +458,6 @@ public class Manager {
     }
 
     public String realTest() {
-        Log.e(TAG, "THIS IS REAL SHIT GUY");
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         Activity curActivity = mReactContext.getCurrentActivity();
         if (!mBluetoothAdapter.isEnabled()) {
@@ -484,7 +483,7 @@ public class Manager {
 //                startScanning();
             }
         }
-        return "COMING FROM THAT MOTHA FUCKING JAVA";
+        return "COMING FROM JAVA";
     }
 
     protected BluetoothGattCallback mGattCallback;
@@ -596,7 +595,9 @@ public class Manager {
 
                     gatt.readCharacteristic(bDevice.maCharacteristic);
                     gatt.readCharacteristic(bDevice.peerIDCharacteristic);
-                    while (!gatt.requestMtu(512)) ;
+                    while (!gatt.requestMtu(512)) {
+                        /** intentionally empty */
+                    }
 
                     super.onServicesDiscovered(gatt, status);
                 }

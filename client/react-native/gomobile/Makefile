@@ -5,22 +5,14 @@ CORE_MOBILE := $(MAKEFILE_DIR)/core
 CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 				$(shell find $(CORE_MOBILE) -type f -name "*.go")
 
-<<<<<<< HEAD
 BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../build/docker/patch
-||||||| parent of 6ef2cd9... feat(java): basic ble service in java
-BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../.circleci/docker
-
-GOPATH ?=		$(HOME)/go
-=======
-BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../.circleci/docker
 
 ANDROID_PATH := $(MAKEFILE_DIR)/../android
 BLE_JAR_PATH := $(MAKEFILE_DIR)/../android/ble/build/libs/ble.jar
-BLE_DIR_PATH := $(MAKEFILE_DIR)/../android/ble/build/libs/ble.jar
+BLE_DIR_PATH := $(MAKEFILE_DIR)/../android/ble/build/libs
 BLE_BIND_PATH := /tmp/ble
 
 GOPATH ?=		$(HOME)/go
->>>>>>> 6ef2cd9... feat(java): basic ble service in java
 
 CGO_CPPFLAGS ?= -I$(MAKEFILE_DIR)/../../common/openssl/built/include
 
