@@ -74,6 +74,8 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 	val, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		return 0, err
+	} else if val == "" {
+		return 0, fmt.Errorf("ble can't dial unknow multiaddr")
 	}
 
 	ma := C.CString(val)
