@@ -596,7 +596,7 @@ public class Manager {
 
                     gatt.readCharacteristic(bDevice.maCharacteristic);
                     gatt.readCharacteristic(bDevice.peerIDCharacteristic);
-                    while (!gatt.requestMtu(512));
+                    while (!gatt.requestMtu(512)) ;
 
                     super.onServicesDiscovered(gatt, status);
                 }
@@ -615,8 +615,6 @@ public class Manager {
                     if (status == GATT_SUCCESS) {
                         BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
                         bDevice.isWaiting.release();
-
-
                     } else {
                         Log.e(TAG, "Error writing gatt " + status);
                     }
