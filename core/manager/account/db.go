@@ -11,9 +11,12 @@ type StateDB struct {
 	gorm.Model
 
 	StartCounter int
+
+	JSONNetConf string
+	BotMode     bool
 }
 
-func OpenStateDB(path string) (*StateDB, error) {
+func OpenStateDB(path string, initialState StateDB) (*StateDB, error) {
 	// open db
 	db, err := gorm.Open("sqlite3", path)
 	if err != nil {
@@ -30,7 +33,15 @@ func OpenStateDB(path string) (*StateDB, error) {
 	if err := db.FirstOrInit(&state).Error; err != nil {
 		return nil, err
 	}
-	state.gorm = db
+
+	// if no previous state found, set initial state
+	if state.StartCounter == 0 {
+		state = initialState
+		state.gorm = db
+		state.Save()
+	} else {
+		state.gorm = db
+	}
 
 	return &state, nil
 }

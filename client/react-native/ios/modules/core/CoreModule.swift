@@ -66,7 +66,7 @@ class CoreModule: NSObject {
             resolve(nil)
         } catch let error as NSError {
             logger.format("unable to start core: %@", level: .Error, error.userInfo.description)
-            reject("\(String(describing: error.code))", error.userInfo.description, error)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
     }
 
@@ -81,7 +81,7 @@ class CoreModule: NSObject {
           resolve(nil)
       } catch let error as NSError {
           logger.format("unable to restart core: %@", level: .Error, error.userInfo.description)
-          reject("\(String(describing: error.code))", error.userInfo.description, error)
+          reject("\(String(describing: error.code))", error.localizedDescription, error)
       }
     }
 
@@ -97,7 +97,7 @@ class CoreModule: NSObject {
             resolve(nil)
         } catch let error as NSError {
             logger.format("unable to drop database: %@", level: .Error, error.userInfo.description)
-            reject("\(String(describing: error.code))", error.userInfo.description, error)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
     }
 
@@ -108,20 +108,13 @@ class CoreModule: NSObject {
         CoreGetPort(&port, &err)
         if let error = err {
             logger.format("unable to get port: ", level: .Error, error.userInfo.description)
-            reject("\(String(describing: error.code))", error.userInfo.description, error)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
         resolve(port)
     }
 
     @objc func getNetworkConfig(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-        var err: NSError?
-
-        let config: String = CoreGetNetworkConfig(&err)
-        if let error = err {
-            logger.format("get network config error: ", level: .Error, error.userInfo.description)
-            reject("\(String(describing: error.code))", error.userInfo.description, error)
-        }
-        resolve(config)
+        resolve(CoreGetNetworkConfig())
     }
 
     @objc func updateNetworkConfig(_ config: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
@@ -130,7 +123,7 @@ class CoreModule: NSObject {
         CoreUpdateNetworkConfig(config, &err)
         if let error = err {
             logger.format("update network config error: ", level: .Error, error.userInfo.description)
-            reject("\(String(describing: error.code))", error.userInfo.description, error)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
         resolve(nil)
     }
@@ -145,7 +138,7 @@ class CoreModule: NSObject {
         CoreStartBot(&err)
         if let error = err {
             logger.format("start bot error: ", level: .Error, error.userInfo.description)
-            reject("\(String(describing: error.code))", error.userInfo.description, error)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
         resolve(nil)
     }
@@ -156,7 +149,7 @@ class CoreModule: NSObject {
         CoreStopBot(&err)
         if let error = err {
             logger.format("stop bot error: ", level: .Error, error.userInfo.description)
-            reject("\(String(describing: error.code))", error.userInfo.description, error)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
         resolve(nil)
     }
