@@ -19,7 +19,6 @@ type Listener struct {
 	network         string
 	incomingBLEUUID chan string
 	incomingPeerID  chan string
-	connected       map[string]*Conn
 	lAddr           ma.Multiaddr
 }
 

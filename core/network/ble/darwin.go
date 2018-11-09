@@ -112,7 +112,6 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
 		lAddr:           lAddr,
 		incomingBLEUUID: make(chan string),
 		incomingPeerID:  make(chan string),
-		connected:       make(map[string]*Conn),
 		transport:       t,
 	}
 
