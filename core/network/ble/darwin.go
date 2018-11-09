@@ -9,7 +9,6 @@ import (
 	"unsafe"
 
 	peer "github.com/libp2p/go-libp2p-peer"
-	
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
