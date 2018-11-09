@@ -12,6 +12,7 @@ type networkConfig struct {
 	DefaultTransport   bool
 	BluetoothTransport bool
 	DefaultBootstrap   bool
+	IPFSBootstrap      bool
 	CustomBootstrap    []string
 	MDNS               bool
 	Relay              bool
@@ -37,9 +38,11 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 		transport = append(transport, "ble")
 		bind = append(bind, defaultBLEBind)
 	}
-
 	if netConf.DefaultBootstrap {
 		bootstrap = append(bootstrap, p2p.DefaultBootstrap...)
+	}
+	if netConf.IPFSBootstrap {
+		bootstrap = append(bootstrap, p2p.BootstrapIpfs...)
 	}
 	bootstrap = append(bootstrap, netConf.CustomBootstrap...)
 
@@ -59,7 +62,7 @@ func GetNetworkConfig() string {
 }
 
 func UpdateNetworkConfig(jsonConf string) error {
-	waitDaemon()
+	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 
 	var newNetworkConfig networkConfig

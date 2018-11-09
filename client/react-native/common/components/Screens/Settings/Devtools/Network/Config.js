@@ -25,6 +25,7 @@ export default class Network extends PureComponent {
     default_trans: false,
     bluetooth_trans: false,
     default_bootstrap: false,
+    ipfs_bootstrap: false,
     custom_bootstrap: [],
     mdns: false,
     relay: false,
@@ -38,6 +39,7 @@ export default class Network extends PureComponent {
       (this.state.default_trans !== this.currentConfig.DefaultTransport ||
         this.state.bluetooth_trans !== this.currentConfig.BluetoothTransport ||
         this.state.default_bootstrap !== this.currentConfig.DefaultBootstrap ||
+        this.state.ipfs_bootstrap !== this.currentConfig.IPFSBootstrap ||
         this.state.custom_bootstrap !== this.currentConfig.CustomBootstrap ||
         this.state.mdns !== this.currentConfig.MDNS ||
         this.state.relay !== this.currentConfig.Relay)
@@ -58,6 +60,7 @@ export default class Network extends PureComponent {
         DefaultTransport: this.state.default_trans,
         BluetoothTransport: this.state.bluetooth_trans,
         DefaultBootstrap: this.state.default_bootstrap,
+        IPFSBootstrap: this.state.ipfs_bootstrap,
         CustomBootstrap: this.state.custom_bootstrap,
         MDNS: this.state.mdns,
         Relay: this.state.relay,
@@ -84,6 +87,7 @@ export default class Network extends PureComponent {
       default_trans: this.currentConfig.DefaultTransport,
       bluetooth_trans: this.currentConfig.BluetoothTransport,
       default_bootstrap: this.currentConfig.DefaultBootstrap,
+      ipfs_bootstrap: this.currentConfig.IPFSBootstrap,
       custom_bootstrap: this.currentConfig.CustomBootstrap,
       mdns: this.currentConfig.MDNS,
       relay: this.currentConfig.Relay,
@@ -139,6 +143,21 @@ export default class Network extends PureComponent {
                 value={this.state.default_bootstrap}
                 onValueChange={value => {
                   this.setState({ default_bootstrap: value }, () => {
+                    this.hasConfigChanged()
+                  })
+                }}
+              />
+            }
+          />
+          <Menu.Item
+            title='IPFS bootstrap'
+            customRight={
+              <Switch
+                justify='end'
+                disabled={!this.state.loaded}
+                value={this.state.ipfs_bootstrap}
+                onValueChange={value => {
+                  this.setState({ ipfs_bootstrap: value }, () => {
                     this.hasConfigChanged()
                   })
                 }}
