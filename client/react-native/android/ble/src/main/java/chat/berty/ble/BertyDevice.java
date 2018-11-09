@@ -58,7 +58,7 @@ public class BertyDevice {
             try {
                 waitReady.await();
                 isRdyCharacteristic.setValue("");
-                while (!gatt.writeCharacteristic(isRdyCharacteristic));
+                while (!gatt.writeCharacteristic(isRdyCharacteristic)) ;
             } catch (Exception e) {
                 Log.e(TAG, "Error waiting/writing " + e.getMessage());
             }
@@ -82,7 +82,7 @@ public class BertyDevice {
             while (!toSend.isEmpty()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     writerCharacteristic.setValue(toSend.get(0));
-                    while (!gatt.writeCharacteristic(writerCharacteristic));
+                    while (!gatt.writeCharacteristic(writerCharacteristic)) ;
                     isWaiting.acquire();
                 }
                 toSend.remove(0);
