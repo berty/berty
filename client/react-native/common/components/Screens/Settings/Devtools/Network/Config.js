@@ -25,7 +25,7 @@ export default class Network extends PureComponent {
     default_trans: false,
     bluetooth_trans: false,
     default_bootstrap: false,
-    bootstrap: [],
+    custom_bootstrap: [],
     mdns: false,
     relay: false,
   }
@@ -38,7 +38,7 @@ export default class Network extends PureComponent {
       (this.state.default_trans !== this.currentConfig.DefaultTransport ||
         this.state.bluetooth_trans !== this.currentConfig.BluetoothTransport ||
         this.state.default_bootstrap !== this.currentConfig.DefaultBootstrap ||
-        this.state.bootstrap !== this.currentConfig.Bootstrap ||
+        this.state.custom_bootstrap !== this.currentConfig.CustomBootstrap ||
         this.state.mdns !== this.currentConfig.MDNS ||
         this.state.relay !== this.currentConfig.Relay)
     ) {
@@ -58,7 +58,7 @@ export default class Network extends PureComponent {
         DefaultTransport: this.state.default_trans,
         BluetoothTransport: this.state.bluetooth_trans,
         DefaultBootstrap: this.state.default_bootstrap,
-        Bootstrap: this.state.bootstrap,
+        CustomBootstrap: this.state.custom_bootstrap,
         MDNS: this.state.mdns,
         Relay: this.state.relay,
       }
@@ -76,22 +76,18 @@ export default class Network extends PureComponent {
   }
 
   getCurrentConfig = async () => {
-    try {
-      let json = await NativeModules.CoreModule.getNetworkConfig()
-      this.currentConfig = JSON.parse(json)
+    let json = await NativeModules.CoreModule.getNetworkConfig()
+    this.currentConfig = JSON.parse(json)
 
-      this.setState({
-        loaded: true,
-        default_trans: this.currentConfig.DefaultTransport,
-        bluetooth_trans: this.currentConfig.BluetoothTransport,
-        default_bootstrap: this.currentConfig.DefaultBootstrap,
-        bootstrap: this.currentConfig.Bootstrap,
-        mdns: this.currentConfig.MDNS,
-        relay: this.currentConfig.Relay,
-      })
-    } catch (err) {
-      console.error(err)
-    }
+    this.setState({
+      loaded: true,
+      default_trans: this.currentConfig.DefaultTransport,
+      bluetooth_trans: this.currentConfig.BluetoothTransport,
+      default_bootstrap: this.currentConfig.DefaultBootstrap,
+      custom_bootstrap: this.currentConfig.CustomBootstrap,
+      mdns: this.currentConfig.MDNS,
+      relay: this.currentConfig.Relay,
+    })
   }
 
   componentDidMount () {
