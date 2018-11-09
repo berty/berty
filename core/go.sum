@@ -203,6 +203,8 @@ github.com/libp2p/go-ws-transport v2.0.14+incompatible h1:wnf+ND4tot8DdqdpveeieT
 github.com/libp2p/go-ws-transport v2.0.14+incompatible/go.mod h1:qx7Dcw4onTaVNI3iG6q3XOKwNQWnXYhNEHYmhgQmKKk=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
+github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43 h1:Fefy2DSaKkme73mCUM2YJxNmi4dC1vrGzs+sjcoxXE4=
+github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43/go.mod h1:2R57jb7EgkTrwIT4IRrrJ2I4m10M83Zf7e6ej1Cer9c=
 github.com/mattn/go-colorable v0.0.9 h1:UVL0vNpWh04HeJXV0KLcaT7r06gOH2l4OW6ddYRUIY4=
 github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
 github.com/mattn/go-isatty v0.0.4 h1:bnP0vzxcAdeI1zdubAl5PjU6zsERjGZb7raWodagDYs=

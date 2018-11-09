@@ -79,6 +79,7 @@ func daemon(opts *daemonOptions) error {
 	defer a.PanicHandler()
 
 	accountOptions := account.Options{
+		account.WithRing(ring),
 		account.WithName(opts.nickname),
 		account.WithPassphrase(opts.password),
 		account.WithDatabase(&account.DatabaseOptions{

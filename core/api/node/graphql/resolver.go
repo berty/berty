@@ -547,13 +547,40 @@ func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Even
 	return channel, nil
 }
 
-func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *p2p.Peer, error) {
-	stream, err := r.client.MonitorPeers(ctx, &node.Void{})
-	channel := make(chan *p2p.Peer, 10)
-
+func (r *subscriptionResolver) LogStream(ctx context.Context, continues bool, logLevel, namespaces string, last int32) (<-chan *node.LogEntry, error) {
+	stream, err := r.client.LogStream(ctx, &node.LogStreamInput{
+		Continues:  continues,
+		LogLevel:   logLevel,
+		Namespaces: namespaces,
+		Last:       last,
+	})
 	if err != nil {
 		return nil, err
 	}
+	channel := make(chan *node.LogEntry, 1)
+	go func() {
+		for {
+			elem, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				// logger().Error(err.Error())
+				break
+			}
+			channel <- elem
+		}
+	}()
+	return channel, nil
+}
+
+func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *p2p.Peer, error) {
+	stream, err := r.client.MonitorPeers(ctx, &node.Void{})
+	if err != nil {
+		return nil, err
+	}
+
+	channel := make(chan *p2p.Peer, 10)
 	go func() {
 		for {
 			elem, err := stream.Recv()

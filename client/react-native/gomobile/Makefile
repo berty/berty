@@ -30,6 +30,7 @@ ANDROID_BUILD := $(addprefix $(ANDROID_BUILD_PATH)/core., $(addsuffix .aar, $(AN
 
 GOTEST_TIMEOUT ?= 30s
 
+
 .PHONY: help
 help:
 	@echo "Gomobile commands:"

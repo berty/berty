@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	"berty.tech/core/pkg/zapring"
 )
 
 // Node is the top-level object of a Berty peer
@@ -35,6 +36,7 @@ type Node struct {
 	b64pubkey               string // FIXME: same as above
 	sigchain                *sigchain.SigChain
 	crypto                  keypair.Interface
+	ring                    *zapring.Ring // log ring buffer
 
 	// devtools
 	createdAt time.Time // used for uptime calculation

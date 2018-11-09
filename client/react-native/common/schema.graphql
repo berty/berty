@@ -454,6 +454,9 @@ type BertyNodePageInfo  {
 type BertyNodeVoid  {
       T: Bool!
 }
+type BertyNodeLogEntry  {
+      line: String!
+}
 type BertyP2pPeerPayload {
       id: String!
       addrs: [String!]
@@ -599,6 +602,9 @@ type BertyP2pPeersPayload {
 }
 type BertyNodeProtocolsPayload {
       protocols: [String!]
+}
+type BertyNodeLogEntryPayload {
+      line: String!
 }
 type BertyP2pBandwidthStatsPayload {
       id: String
@@ -789,6 +795,12 @@ type Subscription {
   EventStream(
     filter: BertyP2pEventInput
   ): BertyP2pEventPayload
+  LogStream(
+      continues: Bool!
+      logLevel: String!
+      namespaces: String!
+      last: Int32!
+  ): BertyNodeLogEntryPayload
   MonitorBandwidth(
       id: String
       totalIn: Int64

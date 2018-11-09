@@ -139,6 +139,10 @@ service Service {
     option (gql.graphql_type) = "Query";
   };
 
+  rpc LogStream (LogStreamInput) returns (stream LogEntry) {
+    option (gql.graphql_type) = "Subscription";
+  };
+
   //
   // Metrics
   //
@@ -297,7 +301,24 @@ enum NullableTrueFalse {
   False = 2;
 }
 
-
 message DebugEventRequeueInput {
   string event_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "EventID"];
+}
+
+//
+// Logs
+//
+
+message LogStreamInput {
+  bool continues = 1;    // stay connected and wait for new lines
+  string log_level = 2;  // "debug", "info", "warn", "error"
+  string namespaces = 3;  // "core.*", "*", ...
+  int32 last = 4;        // number of previous lines to return, capped by the rotating buffer size
+}
+
+message LogEntry {
+  string line = 1;       // line
+  // string log_level = 2;
+  // namespace
+  // ...
 }
