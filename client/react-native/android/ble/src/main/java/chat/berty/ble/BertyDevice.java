@@ -34,11 +34,17 @@ public class BertyDevice {
 
     public CountDownLatch waitReady;
 
+    public Semaphore isWaiting;
+
+    public List<byte[]> toSend;
+
     public BertyDevice(BluetoothDevice device, BluetoothGatt gatt, String address) {
         this.gatt = gatt;
         this.addr = address;
         this.device = device;
+        this.isWaiting = new Semaphore(1);
         waitReady = new CountDownLatch(2);
+        this.toSend = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -55,6 +61,31 @@ public class BertyDevice {
                 while (!gatt.writeCharacteristic(isRdyCharacteristic));
             } catch (Exception e) {
                 Log.e(TAG, "Error waiting/writing " + e.getMessage());
+            }
+        }
+    }
+
+    public void write(byte[] p) throws InterruptedException {
+        waitReady.await();
+        synchronized (toSend) {
+
+             int length = p.length;
+             int offset = 0;
+             do {
+                 int chunckSize = length - offset > mtu ? mtu : length - offset;
+                 byte[] chunck = Arrays.copyOfRange(p, offset, chunckSize);
+                 offset += chunckSize;
+                 toSend.add(chunck);
+             } while (offset < length);
+
+
+            while (!toSend.isEmpty()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    writerCharacteristic.setValue(toSend.get(0));
+                    while (!gatt.writeCharacteristic(writerCharacteristic));
+                    isWaiting.acquire();
+                }
+                toSend.remove(0);
             }
         }
     }

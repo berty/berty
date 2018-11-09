@@ -15,6 +15,8 @@ func initBleFunc() {
 	ble.SetPeerID = Manager.GetInstance().SetPeerID
 	ble.StartScanning = Manager.GetInstance().StartScanning
 	ble.StartAdvertising = Manager.GetInstance().StartAdvertising
+	ble.Write = Manager.GetInstance().Write
+	ble.DialPeer = Manager.GetInstance().DialPeer
 }
 
 func JavaExportTestFunc() {

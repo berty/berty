@@ -259,10 +259,16 @@ public class Manager {
                 public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
                     UUID charID = characteristic.getUuid();
                     BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
-                    Log.e(TAG, "WRITE");
+
                     if (charID.equals(ACCEPT_UUID)) {
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
                     } else if (charID.equals(WRITER_UUID)) {
+//                        Log.e(TAG, "READER CALLED     " + Arrays.toString(value));
+                        try {
+                            bDevice.waitReady.await();
+                        } catch (Exception e) {
+                            Log.e(TAG, "FAIL AWAIT " + e.getMessage());
+                        }
                         Core.bytesToConn(bDevice.ma, value);
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
                     } else if (charID.equals(CLOSER_UUID)) {
@@ -590,7 +596,7 @@ public class Manager {
 
                     gatt.readCharacteristic(bDevice.maCharacteristic);
                     gatt.readCharacteristic(bDevice.peerIDCharacteristic);
-                    while (!gatt.requestMtu(111000));
+                    while (!gatt.requestMtu(512));
 
                     super.onServicesDiscovered(gatt, status);
                 }
@@ -605,6 +611,15 @@ public class Manager {
 
                 @Override
                 public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                    // Log.e(TAG, "charact writed");
+                    if (status == GATT_SUCCESS) {
+                        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                        bDevice.isWaiting.release();
+
+
+                    } else {
+                        Log.e(TAG, "Error writing gatt " + status);
+                    }
                     super.onCharacteristicWrite(gatt, characteristic, status);
                 }
 
@@ -703,6 +718,23 @@ public class Manager {
                 bertyDevices.remove(device.addr);
             }
         }
+    }
+
+    public boolean write(byte[] p, String ma) {
+        BertyDevice bDevice = getDeviceFromMa(ma);
+        if (bDevice == null) {
+            Log.e(TAG, "WRITING PAT3");
+            return false;
+        }
+
+        try {
+            bDevice.write(p);
+        } catch (Exception e) {
+            Log.e(TAG, "WRITING PAT2       " + e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 
     public class PopulateCharacteristic implements Callable<BluetoothGattCharacteristic> {
