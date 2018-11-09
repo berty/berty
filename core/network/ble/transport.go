@@ -1,4 +1,4 @@
-// +build darwin
+// +build android darwin
 
 package ble
 
@@ -6,7 +6,6 @@ import (
 	"context"
 	"fmt"
 	"time"
-	"unsafe"
 
 	logging "github.com/ipfs/go-log"
 	host "github.com/libp2p/go-libp2p-host"
@@ -17,13 +16,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
-
-/*
-#cgo darwin CFLAGS: -x objective-c -Wno-incompatible-pointer-types -Wno-missing-field-initializers -Wno-missing-prototypes -Werror=return-type -Wdocumentation -Wunreachable-code -Wno-implicit-atomic-properties -Werror=deprecated-objc-isa-usage -Wno-objc-interface-ivars -Werror=objc-root-class -Wno-arc-repeated-use-of-weak -Wimplicit-retain-self -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wdeprecated-implementations -DNS_BLOCK_ASSERTIONS=1 -DOBJC_OLD_DISPATCH_PROTOTYPES=0
-#cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
-#import "ble.h"
-*/
-import "C"
 
 var peerAdder chan *pstore.PeerInfo = make(chan *pstore.PeerInfo)
 
@@ -40,13 +32,20 @@ type Transport struct {
 	reuse          rtpt.Transport
 }
 
-//export AddToPeerStore
-func AddToPeerStore(peerID *C.char, rAddr *C.char) {
-	pID, err := peer.IDB58Decode(C.GoString(peerID))
+// DefaultConnectTimeout is the (default) maximum amount of time the TCP
+// transport will spend on the initial TCP connect before giving up.
+var DefaultConnectTimeout = 5 * time.Second
+
+var log = logging.Logger("ble-tpt")
+
+var _ tpt.Transport = &Transport{}
+
+func AddToPeerStore(peerID string, rAddr string) {
+	pID, err := peer.IDB58Decode(peerID)
 	if err != nil {
 		panic(err)
 	}
-	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", C.GoString(rAddr)))
+	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", rAddr))
 	if err != nil {
 		panic(err)
 	}
@@ -59,14 +58,6 @@ func AddToPeerStore(peerID *C.char, rAddr *C.char) {
 		logger().Debug("SENDED TO PEERADDER\n")
 	}()
 }
-
-// DefaultConnectTimeout is the (default) maximum amount of time the TCP
-// transport will spend on the initial TCP connect before giving up.
-var DefaultConnectTimeout = 5 * time.Second
-
-var log = logging.Logger("ble-tpt")
-
-var _ tpt.Transport = &Transport{}
 
 // NewBLETransport creates a tcp transport object that tracks dialers and listeners
 // created. It represents an entire tcp stack (though it might not necessarily be)
@@ -115,30 +106,6 @@ func (t *Transport) ListenNewPeer() {
 func (t *Transport) CanDial(addr ma.Multiaddr) bool {
 	logger().Debug("BLETransport CanDial", zap.String("peer", addr.String()))
 	return BLE.Matches(addr)
-}
-
-// Dial dials the   peer at the remote address.
-func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
-	if int(C.isDiscovering()) != 1 {
-		go C.startDiscover()
-	}
-	s, err := rAddr.ValueForProtocol(PBle)
-	if err != nil {
-		return nil, err
-	}
-
-	ma := C.CString(s)
-	defer C.free(unsafe.Pointer(ma))
-	if C.dialPeer(ma) == 0 {
-		return nil, fmt.Errorf("error dialing ble")
-	}
-
-	if conn, ok := conns[s]; ok {
-		conn.closed = false
-		return conn, nil
-	}
-	c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr, 0)
-	return &c, nil
 }
 
 // UseReuseport returns true if reuseport is enabled and available.
