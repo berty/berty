@@ -1,28 +1,46 @@
 import React, { PureComponent } from 'react'
-import { Text, View, ActivityIndicator, StyleSheet, ListView } from 'react-native'
-import { Header, Screen } from '../../../../Library'
-import { QueryReducer } from '../../../../../relay'
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native'
+import { Header } from '../../../../Library'
 import { queries, subscriptions } from '../../../../../graphql'
 import { colors } from '../../../../../constants'
-import Accordion from 'react-native-collapsible/Accordion';
+import {
+  bold,
+  textLeft,
+  padding,
+  textCenter,
+  largeText,
+  mediumText,
+  smallText,
+} from '../../../../../styles'
+import Accordion from 'react-native-collapsible/Accordion'
 
 const Connection = {
-  'NOT_CONNECTED': 0,
-  'CONNECTED': 1,
-  'CAN_CONNECT': 2,
-  'CANNOT_CONNECT': 3,
+  NOT_CONNECTED: 0,
+  CONNECTED: 1,
+  CAN_CONNECT: 2,
+  CANNOT_CONNECT: 3,
 }
 
 const ConnectionType = c => {
   switch (c) {
-  case Connection.NOT_CONNECTED: return 'NotConnected'
-  case Connection.CONNECTED: return 'Connected'
-  case Connection.CAN_CONNECT: return 'CanConnect'
-  case Connection.CANNOT_CONNECT: return 'CannotConnect'
-  default: return 'Unknow'
+    case Connection.NOT_CONNECTED:
+      return 'NotConnected'
+    case Connection.CONNECTED:
+      return 'Connected'
+    case Connection.CAN_CONNECT:
+      return 'CanConnect'
+    case Connection.CANNOT_CONNECT:
+      return 'CannotConnect'
+    default:
+      return 'Unknow'
   }
 }
-
 
 export default class Peers extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -41,7 +59,7 @@ export default class Peers extends PureComponent {
     opened: [],
   }
 
-  componentWillMount() {
+  componentWillMount () {
     subscriptions.monitorPeers.subscribe({
       iterator: undefined,
       updater: (store, data) => {
@@ -51,19 +69,13 @@ export default class Peers extends PureComponent {
     })
   }
 
-  componentDidMount() {
+  componentDidMount () {
     queries.Peers.fetch().then(data => this.updatePeers(data.Peers.list))
     subscriptions.monitorPeers.start()
   }
 
   updatePeers = peers => {
     this.setState({ peers })
-  }
-
-  removePeer = peer => {
-    this.setState(prevState => ({
-      peers: prevState.peers.filter(p => p.id !== peer.id),
-    }))
   }
 
   addPeer = peer => {
@@ -74,42 +86,50 @@ export default class Peers extends PureComponent {
 
   renderPeer = peer => {
     return (
-      <View>
-        {
-          peer.connection === Connection.CONNECTED ?
-            <Text style={styles.green}>{peer.id.slice(0, 20)}...</Text>
-          : <Text style={styles.red}>{peer.id.slice(0, 20)}...</Text>
-        }
+      <View style={styles.peer}>
+        {peer.connection === Connection.CONNECTED ? (
+          <Text style={styles.connected}>{peer.id.slice(0, 30)}...</Text>
+        ) : (
+          <Text style={styles.notConnected}>{peer.id.slice(0, 30)}...</Text>
+        )}
       </View>
     )
   }
 
   renderPeerInfo = peer => {
-    console.log(peer)
     return (
       <View>
-        <Text>type: {ConnectionType(peer.connection)}</Text>
-        <Text>addrs: [</Text>
-        {
-          peer.addrs.map((addr, i) => (
-            <Text key={i}>{addr}</Text>
-          ))
-        }
-        <Text>]</Text>
+        <TouchableOpacity style={styles.peerInfos}>
+          <Text style={styles.peerInfoField}>Connection</Text>
+          <Text style={styles.peerInfoValue}>
+            {ConnectionType(peer.connection)}
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.peerInfos}>
+          <Text style={styles.peerInfoField}>addrs:</Text>
+          {peer.addrs.map((addr, i) => (
+            <Text style={styles.peerInfoValue} key={i}>{`${addr.slice(0, 30)}${
+              addr.length > 30 ? '...' : ''
+            }`}</Text>
+          ))}
+        </TouchableOpacity>
       </View>
     )
   }
 
-
   updateOpened = opened => {
-    this.setState({ opened });
-  };
+    this.setState({ opened })
+  }
 
   render () {
     console.log(this.state.peers)
     return (
-      <Screen style={[{ backgroundColor: colors.white }]}>
-        <Text>Number of Peers: {this.state.peers.length}</Text>
+      <ScrollView style={{ backgroundColor: colors.background }}>
+        <View style={styles.peer}>
+          <Text style={styles.title}>
+            Number of Peers: {this.state.peers.length}
+          </Text>
+        </View>
         <Accordion
           sections={this.state.peers}
           activeSections={this.state.opened}
@@ -117,19 +137,46 @@ export default class Peers extends PureComponent {
           renderContent={this.renderPeerInfo}
           onChange={this.updateOpened}
         />
-      </Screen>
+      </ScrollView>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  red: {
-    color: '#FF0000',
+  title: {
+    ...textCenter,
+    ...largeText,
   },
-  green: {
-    color: '#00FF00',
+  peer: {
+    ...padding,
+    backgroundColor: colors.white,
+    borderBottomColor: '#bbb',
+    borderBottomWidth: 1,
   },
-  blue: {
-    color: '#0000FF',
+  peerInfos: {
+    ...textLeft,
+    ...padding,
+    backgroundColor: colors.grey8,
+    borderBottomColor: '#bbb',
+    borderBottomWidth: 1,
+  },
+  peerInfoField: {
+    ...textLeft,
+    ...smallText,
+    ...bold,
+  },
+  peerInfoValue: {
+    ...textLeft,
+    ...smallText,
+  },
+  connected: {
+    ...mediumText,
+    ...textLeft,
+    color: colors.green,
+  },
+  notConnected: {
+    ...mediumText,
+    ...textLeft,
+    color: colors.red,
   },
 })

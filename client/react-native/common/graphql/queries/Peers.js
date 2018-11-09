@@ -13,7 +13,6 @@ const query = graphql`
   }
 `
 
-
 export default {
   ...query,
   fetch: (variables = {}) =>
