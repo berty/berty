@@ -96,7 +96,8 @@ shim.js
 
 # GoGrpc framework
 ios/core.framework
-android/app/libs/core.aar
+android/ble/libs/jars/ble.jar
+android/core/core.aar
 
 # Go template
 .tmp/
