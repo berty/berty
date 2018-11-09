@@ -1,6 +1,7 @@
 rootProject.name = 'Berty'
 
-include ':react-native-vector-icons', ':ble', ':core'
+include ':ble', ':core'
+include ':react-native-vector-icons'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
 include ':react-native-network-info'
 project(':react-native-network-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-network-info/android')
