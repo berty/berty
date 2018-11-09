@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -241,12 +242,15 @@ public class Manager {
                 @Override
                 public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
                     UUID charID = characteristic.getUuid();
-                    Log.e(TAG, "READ");
+
                     if (charID.equals(MA_UUID)) {
+                        Log.e(TAG, "READ MA");
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, ma.getBytes(Charset.forName("UTF-8")));
                     } else if (charID.equals(PEER_ID_UUID)) {
+                        Log.e(TAG, "READ PEER");
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, peerID.getBytes(Charset.forName("UTF-8")));
                     } else {
+                        Log.e(TAG, "READ UNKNOW");
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
                     }
                 }
@@ -296,6 +300,7 @@ public class Manager {
 
                 @Override
                 public void onMtuChanged(BluetoothDevice device, int mtu) {
+                    Log.e(TAG, "ON MTU CHANGED SERV");
                     Log.d(TAG, "new mtu is: " + mtu);
                     BertyDevice bertyDevice = getDeviceFromAddr(device.getAddress());
                     bertyDevice.mtu = mtu;
@@ -488,6 +493,34 @@ public class Manager {
         return null;
     }
 
+    public @Nullable BertyDevice getDeviceFromMa(String ma) {
+        synchronized (bertyDevices) {
+            BertyDevice bDevice = null;
+            for (Map.Entry<String, BertyDevice> entry : bertyDevices.entrySet()) {
+                bDevice = entry.getValue();
+                if (bDevice.ma.equals(ma)) {
+                    return bDevice;
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean dialPeer(String ma) {
+//        List<BluetoothDevice> connectedDevices = mBluetoothGattServer.getConnectedDevices();
+        BertyDevice bDevice = getDeviceFromMa(ma);
+        if (bDevice != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                bDevice.gatt.discoverServices();
+            }
+            return true;
+        }
+        return false;
+//        for (BluetoothDevice device : connectedDevices) {
+//
+//        }
+    }
+
     public void initGattCallback() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             mGattCallback = new BluetoothGattCallback() {
@@ -557,6 +590,7 @@ public class Manager {
 
                     gatt.readCharacteristic(bDevice.maCharacteristic);
                     gatt.readCharacteristic(bDevice.peerIDCharacteristic);
+                    while (!gatt.requestMtu(111000));
 
                     super.onServicesDiscovered(gatt, status);
                 }
@@ -604,6 +638,7 @@ public class Manager {
 
                 @Override
                 public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+                    Log.e(TAG, "ON MTU CHANGED CLI");
                     BertyDevice bertyDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
                     bertyDevice.mtu = mtu;
                     super.onMtuChanged(gatt, mtu, status);
