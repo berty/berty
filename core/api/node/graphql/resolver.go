@@ -242,6 +242,10 @@ func (r *mutationResolver) DebugRequeueEvent(ctx context.Context, eventID string
 	})
 }
 
+func (r *mutationResolver) DebugRequeueAll(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.DebugRequeueAll(ctx, &node.Void{})
+}
+
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error) {

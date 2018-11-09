@@ -780,6 +780,9 @@ type Mutation {
   DebugRequeueEvent(
     eventId: ID!
   ): BertyP2pEventPayload
+  DebugRequeueAll(
+      T: Bool!
+  ): BertyNodeVoidPayload
 }
   
 type Subscription {

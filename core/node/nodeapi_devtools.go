@@ -189,3 +189,11 @@ func (n *Node) DebugRequeueEvent(_ context.Context, input *node.DebugEventRequeu
 
 	return &event, nil
 }
+
+func (n *Node) DebugRequeueAll(_ context.Context, _ *node.Void) (*node.Void, error) {
+	if _, err := n.EventsRetry(time.Now()); err != nil {
+		return nil, errors.Wrap(err, "unable to requeue events")
+	}
+
+	return &node.Void{}, nil
+}

@@ -13,8 +13,9 @@ import {
 } from '../../../Library'
 import { QueryReducer } from '../../../../relay'
 import { colors } from '../../../../constants'
-import { fragments, queries } from '../../../../graphql'
+import { fragments, mutations, queries } from '../../../../graphql'
 import { marginLeft, padding } from '../../../../styles'
+import Button from '../../../Library/Button'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
@@ -218,4 +219,8 @@ export const EventListFilterModal = ({ navigation }) =>
         { value: 2, label: 'AckedAt is defined' },
       ]}
     />
+    <Button onPress={async () => await mutations.debugRequeueAll.commit({ t: true })} icon={'radio'}
+      style={{ textAlign: 'left' }}>
+      Requeue all non acked
+    </Button>
   </FilterModal>
