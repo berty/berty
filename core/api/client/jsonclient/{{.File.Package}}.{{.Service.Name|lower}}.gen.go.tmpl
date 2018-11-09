@@ -5,15 +5,13 @@ package jsonclient
 {{- $file := .File}}
 
 import (
-        "context"
+       "context"
         "encoding/json"
-        "berty.tech/core/api/client"
         "berty.tech/core/{{.File.Name|dir}}"
-        {{- range .File.Dependency := . | getProtoFile}}
-          {{ if (regexMatch "\"berTy[^\"]+\"" ($dependency|string)) }}
-          "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
-          {{ end }}
-        {{- end}}
+        {{- range .File.Dependency -}}{{- $dependency := . | getProtoFile}}
+        "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
+        {{ end -}}
+	"berty.tech/core/api/client"
 )
 
 {{- range $svc := .File.Service}}

@@ -10,11 +10,11 @@ PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_FILES = \
 	$(patsubst %.proto,%.pb.go,$(OUR_PROTOS)) \
-	api/node/graphql/service.gen.graphql \
 	api/client/berty.node.service.gen.go \
-	../client/react-native/common/schema.graphql \
+	api/client/jsonclient/berty.node.service.gen.go \
 	$(call rwildcard $(CODE_PATHS), *.gen.go) \
-	api/p2p/kind.gen.go
+	api/p2p/kind.gen.go \
+	api/node/graphql/service.gen.graphql
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= GO111MODULE=on CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
@@ -135,25 +135,26 @@ dev-deps:
 	$(PROTOC) $(PROTOC_OPTS) --gofast_out=plugins=grpc:"$(GOPATH)/src" "$(dir $<)"/*.proto
 
 # FIXME: use an automated rule that matches every client generated files
-api/client/berty.node.service.gen.go: $(PROTOS)
+api/client/berty.node.service.gen.go api/client/jsonclient/berty.node.service.gen.go: $(PROTOS)
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
 		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
 	); done
+
+	# FIXME: the following hack is due to goimports -w not deleting duplicated imports
 	goimports -w ./api/client
-	sed -i'' '/^$$/d' api/client/*.gen.go
+	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
+	goimports -w ./api/client
+	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
 	goimports -w ./api/client
 
 api/p2p/kind.gen.go: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
 	goimports -w ./api/p2p
 
-
 generate.graphql api/node/graphql/service.gen.graphql: $(PROTOS)
 	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	goimports -w ./api/node/graphql
 	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
-
-../client/react-native/common/schema.graphql: api/node/graphql/service.gen.graphql
-	cp api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
+	cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
