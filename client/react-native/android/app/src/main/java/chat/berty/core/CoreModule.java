@@ -1,12 +1,12 @@
 package chat.berty.core;
 
-import android.util.Log;
+import android.app.Activity;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
-
+import chat.berty.ble.Manager;
 import core.Core;
 
 public class CoreModule extends ReactContextBaseJavaModule {
@@ -14,10 +14,18 @@ public class CoreModule extends ReactContextBaseJavaModule {
     private String filesDir = "";
     private ReactApplicationContext reactContext;
 
-    public CoreModule(ReactApplicationContext reactContext) {
+    public CoreModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
         this.reactContext = reactContext;
+
+        Object o = new Manager.ActivityGetter() {
+            public Activity getCurrentActivity() {
+                return reactContext.getCurrentActivity();
+            }
+        };
+
+        Manager.getInstance().setmReactContext(o, reactContext);
     }
 
     public String getName() {

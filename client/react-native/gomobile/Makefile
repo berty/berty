@@ -7,6 +7,13 @@ CORE_SOURCES := $(shell find $(CORE_PACKAGE) -type f -name "*.go") \
 
 BUILD_PATCH_PATH :=	$(MAKEFILE_DIR)/../../../build/docker/patch
 
+ANDROID_PATH := $(MAKEFILE_DIR)/../android
+BLE_JAR_PATH := $(MAKEFILE_DIR)/../android/ble/build/libs/ble.jar
+BLE_DIR_PATH := $(MAKEFILE_DIR)/../android/ble/build/libs
+BLE_BIND_PATH := /tmp/ble
+
+GOPATH ?=		$(HOME)/go
+
 CGO_CPPFLAGS ?= -I$(MAKEFILE_DIR)/../../common/openssl/built/include
 
 LIBS_PATH := $(MAKEFILE_DIR)/../../common/openssl/built
@@ -18,7 +25,7 @@ ANDROID_NDK_HOME := /usr/local/share/android-ndk/
 ANDROID_ARCHS := aarch64 arm x86_64 x86
 ANDROID_LIBS_PATHS := $(addprefix $(LIBS_PATH)/android/, $(ANDROID_ARCHS))
 ANDROID_LDFLAGS := $(addprefix -L, $(ANDROID_LIBS_PATHS))
-ANDROID_BUILD_PATH := $(MAKEFILE_DIR)/../android/app/libs
+ANDROID_BUILD_PATH := $(MAKEFILE_DIR)/../android/core
 ANDROID_BUILD := $(addprefix $(ANDROID_BUILD_PATH)/core., $(addsuffix .aar, $(ANDROID_ARCHS)))
 
 GOTEST_TIMEOUT ?= 30s
@@ -51,11 +58,18 @@ test:
 .PHONY: build.android
 build.android: $(ANDROID_BUILD_PATH)/core.aar
 
+build.ble: $(BLE_DIR_PATH)/ble.jar
+
+$(BLE_DIR_PATH)/ble.jar:
+	GO111MODULE=on go mod vendor
+	cd $(ANDROID_PATH) && ./gradlew ble:createJar && cd -
+
 $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
+	# GOOS=android gobind -lang=go,java -outdir=$(BLE_BIND_PATH) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar berty.tech/core/network/ble
 	mkdir -p $(ANDROID_BUILD_PATH)
-	cd $(CORE_MOBILE) && CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
-		gomobile bind -v -target=android -o $(ANDROID_BUILD_PATH)/core.aar .
+	cd $(CORE_MOBILE) && GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
+		gomobile bind -v -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android -o $(ANDROID_BUILD_PATH)/core.aar .
 
 .PHONY: build.ios
 build.ios: $(IOS_BUILD_PATH)/core.framework/Core
@@ -81,7 +95,7 @@ clean.ios:
 clean: clean.android clean.ios
 
 .PHONY: re.android
-re.android: clean.android build.android
+re.android: build.ble clean.android build.android
 
 .PHONY: re.ios
 re.ios: clean.ios build.ios

@@ -1,24 +1,15 @@
-// +build darwin
+// +build android darwin
 
 package ble
 
 import (
 	"net"
-	"time"
-	"unsafe"
 
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
-
-/*
-#cgo darwin CFLAGS: -x objective-c -Wno-incompatible-pointer-types -Wno-missing-field-initializers -Wno-missing-prototypes -Werror=return-type -Wdocumentation -Wunreachable-code -Wno-implicit-atomic-properties -Werror=deprecated-objc-isa-usage -Wno-objc-interface-ivars -Werror=objc-root-class -Wno-arc-repeated-use-of-weak -Wimplicit-retain-self -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wdeprecated-implementations -DNS_BLOCK_ASSERTIONS=1 -DOBJC_OLD_DISPATCH_PROTOTYPES=0
-#cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
-#import "ble.h"
-*/
-import "C"
 
 // Listener implement ipfs Listener interface
 type Listener struct {
@@ -34,14 +25,6 @@ type Listener struct {
 
 var listeners map[string]*Listener = make(map[string]*Listener)
 
-//export sendAcceptToListenerForPeerID
-func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.char) {
-	goPeerID := C.GoString(peerID)
-	goble := C.GoString(ble)
-	goIncPeerID := C.GoString(incPeerID)
-	go RealAcceptSender(goPeerID, goble, goIncPeerID)
-}
-
 func RealAcceptSender(peerID string, ble string, incPeerID string) {
 	for {
 		logger().Debug("ACCEPT\n", zap.String("peer", peerID))
@@ -51,28 +34,6 @@ func RealAcceptSender(peerID string, ble string, incPeerID string) {
 			return
 		}
 	}
-}
-
-func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
-	m, _ := lAddr.ValueForProtocol(PBle)
-	val := C.CString(m)
-	peerID := C.CString(hostID.Pretty())
-	defer C.free(unsafe.Pointer(val))
-	defer C.free(unsafe.Pointer(peerID))
-	C.init(val, peerID)
-	time.Sleep(1 * time.Second)
-	go C.startAdvertising()
-	go C.startDiscover()
-	listerner := &Listener{
-		lAddr:           lAddr,
-		incomingBLEUUID: make(chan string),
-		incomingPeerID:  make(chan string),
-		connected:       make(map[string]*Conn),
-		transport:       t,
-	}
-
-	listeners[t.ID] = listerner
-	return listerner
 }
 
 func (b *Listener) Addr() net.Addr {
