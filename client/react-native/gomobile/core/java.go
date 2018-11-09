@@ -38,6 +38,7 @@ func ConnClosed(bleUUID string) {
 }
 
 func BytesToConn(bleUUID string, b []byte) {
+	fmt.Printf("BYTES TO CONN FROM JAVA %+v\n", b)
 	ble.BytesToConn(bleUUID, b)
 }
 

@@ -11,7 +11,6 @@ import (
 	yamux "github.com/whyrusleeping/yamux"
 	"go.uber.org/zap"
 )
-import "time"
 
 type Conn struct {
 	tpt.Conn
@@ -34,15 +33,16 @@ type ConnForSmux struct {
 var conns map[string]*Conn = make(map[string]*Conn)
 
 func BytesToConn(bleUUID string, b []byte) {
-	go func(bleUUID string, b []byte) {
+	tmp := make([]byte, len(b))
+	copy(tmp, b)
+	go func(bleUUID string, tmp []byte) {
 		for {
 			if conn, ok := conns[bleUUID]; ok {
-				conn.incoming <- b
+				conn.incoming <- tmp
 				return
 			}
-			time.Sleep(1 * time.Second)
 		}
-	}(bleUUID, b)
+	}(bleUUID, tmp)
 }
 
 func ConnClosed(bleUUID string) {
