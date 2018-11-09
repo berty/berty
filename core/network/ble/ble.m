@@ -11,8 +11,17 @@
 #include "_cgo_export.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <Foundation/Foundation.h>
+#include <signal.h>
 
 static BertyCentralManager *bcm;
+
+void handleSigInt(int sig) {
+    exit(-1);
+}
+
+void initSignalHandling() {
+    signal(SIGINT, handleSigInt);
+}
 
 void init(char *ma, char *peerID) {
     if (bcm == nil) {
@@ -107,14 +116,14 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
 
         self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
         self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
-
         self.centralManager.delegate = self;
         self.peripheralManager.delegate = self;
-    }
+        initSignalHandling();
 
-    NSLog(@"init finished %@", [self.centralManager retrieveConnectedPeripheralsWithServices:@[self.serviceUUID]]);
-    for (CBPeripheral *peripheral in [self.centralManager retrieveConnectedPeripheralsWithServices:@[self.serviceUUID]]) {
-        [self newDevice:peripheral];
+        NSLog(@"init finished %@", [self.centralManager retrieveConnectedPeripheralsWithServices:@[self.serviceUUID]]);
+        for (CBPeripheral *peripheral in [self.centralManager retrieveConnectedPeripheralsWithServices:@[self.serviceUUID]]) {
+            [self newDevice:peripheral];
+        }
     }
 
     return self;
