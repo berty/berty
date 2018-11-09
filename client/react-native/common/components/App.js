@@ -151,7 +151,7 @@ export default class App extends PureComponent {
   render () {
     const { loading, success, nickname } = this.state
     return (
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
         {loading && (
           <Flex.Rows align='center'>
             <ActivityIndicator size='large' />

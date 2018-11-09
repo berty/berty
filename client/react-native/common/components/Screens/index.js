@@ -1,6 +1,6 @@
 import React, { Fragment, PureComponent } from 'react'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
-import { Animated, Easing } from 'react-native'
+import { Animated, Easing, Platform } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
 import Contacts from './Contacts'
 import Chats from './Chats'
@@ -33,11 +33,13 @@ export const mainTabs = createTabNavigator(
         } else if (routeName === 'settings') {
           iconName = 'settings';
         }
-        return <IconFeather name={iconName} size={25} color={tintColor} />;
+        return <IconFeather name={iconName} size={24} color={tintColor} />;
       },
     }),
-    tabBarTextFontSize: 22,
     tabBarOptions: {
+      showIcon: true,
+      showLabel: true,
+      upperCaseLabel: false,
       activeTintColor: colors.fakeBlack,
       inactiveTintColor: colors.lightGrey,
       indicatorStyle: {
@@ -46,16 +48,13 @@ export const mainTabs = createTabNavigator(
       style: [
         {
           backgroundColor: colors.white,
-          paddingTop: 8,
-          paddingBottom:10,
-          fontSize: 50,
-          height:63,
           borderTopWidth: 0.5,
           borderTopColor: colors.borderGrey,
           shadowColor: colors.shadowGrey,
           shadowOffset: { height: -5, width: 0 },
           shadowOpacity: 0.2,
           shadowRadius: 5,
+          ...(Platform.OS === 'android' ? { height:68, paddingTop: 3 } : { height:64, paddingTop: 5, paddingBottom:6, }),
         },
       ],
     },
