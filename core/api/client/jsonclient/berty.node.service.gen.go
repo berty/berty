@@ -35,6 +35,7 @@ func init() {
 	registerUnary("berty.node.RunIntegrationTests", NodeRunIntegrationTests)
 	registerUnary("berty.node.DebugPing", NodeDebugPing)
 	registerUnary("berty.node.DebugRequeueEvent", NodeDebugRequeueEvent)
+	registerUnary("berty.node.DebugRequeueAll", NodeDebugRequeueAll)
 	registerUnary("berty.node.DeviceInfos", NodeDeviceInfos)
 	registerUnary("berty.node.AppVersion", NodeAppVersion)
 	registerUnary("berty.node.Peers", NodePeers)
@@ -370,6 +371,18 @@ func NodeDebugRequeueEvent(client *client.Client, ctx context.Context, jsonInput
 		return nil, err
 	}
 	return client.Node().DebugRequeueEvent(ctx, &typedInput)
+}
+func NodeDebugRequeueAll(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "DebugRequeueAll"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().DebugRequeueAll(ctx, &typedInput)
 }
 func NodeDeviceInfos(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
