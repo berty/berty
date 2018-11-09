@@ -3,15 +3,22 @@ package node
 import (
 	"encoding/base64"
 
+	"github.com/gogo/protobuf/proto"
+	"github.com/pkg/errors"
+	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
-	"github.com/gogo/protobuf/proto"
-	"github.com/pkg/errors"
-	uuid "github.com/satori/go.uuid"
+	"berty.tech/core/pkg/zapring"
 )
+
+func WithRing(ring *zapring.Ring) NewNodeOption {
+	return func(n *Node) {
+		n.ring = ring
+	}
+}
 
 func WithInitConfig() NewNodeOption {
 	return func(n *Node) {

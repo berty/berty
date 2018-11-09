@@ -8,7 +8,7 @@ require (
 	github.com/pkg/errors v0.8.0
 	github.com/whyrusleeping/go-logging v0.0.0-20170515211332-0457bb6b88fc
 	go.uber.org/zap v1.9.1
-	golang.org/x/mobile v0.0.0-20181010163405-92f3b9caf7ba // indirect
+	golang.org/x/mobile v0.0.0-20181026062114-a27dd33d354d // indirect
 )
 
 replace berty.tech/core v0.0.0 => ../../../core

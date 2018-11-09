@@ -1,12 +1,14 @@
 package node
 
 import (
+	"bufio"
 	"context"
 	crand "crypto/rand"
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"math/rand"
 	"strings"
 	"time"
@@ -196,4 +198,33 @@ func (n *Node) DebugRequeueAll(_ context.Context, _ *node.Void) (*node.Void, err
 	}
 
 	return &node.Void{}, nil
+}
+
+func (n *Node) LogStream(input *node.LogStreamInput, stream node.Service_LogStreamServer) error {
+	if n.ring == nil {
+		return fmt.Errorf("ring not configured")
+	}
+
+	// FIXME: support Continue
+	// FIXME: support LogLevel
+	// FIXME: support Namespaces
+	// FIXME: support Last
+
+	r, w := io.Pipe()
+
+	go func() {
+		n.ring.WriteTo(w)
+		w.Close()
+	}()
+
+	scanner := bufio.NewScanner(r)
+	for scanner.Scan() {
+		err := stream.Send(&node.LogEntry{
+			Line: scanner.Text(),
+		})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

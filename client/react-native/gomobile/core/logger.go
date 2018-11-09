@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"berty.tech/core/pkg/filteredzap"
+	"berty.tech/core/pkg/zapring"
 	p2plog "github.com/ipfs/go-log"
 	"github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
@@ -80,6 +81,8 @@ func getP2PLogLevel(level zapcore.Level) logging.Level {
 	return logging.CRITICAL
 }
 
+var ring = zapring.New(10 * 1024 * 1024)
+
 func setupLogger(logLevel string, mlogger Logger) error {
 	var zapLogLevel zapcore.Level
 	switch logLevel {
@@ -114,9 +117,10 @@ func setupLogger(logLevel string, mlogger Logger) error {
 
 	core := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
 		consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
-		mobileCore := newMobileCore(core, consoleEncoder, mlogger)
-		filteredCore := filteredzap.FilterByNamespace(mobileCore, "*")
-		return filteredCore
+		core = newMobileCore(core, consoleEncoder, mlogger) // mobile logger
+		core = filteredzap.FilterByNamespace(core, "*")     // filtered logger
+		core = ring.Wrap(core, consoleEncoder)              // in-memory ring buffer
+		return core
 	})
 
 	zap.ReplaceGlobals(l.WithOptions(core))
