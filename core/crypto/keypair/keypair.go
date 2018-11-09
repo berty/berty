@@ -61,8 +61,8 @@ func (m *CertificateContent) GetDataToSign() ([]byte, error) {
 		m.Extension,
 		m.PublicKey,
 		IntToBytes(uint64(m.PublicKeyAlgorithm)),
-		[]byte(m.Issuer),
-		[]byte(m.Subject),
+		m.Issuer,
+		m.Subject,
 		IntToBytes(uint64(m.NotBefore.UnixNano())),
 		IntToBytes(uint64(m.NotAfter.UnixNano())),
 	}, []byte("")), nil
@@ -71,8 +71,8 @@ func (m *CertificateContent) GetDataToSign() ([]byte, error) {
 func (m *RevocationContent) GetDataToSign() ([]byte, error) {
 	return bytes.Join([][]byte{
 		m.Extension,
-		[]byte(m.Issuer),
-		[]byte(m.Subject),
+		m.Issuer,
+		m.Subject,
 		IntToBytes(uint64(m.IssuedOn.UnixNano())),
 	}, []byte("")), nil
 }

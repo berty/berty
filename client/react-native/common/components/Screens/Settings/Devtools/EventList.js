@@ -219,7 +219,7 @@ export const EventListFilterModal = ({ navigation }) =>
         { value: 2, label: 'AckedAt is defined' },
       ]}
     />
-    <Button onPress={async () => await mutations.debugRequeueAll.commit({ t: true })} icon={'radio'}
+    <Button onPress={() => mutations.debugRequeueAll.commit({ t: true })} icon={'radio'}
       style={{ textAlign: 'left' }}>
       Requeue all non acked
     </Button>
