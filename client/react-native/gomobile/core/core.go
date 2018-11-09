@@ -1,23 +1,28 @@
 package core
 
 import (
-	"errors"
+	"encoding/json"
 	"fmt"
 	"net"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
+
 	account "berty.tech/core/manager/account"
 	reuse "github.com/libp2p/go-reuseport"
 	"go.uber.org/zap"
 )
 
+var (
+	accountName = ""
+	appConfig   *account.StateDB
+)
+
 func logger() *zap.Logger {
 	return zap.L().Named("client.rn.gomobile")
 }
-
-var accountName = ""
 
 func panicHandler() {
 	if r := recover(); r != nil {
@@ -66,6 +71,27 @@ func ListAccounts(datastorePath string) (string, error) {
 	return strings.Join(accounts, ":"), nil
 }
 
+func initOrRestoreAppState(datastorePath string) error {
+	initialJSONNetConf, err := json.Marshal(initialNetConf)
+	if err != nil {
+		return err
+	}
+
+	// Needed by OpenStateDB to init DB if no previous config is found (first launch)
+	initialState := account.StateDB{
+		JSONNetConf: string(initialJSONNetConf),
+		BotMode:     initialBotMode,
+	}
+
+	appState, err := account.OpenStateDB(datastorePath+"berty.state.db", initialState)
+	if err != nil {
+		return errors.Wrap(err, "state DB init failed")
+	}
+
+	appConfig = appState
+	return nil
+}
+
 func Start(nickname, datastorePath string, loggerNative Logger) error {
 
 	defer panicHandler()
@@ -76,6 +102,11 @@ func Start(nickname, datastorePath string, loggerNative Logger) error {
 	if a != nil {
 		return errors.New("daemon already started")
 	}
+
+	if err := initOrRestoreAppState(datastorePath); err != nil {
+		return errors.Wrap(err, "app init/restore state failed")
+	}
+
 	run(nickname, datastorePath, loggerNative)
 	waitDaemon(nickname)
 	return nil
@@ -133,7 +164,6 @@ func waitDaemon(nickname string) {
 }
 
 func daemon(nickname, datastorePath string, loggerNative Logger) error {
-
 	defer panicHandler()
 
 	grpcPort, err := getRandomPort()
@@ -146,14 +176,20 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 	}
 
 	var a *account.Account
-	a, err = account.New(
+
+	netConf, err := createNetworkConfig()
+	if err != nil {
+		return err
+	}
+
+	accountOptions := account.Options{
 		account.WithName(nickname),
 		account.WithPassphrase("secure"),
 		account.WithDatabase(&account.DatabaseOptions{
 			Path: datastorePath,
 			Drop: false,
 		}),
-		account.WithP2PNetwork(createNetworkConfig()),
+		account.WithP2PNetwork(netConf),
 		account.WithGrpcServer(&account.GrpcServerOptions{
 			Bind:         fmt.Sprintf(":%d", grpcPort),
 			Interceptors: false,
@@ -162,7 +198,13 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 			Bind:         fmt.Sprintf(":%d", gqlPort),
 			Interceptors: false,
 		}),
-	)
+	}
+
+	if appConfig.BotMode {
+		accountOptions = append(accountOptions, account.WithBot())
+	}
+
+	a, err = account.New(accountOptions...)
 	if err != nil {
 		return err
 	}
