@@ -2,7 +2,7 @@ package core
 
 import (
 	"encoding/json"
-	"errors"
+	"github.com/pkg/errors"
 
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/network/p2p"
@@ -12,69 +12,73 @@ type networkConfig struct {
 	DefaultTransport   bool
 	BluetoothTransport bool
 	DefaultBootstrap   bool
-	Bootstrap          []string
+	CustomBootstrap    []string
 	MDNS               bool
 	Relay              bool
 }
 
-var currentNetworkConfig = networkConfig{
-	DefaultTransport:   true,
-	BluetoothTransport: false,
-	DefaultBootstrap:   true,
-	Bootstrap:          []string{},
-	MDNS:               false,
-	Relay:              false,
-}
+func createNetworkConfig() (*account.P2PNetworkOptions, error) {
+	var (
+		netConf   networkConfig
+		bind      []string
+		transport []string
+		bootstrap []string
+	)
 
-func createNetworkConfig() *account.P2PNetworkOptions {
-	var transport []string
+	if err := json.Unmarshal([]byte(appConfig.JSONNetConf), &netConf); err != nil {
+		return nil, errors.Wrap(err, "JSONNetConf unmarshal failed")
+	}
 
-	if currentNetworkConfig.DefaultTransport {
+	if netConf.DefaultTransport {
 		transport = append(transport, "default")
+		bind = append(bind, defaultBind)
 	}
-	if currentNetworkConfig.BluetoothTransport {
+	if netConf.BluetoothTransport {
 		transport = append(transport, "ble")
+		bind = append(bind, defaultBLEBind)
 	}
-	if currentNetworkConfig.DefaultBootstrap {
-		currentNetworkConfig.Bootstrap = append(currentNetworkConfig.Bootstrap, p2p.DefaultBootstrap...)
+
+	if netConf.DefaultBootstrap {
+		bootstrap = append(bootstrap, p2p.DefaultBootstrap...)
 	}
+	bootstrap = append(bootstrap, netConf.CustomBootstrap...)
 
 	return &account.P2PNetworkOptions{
-		Bind:      []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"},
+		Bind:      bind,
 		Transport: transport,
-		Bootstrap: currentNetworkConfig.Bootstrap,
-		MDNS:      currentNetworkConfig.MDNS,
-		Relay:     currentNetworkConfig.Relay,
-		Metrics:   true,
-		Identity:  "",
-	}
+		Bootstrap: bootstrap,
+		MDNS:      netConf.MDNS,
+		Relay:     netConf.Relay,
+		Metrics:   defaultMetrics,
+		Identity:  defaultIdentity,
+	}, nil
 }
 
-func GetNetworkConfig() (string, error) {
-	json, err := json.Marshal(currentNetworkConfig)
-	if err != nil {
-		return "", err
-	}
-
-	return string(json), nil
+func GetNetworkConfig() string {
+	return string(appConfig.JSONNetConf)
 }
 
 func UpdateNetworkConfig(jsonConf string) error {
+	waitDaemon()
 	currentAccount, _ := account.Get(accountName)
-	if currentAccount == nil {
-		return errors.New("account not running")
-	}
 
 	var newNetworkConfig networkConfig
-
 	if err := json.Unmarshal([]byte(jsonConf), &newNetworkConfig); err != nil {
 		return err
 	}
 
-	currentNetworkConfig = newNetworkConfig
-
-	if err := currentAccount.UpdateP2PNetwork(createNetworkConfig()); err != nil {
+	netConf, err := createNetworkConfig()
+	if err != nil {
 		return err
+	}
+	if err := currentAccount.UpdateP2PNetwork(netConf); err != nil {
+		return err
+	}
+
+	appConfig.JSONNetConf = jsonConf
+	appConfig.StartCounter++
+	if err := appConfig.Save(); err != nil {
+		return errors.Wrap(err, "state DB save failed")
 	}
 
 	return nil
