@@ -12,6 +12,7 @@ import (
 	"berty.tech/core/network/mock"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/pkg/jaeger"
+	"berty.tech/core/pkg/zapring"
 	"github.com/99designs/gqlgen/graphql"
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
@@ -27,6 +28,13 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
+
+func WithRing(ring *zapring.Ring) NewOption {
+	return func(a *Account) error {
+		a.ring = ring
+		return nil
+	}
+}
 
 func WithName(name string) NewOption {
 	return func(a *Account) error {

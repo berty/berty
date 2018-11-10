@@ -40,6 +40,7 @@ func init() {
 	registerUnary("berty.node.AppVersion", NodeAppVersion)
 	registerUnary("berty.node.Peers", NodePeers)
 	registerUnary("berty.node.Protocols", NodeProtocols)
+	registerServerStream("berty.node.LogStream", NodeLogStream)
 	registerServerStream("berty.node.MonitorBandwidth", NodeMonitorBandwidth)
 	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
 	registerUnary("berty.node.Panic", NodePanic)
@@ -431,6 +432,34 @@ func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte)
 		return nil, err
 	}
 	return client.Node().Protocols(ctx, &typedInput)
+}
+func NodeLogStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "LogStream"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.LogStreamInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().LogStream(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+	return streamProxy, nil
 }
 func NodeMonitorBandwidth(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",

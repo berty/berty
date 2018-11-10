@@ -88,6 +88,7 @@ require (
 	github.com/libp2p/go-tcp-transport v2.0.14+incompatible // indirect
 	github.com/libp2p/go-testutil v1.2.8 // indirect
 	github.com/libp2p/go-ws-transport v2.0.14+incompatible // indirect
+	github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/mattn/go-sqlite3 v1.9.0 // indirect

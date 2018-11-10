@@ -19,6 +19,7 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
+	"berty.tech/core/pkg/zapring"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
 	"github.com/jinzhu/gorm"
@@ -76,6 +77,8 @@ type Account struct {
 	dialTracerCloser   io.Closer
 
 	errChan chan error
+
+	ring *zapring.Ring
 }
 
 var list []*Account
@@ -235,6 +238,9 @@ func (a *Account) Close() {
 	if a.BotRunning {
 		_ = a.StopBot()
 	}
+	if a.ring != nil {
+		a.ring.Close()
+	}
 }
 
 // Database
@@ -392,6 +398,7 @@ func (a *Account) initNode() error {
 		node.WithInitConfig(),
 		node.WithSoftwareCrypto(), // FIXME: use hardware impl if available
 		node.WithConfig(),
+		node.WithRing(a.ring),
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize node")

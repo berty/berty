@@ -200,6 +200,14 @@ type ComplexityRoot struct {
 		FinishedAt func(childComplexity int) int
 	}
 
+	BertyNodeLogEntry struct {
+		Line func(childComplexity int) int
+	}
+
+	BertyNodeLogEntryPayload struct {
+		Line func(childComplexity int) int
+	}
+
 	BertyNodePageInfo struct {
 		StartCursor     func(childComplexity int) int
 		EndCursor       func(childComplexity int) int
@@ -606,6 +614,7 @@ type ComplexityRoot struct {
 
 	Subscription struct {
 		EventStream      func(childComplexity int, filter *p2p.Event) int
+		LogStream        func(childComplexity int, continues bool, logLevel string, namespaces string, last int32) int
 		MonitorBandwidth func(childComplexity int, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) int
 		MonitorPeers     func(childComplexity int, T bool) int
 	}
@@ -694,6 +703,7 @@ type QueryResolver interface {
 }
 type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
+	LogStream(ctx context.Context, continues bool, logLevel string, namespaces string, last int32) (<-chan *node.LogEntry, error)
 	MonitorBandwidth(ctx context.Context, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) (<-chan *p2p.BandwidthStats, error)
 	MonitorPeers(ctx context.Context, T bool) (<-chan *p2p.Peer, error)
 }
@@ -2425,6 +2435,48 @@ func field_Subscription_EventStream_args(rawArgs map[string]interface{}) (map[st
 
 }
 
+func field_Subscription_LogStream_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["continues"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["continues"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["logLevel"]; ok {
+		var err error
+		arg1, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["logLevel"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["namespaces"]; ok {
+		var err error
+		arg2, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["namespaces"] = arg2
+	var arg3 int32
+	if tmp, ok := rawArgs["last"]; ok {
+		var err error
+		arg3, err = models.UnmarshalInt32(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg3
+	return args, nil
+
+}
+
 func field_Subscription_MonitorBandwidth_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *string
@@ -3195,6 +3247,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeIntegrationTestPayload.FinishedAt(childComplexity), true
+
+	case "BertyNodeLogEntry.line":
+		if e.complexity.BertyNodeLogEntry.Line == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogEntry.Line(childComplexity), true
+
+	case "BertyNodeLogEntryPayload.line":
+		if e.complexity.BertyNodeLogEntryPayload.Line == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogEntryPayload.Line(childComplexity), true
 
 	case "BertyNodePageInfo.startCursor":
 		if e.complexity.BertyNodePageInfo.StartCursor == nil {
@@ -4968,6 +5034,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Subscription.EventStream(childComplexity, args["filter"].(*p2p.Event)), true
+
+	case "Subscription.LogStream":
+		if e.complexity.Subscription.LogStream == nil {
+			break
+		}
+
+		args, err := field_Subscription_LogStream_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.LogStream(childComplexity, args["continues"].(bool), args["logLevel"].(string), args["namespaces"].(string), args["last"].(int32)), true
 
 	case "Subscription.MonitorBandwidth":
 		if e.complexity.Subscription.MonitorBandwidth == nil {
@@ -8100,6 +8178,112 @@ func (ec *executionContext) _BertyNodeIntegrationTestPayload_finishedAt(ctx cont
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
+}
+
+var bertyNodeLogEntryImplementors = []string{"BertyNodeLogEntry"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeLogEntry(ctx context.Context, sel ast.SelectionSet, obj *node.LogEntry) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeLogEntryImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeLogEntry")
+		case "line":
+			out.Values[i] = ec._BertyNodeLogEntry_line(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogEntry_line(ctx context.Context, field graphql.CollectedField, obj *node.LogEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogEntry",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Line, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyNodeLogEntryPayloadImplementors = []string{"BertyNodeLogEntryPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeLogEntryPayload(ctx context.Context, sel ast.SelectionSet, obj *node.LogEntry) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeLogEntryPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeLogEntryPayload")
+		case "line":
+			out.Values[i] = ec._BertyNodeLogEntryPayload_line(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogEntryPayload_line(ctx context.Context, field graphql.CollectedField, obj *node.LogEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogEntryPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Line, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
 }
 
 var bertyNodePageInfoImplementors = []string{"BertyNodePageInfo"}
@@ -17707,6 +17891,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	switch fields[0].Name {
 	case "EventStream":
 		return ec._Subscription_EventStream(ctx, fields[0])
+	case "LogStream":
+		return ec._Subscription_LogStream(ctx, fields[0])
 	case "MonitorBandwidth":
 		return ec._Subscription_MonitorBandwidth(ctx, fields[0])
 	case "MonitorPeers":
@@ -17744,6 +17930,39 @@ func (ec *executionContext) _Subscription_EventStream(ctx context.Context, field
 			}
 
 			return ec._BertyP2pEventPayload(ctx, field.Selections, res)
+		}())
+		return &out
+	}
+}
+
+func (ec *executionContext) _Subscription_LogStream(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Subscription_LogStream_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Field: field,
+	})
+	rctx := ctx // FIXME: subscriptions are missing request middleware stack https://github.com/99designs/gqlgen/issues/259
+	results, err := ec.resolvers.Subscription().LogStream(rctx, args["continues"].(bool), args["logLevel"].(string), args["namespaces"].(string), args["last"].(int32))
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-results
+		if !ok {
+			return nil
+		}
+		var out graphql.OrderedMap
+		out.Add(field.Alias, func() graphql.Marshaler {
+			if res == nil {
+				return graphql.Null
+			}
+
+			return ec._BertyNodeLogEntryPayload(ctx, field.Selections, res)
 		}())
 		return &out
 	}
@@ -20165,6 +20384,9 @@ type BertyNodePageInfo  {
 type BertyNodeVoid  {
       T: Bool!
 }
+type BertyNodeLogEntry  {
+      line: String!
+}
 type BertyP2pPeerPayload {
       id: String!
       addrs: [String!]
@@ -20310,6 +20532,9 @@ type BertyP2pPeersPayload {
 }
 type BertyNodeProtocolsPayload {
       protocols: [String!]
+}
+type BertyNodeLogEntryPayload {
+      line: String!
 }
 type BertyP2pBandwidthStatsPayload {
       id: String
@@ -20500,6 +20725,12 @@ type Subscription {
   EventStream(
     filter: BertyP2pEventInput
   ): BertyP2pEventPayload
+  LogStream(
+      continues: Bool!
+      logLevel: String!
+      namespaces: String!
+      last: Int32!
+  ): BertyNodeLogEntryPayload
   MonitorBandwidth(
       id: String
       totalIn: Int64

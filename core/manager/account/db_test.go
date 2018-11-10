@@ -14,7 +14,7 @@ func TestStateDB(t *testing.T) {
 		So(err, ShouldBeNil)
 		defer os.Remove(tmpFile.Name())
 
-		state, err := OpenStateDB(tmpFile.Name())
+		state, err := OpenStateDB(tmpFile.Name(), StateDB{})
 		So(err, ShouldBeNil)
 		defer state.Close()
 		So(state.StartCounter, ShouldEqual, 0)
@@ -25,7 +25,7 @@ func TestStateDB(t *testing.T) {
 
 		state.Close()
 
-		state, err = OpenStateDB(tmpFile.Name())
+		state, err = OpenStateDB(tmpFile.Name(), StateDB{})
 		So(err, ShouldBeNil)
 		defer state.Close()
 		So(state.StartCounter, ShouldEqual, 1)
