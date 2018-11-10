@@ -17,6 +17,7 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/pkg/filteredzap"
+	"berty.tech/core/pkg/zapring"
 )
 
 type p2pLogBackendWrapper struct {
@@ -94,6 +95,8 @@ func newRootCommand() *cobra.Command {
 	return cmd
 }
 
+var ring = zapring.New(10 * 1024 * 1024)
+
 func setupLogger(cmd *cobra.Command, args []string) error {
 	randSeed, err := cmd.Flags().GetInt64("rand-seed")
 	if err != nil {
@@ -137,10 +140,14 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 		panic(err)
 	}
 
-	filtered := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
-		return filteredzap.FilterByNamespace(core, patternsString)
+	core := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
+		consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
+		core = ring.Wrap(core, consoleEncoder)                     // in-memory ring buffer
+		core = filteredzap.FilterByNamespace(core, patternsString) // filter
+		return core
 	})
-	zap.ReplaceGlobals(l.WithOptions(filtered))
+
+	zap.ReplaceGlobals(l.WithOptions(core))
 	logger().Debug("logger initialized")
 
 	// configure p2p log

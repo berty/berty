@@ -1549,3 +1549,31 @@ models:
     fields:
       eventId:
         resolver: true
+
+  BertyNodeLogStreamInput:
+    model: berty.tech/core/api/node.LogStreamInput
+    fields:
+      continues:
+      logLevel:
+      namespaces:
+      last:
+  BertyNodeLogStreamInputPayload:
+    model: berty.tech/core/api/node.LogStreamInput
+    fields:
+      continues:
+      logLevel:
+      namespaces:
+      last:
+
+  BertyNodeLogEntry:
+    model: berty.tech/core/api/node.LogEntry
+    fields:
+      line:
+  BertyNodeLogEntryInput:
+    model: berty.tech/core/api/node.LogEntry
+    fields:
+      line:
+  BertyNodeLogEntryPayload:
+    model: berty.tech/core/api/node.LogEntry
+    fields:
+      line:

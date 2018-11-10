@@ -183,6 +183,7 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 	}
 
 	accountOptions := account.Options{
+		account.WithRing(ring),
 		account.WithName(nickname),
 		account.WithPassphrase("secure"),
 		account.WithDatabase(&account.DatabaseOptions{

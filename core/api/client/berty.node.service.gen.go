@@ -86,6 +86,24 @@ func (c *Client) ConversationList(ctx context.Context, input *node.ConversationL
 	}
 	return entries, nil
 }
+func (c *Client) LogStream(ctx context.Context, input *node.LogStreamInput) ([]*node.LogEntry, error) {
+	stream, err := c.Node().LogStream(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*node.LogEntry
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
 func (c *Client) MonitorBandwidth(ctx context.Context, input *p2p.BandwidthStats) ([]*p2p.BandwidthStats, error) {
 	stream, err := c.Node().MonitorBandwidth(ctx, input)
 	if err != nil {
