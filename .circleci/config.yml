@@ -262,7 +262,7 @@ jobs:
       - run:
           name: build app
           command: |
-            /tmp/retry -m 3 bundle exec fastlane android beta
+            /tmp/retry -m 3 bundle exec fastlane android beta || true
 
   client.rn.ios:
     working_directory: ~/go/src/berty.tech
