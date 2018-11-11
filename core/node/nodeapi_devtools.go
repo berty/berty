@@ -93,13 +93,25 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 				ID: contacts[rand.Intn(len(contacts))].ID,
 			})
 		}
-		if _, err := n.ConversationCreate(context.Background(), &node.ConversationCreateInput{
+		if _, err := n.conversationCreate(context.Background(), &node.ConversationCreateInput{
 			Contacts: contactsMembers,
 			Title:    strings.Title(fmt.Sprintf("%s %s", gofakeit.HipsterWord(), gofakeit.HackerNoun())),
 			Topic:    gofakeit.HackerPhrase(),
 		}); err != nil {
 			return nil, errors.Wrap(err, "failed to create conversation")
 		}
+	}
+
+	// enqueue fake incoming event
+	in := n.NewContactEvent(&entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
+	if err := n.EnqueueClientEvent(in); err != nil {
+		return nil, err
+	}
+
+	// enqueue fake outgoing event
+	out := n.NewContactEvent(&entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
+	if err := n.EnqueueOutgoingEvent(out); err != nil {
+		return nil, err
 	}
 
 	return &node.Void{}, nil

@@ -414,7 +414,7 @@ func (a *Account) startNode() error {
 	// start node
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.node.Start()
+		a.errChan <- a.node.Start(true)
 
 	}()
 

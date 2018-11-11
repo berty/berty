@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"berty.tech/core/api/p2p"
 	"berty.tech/core/network/mock"
 )
 
@@ -95,4 +96,27 @@ func shouldIContinue(t *testing.T) {
 
 func everythingWentFine() {
 	lastTestSucceed = true
+}
+
+//
+// get async events with timeout
+//
+
+func asyncEventsWithTimeout(eventStream chan *p2p.Event, n int) ([]*p2p.Event, []*p2p.Event, error) {
+	var incomings, outgoings []*p2p.Event
+
+	for i := 0; i < n; i++ {
+		select {
+		case event := <-eventStream:
+			if event.Direction == p2p.Event_Incoming {
+				incomings = append(incomings, event)
+			} else {
+				outgoings = append(outgoings, event)
+			}
+		case <-time.After(1 * time.Second): // max 1 sec timeout
+			return nil, nil, fmt.Errorf("timeout")
+		}
+	}
+
+	return incomings, outgoings, nil
 }
