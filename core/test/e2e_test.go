@@ -85,9 +85,12 @@ func TestWithEnqueuer(t *testing.T) {
 					//jsonPrintIndent(event)
 				}
 				{
-					event := <-bob.eventStream
-					So(event.Kind, ShouldEqual, p2p.Kind_DevtoolsMapset)
-					//jsonPrintIndent(event)
+					in, out, err := asyncEventsWithTimeout(bob.eventStream, 2)
+					So(err, ShouldBeNil)
+					So(len(in), ShouldEqual, 1)
+					So(len(out), ShouldEqual, 1)
+					So(in[0].Kind, ShouldEqual, p2p.Kind_DevtoolsMapset)
+					So(out[0].Kind, ShouldEqual, p2p.Kind_Ack)
 				}
 			}
 			So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
@@ -175,6 +178,13 @@ func TestWithEnqueuer(t *testing.T) {
 				So(res.DisplayName, ShouldBeEmpty)
 				So(res.DisplayStatus, ShouldBeEmpty)
 				So(len(res.Devices), ShouldEqual, 0)
+
+				in, out, err := asyncEventsWithTimeout(alice.eventStream, 1)
+				So(err, ShouldBeNil)
+				So(len(in), ShouldEqual, 0)
+				So(len(out), ShouldEqual, 1)
+				So(out[0].Kind, ShouldEqual, p2p.Kind_ContactRequest)
+
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 0, 0, 0, 0})
 
 				everythingWentFine()
@@ -224,14 +234,18 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
 			Convey("Bob emits the ContactRequest event to its client", FailureHalts, func() {
 				shouldIContinue(t)
 
-				event := <-bob.eventStream
+				in, out, err := asyncEventsWithTimeout(bob.eventStream, 2)
+				So(err, ShouldBeNil)
+				So(len(in), ShouldEqual, 1)
+				So(len(out), ShouldEqual, 1)
+				event := in[0]
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
@@ -310,7 +324,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				time.Sleep(time.Second * 1)
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 2, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 2, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -332,14 +346,20 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 1, 1, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 3, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
 			Convey("Alice emits the ContactRequestAccepted event to its clients", FailureHalts, func() {
 				shouldIContinue(t)
 
-				event := <-alice.eventStream
+				in, out, err := asyncEventsWithTimeout(alice.eventStream, 3)
+				So(err, ShouldBeNil)
+				So(len(in), ShouldEqual, 1)
+				So(len(out), ShouldEqual, 2)
+				event := in[0]
+
+				//jsonPrintIndent(event)
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
@@ -347,7 +367,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
 				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -370,14 +390,18 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 0, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 2, 0, 2, 0, 0})
 
 				everythingWentFine()
 			})
 			Convey("Alice emits the ContactShareMe event to its client", FailureHalts, func() {
 				shouldIContinue(t)
 
-				event := <-alice.eventStream
+				in, out, err := asyncEventsWithTimeout(alice.eventStream, 2)
+				So(err, ShouldBeNil)
+				So(len(in), ShouldEqual, 1)
+				So(len(out), ShouldEqual, 1)
+				event := in[0]
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
@@ -387,7 +411,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(attrs.Me.DisplayName, ShouldEqual, "Bob")
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 0, 0, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 0, 0, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -412,7 +436,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 1, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 4, 0, 0})
 
 				everythingWentFine()
 			})
@@ -435,7 +459,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 1, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 4, 0, 0})
 
 				everythingWentFine()
 			})
@@ -458,7 +482,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 1, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 4, 0, 0})
 
 				everythingWentFine()
 			})
@@ -480,14 +504,18 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 1, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 4, 0, 0})
 
 				everythingWentFine()
 			})
 			Convey("Bob emits the ContactShareMe event to its client", FailureHalts, func() {
 				shouldIContinue(t)
 
-				event := <-bob.eventStream
+				in, out, err := asyncEventsWithTimeout(bob.eventStream, 4)
+				So(err, ShouldBeNil)
+				So(len(in), ShouldEqual, 1)
+				So(len(out), ShouldEqual, 3)
+				event := in[0]
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
@@ -671,6 +699,8 @@ func TestAliasesFlow(t *testing.T) {
 			})
 
 			So(err, ShouldBeNil)
+
+			time.Sleep(200 * time.Millisecond)
 
 			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)

@@ -1,7 +1,3 @@
-berty.tech v0.0.0-20181022155922-f32cfaad3875 h1:idZm5uDumAQzxQHAfTnmaxGqFOO6KC6/qHIEo0pyX1w=
-berty.tech v0.0.0-20181023103937-6f6ce2eea59a h1:5XLFVgNTFR7/oD1a6amaLQ5oCOXteavfPzwm9vwljF4=
-berty.tech v0.0.0-20181023133502-f897998c663b h1:H1iL7aMkf5y+JE8z2e63xM3ceJYDSwVsXET5kNXyGss=
-berty.tech v0.0.0-20181031153117-b329d9e0528f h1:4MN99eOxuAzwg+Po0PNDVD7EFtV44h9Tc3YCY8vCGSw=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.30.0 h1:xKvyLgk56d0nksWq49J0UyGEeUIicTl4+UBiX1NPX9g=
 cloud.google.com/go v0.30.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -205,6 +201,8 @@ github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDe
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43 h1:Fefy2DSaKkme73mCUM2YJxNmi4dC1vrGzs+sjcoxXE4=
 github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43/go.mod h1:2R57jb7EgkTrwIT4IRrrJ2I4m10M83Zf7e6ej1Cer9c=
+github.com/maruel/ut v1.0.0 h1:Tg5f5waOijrohsOwnMlr1bZmv+wHEbuMEacNBE8kQ7k=
+github.com/maruel/ut v1.0.0/go.mod h1:I68ffiAt5qre9obEVTy7S2/fj2dJku2NYLvzPuY0gqE=
 github.com/mattn/go-colorable v0.0.9 h1:UVL0vNpWh04HeJXV0KLcaT7r06gOH2l4OW6ddYRUIY4=
 github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
 github.com/mattn/go-isatty v0.0.4 h1:bnP0vzxcAdeI1zdubAl5PjU6zsERjGZb7raWodagDYs=
