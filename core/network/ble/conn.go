@@ -3,6 +3,8 @@
 package ble
 
 import (
+	"sync"
+
 	ic "github.com/libp2p/go-libp2p-crypto"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
@@ -30,14 +32,19 @@ type ConnForSmux struct {
 	*Conn
 }
 
-var conns map[string]*Conn = make(map[string]*Conn)
+var conns sync.Map
+
+func getConn(bleUUID string) (*Conn, bool) {
+	c, ok := conns.Load(bleUUID)
+	return c.(*Conn), ok
+}
 
 func BytesToConn(bleUUID string, b []byte) {
 	tmp := make([]byte, len(b))
 	copy(tmp, b)
 	go func(bleUUID string, tmp []byte) {
 		for {
-			if conn, ok := conns[bleUUID]; ok {
+			if conn, ok := getConn(bleUUID); ok {
 				conn.incoming <- tmp
 				return
 			}
@@ -46,16 +53,16 @@ func BytesToConn(bleUUID string, b []byte) {
 }
 
 func ConnClosed(bleUUID string) {
-	if conn, ok := conns[bleUUID]; ok {
-		delete(conns, bleUUID)
+	if conn, ok := getConn(bleUUID); ok {
+		conns.Delete(bleUUID)
 		conn.closed = true
 		conn.sess.Close()
 	}
 }
 
 func ConnClose(bleUUID string) {
-	if conn, ok := conns[bleUUID]; ok {
-		delete(conns, bleUUID)
+	if conn, ok := getConn(bleUUID); ok {
+		conns.Delete(bleUUID)
 		conn.sess.Close()
 	}
 }
@@ -91,7 +98,7 @@ func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, 
 	}
 
 	st, _ := rAddr.ValueForProtocol(PBle)
-	conns[st] = &conn
+	conns.Store(st, &conn)
 	return conn
 }
 

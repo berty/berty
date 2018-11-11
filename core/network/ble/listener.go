@@ -19,7 +19,6 @@ type Listener struct {
 	network         string
 	incomingBLEUUID chan string
 	incomingPeerID  chan string
-	connected       map[string]*Conn
 	lAddr           ma.Multiaddr
 }
 
@@ -53,7 +52,7 @@ func (b *Listener) Accept() (tpt.Conn, error) {
 		bleUUID := <-b.incomingBLEUUID
 		peerIDb58 := <-b.incomingPeerID
 		for {
-			if ci, ok := conns[bleUUID]; !ok {
+			if ci, ok := getConn(bleUUID); !ok {
 				rAddr, err := ma.NewMultiaddr("/ble/" + bleUUID)
 				if err != nil {
 					return nil, err
