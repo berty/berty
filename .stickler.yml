@@ -1,8 +1,7 @@
 linters:
 
-  # disabling golint while stickler doesn't support excluding some rules
-  #golint:
-  #  fixer: false
+  golangcilint:
+    config: .golangci.yml
 
   shellcheck:
     shell: bash
