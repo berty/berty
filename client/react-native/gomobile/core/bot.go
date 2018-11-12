@@ -1,12 +1,12 @@
 package core
 
 import (
-	"github.com/pkg/errors"
-
 	account "berty.tech/core/manager/account"
+	"github.com/pkg/errors"
 )
 
 func IsBotRunning() bool {
+	defer panicHandler()
 	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 
@@ -14,6 +14,7 @@ func IsBotRunning() bool {
 }
 
 func StartBot() error {
+	defer panicHandler()
 	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 
@@ -32,6 +33,7 @@ func StartBot() error {
 }
 
 func StopBot() error {
+	defer panicHandler()
 	waitDaemon(accountName)
 	currentAccount, _ := account.Get(accountName)
 

@@ -11,9 +11,9 @@
 #import <React/RCTRootView.h>
 #import <React/RCTLinkingManager.h>
 #import <React/RCTPushNotificationManager.h>
+#import <signal.h>
 
 @implementation AppDelegate
-
 
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
@@ -31,6 +31,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+
     NSURL *jsCodeLocation;
 
     jsCodeLocation = [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];

@@ -1,20 +1,10 @@
-/* eslint-disable */
-if (!__DEV__) {
-  console.error = console.warn
-}
-console.warn = () => {}
+import './helpers/crash-handler.js'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { NativeModules, Platform, AppRegistry } from 'react-native'
+import { Platform, AppRegistry } from 'react-native'
 import App from './components/App'
-/* eslint-enable */
 
 if (Platform.OS === 'web') {
-  NativeModules.CoreModule = {
-    start: async () => {},
-    getPort: async () => '8700',
-    getUnixSockPath: async () => 'localhost:8700',
-  }
   ReactDOM.render(<App />, document.getElementById('root'))
   import('./registerServiceWorker').then()
 } else {
