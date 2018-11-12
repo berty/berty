@@ -39,12 +39,12 @@ export default class List extends PureComponent {
       <Menu.Section>
         <Menu.Item
           icon='lock'
-          title='Security & privacy'
+          title='Security & privacy (not implem.)'
           onPress={() => navigation.push('settings/security-and-privacy')}
         />
         <Menu.Item
           icon='send'
-          title='Messages settings'
+          title='Messages settings (not implem.)'
           onPress={() => navigation.push('settings/messages-settings')}
         />
         <Menu.Item
@@ -61,7 +61,7 @@ export default class List extends PureComponent {
         />
         <Menu.Item
           icon='activity'
-          title='News'
+          title='News (not implem.)'
           onPress={() => navigation.push('settings/news')}
         />
       </Menu.Section>
