@@ -89,7 +89,7 @@ export default class MyAccount extends PureComponent {
         <Menu.Section>
           <Menu.Item
             icon='trash-2'
-            title='Delete my account'
+            title='Delete my account (not implem.)'
             color={colors.error}
             onPress={() => console.error('delete my account: not implemented')}
           />

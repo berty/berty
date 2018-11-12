@@ -44,7 +44,7 @@ export default class Detail extends PureComponent {
         'Are you sure you want to block this contact?',
         [
           {
-            text: 'Block it',
+            text: 'Block it (not implem.)',
             onPress: () => this.blockContact(),
             style: 'destructive',
           },
@@ -85,12 +85,12 @@ export default class Detail extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='message-circle'
-              title='Send a message'
+              title='Send a message (not implem.)'
               onPress={() => console.log('Send')}
             />
             <Menu.Item
               icon='phone'
-              title='Call'
+              title='Call (not implem.)'
               onPress={() => console.log('Call')}
             />
           </Menu.Section>

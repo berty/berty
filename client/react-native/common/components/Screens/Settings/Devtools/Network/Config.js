@@ -165,7 +165,7 @@ export default class Network extends PureComponent {
             }
           />
           <Menu.Item
-            title='Custom bootstrap (not implem. yet)'
+            title='Custom bootstrap (not implem.)'
             onPress={() => this.hasConfigChanged()}
           />
         </Menu.Section>
