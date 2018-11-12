@@ -17,6 +17,7 @@ func initBleFunc() {
 	ble.StartAdvertising = Manager.GetInstance().StartAdvertising
 	ble.Write = Manager.GetInstance().Write
 	ble.DialPeer = Manager.GetInstance().DialPeer
+	ble.InitScannerAndAdvertiser = Manager.GetInstance().InitScannerAndAdvertiser
 }
 
 func JavaToGo() string {
