@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { ActivityIndicator, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, Platform, View } from 'react-native'
 import React, { Fragment, PureComponent } from 'react'
 
 import { QueryReducer } from '../../../relay'
@@ -64,6 +64,7 @@ const Message = fragments.Event(props => {
 class Input extends PureComponent {
   state = {
     input: '',
+    height: 16,
   }
 
   onSubmit = () => {
@@ -87,25 +88,59 @@ class Input extends PureComponent {
 
   render() {
     return (
-      <Text
-        left
-        middle
-        padding
-        margin
-        height={32}
-        rounded={32}
-        icon="edit-2"
-        input={{
-          returnKeyType: 'send',
-          onChangeText: input => this.setState({ input }),
-          placeholder: 'Write a secure message...',
-          autoFocus: true,
-          value: this.state.input,
-        }}
-        background={colors.grey8}
-        color={colors.grey5}
-        onSubmit={this.onSubmit}
-      />
+      <Flex.Cols style={[shadow]} justify="center" align="center">
+        <Flex.Cols
+          style={{
+            backgroundColor: colors.grey8,
+            marginLeft: 16,
+            borderRadius: 16,
+          }}
+        >
+          <Text
+            left
+            middle
+            margin={{
+              left: 8,
+              right: Platform.OS === 'web' ? 8 : 0,
+              top: this.state.height > 20 ? 0 : 8,
+              bottom: this.state.height > 20 ? 0 : 8,
+            }}
+            lineHeight={this.state.height > 20 ? 0 : 16}
+            background={colors.grey8}
+            icon="edit-2"
+            height={this.state.height}
+            input={{
+              onChangeText: input => {
+                this.setState({ input })
+              },
+              onContentSizeChange: ({
+                nativeEvent: {
+                  contentSize: { height },
+                },
+              }) => {
+                this.setState({
+                  height: height > 80 ? 80 : height,
+                })
+              },
+              placeholder: 'Write a secure message...',
+              autoFocus: true,
+              value: this.state.input,
+            }}
+            multiline
+            color={colors.grey5}
+          />
+        </Flex.Cols>
+        <Text
+          right
+          size={0}
+          middle
+          margin
+          height={this.state.height}
+          icon="send"
+          color={colors.grey5}
+          onPress={this.onSubmit}
+        />
+      </Flex.Cols>
     )
   }
 }
@@ -134,10 +169,10 @@ const List = fragments.EventList(
       const { data, loading } = this.props
       const edges = (data && data.EventList && data.EventList.edges) || []
       return (
-        <Flex.Rows style={{ backgroundColor: colors.white }}>
+        <Flex.Rows>
           <FlatList
             ref={ref => (this.ref = ref)}
-            style={[{ paddingTop: 54 }, paddingHorizontal]}
+            style={[paddingHorizontal]}
             data={edges}
             inverted
             refreshing={loading}
@@ -151,24 +186,6 @@ const List = fragments.EventList(
               />
             )}
           />
-          <Flex.Rows
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              backgroundColor: colors.white,
-              height: 54,
-            }}
-          >
-            <Flex.Cols
-              style={[{ height: 54 }, shadow]}
-              justify="center"
-              align="center"
-            >
-              <Input navigation={this.props.navigation} />
-            </Flex.Cols>
-          </Flex.Rows>
         </Flex.Rows>
       )
     }
@@ -195,37 +212,50 @@ export default class Detail extends PureComponent {
   render() {
     const conversation = this.props.navigation.getParam('conversation')
     return (
-      <Screen style={{ backgroundColor: colors.white }}>
-        <QueryReducer
-          query={queries.EventList}
-          variables={merge([
-            queries.EventList.defaultVariables,
-            {
-              filter: {
-                kind: 302,
-                conversationId: conversation.id,
+      <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
+        <Flex.Rows style={{ backgroundColor: colors.white }}>
+          <QueryReducer
+            query={queries.EventList}
+            variables={merge([
+              queries.EventList.defaultVariables,
+              {
+                filter: {
+                  kind: 302,
+                  conversationId: conversation.id,
+                },
               },
-            },
-          ])}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return <ActivityIndicator size="large" />
-              case state.success:
-                return (
-                  <List
-                    navigation={this.props.navigation}
-                    data={state.data}
-                    loading={state.type === state.loading}
-                  />
-                )
-              case state.error:
-                return null
-            }
-          }}
-        </QueryReducer>
+            ])}
+          >
+            {(state, retry) => {
+              switch (state.type) {
+                default:
+                case state.loading:
+                  return <ActivityIndicator size="large" />
+                case state.success:
+                  return (
+                    <List
+                      navigation={this.props.navigation}
+                      data={state.data}
+                      loading={state.type === state.loading}
+                    />
+                  )
+                case state.error:
+                  return null
+              }
+            }}
+          </QueryReducer>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: colors.white,
+            }}
+          >
+            <Input navigation={this.props.navigation} />
+          </View>
+        </Flex.Rows>
       </Screen>
     )
   }

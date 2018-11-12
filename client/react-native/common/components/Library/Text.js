@@ -1,6 +1,9 @@
+import { Text as TextNative, TextInput, StyleSheet } from 'react-native'
 import React, { Fragment, PureComponent } from 'react'
-import { View, Text as TextNative, TextInput, StyleSheet } from 'react-native'
+import hash from 'object-hash'
+
 import { Icon, Flex } from '.'
+import { colors } from '../../constants'
 import {
   tinyText,
   smallText,
@@ -23,8 +26,6 @@ import {
   marginHorizontal,
   marginVertical,
 } from '../../styles'
-import { colors } from '../../constants'
-import hash from 'object-hash'
 
 const reverse = props =>
   Object.keys(props)
@@ -51,6 +52,8 @@ const getPadding = (
   switch (typeof padding) {
     case 'boolean':
       padding = find({ inside: props, from: paddings, or: 'small' })
+      break
+    case 'number':
       break
     case 'string':
       padding = paddings[padding]
@@ -206,11 +209,17 @@ const getMargin = (
     case 'string':
       return margins[props.margin]
     case 'object':
-      return Object.keys(margins).reduce((a, key) => {
-        a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
-          props.margin[key]
-        return a
-      }, {})
+      return Array.isArray(props.margin)
+        ? props.margin.reduce((a, key) => {
+          a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
+              margins[key]
+          return a
+        }, {})
+        : Object.keys(margins).reduce((a, key) => {
+          a[`margin${key.charAt(0).toUpperCase()}${key.slice(1)}`] =
+              props.margin[key]
+          return a
+        }, {})
     default:
       return null
   }
@@ -352,7 +361,7 @@ export class ForegroundText extends PureComponent {
         {icon && typeof icon === 'string' ? (
           <Icon name={icon} style={styles.icon} />
         ) : (
-          icon && <View style={styles.iconView}>{icon}</View>
+          icon && <Flex.Rows style={styles.iconView}>{icon}</Flex.Rows>
         )}
         {input ? (
           <TextInput
@@ -368,7 +377,7 @@ export class ForegroundText extends PureComponent {
           <TextNative
             className={multiline ? 'textBreak' : 'textEllipsis'}
             style={styles.text}
-            ellipsizeMode={!multiline && 'tail'}
+            ellipsizeMode={!multiline ? 'tail' : undefined}
             numberOfLines={numberOfLines}
           >
             {children}
