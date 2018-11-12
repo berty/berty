@@ -137,6 +137,33 @@ public class Manager {
         mReactContext = (ActivityGetter)rCtx;
     }
 
+    public void initScannerAndAdvertiser() {
+        Activity curActivity = mReactContext.getCurrentActivity();
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            curActivity.startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            initGattServerCallBack();
+            initGattCallback();
+            initAdvertiseCallback();
+            initScanCallBack();
+
+            BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
+                mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+
+                mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
+                mBluetoothGattServer.addService(createService());
+
+//                startAdvertising();
+//                startScanning();
+            }
+        }
+    }
+
     public static Manager getInstance() {
         if (instance == null) {
             synchronized (Manager.class) {
@@ -456,36 +483,7 @@ public class Manager {
             mBluetoothLeScanner.startScan(Arrays.asList(filter), settings, mScanCallback);
         }
     }
-
-    public String realTest() {
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Activity curActivity = mReactContext.getCurrentActivity();
-        if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            curActivity.startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            initGattServerCallBack();
-            initGattCallback();
-            initAdvertiseCallback();
-            initScanCallBack();
-
-            BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
-                mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
-
-                mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
-                mBluetoothGattServer.addService(createService());
-
-//                startAdvertising();
-//                startScanning();
-            }
-        }
-        return "COMING FROM JAVA";
-    }
-
+    
     protected BluetoothGattCallback mGattCallback;
 
     public @Nullable BertyDevice getDeviceFromAddr(String addr) {
