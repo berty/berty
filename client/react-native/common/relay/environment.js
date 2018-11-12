@@ -1,14 +1,15 @@
+import 'regenerator-runtime/runtime'
+
 import { NativeModules, Platform } from 'react-native'
-import { Environment, RecordSource, Store } from 'relay-runtime'
-import { SubscriptionClient } from 'subscriptions-transport-ws'
-// import { installRelayDevTools } from 'relay-devtools'
 import {
   RelayNetworkLayer,
   retryMiddleware,
   urlMiddleware,
   perfMiddleware,
 } from 'react-relay-network-modern/node8'
-import 'regenerator-runtime/runtime'
+import { SubscriptionClient } from 'subscriptions-transport-ws'
+
+import { Environment, RecordSource, Store } from 'relay-runtime'
 
 const logStyle = {
   relayOK:
@@ -30,6 +31,11 @@ if (Platform.OS === 'web') {
     start: async () => {},
     restart: async () => console.warn('not implemented in web'),
     dropDatabase: async () => console.warn('not implemented in web'),
+    // TODO: remove circle dependencies with containers to implem directly panic here
+    panic: async () => console.warn('not implemented in web'),
+    throwException: () => {
+      throw new Error('thrown exception')
+    },
     getPort: async () => {
       const url = new URL(window.location.href)
       return url.searchParams.get('gql-port') || '8700'

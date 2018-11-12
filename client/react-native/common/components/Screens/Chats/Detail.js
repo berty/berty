@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { ActivityIndicator, FlatList, Platform, View } from 'react-native'
 import React, { Fragment, PureComponent } from 'react'
 
@@ -86,9 +85,9 @@ class Input extends PureComponent {
     })
   }
 
-  render() {
+  render () {
     return (
-      <Flex.Cols style={[shadow]} justify="center" align="center">
+      <Flex.Cols style={[shadow]} justify='center' align='center'>
         <Flex.Cols
           style={{
             backgroundColor: colors.grey8,
@@ -107,7 +106,7 @@ class Input extends PureComponent {
             }}
             lineHeight={this.state.height > 20 ? 0 : 16}
             background={colors.grey8}
-            icon="edit-2"
+            icon='edit-2'
             height={this.state.height}
             input={{
               onChangeText: input => {
@@ -136,7 +135,7 @@ class Input extends PureComponent {
           middle
           margin
           height={this.state.height}
-          icon="send"
+          icon='send'
           color={colors.grey5}
           onPress={this.onSubmit}
         />
@@ -154,18 +153,18 @@ const List = fragments.EventList(
       this.props.relay.loadMore(5, console.error)
     }
 
-    componentDidMount() {
+    componentDidMount () {
       const conversation = this.props.navigation.getParam('conversation')
       this.subscriber = subscriptions.conversationNewMessage.subscribe(
         conversation
       )
     }
 
-    componentWillUnmount() {
+    componentWillUnmount () {
       this.subscriber.unsubscribe()
     }
 
-    render() {
+    render () {
       const { data, loading } = this.props
       const edges = (data && data.EventList && data.EventList.edges) || []
       return (
@@ -199,7 +198,7 @@ export default class Detail extends PureComponent {
         navigation={navigation}
         title={utils.getTitle(navigation.getParam('conversation'))}
         backBtn
-        rightBtnIcon="settings"
+        rightBtnIcon='settings'
         onPressRightBtn={() =>
           navigation.push('chats/settings', {
             conversation: navigation.getParam('conversation'),
@@ -209,7 +208,7 @@ export default class Detail extends PureComponent {
     ),
   })
 
-  render() {
+  render () {
     const conversation = this.props.navigation.getParam('conversation')
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
@@ -230,7 +229,7 @@ export default class Detail extends PureComponent {
               switch (state.type) {
                 default:
                 case state.loading:
-                  return <ActivityIndicator size="large" />
+                  return <ActivityIndicator size='large' />
                 case state.success:
                   return (
                     <List

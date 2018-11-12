@@ -1,7 +1,7 @@
 import IconAwesome from 'react-native-vector-icons/Fonts/FontAwesome.ttf'
 import IconFeather from 'react-native-vector-icons/Fonts/Feather.ttf'
 import IconMatCom from 'react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'
-import('../common/index.js')
+import '../common/index.js'
 
 /** ***** Fonts ***********/
 

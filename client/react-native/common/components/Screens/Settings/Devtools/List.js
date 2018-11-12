@@ -1,4 +1,10 @@
-import { ActivityIndicator, NativeModules, Switch, Alert } from 'react-native'
+import {
+  ActivityIndicator,
+  NativeModules,
+  Switch,
+  Alert,
+  Platform,
+} from 'react-native'
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
@@ -47,10 +53,10 @@ export default class List extends PureComponent {
   panic = async () => {
     this.props.navigation.setParams({ panic: true })
     this.setState({ panic: true }, async () => {
-      try {
+      if (Platform.OS === 'web') {
         await queries.Panic.fetch()
-      } catch (err) {
-        console.error(err)
+      } else {
+        CoreModule.panic()
       }
       this.props.navigation.setParams({
         panic: false,
@@ -91,6 +97,14 @@ export default class List extends PureComponent {
 
   componentDidMount () {
     this.getBotState()
+  }
+
+  throwNativeException = () => {
+    CoreModule.throwException()
+  }
+
+  throwJsException = () => {
+    throw new Error('thrown exception')
   }
 
   render () {
@@ -139,6 +153,16 @@ export default class List extends PureComponent {
             onPress={this.restartDaemon}
           />
           <Menu.Item icon='alert-triangle' title='Panic' onPress={this.panic} />
+          <Menu.Item
+            icon='slash'
+            title='Throw native exception'
+            onPress={this.throwNativeException}
+          />
+          <Menu.Item
+            icon='slash'
+            title='Throw JS exception'
+            onPress={this.throwJsException}
+          />
           <Menu.Item
             icon='list'
             title='List events'
