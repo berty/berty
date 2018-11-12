@@ -114,7 +114,7 @@ export default class List extends PureComponent {
               />
               <Menu.Item
                 icon='clock'
-                title='Message retention'
+                title='Message retention (not implem.)'
                 onPress={() => console.log('Message retention')}
               />
             </Menu.Section>
@@ -123,7 +123,7 @@ export default class List extends PureComponent {
             <Menu.Section>
               <Menu.Item
                 icon='user'
-                title='Contact details'
+                title='Contact details (not implem.)'
                 onPress={() => console.log('Contact details')}
               />
             </Menu.Section>
@@ -141,7 +141,7 @@ export default class List extends PureComponent {
               />
               <Menu.Item
                 icon='link'
-                title='Invite to group with a link'
+                title='Invite to group with a link (not implem.)'
                 color={colors.blue}
                 onPress={() => console.log('Invite to group with a link')}
               />
@@ -169,7 +169,7 @@ export default class List extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='trash-2'
-              title='Delete this conversation'
+              title='Delete this conversation (not implem.)'
               color={colors.error}
               onPress={() => console.log('Delete this conversation')}
             />
