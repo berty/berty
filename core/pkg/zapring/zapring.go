@@ -9,6 +9,8 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+const PtrSize = 32 << uintptr(^uintptr(0)>>63)
+
 type Ring struct {
 	zapcore.Core
 	enc    zapcore.Encoder
@@ -32,11 +34,15 @@ func (r *Ring) Check(entry zapcore.Entry, checked *zapcore.CheckedEntry) *zapcor
 }
 
 func (r *Ring) Write(entry zapcore.Entry, fields []zapcore.Field) error {
-	buff, err := r.enc.EncodeEntry(entry, fields)
-	if err != nil {
-		return err
+	// We need to be sure we're in 64-bit since circular buffer call LoadInt64
+	// so if you're running in 32-bit the app will crash
+	if PtrSize == 64 {
+		buff, err := r.enc.EncodeEntry(entry, fields)
+		if err != nil {
+			return err
+		}
+		r.buffer.Write(buff.Bytes())
 	}
-	r.buffer.Write(buff.Bytes())
 
 	return r.Core.Write(entry, fields)
 }
