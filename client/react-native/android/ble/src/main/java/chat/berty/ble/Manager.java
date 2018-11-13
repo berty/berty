@@ -158,8 +158,8 @@ public class Manager {
                 mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
                 mBluetoothGattServer.addService(createService());
 
-//                startAdvertising();
-//                startScanning();
+                startAdvertising();
+                startScanning();
             }
         }
     }
@@ -483,7 +483,7 @@ public class Manager {
             mBluetoothLeScanner.startScan(Arrays.asList(filter), settings, mScanCallback);
         }
     }
-    
+
     protected BluetoothGattCallback mGattCallback;
 
     public @Nullable BertyDevice getDeviceFromAddr(String addr) {
