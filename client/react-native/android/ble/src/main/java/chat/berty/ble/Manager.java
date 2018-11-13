@@ -42,8 +42,16 @@ import java.util.concurrent.Future;
 
 import core.Core;
 
+import static android.bluetooth.BluetoothGatt.GATT_CONNECTION_CONGESTED;
 import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
+import static android.bluetooth.BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION;
+import static android.bluetooth.BluetoothGatt.GATT_INSUFFICIENT_ENCRYPTION;
+import static android.bluetooth.BluetoothGatt.GATT_INVALID_ATTRIBUTE_LENGTH;
+import static android.bluetooth.BluetoothGatt.GATT_INVALID_OFFSET;
+import static android.bluetooth.BluetoothGatt.GATT_READ_NOT_PERMITTED;
+import static android.bluetooth.BluetoothGatt.GATT_REQUEST_NOT_SUPPORTED;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+import static android.bluetooth.BluetoothGatt.GATT_WRITE_NOT_PERMITTED;
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
@@ -64,7 +72,7 @@ public class Manager {
 
     final static int BLUETOOTH_ENABLE_REQUEST = 1;
 
-    final static UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6664");
+    final static UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6663");
 
     final static UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C");
 
@@ -565,22 +573,30 @@ public class Manager {
                     todo.add(new PopulateCharacteristic(IS_READY_UUID, bDevice));
                     todo.add(new PopulateCharacteristic(ACCEPT_UUID, bDevice));
 
+                    Log.e(TAG, "START DISCO CHAR");
+
                     try {
                         List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
                         for (Future<BluetoothGattCharacteristic> future:answers) {
                             BluetoothGattCharacteristic c = future.get();
                             if (c.getUuid().equals(MA_UUID)) {
                                 bDevice.maCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(PEER_ID_UUID)) {
                                 bDevice.peerIDCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(CLOSER_UUID)) {
                                 bDevice.closerCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(WRITER_UUID)) {
                                 bDevice.writerCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(IS_READY_UUID)) {
                                 bDevice.isRdyCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(ACCEPT_UUID)) {
                                 bDevice.acceptCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else {
                                 Log.e(TAG, "UNKNOW CHARACT");
                             }
@@ -615,7 +631,33 @@ public class Manager {
                         BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
                         bDevice.isWaiting.release();
                     } else {
-                        Log.e(TAG, "Error writing gatt " + status);
+                        String errorString;
+
+                        switch(status) {
+                            case GATT_SUCCESS: errorString = "GATT_SUCCESS";
+                                break;
+                            case GATT_READ_NOT_PERMITTED: errorString = "GATT_READ_NOT_PERMITTED";
+                                break;
+                            case GATT_WRITE_NOT_PERMITTED: errorString = "GATT_WRITE_NOT_PERMITTED";
+                                break;
+                            case GATT_INSUFFICIENT_AUTHENTICATION: errorString = "GATT_INSUFFICIENT_AUTHENTICATION";
+                                break;
+                            case GATT_REQUEST_NOT_SUPPORTED: errorString = "GATT_REQUEST_NOT_SUPPORTED";
+                                break;
+                            case GATT_INSUFFICIENT_ENCRYPTION: errorString = "GATT_INSUFFICIENT_ENCRYPTION";
+                                break;
+                            case GATT_INVALID_OFFSET: errorString = "GATT_INVALID_OFFSET";
+                                break;
+                            case GATT_INVALID_ATTRIBUTE_LENGTH: errorString = "GATT_INVALID_ATTRIBUTE_LENGTH";
+                                break;
+                            case GATT_CONNECTION_CONGESTED: errorString = "GATT_CONNECTION_CONGESTED";
+                                break;
+                            case GATT_FAILURE: errorString = "GATT_FAILURE";
+                                break;
+                            default: errorString = "UNKNOW FAIL";
+                                break;
+                        }
+                        Log.e(TAG, "Error writing gatt " + errorString);
                     }
                     super.onCharacteristicWrite(gatt, characteristic, status);
                 }
