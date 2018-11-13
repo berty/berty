@@ -27,7 +27,7 @@ if (Platform.OS === 'ios' || Platform.OS === 'android') {
       { cancelable: false }
     )
   }
-  const allowInDevMode = true
+  const allowInDevMode = false
   const forceAppQuit = false
   const executeDefaultHandler = false
 
