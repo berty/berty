@@ -43,7 +43,7 @@ public class BertyDevice {
         this.addr = address;
         this.device = device;
         this.isWaiting = new Semaphore(1);
-        waitReady = new CountDownLatch(2);
+        waitReady = new CountDownLatch(8);
         this.toSend = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
@@ -69,13 +69,15 @@ public class BertyDevice {
 
     public void write(byte[] p) throws InterruptedException {
         waitReady.await();
-        synchronized (toSend) {
 
+        synchronized (toSend) {
             int length = p.length;
             int offset = 0;
+
             do {
-                int chunckSize = length - offset > mtu ? mtu : length - offset;
-                byte[] chunck = Arrays.copyOfRange(p, offset, chunckSize);
+                // You always need to detuct 3bytes from the mtu
+                int chunckSize = length - offset > mtu - 3 ? mtu - 3 : length - offset;
+                byte[] chunck = Arrays.copyOfRange(p, offset, offset + chunckSize);
                 offset += chunckSize;
                 toSend.add(chunck);
             } while (offset < length);
