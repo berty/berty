@@ -1,12 +1,20 @@
-import { graphql } from 'react-relay'
+import { graphql, fetchQuery } from 'relay-runtime'
+import environment from '../../relay/environment'
 
-export default graphql`
-  query PeersListQuery {
-    Peers(T: true) {
+const query = graphql`
+  query PeersListQuery($t: Bool!) {
+    Peers(T: $t) {
       list {
         id
         addrs
+        connection
       }
     }
   }
 `
+
+export default {
+  ...query,
+  fetch: (variables = {}) =>
+    fetchQuery(environment, query, { t: true, ...variables }),
+}
