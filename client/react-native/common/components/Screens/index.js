@@ -10,6 +10,18 @@ import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
 import IconFeather from 'react-native-vector-icons/dist/Feather'
 
+const TabBarIcon = (tintColor, routeName) => {
+  let iconName
+  if (routeName === 'contacts') {
+    iconName = 'users'
+  } else if (routeName === 'chats') {
+    iconName = 'message-circle'
+  } else if (routeName === 'settings') {
+    iconName = 'settings'
+  }
+  return <IconFeather name={iconName} size={24} color={tintColor} />
+}
+
 export const mainTabs = createTabNavigator(
   {
     contacts: Contacts,
@@ -22,18 +34,7 @@ export const mainTabs = createTabNavigator(
     animationEnabled: true,
     tabBarPosition: 'bottom',
     navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state
-        let iconName
-        if (routeName === 'contacts') {
-          iconName = 'users'
-        } else if (routeName === 'chats') {
-          iconName = 'message-circle'
-        } else if (routeName === 'settings') {
-          iconName = 'settings'
-        }
-        return <IconFeather name={iconName} size={24} color={tintColor} />
-      },
+      tabBarIcon: ({ tintColor }) => TabBarIcon(tintColor, navigation.state.routeName),
     }),
     tabBarOptions: {
       showIcon: true,
