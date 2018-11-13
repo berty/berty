@@ -75,7 +75,7 @@ debug.android: deps.android patch.android
 
 .PHONY: release.android
 release.android: deps.android
-	cd $(ANDROID) && ./gradlew installLocalRelease
+	cd $(ROOT) && react-native run-android --variant=release --no-packager
 
 .PHONY: debug.ios
 debug.ios: deps.ios
