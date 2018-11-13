@@ -17,6 +17,7 @@ var StartScanning func() = nil
 var StartAdvertising func() = nil
 var Write func(p []byte, ma string) bool = nil
 var DialPeer func(ma string) bool = nil
+var InitScannerAndAdvertiser func() = nil
 
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	// if int(C.isDiscovering()) != 1 {
@@ -72,6 +73,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
 	ma, _ := lAddr.ValueForProtocol(PBle)
 	peerID := hostID.Pretty()
 
+	InitScannerAndAdvertiser()
 	SetMa(ma)
 	SetPeerID(peerID)
 	defer StartScanning()

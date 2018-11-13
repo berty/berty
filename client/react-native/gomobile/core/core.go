@@ -70,6 +70,8 @@ func Initialize(loggerNative Logger) error {
 		return err
 	}
 
+	initBleFunc()
+
 	return nil
 }
 

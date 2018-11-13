@@ -154,7 +154,7 @@ jobs:
       - run:
           name: test gomobile
           command: |
-            cd client/react-native/gomobile
+            cd client/react-native/gomobile/core
             /tmp/retry -m 3 go test $TEST_OPTS -v . | tee /tmp/test-results/go-test-report.out
             GOARCH=386 /tmp/retry -m 3 go test -v . | tee /tmp/test-results/go-test-report.out
       - run:
