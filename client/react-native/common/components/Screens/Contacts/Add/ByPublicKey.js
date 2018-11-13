@@ -1,10 +1,13 @@
 import React, { PureComponent } from 'react'
+import { Platform, ActivityIndicator, Share } from 'react-native'
 import {
-  Platform,
-  ActivityIndicator,
-  Share,
-} from 'react-native'
-import { Flex, Screen, Button, Text, ModalScreen, TextInputMultilineFix } from '../../../Library'
+  Flex,
+  Screen,
+  Button,
+  Text,
+  ModalScreen,
+  TextInputMultilineFix,
+} from '../../../Library'
 import { colors } from '../../../../constants'
 import {
   padding,
@@ -37,33 +40,39 @@ const requestContact = async (contactId, navigation, errorHandler) => {
   }
 }
 
-const ActionButton = props => <Button
-  icon={props.icon}
-  background={colors.blue}
-  margin
-  padding
-  rounded={23}
-  height={24}
-  medium
-  middle
-  center
-  self='stretch'
-  onPress={props.onPress}
->
-  {props.label}
-</Button>
+const ActionButton = props => (
+  <Button
+    icon={props.icon}
+    background={colors.blue}
+    margin
+    padding
+    rounded={23}
+    height={24}
+    medium
+    middle
+    center
+    self='stretch'
+    onPress={props.onPress}
+  >
+    {props.label}
+  </Button>
+)
 
-const AddButton = ({ contactId, navigation, errorHandler }) => <ActionButton
-  icon='plus'
-  onPress={() => requestContact(contactId, navigation, errorHandler)}
-  label={'Add this key'}
-/>
+const AddButton = ({ contactId, navigation, errorHandler }) => (
+  <ActionButton
+    icon='plus'
+    onPress={() => requestContact(contactId, navigation, errorHandler)}
+    label={'Add this key'}
+  />
+)
 
-const ShareMyKey = ({ contactId }) => <ActionButton
-  icon='plus'
-  onPress={() => Share.share({ message: contactId }).catch(() => null)}
-  label={'Share my key'}
-/>
+const ShareMyKey = ({ contactId }) => (
+  <ActionButton
+    icon='plus'
+    onPress={() => Share.share({ message: contactId }).catch(() => null)}
+    label={'Share my key'}
+  />
+)
 
 class ByPublicKeyComponent extends PureComponent {
   state = {
@@ -115,13 +124,16 @@ class ByPublicKeyComponent extends PureComponent {
 
         <Flex.Cols justify='center'>
           {shareButton ? <ShareMyKey contactId={contactId} /> : null}
-          {addButton ? <AddButton
-            contactId={contactId}
-            navigation={navigation}
-            errorHandler={err => {
-              this.setState({ err })
-              console.error(err)
-            }} /> : null}
+          {addButton ? (
+            <AddButton
+              contactId={contactId}
+              navigation={navigation}
+              errorHandler={err => {
+                this.setState({ err })
+                console.error(err)
+              }}
+            />
+          ) : null}
         </Flex.Cols>
       </Flex.Rows>
     )
@@ -130,13 +142,15 @@ class ByPublicKeyComponent extends PureComponent {
 
 const ByPublicKey = fragments.Contact(ByPublicKeyComponent)
 
-const AddByPublicKeyScreen = props => <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
-  <ByPublicKeyComponent
-    navigation={props.navigation}
-    initialKey={''}
-    addButton
-  />
-</Screen>
+const AddByPublicKeyScreen = props => (
+  <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
+    <ByPublicKeyComponent
+      navigation={props.navigation}
+      initialKey={''}
+      addButton
+    />
+  </Screen>
+)
 
 class SharePublicKeyScreen extends PureComponent {
   render () {
@@ -218,9 +232,15 @@ export default createTabNavigator(
         borderBottom,
       ],
     },
-  },
+  }
 )
 
-export const ByPublicKeyModal = props => <ModalScreen navigation={props.navigation}>
-  <ByPublicKeyComponent addButton initialKey={props.navigation.getParam('initialKey', '')} {...props} />
-</ModalScreen>
+export const ByPublicKeyModal = props => (
+  <ModalScreen navigation={props.navigation}>
+    <ByPublicKeyComponent
+      addButton
+      initialKey={props.navigation.getParam('initialKey', '')}
+      {...props}
+    />
+  </ModalScreen>
+)

@@ -159,7 +159,7 @@ let middlewares = [
   }),
   retryMiddleware({
     fetchTimeout: 15000,
-    retryDelays: attempt => Math.pow(2, attempt + 4) * 100, // or simple array [3200, 6400, 12800, 25600, 51200, 102400, 204800, 409600],
+    retryDelays: attempt => 1000, // or simple array [3200, 6400, 12800, 25600, 51200, 102400, 204800, 409600],
     beforeRetry: ({ forceRetry, abort, delay, attempt, lastError, req }) => {
       // Unlock query
       queryLock = false
