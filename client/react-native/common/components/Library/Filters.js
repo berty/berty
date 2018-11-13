@@ -34,33 +34,54 @@ export class FilterModal extends React.Component {
   }
 
   close = () => {
-    this.props.navigation.dispatch(StackActions.pop({
-      n: 1,
-    }))
+    this.props.navigation.dispatch(
+      StackActions.pop({
+        n: 1,
+      })
+    )
   }
 
-  render = () => <ModalScreen navigation={this.props.navigation}>
-    <Rows style={[padding]} align='center'>
-      {this.props.title ? <Text>{this.props.title}</Text> : null}
-      {React.Children.map(this.props.children, child => React.cloneElement(child, {
-        onChange: value => this.setState({ [child.props.name]: value }),
-        value: this.state[child.props.name],
-      }))}
-      <Cols>
-        <Button onPress={() => this.onDismiss()} icon={'x-circle'}
-          style={{ backgroundColor: colors.red }}>Cancel</Button>
-        <Button onPress={() => this.onFilter()} icon={'filter'}>Filter</Button>
-      </Cols>
-    </Rows>
-  </ModalScreen>
+  render () {
+    return (
+      <ModalScreen navigation={this.props.navigation}>
+        <Rows style={[padding]} align='center'>
+          {this.props.title ? <Text>{this.props.title}</Text> : null}
+          {React.Children.map(this.props.children, child =>
+            React.cloneElement(child, {
+              onChange: value => this.setState({ [child.props.name]: value }),
+              value: this.state[child.props.name],
+            })
+          )}
+          <Cols>
+            <Button
+              onPress={() => this.onDismiss()}
+              icon={'x-circle'}
+              style={{ backgroundColor: colors.red }}
+            >
+              Cancel
+            </Button>
+            <Button onPress={() => this.onFilter()} icon={'filter'}>
+              Filter
+            </Button>
+          </Cols>
+        </Rows>
+      </ModalScreen>
+    )
+  }
 }
 
 // Impl for this is really bad, move to radio buttons instead
-export const PickerFilter = ({ value, onChange, choices }) => <Rows style={{ flex: 1, width: '100%' }}>
-  {choices.map(({ value: choiceValue, label }) =>
-    <Cols size={1} key={choiceValue}>
-      <Switch value={value === choiceValue} onValueChange={() => onChange(choiceValue)} style={{ width: 50 }} />
-      <FlexText>{label}</FlexText>
-    </Cols>,
-  )}
-</Rows>
+export const PickerFilter = ({ value, onChange, choices }) => (
+  <Rows style={{ flex: 1, width: '100%' }}>
+    {choices.map(({ value: choiceValue, label }) => (
+      <Cols size={1} key={choiceValue}>
+        <Switch
+          value={value === choiceValue}
+          onValueChange={() => onChange(choiceValue)}
+          style={{ width: 50 }}
+        />
+        <FlexText>{label}</FlexText>
+      </Cols>
+    ))}
+  </Rows>
+)
