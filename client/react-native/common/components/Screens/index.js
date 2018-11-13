@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react'
+import React from 'react'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { Animated, Easing, Platform } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
@@ -9,7 +9,6 @@ import { colors } from '../../constants'
 import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
 import IconFeather from 'react-native-vector-icons/dist/Feather'
-
 
 export const mainTabs = createTabNavigator(
   {
@@ -24,16 +23,16 @@ export const mainTabs = createTabNavigator(
     tabBarPosition: 'bottom',
     navigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state;
-        let iconName;
+        const { routeName } = navigation.state
+        let iconName
         if (routeName === 'contacts') {
-          iconName = 'users';
+          iconName = 'users'
         } else if (routeName === 'chats') {
-          iconName = 'message-circle';
+          iconName = 'message-circle'
         } else if (routeName === 'settings') {
-          iconName = 'settings';
+          iconName = 'settings'
         }
-        return <IconFeather name={iconName} size={24} color={tintColor} />;
+        return <IconFeather name={iconName} size={24} color={tintColor} />
       },
     }),
     tabBarOptions: {
@@ -54,7 +53,7 @@ export const mainTabs = createTabNavigator(
           shadowOffset: { height: -5, width: 0 },
           shadowOpacity: 0.2,
           shadowRadius: 5,
-          ...(Platform.OS === 'android' ? { height:68, paddingTop: 3 } : { height:64, paddingTop: 5, paddingBottom:6, }),
+          ...(Platform.OS === 'android' ? { height: 68, paddingTop: 3 } : { height: 64, paddingTop: 5, paddingBottom: 6 }),
         },
       ],
     },
