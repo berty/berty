@@ -565,22 +565,30 @@ public class Manager {
                     todo.add(new PopulateCharacteristic(IS_READY_UUID, bDevice));
                     todo.add(new PopulateCharacteristic(ACCEPT_UUID, bDevice));
 
+                    Log.e(TAG, "START DISCO CHAR");
+
                     try {
                         List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
                         for (Future<BluetoothGattCharacteristic> future:answers) {
                             BluetoothGattCharacteristic c = future.get();
                             if (c.getUuid().equals(MA_UUID)) {
                                 bDevice.maCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(PEER_ID_UUID)) {
                                 bDevice.peerIDCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(CLOSER_UUID)) {
                                 bDevice.closerCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(WRITER_UUID)) {
                                 bDevice.writerCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(IS_READY_UUID)) {
                                 bDevice.isRdyCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else if (c.getUuid().equals(ACCEPT_UUID)) {
                                 bDevice.acceptCharacteristic = c;
+                                bDevice.waitReady.countDown();
                             } else {
                                 Log.e(TAG, "UNKNOW CHARACT");
                             }
