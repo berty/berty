@@ -43,7 +43,7 @@ public class BertyDevice {
         this.addr = address;
         this.device = device;
         this.isWaiting = new Semaphore(1);
-        waitReady = new CountDownLatch(2);
+        waitReady = new CountDownLatch(8);
         this.toSend = new ArrayList<>();
         new Thread(new Runnable() {
             @Override
