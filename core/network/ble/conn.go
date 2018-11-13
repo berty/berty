@@ -36,6 +36,9 @@ var conns sync.Map
 
 func getConn(bleUUID string) (*Conn, bool) {
 	c, ok := conns.Load(bleUUID)
+	if !ok {
+		return nil, ok
+	}
 	return c.(*Conn), ok
 }
 
