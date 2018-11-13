@@ -246,6 +246,7 @@ jobs:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
+            sed -i '/signingConfig signingConfigs.release/d' android/app/build.gradle
             bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - save_cache:
@@ -262,7 +263,7 @@ jobs:
       - run:
           name: build app
           command: |
-            /tmp/retry -m 3 bundle exec fastlane android beta || true
+            /tmp/retry -m 3 bundle exec fastlane android beta
 
   client.rn.ios:
     working_directory: ~/go/src/berty.tech
