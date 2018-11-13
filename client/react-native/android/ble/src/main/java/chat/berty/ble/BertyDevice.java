@@ -69,13 +69,15 @@ public class BertyDevice {
 
     public void write(byte[] p) throws InterruptedException {
         waitReady.await();
-        synchronized (toSend) {
 
+        synchronized (toSend) {
             int length = p.length;
             int offset = 0;
+
             do {
-                int chunckSize = length - offset > mtu ? mtu : length - offset;
-                byte[] chunck = Arrays.copyOfRange(p, offset, chunckSize);
+                // You always need to detuct 3bytes from the mtu
+                int chunckSize = length - offset > mtu - 3 ? mtu - 3 : length - offset;
+                byte[] chunck = Arrays.copyOfRange(p, offset, offset + chunckSize);
                 offset += chunckSize;
                 toSend.add(chunck);
             } while (offset < length);
