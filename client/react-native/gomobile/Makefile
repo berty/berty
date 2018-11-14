@@ -15,7 +15,7 @@ BLE_BIND_PATH := /tmp/ble
 GIT_SHA ?= $(shell git rev-parse HEAD)
 GIT_TAG ?= $(shell git describe --tags --always)
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
-EXT_LDFLAGS ?= -ldflags "-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH)"
+EXT_LDFLAGS ?= -ldflags="\"-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH)\""
 
 GOPATH ?=		$(HOME)/go
 
