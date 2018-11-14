@@ -33,7 +33,7 @@ class PaginationContainer extends PureComponent {
     relay.refetchConnection(edges.length, err => err && console.error(err))
   }
 
-  keyExtractor = item => item.cursor
+  keyExtractor = item => item.node.id
 
   render () {
     const { data, connection, relay, renderItem, inverted } = this.props
@@ -80,6 +80,15 @@ const createPagination = ({
   })
 
 export default class Pagination extends PureComponent {
+  componentDidMount () {
+    const { subscriptions = [] } = this.props
+    this.subscribers = subscriptions.map(s => s.subscribe())
+  }
+
+  componentWillUnmount () {
+    this.subscribers.forEach(s => s.unsubscribe())
+  }
+
   render () {
     const { query, variables } = this.props
 

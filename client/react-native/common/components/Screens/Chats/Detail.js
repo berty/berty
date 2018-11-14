@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react'
 import { Pagination } from '../../../relay'
 import { Text, Flex, Screen, Header } from '../../Library'
 import { colors } from '../../../constants'
-import { fragments, mutations, queries } from '../../../graphql'
+import { fragments, mutations, queries, subscriptions } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
@@ -177,6 +177,7 @@ export default class Detail extends PureComponent {
                 },
               },
             ])}
+            subscriptions={[subscriptions.conversationNewMessage(conversation)]}
             fragment={fragments.EventList.default}
             connection='EventList'
             renderItem={props => <Message {...props} navigation={navigation} />}
