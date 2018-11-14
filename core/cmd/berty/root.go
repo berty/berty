@@ -60,8 +60,11 @@ func getP2PLogLevel(level zapcore.Level) logging.Level {
 
 func newRootCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "berty",
-		Version: fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version),
+		Use: "berty",
+		Version: fmt.Sprintf(
+			"core=%s p2p=%d node=%d git_sha=%s git_branch=%s git_tag=%s",
+			core.Version, p2p.Version, node.Version, core.GitSha, core.GitBranch, core.GitTag,
+		),
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			if err := setupLogger(cmd, args); err != nil {
 				return err
