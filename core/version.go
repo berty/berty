@@ -1,4 +1,10 @@
 package core // import "berty.tech/core"
 
-// Version is the core semver version
-const Version = "1.0.0"
+var (
+	// Version is the core semver version
+	Version = "1.0.0"
+
+	GitSha    = "undefined"
+	GitTag    = "undefined"
+	GitBranch = "undefined"
+)
