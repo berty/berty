@@ -97,14 +97,19 @@ func initOrRestoreAppState(datastorePath string) error {
 	initialState := account.StateDB{
 		JSONNetConf: string(initialJSONNetConf),
 		BotMode:     initialBotMode,
+		LocalGRPC:   initiallocalGRPC,
 	}
 
 	appState, err := account.OpenStateDB(datastorePath+"berty.state.db", initialState)
 	if err != nil {
 		return errors.Wrap(err, "state DB init failed")
 	}
-
 	appConfig = appState
+	logger().Debug("App state:", zap.Int("StartCounter", appConfig.StartCounter))
+	logger().Debug("App state:", zap.String("JSONNetConf", appConfig.JSONNetConf))
+	logger().Debug("App state:", zap.Bool("BotMode", appConfig.BotMode))
+	logger().Debug("App state:", zap.Bool("LocalGRPC", appConfig.LocalGRPC))
+
 	return nil
 }
 
@@ -232,6 +237,16 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 		return err
 	}
 	defer a.Close()
+
+	if appConfig.LocalGRPC {
+		err := StartLocalGRPC()
+		if err != nil {
+			logger().Error(err.Error())
+			appConfig.LocalGRPC = false
+		}
+		// Continue if local gRPC fails (e.g wifi not connected)
+		// Still re-enableable via toggle in devtools
+	}
 
 	return <-a.ErrChan()
 }
