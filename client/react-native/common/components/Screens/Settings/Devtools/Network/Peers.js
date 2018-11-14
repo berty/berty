@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
 import {
   Text,
-  View,
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  View,
 } from 'react-native'
-import { Header } from '../../../../Library'
+import { Header, SearchBar, Text as LibText } from '../../../../Library'
 import { queries, subscriptions } from '../../../../../graphql'
 import { colors } from '../../../../../constants'
 import {
@@ -49,14 +49,29 @@ export default class Peers extends PureComponent {
         navigation={navigation}
         title='Peers List'
         titleIcon='list'
+        searchBar={
+          <SearchBar onChangeText={navigation.getParam('peerFilter')}>
+            <LibText
+              size={0}
+              height={34}
+              icon='filter'
+              padding
+              middle
+              large
+            />
+          </SearchBar>
+        }
         backBtn
       />
     ),
   })
 
+  peerFilter = filter => this.setState({ filter })
+
   state = {
     peers: [],
     opened: [],
+    filter: '',
   }
 
   componentWillMount () {
@@ -70,6 +85,10 @@ export default class Peers extends PureComponent {
   }
 
   componentDidMount () {
+    this.props.navigation.setParams({
+      peerFilter: this.peerFilter,
+    })
+
     queries.Peers.fetch().then(data => this.updatePeers(data.Peers.list))
     subscriptions.monitorPeers.start()
   }
@@ -121,17 +140,32 @@ export default class Peers extends PureComponent {
     this.setState({ opened })
   }
 
+  filteredPeers = () => {
+    const { peers } = this.state
+
+    if (this.state.filter.length === 0) {
+      return peers
+    }
+
+    const matchAddr = peer => peer.addrs.reduce((acc, addr) => addr.indexOf(this.state.filter) > -1 || acc, false)
+    const matchID = peer => peer.id.indexOf(this.state.filter) > -1
+
+    return peers.filter(peer => matchID(peer) || matchAddr(peer))
+  }
+
   render () {
-    console.log(this.state.peers)
+    const filteredPeers = this.filteredPeers()
+    const isFiltered = !!this.state.filter.length
+
     return (
       <ScrollView style={{ backgroundColor: colors.background }}>
         <View style={styles.peer}>
           <Text style={styles.title}>
-            Number of Peers: {this.state.peers.length}
+            Number of Peers: {this.state.peers.length} {isFiltered ? `(${filteredPeers.length})` : ''}
           </Text>
         </View>
         <Accordion
-          sections={this.state.peers}
+          sections={this.filteredPeers()}
           activeSections={this.state.opened}
           renderHeader={this.renderPeer}
           renderContent={this.renderPeerInfo}
