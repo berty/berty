@@ -24,6 +24,10 @@ func DiscoveryNotify(d *Driver) discovery.Notifee {
 	return (*driverDiscoveryNotify)(d)
 }
 
+func Notify(d *Driver) inet.Notifiee {
+	return (*driverDiscoveryNotify)(d)
+}
+
 // Driver Notify
 func (ddn *driverDiscoveryNotify) HandlePeerFound(pi pstore.PeerInfo) {
 	if err := ddn.host.Connect(context.Background(), pi); err != nil {
@@ -41,20 +45,22 @@ func (ddn *driverDiscoveryNotify) ClosedStream(net inet.Network, s inet.Stream) 
 
 func (ddn *driverDiscoveryNotify) Connected(s inet.Network, c inet.Conn) {
 	go func(id peer.ID) {
+		ddn.muSubs.Lock()
 		if len(ddn.subsStack) > 0 {
 			var newSubsStack []cid.Cid
 			for _, c := range ddn.subsStack {
 				if err := ddn.dht.Provide(context.Background(), c, true); err != nil {
 					// stack peer if no peer found
-					logger().Warn("Provide err", zap.Error(err))
+					logger().Warn("discover: provide err:", zap.Error(err))
 					newSubsStack = append(newSubsStack, c)
+				} else {
+					logger().Debug("discover: announcing", zap.String("id", c.String()))
 				}
 			}
 
-			ddn.muSubs.Lock()
 			ddn.subsStack = newSubsStack
-			ddn.muSubs.Unlock()
 		}
+		ddn.muSubs.Unlock()
 	}(c.RemotePeer())
 }
 
