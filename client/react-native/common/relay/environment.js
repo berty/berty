@@ -122,34 +122,14 @@ const perfLogger = (msg, req, res) => {
   }
 }
 
-const _fetchQuery = async req => {
-  try {
-    const query = `http://${await getIP()}:${await CoreModule.getPort()}/query`
-
-    // eslint-disable-next-line
-    if (__DEV__) {
-      console.log(
-        '%c RELAY %c relay query: %s',
-        logStyle.relayOK,
-        logStyle.title,
-        query
-      )
-    }
-    return query
-  } catch (err) {
-    console.warn(err)
-  }
-}
-
-// @TODO: Do something better to cache this
-let queryLock = false
-export const fetchQuery = async req => {
-  if (queryLock) {
-    return queryLock
-  }
-
-  return (queryLock = _fetchQuery(req))
-}
+const _fetchQuery = async () => `http://${await getIP()}:${await CoreModule.getPort()}/query`
+const fetchQuery = req => new Promise((resolve, reject) => {
+  _fetchQuery().then(resolve)
+    .catch(err => {
+      console.log('waiting for daemon')
+      setTimeout(() => resolve(fetchQuery(req)), 500)
+    })
+})
 
 let middlewares = [
   // eslint-disable-next-line
@@ -158,12 +138,12 @@ let middlewares = [
     url: fetchQuery,
   }),
   retryMiddleware({
-    fetchTimeout: 15000,
-    retryDelays: attempt => 1000, // or simple array [3200, 6400, 12800, 25600, 51200, 102400, 204800, 409600],
+    fetchTimeout: 10000,
+    retryDelays: () => 1000,
     beforeRetry: ({ forceRetry, abort, delay, attempt, lastError, req }) => {
       // Unlock query
-      queryLock = false
-      if (attempt > 10) abort()
+      console.groupCollapsed('%c RELAY %c %s', logStyle.relayERROR, logStyle.title, 'fetch query error')
+      console.warn(lastError)
 
       // eslint-disable-next-line
       if (__DEV__) {
@@ -174,8 +154,11 @@ let middlewares = [
             ' ms.'
         )
       }
+
+      console.groupEnd()
+
+      if (attempt > 5) abort()
     },
-    statusCodes: [500, 503, 504],
   }),
 ]
 
