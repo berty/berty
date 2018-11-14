@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 
-export default graphql`
+const ConversationList = graphql`
   query ConversationListQuery(
     $filter: BertyEntityConversationInput
     $count: Int32
@@ -10,3 +10,11 @@ export default graphql`
       @arguments(filter: $filter, count: $count, cursor: $cursor)
   }
 `
+
+ConversationList.defaultVariables = {
+  fileter: null,
+  count: 50,
+  cursor: '',
+}
+
+export default ConversationList

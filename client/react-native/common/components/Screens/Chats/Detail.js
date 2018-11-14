@@ -1,12 +1,12 @@
-import { ActivityIndicator, FlatList, Platform, View } from 'react-native'
-import React, { Fragment, PureComponent } from 'react'
+import { Platform, View } from 'react-native'
+import React, { PureComponent } from 'react'
 
-import { QueryReducer } from '../../../relay'
+import { Pagination } from '../../../relay'
 import { Text, Flex, Screen, Header } from '../../Library'
 import { colors } from '../../../constants'
-import { fragments, mutations, queries, subscriptions } from '../../../graphql'
+import { fragments, mutations, queries } from '../../../graphql'
 import { merge } from '../../../helpers'
-import { paddingHorizontal, shadow } from '../../../styles'
+import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
 
 const Message = fragments.Event(props => {
@@ -16,33 +16,18 @@ const Message = fragments.Event(props => {
     conversation.members.find(m => m.contactId === contactId).contact.status ===
     42
   return (
-    <Fragment>
+    <Flex.Rows
+      align={isMyself ? 'end' : 'start'}
+      style={{ marginHorizontal: 10, marginVertical: 10 }}
+    >
       <Text
         padding={{
-          horizontal: 10,
           vertical: 6,
-        }}
-        left={!isMyself}
-        right={isMyself}
-        self={isMyself ? 'end' : 'start'}
-        tiny
-        color={colors.subtleGrey}
-        margin={{
-          bottom: 16,
-          [isMyself ? 'left' : 'right']: 42,
-        }}
-      >
-        {new Date(props.data.createdAt).toTimeString()}
-      </Text>
-      <Text
-        padding={{
           horizontal: 10,
-          vertical: 6,
         }}
         multiline
         left={!isMyself}
         right={isMyself}
-        self={isMyself ? 'end' : 'start'}
         background={colors.blue}
         color={colors.white}
         rounded={14.5}
@@ -56,7 +41,20 @@ const Message = fragments.Event(props => {
             .message.text
         }
       </Text>
-    </Fragment>
+      <Text
+        left={!isMyself}
+        right={isMyself}
+        tiny
+        color={colors.subtleGrey}
+        margin={{
+          top: 6,
+          bottom: 6,
+          [isMyself ? 'left' : 'right']: 42,
+        }}
+      >
+        {new Date(props.data.createdAt).toTimeString()}
+      </Text>
+    </Flex.Rows>
   )
 })
 
@@ -144,53 +142,6 @@ class Input extends PureComponent {
   }
 }
 
-const List = fragments.EventList(
-  class List extends PureComponent {
-    onEndReached = () => {
-      if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
-        return
-      }
-      this.props.relay.loadMore(5, console.error)
-    }
-
-    componentDidMount () {
-      const conversation = this.props.navigation.getParam('conversation')
-      this.subscriber = subscriptions.conversationNewMessage.subscribe(
-        conversation
-      )
-    }
-
-    componentWillUnmount () {
-      this.subscriber.unsubscribe()
-    }
-
-    render () {
-      const { data, loading } = this.props
-      const edges = (data && data.EventList && data.EventList.edges) || []
-      return (
-        <Flex.Rows>
-          <FlatList
-            ref={ref => (this.ref = ref)}
-            style={[paddingHorizontal]}
-            data={edges}
-            inverted
-            refreshing={loading}
-            onEndReached={this.onEndReached}
-            renderItem={({ item: { node, cursor }, separators }) => (
-              <Message
-                key={cursor}
-                data={node}
-                separators={separators}
-                navigation={this.props.navigation}
-              />
-            )}
-          />
-        </Flex.Rows>
-      )
-    }
-  }
-)
-
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -210,10 +161,12 @@ export default class Detail extends PureComponent {
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
+    const { navigation } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
         <Flex.Rows style={{ backgroundColor: colors.white }}>
-          <QueryReducer
+          <Pagination
+            direction='forward'
             query={queries.EventList}
             variables={merge([
               queries.EventList.defaultVariables,
@@ -224,29 +177,13 @@ export default class Detail extends PureComponent {
                 },
               },
             ])}
-          >
-            {(state, retry) => {
-              switch (state.type) {
-                default:
-                case state.loading:
-                  return <ActivityIndicator size='large' />
-                case state.success:
-                  return (
-                    <List
-                      navigation={this.props.navigation}
-                      data={state.data}
-                      loading={state.type === state.loading}
-                    />
-                  )
-                case state.error:
-                  return null
-              }
-            }}
-          </QueryReducer>
+            fragment={fragments.EventList.default}
+            connection='EventList'
+            renderItem={props => <Message {...props} navigation={navigation} />}
+            inverted
+          />
           <View
             style={{
-              position: 'absolute',
-              bottom: 0,
               left: 0,
               right: 0,
               backgroundColor: colors.white,

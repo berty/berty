@@ -1,70 +1,55 @@
-import { graphql, createPaginationContainer } from 'react-relay'
+import { graphql } from 'react-relay'
 
 import { conversation } from '../../utils'
 import { merge } from '../../helpers'
-import { queries } from '../../graphql'
-import { updater } from '../../relay'
+import { updater as updaterHelper } from '../../relay'
 
-const ConversationList = component =>
-  createPaginationContainer(
-    component,
-    graphql`
-      fragment ConversationList on Query
-        @argumentDefinitions(
-          filter: { type: BertyEntityConversationInput }
-          count: { type: "Int32" }
-          cursor: { type: "String" }
-        ) {
-        ConversationList(
-          filter: $filter
-          first: $count
-          after: $cursor
-          orderBy: ""
-          orderDesc: false
-        ) @connection(key: "ConversationList_ConversationList") {
-          edges {
-            cursor
-            node {
-              id
-              ...Conversation
-            }
-          }
-          pageInfo {
-            count
-            hasNextPage
-            hasPreviousPage
-            endCursor
-            startCursor
-          }
+export const defaultArguments = {
+  default: {
+    filter: conversation.default,
+    orderBy: '',
+    orederDesc: false,
+  },
+}
+
+export const updater = {
+  default: (store, args = {}) =>
+    updaterHelper(store).connection(
+      'ConversationList_ConversationList',
+      merge([defaultArguments.default, args])
+    ),
+}
+
+const Default = graphql`
+  fragment ConversationList on Query
+    @argumentDefinitions(
+      filter: { type: BertyEntityConversationInput }
+      count: { type: "Int32" }
+      cursor: { type: "String" }
+    ) {
+    ConversationList(
+      filter: $filter
+      first: $count
+      after: $cursor
+      orderBy: ""
+      orderDesc: false
+    ) @connection(key: "ConversationList_ConversationList") {
+      edges {
+        cursor
+        node {
+          id
+          ...Conversation
         }
       }
-    `,
-    {
-      direction: 'forward',
-      getConnectionFromProps (props) {
-        return props.data.ConversationList
-      },
-      getFragmentVariables (prevVars, totalCount) {
-        return {
-          ...prevVars,
-          count: totalCount,
-        }
-      },
-      getVariables (props, { count, cursor }, fragmentVariables) {
-        return { count, cursor }
-      },
-      query: queries.ConversationList,
+      pageInfo {
+        count
+        hasNextPage
+        hasPreviousPage
+        endCursor
+        startCursor
+      }
     }
-  )
-ConversationList.defaultArguments = {
-  filter: conversation.default,
-  orderBy: '',
-  orederDesc: false,
-}
-ConversationList.updater = (store, args = {}) =>
-  updater(store).connection(
-    'ConversationList_ConversationList',
-    merge([ConversationList.defaultArguments, args])
-  )
+  }
+`
 
-export default ConversationList
+export default Default
