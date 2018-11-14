@@ -1,18 +1,13 @@
-import { ActivityIndicator, FlatList, Image } from 'react-native'
+import { ActivityIndicator, Image } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
-import { Flex, Screen, Separator, Text } from '../../../Library'
-import { QueryReducer } from '../../../../relay'
+import { Flex, Screen, Text } from '../../../Library'
+import { Pagination } from '../../../../relay'
 import { borderBottom, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import {
-  mutations,
-  fragments,
-  queries,
-  subscriptions,
-} from '../../../../graphql'
+import { mutations, fragments, queries } from '../../../../graphql'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -73,7 +68,10 @@ const Item = fragments.Contact(
         navigation,
       } = this.props
       return (
-        <Flex.Cols align='center' style={[{ height: 72 }, padding]}>
+        <Flex.Cols
+          align='center'
+          style={[{ height: 72 }, padding, borderBottom]}
+        >
           <Flex.Cols size={4} justify='start'>
             <Image
               style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
@@ -180,89 +178,39 @@ const Item = fragments.Contact(
   }
 )
 
-class List extends PureComponent {
-  onEndReached = () => {
-    if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
-      return
-    }
-    this.props.relay.loadMore(10, console.error)
-  }
-  componentDidMount () {
-    this.props.navigation.setParams({ searchHandler: this.searchHandler })
-    this.subscribers = [
-      subscriptions.contactRequest.subscribe({
-        updater: (store, data) => {
-          // TODO
-          console.log('not implemented')
-        },
-      }),
-      subscriptions.contactRequestAccepted.subscribe({
-        updater: (store, data) => {
-          // TODO
-          console.log('not implemented')
-        },
-      }),
-    ]
-  }
-  componentWillUnmount () {
-    this.subscribers.forEach(subscriber => subscriber.unsubscribe())
-  }
+class Received extends PureComponent {
   render () {
-    const { data, relay, navigation } = this.props
-    const edges = (data && data.ContactList && data.ContactList.edges) || []
+    const { navigation } = this.props
+
     return (
-      <FlatList
-        data={edges}
-        ItemSeparatorComponent={({ highlighted }) => (
-          <Separator highlighted={highlighted} />
-        )}
-        refreshing={relay.isLoading()}
-        onEndReached={this.onEndReached}
-        keyExtractor={this.props.keyExtractor}
-        renderItem={({ item: { node, cursor } }) => (
-          <Item data={node} navigation={navigation} />
-        )}
-      />
+      <Screen style={[{ backgroundColor: colors.white }]}>
+        <Pagination
+          direction='forward'
+          query={queries.ContactList.Received}
+          variables={queries.ContactList.Received.defaultVariables}
+          fragment={fragments.ContactList.Received}
+          connection='ContactList'
+          renderItem={props => <Item {...props} navigation={navigation} />}
+        />
+      </Screen>
     )
   }
 }
 
-const ReceivedList = fragments.ContactList.Received(List)
-const SentList = fragments.ContactList.Sent(List)
-
-class Request extends PureComponent {
+class Sent extends PureComponent {
   render () {
     const { navigation } = this.props
-    const {
-      state: { routeName },
-    } = navigation
 
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <QueryReducer
-          query={queries.ContactList[routeName]}
-          variables={queries.ContactList[routeName].defaultVariables}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return <ActivityIndicator size='large' />
-              case state.success:
-                return routeName === 'Received' ? (
-                  <ReceivedList
-                    {...state}
-                    retry={retry}
-                    navigation={navigation}
-                  />
-                ) : (
-                  <SentList {...state} retry={retry} navigation={navigation} />
-                )
-              case state.error:
-                return null
-            }
-          }}
-        </QueryReducer>
+        <Pagination
+          direction='forward'
+          query={queries.ContactList.Sent}
+          variables={queries.ContactList.Sent.defaultVariables}
+          fragment={fragments.ContactList.Sent}
+          connection='ContactList'
+          renderItem={props => <Item {...props} navigation={navigation} />}
+        />
       </Screen>
     )
   }
@@ -270,8 +218,8 @@ class Request extends PureComponent {
 
 export default createTabNavigator(
   {
-    Received: Request,
-    Sent: Request,
+    Received,
+    Sent,
   },
   {
     initialRouteName: 'Received',

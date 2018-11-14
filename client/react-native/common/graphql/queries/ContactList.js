@@ -12,6 +12,12 @@ const ContactList = graphql`
   }
 `
 
+ContactList.defaultVariables = {
+  filter: contact.default,
+  count: 10,
+  cursor: '',
+}
+
 ContactList.Received = graphql`
   query ContactListReceivedQuery(
     $filter: BertyEntityContactInput

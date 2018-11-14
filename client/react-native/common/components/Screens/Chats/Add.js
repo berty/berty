@@ -1,12 +1,11 @@
-// TODO: create generic contact list with pagination
+import { Image, View } from 'react-native'
+import React, { Component, PureComponent } from 'react'
 
-import React, { PureComponent } from 'react'
-import { FlatList, Image, View, ActivityIndicator } from 'react-native'
-import { Screen, Flex, Text, Separator, Header } from '../../Library'
+import { Pagination } from '../../../relay'
+import { Screen, Flex, Text, Header } from '../../Library'
+import { border, borderBottom, marginHorizontal } from '../../../styles'
 import { colors } from '../../../constants'
-import { marginHorizontal, border } from '../../../styles'
-import { QueryReducer } from '../../../relay'
-import { queries, subscriptions, mutations, fragments } from '../../../graphql'
+import { queries, mutations, fragments } from '../../../graphql'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -18,7 +17,7 @@ const Item = fragments.Contact(
 
     render () {
       const {
-        data: { status, displayName, overrideDisplayName, displayStatus },
+        data: { id, status, displayName, overrideDisplayName, displayStatus },
       } = this.props
       const { selected } = this.state
       return (
@@ -32,18 +31,14 @@ const Item = fragments.Contact(
               height: 71,
             },
             marginHorizontal,
+            borderBottom,
           ]}
         >
           <Flex.Rows size={1} align='start'>
             <Image
               style={{ width: 40, height: 40, borderRadius: 50 }}
               source={{
-                uri:
-                  'https://api.adorable.io/avatars/285/' +
-                  ((status === 42 && 'Myself') ||
-                    overrideDisplayName ||
-                    displayName) +
-                  '.png',
+                uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
               }}
             />
           </Flex.Rows>
@@ -78,102 +73,7 @@ const Item = fragments.Contact(
   }
 )
 
-const List = fragments.ContactList(
-  class List extends PureComponent {
-    onEndReached = () => {
-      if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
-        return
-      }
-      this.props.relay.loadMore(21, console.error)
-    }
-    componentDidMount () {
-      const onSubmit = this.props.navigation.getParam('onSubmit')
-      if (!onSubmit) {
-        this.props.navigation.setParams({
-          onSubmit: this.onSubmit(this.onDefaultSubmit),
-        })
-      } else {
-        this.props.navigation.setParams({
-          onSubmit: this.onSubmit(onSubmit),
-        })
-      }
-
-      this.subscribers = [
-        subscriptions.contactRequest.subscribe({
-          updater: (store, data) => this.retry && this.retry(),
-        }),
-        subscriptions.contactRequestAccepted.subscribe({
-          updater: (store, data) => this.retry && this.retry(),
-        }),
-      ]
-    }
-
-    componentWillUnmount () {
-      this.subscribers.forEach(subscriber => subscriber.unsubscribe())
-    }
-
-    state = {
-      contactsID: [],
-    }
-
-    onDefaultSubmit = async ({ contactsID }) => {
-      const retry = this.props.navigation.getParam('retry')
-      await mutations.conversationCreate.commit({
-        title: '',
-        topic: '',
-        contacts: contactsID.map(id => ({
-          id,
-          displayName: '',
-          displayStatus: '',
-          overrideDisplayName: '',
-          overrideDisplayStatus: '',
-        })),
-      })
-      retry && retry()
-      this.props.navigation.goBack(null)
-    }
-
-    onSubmit = onSubmit => async () => {
-      try {
-        await onSubmit(this.state)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    render () {
-      const { data, retry, relay } = this.props
-      const edges = (data && data.ContactList && data.ContactList.edges) || []
-      const { contactsID } = this.state
-      return (
-        <FlatList
-          data={edges}
-          ItemSeparatorComponent={({ highlighted }) => (
-            <Separator highlighted={highlighted} />
-          )}
-          refreshing={relay.isLoading()}
-          onRefresh={retry}
-          onEndReached={this.onEndReached}
-          renderItem={({ item: { node, cursor } }) => (
-            <Item
-              key={cursor}
-              data={node}
-              onPress={() => {
-                const index = contactsID.lastIndexOf(node.id)
-                index < 0
-                  ? contactsID.push(node.id)
-                  : contactsID.splice(index, 1)
-                this.setState({ contactsID })
-              }}
-            />
-          )}
-        />
-      )
-    }
-  }
-)
-
-export default class ListScreen extends PureComponent {
+export default class ListScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -190,30 +90,75 @@ export default class ListScreen extends PureComponent {
     tabBarVisible: true,
   })
 
+  state = {
+    contactsID: [],
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    return false
+  }
+
+  componentDidMount () {
+    const onSubmit = this.props.navigation.getParam('onSubmit')
+    if (!onSubmit) {
+      this.props.navigation.setParams({
+        onSubmit: this.onSubmit(this.onDefaultSubmit),
+      })
+    } else {
+      this.props.navigation.setParams({
+        onSubmit: this.onSubmit(onSubmit),
+      })
+    }
+  }
+
+  onDefaultSubmit = async ({ contactsID }) => {
+    const retry = this.props.navigation.getParam('retry')
+    await mutations.conversationCreate.commit({
+      title: '',
+      topic: '',
+      contacts: contactsID.map(id => ({
+        id,
+        displayName: '',
+        displayStatus: '',
+        overrideDisplayName: '',
+        overrideDisplayStatus: '',
+      })),
+    })
+    retry && retry()
+    this.props.navigation.goBack(null)
+  }
+
+  onSubmit = onSubmit => async () => {
+    try {
+      await onSubmit(this.state)
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   render () {
-    const { navigation } = this.props
+    const { contactsID } = this.state
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <QueryReducer
+        <Pagination
           query={queries.ContactList}
-          variables={{
-            filter: null,
-            count: 21,
-            cursor: '',
-          }}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return <ActivityIndicator size='large' />
-              case state.success:
-                return <List {...state} retry={retry} navigation={navigation} />
-              case state.error:
-                return null
-            }
-          }}
-        </QueryReducer>
+          variables={queries.ContactList.defaultVariables}
+          fragment={fragments.ContactList.default}
+          connection='ContactList'
+          renderItem={props => (
+            <Item
+              {...props}
+              onPress={() => {
+                console.log(props)
+                const index = contactsID.lastIndexOf(props.data.id)
+                index < 0
+                  ? contactsID.push(props.data.id)
+                  : contactsID.splice(index, 1)
+                this.setState({ contactsID })
+              }}
+            />
+          )}
+        />
       </Screen>
     )
   }

@@ -52,10 +52,10 @@ export default (input, configs) =>
     },
     {
       updater: (store, data) => {
-        fragments.ContactList.Received.updater(store).delete(
-          data.ContactRemove.id
-        )
-        fragments.ContactList.Sent.updater(store).delete(data.ContactRemove.id)
+        fragments.ContactList.updater
+          .Received(store)
+          .delete(data.ContactRemove.id)
+        fragments.ContactList.updater.Sent(store).delete(data.ContactRemove.id)
       },
       ...configs,
     }

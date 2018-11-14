@@ -1,10 +1,11 @@
+import { Image } from 'react-native'
 import React, { PureComponent } from 'react'
-import { Screen, Flex, Header, Text, Separator } from '../../Library'
+
+import { Flex, Header, Screen, Text } from '../../Library'
+import { Pagination } from '../../../relay'
+import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
-import { Image, FlatList, ActivityIndicator } from 'react-native'
-import { queries, fragments, subscriptions } from '../../../graphql'
-import { QueryReducer } from '../../../relay'
-import { marginLeft, padding } from '../../../styles'
+import { queries, fragments } from '../../../graphql'
 
 const Item = fragments.Contact(
   ({
@@ -22,7 +23,7 @@ const Item = fragments.Contact(
           },
         })
       }}
-      style={[{ height: 72 }, padding]}
+      style={[{ height: 72 }, padding, borderBottom]}
     >
       <Flex.Rows size={1} align='center'>
         <Image
@@ -44,55 +45,7 @@ const Item = fragments.Contact(
   )
 )
 
-const List = fragments.ContactList(
-  class List extends PureComponent {
-    searchHandler = search => this.setState({ search })
-    onEndReached = () => {
-      if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
-        return
-      }
-      this.props.relay.loadMore(50, console.error)
-    }
-    componentDidMount () {
-      this.props.navigation.setParams({ searchHandler: this.searchHandler })
-      this.subscribers = [
-        subscriptions.contactRequest.subscribe({
-          updater: (store, data) => this.props.retry && this.props.retry(),
-        }),
-        subscriptions.contactRequestAccepted.subscribe({
-          updater: (store, data) => this.props.retry && this.props.retry(),
-        }),
-      ]
-    }
-    componentWillUnmount () {
-      this.subscribers.forEach(subscriber => subscriber.unsubscribe())
-    }
-
-    keyExtractor = item => item.node.id
-
-    render () {
-      const { data, retry, relay } = this.props
-      const edges = (data && data.ContactList && data.ContactList.edges) || []
-      return (
-        <FlatList
-          data={edges}
-          ItemSeparatorComponent={({ highlighted }) => (
-            <Separator highlighted={highlighted} />
-          )}
-          refreshing={relay.isLoading()}
-          onRefresh={retry}
-          onEndReached={this.onEndReached}
-          keyExtractor={this.props.keyExtractor}
-          renderItem={({ item: { node, cursor } }) => (
-            <Item data={node} navigation={this.props.navigation} />
-          )}
-        />
-      )
-    }
-  }
-)
-
-export default class ListScreen extends PureComponent {
+export default class ContactList extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -108,26 +61,21 @@ export default class ListScreen extends PureComponent {
     tabBarVisible: true,
   })
 
+  searchHandler = search => this.setState({ search })
+
   render () {
-    const { navigation } = this.props
     return (
-      <Screen style={[{ backgroundColor: colors.white }]}>
-        <QueryReducer
+      <Screen style={{ backgroundColor: colors.white }}>
+        <Pagination
+          direction='forward'
           query={queries.ContactList}
           variables={{ filter: null, count: 50, cursor: '' }}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return <ActivityIndicator size='large' />
-              case state.success:
-                return <List {...state} retry={retry} navigation={navigation} />
-              case state.error:
-                return null
-            }
-          }}
-        </QueryReducer>
+          fragment={fragments.ContactList.default}
+          connection='ContactList'
+          renderItem={props => (
+            <Item {...props} navigation={this.props.navigation} />
+          )}
+        />
       </Screen>
     )
   }
