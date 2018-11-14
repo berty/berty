@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import {
   Text,
   TouchableOpacity,
@@ -42,7 +42,7 @@ const ConnectionType = c => {
   }
 }
 
-export default class Peers extends PureComponent {
+export default class Peers extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -51,14 +51,7 @@ export default class Peers extends PureComponent {
         titleIcon='list'
         searchBar={
           <SearchBar onChangeText={navigation.getParam('peerFilter')}>
-            <LibText
-              size={0}
-              height={34}
-              icon='filter'
-              padding
-              middle
-              large
-            />
+            <LibText size={0} height={34} padding middle large />
           </SearchBar>
         }
         backBtn
@@ -72,6 +65,7 @@ export default class Peers extends PureComponent {
     peers: [],
     opened: [],
     filter: '',
+    watchdog: false,
   }
 
   componentWillMount () {
@@ -89,8 +83,16 @@ export default class Peers extends PureComponent {
       peerFilter: this.peerFilter,
     })
 
-    queries.Peers.fetch().then(data => this.updatePeers(data.Peers.list))
+    this.fetchPeers()
     subscriptions.monitorPeers.start()
+  }
+
+  componentWillUnmount () {
+    subscriptions.monitorPeers.dispose()
+  }
+
+  fetchPeers = () => {
+    queries.Peers.fetch().then(data => this.updatePeers(data.Peers.list))
   }
 
   updatePeers = peers => {
@@ -99,7 +101,7 @@ export default class Peers extends PureComponent {
 
   addPeer = peer => {
     this.setState(prevState => ({
-      peers: [peer, ...prevState.peers.filter(p => p.id !== peer.id)],
+      peers: [...prevState.peers.filter(p => p.id !== peer.id), peer],
     }))
   }
 
@@ -115,25 +117,30 @@ export default class Peers extends PureComponent {
     )
   }
 
-  renderPeerInfo = peer => {
-    return (
-      <View>
-        <TouchableOpacity style={styles.peerInfos}>
-          <Text style={styles.peerInfoField}>Connection</Text>
-          <Text style={styles.peerInfoValue}>
-            {ConnectionType(peer.connection)}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.peerInfos}>
-          <Text style={styles.peerInfoField}>addrs:</Text>
-          {peer.addrs.map((addr, i) => (
-            <Text style={styles.peerInfoValue} key={i}>{`${addr.slice(0, 30)}${
-              addr.length > 30 ? '...' : ''
-            }`}</Text>
-          ))}
-        </TouchableOpacity>
-      </View>
-    )
+  renderPeerInfo = (peer, index) => {
+    if (this.state.opened.indexOf(index) > -1) {
+      return (
+        <View>
+          <TouchableOpacity style={styles.peerInfos}>
+            <Text style={styles.peerInfoField}>Connection</Text>
+            <Text style={styles.peerInfoValue}>
+              {ConnectionType(peer.connection)}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.peerInfos}>
+            <Text style={styles.peerInfoField}>addrs:</Text>
+            {peer.addrs.map((addr, i) => (
+              <Text style={styles.peerInfoValue} key={i}>{`${addr.slice(
+                0,
+                30
+              )}${addr.length > 30 ? '...' : ''}`}</Text>
+            ))}
+          </TouchableOpacity>
+        </View>
+      )
+    }
+
+    return false
   }
 
   updateOpened = opened => {
@@ -144,10 +151,14 @@ export default class Peers extends PureComponent {
     const { peers } = this.state
 
     if (this.state.filter.length === 0) {
-      return peers
+      return peers.filter(peer => peer.connection === Connection.CONNECTED)
     }
 
-    const matchAddr = peer => peer.addrs.reduce((acc, addr) => addr.indexOf(this.state.filter) > -1 || acc, false)
+    const matchAddr = peer =>
+      peer.addrs.reduce(
+        (acc, addr) => addr.indexOf(this.state.filter) > -1 || acc,
+        false
+      )
     const matchID = peer => peer.id.indexOf(this.state.filter) > -1
 
     return peers.filter(peer => matchID(peer) || matchAddr(peer))
@@ -161,16 +172,27 @@ export default class Peers extends PureComponent {
       <ScrollView style={{ backgroundColor: colors.background }}>
         <View style={styles.peer}>
           <Text style={styles.title}>
-            Number of Peers: {this.state.peers.length} {isFiltered ? `(${filteredPeers.length})` : ''}
+            {!isFiltered
+              ? `Connected Peers: ${filteredPeers.length}/${
+                this.state.peers.length
+              }`
+              : `Matched Peers: ${filteredPeers.length}/${
+                this.state.peers.length
+              }`}
           </Text>
         </View>
         <Accordion
-          sections={this.filteredPeers()}
+          sections={filteredPeers.slice(0, 100)}
           activeSections={this.state.opened}
           renderHeader={this.renderPeer}
           renderContent={this.renderPeerInfo}
           onChange={this.updateOpened}
         />
+        {filteredPeers.length > 100 && (
+          <View style={styles.peer}>
+            <Text>...</Text>
+          </View>
+        )}
       </ScrollView>
     )
   }
