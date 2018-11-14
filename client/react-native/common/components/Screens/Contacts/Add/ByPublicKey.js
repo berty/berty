@@ -69,7 +69,10 @@ const AddButton = ({ contactId, navigation, errorHandler }) => (
 const ShareMyKey = ({ contactId }) => (
   <ActionButton
     icon='plus'
-    onPress={() => Share.share({ message: contactId }).catch(() => null)}
+    onPress={() => {
+      const url = `https://berty.tech/add-contact#public-key=${contactId}`
+      Share.share({ title: 'Add me on Berty', message: `Use this link to add me on Berty ${url}`, url: url }).catch(() => null)
+    }}
     label={'Share my key'}
   />
 )
