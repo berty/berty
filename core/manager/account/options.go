@@ -156,8 +156,8 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
 		}
 
-		a.grpcServer = grpc.NewServer(interceptors...)
-		reflection.Register(a.grpcServer)
+		a.GrpcServer = grpc.NewServer(interceptors...)
+		reflection.Register(a.GrpcServer)
 
 		a.GrpcBind = opts.Bind
 		if a.GrpcBind == "" {
