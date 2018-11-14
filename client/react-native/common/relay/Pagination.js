@@ -21,14 +21,22 @@ class PaginationContainer extends PureComponent {
     }
     this.props.relay.loadMore(
       (this.props.variables && this.props.variables.count) || 10,
-      console.error
+      err => err && console.error(err)
     )
+  }
+
+  refetch = () => {
+    const { relay, data, connection } = this.props
+    const edges =
+      data[connection] && data[connection].edges ? data[connection].edges : []
+
+    relay.refetchConnection(edges.length, err => err && console.error(err))
   }
 
   keyExtractor = item => item.cursor
 
   render () {
-    const { data, connection, retry, relay, renderItem, inverted } = this.props
+    const { data, connection, relay, renderItem, inverted } = this.props
     return (
       <FlatList
         data={
@@ -38,7 +46,7 @@ class PaginationContainer extends PureComponent {
         }
         inverted={inverted}
         refreshing={relay.isLoading()}
-        onRefresh={retry}
+        onRefresh={this.refetch}
         onEndReached={this.onEndReached}
         keyExtractor={this.keyExtractor}
         renderItem={({ item: { node } }) => renderItem({ data: node })}
