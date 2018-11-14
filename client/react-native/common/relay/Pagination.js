@@ -36,7 +36,7 @@ class PaginationContainer extends PureComponent {
   keyExtractor = item => item.node.id
 
   render () {
-    const { data, connection, relay, renderItem, inverted } = this.props
+    const { data, connection, relay, renderItem, inverted, style } = this.props
     return (
       <FlatList
         data={
@@ -50,6 +50,7 @@ class PaginationContainer extends PureComponent {
         onEndReached={this.onEndReached}
         keyExtractor={this.keyExtractor}
         renderItem={({ item: { node } }) => renderItem({ data: node })}
+        style={style}
       />
     )
   }

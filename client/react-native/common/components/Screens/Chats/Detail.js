@@ -164,35 +164,36 @@ export default class Detail extends PureComponent {
     const { navigation } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
-        <Flex.Rows style={{ backgroundColor: colors.white }}>
-          <Pagination
-            direction='forward'
-            query={queries.EventList}
-            variables={merge([
-              queries.EventList.defaultVariables,
-              {
-                filter: {
-                  kind: 302,
-                  conversationId: conversation.id,
-                },
+        <Pagination
+          direction='forward'
+          query={queries.EventList}
+          variables={merge([
+            queries.EventList.defaultVariables,
+            {
+              filter: {
+                kind: 302,
+                conversationId: conversation.id,
               },
-            ])}
-            subscriptions={[subscriptions.conversationNewMessage(conversation)]}
-            fragment={fragments.EventList.default}
-            connection='EventList'
-            renderItem={props => <Message {...props} navigation={navigation} />}
-            inverted
-          />
-          <View
-            style={{
-              left: 0,
-              right: 0,
-              backgroundColor: colors.white,
-            }}
-          >
-            <Input navigation={this.props.navigation} />
-          </View>
-        </Flex.Rows>
+            },
+          ])}
+          subscriptions={[subscriptions.conversationNewMessage(conversation)]}
+          fragment={fragments.EventList.default}
+          connection='EventList'
+          renderItem={props => <Message {...props} navigation={navigation} />}
+          inverted
+          style={{ paddingTop: 48 }}
+        />
+        <View
+          style={{
+            left: 0,
+            right: 0,
+            bottom: 0,
+            position: 'absolute',
+            backgroundColor: colors.white,
+          }}
+        >
+          <Input navigation={this.props.navigation} />
+        </View>
       </Screen>
     )
   }
