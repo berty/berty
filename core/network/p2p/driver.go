@@ -133,6 +133,8 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		}
 	}
 
+	host.Network().Notify(Notify(driver))
+
 	if len(cfg.bootstrap) > 0 {
 		if err := driver.Bootstrap(ctx, cfg.bootstrapSync, cfg.bootstrap...); err != nil {
 			return nil, err
@@ -433,12 +435,11 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 	}
 
 	if err := d.dht.Provide(ctx, c, true); err != nil {
-		// stack peer if no peer found
 		d.stackSub(c)
 		logger().Warn("provide err", zap.Error(err))
+	} else {
+		logger().Debug("discover: announcing", zap.String("id", id))
 	}
-
-	logger().Debug("announcing", zap.String("id", id))
 
 	// Announce that you are subscribed to this conversation, but don't
 	// broadcast it! in this way, if you die, your announcement will die with you!
