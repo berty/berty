@@ -206,6 +206,9 @@ func (a *Account) Open() error {
 		zap.Int("p2p-api", int(p2papi.Version)),
 		zap.Int("node-api", int(nodeapi.Version)),
 		zap.String("version", core.Version),
+		zap.String("git-tag", core.GitTag),
+		zap.String("git-sha", core.GitSha),
+		zap.String("git-branch", core.GitBranch),
 		zap.String("db", a.dbPath()),
 		zap.String("name", a.Name),
 	)

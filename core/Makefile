@@ -18,6 +18,10 @@ GENERATED_FILES = \
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= GO111MODULE=on CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
+GIT_SHA ?= $(shell git rev-parse HEAD)
+GIT_TAG ?= $(shell git describe --tags --always)
+GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
+EXT_LDFLAGS ?= -ldflags "-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH)"
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
@@ -49,7 +53,7 @@ run: $(BIN)
 install: $(BIN)
 
 $(BIN): generate $(OUR_SOURCES)
-	$(BUILD_ENV) go install -v ./cmd/...
+	$(BUILD_ENV) go install $(EXT_LDFLAGS) -v ./cmd/...
 
 .PHONY: testwatch
 testwatch:
