@@ -126,8 +126,8 @@ const _fetchQuery = async () => `http://${await getIP()}:${await CoreModule.getP
 const fetchQuery = req => new Promise((resolve, reject) => {
   _fetchQuery().then(resolve)
     .catch(err => {
-      console.log('waiting for daemon')
-      setTimeout(() => resolve(fetchQuery(req)), 500)
+      console.log('waiting for daemon', err)
+      setTimeout(() => resolve(fetchQuery(req)), 1000)
     })
 })
 
