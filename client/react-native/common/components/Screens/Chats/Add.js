@@ -112,7 +112,6 @@ export default class ListScreen extends Component {
   }
 
   onDefaultSubmit = async ({ contactsID }) => {
-    const retry = this.props.navigation.getParam('retry')
     await mutations.conversationCreate.commit({
       title: '',
       topic: '',
@@ -124,7 +123,6 @@ export default class ListScreen extends Component {
         overrideDisplayStatus: '',
       })),
     })
-    retry && retry()
     this.props.navigation.goBack(null)
   }
 
