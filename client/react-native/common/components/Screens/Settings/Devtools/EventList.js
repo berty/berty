@@ -16,6 +16,7 @@ import { colors } from '../../../../constants'
 import { fragments, mutations, queries } from '../../../../graphql'
 import { marginLeft, padding } from '../../../../styles'
 import Button from '../../../Library/Button'
+import moment from 'moment'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
@@ -38,12 +39,20 @@ const Item = fragments.Event(({ data, navigation }) => (
           className='textEllipsis'
           style={{ color: colors.black }}
         >
-          <Text style={{ fontWeight: 'bold' }}>Kind</Text>
-          {' ' + data.kind}
+
           {data.ackedAt !== null
             ? <Icon name={'check-circle'} color={colors.green} />
-            : <Icon name={'arrow-up-circle'} color={colors.orange} />
+            : <Icon name={'arrow-up-circle'} color={colors.red} />
           }
+          {' '}
+          {{
+            0: <Icon name={'check-circle'} color={colors.red} />,
+            1: <Icon name={'phone-incoming'} color={colors.orange} />,
+            2: <Icon name={'phone-outgoing'} color={colors.purple} />,
+          }[data.direction]}
+          {' '}
+          <Text style={{ fontWeight: 'bold' }}>Kind</Text>
+          {' ' + data.kind}
         </Text>
         <Text
           ellipsizeMode='tail'
@@ -61,7 +70,16 @@ const Item = fragments.Event(({ data, navigation }) => (
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>Created</Text>
-          {' ' + data.createdAt}
+          {` ${moment(data.createdAt).fromNow()} ${data.createdAt}`}
+        </Text>
+        <Text
+          ellipsizeMode='tail'
+          numberOfLines={1}
+          className='textEllipsis'
+          style={{ color: colors.blackGrey, fontSize: 12 }}
+        >
+          <Text style={{ fontWeight: 'bold' }}>Acked</Text>
+          {data.ackedAt ? ` ${moment(data.ackedAt).fromNow()} ${data.ackedAt}` : ' never'}
         </Text>
       </Flex.Rows>
     </Flex.Cols>
