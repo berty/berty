@@ -35,6 +35,8 @@ class PaginationContainer extends PureComponent {
 
   keyExtractor = item => item.node.id
 
+  renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
+
   render () {
     const { data, connection, relay, renderItem, inverted, style } = this.props
     return (
@@ -49,7 +51,7 @@ class PaginationContainer extends PureComponent {
         onRefresh={this.refetch}
         onEndReached={this.onEndReached}
         keyExtractor={this.keyExtractor}
-        renderItem={({ item: { node } }) => renderItem({ data: node })}
+        renderItem={renderItem && this.renderItem}
         style={style}
       />
     )
