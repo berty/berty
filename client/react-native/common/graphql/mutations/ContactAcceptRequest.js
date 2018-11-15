@@ -51,9 +51,9 @@ export default (input, configs) =>
     merge([contact.default, input]),
     {
       updater: (store, data) =>
-        fragments.ContactList.Received.updater(store).delete(
-          data.ContactAcceptRequest.id
-        ),
+        fragments.ContactList.updater
+          .Received(store)
+          .delete(data.ContactAcceptRequest.id),
       ...configs,
     }
   )
