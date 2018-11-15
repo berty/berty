@@ -1,9 +1,9 @@
 import { fragments } from '..'
 import EventStream from './EventStream'
 
-export default {
+export default conversation => ({
   ...EventStream,
-  subscribe: conversation =>
+  subscribe: () =>
     EventStream.subscribe({
       updater: (store, data) => {
         console.log('RECEIVED_EVENT')
@@ -22,4 +22,4 @@ export default {
         }
       },
     }),
-}
+})

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { TouchableOpacity, Image } from 'react-native'
 import { colors } from '../../constants'
 import { Flex, Text } from '.'
-import { marginLeft, padding } from '../../styles'
+import { marginLeft, padding, borderBottom } from '../../styles'
 
 export default class ListItem extends PureComponent {
   render () {
@@ -16,6 +16,7 @@ export default class ListItem extends PureComponent {
             height: 72,
           },
           padding,
+          borderBottom,
         ]}
       >
         <Flex.Cols align='center'>

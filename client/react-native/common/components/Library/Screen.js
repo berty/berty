@@ -1,5 +1,6 @@
+import { Dimensions, View } from 'react-native'
 import React, { Component } from 'react'
-import { StyleSheet, Dimensions, View } from 'react-native'
+
 import { screen, colors } from '../../constants'
 
 export default class Screen extends Component {
@@ -46,7 +47,6 @@ export default class Screen extends Component {
           },
           dimensions,
           style,
-          absolute && StyleSheet.absoluteFill,
         ]}
         onLayout={this._onLayout}
         {...props}
