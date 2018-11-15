@@ -40,12 +40,13 @@ export default (input, configs) =>
     ]),
     {
       updater: (store, data) => {
-        fragments.EventList.updater(store, {
-          filter: {
-            conversationId: data.ConversationAddMessage.conversationId,
-            kind: data.ConversationAddMessage.kind,
-          },
-        })
+        fragments.EventList.updater
+          .default(store, {
+            filter: {
+              conversationId: data.ConversationAddMessage.conversationId,
+              kind: data.ConversationAddMessage.kind,
+            },
+          })
           .add('EventEdge', data.ConversationAddMessage.id)
           .before()
       },

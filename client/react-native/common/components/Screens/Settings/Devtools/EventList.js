@@ -1,5 +1,6 @@
-import { ActivityIndicator, FlatList, Text, TouchableOpacity } from 'react-native'
+import { Text, TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
+import moment from 'moment'
 
 import { FilterModal, PickerFilter } from '../../../Library/Filters'
 import {
@@ -7,16 +8,14 @@ import {
   Header,
   Screen,
   SearchBar,
-  Separator,
   Icon,
   Text as LibText,
 } from '../../../Library'
-import { QueryReducer } from '../../../../relay'
+import { Pagination } from '../../../../relay'
+import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { fragments, mutations, queries } from '../../../../graphql'
-import { marginLeft, padding } from '../../../../styles'
 import Button from '../../../Library/Button'
-import moment from 'moment'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
@@ -29,6 +28,7 @@ const Item = fragments.Event(({ data, navigation }) => (
         height: 72,
       },
       padding,
+      borderBottom,
     ]}
   >
     <Flex.Cols align='center'>
@@ -39,18 +39,18 @@ const Item = fragments.Event(({ data, navigation }) => (
           className='textEllipsis'
           style={{ color: colors.black }}
         >
-
-          {data.ackedAt !== null
-            ? <Icon name={'check-circle'} color={colors.green} />
-            : <Icon name={'arrow-up-circle'} color={colors.red} />
-          }
-          {' '}
-          {{
-            0: <Icon name={'check-circle'} color={colors.red} />,
-            1: <Icon name={'phone-incoming'} color={colors.orange} />,
-            2: <Icon name={'phone-outgoing'} color={colors.purple} />,
-          }[data.direction]}
-          {' '}
+          {data.ackedAt !== null ? (
+            <Icon name={'check-circle'} color={colors.green} />
+          ) : (
+            <Icon name={'arrow-up-circle'} color={colors.red} />
+          )}{' '}
+          {
+            {
+              0: <Icon name={'check-circle'} color={colors.red} />,
+              1: <Icon name={'phone-incoming'} color={colors.orange} />,
+              2: <Icon name={'phone-outgoing'} color={colors.purple} />,
+            }[data.direction]
+          }{' '}
           <Text style={{ fontWeight: 'bold' }}>Kind</Text>
           {' ' + data.kind}
         </Text>
@@ -79,83 +79,36 @@ const Item = fragments.Event(({ data, navigation }) => (
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>Acked</Text>
-          {data.ackedAt ? ` ${moment(data.ackedAt).fromNow()} ${data.ackedAt}` : ' never'}
+          {data.ackedAt
+            ? ` ${moment(data.ackedAt).fromNow()} ${data.ackedAt}`
+            : ' never'}
         </Text>
       </Flex.Rows>
     </Flex.Cols>
   </TouchableOpacity>
 ))
 
-const List = fragments.EventList(
-  class List extends PureComponent {
-    state = {
-      search: '',
-    }
+export default class EventList extends PureComponent {
+  state = {
+    search: '',
+  }
 
-    searchHandler = search => this.setState({ search })
+  searchHandler = search => this.setState({ search })
 
-    filter = EventList => {
-      const { search } = this.state
-      if (search === '') {
-        return EventList
-      } else {
-        return EventList.filter(
-          entry =>
-            entry.id.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            entry.kind.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
-            entry.createdAt.toLowerCase().indexOf(search.toLowerCase()) > -1,
-        )
-      }
-    }
-
-    onEndReached = () => {
-      if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
-        return
-      }
-      this.props.relay.loadMore(10, console.error)
-    }
-
-    refetch = () => {
-      this.props.relay.refetchConnection(10, console.error, {
-        ...queries.EventList.defaultVariables,
-        ...this.props.navigation.getParam('filters'),
-      })
-    }
-
-    componentDidMount () {
-      this.props.navigation.setParams({
-        searchHandler: this.searchHandler,
-        retry: this.refetch,
-      })
-    }
-
-    componentWillUnmount () {}
-
-    render () {
-      const { data, navigation } = this.props
-      return (
-        <FlatList
-          data={data.EventList.edges || []}
-          ItemSeparatorComponent={({ highlighted }) => (
-            <Separator highlighted={highlighted} />
-          )}
-          onEndReached={this.onEndReached}
-          refreshing={this.props.relay.isLoading()}
-          onRefresh={this.refetch}
-          navigation={navigation}
-          renderItem={data => (
-            <Item
-              key={data.item.node.id}
-              data={data.item.node}
-              navigation={navigation}
-            />
-          )}
-        />
+  filter = EventList => {
+    const { search } = this.state
+    if (search === '') {
+      return EventList
+    } else {
+      return EventList.filter(
+        entry =>
+          entry.id.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+          entry.kind.toLowerCase().indexOf(search.toLowerCase()) > -1 ||
+          entry.createdAt.toLowerCase().indexOf(search.toLowerCase()) > -1
       )
     }
-  },
-)
-export default class EventList extends PureComponent {
+  }
+
   componentWillMount () {
     this.props.navigation.setParams({
       filters: {
@@ -199,36 +152,27 @@ export default class EventList extends PureComponent {
     const { navigation } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white }}>
-        <QueryReducer
+        <Pagination
           query={queries.EventList}
           variables={{
             ...queries.EventList.defaultVariables,
             ...navigation.getParam('filters'),
           }}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return (
-                  <Flex.Rows>
-                    <ActivityIndicator size='large' />
-                  </Flex.Rows>
-                )
-              case state.success:
-                return <List data={state.data} navigation={navigation} />
-              case state.error:
-                return null
-            }
-          }}
-        </QueryReducer>
+          fragment={fragments.EventList.default}
+          connection='EventList'
+          renderItem={props => <Item {...props} navigation={navigation} />}
+        />
       </Screen>
     )
   }
 }
 
-export const EventListFilterModal = ({ navigation }) =>
-  <FilterModal title={'Filter events'} navigation={navigation} defaultData={navigation.getParam('defaultData')}>
+export const EventListFilterModal = ({ navigation }) => (
+  <FilterModal
+    title={'Filter events'}
+    navigation={navigation}
+    defaultData={navigation.getParam('defaultData')}
+  >
     <PickerFilter
       name='onlyWithoutAckedAt'
       choices={[
@@ -237,8 +181,12 @@ export const EventListFilterModal = ({ navigation }) =>
         { value: 2, label: 'AckedAt is defined' },
       ]}
     />
-    <Button onPress={() => mutations.debugRequeueAll.commit({ t: true })} icon={'radio'}
-      style={{ textAlign: 'left' }}>
+    <Button
+      onPress={() => mutations.debugRequeueAll.commit({ t: true })}
+      icon={'radio'}
+      style={{ textAlign: 'left' }}
+    >
       Requeue all non acked
     </Button>
   </FilterModal>
+)
