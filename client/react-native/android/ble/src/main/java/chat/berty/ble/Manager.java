@@ -291,6 +291,14 @@ public class Manager {
                 }
 
                 @Override
+                public void onExecuteWrite (BluetoothDevice device,
+                                            int requestId,
+                                            boolean execute) {
+                    Log.e(TAG, "EXECUTE WRITE " + requestId + " EXECUTE " + execute);
+                    super.onExecuteWrite(device, requestId, execute);
+                }
+
+                @Override
                 public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
                     UUID charID = characteristic.getUuid();
                     BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
@@ -304,8 +312,12 @@ public class Manager {
                         } catch (Exception e) {
                             Log.e(TAG, "FAIL AWAIT " + e.getMessage());
                         }
+                        Log.e(TAG, "rep needed" + responseNeeded+ "prepared " + preparedWrite + " transid " + requestId  + " offset " + offset + " len: " + value.length);
                         Core.bytesToConn(bDevice.ma, value);
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
+                        if (responseNeeded) {
+                            mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
+                        }
+
                     } else if (charID.equals(CLOSER_UUID)) {
                         // TODO
                     } else if (charID.equals(IS_READY_UUID)) {
