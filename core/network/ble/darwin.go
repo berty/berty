@@ -98,8 +98,11 @@ func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.cha
 	go RealAcceptSender(goPeerID, goble, goIncPeerID)
 }
 
-func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
-	m, _ := lAddr.ValueForProtocol(PBle)
+func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
+	m, err := lAddr.ValueForProtocol(PBle)
+	if err != nil {
+		return nil, err
+	}
 	val := C.CString(m)
 	peerID := C.CString(hostID.Pretty())
 	defer C.free(unsafe.Pointer(val))
@@ -116,7 +119,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
 	}
 
 	listeners[t.ID] = listerner
-	return listerner
+	return listerner, nil
 }
 
 // Dial dials the peer at the remote address.
