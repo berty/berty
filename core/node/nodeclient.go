@@ -32,6 +32,9 @@ func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_Eve
 			if input.Filter == nil {
 				return true
 			}
+			if input.Filter.Direction != p2p.Event_UnknownDirection && e.Direction != input.Filter.Direction {
+				return false
+			}
 			if input.Filter.Kind != p2p.Kind_Unknown && e.Kind != input.Filter.Kind {
 				return false
 			}

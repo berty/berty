@@ -56,25 +56,28 @@ func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
 }
 
 // Start is the node's mainloop
-func (n *Node) Start() error {
+func (n *Node) Start(withCron bool) error {
 	ctx := context.Background()
 
-	go func() {
-		for true {
-			before := time.Now().Add(-time.Second * 60 * 10)
-			_, err := n.EventsRetry(before)
+	if withCron {
+		go func() {
+			for true {
+				before := time.Now().Add(-time.Second * 60 * 10)
+				_, err := n.EventsRetry(before)
 
-			if err != nil {
-				logger().Error("error while retrieving non acked destinations", zap.Error(err))
+				if err != nil {
+					logger().Error("error while retrieving non acked destinations", zap.Error(err))
+				}
+
+				time.Sleep(time.Second * 60)
 			}
-
-			time.Sleep(time.Second * 60)
-		}
-	}()
+		}()
+	}
 
 	for {
 		select {
 		case event := <-n.outgoingEvents:
+			logger().Debug("outgoing event", zap.Stringer("event", event))
 			envelope := p2p.Envelope{}
 			eventBytes, err := proto.Marshal(event)
 			if err != nil {
@@ -103,10 +106,28 @@ func (n *Node) Start() error {
 				continue
 			}
 
-			if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
-				logger().Error("failed to emit envelope on network", zap.Error(err))
+			// Async subscribe to conversation
+			// wait for 1s to simulate a sync subscription,
+			// if too long, the task will be done in background
+			done := make(chan bool, 1)
+			go func() {
+				// FIXME: make something smarter, i.e., grouping events by contact or network driver
+				if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
+					logger().Error("failed to emit envelope on network", zap.Error(err))
+				}
+				done <- true
+			}()
+			select {
+			case <-done:
+			case <-time.After(1 * time.Second):
 			}
+
+			// push the outgoing event on the client stream
+			n.clientEvents <- event
+
+			// emit the outgoing event on the node event stream
 		case event := <-n.clientEvents:
+			logger().Debug("client event", zap.Stringer("event", event))
 			n.clientEventsMutex.Lock()
 			for _, sub := range n.clientEventsSubscribers {
 				if sub.filter(event) {
