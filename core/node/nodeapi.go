@@ -2,12 +2,14 @@ package node
 
 import (
 	"context"
+	"time"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/sql"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -241,6 +243,10 @@ func (n *Node) ConversationCreate(ctx context.Context, input *node.ConversationC
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
+	return n.conversationCreate(ctx, input)
+}
+
+func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationCreateInput) (*entity.Conversation, error) {
 	members := []*entity.ConversationMember{
 		{
 			ID:        n.NewID(),
@@ -273,10 +279,21 @@ func (n *Node) ConversationCreate(ctx context.Context, input *node.ConversationC
 		return nil, errors.Wrap(err, "failed to load freshly created conversation")
 	}
 
-	// Subscribe to conversation
-	if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
-		return nil, err
+	// Async subscribe to conversation
+	// wait for 1s to simulate a sync subscription,
+	// if too long, the task will be done in background
+	done := make(chan bool, 1)
+	go func() {
+		if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
+			logger().Error("failed to join conversation", zap.Error(err))
+		}
+		done <- true
+	}()
+	select {
+	case <-done:
+	case <-time.After(1 * time.Second):
 	}
+
 	// send invite to peers
 	filtered := conversation.Filtered()
 	for _, member := range conversation.Members {

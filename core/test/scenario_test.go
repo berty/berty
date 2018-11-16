@@ -75,6 +75,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		})
 		Convey("Alice has Bob as friend", FailureHalts, func() {
 			shouldIContinue(t)
+			time.Sleep(200 * time.Millisecond)
 
 			contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{
 				Filter: &entity.Contact{Status: entity.Contact_IsFriend},
