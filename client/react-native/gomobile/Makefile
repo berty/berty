@@ -15,7 +15,7 @@ BLE_BIND_PATH := /tmp/ble
 GIT_SHA ?= $(shell git rev-parse HEAD)
 GIT_TAG ?= $(shell git describe --tags --always)
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
-EXT_LDFLAGS ?= -ldflags="\"-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH)\""
+EXT_LDFLAGS ?= -ldflags="-X \"berty.tech/client/react-native/gomobile/vendor/berty.tech/core.GitTag=$(GIT_TAG)\" -X \"berty.tech/client/react-native/gomobile/vendor/berty.tech/core.GitBranch=$(GIT_BRANCH)\" -X \"berty.tech/client/react-native/gomobile/vendor/berty.tech/core.GitSha=$(GIT_SHA)\""
 
 GOPATH ?=		$(HOME)/go
 
@@ -74,8 +74,8 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	# GOOS=android gobind -lang=go,java -outdir=$(BLE_BIND_PATH) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar berty.tech/core/network/ble
 	mkdir -p $(ANDROID_BUILD_PATH)
-	cd $(CORE_MOBILE) && GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
-		gomobile bind -v $(EXT_LDFLAGS) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android -o $(ANDROID_BUILD_PATH)/core.aar .
+	GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
+		gomobile bind -v $(EXT_LDFLAGS) -work -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/client/react-native/gomobile/core
 
 .PHONY: build.ios
 build.ios: $(IOS_BUILD_PATH)/core.framework/Core
@@ -84,7 +84,7 @@ $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	mkdir -p $(IOS_BUILD_PATH)
 	cd $(CORE_MOBILE) && CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
-		gomobile bind -v $(EXT_LDFLAGS) -target=ios -o $(IOS_BUILD_PATH)/core.framework .
+		gomobile bind -v $(EXT_LDFLAGS) -work -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/client/react-native/gomobile/core
 
 .PHONY: build
 build: build.android build.ios
