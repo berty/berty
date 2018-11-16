@@ -162,4 +162,32 @@ class CoreModule: NSObject {
             resolve(nil)
         }
     }
+
+    @objc func getLocalGRPCInfos(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        resolve(CoreGetLocalGRPCInfos())
+    }
+
+    @objc func startLocalGRPC(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        var err: NSError?
+
+        CoreStartLocalGRPC(&err)
+        if let error = err {
+            logger.format("start local gRPC error: ", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
+        } else {
+            resolve(nil)
+        }
+    }
+
+    @objc func stopLocalGRPC(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+        var err: NSError?
+
+        CoreStopLocalGRPC(&err)
+        if let error = err {
+            logger.format("stop local gRPC error: ", level: .Error, error.userInfo.description)
+            reject("\(String(describing: error.code))", error.localizedDescription, error)
+        } else {
+            resolve(nil)
+        }
+    }
 }
