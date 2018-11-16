@@ -117,7 +117,7 @@ func (t *Transport) UseReuseport() bool {
 // Listen listens on the given multiaddr.
 func (t *Transport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 	logger().Debug("BLETransport Listen")
-	return NewListener(laddr, t.MySelf.ID(), t), nil
+	return NewListener(laddr, t.MySelf.ID(), t)
 }
 
 // Protocols returns the list of terminal protocols this transport can dial.

@@ -73,6 +73,7 @@ func UpdateNetworkConfig(jsonConf string) error {
 		return err
 	}
 
+	appConfig.JSONNetConf = jsonConf
 	netConf, err := createNetworkConfig()
 	if err != nil {
 		return err
@@ -81,7 +82,6 @@ func UpdateNetworkConfig(jsonConf string) error {
 		return err
 	}
 
-	appConfig.JSONNetConf = jsonConf
 	appConfig.StartCounter++
 	if err := appConfig.Save(); err != nil {
 		return errors.Wrap(err, "state DB save failed")
