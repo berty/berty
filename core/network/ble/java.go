@@ -69,8 +69,11 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
-	ma, _ := lAddr.ValueForProtocol(PBle)
+func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
+	ma, err := lAddr.ValueForProtocol(PBle)
+	if err != nil {
+		return nil, err
+	}
 	peerID := hostID.Pretty()
 
 	InitScannerAndAdvertiser()
@@ -87,7 +90,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) *Listener {
 	}
 
 	listeners[t.ID] = listener
-	return listener
+	return listener, nil
 }
 
 func (b *Conn) IsClosed() bool {
