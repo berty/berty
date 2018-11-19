@@ -3,6 +3,7 @@
 package ble
 
 import (
+	"fmt"
 	"net"
 
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -19,6 +20,7 @@ type Listener struct {
 	network         string
 	incomingBLEUUID chan string
 	incomingPeerID  chan string
+	closer          chan struct{}
 	lAddr           ma.Multiaddr
 }
 
@@ -49,22 +51,29 @@ func (b *Listener) Multiaddr() ma.Multiaddr {
 
 func (b *Listener) Accept() (tpt.Conn, error) {
 	for {
-		bleUUID := <-b.incomingBLEUUID
-		peerIDb58 := <-b.incomingPeerID
-		for {
-			if ci, ok := getConn(bleUUID); !ok {
-				rAddr, err := ma.NewMultiaddr("/ble/" + bleUUID)
-				if err != nil {
-					return nil, err
+		select {
+		case _, ok := <-b.closer:
+			if !ok {
+				return nil, fmt.Errorf("ble listener closed")
+			}
+		case bleUUID, _ := <-b.incomingBLEUUID:
+			peerIDb58 := <-b.incomingPeerID
+			for {
+				if ci, ok := getConn(bleUUID); !ok {
+					rAddr, err := ma.NewMultiaddr("/ble/" + bleUUID)
+					if err != nil {
+						return nil, err
+					}
+					rID, err := peer.IDB58Decode(peerIDb58)
+					if err != nil {
+						return nil, err
+					}
+					close(b.incomingBLEUUID)
+					c := NewConn(b.transport, b.transport.MySelf.ID(), rID, b.lAddr, rAddr, 1)
+					return &c, nil
+				} else {
+					return ci, nil
 				}
-				rID, err := peer.IDB58Decode(peerIDb58)
-				if err != nil {
-					return nil, err
-				}
-				c := NewConn(b.transport, b.transport.MySelf.ID(), rID, b.lAddr, rAddr, 1)
-				return &c, nil
-			} else {
-				return ci, nil
 			}
 		}
 	}
@@ -73,5 +82,13 @@ func (b *Listener) Accept() (tpt.Conn, error) {
 // Close TODO: stop advertising release object etc...
 func (b *Listener) Close() error {
 	logger().Debug("BLEListener Close")
+	select {
+	case _, ok := <-b.closer:
+		if !ok {
+			return fmt.Errorf("ble listerner already closed")
+		}
+	default:
+		close(b.closer)
+	}
 	return nil
 }
