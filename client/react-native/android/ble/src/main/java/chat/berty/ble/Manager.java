@@ -181,6 +181,16 @@ public class Manager {
         }
     }
 
+    public void closeConnFromMa(String rMa) {
+        BertyDevice bDevice = getDeviceFromMa(rMa);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            bDevice.gatt.disconnect();
+        }
+        synchronized (bertyDevices) {
+            bertyDevices.remove(bDevice.addr);
+        }
+    }
+
     public static Manager getInstance() {
         if (instance == null) {
             synchronized (Manager.class) {

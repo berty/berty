@@ -19,6 +19,7 @@ var Write func(p []byte, ma string) bool = nil
 var DialPeer func(ma string) bool = nil
 var InitScannerAndAdvertiser func() = nil
 var CloseScannerAndAdvertiser func() = nil
+var CloseConnFromMa func(ma string) = nil
 
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	// if int(C.isDiscovering()) != 1 {
@@ -42,8 +43,15 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 }
 
 func (b *Conn) Close() error {
-	// logger().Debug("BLEConn Close")
-	// b.closed = true
+	logger().Debug("BLEConn Close")
+	if b.closed == false {
+		val, err := b.rAddr.ValueForProtocol(PBle)
+		if err != nil {
+			return err
+		}
+		CloseConnFromMa(val)
+	}
+	b.closed = true
 	// val, err := b.rAddr.ValueForProtocol(PBle)
 	// if err != nil {
 	// 	logger().Debug("BLEConn close", zap.Error(err))
