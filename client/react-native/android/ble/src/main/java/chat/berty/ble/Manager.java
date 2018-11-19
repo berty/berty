@@ -172,6 +172,15 @@ public class Manager {
         }
     }
 
+    public void closeScannerAndAdvertiser() {
+        stopScanning();
+        stopAdvertising();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            mBluetoothGattServer.close();
+        }
+    }
+
     public static Manager getInstance() {
         if (instance == null) {
             synchronized (Manager.class) {
@@ -495,12 +504,24 @@ public class Manager {
         }
     }
 
+    public void stopAdvertising() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBluetoothLeAdvertiser.stopAdvertising(mAdvertisingCallback);
+        }
+    }
+
     public void startScanning() {
         ScanSettings settings = createScanSetting();
         ScanFilter filter = makeFilter();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBluetoothLeScanner.startScan(Arrays.asList(filter), settings, mScanCallback);
+        }
+    }
+
+    public void stopScanning() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mBluetoothLeScanner.stopScan(mScanCallback);
         }
     }
 

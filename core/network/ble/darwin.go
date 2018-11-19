@@ -153,3 +153,7 @@ func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
 	goRAddr := C.GoString(rAddr)
 	AddToPeerStore(goPeerID, goRAddr)
 }
+
+func (b *Listener) closeNative() {
+
+}

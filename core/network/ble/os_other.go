@@ -55,3 +55,7 @@ func (t *Transport) Proxy() bool {
 func (t *Transport) String() string {
 	return "ble"
 }
+
+func (b *Listener) closeNative() {
+
+}

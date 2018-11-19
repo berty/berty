@@ -88,6 +88,7 @@ func (b *Listener) Close() error {
 			return fmt.Errorf("ble listerner already closed")
 		}
 	default:
+		b.closeNative()
 		close(b.closer)
 	}
 	return nil
