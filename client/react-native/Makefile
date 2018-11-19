@@ -4,6 +4,7 @@ WEB := $(ROOT)/web
 GOMOB := $(ROOT)/gomobile
 IOS := $(ROOT)/ios
 ANDROID := $(ROOT)/android
+IOS_UDID := ''
 
 # Fastlane build related
 IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
@@ -22,10 +23,21 @@ SCALE ?= 1
 PORT ?= 0
 SERV ?=
 
+# Misc.
 .PHONY: help
 help:
 	@echo "React-Native commands:"
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | grep -v / | sed 's/^/  $(HELP_MSG_PREFIX)make /'
+
+.PHONY: get_iphone_udid
+get_iphone_udid:
+	$(eval IOS_UDID = $(shell ios-deploy -c | grep 'Found' | head -n 1 | cut -d ' ' -f 3))
+	@if [ -z '$(IOS_UDID)' ]; then						\
+		echo 'No iOS device connected';					\
+	else												\
+		echo 'iOS device found with UDID: $(IOS_UDID)';	\
+	fi
+	$(eval IOS_UDID = $(shell if [ -n '$(IOS_UDID)' ]; then echo '--udid $(IOS_UDID)'; fi))
 
 
 ### Dependencies part ###
@@ -57,7 +69,6 @@ deps.web: deps
 .PHONY: deps.logs
 deps.logs:
 	brew install --HEAD pidcat
-
 ##############################
 
 
@@ -78,15 +89,16 @@ release.android: deps.android
 	cd $(ROOT) && react-native run-android --variant=release --no-packager
 
 .PHONY: debug.ios
-debug.ios: deps.ios
-	cd $(ROOT) && ./node_modules/.bin/concurrently "react-native run-ios --no-packager --configuration=Debug --scheme=debug --device '$(device)'" 'yarn start'
+debug.ios: deps.ios get_iphone_udid
+	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-ios --no-packager --configuration=Debug --scheme=debug $(IOS_UDID)' 'yarn start'
 
 .PHONY: release.ios
-release.ios: deps.ios
-	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=release --device '$(device)'
+release.ios: deps.ios get_iphone_udid
+	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=release $(IOS_UDID)
 
-adhoc.ios: deps.ios
-	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=adhoc --device '$(device)'
+.PHONY: adhoc.ios
+adhoc.ios: deps.ios get_iphone_udid
+	cd $(ROOT) && react-native run-ios --no-packager --configuration=Release --scheme=adhoc $(IOS_UDID)
 
 .PHONY: debug.web
 debug.web: deps.web

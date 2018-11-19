@@ -153,4 +153,31 @@ public class CoreModule extends ReactContextBaseJavaModule {
             promise.reject(err);
         }
     }
+
+    @ReactMethod
+    public void getLocalGRPCInfos(Promise promise) {
+        promise.resolve(Core.getLocalGRPCInfos());
+    }
+
+    @ReactMethod
+    public void startLocalGRPC(Promise promise) {
+        try {
+            Core.startLocalGRPC();
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to update start local gRPC: %s", err);
+            promise.reject(err);
+        }
+    }
+
+    @ReactMethod
+    public void stopLocalGRPC(Promise promise) {
+        try {
+            Core.stopLocalGRPC();
+            promise.resolve(null);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to update stop local gRPC: %s", err);
+            promise.reject(err);
+        }
+    }
 }

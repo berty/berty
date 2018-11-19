@@ -14,6 +14,7 @@ type StateDB struct {
 
 	JSONNetConf string
 	BotMode     bool
+	LocalGRPC   bool
 }
 
 func OpenStateDB(path string, initialState StateDB) (*StateDB, error) {

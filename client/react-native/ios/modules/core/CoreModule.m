@@ -53,4 +53,13 @@ RCT_EXTERN_METHOD(startBot:(RCTPromiseResolveBlock)resolve
 RCT_EXTERN_METHOD(stopBot:(RCTPromiseResolveBlock)resolve
                     reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(getLocalGRPCInfos:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(startLocalGRPC:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
+RCT_EXTERN_METHOD(stopLocalGRPC:(RCTPromiseResolveBlock)resolve
+                    reject:(RCTPromiseRejectBlock)reject);
+
 @end

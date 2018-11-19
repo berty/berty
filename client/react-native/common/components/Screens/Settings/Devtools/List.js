@@ -33,6 +33,8 @@ export default class List extends PureComponent {
     panic: false,
     botStateLoaded: false,
     botRunning: false,
+    localGRPCRunning: false,
+    localGRPCAddress: '',
   }
 
   restartDaemon = async () => {
@@ -74,11 +76,11 @@ export default class List extends PureComponent {
     })
   }
 
-  antispam = false
+  antispamBot = false
 
   toggleBotState = async () => {
-    if (!this.antispam) {
-      this.antispam = true
+    if (!this.antispamBot) {
+      this.antispamBot = true
       try {
         if (this.state.botRunning === true) {
           await CoreModule.stopBot()
@@ -87,16 +89,48 @@ export default class List extends PureComponent {
         }
 
         this.setState({ botRunning: !this.state.botRunning })
-        this.antispam = false
+        this.antispamBot = false
       } catch (err) {
         Alert.alert('Error', `${err}`)
-        this.antispam = false
+        this.antispamBot = false
+      }
+    }
+  }
+
+  getLocalGRPCState = async () => {
+    let json = await CoreModule.getLocalGRPCInfos()
+    let infos = JSON.parse(json)
+
+    this.setState({
+      localGRPCRunning: infos.IsRunning,
+      localGRPCAddress: infos.LocalAddr,
+    })
+  }
+
+  antispamLocalGRPC = false
+
+  toggleLocalGRPCState = async () => {
+    if (!this.antispamLocalGRPC) {
+      this.antispamLocalGRPC = true
+      try {
+        if (this.state.localGRPCRunning === true) {
+          await CoreModule.stopLocalGRPC()
+        } else {
+          await CoreModule.startLocalGRPC()
+        }
+
+        this.setState({ localGRPCRunning: !this.state.localGRPCRunning })
+        this.antispamLocalGRPC = false
+      } catch (err) {
+        Alert.alert('Error', `${err}`)
+        this.antispamLocalGRPC = false
       }
     }
   }
 
   componentDidMount () {
     this.getBotState()
+    this.getLocalGRPCState()
   }
 
   throwNativeException = () => {
@@ -135,18 +169,20 @@ export default class List extends PureComponent {
           />
         </Menu.Section>
         <Menu.Section>
-          <Menu.Item
-            icon='cpu'
-            title='Bot mode'
-            customRight={
-              <Switch
-                justify='end'
-                disabled={!this.state.botStateLoaded}
-                value={this.state.botRunning}
-                onValueChange={this.toggleBotState}
-              />
-            }
-          />
+          {Platform.OS !== 'web' && (
+            <Menu.Item
+              icon='cpu'
+              title='Bot mode'
+              customRight={
+                <Switch
+                  justify='end'
+                  disabled={!this.state.botStateLoaded}
+                  value={this.state.botRunning}
+                  onValueChange={this.toggleBotState}
+                />
+              }
+            />
+          )}
           <Menu.Item
             icon='refresh-ccw'
             title='Restart daemon'
@@ -169,6 +205,33 @@ export default class List extends PureComponent {
             onPress={() => navigation.push('devtools/eventlist')}
           />
         </Menu.Section>
+        {Platform.OS !== 'web' && (
+          <Menu.Section>
+            <Menu.Item
+              icon='server'
+              title={
+                'Local gRPC (' +
+                (this.state.localGRPCAddress === ''
+                  ? 'no private IP'
+                  : this.state.localGRPCAddress) +
+                ')'
+              }
+              customRight={
+                <Switch
+                  justify='end'
+                  disabled={this.state.localGRPCAddress === ''}
+                  value={this.state.localGRPCRunning}
+                  onValueChange={this.toggleLocalGRPCState}
+                />
+              }
+            />
+            <Menu.Item
+              icon='file-text'
+              title='Logs (not implem.)'
+              onPress={() => console.log('Console logs')}
+            />
+          </Menu.Section>
+        )}
         <Menu.Section>
           <Menu.Item
             icon='database'
