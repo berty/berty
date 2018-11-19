@@ -60,7 +60,7 @@ type Account struct {
 	ioGrpc      *netutil.IOGrpc
 	gqlListener net.Listener
 
-	grpcServer   *grpc.Server
+	GrpcServer   *grpc.Server
 	GrpcBind     string
 	grpcListener net.Listener
 
@@ -161,8 +161,8 @@ func (a *Account) Validate() error {
 		return errors.New("connecting to the db failed with the provided (dbDir/Passphrase) for account")
 	} else if a.network == nil {
 		return errors.New("missing required field (network) for account")
-	} else if a.grpcServer == nil {
-		return errors.New("missing required field (grpcServer) for Account")
+	} else if a.GrpcServer == nil {
+		return errors.New("missing required field (GrpcServer) for Account")
 	}
 	return nil
 }
@@ -310,7 +310,7 @@ func (a *Account) startGrpcServer() error {
 
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.grpcServer.Serve(a.grpcListener)
+		a.errChan <- a.GrpcServer.Serve(a.grpcListener)
 	}()
 
 	return nil
@@ -358,7 +358,7 @@ func (a *Account) startGQL() error {
 
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.grpcServer.Serve(a.ioGrpc.Listener())
+		a.errChan <- a.GrpcServer.Serve(a.ioGrpc.Listener())
 	}()
 
 	addr, err := net.ResolveTCPAddr("tcp", a.GQLBind)
@@ -392,8 +392,8 @@ func (a *Account) initNode() error {
 
 	// initialize node
 	a.node, err = node.New(
-		node.WithP2PGrpcServer(a.grpcServer),
-		node.WithNodeGrpcServer(a.grpcServer),
+		node.WithP2PGrpcServer(a.GrpcServer),
+		node.WithNodeGrpcServer(a.GrpcServer),
 		node.WithSQL(a.db),
 		node.WithDevice(&entity.Device{Name: a.Name}),
 		node.WithNetworkDriver(a.network),
