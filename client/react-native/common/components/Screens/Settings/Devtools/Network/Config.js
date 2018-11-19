@@ -118,7 +118,7 @@ export default class Network extends PureComponent {
             }
           />
           <Menu.Item
-            title='Bluetooth (crash if On -> Off ; #514)'
+            title='Bluetooth (unstable if on/off multiple time #629/630)'
             customRight={
               <Switch
                 justify='end'

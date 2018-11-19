@@ -17,6 +17,7 @@ import (
 type Conn struct {
 	tpt.Conn
 	closed            bool
+	closer            chan struct{}
 	transport         *Transport
 	lID               peer.ID
 	rID               peer.ID
@@ -73,6 +74,7 @@ func ConnClose(bleUUID string) {
 func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, dir int) Conn {
 	conn := Conn{
 		closed:            false,
+		closer:            make(chan struct{}),
 		transport:         transport,
 		incoming:          make(chan []byte),
 		lID:               lID,
