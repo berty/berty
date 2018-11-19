@@ -26,7 +26,6 @@ type Conn struct {
 	notFinishedToRead []byte
 	incoming          chan []byte
 	sess              *yamux.Session
-	accept            chan string
 }
 
 type ConnForSmux struct {
