@@ -18,6 +18,7 @@ var StartAdvertising func() = nil
 var Write func(p []byte, ma string) bool = nil
 var DialPeer func(ma string) bool = nil
 var InitScannerAndAdvertiser func() = nil
+var CloseScannerAndAdvertiser func() = nil
 
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	// if int(C.isDiscovering()) != 1 {
@@ -104,4 +105,8 @@ func (b *Conn) IsClosed() bool {
 	// defer C.free(unsafe.Pointer(ma))
 
 	return b.closed
+}
+
+func (b *Listener) closeNative() {
+	CloseScannerAndAdvertiser()
 }
