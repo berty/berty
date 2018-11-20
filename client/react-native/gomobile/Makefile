@@ -37,6 +37,13 @@ GOMOBILES_OPT ?=
 
 GOTEST_TIMEOUT ?= 30s
 
+SED_CMD :=
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	SED_CMD += sed -E -i ''
+else
+	SED_CMD += sed -r -i
+endif
 
 .PHONY: help
 help:
@@ -68,11 +75,11 @@ build.android: $(ANDROID_BUILD_PATH)/core.aar
 
 .PHONY: sed.ble
 sed.ble:
-	sed -r -i '' 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)ble/src/main/java/chat/berty/ble/Manager.java
+	$(SED_CMD) 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
 
 .PHONY: unsed.ble
 unsed.ble:
-	sed -r -i 's/\/\/(.*Core.*)/\1/g' $(ANDROID_PATH)ble/src/main/java/chat/berty/ble/Manager.java
+	$(SED_CMD) 's/\/\/(.*Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
 
 .PHONY: build.ble
 build.ble: $(BLE_DIR_PATH)/ble.jar
