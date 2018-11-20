@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"os"
 
@@ -54,6 +55,7 @@ func newIdentityCommand() *cobra.Command {
 	cryptoKeyGenerateCmd.Flags().BoolVar(&cfgCryptoRaw, "bytes", false, "Print raw key")
 	cryptoKeyGenerateCmd.Flags().StringVar(&cfgCryptoKeyType, "key-type", "RSA", "Key types, can be: `RSA`, `Ed25519` or `Secp256k1` ")
 	cryptoCmd.AddCommand(cryptoKeyGenerateCmd)
+	cryptoCmd.AddCommand(cryptoSwarmKey)
 	return cryptoCmd
 }
 
@@ -70,47 +72,64 @@ var cryptoCmd = &cobra.Command{
 	Short: "identity related cmds",
 }
 
+var cryptoSwarmKey = &cobra.Command{
+	Use:   "swarm-key",
+	Short: "Generate a swarm key",
+	Run: func(cmd *cobra.Command, args []string) {
+		key := make([]byte, 32)
+		_, err := rand.Read(key)
+		if err != nil {
+			logger().Fatal("While trying to read random source", zap.Error(err))
+		}
+
+		fmt.Println("/key/swarm/psk/1.0.0/")
+		fmt.Println("/base16/")
+		fmt.Print(hex.EncodeToString(key))
+	},
+}
+
 var cryptoKeyGenerateCmd = &cobra.Command{
 	Use:   "generate",
 	Short: "keys related tools",
 	Run: func(cmd *cobra.Command, args []string) {
 		// @TODO: handle file output
 		w := os.Stdout
+		defer w.Close()
 
 		t, err := getKeyType(cfgCryptoKeyType)
 		if err != nil {
-			zap.L().Fatal("cannot get key type:", zap.String("type", cfgCryptoKeyType), zap.Error(err))
+			logger().Fatal("cannot get key type:", zap.String("type", cfgCryptoKeyType), zap.Error(err))
 		}
 
 		priv, pub, err := p2pcrypto.GenerateKeyPairWithReader(int(t), 2048, r)
 		if err != nil {
-			zap.L().Fatal("error while generating key pair", zap.Error(err))
+			logger().Fatal("error while generating key pair", zap.Error(err))
 		}
 
 		bPriv, err := priv.Bytes()
 		if err != nil {
-			zap.L().Fatal("invalid private key", zap.Error(err))
+			logger().Fatal("invalid private key", zap.Error(err))
 		}
 
 		var bPub []byte = []byte{}
 		if cfgCryptoPubKey {
 			bPub, err = pub.Bytes()
 			if err != nil {
-				zap.L().Fatal("invalid private key", zap.Error(err))
+				logger().Fatal("invalid private key", zap.Error(err))
 			}
 		}
 
 		if cfgCryptoRaw {
 			if cfgCryptoPubKey {
 				if _, err = w.Write(bPub); err != nil {
-					zap.L().Fatal("error while writing output", zap.Error(err))
+					logger().Fatal("error while writing output", zap.Error(err))
 				}
 
 				return
 			}
 
 			if _, err := w.Write(bPriv); err != nil {
-				zap.L().Fatal("error while writing output", zap.Error(err))
+				logger().Fatal("error while writing output", zap.Error(err))
 			}
 
 			return
@@ -122,7 +141,7 @@ var cryptoKeyGenerateCmd = &cobra.Command{
 		}
 
 		if err != nil {
-			zap.L().Fatal("error while writing output", zap.Error(err))
+			logger().Fatal("error while writing output", zap.Error(err))
 		}
 	},
 }

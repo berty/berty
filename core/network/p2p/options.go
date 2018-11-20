@@ -4,6 +4,7 @@ package p2p
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"strings"
 
@@ -15,15 +16,20 @@ import (
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
-	pnet "github.com/libp2p/go-libp2p-interface-pnet"
+	ipnet "github.com/libp2p/go-libp2p-interface-pnet"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"
 	metrics "github.com/libp2p/go-libp2p-metrics"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
+	pnet "github.com/libp2p/go-libp2p-pnet"
 	"github.com/libp2p/go-libp2p/config"
 	ma "github.com/multiformats/go-multiaddr"
 	uuid "github.com/satori/go.uuid"
 )
+
+const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
+/base16/
+7beb018da4c79cb018e05305335d265046909f060c1b65e8eef94a107b9387cc`
 
 var DefaultBootstrap = []string{
 	"/ip4/104.248.78.238/tcp/4004/ipfs/QmTeeg5PbTmrJKNiBndzmJmvpvBtZArhMxsgDdzxZXLE29",
@@ -90,6 +96,20 @@ func WithJaeger(jaeger *grpc_ot.Option) Option {
 	}
 }
 
+// WithSwarmKey secure connections so they can be only established with
+// selected number of peers.
+// input `io.Reader` should include Multicodec encoded V1 PSK.
+func WithSwarmKey(input io.Reader) Option {
+	return func(dc *driverConfig) error {
+		prot, err := pnet.NewProtector(input)
+		if err != nil {
+			return err
+		}
+
+		return WithPrivateNetwork(prot)(dc)
+	}
+}
+
 // WithBootstrapSync configure boostrap connection synchronously
 func WithBootstrapSync(addrs ...string) Option {
 	return func(dc *driverConfig) error {
@@ -111,9 +131,7 @@ func WithRelayHOP() Option {
 
 func WithLibp2pOption(opts ...libp2p.Option) Option {
 	return func(dc *driverConfig) error {
-		for _, o := range opts {
-			dc.libp2pOpt = append(dc.libp2pOpt, o)
-		}
+		dc.libp2pOpt = append(dc.libp2pOpt, opts...)
 		return nil
 	}
 }
@@ -195,7 +213,7 @@ func WithPeerstore(ps pstore.Peerstore) Option {
 }
 
 // WithPrivateNetwork configures libp2p to use the given private network protector.
-func WithPrivateNetwork(prot pnet.Protector) Option {
+func WithPrivateNetwork(prot ipnet.Protector) Option {
 	return WithLibp2pOption(libp2p.PrivateNetwork(prot))
 }
 
