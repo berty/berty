@@ -71,17 +71,19 @@ test:
 	cd $(CORE_MOBILE) && go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
 .PHONY: build.core
-buid.core: $(ANDROID_BUILD_PATH)/core.aar
+build.core: $(ANDROID_BUILD_PATH)/core.aar
 
 .PHONY: build.android
 build.android: sed.ble build.ble unsed.ble build.core build.ble
 
 .PHONY: sed.ble
 sed.ble:
+	$(SED_CMD) "s/.*implementation project\(':core'\)/\/\/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
 	$(SED_CMD) 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
 
 .PHONY: unsed.ble
 unsed.ble:
+	$(SED_CMD) "s/.*\/\/implementation project\(':core'\)/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
 	$(SED_CMD) 's/\/\/(.*Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
 
 .PHONY: build.ble
@@ -119,7 +121,7 @@ clean.ble:
 	rm -rf $(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar
 
 .PHONY: clean.android
-clean.android: clean.core
+clean.android: clean.core clean.ble
 
 .PHONY: clean.ios
 clean.ios:
