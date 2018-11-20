@@ -1,5 +1,6 @@
 package chat.berty.ble;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
@@ -165,9 +166,6 @@ public class Manager {
 
                 mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
                 mBluetoothGattServer.addService(createService());
-
-                startAdvertising();
-                startScanning();
             }
         }
     }
@@ -288,9 +286,8 @@ public class Manager {
                             bertyDevices.put(device.getAddress(), bDevice);
                         }
                     }
-                    handleConnectionStateChange(bDevice, status, newState);
                     super.onConnectionStateChange(device, status, newState);
-                    Log.e(TAG, "new coon " + device.getAddress());
+                    Log.e(TAG, "Server new coon " + device.getAddress());
                 }
 
                 @Override
@@ -307,6 +304,7 @@ public class Manager {
                         Log.e(TAG, "READ UNKNOW");
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
                     }
+                    super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
                 }
 
                 @Override
@@ -458,9 +456,11 @@ public class Manager {
                     String addr = device.getAddress();
                     synchronized (bertyDevices) {
                         if (!bertyDevices.containsKey(addr)) {
+                            initGattCallback();
                             BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback);
                             BertyDevice bDevice = new BertyDevice(device, gatt, addr);
                             bertyDevices.put(addr, bDevice);
+                            gatt.discoverServices();
                         }
                     }
                 }
@@ -535,7 +535,7 @@ public class Manager {
         }
     }
 
-    protected BluetoothGattCallback mGattCallback;
+    protected BluetoothGattCallback mGattCallback = null;
 
     public @Nullable BertyDevice getDeviceFromAddr(String addr) {
         synchronized (bertyDevices) {
@@ -561,186 +561,212 @@ public class Manager {
     }
 
     public boolean dialPeer(String ma) {
-//        List<BluetoothDevice> connectedDevices = mBluetoothGattServer.getConnectedDevices();
         BertyDevice bDevice = getDeviceFromMa(ma);
         if (bDevice != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                bDevice.gatt.discoverServices();
-            }
             return true;
         }
         return false;
-//        for (BluetoothDevice device : connectedDevices) {
-//
-//        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public void populateCharacteristic(BluetoothGatt gatt) {
+        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+        ExecutorService es = Executors.newFixedThreadPool(6);
+        List<PopulateCharacteristic> todo = new ArrayList<>(6);
+
+        todo.add(new PopulateCharacteristic(MA_UUID, bDevice));
+        todo.add(new PopulateCharacteristic(PEER_ID_UUID, bDevice));
+        todo.add(new PopulateCharacteristic(CLOSER_UUID, bDevice));
+        todo.add(new PopulateCharacteristic(WRITER_UUID, bDevice));
+        todo.add(new PopulateCharacteristic(IS_READY_UUID, bDevice));
+        todo.add(new PopulateCharacteristic(ACCEPT_UUID, bDevice));
+
+        Log.e(TAG, "START DISCO CHAR");
+
+        try {
+            List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
+            for (Future<BluetoothGattCharacteristic> future : answers) {
+                BluetoothGattCharacteristic c = future.get();
+
+                if (c != null && c.getUuid().equals(MA_UUID)) {
+                    bDevice.maCharacteristic = c;
+                    gatt.readCharacteristic(bDevice.maCharacteristic);
+                    bDevice.waitReady.countDown();
+                } else if (c != null && c.getUuid().equals(PEER_ID_UUID)) {
+                    bDevice.peerIDCharacteristic = c;
+                    gatt.readCharacteristic(bDevice.peerIDCharacteristic);
+                    bDevice.waitReady.countDown();
+                } else if (c != null && c.getUuid().equals(CLOSER_UUID)) {
+                    bDevice.closerCharacteristic = c;
+                    bDevice.waitReady.countDown();
+                } else if (c != null && c.getUuid().equals(WRITER_UUID)) {
+                    bDevice.writerCharacteristic = c;
+                    bDevice.waitReady.countDown();
+                } else if (c != null && c.getUuid().equals(IS_READY_UUID)) {
+                    bDevice.isRdyCharacteristic = c;
+                    bDevice.waitReady.countDown();
+                } else if (c != null && c.getUuid().equals(ACCEPT_UUID)) {
+                    bDevice.acceptCharacteristic = c;
+                    bDevice.waitReady.countDown();
+                } else {
+                    Log.e(TAG, "UNKNOW CHARACT");
+                }
+
+                Log.e(TAG, "UUID " + c.getUuid());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        while (!gatt.requestMtu(512)) {
+            /** intentionally empty */
+        }
     }
 
     public void initGattCallback() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            mGattCallback = new BluetoothGattCallback() {
-                @Override
-                public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-                    super.onPhyUpdate(gatt, txPhy, rxPhy, status);
-                }
-
-                @Override
-                public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-                    super.onPhyRead(gatt, txPhy, rxPhy, status);
-                }
-
-                @Override
-                public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                    if (bDevice == null) {
-                        synchronized (bertyDevices) {
-                            BluetoothDevice device = gatt.getDevice();
-                            bDevice = new BertyDevice(device, gatt, device.getAddress());
-                            bertyDevices.put(device.getAddress(), bDevice);
-                        }
-                    }
-                    handleConnectionStateChange(bDevice, status, newState);
-                    super.onConnectionStateChange(gatt, status, newState);
-                }
-
-                @Override
-                public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-                    BluetoothGattService svc = gatt.getService(SERVICE_UUID);
-                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                    ExecutorService es = Executors.newFixedThreadPool(6);
-                    List<PopulateCharacteristic> todo = new ArrayList<PopulateCharacteristic>(6);
-
-                    todo.add(new PopulateCharacteristic(MA_UUID, bDevice));
-                    todo.add(new PopulateCharacteristic(PEER_ID_UUID, bDevice));
-                    todo.add(new PopulateCharacteristic(CLOSER_UUID, bDevice));
-                    todo.add(new PopulateCharacteristic(WRITER_UUID, bDevice));
-                    todo.add(new PopulateCharacteristic(IS_READY_UUID, bDevice));
-                    todo.add(new PopulateCharacteristic(ACCEPT_UUID, bDevice));
-
-                    Log.e(TAG, "START DISCO CHAR");
-
-                    try {
-                        List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
-                        for (Future<BluetoothGattCharacteristic> future:answers) {
-                            BluetoothGattCharacteristic c = future.get();
-                            if (c.getUuid().equals(MA_UUID)) {
-                                bDevice.maCharacteristic = c;
-                                bDevice.waitReady.countDown();
-                            } else if (c.getUuid().equals(PEER_ID_UUID)) {
-                                bDevice.peerIDCharacteristic = c;
-                                bDevice.waitReady.countDown();
-                            } else if (c.getUuid().equals(CLOSER_UUID)) {
-                                bDevice.closerCharacteristic = c;
-                                bDevice.waitReady.countDown();
-                            } else if (c.getUuid().equals(WRITER_UUID)) {
-                                bDevice.writerCharacteristic = c;
-                                bDevice.waitReady.countDown();
-                            } else if (c.getUuid().equals(IS_READY_UUID)) {
-                                bDevice.isRdyCharacteristic = c;
-                                bDevice.waitReady.countDown();
-                            } else if (c.getUuid().equals(ACCEPT_UUID)) {
-                                bDevice.acceptCharacteristic = c;
-                                bDevice.waitReady.countDown();
-                            } else {
-                                Log.e(TAG, "UNKNOW CHARACT");
-                            }
-
-                            Log.e(TAG, "UUID "+c.getUuid());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            if (mGattCallback == null) {
+                mGattCallback = new BluetoothGattCallback() {
+                    @Override
+                    public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+                        super.onPhyUpdate(gatt, txPhy, rxPhy, status);
                     }
 
-                    gatt.readCharacteristic(bDevice.maCharacteristic);
-                    gatt.readCharacteristic(bDevice.peerIDCharacteristic);
-                    while (!gatt.requestMtu(512)) {
-                        /** intentionally empty */
+                    @Override
+                    public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
+                        super.onPhyRead(gatt, txPhy, rxPhy, status);
                     }
 
-                    super.onServicesDiscovered(gatt, status);
-                }
-
-                @Override
-                public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                    Log.e(TAG, "charact discovered " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
-                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                    handleReadCharact(bDevice, characteristic);
-                    super.onCharacteristicRead(gatt, characteristic, status);
-                }
-
-                @Override
-                public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                    // Log.e(TAG, "charact writed");
-                    if (status == GATT_SUCCESS) {
+                    @Override
+                    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
                         BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                        bDevice.isWaiting.release();
-                    } else {
-                        String errorString;
-
-                        switch(status) {
-                            case GATT_SUCCESS: errorString = "GATT_SUCCESS";
-                                break;
-                            case GATT_READ_NOT_PERMITTED: errorString = "GATT_READ_NOT_PERMITTED";
-                                break;
-                            case GATT_WRITE_NOT_PERMITTED: errorString = "GATT_WRITE_NOT_PERMITTED";
-                                break;
-                            case GATT_INSUFFICIENT_AUTHENTICATION: errorString = "GATT_INSUFFICIENT_AUTHENTICATION";
-                                break;
-                            case GATT_REQUEST_NOT_SUPPORTED: errorString = "GATT_REQUEST_NOT_SUPPORTED";
-                                break;
-                            case GATT_INSUFFICIENT_ENCRYPTION: errorString = "GATT_INSUFFICIENT_ENCRYPTION";
-                                break;
-                            case GATT_INVALID_OFFSET: errorString = "GATT_INVALID_OFFSET";
-                                break;
-                            case GATT_INVALID_ATTRIBUTE_LENGTH: errorString = "GATT_INVALID_ATTRIBUTE_LENGTH";
-                                break;
-                            case GATT_CONNECTION_CONGESTED: errorString = "GATT_CONNECTION_CONGESTED";
-                                break;
-                            case GATT_FAILURE: errorString = "GATT_FAILURE";
-                                break;
-                            default: errorString = "UNKNOW FAIL";
-                                break;
+                        if (bDevice == null) {
+                            synchronized (bertyDevices) {
+                                BluetoothDevice device = gatt.getDevice();
+                                bDevice = new BertyDevice(device, gatt, device.getAddress());
+                                bertyDevices.put(device.getAddress(), bDevice);
+                            }
                         }
-                        Log.e(TAG, "Error writing gatt " + errorString);
+                        Log.e(TAG, "CLI");
+                        handleConnectionStateChange(bDevice, status, newState);
+                        super.onConnectionStateChange(gatt, status, newState);
                     }
-                    super.onCharacteristicWrite(gatt, characteristic, status);
-                }
 
-                @Override
-                public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-                    Log.e(TAG, "charact changed " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
-                    BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                    handleReadCharact(bDevice, characteristic);
-                    super.onCharacteristicChanged(gatt, characteristic);
-                }
+                    @Override
+                    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
+                        for (BluetoothGattService svc : gatt.getServices()) {
+                            if (svc.getUuid().equals(SERVICE_UUID)) {
+                                Log.e(TAG, "START DISCO CHAR1");
+                                populateCharacteristic(gatt);
+                            }
+                        }
 
-                @Override
-                public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-                    super.onDescriptorRead(gatt, descriptor, status);
-                }
+                        super.onServicesDiscovered(gatt, status);
+                    }
 
-                @Override
-                public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-                    super.onDescriptorWrite(gatt, descriptor, status);
-                }
+                    @Override
+                    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                        Log.e(TAG, "charact discovered " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
+                        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                        handleReadCharact(bDevice, characteristic);
+                        super.onCharacteristicRead(gatt, characteristic, status);
+                    }
 
-                @Override
-                public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
-                    super.onReliableWriteCompleted(gatt, status);
-                }
+                    @Override
+                    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
+                        Log.e(TAG, "onCharacteristicWrite " + characteristic.getUuid());
+                        AdvertiseSettings settings = createAdvSettings(true, 0);
+                        AdvertiseData advData = makeAdvertiseData();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
+                        }
+                        if (status == GATT_SUCCESS) {
+                            BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                            bDevice.isWaiting.release();
+                        } else {
+                            String errorString;
 
-                @Override
-                public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-                    super.onReadRemoteRssi(gatt, rssi, status);
-                }
+                            switch (status) {
+                                case GATT_SUCCESS:
+                                    errorString = "GATT_SUCCESS";
+                                    break;
+                                case GATT_READ_NOT_PERMITTED:
+                                    errorString = "GATT_READ_NOT_PERMITTED";
+                                    break;
+                                case GATT_WRITE_NOT_PERMITTED:
+                                    errorString = "GATT_WRITE_NOT_PERMITTED";
+                                    break;
+                                case GATT_INSUFFICIENT_AUTHENTICATION:
+                                    errorString = "GATT_INSUFFICIENT_AUTHENTICATION";
+                                    break;
+                                case GATT_REQUEST_NOT_SUPPORTED:
+                                    errorString = "GATT_REQUEST_NOT_SUPPORTED";
+                                    break;
+                                case GATT_INSUFFICIENT_ENCRYPTION:
+                                    errorString = "GATT_INSUFFICIENT_ENCRYPTION";
+                                    break;
+                                case GATT_INVALID_OFFSET:
+                                    errorString = "GATT_INVALID_OFFSET";
+                                    break;
+                                case GATT_INVALID_ATTRIBUTE_LENGTH:
+                                    errorString = "GATT_INVALID_ATTRIBUTE_LENGTH";
+                                    break;
+                                case GATT_CONNECTION_CONGESTED:
+                                    errorString = "GATT_CONNECTION_CONGESTED";
+                                    break;
+                                case GATT_FAILURE:
+                                    errorString = "GATT_FAILURE";
+                                    break;
+                                default:
+                                    errorString = "UNKNOW FAIL";
+                                    break;
+                            }
+                            Log.e(TAG, "Error writing gatt " + errorString);
+                        }
+                        super.onCharacteristicWrite(gatt, characteristic, status);
+                    }
 
-                @Override
-                public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-                    Log.e(TAG, "ON MTU CHANGED CLI");
-                    BertyDevice bertyDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                    bertyDevice.mtu = mtu;
-                    super.onMtuChanged(gatt, mtu, status);
-                }
-            };
+                    @Override
+                    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                        Log.e(TAG, "charact changed " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
+                        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                        handleReadCharact(bDevice, characteristic);
+                        super.onCharacteristicChanged(gatt, characteristic);
+                    }
+
+                    @Override
+                    public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+                        Log.e(TAG, "onDescriptorRead");
+                        super.onDescriptorRead(gatt, descriptor, status);
+                    }
+
+                    @Override
+                    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
+                        Log.e(TAG, "onDescriptorWrite");
+                        super.onDescriptorWrite(gatt, descriptor, status);
+                    }
+
+                    @Override
+                    public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
+                        Log.e(TAG, "onReliableWriteCompleted");
+                        super.onReliableWriteCompleted(gatt, status);
+                    }
+
+                    @Override
+                    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+                        Log.e(TAG, "onReadRemoteRssi");
+                        super.onReadRemoteRssi(gatt, rssi, status);
+                    }
+
+                    @Override
+                    public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
+                        Log.e(TAG, "ON MTU CHANGED CLI");
+                        BertyDevice bertyDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+                        bertyDevice.mtu = mtu;
+                        super.onMtuChanged(gatt, mtu, status);
+                    }
+                };
+            }
         }
     }
 
@@ -790,6 +816,7 @@ public class Manager {
 
     public void handleConnectionStateChange(BertyDevice device, int status, int newState) {
         if (newState == STATE_CONNECTED) {
+            BertyDevice bDevice = getDeviceFromAddr(device.addr);
             Log.e(TAG, "new newly connected device " + device.gatt);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 device.gatt.discoverServices();
@@ -798,6 +825,7 @@ public class Manager {
             Log.e(TAG, "disconnected device " + device.addr);
             synchronized (bertyDevices) {
                 bertyDevices.remove(device.addr);
+                Core.connClose(device.ma);
             }
         }
     }
@@ -805,7 +833,7 @@ public class Manager {
     public boolean write(byte[] p, String ma) {
         BertyDevice bDevice = getDeviceFromMa(ma);
         if (bDevice == null) {
-            Log.e(TAG, "WRITING PAT3");
+            Log.e(TAG, "Unknow device to write");
             return false;
         }
 
