@@ -4,7 +4,6 @@ package core
 
 import (
 	"Java/chat/berty/ble/Manager"
-	"fmt"
 
 	"berty.tech/core/network/ble"
 )
@@ -37,7 +36,6 @@ func ConnClosed(bleUUID string) {
 
 func BytesToConn(bleUUID string, b []byte) {
 	defer panicHandler()
-	fmt.Printf("BYTES TO CONN FROM JAVA %+v\n", b)
 	ble.BytesToConn(bleUUID, b)
 }
 
