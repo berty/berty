@@ -1,6 +1,12 @@
 package main
 
 import (
+	"bufio"
+	"fmt"
+	"io"
+	"os"
+	"strings"
+
 	"berty.tech/core/manager/account"
 	"berty.tech/core/network/p2p"
 	"github.com/spf13/cobra"
@@ -19,13 +25,15 @@ type daemonOptions struct {
 	withBot      bool   `mapstructure:"with-bot"`
 
 	// p2p
-	identity     string   `mapstructure:"identity"`
-	bootstrap    []string `mapstructure:"bootstrap"`
-	noP2P        bool     `mapstructure:"no-p2p"`
-	bindP2P      []string `mapstructure:"bind-p2p"`
-	transportP2P []string `mapstructure:"transport-p2p"`
-	hop          bool     `mapstructure:"hop"` // relay hop
-	mdns         bool     `mapstructure:"mdns"`
+	identity       string   `mapstructure:"identity"`
+	bootstrap      []string `mapstructure:"bootstrap"`
+	noP2P          bool     `mapstructure:"no-p2p"`
+	bindP2P        []string `mapstructure:"bind-p2p"`
+	transportP2P   []string `mapstructure:"transport-p2p"`
+	hop            bool     `mapstructure:"hop"` // relay hop
+	mdns           bool     `mapstructure:"mdns"`
+	PrivateNetwork bool     `mapstructure:"private-network"`
+	SwarmKeyPath   string   `mapstructure:"swarm-key"`
 
 	nickname string `mapstructure:"nickname"`
 	password string `mapstructure:"password"`
@@ -41,6 +49,8 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.BoolVar(&opts.withBot, "bot", false, "enable bot")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
+	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
+	flags.StringVar(&opts.SwarmKeyPath, "swarm-key", "", "path to a custom swarm key, only peers that use the same swarm key will be able to talk with you")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
@@ -72,7 +82,6 @@ func newDaemonCommand() *cobra.Command {
 }
 
 func daemon(opts *daemonOptions) error {
-
 	var err error
 	a := &account.Account{}
 
@@ -99,6 +108,21 @@ func daemon(opts *daemonOptions) error {
 		}),
 	}
 	if !opts.noP2P {
+		var swarmKey io.Reader
+
+		if opts.PrivateNetwork {
+			swarmKey = strings.NewReader(p2p.DefaultSwarmKey)
+		}
+
+		if opts.SwarmKeyPath != "" {
+			file, err := os.Open(opts.SwarmKeyPath)
+			if err != nil {
+				return fmt.Errorf("swarm key error: %s", err)
+			}
+
+			swarmKey = bufio.NewReader(file)
+		}
+
 		accountOptions = append(accountOptions, account.WithP2PNetwork(
 			&account.P2PNetworkOptions{
 				Bind:      opts.bindP2P,
@@ -108,6 +132,7 @@ func daemon(opts *daemonOptions) error {
 				Relay:     opts.hop,
 				Metrics:   true,
 				Identity:  opts.identity,
+				SwarmKey:  swarmKey,
 			},
 		))
 	} else {
