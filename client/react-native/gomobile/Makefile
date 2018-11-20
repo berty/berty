@@ -70,8 +70,11 @@ init: deps
 test:
 	cd $(CORE_MOBILE) && go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
+.PHONY: build.core
+buid.core: $(ANDROID_BUILD_PATH)/core.aar
+
 .PHONY: build.android
-build.android: $(ANDROID_BUILD_PATH)/core.aar
+build.android: sed.ble build.ble unsed.ble build.core build.ble
 
 .PHONY: sed.ble
 sed.ble:
@@ -107,9 +110,16 @@ $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 .PHONY: build
 build: build.android build.ios
 
-.PHONY: clean.android
-clean.android:
+.PHONY: clean.core
+clean.core:
 	rm -rf $(ANDROID_BUILD_PATH)/core.aar
+
+.PHONY: clean.ble
+clean.ble:
+	rm -rf $(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar
+
+.PHONY: clean.android
+clean.android: clean.core
 
 .PHONY: clean.ios
 clean.ios:
@@ -119,7 +129,7 @@ clean.ios:
 clean: clean.android clean.ios
 
 .PHONY: re.android
-re.android: build.ble clean.android build.android
+re.android: build.ble clean.core build.core
 
 .PHONY: re.ios
 re.ios: clean.ios build.ios
