@@ -50,7 +50,7 @@ jobs:
 
   generate:
     docker:
-      - image: bertychat/protoc:v3
+      - image: bertychat/protoc:v4
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -61,7 +61,7 @@ jobs:
       - run:
           name: cleanup existing generated files
           command: |
-           cd core
+            cd core
             make clean
       - run:
           name: make generate_prepare

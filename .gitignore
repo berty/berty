@@ -1,6 +1,8 @@
 # core
 core/.generated
 gin-bin
+core/node_modules/
+core/package-lock.json
 
 #ag
 .agignore
