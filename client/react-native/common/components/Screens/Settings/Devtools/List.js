@@ -129,8 +129,10 @@ export default class List extends PureComponent {
   }
 
   componentDidMount () {
-    this.getBotState()
-    this.getLocalGRPCState()
+    if (Platform.OS !== 'web') {
+      this.getBotState()
+      this.getLocalGRPCState()
+    }
   }
 
   throwNativeException = () => {
