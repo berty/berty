@@ -237,7 +237,7 @@ jobs:
           command: |
             env
             cd ../gomobile
-            /tmp/retry -m 3 make build.android
+            /tmp/retry -m 3 make sed.ble build.ble unsed.ble build.android
 
       - restore_cache:
           key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
