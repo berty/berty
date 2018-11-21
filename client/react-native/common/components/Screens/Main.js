@@ -1,5 +1,5 @@
 import { Animated, Easing, Platform } from 'react-native'
-import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
+import { createStackNavigator } from 'react-navigation'
 import React from 'react'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
@@ -8,7 +8,6 @@ import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
 import { Icon } from '../Library'
 import { colors } from '../../constants'
-import Accounts from './Accounts'
 import Chats from './Chats'
 import Contacts from './Contacts'
 import Settings from './Settings'
@@ -30,7 +29,7 @@ const TabBarIcon = (tintColor, routeName, badgeValue) => {
   )
 }
 
-export const mainTabs = createTabNavigator(
+export const tabs = createTabNavigator(
   {
     contacts: {
       screen: Contacts,
@@ -99,11 +98,9 @@ export const mainTabs = createTabNavigator(
 )
 
 // Navigator handling modals
-const Main = createStackNavigator(
+export default createStackNavigator(
   {
-    mainTabs: {
-      screen: mainTabs,
-    },
+    tabs: tabs,
     'modal/contacts/add/by-public-key': {
       screen: ByPublicKeyModal,
     },
@@ -147,15 +144,5 @@ const Main = createStackNavigator(
         return { opacity, transform: [{ translateY }] }
       },
     }),
-  }
-)
-
-export default createSwitchNavigator(
-  {
-    accounts: Accounts,
-    main: Main,
-  },
-  {
-    headerMode: 'none',
   }
 )

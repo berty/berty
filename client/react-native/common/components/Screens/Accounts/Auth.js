@@ -49,10 +49,6 @@ export default class Auth extends PureComponent {
   }
 
   open = async nickname => {
-    const {
-      navigation,
-      screenProps: { deepLink },
-    } = this.props
     if (nickname == null) {
       await this.init()
       const list = await this.list()
@@ -63,7 +59,7 @@ export default class Auth extends PureComponent {
       nickname = list[0]
     }
     await this.start(nickname)
-    navigation.navigate(deepLink.routeName, deepLink.params)
+    this.props.navigation.navigate('accounts/current')
   }
 
   async componentDidMount () {

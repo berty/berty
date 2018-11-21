@@ -10,6 +10,11 @@ const DebugRequeueAllMutation = graphql`
   }
 `
 
-export default {
-  commit: (input, configs) => commit(DebugRequeueAllMutation, 'DebugRequeueAll', input, configs),
-}
+export default context => (input, configs) =>
+  commit(
+    context.environment,
+    DebugRequeueAllMutation,
+    'DebugRequeueAll',
+    input,
+    configs
+  )

@@ -9,6 +9,11 @@ const GenerateFakeDataMutation = graphql`
   }
 `
 
-export default {
-  commit: (input, configs) => commit(GenerateFakeDataMutation, 'GenerateFakeData', input, configs),
-}
+export default context => (input, configs) =>
+  commit(
+    context.environment,
+    GenerateFakeDataMutation,
+    'GenerateFakeData',
+    input,
+    configs
+  )

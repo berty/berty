@@ -1,10 +1,11 @@
-import { createStackNavigator } from 'react-navigation'
+import { createSwitchNavigator } from 'react-navigation'
 import Auth from './Auth'
+import Current from './Current'
 
-export default createStackNavigator(
+export default createSwitchNavigator(
   {
-    // 'accounts/list': List,
     'accounts/auth': Auth,
+    'accounts/current': Current,
   },
   {
     initialRouteName: 'accounts/auth',

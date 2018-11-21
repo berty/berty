@@ -11,10 +11,10 @@ import {
   Icon,
   Text as LibText,
 } from '../../../Library'
-import { Pagination } from '../../../../relay'
+import { Pagination, RelayContext } from '../../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { fragments, mutations, queries, enums } from '../../../../graphql'
+import { fragments, queries, enums } from '../../../../graphql'
 import Button from '../../../Library/Button'
 
 const Item = fragments.Event(({ data, navigation }) => (
@@ -167,26 +167,32 @@ export default class EventList extends PureComponent {
   }
 }
 
-export const EventListFilterModal = ({ navigation }) => (
-  <FilterModal
-    title={'Filter events'}
-    navigation={navigation}
-    defaultData={navigation.getParam('defaultData')}
-  >
-    <PickerFilter
-      name='onlyWithoutAckedAt'
-      choices={[
-        { value: 0, label: 'All values' },
-        { value: 1, label: 'AckedAt is not defined' },
-        { value: 2, label: 'AckedAt is defined' },
-      ]}
-    />
-    <Button
-      onPress={() => mutations.debugRequeueAll.commit({ t: true })}
-      icon={'radio'}
-      style={{ textAlign: 'left' }}
-    >
-      Requeue all non acked
-    </Button>
-  </FilterModal>
-)
+export class EventListFilterModal extends PureComponent {
+  static contextType = RelayContext
+  render () {
+    const { navigation } = this.props
+    return (
+      <FilterModal
+        title={'Filter events'}
+        navigation={navigation}
+        defaultData={navigation.getParam('defaultData')}
+      >
+        <PickerFilter
+          name='onlyWithoutAckedAt'
+          choices={[
+            { value: 0, label: 'All values' },
+            { value: 1, label: 'AckedAt is not defined' },
+            { value: 2, label: 'AckedAt is defined' },
+          ]}
+        />
+        <Button
+          onPress={() => this.props.screenProps.context.mutations.debugRequeueAll({ t: true })}
+          icon={'radio'}
+          style={{ textAlign: 'left' }}
+        >
+          Requeue all non acked
+        </Button>
+      </FilterModal>
+    )
+  }
+}

@@ -1,5 +1,4 @@
-import { ActivityIndicator, Platform, Share, TextInput } from 'react-native'
-import { btoa, atob } from 'b64-lite'
+import { ActivityIndicator } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
@@ -10,195 +9,16 @@ import {
   Text,
   ModalScreen,
   PublicKeyWithActions,
-  Button,
-  Flex,
-  TextInputMultilineFix,
 } from '../../../Library'
-import {
-  borderBottom,
-  marginTop,
-  padding,
-  paddingVertical,
-  rounded,
-  textTiny,
-} from '../../../../styles'
+import { borderBottom, paddingVertical } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { fragments, mutations, queries } from '../../../../graphql'
+import { fragments, queries } from '../../../../graphql'
 
-const requestContact = async (
-  { id, displayName },
-  navigation,
-  errorHandler
-) => {
-  try {
-    await mutations.contactRequest.commit({
-      contact: {
-        id: btoa(`contact:${id}`),
-        displayName: displayName || '',
-        displayStatus: '',
-        overrideDisplayName: '',
-        overrideDisplayStatus: '',
-      },
-      introText: '',
-    })
-    navigation.goBack(null)
-  } catch (err) {
-    errorHandler(err)
-  }
-}
-
-const ActionButton = props => (
-  <Button
-    icon={props.icon}
-    background={colors.blue}
-    margin
-    padding
-    rounded={23}
-    height={24}
-    medium
-    middle
-    center
-    self='stretch'
-    onPress={props.onPress}
-  >
-    {props.label}
-  </Button>
-)
-
-const AddButton = ({ id, displayName, navigation, errorHandler }) => (
-  <ActionButton
-    icon='plus'
-    onPress={() =>
-      requestContact({ id, displayName }, navigation, errorHandler)
-    }
-    label={'Add this key'}
-  />
-)
-
-const ShareMyKey = ({ contactId, displayName }) => (
-  <ActionButton
-    icon='plus'
-    onPress={() => {
-      const url = `https://berty.tech/add-contact#public-key=${encodeURIComponent(
-        contactId
-      )}&display-name=${encodeURIComponent(displayName)}`
-      Share.share({
-        title: 'Add me on Berty',
-        message: `Use this link to add me on Berty ${url}`,
-        url: url,
-      }).catch(() => null)
-    }}
-    label={'Share my key'}
-  />
-)
-
-class ByPublicKeyComponent extends PureComponent {
-  state = {
-    contactId: '',
-    displayName: '',
-  }
-
-  constructor (props) {
-    super(props)
-
-    const initialData =
-      props.initialKey !== undefined && props.initialName !== undefined
-
-    if (props.initialKey !== undefined) {
-      this.state.contactId = props.initialKey
-    }
-
-    if (props.initialName !== undefined) {
-      this.state.displayName = props.initialName
-    }
-
-    if (!initialData && props.data !== undefined) {
-      try {
-        this.state.contactId = atob(props.data.id).split('contact:')[1]
-      } catch (e) {
-        console.error(e)
-      }
-
-      this.state.displayName = props.data.displayName
-    }
-  }
-
-  render () {
-    const { navigation, shareButton, addButton, readOnly } = this.props
-    const { contactId, displayName } = this.state
-
-    return (
-      <Flex.Rows style={[padding]} align='center'>
-        <TextInput
-          placeholder={'Contact name (optional)'}
-          onChangeText={displayName => this.setState({ displayName })}
-          value={displayName}
-          style={[
-            {
-              backgroundColor: colors.grey7,
-              color: colors.black,
-              textAlign: 'left',
-              width: 330,
-              flex: 0,
-              ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
-            },
-            padding,
-            rounded,
-          ]}
-        />
-        <TextInputMultilineFix
-          style={[
-            {
-              width: 330,
-              height: 330,
-              backgroundColor: colors.grey7,
-              color: colors.black,
-              flexWrap: 'wrap',
-              fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-            },
-            textTiny,
-            padding,
-            marginTop,
-            rounded,
-          ]}
-          multiline
-          placeholder='Type or copy/paste a berty user public key here'
-          value={contactId || this.props.navigation.getParam('initialKey')}
-          onChangeText={contactId => this.setState({ contactId })}
-          editable={!readOnly}
-          selectTextOnFocus
-        />
-
-        <Flex.Cols justify='center'>
-          {shareButton ? (
-            <ShareMyKey contactId={contactId} displayName={displayName} />
-          ) : null}
-          {addButton ? (
-            <AddButton
-              contactId={contactId}
-              displayName={displayName}
-              navigation={navigation}
-              errorHandler={err => {
-                this.setState({ err })
-                console.error(err)
-              }}
-            />
-          ) : null}
-        </Flex.Cols>
-      </Flex.Rows>
-    )
-  }
-}
-
-const ByPublicKey = fragments.Contact(ByPublicKeyComponent)
+const ByPublicKey = fragments.Contact(PublicKeyWithActions)
 
 const AddByPublicKeyScreen = props => (
   <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
-    <PublicKeyWithActions
-      navigation={props.navigation}
-      initialKey={''}
-      addButton
-    />
+    <PublicKeyWithActions {...props} initialKey={''} addButton />
   </Screen>
 )
 

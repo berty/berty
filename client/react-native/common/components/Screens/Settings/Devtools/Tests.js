@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Menu, Header } from '../../../Library'
-import { mutations } from '../../../../graphql'
+import { RelayContext } from '../../../../relay'
 
 const testScenarios = [
   {
@@ -63,6 +63,7 @@ class Observable {
 }
 
 export default class Tests extends PureComponent {
+  static contextType = RelayContext
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -85,7 +86,7 @@ export default class Tests extends PureComponent {
                 icon={icon}
                 title={title}
                 onPress={async () => {
-                  const promise = mutations.runIntegrationTests.commit({ name: key })
+                  const promise = this.props.screenProps.context.mutations.runIntegrationTests({ name: key })
                   const obs = new Observable()
 
                   try {

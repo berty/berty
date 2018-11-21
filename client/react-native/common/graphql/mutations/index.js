@@ -1,4 +1,3 @@
-export generateFakeData from './GenerateFakeData'
 export runIntegrationTests from './RunIntegrationTests'
 export contactRequest from './ContactRequest'
 export contactAcceptRequest from './ContactAcceptRequest'

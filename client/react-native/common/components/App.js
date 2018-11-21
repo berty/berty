@@ -5,8 +5,8 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 
 import { Loader } from './Library'
-import Screens from './Screens'
 import { getAvailableUpdate } from '../helpers/update'
+import Accounts from './Screens/Accounts'
 
 export default class App extends PureComponent {
   state = {
@@ -75,7 +75,7 @@ export default class App extends PureComponent {
     return (
       <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
         }
-        <Screens
+        <Accounts
           ref={nav => {
             this.navigation = nav
           }}

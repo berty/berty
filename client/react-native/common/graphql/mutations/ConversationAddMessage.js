@@ -30,8 +30,9 @@ const ConversationAddMessageMutation = graphql`
   }
 `
 
-export default (input, configs) =>
+export default context => (input, configs) =>
   commit(
+    context.environment,
     ConversationAddMessageMutation,
     'ConversationAddMessage',
     merge([

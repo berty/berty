@@ -1,8 +1,8 @@
 import { graphql } from 'react-relay'
 
-import { commit } from '../../relay'
 import { contact } from '../../utils'
 import { fragments } from '../../graphql'
+import { commit } from '../../relay'
 import { merge } from '../../helpers'
 
 const ContactAcceptRequestMutation = graphql`
@@ -44,8 +44,9 @@ const ContactAcceptRequestMutation = graphql`
   }
 `
 
-export default (input, configs) =>
+export default context => (input, configs) =>
   commit(
+    context.environment,
     ContactAcceptRequestMutation,
     'ContactAcceptRequest',
     merge([contact.default, input]),

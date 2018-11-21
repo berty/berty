@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react'
 import { Text, ScrollView, TouchableOpacity, Clipboard } from 'react-native'
+import { RelayContext } from '../../../../relay'
 import { Header } from '../../../Library'
 import { colors } from '../../../../constants'
 import { padding } from '../../../../styles'
-import { mutations } from '../../../../graphql'
 
 export default class EventDetails extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -33,7 +35,7 @@ export default class EventDetails extends PureComponent {
         ]}
         onPress={async () => {
           try {
-            await mutations.debugRequeueEvent.commit({ eventId: data.id })
+            await this.props.screenProps.context.mutations.debugRequeueEvent({ eventId: data.id })
           } catch (err) {
             this.setState({ err })
             console.error(err)

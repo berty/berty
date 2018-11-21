@@ -9,7 +9,13 @@ import { queries, fragments } from '../../../graphql'
 
 const Item = fragments.Contact(
   ({
-    data: { id, overrideDisplayName, displayName, displayStatus },
+    data: {
+      id,
+      overrideDisplayName,
+      displayName,
+      overrideDisplayStatus,
+      displayStatus,
+    },
     navigation,
   }) => (
     <Flex.Cols
@@ -37,9 +43,11 @@ const Item = fragments.Contact(
         <Text color={colors.black} left middle>
           {overrideDisplayName || displayName}
         </Text>
-        <Text color={colors.subtleGrey} tiny middle left>
-          {displayStatus}
-        </Text>
+        {overrideDisplayStatus || overrideDisplayName ? (
+          <Text color={colors.subtleGrey} tiny middle left>
+            {overrideDisplayStatus || displayStatus}
+          </Text>
+        ) : null}
       </Flex.Rows>
     </Flex.Cols>
   )
@@ -64,6 +72,7 @@ export default class ContactList extends PureComponent {
   searchHandler = search => this.setState({ search })
 
   render () {
+    console.log(this.props)
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination

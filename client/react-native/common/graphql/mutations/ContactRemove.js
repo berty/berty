@@ -42,8 +42,9 @@ const ContactRemoveMutation = graphql`
   }
 `
 
-export default (input, configs) =>
+export default context => (input, configs) =>
   commit(
+    context.environment,
     ContactRemoveMutation,
     'ContactRemove',
     {
