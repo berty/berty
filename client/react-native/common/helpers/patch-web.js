@@ -3,7 +3,7 @@ import { NativeModules, Platform } from 'react-native'
 if (Platform.OS === 'web') {
   const CoreModule = {
     initialize: async () => {},
-    listAccounts: async () => ['berty-daemon'],
+    listAccounts: async () => 'berty-daemon',
     start: async () => {},
     restart: async () => console.warn('not implemented in web'),
     dropDatabase: async () => console.warn('not implemented in web'),

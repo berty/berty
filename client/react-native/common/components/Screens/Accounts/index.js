@@ -8,5 +8,6 @@ export default createStackNavigator(
   },
   {
     initialRouteName: 'accounts/auth',
+    headerMode: 'none',
   }
 )
