@@ -1,7 +1,10 @@
 import './helpers/crash-handler.js'
+import './helpers/patch-web.js'
+
+import { Platform, AppRegistry } from 'react-native'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Platform, AppRegistry } from 'react-native'
+
 import App from './components/App'
 
 if (Platform.OS === 'web') {

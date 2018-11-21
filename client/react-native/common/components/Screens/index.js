@@ -1,7 +1,8 @@
 import React from 'react'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { Animated, Easing, Platform } from 'react-native'
-import { createStackNavigator } from 'react-navigation'
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
+import Accounts from './Accounts'
 import Contacts from './Contacts'
 import Chats from './Chats'
 import Settings from './Settings'
@@ -12,12 +13,19 @@ import { Icon } from '../Library'
 
 const TabBarIcon = (tintColor, routeName, badgeValue) => {
   let iconName = {
-    'contacts': 'users',
-    'chats': 'message-circle',
-    'settings': 'settings',
+    contacts: 'users',
+    chats: 'message-circle',
+    settings: 'settings',
   }[routeName]
 
-  return <Icon.Badge name={iconName} size={24} color={tintColor} badge={badgeValue} />
+  return (
+    <Icon.Badge
+      name={iconName}
+      size={24}
+      color={tintColor}
+      badge={badgeValue}
+    />
+  )
 }
 
 export const mainTabs = createTabNavigator(
@@ -49,12 +57,16 @@ export const mainTabs = createTabNavigator(
     navigationOptions: ({ navigation, screenProps }) => {
       let badge = null
 
-      if (navigation.state.routeName === 'settings' && !!screenProps.availableUpdate) {
+      if (
+        navigation.state.routeName === 'settings' &&
+        !!screenProps.availableUpdate
+      ) {
         badge = '!'
       }
 
       return {
-        tabBarIcon: ({ tintColor }) => TabBarIcon(tintColor, navigation.state.routeName, badge),
+        tabBarIcon: ({ tintColor }) =>
+          TabBarIcon(tintColor, navigation.state.routeName, badge),
       }
     },
     tabBarOptions: {
@@ -75,17 +87,19 @@ export const mainTabs = createTabNavigator(
           shadowOffset: { height: -5, width: 0 },
           shadowOpacity: 0.2,
           shadowRadius: 5,
-          ...(Platform.OS === 'android' ? { height: 68, paddingTop: 3 } : { height: 64, paddingTop: 5, paddingBottom: 6 }),
+          ...(Platform.OS === 'android'
+            ? { height: 68, paddingTop: 3 }
+            : { height: 64, paddingTop: 5, paddingBottom: 6 }),
         },
       ],
     },
-  },
+  }
 )
 
 // Navigator handling modals
-export default createStackNavigator(
+const Main = createStackNavigator(
   {
-    'main': {
+    mainTabs: {
       screen: mainTabs,
     },
     'modal/contacts/add/by-public-key': {
@@ -131,5 +145,10 @@ export default createStackNavigator(
         return { opacity, transform: [{ translateY }] }
       },
     }),
-  },
+  }
 )
+
+export default createSwitchNavigator({
+  accounts: Accounts,
+  main: Main,
+})
