@@ -90,6 +90,7 @@ func newRootCommand() *cobra.Command {
 		newClientCommand(),
 		newSQLCommand(),
 		newIdentityCommand(),
+		newUpdateCommand(),
 	)
 
 	viper.AutomaticEnv()
