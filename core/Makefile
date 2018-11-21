@@ -1,6 +1,7 @@
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 GOPATH ?= $(HOME)/go
 BIN = $(GOPATH)/bin/berty
+BUILD_MODE ?= dev
 SOURCES = $(call rwildcard, $(CODE_PATHS), *.go)
 OUR_SOURCES = $(filter-out $(call rwildcard,vendor//, *.go),$(SOURCES))
 CODE_PATHS = $(filter-out node_modules/,$(wildcard */))
@@ -21,7 +22,7 @@ BUILD_ENV ?= GO111MODULE=on CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPP
 GIT_SHA ?= $(shell git rev-parse HEAD)
 GIT_TAG ?= $(shell git describe --tags --always)
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
-EXT_LDFLAGS ?= -ldflags "-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH)"
+EXT_LDFLAGS ?= -ldflags "-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH) -X berty.tech/core.BuildMode=$(BUILD_MODE)"
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v

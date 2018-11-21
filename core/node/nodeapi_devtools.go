@@ -120,8 +120,8 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 func (n *Node) NodeInfos() (map[string]string, error) {
 	infos := map[string]string{}
 
-	infos["runtime: versions"] = fmt.Sprintf("core=%s (p2p=%d, node=%d)", core.Version, p2p.Version, node.Version)
-	infos["build: git"] = fmt.Sprintf("sha=%s tag=%s branch=%s", core.GitSha, core.GitTag, core.GitBranch)
+	infos["runtime: versions"] = fmt.Sprintf("core=%s\np2p=%d\nnode=%d", core.Version, p2p.Version, node.Version)
+	infos["build: git"] = fmt.Sprintf("sha=%s\ntag=%s\nbranch=%s\nmode=%s", core.GitSha, core.GitTag, core.GitBranch, core.BuildMode)
 
 	infos["time: node uptime"] = fmt.Sprintf("%s", time.Since(n.createdAt))
 	infos["time: node db creation"] = fmt.Sprintf("%s", time.Since(n.config.CreatedAt))

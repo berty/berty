@@ -35,11 +35,11 @@ jobs:
       - run:
           name: fetch deps
           command: |
-            cd core; /tmp/retry -m 3 go mod download
+            cd core
+            /tmp/retry -m 3 go mod download
       - run:
           name: prepare CI
-          command: |
-            make _ci_prepare
+          command: make _ci_prepare
       - run:
           name: lint
           command: /tmp/retry -m 3 make lint
@@ -61,7 +61,7 @@ jobs:
       - run:
           name: cleanup existing generated files
           command: |
-           cd core
+            cd core
             make clean
       - run:
           name: make generate_prepare
@@ -75,8 +75,7 @@ jobs:
             /tmp/retry -m 3 make generate_local
       - run:
           name: ignore some files
-          command: |
-            git checkout core/go.mod # this file regularly changes with useless information (adding `// indirect`)
+          command: git checkout core/go.mod # this file regularly changes with useless information (adding `// indirect`)
       - run:
           name: check if files changed
           command: |
@@ -106,12 +105,10 @@ jobs:
             docker load -i /caches/berty.tar | true
       - run:
           name: Build application Docker image
-          command: |
-            /tmp/retry -m 3 docker build --cache-from=berty -t berty .
+          command: /tmp/retry -m 3 docker build --cache-from=berty -t berty .
       - run:
           name: Run application within Docker
-          command: |
-            /tmp/retry -m 3 docker run --rm berty daemon --init-only --no-p2p
+          command: /tmp/retry -m 3 docker run --rm berty daemon --init-only --no-p2p
       - run:
           name: Save Docker image layer cache
           command: |
@@ -145,7 +142,10 @@ jobs:
           name: install core
           command: |
             cd core
-            /tmp/retry -m 3 make install
+            BUILD_MODE="ci-${CIRCLE_BRANCH}" /tmp/retry -m 3 make install
+      - run:
+          name: berty version
+          command: berty --version
       - run:
           name: test core
           command: |
@@ -164,8 +164,7 @@ jobs:
             /tmp/retry -m 3 make integration
       - run:
           name: junit-report
-          command: |
-            go-junit-report < /tmp/test-results/go-test-report.out > /tmp/test-results/go-test-report.xml
+          command: go-junit-report < /tmp/test-results/go-test-report.out > /tmp/test-results/go-test-report.xml
       - save_cache:
           key: v1-go-cache
           paths:
@@ -229,15 +228,13 @@ jobs:
 
       - run:
           name: setup golang environment
-          command: |
-            echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+          command: echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build
           command: |
-            env
             cd ../gomobile
-            /tmp/retry -m 3 make build.android
+            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
       - restore_cache:
           key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
@@ -257,13 +254,11 @@ jobs:
       - run:
           name: patch android repo
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: |
-            make patch.android
+          command: make patch.android
 
       - run:
           name: build app
-          command: |
-            /tmp/retry -m 3 bundle exec fastlane android beta
+          command: /tmp/retry -m 3 bundle exec fastlane android beta
 
   client.rn.ios:
     working_directory: ~/go/src/berty.tech
@@ -327,8 +322,7 @@ jobs:
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
-          command: |
-            /tmp/retry -m 3 make build.ios
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
 
       - restore_cache:
           key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
@@ -336,8 +330,7 @@ jobs:
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: |
-            bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
       - save_cache:
           key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
@@ -347,14 +340,12 @@ jobs:
       - run:
           name: set version
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: |
-            make version
+          command: make version
 
       - run:
           name: install fsevents
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: |
-            /tmp/retry -m 3 yarn add fsevents
+          command: /tmp/retry -m 3 yarn add fsevents
 
       - run:
           name: build app
@@ -400,8 +391,7 @@ jobs:
       - run:
           name: build web app
           working_directory: ~/go/src/berty.tech/client/react-native/web
-          command: |
-            /tmp/retry -m 3 yarn build
+          command: /tmp/retry -m 3 yarn build
 
 workflows:
   version: 2
