@@ -1,15 +1,17 @@
-import React from 'react'
-import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { Animated, Easing, Platform } from 'react-native'
 import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
-import Accounts from './Accounts'
-import Contacts from './Contacts'
-import Chats from './Chats'
-import Settings from './Settings'
-import { colors } from '../../constants'
+import React from 'react'
+
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+
 import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
 import { Icon } from '../Library'
+import { colors } from '../../constants'
+import Accounts from './Accounts'
+import Chats from './Chats'
+import Contacts from './Contacts'
+import Settings from './Settings'
 
 const TabBarIcon = (tintColor, routeName, badgeValue) => {
   let iconName = {
