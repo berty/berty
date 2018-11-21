@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import {
   ActivityIndicator,
   Linking,
@@ -5,11 +7,11 @@ import {
   Platform,
   TextInput,
 } from 'react-native'
-import { SafeAreaView, NavigationActions } from 'react-navigation'
+import { NavigationActions, SafeAreaView } from 'react-navigation'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 
-import { Flex, Screen } from './Library'
+import { Flex, Loader, Screen } from './Library'
 import { colors } from '../constants'
 import { subscriptions } from '../graphql'
 import Screens from './Screens'
@@ -19,83 +21,13 @@ const { CoreModule } = NativeModules
 export default class App extends PureComponent {
   state = {
     loading: true,
-    success: false,
-    error: false,
-    nickname: null,
+    deepLink: {
+      routeName: 'main',
+      params: {},
+    },
   }
 
-  setStateLoading = () =>
-    this.setState({ loading: true, success: false, error: false })
-  setStateSuccess = () =>
-    this.setState({ loading: false, success: true, error: false })
-  setStateError = () =>
-    this.setState({ loading: false, success: false, error: true })
-
-  initialize = async () => {
-    if (Platform.OS === 'web') {
-      this.setState({ nickname: '' })
-      return this.start()
-    }
-    try {
-      await CoreModule.initialize()
-      let accounts = await CoreModule.listAccounts()
-      if (accounts === '') {
-        accounts = []
-      } else {
-        accounts = accounts.split(':')
-      }
-      const nickname = accounts.length > 0 ? accounts[0] : null
-      this.setState({
-        nickname,
-      })
-      if (nickname != null) {
-        await this.start(nickname)
-      } else {
-        this.setStateSuccess()
-      }
-    } catch (error) {
-      console.error(error)
-      this.setStateError()
-    }
-  }
-
-  start = async () => {
-    this.setStateLoading()
-    try {
-      await CoreModule.start(this.state.nickname)
-    } catch (err) {
-      console.warn(err)
-    }
-    try {
-      subscriptions.eventStream.subscribe({
-        iterator: function * () {
-          try {
-            while (true) {
-              console.log('EventStream: ', yield)
-            }
-          } catch (error) {
-            console.error('EventStream: ', error)
-          }
-          console.log('EventStream: return')
-        },
-        updater: undefined,
-      })
-      subscriptions.eventStream.start()
-      this.setState({
-        loading: false,
-        success: true,
-        error: false,
-      })
-    } catch (err) {
-      this.setState({
-        loading: false,
-        success: false,
-        error: true,
-      })
-      console.error(err)
-      subscriptions.eventStream.dispose()
-    }
-
+  componentDidMount() {
     Linking.getInitialURL()
       .then(url => {
         if (url !== null) {
@@ -109,22 +41,20 @@ export default class App extends PureComponent {
     }
 
     Linking.addEventListener('url', this._handleOpenURL)
+    this.setState({ loading: false })
   }
 
-  componentDidMount () {
-    this.initialize()
-  }
-
-  componentWillUnmount () {
-    subscriptions.eventStream.dispose()
-
+  componentWillUnmount() {
     if (this._handleOpenURL !== undefined) {
       Linking.removeEventListener('url', this._handleOpenURL)
     }
   }
 
-  handleOpenURL (event) {
+  handleOpenURL = event => {
     const prefixes = ['https://berty.tech/', 'berty://']
+    if (Platform.OS === 'web') {
+      prefixes.push('http://localhost:3000/')
+    }
 
     let url = event.url
 
@@ -139,48 +69,29 @@ export default class App extends PureComponent {
       const initialKey = url.substr('add-contact#public-key='.length)
       console.log('Adding new contact via public key')
 
-      this.navigation.dispatch(
-        NavigationActions.navigate({
+      this.setState({
+        deepLink: {
           routeName: 'modal/contacts/add/by-public-key',
-          params: { initialKey: initialKey },
-        })
-      )
+          params: { initialKey },
+        },
+      })
     }
   }
 
-  render () {
-    const { loading, success, nickname } = this.state
+  render() {
+    const { loading, deepLink } = this.state
+
+    if (loading) {
+      return <Loader />
+    }
     return (
       <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-        {loading && (
-          <Flex.Rows align='center'>
-            <ActivityIndicator size='large' />
-          </Flex.Rows>
-        )}
-        {success && nickname != null ? (
-          <Screens
-            ref={nav => {
-              this.navigation = nav
-            }}
-          />
-        ) : null}
-        {success && nickname == null ? (
-          <Screen style={{ backgroundColor: colors.white }}>
-            <Flex.Rows align='center' justify='center'>
-              <Flex.Cols align='center' justify='center'>
-                <TextInput
-                  style={{ flex: 1 }}
-                  placeholder='Enter a nickname'
-                  onSubmitEditing={({ nativeEvent }) =>
-                    this.setState({ nickname: nativeEvent.text }, () =>
-                      this.start()
-                    )
-                  }
-                />
-              </Flex.Cols>
-            </Flex.Rows>
-          </Screen>
-        ) : null}
+        <Screens
+          ref={nav => {
+            this.navigation = nav
+          }}
+          screenProps={{ deepLink }}
+        />
         {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>
     )

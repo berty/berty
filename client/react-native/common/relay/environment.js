@@ -25,30 +25,6 @@ const logStyle = {
 //   installRelayDevTools()
 // }
 
-// @TODO: patch web CoreModule
-if (Platform.OS === 'web') {
-  const CoreModule = {
-    start: async () => {},
-    restart: async () => console.warn('not implemented in web'),
-    dropDatabase: async () => console.warn('not implemented in web'),
-    // TODO: remove circle dependencies with containers to implem directly panic here
-    panic: async () => console.warn('not implemented in web'),
-    throwException: () => {
-      throw new Error('thrown exception')
-    },
-    getPort: async () => {
-      const url = new URL(window.location.href)
-      return url.searchParams.get('gql-port') || '8700'
-    },
-    isBotRunning: async () => console.warn('not implemented in web'),
-    startBot: async () => console.warn('not implemented in web'),
-    stopBot: async () => console.warn('not implemented in web'),
-    getNetworkConfig: async () => console.warn('not implemented in web'),
-    updateNetworkConfig: async () => console.warn('not implemented in web'),
-  }
-  NativeModules.CoreModule = CoreModule
-}
-
 const { CoreModule } = NativeModules
 
 let getIP = () =>
@@ -122,14 +98,17 @@ const perfLogger = (msg, req, res) => {
   }
 }
 
-const _fetchQuery = async () => `http://${await getIP()}:${await CoreModule.getPort()}/query`
-const fetchQuery = req => new Promise((resolve, reject) => {
-  _fetchQuery().then(resolve)
-    .catch(err => {
-      console.log('waiting for daemon', err)
-      setTimeout(() => resolve(fetchQuery(req)), 1000)
-    })
-})
+const _fetchQuery = async () =>
+  `http://${await getIP()}:${await CoreModule.getPort()}/query`
+const fetchQuery = req =>
+  new Promise((resolve, reject) => {
+    _fetchQuery()
+      .then(resolve)
+      .catch(err => {
+        console.log('waiting for daemon', err)
+        setTimeout(() => resolve(fetchQuery(req)), 1000)
+      })
+  })
 
 let middlewares = [
   // eslint-disable-next-line
@@ -142,7 +121,12 @@ let middlewares = [
     retryDelays: () => 1000,
     beforeRetry: ({ forceRetry, abort, delay, attempt, lastError, req }) => {
       // Unlock query
-      console.groupCollapsed('%c RELAY %c %s', logStyle.relayERROR, logStyle.title, 'fetch query error')
+      console.groupCollapsed(
+        '%c RELAY %c %s',
+        logStyle.relayERROR,
+        logStyle.title,
+        'fetch query error'
+      )
       console.warn(lastError)
 
       // eslint-disable-next-line

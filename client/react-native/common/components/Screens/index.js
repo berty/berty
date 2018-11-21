@@ -1,7 +1,8 @@
 import React from 'react'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { Animated, Easing, Platform } from 'react-native'
-import { createStackNavigator } from 'react-navigation'
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
+import Accounts from './Accounts'
 import Contacts from './Contacts'
 import Chats from './Chats'
 import Settings from './Settings'
@@ -34,7 +35,8 @@ export const mainTabs = createTabNavigator(
     animationEnabled: true,
     tabBarPosition: 'bottom',
     navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ tintColor }) => TabBarIcon(tintColor, navigation.state.routeName),
+      tabBarIcon: ({ tintColor }) =>
+        TabBarIcon(tintColor, navigation.state.routeName),
     }),
     tabBarOptions: {
       showIcon: true,
@@ -54,17 +56,19 @@ export const mainTabs = createTabNavigator(
           shadowOffset: { height: -5, width: 0 },
           shadowOpacity: 0.2,
           shadowRadius: 5,
-          ...(Platform.OS === 'android' ? { height: 68, paddingTop: 3 } : { height: 64, paddingTop: 5, paddingBottom: 6 }),
+          ...(Platform.OS === 'android'
+            ? { height: 68, paddingTop: 3 }
+            : { height: 64, paddingTop: 5, paddingBottom: 6 }),
         },
       ],
     },
-  },
+  }
 )
 
 // Navigator handling modals
-export default createStackNavigator(
+const Main = createStackNavigator(
   {
-    'main': {
+    mainTabs: {
       screen: mainTabs,
     },
     'modal/contacts/add/by-public-key': {
@@ -110,5 +114,10 @@ export default createStackNavigator(
         return { opacity, transform: [{ translateY }] }
       },
     }),
-  },
+  }
 )
+
+export default createSwitchNavigator({
+  accounts: Accounts,
+  main: Main,
+})
