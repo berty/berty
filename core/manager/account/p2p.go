@@ -3,6 +3,7 @@ package account
 import (
 	"context"
 	"encoding/base64"
+	"io"
 
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p"
@@ -18,6 +19,7 @@ type P2PNetworkOptions struct {
 	MDNS      bool
 	Relay     bool
 	Metrics   bool
+	SwarmKey  io.Reader
 	Identity  string
 }
 
@@ -80,6 +82,10 @@ func createP2PNetwork(opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, net
 		p2pOptions = append(p2pOptions, p2p.WithRelayHOP())
 	} else {
 		p2pOptions = append(p2pOptions, p2p.WithRelayClient())
+	}
+
+	if opts.SwarmKey != nil {
+		p2pOptions = append(p2pOptions, p2p.WithSwarmKey(opts.SwarmKey))
 	}
 
 	driver, err := p2p.NewDriver(context.Background(), p2pOptions...)
