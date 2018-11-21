@@ -1,15 +1,16 @@
-import React from 'react'
-import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { Animated, Easing, Platform } from 'react-native'
 import { createSwitchNavigator, createStackNavigator } from 'react-navigation'
-import Accounts from './Accounts'
-import Contacts from './Contacts'
-import Chats from './Chats'
-import Settings from './Settings'
-import { colors } from '../../constants'
-import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
-import { EventListFilterModal } from './Settings/Devtools/EventList'
 import IconFeather from 'react-native-vector-icons/dist/Feather'
+import React from 'react'
+
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+
+import { EventListFilterModal } from './Settings/Devtools/EventList'
+import { colors } from '../../constants'
+import Accounts from './Accounts'
+import Chats from './Chats'
+import Contacts from './Contacts'
+import Settings from './Settings'
 
 const TabBarIcon = (tintColor, routeName) => {
   let iconName
@@ -70,9 +71,6 @@ const Main = createStackNavigator(
   {
     mainTabs: {
       screen: mainTabs,
-    },
-    'modal/contacts/add/by-public-key': {
-      screen: ByPublicKeyModal,
     },
     'modal/devtools/event/list/filters': {
       screen: EventListFilterModal,

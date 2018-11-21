@@ -1,33 +1,39 @@
+import { ActivityIndicator, Platform, Share, TextInput } from 'react-native'
+import { btoa, atob } from 'b64-lite'
 import React, { PureComponent } from 'react'
-import { Platform, ActivityIndicator, Share } from 'react-native'
+
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+
 import {
   Flex,
   Screen,
   Button,
   Text,
-  ModalScreen,
   TextInputMultilineFix,
 } from '../../../Library'
-import { colors } from '../../../../constants'
+import { QueryReducer } from '../../../../relay'
 import {
-  padding,
-  paddingVertical,
+  borderBottom,
   marginTop,
+  padding,
+  paddingHorizontal,
+  paddingVertical,
   rounded,
   textTiny,
-  borderBottom,
 } from '../../../../styles'
+import { colors } from '../../../../constants'
 import { fragments, mutations, queries } from '../../../../graphql'
-import { QueryReducer } from '../../../../relay'
-import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
-import { btoa, atob } from 'b64-lite'
 
-const requestContact = async (contactId, navigation, errorHandler) => {
+const requestContact = async (
+  { id, displayName },
+  navigation,
+  errorHandler
+) => {
   try {
     await mutations.contactRequest.commit({
       contact: {
-        id: btoa(`contact:${contactId}`),
-        displayName: '',
+        id: btoa(`contact:${id}`),
+        displayName: displayName || '',
         displayStatus: '',
         overrideDisplayName: '',
         overrideDisplayStatus: '',
@@ -58,10 +64,12 @@ const ActionButton = props => (
   </Button>
 )
 
-const AddButton = ({ contactId, navigation, errorHandler }) => (
+const AddButton = ({ id, displayName, navigation, errorHandler }) => (
   <ActionButton
     icon='plus'
-    onPress={() => requestContact(contactId, navigation, errorHandler)}
+    onPress={() =>
+      requestContact({ id, displayName }, navigation, errorHandler)
+    }
     label={'Add this key'}
   />
 )
@@ -71,7 +79,11 @@ const ShareMyKey = ({ contactId }) => (
     icon='plus'
     onPress={() => {
       const url = `https://berty.tech/add-contact#public-key=${contactId}`
-      Share.share({ title: 'Add me on Berty', message: `Use this link to add me on Berty ${url}`, url: url }).catch(() => null)
+      Share.share({
+        title: 'Add me on Berty',
+        message: `Use this link to add me on Berty ${url}`,
+        url: url,
+      }).catch(() => null)
     }}
     label={'Share my key'}
   />
@@ -98,10 +110,29 @@ class ByPublicKeyComponent extends PureComponent {
 
   render () {
     const { navigation, shareButton, addButton, readOnly } = this.props
-    const { contactId } = this.state
+    const { contactId, contactName } = this.state
 
     return (
-      <Flex.Rows style={[padding]} align='center'>
+      <Flex.Rows style={[paddingHorizontal]} align='center'>
+        {this.props.navigation.state.routeName === 'Enter a public key' ? (
+          <TextInput
+            placeholder='Nickname'
+            onChangeText={contactName => this.setState({ contactName })}
+            value={contactName || this.props.navigation.getParam('nickname')}
+            style={[
+              {
+                width: 330,
+                backgroundColor: colors.grey7,
+                color: colors.black,
+                flexWrap: 'wrap',
+              },
+              textTiny,
+              padding,
+              marginTop,
+              rounded,
+            ]}
+          />
+        ) : null}
         <TextInputMultilineFix
           style={[
             {
@@ -119,7 +150,7 @@ class ByPublicKeyComponent extends PureComponent {
           ]}
           multiline
           placeholder='Type or copy/paste a berty user public key here'
-          value={contactId}
+          value={contactId || this.props.navigation.getParam('initialKey')}
           onChangeText={contactId => this.setState({ contactId })}
           editable={!readOnly}
           selectTextOnFocus
@@ -129,7 +160,8 @@ class ByPublicKeyComponent extends PureComponent {
           {shareButton ? <ShareMyKey contactId={contactId} /> : null}
           {addButton ? (
             <AddButton
-              contactId={contactId}
+              id={contactId || this.props.navigation.getParam('initialKey')}
+              displayName={contactName}
               navigation={navigation}
               errorHandler={err => {
                 this.setState({ err })
@@ -236,14 +268,4 @@ export default createTabNavigator(
       ],
     },
   }
-)
-
-export const ByPublicKeyModal = props => (
-  <ModalScreen navigation={props.navigation}>
-    <ByPublicKeyComponent
-      addButton
-      initialKey={props.navigation.getParam('initialKey', '')}
-      {...props}
-    />
-  </ModalScreen>
 )

@@ -71,7 +71,7 @@ export default class App extends PureComponent {
 
       this.setState({
         deepLink: {
-          routeName: 'modal/contacts/add/by-public-key',
+          routeName: 'contacts/add/by-public-key',
           params: { initialKey },
         },
       })
