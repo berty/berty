@@ -210,6 +210,7 @@ func (a *Account) Open() error {
 		zap.String("git-sha", core.GitSha),
 		zap.String("git-branch", core.GitBranch),
 		zap.String("build-mode", core.BuildMode),
+		zap.String("commit-date", core.CommitDate()),
 		zap.String("db", a.dbPath()),
 		zap.String("name", a.Name),
 	)
