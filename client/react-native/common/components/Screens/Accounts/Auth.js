@@ -1,7 +1,7 @@
-import { NativeModules, TextInput } from 'react-native'
+import { NativeModules } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Loader, Screen } from '../../Library'
+import { Flex, Loader, Screen, Text } from '../../Library'
 import { colors } from '../../../constants'
 
 const { CoreModule } = NativeModules
@@ -26,7 +26,12 @@ export default class Auth extends PureComponent {
   list = async () => {
     this.setState({ loading: true, message: 'Retrieving accounts' })
     try {
-      const list = await CoreModule.listAccounts()
+      let list = await CoreModule.listAccounts()
+      if (list === '') {
+        list = []
+      } else {
+        list = list.split(':')
+      }
       this.setState({ list })
       return list
     } catch (error) {
@@ -80,14 +85,18 @@ export default class Auth extends PureComponent {
     if (current === null) {
       return (
         <Screen style={{ backgroundColor: colors.white }}>
-          <Flex.Rows align='center' justify='center'>
-            <Flex.Cols align='center' justify='center'>
-              <TextInput
-                style={{ flex: 1 }}
-                placeholder='Enter a nickname'
-                onSubmitEditing={({ nativeEvent }) =>
-                  this.open(nativeEvent.text)
-                }
+          <Flex.Rows align='center'>
+            <Flex.Cols align='center' self='stretch'>
+              <Text
+                size={0}
+                large
+                rounded
+                color={colors.black}
+                input={{
+                  placeholder: 'Enter a nickname',
+                  focus: true,
+                }}
+                onSubmit={({ nativeEvent }) => this.open(nativeEvent.text)}
               />
             </Flex.Cols>
           </Flex.Rows>

@@ -150,7 +150,12 @@ const Main = createStackNavigator(
   }
 )
 
-export default createSwitchNavigator({
-  accounts: Accounts,
-  main: Main,
-})
+export default createSwitchNavigator(
+  {
+    accounts: Accounts,
+    main: Main,
+  },
+  {
+    headerMode: 'none',
+  }
+)
