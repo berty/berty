@@ -35,6 +35,7 @@
     "react-relay-network-modern": "^2.4.0",
     "relay-compiler": "^1.6.2",
     "relay-devtools": "^1.4.0",
+    "sleep": "^5.2.3",
     "subscriptions-transport-ws": "^0.9.15"
   },
   "devDependencies": {

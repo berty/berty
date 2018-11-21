@@ -8,7 +8,7 @@ import {
   perfMiddleware,
 } from 'react-relay-network-modern/node8'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-
+import { sleep } from 'sleep'
 import { Environment, RecordSource, Store } from 'relay-runtime'
 
 const logStyle = {
@@ -27,19 +27,33 @@ const logStyle = {
 
 const { CoreModule } = NativeModules
 
-let getIP = () =>
-  new Promise(resolve => {
-    if (Platform.OS === 'web') {
-      return resolve(window.location.hostname)
-    }
-    return resolve('127.0.0.1')
-  })
+const getIp = async () => {
+  if (Platform.OS === 'web') {
+    return window.location.hostname
+  }
+  return '127.0.0.1'
+}
 
-const setupSubscription = async (config, variables, cacheConfig, observer) => {
+const getPort = async () => {
+  try {
+    return CoreModule.getPort()
+  } catch (error) {
+    console.warn(error, 'retrying to get port')
+    sleep(1)
+    return getPort()
+  }
+}
+
+const setupSubscription = ({ ip, port }) => (
+  config,
+  variables,
+  cacheConfig,
+  observer
+) => {
   try {
     const query = config.text
     const subscriptionClient = new SubscriptionClient(
-      `ws://${await getIP()}:${await CoreModule.getPort()}/query`,
+      `ws://${ip}:${port}/query`,
       {
         reconnect: true,
       }
@@ -98,23 +112,11 @@ const perfLogger = (msg, req, res) => {
   }
 }
 
-const _fetchQuery = async () =>
-  `http://${await getIP()}:${await CoreModule.getPort()}/query`
-const fetchQuery = req =>
-  new Promise((resolve, reject) => {
-    _fetchQuery()
-      .then(resolve)
-      .catch(err => {
-        console.log('waiting for daemon', err)
-        setTimeout(() => resolve(fetchQuery(req)), 1000)
-      })
-  })
-
-let middlewares = [
+const setupMiddlewares = ({ ip, port }) => [
   // eslint-disable-next-line
   __DEV__ ? perfMiddleware({ logger: perfLogger }) : null,
   urlMiddleware({
-    url: fetchQuery,
+    url: `http://${ip}:${port}/query`,
   }),
   retryMiddleware({
     fetchTimeout: 10000,
@@ -138,26 +140,15 @@ let middlewares = [
             ' ms.'
         )
       }
-
       console.groupEnd()
-
-      if (attempt > 5) abort()
     },
   }),
 ]
 
-const opts = {
-  subscribeFn: setupSubscription,
-}
-
-// Create a network layer from the fetch function
-const network = new RelayNetworkLayer(middlewares, opts)
-const store = new Store(new RecordSource())
-
-const environment = new Environment({
-  network,
-  store,
-  // ... other options
-})
-
-export default environment
+const setupEnvironment = ({ ip, port }) =>
+  new Environment({
+    network: new RelayNetworkLayer(setupMiddlewares({ ip, port }), {
+      subscribeFn: setupSubscription({ ip, port }),
+    }),
+    store: new Store(new RecordSource()),
+  })
