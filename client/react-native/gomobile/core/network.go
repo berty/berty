@@ -2,6 +2,8 @@ package core
 
 import (
 	"encoding/json"
+	"io"
+	"strings"
 
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/network/p2p"
@@ -11,8 +13,8 @@ import (
 type networkConfig struct {
 	DefaultTransport   bool
 	BluetoothTransport bool
-	DefaultBootstrap   bool
 	IPFSBootstrap      bool
+	DefaultBootstrap   bool
 	CustomBootstrap    []string
 	MDNS               bool
 	Relay              bool
@@ -25,6 +27,7 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 		bind      []string
 		transport []string
 		bootstrap []string
+		swarmKey  io.Reader
 	)
 
 	if err := json.Unmarshal([]byte(appConfig.JSONNetConf), &netConf); err != nil {
@@ -42,9 +45,15 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 	if netConf.DefaultBootstrap {
 		bootstrap = append(bootstrap, p2p.DefaultBootstrap...)
 	}
+
+	// If ipfs is disable protect swarm with a default key, this will avoid to
+	// spread ipfs nodes over our network
 	if netConf.IPFSBootstrap {
 		bootstrap = append(bootstrap, p2p.BootstrapIpfs...)
+	} else {
+		swarmKey = strings.NewReader(p2p.DefaultSwarmKey)
 	}
+
 	bootstrap = append(bootstrap, netConf.CustomBootstrap...)
 
 	return &account.P2PNetworkOptions{
@@ -55,6 +64,7 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 		Relay:     netConf.Relay,
 		Metrics:   defaultMetrics,
 		Identity:  defaultIdentity,
+		SwarmKey:  swarmKey,
 	}, nil
 }
 
