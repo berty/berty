@@ -37,6 +37,13 @@ GOMOBILES_OPT ?=
 
 GOTEST_TIMEOUT ?= 30s
 
+SED_CMD :=
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+	SED_CMD += sed -E -i ''
+else
+	SED_CMD += sed -r -i
+endif
 
 .PHONY: help
 help:
@@ -63,9 +70,23 @@ init: deps
 test:
 	cd $(CORE_MOBILE) && go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
-.PHONY: build.android
-build.android: $(ANDROID_BUILD_PATH)/core.aar
+.PHONY: build.core
+build.core: $(ANDROID_BUILD_PATH)/core.aar
 
+.PHONY: build.android
+build.android: sed.ble build.ble unsed.ble build.core build.ble
+
+.PHONY: sed.ble
+sed.ble:
+	$(SED_CMD) "s/.*implementation project\(':core'\)/\/\/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
+	$(SED_CMD) 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
+
+.PHONY: unsed.ble
+unsed.ble:
+	$(SED_CMD) "s/.*\/\/implementation project\(':core'\)/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
+	$(SED_CMD) 's/\/\/(.*Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
+
+.PHONY: build.ble
 build.ble: $(BLE_DIR_PATH)/ble.jar
 
 $(BLE_DIR_PATH)/ble.jar:
@@ -91,9 +112,16 @@ $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 .PHONY: build
 build: build.android build.ios
 
-.PHONY: clean.android
-clean.android:
+.PHONY: clean.core
+clean.core:
 	rm -rf $(ANDROID_BUILD_PATH)/core.aar
+
+.PHONY: clean.ble
+clean.ble:
+	rm -rf $(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar
+
+.PHONY: clean.android
+clean.android: clean.core clean.ble
 
 .PHONY: clean.ios
 clean.ios:
@@ -103,7 +131,7 @@ clean.ios:
 clean: clean.android clean.ios
 
 .PHONY: re.android
-re.android: build.ble clean.android build.android
+re.android: build.ble clean.core build.core
 
 .PHONY: re.ios
 re.ios: clean.ios build.ios
