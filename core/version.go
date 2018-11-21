@@ -18,15 +18,14 @@ var (
 	commitDate = "undefined"
 )
 
-func CommitDate() string {
+func CommitDate() time.Time {
 	if commitDate == "undefined" {
-		return "undefined"
+		return time.Time{}
 	}
 
 	commitDateInt, err := strconv.ParseInt(commitDate, 10, 64)
 	if err != nil {
-		return "parse-error"
+		return time.Time{}
 	}
-	tm := time.Unix(commitDateInt, 0)
-	return tm.Format(time.RFC3339)
+	return time.Unix(commitDateInt, 0)
 }
