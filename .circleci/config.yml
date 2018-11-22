@@ -50,7 +50,7 @@ jobs:
 
   generate:
     docker:
-      - image: bertychat/protoc:v3
+      - image: bertychat/protoc:v4
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -72,7 +72,7 @@ jobs:
           name: make generate_local
           command: |
             cd core
-            /tmp/retry -m 3 make generate_local
+            /tmp/retry -m 100 -t 100 make generate_local
       - run:
           name: ignore some files
           command: git checkout core/go.mod # this file regularly changes with useless information (adding `// indirect`)

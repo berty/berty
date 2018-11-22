@@ -14,7 +14,7 @@ import {
 import { Pagination } from '../../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { fragments, mutations, queries } from '../../../../graphql'
+import { fragments, mutations, queries, enums } from '../../../../graphql'
 import Button from '../../../Library/Button'
 
 const Item = fragments.Event(({ data, navigation }) => (
@@ -51,8 +51,8 @@ const Item = fragments.Event(({ data, navigation }) => (
               2: <Icon name={'phone-outgoing'} color={colors.purple} />,
             }[data.direction]
           }{' '}
-          <Text style={{ fontWeight: 'bold' }}>Kind</Text>
-          {' ' + data.kind}
+          <Text style={{ fontWeight: 'bold' }}>{enums.ValueBertyP2pKindInputKind[data.kind]}</Text>
+          {' (' + data.kind + ')'}
         </Text>
         <Text
           ellipsizeMode='tail'

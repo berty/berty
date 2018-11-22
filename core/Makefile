@@ -10,12 +10,16 @@ OUR_PROTOS = $(filter-out $(call rwildcard,vendor//, *.proto),$(PROTOS))
 PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_FILES = \
-	$(patsubst %.proto,%.pb.go,$(OUR_PROTOS)) \
-	api/client/berty.node.service.gen.go \
-	api/client/jsonclient/berty.node.service.gen.go \
 	$(call rwildcard $(CODE_PATHS), *.gen.go) \
-	api/p2p/kind.gen.go \
-	api/node/graphql/service.gen.graphql
+	$(call rwildcard $(CODE_PATHS), *.pb.go) \
+	$(call rwildcard $(CODE_PATHS), *.gen.js) \
+	$(call rwildcard $(CODE_PATHS), *.gen.graphql)
+GENERATION_TARGETS = \
+	.client.generated \
+	.gql.generated \
+	.kind.generated \
+	.pb.generated
+
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= GO111MODULE=on CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
@@ -90,7 +94,7 @@ lint: generate
 generate: .generated
 
 .generated: $(PROTOS)
-	rm -f $(GENERATED_FILES)
+	rm -f $(GENERATED_FILES) $(GENERATION_TARGETS) $@
 	make generate_prepare
 	docker run \
 		--user="$(shell id -u)" \
@@ -98,16 +102,16 @@ generate: .generated
 		--workdir="/go/src/berty.tech/core" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v3 \
+		bertychat/protoc:v4 \
 		-xec 'make generate_local'
 	touch $@
 
 .PHONY: clean
 clean:
-	rm -f .generated $(GENERATED_FILES) $(BIN)
+	rm -f .generated $(GENERATED_FILES) $(GENERATION_TARGETS) $(BIN)
 
 .PHONY: generate_local
-generate_local: $(GENERATED_FILES)
+generate_local: $(GENERATION_TARGETS)
 
 .PHONY: generate_prepare
 generate_prepare:
@@ -141,26 +145,34 @@ dev-deps:
 	$(PROTOC) $(PROTOC_OPTS) --gofast_out=plugins=grpc:"$(GOPATH)/src" "$(dir $<)"/*.proto
 
 # FIXME: use an automated rule that matches every client generated files
-api/client/berty.node.service.gen.go api/client/jsonclient/berty.node.service.gen.go: $(PROTOS)
+.client.generated: $(PROTOS)
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
 		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
 	); done
 
-	# FIXME: the following hack is due to goimports -w not deleting duplicated imports
+	@# FIXME: the following hack is due to goimports -w not deleting duplicated imports
 	goimports -w ./api/client
 	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
 	goimports -w ./api/client
 	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
 	goimports -w ./api/client
+	touch $@
 
-api/p2p/kind.gen.go: $(PROTOS)
+.kind.generated: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
 	goimports -w ./api/p2p
+	touch $@
 
-generate.graphql api/node/graphql/service.gen.graphql: $(PROTOS)
+.gql.generated: $(PROTOS) .pb.generated
 	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	goimports -w ./api/node/graphql
 	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
 	cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
+	prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
+	cp ./api/node/graphql/enums.gen.js ../client/react-native/common/graphql/enums.gen.js
+	touch $@
+
+.pb.generated: $(patsubst %.proto,%.pb.go,$(OUR_PROTOS))
+	touch $@

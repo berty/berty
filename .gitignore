@@ -1,5 +1,6 @@
 # core
 core/.generated
+core/.*.generated
 gin-bin
 
 #ag
