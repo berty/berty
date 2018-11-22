@@ -1,3 +1,4 @@
+import { URL, URLSearchParams } from 'whatwg-url'
 import {
   ActivityIndicator,
   Linking,
@@ -124,27 +125,22 @@ export default class App extends PureComponent {
   }
 
   handleOpenURL (event) {
-    const prefixes = ['https://berty.tech/', 'berty://']
+    let url = new URL(event.url.replace('berty://', 'https://berty.tech/'))
+    let params = new URLSearchParams(url.hash.replace('#', ''))
 
-    let url = event.url
-
-    for (let prefix of prefixes) {
-      if (url.indexOf(prefix) === 0) {
-        url = url.substr(prefix.length)
-        break
-      }
-    }
-
-    if (url.indexOf('add-contact#public-key=') === 0) {
-      const initialKey = url.substr('add-contact#public-key='.length)
-      console.log('Adding new contact via public key')
-
-      this.navigation.dispatch(
-        NavigationActions.navigate({
+    switch (url.pathname) {
+      case '/add-contact':
+        this.navigation.dispatch(NavigationActions.navigate({
           routeName: 'modal/contacts/add/by-public-key',
-          params: { initialKey: initialKey },
-        })
-      )
+          params: {
+            initialKey: params.get('public-key'),
+            initialName: params.get('display-name'),
+          },
+        }))
+        break
+      default:
+        console.warn(`Unhandled deep link, URL: ${event.url}`)
+        break
     }
   }
 
@@ -173,7 +169,7 @@ export default class App extends PureComponent {
                   placeholder='Enter a nickname'
                   onSubmitEditing={({ nativeEvent }) =>
                     this.setState({ nickname: nativeEvent.text }, () =>
-                      this.start()
+                      this.start(),
                     )
                   }
                 />
