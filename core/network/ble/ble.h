@@ -28,6 +28,7 @@ int isClosed(char *ma);
 @interface BertyCentralManager : NSObject <CBCentralManagerDelegate, CBPeripheralDelegate, CBPeripheralManagerDelegate>
 
 @property (nonatomic, assign) BOOL serviceAdded;
+@property (nonatomic, strong) dispatch_queue_t dispatch_queue;
 @property (nonatomic, strong) NSMutableDictionary *bertyDevices;
 @property (nonatomic, strong) NSMutableDictionary *oldDevices;
 @property (nonatomic, strong) CBCentralManager *centralManager;

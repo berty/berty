@@ -94,6 +94,8 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         self.serviceAdded = NO;
         self.ma = ma;
         self.peerID = peerID;
+        self.dispatch_queue = dispatch_queue_create("BertyCentralManager", DISPATCH_QUEUE_CONCURRENT);
+
         self.bertyDevices = [[NSMutableDictionary alloc] init];
         self.oldDevices = [[NSMutableDictionary alloc] init];
         self.serviceUUID = [CBUUID UUIDWithString:SERVICE_UUID];
@@ -114,8 +116,8 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         self.bertyService.characteristics = @[self.isRdyCharacteristic, self.closerCharacteristic, self.writerCharacteristic, self.acceptCharacteristic, self.maCharacteristic, self.peerIDCharacteristic];
         self.centralWaiter = dispatch_semaphore_create(0);
 
-        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
-        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0) options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+        self.centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:self.dispatch_queue options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
+        self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:self.dispatch_queue options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
         self.centralManager.delegate = self;
         self.peripheralManager.delegate = self;
         initSignalHandling();
@@ -144,7 +146,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         dispatch_semaphore_signal(device.closerSema);
     } else if ([characteristic.UUID isEqual:self.isRdyUUID]) {
         device.isRdy = characteristic;
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(self.dispatch_queue, ^{
             while (device.didRdySema == NO) {
                 [device.peripheral writeValue:[[NSData alloc] init] forCharacteristic:characteristic type:CBCharacteristicWriteWithResponse];
                 [NSThread sleepForTimeInterval:1.0f];
@@ -186,12 +188,17 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
 }
 
 - (void)checkConnectBertyDevice:(BertyDevice *)device {
+    NSLog(@"LA");
     if (device.peripheral.state == CBPeripheralStateConnected) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSLog(@"LA1");
+        dispatch_async(self.dispatch_queue, ^{
             dispatch_semaphore_signal(device.connSema);
         });
     } else {
-        [self.centralManager connectPeripheral:device.peripheral options:nil];
+        NSLog(@"LA2");
+        dispatch_async(self.dispatch_queue, ^{
+            [self.centralManager connectPeripheral:device.peripheral options:nil];
+        });
     }
 }
 
@@ -199,7 +206,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
     CBService *service = [self getSvcForPeripheral:device.peripheral];
     NSLog(@"service %@", service);
     if (service != nil) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(self.dispatch_queue, ^{
             device.svc = service;
             dispatch_semaphore_signal(device.svcSema);
         });
@@ -217,8 +224,8 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
     [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
 }
 
-- (BertyDevice *)waiterForDeviceRdy:(BertyDevice *)device {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+- (BertyDevice *)waiterForDeviceRdy:(BertyDevice *)device ForWairter:(dispatch_semaphore_t) test {
+    dispatch_async(self.dispatch_queue, ^{
         [self checkConnectBertyDevice:device];
         dispatch_semaphore_wait(device.connSema, DISPATCH_TIME_FOREVER);
         NSLog(@"device conn released");
@@ -230,27 +237,27 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         // once service is disco asked for charact retrieve
         [self checkDiscoverBertyDeviceCharacteristic:device];
         dispatch_group_t group = dispatch_group_create();
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_group_async(group, self.dispatch_queue, ^{
             dispatch_semaphore_wait(device.writerSema, DISPATCH_TIME_FOREVER);
             NSLog(@"READ writerSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_group_async(group, self.dispatch_queue, ^{
             dispatch_semaphore_wait(device.acceptSema, DISPATCH_TIME_FOREVER);
             NSLog(@"READ acceptSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_group_async(group, self.dispatch_queue, ^{
             dispatch_semaphore_wait(device.maSema, DISPATCH_TIME_FOREVER);
             NSLog(@"READ maSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_group_async(group, self.dispatch_queue, ^{
             dispatch_semaphore_wait(device.peerIDSema, DISPATCH_TIME_FOREVER);
             NSLog(@"READ peerIDSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_group_async(group, self.dispatch_queue, ^{
             dispatch_semaphore_wait(device.closerSema, DISPATCH_TIME_FOREVER);
             NSLog(@"READ cloSema %@", device);
         });
-        dispatch_group_async(group, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_group_async(group, self.dispatch_queue, ^{
             dispatch_semaphore_wait(device.isRdySema, DISPATCH_TIME_FOREVER);
             NSLog(@"READ rdySema %@", device);
         });
@@ -323,7 +330,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
         device.closed = YES;
         [device checkAndWrite];
         [self removeBertyDevice:device];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        dispatch_async(self.dispatch_queue, ^{
             setConnClosed([device.ma UTF8String]);
         });
         dispatch_semaphore_wait(device.closerWaiterSema, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(NSEC_PER_SEC * 10)));
@@ -383,7 +390,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
                 error:(NSError *)error {
     BertyDevice *device = [self getDeviceFromPeripheral:peripheral];
     [self removeBertyDevice:device];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(self.dispatch_queue, ^{
         setConnClosed([device.ma UTF8String]);
     });
     NSLog(@"didDisConnectPeriheral: %@ %@", [peripheral.identifier UUIDString], error);
@@ -424,7 +431,7 @@ NSString* const ACCEPT_UUID = @"6F110ECA-9FCC-4BB3-AB45-6F13565E2E34";
             break;
         case CBManagerStatePoweredOn:
             stateString = @"Bluetooth is currently powered on and available to use.";
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            dispatch_async(self.dispatch_queue, ^{
                 dispatch_semaphore_signal(self.centralWaiter);
             });
             break;
@@ -584,7 +591,7 @@ didDiscoverServices:(NSError *)error {
         case CBManagerStatePoweredOn:
             stateString = @"CBManagerStatePoweredOn";
             if (self.serviceAdded == NO) {
-                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                dispatch_async(self.dispatch_queue, ^{
                     dispatch_semaphore_wait(self.centralWaiter, DISPATCH_TIME_FOREVER);
                     self.serviceAdded = YES;
                     [self.peripheralManager addService:self.bertyService];
@@ -636,32 +643,38 @@ didDiscoverServices:(NSError *)error {
 
 - (void)acceptRequest:(CBPeripheralManager *)peripheral
             req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
-    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
+    [self dispatchSuccess:peripheral forRequest:request];
 }
 
 - (void)writeRequest:(CBPeripheralManager *)peripheral
             req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
+    [self dispatchSuccess:peripheral forRequest:request];
     if (request.value != nil) {
         sendBytesToConn([device.ma UTF8String], [request.value bytes], (int)[request.value length]);
     }
-    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
 }
 
 - (void)closeRequest:(CBPeripheralManager *)peripheral
             req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
+    [self dispatchSuccess:peripheral forRequest:request];
     device.closedSend = YES;
     device.closed = YES;
     [self removeBertyDevice:device];
-    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(self.dispatch_queue, ^{
         setConnClosed([device.ma UTF8String]);
     });
 }
 
 - (void)isRdyRequest:(CBPeripheralManager *)peripheral
             req:(CBATTRequest *)request forDevice:(BertyDevice *)device {
+    [self dispatchSuccess:peripheral forRequest:request];
     dispatch_semaphore_signal(device.isRdySema);
-    [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
+}
+
+- (void)dispatchSuccess:(CBPeripheralManager *)peripheral forRequest:(CBATTRequest *)request {
+    dispatch_async(self.dispatch_queue, ^{
+        [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
+    });
 }
 
 - (void)peripheralManager:(CBPeripheralManager *)pm

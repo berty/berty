@@ -11,6 +11,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
+#import "CountDownLatch.h"
 
 @interface BertyDevice : NSObject
 
@@ -38,6 +39,7 @@
 @property (atomic, readwrite, strong) dispatch_semaphore_t maSema;
 @property (atomic, readwrite, strong) dispatch_semaphore_t peerIDSema;
 @property (atomic, readwrite, strong) dispatch_semaphore_t writerSema;
+@property (nonatomic, readwrite, strong) CountDownLatch *latch;
 
 - (instancetype)initWithPeripheral:(CBPeripheral *)peripheral;
 - (void)write:(NSData *)data;
