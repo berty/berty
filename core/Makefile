@@ -18,7 +18,7 @@ GENERATION_TARGETS = \
 	.client.generated \
 	.gql.generated \
 	.kind.generated \
-	$(patsubst %.proto,%.pb.go,$(OUR_PROTOS))
+	.pb.generated
 
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
@@ -164,7 +164,7 @@ dev-deps:
 	goimports -w ./api/p2p
 	touch $@
 
-.gql.generated: $(PROTOS)
+.gql.generated: $(PROTOS) .pb.generated
 	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	goimports -w ./api/node/graphql
@@ -172,4 +172,7 @@ dev-deps:
 	cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
 	prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
 	cp ./api/node/graphql/enums.gen.js ../client/react-native/common/graphql/enums.gen.js
+	touch $@
+
+.pb.generated: $(patsubst %.proto,%.pb.go,$(OUR_PROTOS))
 	touch $@

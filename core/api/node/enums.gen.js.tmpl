@@ -1,27 +1,27 @@
 {{- /* Default content */ -}}
-{{- if not (getStore "headerSet") -}}
+{{- if not (getStore "enumHeaderSet") -}}
 // GENERATED CODE -- DO NOT EDIT!
 
-{{setStore "headerSet" true}}
+{{setStore "enumHeaderSet" true}}
 {{- end}}
 
-{{- $PackageName := .File.Package | replace "." "_" | camelCase}}
-{{- $FilePackageName := .File.Package | replace "." "/" }}
-{{- setStore "packageName" $PackageName}}
-{{- setStore "filePackageName" $FilePackageName}}
-{{- setStore "namespace" "" }}
-{{- setStore "goPackage" (splitArray ";" .File.Options.GoPackage | first) }}
+{{- $EnumPackageName := .File.Package | replace "." "_" | camelCase}}
+{{- $EnumFilePackageName := .File.Package | replace "." "/" }}
+{{- setStore "enumPackageName" $EnumPackageName}}
+{{- setStore "enumFilePackageName" $EnumFilePackageName}}
+{{- setStore "enumNamespace" "" }}
+{{- setStore "enumGoPackage" (splitArray ";" .File.Options.GoPackage | first) }}
 
 {{- /* Associate GraphQL type with internal Go type */ -}}
 
 {{- define "enumInputName" }}
-  {{- $type := .}}
-  {{- if $type}}
-    {{- $typeName := .Name | replace "." "_" | camelCase | replace "_" ""}}
-    {{- if $typeName | regexMatch ".*Input"}}
-      {{- $typeName}}
+  {{- $enumType := .}}
+  {{- if $enumType}}
+    {{- $enumTypeName := .Name | replace "." "_" | camelCase | replace "_" ""}}
+    {{- if $enumTypeName | regexMatch ".*Input"}}
+      {{- $enumTypeName}}
     {{- else}}
-      {{- $typeName}}Input
+      {{- $enumTypeName}}Input
     {{- end}}
   {{- end}}
 {{- end}}
@@ -46,35 +46,35 @@
 
 
 {{- define "enumNestedType"}}
-    {{- $PackageName := getStore "packageName"}}
-    {{- $GoPackage := getStore "goPackage"}}
-    {{- $FilePackageName := getStore "filePackageName"}}
+    {{- $EnumPackageName := getStore "enumPackageName"}}
+    {{- $EnumGoPackage := getStore "enumGoPackage"}}
+    {{- $EnumFilePackageName := getStore "enumFilePackageName"}}
     {{- range .}}
-        {{- $backup := getStore "namespace"}}
-        {{- $name := concat $backup .Name -}}
-        {{- setStore "name" $name }}
-        {{- if $backup }}
-            {{- $name := concat $backup "_" .Name -}}
-            {{- setStore "name" $name }}
+        {{- $enumBackup := getStore "enumNamespace"}}
+        {{- $enumName := concat $enumBackup .Name -}}
+        {{- setStore "enumName" $enumName }}
+        {{- if $enumBackup }}
+            {{- $enumName := concat $enumBackup "_" .Name -}}
+            {{- setStore "enumName" $enumName }}
         {{- end }}
 
-        {{- $name := getStore "name"}}
-        {{- setStore "namespace" $name}}
+        {{- $enumName := getStore "enumName"}}
+        {{- setStore "enumNamespace" $enumName}}
 
-        {{- $package := . }}
+        {{- $enumPackage := . }}
 
         {{- range .EnumType }}
-          export const {{$PackageName}}{{template "enumInputName" $package}}{{ .Name }} = {{template "enumFormat" .}}
+          export const {{$EnumPackageName}}{{template "enumInputName" $enumPackage}}{{ .Name }} = {{template "enumFormat" .}}
 
 
-          export const Value{{$PackageName}}{{template "enumInputName" $package}}{{ .Name }} = {{template "enumFormatValue" .}}
+          export const Value{{$EnumPackageName}}{{template "enumInputName" $enumPackage}}{{ .Name }} = {{template "enumFormatValue" .}}
         {{ end }}
 
-        {{- setStore "namespace" .Name}}
+        {{- setStore "enumNamespace" .Name}}
         {{- if .NestedType}}
             {{- template "enumNestedType" .NestedType}}
         {{- end}}
-        {{- setStore "namespace" $backup -}}
+        {{- setStore "enumNamespace" $enumBackup -}}
     {{- end}}
 {{- end}}
 
@@ -83,10 +83,10 @@
 {{- template "enumNestedType" .File.MessageType }}
 
 {{- range .Enum }}
-  {{- $PackageName := getStore "packageName"}}
-  export const {{$PackageName}}{{template "enumInputName" .}}{{ .Name }} = {{template "enumFormat" .}}
+  {{- $EnumPackageName := getStore "enumPackageName"}}
+  export const {{$EnumPackageName}}{{template "enumInputName" .}}{{ .Name }} = {{template "enumFormat" .}}
 
 
-  export const Value{{$PackageName}}{{template "enumInputName" .}}{{ .Name }} = {{template "enumFormatValue" .}}
+  export const Value{{$EnumPackageName}}{{template "enumInputName" .}}{{ .Name }} = {{template "enumFormatValue" .}}
 
 {{ end }}
