@@ -228,11 +228,19 @@ export default class List extends PureComponent {
               }
             />
           )}
-          <Menu.Item
-            icon='file-text'
-            title='Console logs'
-            onPress={() => navigation.push('devtools/logs')}
-          />
+          {Platform.OS !== 'android' && (
+            <Menu.Item
+              icon='file-text'
+              title='Console logs'
+              onPress={() => navigation.push('devtools/logs')}
+            />
+          )}
+          {Platform.OS === 'android' && (
+            <Menu.Item
+              icon='file-text'
+              title='Console logs (crash on Android cf. #627)'
+            />
+          )}
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
