@@ -23,7 +23,7 @@ require (
 	github.com/getlantern/golog v0.0.0-20170508214112-cca714f7feb5 // indirect
 	github.com/getlantern/hex v0.0.0-20160523043825-083fba3033ad // indirect
 	github.com/getlantern/hidden v0.0.0-20160523043807-d52a649ab33a // indirect
-	github.com/getlantern/lampshade v0.0.0-20181026012137-44db2076fd5b
+	github.com/getlantern/lampshade v0.0.0-20181026012137-44db2076fd5b // indirect
 	github.com/getlantern/mtime v0.0.0-20170117193331-ba114e4a82b0 // indirect
 	github.com/getlantern/ops v0.0.0-20170904182230-37353306c908 // indirect
 	github.com/go-check/check v0.0.0-20180628173108-788fd7840127 // indirect
@@ -67,7 +67,7 @@ require (
 	github.com/libp2p/go-buffer-pool v0.1.1 // indirect
 	github.com/libp2p/go-conn-security v0.1.13 // indirect
 	github.com/libp2p/go-conn-security-multistream v0.1.13 // indirect
-	github.com/libp2p/go-floodsub v0.10.2
+	github.com/libp2p/go-floodsub v0.10.2 // indirect
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v6.0.19+incompatible
 	github.com/libp2p/go-libp2p-blankhost v0.3.13 // indirect
@@ -158,7 +158,6 @@ require (
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
 	golang.org/x/crypto v0.0.0-20181015023909-0c41d7ab0a0e // indirect
-	golang.org/x/net v0.0.0-20181011144130-49bb7cea24b1
 	golang.org/x/sys v0.0.0-20181011152604-fa43e7bc11ba // indirect
 	google.golang.org/appengine v1.2.0 // indirect
 	google.golang.org/genproto v0.0.0-20181004005441-af9cb2a35e7f // indirect

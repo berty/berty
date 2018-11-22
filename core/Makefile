@@ -15,7 +15,8 @@ GENERATED_FILES = \
 	api/client/jsonclient/berty.node.service.gen.go \
 	$(call rwildcard $(CODE_PATHS), *.gen.go) \
 	api/p2p/kind.gen.go \
-	api/node/graphql/service.gen.graphql
+	api/node/graphql/service.gen.graphql \
+	api/node/graphql/enums.gen.js
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= GO111MODULE=on CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
@@ -98,7 +99,7 @@ generate: .generated
 		--workdir="/go/src/berty.tech/core" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v3 \
+		bertychat/protoc:v4 \
 		-xec 'make generate_local'
 	touch $@
 
@@ -158,9 +159,11 @@ api/p2p/kind.gen.go: $(PROTOS)
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
 	goimports -w ./api/p2p
 
-generate.graphql api/node/graphql/service.gen.graphql: $(PROTOS)
+generate.graphql api/node/graphql/service.gen.graphql api/node/graphql/enums.gen.js: $(PROTOS)
 	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
 	goimports -w ./api/node/graphql
 	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
 	cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
+	prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
+	cp ./api/node/graphql/enums.gen.js ../client/react-native/common/graphql/enums.gen.js
