@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native'
 import { Header, SearchBar, Text as LibText } from '../../../../Library'
-import { queries, subscriptions } from '../../../../../graphql'
+import { queries } from '../../../../../graphql'
 import { colors } from '../../../../../constants'
 import {
   bold,
@@ -69,7 +69,7 @@ export default class Peers extends Component {
   }
 
   componentWillMount () {
-    subscriptions.monitorPeers.subscribe({
+    this.props.screenProps.context.subscriptions.monitorPeers.subscribe({
       iterator: undefined,
       updater: (store, data) => {
         const peer = data.MonitorPeers
@@ -84,11 +84,11 @@ export default class Peers extends Component {
     })
 
     this.fetchPeers()
-    subscriptions.monitorPeers.start()
+    this.props.screenProps.context.subscriptions.monitorPeers.start()
   }
 
   componentWillUnmount () {
-    subscriptions.monitorPeers.dispose()
+    this.props.screenProps.context.subscriptions.monitorPeers.dispose()
   }
 
   fetchPeers = () => {

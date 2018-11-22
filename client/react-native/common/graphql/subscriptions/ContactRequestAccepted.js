@@ -1,24 +1,9 @@
 import EventStream from './EventStream'
 
-export default {
-  ...EventStream,
+export default context => ({
+  ...EventStream(context),
   subscribe: ({ iterator, updater }) =>
-    EventStream.subscribe({
-      iterator:
-        iterator &&
-        function * () {
-          try {
-            while (true) {
-              const response = yield
-              if (response.EventStream.kind === 202) {
-                iterator.next(response.EventStream)
-              }
-            }
-          } catch (error) {
-            iterator.error(error)
-          }
-          iterator.return()
-        },
+    EventStream(context).subscribe({
       updater:
         updater &&
         ((store, data) => {
@@ -27,4 +12,4 @@ export default {
           }
         }),
     }),
-}
+})

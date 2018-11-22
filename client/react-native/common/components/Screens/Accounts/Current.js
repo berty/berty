@@ -1,11 +1,11 @@
 import { NavigationActions } from 'react-navigation'
 import { Platform, NativeModules } from 'react-native'
-import { sleep } from 'sleep'
+import sleep from '../../../helpers/sleep'
 import React, { PureComponent } from 'react'
 
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
-import { mutations } from '../../../graphql'
+import { mutations, subscriptions } from '../../../graphql'
 import Main from '../Main'
 
 const { CoreModule } = NativeModules
@@ -28,7 +28,7 @@ export default class Current extends PureComponent {
       return CoreModule.getPort()
     } catch (error) {
       console.warn(error, 'retrying to get port')
-      sleep(1)
+      sleep(1000)
       return this.getPort()
     }
   }
@@ -49,6 +49,7 @@ export default class Current extends PureComponent {
             port: await this.getPort(),
           }),
           mutations,
+          subscriptions,
         }),
         loading: false,
       },

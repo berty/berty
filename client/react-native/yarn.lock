@@ -4313,7 +4313,7 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
-nan@>=2.5.1, nan@^2.9.2:
+nan@^2.9.2:
   version "2.11.1"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.11.1.tgz#90e22bccb8ca57ea4cd37cc83d3819b52eea6766"
 
@@ -5748,12 +5748,6 @@ single-line-log@^1.1.2:
 slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
-
-sleep@^5.2.3:
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/sleep/-/sleep-5.2.3.tgz#be8852dd8cf91c8f206d21d681c64754cbceb33c"
-  dependencies:
-    nan ">=2.5.1"
 
 slice-ansi@1.0.0:
   version "1.0.0"

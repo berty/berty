@@ -1,9 +1,9 @@
 import EventStream from './EventStream'
 
-export default {
-  ...EventStream,
+export default context => ({
+  ...EventStream(context),
   subscribe: ({ iterator, updater }) =>
-    EventStream.subscribe({
+    EventStream(context).subscribe({
       iterator:
         iterator &&
         function * () {
@@ -27,4 +27,4 @@ export default {
           }
         }),
     }),
-}
+})

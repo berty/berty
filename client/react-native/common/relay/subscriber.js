@@ -1,9 +1,8 @@
-import environment from './environment'
 import { requestSubscription } from 'react-relay'
 
 export default ({
+  environment,
   subscription,
-  variables = {},
   iterators = [],
   updaters = [],
 }) => {
@@ -15,12 +14,9 @@ export default ({
   const start = () => {
     dispose = requestSubscription(environment, {
       subscription,
-      variables,
-      onNext: response =>
-        _generators.forEach(generator => generator.next(response)),
-      onError: error =>
-        _generators.forEach(generator => generator.throw(error)),
-      onCompleted: () => _generators.forEach(generator => generator.return()),
+      // onNext: response => _generators.forEach(generator => generator.next(response)),
+      onError: error => console.error(error),
+      // onCompleted: () => _generators.forEach(generator => generator.return()),
       updater: (store, data) =>
         _updaters.forEach(updater => updater(store, data)),
     }).dispose
