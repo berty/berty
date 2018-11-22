@@ -207,8 +207,8 @@ export default class List extends PureComponent {
             onPress={() => navigation.push('devtools/eventlist')}
           />
         </Menu.Section>
-        {Platform.OS !== 'web' && (
-          <Menu.Section>
+        <Menu.Section>
+          {Platform.OS !== 'web' && (
             <Menu.Item
               icon='server'
               title={
@@ -227,13 +227,13 @@ export default class List extends PureComponent {
                 />
               }
             />
-            <Menu.Item
-              icon='file-text'
-              title='Logs (not implem.)'
-              onPress={() => console.log('Console logs')}
-            />
-          </Menu.Section>
-        )}
+          )}
+          <Menu.Item
+            icon='file-text'
+            title='Console logs'
+            onPress={() => navigation.push('devtools/logs')}
+          />
+        </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='database'
