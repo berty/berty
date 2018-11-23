@@ -122,7 +122,7 @@ _ci_prepare:
 	@# touching files to avoid regenerating files based on modification date
 	touch $(PROTOS) $(SOURCES)
 	sleep 1
-	touch .generated
+	touch .generated $(GENERATION_TARGETS)
 
 .PHONY: dev-deps
 dev-deps:
