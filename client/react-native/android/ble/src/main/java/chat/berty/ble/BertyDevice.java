@@ -67,6 +67,23 @@ public class BertyDevice {
         }
     }
 
+    public void writeRdy() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                isRdyCharacteristic.setValue("");
+                while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
+                    /** intentionally empty */
+                }
+            }
+        }).start();
+    }
+
     public void write(byte[] p) throws InterruptedException {
         waitReady.await();
 

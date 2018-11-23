@@ -13,6 +13,7 @@ import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
@@ -108,6 +109,10 @@ public class Manager {
     protected BluetoothLeScanner mBluetoothLeScanner;
 
     protected BluetoothGattService mService;
+
+    public boolean isAdvertising = false;
+
+    public boolean isScanning = false;
 
     protected BluetoothGattCharacteristic acceptCharacteristic;
     protected BluetoothGattCharacteristic maCharacteristic;
@@ -337,7 +342,7 @@ public class Manager {
 
                     } else if (charID.equals(CLOSER_UUID)) {
                         // TODO
-                    } else if (charID.equals(IS_READY_UUID)) {
+                   } else if (charID.equals(IS_READY_UUID)) {
                         new Thread(new Runnable() {
                             @Override
                             public void run() {
@@ -388,6 +393,7 @@ public class Manager {
                 @Override
                 public void onStartSuccess(AdvertiseSettings settingsInEffect) {
                     Log.e( "BLE", "Advertising onStartSuccess: " + settingsInEffect);
+                    isAdvertising = true;
                     super.onStartSuccess(settingsInEffect);
                 }
                 @Override
@@ -515,6 +521,7 @@ public class Manager {
     }
 
     public void stopAdvertising() {
+        isAdvertising = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertisingCallback);
         }
@@ -647,8 +654,14 @@ public class Manager {
                                 bertyDevices.put(device.getAddress(), bDevice);
                             }
                         }
+                        gatt.discoverServices();
                         Log.e(TAG, "CLI");
-                        handleConnectionStateChange(bDevice, status, newState);
+//                        for (BluetoothGattService svc : gatt.getServices()) {
+//                            Log.e(TAG, "KNOWN SVC  "+ svc.getUuid().toString());
+//                        }
+//                        runDiscoAndMtu(gatt);
+
+
                         super.onConnectionStateChange(gatt, status, newState);
                     }
 
@@ -701,6 +714,10 @@ public class Manager {
                                     break;
                                 case GATT_REQUEST_NOT_SUPPORTED:
                                     errorString = "GATT_REQUEST_NOT_SUPPORTED";
+                                    if (characteristic.getUuid().equals(IS_READY_UUID)) {
+                                        errorString += " IS RDY RETRYING";
+                                        bDevice.writeRdy();
+                                    }
                                     break;
                                 case GATT_INSUFFICIENT_ENCRYPTION:
                                     errorString = "GATT_INSUFFICIENT_ENCRYPTION";
