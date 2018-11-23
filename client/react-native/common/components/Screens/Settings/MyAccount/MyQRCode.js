@@ -4,7 +4,7 @@ import { colors } from '../../../../constants'
 import { Flex, Screen, Button, Header } from '../../../Library'
 import { padding, paddingVertical } from '../../../../styles'
 import QRGenerator from '../../../Library/QRGenerator/QRGenerator'
-import { atob } from 'b64-lite'
+import { extractPublicKeyFromId } from '../../../../helpers/contacts'
 
 export default class MyQRCode extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -25,7 +25,7 @@ export default class MyQRCode extends PureComponent {
   render () {
     const { logo } = this.state
     const { id } = this.props.navigation.getParam('data')
-    const myID = atob(id).split('contact:')[1]
+    const myID = extractPublicKeyFromId(id)
 
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
