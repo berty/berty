@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react'
-import { Image, Share, ActionSheetIOS, Platform, Alert } from 'react-native'
+import { Image, ActionSheetIOS, Platform, Alert } from 'react-native'
 import { Menu, Header, Screen } from '../../../Library'
 import { colors } from '../../../../constants'
+import { shareLinkOther, extractPublicKeyFromId } from '../../../../helpers/contacts'
 
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -99,15 +100,19 @@ export default class Detail extends PureComponent {
               icon='eye'
               title='View public key'
               onPress={() =>
-                navigation.push('detail/publickey', { id: contact.id })
+                navigation.push('detail/publickey', {
+                  id: extractPublicKeyFromId(contact.id),
+                  displayName: contact.displayName,
+                })
               }
             />
             <Menu.Item
               icon='share'
               title='Share this contact'
-              onPress={() =>
-                Share.share({ message: contact.id }).catch(() => null)
-              }
+              onPress={() => shareLinkOther({
+                contactId: extractPublicKeyFromId(contact.id),
+                displayName: contact.displayName,
+              })}
             />
           </Menu.Section>
           <Menu.Section>
