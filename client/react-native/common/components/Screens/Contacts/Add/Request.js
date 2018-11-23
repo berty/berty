@@ -185,16 +185,12 @@ const Item = fragments.Contact(
 
 class Received extends PureComponent {
   render () {
-    const {
-      navigation,
-      screenProps: {
-        context: { queries },
-      },
-    } = this.props
-
+    const { navigation, screenProps } = this.props
+    const { queries } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
+          context={this.props.screenProps.context}
           direction='forward'
           query={queries.ContactList.graphql}
           variables={merge([
@@ -202,8 +198,14 @@ class Received extends PureComponent {
             { filter: { status: 4 } },
           ])}
           fragment={fragments.ContactList}
-          connection='ContactList'
-          renderItem={props => <Item {...props} navigation={navigation} />}
+          alias='ContactList'
+          renderItem={props => (
+            <Item
+              {...props}
+              navigation={navigation}
+              screenProps={screenProps}
+            />
+          )}
         />
       </Screen>
     )
@@ -229,7 +231,7 @@ class Sent extends PureComponent {
             { filter: { status: 3 } },
           ])}
           fragment={fragments.ContactList}
-          connection='ContactList'
+          alias='ContactList'
           renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>

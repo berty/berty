@@ -4,17 +4,9 @@ import Relay from 'react-relay'
 
 import { Flex } from '../components/Library'
 import { QueryReducer } from '.'
+import genericUpdater from './genericUpdater'
 
 class PaginationContainer extends PureComponent {
-  componentDidMount () {
-    this.props.subscribers && this.props.subscribers.forEach(s => s.subscribe())
-  }
-
-  componentWillUnmount () {
-    this.props.subscribers &&
-      this.props.subscribers.forEach(s => s.unsubscribe())
-  }
-
   onEndReached = () => {
     if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
       return
@@ -38,14 +30,10 @@ class PaginationContainer extends PureComponent {
   renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
 
   render () {
-    const { data, connection, relay, renderItem, inverted, style } = this.props
+    const { data, alias, relay, renderItem, inverted, style } = this.props
     return (
       <FlatList
-        data={
-          data[connection] && data[connection].edges
-            ? data[connection].edges
-            : []
-        }
+        data={data[alias] && data[alias].edges ? data[alias].edges : []}
         inverted={inverted}
         refreshing={relay.isLoading()}
         onRefresh={this.refetch}
@@ -84,8 +72,16 @@ const createPagination = ({
 
 export default class Pagination extends PureComponent {
   componentDidMount () {
-    const { subscriptions = [] } = this.props
-    this.subscribers = subscriptions.map(s => s.subscribe())
+    const { subscriptions = [], fragment, alias, variables } = this.props
+    this.subscribers = subscriptions.map(s =>
+      s.subscribe({
+        updater: genericUpdater(fragment, alias, {
+          ...variables,
+          count: undefined,
+          cursor: undefined,
+        }),
+      })
+    )
   }
 
   componentWillUnmount () {
@@ -111,6 +107,7 @@ export default class Pagination extends PureComponent {
                 </Flex.Rows>
               )
             case state.success:
+              console.log(state)
               return <Container {...state} retry={retry} {...this.props} />
             case state.error:
               return null

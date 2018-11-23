@@ -8,7 +8,7 @@ export default context => ({
         updater &&
         ((store, data) => {
           if (data.EventStream.kind === 301) {
-            return updater(store, data.EventStream)
+            return updater && updater(store, data.EventStream)
           }
         }),
     }),

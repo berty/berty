@@ -74,7 +74,7 @@ export default class ContactList extends PureComponent {
   render () {
     const {
       screenProps: {
-        context: { queries },
+        context: { queries, subscriptions },
       },
     } = this.props
     return (
@@ -84,7 +84,8 @@ export default class ContactList extends PureComponent {
           query={queries.ContactList.graphql}
           variables={queries.ContactList.defaultVariables}
           fragment={fragments.ContactList}
-          connection='ContactList'
+          alias='ContactList'
+          subscriptions={[subscriptions.contactRequest]}
           renderItem={props => (
             <Item {...props} navigation={this.props.navigation} />
           )}

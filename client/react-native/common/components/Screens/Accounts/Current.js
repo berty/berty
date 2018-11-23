@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react'
 
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
-import { queries, mutations, subscriptions } from '../../../graphql'
+import { queries, mutations, subscriptions, updaters } from '../../../graphql'
 import Main from '../Main'
 
 const { CoreModule } = NativeModules
@@ -51,6 +51,7 @@ export default class Current extends PureComponent {
           mutations,
           subscriptions,
           queries,
+          updaters,
         }),
         loading: false,
       },
@@ -65,7 +66,6 @@ export default class Current extends PureComponent {
     if (loading) {
       return <Loader message='Setting up berty :)' />
     }
-    console.log('test')
     return (
       <RelayContext.Provider value={context}>
         <Main

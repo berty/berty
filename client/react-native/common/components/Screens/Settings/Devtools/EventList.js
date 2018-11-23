@@ -153,13 +153,14 @@ export default class EventList extends PureComponent {
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination
+          context={this.props.screenProps.context}
           query={queries.EventList.graphql}
           variables={{
             ...queries.EventList.defaultVariables,
             ...navigation.getParam('filters'),
           }}
           fragment={fragments.EventList}
-          connection='EventList'
+          alias='EventList'
           renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>

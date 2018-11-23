@@ -6,6 +6,8 @@ import { merge } from '../../helpers'
 const query = graphql`
   query EventListQuery(
     $filter: BertyP2pEventInput
+    $orderBy: String!
+    $orderDesc: Bool!
     $count: Int32
     $cursor: String
     $onlyWithoutAckedAt: Enum
@@ -13,6 +15,8 @@ const query = graphql`
     ...EventList
       @arguments(
         filter: $filter
+        orderBy: $orderBy
+        orderDesc: $orderDesc
         count: $count
         cursor: $cursor
         onlyWithoutAckedAt: $onlyWithoutAckedAt
@@ -22,8 +26,11 @@ const query = graphql`
 
 const defaultVariables = {
   filter: event.default,
+  orderBy: 'created_at',
+  orderDesc: true,
   count: 5,
   cursor: new Date(Date.now()).toISOString(),
+  onlyWithoutAckedAt: 0,
 }
 
 export default context => ({

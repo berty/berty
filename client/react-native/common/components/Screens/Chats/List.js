@@ -51,11 +51,12 @@ export default class ListScreen extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
+          context={this.props.screenProps.context}
           direction='forward'
           query={queries.ConversationList.graphql}
           variables={queries.ConversationList.defaultVariables}
           fragment={fragments.ConversationList}
-          connection='ConversationList'
+          alias='ConversationList'
           renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>

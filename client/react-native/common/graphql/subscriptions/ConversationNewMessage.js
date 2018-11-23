@@ -1,9 +1,8 @@
-import { fragments } from '..'
 import EventStream from './EventStream'
 
 export default conversation => ({
   ...EventStream,
-  subscribe: () =>
+  subscribe: ({ updater }) =>
     EventStream.subscribe({
       updater: (store, data) => {
         console.log('RECEIVED_EVENT')
@@ -11,14 +10,7 @@ export default conversation => ({
           data.EventStream.kind === 302 &&
           data.EventStream.conversationId === conversation.id
         ) {
-          fragments.EventList.updater(store, {
-            filter: {
-              conversationId: data.EventStream.conversationId,
-              kind: data.EventStream.kind,
-            },
-          })
-            .add('EventEdge', data.EventStream.id)
-            .before(data.EventStream.createdAt)
+          return updater && updater(store, data.EventStream)
         }
       },
     }),

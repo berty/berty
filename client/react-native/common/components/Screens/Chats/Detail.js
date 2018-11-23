@@ -167,6 +167,7 @@ export default class Detail extends PureComponent {
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
         <Pagination
+          context={this.props.screenProps.context}
           direction='forward'
           query={queries.EventList.graphql}
           variables={merge([
@@ -180,7 +181,7 @@ export default class Detail extends PureComponent {
           ])}
           subscriptions={[this.props.screenProps.context.subscriptions.conversationNewMessage(conversation)]}
           fragment={fragments.EventList}
-          connection='EventList'
+          alias='EventList'
           renderItem={props => <Message {...props} navigation={navigation} />}
           inverted
           style={{ paddingTop: 48 }}
