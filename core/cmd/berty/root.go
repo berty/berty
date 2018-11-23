@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"math/rand"
+	"os"
 	"strings"
 
 	p2plog "github.com/ipfs/go-log"
@@ -129,29 +131,51 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unknown log level: %q", cfgLogLevel)
 	}
 
-	// configure zap
-	config := zap.NewDevelopmentConfig()
-	config.Level.SetLevel(logLevel)
-	config.DisableStacktrace = true
-	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	l, err := config.Build()
-	if err != nil {
-		return err
-	}
-
 	patternsString, err := cmd.Flags().GetString("log-namespaces")
 	if err != nil {
 		panic(err)
 	}
 
-	core := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
-		consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
-		core = ring.Wrap(core, consoleEncoder)                     // in-memory ring buffer
-		core = filteredzap.FilterByNamespace(core, patternsString) // filter
-		return core
+	// console core configuration
+	consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
+	consoleEncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
+
+	consoleOutput := zapcore.Lock(os.Stderr)
+
+	consoleLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= logLevel
 	})
 
-	zap.ReplaceGlobals(l.WithOptions(core))
+	// console core creation with namespace filtering
+	consoleCore := filteredzap.FilterByNamespace(
+		zapcore.NewCore(consoleEncoder, consoleOutput, consoleLevel),
+		patternsString,
+	)
+
+	// gRPC ring core configuration
+	grpcRingEncoder := zapcore.NewJSONEncoder(zap.NewDevelopmentEncoderConfig())
+
+	grpcRingOutput := zapcore.AddSync(ioutil.Discard)
+
+	grpcRingLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return true
+	})
+
+	// gRPC ring core creation
+	grpcRingCore := ring.Wrap(
+		zapcore.NewCore(grpcRingEncoder, grpcRingOutput, grpcRingLevel),
+		grpcRingEncoder,
+	)
+
+	// logger creation
+	l := zap.New(
+		zapcore.NewTee(consoleCore, grpcRingCore),
+		zap.ErrorOutput(consoleOutput),
+		zap.Development(),
+		zap.AddCaller(),
+	)
+	zap.ReplaceGlobals(l)
 	logger().Debug("logger initialized")
 
 	// configure p2p log

@@ -2,8 +2,9 @@ package core
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 
-	"berty.tech/core/pkg/filteredzap"
 	"berty.tech/core/pkg/zapring"
 	p2plog "github.com/ipfs/go-log"
 	"github.com/whyrusleeping/go-logging"
@@ -98,32 +99,50 @@ func setupLogger(logLevel string, mlogger Logger) error {
 		return fmt.Errorf("unknown log level: %q", logLevel)
 	}
 
-	// configure zap
-	config := zap.NewDevelopmentConfig()
-	config.Level.SetLevel(zapLogLevel)
-	config.DisableStacktrace = true
+	// console core configuration
+	consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
+	consoleEncoderConfig.LevelKey = ""
+	consoleEncoderConfig.TimeKey = ""
+	consoleEncoderConfig.NameKey = ""
+	consoleEncoderConfig.CallerKey = ""
+	consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
 
-	// configure log encoder
-	// disable unwanted info
-	config.EncoderConfig.LevelKey = ""
-	config.EncoderConfig.TimeKey = ""
-	config.EncoderConfig.NameKey = ""
-	config.EncoderConfig.CallerKey = ""
+	consoleOutput := zapcore.Lock(os.Stderr)
 
-	l, err := config.Build()
-	if err != nil {
-		return err
-	}
-
-	core := zap.WrapCore(func(core zapcore.Core) zapcore.Core {
-		consoleEncoder := zapcore.NewConsoleEncoder(config.EncoderConfig)
-		core = newMobileCore(core, consoleEncoder, mlogger) // mobile logger
-		core = filteredzap.FilterByNamespace(core, "*")     // filtered logger
-		core = ring.Wrap(core, consoleEncoder)              // in-memory ring buffer
-		return core
+	consoleLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapLogLevel
 	})
 
-	zap.ReplaceGlobals(l.WithOptions(core))
+	// console core creation
+	consoleCore := newMobileCore(
+		zapcore.NewCore(consoleEncoder, consoleOutput, consoleLevel),
+		consoleEncoder,
+		mlogger,
+	)
+
+	// gRPC ring core configuration
+	grpcRingEncoder := zapcore.NewJSONEncoder(zap.NewDevelopmentEncoderConfig())
+
+	grpcRingOutput := zapcore.AddSync(ioutil.Discard)
+
+	grpcRingLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return true
+	})
+
+	// gRPC ring core creation
+	grpcRingCore := ring.Wrap(
+		zapcore.NewCore(grpcRingEncoder, grpcRingOutput, grpcRingLevel),
+		grpcRingEncoder,
+	)
+
+	// logger creation
+	l := zap.New(
+		zapcore.NewTee(consoleCore, grpcRingCore),
+		zap.ErrorOutput(consoleOutput),
+		zap.Development(),
+		zap.AddCaller(),
+	)
+	zap.ReplaceGlobals(l)
 	logger().Debug("logger initialized")
 
 	// configure p2p log
