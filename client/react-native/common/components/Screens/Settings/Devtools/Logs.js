@@ -5,6 +5,9 @@ import {
   FlatList,
   Switch,
   TextInput,
+  View,
+  ActivityIndicator,
+  Linking,
 } from 'react-native'
 import { createSubStackNavigator } from '../../../../helpers/react-navigation'
 import { Menu, Header, Text, Flex } from '../../../Library'
@@ -13,13 +16,19 @@ import { colors } from '../../../../constants'
 import { borderBottom, padding } from '../../../../styles'
 
 const listRenderInterval = 500
+var maxDisplaySize = 300
+var maxBufferSize = 10000
+
+var antispamModalOpen = false
+var antispamModalSave = false
 
 class FilterModal extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Log filters'
+        title='Log settings'
+        titleIcon='settings'
         rightBtnIcon={'save'}
         onPressRightBtn={
           navigation.state.params && navigation.state.params.updateCallback
@@ -31,7 +40,10 @@ class FilterModal extends PureComponent {
 
   currentConfig = undefined
   newConfig = undefined
-  updateConfig = undefined
+  newMaxDisplaySize = undefined
+  newMaxBufferSize = undefined
+
+  antispamTimer = undefined
 
   componentWillMount () {
     this.currentConfig = this.props.navigation.state.params.currentConfig
@@ -39,12 +51,29 @@ class FilterModal extends PureComponent {
       compact: this.currentConfig.compact,
       filters: { ...this.currentConfig.filters },
     }
-    this.updateConfig = this.props.navigation.state.params.updateConfig
+    this.newMaxDisplaySize = maxDisplaySize
+    this.newMaxBufferSize = maxBufferSize
+  }
+
+  componentDidMount () {
+    this.antispamTimer = setTimeout(() => {
+      antispamModalOpen = false
+    }, 2000)
+  }
+
+  componentWillUnmount () {
+    clearTimeout(this.antispamTimer)
+    antispamModalOpen = false
   }
 
   updateCallback = () => {
-    this.updateConfig(this.newConfig)
-    this.props.navigation.goBack(null)
+    if (!antispamModalSave) {
+      antispamModalSave = true
+      this.props.navigation.goBack(null)
+      maxDisplaySize = parseInt(this.newMaxDisplaySize, 10)
+      maxBufferSize = parseInt(this.newMaxBufferSize, 10)
+      this.props.navigation.state.params.updateConfig(this.newConfig)
+    }
   }
 
   hasConfigChanged = () => {
@@ -56,7 +85,9 @@ class FilterModal extends PureComponent {
       this.newConfig.filters.error !== this.currentConfig.filters.error ||
       this.newConfig.filters.namespace !==
         this.currentConfig.filters.namespace ||
-      this.newConfig.filters.message !== this.currentConfig.filters.message
+      this.newConfig.filters.message !== this.currentConfig.filters.message ||
+      parseInt(this.newMaxDisplaySize, 10) !== maxDisplaySize ||
+      parseInt(this.newMaxBufferSize, 10) !== maxBufferSize
     ) {
       this.props.navigation.setParams({
         updateCallback: this.updateCallback,
@@ -71,7 +102,7 @@ class FilterModal extends PureComponent {
   render () {
     return (
       <Menu>
-        <Menu.Section title='Display mode' customMarginTop={24}>
+        <Menu.Section title='Display & history' customMarginTop={24}>
           <Menu.Item
             title='Compact logs'
             customRight={
@@ -80,6 +111,54 @@ class FilterModal extends PureComponent {
                 value={this.newConfig.compact}
                 onValueChange={value => {
                   this.newConfig.compact = value
+                  this.hasConfigChanged()
+                }}
+              />
+            }
+          />
+          <Menu.Item
+            title='Display max size'
+            customRight={
+              <TextInput
+                justify='end'
+                size={12}
+                style={{
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: '#d6d7da',
+                  paddingLeft: 8,
+                  paddingRight: 8,
+                  paddingBottom: 2,
+                }}
+                value={this.newMaxDisplaySize.toString()}
+                onChangeText={text => {
+                  let num = parseInt(text, 10) || 0
+                  num = num >= 0 ? num : num * -1
+                  this.newMaxDisplaySize = num.toString()
+                  this.hasConfigChanged()
+                }}
+              />
+            }
+          />
+          <Menu.Item
+            title='History max size'
+            customRight={
+              <TextInput
+                justify='end'
+                size={12}
+                style={{
+                  borderBottomWidth: 0.5,
+                  borderBottomColor: '#d6d7da',
+                  paddingLeft: 8,
+                  paddingRight: 8,
+                  paddingBottom: 2,
+                }}
+                value={this.newMaxBufferSize.toString()}
+                onChangeText={text => {
+                  let num = parseInt(text, 10) || 0
+                  num = num >= 0 ? num : num * -1
+                  num =
+                    num < this.newMaxDisplaySize ? this.newMaxDisplaySize : num
+                  this.newMaxBufferSize = num.toString()
                   this.hasConfigChanged()
                 }}
               />
@@ -185,6 +264,11 @@ class FilterModal extends PureComponent {
               />
             }
           />
+          <Menu.Item
+            title='Online JS regex tester'
+            color={colors.blue}
+            onPress={() => Linking.openURL('https://regexr.com/')}
+          />
         </Menu.Section>
       </Menu>
     )
@@ -222,23 +306,30 @@ class Line extends PureComponent {
               align='stretch'
               style={{ marginTop: 0.5 }}
             >
-              <Text color={colors.black} left>
+              <Text
+                multiline={compact ? 1 : true}
+                color={colors.grey3}
+                tiny
+                bold
+                left
+              >
                 {log.namespace}
               </Text>
-              <Text color={colors.black} right>
-                {log.topic}
+              <Text
+                multiline={compact ? 1 : true}
+                color={colors.grey3}
+                tiny
+                bold
+                right
+              >
+                {log.caller}
               </Text>
             </Flex.Cols>
             <Flex.Cols style={{ marginTop: 2 }}>
-              <Text multiline={!compact}>{log.message}</Text>
+              <Text left multiline={compact ? 1 : true}>
+                {log.message}
+              </Text>
             </Flex.Cols>
-            {compact === false && (
-              <Flex.Cols style={{ marginTop: 2 }}>
-                <Text right bold tiny>
-                  {log.location}
-                </Text>
-              </Flex.Cols>
-            )}
           </Flex.Rows>
         </Flex.Cols>
       </TouchableOpacity>
@@ -252,13 +343,17 @@ class LogStream extends PureComponent {
       <Header
         navigation={navigation}
         title='Console logs'
-        rightBtnIcon={'filter'}
-        onPressRightBtn={() =>
-          navigation.push('devtools/logs/filter', {
-            updateConfig: navigation.state.params.updateConfig,
-            currentConfig: navigation.state.params.currentConfig,
-          })
-        }
+        titleIcon='file-text'
+        rightBtnIcon={'settings'}
+        onPressRightBtn={() => {
+          if (!antispamModalOpen) {
+            antispamModalOpen = true
+            navigation.push('devtools/logs/filter', {
+              updateConfig: navigation.state.params.updateConfig,
+              currentConfig: navigation.state.params.currentConfig,
+            })
+          }
+        }}
         backBtn
       />
     ),
@@ -294,6 +389,7 @@ class LogStream extends PureComponent {
   logs = []
   state = {
     filtered: [],
+    loading: true,
   }
 
   timer = undefined
@@ -303,8 +399,15 @@ class LogStream extends PureComponent {
     let parsed = this.parseLog(line)
 
     this.logs.unshift(parsed)
+    if (this.logs.length > maxBufferSize) {
+      this.logs.pop()
+    }
+
     if (this.filterLog(parsed)) {
       this.state.filtered.unshift(parsed)
+      if (this.state.filtered.length > maxDisplaySize) {
+        this.state.filtered.pop()
+      }
     }
 
     if (this.timer === undefined) {
@@ -317,6 +420,7 @@ class LogStream extends PureComponent {
     this.timer = undefined
     this.forceUpdate()
     this.updateCounter++
+    this.setState({ loading: false })
   }
 
   currentConfig = {
@@ -332,14 +436,24 @@ class LogStream extends PureComponent {
   }
 
   updateConfig = config => {
+    this.setState({ loading: true })
     this.currentConfig = config
     this.props.navigation.setParams({
       currentConfig: this.currentConfig,
     })
 
+    if (this.logs.length > maxBufferSize) {
+      this.logs = this.logs.slice(0, maxBufferSize)
+    }
+
     let filtered = this.logs.filter(log => this.filterLog(log))
+    if (filtered.length > maxDisplaySize) {
+      filtered = filtered.slice(0, maxDisplaySize)
+    }
+
     this.setState({ filtered: filtered })
     this.updateList()
+    antispamModalSave = false
   }
 
   filterLog = line => {
@@ -349,7 +463,8 @@ class LogStream extends PureComponent {
       (filters.debug && line.level === 'DEBUG') ||
       (filters.info && line.level === 'INFO') ||
       (filters.warn && line.level === 'WARN') ||
-      (filters.error && line.level === 'ERROR')
+      (filters.error && line.level === 'ERROR') ||
+      line.level === 'UNKNOWN'
     ) {
       if (
         (filters.namespace.trim() === '' ||
@@ -364,72 +479,84 @@ class LogStream extends PureComponent {
   }
 
   parseLog = line => {
-    let fields = line.split('\t')
-    let level = this.parseLevel(fields[1])
-
-    return {
-      date: this.datePrettier(fields[0]),
-      level: level,
-      color: this.setLevelColor(level),
-      namespace: fields[2],
-      location: fields[3],
-      topic: fields[4],
-      message: fields.slice(5, fields.length).toString(),
+    function getValAndDeleteKey (key) {
+      let value = lineObject[key]
+      delete lineObject[key]
+      return value
     }
-  }
 
-  parseLevel = level => {
-    return level.replace(
-      // eslint-disable-next-line
-      /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g,
-      ''
-    )
-  }
-
-  setLevelColor = level => {
-    switch (level) {
-      case 'DEBUG':
-        return colors.debug
-      case 'INFO':
-        return colors.info
-      case 'WARN':
-        return colors.warning
-      case 'ERROR':
-        return colors.error
-      default:
-        return colors.black
+    function setLevelColor (level) {
+      switch (level) {
+        case 'DEBUG':
+          return colors.debug
+        case 'INFO':
+          return colors.info
+        case 'WARN':
+          return colors.warning
+        case 'ERROR':
+          return colors.error
+        default:
+          return colors.black
+      }
     }
-  }
 
-  datePrettier = rawDate => {
-    let date = new Date(rawDate)
-    return (
-      date.getMonth() +
-      1 +
-      '/' +
-      date.getDate() +
-      ' ' +
-      date.getHours() +
-      ':' +
-      date.getMinutes() +
-      ':' +
-      date.getSeconds() +
-      '.' +
-      date.getMilliseconds()
-    )
+    function datePrettier (rawDate) {
+      let date = new Date(rawDate)
+      return (
+        date.getMonth() +
+        1 +
+        '/' +
+        date.getDate() +
+        ' ' +
+        date.getHours() +
+        ':' +
+        date.getMinutes() +
+        ':' +
+        date.getSeconds() +
+        '.' +
+        date.getMilliseconds()
+      )
+    }
+
+    let lineObject = JSON.parse(line)
+
+    let logObject = {
+      date: datePrettier(getValAndDeleteKey('T')) || 'Unknown',
+      level: lineObject.L || 'UNKNOWN',
+      color: setLevelColor(getValAndDeleteKey('L')),
+      namespace: getValAndDeleteKey('N') || 'Unknown',
+      caller: getValAndDeleteKey('C') || 'Unknown',
+      message: getValAndDeleteKey('M') || 'Empty message',
+    }
+
+    let trailingJson = JSON.stringify(lineObject)
+    if (trailingJson !== JSON.stringify({})) {
+      logObject.message += ' ' + trailingJson
+    }
+
+    return logObject
   }
 
   render () {
     return (
-      <FlatList
-        initialNumToRender={20}
-        maxToRenderPerBatch={5}
-        data={this.state.filtered}
-        extraData={this.updateCounter}
-        renderItem={log => (
-          <Line log={log.item} compact={this.currentConfig.compact} />
+      <View style={{ flex: 1, backgroundColor: colors.white }}>
+        {this.state.loading && (
+          <Flex.Cols align='center'>
+            <Flex.Rows>
+              <ActivityIndicator size='large' />
+            </Flex.Rows>
+          </Flex.Cols>
         )}
-      />
+        <FlatList
+          initialNumToRender={20}
+          maxToRenderPerBatch={5}
+          data={this.state.filtered}
+          extraData={this.updateCounter}
+          renderItem={log => (
+            <Line log={log.item} compact={this.currentConfig.compact} />
+          )}
+        />
+      </View>
     )
   }
 }
