@@ -19,6 +19,7 @@
 @property (nonatomic, readwrite, strong) NSString *peerID;
 @property (nonatomic, readwrite, strong) NSString *ma;
 @property (nonatomic, readwrite, assign) BOOL isWaiting;
+@property (nonatomic, strong) dispatch_queue_t dispatch_queue;
 @property (atomic, readwrite, assign) BOOL closedSend;
 @property (atomic, readwrite, assign) BOOL closed;
 @property (atomic, readwrite, assign) BOOL didRdySema;
@@ -28,23 +29,23 @@
 @property (atomic, readwrite, strong) CBCharacteristic *isRdy;
 @property (atomic, readwrite, strong) CBCharacteristic *closer;
 @property (atomic, readwrite, strong) CBCharacteristic *accepter;
+@property (atomic, readwrite, strong) CBCharacteristic *peerIDChar;
+@property (atomic, readwrite, strong) CBCharacteristic *maChar;
 @property (atomic, readwrite, strong) dispatch_semaphore_t writeWaiter;
 @property (atomic, readwrite, strong) dispatch_semaphore_t acceptWaiterSema;
 @property (atomic, readwrite, strong) dispatch_semaphore_t closerWaiterSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t closerSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t isRdySema;
 @property (atomic, readwrite, strong) dispatch_semaphore_t connSema;
 @property (atomic, readwrite, strong) dispatch_semaphore_t svcSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t acceptSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t maSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t peerIDSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t writerSema;
-@property (nonatomic, readwrite, strong) CountDownLatch *latch;
+@property (nonatomic, readwrite, strong) CountDownLatch *latchRdy;
+@property (nonatomic, readwrite, strong) CountDownLatch *latchChar;
+@property (nonatomic, readwrite, strong) CountDownLatch *latchRead;
+@property (nonatomic, strong) CBCentralManager *centralManager;
 
-- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral;
+- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral withCentralManager:(CBCentralManager *)manager;
 - (void)write:(NSData *)data;
 - (void)checkAndWrite;
 - (void)popToSend;
+- (void)writeIsRdy;
 
 @end
 
