@@ -7,11 +7,13 @@ import (
 	"os"
 	"strings"
 
-	"berty.tech/core/manager/account"
-	"berty.tech/core/network/p2p"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+
+	"berty.tech/core/manager/account"
+	"berty.tech/core/network/p2p"
+	"berty.tech/core/pkg/banner"
 )
 
 type daemonOptions struct {
@@ -95,7 +97,7 @@ func daemon(opts *daemonOptions) error {
 			Path: "/tmp",
 			Drop: opts.dropDatabase,
 		}),
-		account.WithBanner(banner),
+		account.WithBanner(banner.Quote()),
 		account.WithGrpcServer(&account.GrpcServerOptions{
 			Bind:         opts.grpcBind,
 			Interceptors: true,
