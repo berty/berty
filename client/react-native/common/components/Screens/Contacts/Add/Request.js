@@ -7,7 +7,8 @@ import { Flex, Screen, Text } from '../../../Library'
 import { Pagination, RelayContext } from '../../../../relay'
 import { borderBottom, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { fragments, queries } from '../../../../graphql'
+import { fragments } from '../../../../graphql'
+import { merge } from '../../../../helpers'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -36,7 +37,9 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await this.props.screenProps.context.mutations.contactAcceptRequest({ id })
+        await this.props.screenProps.context.mutations.contactAcceptRequest({
+          id,
+        })
       } catch (err) {
         console.error(err)
       }
@@ -182,15 +185,23 @@ const Item = fragments.Contact(
 
 class Received extends PureComponent {
   render () {
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
 
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
           direction='forward'
-          query={queries.ContactList.Received}
-          variables={queries.ContactList.Received.defaultVariables}
-          fragment={fragments.ContactList.Received}
+          query={queries.ContactList.graphql}
+          variables={merge([
+            queries.ContactList.defaultVariables,
+            { filter: { status: 4 } },
+          ])}
+          fragment={fragments.ContactList}
           connection='ContactList'
           renderItem={props => <Item {...props} navigation={navigation} />}
         />
@@ -201,15 +212,23 @@ class Received extends PureComponent {
 
 class Sent extends PureComponent {
   render () {
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
 
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
           direction='forward'
-          query={queries.ContactList.Sent}
-          variables={queries.ContactList.Sent.defaultVariables}
-          fragment={fragments.ContactList.Sent}
+          query={queries.ContactList.graphql}
+          variables={merge([
+            queries.ContactList.defaultVariables,
+            { filter: { status: 3 } },
+          ])}
+          fragment={fragments.ContactList}
           connection='ContactList'
           renderItem={props => <Item {...props} navigation={navigation} />}
         />

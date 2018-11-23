@@ -1,6 +1,9 @@
-import { graphql } from 'react-relay'
+import { fetchQuery, graphql } from 'react-relay'
 
-export default graphql`
+import { contact } from '../../utils'
+import { merge } from '../../helpers'
+
+const query = graphql`
   query ContactQuery($filter: BertyEntityContactInput) {
     ContactList(
       filter: $filter
@@ -17,3 +20,9 @@ export default graphql`
     }
   }
 `
+
+export default context => ({
+  graphql: query,
+  fetch: variables =>
+    fetchQuery(context.environment, query, merge([contact, variables])),
+})

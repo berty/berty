@@ -8,6 +8,7 @@ import ReactDOM from 'react-dom'
 import App from './components/App'
 
 if (Platform.OS === 'web') {
+  import('./helpers/patch-web.js')
   ReactDOM.render(<App />, document.getElementById('root'))
   import('./registerServiceWorker').then()
 } else {

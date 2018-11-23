@@ -20,7 +20,7 @@ export const updater = {
     ),
 }
 
-const Default = graphql`
+export default graphql`
   fragment EventList on Query
     @argumentDefinitions(
       filter: { type: BertyP2pEventInput }
@@ -53,5 +53,3 @@ const Default = graphql`
     }
   }
 `
-
-export default Default

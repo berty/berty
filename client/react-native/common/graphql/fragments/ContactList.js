@@ -46,7 +46,7 @@ export const updater = {
     ),
 }
 
-export const Default = graphql`
+export default graphql`
   fragment ContactList on Query
     @argumentDefinitions(
       filter: { type: BertyEntityContactInput }
@@ -77,69 +77,3 @@ export const Default = graphql`
     }
   }
 `
-
-export const Received = graphql`
-  fragment ContactListReceived on Query
-    @argumentDefinitions(
-      filter: { type: BertyEntityContactInput }
-      count: { type: Int32 }
-      cursor: { type: String }
-    ) {
-    ContactList(
-      filter: $filter
-      first: $count
-      after: $cursor
-      orderBy: ""
-      orderDesc: false
-    ) @connection(key: "ContactListReceived_ContactList") {
-      edges {
-        cursor
-        node {
-          id
-          ...Contact
-        }
-      }
-      pageInfo {
-        count
-        hasNextPage
-        hasPreviousPage
-        endCursor
-        startCursor
-      }
-    }
-  }
-`
-
-export const Sent = graphql`
-  fragment ContactListSent on Query
-    @argumentDefinitions(
-      filter: { type: BertyEntityContactInput }
-      count: { type: Int32 }
-      cursor: { type: String }
-    ) {
-    ContactList(
-      filter: $filter
-      first: $count
-      after: $cursor
-      orderBy: ""
-      orderDesc: false
-    ) @connection(key: "ContactListSent_ContactList") {
-      edges {
-        cursor
-        node {
-          id
-          ...Contact
-        }
-      }
-      pageInfo {
-        count
-        hasNextPage
-        hasPreviousPage
-        endCursor
-        startCursor
-      }
-    }
-  }
-`
-
-export default Default

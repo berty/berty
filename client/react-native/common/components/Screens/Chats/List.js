@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import { Pagination } from '../../../relay'
 import { Screen, Header, ListItem } from '../../Library'
 import { colors } from '../../../constants'
-import { fragments, queries } from '../../../graphql'
+import { fragments } from '../../../graphql'
 import { conversation as utils } from '../../../utils'
 
 const Item = fragments.Conversation(({ data, navigation, onPress }) => {
@@ -42,14 +42,19 @@ export default class ListScreen extends PureComponent {
   })
 
   render () {
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
           direction='forward'
-          query={queries.ConversationList}
+          query={queries.ConversationList.graphql}
           variables={queries.ConversationList.defaultVariables}
-          fragment={fragments.ConversationList.default}
+          fragment={fragments.ConversationList}
           connection='ConversationList'
           renderItem={props => <Item {...props} navigation={navigation} />}
         />

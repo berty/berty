@@ -141,9 +141,9 @@ export default class ListScreen extends Component {
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
-          query={queries.ContactList}
+          query={queries.ContactList.graphql}
           variables={queries.ContactList.defaultVariables}
-          fragment={fragments.ContactList.default}
+          fragment={fragments.ContactList}
           connection='ContactList'
           renderItem={props => (
             <Item

@@ -20,7 +20,7 @@ export const updater = {
     ),
 }
 
-const Default = graphql`
+export default graphql`
   fragment ConversationList on Query
     @argumentDefinitions(
       filter: { type: BertyEntityConversationInput }
@@ -51,5 +51,3 @@ const Default = graphql`
     }
   }
 `
-
-export default Default

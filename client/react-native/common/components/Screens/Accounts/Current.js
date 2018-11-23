@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react'
 
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
-import { mutations, subscriptions } from '../../../graphql'
+import { queries, mutations, subscriptions } from '../../../graphql'
 import Main from '../Main'
 
 const { CoreModule } = NativeModules
@@ -28,7 +28,7 @@ export default class Current extends PureComponent {
       return CoreModule.getPort()
     } catch (error) {
       console.warn(error, 'retrying to get port')
-      sleep(1000)
+      await sleep(1000)
       return this.getPort()
     }
   }
@@ -44,12 +44,13 @@ export default class Current extends PureComponent {
     this.setState(
       {
         context: contextValue({
-          environment: environment.setup({
-            ip: await this.getIp(),
-            port: await this.getPort(),
+          environment: await environment.setup({
+            getIp: this.getIp,
+            getPort: this.getPort,
           }),
           mutations,
           subscriptions,
+          queries,
         }),
         loading: false,
       },
@@ -64,6 +65,7 @@ export default class Current extends PureComponent {
     if (loading) {
       return <Loader message='Setting up berty :)' />
     }
+    console.log('test')
     return (
       <RelayContext.Provider value={context}>
         <Main

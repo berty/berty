@@ -28,7 +28,7 @@ class SharePublicKeyScreen extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <QueryReducer
-          query={queries.Contact}
+          query={queries.Contact.graphql}
           variables={{
             filter: {
               id: '',

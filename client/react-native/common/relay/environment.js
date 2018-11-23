@@ -1,8 +1,5 @@
-import 'regenerator-runtime/runtime'
-
 import {
   RelayNetworkLayer,
-  retryMiddleware,
   urlMiddleware,
   perfMiddleware,
 } from 'react-relay-network-modern/node8'
@@ -24,8 +21,7 @@ const logStyle = {
 //   installRelayDevTools()
 // }
 
-// eslint-disable-next-line
-const setupSubscription = ({ ip, port }) => (
+const setupSubscription = ({ getIp, getPort }) => async (
   config,
   variables,
   cacheConfig,
@@ -34,7 +30,7 @@ const setupSubscription = ({ ip, port }) => (
   try {
     const query = config.text
     const subscriptionClient = new SubscriptionClient(
-      `ws://${ip}:${port}/query`,
+      `ws://${await getIp()}:${await getPort()}/query`,
       {
         reconnect: true,
       }
@@ -93,45 +89,22 @@ const perfLogger = (msg, req, res) => {
   }
 }
 
-const setupMiddlewares = ({ ip, port }) => [
+const setupMiddlewares = async ({ getIp, getPort }) => [
   // eslint-disable-next-line
   __DEV__ ? perfMiddleware({ logger: perfLogger }) : null,
   urlMiddleware({
-    url: `http://${ip}:${port}/query`,
-  }),
-  retryMiddleware({
-    fetchTimeout: 10000,
-    retryDelays: () => 1000,
-    beforeRetry: ({ forceRetry, abort, delay, attempt, lastError, req }) => {
-      // Unlock query
-      console.groupCollapsed(
-        '%c RELAY %c %s',
-        logStyle.relayERROR,
-        logStyle.title,
-        'fetch query error'
-      )
-      console.warn(lastError)
-
-      // eslint-disable-next-line
-      if (__DEV__) {
-        window.forceRelayRetry = forceRetry
-        console.warn(
-          'call `forceRelayRetry()` for immediately retry! Or wait ' +
-            delay +
-            ' ms.'
-        )
-      }
-      console.groupEnd()
+    url: async req => {
+      const url = `http://${await getIp()}:${await getPort()}/query`
+      console.warn('url', url)
+      return url
     },
   }),
 ]
 
-export const setup = ({ ip, port }) =>
+export const setup = async ({ getIp, getPort }) =>
   new Environment({
-    network: new RelayNetworkLayer(setupMiddlewares({ ip, port }), {
-      subscribeFn: setupSubscription({ ip, port }),
+    network: new RelayNetworkLayer(await setupMiddlewares({ getIp, getPort }), {
+      subscribeFn: await setupSubscription({ getIp, getPort }),
     }),
     store: new Store(new RecordSource()),
   })
-
-export default setup({ ip: 'localhost', port: '8700' })

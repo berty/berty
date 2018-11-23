@@ -15,6 +15,7 @@
     "standard"
   ],
   "rules": {
+    "import/no-cycle": "warn",
     "no-console": "off",
     "linebreak-style": "off",
     "comma-dangle": ["error",

@@ -121,7 +121,8 @@ func Start(nickname, datastorePath string, loggerNative Logger) error {
 
 	a, _ := account.Get(nickname)
 	if a != nil {
-		return errors.New("daemon already started")
+		// daemon already started, no errors to return
+		return nil
 	}
 
 	if err := initOrRestoreAppState(datastorePath); err != nil {
@@ -247,6 +248,6 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 		// Continue if local gRPC fails (e.g wifi not connected)
 		// Still re-enableable via toggle in devtools
 	}
-
+	logger().Debug("daemon started")
 	return <-a.ErrChan()
 }

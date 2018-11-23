@@ -5,7 +5,7 @@ import { Flex, Header, Screen, Text } from '../../Library'
 import { Pagination } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
-import { queries, fragments } from '../../../graphql'
+import { fragments } from '../../../graphql'
 
 const Item = fragments.Contact(
   ({
@@ -72,14 +72,18 @@ export default class ContactList extends PureComponent {
   searchHandler = search => this.setState({ search })
 
   render () {
-    console.log(this.props)
+    const {
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination
           direction='forward'
-          query={queries.ContactList}
-          variables={{ filter: null, count: 50, cursor: '' }}
-          fragment={fragments.ContactList.default}
+          query={queries.ContactList.graphql}
+          variables={queries.ContactList.defaultVariables}
+          fragment={fragments.ContactList}
           connection='ContactList'
           renderItem={props => (
             <Item {...props} navigation={this.props.navigation} />
