@@ -71,5 +71,8 @@ message Event {
 
     // Outgoing is the value for locally-created events, should be set by the sender when creating an event.
     Outgoing = 2;
+
+    // Node is the value for local events, see ./core/api/node/kind.proto
+    Node = 99;
   }
 }

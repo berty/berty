@@ -142,7 +142,7 @@ func (a *AppMock) Open() error {
 	}()
 
 	go func() {
-		if err := a.node.Start(false); err != nil {
+		if err := a.node.Start(false, false); err != nil {
 			logger().Error("node routine error", zap.Error(err))
 		}
 	}()

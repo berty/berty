@@ -317,5 +317,4 @@ func UnmarshalByte(v interface{}) (byte, error) {
 		}
 		return byte(i), nil
 	}
-
 }

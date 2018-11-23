@@ -2,14 +2,16 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
+	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
-	"github.com/gogo/protobuf/proto"
-	"go.uber.org/zap"
 )
 
 // EventsRetry updates SentAt and requeue an event
@@ -37,7 +39,7 @@ func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
 		events, err := p2p.FindNonAcknowledgedEventsForDestination(n.sql, destination)
 
 		if err != nil {
-			logger().Error("error while retrieving events for dst", zap.Error(err))
+			n.LogBackgroundError(errors.Wrap(err, "error while retrieving events for dst"))
 			continue
 		}
 
@@ -45,7 +47,7 @@ func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
 			err := n.EventRequeue(event)
 
 			if err != nil {
-				logger().Error("error while enqueuing event", zap.Error(err))
+				n.LogBackgroundError(errors.Wrap(err, "error while enqueuing event"))
 				continue
 			}
 			retriedEvents = append(retriedEvents, event)
@@ -56,7 +58,7 @@ func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
 }
 
 // Start is the node's mainloop
-func (n *Node) Start(withCron bool) error {
+func (n *Node) Start(withCron, withNodeEvents bool) error {
 	ctx := context.Background()
 
 	if withCron {
@@ -64,12 +66,27 @@ func (n *Node) Start(withCron bool) error {
 			for true {
 				before := time.Now().Add(-time.Second * 60 * 10)
 				_, err := n.EventsRetry(before)
-
 				if err != nil {
-					logger().Error("error while retrieving non acked destinations", zap.Error(err))
+					n.LogBackgroundError(err)
 				}
 
 				time.Sleep(time.Second * 60)
+			}
+		}()
+	}
+
+	if withNodeEvents {
+		// "node started" event
+		go func() {
+			time.Sleep(time.Second)
+			n.EnqueueNodeEvent(node.Kind_NodeStarted, nil)
+		}()
+
+		// "node is alive" event
+		go func() {
+			for {
+				n.EnqueueNodeEvent(node.Kind_NodeIsAlive, nil)
+				time.Sleep(30 * time.Second)
 			}
 		}()
 	}
@@ -81,7 +98,8 @@ func (n *Node) Start(withCron bool) error {
 			envelope := p2p.Envelope{}
 			eventBytes, err := proto.Marshal(event)
 			if err != nil {
-				logger().Warn("failed to marshal outgoing event", zap.Error(err))
+				n.LogBackgroundError(errors.Wrap(err, "failed to marshal outgoing event"))
+				continue
 			}
 
 			event.SenderID = n.b64pubkey
@@ -98,11 +116,11 @@ func (n *Node) Start(withCron bool) error {
 				envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
 
 			default:
-				logger().Error("unhandled event type")
+				n.LogBackgroundError(fmt.Errorf("unhandled event type"))
 			}
 
 			if envelope.Signature, err = keypair.Sign(n.crypto, &envelope); err != nil {
-				logger().Error("failed to sign envelope", zap.Error(err))
+				n.LogBackgroundError(errors.Wrap(err, "failed to sign envelope"))
 				continue
 			}
 
@@ -113,7 +131,7 @@ func (n *Node) Start(withCron bool) error {
 			go func() {
 				// FIXME: make something smarter, i.e., grouping events by contact or network driver
 				if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
-					logger().Error("failed to emit envelope on network", zap.Error(err))
+					n.LogBackgroundError(errors.Wrap(err, "failed to emit envelope on network"))
 				}
 				done <- true
 			}()

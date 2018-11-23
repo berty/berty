@@ -5,8 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/core/test/mock"
 	"github.com/jinzhu/gorm"
+
+	"berty.tech/core/test/mock"
 )
 
 func setupNonAcknowledgedEventDestinations() (string, *gorm.DB, time.Time, time.Time, time.Time) {
