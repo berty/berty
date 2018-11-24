@@ -60,8 +60,11 @@ export default {
   primary: '#00DAEE',
   secondary: '#f1f1fc',
   success: '#15D09D',
-  warning: '#FFD665',
-  error: '#F00062',
+
+  debug: '#3385FF',
+  info: '#33CC33',
+  warning: '#FF9933',
+  error: '#FF3333',
 
   background: '#FAFAFE',
 

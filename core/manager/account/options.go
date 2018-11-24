@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"sync"
 
 	nodeapi "berty.tech/core/api/node"
 	gql "berty.tech/core/api/node/graphql"
@@ -225,6 +226,10 @@ func WithGQL(opts *GQLOptions) NewOption {
 
 		mux := http.NewServeMux()
 		mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
+		var (
+			gqlLogMutex    sync.Mutex
+			gqlLogPrevious string
+		)
 		mux.Handle("/query", gqlhandler.GraphQL(
 			graph.NewExecutableSchema(resolver),
 			gqlhandler.WebsocketUpgrader(websocket.Upgrader{
@@ -245,13 +250,20 @@ func WithGQL(opts *GQLOptions) NewOption {
 						return next(ctx)
 					}
 					//verb := strings.TrimSpace(strings.Split(req.RawQuery, "{")[1]) // verb can be used to filter-out
-					gqlLogger.Debug(
-						"gql query",
-						zap.String(
-							"query",
-							strings.Replace(req.RawQuery, "\n", "", -1),
-						),
-					)
+
+					// if subscription, only log lines when they differ from the previous one
+					gqlLogMutex.Lock()
+					if gqlLogPrevious != req.RawQuery {
+						gqlLogger.Debug(
+							"gql query",
+							zap.String(
+								"query",
+								strings.Replace(req.RawQuery, "\n", "", -1),
+							),
+						)
+						gqlLogPrevious = req.RawQuery
+					}
+					gqlLogMutex.Unlock()
 					return next(ctx)
 				},
 			),
