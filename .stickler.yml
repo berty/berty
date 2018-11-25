@@ -1,7 +1,8 @@
 linters:
 
-  #golangcilint:
-  #  config: .golangci.yml
+  golangcilint:
+    config: .golangci.yml
+    installer: mod
 
   shellcheck:
     shell: bash
