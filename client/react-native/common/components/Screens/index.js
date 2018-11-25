@@ -8,34 +8,55 @@ import Settings from './Settings'
 import { colors } from '../../constants'
 import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
-import IconFeather from 'react-native-vector-icons/dist/Feather'
+import { Icon } from '../Library'
 
-const TabBarIcon = (tintColor, routeName) => {
-  let iconName
-  if (routeName === 'contacts') {
-    iconName = 'users'
-  } else if (routeName === 'chats') {
-    iconName = 'message-circle'
-  } else if (routeName === 'settings') {
-    iconName = 'settings'
-  }
-  return <IconFeather name={iconName} size={24} color={tintColor} />
+const TabBarIcon = (tintColor, routeName, badgeValue) => {
+  let iconName = {
+    'contacts': 'users',
+    'chats': 'message-circle',
+    'settings': 'settings',
+  }[routeName]
+
+  return <Icon.Badge name={iconName} size={24} color={tintColor} badge={badgeValue} />
 }
 
 export const mainTabs = createTabNavigator(
   {
-    contacts: Contacts,
-    chats: Chats,
-    settings: Settings,
+    contacts: {
+      screen: Contacts,
+      navigationOptions: {
+        title: 'Contacts',
+      },
+    },
+    chats: {
+      screen: Chats,
+      navigationOptions: {
+        title: 'Chats',
+      },
+    },
+    settings: {
+      screen: Settings,
+      navigationOptions: {
+        title: 'Settings',
+      },
+    },
   },
   {
     initialRouteName: 'chats',
     swipeEnabled: true,
     animationEnabled: true,
     tabBarPosition: 'bottom',
-    navigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ tintColor }) => TabBarIcon(tintColor, navigation.state.routeName),
-    }),
+    navigationOptions: ({ navigation, screenProps }) => {
+      let badge = null
+
+      if (navigation.state.routeName === 'settings' && !!screenProps.availableUpdate) {
+        badge = '!'
+      }
+
+      return {
+        tabBarIcon: ({ tintColor }) => TabBarIcon(tintColor, navigation.state.routeName, badge),
+      }
+    },
     tabBarOptions: {
       showIcon: true,
       showLabel: true,

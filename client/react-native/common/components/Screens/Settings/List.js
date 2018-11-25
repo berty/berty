@@ -1,15 +1,18 @@
 import React, { PureComponent } from 'react'
-import { Image, ActivityIndicator } from 'react-native'
+import { Image, ActivityIndicator, Linking } from 'react-native'
 import { Menu, Text, Screen } from '../../Library'
 import { QueryReducer } from '../../../relay'
 import { colors } from '../../../constants'
 import { graphql } from 'react-relay'
 
 export default class List extends PureComponent {
-  static Menu = ({
-    navigation,
-    data: { id, displayName, overrideDisplayName },
-  }) => (
+  static Menu = (
+    {
+      navigation,
+      data: { id, displayName, overrideDisplayName },
+      availableUpdate,
+    },
+  ) => (
     <Menu absolute>
       <Menu.Header
         icon={
@@ -28,6 +31,16 @@ export default class List extends PureComponent {
           title='My account'
           onPress={() => navigation.push('settings/my-account')}
         />
+        {availableUpdate
+          ? <Menu.Item
+            icon='arrow-up-circle'
+            title='An update of the app is available'
+            onPress={() => Linking.openURL(availableUpdate['manifest-url']).catch(e => console.error(e))}
+            color={colors.red}
+          />
+
+          : null
+        }
       </Menu.Section>
       <Menu.Section>
         <Menu.Item
@@ -82,6 +95,7 @@ export default class List extends PureComponent {
 
   render () {
     const { navigation } = this.props
+
     return (
       <Screen>
         <QueryReducer
@@ -124,6 +138,7 @@ export default class List extends PureComponent {
                   <List.Menu
                     navigation={navigation}
                     data={state.data.ContactList.edges[0].node}
+                    availableUpdate={this.props.screenProps.availableUpdate}
                   />
                 )
               case state.error:
