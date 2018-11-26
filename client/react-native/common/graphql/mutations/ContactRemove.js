@@ -1,4 +1,5 @@
 import { graphql } from 'react-relay'
+
 import { commit } from '../../relay'
 import { contact } from '../../utils'
 
@@ -51,6 +52,10 @@ export default context => (input, configs) =>
       ...input,
     },
     {
+      updater: (store, data) =>
+        context.updaters.contactList.forEach(updater =>
+          updater(store, data.ContactRemove, true)
+        ),
       ...configs,
     }
   )

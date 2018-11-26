@@ -1,15 +1,26 @@
-import { contact } from '../../utils'
+import { genericUpdater } from '../../relay'
 import { merge } from '../../helpers'
-import { updater as updaterHelper } from '../../relay'
 
-export const defaultArguments = {
-  filter: contact.default,
-  orderBy: '',
-  orderDesc: false,
-}
-
-export default (store, args) =>
-  updaterHelper(store).connection(
-    'ContactList_ContactList',
-    merge([defaultArguments, args])
-  )
+export default context => [
+  genericUpdater(context.fragments.ContactList, 'ContactList', {
+    ...context.queries.ContactList.defaultVariables,
+    count: undefined,
+    cursor: undefined,
+  }),
+  genericUpdater(context.fragments.ContactList, 'ContactList', {
+    ...merge([
+      context.queries.ContactList.defaultVariables,
+      { filter: { status: 3 } },
+    ]),
+    count: undefined,
+    cursor: undefined,
+  }),
+  genericUpdater(context.fragments.ContactList, 'ContactList', {
+    ...merge([
+      context.queries.ContactList.defaultVariables,
+      { filter: { status: 4 } },
+    ]),
+    count: undefined,
+    cursor: undefined,
+  }),
+]

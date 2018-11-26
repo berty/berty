@@ -30,8 +30,9 @@ const deepFilterEqual = (a, b) => {
  * The filter "args" need to have same field that the connection have in arguments
  */
 export default (fragment, alias, args) => {
-  return (store, data) => {
+  return (store, data, deletion) => {
     const helper = new FragmentHelper(fragment)
+    console.log(helper)
     const connectionHelper = helper.getConnection(alias)
     const root = store.getRoot()
     const connection = ConnectionHandler.getConnection(
@@ -39,7 +40,10 @@ export default (fragment, alias, args) => {
       helper.getConnection(alias).key,
       args
     )
-    if (deepFilterEqual(args, merge([args, { filter: data }])) === false) {
+    if (
+      deletion ||
+      deepFilterEqual(args, merge([args, { filter: data }])) === false
+    ) {
       // delete
       ConnectionHandler.deleteNode(connection, data.id)
       return
@@ -53,8 +57,6 @@ export default (fragment, alias, args) => {
         : atob(data.id).split(':')[1]
     if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
       // update
-      const node = store.get(data.id)
-      Object.keys(data).forEach(k => node.setValue(data[k], k))
       return
     }
 

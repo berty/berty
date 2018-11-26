@@ -190,7 +190,6 @@ class Received extends PureComponent {
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
-          context={this.props.screenProps.context}
           direction='forward'
           query={queries.ContactList.graphql}
           variables={merge([
@@ -214,13 +213,8 @@ class Received extends PureComponent {
 
 class Sent extends PureComponent {
   render () {
-    const {
-      navigation,
-      screenProps: {
-        context: { queries },
-      },
-    } = this.props
-
+    const { navigation, screenProps } = this.props
+    const { queries } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
@@ -232,7 +226,13 @@ class Sent extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
-          renderItem={props => <Item {...props} navigation={navigation} />}
+          renderItem={props => (
+            <Item
+              {...props}
+              navigation={navigation}
+              screenProps={screenProps}
+            />
+          )}
         />
       </Screen>
     )

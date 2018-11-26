@@ -5,25 +5,29 @@ export const contextValue = ({
   mutations,
   subscriptions,
   queries,
+  fragments,
   updaters,
-}) => ({
-  environment,
-  mutations: Object.keys(mutations).reduce((a, k) => {
-    a[k] = mutations[k]({ environment })
+}) => {
+  let ctx = {}
+  ctx.environment = environment
+  ctx.fragments = fragments
+  ctx.queries = Object.keys(queries).reduce((a, k) => {
+    a[k] = queries[k](ctx)
     return a
-  }, {}),
-  subscriptions: Object.keys(subscriptions).reduce((a, k) => {
-    a[k] = subscriptions[k]({ environment })
+  }, {})
+  ctx.subscriptions = Object.keys(subscriptions).reduce((a, k) => {
+    a[k] = subscriptions[k](ctx)
     return a
-  }, {}),
-  queries: Object.keys(queries).reduce((a, k) => {
-    a[k] = queries[k]({ environment })
+  }, {})
+  ctx.mutations = Object.keys(mutations).reduce((a, k) => {
+    a[k] = mutations[k](ctx)
     return a
-  }, {}),
-  updaters: Object.keys(updaters).reduce((a, k) => {
-    a[k] = updaters[k]
+  }, {})
+  ctx.updaters = Object.keys(updaters).reduce((a, k) => {
+    a[k] = updaters[k](ctx)
     return a
-  }, {}),
-})
+  }, {})
+  return ctx
+}
 
 export default React.createContext()

@@ -5,7 +5,13 @@ import React, { PureComponent } from 'react'
 
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
-import { queries, mutations, subscriptions, updaters } from '../../../graphql'
+import {
+  queries,
+  mutations,
+  subscriptions,
+  fragments,
+  updaters,
+} from '../../../graphql'
 import Main from '../Main'
 
 const { CoreModule } = NativeModules
@@ -51,6 +57,7 @@ export default class Current extends PureComponent {
           mutations,
           subscriptions,
           queries,
+          fragments,
           updaters,
         }),
         loading: false,
