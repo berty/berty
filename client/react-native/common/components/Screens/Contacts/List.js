@@ -1,23 +1,15 @@
 import { Image } from 'react-native'
+import Case from 'case'
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Screen, Text } from '../../Library'
 import { Pagination } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
-import { fragments } from '../../../graphql'
+import { fragments, enums } from '../../../graphql'
 
 const Item = fragments.Contact(
-  ({
-    data: {
-      id,
-      overrideDisplayName,
-      displayName,
-      overrideDisplayStatus,
-      displayStatus,
-    },
-    navigation,
-  }) => (
+  ({ data: { id, overrideDisplayName, displayName, status }, navigation }) => (
     <Flex.Cols
       align='center'
       onPress={() => {
@@ -43,11 +35,12 @@ const Item = fragments.Contact(
         <Text color={colors.black} left middle>
           {overrideDisplayName || displayName}
         </Text>
-        {overrideDisplayStatus || overrideDisplayName ? (
-          <Text color={colors.subtleGrey} tiny middle left>
-            {overrideDisplayStatus || displayStatus}
-          </Text>
-        ) : null}
+        <Text color={colors.subtleGrey} tiny middle left>
+          {Case.lower(enums.ValueBertyEntityContactInputStatus[status]).replace(
+            /^is /g,
+            ''
+          )}
+        </Text>
       </Flex.Rows>
     </Flex.Cols>
   )
