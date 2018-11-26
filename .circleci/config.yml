@@ -283,6 +283,16 @@ jobs:
       - checkout:
           path: ~/go/src/berty.tech/
 
+      - run:
+          name: fetch git history
+          command: |
+            set -x
+            git rev-parse HEAD
+            git describe --tags --always
+            git rev-parse --abbrev-ref HEAD
+            git show -s --format=%ct `git rev-parse HEAD`
+
+
       - attach_workspace:
           at: ~/go/src/berty.tech/
 
