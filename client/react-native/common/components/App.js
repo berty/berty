@@ -74,7 +74,6 @@ export default class App extends PureComponent {
     }
     return (
       <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-        }
         <Accounts
           ref={nav => {
             this.navigation = nav
