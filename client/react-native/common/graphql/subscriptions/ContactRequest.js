@@ -1,3 +1,5 @@
+import { btoa } from 'b64-lite'
+
 import EventStream from './EventStream'
 
 export default context => ({
@@ -8,7 +10,11 @@ export default context => ({
         updater &&
         ((store, data) => {
           if (data.EventStream.kind === 201) {
-            return updater && updater(store, data.EventStream.attributes.me)
+            const attributes = JSON.parse(
+              String.fromCharCode.apply(null, data.EventStream.attributes)
+            )
+            attributes.me.id = btoa('contact:' + attributes.me.id)
+            return updater && updater(store, attributes.me)
           }
         }),
     }),

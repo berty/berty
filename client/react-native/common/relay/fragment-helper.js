@@ -1,17 +1,20 @@
 import Relay from 'react-relay'
 
 export class ConnectionHelper {
-  constructor (selection) {
-    console.log('new ConnectionHelper')
+  constructor (selection, metadata) {
+    console.log(metadata)
     Object.keys(selection).forEach(k => (this[k] = selection[k]))
+    Object.keys(metadata).forEach(k => (this[k] = metadata[k]))
   }
 
-  getEdgeType = _ =>
-    console.log('EdgeType') ||
-    ((_ = this.selections.find(_ => _.concreteType.match(/Edge$/))) &&
-      _.concreteType)
+  getEdge = _ => (_ = this.selections.find(_ => _.concreteType.match(/Edge$/)))
 
-  getMetadata = metadata => metadata.find(_ => _.alias === this.alias)
+  getEdgeType = _ => (_ = this.getEdge()) && _.concreteType
+
+  getEdgeNodeType = _ =>
+    (_ = this.getEdge()) &&
+    (_ = _.selections.find(_ => _.name === 'node')) &&
+    _.concreteType
 
   get key () {
     console.log('key')
@@ -39,14 +42,17 @@ export class FragmentHelper {
       ? this.getDefaultConnection()
       : (_ = this.getSelection(alias)) &&
           _.concreteType.match(/Connection$/g) &&
-          new ConnectionHelper(_)
+          new ConnectionHelper(
+            _,
+            this.metadata.connection.find(_ => _.path.some(_ => _ === alias))
+          )
   }
 
   getDefaultConnection = _ => {
     console.log('getDefaultConnection')
     return (
       (_ = this.selections.find(_ => _.concreteType.match(/Connection$/g))) &&
-      new ConnectionHelper(_)
+      new ConnectionHelper(_, this.metadata.connection[0])
     )
   }
 }

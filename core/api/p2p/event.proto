@@ -16,7 +16,7 @@ message Event {
 
   // Sender is the ID of the sender.
   // this field is a member of the composite primary key to avoid id collisions.
-  string sender_id = 2 [gql.graphql_id = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "SenderID"];
+  string sender_id = 2 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "SenderID"];
 
   // CreatedAt is set to current date when initializing a new Event object.
   // This field is required by gorm.
