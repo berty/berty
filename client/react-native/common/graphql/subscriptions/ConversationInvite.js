@@ -8,7 +8,13 @@ export default context => ({
         updater &&
         ((store, data) => {
           if (data.EventStream.kind === 301) {
-            return updater && updater(store, data.EventStream)
+            const attributes = JSON.parse(
+              String.fromCharCode.apply(null, data.EventStream.attributes)
+            )
+            attributes.conversation.id = btoa(
+              'conversation:' + attributes.conversation.id
+            )
+            return updater && updater(store, attributes.conversation)
           }
         }),
     }),

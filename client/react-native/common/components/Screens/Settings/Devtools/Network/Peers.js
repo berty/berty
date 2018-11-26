@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native'
 import { Header, SearchBar, Text as LibText } from '../../../../Library'
-import { queries } from '../../../../../graphql'
 import { colors } from '../../../../../constants'
 import {
   bold,
@@ -86,7 +85,6 @@ export default class Peers extends Component {
     })
 
     this.fetchPeers()
-    this.props.screenProps.context.subscriptions.monitorPeers.start()
   }
 
   componentWillUnmount () {
@@ -94,7 +92,9 @@ export default class Peers extends Component {
   }
 
   fetchPeers = () => {
-    queries.Peers.fetch().then(data => this.updatePeers(data.Peers.list))
+    this.props.screenProps.context.queries.Peers.fetch().then(data =>
+      this.updatePeers(data.Peers.list)
+    )
   }
 
   updatePeers = peers => {

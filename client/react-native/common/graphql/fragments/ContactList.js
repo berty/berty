@@ -33,6 +33,5 @@ const fragment = graphql`
     }
   }
 `
-console.log(fragment.data())
 
 export default fragment

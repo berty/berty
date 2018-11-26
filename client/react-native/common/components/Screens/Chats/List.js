@@ -7,6 +7,7 @@ import { fragments } from '../../../graphql'
 import { conversation as utils } from '../../../utils'
 
 const Item = fragments.Conversation(({ data, navigation, onPress }) => {
+  console.log(data)
   return (
     <ListItem
       id={data.id}
@@ -45,18 +46,18 @@ export default class ListScreen extends PureComponent {
     const {
       navigation,
       screenProps: {
-        context: { queries },
+        context: { queries, fragments, subscriptions },
       },
     } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
-          context={this.props.screenProps.context}
           direction='forward'
           query={queries.ConversationList.graphql}
           variables={queries.ConversationList.defaultVariables}
           fragment={fragments.ConversationList}
           alias='ConversationList'
+          subscriptions={[subscriptions.conversationInvite]}
           renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>

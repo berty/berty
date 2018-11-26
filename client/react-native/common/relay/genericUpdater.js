@@ -24,15 +24,14 @@ const deepFilterEqual = (a, b) => {
   }
 }
 
-/*
- * This function will create a generic relay updater for pagination connection
- * based on fragment information
- * The filter "args" need to have same field that the connection have in arguments
- */
+//
+//  This function will create a generic relay updater for pagination connection
+//  based on fragment information
+//  The filter "args" need to have same field that the connection have in arguments
+//
 export default (fragment, alias, args) => {
   return (store, data, deletion) => {
     const helper = new FragmentHelper(fragment)
-    console.log(helper)
     const connectionHelper = helper.getConnection(alias)
     const root = store.getRoot()
     const connection = ConnectionHandler.getConnection(

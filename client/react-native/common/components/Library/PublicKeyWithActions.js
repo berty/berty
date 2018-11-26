@@ -57,14 +57,14 @@ export default class PublicKeyWithActions extends PureComponent {
 
   constructor (props) {
     super(props)
-    console.log(props)
-    const [initialKey, initialName] = [
-      this.props.navigation.getParam('initialKey'),
-      this.props.navigation.getParam('initialName'),
-    ]
+    const [initialKey, initialName] = props.navigation
+      ? [
+        props.navigation.getParam('initialKey'),
+        props.navigation.getParam('initialName'),
+      ]
+      : [props.initialKey, props.initialName]
     const initialData =
-      props.initialKey !== undefined && props.initialName !== undefined
-    console.log(initialData)
+      props.initialKey === undefined && props.initialName === undefined
     this.state = {
       contact: {
         id: initialKey || '',
@@ -75,7 +75,7 @@ export default class PublicKeyWithActions extends PureComponent {
       },
     }
 
-    if (!initialData && props.data !== undefined) {
+    if (initialData && props.data !== undefined) {
       try {
         this.state.contact = props.data
         this.state.contact.id = extractPublicKeyFromId(props.data.id)

@@ -14,7 +14,7 @@ import {
 import { Pagination, RelayContext } from '../../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { fragments, queries, enums } from '../../../../graphql'
+import { fragments, enums } from '../../../../graphql'
 import Button from '../../../Library/Button'
 
 const Item = fragments.Event(({ data, navigation }) => (
@@ -51,7 +51,9 @@ const Item = fragments.Event(({ data, navigation }) => (
               2: <Icon name={'phone-outgoing'} color={colors.purple} />,
             }[data.direction]
           }{' '}
-          <Text style={{ fontWeight: 'bold' }}>{enums.ValueBertyP2pKindInputKind[data.kind]}</Text>
+          <Text style={{ fontWeight: 'bold' }}>
+            {enums.ValueBertyP2pKindInputKind[data.kind]}
+          </Text>
           {' (' + data.kind + ')'}
         </Text>
         <Text
@@ -149,11 +151,15 @@ export default class EventList extends PureComponent {
   }
 
   render () {
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination
-          context={this.props.screenProps.context}
           query={queries.EventList.graphql}
           variables={{
             ...queries.EventList.defaultVariables,
@@ -187,7 +193,11 @@ export class EventListFilterModal extends PureComponent {
           ]}
         />
         <Button
-          onPress={() => this.props.screenProps.context.mutations.debugRequeueAll({ t: true })}
+          onPress={() =>
+            this.props.screenProps.context.mutations.debugRequeueAll({
+              t: true,
+            })
+          }
           icon={'radio'}
           style={{ textAlign: 'left' }}
         >

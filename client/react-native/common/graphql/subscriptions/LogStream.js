@@ -24,4 +24,4 @@ const LogStream = graphql`
   }
 `
 
-export default variables => subscriber({ subscription: LogStream, variables })
+export default context => variables => subscriber({ environment: context.environment, subscription: LogStream, variables })

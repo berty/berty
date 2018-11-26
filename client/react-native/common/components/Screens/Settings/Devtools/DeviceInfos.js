@@ -7,7 +7,6 @@ import {
 } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { DeviceInfos as GetDeviceInfos } from '../../../../graphql/queries'
 import { Header } from '../../../Library'
 import { colors } from '../../../../constants'
 import { padding } from '../../../../styles'
@@ -30,8 +29,13 @@ export default class DeviceInfos extends PureComponent {
   }
 
   fetch = () => {
+    const {
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     this.setState({ refreshing: true }, async () => {
-      const data = await GetDeviceInfos.fetch()
+      const data = await queries.DeviceInfos.fetch()
       this.setState({ infos: data.DeviceInfos.infos, refreshing: false })
     })
   }

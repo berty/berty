@@ -1,4 +1,3 @@
-import React, { PureComponent } from 'react'
 import {
   Clipboard,
   TouchableOpacity,
@@ -9,11 +8,12 @@ import {
   ActivityIndicator,
   Linking,
 } from 'react-native'
-import { createSubStackNavigator } from '../../../../helpers/react-navigation'
+import React, { PureComponent } from 'react'
+
 import { Menu, Header, Text, Flex } from '../../../Library'
-import { subscriptions } from '../../../../graphql'
-import { colors } from '../../../../constants'
 import { borderBottom, padding } from '../../../../styles'
+import { colors } from '../../../../constants'
+import { createSubStackNavigator } from '../../../../helpers/react-navigation'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300
@@ -360,13 +360,12 @@ class LogStream extends PureComponent {
   })
 
   componentWillMount () {
-    this.logStream = subscriptions.logStream({
+    this.logStream = this.props.screenProps.context.subscriptions.logStream({
       continues: true,
       logLevel: '',
       namespaces: '',
       last: 0,
     })
-    this.logStream.start()
   }
 
   componentDidMount () {
@@ -552,8 +551,13 @@ class LogStream extends PureComponent {
           maxToRenderPerBatch={5}
           data={this.state.filtered}
           extraData={this.updateCounter}
-          renderItem={log => (
-            <Line log={log.item} compact={this.currentConfig.compact} />
+          keyExtractor={this.keyExtractor}
+          renderItem={(log, index) => (
+            <Line
+              key={index}
+              log={log.item}
+              compact={this.currentConfig.compact}
+            />
           )}
         />
       </View>
