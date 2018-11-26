@@ -12,7 +12,8 @@ import {
 } from '../../../Library'
 import { borderBottom, paddingVertical } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { fragments, queries } from '../../../../graphql'
+import { fragments } from '../../../../graphql'
+import { merge } from '../../../../helpers'
 
 const ByPublicKey = fragments.Contact(PublicKeyWithActions)
 
@@ -24,21 +25,20 @@ const AddByPublicKeyScreen = props => (
 
 class SharePublicKeyScreen extends PureComponent {
   render () {
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <QueryReducer
           query={queries.Contact.graphql}
-          variables={{
-            filter: {
-              id: '',
-              status: 42,
-              displayName: '',
-              displayStatus: '',
-              overrideDisplayName: '',
-              overrideDisplayStatus: '',
-            },
-          }}
+          variables={merge([
+            queries.Contact.defaultVariables,
+            { filter: { status: 42 } },
+          ])}
         >
           {(state, retry) => {
             switch (state.type) {

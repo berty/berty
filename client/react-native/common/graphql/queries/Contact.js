@@ -21,8 +21,21 @@ const query = graphql`
   }
 `
 
+const defaultVariables = {
+  filter: contact.default,
+  orderBy: '',
+  orderDesc: false,
+  count: 1,
+  cursor: '',
+}
+
 export default context => ({
   graphql: query,
+  defaultVariables,
   fetch: variables =>
-    fetchQuery(context.environment, query, merge([contact, variables])),
+    fetchQuery(
+      context.environment,
+      query,
+      merge([defaultVariables, variables])
+    ),
 })
