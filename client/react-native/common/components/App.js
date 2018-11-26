@@ -14,6 +14,7 @@ import { Flex, Screen } from './Library'
 import { colors } from '../constants'
 import { subscriptions } from '../graphql'
 import Screens from './Screens'
+import { getAvailableUpdate } from '../helpers/update'
 
 const { CoreModule } = NativeModules
 
@@ -23,6 +24,7 @@ export default class App extends PureComponent {
     success: false,
     error: false,
     nickname: null,
+    availableUpdate: null,
   }
 
   setStateLoading = () =>
@@ -45,6 +47,9 @@ export default class App extends PureComponent {
       } else {
         accounts = accounts.split(':')
       }
+
+      getAvailableUpdate().then(availableUpdate => this.setState({ availableUpdate }))
+
       const nickname = accounts.length > 0 ? accounts[0] : null
       this.setState({
         nickname,
@@ -158,6 +163,7 @@ export default class App extends PureComponent {
             ref={nav => {
               this.navigation = nav
             }}
+            screenProps={{ availableUpdate: this.state.availableUpdate }}
           />
         ) : null}
         {success && nickname == null ? (
