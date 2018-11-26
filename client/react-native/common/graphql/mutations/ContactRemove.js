@@ -50,5 +50,7 @@ export default context => (input, configs) =>
       ...contact.default,
       ...input,
     },
-    configs
+    {
+      ...configs,
+    }
   )

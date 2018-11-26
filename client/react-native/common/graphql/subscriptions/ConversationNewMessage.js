@@ -1,17 +1,15 @@
 import EventStream from './EventStream'
 
-export default conversation => ({
-  ...EventStream,
+export default context => ({
+  ...EventStream(context),
   subscribe: ({ updater }) =>
-    EventStream.subscribe({
-      updater: (store, data) => {
-        console.log('RECEIVED_EVENT')
-        if (
-          data.EventStream.kind === 302 &&
-          data.EventStream.conversationId === conversation.id
-        ) {
-          return updater && updater(store, data.EventStream)
-        }
-      },
+    EventStream(context).subscribe({
+      updater:
+        updater &&
+        ((store, data) => {
+          if (data.EventStream.kind === 302) {
+            return updater(store, data.EventStream)
+          }
+        }),
     }),
 })

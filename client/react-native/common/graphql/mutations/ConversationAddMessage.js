@@ -3,7 +3,7 @@ import { graphql } from 'react-relay'
 import { commit } from '../../relay'
 import { conversation } from '../../utils'
 import { merge } from '../../helpers'
-import { updaters } from '..'
+// import { updaters } from '..'
 
 const ConversationAddMessageMutation = graphql`
   mutation ConversationAddMessageMutation(
@@ -39,17 +39,18 @@ export default context => (input, configs) =>
       { conversation: conversation.default, message: { text: '' } },
       input,
     ]),
-    {
-      updater: (store, data) => {
-        updaters.eventList[0](store, {
-          filter: {
-            conversationId: data.ConversationAddMessage.conversationId,
-            kind: data.ConversationAddMessage.kind,
-          },
-        })
-          .add('EventEdge', data.ConversationAddMessage.id)
-          .before()
-      },
-      ...configs,
-    }
+    // {
+    //   updater: (store, data) => {
+    //     updaters.eventList[0](store, {
+    //       filter: {
+    //         conversationId: data.ConversationAddMessage.conversationId,
+    //         kind: data.ConversationAddMessage.kind,
+    //       },
+    //     })
+    //       .add('EventEdge', data.ConversationAddMessage.id)
+    //       .before()
+    //   },
+    //   ...configs,
+    // }
+    configs
   )

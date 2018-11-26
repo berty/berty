@@ -32,6 +32,7 @@ const ContactRequestMutation = graphql`
     }
   }
 `
+
 export default context => (input, configs) =>
   commit(
     context.environment,
@@ -41,5 +42,5 @@ export default context => (input, configs) =>
       ...contact.default,
       ...input,
     },
-    configs,
+    configs
   )

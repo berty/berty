@@ -50,13 +50,13 @@ const createPagination = ({
   children,
   direction = 'forward',
   fragment,
-  connection,
+  alias,
   query,
 }) =>
   Relay.createPaginationContainer(PaginationContainer, fragment, {
     direction,
     getConnectionFromProps: props => {
-      return props.data[connection]
+      return props.data[alias]
     },
     getFragmentVariables: (prevVars, totalCount) => {
       return {
@@ -107,7 +107,6 @@ export default class Pagination extends PureComponent {
                 </Flex.Rows>
               )
             case state.success:
-              console.log(state)
               return <Container {...state} retry={retry} {...this.props} />
             case state.error:
               return null

@@ -5,7 +5,7 @@ import { Pagination, RelayContext } from '../../../relay'
 import { Screen, Flex, Text, Header } from '../../Library'
 import { border, borderBottom, marginHorizontal } from '../../../styles'
 import { colors } from '../../../constants'
-import { queries, fragments } from '../../../graphql'
+import { fragments } from '../../../graphql'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -138,6 +138,11 @@ export default class ListScreen extends Component {
 
   render () {
     const { contactsID } = this.state
+    const {
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination

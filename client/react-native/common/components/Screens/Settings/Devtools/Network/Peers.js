@@ -69,13 +69,15 @@ export default class Peers extends Component {
   }
 
   componentWillMount () {
-    this.props.screenProps.context.subscriptions.monitorPeers.subscribe({
-      iterator: undefined,
-      updater: (store, data) => {
-        const peer = data.MonitorPeers
-        this.addPeer(peer)
-      },
-    })
+    this.subscriber = this.props.screenProps.context.subscriptions.monitorPeers.subscribe(
+      {
+        iterator: undefined,
+        updater: (store, data) => {
+          const peer = data.MonitorPeers
+          this.addPeer(peer)
+        },
+      }
+    )
   }
 
   componentDidMount () {
@@ -88,7 +90,7 @@ export default class Peers extends Component {
   }
 
   componentWillUnmount () {
-    this.props.screenProps.context.subscriptions.monitorPeers.dispose()
+    this.subscriber.unsubscribe()
   }
 
   fetchPeers = () => {
@@ -109,9 +111,15 @@ export default class Peers extends Component {
     return (
       <View style={styles.peer}>
         {peer.connection === Connection.CONNECTED ? (
-          <Text style={styles.connected}>{peer.id.slice(0, 30)}...</Text>
+          <Text style={styles.connected}>
+            {peer.id.slice(0, 30)}
+            ...
+          </Text>
         ) : (
-          <Text style={styles.notConnected}>{peer.id.slice(0, 30)}...</Text>
+          <Text style={styles.notConnected}>
+            {peer.id.slice(0, 30)}
+            ...
+          </Text>
         )}
       </View>
     )

@@ -21,40 +21,20 @@ const logStyle = {
 //   installRelayDevTools()
 // }
 
-const setupSubscription = ({ getIp, getPort }) => async (
+const setupSubscription = ({ ip, port }) => (
   config,
   variables,
   cacheConfig,
   observer
 ) => {
-  try {
-    const query = config.text
-    const subscriptionClient = new SubscriptionClient(
-      `ws://${await getIp()}:${await getPort()}/query`,
-      {
-        reconnect: true,
-      }
-    )
+  const query = config.text
+  const client = new SubscriptionClient(`ws://${ip}:${port}/query`, {
+    reconnect: true,
+  })
 
-    const onNext = result => {
-      observer.onNext(result)
-    }
-
-    const onError = error => {
-      observer.onError(error)
-    }
-
-    const onComplete = () => {
-      observer.onCompleted()
-    }
-
-    subscriptionClient
-      .request({ query, variables })
-      .subscribe(onNext, onError, onComplete)
-  } catch (err) {
-    console.error(err)
-  }
-  // client.unsubscribe()
+  const observable = client.request({ query, variables })
+  observable.subscribe(observer.onNext, observer.onError, observer.onCompleted)
+  return observable
 }
 
 const perfLogger = (msg, req, res) => {
@@ -104,7 +84,10 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
 export const setup = async ({ getIp, getPort }) =>
   new Environment({
     network: new RelayNetworkLayer(await setupMiddlewares({ getIp, getPort }), {
-      subscribeFn: await setupSubscription({ getIp, getPort }),
+      subscribeFn: setupSubscription({
+        ip: await getIp(),
+        port: await getPort(),
+      }),
     }),
     store: new Store(new RecordSource()),
   })

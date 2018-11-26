@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react'
 import { Pagination, RelayContext } from '../../../relay'
 import { Text, Flex, Screen, Header } from '../../Library'
 import { colors } from '../../../constants'
-import { fragments, queries } from '../../../graphql'
+import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
@@ -163,11 +163,16 @@ export default class Detail extends PureComponent {
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries, subscriptions },
+      },
+    } = this.props
+
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
         <Pagination
-          context={this.props.screenProps.context}
           direction='forward'
           query={queries.EventList.graphql}
           variables={merge([
@@ -179,7 +184,7 @@ export default class Detail extends PureComponent {
               },
             },
           ])}
-          subscriptions={[this.props.screenProps.context.subscriptions.conversationNewMessage(conversation)]}
+          subscriptions={[subscriptions.conversationNewMessage]}
           fragment={fragments.EventList}
           alias='EventList'
           renderItem={props => <Message {...props} navigation={navigation} />}
@@ -195,7 +200,10 @@ export default class Detail extends PureComponent {
             backgroundColor: colors.white,
           }}
         >
-          <Input navigation={this.props.navigation} />
+          <Input
+            navigation={this.props.navigation}
+            screenProps={this.props.screenProps}
+          />
         </View>
       </Screen>
     )

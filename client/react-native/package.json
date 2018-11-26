@@ -14,6 +14,7 @@
     "babel-plugin-relay": "^1.6.2",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "buffer": "^5.2.1",
+    "case": "^1.6.0",
     "concurrently": "^4.0.1",
     "deepmerge": "^2.2.1",
     "graphql": "^14.0.2",

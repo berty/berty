@@ -1,5 +1,10 @@
-import { FragmentHelper } from './fragment-helper'
+import { atob } from 'b64-lite'
+import Case from 'case'
+
 import { ConnectionHandler } from 'relay-runtime'
+
+import { FragmentHelper } from './fragment-helper'
+import { merge } from '../helpers'
 
 const deepFilterEqual = (a, b) => {
   if (!a) {
@@ -13,9 +18,7 @@ const deepFilterEqual = (a, b) => {
       if (Array.isArray(a)) {
         return a.every(av => b.some(bv => deepFilterEqual(av, bv)))
       }
-      return Object.keys(a).every(
-        k => console.log(k) || deepFilterEqual(a[k], b[k])
-      )
+      return Object.keys(a).every(k => deepFilterEqual(a[k], b[k]))
     default:
       return a === b
   }
@@ -27,18 +30,16 @@ const deepFilterEqual = (a, b) => {
  * The filter "args" need to have same field that the connection have in arguments
  */
 export default (fragment, alias, args) => {
-  const helper = new FragmentHelper(fragment)
-  const connectionHelper = helper.getConnection(alias)
-
   return (store, data) => {
+    const helper = new FragmentHelper(fragment)
+    const connectionHelper = helper.getConnection(alias)
     const root = store.getRoot()
     const connection = ConnectionHandler.getConnection(
       root,
       helper.getConnection(alias).key,
       args
     )
-
-    if (deepFilterEqual(args, { filter: data }) === false) {
+    if (deepFilterEqual(args, merge([args, { filter: data }])) === false) {
       // delete
       ConnectionHandler.deleteNode(connection, data.id)
       return
@@ -48,15 +49,9 @@ export default (fragment, alias, args) => {
     const cursor =
       (args.orderBy && args.orderBy !== 'id') ||
       (args.sortBy && args.sortBy !== 'id')
-        ? data[args.orderBy || args.sortBy]
+        ? data[Case.camel(args.orderBy || args.sortBy)]
         : atob(data.id).split(':')[1]
-    if (
-      edges.length > 0 &&
-      edges.some(
-        e =>
-          console.log(e.getValue('cursor')) || e.getValue('cursor') === cursor
-      )
-    ) {
+    if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
       // update
       const node = store.get(data.id)
       Object.keys(data).forEach(k => node.setValue(data[k], k))
