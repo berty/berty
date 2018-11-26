@@ -4,11 +4,10 @@ import ReactDOM from 'react-dom'
 import { Platform, AppRegistry } from 'react-native'
 import App from './components/App'
 
-export default () => {
-  if (Platform.OS === 'web') {
-    ReactDOM.render(<App />, document.getElementById('root'))
-    import('./registerServiceWorker').then()
-  } else {
-    AppRegistry.registerComponent('root', () => App)
-  }
+if (Platform.OS === 'web') {
+  ReactDOM.render(<App />, document.getElementById('root'))
+  import('./registerServiceWorker').then()
+} else {
+  global.Buffer = global.Buffer || require('buffer').Buffer
+  AppRegistry.registerComponent('root', () => App)
 }
