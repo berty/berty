@@ -40,7 +40,7 @@ func WithSoftwareCrypto() NewNodeOption {
 			n.config.CryptoParams = privBytes
 			if err = n.sql.Save(n.config).Error; err != nil {
 				err := errors.Wrap(err, "failed to save RSA key")
-				logger().Error("node.WithSoftwareCrypto", zap.Error(err))
+				n.LogBackgroundError(errors.Wrap(err, "node.WithSoftwareCrypto"))
 				return
 
 			}

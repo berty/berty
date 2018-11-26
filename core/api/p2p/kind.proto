@@ -11,6 +11,7 @@ import "gogoproto/gogo.proto";
 option go_package = "berty.tech/core/api/p2p";
 
 enum Kind {
+  // Unknown events should never happen
   Unknown = 0;
 
   //
@@ -50,6 +51,14 @@ enum Kind {
   //
 
   SenderAliasUpdate = 501;
+
+  //
+  // Other events
+  //
+
+  // Node events aren't used in communication, and most of the time they aren't stored in DB.
+  // see core/api/node/kind.proto
+  Node = 99;
 }
 
 //
@@ -57,7 +66,7 @@ enum Kind {
 //
 
 message SentAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
-message AckAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; string ErrMsg = 2; }
+message AckAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; string err_msg = 2; }
 message PingAttrs { bool T = 1; }
 
 //
@@ -87,3 +96,14 @@ message DevtoolsMapsetAttrs { string key = 1; string val = 2; }
 //
 
 message SenderAliasUpdateAttrs { repeated berty.entity.SenderAlias aliases = 1; }
+
+//
+// Other events
+//
+
+// NodeAttrs is proto-compatible with api/node.NodeEvent, without enums.
+// see api/node/service.proto.
+message NodeAttrs {
+  int32 kind = 1;
+  bytes attributes = 2;
+}

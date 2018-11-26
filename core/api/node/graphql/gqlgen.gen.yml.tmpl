@@ -8,12 +8,12 @@ schema: service.gen.graphql
 
 # Let gqlgen know where to put the generated server
 exec:
-  filename: graph/generated/generated.go
+  filename: graph/generated/generated.gen.go
   package: generated
 
 # Let gqlgen know where to the generated models (if any)
 model:
-  filename: models/generated.go
+  filename: models/generated.gen.go
   package: models
 
 # Optional, turns on resolver stub generation

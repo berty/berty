@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package berty.node;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "berty.tech/core/api/node";
+
+enum Kind {
+  // Unknown events should never happen
+  Unknown = 0;
+
+  NodeStarted = 1;
+  NodeStopped = 2;
+  NodeIsAlive = 3;
+  BackgroundError = 4;
+  BackgroundWarn = 5;
+  Debug = 6;
+  // FIXME: add connection established
+  // FIXME: statistics (every N secs)
+}
+
+message NodeStartedAttrs { bool T = 1; }
+message NodeStoppedAttrs { string err_msg = 1; }
+message NodeIsAliveAttrs { bool T = 1; }
+message BackgroundErrorAttrs { string err_msg = 1; }
+message BackgroundWarnAttrs { string err_msg = 1; }
+message DebugAttrs { string msg = 1; }

@@ -220,6 +220,29 @@ type GoogleProtobufGeneratedCodeInfo  {
   
 
   
+type BertyNodeNodeStartedAttrs  {
+      T: Bool!
+}
+type BertyNodeNodeStoppedAttrs  {
+      errMsg: String!
+}
+type BertyNodeNodeIsAliveAttrs  {
+      T: Bool!
+}
+type BertyNodeBackgroundErrorAttrs  {
+      errMsg: String!
+}
+type BertyNodeBackgroundWarnAttrs  {
+      errMsg: String!
+}
+type BertyNodeDebugAttrs  {
+      msg: String!
+}
+  
+  
+  
+
+  
   
   
 
@@ -314,7 +337,7 @@ type BertyP2pSentAttrs  {
 }
 type BertyP2pAckAttrs  {
       ids: [String!]
-      ErrMsg: String!
+      errMsg: String!
 }
 type BertyP2pPingAttrs  {
       T: Bool!
@@ -344,6 +367,10 @@ type BertyP2pDevtoolsMapsetAttrs  {
 }
 type BertyP2pSenderAliasUpdateAttrs  {
     aliases: [BertyEntitySenderAlias]
+}
+type BertyP2pNodeAttrs  {
+      kind: Int32!
+      attributes: [Byte!],
 }
   
   
@@ -456,6 +483,10 @@ type BertyNodeVoid  {
 }
 type BertyNodeLogEntry  {
       line: String!
+}
+type BertyNodeNodeEvent  {
+    kind: Enum
+      attributes: [Byte!],
 }
 type BertyP2pPeerPayload {
       id: String!

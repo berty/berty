@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
-	"github.com/pkg/errors"
 )
 
 func (n *Node) AsyncWait() {
@@ -95,7 +95,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 			return err
 		}
 	} else {
-		logger().Error("p2p.Handle event", zap.Error(handlingError))
+		n.LogBackgroundError(errors.Wrap(handlingError, "p2p.Handle event"))
 	}
 
 	if err := n.sql.Save(input).Error; err != nil {

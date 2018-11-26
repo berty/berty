@@ -4,6 +4,7 @@ package berty.node;
 
 import "api/protobuf/graphql/graphql.proto";
 import "api/p2p/event.proto";
+import "api/node/kind.proto";
 import "api/p2p/metrics.proto";
 import "api/p2p/peer.proto";
 import "entity/contact.proto";
@@ -321,4 +322,19 @@ message LogEntry {
   // string log_level = 2;
   // namespace
   // ...
+}
+
+//
+// Node Event (see kind.proto)
+//
+
+// NodeEvent is embedded in a classical p2p.Event with p2p.Event.Kind = p2p.Kind_Node
+// we don't need to add base information as the created_at field, as we can already
+// read them from the parent p2p.Event.
+message NodeEvent {
+  // Kind is an enum defining the event type.
+  Kind kind = 1;
+
+  // Attributes is a nested protobuf message containing per-event-type additional attributes.
+  bytes attributes = 2;
 }

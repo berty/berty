@@ -217,6 +217,25 @@ func (e *Event) SetSenderAliasUpdateAttrs(attrs *SenderAliasUpdateAttrs) error {
 	return nil
 }
 
+// GetNodeAttrs is a typesafe version of GetAttrs
+func (e *Event) GetNodeAttrs() (*NodeAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &NodeAttrs{}, nil
+	}
+	var attrs NodeAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetNodeAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetNodeAttrs(attrs *NodeAttrs) error {
+	raw, err := proto.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetAttrs parses the embedded attributes
 func (e *Event) GetAttrs() (proto.Message, error) {
 	switch e.Kind {
@@ -242,6 +261,8 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetDevtoolsMapsetAttrs()
 	case Kind_SenderAliasUpdate:
 		return e.GetSenderAliasUpdateAttrs()
+	case Kind_Node:
+		return e.GetNodeAttrs()
 	}
 	return nil, fmt.Errorf("not supported event kind: %q", e.Kind)
 }

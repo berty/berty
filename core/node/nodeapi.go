@@ -9,7 +9,6 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/sql"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -285,7 +284,7 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 	done := make(chan bool, 1)
 	go func() {
 		if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
-			logger().Error("failed to join conversation", zap.Error(err))
+			n.LogBackgroundWarn(errors.Wrap(err, "failed to join conversation"))
 		}
 		done <- true
 	}()

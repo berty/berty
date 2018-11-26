@@ -94,7 +94,6 @@ lint: generate
 generate: .generated
 
 .generated: $(PROTOS)
-	rm -f $(GENERATED_FILES) $(GENERATION_TARGETS) $@
 	make generate_prepare
 	docker run \
 		--user="$(shell id -u)" \
@@ -148,15 +147,15 @@ dev-deps:
 .client.generated: $(PROTOS)
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
-		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=true,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
+		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
 	); done
 
 	@# FIXME: the following hack is due to goimports -w not deleting duplicated imports
-	goimports -w ./api/client
+	goimports -w ./api/client/
 	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
-	goimports -w ./api/client
+	goimports -w ./api/client/*.gen.go ./api/client/jsonclient/*.gen.go
 	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
-	goimports -w ./api/client
+	goimports -w ./api/client/*.gen.go ./api/client/jsonclient/*.gen.go
 	touch $@
 
 .kind.generated: $(PROTOS)
@@ -166,8 +165,8 @@ dev-deps:
 
 .gql.generated: $(PROTOS) .pb.generated
 	mkdir -p ./api/node/graphql
-	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node/graphql ./api/node/service.proto
-	goimports -w ./api/node/graphql
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/*.proto
+	goimports -w ./api/node/*.gen.go ./api/node/graphql/*.gen.go
 	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
 	cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
 	prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
