@@ -17,14 +17,16 @@ class Message extends React.PureComponent {
     const conversation = this.props.navigation.getParam('conversation')
     const contactId = this.props.data.senderId
     const isMyself =
-      conversation.members.find(m => m.contactId === contactId).contact.status ===
-      42
+      conversation.members.find(m => m.contactId === contactId).contact
+        .status === 42
 
     if (isMyself || this.props.data.seenAt !== null) {
       return
     }
 
-    await this.props.screenProps.context.mutations.eventSeen({ eventId: this.props.data.id })
+    await this.props.screenProps.context.mutations.eventSeen({
+      eventId: this.props.data.id,
+    })
   }
 
   async componentDidUpdate (prevProps) {
@@ -39,8 +41,8 @@ class Message extends React.PureComponent {
     const conversation = this.props.navigation.getParam('conversation')
     const contactId = this.props.data.senderId
     const isMyself =
-      conversation.members.find(m => m.contactId === contactId).contact.status ===
-      42
+      conversation.members.find(m => m.contactId === contactId).contact
+        .status === 42
 
     const { data } = this.props
 
@@ -78,13 +80,12 @@ class Message extends React.PureComponent {
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
-          {new Date(data.createdAt).toTimeString()}
-          {' '}
-          {isMyself
-            ? <Icon name={data.ackedAt ? 'check-circle' : 'circle'} />
-            : null}
-          {' '}
-          <Icon name={data.seenAt ? 'eye' : 'eye-off'} /> {/* TODO: used for debugging, remove me */}
+          {new Date(data.createdAt).toTimeString()}{' '}
+          {isMyself ? (
+            <Icon name={data.ackedAt ? 'check-circle' : 'circle'} />
+          ) : null}{' '}
+          <Icon name={data.seenAt ? 'eye' : 'eye-off'} />{' '}
+          {/* TODO: used for debugging, remove me */}
         </Text>
       </Flex.Rows>
     )
@@ -222,8 +223,13 @@ export default class Detail extends PureComponent {
           subscriptions={[subscriptions.conversationNewMessage]}
           fragment={fragments.EventList}
           alias='EventList'
-          renderItem={props => <MessageContainer {...props} navigation={navigation}
-            screenProps={this.props.screenProps} />}
+          renderItem={props => (
+            <MessageContainer
+              {...props}
+              navigation={navigation}
+              screenProps={this.props.screenProps}
+            />
+          )}
           inverted
           style={{ paddingTop: 48 }}
         />
