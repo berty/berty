@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.os.Build;
 import android.util.Log;
@@ -131,14 +132,13 @@ public class BertyGatt extends BluetoothGattCallback {
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
         Log.e(TAG, "onServicesDiscovered()");
-//        Log.e(TAG, "START DISCO CHAR3");
-//        for (BluetoothGattService svc : gatt.getServices()) {
-//            Log.e(TAG, "START DISCO CHAR2 " + svc.getUuid());
-//            if (svc.getUuid().equals(SERVICE_UUID)) {
-//                Log.e(TAG, "START DISCO CHAR1");
-//                populateCharacteristic(gatt);
-//            }
-//        }
+        BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
+        for (BluetoothGattService svc : gatt.getServices()) {
+            if (svc.getUuid().equals(BertyUtils.SERVICE_UUID)) {
+                bDevice.svc = svc;
+                bDevice.svcSema.release();
+            }
+        }
         super.onServicesDiscovered(gatt, status);
     }
 

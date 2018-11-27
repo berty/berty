@@ -1,8 +1,10 @@
 package chat.berty.ble;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.os.Build;
 import android.util.Log;
 
@@ -13,6 +15,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyDevice {
 
     public static String TAG = "chat.berty.ble.BertyDevice";
@@ -30,6 +33,7 @@ public class BertyDevice {
     public Semaphore svcSema;
     public Semaphore isWaiting;
     public List<byte[]> toSend;
+    protected BluetoothGattService svc;
     protected BluetoothGattCharacteristic acceptCharacteristic;
     protected BluetoothGattCharacteristic maCharacteristic;
     protected BluetoothGattCharacteristic peerIDCharacteristic;
@@ -42,7 +46,7 @@ public class BertyDevice {
         this.addr = address;
         this.device = device;
         this.isWaiting = new Semaphore(1);
-        this.svcSema = new Semaphore(1);
+        this.svcSema = new Semaphore(0);
         this.latchRdy = new CountDownLatch(2);
         this.latchConn = new CountDownLatch(2);
         this.latchChar = new CountDownLatch(6);
@@ -73,13 +77,35 @@ public class BertyDevice {
     }
 
     public void waitConn() {
+        Log.e(TAG, "waitConn()");
         new Thread(new Runnable() {
             @Override
             public void run() {
-                Thread.currentThread().setName("waitConn");
+                Thread.currentThread().setName("WaitConn");
                 try {
                     latchConn.await();
-                    Log.e(TAG, "BOTH CONN RDY");
+                    while (!gatt.discoverServices()){
+                        Log.e(TAG, "Waiting service discover");
+                        Thread.sleep(1000);
+                    }
+                    waitService();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                }
+
+            }
+        }).start();
+    }
+
+    public void waitService() {
+        Log.e(TAG, "waitService()");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("WaitService");
+                try {
+                    svcSema.acquire();
+                    Log.e(TAG, "Need to launch char disco");
                 } catch (Exception e) {
                     Log.e(TAG, "Error waiting/writing " + e.getMessage());
                 }
