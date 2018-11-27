@@ -6,12 +6,18 @@ import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
@@ -105,13 +111,75 @@ public class BertyDevice {
                 Thread.currentThread().setName("WaitService");
                 try {
                     svcSema.acquire();
-                    Log.e(TAG, "Need to launch char disco");
+                    waitChar();
+                    populateCharacteristic();
                 } catch (Exception e) {
                     Log.e(TAG, "Error waiting/writing " + e.getMessage());
                 }
 
             }
         }).start();
+    }
+
+    public void waitChar() {
+        Log.e(TAG, "waitChar()");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("WaitChar");
+                try {
+                    latchChar.await();
+                    Log.e(TAG, "Need to launch read char");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                }
+
+            }
+        }).start();
+    }
+
+    public void populateCharacteristic() {
+        Log.e(TAG, "populateCharacteristic()");
+        ExecutorService es = Executors.newFixedThreadPool(6);
+        List<PopulateCharacteristic> todo = new ArrayList<>(6);
+
+        todo.add(new PopulateCharacteristic(BertyUtils.MA_UUID));
+        todo.add(new PopulateCharacteristic(BertyUtils.PEER_ID_UUID));
+        todo.add(new PopulateCharacteristic(BertyUtils.CLOSER_UUID));
+        todo.add(new PopulateCharacteristic(BertyUtils.WRITER_UUID));
+        todo.add(new PopulateCharacteristic(BertyUtils.IS_READY_UUID));
+        todo.add(new PopulateCharacteristic(BertyUtils.ACCEPT_UUID));
+
+        try {
+            List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
+            for (Future<BluetoothGattCharacteristic> future : answers) {
+                BluetoothGattCharacteristic c = future.get();
+
+                if (c != null && c.getUuid().equals(BertyUtils.MA_UUID)) {
+                    maCharacteristic = c;
+                    latchChar.countDown();
+                } else if (c != null && c.getUuid().equals(BertyUtils.PEER_ID_UUID)) {
+                    peerIDCharacteristic = c;
+                    latchChar.countDown();
+                } else if (c != null && c.getUuid().equals(BertyUtils.CLOSER_UUID)) {
+                    closerCharacteristic = c;
+                    latchChar.countDown();
+                } else if (c != null && c.getUuid().equals(BertyUtils.WRITER_UUID)) {
+                    writerCharacteristic = c;
+                    latchChar.countDown();
+                } else if (c != null && c.getUuid().equals(BertyUtils.IS_READY_UUID)) {
+                    isRdyCharacteristic = c;
+                    latchChar.countDown();
+                } else if (c != null && c.getUuid().equals(BertyUtils.ACCEPT_UUID)) {
+                    acceptCharacteristic = c;
+                    latchChar.countDown();
+                } else {
+                    Log.e(TAG, "Retrieved an unknown characteristic");
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void writeRdy() {
@@ -157,6 +225,23 @@ public class BertyDevice {
                 }
                 toSend.remove(0);
             }
+        }
+    }
+
+    private class PopulateCharacteristic implements Callable<BluetoothGattCharacteristic> {
+        private UUID uuid;
+
+        public PopulateCharacteristic(UUID charactUUID) {
+            uuid = charactUUID;
+        }
+
+        public @Nullable
+        BluetoothGattCharacteristic call() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                return gatt.getService(BertyUtils.SERVICE_UUID).getCharacteristic(uuid);
+            }
+
+            return null;
         }
     }
 }

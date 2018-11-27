@@ -264,88 +264,6 @@ public class Manager {
         return false;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public void populateCharacteristic(BluetoothGatt gatt) {
-        BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
-        ExecutorService es = Executors.newFixedThreadPool(6);
-        List<PopulateCharacteristic> todo = new ArrayList<>(6);
-
-        todo.add(new PopulateCharacteristic(MA_UUID, bDevice));
-        todo.add(new PopulateCharacteristic(PEER_ID_UUID, bDevice));
-        todo.add(new PopulateCharacteristic(CLOSER_UUID, bDevice));
-        todo.add(new PopulateCharacteristic(WRITER_UUID, bDevice));
-        todo.add(new PopulateCharacteristic(IS_READY_UUID, bDevice));
-        todo.add(new PopulateCharacteristic(ACCEPT_UUID, bDevice));
-
-        Log.e(TAG, "START DISCO CHAR");
-
-        try {
-            List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
-            for (Future<BluetoothGattCharacteristic> future : answers) {
-                BluetoothGattCharacteristic c = future.get();
-
-                if (c != null && c.getUuid().equals(MA_UUID)) {
-                    bDevice.maCharacteristic = c;
-                    bDevice.latchChar.countDown();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Thread.currentThread().setName("ReadMaWaiter");
-                            while (!gatt.readCharacteristic(bDevice.maCharacteristic)) {
-                                Log.e(TAG, "Gonna wait");
-                                try {
-                                    Thread.sleep(4000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            Log.e(TAG, "TEST        " + bDevice.maCharacteristic.getValue());
-                        }
-                    }).start();
-                } else if (c != null && c.getUuid().equals(PEER_ID_UUID)) {
-                    bDevice.peerIDCharacteristic = c;
-                    bDevice.latchChar.countDown();
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Thread.currentThread().setName("ReadPeerWaiter");
-                            while (!gatt.readCharacteristic(bDevice.peerIDCharacteristic)) {
-                                Log.e(TAG, "Gonna wait");
-                                try {
-                                    Thread.sleep(4000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                            Log.e(TAG, "TEST        " + bDevice.peerIDCharacteristic.getValue());
-                        }
-                    }).start();
-                } else if (c != null && c.getUuid().equals(CLOSER_UUID)) {
-                    bDevice.closerCharacteristic = c;
-                    bDevice.latchChar.countDown();
-                } else if (c != null && c.getUuid().equals(WRITER_UUID)) {
-                    bDevice.writerCharacteristic = c;
-                    bDevice.latchChar.countDown();
-                } else if (c != null && c.getUuid().equals(IS_READY_UUID)) {
-                    bDevice.isRdyCharacteristic = c;
-                    bDevice.latchChar.countDown();
-                } else if (c != null && c.getUuid().equals(ACCEPT_UUID)) {
-                    bDevice.acceptCharacteristic = c;
-                    bDevice.latchChar.countDown();
-                } else {
-                    Log.e(TAG, "UNKNOW CHARACT");
-                }
-
-                Log.e(TAG, "UUID " + c.getUuid());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        while (!gatt.requestMtu(512)) {
-            /** intentionally empty */
-        }
-    }
 
     public void handleMaRead(BertyDevice device, BluetoothGattCharacteristic characteristic) {
         String newMa = null;
@@ -407,24 +325,6 @@ public class Manager {
         }
 
         return true;
-    }
-
-    public class PopulateCharacteristic implements Callable<BluetoothGattCharacteristic> {
-        private UUID uuid;
-        private BertyDevice device;
-
-        public PopulateCharacteristic(UUID charactUUID, BertyDevice bDevice) {
-            uuid = charactUUID;
-            device = bDevice;
-        }
-
-        public @Nullable BluetoothGattCharacteristic call() {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                return device.gatt.getService(SERVICE_UUID).getCharacteristic(uuid);
-            }
-
-            return null;
-        }
     }
 
     @Override
