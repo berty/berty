@@ -138,10 +138,12 @@ public class Manager {
     public void setMa(String ma) {
         this.ma = ma;
         Log.e(TAG, "BLE MA " + ma);
+        maCharacteristic.setValue(ma);
     }
 
     public void setPeerID(String peerID) {
         this.peerID = peerID;
+        peerIDCharacteristic.setValue(ma);
         Log.e(TAG, "BLE PEERID " + peerID);
     }
 
@@ -283,28 +285,73 @@ public class Manager {
             mGattServerCallback = new BluetoothGattServerCallback() {
                 @Override
                 public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
+
                     BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
                     if (bDevice == null) {
                         synchronized (bertyDevices) {
-                            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback);
+                            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback, BluetoothDevice.TRANSPORT_LE);
+//                            Log.e(TAG, "discover service :" + bDevice.gatt.discoverServices());
                             bDevice = new BertyDevice(device, gatt, device.getAddress());
                             bertyDevices.put(device.getAddress(), bDevice);
+                            Log.e(TAG, "req mtu start");
                         }
                     }
+                    if (newState == 0) {
+                        bDevice.gatt.requestMtu(512);
+
+                        List<BluetoothGattService> svcs = bDevice.gatt.getServices();
+                        BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
+                        List<BluetoothDevice> gbd = mb.getConnectedDevices(GATT);
+                        List<BluetoothDevice> gbds = mb.getConnectedDevices(GATT_SERVER);
+
+
+                        Log.e(TAG, "SVC " + svcs);
+                        for (BluetoothGattService svc: svcs) {
+                            Log.e(TAG, "SVC " + svc.toString());
+                        }
+                        Log.e(TAG, "gdb " + gbd);
+                        for (BluetoothDevice g : gbd) {
+                            Log.e(TAG, "SVC " + g.getAddress());
+                        }
+                        Log.e(TAG, "gdbs " + gbds);
+                        for (BluetoothDevice g : gbds) {
+                            Log.e(TAG, "SVC " + g.getAddress());
+                        }
+                    }
+//                    runDiscoAndMtu(bDevice.gatt);
                     super.onConnectionStateChange(device, status, newState);
                     Log.e(TAG, "Server new coon " + device.getAddress());
+                }
+
+
+                public void onConnectionUpdated(BluetoothDevice gatt, int interval, int latency, int timeout,
+                                                int status) {
+                    Log.e(TAG, "TA RACE");
+                }
+
+                public void sendReadResponse(byte[] value, BluetoothDevice device, int offset, int requestId) {
+                    if (offset > value.length) {
+                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, 0, new byte[]{0} );
+                        return;
+                    }
+                    int size = value.length - offset;
+                    byte[] resp = new byte[size];
+                    for (int i = offset; i < value.length; i++) {
+                        resp[i - offset] = value[i];
+                    }
+                    mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, resp);
                 }
 
                 @Override
                 public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
                     UUID charID = characteristic.getUuid();
-
+                    Log.e(TAG, "Read req off " + offset);
                     if (charID.equals(MA_UUID)) {
-                        Log.e(TAG, "READ MA");
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, ma.getBytes(Charset.forName("UTF-8")));
+                        byte[] value = ma.getBytes(Charset.forName("UTF-8"));
+                        sendReadResponse(value, device, offset, requestId);
                     } else if (charID.equals(PEER_ID_UUID)) {
-                        Log.e(TAG, "READ PEER");
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, peerID.getBytes(Charset.forName("UTF-8")));
+                        byte[] value = peerID.getBytes(Charset.forName("UTF-8"));
+                        sendReadResponse(value, device, offset, requestId);
                     } else {
                         Log.e(TAG, "READ UNKNOW");
                         mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
