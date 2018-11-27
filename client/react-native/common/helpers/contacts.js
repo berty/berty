@@ -29,10 +29,10 @@ export const extractPublicKeyFromId = contactId => {
   }
 }
 
-export const makeShareableUrl = ({ contactId, displayName }) => `https://berty.tech/add-contact#public-key=${encodeURIComponent(contactId)}&display-name=${encodeURIComponent(displayName)}`
+export const makeShareableUrl = ({ id, displayName }) => `https://berty.tech/add-contact#public-key=${encodeURIComponent(id)}&display-name=${encodeURIComponent(displayName)}`
 
-export const shareLinkSelf = ({ contactId, displayName }) => {
-  const url = makeShareableUrl({ contactId, displayName })
+export const shareLinkSelf = ({ id, displayName }) => {
+  const url = makeShareableUrl({ id, displayName })
 
   Share.share({
     title: 'Add me on Berty',
@@ -41,8 +41,8 @@ export const shareLinkSelf = ({ contactId, displayName }) => {
   }).catch(() => null)
 }
 
-export const shareLinkOther = ({ contactId, displayName }) => {
-  const url = makeShareableUrl({ contactId, displayName })
+export const shareLinkOther = ({ id, displayName }) => {
+  const url = makeShareableUrl({ id, displayName })
 
   Share.share({
     title: `Add ${displayName} on Berty`,
