@@ -2,7 +2,7 @@ import { Platform, View } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import { Pagination, RelayContext } from '../../../relay'
-import { Text, Flex, Screen, Header } from '../../Library'
+import { Text, Flex, Screen, Header, Icon } from '../../Library'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
@@ -53,6 +53,10 @@ const Message = fragments.Event(props => {
         }}
       >
         {new Date(props.data.createdAt).toTimeString()}
+        {' '}
+        {isMyself
+          ? <Icon name={props.data.ackedAt ? 'check-circle' : 'circle'} />
+          : null}
       </Text>
     </Flex.Rows>
   )

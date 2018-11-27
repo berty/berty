@@ -285,7 +285,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 1, 0, 0, 0, 0})
 				// FIXME: check that event is acked in db
 
 				everythingWentFine()
@@ -324,7 +324,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				time.Sleep(time.Second * 1)
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 2, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 1, 2, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -346,7 +346,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 3, 1, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 4, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -367,7 +367,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
 				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 1, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -390,7 +390,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 2, 0, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 3, 0, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -411,7 +411,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(attrs.Me.DisplayName, ShouldEqual, "Bob")
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 0, 0, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 0, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -436,7 +436,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 1, 4, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 1, 1, 4, 0, 0})
 
 				everythingWentFine()
 			})
@@ -459,7 +459,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 4, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 1, 1, 5, 0, 0})
 
 				everythingWentFine()
 			})
@@ -482,7 +482,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 4, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 1, 1, 6, 0, 0})
 
 				everythingWentFine()
 			})
@@ -504,7 +504,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 4, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 2, 0, 6, 0, 0})
 
 				everythingWentFine()
 			})
@@ -528,7 +528,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 				So(attrs.Me.Devices, ShouldBeNil)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 2, 0, 2, 0, 0})
 
 				everythingWentFine()
 			})

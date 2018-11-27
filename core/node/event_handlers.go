@@ -183,6 +183,7 @@ func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) er
 }
 
 func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
+	var ackedEvents []*p2p.Event
 	ackCount := 0
 	ackAttrs, err := input.GetAckAttrs()
 
@@ -190,9 +191,11 @@ func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
 		return errors.Wrap(err, "unable to unmarshal ack attrs")
 	}
 
-	if err = n.sql.
+	baseQuery := n.sql.
 		Model(&p2p.Event{}).
-		Where("id in (?)", ackAttrs.IDs).
+		Where("id in (?)", ackAttrs.IDs)
+
+	if err = baseQuery.
 		Count(&ackCount).
 		UpdateColumn("acked_at", time.Now().UTC()).
 		Error; err != nil {
@@ -203,8 +206,16 @@ func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
 		return errors.Wrap(err, "no events to ack found")
 	}
 
+	if err = baseQuery.Find(&ackedEvents).Error; err != nil {
+		return errors.Wrap(err, "unable to fetch acked events")
+	}
+
 	if err := n.handleAckSenderAlias(ctx, ackAttrs); err != nil {
 		return errors.Wrap(err, "error while acking alias updates")
+	}
+
+	for _, ackedEvent := range ackedEvents {
+		n.clientEvents <- ackedEvent
 	}
 
 	return nil
