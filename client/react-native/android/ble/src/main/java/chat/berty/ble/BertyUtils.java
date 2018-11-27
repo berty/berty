@@ -17,7 +17,7 @@ import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class BertyConstants {
+public class BertyUtils {
     final static int BLUETOOTH_ENABLE_REQUEST = 1;
     final static UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6664");
     final static UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C");
@@ -33,7 +33,7 @@ public class BertyConstants {
     final static BluetoothGattCharacteristic writerCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static BluetoothGattCharacteristic isRdyCharacteristic = new BluetoothGattCharacteristic(IS_READY_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static BluetoothGattCharacteristic closerCharacteristic = new BluetoothGattCharacteristic(CLOSER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
-    private static final String TAG = "chat.berty.ble.BertyConstants";
+    private static final String TAG = "chat.berty.ble.BertyUtils";
 
     public static BluetoothGattService createService() {
         Log.e(TAG, "createService()");
