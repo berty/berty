@@ -7,7 +7,6 @@ import { fragments } from '../../../graphql'
 import { conversation as utils } from '../../../utils'
 
 const Item = fragments.Conversation(({ data, navigation, onPress }) => {
-  console.log(data)
   return (
     <ListItem
       id={data.id}

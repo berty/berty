@@ -7,22 +7,45 @@ import { QueryReducer } from '.'
 import genericUpdater from './genericUpdater'
 
 class PaginationContainer extends PureComponent {
+  state = {
+    refetching: false,
+    loadingMore: false,
+  }
+
   onEndReached = () => {
-    if (!this.props.relay.hasMore() || this.props.relay.isLoading()) {
+    const { relay } = this.props
+    const { refetching, loadingMore } = this.state
+
+    if (refetching || loadingMore || !relay.hasMore() || relay.isLoading()) {
       return
     }
-    this.props.relay.loadMore(
-      (this.props.variables && this.props.variables.count) || 10,
-      err => err && console.error(err)
-    )
+
+    this.setState({ loadingMore: true }, () => {
+      this.props.relay.loadMore(
+        (this.props.variables && this.props.variables.count) || 10,
+        err => {
+          err && console.error(err)
+          this.setState({ loadingMore: false })
+        }
+      )
+    })
   }
 
   refetch = () => {
-    const { relay, data, connection } = this.props
-    const edges =
-      data[connection] && data[connection].edges ? data[connection].edges : []
+    const { relay, alias, data } = this.props
+    const { refetching, loadingMore } = this.state
 
-    relay.refetchConnection(edges.length, err => err && console.error(err))
+    if (refetching || loadingMore || relay.isLoading()) {
+      return
+    }
+    this.setState({ refetching: true }, () => {
+      const edges = data[alias] && data[alias].edges ? data[alias].edges : []
+
+      relay.refetchConnection(edges.length, err => {
+        err && console.error(err)
+        this.setState({ refetching: false })
+      })
+    })
   }
 
   keyExtractor = item => item.node.id
@@ -30,12 +53,12 @@ class PaginationContainer extends PureComponent {
   renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
 
   render () {
-    const { data, alias, relay, renderItem, inverted, style } = this.props
+    const { data, alias, renderItem, inverted, style } = this.props
     return (
       <FlatList
         data={data[alias] && data[alias].edges ? data[alias].edges : []}
         inverted={inverted}
-        refreshing={relay.isLoading()}
+        refreshing={this.state.refetching}
         onRefresh={this.refetch}
         onEndReached={this.onEndReached}
         keyExtractor={this.keyExtractor}
