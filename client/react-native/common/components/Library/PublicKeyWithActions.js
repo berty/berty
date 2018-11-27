@@ -1,14 +1,16 @@
-import React, { PureComponent } from 'react'
-import { Button, Flex, TextInputMultilineFix } from './index'
-import { colors } from '../../constants'
 import { ScrollView, TextInput, Platform, Clipboard } from 'react-native'
-import { marginTop, padding, rounded, textTiny } from '../../styles'
+import { btoa } from 'b64-lite'
+import React, { PureComponent } from 'react'
+
+import { Button, Flex, TextInputMultilineFix } from './index'
+import { RelayContext } from '../../relay'
+import { colors } from '../../constants'
 import {
   extractPublicKeyFromId,
   shareLinkOther,
   shareLinkSelf,
 } from '../../helpers/contacts'
-import { RelayContext } from '../../relay'
+import { marginTop, padding, rounded, textTiny } from '../../styles'
 
 const CopyKeyButton = ({ id }) => (
   <ActionButton
