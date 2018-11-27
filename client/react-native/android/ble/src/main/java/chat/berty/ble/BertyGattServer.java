@@ -162,12 +162,12 @@ public class BertyGattServer extends BluetoothGattServerCallback {
     public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
         super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
         Log.e(TAG, "onCharacteristicWriteRequest()");
-//        UUID charID = characteristic.getUuid();
-//        BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
+        UUID charID = characteristic.getUuid();
+        BertyDevice bDevice = BertyUtils.getDeviceFromAddr(device.getAddress());
 //        Log.e(TAG, "write req");
-//        if (charID.equals(ACCEPT_UUID)) {
+        if (charID.equals(BertyUtils.ACCEPT_UUID)) {
 ////            mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
-//        } else if (charID.equals(WRITER_UUID)) {
+        } else if (charID.equals(BertyUtils.WRITER_UUID)) {
 ////                        Log.e(TAG, "READER CALLED     " + Arrays.toString(value));
 //            try {
 //                bDevice.waitReady.await();
@@ -180,26 +180,15 @@ public class BertyGattServer extends BluetoothGattServerCallback {
 //                mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
 //            }
 //
-//        } else if (charID.equals(CLOSER_UUID)) {
+        } else if (charID.equals(BertyUtils.CLOSER_UUID)) {
 //            // TODO
-//        } else if (charID.equals(IS_READY_UUID)) {
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Thread.currentThread().setName("BleIsRdyWaiter");
-//                    try {
-//                        bDevice.waitReady.await();
-//                        Core.addToPeerStore(bDevice.peerID, bDevice.ma);
-//                    } catch (InterruptedException e) {
-//                        Log.e(TAG, "error waiting/writing new peer " + e.getMessage());
-//                    }
-//                }
-//            }).start();
-//            Log.e(TAG, "OTHER DEVICE IS RDY");
+        } else if (charID.equals(BertyUtils.IS_READY_UUID)) {
+            bDevice.latchRdy.countDown();
+            Log.e(TAG, "OTHER DEVICE IS RDY");
 //            mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
-//        } else {
+        } else {
 //            mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
-//        }
+        }
     }
 
     /**

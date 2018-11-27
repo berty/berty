@@ -19,7 +19,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
+
+import core.Core;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyDevice {
@@ -70,10 +71,7 @@ public class BertyDevice {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     try {
                         latchRdy.await();
-                        isRdyCharacteristic.setValue("");
-                        while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
-                            /** intentionally empty */
-                        }
+                        Core.addToPeerStore(peerID, ma);
                     } catch (Exception e) {
                         Log.e(TAG, "Error waiting/writing " + e.getMessage());
                     }
@@ -165,6 +163,25 @@ public class BertyDevice {
                 Thread.currentThread().setName("LaunchRead");
                 while (!gatt.readCharacteristic(characteristic)) {
                     Log.e(TAG, "launchRead() waiting read");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void launchWriteIsRdy() {
+        Log.e(TAG, "launchWriteIsRdy()");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("LaunchWrite");
+                isRdyCharacteristic.setValue("");
+                while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
+                    Log.e(TAG, "launchWrite() waiting write");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
