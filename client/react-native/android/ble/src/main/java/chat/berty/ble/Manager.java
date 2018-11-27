@@ -13,21 +13,19 @@ import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
-import android.bluetooth.le.AdvertiseCallback;
 import android.bluetooth.le.AdvertiseData;
 import android.bluetooth.le.AdvertiseSettings;
 import android.bluetooth.le.BluetoothLeAdvertiser;
 import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.ParcelUuid;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import java.nio.charset.Charset;
@@ -42,8 +40,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import core.Core;
-
 import static android.bluetooth.BluetoothGatt.GATT_CONNECTION_CONGESTED;
 import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
 import static android.bluetooth.BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION;
@@ -54,14 +50,17 @@ import static android.bluetooth.BluetoothGatt.GATT_READ_NOT_PERMITTED;
 import static android.bluetooth.BluetoothGatt.GATT_REQUEST_NOT_SUPPORTED;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
 import static android.bluetooth.BluetoothGatt.GATT_WRITE_NOT_PERMITTED;
-import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
-import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
-import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
-import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
-import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
-import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
+import static android.bluetooth.BluetoothProfile.GATT;
+import static android.bluetooth.BluetoothProfile.GATT_SERVER;
 import static android.content.Context.BLUETOOTH_SERVICE;
+import static chat.berty.ble.BertyConstants.ACCEPT_UUID;
+import static chat.berty.ble.BertyConstants.BLUETOOTH_ENABLE_REQUEST;
+import static chat.berty.ble.BertyConstants.CLOSER_UUID;
+import static chat.berty.ble.BertyConstants.IS_READY_UUID;
+import static chat.berty.ble.BertyConstants.MA_UUID;
+import static chat.berty.ble.BertyConstants.PEER_ID_UUID;
+import static chat.berty.ble.BertyConstants.SERVICE_UUID;
+import static chat.berty.ble.BertyConstants.WRITER_UUID;
 
 public class Manager {
     private static Manager instance = null;
@@ -71,26 +70,6 @@ public class Manager {
     private ActivityGetter mReactContext;
 
     private Object RmReactContext;
-
-    final static int BLUETOOTH_ENABLE_REQUEST = 1;
-
-    final static UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6663");
-
-    final static UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C");
-
-    final static UUID CLOSER_UUID = UUID.fromString("AD127A46-D065-4D72-B15A-EB2B3DA20561");
-
-    final static UUID IS_READY_UUID = UUID.fromString("D27DE0B5-2170-4C59-9C0B-750C760C74E6");
-
-    final static UUID MA_UUID = UUID.fromString("9B827770-DC72-4C55-B8AE-0870C7AC15A8");
-
-    final static UUID PEER_ID_UUID = UUID.fromString("0EF50D30-E208-4315-B323-D05E0A23E6B3");
-
-    final static UUID ACCEPT_UUID = UUID.fromString("6F110ECA-9FCC-4BB3-AB45-6F13565E2E34");
-
-    public enum CHARACT_UUIDS  {
-        WRITER_UUID, CLOSER_UUID, IS_READY_UUID, MA_UUID, PEER_ID_UUID, ACCEPT_UUID
-    }
 
     public String ma;
 
@@ -114,12 +93,13 @@ public class Manager {
 
     public boolean isScanning = false;
 
-    protected BluetoothGattCharacteristic acceptCharacteristic;
-    protected BluetoothGattCharacteristic maCharacteristic;
-    protected BluetoothGattCharacteristic peerIDCharacteristic;
-    protected BluetoothGattCharacteristic writerCharacteristic;
-    protected BluetoothGattCharacteristic isRdyCharacteristic;
-    protected BluetoothGattCharacteristic closerCharacteristic;
+    private BertyGattServer mGattServerCallback = new BertyGattServer();
+
+    protected BertyGatt mGattCallback = new BertyGatt();
+
+    private BertyAdvertise mAdvertisingCallback = new BertyAdvertise();
+
+    private BertyScan mScanCallback = new BertyScan();
 
     public interface ActivityGetter {
         @Nullable Activity getCurrentActivity();
@@ -127,6 +107,7 @@ public class Manager {
 
     private Manager() {
         super();
+        Thread.currentThread().setName("BleManager");
         Log.e(TAG, "BLEManager init");
     }
 
@@ -137,13 +118,23 @@ public class Manager {
 
     public void setMa(String ma) {
         this.ma = ma;
+        BertyConstants.maCharacteristic.setValue(ma);
+        if (this.peerID != "") {
+            AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
+            AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
+            mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
+        }
         Log.e(TAG, "BLE MA " + ma);
-        maCharacteristic.setValue(ma);
     }
 
     public void setPeerID(String peerID) {
         this.peerID = peerID;
-        peerIDCharacteristic.setValue(ma);
+        BertyConstants.peerIDCharacteristic.setValue(peerID);
+        if (this.ma != "") {
+            AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
+            AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
+            mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
+        }
         Log.e(TAG, "BLE PEERID " + peerID);
     }
 
@@ -154,25 +145,47 @@ public class Manager {
     }
 
     public void initScannerAndAdvertiser() {
+//        BluetoothAdapter.getDefaultAdapter().disable();
         Activity curActivity = mReactContext.getCurrentActivity();
         if (!mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             curActivity.startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
+            if (ContextCompat.checkSelfPermission(curActivity,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                ActivityCompat.requestPermissions(curActivity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        99);
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            initGattServerCallBack();
-            initGattCallback();
-            initAdvertiseCallback();
-            initScanCallBack();
+            try {
+                BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
+                Log.e(TAG, "TRY ");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Log.e(TAG, "TRY 2");
+                    mBluetoothLeAdvertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
+                    mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
+                    BluetoothGattService svc = BertyConstants.createService();
 
-            BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                mBluetoothLeAdvertiser = mBluetoothAdapter.getBluetoothLeAdvertiser();
-                mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
 
-                mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
-                mBluetoothGattServer.addService(createService());
+
+                    mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
+                    mGattServerCallback.mBluetoothGattServer = mBluetoothGattServer;
+                    Log.e(TAG, "TEST " + svc + " " + mBluetoothGattServer);
+
+                    mBluetoothGattServer.addService(svc);
+                    ScanSettings settings2 = BertyScan.createScanSetting();
+                    ScanFilter filter = BertyScan.makeFilter();
+                    Log.e(TAG, "START SCANNING");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        mBluetoothLeScanner.startScan(Arrays.asList(filter), settings2, mScanCallback);
+                    }
+
+                }
+
+            } catch (Exception e) {
+                Log.e(TAG, "ECECE " + e);
             }
         }
     }
@@ -222,364 +235,30 @@ public class Manager {
         return false;
     }
 
-    public static AdvertiseSettings createAdvSettings(boolean connectable, int timeoutMillis) {
-        AdvertiseSettings.Builder builder = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AdvertiseSettings.Builder();
-            builder.setAdvertiseMode(AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY);
-            builder.setConnectable(connectable);
-            builder.setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH);
-            builder.setTimeout(timeoutMillis);
-            return builder.build();
-        }
-
-        return null;
-    }
-
-    public AdvertiseData makeAdvertiseData() {
-        ParcelUuid pUuid = new ParcelUuid(SERVICE_UUID);
-        AdvertiseData.Builder builder = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            builder = new AdvertiseData.Builder()
-                    .setIncludeDeviceName(true)
-                    .setIncludeTxPowerLevel(false)
-                    .addServiceUuid(pUuid);
-
-            return builder.build();
-        }
-        return null;
-    }
-
-    private BluetoothGattService createService() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            Boolean truer = true;
-
-            mService = new BluetoothGattService(SERVICE_UUID, SERVICE_TYPE_PRIMARY);
-            acceptCharacteristic = new BluetoothGattCharacteristic(ACCEPT_UUID, PROPERTY_READ | PROPERTY_WRITE, PERMISSION_READ | PERMISSION_WRITE);
-            maCharacteristic = new BluetoothGattCharacteristic(MA_UUID, PROPERTY_READ, PERMISSION_READ);
-            peerIDCharacteristic = new BluetoothGattCharacteristic(PEER_ID_UUID, PROPERTY_READ, PERMISSION_READ);
-            writerCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
-            isRdyCharacteristic = new BluetoothGattCharacteristic(IS_READY_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
-            closerCharacteristic = new BluetoothGattCharacteristic(CLOSER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
-
-            truer = mService.addCharacteristic(acceptCharacteristic) && truer;
-            truer = mService.addCharacteristic(maCharacteristic) && truer;
-            truer = mService.addCharacteristic(peerIDCharacteristic) && truer;
-            truer = mService.addCharacteristic(writerCharacteristic) && truer;
-            truer = mService.addCharacteristic(isRdyCharacteristic) && truer;
-            truer = mService.addCharacteristic(closerCharacteristic) && truer;
-
-            if (truer == false) {
-                Log.e(TAG, "Error adding characteristic");
-            }
-            return mService;
-        }
-
-        return null;
-    }
-
-    private BluetoothGattServerCallback mGattServerCallback;
-
-    public void initGattServerCallBack() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            mGattServerCallback = new BluetoothGattServerCallback() {
-                @Override
-                public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
-
-                    BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
-                    if (bDevice == null) {
-                        synchronized (bertyDevices) {
-                            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback, BluetoothDevice.TRANSPORT_LE);
-//                            Log.e(TAG, "discover service :" + bDevice.gatt.discoverServices());
-                            bDevice = new BertyDevice(device, gatt, device.getAddress());
-                            bertyDevices.put(device.getAddress(), bDevice);
-                            Log.e(TAG, "req mtu start");
-                        }
-                    }
-                    if (newState == 0) {
-                        bDevice.gatt.requestMtu(512);
-
-                        List<BluetoothGattService> svcs = bDevice.gatt.getServices();
-                        BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
-                        List<BluetoothDevice> gbd = mb.getConnectedDevices(GATT);
-                        List<BluetoothDevice> gbds = mb.getConnectedDevices(GATT_SERVER);
-
-
-                        Log.e(TAG, "SVC " + svcs);
-                        for (BluetoothGattService svc: svcs) {
-                            Log.e(TAG, "SVC " + svc.toString());
-                        }
-                        Log.e(TAG, "gdb " + gbd);
-                        for (BluetoothDevice g : gbd) {
-                            Log.e(TAG, "SVC " + g.getAddress());
-                        }
-                        Log.e(TAG, "gdbs " + gbds);
-                        for (BluetoothDevice g : gbds) {
-                            Log.e(TAG, "SVC " + g.getAddress());
-                        }
-                    }
-//                    runDiscoAndMtu(bDevice.gatt);
-                    super.onConnectionStateChange(device, status, newState);
-                    Log.e(TAG, "Server new coon " + device.getAddress());
-                }
-
-
-                public void onConnectionUpdated(BluetoothDevice gatt, int interval, int latency, int timeout,
-                                                int status) {
-                    Log.e(TAG, "TA RACE");
-                }
-
-                public void sendReadResponse(byte[] value, BluetoothDevice device, int offset, int requestId) {
-                    if (offset > value.length) {
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, 0, new byte[]{0} );
-                        return;
-                    }
-                    int size = value.length - offset;
-                    byte[] resp = new byte[size];
-                    for (int i = offset; i < value.length; i++) {
-                        resp[i - offset] = value[i];
-                    }
-                    mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, resp);
-                }
-
-                @Override
-                public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
-                    UUID charID = characteristic.getUuid();
-                    Log.e(TAG, "Read req off " + offset);
-                    if (charID.equals(MA_UUID)) {
-                        byte[] value = ma.getBytes(Charset.forName("UTF-8"));
-                        sendReadResponse(value, device, offset, requestId);
-                    } else if (charID.equals(PEER_ID_UUID)) {
-                        byte[] value = peerID.getBytes(Charset.forName("UTF-8"));
-                        sendReadResponse(value, device, offset, requestId);
-                    } else {
-                        Log.e(TAG, "READ UNKNOW");
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
-                    }
-                    super.onCharacteristicReadRequest(device, requestId, offset, characteristic);
-                }
-
-                @Override
-                public void onExecuteWrite (BluetoothDevice device,
-                                            int requestId,
-                                            boolean execute) {
-                    Log.e(TAG, "EXECUTE WRITE " + requestId + " EXECUTE " + execute);
-                    super.onExecuteWrite(device, requestId, execute);
-                }
-
-                @Override
-                public void onCharacteristicWriteRequest(BluetoothDevice device, int requestId, BluetoothGattCharacteristic characteristic, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
-                    UUID charID = characteristic.getUuid();
-                    BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
-
-                    if (charID.equals(ACCEPT_UUID)) {
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
-                    } else if (charID.equals(WRITER_UUID)) {
-//                        Log.e(TAG, "READER CALLED     " + Arrays.toString(value));
-                        try {
-                            bDevice.waitReady.await();
-                        } catch (Exception e) {
-                            Log.e(TAG, "FAIL AWAIT " + e.getMessage());
-                        }
-                        Log.e(TAG, "rep needed" + responseNeeded+ "prepared " + preparedWrite + " transid " + requestId  + " offset " + offset + " len: " + value.length);
-                        Core.bytesToConn(bDevice.ma, value);
-                        if (responseNeeded) {
-                            mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
-                        }
-
-                    } else if (charID.equals(CLOSER_UUID)) {
-                        // TODO
-                   } else if (charID.equals(IS_READY_UUID)) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    bDevice.waitReady.await();
-                                    Core.addToPeerStore(bDevice.peerID, bDevice.ma);
-                                } catch (InterruptedException e) {
-                                    Log.e(TAG, "error waiting/writing new peer " + e.getMessage());
-                                }
-                            }
-                        }).start();
-                        Log.e(TAG, "OTHER DEVICE IS RDY");
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, null);
-                    } else {
-                        mBluetoothGattServer.sendResponse(device, requestId, GATT_FAILURE, offset, null);
-                    }
-
-                    super.onCharacteristicWriteRequest(device, requestId, characteristic, preparedWrite, responseNeeded, offset, value);
-                }
-
-                @Override
-                public void onDescriptorReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattDescriptor descriptor) {
-                    super.onDescriptorReadRequest(device, requestId, offset, descriptor);
-                }
-
-                @Override
-                public void onDescriptorWriteRequest(BluetoothDevice device, int requestId, BluetoothGattDescriptor descriptor, boolean preparedWrite, boolean responseNeeded, int offset, byte[] value) {
-                    super.onDescriptorWriteRequest(device, requestId, descriptor, preparedWrite, responseNeeded, offset, value);
-                }
-
-                @Override
-                public void onMtuChanged(BluetoothDevice device, int mtu) {
-                    Log.e(TAG, "ON MTU CHANGED SERV");
-                    Log.d(TAG, "new mtu is: " + mtu);
-                    BertyDevice bertyDevice = getDeviceFromAddr(device.getAddress());
-                    bertyDevice.mtu = mtu;
-                    super.onMtuChanged(device, mtu);
-                }
-            };
-        }
-    }
-
-    private AdvertiseCallback mAdvertisingCallback;
-
-    public void initAdvertiseCallback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mAdvertisingCallback = new AdvertiseCallback() {
-                @Override
-                public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-                    Log.e( "BLE", "Advertising onStartSuccess: " + settingsInEffect);
-                    isAdvertising = true;
-                    super.onStartSuccess(settingsInEffect);
-                }
-                @Override
-                public void onStartFailure(int errorCode) {
-                    String errorString;
-                    switch (errorCode) {
-                        case ADVERTISE_FAILED_DATA_TOO_LARGE: errorString = "ADVERTISE_FAILED_DATA_TOO_LARGE";
-                        break;
-
-                        case ADVERTISE_FAILED_TOO_MANY_ADVERTISERS: errorString = "ADVERTISE_FAILED_TOO_MANY_ADVERTISERS";
-                        break;
-
-                        case ADVERTISE_FAILED_ALREADY_STARTED: errorString = "ADVERTISE_FAILED_ALREADY_STARTED";
-                        break;
-
-                        case ADVERTISE_FAILED_INTERNAL_ERROR: errorString = "ADVERTISE_FAILED_INTERNAL_ERROR";
-                        break;
-
-                        case ADVERTISE_FAILED_FEATURE_UNSUPPORTED: errorString = "ADVERTISE_FAILED_FEATURE_UNSUPPORTED";
-                        break;
-
-                        default: errorString = "UNKNOWN ADVERTISE FAILURE";
-                        break;
-                    }
-                    Log.e(TAG, "Advertising onStartFailure: " + errorString);
-                    if (errorCode == AdvertiseCallback.ADVERTISE_FAILED_INTERNAL_ERROR) {
-//                        mBluetoothAdapter.getBluetoothLeAdvertiser().stopAdvertising(mAdvertisingCallback);
-//                        mBluetoothLeAdvertiser.startAdvertising(createAdvSettings(
-//                                true, 300), makeAdvertiseData(), mAdvertisingCallback);
-                    }
-                    super.onStartFailure(errorCode);
-                }
-            };
-        }
-    }
-
-    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-
-    public @Nullable ScanSettings createScanSetting() {
-        ScanSettings settings = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            settings = new ScanSettings.Builder()
-                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                .build();
-        }
-        return settings;
-    }
-
-    public @Nullable ScanFilter makeFilter() {
-        ParcelUuid pUuid = new ParcelUuid(SERVICE_UUID);
-        ScanFilter filter = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            filter = new ScanFilter.Builder().setServiceUuid(pUuid).build();
-
-        }
-        return filter;
-    }
-
-    private ScanCallback mScanCallback;
-
-    public void initScanCallBack() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mScanCallback = new ScanCallback() {
-                public void parseResult(ScanResult result) {
-                    BluetoothDevice device = result.getDevice();
-                    String addr = device.getAddress();
-                    synchronized (bertyDevices) {
-                        if (!bertyDevices.containsKey(addr)) {
-                            initGattCallback();
-                            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback);
-                            BertyDevice bDevice = new BertyDevice(device, gatt, addr);
-                            bertyDevices.put(addr, bDevice);
-                            gatt.discoverServices();
-                        }
-                    }
-                }
-
-                @Override
-                public void onScanResult(int callbackType, ScanResult result) {
-                    parseResult(result);
-                    super.onScanResult(callbackType, result);
-                }
-
-                @Override
-                public void onBatchScanResults(List<ScanResult> results) {
-                    for (ScanResult result:results) {
-                        parseResult(result);
-                    }
-                    super.onBatchScanResults(results);
-                }
-
-                @Override
-                public void onScanFailed(int errorCode) {
-                    String errorString;
-
-                    switch(errorCode) {
-                        case SCAN_FAILED_ALREADY_STARTED: errorString = "SCAN_FAILED_ALREADY_STARTED";
-                            break;
-
-                        case SCAN_FAILED_APPLICATION_REGISTRATION_FAILED: errorString = "SCAN_FAILED_APPLICATION_REGISTRATION_FAILED";
-                            break;
-
-                        case SCAN_FAILED_INTERNAL_ERROR: errorString = "SCAN_FAILED_INTERNAL_ERROR";
-                            break;
-
-                        case SCAN_FAILED_FEATURE_UNSUPPORTED: errorString = "SCAN_FAILED_FEATURE_UNSUPPORTED";
-                        break;
-
-                        default: errorString = "UNKNOW FAIL";
-                        break;
-                    }
-                    Log.e(TAG, "error scanning " + errorString);
-                    super.onScanFailed(errorCode);
-                }
-            };
-        }
-    }
 
     public void startAdvertising() {
-        AdvertiseSettings settings = createAdvSettings(true, 0);
-        AdvertiseData advData = makeAdvertiseData();
+        AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
+        AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
+            Log.e(TAG, "ADV see " + settings + " data " + advData + " cb " + mAdvertisingCallback);
+//            mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
         }
     }
 
     public void stopAdvertising() {
         isAdvertising = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Log.e(TAG, "STOP ADV");
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertisingCallback);
         }
     }
 
     public void startScanning() {
-        ScanSettings settings = createScanSetting();
-        ScanFilter filter = makeFilter();
-
+        ScanSettings settings = BertyScan.createScanSetting();
+        ScanFilter filter = BertyScan.makeFilter();
+        Log.e(TAG, "START SCANNING");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBluetoothLeScanner.startScan(Arrays.asList(filter), settings, mScanCallback);
+//            mBluetoothLeScanner.startScan(Arrays.asList(filter), settings, mScanCallback);
         }
     }
 
@@ -588,8 +267,6 @@ public class Manager {
             mBluetoothLeScanner.stopScan(mScanCallback);
         }
     }
-
-    protected BluetoothGattCallback mGattCallback = null;
 
     public @Nullable BertyDevice getDeviceFromAddr(String addr) {
         synchronized (bertyDevices) {
@@ -644,12 +321,40 @@ public class Manager {
 
                 if (c != null && c.getUuid().equals(MA_UUID)) {
                     bDevice.maCharacteristic = c;
-                    gatt.readCharacteristic(bDevice.maCharacteristic);
                     bDevice.waitReady.countDown();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Thread.currentThread().setName("ReadMaWaiter");
+                            while (!gatt.readCharacteristic(bDevice.maCharacteristic)) {
+                                Log.e(TAG, "Gonna wait");
+                                try {
+                                    Thread.sleep(4000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Log.e(TAG, "TEST        " + bDevice.maCharacteristic.getValue());
+                        }
+                    }).start();
                 } else if (c != null && c.getUuid().equals(PEER_ID_UUID)) {
                     bDevice.peerIDCharacteristic = c;
-                    gatt.readCharacteristic(bDevice.peerIDCharacteristic);
                     bDevice.waitReady.countDown();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Thread.currentThread().setName("ReadPeerWaiter");
+                            while (!gatt.readCharacteristic(bDevice.peerIDCharacteristic)) {
+                                Log.e(TAG, "Gonna wait");
+                                try {
+                                    Thread.sleep(4000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            Log.e(TAG, "TEST        " + bDevice.peerIDCharacteristic.getValue());
+                        }
+                    }).start();
                 } else if (c != null && c.getUuid().equals(CLOSER_UUID)) {
                     bDevice.closerCharacteristic = c;
                     bDevice.waitReady.countDown();
@@ -674,163 +379,6 @@ public class Manager {
 
         while (!gatt.requestMtu(512)) {
             /** intentionally empty */
-        }
-    }
-
-    public void initGattCallback() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (mGattCallback == null) {
-                mGattCallback = new BluetoothGattCallback() {
-                    @Override
-                    public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-                        super.onPhyUpdate(gatt, txPhy, rxPhy, status);
-                    }
-
-                    @Override
-                    public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-                        super.onPhyRead(gatt, txPhy, rxPhy, status);
-                    }
-
-                    @Override
-                    public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                        if (bDevice == null) {
-                            synchronized (bertyDevices) {
-                                BluetoothDevice device = gatt.getDevice();
-                                bDevice = new BertyDevice(device, gatt, device.getAddress());
-                                bertyDevices.put(device.getAddress(), bDevice);
-                            }
-                        }
-                        gatt.discoverServices();
-                        Log.e(TAG, "CLI");
-//                        for (BluetoothGattService svc : gatt.getServices()) {
-//                            Log.e(TAG, "KNOWN SVC  "+ svc.getUuid().toString());
-//                        }
-//                        runDiscoAndMtu(gatt);
-
-
-                        super.onConnectionStateChange(gatt, status, newState);
-                    }
-
-                    @Override
-                    public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-                        for (BluetoothGattService svc : gatt.getServices()) {
-                            if (svc.getUuid().equals(SERVICE_UUID)) {
-                                Log.e(TAG, "START DISCO CHAR1");
-                                populateCharacteristic(gatt);
-                            }
-                        }
-
-                        super.onServicesDiscovered(gatt, status);
-                    }
-
-                    @Override
-                    public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                        Log.e(TAG, "charact discovered " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
-                        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                        handleReadCharact(bDevice, characteristic);
-                        super.onCharacteristicRead(gatt, characteristic, status);
-                    }
-
-                    @Override
-                    public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-                        Log.e(TAG, "onCharacteristicWrite " + characteristic.getUuid());
-                        AdvertiseSettings settings = createAdvSettings(true, 0);
-                        AdvertiseData advData = makeAdvertiseData();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
-                        }
-                        if (status == GATT_SUCCESS) {
-                            BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                            bDevice.isWaiting.release();
-                        } else {
-                            String errorString;
-
-                            switch (status) {
-                                case GATT_SUCCESS:
-                                    errorString = "GATT_SUCCESS";
-                                    break;
-                                case GATT_READ_NOT_PERMITTED:
-                                    errorString = "GATT_READ_NOT_PERMITTED";
-                                    break;
-                                case GATT_WRITE_NOT_PERMITTED:
-                                    errorString = "GATT_WRITE_NOT_PERMITTED";
-                                    break;
-                                case GATT_INSUFFICIENT_AUTHENTICATION:
-                                    errorString = "GATT_INSUFFICIENT_AUTHENTICATION";
-                                    break;
-                                case GATT_REQUEST_NOT_SUPPORTED:
-                                    errorString = "GATT_REQUEST_NOT_SUPPORTED";
-                                    if (characteristic.getUuid().equals(IS_READY_UUID)) {
-                                        errorString += " IS RDY RETRYING";
-                                        bDevice.writeRdy();
-                                    }
-                                    break;
-                                case GATT_INSUFFICIENT_ENCRYPTION:
-                                    errorString = "GATT_INSUFFICIENT_ENCRYPTION";
-                                    break;
-                                case GATT_INVALID_OFFSET:
-                                    errorString = "GATT_INVALID_OFFSET";
-                                    break;
-                                case GATT_INVALID_ATTRIBUTE_LENGTH:
-                                    errorString = "GATT_INVALID_ATTRIBUTE_LENGTH";
-                                    break;
-                                case GATT_CONNECTION_CONGESTED:
-                                    errorString = "GATT_CONNECTION_CONGESTED";
-                                    break;
-                                case GATT_FAILURE:
-                                    errorString = "GATT_FAILURE";
-                                    break;
-                                default:
-                                    errorString = "UNKNOW FAIL";
-                                    break;
-                            }
-                            Log.e(TAG, "Error writing gatt " + errorString);
-                        }
-                        super.onCharacteristicWrite(gatt, characteristic, status);
-                    }
-
-                    @Override
-                    public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-                        Log.e(TAG, "charact changed " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
-                        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                        handleReadCharact(bDevice, characteristic);
-                        super.onCharacteristicChanged(gatt, characteristic);
-                    }
-
-                    @Override
-                    public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-                        Log.e(TAG, "onDescriptorRead");
-                        super.onDescriptorRead(gatt, descriptor, status);
-                    }
-
-                    @Override
-                    public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-                        Log.e(TAG, "onDescriptorWrite");
-                        super.onDescriptorWrite(gatt, descriptor, status);
-                    }
-
-                    @Override
-                    public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
-                        Log.e(TAG, "onReliableWriteCompleted");
-                        super.onReliableWriteCompleted(gatt, status);
-                    }
-
-                    @Override
-                    public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-                        Log.e(TAG, "onReadRemoteRssi");
-                        super.onReadRemoteRssi(gatt, rssi, status);
-                    }
-
-                    @Override
-                    public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-                        Log.e(TAG, "ON MTU CHANGED CLI");
-                        BertyDevice bertyDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-                        bertyDevice.mtu = mtu;
-                        super.onMtuChanged(gatt, mtu, status);
-                    }
-                };
-            }
         }
     }
 
@@ -867,6 +415,7 @@ public class Manager {
     }
 
     public void handleReadCharact(BertyDevice device, BluetoothGattCharacteristic characteristic) {
+        Log.e(TAG, "READ CHARACT");
         UUID charID = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
             charID = characteristic.getUuid();
@@ -878,24 +427,9 @@ public class Manager {
         }
     }
 
-    public void handleConnectionStateChange(BertyDevice device, int status, int newState) {
-        if (newState == STATE_CONNECTED) {
-            BertyDevice bDevice = getDeviceFromAddr(device.addr);
-            Log.e(TAG, "new newly connected device " + device.gatt);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                device.gatt.discoverServices();
-            }
-        } else if (newState == STATE_DISCONNECTED) {
-            Log.e(TAG, "disconnected device " + device.addr);
-            synchronized (bertyDevices) {
-                bertyDevices.remove(device.addr);
-                Core.connClose(device.ma);
-            }
-        }
-    }
-
     public boolean write(byte[] p, String ma) {
         BertyDevice bDevice = getDeviceFromMa(ma);
+
         if (bDevice == null) {
             Log.e(TAG, "Unknow device to write");
             return false;
@@ -904,7 +438,6 @@ public class Manager {
         try {
             bDevice.write(p);
         } catch (Exception e) {
-            Log.e(TAG, "WRITING PAT2       " + e.getMessage());
             return false;
         }
 
@@ -926,6 +459,17 @@ public class Manager {
             }
 
             return null;
+        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            mBluetoothGattServer.clearServices();
+            stopAdvertising();
+            stopScanning();
+        } finally {
+            super.finalize();
         }
     }
 }
