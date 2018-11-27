@@ -142,6 +142,10 @@ export default class List extends PureComponent {
     throw new Error('thrown exception')
   }
 
+  jsConsoleError = () => {
+    console.error('console error')
+  }
+
   render () {
     const { navigation } = this.props
     const { restartDaemon, panic } = this.state
@@ -199,6 +203,11 @@ export default class List extends PureComponent {
             icon='slash'
             title='Throw JS exception'
             onPress={this.throwJsException}
+          />
+          <Menu.Item
+            icon='slash'
+            title='JS console error'
+            onPress={this.jsConsoleError}
           />
           <Menu.Item
             icon='list'
