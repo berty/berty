@@ -40,6 +40,9 @@ service Service {
   rpc GetEvent (berty.p2p.Event) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Query";
   };
+  rpc EventSeen (EventIDInput) returns (p2p.Event) {
+    option (gql.graphql_type) = "Mutation";
+  };
 
   //
   // Contacts
@@ -116,7 +119,7 @@ service Service {
   rpc DebugPing (PingDestination) returns (Void) {
   };
 
-  rpc DebugRequeueEvent (DebugEventRequeueInput) returns (p2p.Event) {
+  rpc DebugRequeueEvent (EventIDInput) returns (p2p.Event) {
     option (gql.graphql_type) = "Mutation";
   };
 
@@ -302,7 +305,7 @@ enum NullableTrueFalse {
   False = 2;
 }
 
-message DebugEventRequeueInput {
+message EventIDInput {
   string event_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "EventID"];
 }
 

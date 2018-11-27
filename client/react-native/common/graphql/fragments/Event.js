@@ -10,6 +10,7 @@ export default component =>
         createdAt
         updatedAt
         sentAt
+        seenAt
         receivedAt
         ackedAt
         direction

@@ -330,6 +330,7 @@ type ComplexityRoot struct {
 		Kind               func(childComplexity int) int
 		Attributes         func(childComplexity int) int
 		ConversationId     func(childComplexity int) int
+		SeenAt             func(childComplexity int) int
 	}
 
 	BertyP2pEventPayload struct {
@@ -347,6 +348,7 @@ type ComplexityRoot struct {
 		Kind               func(childComplexity int) int
 		Attributes         func(childComplexity int) int
 		ConversationId     func(childComplexity int) int
+		SeenAt             func(childComplexity int) int
 	}
 
 	BertyP2pNodeAttrs struct {
@@ -605,6 +607,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		EventSeen              func(childComplexity int, eventId string) int
 		ContactRequest         func(childComplexity int, contact *entity.Contact, introText string) int
 		ContactAcceptRequest   func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ContactRemove          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
@@ -623,7 +626,7 @@ type ComplexityRoot struct {
 		Node                  func(childComplexity int, id string) int
 		Id                    func(childComplexity int, T bool) int
 		EventList             func(childComplexity int, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
+		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string, seenAt *time.Time) int
 		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ConversationList      func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
@@ -696,6 +699,7 @@ type GoogleProtobufMethodOptionsResolver interface {
 	IdempotencyLevel(ctx context.Context, obj *descriptor.MethodOptions) (*int32, error)
 }
 type MutationResolver interface {
+	EventSeen(ctx context.Context, eventId string) (*p2p.Event, error)
 	ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error)
 	ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
@@ -713,7 +717,7 @@ type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
 	ID(ctx context.Context, T bool) (*p2p.Peer, error)
 	EventList(ctx context.Context, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
-	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
+	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string, seenAt *time.Time) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
 	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
@@ -730,6 +734,21 @@ type SubscriptionResolver interface {
 	LogStream(ctx context.Context, continues bool, logLevel string, namespaces string, last int32) (<-chan *node.LogEntry, error)
 	MonitorBandwidth(ctx context.Context, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) (<-chan *p2p.BandwidthStats, error)
 	MonitorPeers(ctx context.Context, T bool) (<-chan *p2p.Peer, error)
+}
+
+func field_Mutation_EventSeen_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["eventId"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["eventId"] = arg0
+	return args, nil
+
 }
 
 func field_Mutation_ContactRequest_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
@@ -1714,6 +1733,20 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 		}
 	}
 	args["conversationId"] = arg13
+	var arg14 *time.Time
+	if tmp, ok := rawArgs["seenAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg14 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["seenAt"] = arg14
 	return args, nil
 
 }
@@ -3552,6 +3585,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyP2pEvent.ConversationId(childComplexity), true
 
+	case "BertyP2pEvent.seenAt":
+		if e.complexity.BertyP2pEvent.SeenAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEvent.SeenAt(childComplexity), true
+
 	case "BertyP2pEventPayload.id":
 		if e.complexity.BertyP2pEventPayload.Id == nil {
 			break
@@ -3649,6 +3689,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyP2pEventPayload.ConversationId(childComplexity), true
+
+	case "BertyP2pEventPayload.seenAt":
+		if e.complexity.BertyP2pEventPayload.SeenAt == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pEventPayload.SeenAt(childComplexity), true
 
 	case "BertyP2pNodeAttrs.kind":
 		if e.complexity.BertyP2pNodeAttrs.Kind == nil {
@@ -4637,6 +4684,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.GoogleProtobufUninterpretedOptionNamePart.IsExtension(childComplexity), true
 
+	case "Mutation.EventSeen":
+		if e.complexity.Mutation.EventSeen == nil {
+			break
+		}
+
+		args, err := field_Mutation_EventSeen_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EventSeen(childComplexity, args["eventId"].(string)), true
+
 	case "Mutation.ContactRequest":
 		if e.complexity.Mutation.ContactRequest == nil {
 			break
@@ -4827,7 +4886,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string)), true
+		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string), args["seenAt"].(*time.Time)), true
 
 	case "Query.ContactList":
 		if e.complexity.Query.ContactList == nil {
@@ -9842,6 +9901,8 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 				}
 				wg.Done()
 			}(i, field)
+		case "seenAt":
+			out.Values[i] = ec._BertyP2pEvent_seenAt(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10172,6 +10233,30 @@ func (ec *executionContext) _BertyP2pEvent_conversationId(ctx context.Context, f
 	return models.MarshalID(res)
 }
 
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pEvent_seenAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SeenAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalTime(*res)
+}
+
 var bertyP2pEventPayloadImplementors = []string{"BertyP2pEventPayload"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -10245,6 +10330,8 @@ func (ec *executionContext) _BertyP2pEventPayload(ctx context.Context, sel ast.S
 				}
 				wg.Done()
 			}(i, field)
+		case "seenAt":
+			out.Values[i] = ec._BertyP2pEventPayload_seenAt(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10573,6 +10660,30 @@ func (ec *executionContext) _BertyP2pEventPayload_conversationId(ctx context.Con
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalID(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pEventPayload_seenAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pEventPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SeenAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalTime(*res)
 }
 
 var bertyP2pNodeAttrsImplementors = []string{"BertyP2pNodeAttrs"}
@@ -17010,6 +17121,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
+		case "EventSeen":
+			out.Values[i] = ec._Mutation_EventSeen(ctx, field)
 		case "ContactRequest":
 			out.Values[i] = ec._Mutation_ContactRequest(ctx, field)
 		case "ContactAcceptRequest":
@@ -17043,6 +17156,37 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		return graphql.Null
 	}
 	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_EventSeen(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_EventSeen_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().EventSeen(rctx, args["eventId"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pEventPayload(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -17640,7 +17784,7 @@ func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.C
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetEvent(rctx, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string))
+		return ec.resolvers.Query().GetEvent(rctx, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string), args["seenAt"].(*time.Time))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19989,6 +20133,17 @@ func UnmarshalBertyP2pEventInput(v interface{}) (p2p.Event, error) {
 			if err != nil {
 				return it, err
 			}
+		case "seenAt":
+			var err error
+			var ptr1 time.Time
+			if v != nil {
+				ptr1, err = models.UnmarshalTime(v)
+				it.SeenAt = &ptr1
+			}
+
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -20408,6 +20563,7 @@ type BertyP2pEvent implements Node {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestamp
 }
   
   
@@ -20523,6 +20679,7 @@ input BertyP2pEventInput {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestampInput
 }
 type BertyP2pEventPayload {
     id: ID!
@@ -20539,6 +20696,7 @@ type BertyP2pEventPayload {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestamp
 }
 input BertyNodePaginationInput {
       orderBy: String!
@@ -20682,6 +20840,7 @@ type Query {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestampInput
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput
@@ -20750,6 +20909,9 @@ type Query {
 }
   
 type Mutation {
+  EventSeen(
+    eventId: ID!
+  ): BertyP2pEventPayload
   ContactRequest(
     contact: BertyEntityContactInput
       introText: String!

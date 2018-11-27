@@ -17,6 +17,7 @@ func init() {
 	registerServerStream("berty.node.EventStream", NodeEventStream)
 	registerServerStream("berty.node.EventList", NodeEventList)
 	registerUnary("berty.node.GetEvent", NodeGetEvent)
+	registerUnary("berty.node.EventSeen", NodeEventSeen)
 	registerUnary("berty.node.ContactRequest", NodeContactRequest)
 	registerUnary("berty.node.ContactAcceptRequest", NodeContactAcceptRequest)
 	registerUnary("berty.node.ContactRemove", NodeContactRemove)
@@ -124,6 +125,18 @@ func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) 
 		return nil, err
 	}
 	return client.Node().GetEvent(ctx, &typedInput)
+}
+func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "EventSeen"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.EventIDInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().EventSeen(ctx, &typedInput)
 }
 func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
@@ -367,7 +380,7 @@ func NodeDebugRequeueEvent(client *client.Client, ctx context.Context, jsonInput
 		zap.String("method", "DebugRequeueEvent"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput node.DebugEventRequeueInput
+	var typedInput node.EventIDInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}

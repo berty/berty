@@ -1172,6 +1172,7 @@ models:
         resolver: true
       conversationId:
         resolver: true
+      seenAt:
   BertyP2pEventInput:
     model: berty.tech/core/api/p2p.Event
     fields:
@@ -1192,6 +1193,7 @@ models:
         resolver: true
       conversationId:
         resolver: true
+      seenAt:
   BertyP2pEventPayload:
     model: berty.tech/core/api/p2p.Event
     fields:
@@ -1212,6 +1214,7 @@ models:
         resolver: true
       conversationId:
         resolver: true
+      seenAt:
 
 
   BertyP2pBandwidthStats:
@@ -1616,13 +1619,13 @@ models:
     fields:
       t:
 
-  BertyNodeDebugEventRequeueInput:
-    model: berty.tech/core/api/node.DebugEventRequeueInput
+  BertyNodeEventIDInput:
+    model: berty.tech/core/api/node.EventIDInput
     fields:
       eventId:
         resolver: true
-  BertyNodeDebugEventRequeueInputPayload:
-    model: berty.tech/core/api/node.DebugEventRequeueInput
+  BertyNodeEventIDInputPayload:
+    model: berty.tech/core/api/node.EventIDInput
     fields:
       eventId:
         resolver: true

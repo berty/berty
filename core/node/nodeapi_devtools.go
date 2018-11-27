@@ -191,7 +191,7 @@ func (n *Node) Panic(_ context.Context, input *node.Void) (*node.Void, error) {
 	panic("panic from client")
 }
 
-func (n *Node) DebugRequeueEvent(_ context.Context, input *node.DebugEventRequeueInput) (*p2p.Event, error) {
+func (n *Node) DebugRequeueEvent(_ context.Context, input *node.EventIDInput) (*p2p.Event, error) {
 	event := p2p.Event{}
 
 	if err := n.sql.First(&event, "ID = ?", input.EventID).Error; err != nil {

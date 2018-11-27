@@ -62,6 +62,27 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
+func (n *Node) EventSeen(ctx context.Context, input *node.EventIDInput) (*p2p.Event, error) {
+	event := &p2p.Event{}
+	count := 0
+
+	if err := n.sql.
+		Model(&p2p.Event{}).
+		Where(&p2p.Event{ID: input.EventID}).
+		Count(&count).
+		UpdateColumn("seen_at", time.Now().UTC()).
+		First(event).
+		Error; err != nil {
+		return nil, errors.Wrap(err, "unable to mark event as seen")
+	}
+
+	if count == 0 {
+		return nil, errors.New("event not found")
+	}
+
+	return event, nil
+}
+
 // GetEvent implements berty.node.GetEvent
 func (n *Node) GetEvent(ctx context.Context, event *p2p.Event) (*p2p.Event, error) {
 	n.handleMutex.Lock()
