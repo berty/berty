@@ -1,3 +1,5 @@
+import { btoa } from 'b64-lite'
+
 import EventStream from './EventStream'
 
 export default context => ({
