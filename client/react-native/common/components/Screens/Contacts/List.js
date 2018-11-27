@@ -3,7 +3,7 @@ import Case from 'case'
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Screen, Text } from '../../Library'
-import { Pagination } from '../../../relay'
+import { Pagination, RelayContext } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments, enums } from '../../../graphql'
@@ -47,6 +47,8 @@ const Item = fragments.Contact(
 )
 
 export default class ContactList extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -70,6 +72,7 @@ export default class ContactList extends PureComponent {
         context: { queries, subscriptions },
       },
     } = this.props
+    console.log(this.context)
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination

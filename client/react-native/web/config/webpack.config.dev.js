@@ -1,35 +1,33 @@
-'use strict';
-
-const path = require('path');
-const webpack = require('webpack');
-const PnpWebpackPlugin = require('pnp-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
-const getClientEnvironment = require('./env');
-const paths = require('./paths');
-const ManifestPlugin = require('webpack-manifest-plugin');
-const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
-const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
+const path = require('path')
+const webpack = require('webpack')
+const PnpWebpackPlugin = require('pnp-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
+const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
+const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
+const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
+const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
+const getClientEnvironment = require('./env')
+const paths = require('./paths')
+const ManifestPlugin = require('webpack-manifest-plugin')
+const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier')
+const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
-const publicPath = '/';
+const publicPath = '/'
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
-const publicUrl = '';
+const publicUrl = ''
 // Get environment variables to inject into our app.
-const env = getClientEnvironment(publicUrl);
+const env = getClientEnvironment(publicUrl)
 
 // style files regexes
-const cssRegex = /\.css$/;
-const cssModuleRegex = /\.module\.css$/;
-const sassRegex = /\.(scss|sass)$/;
-const sassModuleRegex = /\.module\.(scss|sass)$/;
+const cssRegex = /\.css$/
+const cssModuleRegex = /\.module\.css$/
+const sassRegex = /\.(scss|sass)$/
+const sassModuleRegex = /\.module\.(scss|sass)$/
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -59,12 +57,12 @@ const getStyleLoaders = (cssOptions, preProcessor) => {
         ],
       },
     },
-  ];
+  ]
   if (preProcessor) {
-    loaders.push(require.resolve(preProcessor));
+    loaders.push(require.resolve(preProcessor))
   }
-  return loaders;
-};
+  return loaders
+}
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -126,10 +124,7 @@ module.exports = {
     // We placed these paths second because we want `node_modules` to "win"
     // if there are any conflicts. This matches Node resolution mechanism.
     // https://github.com/facebook/create-react-app/issues/253
-    modules: [
-      'web/node_modules',
-      'node_modules',
-    ],
+    modules: ['web/node_modules', 'node_modules'],
     // These are the reasonable defaults supported by the Node ecosystem.
     // We also include JSX as a common component filename extension to support
     // some tools, although we do not recommend using it, see:
@@ -138,7 +133,10 @@ module.exports = {
     // for React Native Web.
     extensions: ['.mjs', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
-      'react-dom/unstable-native-dependencies': path.resolve(paths.appPath, 'config/unstable-native-dependencies')
+      'react-dom/unstable-native-dependencies': path.resolve(
+        paths.appPath,
+        'config/unstable-native-dependencies'
+      ),
     },
     plugins: [
       // Adds support for installing with Plug'n'Play, leading to faster installs and adding
@@ -175,12 +173,17 @@ module.exports = {
             options: {
               formatter: require.resolve('react-dev-utils/eslintFormatter'),
               eslintPath: require.resolve('eslint'),
-
             },
             loader: require.resolve('eslint-loader'),
           },
         ],
         include: paths.appSrc,
+      },
+      // See: https://github.com/aws/aws-amplify/issues/686#issuecomment-387710340
+      {
+        test: /\.mjs$/,
+        include: /node_modules\/react-relay-network-modern/,
+        type: 'javascript/auto',
       },
       {
         // "oneOf" will traverse all following loaders until one will
@@ -211,7 +214,7 @@ module.exports = {
               ],
               plugins: [
                 'react-native-web',
-                require.resolve("@babel/plugin-proposal-export-namespace-from"),
+                require.resolve('@babel/plugin-proposal-export-namespace-from'),
                 require.resolve('babel-plugin-relay'),
                 [
                   require.resolve('babel-plugin-named-asset-import'),
@@ -244,13 +247,13 @@ module.exports = {
               configFile: false,
               compact: false,
               presets: [
-                require.resolve("@babel/preset-react"),
-                require.resolve("@babel/preset-env"),
-                require.resolve('metro-react-native-babel-preset')
+                require.resolve('@babel/preset-react'),
+                require.resolve('@babel/preset-env'),
+                require.resolve('metro-react-native-babel-preset'),
               ],
               plugins: [
                 'react-native-web',
-                require.resolve("@babel/plugin-proposal-class-properties")
+                require.resolve('@babel/plugin-proposal-class-properties'),
               ],
               cacheDirectory: true,
               // Don't waste time on Gzipping the cache
@@ -415,4 +418,4 @@ module.exports = {
   // Turn off performance processing because we utilize
   // our own hints via the FileSizeReporter
   performance: false,
-};
+}

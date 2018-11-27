@@ -2,9 +2,8 @@ import {
   RelayNetworkLayer,
   urlMiddleware,
   perfMiddleware,
-} from 'react-relay-network-modern/node8'
+} from 'react-relay-network-modern/es'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { _ } from 'case'
 import { retryMiddleware } from 'react-relay-network-modern'
 
 import { Environment, RecordSource, Store } from 'relay-runtime'
@@ -66,7 +65,7 @@ const perfLogger = (msg, req, res) => {
     }
 
     console.groupEnd()
-  } catch (_) {
+  } catch (err) {
     console.log('[RELAY_NETWORK]', msg, req, res)
   }
 }
