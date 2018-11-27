@@ -8,6 +8,7 @@ import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
+import { parseEmbedded } from '../../../helpers/json'
 
 const Message = fragments.Event(props => {
   const conversation = props.navigation.getParam('conversation')
@@ -36,10 +37,7 @@ const Message = fragments.Event(props => {
           [isMyself ? 'left' : 'right']: 42,
         }}
       >
-        {
-          JSON.parse(String.fromCharCode.apply(null, props.data.attributes))
-            .message.text
-        }
+        {parseEmbedded(props.data.attributes).message.text}
       </Text>
       <Text
         left={!isMyself}

@@ -38,6 +38,7 @@
     "relay-compiler": "^1.6.2",
     "relay-devtools": "^1.4.0",
     "subscriptions-transport-ws": "^0.9.15",
+    "text-encoding": "^0.7.0",
     "whatwg-url": "^7.0.0"
   },
   "devDependencies": {
