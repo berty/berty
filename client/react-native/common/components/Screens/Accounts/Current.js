@@ -2,6 +2,7 @@ import { NavigationActions } from 'react-navigation'
 import { Platform, NativeModules } from 'react-native'
 import sleep from '../../../helpers/sleep'
 import React, { PureComponent } from 'react'
+import { getAvailableUpdate } from '../../../helpers/update'
 
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
@@ -39,37 +40,39 @@ export default class Current extends PureComponent {
     }
   }
 
-  componentDidMount () {
-    this.setRelayContext()
-  }
-
-  setRelayContext = async () => {
-    const {
-      screenProps: { deepLink },
-    } = this.props
+  async componentDidMount () {
+    const context = await this.getRelayContext()
+    const availableUpdate = await getAvailableUpdate(context)
     this.setState(
       {
-        context: contextValue({
-          environment: await environment.setup({
-            getIp: this.getIp,
-            getPort: this.getPort,
-          }),
-          mutations,
-          subscriptions,
-          queries,
-          fragments,
-          updaters,
-        }),
+        context,
+        availableUpdate,
         loading: false,
       },
       () => {
+        const {
+          screenProps: { deepLink },
+        } = this.props
         this.mainNav.dispatch(NavigationActions.navigate(deepLink))
       }
     )
   }
 
+  getRelayContext = async () =>
+    contextValue({
+      environment: await environment.setup({
+        getIp: this.getIp,
+        getPort: this.getPort,
+      }),
+      mutations,
+      subscriptions,
+      queries,
+      fragments,
+      updaters,
+    })
+
   render () {
-    const { loading, context } = this.state
+    const { loading, context, availableUpdate } = this.state
     if (loading) {
       return <Loader message='Setting up berty :)' />
     }
@@ -77,7 +80,11 @@ export default class Current extends PureComponent {
       <RelayContext.Provider value={context}>
         <Main
           ref={nav => (this.mainNav = nav)}
-          screenProps={{ ...this.props.screenProps, context }}
+          screenProps={{
+            ...this.props.screenProps,
+            context,
+            availableUpdate,
+          }}
         />
       </RelayContext.Provider>
     )

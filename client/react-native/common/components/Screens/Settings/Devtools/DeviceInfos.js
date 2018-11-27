@@ -35,6 +35,7 @@ export default class DeviceInfos extends PureComponent {
       },
     } = this.props
     this.setState({ refreshing: true }, async () => {
+      console.log(queries)
       const data = await queries.DeviceInfos.fetch()
       this.setState({ infos: data.DeviceInfos.infos, refreshing: false })
     })

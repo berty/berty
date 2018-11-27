@@ -5,7 +5,6 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 
 import { Loader } from './Library'
-import { getAvailableUpdate } from '../helpers/update'
 import Accounts from './Screens/Accounts'
 
 export default class App extends PureComponent {
@@ -18,10 +17,6 @@ export default class App extends PureComponent {
   }
 
   componentDidMount () {
-    getAvailableUpdate().then(availableUpdate =>
-      this.setState({ availableUpdate })
-    )
-
     Linking.getInitialURL()
       .then(url => {
         if (url !== null) {
@@ -80,7 +75,6 @@ export default class App extends PureComponent {
           }}
           screenProps={{
             deepLink,
-            availableUpdate: this.state.availableUpdate,
           }}
         />
         {Platform.OS === 'ios' && <KeyboardSpacer />}
