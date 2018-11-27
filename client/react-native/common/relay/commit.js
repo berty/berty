@@ -1,7 +1,12 @@
 import { commitMutation } from 'react-relay'
-import environment from './environment'
 
-export default (mutation, clientMutationId, input = {}, configs) => {
+export default (
+  environment,
+  mutation,
+  clientMutationId,
+  input = {},
+  configs
+) => {
   return new Promise((resolve, reject) =>
     commitMutation(environment, {
       mutation,

@@ -1,12 +1,15 @@
-import React, { PureComponent } from 'react'
 import { Image } from 'react-native'
+import React, { PureComponent } from 'react'
+
 import { Screen, Menu, Header, Badge } from '../../../Library'
+import { choosePicture } from '../../../../helpers/react-native-image-picker'
 import { colors } from '../../../../constants'
 import { conversation as utils } from '../../../../utils'
-import { mutations } from '../../../../graphql'
-import { choosePicture } from '../../../../helpers/react-native-image-picker'
+import { RelayContext } from '../../../../relay'
 
 export default class List extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => {
     const [conversation, { edit }, onEdit, onSave] = [
       navigation.getParam('conversation') || { members: [] },
@@ -59,7 +62,7 @@ export default class List extends PureComponent {
   addMembers = async ({ contactsID }) => {
     try {
       const { id } = this.props.navigation.getParam('conversation')
-      await mutations.conversationInvite.commit({
+      await this.props.screenProps.context.mutations.conversationInvite({
         conversationID: id,
         contactsID,
       })

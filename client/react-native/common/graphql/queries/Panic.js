@@ -1,7 +1,5 @@
 import { fetchQuery, graphql } from 'react-relay'
 
-import { environment } from '../../relay'
-
 const query = graphql`
   query PanicQuery {
     Panic(T: true) {
@@ -10,7 +8,8 @@ const query = graphql`
   }
 `
 
-export default {
-  ...query,
-  fetch: (variables = {}) => fetchQuery(environment, query, variables),
-}
+export default context => ({
+  graphql: query,
+  fetch: (variables = {}) =>
+    fetchQuery(context.environment, query, variables),
+})

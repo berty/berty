@@ -9,7 +9,6 @@ import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
 import { colors } from '../../../../constants'
-import { queries } from '../../../../graphql'
 
 const { CoreModule } = NativeModules
 
@@ -56,7 +55,7 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ panic: true })
     this.setState({ panic: true }, async () => {
       if (Platform.OS === 'web') {
-        await queries.Panic.fetch()
+        await this.props.screenProps.queries.Panic.fetch()
       } else {
         CoreModule.panic()
       }

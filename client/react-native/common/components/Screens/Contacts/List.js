@@ -1,17 +1,15 @@
 import { Image } from 'react-native'
+import Case from 'case'
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Screen, Text } from '../../Library'
-import { Pagination } from '../../../relay'
+import { Pagination, RelayContext } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
-import { queries, fragments } from '../../../graphql'
+import { fragments, enums } from '../../../graphql'
 
 const Item = fragments.Contact(
-  ({
-    data: { id, overrideDisplayName, displayName, displayStatus },
-    navigation,
-  }) => (
+  ({ data: { id, overrideDisplayName, displayName, status }, navigation }) => (
     <Flex.Cols
       align='center'
       onPress={() => {
@@ -38,7 +36,10 @@ const Item = fragments.Contact(
           {overrideDisplayName || displayName}
         </Text>
         <Text color={colors.subtleGrey} tiny middle left>
-          {displayStatus}
+          {Case.lower(enums.ValueBertyEntityContactInputStatus[status]).replace(
+            /^is /g,
+            ''
+          )}
         </Text>
       </Flex.Rows>
     </Flex.Cols>
@@ -46,6 +47,8 @@ const Item = fragments.Contact(
 )
 
 export default class ContactList extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -64,14 +67,21 @@ export default class ContactList extends PureComponent {
   searchHandler = search => this.setState({ search })
 
   render () {
+    const {
+      screenProps: {
+        context: { queries, subscriptions },
+      },
+    } = this.props
+    console.log(this.context)
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination
           direction='forward'
-          query={queries.ContactList}
-          variables={{ filter: null, count: 50, cursor: '' }}
-          fragment={fragments.ContactList.default}
-          connection='ContactList'
+          query={queries.ContactList.graphql}
+          variables={queries.ContactList.defaultVariables}
+          fragment={fragments.ContactList}
+          alias='ContactList'
+          subscriptions={[subscriptions.contactRequest]}
           renderItem={props => (
             <Item {...props} navigation={this.props.navigation} />
           )}

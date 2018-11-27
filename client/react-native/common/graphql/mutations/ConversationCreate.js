@@ -1,5 +1,7 @@
 import { graphql } from 'react-relay'
+
 import { commit } from '../../relay'
+// import { updaters } from '..'
 
 const ConversationCreateMutation = graphql`
   mutation ConversationCreateMutation(
@@ -49,7 +51,21 @@ const ConversationCreateMutation = graphql`
   }
 `
 
-export default {
-  commit: (input, configs) =>
-    commit(ConversationCreateMutation, 'ConversationCreate', input, configs),
-}
+export default context => (input, configs) =>
+  commit(
+    context.environment,
+    ConversationCreateMutation,
+    'ConversationCreate',
+    input,
+    // {
+    //   updater: (store, data) => {
+    //     updaters.conversationList.forEach(updater =>
+    //       updater(store)
+    //         .add('ConversationEdge', data.ConversationCreate.id)
+    //         .after()
+    //     )
+    //   },
+    //   ...configs,
+    // }
+    configs
+  )

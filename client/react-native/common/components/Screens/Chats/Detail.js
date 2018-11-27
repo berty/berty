@@ -1,10 +1,10 @@
 import { Platform, View } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Pagination } from '../../../relay'
+import { Pagination, RelayContext } from '../../../relay'
 import { Text, Flex, Screen, Header } from '../../Library'
 import { colors } from '../../../constants'
-import { fragments, mutations, queries, subscriptions } from '../../../graphql'
+import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
@@ -59,6 +59,8 @@ const Message = fragments.Event(props => {
 })
 
 class Input extends PureComponent {
+  static contextType = RelayContext
+
   state = {
     input: '',
     height: 16,
@@ -69,7 +71,7 @@ class Input extends PureComponent {
     this.setState({ input: '' }, async () => {
       try {
         const conversation = this.props.navigation.getParam('conversation')
-        await mutations.conversationAddMessage({
+        await this.props.screenProps.context.mutations.conversationAddMessage({
           conversation: {
             id: conversation.id,
           },
@@ -161,12 +163,18 @@ export default class Detail extends PureComponent {
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries, subscriptions },
+      },
+    } = this.props
+
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
         <Pagination
           direction='forward'
-          query={queries.EventList}
+          query={queries.EventList.graphql}
           variables={merge([
             queries.EventList.defaultVariables,
             {
@@ -176,9 +184,9 @@ export default class Detail extends PureComponent {
               },
             },
           ])}
-          subscriptions={[subscriptions.conversationNewMessage(conversation)]}
-          fragment={fragments.EventList.default}
-          connection='EventList'
+          subscriptions={[subscriptions.conversationNewMessage]}
+          fragment={fragments.EventList}
+          alias='EventList'
           renderItem={props => <Message {...props} navigation={navigation} />}
           inverted
           style={{ paddingTop: 48 }}
@@ -192,7 +200,10 @@ export default class Detail extends PureComponent {
             backgroundColor: colors.white,
           }}
         >
-          <Input navigation={this.props.navigation} />
+          <Input
+            navigation={this.props.navigation}
+            screenProps={this.props.screenProps}
+          />
         </View>
       </Screen>
     )

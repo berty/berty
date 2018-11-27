@@ -3,11 +3,12 @@ import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
 import { colors } from '../../../../constants'
-import { mutations } from '../../../../graphql'
+import { RelayContext } from '../../../../relay'
 
 const { CoreModule } = NativeModules
 
 export default class Database extends PureComponent {
+  static contextType = RelayContext
   static navigationOptions = ({ navigation }) => ({
     header: () =>
       navigation.getParam('dropDatabase') || (
@@ -22,7 +23,9 @@ export default class Database extends PureComponent {
 
   generateFakeData = async () => {
     try {
-      await mutations.generateFakeData.commit({ t: true })
+      await this.props.screenProps.context.mutations.generateFakeData({
+        t: true,
+      })
     } catch (err) {
       this.setState({ err })
       console.error(err)

@@ -4,14 +4,15 @@ import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/cr
 import { colors } from '../../../../constants'
 import { Flex, Screen, Button } from '../../../Library'
 import { padding, paddingVertical, borderBottom } from '../../../../styles'
-import { commit } from '../../../../relay'
-import { mutations } from '../../../../graphql'
+import { RelayContext } from '../../../../relay'
 import QRGenerator from '../../../Library/QRGenerator/QRGenerator'
 import QRReader from '../../../Library/QRReader/QRReader'
 
 // TODO: get contact with status == 'myself' to get real id
 
 class ByQRCode extends PureComponent {
+  static contextType = RelayContext
+
   state = {
     contactID: '',
     myID:
@@ -23,7 +24,7 @@ class ByQRCode extends PureComponent {
     const { navigation } = this.props
     const { contactID } = this.state
     try {
-      console.log(await commit(mutations.ContactRequest, { contactID }))
+      console.log(await this.props.screenProps.context.mutations.ContactRequest({ contactID }))
       navigation.goBack(null)
     } catch (err) {
       this.setState({ err })

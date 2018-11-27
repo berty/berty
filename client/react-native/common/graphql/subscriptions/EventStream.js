@@ -23,4 +23,15 @@ const EventStream = graphql`
   }
 `
 
-export default subscriber({ subscription: EventStream })
+let _context = null
+let _subscriber = null
+
+export default context => {
+  if (subscriber === null || context !== _context) {
+    return (_subscriber = subscriber({
+      environment: context.environment,
+      subscription: EventStream,
+    }))
+  }
+  return _subscriber
+}

@@ -1,5 +1,4 @@
 import { fetchQuery, graphql } from 'relay-runtime'
-import environment from '../../relay/environment'
 
 const query = graphql`
   query DeviceInfosQuery($t: Bool!) {
@@ -12,8 +11,8 @@ const query = graphql`
   }
 `
 
-export default {
-  ...query,
-  fetch: (variables = {}) =>
-    fetchQuery(environment, query, { t: true, ...variables }),
-}
+export default context => ({
+  graphql: query,
+  fetch: () =>
+    fetchQuery(context.environment, query, { t: true }),
+})

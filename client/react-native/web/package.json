@@ -45,7 +45,7 @@
     "react-art": "16.5.2",
     "react-dev-utils": "^6.0.4",
     "react-dom": "16.5.2",
-    "react-native-web": "^0.9.3",
+    "react-native-web": "^0.9.8",
     "react-navigation": "^2.18.0",
     "react-qr-reader": "^2.1.1",
     "resolve": "1.8.1",

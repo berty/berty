@@ -9,7 +9,6 @@ import (
 	"time"
 
 	account "berty.tech/core/manager/account"
-	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -39,12 +38,17 @@ func panicHandler() {
 }
 
 func getRandomPort() (int, error) {
-	listener, err := reuse.Listen("tcp", "0.0.0.0:0")
+	addr, err := net.ResolveTCPAddr("tcp", "0.0.0.0:0")
 	if err != nil {
 		return 0, err
 	}
-	port := listener.Addr().(*net.TCPAddr).Port
-	return port, nil
+
+	l, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
 func Panic() {
@@ -121,7 +125,8 @@ func Start(nickname, datastorePath string, loggerNative Logger) error {
 
 	a, _ := account.Get(nickname)
 	if a != nil {
-		return errors.New("daemon already started")
+		// daemon already started, no errors to return
+		return nil
 	}
 
 	if err := initOrRestoreAppState(datastorePath); err != nil {
@@ -247,6 +252,6 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 		// Continue if local gRPC fails (e.g wifi not connected)
 		// Still re-enableable via toggle in devtools
 	}
-
+	logger().Debug("daemon started")
 	return <-a.ErrChan()
 }

@@ -1,20 +1,41 @@
-import { graphql } from 'react-relay'
+import { fetchQuery, graphql } from 'react-relay'
 
-const ConversationList = graphql`
+import { merge } from '../../helpers'
+
+const query = graphql`
   query ConversationListQuery(
     $filter: BertyEntityConversationInput
+    $orderBy: String!
+    $orderDesc: Bool!
     $count: Int32
     $cursor: String
   ) {
     ...ConversationList
-      @arguments(filter: $filter, count: $count, cursor: $cursor)
+      @arguments(
+        filter: $filter
+        orderBy: $orderBy
+        orderDesc: $orderDesc
+        count: $count
+        cursor: $cursor
+      )
   }
 `
 
-ConversationList.defaultVariables = {
-  fileter: null,
+const defaultVariables = {
+  filter: null,
+  orderBy: '',
+  orderDesc: false,
   count: 50,
   cursor: '',
 }
 
-export default ConversationList
+export default context => ({
+  graphql: query,
+  defaultVariables,
+  fetch: variables =>
+    fetchQuery(
+      context.environment,
+      query,
+      merge([defaultVariables, variables])
+    ),
+})

@@ -1,11 +1,11 @@
 import { Image, View } from 'react-native'
 import React, { Component, PureComponent } from 'react'
 
-import { Pagination } from '../../../relay'
+import { Pagination, RelayContext } from '../../../relay'
 import { Screen, Flex, Text, Header } from '../../Library'
 import { border, borderBottom, marginHorizontal } from '../../../styles'
 import { colors } from '../../../constants'
-import { queries, mutations, fragments } from '../../../graphql'
+import { fragments } from '../../../graphql'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -90,6 +90,8 @@ export default class ListScreen extends Component {
     tabBarVisible: true,
   })
 
+  static contextType = RelayContext
+
   state = {
     contactsID: [],
   }
@@ -112,7 +114,7 @@ export default class ListScreen extends Component {
   }
 
   onDefaultSubmit = async ({ contactsID }) => {
-    await mutations.conversationCreate.commit({
+    await this.props.screenProps.context.mutations.conversationCreate({
       title: '',
       topic: '',
       contacts: contactsID.map(id => ({
@@ -136,13 +138,19 @@ export default class ListScreen extends Component {
 
   render () {
     const { contactsID } = this.state
+    const {
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
-          query={queries.ContactList}
+          context={this.props.screenProps.context}
+          query={queries.ContactList.graphql}
           variables={queries.ContactList.defaultVariables}
-          fragment={fragments.ContactList.default}
-          connection='ContactList'
+          fragment={fragments.ContactList}
+          alias='ContactList'
           renderItem={props => (
             <Item
               {...props}

@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native'
 import { Header, SearchBar, Text as LibText } from '../../../../Library'
-import { queries, subscriptions } from '../../../../../graphql'
 import { colors } from '../../../../../constants'
 import {
   bold,
@@ -69,13 +68,15 @@ export default class Peers extends Component {
   }
 
   componentWillMount () {
-    subscriptions.monitorPeers.subscribe({
-      iterator: undefined,
-      updater: (store, data) => {
-        const peer = data.MonitorPeers
-        this.addPeer(peer)
-      },
-    })
+    this.subscriber = this.props.screenProps.context.subscriptions.monitorPeers.subscribe(
+      {
+        iterator: undefined,
+        updater: (store, data) => {
+          const peer = data.MonitorPeers
+          this.addPeer(peer)
+        },
+      }
+    )
   }
 
   componentDidMount () {
@@ -84,15 +85,16 @@ export default class Peers extends Component {
     })
 
     this.fetchPeers()
-    subscriptions.monitorPeers.start()
   }
 
   componentWillUnmount () {
-    subscriptions.monitorPeers.dispose()
+    this.subscriber.unsubscribe()
   }
 
   fetchPeers = () => {
-    queries.Peers.fetch().then(data => this.updatePeers(data.Peers.list))
+    this.props.screenProps.context.queries.Peers.fetch().then(data =>
+      this.updatePeers(data.Peers.list)
+    )
   }
 
   updatePeers = peers => {
@@ -109,9 +111,15 @@ export default class Peers extends Component {
     return (
       <View style={styles.peer}>
         {peer.connection === Connection.CONNECTED ? (
-          <Text style={styles.connected}>{peer.id.slice(0, 30)}...</Text>
+          <Text style={styles.connected}>
+            {peer.id.slice(0, 30)}
+            ...
+          </Text>
         ) : (
-          <Text style={styles.notConnected}>{peer.id.slice(0, 30)}...</Text>
+          <Text style={styles.notConnected}>
+            {peer.id.slice(0, 30)}
+            ...
+          </Text>
         )}
       </View>
     )

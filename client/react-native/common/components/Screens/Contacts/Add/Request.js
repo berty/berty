@@ -4,13 +4,16 @@ import React, { PureComponent } from 'react'
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
 import { Flex, Screen, Text } from '../../../Library'
-import { Pagination } from '../../../../relay'
+import { Pagination, RelayContext } from '../../../../relay'
 import { borderBottom, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { mutations, fragments, queries } from '../../../../graphql'
+import { fragments } from '../../../../graphql'
+import { merge } from '../../../../helpers'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
+    static contextType = RelayContext
+
     static isLoading = {}
 
     onResend = async () => {
@@ -18,7 +21,7 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await mutations.contactRequest.commit({
+        await this.props.screenProps.context.mutations.contactRequest({
           contact: this.props.data,
           introText: '',
         })
@@ -34,7 +37,9 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await mutations.contactAcceptRequest({ id })
+        await this.props.screenProps.context.mutations.contactAcceptRequest({
+          id,
+        })
       } catch (err) {
         console.error(err)
       }
@@ -45,7 +50,7 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await mutations.contactRemove({ id })
+        await this.props.screenProps.context.mutations.contactRemove({ id })
       } catch (err) {
         console.error(err)
       }
@@ -56,7 +61,7 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await mutations.contactRemove({ id })
+        await this.props.screenProps.context.mutations.contactRemove({ id })
       } catch (err) {
         console.error(err)
       }
@@ -180,17 +185,26 @@ const Item = fragments.Contact(
 
 class Received extends PureComponent {
   render () {
-    const { navigation } = this.props
-
+    const { navigation, screenProps } = this.props
+    const { queries } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
           direction='forward'
-          query={queries.ContactList.Received}
-          variables={queries.ContactList.Received.defaultVariables}
-          fragment={fragments.ContactList.Received}
-          connection='ContactList'
-          renderItem={props => <Item {...props} navigation={navigation} />}
+          query={queries.ContactList.graphql}
+          variables={merge([
+            queries.ContactList.defaultVariables,
+            { filter: { status: 4 } },
+          ])}
+          fragment={fragments.ContactList}
+          alias='ContactList'
+          renderItem={props => (
+            <Item
+              {...props}
+              navigation={navigation}
+              screenProps={screenProps}
+            />
+          )}
         />
       </Screen>
     )
@@ -199,17 +213,26 @@ class Received extends PureComponent {
 
 class Sent extends PureComponent {
   render () {
-    const { navigation } = this.props
-
+    const { navigation, screenProps } = this.props
+    const { queries } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
           direction='forward'
-          query={queries.ContactList.Sent}
-          variables={queries.ContactList.Sent.defaultVariables}
-          fragment={fragments.ContactList.Sent}
-          connection='ContactList'
-          renderItem={props => <Item {...props} navigation={navigation} />}
+          query={queries.ContactList.graphql}
+          variables={merge([
+            queries.ContactList.defaultVariables,
+            { filter: { status: 3 } },
+          ])}
+          fragment={fragments.ContactList}
+          alias='ContactList'
+          renderItem={props => (
+            <Item
+              {...props}
+              navigation={navigation}
+              screenProps={screenProps}
+            />
+          )}
         />
       </Screen>
     )

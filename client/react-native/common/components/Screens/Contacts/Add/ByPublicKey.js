@@ -1,49 +1,44 @@
-import React, { PureComponent } from 'react'
 import { ActivityIndicator } from 'react-native'
+import React, { PureComponent } from 'react'
+
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+
+import { QueryReducer } from '../../../../relay'
 import {
   Screen,
   Text,
   ModalScreen,
   PublicKeyWithActions,
 } from '../../../Library'
+import { borderBottom, paddingVertical } from '../../../../styles'
 import { colors } from '../../../../constants'
-import {
-  paddingVertical,
-  borderBottom,
-} from '../../../../styles'
-import { fragments, queries } from '../../../../graphql'
-import { QueryReducer } from '../../../../relay'
-import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+import { fragments } from '../../../../graphql'
+import { merge } from '../../../../helpers'
 
 const ByPublicKey = fragments.Contact(PublicKeyWithActions)
 
 const AddByPublicKeyScreen = props => (
   <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
-    <PublicKeyWithActions
-      navigation={props.navigation}
-      initialKey={''}
-      addButton
-    />
+    <PublicKeyWithActions {...props} initialKey={''} addButton />
   </Screen>
 )
 
 class SharePublicKeyScreen extends PureComponent {
   render () {
-    const { navigation } = this.props
+    const {
+      navigation,
+      screenProps: {
+        context: { queries },
+      },
+    } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <QueryReducer
-          query={queries.Contact}
-          variables={{
-            filter: {
-              id: '',
-              status: 42,
-              displayName: '',
-              displayStatus: '',
-              overrideDisplayName: '',
-              overrideDisplayStatus: '',
-            },
-          }}
+          query={queries.Contact.graphql}
+          variables={merge([
+            queries.Contact.defaultVariables,
+            { filter: { status: 42 } },
+          ])}
         >
           {(state, retry) => {
             switch (state.type) {
@@ -109,7 +104,7 @@ export default createTabNavigator(
         borderBottom,
       ],
     },
-  },
+  }
 )
 
 export const ByPublicKeyModal = props => (

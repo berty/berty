@@ -3,9 +3,7 @@ import { graphql } from 'react-relay'
 import { commit } from '../../relay'
 
 const DebugRequeueEventMutation = graphql`
-  mutation DebugRequeueEventMutation(
-  $eventId: ID!
-  ) {
+  mutation DebugRequeueEventMutation($eventId: ID!) {
     DebugRequeueEvent(eventId: $eventId) {
       id
       senderId
@@ -26,6 +24,11 @@ const DebugRequeueEventMutation = graphql`
   }
 `
 
-export default {
-  commit: (input, configs) => commit(DebugRequeueEventMutation, 'DebugRequeueEvent', input, configs),
-}
+export default context => (input, configs) =>
+  commit(
+    context.environment,
+    DebugRequeueEventMutation,
+    'DebugRequeueEvent',
+    input,
+    configs
+  )

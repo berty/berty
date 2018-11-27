@@ -1,29 +1,11 @@
 import { graphql } from 'react-relay'
 
-import { conversation } from '../../utils'
-import { merge } from '../../helpers'
-import { updater as updaterHelper } from '../../relay'
-
-export const defaultArguments = {
-  default: {
-    filter: conversation.default,
-    orderBy: '',
-    orederDesc: false,
-  },
-}
-
-export const updater = {
-  default: (store, args = {}) =>
-    updaterHelper(store).connection(
-      'ConversationList_ConversationList',
-      merge([defaultArguments.default, args])
-    ),
-}
-
-const Default = graphql`
+export default graphql`
   fragment ConversationList on Query
     @argumentDefinitions(
       filter: { type: BertyEntityConversationInput }
+      orderBy: { type: "String!" }
+      orderDesc: { type: "Bool!" }
       count: { type: "Int32" }
       cursor: { type: "String" }
     ) {
@@ -31,8 +13,8 @@ const Default = graphql`
       filter: $filter
       first: $count
       after: $cursor
-      orderBy: ""
-      orderDesc: false
+      orderBy: $orderBy
+      orderDesc: $orderDesc
     ) @connection(key: "ConversationList_ConversationList") {
       edges {
         cursor
@@ -51,5 +33,3 @@ const Default = graphql`
     }
   }
 `
-
-export default Default

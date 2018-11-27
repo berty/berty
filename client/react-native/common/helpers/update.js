@@ -1,25 +1,29 @@
 import moment from 'moment'
 import { Platform } from 'react-native'
-import { DeviceInfos as GetDeviceInfos } from '../graphql/queries'
+import { DeviceInfos } from '../graphql/queries'
 
-export const getAvailableUpdate = async () => {
+export const getAvailableUpdate = async context => {
   if (Platform.OS !== 'ios') {
     return null
   }
 
   try {
-    const deviceData = await GetDeviceInfos.fetch()
-    const releases = await fetch('https://yolo.berty.io/release/ios.json').then(res => res.json())
+    const deviceData = await DeviceInfos(context).fetch()
+    const releases = await fetch('https://yolo.berty.io/release/ios.json').then(
+      res => res.json()
+    )
 
     if (!deviceData) {
       return null
     }
 
-    const [gitData] = deviceData.DeviceInfos.infos.filter(d => d.key === 'build: git')
-      .map(({ key, value }) => value
-        .split('\n')
-        .map(line => line.split('='))
-        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {}),
+    const [gitData] = deviceData.DeviceInfos.infos
+      .filter(d => d.key === 'build: git')
+      .map(({ key, value }) =>
+        value
+          .split('\n')
+          .map(line => line.split('='))
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       )
 
     if (
@@ -30,7 +34,10 @@ export const getAvailableUpdate = async () => {
       return null
     }
 
-    if (gitData.branch === 'master' && gitData.sha !== releases.master['git-sha']) {
+    if (
+      gitData.branch === 'master' &&
+      gitData.sha !== releases.master['git-sha']
+    ) {
       return releases.master
     }
 

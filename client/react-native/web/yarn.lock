@@ -6891,9 +6891,9 @@ react-native-tab-view@^1.0.0:
   dependencies:
     prop-types "^15.6.1"
 
-react-native-web@^0.9.3:
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.9.3.tgz#7d504a4d331e6965061496a5954dfefe1cdc1239"
+react-native-web@^0.9.8:
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/react-native-web/-/react-native-web-0.9.8.tgz#a87531277d40df48257f73d0a2bbc54d2a400df3"
   dependencies:
     array-find-index "^1.0.2"
     create-react-class "^15.6.2"

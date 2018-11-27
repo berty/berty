@@ -2,9 +2,7 @@ import { graphql } from 'react-relay'
 import { commit } from '../../relay'
 
 const RunIntegrationTestsMutation = graphql`
-  mutation RunIntegrationTestsMutation(
-  $name: String!
-  ) {
+  mutation RunIntegrationTestsMutation($name: String!) {
     RunIntegrationTests(name: $name) {
       name
       success
@@ -15,7 +13,10 @@ const RunIntegrationTestsMutation = graphql`
   }
 `
 
-export default {
-  commit: input =>
-    commit(RunIntegrationTestsMutation, 'RunIntegrationTests', input),
-}
+export default context => input =>
+  commit(
+    context.environment,
+    RunIntegrationTestsMutation,
+    'RunIntegrationTests',
+    input
+  )

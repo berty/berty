@@ -1,26 +1,35 @@
-import React from 'react'
-import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 import { Animated, Easing, Platform } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
-import Contacts from './Contacts'
-import Chats from './Chats'
-import Settings from './Settings'
-import { colors } from '../../constants'
+import React from 'react'
+
+import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
+
 import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
 import { Icon } from '../Library'
+import { colors } from '../../constants'
+import Chats from './Chats'
+import Contacts from './Contacts'
+import Settings from './Settings'
 
 const TabBarIcon = (tintColor, routeName, badgeValue) => {
   let iconName = {
-    'contacts': 'users',
-    'chats': 'message-circle',
-    'settings': 'settings',
+    contacts: 'users',
+    chats: 'message-circle',
+    settings: 'settings',
   }[routeName]
 
-  return <Icon.Badge name={iconName} size={24} color={tintColor} badge={badgeValue} />
+  return (
+    <Icon.Badge
+      name={iconName}
+      size={24}
+      color={tintColor}
+      badge={badgeValue}
+    />
+  )
 }
 
-export const mainTabs = createTabNavigator(
+export const tabs = createTabNavigator(
   {
     contacts: {
       screen: Contacts,
@@ -49,12 +58,16 @@ export const mainTabs = createTabNavigator(
     navigationOptions: ({ navigation, screenProps }) => {
       let badge = null
 
-      if (navigation.state.routeName === 'settings' && !!screenProps.availableUpdate) {
+      if (
+        navigation.state.routeName === 'settings' &&
+        !!screenProps.availableUpdate
+      ) {
         badge = '!'
       }
 
       return {
-        tabBarIcon: ({ tintColor }) => TabBarIcon(tintColor, navigation.state.routeName, badge),
+        tabBarIcon: ({ tintColor }) =>
+          TabBarIcon(tintColor, navigation.state.routeName, badge),
       }
     },
     tabBarOptions: {
@@ -75,19 +88,19 @@ export const mainTabs = createTabNavigator(
           shadowOffset: { height: -5, width: 0 },
           shadowOpacity: 0.2,
           shadowRadius: 5,
-          ...(Platform.OS === 'android' ? { height: 68, paddingTop: 3 } : { height: 64, paddingTop: 5, paddingBottom: 6 }),
+          ...(Platform.OS === 'android'
+            ? { height: 68, paddingTop: 3 }
+            : { height: 64, paddingTop: 5, paddingBottom: 6 }),
         },
       ],
     },
-  },
+  }
 )
 
 // Navigator handling modals
 export default createStackNavigator(
   {
-    'main': {
-      screen: mainTabs,
-    },
+    tabs: tabs,
     'modal/contacts/add/by-public-key': {
       screen: ByPublicKeyModal,
     },
@@ -131,5 +144,5 @@ export default createStackNavigator(
         return { opacity, transform: [{ translateY }] }
       },
     }),
-  },
+  }
 )

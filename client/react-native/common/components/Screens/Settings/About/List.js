@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
 import { Header, Menu } from '../../../Library'
-import { AppVersion } from '../../../../graphql/queries'
 
 export default class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -14,7 +13,7 @@ export default class List extends PureComponent {
   }
 
   componentDidMount () {
-    AppVersion.then(data => {
+    this.props.screenProps.context.queries.AppVersion.fetch().then(data => {
       this.setState({ version: data.AppVersion.version })
     })
   }

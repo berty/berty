@@ -3,7 +3,7 @@ import { subscriber } from '../../relay'
 
 const MonitorPeers = graphql`
   subscription MonitorPeersSubscription {
-    MonitorPeers (T: true) {
+    MonitorPeers(T: true) {
       id
       addrs
       connection
@@ -11,4 +11,5 @@ const MonitorPeers = graphql`
   }
 `
 
-export default subscriber({ subscription: MonitorPeers })
+export default context =>
+  subscriber({ environment: context.environment, subscription: MonitorPeers })
