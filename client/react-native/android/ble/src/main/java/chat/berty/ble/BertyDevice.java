@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 public class BertyDevice {
 
@@ -20,7 +21,15 @@ public class BertyDevice {
     public String peerID;
     public String ma;
     public int mtu;
-
+    public BluetoothGatt gatt;
+    public BluetoothDevice device;
+    public CountDownLatch latchRdy;
+    public CountDownLatch latchConn;
+    public CountDownLatch latchChar;
+    public CountDownLatch latchRead;
+    public Semaphore svcSema;
+    public Semaphore isWaiting;
+    public List<byte[]> toSend;
     protected BluetoothGattCharacteristic acceptCharacteristic;
     protected BluetoothGattCharacteristic maCharacteristic;
     protected BluetoothGattCharacteristic peerIDCharacteristic;
@@ -28,49 +37,61 @@ public class BertyDevice {
     protected BluetoothGattCharacteristic isRdyCharacteristic;
     protected BluetoothGattCharacteristic closerCharacteristic;
 
-    public BluetoothGatt gatt;
-
-    public BluetoothDevice device;
-
-    public CountDownLatch waitReady;
-
-    public Semaphore isWaiting;
-
-    public List<byte[]> toSend;
-
     public BertyDevice(BluetoothDevice device, BluetoothGatt gatt, String address) {
         this.gatt = gatt;
         this.addr = address;
         this.device = device;
         this.isWaiting = new Semaphore(1);
-        waitReady = new CountDownLatch(8);
+        this.svcSema = new Semaphore(1);
+        this.latchRdy = new CountDownLatch(2);
+        this.latchConn = new CountDownLatch(2);
+        this.latchChar = new CountDownLatch(6);
+        this.latchRead = new CountDownLatch(2);
         this.toSend = new ArrayList<>();
+        waitRdy();
+    }
+
+    public void waitRdy() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                isRdy();
+                Thread.currentThread().setName("LatchIsRdy");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    try {
+                        latchRdy.await();
+                        isRdyCharacteristic.setValue("");
+                        while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
+                            /** intentionally empty */
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                    }
+                }
             }
         }).start();
     }
 
-    public void isRdy() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            try {
-                waitReady.await();
-                isRdyCharacteristic.setValue("");
-                while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
-                    /** intentionally empty */
+    public void waitConn() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("waitConn");
+                try {
+                    latchConn.await();
+                    Log.e(TAG, "BOTH CONN RDY");
+                } catch (Exception e) {
+                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error waiting/writing " + e.getMessage());
+
             }
-        }
+        }).start();
     }
 
     public void writeRdy() {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Thread.currentThread().setName("LatchIsWriteRdy");
                 try {
                     TimeUnit.MILLISECONDS.sleep(1000);
                 } catch (InterruptedException e) {
@@ -85,7 +106,7 @@ public class BertyDevice {
     }
 
     public void write(byte[] p) throws InterruptedException {
-        waitReady.await();
+        latchRdy.await();
 
         synchronized (toSend) {
             int length = p.length;
