@@ -4,13 +4,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
-import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattServer;
-import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.AdvertiseData;
@@ -40,27 +36,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import static android.bluetooth.BluetoothGatt.GATT_CONNECTION_CONGESTED;
-import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
-import static android.bluetooth.BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION;
-import static android.bluetooth.BluetoothGatt.GATT_INSUFFICIENT_ENCRYPTION;
-import static android.bluetooth.BluetoothGatt.GATT_INVALID_ATTRIBUTE_LENGTH;
-import static android.bluetooth.BluetoothGatt.GATT_INVALID_OFFSET;
-import static android.bluetooth.BluetoothGatt.GATT_READ_NOT_PERMITTED;
-import static android.bluetooth.BluetoothGatt.GATT_REQUEST_NOT_SUPPORTED;
-import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
-import static android.bluetooth.BluetoothGatt.GATT_WRITE_NOT_PERMITTED;
-import static android.bluetooth.BluetoothProfile.GATT;
-import static android.bluetooth.BluetoothProfile.GATT_SERVER;
 import static android.content.Context.BLUETOOTH_SERVICE;
-import static chat.berty.ble.BertyConstants.ACCEPT_UUID;
-import static chat.berty.ble.BertyConstants.BLUETOOTH_ENABLE_REQUEST;
-import static chat.berty.ble.BertyConstants.CLOSER_UUID;
-import static chat.berty.ble.BertyConstants.IS_READY_UUID;
-import static chat.berty.ble.BertyConstants.MA_UUID;
-import static chat.berty.ble.BertyConstants.PEER_ID_UUID;
-import static chat.berty.ble.BertyConstants.SERVICE_UUID;
-import static chat.berty.ble.BertyConstants.WRITER_UUID;
+import static chat.berty.ble.BertyUtils.ACCEPT_UUID;
+import static chat.berty.ble.BertyUtils.BLUETOOTH_ENABLE_REQUEST;
+import static chat.berty.ble.BertyUtils.CLOSER_UUID;
+import static chat.berty.ble.BertyUtils.IS_READY_UUID;
+import static chat.berty.ble.BertyUtils.MA_UUID;
+import static chat.berty.ble.BertyUtils.PEER_ID_UUID;
+import static chat.berty.ble.BertyUtils.SERVICE_UUID;
+import static chat.berty.ble.BertyUtils.WRITER_UUID;
 
 public class Manager {
     private static Manager instance = null;
@@ -93,9 +77,9 @@ public class Manager {
 
     public boolean isScanning = false;
 
-    private BertyGattServer mGattServerCallback = new BertyGattServer();
-
     protected BertyGatt mGattCallback = new BertyGatt();
+
+    private BertyGattServer mGattServerCallback = new BertyGattServer();
 
     private BertyAdvertise mAdvertisingCallback = new BertyAdvertise();
 
@@ -109,16 +93,20 @@ public class Manager {
         super();
         Thread.currentThread().setName("BleManager");
         Log.e(TAG, "BLEManager init");
+        mScanCallback.mGattCallback = mGattCallback;
+        mGattServerCallback.mGattCallback = mGattCallback;
     }
 
     public void setmContext(Context ctx) {
         Log.e(TAG, "BLEManager context set");
         mContext = ctx;
+        mScanCallback.mContext = ctx;
+        mGattServerCallback.mContext = ctx;
     }
 
     public void setMa(String ma) {
         this.ma = ma;
-        BertyConstants.maCharacteristic.setValue(ma);
+        BertyUtils.maCharacteristic.setValue(ma);
         if (this.peerID != "") {
             AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
             AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
@@ -129,7 +117,7 @@ public class Manager {
 
     public void setPeerID(String peerID) {
         this.peerID = peerID;
-        BertyConstants.peerIDCharacteristic.setValue(peerID);
+        BertyUtils.peerIDCharacteristic.setValue(peerID);
         if (this.ma != "") {
             AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
             AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
@@ -166,7 +154,7 @@ public class Manager {
                     Log.e(TAG, "TRY 2");
                     mBluetoothLeAdvertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
                     mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
-                    BluetoothGattService svc = BertyConstants.createService();
+                    BluetoothGattService svc = BertyUtils.createService();
 
 
 
@@ -200,7 +188,7 @@ public class Manager {
     }
 
     public void closeConnFromMa(String rMa) {
-        BertyDevice bDevice = getDeviceFromMa(rMa);
+        BertyDevice bDevice = BertyUtils.getDeviceFromMa(rMa);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             bDevice.gatt.disconnect();
         }
@@ -268,31 +256,8 @@ public class Manager {
         }
     }
 
-    public @Nullable BertyDevice getDeviceFromAddr(String addr) {
-        synchronized (bertyDevices) {
-            if (bertyDevices.containsKey(addr)) {
-                return bertyDevices.get(addr);
-            }
-        }
-
-        return null;
-    }
-
-    public @Nullable BertyDevice getDeviceFromMa(String ma) {
-        synchronized (bertyDevices) {
-            BertyDevice bDevice = null;
-            for (Map.Entry<String, BertyDevice> entry : bertyDevices.entrySet()) {
-                bDevice = entry.getValue();
-                if (bDevice.ma.equals(ma)) {
-                    return bDevice;
-                }
-            }
-        }
-        return null;
-    }
-
     public boolean dialPeer(String ma) {
-        BertyDevice bDevice = getDeviceFromMa(ma);
+        BertyDevice bDevice = BertyUtils.getDeviceFromMa(ma);
         if (bDevice != null) {
             return true;
         }
@@ -301,7 +266,7 @@ public class Manager {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void populateCharacteristic(BluetoothGatt gatt) {
-        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
+        BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
         ExecutorService es = Executors.newFixedThreadPool(6);
         List<PopulateCharacteristic> todo = new ArrayList<>(6);
 
@@ -321,7 +286,7 @@ public class Manager {
 
                 if (c != null && c.getUuid().equals(MA_UUID)) {
                     bDevice.maCharacteristic = c;
-                    bDevice.waitReady.countDown();
+                    bDevice.latchChar.countDown();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -339,7 +304,7 @@ public class Manager {
                     }).start();
                 } else if (c != null && c.getUuid().equals(PEER_ID_UUID)) {
                     bDevice.peerIDCharacteristic = c;
-                    bDevice.waitReady.countDown();
+                    bDevice.latchChar.countDown();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -357,16 +322,16 @@ public class Manager {
                     }).start();
                 } else if (c != null && c.getUuid().equals(CLOSER_UUID)) {
                     bDevice.closerCharacteristic = c;
-                    bDevice.waitReady.countDown();
+                    bDevice.latchChar.countDown();
                 } else if (c != null && c.getUuid().equals(WRITER_UUID)) {
                     bDevice.writerCharacteristic = c;
-                    bDevice.waitReady.countDown();
+                    bDevice.latchChar.countDown();
                 } else if (c != null && c.getUuid().equals(IS_READY_UUID)) {
                     bDevice.isRdyCharacteristic = c;
-                    bDevice.waitReady.countDown();
+                    bDevice.latchChar.countDown();
                 } else if (c != null && c.getUuid().equals(ACCEPT_UUID)) {
                     bDevice.acceptCharacteristic = c;
-                    bDevice.waitReady.countDown();
+                    bDevice.latchChar.countDown();
                 } else {
                     Log.e(TAG, "UNKNOW CHARACT");
                 }
@@ -428,7 +393,7 @@ public class Manager {
     }
 
     public boolean write(byte[] p, String ma) {
-        BertyDevice bDevice = getDeviceFromMa(ma);
+        BertyDevice bDevice = BertyUtils.getDeviceFromMa(ma);
 
         if (bDevice == null) {
             Log.e(TAG, "Unknow device to write");

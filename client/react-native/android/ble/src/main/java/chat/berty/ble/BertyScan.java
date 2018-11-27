@@ -2,23 +2,29 @@ package chat.berty.ble;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
+import android.content.Context;
 import android.os.Build;
 import android.os.ParcelUuid;
 import android.util.Log;
 
 import java.util.List;
 
-import static chat.berty.ble.BertyConstants.SERVICE_UUID;
+import static chat.berty.ble.BertyUtils.SERVICE_UUID;
 
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BertyScan extends ScanCallback {
     private static final String TAG = "chat.berty.ble.BertyScan";
 
+    public Context mContext;
+
+    public BertyGatt mGattCallback;
 
     public static ScanSettings createScanSetting() {
         ScanSettings settings = new ScanSettings.Builder()
@@ -101,40 +107,11 @@ public class BertyScan extends ScanCallback {
 
     public void parseResult(ScanResult result) {
         Log.e(TAG, "new result");
-//        BluetoothDevice device = result.getDevice();
-//        String addr = device.getAddress();
-//        synchronized (bertyDevices) {
-//            if (!bertyDevices.containsKey(addr)) {
-//                Log.e(TAG, "SCANNNING RESULT mGattCallback " + mGattCallback);
-//                initGattCallback();
-//                BluetoothManager bluetoothManager = (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
-//                List<BluetoothDevice> devices = bluetoothManager.getConnectedDevices(GATT);
-//                for(BluetoothDevice devicee : devices) {
-//                    Log.e(TAG, "test " + devicee.getAddress());
-//
-//                }
-//                try {
-//                    Log.e(TAG, "CONN SUCESsssS");
-//                    BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback, BluetoothDevice.TRANSPORT_LE);
-//
-//                    gatt.connect();
-//                    Log.e(TAG, "CONN SUCESS");
-//                    BertyDevice bDevice = new BertyDevice(device, gatt, addr);
-////                                runDiscoAndMtu(gatt);
-//                    bertyDevices.put(addr, bDevice);
-//                    gatt.requestMtu(512);
-////                                gatt.discoverServices();
-//                    Log.e(TAG, "PU SUCESS");
-//                    for (BluetoothGattService svc : gatt.getServices()) {
-//                        Log.e(TAG, "PU SUCESS "+ svc.getUuid().toString());
-//                    }
-//                    Log.e(TAG, "PU SUCESS2");
-//                } catch (Exception e) {
-//
-//                    Log.e(TAG, "GATT FAIL " + e);
-//
-//                }
-//            }
-//        }
+        BluetoothDevice device = result.getDevice();
+        BertyDevice bDevice = BertyUtils.getDeviceFromAddr(device.getAddress());
+        if (bDevice == null) {
+            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback, BluetoothDevice.TRANSPORT_LE);
+            BertyUtils.addDevice(device, gatt);
+        }
     }
 }

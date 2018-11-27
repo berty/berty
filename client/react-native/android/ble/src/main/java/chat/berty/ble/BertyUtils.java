@@ -2,11 +2,16 @@ package chat.berty.ble;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_READ;
@@ -33,13 +38,14 @@ public class BertyUtils {
     final static BluetoothGattCharacteristic writerCharacteristic = new BluetoothGattCharacteristic(WRITER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static BluetoothGattCharacteristic isRdyCharacteristic = new BluetoothGattCharacteristic(IS_READY_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static BluetoothGattCharacteristic closerCharacteristic = new BluetoothGattCharacteristic(CLOSER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
+    final static HashMap<String, BertyDevice> bertyDevices = new HashMap<>();
     private static final String TAG = "chat.berty.ble.BertyUtils";
 
     public static BluetoothGattService createService() {
         Log.e(TAG, "createService()");
 
             if (!mService.addCharacteristic(acceptCharacteristic) ||
-                !mService.addCharacteristic(maCharacteristic) ||
+                    !mService.addCharacteristic(maCharacteristic) ||
             !mService.addCharacteristic(peerIDCharacteristic) ||
             !mService.addCharacteristic(writerCharacteristic) ||
             !mService.addCharacteristic(isRdyCharacteristic) ||
@@ -48,5 +54,39 @@ public class BertyUtils {
             }
 
             return mService;
+    }
+
+
+    public @Nullable static
+    BertyDevice getDeviceFromAddr(String addr) {
+        synchronized (bertyDevices) {
+            if (bertyDevices.containsKey(addr)) {
+                return bertyDevices.get(addr);
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean addDevice(BluetoothDevice device, BluetoothGatt gatt) {
+        String addr = device.getAddress();
+        BertyDevice bDevice = new BertyDevice(device, gatt, addr);
+        synchronized (bertyDevices) {
+            bertyDevices.put(addr, bDevice);
+        }
+        return true;
+    }
+
+    public @Nullable static BertyDevice getDeviceFromMa(String ma) {
+        synchronized (bertyDevices) {
+            BertyDevice bDevice = null;
+            for (Map.Entry<String, BertyDevice> entry : bertyDevices.entrySet()) {
+                bDevice = entry.getValue();
+                if (bDevice.ma.equals(ma)) {
+                    return bDevice;
+                }
+            }
+        }
+        return null;
     }
 }

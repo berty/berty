@@ -11,6 +11,9 @@ import android.bluetooth.BluetoothProfile;
 import android.os.Build;
 import android.util.Log;
 
+import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
+import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
+
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyGatt extends BluetoothGattCallback {
@@ -68,6 +71,10 @@ public class BertyGatt extends BluetoothGattCallback {
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
         Log.e(TAG, "onConnectionStateChange()");
+        if (status == GATT_SUCCESS && newState == STATE_CONNECTED) {
+            BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
+            bDevice.latchConn.countDown();
+        }
 //        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
 //        Log.e(TAG, "STATUS " + status + " New  "+ newState);
 //        if (newState == 2) {

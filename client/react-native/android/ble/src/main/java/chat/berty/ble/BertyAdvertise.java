@@ -10,7 +10,7 @@ import android.os.Build;
 import android.os.ParcelUuid;
 import android.util.Log;
 
-import static chat.berty.ble.BertyConstants.SERVICE_UUID;
+import static chat.berty.ble.BertyUtils.SERVICE_UUID;
 
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)

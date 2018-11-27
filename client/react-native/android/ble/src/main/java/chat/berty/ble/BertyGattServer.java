@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattServerCallback;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -17,8 +18,9 @@ import java.util.UUID;
 
 import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
-import static chat.berty.ble.BertyConstants.MA_UUID;
-import static chat.berty.ble.BertyConstants.PEER_ID_UUID;
+import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
+import static chat.berty.ble.BertyUtils.MA_UUID;
+import static chat.berty.ble.BertyUtils.PEER_ID_UUID;
 
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -26,6 +28,10 @@ public class BertyGattServer extends BluetoothGattServerCallback {
     private static final String TAG = "chat.berty.ble.BertyGattServer";
 
     public BluetoothGattServer mBluetoothGattServer;
+
+    public Context mContext;
+
+    public BertyGatt mGattCallback;
 
     public BertyGattServer() {
         super();
@@ -59,16 +65,15 @@ public class BertyGattServer extends BluetoothGattServerCallback {
     public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
             Log.e(TAG, "onConnectionStateChange()");
 
-//        BertyDevice bDevice = getDeviceFromAddr(device.getAddress());
-//        if (bDevice == null) {
-//            synchronized (bertyDevices) {
-//                BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback, BluetoothDevice.TRANSPORT_LE);
-////                            Log.e(TAG, "discover service :" + bDevice.gatt.discoverServices());
-//                bDevice = new BertyDevice(device, gatt, device.getAddress());
-//                bertyDevices.put(device.getAddress(), bDevice);
-//                Log.e(TAG, "req mtu start");
-//            }
-//        }
+        BertyDevice bDevice = BertyUtils.getDeviceFromAddr(device.getAddress());
+        if (bDevice == null && newState == STATE_CONNECTED) {
+            BluetoothGatt gatt = device.connectGatt(mContext, false, mGattCallback, BluetoothDevice.TRANSPORT_LE);
+            BertyUtils.addDevice(device, gatt);
+            bDevice = BertyUtils.getDeviceFromAddr(device.getAddress());
+            bDevice.latchConn.countDown();
+        } else if (bDevice != null && newState == STATE_CONNECTED && bDevice.latchConn.getCount() > 0) {
+            bDevice.latchConn.countDown();
+        }
 //        if (newState == 0) {
 //            bDevice.gatt.requestMtu(512);
 //

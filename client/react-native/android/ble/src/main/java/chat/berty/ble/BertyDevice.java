@@ -49,6 +49,7 @@ public class BertyDevice {
         this.latchRead = new CountDownLatch(2);
         this.toSend = new ArrayList<>();
         waitRdy();
+        waitConn();
     }
 
     public void waitRdy() {
