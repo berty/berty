@@ -23,7 +23,7 @@ export default class Database extends PureComponent {
 
   generateFakeData = async () => {
     try {
-      await this.props.screenProps.context.mutations.generateFakeData({
+      await this.context.mutations.generateFakeData({
         t: true,
       })
     } catch (err) {

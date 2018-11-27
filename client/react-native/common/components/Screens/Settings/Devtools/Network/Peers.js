@@ -1,4 +1,3 @@
-import React, { Component } from 'react'
 import {
   Text,
   TouchableOpacity,
@@ -6,8 +5,11 @@ import {
   ScrollView,
   View,
 } from 'react-native'
+import Accordion from 'react-native-collapsible/Accordion'
+import React, { Component } from 'react'
+
 import { Header, SearchBar, Text as LibText } from '../../../../Library'
-import { colors } from '../../../../../constants'
+import { RelayContext } from '../../../../../relay'
 import {
   bold,
   textLeft,
@@ -17,7 +19,7 @@ import {
   mediumText,
   smallText,
 } from '../../../../../styles'
-import Accordion from 'react-native-collapsible/Accordion'
+import { colors } from '../../../../../constants'
 
 const Connection = {
   NOT_CONNECTED: 0,
@@ -42,6 +44,8 @@ const ConnectionType = c => {
 }
 
 export default class Peers extends Component {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -68,15 +72,13 @@ export default class Peers extends Component {
   }
 
   componentWillMount () {
-    this.subscriber = this.props.screenProps.context.subscriptions.monitorPeers.subscribe(
-      {
-        iterator: undefined,
-        updater: (store, data) => {
-          const peer = data.MonitorPeers
-          this.addPeer(peer)
-        },
-      }
-    )
+    this.subscriber = this.context.subscriptions.monitorPeers.subscribe({
+      iterator: undefined,
+      updater: (store, data) => {
+        const peer = data.MonitorPeers
+        this.addPeer(peer)
+      },
+    })
   }
 
   componentDidMount () {
@@ -92,7 +94,7 @@ export default class Peers extends Component {
   }
 
   fetchPeers = () => {
-    this.props.screenProps.context.queries.Peers.fetch().then(data =>
+    this.context.queries.Peers.fetch().then(data =>
       this.updatePeers(data.Peers.list)
     )
   }

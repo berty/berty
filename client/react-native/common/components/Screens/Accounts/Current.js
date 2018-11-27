@@ -84,7 +84,6 @@ export default class Current extends PureComponent {
           ref={nav => (this.mainNav = nav)}
           screenProps={{
             ...this.props.screenProps,
-            context,
             availableUpdate,
           }}
         />

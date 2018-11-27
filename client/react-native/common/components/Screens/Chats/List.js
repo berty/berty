@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 
-import { Pagination } from '../../../relay'
+import { Pagination, RelayContext } from '../../../relay'
 import { Screen, Header, ListItem } from '../../Library'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
@@ -18,6 +18,8 @@ const Item = fragments.Conversation(({ data, navigation, onPress }) => {
 })
 
 export default class ListScreen extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -42,12 +44,9 @@ export default class ListScreen extends PureComponent {
   })
 
   render () {
-    const {
-      navigation,
-      screenProps: {
-        context: { queries, fragments, subscriptions },
-      },
-    } = this.props
+    const { navigation } = this.props
+    const { queries, fragments, subscriptions } = this.context
+    console.log(this.context)
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination

@@ -71,7 +71,7 @@ class Input extends PureComponent {
     this.setState({ input: '' }, async () => {
       try {
         const conversation = this.props.navigation.getParam('conversation')
-        await this.props.screenProps.context.mutations.conversationAddMessage({
+        await this.context.mutations.conversationAddMessage({
           conversation: {
             id: conversation.id,
           },
@@ -163,12 +163,8 @@ export default class Detail extends PureComponent {
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
-    const {
-      navigation,
-      screenProps: {
-        context: { queries, subscriptions },
-      },
-    } = this.props
+    const { navigation } = this.props
+    const { queries, subscriptions } = this.context
 
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>

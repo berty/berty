@@ -62,7 +62,7 @@ export default class List extends PureComponent {
   addMembers = async ({ contactsID }) => {
     try {
       const { id } = this.props.navigation.getParam('conversation')
-      await this.props.screenProps.context.mutations.conversationInvite({
+      await this.context.mutations.conversationInvite({
         conversationID: id,
         contactsID,
       })

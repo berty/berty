@@ -86,7 +86,7 @@ export default class Tests extends PureComponent {
                 icon={icon}
                 title={title}
                 onPress={async () => {
-                  const promise = this.props.screenProps.context.mutations.runIntegrationTests({ name: key })
+                  const promise = this.context.mutations.runIntegrationTests({ name: key })
                   const obs = new Observable()
 
                   try {

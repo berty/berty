@@ -95,7 +95,7 @@ export default class PublicKeyWithActions extends PureComponent {
       introText: '',
     }
     try {
-      await this.props.screenProps.context.mutations.contactRequest(input)
+      await this.context.mutations.contactRequest(input)
       this.props.navigation.goBack(null)
     } catch (err) {
       this.setState({ err })

@@ -67,12 +67,7 @@ export default class ContactList extends PureComponent {
   searchHandler = search => this.setState({ search })
 
   render () {
-    const {
-      screenProps: {
-        context: { queries, subscriptions },
-      },
-    } = this.props
-    console.log(this.context)
+    const { queries, subscriptions } = this.context
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination

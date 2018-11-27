@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
-import { QueryReducer } from '../../../../relay'
+import { QueryReducer, RelayContext } from '../../../../relay'
 import {
   Screen,
   Text,
@@ -24,13 +24,10 @@ const AddByPublicKeyScreen = props => (
 )
 
 class SharePublicKeyScreen extends PureComponent {
+  static contextType = RelayContext
   render () {
-    const {
-      navigation,
-      screenProps: {
-        context: { queries },
-      },
-    } = this.props
+    const { navigation } = this.props
+    const { queries } = this.context
     return (
       <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
         <QueryReducer

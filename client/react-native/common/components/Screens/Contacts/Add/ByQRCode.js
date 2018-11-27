@@ -24,7 +24,7 @@ class ByQRCode extends PureComponent {
     const { navigation } = this.props
     const { contactID } = this.state
     try {
-      console.log(await this.props.screenProps.context.mutations.ContactRequest({ contactID }))
+      console.log(await this.context.mutations.ContactRequest({ contactID }))
       navigation.goBack(null)
     } catch (err) {
       this.setState({ err })

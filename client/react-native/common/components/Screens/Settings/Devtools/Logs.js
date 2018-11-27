@@ -11,6 +11,7 @@ import {
 import React, { PureComponent } from 'react'
 
 import { Menu, Header, Text, Flex } from '../../../Library'
+import { RelayContext } from '../../../../relay'
 import { borderBottom, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { createSubStackNavigator } from '../../../../helpers/react-navigation'
@@ -338,6 +339,8 @@ class Line extends PureComponent {
 }
 
 class LogStream extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -360,7 +363,7 @@ class LogStream extends PureComponent {
   })
 
   componentWillMount () {
-    this.logStream = this.props.screenProps.context.subscriptions.logStream({
+    this.logStream = this.context.subscriptions.logStream({
       continues: true,
       logLevel: '',
       namespaces: '',

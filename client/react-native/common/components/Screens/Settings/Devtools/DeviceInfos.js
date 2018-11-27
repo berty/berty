@@ -8,10 +8,13 @@ import {
 import React, { PureComponent } from 'react'
 
 import { Header } from '../../../Library'
+import { RelayContext } from '../../../../relay'
 import { colors } from '../../../../constants'
 import { padding } from '../../../../styles'
 
 export default class DeviceInfos extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -29,11 +32,7 @@ export default class DeviceInfos extends PureComponent {
   }
 
   fetch = () => {
-    const {
-      screenProps: {
-        context: { queries },
-      },
-    } = this.props
+    const { queries } = this.context
     this.setState({ refreshing: true }, async () => {
       console.log(queries)
       const data = await queries.DeviceInfos.fetch()

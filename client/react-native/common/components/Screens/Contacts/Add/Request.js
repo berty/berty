@@ -21,7 +21,7 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await this.props.screenProps.context.mutations.contactRequest({
+        await this.context.mutations.contactRequest({
           contact: this.props.data,
           introText: '',
         })
@@ -37,7 +37,7 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await this.props.screenProps.context.mutations.contactAcceptRequest({
+        await this.context.mutations.contactAcceptRequest({
           id,
         })
       } catch (err) {
@@ -50,7 +50,7 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await this.props.screenProps.context.mutations.contactRemove({ id })
+        await this.context.mutations.contactRemove({ id })
       } catch (err) {
         console.error(err)
       }
@@ -61,7 +61,7 @@ const Item = fragments.Contact(
       Item.isLoading[id] = true
       this.forceUpdate()
       try {
-        await this.props.screenProps.context.mutations.contactRemove({ id })
+        await this.context.mutations.contactRemove({ id })
       } catch (err) {
         console.error(err)
       }
@@ -184,9 +184,10 @@ const Item = fragments.Contact(
 )
 
 class Received extends PureComponent {
+  static contextType = RelayContext
   render () {
-    const { navigation, screenProps } = this.props
-    const { queries } = screenProps.context
+    const { navigation } = this.props
+    const { queries } = this.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
@@ -198,13 +199,7 @@ class Received extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
-          renderItem={props => (
-            <Item
-              {...props}
-              navigation={navigation}
-              screenProps={screenProps}
-            />
-          )}
+          renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>
     )
@@ -212,9 +207,10 @@ class Received extends PureComponent {
 }
 
 class Sent extends PureComponent {
+  static contextType = RelayContext
   render () {
-    const { navigation, screenProps } = this.props
-    const { queries } = screenProps.context
+    const { navigation } = this.props
+    const { queries } = this.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
@@ -226,13 +222,7 @@ class Sent extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
-          renderItem={props => (
-            <Item
-              {...props}
-              navigation={navigation}
-              screenProps={screenProps}
-            />
-          )}
+          renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>
     )

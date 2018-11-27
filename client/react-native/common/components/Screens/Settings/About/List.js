@@ -1,8 +1,12 @@
-import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
+import React, { PureComponent } from 'react'
+
 import { Header, Menu } from '../../../Library'
+import { RelayContext } from '../../../../relay'
 
 export default class List extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: <Header navigation={navigation} title='About Berty' backBtn />,
     tabBarVisible: false,
@@ -13,7 +17,7 @@ export default class List extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.screenProps.context.queries.AppVersion.fetch().then(data => {
+    this.context.queries.AppVersion.fetch().then(data => {
       this.setState({ version: data.AppVersion.version })
     })
   }

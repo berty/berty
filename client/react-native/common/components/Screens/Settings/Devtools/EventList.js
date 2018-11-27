@@ -91,6 +91,8 @@ const Item = fragments.Event(({ data, navigation }) => (
 ))
 
 export default class EventList extends PureComponent {
+  static contextType = RelayContext
+
   state = {
     search: '',
   }
@@ -151,12 +153,8 @@ export default class EventList extends PureComponent {
   }
 
   render () {
-    const {
-      navigation,
-      screenProps: {
-        context: { queries },
-      },
-    } = this.props
+    const { navigation } = this.props
+    const { queries } = this.context
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination
@@ -194,7 +192,7 @@ export class EventListFilterModal extends PureComponent {
         />
         <Button
           onPress={() =>
-            this.props.screenProps.context.mutations.debugRequeueAll({
+            this.context.mutations.debugRequeueAll({
               t: true,
             })
           }

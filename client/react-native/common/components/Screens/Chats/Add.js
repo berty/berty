@@ -74,6 +74,8 @@ const Item = fragments.Contact(
 )
 
 export default class ListScreen extends Component {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -89,8 +91,6 @@ export default class ListScreen extends Component {
     ),
     tabBarVisible: true,
   })
-
-  static contextType = RelayContext
 
   state = {
     contactsID: [],
@@ -114,7 +114,7 @@ export default class ListScreen extends Component {
   }
 
   onDefaultSubmit = async ({ contactsID }) => {
-    await this.props.screenProps.context.mutations.conversationCreate({
+    await this.context.mutations.conversationCreate({
       title: '',
       topic: '',
       contacts: contactsID.map(id => ({
@@ -138,15 +138,10 @@ export default class ListScreen extends Component {
 
   render () {
     const { contactsID } = this.state
-    const {
-      screenProps: {
-        context: { queries },
-      },
-    } = this.props
+    const { queries } = this.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
-          context={this.props.screenProps.context}
           query={queries.ContactList.graphql}
           variables={queries.ContactList.defaultVariables}
           fragment={fragments.ContactList}

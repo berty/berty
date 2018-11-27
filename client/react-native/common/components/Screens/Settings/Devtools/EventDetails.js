@@ -35,7 +35,7 @@ export default class EventDetails extends PureComponent {
         ]}
         onPress={async () => {
           try {
-            await this.props.screenProps.context.mutations.debugRequeueEvent({ eventId: data.id })
+            await this.context.mutations.debugRequeueEvent({ eventId: data.id })
           } catch (err) {
             this.setState({ err })
             console.error(err)

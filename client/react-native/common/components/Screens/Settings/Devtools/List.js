@@ -8,11 +8,14 @@ import {
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
+import { RelayContext } from '../../../../relay'
 import { colors } from '../../../../constants'
 
 const { CoreModule } = NativeModules
 
 export default class List extends PureComponent {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header:
       navigation.getParam('restartDaemon') ||
@@ -55,7 +58,7 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ panic: true })
     this.setState({ panic: true }, async () => {
       if (Platform.OS === 'web') {
-        await this.props.screenProps.queries.Panic.fetch()
+        await this.context.queries.Panic.fetch()
       } else {
         CoreModule.panic()
       }
