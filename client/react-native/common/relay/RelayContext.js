@@ -30,4 +30,6 @@ export const contextValue = ({
   return ctx
 }
 
-export default React.createContext()
+const RelayContext = React.createContext()
+console.log(RelayContext)
+export default RelayContext

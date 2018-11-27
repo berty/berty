@@ -4,6 +4,8 @@ import {
   perfMiddleware,
 } from 'react-relay-network-modern/node8'
 import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { _ } from 'case'
+import { retryMiddleware } from 'react-relay-network-modern'
 
 import { Environment, RecordSource, Store } from 'relay-runtime'
 
@@ -73,10 +75,38 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
   // eslint-disable-next-line
   __DEV__ ? perfMiddleware({ logger: perfLogger }) : null,
   urlMiddleware({
-    url: async req => {
-      const url = `http://${await getIp()}:${await getPort()}/query`
-      console.warn('url', url)
-      return url
+    url: `http://${await getIp()}:${await getPort()}/query`,
+  }),
+  retryMiddleware({
+    fetchTimeout: 1000,
+    retryDelays: () => 1000,
+    beforeRetry: async ({
+      forceRetry,
+      abort,
+      delay,
+      attempt,
+      lastError,
+      req,
+    }) => {
+      req.fetchOpts.url = `http://${await getIp()}:${await getPort()}/query`
+      // eslint-disable-next-line
+      if (__DEV__) {
+        // Unlock query
+        console.groupCollapsed(
+          '%c RELAY %c %s',
+          logStyle.relayERROR,
+          logStyle.title,
+          'fetch query error'
+        )
+        console.warn(lastError)
+
+        console.warn(
+          'call `forceRelayRetry()` for immediately retry! Or wait ' +
+            delay +
+            ' ms.'
+        )
+        console.groupEnd()
+      }
     },
   }),
 ]

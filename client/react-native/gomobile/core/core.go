@@ -9,7 +9,6 @@ import (
 	"time"
 
 	account "berty.tech/core/manager/account"
-	reuse "github.com/libp2p/go-reuseport"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -39,12 +38,17 @@ func panicHandler() {
 }
 
 func getRandomPort() (int, error) {
-	listener, err := reuse.Listen("tcp", "0.0.0.0:0")
+	addr, err := net.ResolveTCPAddr("tcp", "0.0.0.0:0")
 	if err != nil {
 		return 0, err
 	}
-	port := listener.Addr().(*net.TCPAddr).Port
-	return port, nil
+
+	l, err := net.ListenTCP("tcp", addr)
+	if err != nil {
+		return 0, err
+	}
+	defer l.Close()
+	return l.Addr().(*net.TCPAddr).Port, nil
 }
 
 func Panic() {

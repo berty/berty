@@ -32,7 +32,9 @@ export default class Current extends PureComponent {
 
   getPort = async () => {
     try {
-      return CoreModule.getPort()
+      const port = await CoreModule.getPort()
+      console.log('get port', port)
+      return port
     } catch (error) {
       console.warn(error, 'retrying to get port')
       await sleep(1000)
