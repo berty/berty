@@ -129,11 +129,48 @@ public class BertyDevice {
                 Thread.currentThread().setName("WaitChar");
                 try {
                     latchChar.await();
-                    Log.e(TAG, "Need to launch read char");
+                    waitRead();
+                    launchRead(maCharacteristic);
+                    launchRead(peerIDCharacteristic);
                 } catch (Exception e) {
                     Log.e(TAG, "Error waiting/writing " + e.getMessage());
                 }
 
+            }
+        }).start();
+    }
+
+    public void waitRead() {
+        Log.e(TAG, "waitRead()");
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("WaitChar");
+                try {
+                    latchRead.await();
+                    launchWriteIsRdy();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                }
+
+            }
+        }).start();
+    }
+
+    public void launchRead(BluetoothGattCharacteristic characteristic) {
+        Log.e(TAG, "launchRead() - characteristic=" + characteristic.getUuid());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Thread.currentThread().setName("LaunchRead");
+                while (!gatt.readCharacteristic(characteristic)) {
+                    Log.e(TAG, "launchRead() waiting read");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }).start();
     }
@@ -180,24 +217,6 @@ public class BertyDevice {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void writeRdy() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Thread.currentThread().setName("LatchIsWriteRdy");
-                try {
-                    TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                isRdyCharacteristic.setValue("");
-                while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
-                    /** intentionally empty */
-                }
-            }
-        }).start();
     }
 
     public void write(byte[] p) throws InterruptedException {

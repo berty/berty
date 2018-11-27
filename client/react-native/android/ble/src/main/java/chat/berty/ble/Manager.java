@@ -264,52 +264,6 @@ public class Manager {
         return false;
     }
 
-
-    public void handleMaRead(BertyDevice device, BluetoothGattCharacteristic characteristic) {
-        String newMa = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            newMa = new String(characteristic.getValue(), Charset.forName("UTF-8"));
-        }
-        if (device.ma == null || device.ma == "" || !device.ma.equals(newMa)) {
-            device.ma = newMa;
-            if (device.peerID == null || device.peerID == "" || !device.ma.equals(newMa)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(PEER_ID_UUID));
-                }
-            }
-            device.waitReady.countDown();
-        }
-    }
-
-    public void handlePeerIDRead(BertyDevice device, BluetoothGattCharacteristic characteristic) {
-        String newPeerID = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            newPeerID = new String(characteristic.getValue(), Charset.forName("UTF-8"));
-        }
-        if (device.peerID == null || device.peerID == "" || !device.peerID.equals(newPeerID)) {
-            device.peerID = newPeerID;
-            if (device.ma == null || device.ma == "" || !device.peerID.equals(newPeerID)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                    device.gatt.readCharacteristic(device.gatt.getService(SERVICE_UUID).getCharacteristic(MA_UUID));
-                }
-            }
-            device.waitReady.countDown();
-        }
-    }
-
-    public void handleReadCharact(BertyDevice device, BluetoothGattCharacteristic characteristic) {
-        Log.e(TAG, "READ CHARACT");
-        UUID charID = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            charID = characteristic.getUuid();
-        }
-        if (charID.equals(MA_UUID)) {
-            handleMaRead(device, characteristic);
-        } else if (charID.equals(PEER_ID_UUID)) {
-            handlePeerIDRead(device, characteristic);
-        }
-    }
-
     public boolean write(byte[] p, String ma) {
         BertyDevice bDevice = BertyUtils.getDeviceFromMa(ma);
 
