@@ -128,13 +128,13 @@ public class BertyGattServer extends BluetoothGattServerCallback {
      */
     @Override
     public void onCharacteristicReadRequest(BluetoothDevice device, int requestId, int offset, BluetoothGattCharacteristic characteristic) {
-        Log.e(TAG, "onCharacteristicReadRequest() - requestId=" + requestId + " offset=" + offset);
+        Log.e(TAG, "onCharacteristicReadRequest() - device=" + device.getAddress() + " requestId=" + requestId + " offset=" + offset + " characteristic=" + characteristic.getUuid());
         UUID charID = characteristic.getUuid();
         if (charID.equals(MA_UUID)) {
-            byte[] value = BertyConstants.maCharacteristic.getValue();
+            byte[] value = BertyUtils.maCharacteristic.getValue();
             sendReadResponse(value, device, offset, requestId);
         } else if (charID.equals(PEER_ID_UUID)) {
-            byte[] value = BertyConstants.peerIDCharacteristic.getValue();
+            byte[] value = BertyUtils.peerIDCharacteristic.getValue();
             sendReadResponse(value, device, offset, requestId);
         } else {
             Log.e(TAG, "READ UNKNOW");
