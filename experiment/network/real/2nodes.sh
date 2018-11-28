@@ -7,10 +7,13 @@
 # test
 testContactRequest() {
     @test_start "sending request"
-    req="$(jq -n --arg id $CLIENT_PUBKEY_2 '{"contact":{"id":$id}}')"
+    req=$(jq -n --arg id $CLIENT_PUBKEY_2 '{"contact":{"id":$id}}')
     ret="$($CLIENT_1 berty.node.ContactRequest "$req")"
     @test_end \
      assertEquals 0 $?
+
+    # wait to propagate
+    sleep 2
 
     @test_start "accepting request"
     req="$(jq -n --arg id $CLIENT_PUBKEY_1 '{"id":$id}')"
