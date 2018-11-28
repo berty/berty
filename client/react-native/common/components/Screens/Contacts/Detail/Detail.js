@@ -110,7 +110,7 @@ export default class Detail extends PureComponent {
               icon='share'
               title='Share this contact'
               onPress={() => shareLinkOther({
-                contactId: extractPublicKeyFromId(contact.id),
+                id: extractPublicKeyFromId(contact.id),
                 displayName: contact.displayName,
               })}
             />

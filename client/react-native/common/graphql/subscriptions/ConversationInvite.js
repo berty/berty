@@ -1,6 +1,7 @@
 import { btoa } from 'b64-lite'
 
 import EventStream from './EventStream'
+import { parseEmbedded } from '../../helpers/json'
 
 export default context => ({
   ...EventStream(context),
@@ -10,9 +11,7 @@ export default context => ({
         updater &&
         ((store, data) => {
           if (data.EventStream.kind === 301) {
-            const attributes = JSON.parse(
-              String.fromCharCode.apply(null, data.EventStream.attributes)
-            )
+            const attributes = parseEmbedded(data.EventStream.attributes)
             attributes.conversation.id = btoa(
               'conversation:' + attributes.conversation.id
             )
