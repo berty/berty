@@ -15,7 +15,6 @@ const ConversationAddMessageMutation = graphql`
       senderId
       createdAt
       updatedAt
-      deletedAt
       sentAt
       receivedAt
       ackedAt

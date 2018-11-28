@@ -26,9 +26,6 @@ message Event {
   // This field is required by gorm.
   google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
-  // DeletedAt is not used but required by gorm.
-  google.protobuf.Timestamp deleted_at = 5 [(gogoproto.stdtime) = true];
-
   // SentAt is set to current date just after sending the event.
   google.protobuf.Timestamp sent_at = 6 [(gogoproto.stdtime) = true];
 

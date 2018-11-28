@@ -793,7 +793,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       name:
       status:
       apiVersion:
@@ -805,7 +804,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       name:
       status:
       apiVersion:
@@ -817,7 +815,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       name:
       status:
       apiVersion:
@@ -831,7 +828,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       sigchain:
       status:
       devices:
@@ -846,7 +842,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       sigchain:
       status:
       devices:
@@ -861,7 +856,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       sigchain:
       status:
       devices:
@@ -878,7 +872,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       title:
       topic:
       members:
@@ -889,7 +882,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       title:
       topic:
       members:
@@ -900,7 +892,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       title:
       topic:
       members:
@@ -912,7 +903,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       status:
       contact:
       conversationId:
@@ -924,7 +914,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       status:
       contact:
       conversationId:
@@ -936,7 +925,6 @@ models:
         resolver: true
       createdAt:
       updatedAt:
-      deletedAt:
       status:
       contact:
       conversationId:
@@ -963,7 +951,6 @@ models:
       id:
       createdAt:
       updatedAt:
-      deletedAt:
       status:
       originDeviceId:
       contactId:
@@ -976,7 +963,6 @@ models:
       id:
       createdAt:
       updatedAt:
-      deletedAt:
       status:
       originDeviceId:
       contactId:
@@ -989,7 +975,6 @@ models:
       id:
       createdAt:
       updatedAt:
-      deletedAt:
       status:
       originDeviceId:
       contactId:
@@ -1175,7 +1160,6 @@ models:
       senderId:
       createdAt:
       updatedAt:
-      deletedAt:
       sentAt:
       receivedAt:
       ackedAt:
@@ -1196,7 +1180,6 @@ models:
       senderId:
       createdAt:
       updatedAt:
-      deletedAt:
       sentAt:
       receivedAt:
       ackedAt:
@@ -1217,7 +1200,6 @@ models:
       senderId:
       createdAt:
       updatedAt:
-      deletedAt:
       sentAt:
       receivedAt:
       ackedAt:

@@ -8,7 +8,6 @@ const EventStream = graphql`
       senderId
       createdAt
       updatedAt
-      deletedAt
       sentAt
       receivedAt
       ackedAt

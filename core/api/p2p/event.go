@@ -30,7 +30,6 @@ func (e Event) Copy() *Event {
 		ID:                 e.ID,
 		CreatedAt:          e.CreatedAt,
 		UpdatedAt:          e.UpdatedAt,
-		DeletedAt:          e.DeletedAt,
 		SenderID:           e.SenderID,
 		Direction:          e.Direction,
 		SenderAPIVersion:   e.SenderAPIVersion,

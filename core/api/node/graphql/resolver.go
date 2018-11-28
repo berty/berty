@@ -189,17 +189,17 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, contact *entity.C
 		IntroText: introText,
 	})
 }
-func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.ContactAcceptRequest(ctx, &entity.Contact{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *mutationResolver) ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *mutationResolver) ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.ContactRemove(ctx, &entity.Contact{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *mutationResolver) ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *mutationResolver) ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.ContactUpdate(ctx, &entity.Contact{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
@@ -357,7 +357,7 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	return output, nil
 }
 
-func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
+func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
@@ -431,7 +431,7 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.GetContact(ctx, &entity.Contact{ID: id})
 }
 func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {
@@ -502,10 +502,10 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
 }
-func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
+func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
 	return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
 }
 func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error) {
