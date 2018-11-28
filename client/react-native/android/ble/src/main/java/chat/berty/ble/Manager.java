@@ -1,11 +1,8 @@
 package chat.berty.ble;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattServer;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
@@ -24,70 +21,35 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import static android.content.Context.BLUETOOTH_SERVICE;
-import static chat.berty.ble.BertyUtils.ACCEPT_UUID;
 import static chat.berty.ble.BertyUtils.BLUETOOTH_ENABLE_REQUEST;
-import static chat.berty.ble.BertyUtils.CLOSER_UUID;
-import static chat.berty.ble.BertyUtils.IS_READY_UUID;
-import static chat.berty.ble.BertyUtils.MA_UUID;
-import static chat.berty.ble.BertyUtils.PEER_ID_UUID;
-import static chat.berty.ble.BertyUtils.SERVICE_UUID;
-import static chat.berty.ble.BertyUtils.WRITER_UUID;
 
 public class Manager {
-    private static Manager instance = null;
-
-    private Context mContext;
-
-    private ActivityGetter mReactContext;
-
-    private Object RmReactContext;
-
-    public String ma;
-
-    public String peerID;
-
     public static String TAG = "chat.berty.ble.Manager";
-
-    protected HashMap<String, BertyDevice> bertyDevices;
-
-    protected BluetoothAdapter mBluetoothAdapter;
-
-    protected BluetoothGattServer mBluetoothGattServer;
-
-    protected BluetoothLeAdvertiser mBluetoothLeAdvertiser;
-
-    protected BluetoothLeScanner mBluetoothLeScanner;
-
-    protected BluetoothGattService mService;
-
+    private static Manager instance = null;
+    public String ma;
+    public String peerID;
     public boolean isAdvertising = false;
-
     public boolean isScanning = false;
-
+    protected HashMap<String, BertyDevice> bertyDevices;
+    protected BluetoothAdapter mBluetoothAdapter;
+    protected BluetoothGattServer mBluetoothGattServer;
+    protected BluetoothLeAdvertiser mBluetoothLeAdvertiser;
+    protected BluetoothLeScanner mBluetoothLeScanner;
+    protected BluetoothGattService mService;
     protected BertyGatt mGattCallback = new BertyGatt();
-
+    private Context mContext;
+    private ActivityGetter mReactContext;
+    private Object RmReactContext;
     private BertyGattServer mGattServerCallback = new BertyGattServer();
 
     private BertyAdvertise mAdvertisingCallback = new BertyAdvertise();
 
     private BertyScan mScanCallback = new BertyScan();
-
-    public interface ActivityGetter {
-        @Nullable Activity getCurrentActivity();
-    }
 
     private Manager() {
         super();
@@ -95,6 +57,21 @@ public class Manager {
         Log.e(TAG, "BLEManager init");
         mScanCallback.mGattCallback = mGattCallback;
         mGattServerCallback.mGattCallback = mGattCallback;
+    }
+
+    public static Manager getInstance() {
+        if (instance == null) {
+            synchronized (Manager.class) {
+                if (instance == null) {
+                    instance = new Manager();
+                    instance.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                    instance.bertyDevices = new HashMap<>();
+                }
+            }
+        }
+
+        Log.e(TAG, "ALL INSTANCES " + instance);
+        return instance;
     }
 
     public void setmContext(Context ctx) {
@@ -129,7 +106,7 @@ public class Manager {
     public void setmReactContext(Object rCtx, Object t) {
         Log.e(TAG, "BLEManager ReactContext set");
         RmReactContext = t;
-        mReactContext = (ActivityGetter)rCtx;
+        mReactContext = (ActivityGetter) rCtx;
     }
 
     public void initScannerAndAdvertiser() {
@@ -155,7 +132,6 @@ public class Manager {
                     mBluetoothLeAdvertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
                     mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
                     BluetoothGattService svc = BertyUtils.createService();
-
 
 
                     mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
@@ -197,20 +173,6 @@ public class Manager {
         }
     }
 
-    public static Manager getInstance() {
-        if (instance == null) {
-            synchronized (Manager.class) {
-                if (instance == null) {
-                    instance = new Manager();
-                    instance.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                    instance.bertyDevices = new HashMap<>();
-                }
-            }
-        }
-
-        Log.e(TAG, "ALL INSTANCES " + instance);
-        return instance;
-    }
     public boolean isRunning(Context ctx) {
         ActivityManager activityManager = (ActivityManager) ctx.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasks = activityManager.getRunningTasks(Integer.MAX_VALUE);
@@ -222,7 +184,6 @@ public class Manager {
 
         return false;
     }
-
 
     public void startAdvertising() {
         AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
@@ -275,6 +236,8 @@ public class Manager {
         try {
             bDevice.write(p);
         } catch (Exception e) {
+            Log.e(TAG, "Error writing " + e.getMessage());
+
             return false;
         }
 
@@ -290,5 +253,10 @@ public class Manager {
         } finally {
             super.finalize();
         }
+    }
+
+    public interface ActivityGetter {
+        @Nullable
+        Activity getCurrentActivity();
     }
 }
