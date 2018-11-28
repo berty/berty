@@ -59,6 +59,7 @@ public class BertyDevice {
         this.latchChar = new CountDownLatch(6);
         this.latchRead = new CountDownLatch(2);
         this.toSend = new ArrayList<>();
+        this.mtu = 23;
         waitRdy();
         waitConn();
     }
