@@ -11,12 +11,6 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/jinzhu/gorm"
-	reuse "github.com/libp2p/go-reuseport"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
-
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	p2papi "berty.tech/core/api/p2p"
@@ -28,6 +22,11 @@ import (
 	"berty.tech/core/pkg/zapring"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
+	"github.com/jinzhu/gorm"
+	reuse "github.com/libp2p/go-reuseport"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 // Info is used in berty.node.DeviceInfos
@@ -286,6 +285,10 @@ func (a *Account) DropDatabase() error {
 }
 
 func (a *Account) startNetwork() error {
+	if a.network == nil {
+		return nil
+	}
+
 	go func() {
 		defer a.PanicHandler()
 		a.errChan <- a.network.Start()
