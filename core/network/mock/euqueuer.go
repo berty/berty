@@ -30,6 +30,12 @@ func (e *Enqueuer) Emit(_ context.Context, envelope *p2p.Envelope) error {
 	return nil
 }
 
+func (e *Enqueuer) Start() error {
+	for true {
+	}
+	return nil
+}
+
 func (e *Enqueuer) OnEnvelopeHandler(_ func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
 	// doing nothing, enqueuer does not support receiving events
 }
