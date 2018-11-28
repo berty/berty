@@ -1,10 +1,10 @@
-// +build android darwin
-
 package ble
 
 import (
 	"fmt"
 	"net"
+
+	// "runtime/debug"
 
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
@@ -24,7 +24,7 @@ type Listener struct {
 	lAddr           ma.Multiaddr
 }
 
-var listeners map[string]*Listener = make(map[string]*Listener)
+var listeners := make(map[string]*Listener)
 
 func RealAcceptSender(peerID string, ble string, incPeerID string) {
 	for {
@@ -59,7 +59,8 @@ func (b *Listener) Accept() (tpt.Conn, error) {
 		case bleUUID, _ := <-b.incomingBLEUUID:
 			peerIDb58 := <-b.incomingPeerID
 			for {
-				if ci, ok := getConn(bleUUID); !ok {
+				ci, ok := getConn(bleUUID)
+				if !ok {
 					rAddr, err := ma.NewMultiaddr("/ble/" + bleUUID)
 					if err != nil {
 						return nil, err
@@ -70,9 +71,8 @@ func (b *Listener) Accept() (tpt.Conn, error) {
 					}
 					c := NewConn(b.transport, b.transport.MySelf.ID(), rID, b.lAddr, rAddr, 1)
 					return &c, nil
-				} else {
-					return ci, nil
 				}
+				return ci, nil
 			}
 		}
 	}

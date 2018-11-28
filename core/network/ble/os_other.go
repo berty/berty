@@ -4,15 +4,27 @@ package ble
 
 import (
 	"context"
+	"time"
 
 	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
+	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/pkg/errors"
 )
 
+// BLETransport is the TCP transport.
 type Transport struct {
+	MySelf host.Host
+	// Explicitly disable reuseport.
+	DisableReuseport bool
+	// ID
+	ID    string
+	lAddr ma.Multiaddr
+	// TCP connect timeout
+	ConnectTimeout time.Duration
+	reuse          rtpt.Transport
 }
 
 var ErrNotImplemented = errors.New("not implemented yet")
@@ -58,4 +70,8 @@ func (t *Transport) String() string {
 
 func (b *Listener) closeNative() {
 
+}
+
+func (b *Conn) Write(p []byte) (n int, err error) {
+	return 0, errors.Wrap(ErrNotImplemented, "Write")
 }

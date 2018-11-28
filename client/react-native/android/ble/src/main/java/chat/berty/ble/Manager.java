@@ -117,6 +117,7 @@ public class Manager {
             curActivity.startActivityForResult(enableBtIntent, BLUETOOTH_ENABLE_REQUEST);
             if (ContextCompat.checkSelfPermission(curActivity,
                     android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                /** intentionally empty */
             } else {
                 ActivityCompat.requestPermissions(curActivity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                         99);
@@ -244,16 +245,26 @@ public class Manager {
         return true;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            mBluetoothGattServer.clearServices();
-            stopAdvertising();
-            stopScanning();
-        } finally {
-            super.finalize();
-        }
-    }
+    // @Override
+    // protected void finalize() throws Throwable {
+    //     try {
+    //         mBluetoothGattServer.clearServices();
+    //         for (BertyDevice value : BertyUtils.bertyDevices.values()) {
+    //             if (value.gatt != null) {
+    //                 value.gatt.disconnect();
+    //                 value.gatt.close();
+    //                 value.gatt = null;
+    //                 value
+    //                         .device = null;
+    //                 Log.e(TAG, "CLOSE");
+    //             }
+    //         }
+    //         stopAdvertising();
+    //         stopScanning();
+    //     } finally {
+    //         super.finalize();
+    //     }
+    // }
 
     public interface ActivityGetter {
         @Nullable

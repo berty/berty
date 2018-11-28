@@ -1,5 +1,3 @@
-// +build android darwin
-
 package ble
 
 import (
