@@ -68,7 +68,6 @@ func (b *Listener) Accept() (tpt.Conn, error) {
 					if err != nil {
 						return nil, err
 					}
-					close(b.incomingBLEUUID)
 					c := NewConn(b.transport, b.transport.MySelf.ID(), rID, b.lAddr, rAddr, 1)
 					return &c, nil
 				} else {
