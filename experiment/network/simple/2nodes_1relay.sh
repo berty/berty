@@ -25,6 +25,10 @@ oneTimeSetUp() {
     . ../libs/ansi.sh
     . ../libs/utils.sh
 
+    if [ ! -z "$CIRCLE_ARTIFACTS" ]; then
+        LOGS_ARTIFACTS=$CIRCLE_ARTIFACTS
+    fi
+
     ansi --bold --newline  'Warmup'
 
     NODES="$(docker-compose ps -q node)"
@@ -33,6 +37,8 @@ oneTimeSetUp() {
         echo "docker compose not started"
         exit 1
     fi
+
+    sleep 1
 
     @test_start "getting nodes addrs"
     c=1

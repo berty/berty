@@ -37,6 +37,8 @@ oneTimeSetUp() {
         exit 1
     fi
 
+    sleep 1
+
     @test_start "getting nodes addrs"
     c=1
     for node in $NODES; do
