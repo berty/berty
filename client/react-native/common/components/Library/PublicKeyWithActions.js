@@ -65,8 +65,7 @@ export default class PublicKeyWithActions extends PureComponent {
         props.navigation.getParam('initialName'),
       ]
       : [props.initialKey, props.initialName]
-    const initialData =
-      props.initialKey === undefined && props.initialName === undefined
+    const missingInitialData = props.initialKey === undefined
     this.state = {
       contact: {
         id: initialKey || '',
@@ -77,10 +76,12 @@ export default class PublicKeyWithActions extends PureComponent {
       },
     }
 
-    if (initialData && props.data !== undefined) {
+    if (missingInitialData && props.data !== undefined) {
       try {
-        this.state.contact = props.data
-        this.state.contact.id = extractPublicKeyFromId(props.data.id)
+        this.state.contact = {
+          ...props.data,
+          id: extractPublicKeyFromId(props.data.id),
+        }
       } catch (e) {
         console.error(e)
       }
