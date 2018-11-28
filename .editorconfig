@@ -46,3 +46,10 @@ indent_size = 1
 [*.m]
 indent_size = 4
 indent_style = space
+
+[*.java]
+indent_size = 4
+indent_style = space
+block_comment_start = /**
+block_comment = *
+block_comment_end = */
