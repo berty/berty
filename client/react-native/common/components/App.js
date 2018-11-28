@@ -63,7 +63,6 @@ export default class App extends PureComponent {
 
   render () {
     const { loading, deepLink } = this.state
-
     if (loading) {
       return <Loader />
     }
