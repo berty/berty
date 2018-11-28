@@ -29,15 +29,15 @@ func TestPagination(t *testing.T) {
 
 		// node
 		alice, _ = testNode(t, WithNodeGrpcServer(gs))
-		So(alice.sql.Where("1=1").Delete(&entity.Contact{}).Error, ShouldBeNil)
+		So(alice.sql(nil).Where("1=1").Delete(&entity.Contact{}).Error, ShouldBeNil)
 		for i := 0; i < 6; i++ {
-			So(alice.sql.Save(&entity.Contact{
+			So(alice.sql(nil).Save(&entity.Contact{
 				ID:     fmt.Sprintf("abcde_%d", i),
 				Status: entity.Contact_IsTrustedFriend,
 			}).Error, ShouldBeNil)
 		}
-		So(alice.sql.Model(entity.Contact{}).Where("1=1").UpdateColumn("created_at", nil).UpdateColumn("updated_at", nil).Error, ShouldBeNil)
-		// alice.sql = alice.sql.Debug() // temporarily uncomment this line to have gorm debug
+		So(alice.sql(nil).Model(entity.Contact{}).Where("1=1").UpdateColumn("created_at", nil).UpdateColumn("updated_at", nil).Error, ShouldBeNil)
+		// alice.sql = alice.sql(nil).Debug() // temporarily uncomment this line to have gorm debug
 
 		// graphql service
 		ic := netutil.NewIOGrpc()

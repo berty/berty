@@ -23,7 +23,8 @@ func (n *Node) EnqueueOutgoingEvent(event *p2p.Event) error {
 	if err := event.Validate(); err != nil {
 		return errors.Wrap(err, "invalid event")
 	}
-	if err := n.sql.Create(event).Error; err != nil {
+	sql := n.sql(nil)
+	if err := sql.Create(event).Error; err != nil {
 		return errors.Wrap(err, "failed to write event to db")
 	}
 	n.outgoingEvents <- event

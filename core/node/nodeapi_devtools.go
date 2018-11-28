@@ -27,7 +27,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void, error) {
+func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Void, error) {
 	// FIXME: enable mutext, but allow calling submethod, i.e., node.CreateConversation
 	//n.handleMutex.Lock()
 	//defer n.handleMutex.Unlock()
@@ -80,7 +80,8 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 				},
 			},
 		}
-		if err := n.sql.Set("gorm:association_autoupdate", true).Save(&contact).Error; err != nil {
+		sql := n.sql(ctx)
+		if err := sql.Set("gorm:association_autoupdate", true).Save(&contact).Error; err != nil {
 			return nil, errors.Wrap(err, "failed to save contacts")
 		}
 		contacts = append(contacts, contact)
@@ -117,7 +118,9 @@ func (n *Node) GenerateFakeData(_ context.Context, input *node.Void) (*node.Void
 	return &node.Void{}, nil
 }
 
-func (n *Node) NodeInfos() (map[string]string, error) {
+func (n *Node) NodeInfos(ctx context.Context) (map[string]string, error) {
+	db := n.sql(ctx)
+
 	infos := map[string]string{}
 
 	infos["runtime: versions"] = fmt.Sprintf("core=%s\np2p=%d\nnode=%d", core.Version, p2p.Version, node.Version)
@@ -129,7 +132,7 @@ func (n *Node) NodeInfos() (map[string]string, error) {
 	sqlStats := []string{}
 	for _, table := range sql.AllTables() {
 		var count uint32
-		if err := n.sql.Table(table).Count(&count).Error; err != nil {
+		if err := db.Table(table).Count(&count).Error; err != nil {
 			sqlStats = append(sqlStats, fmt.Sprintf("%s: %v", table, err))
 		} else {
 			sqlStats = append(sqlStats, fmt.Sprintf("%s: %d", table, count))
@@ -147,8 +150,8 @@ func (n *Node) NodeInfos() (map[string]string, error) {
 	return infos, nil
 }
 
-func (n *Node) DeviceInfos(_ context.Context, input *node.Void) (*deviceinfo.DeviceInfos, error) {
-	entries, err := n.NodeInfos()
+func (n *Node) DeviceInfos(ctx context.Context, input *node.Void) (*deviceinfo.DeviceInfos, error) {
+	entries, err := n.NodeInfos(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -191,10 +194,11 @@ func (n *Node) Panic(_ context.Context, input *node.Void) (*node.Void, error) {
 	panic("panic from client")
 }
 
-func (n *Node) DebugRequeueEvent(_ context.Context, input *node.EventIDInput) (*p2p.Event, error) {
+func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) (*p2p.Event, error) {
 	event := p2p.Event{}
 
-	if err := n.sql.First(&event, "ID = ?", input.EventID).Error; err != nil {
+	sql := n.sql(ctx)
+	if err := sql.First(&event, "ID = ?", input.EventID).Error; err != nil {
 		return nil, errors.Wrap(err, "unable to fetch event")
 	}
 

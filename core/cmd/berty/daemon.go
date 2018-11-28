@@ -94,8 +94,9 @@ func daemon(opts *daemonOptions) error {
 		account.WithName(opts.nickname),
 		account.WithPassphrase(opts.password),
 		account.WithDatabase(&account.DatabaseOptions{
-			Path: "/tmp",
-			Drop: opts.dropDatabase,
+			Path:       "/tmp",
+			Drop:       opts.dropDatabase,
+			JaegerAddr: jaegerAddr,
 		}),
 		account.WithBanner(banner.Quote()),
 		account.WithGrpcServer(&account.GrpcServerOptions{

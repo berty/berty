@@ -31,5 +31,6 @@ func (n *Node) persistSigChain() error {
 
 	n.config.Myself.Sigchain = data
 
-	return n.sql.Save(n.config.Myself).Error
+	sql := n.sql(nil)
+	return sql.Save(n.config.Myself).Error
 }

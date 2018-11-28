@@ -70,7 +70,8 @@ func (n *Node) OpenEnvelope(envelope *p2p.Envelope) (*p2p.Event, error) {
 	defer n.asyncWaitGroup.Done()
 
 	trusted := false
-	device, err := envelope.GetDeviceForEnvelope(n.sql)
+	sql := n.sql(nil)
+	device, err := envelope.GetDeviceForEnvelope(sql)
 
 	if err == errorcodes.ErrorNoDeviceFoundForEnvelope {
 		// No device found, lets try to use the pubkey if provided,
