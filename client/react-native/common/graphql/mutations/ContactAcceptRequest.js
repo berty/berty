@@ -22,14 +22,12 @@ const ContactAcceptRequestMutation = graphql`
       id
       createdAt
       updatedAt
-      deletedAt
       sigchain
       status
       devices {
         id
         createdAt
         updatedAt
-        deletedAt
         name
         status
         apiVersion

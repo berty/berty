@@ -64,7 +64,6 @@ type ComplexityRoot struct {
 		Id                    func(childComplexity int) int
 		CreatedAt             func(childComplexity int) int
 		UpdatedAt             func(childComplexity int) int
-		DeletedAt             func(childComplexity int) int
 		Sigchain              func(childComplexity int) int
 		Status                func(childComplexity int) int
 		Devices               func(childComplexity int) int
@@ -78,7 +77,6 @@ type ComplexityRoot struct {
 		Id                    func(childComplexity int) int
 		CreatedAt             func(childComplexity int) int
 		UpdatedAt             func(childComplexity int) int
-		DeletedAt             func(childComplexity int) int
 		Sigchain              func(childComplexity int) int
 		Status                func(childComplexity int) int
 		Devices               func(childComplexity int) int
@@ -92,7 +90,6 @@ type ComplexityRoot struct {
 		Id        func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
-		DeletedAt func(childComplexity int) int
 		Title     func(childComplexity int) int
 		Topic     func(childComplexity int) int
 		Members   func(childComplexity int) int
@@ -102,7 +99,6 @@ type ComplexityRoot struct {
 		Id             func(childComplexity int) int
 		CreatedAt      func(childComplexity int) int
 		UpdatedAt      func(childComplexity int) int
-		DeletedAt      func(childComplexity int) int
 		Status         func(childComplexity int) int
 		Contact        func(childComplexity int) int
 		ConversationId func(childComplexity int) int
@@ -113,7 +109,6 @@ type ComplexityRoot struct {
 		Id             func(childComplexity int) int
 		CreatedAt      func(childComplexity int) int
 		UpdatedAt      func(childComplexity int) int
-		DeletedAt      func(childComplexity int) int
 		Status         func(childComplexity int) int
 		Contact        func(childComplexity int) int
 		ConversationId func(childComplexity int) int
@@ -124,7 +119,6 @@ type ComplexityRoot struct {
 		Id        func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
-		DeletedAt func(childComplexity int) int
 		Title     func(childComplexity int) int
 		Topic     func(childComplexity int) int
 		Members   func(childComplexity int) int
@@ -134,7 +128,6 @@ type ComplexityRoot struct {
 		Id         func(childComplexity int) int
 		CreatedAt  func(childComplexity int) int
 		UpdatedAt  func(childComplexity int) int
-		DeletedAt  func(childComplexity int) int
 		Name       func(childComplexity int) int
 		Status     func(childComplexity int) int
 		ApiVersion func(childComplexity int) int
@@ -149,7 +142,6 @@ type ComplexityRoot struct {
 		Id              func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
 		UpdatedAt       func(childComplexity int) int
-		DeletedAt       func(childComplexity int) int
 		Status          func(childComplexity int) int
 		OriginDeviceId  func(childComplexity int) int
 		ContactId       func(childComplexity int) int
@@ -328,7 +320,6 @@ type ComplexityRoot struct {
 		SenderId           func(childComplexity int) int
 		CreatedAt          func(childComplexity int) int
 		UpdatedAt          func(childComplexity int) int
-		DeletedAt          func(childComplexity int) int
 		SentAt             func(childComplexity int) int
 		ReceivedAt         func(childComplexity int) int
 		AckedAt            func(childComplexity int) int
@@ -346,7 +337,6 @@ type ComplexityRoot struct {
 		SenderId           func(childComplexity int) int
 		CreatedAt          func(childComplexity int) int
 		UpdatedAt          func(childComplexity int) int
-		DeletedAt          func(childComplexity int) int
 		SentAt             func(childComplexity int) int
 		ReceivedAt         func(childComplexity int) int
 		AckedAt            func(childComplexity int) int
@@ -616,9 +606,9 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		ContactRequest         func(childComplexity int, contact *entity.Contact, introText string) int
-		ContactAcceptRequest   func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ContactRemove          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ContactUpdate          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactAcceptRequest   func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactRemove          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactUpdate          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ConversationCreate     func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
 		ConversationInvite     func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
 		ConversationExclude    func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
@@ -633,12 +623,12 @@ type ComplexityRoot struct {
 		Node                  func(childComplexity int, id string) int
 		Id                    func(childComplexity int, T bool) int
 		EventList             func(childComplexity int, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
+		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) int
 		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ConversationList      func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
-		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
+		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
 		DeviceInfos           func(childComplexity int, T bool) int
 		AppVersion            func(childComplexity int, T bool) int
 		Peers                 func(childComplexity int, T bool) int
@@ -707,9 +697,9 @@ type GoogleProtobufMethodOptionsResolver interface {
 }
 type MutationResolver interface {
 	ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error)
-	ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
-	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
-	ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
+	ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
+	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
+	ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error)
 	ConversationInvite(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
@@ -723,12 +713,12 @@ type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
 	ID(ctx context.Context, T bool) (*p2p.Peer, error)
 	EventList(ctx context.Context, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
-	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
+	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
-	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
+	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
-	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
-	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deletedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
+	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
+	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
 	DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
 	Peers(ctx context.Context, T bool) (*p2p.Peers, error)
@@ -810,21 +800,7 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 		}
 	}
 	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
+	var arg3 []byte
 	if tmp, ok := rawArgs["sigchain"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -835,30 +811,30 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg4 = make([]byte, len(rawIf1))
+		arg3 = make([]byte, len(rawIf1))
 		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sigchain"] = arg4
-	var arg5 *int32
+	args["sigchain"] = arg3
+	var arg4 *int32
 	if tmp, ok := rawArgs["status"]; ok {
 		var err error
 		var ptr1 int32
 		if tmp != nil {
 			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
+			arg4 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
+	args["status"] = arg4
+	var arg5 []*entity.Device
 	if tmp, ok := rawArgs["devices"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -869,55 +845,55 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg6 = make([]*entity.Device, len(rawIf1))
+		arg5 = make([]*entity.Device, len(rawIf1))
 		for idx1 := range rawIf1 {
 			var ptr2 entity.Device
 			if rawIf1[idx1] != nil {
 				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
+				arg5[idx1] = &ptr2
 			}
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["devices"] = arg6
-	var arg7 string
+	args["devices"] = arg5
+	var arg6 string
 	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
 		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayName"] = arg7
+	args["displayStatus"] = arg7
 	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
 		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayStatus"] = arg8
+	args["overrideDisplayName"] = arg8
 	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
 		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
+	args["overrideDisplayStatus"] = arg9
 	return args, nil
 
 }
@@ -961,21 +937,7 @@ func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[stri
 		}
 	}
 	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
+	var arg3 []byte
 	if tmp, ok := rawArgs["sigchain"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -986,30 +948,30 @@ func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[stri
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg4 = make([]byte, len(rawIf1))
+		arg3 = make([]byte, len(rawIf1))
 		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sigchain"] = arg4
-	var arg5 *int32
+	args["sigchain"] = arg3
+	var arg4 *int32
 	if tmp, ok := rawArgs["status"]; ok {
 		var err error
 		var ptr1 int32
 		if tmp != nil {
 			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
+			arg4 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
+	args["status"] = arg4
+	var arg5 []*entity.Device
 	if tmp, ok := rawArgs["devices"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1020,55 +982,55 @@ func field_Mutation_ContactRemove_args(rawArgs map[string]interface{}) (map[stri
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg6 = make([]*entity.Device, len(rawIf1))
+		arg5 = make([]*entity.Device, len(rawIf1))
 		for idx1 := range rawIf1 {
 			var ptr2 entity.Device
 			if rawIf1[idx1] != nil {
 				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
+				arg5[idx1] = &ptr2
 			}
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["devices"] = arg6
-	var arg7 string
+	args["devices"] = arg5
+	var arg6 string
 	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
 		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayName"] = arg7
+	args["displayStatus"] = arg7
 	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
 		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayStatus"] = arg8
+	args["overrideDisplayName"] = arg8
 	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
 		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
+	args["overrideDisplayStatus"] = arg9
 	return args, nil
 
 }
@@ -1112,21 +1074,7 @@ func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[stri
 		}
 	}
 	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
+	var arg3 []byte
 	if tmp, ok := rawArgs["sigchain"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1137,30 +1085,30 @@ func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[stri
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg4 = make([]byte, len(rawIf1))
+		arg3 = make([]byte, len(rawIf1))
 		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sigchain"] = arg4
-	var arg5 *int32
+	args["sigchain"] = arg3
+	var arg4 *int32
 	if tmp, ok := rawArgs["status"]; ok {
 		var err error
 		var ptr1 int32
 		if tmp != nil {
 			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
+			arg4 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
+	args["status"] = arg4
+	var arg5 []*entity.Device
 	if tmp, ok := rawArgs["devices"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1171,55 +1119,55 @@ func field_Mutation_ContactUpdate_args(rawArgs map[string]interface{}) (map[stri
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg6 = make([]*entity.Device, len(rawIf1))
+		arg5 = make([]*entity.Device, len(rawIf1))
 		for idx1 := range rawIf1 {
 			var ptr2 entity.Device
 			if rawIf1[idx1] != nil {
 				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
+				arg5[idx1] = &ptr2
 			}
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["devices"] = arg6
-	var arg7 string
+	args["devices"] = arg5
+	var arg6 string
 	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
 		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayName"] = arg7
+	args["displayStatus"] = arg7
 	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
 		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayStatus"] = arg8
+	args["overrideDisplayName"] = arg8
 	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
 		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
+	args["overrideDisplayStatus"] = arg9
 	return args, nil
 
 }
@@ -1641,7 +1589,7 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 	}
 	args["updatedAt"] = arg3
 	var arg4 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
+	if tmp, ok := rawArgs["sentAt"]; ok {
 		var err error
 		var ptr1 time.Time
 		if tmp != nil {
@@ -1653,9 +1601,9 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 			return nil, err
 		}
 	}
-	args["deletedAt"] = arg4
+	args["sentAt"] = arg4
 	var arg5 *time.Time
-	if tmp, ok := rawArgs["sentAt"]; ok {
+	if tmp, ok := rawArgs["receivedAt"]; ok {
 		var err error
 		var ptr1 time.Time
 		if tmp != nil {
@@ -1667,9 +1615,9 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 			return nil, err
 		}
 	}
-	args["sentAt"] = arg5
+	args["receivedAt"] = arg5
 	var arg6 *time.Time
-	if tmp, ok := rawArgs["receivedAt"]; ok {
+	if tmp, ok := rawArgs["ackedAt"]; ok {
 		var err error
 		var ptr1 time.Time
 		if tmp != nil {
@@ -1681,13 +1629,13 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 			return nil, err
 		}
 	}
-	args["receivedAt"] = arg6
-	var arg7 *time.Time
-	if tmp, ok := rawArgs["ackedAt"]; ok {
+	args["ackedAt"] = arg6
+	var arg7 *int32
+	if tmp, ok := rawArgs["direction"]; ok {
 		var err error
-		var ptr1 time.Time
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
+			ptr1, err = models.UnmarshalEnum(tmp)
 			arg7 = &ptr1
 		}
 
@@ -1695,63 +1643,49 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 			return nil, err
 		}
 	}
-	args["ackedAt"] = arg7
-	var arg8 *int32
-	if tmp, ok := rawArgs["direction"]; ok {
+	args["direction"] = arg7
+	var arg8 uint32
+	if tmp, ok := rawArgs["senderApiVersion"]; ok {
 		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg8 = &ptr1
-		}
-
+		arg8, err = models.UnmarshalUint32(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["direction"] = arg8
+	args["senderApiVersion"] = arg8
 	var arg9 uint32
-	if tmp, ok := rawArgs["senderApiVersion"]; ok {
+	if tmp, ok := rawArgs["receiverApiVersion"]; ok {
 		var err error
 		arg9, err = models.UnmarshalUint32(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["senderApiVersion"] = arg9
-	var arg10 uint32
-	if tmp, ok := rawArgs["receiverApiVersion"]; ok {
-		var err error
-		arg10, err = models.UnmarshalUint32(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["receiverApiVersion"] = arg10
-	var arg11 string
+	args["receiverApiVersion"] = arg9
+	var arg10 string
 	if tmp, ok := rawArgs["receiverId"]; ok {
 		var err error
-		arg11, err = models.UnmarshalString(tmp)
+		arg10, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["receiverId"] = arg11
-	var arg12 *int32
+	args["receiverId"] = arg10
+	var arg11 *int32
 	if tmp, ok := rawArgs["kind"]; ok {
 		var err error
 		var ptr1 int32
 		if tmp != nil {
 			ptr1, err = models.UnmarshalEnum(tmp)
-			arg12 = &ptr1
+			arg11 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["kind"] = arg12
-	var arg13 []byte
+	args["kind"] = arg11
+	var arg12 []byte
 	if tmp, ok := rawArgs["attributes"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1762,24 +1696,24 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg13 = make([]byte, len(rawIf1))
+		arg12 = make([]byte, len(rawIf1))
 		for idx1 := range rawIf1 {
-			arg13[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+			arg12[idx1], err = models.UnmarshalByte(rawIf1[idx1])
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["attributes"] = arg13
-	var arg14 string
+	args["attributes"] = arg12
+	var arg13 string
 	if tmp, ok := rawArgs["conversationId"]; ok {
 		var err error
-		arg14, err = models.UnmarshalID(tmp)
+		arg13, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["conversationId"] = arg14
+	args["conversationId"] = arg13
 	return args, nil
 
 }
@@ -1917,21 +1851,7 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 		}
 	}
 	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["deletedAt"] = arg3
-	var arg4 []byte
+	var arg3 []byte
 	if tmp, ok := rawArgs["sigchain"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1942,30 +1862,30 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg4 = make([]byte, len(rawIf1))
+		arg3 = make([]byte, len(rawIf1))
 		for idx1 := range rawIf1 {
-			arg4[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["sigchain"] = arg4
-	var arg5 *int32
+	args["sigchain"] = arg3
+	var arg4 *int32
 	if tmp, ok := rawArgs["status"]; ok {
 		var err error
 		var ptr1 int32
 		if tmp != nil {
 			ptr1, err = models.UnmarshalEnum(tmp)
-			arg5 = &ptr1
+			arg4 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["status"] = arg5
-	var arg6 []*entity.Device
+	args["status"] = arg4
+	var arg5 []*entity.Device
 	if tmp, ok := rawArgs["devices"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1976,55 +1896,55 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg6 = make([]*entity.Device, len(rawIf1))
+		arg5 = make([]*entity.Device, len(rawIf1))
 		for idx1 := range rawIf1 {
 			var ptr2 entity.Device
 			if rawIf1[idx1] != nil {
 				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
+				arg5[idx1] = &ptr2
 			}
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["devices"] = arg6
-	var arg7 string
+	args["devices"] = arg5
+	var arg6 string
 	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
 		var err error
 		arg7, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayName"] = arg7
+	args["displayStatus"] = arg7
 	var arg8 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
 		var err error
 		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["displayStatus"] = arg8
+	args["overrideDisplayName"] = arg8
 	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
 		var err error
 		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["overrideDisplayName"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg10, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayStatus"] = arg10
+	args["overrideDisplayStatus"] = arg9
 	return args, nil
 
 }
@@ -2162,39 +2082,25 @@ func field_Query_GetConversation_args(rawArgs map[string]interface{}) (map[strin
 		}
 	}
 	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
+	var arg3 string
+	if tmp, ok := rawArgs["title"]; ok {
 		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
+		arg3, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["deletedAt"] = arg3
+	args["title"] = arg3
 	var arg4 string
-	if tmp, ok := rawArgs["title"]; ok {
+	if tmp, ok := rawArgs["topic"]; ok {
 		var err error
 		arg4, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["title"] = arg4
-	var arg5 string
-	if tmp, ok := rawArgs["topic"]; ok {
-		var err error
-		arg5, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["topic"] = arg5
-	var arg6 []*entity.ConversationMember
+	args["topic"] = arg4
+	var arg5 []*entity.ConversationMember
 	if tmp, ok := rawArgs["members"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -2205,19 +2111,19 @@ func field_Query_GetConversation_args(rawArgs map[string]interface{}) (map[strin
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg6 = make([]*entity.ConversationMember, len(rawIf1))
+		arg5 = make([]*entity.ConversationMember, len(rawIf1))
 		for idx1 := range rawIf1 {
 			var ptr2 entity.ConversationMember
 			if rawIf1[idx1] != nil {
 				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
-				arg6[idx1] = &ptr2
+				arg5[idx1] = &ptr2
 			}
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["members"] = arg6
+	args["members"] = arg5
 	return args, nil
 
 }
@@ -2261,12 +2167,12 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 		}
 	}
 	args["updatedAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["deletedAt"]; ok {
+	var arg3 *int32
+	if tmp, ok := rawArgs["status"]; ok {
 		var err error
-		var ptr1 time.Time
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
+			ptr1, err = models.UnmarshalEnum(tmp)
 			arg3 = &ptr1
 		}
 
@@ -2274,13 +2180,13 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 			return nil, err
 		}
 	}
-	args["deletedAt"] = arg3
-	var arg4 *int32
-	if tmp, ok := rawArgs["status"]; ok {
+	args["status"] = arg3
+	var arg4 *entity.Contact
+	if tmp, ok := rawArgs["contact"]; ok {
 		var err error
-		var ptr1 int32
+		var ptr1 entity.Contact
 		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
 			arg4 = &ptr1
 		}
 
@@ -2288,39 +2194,25 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 			return nil, err
 		}
 	}
-	args["status"] = arg4
-	var arg5 *entity.Contact
-	if tmp, ok := rawArgs["contact"]; ok {
+	args["contact"] = arg4
+	var arg5 string
+	if tmp, ok := rawArgs["conversationId"]; ok {
 		var err error
-		var ptr1 entity.Contact
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg5 = &ptr1
-		}
-
+		arg5, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["contact"] = arg5
+	args["conversationId"] = arg5
 	var arg6 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
+	if tmp, ok := rawArgs["contactId"]; ok {
 		var err error
 		arg6, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["conversationId"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["contactId"]; ok {
-		var err error
-		arg7, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["contactId"] = arg7
+	args["contactId"] = arg6
 	return args, nil
 
 }
@@ -2680,13 +2572,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityContact.UpdatedAt(childComplexity), true
 
-	case "BertyEntityContact.deletedAt":
-		if e.complexity.BertyEntityContact.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntityContact.DeletedAt(childComplexity), true
-
 	case "BertyEntityContact.sigchain":
 		if e.complexity.BertyEntityContact.Sigchain == nil {
 			break
@@ -2756,13 +2641,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityContactPayload.UpdatedAt(childComplexity), true
-
-	case "BertyEntityContactPayload.deletedAt":
-		if e.complexity.BertyEntityContactPayload.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntityContactPayload.DeletedAt(childComplexity), true
 
 	case "BertyEntityContactPayload.sigchain":
 		if e.complexity.BertyEntityContactPayload.Sigchain == nil {
@@ -2834,13 +2712,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityConversation.UpdatedAt(childComplexity), true
 
-	case "BertyEntityConversation.deletedAt":
-		if e.complexity.BertyEntityConversation.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntityConversation.DeletedAt(childComplexity), true
-
 	case "BertyEntityConversation.title":
 		if e.complexity.BertyEntityConversation.Title == nil {
 			break
@@ -2882,13 +2753,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityConversationMember.UpdatedAt(childComplexity), true
-
-	case "BertyEntityConversationMember.deletedAt":
-		if e.complexity.BertyEntityConversationMember.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntityConversationMember.DeletedAt(childComplexity), true
 
 	case "BertyEntityConversationMember.status":
 		if e.complexity.BertyEntityConversationMember.Status == nil {
@@ -2939,13 +2803,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityConversationMemberPayload.UpdatedAt(childComplexity), true
 
-	case "BertyEntityConversationMemberPayload.deletedAt":
-		if e.complexity.BertyEntityConversationMemberPayload.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntityConversationMemberPayload.DeletedAt(childComplexity), true
-
 	case "BertyEntityConversationMemberPayload.status":
 		if e.complexity.BertyEntityConversationMemberPayload.Status == nil {
 			break
@@ -2995,13 +2852,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityConversationPayload.UpdatedAt(childComplexity), true
 
-	case "BertyEntityConversationPayload.deletedAt":
-		if e.complexity.BertyEntityConversationPayload.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntityConversationPayload.DeletedAt(childComplexity), true
-
 	case "BertyEntityConversationPayload.title":
 		if e.complexity.BertyEntityConversationPayload.Title == nil {
 			break
@@ -3043,13 +2893,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityDevice.UpdatedAt(childComplexity), true
-
-	case "BertyEntityDevice.deletedAt":
-		if e.complexity.BertyEntityDevice.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntityDevice.DeletedAt(childComplexity), true
 
 	case "BertyEntityDevice.name":
 		if e.complexity.BertyEntityDevice.Name == nil {
@@ -3106,13 +2949,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntitySenderAlias.UpdatedAt(childComplexity), true
-
-	case "BertyEntitySenderAlias.deletedAt":
-		if e.complexity.BertyEntitySenderAlias.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyEntitySenderAlias.DeletedAt(childComplexity), true
 
 	case "BertyEntitySenderAlias.status":
 		if e.complexity.BertyEntitySenderAlias.Status == nil {
@@ -3646,13 +3482,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyP2pEvent.UpdatedAt(childComplexity), true
 
-	case "BertyP2pEvent.deletedAt":
-		if e.complexity.BertyP2pEvent.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyP2pEvent.DeletedAt(childComplexity), true
-
 	case "BertyP2pEvent.sentAt":
 		if e.complexity.BertyP2pEvent.SentAt == nil {
 			break
@@ -3750,13 +3579,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyP2pEventPayload.UpdatedAt(childComplexity), true
-
-	case "BertyP2pEventPayload.deletedAt":
-		if e.complexity.BertyP2pEventPayload.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.BertyP2pEventPayload.DeletedAt(childComplexity), true
 
 	case "BertyP2pEventPayload.sentAt":
 		if e.complexity.BertyP2pEventPayload.SentAt == nil {
@@ -4837,7 +4659,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ContactAcceptRequest(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+		return e.complexity.Mutation.ContactAcceptRequest(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
 
 	case "Mutation.ContactRemove":
 		if e.complexity.Mutation.ContactRemove == nil {
@@ -4849,7 +4671,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ContactRemove(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+		return e.complexity.Mutation.ContactRemove(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
 
 	case "Mutation.ContactUpdate":
 		if e.complexity.Mutation.ContactUpdate == nil {
@@ -4861,7 +4683,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ContactUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+		return e.complexity.Mutation.ContactUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
 
 	case "Mutation.ConversationCreate":
 		if e.complexity.Mutation.ConversationCreate == nil {
@@ -5005,7 +4827,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string)), true
+		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string)), true
 
 	case "Query.ContactList":
 		if e.complexity.Query.ContactList == nil {
@@ -5029,7 +4851,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetContact(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+		return e.complexity.Query.GetContact(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
 
 	case "Query.ConversationList":
 		if e.complexity.Query.ConversationList == nil {
@@ -5053,7 +4875,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetConversation(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember)), true
+		return e.complexity.Query.GetConversation(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember)), true
 
 	case "Query.GetConversationMember":
 		if e.complexity.Query.GetConversationMember == nil {
@@ -5065,7 +4887,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
+		return e.complexity.Query.GetConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
 
 	case "Query.DeviceInfos":
 		if e.complexity.Query.DeviceInfos == nil {
@@ -5278,8 +5100,6 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 			out.Values[i] = ec._BertyEntityContact_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityContact_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntityContact_deletedAt(ctx, field, obj)
 		case "sigchain":
 			out.Values[i] = ec._BertyEntityContact_sigchain(ctx, field, obj)
 		case "status":
@@ -5378,30 +5198,6 @@ func (ec *executionContext) _BertyEntityContact_updatedAt(ctx context.Context, f
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntityContact_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntityContact",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -5630,8 +5426,6 @@ func (ec *executionContext) _BertyEntityContactPayload(ctx context.Context, sel 
 			out.Values[i] = ec._BertyEntityContactPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityContactPayload_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntityContactPayload_deletedAt(ctx, field, obj)
 		case "sigchain":
 			out.Values[i] = ec._BertyEntityContactPayload_sigchain(ctx, field, obj)
 		case "status":
@@ -5730,30 +5524,6 @@ func (ec *executionContext) _BertyEntityContactPayload_updatedAt(ctx context.Con
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntityContactPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Contact) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntityContactPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -5982,8 +5752,6 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 			out.Values[i] = ec._BertyEntityConversation_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityConversation_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntityConversation_deletedAt(ctx, field, obj)
 		case "title":
 			out.Values[i] = ec._BertyEntityConversation_title(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -6068,30 +5836,6 @@ func (ec *executionContext) _BertyEntityConversation_updatedAt(ctx context.Conte
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntityConversation_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntityConversation",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -6225,8 +5969,6 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 			out.Values[i] = ec._BertyEntityConversationMember_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityConversationMember_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntityConversationMember_deletedAt(ctx, field, obj)
 		case "status":
 			out.Values[i] = ec._BertyEntityConversationMember_status(ctx, field, obj)
 		case "contact":
@@ -6313,30 +6055,6 @@ func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntityConversationMember_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntityConversationMember",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -6458,8 +6176,6 @@ func (ec *executionContext) _BertyEntityConversationMemberPayload(ctx context.Co
 			out.Values[i] = ec._BertyEntityConversationMemberPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityConversationMemberPayload_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntityConversationMemberPayload_deletedAt(ctx, field, obj)
 		case "status":
 			out.Values[i] = ec._BertyEntityConversationMemberPayload_status(ctx, field, obj)
 		case "contact":
@@ -6546,30 +6262,6 @@ func (ec *executionContext) _BertyEntityConversationMemberPayload_updatedAt(ctx 
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntityConversationMemberPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntityConversationMemberPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -6691,8 +6383,6 @@ func (ec *executionContext) _BertyEntityConversationPayload(ctx context.Context,
 			out.Values[i] = ec._BertyEntityConversationPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityConversationPayload_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntityConversationPayload_deletedAt(ctx, field, obj)
 		case "title":
 			out.Values[i] = ec._BertyEntityConversationPayload_title(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -6777,30 +6467,6 @@ func (ec *executionContext) _BertyEntityConversationPayload_updatedAt(ctx contex
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntityConversationPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntityConversationPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -6934,8 +6600,6 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 			out.Values[i] = ec._BertyEntityDevice_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityDevice_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntityDevice_deletedAt(ctx, field, obj)
 		case "name":
 			out.Values[i] = ec._BertyEntityDevice_name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -7025,30 +6689,6 @@ func (ec *executionContext) _BertyEntityDevice_updatedAt(ctx context.Context, fi
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntityDevice_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntityDevice",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -7216,8 +6856,6 @@ func (ec *executionContext) _BertyEntitySenderAlias(ctx context.Context, sel ast
 			out.Values[i] = ec._BertyEntitySenderAlias_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntitySenderAlias_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyEntitySenderAlias_deletedAt(ctx, field, obj)
 		case "status":
 			out.Values[i] = ec._BertyEntitySenderAlias_status(ctx, field, obj)
 		case "originDeviceId":
@@ -7317,30 +6955,6 @@ func (ec *executionContext) _BertyEntitySenderAlias_updatedAt(ctx context.Contex
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyEntitySenderAlias_deletedAt(ctx context.Context, field graphql.CollectedField, obj *entity.SenderAlias) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyEntitySenderAlias",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -10188,8 +9802,6 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 			out.Values[i] = ec._BertyP2pEvent_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyP2pEvent_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyP2pEvent_deletedAt(ctx, field, obj)
 		case "sentAt":
 			out.Values[i] = ec._BertyP2pEvent_sentAt(ctx, field, obj)
 		case "receivedAt":
@@ -10325,30 +9937,6 @@ func (ec *executionContext) _BertyP2pEvent_updatedAt(ctx context.Context, field 
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEvent_deletedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEvent",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -10617,8 +10205,6 @@ func (ec *executionContext) _BertyP2pEventPayload(ctx context.Context, sel ast.S
 			out.Values[i] = ec._BertyP2pEventPayload_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyP2pEventPayload_updatedAt(ctx, field, obj)
-		case "deletedAt":
-			out.Values[i] = ec._BertyP2pEventPayload_deletedAt(ctx, field, obj)
 		case "sentAt":
 			out.Values[i] = ec._BertyP2pEventPayload_sentAt(ctx, field, obj)
 		case "receivedAt":
@@ -10754,30 +10340,6 @@ func (ec *executionContext) _BertyP2pEventPayload_updatedAt(ctx context.Context,
 	res := resTmp.(time.Time)
 	rctx.Result = res
 	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_deletedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
 }
 
 // nolint: vetshadow
@@ -17530,7 +17092,7 @@ func (ec *executionContext) _Mutation_ContactAcceptRequest(ctx context.Context, 
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ContactAcceptRequest(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+		return ec.resolvers.Mutation().ContactAcceptRequest(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -17561,7 +17123,7 @@ func (ec *executionContext) _Mutation_ContactRemove(ctx context.Context, field g
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ContactRemove(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+		return ec.resolvers.Mutation().ContactRemove(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -17592,7 +17154,7 @@ func (ec *executionContext) _Mutation_ContactUpdate(ctx context.Context, field g
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ContactUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+		return ec.resolvers.Mutation().ContactUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -18078,7 +17640,7 @@ func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.C
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetEvent(rctx, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string))
+		return ec.resolvers.Query().GetEvent(rctx, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -18140,7 +17702,7 @@ func (ec *executionContext) _Query_GetContact(ctx context.Context, field graphql
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetContact(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+		return ec.resolvers.Query().GetContact(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -18202,7 +17764,7 @@ func (ec *executionContext) _Query_GetConversation(ctx context.Context, field gr
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetConversation(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember))
+		return ec.resolvers.Query().GetConversation(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -18233,7 +17795,7 @@ func (ec *executionContext) _Query_GetConversationMember(ctx context.Context, fi
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetConversationMember(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deletedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string))
+		return ec.resolvers.Query().GetConversationMember(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19980,17 +19542,6 @@ func UnmarshalBertyEntityContactInput(v interface{}) (entity.Contact, error) {
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt":
-			var err error
-			var ptr1 time.Time
-			if v != nil {
-				ptr1, err = models.UnmarshalTime(v)
-				it.DeletedAt = &ptr1
-			}
-
-			if err != nil {
-				return it, err
-			}
 		case "sigchain":
 			var err error
 			var rawIf1 []interface{}
@@ -20092,17 +19643,6 @@ func UnmarshalBertyEntityConversationInput(v interface{}) (entity.Conversation, 
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt":
-			var err error
-			var ptr1 time.Time
-			if v != nil {
-				ptr1, err = models.UnmarshalTime(v)
-				it.DeletedAt = &ptr1
-			}
-
-			if err != nil {
-				return it, err
-			}
 		case "title":
 			var err error
 			it.Title, err = models.UnmarshalString(v)
@@ -20166,17 +19706,6 @@ func UnmarshalBertyEntityConversationMemberInput(v interface{}) (entity.Conversa
 			if err != nil {
 				return it, err
 			}
-		case "deletedAt":
-			var err error
-			var ptr1 time.Time
-			if v != nil {
-				ptr1, err = models.UnmarshalTime(v)
-				it.DeletedAt = &ptr1
-			}
-
-			if err != nil {
-				return it, err
-			}
 		case "status":
 			var err error
 
@@ -20236,17 +19765,6 @@ func UnmarshalBertyEntityDeviceInput(v interface{}) (entity.Device, error) {
 		case "updatedAt":
 			var err error
 			it.UpdatedAt, err = models.UnmarshalTime(v)
-			if err != nil {
-				return it, err
-			}
-		case "deletedAt":
-			var err error
-			var ptr1 time.Time
-			if v != nil {
-				ptr1, err = models.UnmarshalTime(v)
-				it.DeletedAt = &ptr1
-			}
-
 			if err != nil {
 				return it, err
 			}
@@ -20376,17 +19894,6 @@ func UnmarshalBertyP2pEventInput(v interface{}) (p2p.Event, error) {
 		case "updatedAt":
 			var err error
 			it.UpdatedAt, err = models.UnmarshalTime(v)
-			if err != nil {
-				return it, err
-			}
-		case "deletedAt":
-			var err error
-			var ptr1 time.Time
-			if v != nil {
-				ptr1, err = models.UnmarshalTime(v)
-				it.DeletedAt = &ptr1
-			}
-
 			if err != nil {
 				return it, err
 			}
@@ -20769,7 +20276,6 @@ type BertyEntityDevice implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       name: String!
     status: Enum
       apiVersion: Uint32!
@@ -20784,7 +20290,6 @@ type BertyEntityContact implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDevice]
@@ -20801,7 +20306,6 @@ type BertyEntityConversation implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       title: String!
       topic: String!
     members: [BertyEntityConversationMember]
@@ -20811,7 +20315,6 @@ type BertyEntityConversationMember implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
       conversationId: String!
@@ -20833,7 +20336,6 @@ type BertyEntitySenderAlias  {
       id: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     status: Enum
       originDeviceId: String!
       contactId: String!
@@ -20896,7 +20398,6 @@ type BertyP2pEvent implements Node {
       senderId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
@@ -21012,7 +20513,6 @@ input BertyP2pEventInput {
       senderId: String!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     sentAt: GoogleProtobufTimestampInput
     receivedAt: GoogleProtobufTimestampInput
     ackedAt: GoogleProtobufTimestampInput
@@ -21029,7 +20529,6 @@ type BertyP2pEventPayload {
       senderId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
@@ -21053,7 +20552,6 @@ input BertyEntityDeviceInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       name: String!
     status: Enum
       apiVersion: Uint32!
@@ -21063,7 +20561,6 @@ input BertyEntityContactInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -21076,7 +20573,6 @@ type BertyEntityContactPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDevice]
@@ -21089,7 +20585,6 @@ type BertyEntityConversationPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       title: String!
       topic: String!
     members: [BertyEntityConversationMember]
@@ -21098,7 +20593,6 @@ input BertyEntityConversationMemberInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
       conversationId: String!
@@ -21108,7 +20602,6 @@ input BertyEntityConversationInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       title: String!
       topic: String!
     members: [BertyEntityConversationMemberInput]
@@ -21120,7 +20613,6 @@ type BertyEntityConversationMemberPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
       conversationId: String!
@@ -21180,7 +20672,6 @@ type Query {
       senderId: String!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     sentAt: GoogleProtobufTimestampInput
     receivedAt: GoogleProtobufTimestampInput
     ackedAt: GoogleProtobufTimestampInput
@@ -21205,7 +20696,6 @@ type Query {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -21227,7 +20717,6 @@ type Query {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       title: String!
       topic: String!
     members: [BertyEntityConversationMemberInput]
@@ -21236,7 +20725,6 @@ type Query {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
       conversationId: String!
@@ -21270,7 +20758,6 @@ type Mutation {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -21283,7 +20770,6 @@ type Mutation {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -21296,7 +20782,6 @@ type Mutation {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]

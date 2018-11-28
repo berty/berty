@@ -255,7 +255,6 @@ type BertyEntityDevice implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       name: String!
     status: Enum
       apiVersion: Uint32!
@@ -270,7 +269,6 @@ type BertyEntityContact implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDevice]
@@ -287,7 +285,6 @@ type BertyEntityConversation implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       title: String!
       topic: String!
     members: [BertyEntityConversationMember]
@@ -297,7 +294,6 @@ type BertyEntityConversationMember implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
       conversationId: String!
@@ -319,7 +315,6 @@ type BertyEntitySenderAlias  {
       id: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     status: Enum
       originDeviceId: String!
       contactId: String!
@@ -382,7 +377,6 @@ type BertyP2pEvent implements Node {
       senderId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
@@ -498,7 +492,6 @@ input BertyP2pEventInput {
       senderId: String!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     sentAt: GoogleProtobufTimestampInput
     receivedAt: GoogleProtobufTimestampInput
     ackedAt: GoogleProtobufTimestampInput
@@ -515,7 +508,6 @@ type BertyP2pEventPayload {
       senderId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
@@ -539,7 +531,6 @@ input BertyEntityDeviceInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       name: String!
     status: Enum
       apiVersion: Uint32!
@@ -549,7 +540,6 @@ input BertyEntityContactInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -562,7 +552,6 @@ type BertyEntityContactPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDevice]
@@ -575,7 +564,6 @@ type BertyEntityConversationPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
       title: String!
       topic: String!
     members: [BertyEntityConversationMember]
@@ -584,7 +572,6 @@ input BertyEntityConversationMemberInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
       conversationId: String!
@@ -594,7 +581,6 @@ input BertyEntityConversationInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       title: String!
       topic: String!
     members: [BertyEntityConversationMemberInput]
@@ -606,7 +592,6 @@ type BertyEntityConversationMemberPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-    deletedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
       conversationId: String!
@@ -666,7 +651,6 @@ type Query {
       senderId: String!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     sentAt: GoogleProtobufTimestampInput
     receivedAt: GoogleProtobufTimestampInput
     ackedAt: GoogleProtobufTimestampInput
@@ -691,7 +675,6 @@ type Query {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -713,7 +696,6 @@ type Query {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       title: String!
       topic: String!
     members: [BertyEntityConversationMemberInput]
@@ -722,7 +704,6 @@ type Query {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
       conversationId: String!
@@ -756,7 +737,6 @@ type Mutation {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -769,7 +749,6 @@ type Mutation {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]
@@ -782,7 +761,6 @@ type Mutation {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-    deletedAt: GoogleProtobufTimestampInput
       sigchain: [Byte!],
     status: Enum
     devices: [BertyEntityDeviceInput]

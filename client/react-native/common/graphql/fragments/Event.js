@@ -9,7 +9,6 @@ export default component =>
         senderId
         createdAt
         updatedAt
-        deletedAt
         sentAt
         receivedAt
         ackedAt
