@@ -137,7 +137,8 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 		return err
 	}
 
-	// nothing to do
+	// say that conversation has not been read
+	n.sql.Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
 	return nil
 }

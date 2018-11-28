@@ -23,7 +23,7 @@ const query = graphql`
 
 const defaultVariables = {
   filter: null,
-  orderBy: '',
+  orderBy: 'updated_at',
   orderDesc: false,
   count: 50,
   cursor: '',

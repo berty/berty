@@ -25,7 +25,7 @@ class Message extends React.PureComponent {
     }
 
     await this.props.screenProps.context.mutations.eventSeen({
-      eventId: this.props.data.id,
+      id: this.props.data.id,
     })
   }
 
@@ -100,6 +100,13 @@ class Input extends PureComponent {
   state = {
     input: '',
     height: 16,
+  }
+
+  async componentDidMount () {
+    const conversation = this.props.navigation.getParam('conversation')
+    await this.props.screenProps.context.mutations.conversationRead({
+      id: conversation.id,
+    })
   }
 
   onSubmit = () => {

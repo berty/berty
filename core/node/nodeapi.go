@@ -4,16 +4,16 @@ import (
 	"context"
 	"time"
 
-	"berty.tech/core/pkg/errorcodes"
-
-	"github.com/jinzhu/gorm"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
+	gql "berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
+	"github.com/jinzhu/gorm"
 	"github.com/opentracing/opentracing-go"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
@@ -70,31 +70,57 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
-func (n *Node) EventSeen(ctx context.Context, input *node.EventIDInput) (*p2p.Event, error) {
+func (n *Node) EventSeen(ctx context.Context, input *gql.Node) (*p2p.Event, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
 	event := &p2p.Event{}
-	count := 0
 
 	sql := n.sql(ctx)
 	if err := sql.
 		Model(&p2p.Event{}).
-		Where(&p2p.Event{ID: input.EventID}).
-		Count(&count).
+		Where(&p2p.Event{ID: input.ID}).
 		UpdateColumn("seen_at", time.Now().UTC()).
 		First(event).
 		Error; err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
-	if count == 0 {
-		return nil, errorcodes.ErrDbNothingFound.New()
+	// mark conversation as read
+	if event.ConversationID != "" {
+		_, err := n.ConversationRead(ctx, &gql.Node{ID: event.ConversationID})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return event, nil
+}
+
+func (n *Node) ConversationRead(ctx context.Context, input *gql.Node) (*entity.Conversation, error) {
+	// get conversation
+	conversation := &entity.Conversation{ID: input.ID}
+	if err := n.sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+		return nil, err
+	}
+
+	// check if last message has been read
+	event := &p2p.Event{ConversationID: conversation.ID}
+	count := 0
+	n.sql.Model(event).Where(event).Order("created_at").Count(&count).Last(event)
+	if count > 0 && event.SeenAt == nil {
+		return conversation, nil
+	}
+
+	// set conversation as read
+	conversation.ReadAt = time.Now().UTC()
+	if err := n.sql.Save(conversation).Error; err != nil {
+		return nil, errors.Wrap(err, "cannot update conversation")
+	}
+
+	return conversation, nil
 }
 
 // GetEvent implements berty.node.GetEvent

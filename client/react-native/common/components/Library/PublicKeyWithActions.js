@@ -1,4 +1,11 @@
-import { ScrollView, TextInput, Platform, Clipboard, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
+import {
+  ScrollView,
+  TextInput,
+  Platform,
+  Clipboard,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+} from 'react-native'
 import { btoa } from 'b64-lite'
 import React, { PureComponent } from 'react'
 
@@ -6,7 +13,8 @@ import { Button, Flex, TextInputMultilineFix, Text } from './index'
 import { RelayContext } from '../../relay'
 import { colors } from '../../constants'
 import {
-  extractPublicKeyFromId, makeShareableUrl,
+  extractPublicKeyFromId,
+  makeShareableUrl,
   shareLinkOther,
   shareLinkSelf,
 } from '../../helpers/contacts'
@@ -133,10 +141,23 @@ export default class PublicKeyWithActions extends PureComponent {
     }
 
     const modeButtons = [
-      { element: () => <Text icon={'edit'} big color={mode === 'key' ? colors.white : colors.grey1} /> },
       {
-        element: () => <Text icon={'material-qrcode-scan'} big
-          color={mode === 'qrcode' ? colors.white : colors.grey1} />,
+        element: () => (
+          <Text
+            icon={'edit'}
+            big
+            color={mode === 'key' ? colors.white : colors.grey1}
+          />
+        ),
+      },
+      {
+        element: () => (
+          <Text
+            icon={'material-qrcode-scan'}
+            big
+            color={mode === 'qrcode' ? colors.white : colors.grey1}
+          />
+        ),
       },
     ]
 
@@ -144,11 +165,13 @@ export default class PublicKeyWithActions extends PureComponent {
       <ScrollView>
         <Flex.Rows style={[padding]} align='center'>
           <Flex.Cols style={{ width: 330 }}>
-            {mode === 'key' || (readOnly)
-              ? <TextInput
+            {mode === 'key' || readOnly ? (
+              <TextInput
                 placeholder={'Contact name (optional)'}
                 onChangeText={displayName =>
-                  this.setState({ contact: { ...this.state.contact, displayName } })
+                  this.setState({
+                    contact: { ...this.state.contact, displayName },
+                  })
                 }
                 value={displayName}
                 style={[
@@ -163,22 +186,29 @@ export default class PublicKeyWithActions extends PureComponent {
                   rounded,
                 ]}
               />
-              : <Text style={{ flex: 1 }}>{' '}</Text>
-            }
+            ) : (
+              <Text style={{ flex: 1 }} />
+            )}
             {/* TODO: Use a lighter button group impl? */}
             <ThemeProvider theme={{ colors: { primary: colors.blue } }}>
               <ButtonGroup
-                onPress={() => this.setState({ mode: mode === 'key' ? 'qrcode' : 'key' })}
+                onPress={() =>
+                  this.setState({ mode: mode === 'key' ? 'qrcode' : 'key' })
+                }
                 selectedIndex={mode === 'key' ? 0 : 1}
                 buttons={modeButtons}
                 containerStyle={{ height: 32, flex: 1 }}
                 selectedBackgroundColor={colors.green}
-                component={Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity}
+                component={
+                  Platform.OS === 'android'
+                    ? TouchableNativeFeedback
+                    : TouchableOpacity
+                }
               />
             </ThemeProvider>
           </Flex.Cols>
-          {mode === 'key'
-            ? <TextInputMultilineFix
+          {mode === 'key' ? (
+            <TextInputMultilineFix
               style={[
                 {
                   width: 330,
@@ -202,31 +232,40 @@ export default class PublicKeyWithActions extends PureComponent {
               editable={!readOnly}
               selectTextOnFocus
             />
-            : null}
+          ) : null}
 
-          {!readOnly && mode === 'qrcode'
-            ? <QRReader style={{ width: 248, height: 248 }} onFound={data => {
-              const url = parseUrl(data)
+          {!readOnly && mode === 'qrcode' ? (
+            <QRReader
+              style={{ width: 248, height: 248 }}
+              onFound={data => {
+                const url = parseUrl(data)
 
-              if (!url || url.pathname !== '/add-contact' || url.hashParts['public-key'] === '') {
-                return
-              }
+                if (
+                  !url ||
+                  url.pathname !== '/add-contact' ||
+                  url.hashParts['public-key'] === ''
+                ) {
+                  return
+                }
 
-              this.setState({
-                mode: 'key',
-                contact: {
-                  ...this.state.contact,
-                  id: url.hashParts['public-key'],
-                  displayName: url.hashParts['display-name'] || '',
-                },
-              })
-            }} /> : null}
-          {readOnly && mode === 'qrcode'
-            ? <QRGenerator
+                this.setState({
+                  mode: 'key',
+                  contact: {
+                    ...this.state.contact,
+                    id: url.hashParts['public-key'],
+                    displayName: url.hashParts['display-name'] || '',
+                  },
+                })
+              }}
+            />
+          ) : null}
+          {readOnly && mode === 'qrcode' ? (
+            <QRGenerator
               value={makeShareableUrl({ id, displayName })}
               size={248}
-              style={[marginTop]} />
-            : null // TODO: implement camera
+              style={[marginTop]}
+            />
+          ) : null // TODO: implement camera
           }
 
           {shareButton ? (
@@ -241,7 +280,11 @@ export default class PublicKeyWithActions extends PureComponent {
               onPress={this.onSubmit}
             />
           ) : null}
-          {errors.map((err, i) => <Text multiline key={i}>{err.extensions.message}</Text>)}
+          {errors.map((err, i) => (
+            <Text multiline key={i}>
+              {err.extensions.message}
+            </Text>
+          ))}
         </Flex.Rows>
       </ScrollView>
     )

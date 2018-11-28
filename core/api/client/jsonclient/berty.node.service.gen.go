@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"go.uber.org/zap"
@@ -32,6 +33,7 @@ func init() {
 	registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
 	registerUnary("berty.node.GetConversation", NodeGetConversation)
 	registerUnary("berty.node.GetConversationMember", NodeGetConversationMember)
+	registerUnary("berty.node.ConversationRead", NodeConversationRead)
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
 	registerUnary("berty.node.RunIntegrationTests", NodeRunIntegrationTests)
@@ -135,7 +137,7 @@ func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte)
 		zap.String("method", "EventSeen"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput node.EventIDInput
+	var typedInput graphql.Node
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -328,6 +330,18 @@ func NodeGetConversationMember(client *client.Client, ctx context.Context, jsonI
 		return nil, err
 	}
 	return client.Node().GetConversationMember(ctx, &typedInput)
+}
+func NodeConversationRead(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationRead"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput graphql.Node
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ConversationRead(ctx, &typedInput)
 }
 func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",

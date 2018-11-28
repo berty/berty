@@ -8,6 +8,7 @@ export default component =>
         id
         createdAt
         updatedAt
+        readAt
         title
         topic
         members {

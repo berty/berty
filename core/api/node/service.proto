@@ -94,6 +94,9 @@ service Service {
   rpc GetConversationMember (berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
     option (gql.graphql_type) = "Query";
   };
+  rpc ConversationRead (gql.Node) returns (berty.entity.Conversation) {
+    option (gql.graphql_type) = "Mutation";
+  }
 
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
@@ -199,6 +202,9 @@ message ConversationAddMessageInput {
 message EventStreamInput {
   berty.p2p.Event filter = 1;
 }
+
+
+// Node
 
 
 //
@@ -361,3 +367,4 @@ message NodeEvent {
   // Attributes is a nested protobuf message containing per-event-type additional attributes.
   bytes attributes = 2;
 }
+

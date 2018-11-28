@@ -15,6 +15,7 @@ import (
 	"berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/api/node/graphql/models"
 	"berty.tech/core/api/p2p"
+	gql "berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
@@ -29,7 +30,9 @@ func New(client node.ServiceClient) generated.Config {
 		Resolvers: &Resolver{client},
 	}
 }
-
+func (r *Resolver) GqlNode() generated.GqlNodeResolver {
+	return &gqlNodeResolver{r}
+}
 func (r *Resolver) BertyEntityContact() generated.BertyEntityContactResolver {
 	return &bertyEntityContactResolver{r}
 }
@@ -85,6 +88,13 @@ func (r *Resolver) Query() generated.QueryResolver {
 }
 func (r *Resolver) Subscription() generated.SubscriptionResolver {
 	return &subscriptionResolver{r}
+}
+
+type gqlNodeResolver struct{ *Resolver }
+
+func (r *gqlNodeResolver) ID(ctx context.Context, obj *gql.Node) (string, error) {
+	// TODO: find the id in db to define the table
+	return "unknown:" + obj.ID, nil
 }
 
 type bertyEntityContactResolver struct{ *Resolver }
@@ -386,11 +396,11 @@ func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string
 	})
 }
 
-func (r *mutationResolver) EventSeen(ctx context.Context, eventID string) (*p2p.Event, error) {
-	eventID = strings.SplitN(eventID, ":", 2)[1]
+func (r *mutationResolver) EventSeen(ctx context.Context, id string) (*p2p.Event, error) {
+	id = strings.SplitN(id, ":", 2)[1]
 
-	return r.client.EventSeen(ctx, &node.EventIDInput{
-		EventID: eventID,
+	return r.client.EventSeen(ctx, &gql.Node{
+		ID: id,
 	})
 }
 
@@ -533,7 +543,15 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *mutationResolver) ConversationRead(ctx context.Context, id string) (*entity.Conversation, error) {
+	id = strings.SplitN(id, ":", 2)[1]
+
+	return r.client.ConversationRead(ctx, &gql.Node{
+		ID: id,
+	})
+}
+
+func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
 }
 func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {

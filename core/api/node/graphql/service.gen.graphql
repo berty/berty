@@ -303,6 +303,7 @@ type BertyEntityConversation implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
+    readAt: GoogleProtobufTimestamp
       title: String!
       topic: String!
     members: [BertyEntityConversationMember]
@@ -595,6 +596,7 @@ type BertyEntityConversationPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
+    readAt: GoogleProtobufTimestamp
       title: String!
       topic: String!
     members: [BertyEntityConversationMember]
@@ -612,6 +614,7 @@ input BertyEntityConversationInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
+    readAt: GoogleProtobufTimestampInput
       title: String!
       topic: String!
     members: [BertyEntityConversationMemberInput]
@@ -735,6 +738,7 @@ type Query {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
+    readAt: GoogleProtobufTimestampInput
       title: String!
       topic: String!
     members: [BertyEntityConversationMemberInput]
@@ -772,7 +776,7 @@ type Query {
   
 type Mutation {
   EventSeen(
-    eventId: ID!
+    id: ID!
   ): BertyP2pEventPayload
   ContactRequest(
     contact: BertyEntityContactInput
@@ -831,6 +835,9 @@ type Mutation {
     conversation: BertyEntityConversationInput
     message: BertyEntityMessageInput
   ): BertyP2pEventPayload
+  ConversationRead(
+    id: ID!
+  ): BertyEntityConversationPayload
   GenerateFakeData(
       T: Bool!
   ): BertyNodeVoidPayload

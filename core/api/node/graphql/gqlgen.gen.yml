@@ -832,6 +832,22 @@ models:
       totalNetworkBandwidth:
       peersCount:
 
+  GqlNode:
+    model: berty.tech/core/api/protobuf/graphql.Node
+    fields:
+      id:
+        resolver: true
+  GqlNodeInput:
+    model: berty.tech/core/api/protobuf/graphql.Node
+    fields:
+      id:
+        resolver: true
+  GqlNodePayload:
+    model: berty.tech/core/api/protobuf/graphql.Node
+    fields:
+      id:
+        resolver: true
+
 
 
   BertyEntityDevice:
@@ -920,6 +936,7 @@ models:
         resolver: true
       createdAt:
       updatedAt:
+      readAt:
       title:
       topic:
       members:
@@ -930,6 +947,7 @@ models:
         resolver: true
       createdAt:
       updatedAt:
+      readAt:
       title:
       topic:
       members:
@@ -940,6 +958,7 @@ models:
         resolver: true
       createdAt:
       updatedAt:
+      readAt:
       title:
       topic:
       members:
