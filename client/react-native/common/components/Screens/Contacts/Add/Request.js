@@ -43,6 +43,8 @@ const Item = fragments.Contact(
       } catch (err) {
         console.error(err)
       }
+      Item.isLoading[id] = false
+      this.forceUpdate()
     }
 
     onDecline = async () => {
@@ -54,6 +56,7 @@ const Item = fragments.Contact(
       } catch (err) {
         console.error(err)
       }
+      Item.isLoading[id] = false
     }
 
     onRemove = async () => {
@@ -65,6 +68,7 @@ const Item = fragments.Contact(
       } catch (err) {
         console.error(err)
       }
+      Item.isLoading[id] = false
     }
 
     render () {
