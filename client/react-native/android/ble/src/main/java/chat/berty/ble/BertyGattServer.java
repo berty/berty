@@ -65,7 +65,7 @@ public class BertyGattServer extends BluetoothGattServerCallback {
      */
     @Override
     public void onConnectionStateChange(BluetoothDevice device, int status, int newState) {
-            Log.e(TAG, "onConnectionStateChange()");
+        Log.e(TAG, "onConnectionStateChange() - device=" + device.getAddress() + " status=" + status + " newState=" + newState);
 
         BertyDevice bDevice = BertyUtils.getDeviceFromAddr(device.getAddress());
         if (bDevice == null && newState == STATE_CONNECTED) {

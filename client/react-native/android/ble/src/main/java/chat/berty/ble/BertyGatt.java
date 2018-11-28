@@ -83,7 +83,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        Log.e(TAG, "onConnectionStateChange()");
+        Log.e(TAG, "onConnectionStateChange() - gatt=" + gatt.getDevice().getAddress() + " status=" + status + " newState=" + newState);
         if (status == GATT_SUCCESS && newState == STATE_CONNECTED) {
             BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
             bDevice.latchConn.countDown();
@@ -227,6 +227,11 @@ public class BertyGatt extends BluetoothGattCallback {
                     if (characteristic.getUuid().equals(BertyUtils.IS_READY_UUID)) {
                         errorString += " IS RDY RETRYING";
                         bDevice.launchWriteIsRdy();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
                 case GATT_INSUFFICIENT_ENCRYPTION:
