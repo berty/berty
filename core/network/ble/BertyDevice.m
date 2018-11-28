@@ -37,7 +37,7 @@
     dispatch_async(self.dispatch_queue, ^{
         [self waitOurConn];
     });
-    
+
     return self;
 }
 

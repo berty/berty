@@ -24,7 +24,7 @@ type Listener struct {
 	lAddr           ma.Multiaddr
 }
 
-var listeners := make(map[string]*Listener)
+var listeners = make(map[string]*Listener)
 
 func RealAcceptSender(peerID string, ble string, incPeerID string) {
 	for {

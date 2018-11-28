@@ -28,8 +28,8 @@ public class BertyScan extends ScanCallback {
 
     public static ScanSettings createScanSetting() {
         ScanSettings settings = new ScanSettings.Builder()
-                    .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-                    .build();
+                .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+                .build();
 
         return settings;
     }

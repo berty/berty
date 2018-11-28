@@ -539,7 +539,6 @@ didDiscoverServices:(NSError *)error {
     } else if ([characteristic.UUID isEqual:self.isRdyUUID]) {
         [device.latchRdy coundDown];
     }
-    
 }
 
 - (void)peripheral:(CBPeripheral *)peripheral

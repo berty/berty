@@ -15,7 +15,7 @@
     if (count < 0) {
         return nil;
     }
-    
+
     self.count = count;
     self.semaphore = dispatch_semaphore_create(0);
     self.dispatch_queue = dispatch_queue_create("CountDownLatchQueue", DISPATCH_QUEUE_CONCURRENT);
