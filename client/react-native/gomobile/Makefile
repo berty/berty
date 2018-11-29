@@ -82,12 +82,12 @@ build.android: sed.ble build.ble unsed.ble build.core build.ble
 .PHONY: sed.ble
 sed.ble:
 	$(SED_CMD) "s/.*implementation project\(':core'\)/\/\/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
-	$(SED_CMD) 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
+	$(SED_CMD) 's/(.*Core.*)/\/\/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/*.java
 
 .PHONY: unsed.ble
 unsed.ble:
 	$(SED_CMD) "s/.*\/\/implementation project\(':core'\)/implementation project\(':core'\)/g" $(ANDROID_PATH)/ble/build.gradle
-	$(SED_CMD) 's/\/\/(.*Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/Manager.java
+	$(SED_CMD) 's/\/\/(.*Core.*)/\1/g' $(ANDROID_PATH)/ble/src/main/java/chat/berty/ble/*.java
 
 .PHONY: build.ble
 build.ble: $(BLE_DIR_PATH)/ble.jar
@@ -101,7 +101,7 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	# GOOS=android gobind -lang=go,java -outdir=$(BLE_BIND_PATH) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar berty.tech/core/network/ble
 	mkdir -p $(ANDROID_BUILD_PATH)
 	GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
-		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/client/react-native/gomobile/core
+		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android/arm -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/client/react-native/gomobile/core
 
 .PHONY: build.ios
 build.ios: $(IOS_BUILD_PATH)/core.framework/Core

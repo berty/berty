@@ -12,9 +12,10 @@
 
 @implementation BertyDevice
 
-- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral {
+- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral withCentralManager:(CBCentralManager *)manager {
     self = [super init];
     self.peripheral = peripheral;
+    self.centralManager = manager;
     self.toSend = [[NSMutableArray alloc]init];
     self.closed = NO;
     self.isWaiting = NO;
@@ -23,28 +24,51 @@
     self.connSema = dispatch_semaphore_create(0);
     self.closerWaiterSema = dispatch_semaphore_create(0);
     self.acceptWaiterSema = dispatch_semaphore_create(0);
-    self.closerSema = dispatch_semaphore_create(0);
     self.writeWaiter = dispatch_semaphore_create(0);
     self.svcSema = dispatch_semaphore_create(0);
-    self.isRdySema = dispatch_semaphore_create(0);
-    self.acceptSema = dispatch_semaphore_create(0);
-    self.maSema = dispatch_semaphore_create(0);
-    self.peerIDSema = dispatch_semaphore_create(0);
-    self.writerSema = dispatch_semaphore_create(0);
+    self.dispatch_queue = dispatch_queue_create("BertyDevice", DISPATCH_QUEUE_CONCURRENT);
+    self.latchRdy = [[CountDownLatch alloc] init:2];
+    self.latchChar = [[CountDownLatch alloc] init:6];
+    self.latchRead = [[CountDownLatch alloc] init:2];
+    dispatch_async(self.dispatch_queue, ^{
+        [self waitLatchRdy];
+    });
+
+    dispatch_async(self.dispatch_queue, ^{
+        [self waitOurConn];
+    });
+
     return self;
 }
 
-- (CBCharacteristic *)getWriter {
-    for (CBService *service in self.peripheral.services) {
-        if ([[service.UUID UUIDString] isEqual:@"A06C6AB8-886F-4D56-82FC-2CF8610D6663"]) {
-            for (CBCharacteristic *charact in service.characteristics) {
-                if ([[charact.UUID UUIDString] isEqual:@"000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C"]) {
-                    return charact;
-                }
-            }
-        }
-    }
-    return nil;
+- (void)waitLatchRdy {
+    NSLog(@"Start waiting latch rdy");
+    [self.latchRdy await];
+    NSLog(@"Stopped waiting latch rdy");
+    NSLog(@"Need to call other device is rdy");
+    AddToPeerStoreC([self.peerID UTF8String], [self.ma UTF8String]);
+}
+
+- (void)waitOurConn {
+    NSLog(@"Start waiting conn sema");
+    dispatch_semaphore_wait(self.connSema, DISPATCH_TIME_FOREVER);
+    NSLog(@"Stop waiting conn sema");
+    NSLog(@"Start waiting svc sema");
+    dispatch_semaphore_wait(self.svcSema, DISPATCH_TIME_FOREVER);
+    NSLog(@"Stop waiting svc sema");
+    NSLog(@"Start waiting latch char");
+    [self.latchChar await];
+    NSLog(@"Start waiting latch read");
+    [self.latchRead await];
+    NSLog(@"Need to tell rdy");
+    [self.peripheral writeValue:[[NSData alloc]init] forCharacteristic:self.isRdy type:CBCharacteristicWriteWithResponse];
+}
+
+- (void)writeIsRdy {
+    dispatch_async(self.dispatch_queue, ^{
+        [NSThread sleepForTimeInterval:1.0f];
+        [self.peripheral writeValue:[[NSData alloc]init] forCharacteristic:self.isRdy type:CBCharacteristicWriteWithResponse];
+    });
 }
 
 - (void)PrintWriteStack {
