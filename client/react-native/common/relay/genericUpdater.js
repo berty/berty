@@ -49,11 +49,9 @@ export default (fragment, alias, args) => {
     }
 
     const edges = connection.getLinkedRecords('edges')
+    const field = Case.camel(args.orderBy || args.sortBy || 'id')
     const cursor =
-      (args.orderBy && args.orderBy !== 'id') ||
-      (args.sortBy && args.sortBy !== 'id')
-        ? data[Case.camel(args.orderBy || args.sortBy)]
-        : atob(data.id).split(':')[1]
+      field === 'id' ? atob(data.id).split(/:(.+)/)[1] : data[field]
     if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
       // update
       return
