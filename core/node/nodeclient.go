@@ -1,17 +1,23 @@
 package node
 
 import (
+	"context"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/pkg/tracing"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-func (n *Node) EnqueueClientEvent(event *p2p.Event) error {
+func (n *Node) EnqueueClientEvent(ctx context.Context, event *p2p.Event) error {
+	span, _ := tracing.EnterFunc(ctx, event)
+	defer span.Finish()
+
 	if err := event.Validate(); err != nil {
 		return errors.Wrap(err, "invalid event")
 	}
-	sql := n.sql(nil)
+	sql := n.sql(ctx)
 	if err := sql.Create(event).Error; err != nil {
 		return errors.Wrap(err, "failed to write event to db")
 	}
@@ -26,6 +32,9 @@ type clientEventSubscriber struct {
 
 // EventStream implements berty.node.EventStream
 func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_EventStreamServer) error {
+	span, _ := tracing.EnterFunc(stream.Context(), input)
+	defer span.Finish()
+
 	logger().Debug("EventStream connected", zap.Stringer("input", input))
 
 	sub := clientEventSubscriber{

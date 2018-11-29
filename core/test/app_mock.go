@@ -118,7 +118,10 @@ func (a *AppMock) Open() error {
 		}
 	}
 
+	a.ctx, a.cancel = context.WithCancel(context.Background())
+
 	if a.node, err = node.New(
+		a.ctx,
 		node.WithSQL(a.db),
 		node.WithP2PGrpcServer(gs),
 		node.WithNodeGrpcServer(gs),
@@ -142,7 +145,7 @@ func (a *AppMock) Open() error {
 	}()
 
 	go func() {
-		if err := a.node.Start(false, false); err != nil {
+		if err := a.node.Start(a.ctx, false, false); err != nil {
 			logger().Error("node routine error", zap.Error(err))
 		}
 	}()
@@ -152,8 +155,6 @@ func (a *AppMock) Open() error {
 		return err
 	}
 	a.client = client.New(a.clientConn)
-
-	a.ctx, a.cancel = context.WithCancel(context.Background())
 
 	return nil
 }

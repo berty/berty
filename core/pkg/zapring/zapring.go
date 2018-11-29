@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-const PtrSize = 32 << uintptr(^uintptr(0)>>63)
+const PtrSize = 32 << (^uintptr(0) >> 63)
 
 type Ring struct {
 	zapcore.Core
@@ -41,7 +41,9 @@ func (r *Ring) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 		if err != nil {
 			return err
 		}
-		r.buffer.Write(buff.Bytes())
+		if _, err = r.buffer.Write(buff.Bytes()); err != nil {
+			return err
+		}
 	}
 
 	return r.Core.Write(entry, fields)

@@ -1,6 +1,7 @@
 package core
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net"
@@ -16,6 +17,7 @@ import (
 var (
 	accountName = ""
 	appConfig   *account.StateDB
+	rootContext = context.Background()
 )
 
 func logger() *zap.Logger {
@@ -29,7 +31,7 @@ func panicHandler() {
 		if accountName == "" {
 			return
 		}
-		a, err := account.Get(accountName)
+		a, err := account.Get(rootContext, accountName)
 		if err != nil {
 			return
 		}
@@ -56,10 +58,9 @@ func Panic() {
 }
 
 func GetPort() (int, error) {
-
 	defer panicHandler()
 
-	a, err := account.Get(accountName)
+	a, err := account.Get(rootContext, accountName)
 	if err != nil {
 		return 0, err
 	}
@@ -67,7 +68,6 @@ func GetPort() (int, error) {
 }
 
 func Initialize(loggerNative Logger) error {
-
 	defer panicHandler()
 
 	if err := setupLogger("debug", loggerNative); err != nil {
@@ -80,10 +80,9 @@ func Initialize(loggerNative Logger) error {
 }
 
 func ListAccounts(datastorePath string) (string, error) {
-
 	defer panicHandler()
 
-	accounts, err := account.List(datastorePath)
+	accounts, err := account.List(rootContext, datastorePath)
 	if err != nil {
 		return "", err
 	}
@@ -118,12 +117,11 @@ func initOrRestoreAppState(datastorePath string) error {
 }
 
 func Start(nickname, datastorePath string, loggerNative Logger) error {
-
 	defer panicHandler()
 
 	accountName = nickname
 
-	a, _ := account.Get(nickname)
+	a, _ := account.Get(rootContext, nickname)
 	if a != nil {
 		// daemon already started, no errors to return
 		return nil
@@ -139,10 +137,9 @@ func Start(nickname, datastorePath string, loggerNative Logger) error {
 }
 
 func Restart() error {
-
 	defer panicHandler()
 
-	currentAccount, _ := account.Get(accountName)
+	currentAccount, _ := account.Get(rootContext, accountName)
 	if currentAccount != nil {
 		currentAccount.ErrChan() <- nil
 	}
@@ -152,14 +149,13 @@ func Restart() error {
 }
 
 func DropDatabase(datastorePath string) error {
-
 	defer panicHandler()
 
-	currentAccount, err := account.Get(accountName)
+	currentAccount, err := account.Get(rootContext, accountName)
 	if err != nil {
 		return err
 	}
-	err = currentAccount.DropDatabase()
+	err = currentAccount.DropDatabase(rootContext)
 	if err != nil {
 		return err
 	}
@@ -181,7 +177,7 @@ func run(nickname, datastorePath string, loggerNative Logger) {
 }
 
 func waitDaemon(nickname string) {
-	currentAccount, _ := account.Get(nickname)
+	currentAccount, _ := account.Get(rootContext, nickname)
 	if currentAccount == nil || currentAccount.GQLBind == "" {
 		logger().Debug("waiting for daemon to start")
 		time.Sleep(time.Second)
@@ -231,17 +227,17 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 		accountOptions = append(accountOptions, account.WithBot())
 	}
 
-	a, err = account.New(accountOptions...)
+	a, err = account.New(rootContext, accountOptions...)
 	if err != nil {
 		return err
 	}
-	defer account.Delete(a)
+	defer account.Delete(rootContext, a)
 
-	err = a.Open()
+	err = a.Open(rootContext)
 	if err != nil {
 		return err
 	}
-	defer a.Close()
+	defer a.Close(rootContext)
 
 	if appConfig.LocalGRPC {
 		err := StartLocalGRPC()

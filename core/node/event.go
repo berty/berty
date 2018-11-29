@@ -6,32 +6,39 @@ import (
 	"fmt"
 	"time"
 
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/pkg/tracing"
 )
 
-func (n *Node) AsyncWait() {
-	n.asyncWaitGroup.Wait()
+func (n *Node) AsyncWait(ctx context.Context) {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
+	n.asyncWaitGroupInst.Wait()
 }
 
 // HandleEvent implements berty.p2p.HandleEvent (synchronous unary)
 func (n *Node) HandleEvent(ctx context.Context, input *p2p.Event) (*node.Void, error) {
-	n.asyncWaitGroup.Add(1)
-	defer n.asyncWaitGroup.Done()
-	err := n.handleEvent(ctx, input)
-	//time.Sleep(100 * time.Millisecond)
-	return &node.Void{}, err
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+	defer n.asyncWaitGroup(ctx)()
+
+	return &node.Void{}, n.handleEvent(ctx, input)
 }
 
 func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
-	n.asyncWaitGroup.Add(1)
-	defer n.asyncWaitGroup.Done()
-	n.handleMutex.Lock()
-	defer n.handleMutex.Unlock()
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+	defer n.asyncWaitGroup(ctx)()
+	n.handleMutex(ctx)()
 
 	if input.SenderID == n.UserID() {
 		logger().Debug("skipping event created by myself",
@@ -92,11 +99,11 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 
 	// emits the event to the client (UI)
 	if handlingError == nil {
-		if err := n.EnqueueClientEvent(input); err != nil {
+		if err := n.EnqueueClientEvent(ctx, input); err != nil {
 			return err
 		}
 	} else {
-		n.LogBackgroundError(errors.Wrap(handlingError, "p2p.Handle event"))
+		n.LogBackgroundError(ctx, errors.Wrap(handlingError, "p2p.Handle event"))
 	}
 
 	if err := sql.Save(input).Error; err != nil {
@@ -104,12 +111,12 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	}
 
 	// asynchronously ack, maybe we can ignore this one?
-	ack := n.NewContactEvent(&entity.Contact{ID: input.SenderID}, p2p.Kind_Ack)
+	ack := n.NewContactEvent(ctx, &entity.Contact{ID: input.SenderID}, p2p.Kind_Ack)
 	ack.AckedAt = &now
 	if err := ack.SetAttrs(&p2p.AckAttrs{IDs: []string{input.ID}}); err != nil {
 		return err
 	}
-	if err := n.EnqueueOutgoingEvent(ack); err != nil {
+	if err := n.EnqueueOutgoingEvent(ctx, ack); err != nil {
 		return err
 	}
 

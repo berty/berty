@@ -55,7 +55,7 @@ func TestPagination(t *testing.T) {
 			gs.Serve(ic.Listener())
 		}()
 		go func() {
-			alice.Start(false, false)
+			alice.Start(context.Background(), false, false)
 		}()
 	})
 

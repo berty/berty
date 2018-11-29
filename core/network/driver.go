@@ -11,7 +11,7 @@ import (
 
 type Metrics interface {
 	// Return a list of peers
-	Peers() *p2p.Peers
+	Peers(context.Context) *p2p.Peers
 
 	// Monitor connected/disconnected peers
 	MonitorPeers(func(*p2p.Peer, error) error)
@@ -29,7 +29,7 @@ type Metrics interface {
 
 type Driver interface {
 	// Return driver current id
-	ID() *p2p.Peer
+	ID(context.Context) *p2p.Peer
 
 	// Emit sends an envelope to a channel
 	Emit(context.Context, *p2p.Envelope) error
@@ -47,11 +47,11 @@ type Driver interface {
 	PingOtherNode(ctx context.Context, destination string) error
 
 	// Start start service listener
-	Start() error
+	Start(context.Context) error
 
 	// Return the supported protocols of the given peer
-	Protocols(*p2p.Peer) ([]string, error)
+	Protocols(context.Context, *p2p.Peer) ([]string, error)
 
 	// Close cleanups things
-	Close() error
+	Close(context.Context) error
 }

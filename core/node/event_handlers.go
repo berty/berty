@@ -63,7 +63,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 	}
 
 	// send my contact
-	if err := n.contactShareMe(contact); err != nil {
+	if err := n.contactShareMe(ctx, contact); err != nil {
 		return err
 	}
 

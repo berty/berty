@@ -14,11 +14,10 @@ func WithSQL(sql *gorm.DB) NewNodeOption {
 	}
 }
 
+// sql returns a gorm.DB object with opentracing context
 func (n *Node) sql(ctx context.Context) *gorm.DB {
-	// FIXME: check if jaeger is enable before losing time calling complex functions
 	if ctx == nil {
-		// FIXME: create a special span for non-contexted streams
-		return n.sqlDriver
+		return n.sqlDriver.Set("rootSpan", n.rootSpan)
 	}
 	if span := opentracing.SpanFromContext(ctx); span != nil {
 		return n.sqlDriver.Set("rootSpan", span)

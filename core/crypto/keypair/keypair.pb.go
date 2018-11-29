@@ -67,9 +67,9 @@ var PublicKeyAlgorithm_name = map[int32]string{
 }
 var PublicKeyAlgorithm_value = map[string]int32{
 	"UNKNOWN_PUBLIC_KEY_ALGORITHM": 0,
-	"RSA":                          1,
-	"DSA":                          2,
-	"ECDSA":                        3,
+	"RSA":   1,
+	"DSA":   2,
+	"ECDSA": 3,
 }
 
 func (x PublicKeyAlgorithm) String() string {

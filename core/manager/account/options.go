@@ -13,6 +13,7 @@ import (
 	"berty.tech/core/network/mock"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/pkg/jaeger"
+	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 	"github.com/99designs/gqlgen/graphql"
 	gqlhandler "github.com/99designs/gqlgen/handler"
@@ -22,7 +23,6 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
 	"go.uber.org/zap"
@@ -58,9 +58,8 @@ func WithPassphrase(passphrase string) NewOption {
 }
 
 type DatabaseOptions struct {
-	Path       string
-	Drop       bool
-	JaegerAddr string
+	Path string
+	Drop bool
 }
 
 func WithBanner(banner string) NewOption {
@@ -72,7 +71,10 @@ func WithBanner(banner string) NewOption {
 
 func WithEnqueurNetwork() NewOption {
 	return func(a *Account) error {
-		a.network = mock.NewEnqueuer()
+		span, ctx := tracing.EnterFunc(a.rootContext)
+		defer span.Finish()
+
+		a.network = mock.NewEnqueuer(ctx)
 		return nil
 	}
 }
@@ -84,16 +86,21 @@ func WithInitOnly() NewOption {
 	}
 }
 
+func WithJaegerAddrName(addr string, name string) NewOption {
+	return func(a *Account) error {
+		var err error
+		a.tracer, a.tracingCloser, err = jaeger.InitTracer(addr, name)
+		return err
+	}
+}
+
 type GrpcServerOptions struct {
 	Bind         string
 	Interceptors bool
-	JaegerAddr   string
 }
 
 func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 	return func(a *Account) error {
-		var err error
-
 		if opts == nil {
 			opts = &GrpcServerOptions{}
 		}
@@ -121,14 +128,8 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 				grpc_recovery.UnaryServerInterceptor(),
 			)
 
-			if opts.JaegerAddr != "" {
-				var tracer opentracing.Tracer
-				tracer, a.serverTracerCloser, err = jaeger.InitTracer(opts.JaegerAddr, "berty-account-"+a.Name+"-server")
-				if err != nil {
-					return err
-				}
-
-				tracerOpts := grpc_ot.WithTracer(tracer)
+			if a.tracer != nil {
+				tracerOpts := grpc_ot.WithTracer(a.tracer)
 				serverStreamOpts = append(serverStreamOpts, grpc_ot.StreamServerInterceptor(tracerOpts))
 				serverUnaryOpts = append(serverUnaryOpts, grpc_ot.UnaryServerInterceptor(tracerOpts))
 			}
@@ -153,7 +154,6 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 type GQLOptions struct {
 	Bind         string
 	Interceptors bool
-	JaegerAddr   string
 }
 
 func WithGQL(opts *GQLOptions) NewOption {
@@ -173,14 +173,8 @@ func WithGQL(opts *GQLOptions) NewOption {
 				grpc_zap.UnaryClientInterceptor(gqlLogger),
 			}
 
-			if opts.JaegerAddr != "" {
-				var tracer opentracing.Tracer
-				tracer, a.dialTracerCloser, err = jaeger.InitTracer(opts.JaegerAddr, "berty-account-"+a.Name+"-dial")
-				if err != nil {
-					return err
-				}
-
-				tracerOpts := grpc_ot.WithTracer(tracer)
+			if a.tracer != nil {
+				tracerOpts := grpc_ot.WithTracer(a.tracer)
 				clientStreamOpts = append(clientStreamOpts, grpc_ot.StreamClientInterceptor(tracerOpts))
 				clientUnaryOpts = append(clientUnaryOpts, grpc_ot.UnaryClientInterceptor(tracerOpts))
 			}

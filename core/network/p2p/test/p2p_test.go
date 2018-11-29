@@ -26,7 +26,7 @@ func getBoostrap(d *p2p.Driver) []string {
 	bootstrap := make([]string, len(addrs))
 
 	for i, a := range addrs {
-		bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.ID().ID)
+		bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.ID(context.Background()).ID)
 	}
 
 	return bootstrap
@@ -49,7 +49,7 @@ func setupDriver(bootstrap ...string) (*p2p.Driver, error) {
 		return nil, err
 	}
 	go func() {
-		if err = driver.Start(); err != nil {
+		if err = driver.Start(context.Background()); err != nil {
 			logger().Error("driver start error", zap.Error(err))
 		}
 	}()
@@ -88,7 +88,7 @@ func TestP2PNetwork(t *testing.T) {
 			if d != nil {
 				_d := d
 				go func() {
-					if err := _d.Close(); err != nil {
+					if err := _d.Close(context.Background()); err != nil {
 						logger().Warn("error while closing", zap.Error(err))
 					}
 				}()

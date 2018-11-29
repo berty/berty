@@ -31,7 +31,8 @@ EXT_LDFLAGS ?= -ldflags "-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core
 RUN_DAEMON_OPTS ?= --log-level=debug
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
-TEST_CMD ?= go test -test.timeout 3m $(TEST_OPTS) $(TEST_PATHS)
+TEST_TIMEOUT ?= 3m
+TEST_CMD ?= go test -test.timeout $(TEST_TIMEOUT) $(TEST_OPTS) $(TEST_PATHS)
 PROTOC ?= protoc
 GQLGEN ?= gqlgen
 GIN_OPTS ?= --immediate --port=2999 --appPort=1337 --build=./cmd/berty --excludeDir vendor
@@ -88,7 +89,7 @@ integration: install
 
 .PHONY: lint
 lint: generate
-	golangci-lint run $(TEST_PATHS)
+	$(BUILD_ENV) golangci-lint run $(TEST_PATHS)
 
 .PHONY: generate
 generate: .generated

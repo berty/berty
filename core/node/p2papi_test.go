@@ -1,6 +1,7 @@
 package node
 
 import (
+	"context"
 	"testing"
 
 	"crypto/rand"
@@ -57,7 +58,7 @@ func testNode(t *testing.T, opts ...NewNodeOption) (*Node, error) {
 	opts = append(opts, WithSoftwareCrypto())
 	opts = append(opts, WithConfig())
 
-	node, err := New(opts...)
+	node, err := New(context.Background(), opts...)
 
 	if err != nil {
 		t.Fatalf("%s", err)
@@ -82,9 +83,9 @@ func TestOpenEnvelope(t *testing.T) {
 
 	charlieAlias := "ch4rli3_4l145"
 
-	alice.RegisterDevice(aliceDevice2)
-	bob.RegisterDevice(bobDevice2)
-	charlie.RegisterDevice(charlieDevice2)
+	alice.RegisterDevice(context.Background(), aliceDevice2)
+	bob.RegisterDevice(context.Background(), bobDevice2)
+	charlie.RegisterDevice(context.Background(), charlieDevice2)
 
 	aliceSigChainBytes, err := alice.sigchain.Marshal()
 	bobSigChainBytes, err := bob.sigchain.Marshal()
@@ -140,7 +141,7 @@ func TestOpenEnvelope(t *testing.T) {
 		t.Fatalf("failed to sign envelope")
 	}
 
-	if decodedEvent, err = bob.OpenEnvelope(envelope); err != nil {
+	if decodedEvent, err = bob.OpenEnvelope(context.Background(), envelope); err != nil {
 		t.Error(err)
 	}
 
@@ -172,7 +173,7 @@ func TestOpenEnvelope(t *testing.T) {
 		t.Fatalf("failed to sign envelope")
 	}
 
-	if decodedEvent, err = alice.OpenEnvelope(envelope); err != nil {
+	if decodedEvent, err = alice.OpenEnvelope(context.Background(), envelope); err != nil {
 		t.Fatal(err)
 	}
 
@@ -204,7 +205,7 @@ func TestOpenEnvelope(t *testing.T) {
 		t.Fatalf("failed to sign envelope")
 	}
 
-	if decodedEvent, err = bob.OpenEnvelope(envelope); err != nil {
+	if decodedEvent, err = bob.OpenEnvelope(context.Background(), envelope); err != nil {
 		t.Fatal(err)
 	}
 
@@ -214,7 +215,7 @@ func TestOpenEnvelope(t *testing.T) {
 		t.Fatalf("wrong event data")
 	}
 
-	if decodedEvent, err = alice.OpenEnvelope(envelope); err == nil {
+	if decodedEvent, err = alice.OpenEnvelope(context.Background(), envelope); err == nil {
 		t.Fatalf("alice should not be able to check this signature")
 	}
 

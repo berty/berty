@@ -1,6 +1,7 @@
 package node
 
 import (
+	"context"
 	"encoding/base64"
 
 	"github.com/gogo/protobuf/proto"
@@ -11,6 +12,7 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
+	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 )
 
@@ -22,8 +24,11 @@ func WithRing(ring *zapring.Ring) NewNodeOption {
 
 func WithInitConfig() NewNodeOption {
 	return func(n *Node) {
+		span, ctx := tracing.EnterFunc(n.rootContext)
+		defer span.Finish()
+
 		// get config from sql
-		config, err := n.Config()
+		config, err := n.Config(ctx)
 		if err != nil {
 			ID, err := uuid.NewV4()
 
@@ -36,7 +41,7 @@ func WithInitConfig() NewNodeOption {
 				ID: ID.String(),
 			}
 
-			if err = n.sql(nil).Create(config).Error; err != nil {
+			if err = n.sql(ctx).Create(config).Error; err != nil {
 				logger().Error("node.WithInitConfig", zap.Error(errors.Wrap(err, "failed to save empty config")))
 				return
 			}
@@ -48,8 +53,11 @@ func WithInitConfig() NewNodeOption {
 
 func WithConfig() NewNodeOption {
 	return func(n *Node) {
+		span, ctx := tracing.EnterFunc(n.rootContext)
+		defer span.Finish()
+
 		// get config from sql
-		config, err := n.Config()
+		config, err := n.Config(ctx)
 
 		if err != nil {
 			zap.Error(errors.Wrap(err, "failed to load existing config"))
@@ -59,14 +67,14 @@ func WithConfig() NewNodeOption {
 
 		if config.Validate() != nil {
 			logger().Debug("config is missing from sql, creating a new one")
-			if _, err = n.initConfig(); err != nil {
+			if _, err = n.initConfig(ctx); err != nil {
 				zap.Error(errors.Wrap(err, "failed to initialize config"))
 
 				return
 			}
 		}
 
-		config, err = n.Config()
+		config, err = n.Config(ctx)
 
 		if err != nil {
 			logger().Error("WithConfig", zap.Error(errors.Wrap(err, "unable to load node config")))
@@ -82,7 +90,10 @@ func WithConfig() NewNodeOption {
 	}
 }
 
-func (n *Node) initConfig() (*entity.Config, error) {
+func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	if n.crypto == nil {
 		return nil, errors.New("unable to get crypto instance")
 	}
@@ -111,7 +122,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 		Sigchain:    scBytes,
 	}
 
-	if err := n.sql(nil).Create(myself).Error; err != nil {
+	if err := n.sql(ctx).Create(myself).Error; err != nil {
 		return nil, errors.Wrap(err, "unable to save myself")
 	}
 
@@ -124,7 +135,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 		ContactID:  myself.ID,
 	}
 
-	if err := n.sql(nil).Create(currentDevice).Error; err != nil {
+	if err := n.sql(ctx).Create(currentDevice).Error; err != nil {
 		return nil, errors.Wrap(err, "unable to save config")
 	}
 
@@ -133,7 +144,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 	n.config.Myself = myself
 	n.config.MyselfID = n.config.Myself.ID
 
-	if err := n.sql(nil).
+	if err := n.sql(ctx).
 		Save(&n.config).
 		Error; err != nil {
 		return nil, errors.Wrap(err, "failed to save config")
@@ -143,10 +154,13 @@ func (n *Node) initConfig() (*entity.Config, error) {
 }
 
 // Config gets config from database
-func (n *Node) Config() (*entity.Config, error) {
+func (n *Node) Config(ctx context.Context) (*entity.Config, error) {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	var config []*entity.Config
 
-	if err := n.sql(nil).Preload("CurrentDevice").Preload("Myself").Preload("Myself.Devices").Find(&config, &entity.Config{}).Error; err != nil {
+	if err := n.sql(ctx).Preload("CurrentDevice").Preload("Myself").Preload("Myself.Devices").Find(&config, &entity.Config{}).Error; err != nil {
 		// if err := n.sql.First(config).Error; err != nil {
 		return nil, errors.Wrap(err, "unable to get config")
 	}

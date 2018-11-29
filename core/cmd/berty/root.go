@@ -80,11 +80,12 @@ func newRootCommand() *cobra.Command {
 			return nil
 		},
 	}
-
+	defaultJaegerName := os.Getenv("USER") + "@" + os.Getenv("HOST")
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
 	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
 	cmd.PersistentFlags().StringP("jaeger-address", "", "127.0.0.1:6831", "ip address / hostname and port of jaeger-agent: <hostname>:<port>")
+	cmd.PersistentFlags().StringP("jaeger-name", "", defaultJaegerName, "tracer name")
 	cmd.PersistentFlags().Int64P("rand-seed", "", 0, "seed used to initialize the default rand source")
 
 	cmd.AddCommand(
@@ -188,10 +189,17 @@ func setupLogger(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-var jaegerAddr string
+var (
+	jaegerAddr string
+	jaegerName string
+)
 
 func setupJaeger(cmd *cobra.Command, args []string) (err error) {
 	jaegerAddr, err = cmd.Flags().GetString("jaeger-address")
+	if err != nil {
+		return err
+	}
+	jaegerName, err = cmd.Flags().GetString("jaeger-name")
 	return
 }
 

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -60,7 +61,7 @@ func nodeChansLens(apps ...*AppMock) []int {
 	time.Sleep(10 * time.Millisecond) // we let a few time to the queue to be filled
 	out := []int{}
 	for _, app := range apps {
-		app.node.AsyncWait()
+		app.node.AsyncWait(context.Background())
 		out = append(out, len(app.networkDriver.(*mock.Enqueuer).Queue()))
 		out = append(out, len(app.eventStream))
 		if len(app.eventStream) > 99 {

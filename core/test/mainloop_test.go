@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -14,7 +15,7 @@ import (
 )
 
 func setupNonAcknowledgedEventDestinations() (*AppMock, time.Time, time.Time, time.Time) {
-	n, err := NewAppMock(&entity.Device{Name: "Alice's iPhone"}, networkmock.NewEnqueuer(), WithUnencryptedDb())
+	n, err := NewAppMock(&entity.Device{Name: "Alice's iPhone"}, networkmock.NewEnqueuer(context.Background()), WithUnencryptedDb())
 
 	if err != nil {
 		panic(err)
@@ -54,7 +55,7 @@ func TestEventRetry(t *testing.T) {
 		"Event8": false,
 	}
 
-	events, err := appMock.node.EventsRetry(now)
+	events, err := appMock.node.EventsRetry(context.Background(), now)
 
 	if err != nil {
 		t.Error(err)
