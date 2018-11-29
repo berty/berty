@@ -1,6 +1,7 @@
 package node
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"sync"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
@@ -38,6 +40,10 @@ type Node struct {
 	crypto                  keypair.Interface
 	ring                    *zapring.Ring // log ring buffer
 
+	tracingTracer   opentracing.Tracer
+	tracingContext  context.Context // used by jaeger to mark events that are not related to another context
+	tracingRootSpan opentracing.Span
+
 	// devtools
 	createdAt time.Time // used for uptime calculation
 	devtools  struct {
@@ -53,6 +59,8 @@ func New(opts ...NewNodeOption) (*Node, error) {
 		clientEvents:   make(chan *p2p.Event, 100),
 		createdAt:      time.Now().UTC(),
 	}
+
+	n.tracingSpan, n.tracingContext = opentracing.StartSpanFromContext(context.Background(), "node-root")
 
 	// apply optioners
 	for _, opt := range opts {
@@ -95,6 +103,9 @@ func New(opts ...NewNodeOption) (*Node, error) {
 //
 // it should be called in a defer from the caller of New()
 func (n *Node) Close() error {
+	if n.nodeSpan != nil {
+		n.nodeSpan.Finish()
+	}
 	return nil
 }
 
