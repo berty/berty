@@ -41,8 +41,24 @@ public class BertyUtils {
     final static HashMap<String, BertyDevice> bertyDevices = new HashMap<>();
     private static final String TAG = "chat.berty.ble.BertyUtils";
 
+    public static void logger(String level, String tag, String log) {
+        switch (level) {
+            case "debug":  Log.d(tag, log);
+                    break;
+            case "info":  Log.i(tag, log);
+                    break;
+            case "warn":  Log.w(tag, log);
+                    break;
+            case "error":  Log.e(tag, log);
+                    break;
+            default: Log.e(tag, "unknow level: <" + level + "> for log: <" + log + ">");
+                    break;
+        }
+//////        Core.goLogger(log, level, tag)
+    }
+
     public static BluetoothGattService createService() {
-        Log.e(TAG, "createService()");
+        logger("debug", TAG, "createService() called");
 
             if (!mService.addCharacteristic(acceptCharacteristic) ||
                     !mService.addCharacteristic(maCharacteristic) ||
@@ -50,7 +66,7 @@ public class BertyUtils {
             !mService.addCharacteristic(writerCharacteristic) ||
             !mService.addCharacteristic(isRdyCharacteristic) ||
             !mService.addCharacteristic(closerCharacteristic)) {
-                Log.e(TAG, "Error adding characteristic");
+                logger("error", TAG, "characteristic adding failed");
             }
 
             return mService;
