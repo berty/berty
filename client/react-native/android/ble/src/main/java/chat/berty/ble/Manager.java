@@ -54,7 +54,7 @@ public class Manager {
     private Manager() {
         super();
         Thread.currentThread().setName("BleManager");
-        Log.e(TAG, "BLEManager init");
+        BertyUtils.logger("debug", TAG, "initializing BLEManager");
         mScanCallback.mGattCallback = mGattCallback;
         mGattServerCallback.mGattCallback = mGattCallback;
     }
@@ -70,12 +70,11 @@ public class Manager {
             }
         }
 
-        Log.e(TAG, "ALL INSTANCES " + instance);
         return instance;
     }
 
     public void setmContext(Context ctx) {
-        Log.e(TAG, "BLEManager context set");
+        BertyUtils.logger("debug", TAG, "BLEManager context set");
         mContext = ctx;
         mScanCallback.mContext = ctx;
         mGattServerCallback.mContext = ctx;
@@ -89,7 +88,7 @@ public class Manager {
             AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
             mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
         }
-        Log.e(TAG, "BLE MA " + ma);
+        BertyUtils.logger("debug", TAG, "Ma setted: " + ma);
     }
 
     public void setPeerID(String peerID) {
@@ -100,11 +99,11 @@ public class Manager {
             AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
             mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
         }
-        Log.e(TAG, "BLE PEERID " + peerID);
+        BertyUtils.logger("debug", TAG, "PeerID setted: " + peerID);
     }
 
     public void setmReactContext(Object rCtx, Object t) {
-        Log.e(TAG, "BLEManager ReactContext set");
+        BertyUtils.logger("debug", TAG, "BLEManager ReactContext set");
         RmReactContext = t;
         mReactContext = (ActivityGetter) rCtx;
     }
@@ -127,9 +126,7 @@ public class Manager {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             try {
                 BluetoothManager mb = (BluetoothManager) mContext.getSystemService(BLUETOOTH_SERVICE);
-                Log.e(TAG, "TRY ");
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Log.e(TAG, "TRY 2");
                     mBluetoothLeAdvertiser = BluetoothAdapter.getDefaultAdapter().getBluetoothLeAdvertiser();
                     mBluetoothLeScanner = BluetoothAdapter.getDefaultAdapter().getBluetoothLeScanner();
                     BluetoothGattService svc = BertyUtils.createService();
@@ -137,12 +134,12 @@ public class Manager {
 
                     mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
                     mGattServerCallback.mBluetoothGattServer = mBluetoothGattServer;
-                    Log.e(TAG, "TEST " + svc + " " + mBluetoothGattServer);
+                    BertyUtils.logger("debug", TAG, "test " + svc + " " + mBluetoothGattServer);
 
                     mBluetoothGattServer.addService(svc);
                     ScanSettings settings2 = BertyScan.createScanSetting();
                     ScanFilter filter = BertyScan.makeFilter();
-                    Log.e(TAG, "START SCANNING");
+                    BertyUtils.logger("debug", TAG, "starting scan");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         mBluetoothLeScanner.startScan(Arrays.asList(filter), settings2, mScanCallback);
                     }
@@ -150,7 +147,7 @@ public class Manager {
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, "ECECE " + e);
+                BertyUtils.logger("error", TAG, "error: " + e);
             }
         }
     }
@@ -190,7 +187,7 @@ public class Manager {
         AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
         AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Log.e(TAG, "ADV see " + settings + " data " + advData + " cb " + mAdvertisingCallback);
+            BertyUtils.logger("debug", TAG, "startAdvertising settings: " + settings + " data: " + advData + " cb: " + mAdvertisingCallback);
 //            mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
         }
     }
@@ -198,15 +195,15 @@ public class Manager {
     public void stopAdvertising() {
         isAdvertising = false;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Log.e(TAG, "STOP ADV");
+            BertyUtils.logger("debug", TAG, "stopAdvertising");
             mBluetoothLeAdvertiser.stopAdvertising(mAdvertisingCallback);
         }
     }
 
     public void startScanning() {
+        BertyUtils.logger("debug", TAG, "startScanning() called");
         ScanSettings settings = BertyScan.createScanSetting();
         ScanFilter filter = BertyScan.makeFilter();
-        Log.e(TAG, "START SCANNING");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            mBluetoothLeScanner.startScan(Arrays.asList(filter), settings, mScanCallback);
         }
@@ -230,14 +227,14 @@ public class Manager {
         BertyDevice bDevice = BertyUtils.getDeviceFromMa(ma);
 
         if (bDevice == null) {
-            Log.e(TAG, "Unknow device to write");
+            BertyUtils.logger("error", TAG, "writing on unknow device failed");
             return false;
         }
 
         try {
             bDevice.write(p);
         } catch (Exception e) {
-            Log.e(TAG, "Error writing " + e.getMessage());
+            BertyUtils.logger("error", TAG, "writing error " + e.getMessage());
 
             return false;
         }
@@ -256,7 +253,7 @@ public class Manager {
     //                 value.gatt = null;
     //                 value
     //                         .device = null;
-    //                 Log.e(TAG, "CLOSE");
+    //                 BertyUtils.logger("debug", TAG, "CLOSE")
     //             }
     //         }
     //         stopAdvertising();

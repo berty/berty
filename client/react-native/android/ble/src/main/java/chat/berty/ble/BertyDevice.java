@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
-import core.Core;
+//////import core.Core;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyDevice {
@@ -72,9 +72,9 @@ public class BertyDevice {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     try {
                         latchRdy.await();
-                        Core.addToPeerStore(peerID, ma);
+//////                        Core.addToPeerStore(peerID, ma);
                     } catch (Exception e) {
-                        Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                        BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
                     }
                 }
             }
@@ -82,7 +82,7 @@ public class BertyDevice {
     }
 
     public void waitConn() {
-        Log.e(TAG, "waitConn()");
+        BertyUtils.logger("debug", TAG, "waitConn() called");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -90,12 +90,12 @@ public class BertyDevice {
                 try {
                     latchConn.await();
                     while (!gatt.discoverServices()){
-                        Log.e(TAG, "Waiting service discover");
+                        BertyUtils.logger("debug", TAG, "waiting service discover");
                         Thread.sleep(1000);
                     }
                     waitService();
                 } catch (Exception e) {
-                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                    BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
                 }
 
             }
@@ -103,7 +103,7 @@ public class BertyDevice {
     }
 
     public void waitService() {
-        Log.e(TAG, "waitService()");
+        BertyUtils.logger("debug", TAG, "waitService() called");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -113,7 +113,7 @@ public class BertyDevice {
                     waitChar();
                     populateCharacteristic();
                 } catch (Exception e) {
-                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                    BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
                 }
 
             }
@@ -121,7 +121,7 @@ public class BertyDevice {
     }
 
     public void waitChar() {
-        Log.e(TAG, "waitChar()");
+        BertyUtils.logger("debug", TAG, "waitChar() called");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -132,7 +132,7 @@ public class BertyDevice {
                     launchRead(maCharacteristic);
                     launchRead(peerIDCharacteristic);
                 } catch (Exception e) {
-                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                    BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
                 }
 
             }
@@ -140,7 +140,7 @@ public class BertyDevice {
     }
 
     public void waitRead() {
-        Log.e(TAG, "waitRead()");
+        BertyUtils.logger("debug", TAG, "waitRead() called");
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -149,7 +149,7 @@ public class BertyDevice {
                     latchRead.await();
                     launchWriteIsRdy();
                 } catch (Exception e) {
-                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
+                    BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
                 }
 
             }
@@ -157,13 +157,13 @@ public class BertyDevice {
     }
 
     public void launchRead(BluetoothGattCharacteristic characteristic) {
-        Log.e(TAG, "launchRead() - characteristic=" + characteristic.getUuid());
+        BertyUtils.logger("debug", TAG, "launchRead() called: characteristic=" + characteristic.getUuid());
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Thread.currentThread().setName("LaunchRead");
                 while (!gatt.readCharacteristic(characteristic)) {
-                    Log.e(TAG, "launchRead() waiting read");
+                    BertyUtils.logger("debug", TAG, "waiting launchRead()");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -175,14 +175,14 @@ public class BertyDevice {
     }
 
     public void launchWriteIsRdy() {
-        Log.e(TAG, "launchWriteIsRdy()");
+        BertyUtils.logger("debug", TAG, "launchWriteIsRdy() called");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Thread.currentThread().setName("LaunchWrite");
                 isRdyCharacteristic.setValue("");
                 while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
-                    Log.e(TAG, "launchWrite() waiting write");
+                    BertyUtils.logger("debug", TAG, "waiting launchWrite()");
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -194,7 +194,7 @@ public class BertyDevice {
     }
 
     public void populateCharacteristic() {
-        Log.e(TAG, "populateCharacteristic()");
+        BertyUtils.logger("debug", TAG, "populateCharacteristic() called");
         ExecutorService es = Executors.newFixedThreadPool(6);
         List<PopulateCharacteristic> todo = new ArrayList<>(6);
 
@@ -229,7 +229,7 @@ public class BertyDevice {
                     acceptCharacteristic = c;
                     latchChar.countDown();
                 } else {
-                    Log.e(TAG, "Retrieved an unknown characteristic");
+                    BertyUtils.logger("error", TAG, "unknown characteristic retrieved");
                 }
             }
         } catch (Exception e) {

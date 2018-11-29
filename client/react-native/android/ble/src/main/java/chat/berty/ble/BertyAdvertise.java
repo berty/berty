@@ -53,7 +53,7 @@ public class BertyAdvertise extends AdvertiseCallback {
      */
     @Override
     public void onStartSuccess(AdvertiseSettings settingsInEffect) {
-        Log.e(TAG, "Advertising onStartSuccess: " + settingsInEffect);
+        BertyUtils.logger("debug", TAG, "onStartSuccess advertising: " + settingsInEffect);
         super.onStartSuccess(settingsInEffect);
     }
 
@@ -86,7 +86,7 @@ public class BertyAdvertise extends AdvertiseCallback {
             default: errorString = "UNKNOWN ADVERTISE FAILURE";
                 break;
         }
-        Log.e(TAG, "Advertising onStartFailure: " + errorString);
+        BertyUtils.logger("error", TAG, "onStartFailure advertising: " + errorString);
         super.onStartFailure(errorCode);
     }
 }

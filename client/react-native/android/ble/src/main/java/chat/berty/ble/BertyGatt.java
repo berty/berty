@@ -49,7 +49,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-        Log.e(TAG, "onPhyUpdate()");
+        BertyUtils.logger("debug", TAG, "onPhyUpdate() called");
         super.onPhyUpdate(gatt, txPhy, rxPhy, status);
     }
 
@@ -66,7 +66,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onPhyRead(BluetoothGatt gatt, int txPhy, int rxPhy, int status) {
-        Log.e(TAG, "onPhyRead()");
+        BertyUtils.logger("debug", TAG, "onPhyRead() called");
         super.onPhyRead(gatt, txPhy, rxPhy, status);
     }
 
@@ -83,15 +83,15 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        Log.e(TAG, "onConnectionStateChange() - gatt=" + gatt.getDevice().getAddress() + " status=" + status + " newState=" + newState);
+        BertyUtils.logger("debug", TAG, "onConnectionStateChange() called: gatt=" + gatt.getDevice().getAddress() + " status=" + status + " newState=" + newState);
         if (status == GATT_SUCCESS && newState == STATE_CONNECTED) {
             BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
             bDevice.latchConn.countDown();
         }
 //        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
-//        Log.e(TAG, "STATUS " + status + " New  "+ newState);
+//        BertyUtils.logger("debug", TAG, "status " + status + " New  "+ newState);
 //        if (newState == 2) {
-//            Log.e(TAG, "discover service :" + bDevice.gatt.discoverServices());
+//            BertyUtils.logger("debug", TAG, "discover service: " + bDevice.gatt.discoverServices());
 //        }
 //        if (newState == 0 || status == 0) {
 //            bDevice.gatt.requestMtu(512);
@@ -102,17 +102,17 @@ public class BertyGatt extends BluetoothGattCallback {
 //            List<BluetoothDevice> gbds = mb.getConnectedDevices(GATT_SERVER);
 //
 //
-//            Log.e(TAG, "SVC " + svcs);
+//            BertyUtils.logger("debug", TAG, "SVC " + svcs);
 //            for (BluetoothGattService svc: svcs) {
-//                Log.e(TAG, "SVC " + svc.toString());
+//                BertyUtils.logger("debug", TAG, "SVC " + svc.toString());
 //            }
-//            Log.e(TAG, "gdb " + gbd);
+//            BertyUtils.logger("debug", TAG, "gdb " + gbd);
 //            for (BluetoothDevice g : gbd) {
-//                Log.e(TAG, "SVC " + g.getAddress());
+//                BertyUtils.logger("debug", TAG, "SVC " + g.getAddress());
 //            }
-//            Log.e(TAG, "gdbs " + gbds);
+//            BertyUtils.logger("debug", TAG, "gdbs " + gbds);
 //            for (BluetoothDevice g : gbds) {
-//                Log.e(TAG, "SVC " + g.getAddress());
+//                BertyUtils.logger("debug", TAG, "SVC " + g.getAddress());
 //            }
 //        }
 //        if (bDevice == null) {
@@ -123,9 +123,9 @@ public class BertyGatt extends BluetoothGattCallback {
 //            }
 //        }
 //        gatt.discoverServices();
-//        Log.e(TAG, "CLI");
+//        BertyUtils.logger("debug", TAG, "CLI");
 ////                        for (BluetoothGattService svc : gatt.getServices()) {
-////                            Log.e(TAG, "KNOWN SVC  "+ svc.getUuid().toString());
+////                            BertyUtils.logger("debug", TAG, "KNOWN SVC  "+ svc.getUuid().toString());
 ////                        }
 ////                        runDiscoAndMtu(gatt);
 //
@@ -143,7 +143,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-        Log.e(TAG, "onServicesDiscovered()");
+        BertyUtils.logger("debug", TAG, "onServicesDiscovered() called");
         BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
         for (BluetoothGattService svc : gatt.getServices()) {
             if (svc.getUuid().equals(BertyUtils.SERVICE_UUID)) {
@@ -164,7 +164,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-        Log.e(TAG, "onCharacteristicRead()");
+        BertyUtils.logger("debug", TAG, "onCharacteristicRead() called");
         UUID uuid = characteristic.getUuid();
         if (uuid.equals(BertyUtils.MA_UUID)) {
             BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
@@ -177,7 +177,7 @@ public class BertyGatt extends BluetoothGattCallback {
             bDevice.peerID = peerID;
             bDevice.latchRead.countDown();
         } else {
-            Log.e(TAG, "onCharacteristicRead() - unknown read characteristic=" + uuid);
+            BertyUtils.logger("error", TAG, "unknown read characteristic: " + uuid);
         }
 
         super.onCharacteristicRead(gatt, characteristic, status);
@@ -200,7 +200,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
-        Log.e(TAG, "onCharacteristicWrite()");
+        BertyUtils.logger("debug", TAG, "onCharacteristicWrite() called");
         BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
         if (status == GATT_SUCCESS && characteristic.getUuid().equals(BertyUtils.IS_READY_UUID)) {
             bDevice.latchRdy.countDown();
@@ -253,7 +253,7 @@ public class BertyGatt extends BluetoothGattCallback {
                     errorString = "UNKNOW FAIL";
                     break;
             }
-            Log.e(TAG, "Error writing gatt " + errorString);
+            BertyUtils.logger("debug", TAG, "GATT writing failed: " + errorString);
         }
         super.onCharacteristicWrite(gatt, characteristic, status);
     }
@@ -266,8 +266,8 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-        Log.e(TAG, "onCharacteristicChanged()");
-//        Log.e(TAG, "charact changed " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
+        BertyUtils.logger("debug", TAG, "onCharacteristicChanged() called");
+//        BertyUtils.logger("debug", TAG, "charact changed " + new String(characteristic.getValue(), Charset.forName("UTF-8")));
 //        BertyDevice bDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
 //        handleReadCharact(bDevice, characteristic);
         super.onCharacteristicChanged(gatt, characteristic);
@@ -283,7 +283,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onDescriptorRead(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-        Log.e(TAG, "onDescriptorRead()");
+        BertyUtils.logger("debug", TAG, "onDescriptorRead() called");
         super.onDescriptorRead(gatt, descriptor, status);
     }
 
@@ -298,7 +298,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onDescriptorWrite(BluetoothGatt gatt, BluetoothGattDescriptor descriptor, int status) {
-        Log.e(TAG, "onDescriptorWrite()");
+        BertyUtils.logger("debug", TAG, "onDescriptorWrite() called");
         super.onDescriptorWrite(gatt, descriptor, status);
     }
 
@@ -310,7 +310,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onReliableWriteCompleted(BluetoothGatt gatt, int status) {
-        Log.e(TAG, "onReliableWriteCompleted()");
+        BertyUtils.logger("debug", TAG, "onReliableWriteCompleted() called");
         super.onReliableWriteCompleted(gatt, status);
     }
 
@@ -326,7 +326,7 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
-        Log.e(TAG, "onReadRemoteRssi()");
+        BertyUtils.logger("debug", TAG, "onReadRemoteRssi() called");
         super.onReadRemoteRssi(gatt, rssi, status);
     }
 
@@ -343,8 +343,8 @@ public class BertyGatt extends BluetoothGattCallback {
      */
     @Override
     public void onMtuChanged(BluetoothGatt gatt, int mtu, int status) {
-        Log.e(TAG, "onMtuChanged()");
-//        Log.e(TAG, "ON MTU CHANGED CLI");
+        BertyUtils.logger("debug", TAG, "onMtuChanged() called");
+//        BertyUtils.logger("debug", TAG, "ON MTU CHANGED CLI");
 //        BertyDevice bertyDevice = getDeviceFromAddr(gatt.getDevice().getAddress());
 //        bertyDevice.mtu = mtu;
         super.onMtuChanged(gatt, mtu, status);

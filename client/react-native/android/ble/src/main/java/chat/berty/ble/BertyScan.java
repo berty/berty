@@ -101,12 +101,12 @@ public class BertyScan extends ScanCallback {
             default: errorString = "UNKNOW FAIL";
                 break;
         }
-        Log.e(TAG, "error scanning " + errorString);
+        BertyUtils.logger("error", TAG, "scanning failed: " + errorString);
         super.onScanFailed(errorCode);
     }
 
     public void parseResult(ScanResult result) {
-        Log.e(TAG, "new result");
+        BertyUtils.logger("debug", TAG, "parseResult() called");
         BluetoothDevice device = result.getDevice();
         BertyDevice bDevice = BertyUtils.getDeviceFromAddr(device.getAddress());
         if (bDevice == null) {
