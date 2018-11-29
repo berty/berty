@@ -36,7 +36,7 @@ func WithInitConfig() NewNodeOption {
 				ID: ID.String(),
 			}
 
-			if err = n.sql.Create(config).Error; err != nil {
+			if err = n.sql(nil).Create(config).Error; err != nil {
 				logger().Error("node.WithInitConfig", zap.Error(errors.Wrap(err, "failed to save empty config")))
 				return
 			}
@@ -111,7 +111,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 		Sigchain:    scBytes,
 	}
 
-	if err := n.sql.Create(myself).Error; err != nil {
+	if err := n.sql(nil).Create(myself).Error; err != nil {
 		return nil, errors.Wrap(err, "unable to save myself")
 	}
 
@@ -124,7 +124,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 		ContactID:  myself.ID,
 	}
 
-	if err := n.sql.Create(currentDevice).Error; err != nil {
+	if err := n.sql(nil).Create(currentDevice).Error; err != nil {
 		return nil, errors.Wrap(err, "unable to save config")
 	}
 
@@ -133,7 +133,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 	n.config.Myself = myself
 	n.config.MyselfID = n.config.Myself.ID
 
-	if err := n.sql.
+	if err := n.sql(nil).
 		Save(&n.config).
 		Error; err != nil {
 		return nil, errors.Wrap(err, "failed to save config")
@@ -146,7 +146,7 @@ func (n *Node) initConfig() (*entity.Config, error) {
 func (n *Node) Config() (*entity.Config, error) {
 	var config []*entity.Config
 
-	if err := n.sql.Preload("CurrentDevice").Preload("Myself").Preload("Myself.Devices").Find(&config, &entity.Config{}).Error; err != nil {
+	if err := n.sql(nil).Preload("CurrentDevice").Preload("Myself").Preload("Myself.Devices").Find(&config, &entity.Config{}).Error; err != nil {
 		// if err := n.sql.First(config).Error; err != nil {
 		return nil, errors.Wrap(err, "unable to get config")
 	}

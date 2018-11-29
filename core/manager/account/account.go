@@ -265,11 +265,10 @@ func (a *Account) openDatabase() error {
 	}
 	if a.dbDrop {
 		if err = a.DropDatabase(); err != nil {
-			return err
+			return errors.Wrap(err, "failed to drop database")
 		}
 	}
-	err = sql.Migrate(a.db)
-	if err != nil {
+	if err = sql.Migrate(a.db); err != nil {
 		return errors.Wrap(err, "failed to apply sql migrations")
 	}
 	return nil

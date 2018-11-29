@@ -7,7 +7,7 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
-	"berty.tech/core/sql"
+	bsql "berty.tech/core/sql"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
@@ -28,8 +28,10 @@ func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 
 // EventList implements berty.node.EventList
 func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventListServer) error {
+	sql := n.sql(stream.Context())
+
 	// prepare query
-	query := n.sql.Model(p2p.Event{}).Where(input.Filter)
+	query := sql.Model(p2p.Event{}).Where(input.Filter)
 
 	if input.OnlyWithoutAckedAt == node.NullableTrueFalse_True {
 		query = query.Where("acked_at IS NULL")
@@ -66,7 +68,8 @@ func (n *Node) EventSeen(ctx context.Context, input *node.EventIDInput) (*p2p.Ev
 	event := &p2p.Event{}
 	count := 0
 
-	if err := n.sql.
+	sql := n.sql(ctx)
+	if err := sql.
 		Model(&p2p.Event{}).
 		Where(&p2p.Event{ID: input.EventID}).
 		Count(&count).
@@ -88,7 +91,8 @@ func (n *Node) GetEvent(ctx context.Context, event *p2p.Event) (*p2p.Event, erro
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
-	if err := n.sql.First(event, "ID = ?", event.ID).Error; err != nil {
+	sql := n.sql(ctx)
+	if err := sql.First(event, "ID = ?", event.ID).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get event from database")
 	}
 
@@ -100,7 +104,7 @@ func (n *Node) GetEvent(ctx context.Context, event *p2p.Event) (*p2p.Event, erro
 //
 
 // ContactAcceptRequest implements berty.node.ContactAcceptRequest
-func (n *Node) ContactAcceptRequest(_ context.Context, input *entity.Contact) (*entity.Contact, error) {
+func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) (*entity.Contact, error) {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
@@ -108,14 +112,15 @@ func (n *Node) ContactAcceptRequest(_ context.Context, input *entity.Contact) (*
 	if err := input.Validate(); err != nil {
 		return nil, errors.Wrap(err, ErrInvalidInput.Error())
 	}
-	contact, err := sql.FindContact(n.sql, input)
+	sql := n.sql(ctx)
+	contact, err := bsql.FindContact(sql, input)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to get contact")
 	}
 
 	// mark contact as friend
 	contact.Status = entity.Contact_IsFriend
-	if err := n.sql.Save(contact).Error; err != nil {
+	if err := sql.Save(contact).Error; err != nil {
 		return nil, err
 	}
 
@@ -147,12 +152,13 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	}
 
 	// check for duplicate
-	contact, err := sql.FindContact(n.sql, req.Contact)
+	sql := n.sql(ctx)
+	contact, err := bsql.FindContact(sql, req.Contact)
 	if err != nil {
 		// save contact in database
 		contact = req.Contact
 		contact.Status = entity.Contact_IsRequested
-		if err = n.sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
+		if err = sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 			return nil, errors.Wrap(err, "failed to save contact")
 		}
 	}
@@ -176,7 +182,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 }
 
 // ContactUpdate implements berty.node.ContactUpdate
-func (n *Node) ContactUpdate(_ context.Context, contact *entity.Contact) (*entity.Contact, error) {
+func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*entity.Contact, error) {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
@@ -190,11 +196,12 @@ func (n *Node) ContactUpdate(_ context.Context, contact *entity.Contact) (*entit
 
 	// FIXME: protect import fields from updatind
 
-	return contact, n.sql.Model(contact).Update("displayName", contact.DisplayName).Error
+	sql := n.sql(ctx)
+	return contact, sql.Model(contact).Update("displayName", contact.DisplayName).Error
 }
 
 // ContactRemove implements berty.node.ContactRemove
-func (n *Node) ContactRemove(_ context.Context, contact *entity.Contact) (*entity.Contact, error) {
+func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*entity.Contact, error) {
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
@@ -210,13 +217,16 @@ func (n *Node) ContactRemove(_ context.Context, contact *entity.Contact) (*entit
 	// FIXME: should not be able to delete myself
 
 	// remove from sql
-	return contact, n.sql.Delete(contact).Error
+	sql := n.sql(ctx)
+	return contact, sql.Delete(contact).Error
 }
 
 // ContactList implements berty.node.ContactList
 func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_ContactListServer) error {
+	sql := n.sql(stream.Context())
+
 	// prepare query
-	query := n.sql.Model(entity.Contact{}).Where(input.Filter)
+	query := sql.Model(entity.Contact{}).Where(input.Filter)
 
 	// pagination
 	var err error
@@ -248,7 +258,8 @@ func (n *Node) GetContact(ctx context.Context, contact *entity.Contact) (*entity
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
-	if err := n.sql.First(contact, "ID = ?", contact.ID).Error; err != nil {
+	sql := n.sql(ctx)
+	if err := sql.First(contact, "ID = ?", contact.ID).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get contact from database")
 	}
 
@@ -289,12 +300,14 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 		Title:   input.Title,
 		Topic:   input.Topic,
 	}
-	if err := n.sql.Set("gorm:association_autoupdate", true).Save(&createConversation).Error; err != nil {
+	sql := n.sql(ctx)
+
+	if err := sql.Set("gorm:association_autoupdate", true).Save(&createConversation).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to save conversation")
 	}
 
 	// load new conversation again, to preload associations
-	conversation, err := sql.ConversationByID(n.sql, createConversation.ID)
+	conversation, err := bsql.ConversationByID(sql, createConversation.ID)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to load freshly created conversation")
 	}
@@ -358,7 +371,8 @@ func (n *Node) ConversationExclude(context.Context, *node.ConversationManageMemb
 
 func (n *Node) ConversationList(input *node.ConversationListInput, stream node.Service_ConversationListServer) error {
 	// prepare query
-	query := n.sql.Model(entity.Conversation{}).Where(input.Filter)
+	sql := n.sql(stream.Context())
+	query := sql.Model(entity.Conversation{}).Where(input.Filter)
 
 	// pagination
 	var err error
@@ -406,7 +420,8 @@ func (n *Node) GetConversation(ctx context.Context, conversation *entity.Convers
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
-	if err := n.sql.First(conversation, "ID = ?", conversation.ID).Error; err != nil {
+	sql := n.sql(ctx)
+	if err := sql.First(conversation, "ID = ?", conversation.ID).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get conversation from database")
 	}
 
@@ -418,7 +433,8 @@ func (n *Node) GetConversationMember(ctx context.Context, conversationMember *en
 	n.handleMutex.Lock()
 	defer n.handleMutex.Unlock()
 
-	if err := n.sql.First(conversationMember, "ID = ?", conversationMember.ID).Error; err != nil {
+	sql := n.sql(ctx)
+	if err := sql.First(conversationMember, "ID = ?", conversationMember.ID).Error; err != nil {
 		return nil, errors.Wrap(err, "failed to get conversationMember from database")
 	}
 

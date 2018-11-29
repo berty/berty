@@ -6,7 +6,7 @@ import (
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
-	"berty.tech/core/sql"
+	bsql "berty.tech/core/sql"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
@@ -25,7 +25,8 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	}
 	// FIXME: validate input
 
-	_, err = sql.FindContact(n.sql, &entity.Contact{ID: attrs.Me.ID})
+	sql := n.sql(ctx)
+	_, err = bsql.FindContact(sql, &entity.Contact{ID: attrs.Me.ID})
 	if err == nil {
 		return errors.New("contact already known")
 	}
@@ -39,7 +40,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 			//Key: crypto.NewPublicKey(p2p.GetPubkey(ctx)),
 		},
 	}
-	if err := n.sql.Set("gorm:association_autoupdate", true).Save(requester).Error; err != nil {
+	if err := sql.Set("gorm:association_autoupdate", true).Save(requester).Error; err != nil {
 		return err
 	}
 
@@ -49,14 +50,15 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 
 func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Event) error {
 	// fetching existing contact from db
-	contact, err := sql.ContactByID(n.sql, input.SenderID)
+	sql := n.sql(ctx)
+	contact, err := bsql.ContactByID(sql, input.SenderID)
 	if err != nil {
 		return errors.Wrap(err, "no such contact")
 	}
 
 	contact.Status = entity.Contact_IsFriend
 	//contact.Devices[0].Key = crypto.NewPublicKey(p2p.GetPubkey(ctx))
-	if err := n.sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
+	if err := sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 		return err
 	}
 
@@ -78,7 +80,8 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	}
 
 	// fetching existing contact from db
-	contact, err := sql.ContactByID(n.sql, input.SenderID)
+	sql := n.sql(ctx)
+	contact, err := bsql.ContactByID(sql, input.SenderID)
 	if err != nil {
 		return errors.Wrap(err, "no such contact")
 	}
@@ -87,7 +90,7 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	contact.DisplayName = attrs.Me.DisplayName
 	contact.DisplayStatus = attrs.Me.DisplayStatus
 	// FIXME: save more attributes
-	return n.sql.Save(contact).Error
+	return sql.Save(contact).Error
 }
 
 //
@@ -116,7 +119,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 	}
 
 	// save conversation
-	if err := n.sql.Set("gorm:association_autoupdate", true).Save(conversation).Error; err != nil {
+	if err := n.sql(ctx).Set("gorm:association_autoupdate", true).Save(conversation).Error; err != nil {
 		return errors.Wrap(err, "failed to save conversation")
 	}
 
@@ -176,7 +179,7 @@ func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) er
 		alias.ID = ID.String()
 		alias.Status = entity.SenderAlias_RECEIVED
 
-		n.sql.Save(&alias)
+		n.sql(ctx).Save(&alias)
 	}
 
 	return nil
@@ -191,7 +194,7 @@ func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
 		return errors.Wrap(err, "unable to unmarshal ack attrs")
 	}
 
-	baseQuery := n.sql.
+	baseQuery := n.sql(ctx).
 		Model(&p2p.Event{}).
 		Where("id in (?)", ackAttrs.IDs)
 
@@ -224,7 +227,8 @@ func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
 func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs) error {
 	var events []*p2p.Event
 
-	err := n.sql.
+	sql := n.sql(ctx)
+	err := sql.
 		Model(&p2p.Event{}).
 		Where("id in (?)", ackAttrs.IDs).
 		Where(p2p.Event{Kind: p2p.Kind_SenderAliasUpdate}).
@@ -247,7 +251,7 @@ func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs)
 		for _, alias := range attrs.Aliases {
 			aliasesCount := 0
 
-			err = n.sql.
+			err = sql.
 				Model(&entity.SenderAlias{}).
 				Where(&entity.SenderAlias{
 					ConversationID:  alias.ConversationID,

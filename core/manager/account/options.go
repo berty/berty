@@ -58,27 +58,9 @@ func WithPassphrase(passphrase string) NewOption {
 }
 
 type DatabaseOptions struct {
-	Path string
-	Drop bool
-}
-
-func WithDatabase(opts *DatabaseOptions) NewOption {
-	return func(a *Account) error {
-		if opts == nil {
-			opts = &DatabaseOptions{}
-		}
-
-		a.dbDir = opts.Path
-		if a.dbDir == "" {
-			return errors.New("cannot have empty database path")
-		}
-
-		a.dbDrop = opts.Drop
-		if err := a.openDatabase(); err != nil {
-			return err
-		}
-		return nil
-	}
+	Path       string
+	Drop       bool
+	JaegerAddr string
 }
 
 func WithBanner(banner string) NewOption {

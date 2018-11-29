@@ -2,9 +2,16 @@ package account
 
 import (
 	"encoding/json"
+	"errors"
+	"fmt"
 
 	"github.com/jinzhu/gorm"
+	opentracing "github.com/opentracing/opentracing-go"
 )
+
+//
+// state db
+//
 
 type StateDB struct {
 	gorm *gorm.DB `gorm:"-"`
@@ -58,4 +65,65 @@ func (state *StateDB) Save() error {
 
 func (state *StateDB) Close() {
 	state.gorm.Close()
+}
+
+//
+// app db
+//
+
+func gormCreateSubSpan(scope *gorm.Scope, operationName string) {
+	if span, ok := scope.Get("rootSpan"); ok {
+		rootSpan := span.(opentracing.Span)
+		operationName = fmt.Sprintf("db-%s", operationName)
+		subSpan := rootSpan.Tracer().StartSpan(
+			operationName,
+			opentracing.ChildOf(rootSpan.Context()),
+		)
+		scope.Set("subSpan", subSpan)
+	}
+}
+
+func gormFinishSubSpan(scope *gorm.Scope) {
+	if span, ok := scope.Get("subSpan"); ok {
+		subSpan := span.(opentracing.Span)
+		defer subSpan.Finish()
+		subSpan.LogKV("sql", scope.SQL)
+	}
+}
+
+func WithDatabase(opts *DatabaseOptions) NewOption {
+	return func(a *Account) error {
+		if opts == nil {
+			opts = &DatabaseOptions{}
+		}
+
+		a.dbDir = opts.Path
+		if a.dbDir == "" {
+			return errors.New("cannot have empty database path")
+		}
+
+		a.dbDrop = opts.Drop
+		if err := a.openDatabase(); err != nil {
+			return err
+		}
+
+		if opts.JaegerAddr != "" {
+			// create
+			a.db.Callback().Create().Before("gorm:before_create").Register("jaeger:before_create", func(scope *gorm.Scope) { gormCreateSubSpan(scope, fmt.Sprintln("insert", scope.TableName())) })
+			a.db.Callback().Create().Before("gorm:after_create").Register("jaeger:after_create", func(scope *gorm.Scope) { gormFinishSubSpan(scope) })
+
+			// update
+			a.db.Callback().Update().Before("gorm:before_update").Register("jaeger:before_update", func(scope *gorm.Scope) { gormCreateSubSpan(scope, fmt.Sprintln("update", scope.TableName())) })
+			a.db.Callback().Update().Before("gorm:after_update").Register("jaeger:after_update", func(scope *gorm.Scope) { gormFinishSubSpan(scope) })
+
+			// delete
+			a.db.Callback().Delete().Before("gorm:before_delete").Register("jaeger:before_delete", func(scope *gorm.Scope) { gormCreateSubSpan(scope, fmt.Sprintln("delete", scope.TableName())) })
+			a.db.Callback().Delete().Before("gorm:after_delete").Register("jaeger:after_delete", func(scope *gorm.Scope) { gormFinishSubSpan(scope) })
+
+			// query
+			a.db.Callback().Query().Before("gorm:query").Register("jaeger:before_query", func(scope *gorm.Scope) { gormCreateSubSpan(scope, fmt.Sprintln("select", scope.TableName())) })
+			a.db.Callback().Query().Before("gorm:after_query").Register("jaeger:after_query", func(scope *gorm.Scope) { gormFinishSubSpan(scope) })
+		}
+		return nil
+	}
 }

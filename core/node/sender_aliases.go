@@ -10,7 +10,8 @@ import (
 func (node *Node) SenderAliasesRenew() error {
 	var aliases []*entity.SenderAlias
 
-	if err := node.sql.Where("used = 1 AND status = ?", entity.SenderAlias_SENT_AND_ACKED).Find(&aliases).Error; err != nil {
+	sql := node.sql(nil)
+	if err := sql.Where("used = 1 AND status = ?", entity.SenderAlias_SENT_AND_ACKED).Find(&aliases).Error; err != nil {
 		return errors.Wrap(err, "unable to fetch used aliases")
 	}
 
@@ -74,7 +75,8 @@ func (node *Node) GenerateAliasForContact(contactID string) (*entity.SenderAlias
 }
 
 func (node *Node) senderAliasSave(senderAlias *entity.SenderAlias, previous *entity.SenderAlias) error {
-	tx := node.sql.Begin()
+	sql := node.sql(nil)
+	tx := sql.Begin()
 
 	if err := tx.Save(senderAlias).Error; err != nil {
 		err := errors.Wrap(err, "unable to save sender alias")
@@ -100,7 +102,8 @@ func (node *Node) senderAliasSave(senderAlias *entity.SenderAlias, previous *ent
 }
 
 func (node *Node) aliasEnvelopeForContact(envelope *p2p.Envelope, event *p2p.Event) string {
-	alias, err := entity.GetAliasForContact(node.sql, event.ReceiverID)
+	sql := node.sql(nil)
+	alias, err := entity.GetAliasForContact(sql, event.ReceiverID)
 
 	if err == nil && alias != "" {
 		return alias
@@ -112,7 +115,8 @@ func (node *Node) aliasEnvelopeForContact(envelope *p2p.Envelope, event *p2p.Eve
 }
 
 func (node *Node) aliasEnvelopeForConversation(envelope *p2p.Envelope, event *p2p.Event) string {
-	alias, err := entity.GetAliasForConversation(node.sql, event.ConversationID)
+	sql := node.sql(nil)
+	alias, err := entity.GetAliasForConversation(sql, event.ConversationID)
 
 	if err == nil && alias != "" {
 		return alias

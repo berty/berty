@@ -44,7 +44,8 @@ func (n *Node) UseNetworkDriver(driver network.Driver) error {
 	// }
 
 	var conversations []entity.Conversation
-	n.sql.Table("conversation").Select("id").Find(&conversations)
+	sql := n.sql(nil)
+	sql.Table("conversation").Select("id").Find(&conversations)
 	for _, conversation := range conversations {
 		if err := n.networkDriver.Join(context.Background(), conversation.ID); err != nil {
 			logger().Warn(err.Error())

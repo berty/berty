@@ -16,9 +16,11 @@ import (
 
 // EventsRetry updates SentAt and requeue an event
 func (n *Node) EventRequeue(event *p2p.Event) error {
+	sql := n.sql(nil)
+
 	now := time.Now()
 	event.SentAt = &now
-	if err := n.sql.Save(event).Error; err != nil {
+	if err := sql.Save(event).Error; err != nil {
 		return errors.Wrap(err, "error while updating SentAt on event")
 	}
 	n.outgoingEvents <- event
@@ -28,15 +30,17 @@ func (n *Node) EventRequeue(event *p2p.Event) error {
 
 // EventsRetry sends events which lack an AckedAt value emitted before the supplied time value
 func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
+	sql := n.sql(nil)
+
 	var retriedEvents []*p2p.Event
-	destinations, err := p2p.FindNonAcknowledgedEventDestinations(n.sql, before)
+	destinations, err := p2p.FindNonAcknowledgedEventDestinations(sql, before)
 
 	if err != nil {
 		return nil, err
 	}
 
 	for _, destination := range destinations {
-		events, err := p2p.FindNonAcknowledgedEventsForDestination(n.sql, destination)
+		events, err := p2p.FindNonAcknowledgedEventsForDestination(sql, destination)
 
 		if err != nil {
 			n.LogBackgroundError(errors.Wrap(err, "error while retrieving events for dst"))

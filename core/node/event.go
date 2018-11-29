@@ -42,7 +42,8 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	}
 
 	var count int
-	if err := n.sql.Model(&p2p.Event{}).Where(&p2p.Event{ID: input.ID, SenderID: input.SenderID}).Count(&count).Error; err != nil {
+	sql := n.sql(ctx)
+	if err := sql.Model(&p2p.Event{}).Where(&p2p.Event{ID: input.ID, SenderID: input.SenderID}).Count(&count).Error; err != nil {
 		return err
 	}
 	if count > 0 {
@@ -98,7 +99,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		n.LogBackgroundError(errors.Wrap(handlingError, "p2p.Handle event"))
 	}
 
-	if err := n.sql.Save(input).Error; err != nil {
+	if err := sql.Save(input).Error; err != nil {
 		return errors.Wrap(err, "failed to save event in db")
 	}
 
@@ -114,7 +115,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 
 	input.AckedAt = &now
 
-	if err := n.sql.Save(input).Error; err != nil {
+	if err := sql.Save(input).Error; err != nil {
 		return errors.Wrap(err, "failed to save event acked at in db")
 	}
 

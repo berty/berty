@@ -25,7 +25,7 @@ type Node struct {
 	clientEventsSubscribers []clientEventSubscriber
 	clientEventsMutex       sync.Mutex
 	outgoingEvents          chan *p2p.Event
-	sql                     *gorm.DB
+	sqlDriver               *gorm.DB
 	config                  *entity.Config
 	initDevice              *entity.Device
 	handleMutex             sync.Mutex
@@ -102,7 +102,7 @@ func (n *Node) Close() error {
 func (n *Node) Validate() error {
 	if n == nil {
 		return errors.New("missing required fields (node) to create a new Node")
-	} else if n.sql == nil {
+	} else if n.sqlDriver == nil {
 		return errors.New("missing required fields (gorm) to create a new Node")
 	} else if n.initDevice == nil {
 		return errors.New("missing required fields (initDevice) to create a new Node")

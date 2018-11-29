@@ -90,31 +90,31 @@ func TestOpenEnvelope(t *testing.T) {
 	bobSigChainBytes, err := bob.sigchain.Marshal()
 	charlieSigChainBytes, err := charlie.sigchain.Marshal()
 
-	alice.sql.Save(&entity.Contact{ID: bob.b64pubkey, Sigchain: bobSigChainBytes})
-	alice.sql.Save(&entity.Device{ID: b64(bob.pubkey), ContactID: bob.b64pubkey})
-	alice.sql.Save(&entity.Device{ID: bobDevice2.ID, ContactID: bob.b64pubkey})
+	alice.sql(nil).Save(&entity.Contact{ID: bob.b64pubkey, Sigchain: bobSigChainBytes})
+	alice.sql(nil).Save(&entity.Device{ID: b64(bob.pubkey), ContactID: bob.b64pubkey})
+	alice.sql(nil).Save(&entity.Device{ID: bobDevice2.ID, ContactID: bob.b64pubkey})
 
-	alice.sql.Save(&entity.Contact{ID: charlie.b64pubkey, Sigchain: charlieSigChainBytes})
-	alice.sql.Save(&entity.Device{ID: charlie.b64pubkey, ContactID: charlie.b64pubkey})
-	alice.sql.Save(&entity.Device{ID: charlieDevice2.ID, ContactID: charlie.b64pubkey})
+	alice.sql(nil).Save(&entity.Contact{ID: charlie.b64pubkey, Sigchain: charlieSigChainBytes})
+	alice.sql(nil).Save(&entity.Device{ID: charlie.b64pubkey, ContactID: charlie.b64pubkey})
+	alice.sql(nil).Save(&entity.Device{ID: charlieDevice2.ID, ContactID: charlie.b64pubkey})
 
-	bob.sql.Save(&entity.Contact{ID: alice.b64pubkey, Sigchain: aliceSigChainBytes})
-	bob.sql.Save(&entity.Device{ID: alice.b64pubkey, ContactID: alice.b64pubkey})
-	bob.sql.Save(&entity.Device{ID: aliceDevice2.ID, ContactID: alice.b64pubkey})
+	bob.sql(nil).Save(&entity.Contact{ID: alice.b64pubkey, Sigchain: aliceSigChainBytes})
+	bob.sql(nil).Save(&entity.Device{ID: alice.b64pubkey, ContactID: alice.b64pubkey})
+	bob.sql(nil).Save(&entity.Device{ID: aliceDevice2.ID, ContactID: alice.b64pubkey})
 
-	bob.sql.Save(&entity.Contact{ID: charlie.b64pubkey, Sigchain: charlieSigChainBytes})
-	bob.sql.Save(&entity.Device{ID: charlie.b64pubkey, ContactID: charlie.b64pubkey})
-	bob.sql.Save(&entity.Device{ID: charlieDevice2.ID, ContactID: charlie.b64pubkey})
+	bob.sql(nil).Save(&entity.Contact{ID: charlie.b64pubkey, Sigchain: charlieSigChainBytes})
+	bob.sql(nil).Save(&entity.Device{ID: charlie.b64pubkey, ContactID: charlie.b64pubkey})
+	bob.sql(nil).Save(&entity.Device{ID: charlieDevice2.ID, ContactID: charlie.b64pubkey})
 
-	charlie.sql.Save(&entity.Contact{ID: alice.b64pubkey, Sigchain: aliceSigChainBytes})
-	charlie.sql.Save(&entity.Device{ID: alice.b64pubkey, ContactID: alice.b64pubkey})
-	charlie.sql.Save(&entity.Device{ID: aliceDevice2.ID, ContactID: alice.b64pubkey})
+	charlie.sql(nil).Save(&entity.Contact{ID: alice.b64pubkey, Sigchain: aliceSigChainBytes})
+	charlie.sql(nil).Save(&entity.Device{ID: alice.b64pubkey, ContactID: alice.b64pubkey})
+	charlie.sql(nil).Save(&entity.Device{ID: aliceDevice2.ID, ContactID: alice.b64pubkey})
 
-	charlie.sql.Save(&entity.Contact{ID: bob.b64pubkey, Sigchain: bobSigChainBytes})
-	charlie.sql.Save(&entity.Device{ID: bob.b64pubkey, ContactID: bob.b64pubkey})
-	charlie.sql.Save(&entity.Device{ID: bobDevice2.ID, ContactID: bob.b64pubkey})
+	charlie.sql(nil).Save(&entity.Contact{ID: bob.b64pubkey, Sigchain: bobSigChainBytes})
+	charlie.sql(nil).Save(&entity.Device{ID: bob.b64pubkey, ContactID: bob.b64pubkey})
+	charlie.sql(nil).Save(&entity.Device{ID: bobDevice2.ID, ContactID: bob.b64pubkey})
 
-	bob.sql.Save(&entity.SenderAlias{Status: entity.SenderAlias_RECEIVED, OriginDeviceID: charlieDevice2.ID, AliasIdentifier: charlieAlias})
+	bob.sql(nil).Save(&entity.SenderAlias{Status: entity.SenderAlias_RECEIVED, OriginDeviceID: charlieDevice2.ID, AliasIdentifier: charlieAlias})
 
 	//
 	//
