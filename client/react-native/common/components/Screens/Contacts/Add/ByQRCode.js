@@ -5,7 +5,7 @@ import { colors } from '../../../../constants'
 import { Flex, Screen, Button } from '../../../Library'
 import { padding, paddingVertical, borderBottom } from '../../../../styles'
 import { RelayContext } from '../../../../relay'
-import QRGenerator from '../../../Library/QRGenerator/QRGenerator'
+import QRGenerator from '../../../Library/QRGenerator'
 import QRReader from '../../../Library/QRReader/QRReader'
 
 // TODO: get contact with status == 'myself' to get real id

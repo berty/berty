@@ -204,6 +204,7 @@ module.exports = {
     // for React Native Web.
     extensions: ['.mjs', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
+      'react-native-svg': 'react-native-svg-web',
       'react-dom/unstable-native-dependencies': path.resolve(
         paths.appPath,
         'config/unstable-native-dependencies'
