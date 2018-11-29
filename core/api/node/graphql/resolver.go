@@ -237,7 +237,7 @@ func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.
 func (r *mutationResolver) DebugRequeueEvent(ctx context.Context, eventID string) (*p2p.Event, error) {
 	eventID = strings.SplitN(eventID, ":", 2)[1]
 
-	return r.client.DebugRequeueEvent(ctx, &node.DebugEventRequeueInput{
+	return r.client.DebugRequeueEvent(ctx, &node.EventIDInput{
 		EventID: eventID,
 	})
 }
@@ -357,9 +357,17 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	return output, nil
 }
 
-func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string) (*p2p.Event, error) {
+func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string, seenAt *time.Time) (*p2p.Event, error) {
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
+	})
+}
+
+func (r *mutationResolver) EventSeen(ctx context.Context, eventID string) (*p2p.Event, error) {
+	eventID = strings.SplitN(eventID, ":", 2)[1]
+
+	return r.client.EventSeen(ctx, &node.EventIDInput{
+		EventID: eventID,
 	})
 }
 

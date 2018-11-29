@@ -57,7 +57,7 @@ func (x Kind) String() string {
 	return proto.EnumName(Kind_name, int32(x))
 }
 func (Kind) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_kind_be0b9faba4a262ab, []int{0}
+	return fileDescriptor_kind_bc5d691df8170c3a, []int{0}
 }
 
 type NodeStartedAttrs struct {
@@ -71,7 +71,7 @@ func (m *NodeStartedAttrs) Reset()         { *m = NodeStartedAttrs{} }
 func (m *NodeStartedAttrs) String() string { return proto.CompactTextString(m) }
 func (*NodeStartedAttrs) ProtoMessage()    {}
 func (*NodeStartedAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_be0b9faba4a262ab, []int{0}
+	return fileDescriptor_kind_bc5d691df8170c3a, []int{0}
 }
 func (m *NodeStartedAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -118,7 +118,7 @@ func (m *NodeStoppedAttrs) Reset()         { *m = NodeStoppedAttrs{} }
 func (m *NodeStoppedAttrs) String() string { return proto.CompactTextString(m) }
 func (*NodeStoppedAttrs) ProtoMessage()    {}
 func (*NodeStoppedAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_be0b9faba4a262ab, []int{1}
+	return fileDescriptor_kind_bc5d691df8170c3a, []int{1}
 }
 func (m *NodeStoppedAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -165,7 +165,7 @@ func (m *NodeIsAliveAttrs) Reset()         { *m = NodeIsAliveAttrs{} }
 func (m *NodeIsAliveAttrs) String() string { return proto.CompactTextString(m) }
 func (*NodeIsAliveAttrs) ProtoMessage()    {}
 func (*NodeIsAliveAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_be0b9faba4a262ab, []int{2}
+	return fileDescriptor_kind_bc5d691df8170c3a, []int{2}
 }
 func (m *NodeIsAliveAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -212,7 +212,7 @@ func (m *BackgroundErrorAttrs) Reset()         { *m = BackgroundErrorAttrs{} }
 func (m *BackgroundErrorAttrs) String() string { return proto.CompactTextString(m) }
 func (*BackgroundErrorAttrs) ProtoMessage()    {}
 func (*BackgroundErrorAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_be0b9faba4a262ab, []int{3}
+	return fileDescriptor_kind_bc5d691df8170c3a, []int{3}
 }
 func (m *BackgroundErrorAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -259,7 +259,7 @@ func (m *BackgroundWarnAttrs) Reset()         { *m = BackgroundWarnAttrs{} }
 func (m *BackgroundWarnAttrs) String() string { return proto.CompactTextString(m) }
 func (*BackgroundWarnAttrs) ProtoMessage()    {}
 func (*BackgroundWarnAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_be0b9faba4a262ab, []int{4}
+	return fileDescriptor_kind_bc5d691df8170c3a, []int{4}
 }
 func (m *BackgroundWarnAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -306,7 +306,7 @@ func (m *DebugAttrs) Reset()         { *m = DebugAttrs{} }
 func (m *DebugAttrs) String() string { return proto.CompactTextString(m) }
 func (*DebugAttrs) ProtoMessage()    {}
 func (*DebugAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_kind_be0b9faba4a262ab, []int{5}
+	return fileDescriptor_kind_bc5d691df8170c3a, []int{5}
 }
 func (m *DebugAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -531,6 +531,9 @@ func encodeVarintKind(dAtA []byte, offset int, v uint64) int {
 	return offset + 1
 }
 func (m *NodeStartedAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.T {
@@ -543,6 +546,9 @@ func (m *NodeStartedAttrs) Size() (n int) {
 }
 
 func (m *NodeStoppedAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.ErrMsg)
@@ -556,6 +562,9 @@ func (m *NodeStoppedAttrs) Size() (n int) {
 }
 
 func (m *NodeIsAliveAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	if m.T {
@@ -568,6 +577,9 @@ func (m *NodeIsAliveAttrs) Size() (n int) {
 }
 
 func (m *BackgroundErrorAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.ErrMsg)
@@ -581,6 +593,9 @@ func (m *BackgroundErrorAttrs) Size() (n int) {
 }
 
 func (m *BackgroundWarnAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.ErrMsg)
@@ -594,6 +609,9 @@ func (m *BackgroundWarnAttrs) Size() (n int) {
 }
 
 func (m *DebugAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
 	var l int
 	_ = l
 	l = len(m.Msg)
@@ -1186,9 +1204,9 @@ var (
 	ErrIntOverflowKind   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("api/node/kind.proto", fileDescriptor_kind_be0b9faba4a262ab) }
+func init() { proto.RegisterFile("api/node/kind.proto", fileDescriptor_kind_bc5d691df8170c3a) }
 
-var fileDescriptor_kind_be0b9faba4a262ab = []byte{
+var fileDescriptor_kind_bc5d691df8170c3a = []byte{
 	// 295 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x91, 0x41, 0x4a, 0xc3, 0x40,
 	0x18, 0x85, 0x3b, 0xb6, 0x4d, 0xed, 0x5f, 0xb1, 0xc3, 0xa4, 0x60, 0x71, 0x11, 0x4a, 0x57, 0x52,

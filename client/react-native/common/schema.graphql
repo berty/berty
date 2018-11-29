@@ -387,6 +387,7 @@ type BertyP2pEvent implements Node {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestamp
 }
   
   
@@ -502,6 +503,7 @@ input BertyP2pEventInput {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestampInput
 }
 type BertyP2pEventPayload {
     id: ID!
@@ -518,6 +520,7 @@ type BertyP2pEventPayload {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestamp
 }
 input BertyNodePaginationInput {
       orderBy: String!
@@ -661,6 +664,7 @@ type Query {
     kind: Enum
       attributes: [Byte!],
     conversationId: ID!
+    seenAt: GoogleProtobufTimestampInput
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput
@@ -729,6 +733,9 @@ type Query {
 }
   
 type Mutation {
+  EventSeen(
+    eventId: ID!
+  ): BertyP2pEventPayload
   ContactRequest(
     contact: BertyEntityContactInput
       introText: String!

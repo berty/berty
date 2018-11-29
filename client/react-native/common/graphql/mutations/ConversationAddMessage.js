@@ -16,6 +16,7 @@ const ConversationAddMessageMutation = graphql`
       createdAt
       updatedAt
       sentAt
+      seenAt
       receivedAt
       ackedAt
       direction

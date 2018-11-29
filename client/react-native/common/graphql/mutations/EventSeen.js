@@ -1,10 +1,11 @@
 import { graphql } from 'react-relay'
-
 import { commit } from '../../relay'
+import { merge } from '../../helpers'
+import { conversation } from '../../utils'
 
-const DebugRequeueEventMutation = graphql`
-  mutation DebugRequeueEventMutation($eventId: ID!) {
-    DebugRequeueEvent(eventId: $eventId) {
+const EventSeenMutation = graphql`
+  mutation EventSeenMutation($eventId: ID!) {
+    EventSeen(eventId: $eventId) {
       id
       senderId
       createdAt
@@ -27,8 +28,11 @@ const DebugRequeueEventMutation = graphql`
 export default context => (input, configs) =>
   commit(
     context.environment,
-    DebugRequeueEventMutation,
-    'DebugRequeueEvent',
-    input,
+    EventSeenMutation,
+    'EventSeen',
+    merge([
+      { conversation: conversation.default, message: { text: '' } },
+      input,
+    ]),
     configs
   )

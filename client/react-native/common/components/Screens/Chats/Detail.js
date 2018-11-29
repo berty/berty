@@ -10,55 +10,88 @@ import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
 import { parseEmbedded } from '../../../helpers/json'
 
-const Message = fragments.Event(props => {
-  const conversation = props.navigation.getParam('conversation')
-  const contactId = props.data.senderId
-  const isMyself =
-    conversation.members.find(m => m.contactId === contactId).contact.status ===
-    42
-  return (
-    <Flex.Rows
-      align={isMyself ? 'end' : 'start'}
-      style={{ marginHorizontal: 10, marginVertical: 10 }}
-    >
-      <Text
-        padding={{
-          vertical: 6,
-          horizontal: 10,
-        }}
-        multiline
-        left={!isMyself}
-        right={isMyself}
-        background={colors.blue}
-        color={colors.white}
-        rounded={14.5}
-        margin={{
-          bottom: 4,
-          [isMyself ? 'left' : 'right']: 42,
-        }}
+class Message extends React.PureComponent {
+  static contextType = RelayContext
+
+  async componentDidMount () {
+    const conversation = this.props.navigation.getParam('conversation')
+    const contactId = this.props.data.senderId
+    const isMyself =
+      conversation.members.find(m => m.contactId === contactId).contact.status ===
+      42
+
+    if (isMyself || this.props.data.seenAt !== null) {
+      return
+    }
+
+    await this.props.screenProps.context.mutations.eventSeen({ eventId: this.props.data.id })
+  }
+
+  async componentDidUpdate (prevProps) {
+    if (prevProps.data.id === this.props.data.id) {
+      return
+    }
+
+    await this.componentDidMount()
+  }
+
+  render () {
+    const conversation = this.props.navigation.getParam('conversation')
+    const contactId = this.props.data.senderId
+    const isMyself =
+      conversation.members.find(m => m.contactId === contactId).contact.status ===
+      42
+
+    const { data } = this.props
+
+    return (
+      <Flex.Rows
+        align={isMyself ? 'end' : 'start'}
+        style={{ marginHorizontal: 10, marginVertical: 10 }}
       >
-        {parseEmbedded(props.data.attributes).message.text}
-      </Text>
-      <Text
-        left={!isMyself}
-        right={isMyself}
-        tiny
-        color={colors.subtleGrey}
-        margin={{
-          top: 6,
-          bottom: 6,
-          [isMyself ? 'left' : 'right']: 42,
-        }}
-      >
-        {new Date(props.data.createdAt).toTimeString()}
-        {' '}
-        {isMyself
-          ? <Icon name={props.data.ackedAt ? 'check-circle' : 'circle'} />
-          : null}
-      </Text>
-    </Flex.Rows>
-  )
-})
+        <Text
+          padding={{
+            vertical: 6,
+            horizontal: 10,
+          }}
+          multiline
+          left={!isMyself}
+          right={isMyself}
+          background={colors.blue}
+          color={colors.white}
+          rounded={14.5}
+          margin={{
+            bottom: 4,
+            [isMyself ? 'left' : 'right']: 42,
+          }}
+        >
+          {parseEmbedded(data.attributes).message.text}
+        </Text>
+        <Text
+          left={!isMyself}
+          right={isMyself}
+          tiny
+          color={colors.subtleGrey}
+          margin={{
+            top: 6,
+            bottom: 6,
+            [isMyself ? 'left' : 'right']: 42,
+          }}
+        >
+          {new Date(data.createdAt).toTimeString()}
+          {' '}
+          {isMyself
+            ? <Icon name={data.ackedAt ? 'check-circle' : 'circle'} />
+            : null}
+          {' '}
+          <Icon name={data.seenAt ? 'eye' : 'eye-off'} /> {/* TODO: used for debugging, remove me */}
+        </Text>
+      </Flex.Rows>
+    )
+  }
+}
+
+const MessageContainer = fragments.Event(Message)
 
 class Input extends PureComponent {
   static contextType = RelayContext
@@ -189,7 +222,8 @@ export default class Detail extends PureComponent {
           subscriptions={[subscriptions.conversationNewMessage]}
           fragment={fragments.EventList}
           alias='EventList'
-          renderItem={props => <Message {...props} navigation={navigation} />}
+          renderItem={props => <MessageContainer {...props} navigation={navigation}
+            screenProps={this.props.screenProps} />}
           inverted
           style={{ paddingTop: 48 }}
         />

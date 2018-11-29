@@ -9,6 +9,7 @@ const EventStream = graphql`
       createdAt
       updatedAt
       sentAt
+      seenAt
       receivedAt
       ackedAt
       direction

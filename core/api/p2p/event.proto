@@ -57,6 +57,9 @@ message Event {
   // ConversationID needs to be set if the event belongs to a conversation.
   string conversation_id = 15 [(gql.graphql_id) = true, (gogoproto.customname) = "ConversationID"];
 
+  // SeenAt is set to the date when the event has been displayed on the user's screen
+  google.protobuf.Timestamp seen_at = 16 [(gogoproto.stdtime) = true];
+
   //
   // enums
   //
