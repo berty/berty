@@ -29,7 +29,7 @@ import static android.content.Context.BLUETOOTH_SERVICE;
 import static chat.berty.ble.BertyUtils.BLUETOOTH_ENABLE_REQUEST;
 
 public class Manager {
-    public static String TAG = "chat.berty.ble.Manager";
+    public static String TAG = "manager";
     private static Manager instance = null;
     public String ma;
     public String peerID;

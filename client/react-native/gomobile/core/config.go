@@ -20,6 +20,8 @@ var (
 
 // Default configs will be used to set default settings but not saved in state DB
 const (
+	defaultLoggerName = "client.rn.gomobile"
+
 	defaultBind     = "/ip4/0.0.0.0/tcp/0"
 	defaultBLEBind  = "/ble/00000000-0000-0000-0000-000000000000"
 	defaultMetrics  = true

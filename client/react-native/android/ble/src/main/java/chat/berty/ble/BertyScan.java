@@ -20,7 +20,7 @@ import static chat.berty.ble.BertyUtils.SERVICE_UUID;
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BertyScan extends ScanCallback {
-    private static final String TAG = "chat.berty.ble.BertyScan";
+    private static final String TAG = "scan";
 
     public Context mContext;
 

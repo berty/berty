@@ -30,7 +30,7 @@ import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyGatt extends BluetoothGattCallback {
-    private static final String TAG = "chat.berty.ble.BertyGatt";
+    private static final String TAG = "gatt_client";
     public BertyGatt() {
         super();
     }

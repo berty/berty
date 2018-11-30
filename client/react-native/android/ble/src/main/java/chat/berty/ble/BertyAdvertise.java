@@ -15,7 +15,7 @@ import static chat.berty.ble.BertyUtils.SERVICE_UUID;
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class BertyAdvertise extends AdvertiseCallback {
-    private static final String TAG = "chat.berty.ble.BertyAdvertise";
+    private static final String TAG = "advertise";
 
     public static AdvertiseData makeAdvertiseData() {
         ParcelUuid pUuid = new ParcelUuid(SERVICE_UUID);

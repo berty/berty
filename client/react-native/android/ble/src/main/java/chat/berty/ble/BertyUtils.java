@@ -20,6 +20,8 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 
+import core.Core;
+
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyUtils {
@@ -39,22 +41,10 @@ public class BertyUtils {
     final static BluetoothGattCharacteristic isRdyCharacteristic = new BluetoothGattCharacteristic(IS_READY_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static BluetoothGattCharacteristic closerCharacteristic = new BluetoothGattCharacteristic(CLOSER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static HashMap<String, BertyDevice> bertyDevices = new HashMap<>();
-    private static final String TAG = "chat.berty.ble.BertyUtils";
+    private static final String TAG = "utils";
 
     public static void logger(String level, String tag, String log) {
-        switch (level) {
-            case "debug":  Log.d(tag, log);
-                    break;
-            case "info":  Log.i(tag, log);
-                    break;
-            case "warn":  Log.w(tag, log);
-                    break;
-            case "error":  Log.e(tag, log);
-                    break;
-            default: Log.e(tag, "unknow level: <" + level + "> for log: <" + log + ">");
-                    break;
-        }
-//////        Core.goLogger(log, level, tag)
+        Core.goLogger(tag, level, log);
     }
 
     public static BluetoothGattService createService() {
