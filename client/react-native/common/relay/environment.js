@@ -1,10 +1,10 @@
+import { SubscriptionClient } from 'subscriptions-transport-ws'
 import {
   RelayNetworkLayer,
   urlMiddleware,
   perfMiddleware,
+  retryMiddleware,
 } from 'react-relay-network-modern/es'
-import { SubscriptionClient } from 'subscriptions-transport-ws'
-import { retryMiddleware } from 'react-relay-network-modern'
 
 import { Environment, RecordSource, Store } from 'relay-runtime'
 
