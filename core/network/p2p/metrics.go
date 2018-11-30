@@ -1,6 +1,7 @@
 package p2p
 
 import (
+	"context"
 	"fmt"
 	"sync"
 	"time"
@@ -12,10 +13,12 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	ma "github.com/multiformats/go-multiaddr"
+	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/network"
+	"berty.tech/core/pkg/tracing"
 )
 
 // Metrics is a network.Metrics
@@ -29,21 +32,31 @@ type Metrics struct {
 
 	bw     *bw.BandwidthCounter
 	driver *Driver
+
+	rootContext context.Context
 }
 
-func NewMetrics(d *Driver) network.Metrics {
+func NewMetrics(ctx context.Context, d *Driver) network.Metrics {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	m := &Metrics{
 		host:          d.host,
 		driver:        d,
 		peersHandlers: make([]func(*p2p.Peer, error) error, 0),
 		bw:            bw.NewBandwidthCounter(),
+		rootContext:   ctx,
 	}
 
 	m.host.Network().Notify(m)
 	return m
 }
 
-func (m *Metrics) Peers() *p2p.Peers {
+func (m *Metrics) Peers(ctx context.Context) *p2p.Peers {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	peers := m.peers()
 	pis := &p2p.Peers{
 		List: make([]*p2p.Peer, len(peers)),
@@ -67,8 +80,8 @@ func (m *Metrics) bandwidthToStats(b bw.Stats) *p2p.BandwidthStats {
 
 func (m *Metrics) MonitorPeers(handler func(*p2p.Peer, error) error) {
 	m.muHPeers.Lock()
+	defer m.muHPeers.Unlock()
 	m.peersHandlers = append(m.peersHandlers, handler)
-	m.muHPeers.Unlock()
 }
 
 func (m *Metrics) MonitorBandwidth(interval time.Duration, handler func(*p2p.BandwidthStats, error) error) {
@@ -112,7 +125,9 @@ func (m *Metrics) MonitorBandwidthProtocol(id string, interval time.Duration, ha
 func (m *Metrics) MonitorBandwidthPeer(id string, interval time.Duration, handler func(*p2p.BandwidthStats, error) error) {
 	peerid, err := peer.IDFromString(id)
 	if err != nil {
-		handler(nil, fmt.Errorf("monitor bandwidth peer: %s", err))
+		if err := handler(nil, fmt.Errorf("monitor bandwidth peer: %s", err)); err != nil {
+			logger().Error("failed to call handler", zap.Error(err))
+		}
 		return
 	}
 
@@ -134,7 +149,10 @@ func (m *Metrics) MonitorBandwidthPeer(id string, interval time.Duration, handle
 	}()
 }
 
-func (m *Metrics) handlePeer(id peer.ID) {
+func (m *Metrics) handlePeer(ctx context.Context, id peer.ID) {
+	span, _ := tracing.EnterFunc(ctx, id)
+	defer span.Finish()
+
 	pi := m.host.Peerstore().PeerInfo(id)
 	peer := m.peerInfoToPeer(pi)
 
@@ -189,9 +207,9 @@ func (m *Metrics) OpenedStream(net inet.Network, s inet.Stream) {}
 func (m *Metrics) ClosedStream(net inet.Network, s inet.Stream) {}
 
 func (m *Metrics) Connected(s inet.Network, c inet.Conn) {
-	go m.handlePeer(c.RemotePeer())
+	go m.handlePeer(m.rootContext, c.RemotePeer())
 }
 
 func (m *Metrics) Disconnected(s inet.Network, c inet.Conn) {
-	go m.handlePeer(c.RemotePeer())
+	go m.handlePeer(m.rootContext, c.RemotePeer())
 }

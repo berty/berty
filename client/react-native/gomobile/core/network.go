@@ -76,7 +76,7 @@ func GetNetworkConfig() string {
 func UpdateNetworkConfig(jsonConf string) error {
 	defer panicHandler()
 	waitDaemon(accountName)
-	currentAccount, _ := account.Get(accountName)
+	currentAccount, _ := account.Get(rootContext, accountName)
 
 	var newNetworkConfig networkConfig
 	if err := json.Unmarshal([]byte(jsonConf), &newNetworkConfig); err != nil {
@@ -88,7 +88,7 @@ func UpdateNetworkConfig(jsonConf string) error {
 	if err != nil {
 		return err
 	}
-	if err := currentAccount.UpdateP2PNetwork(netConf); err != nil {
+	if err := currentAccount.UpdateP2PNetwork(rootContext, netConf); err != nil {
 		return err
 	}
 

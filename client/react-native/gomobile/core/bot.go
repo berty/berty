@@ -8,7 +8,7 @@ import (
 func IsBotRunning() bool {
 	defer panicHandler()
 	waitDaemon(accountName)
-	currentAccount, _ := account.Get(accountName)
+	currentAccount, _ := account.Get(rootContext, accountName)
 
 	return currentAccount.BotRunning
 }
@@ -16,7 +16,7 @@ func IsBotRunning() bool {
 func StartBot() error {
 	defer panicHandler()
 	waitDaemon(accountName)
-	currentAccount, _ := account.Get(accountName)
+	currentAccount, _ := account.Get(rootContext, accountName)
 
 	if currentAccount.BotRunning {
 		return errors.New("bot is already started")
@@ -29,13 +29,13 @@ func StartBot() error {
 	// 	return errors.Wrap(err, "state DB save failed")
 	// }
 
-	return currentAccount.StartBot()
+	return currentAccount.StartBot(rootContext)
 }
 
 func StopBot() error {
 	defer panicHandler()
 	waitDaemon(accountName)
-	currentAccount, _ := account.Get(accountName)
+	currentAccount, _ := account.Get(rootContext, accountName)
 
 	if !currentAccount.BotRunning {
 		return errors.New("bot is already stopped")
@@ -48,5 +48,5 @@ func StopBot() error {
 	// 	return errors.Wrap(err, "state DB save failed")
 	// }
 
-	return currentAccount.StopBot()
+	return currentAccount.StopBot(rootContext)
 }

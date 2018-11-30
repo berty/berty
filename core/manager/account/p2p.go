@@ -7,8 +7,10 @@ import (
 
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p"
+	"berty.tech/core/pkg/tracing"
 	"github.com/jinzhu/gorm"
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 )
 
@@ -23,7 +25,11 @@ type P2PNetworkOptions struct {
 	Identity  string
 }
 
-func createP2PNetwork(opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, network.Metrics, error) {
+func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, network.Metrics, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	if opts == nil {
 		opts = &P2PNetworkOptions{}
 	}
@@ -88,14 +94,14 @@ func createP2PNetwork(opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, net
 		p2pOptions = append(p2pOptions, p2p.WithSwarmKey(opts.SwarmKey))
 	}
 
-	driver, err := p2p.NewDriver(context.Background(), p2pOptions...)
+	driver, err := p2p.NewDriver(ctx, p2pOptions...)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	var metrics network.Metrics
 	if opts.Metrics {
-		metrics = p2p.NewMetrics(driver)
+		metrics = p2p.NewMetrics(ctx, driver)
 	}
 
 	return driver, metrics, nil
@@ -103,9 +109,12 @@ func createP2PNetwork(opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, net
 
 func WithP2PNetwork(opts *P2PNetworkOptions) NewOption {
 	return func(a *Account) error {
+		span, ctx := tracing.EnterFunc(a.rootContext)
+		defer span.Finish()
+
 		var err error
 
-		a.network, a.metrics, err = createP2PNetwork(opts, a.db)
+		a.network, a.metrics, err = createP2PNetwork(ctx, opts, a.db)
 		if err != nil {
 			return err
 		}
@@ -114,20 +123,22 @@ func WithP2PNetwork(opts *P2PNetworkOptions) NewOption {
 	}
 }
 
-func (a *Account) UpdateP2PNetwork(opts *P2PNetworkOptions) error {
+func (a *Account) UpdateP2PNetwork(ctx context.Context, opts *P2PNetworkOptions) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	var err error
 
-	err = a.network.Close()
+	err = a.network.Close(ctx)
 	if err != nil {
 		return err
 	}
 
-	a.network, a.metrics, err = createP2PNetwork(opts, a.db)
+	a.network, a.metrics, err = createP2PNetwork(ctx, opts, a.db)
 	if err != nil {
 		return err
 	}
 
-	a.node.UseNetworkDriver(a.network)
-
-	return nil
+	return a.node.UseNetworkDriver(ctx, a.network)
 }

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"io"
 	"testing"
 	"time"
@@ -42,12 +43,12 @@ func TestNodeHelpers(t *testing.T) {
 	Convey("Testing Node", t, func() {
 		Convey("Testing Node.EventStream", FailureContinues, func(c C) {
 			t.Skip("see https://github.com/berty/berty/issues/252")
-			app, err := NewAppMock(&entity.Device{Name: "test phone"}, mock.NewEnqueuer())
+			app, err := NewAppMock(&entity.Device{Name: "test phone"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
 			defer app.Close()
 
-			So(app.node.EnqueueClientEvent(&p2p.Event{}), ShouldBeNil)
-			So(app.node.EnqueueClientEvent(&p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
 
 			// streamA accepts everything
 			queueA := make(chan eventStreamEntry, 100)
@@ -58,8 +59,8 @@ func TestNodeHelpers(t *testing.T) {
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 0)
 
-			So(app.node.EnqueueClientEvent(&p2p.Event{}), ShouldBeNil)
-			So(app.node.EnqueueClientEvent(&p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
 
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 2)
@@ -70,8 +71,8 @@ func TestNodeHelpers(t *testing.T) {
 			So(err, ShouldBeNil)
 			go streamToQueue(queueB, streamB, c)
 
-			So(app.node.EnqueueClientEvent(&p2p.Event{}), ShouldBeNil)
-			So(app.node.EnqueueClientEvent(&p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
 
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 4)
@@ -97,7 +98,7 @@ func TestNodeHelpers(t *testing.T) {
 			So(err, ShouldBeNil)
 			go streamToQueue(queueD, streamD, c)
 
-			So(app.node.EnqueueClientEvent(&p2p.Event{
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{
 				Kind:           p2p.Kind_Ack,
 				ConversationID: "bbbb",
 			}), ShouldBeNil)
@@ -107,7 +108,7 @@ func TestNodeHelpers(t *testing.T) {
 			So(len(queueC), ShouldEqual, 0)
 			So(len(queueD), ShouldEqual, 0)
 
-			So(app.node.EnqueueClientEvent(&p2p.Event{
+			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{
 				Kind:           p2p.Kind_Ping,
 				ConversationID: "abcde",
 			}), ShouldBeNil)
@@ -127,7 +128,7 @@ func TestNodeHelpers(t *testing.T) {
 			}
 
 			for i := 0; i < 50; i++ {
-				So(app.node.EnqueueClientEvent(&p2p.Event{
+				So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{
 					Kind:           p2p.Kind_Ping,
 					ConversationID: "bbbb",
 				}), ShouldBeNil)

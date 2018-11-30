@@ -50,15 +50,15 @@ func TestWithEnqueuer(t *testing.T) {
 		Convey("Initialize nodes", FailureHalts, func() {
 			shouldIContinue(t)
 
-			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, mock.NewEnqueuer())
+			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
 			So(alice.InitEventStream(), ShouldBeNil)
 
-			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, mock.NewEnqueuer())
+			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
 			So(bob.InitEventStream(), ShouldBeNil)
 
-			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, mock.NewEnqueuer())
+			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
 			So(eve.InitEventStream(), ShouldBeNil)
 
@@ -70,7 +70,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 			for i := 0; i < 100; i++ {
 				{
-					event := alice.node.NewContactEvent(&entity.Contact{ID: bob.node.DeviceID()}, p2p.Kind_DevtoolsMapset)
+					event := alice.node.NewContactEvent(alice.ctx, &entity.Contact{ID: bob.node.DeviceID()}, p2p.Kind_DevtoolsMapset)
 					So(event.SetAttrs(&p2p.DevtoolsMapsetAttrs{Key: "test", Val: fmt.Sprintf("%d", i)}), ShouldBeNil)
 					res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 					So(err, ShouldBeNil)
@@ -79,7 +79,7 @@ func TestWithEnqueuer(t *testing.T) {
 				{
 					So(bob.node.DevtoolsMapget("test"), ShouldEqual, fmt.Sprintf("%d", i))
 					envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
-					event, err := alice.node.OpenEnvelope(envelope)
+					event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 					So(err, ShouldBeIn, nil, errorcodes.ErrorUntrustedEnvelope)
 					So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 					//jsonPrintIndent(event)
@@ -211,7 +211,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
 				So(event.Author(), ShouldEqual, alice.node.UserID())
@@ -269,7 +269,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Author(), ShouldEqual, bob.node.UserID())
@@ -332,7 +332,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
@@ -375,7 +375,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
@@ -419,7 +419,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
@@ -444,7 +444,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
@@ -467,7 +467,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
@@ -490,7 +490,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
-				event, err := alice.node.OpenEnvelope(envelope)
+				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
@@ -728,7 +728,7 @@ func TestAliasesFlow(t *testing.T) {
 		Convey("Alice send initial aliases to Bob and sends an aliased message to Bob", FailureHalts, func() {
 			shouldIContinue(t)
 
-			alias, err := alice.node.GenerateAliasForContact(bob.node.UserID())
+			alias, err := alice.node.GenerateAliasForContact(alice.ctx, bob.node.UserID())
 			So(err, ShouldBeNil)
 
 			time.Sleep(timeBetweenSteps)
@@ -758,7 +758,7 @@ func TestAliasesFlow(t *testing.T) {
 			envelope = alice.networkDriver.(*mock.SimpleDriver).GetLastSentEnvelope()
 			So(envelope.Source, ShouldEqual, alias.AliasIdentifier)
 
-			err = alice.node.SenderAliasesRenew()
+			err = alice.node.SenderAliasesRenew(alice.ctx)
 
 			So(err, ShouldBeNil)
 
@@ -823,7 +823,7 @@ func setupP2PNetwork(bootstrap ...string) (*p2pnet.Driver, error) {
 		return nil, err
 	}
 	go func() {
-		if err := driver.Start(); err != nil {
+		if err := driver.Start(context.Background()); err != nil {
 			logger().Error("driver start error", zap.Error(err))
 		}
 	}()
@@ -835,7 +835,7 @@ func getBoostrap(d *p2pnet.Driver) []string {
 	bootstrap := make([]string, len(addrs))
 
 	for i, a := range addrs {
-		bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.ID().ID)
+		bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.ID(context.Background()).ID)
 	}
 
 	return bootstrap

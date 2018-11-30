@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"os"
@@ -38,12 +39,10 @@ type daemonOptions struct {
 	SwarmKeyPath   string   `mapstructure:"swarm-key"`
 
 	nickname string `mapstructure:"nickname"`
-	password string `mapstructure:"password"`
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.nickname, "nickname", "berty-daemon", "set account nickname")
-	flags.StringVar(&opts.password, "password", "secure", "set account password")
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
@@ -57,7 +56,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", p2p.DefaultBootstrap, "boostrap peers")
-	//	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default"}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
@@ -84,30 +83,29 @@ func newDaemonCommand() *cobra.Command {
 }
 
 func daemon(opts *daemonOptions) error {
+	ctx := context.Background()
 	var err error
 	a := &account.Account{}
 
 	defer a.PanicHandler()
 
 	accountOptions := account.Options{
+		account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
 		account.WithRing(ring),
 		account.WithName(opts.nickname),
-		account.WithPassphrase(opts.password),
+		account.WithPassphrase(opts.sql.key),
 		account.WithDatabase(&account.DatabaseOptions{
-			Path:       "/tmp",
-			Drop:       opts.dropDatabase,
-			JaegerAddr: jaegerAddr,
+			Path: "/tmp",
+			Drop: opts.dropDatabase,
 		}),
 		account.WithBanner(banner.Quote()),
 		account.WithGrpcServer(&account.GrpcServerOptions{
 			Bind:         opts.grpcBind,
 			Interceptors: true,
-			JaegerAddr:   jaegerAddr,
 		}),
 		account.WithGQL(&account.GQLOptions{
 			Bind:         opts.gqlBind,
 			Interceptors: true,
-			JaegerAddr:   jaegerAddr,
 		}),
 	}
 	if !opts.noP2P {
@@ -149,14 +147,14 @@ func daemon(opts *daemonOptions) error {
 	if opts.initOnly {
 		accountOptions = append(accountOptions, account.WithInitOnly())
 	}
-	a, err = account.New(accountOptions...)
+	a, err = account.New(ctx, accountOptions...)
 	if err != nil {
 		return err
 	}
 
-	defer a.Close()
+	defer a.Close(ctx)
 
-	err = a.Open()
+	err = a.Open(ctx)
 	if err != nil {
 		return err
 	}

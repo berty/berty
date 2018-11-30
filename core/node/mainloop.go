@@ -6,17 +6,23 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
+	"berty.tech/core/pkg/tracing"
 )
 
 // EventsRetry updates SentAt and requeue an event
-func (n *Node) EventRequeue(event *p2p.Event) error {
-	sql := n.sql(nil)
+func (n *Node) EventRequeue(ctx context.Context, event *p2p.Event) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
+	sql := n.sql(ctx)
 
 	now := time.Now()
 	event.SentAt = &now
@@ -29,9 +35,12 @@ func (n *Node) EventRequeue(event *p2p.Event) error {
 }
 
 // EventsRetry sends events which lack an AckedAt value emitted before the supplied time value
-func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
-	sql := n.sql(nil)
+func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*p2p.Event, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
 
+	sql := n.sql(ctx)
 	var retriedEvents []*p2p.Event
 	destinations, err := p2p.FindNonAcknowledgedEventDestinations(sql, before)
 
@@ -43,15 +52,13 @@ func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
 		events, err := p2p.FindNonAcknowledgedEventsForDestination(sql, destination)
 
 		if err != nil {
-			n.LogBackgroundError(errors.Wrap(err, "error while retrieving events for dst"))
+			n.LogBackgroundError(ctx, errors.Wrap(err, "error while retrieving events for dst"))
 			continue
 		}
 
 		for _, event := range events {
-			err := n.EventRequeue(event)
-
-			if err != nil {
-				n.LogBackgroundError(errors.Wrap(err, "error while enqueuing event"))
+			if err := n.EventRequeue(ctx, event); err != nil {
+				n.LogBackgroundError(ctx, errors.Wrap(err, "error while enqueuing event"))
 				continue
 			}
 			retriedEvents = append(retriedEvents, event)
@@ -61,35 +68,41 @@ func (n *Node) EventsRetry(before time.Time) ([]*p2p.Event, error) {
 	return retriedEvents, nil
 }
 
+func (n *Node) cron(ctx context.Context) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+	for true {
+		before := time.Now().Add(-time.Second * 60 * 10)
+		if _, err := n.EventsRetry(ctx, before); err != nil {
+			n.LogBackgroundError(ctx, err)
+		}
+
+		time.Sleep(time.Second * 60)
+	}
+}
+
 // Start is the node's mainloop
-func (n *Node) Start(withCron, withNodeEvents bool) error {
-	ctx := context.Background()
+func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
 
 	if withCron {
-		go func() {
-			for true {
-				before := time.Now().Add(-time.Second * 60 * 10)
-				_, err := n.EventsRetry(before)
-				if err != nil {
-					n.LogBackgroundError(err)
-				}
-
-				time.Sleep(time.Second * 60)
-			}
-		}()
+		go n.cron(ctx)
 	}
 
 	if withNodeEvents {
 		// "node started" event
 		go func() {
 			time.Sleep(time.Second)
-			n.EnqueueNodeEvent(node.Kind_NodeStarted, nil)
+			n.EnqueueNodeEvent(ctx, node.Kind_NodeStarted, nil)
 		}()
 
 		// "node is alive" event
 		go func() {
 			for {
-				n.EnqueueNodeEvent(node.Kind_NodeIsAlive, nil)
+				n.EnqueueNodeEvent(ctx, node.Kind_NodeIsAlive, nil)
 				time.Sleep(30 * time.Second)
 			}
 		}()
@@ -102,7 +115,7 @@ func (n *Node) Start(withCron, withNodeEvents bool) error {
 			envelope := p2p.Envelope{}
 			eventBytes, err := proto.Marshal(event)
 			if err != nil {
-				n.LogBackgroundError(errors.Wrap(err, "failed to marshal outgoing event"))
+				n.LogBackgroundError(ctx, errors.Wrap(err, "failed to marshal outgoing event"))
 				continue
 			}
 
@@ -110,21 +123,21 @@ func (n *Node) Start(withCron, withNodeEvents bool) error {
 
 			switch {
 			case event.ReceiverID != "": // ContactEvent
-				envelope.Source = n.aliasEnvelopeForContact(&envelope, event)
+				envelope.Source = n.aliasEnvelopeForContact(ctx, &envelope, event)
 				envelope.ChannelID = event.ReceiverID
 				envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
 
 			case event.ConversationID != "": //ConversationEvent
-				envelope.Source = n.aliasEnvelopeForConversation(&envelope, event)
+				envelope.Source = n.aliasEnvelopeForConversation(ctx, &envelope, event)
 				envelope.ChannelID = event.ConversationID
 				envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
 
 			default:
-				n.LogBackgroundError(fmt.Errorf("unhandled event type"))
+				n.LogBackgroundError(ctx, fmt.Errorf("unhandled event type"))
 			}
 
 			if envelope.Signature, err = keypair.Sign(n.crypto, &envelope); err != nil {
-				n.LogBackgroundError(errors.Wrap(err, "failed to sign envelope"))
+				n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
 				continue
 			}
 
@@ -135,7 +148,7 @@ func (n *Node) Start(withCron, withNodeEvents bool) error {
 			go func() {
 				// FIXME: make something smarter, i.e., grouping events by contact or network driver
 				if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
-					n.LogBackgroundError(errors.Wrap(err, "failed to emit envelope on network"))
+					n.LogBackgroundError(ctx, errors.Wrap(err, "failed to emit envelope on network"))
 				}
 				done <- true
 			}()

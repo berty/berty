@@ -8,9 +8,9 @@ import (
 	"go.uber.org/zap"
 )
 
-func InitTracer(address, service string) (opentracing.Tracer, io.Closer, error) {
+func InitTracer(address, name string) (opentracing.Tracer, io.Closer, error) {
 	cfg := &config.Configuration{
-		ServiceName: service,
+		ServiceName: name,
 		Sampler: &config.SamplerConfig{
 			Type:  "const",
 			Param: 1,
@@ -21,14 +21,20 @@ func InitTracer(address, service string) (opentracing.Tracer, io.Closer, error) 
 		},
 	}
 
+	logger := zap.L().Named("vendor.jaeger")
 	tracer, closer, err := cfg.NewTracer(
-		config.Logger(&jaegerLogger{logger: zap.L().Named("vendor.jaeger")}),
+		config.Logger(&jaegerLogger{logger: logger}),
 	)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	opentracing.SetGlobalTracer(tracer)
+
+	logger.Debug("jaeger tracer started",
+		zap.String("addr", address),
+		zap.String("name", name),
+	)
 
 	return tracer, closer, nil
 }

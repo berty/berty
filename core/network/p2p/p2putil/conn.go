@@ -24,7 +24,7 @@ func (pa *ProtocolAddr) Network() string {
 }
 
 func (pa *ProtocolAddr) String() string {
-	return string(pa.Address)
+	return pa.Address
 }
 
 // conn must implement net.conn

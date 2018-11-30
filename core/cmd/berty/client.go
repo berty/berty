@@ -74,7 +74,7 @@ func clientServerStream(opts *clientOptions) error {
 	}
 
 	if jaegerAddr != "" {
-		tracer, closer, err := jaeger.InitTracer(jaegerAddr, "berty-client")
+		tracer, closer, err := jaeger.InitTracer(jaegerAddr, jaegerName+":client")
 		if err != nil {
 			return err
 		}
@@ -145,7 +145,7 @@ func clientUnary(opts *clientOptions) error {
 	}
 
 	if jaegerAddr != "" {
-		tracer, closer, err := jaeger.InitTracer(jaegerAddr, "berty-client")
+		tracer, closer, err := jaeger.InitTracer(jaegerAddr, jaegerName+":client")
 		if err != nil {
 			return err
 		}

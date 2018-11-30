@@ -1,6 +1,7 @@
 package account
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net"
@@ -19,18 +20,23 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
+	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
 	"github.com/jinzhu/gorm"
 	reuse "github.com/libp2p/go-reuseport"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
 // Info is used in berty.node.DeviceInfos
-func Info() map[string]string {
+func Info(ctx context.Context) map[string]string {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	if len(list) < 1 {
 		return map[string]string{"accounts": "none!"}
 	}
@@ -73,8 +79,10 @@ type Account struct {
 	withBot    bool
 	BotRunning bool
 
-	serverTracerCloser io.Closer
-	dialTracerCloser   io.Closer
+	tracer        opentracing.Tracer
+	tracingCloser io.Closer
+	rootContext   context.Context
+	rootSpan      opentracing.Span
 
 	errChan chan error
 
@@ -86,9 +94,14 @@ var list []*Account
 type NewOption func(*Account) error
 type Options []NewOption
 
-func New(opts ...NewOption) (*Account, error) {
+func New(ctx context.Context, opts ...NewOption) (*Account, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+
 	a := &Account{
-		errChan: make(chan error, 1),
+		errChan:     make(chan error, 1),
+		rootSpan:    span,
+		rootContext: ctx,
 	}
 
 	for _, opt := range opts {
@@ -105,7 +118,10 @@ func New(opts ...NewOption) (*Account, error) {
 	return a, nil
 }
 
-func Get(name string) (*Account, error) {
+func Get(ctx context.Context, name string) (*Account, error) {
+	span, _ := tracing.EnterFunc(ctx, name)
+	defer span.Finish()
+
 	for _, account := range list {
 		if account != nil && account.Name == name {
 			return account, nil
@@ -114,7 +130,10 @@ func Get(name string) (*Account, error) {
 	return nil, errors.New("account with name " + name + " isn't opened")
 }
 
-func List(datastorePath string) ([]string, error) {
+func List(ctx context.Context, datastorePath string) ([]string, error) {
+	span, _ := tracing.EnterFunc(ctx, datastorePath)
+	defer span.Finish()
+
 	var names []string
 
 	err := filepath.Walk(datastorePath, func(path string, info os.FileInfo, err error) error {
@@ -136,17 +155,25 @@ func List(datastorePath string) ([]string, error) {
 	return names, nil
 }
 
-func Delete(a *Account) {
-	ForEach(func(i int, current *Account) {
+func Delete(ctx context.Context, a *Account) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, a)
+	defer span.Finish()
+
+	ForEach(ctx, func(ctx context.Context, i int, current *Account) {
 		if a == current {
 			list = append(list[:i], list[i+1:]...)
 		}
 	})
 }
 
-func ForEach(callback func(int, *Account)) {
+func ForEach(ctx context.Context, callback func(context.Context, int, *Account)) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	for index, account := range list {
-		callback(index, account)
+		callback(ctx, index, account)
 	}
 }
 
@@ -167,9 +194,13 @@ func (a *Account) Validate() error {
 	return nil
 }
 
-func (a *Account) Open() error {
-	if err := a.initNode(); err != nil {
-		a.Close()
+func (a *Account) Open(ctx context.Context) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
+	if err := a.initNode(ctx); err != nil {
+		a.Close(ctx)
 		return err
 	}
 	if a.initOnly {
@@ -177,24 +208,24 @@ func (a *Account) Open() error {
 	}
 
 	// start
-	if err := a.startNetwork(); err != nil {
-		a.Close()
+	if err := a.startNetwork(ctx); err != nil {
+		a.Close(ctx)
 		return err
 	}
-	if err := a.startGrpcServer(); err != nil {
-		a.Close()
+	if err := a.startGrpcServer(ctx); err != nil {
+		a.Close(ctx)
 		return err
 	}
-	if err := a.startGQL(); err != nil {
-		a.Close()
+	if err := a.startGQL(ctx); err != nil {
+		a.Close(ctx)
 		return err
 	}
-	if err := a.startNode(); err != nil {
-		a.Close()
+	if err := a.startNode(ctx); err != nil {
+		a.Close(ctx)
 		return err
 	}
 	if a.withBot {
-		if err := a.StartBot(); err != nil {
+		if err := a.StartBot(ctx); err != nil {
 			return err
 		}
 	}
@@ -218,21 +249,22 @@ func (a *Account) Open() error {
 	return nil
 }
 
-func (a *Account) Close() {
+func (a *Account) Close(ctx context.Context) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	if a.node != nil {
 		_ = a.node.Close()
 	}
 	if a.network != nil {
-		_ = a.network.Close()
+		_ = a.network.Close(ctx)
 	}
 	if a.db != nil {
 		_ = a.db.Close()
 	}
-	if a.serverTracerCloser != nil {
-		_ = a.serverTracerCloser.Close()
-	}
-	if a.dialTracerCloser != nil {
-		_ = a.dialTracerCloser.Close()
+	if a.tracingCloser != nil {
+		_ = a.tracingCloser.Close()
 	}
 	if a.ioGrpc != nil {
 		_ = a.ioGrpc.Listener().Close()
@@ -241,7 +273,7 @@ func (a *Account) Close() {
 		a.grpcListener.Close()
 	}
 	if a.BotRunning {
-		_ = a.StopBot()
+		_ = a.StopBot(ctx)
 	}
 	if a.ring != nil {
 		a.ring.Close()
@@ -253,7 +285,11 @@ func (a *Account) dbPath() string {
 	return a.dbDir + "/berty." + a.Name + ".db"
 }
 
-func (a *Account) openDatabase() error {
+func (a *Account) openDatabase(ctx context.Context) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	var err error
 	a.db, err = sqlcipher.Open(a.dbPath(), []byte(a.Passphrase))
 	if err != nil {
@@ -264,7 +300,7 @@ func (a *Account) openDatabase() error {
 		return errors.Wrap(err, "failed to initialize sql")
 	}
 	if a.dbDrop {
-		if err = a.DropDatabase(); err != nil {
+		if err = a.DropDatabase(ctx); err != nil {
 			return errors.Wrap(err, "failed to drop database")
 		}
 	}
@@ -274,28 +310,39 @@ func (a *Account) openDatabase() error {
 	return nil
 }
 
-func (a *Account) DropDatabase() error {
+func (a *Account) DropDatabase(ctx context.Context) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	var err error
 
 	if err = sql.DropDatabase(a.db); err != nil {
 		return errors.Wrap(err, "failed to drop database")
 	}
-	return a.openDatabase()
+	return a.openDatabase(ctx)
 }
 
-func (a *Account) startNetwork() error {
+func (a *Account) startNetwork(ctx context.Context) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	if a.network == nil {
 		return nil
 	}
 
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.network.Start()
+		a.errChan <- a.network.Start(ctx)
 	}()
 	return nil
 }
 
-func (a *Account) startGrpcServer() error {
+func (a *Account) startGrpcServer(ctx context.Context) error {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	var err error
 
 	addr, err := net.ResolveTCPAddr("tcp", a.GrpcBind)
@@ -321,7 +368,11 @@ func (a *Account) startGrpcServer() error {
 	return nil
 }
 
-func (a *Account) StartBot() error {
+func (a *Account) StartBot(ctx context.Context) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	options := append(
 		[]bot.Option{
 			bot.WithTCPDaemon(a.GrpcBind),
@@ -329,7 +380,7 @@ func (a *Account) StartBot() error {
 		},
 		bot.GenericOptions()...,
 	)
-	b, err := bot.New(options...)
+	b, err := bot.New(ctx, options...)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize bot")
 	}
@@ -348,13 +399,19 @@ func (a *Account) StartBot() error {
 	return nil
 }
 
-func (a *Account) StopBot() error {
+func (a *Account) StopBot(ctx context.Context) error {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	// TODO: implement bot closing function
 	// Then set a.BotRunning = false
 	return errors.New("stop bot not implemented yet")
 }
 
-func (a *Account) startGQL() error {
+func (a *Account) startGQL(ctx context.Context) error {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	var err error
 
 	if a.gqlHandler == nil {
@@ -392,11 +449,15 @@ func (a *Account) startGQL() error {
 	return nil
 }
 
-func (a *Account) initNode() error {
+func (a *Account) initNode(ctx context.Context) error {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	var err error
 
 	// initialize node
 	a.node, err = node.New(
+		a.rootContext,
 		node.WithP2PGrpcServer(a.GrpcServer),
 		node.WithNodeGrpcServer(a.GrpcServer),
 		node.WithSQL(a.db),
@@ -414,13 +475,14 @@ func (a *Account) initNode() error {
 	return nil
 }
 
-func (a *Account) startNode() error {
+func (a *Account) startNode(ctx context.Context) error {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
 
 	// start node
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.node.Start(true, true)
-
+		a.errChan <- a.node.Start(a.rootContext, true, true)
 	}()
 
 	// show banner
@@ -466,6 +528,9 @@ func (a *Account) ErrChan() chan error {
 }
 
 func (a *Account) PanicHandler() {
+	span, _ := tracing.EnterFunc(a.rootContext)
+	defer span.Finish()
+
 	r := recover()
 	if r != nil {
 		err := errors.New(fmt.Sprintf("%+v", r))

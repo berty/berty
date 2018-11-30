@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"berty.tech/core/pkg/tracing"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
 )
@@ -46,7 +47,9 @@ func OpenStateDB(path string, initialState StateDB) (*StateDB, error) {
 	if state.StartCounter == 0 {
 		state = initialState
 		state.gorm = db
-		state.Save()
+		if err := state.Save(); err != nil {
+			return nil, err
+		}
 	} else {
 		state.gorm = db
 	}
@@ -74,11 +77,12 @@ func (state *StateDB) Close() {
 func gormCreateSubSpan(scope *gorm.Scope, operationName string) {
 	if span, ok := scope.Get("rootSpan"); ok {
 		rootSpan := span.(opentracing.Span)
-		operationName = fmt.Sprintf("db-%s", operationName)
+		operationName = fmt.Sprintf("gorm::%s", operationName)
 		subSpan := rootSpan.Tracer().StartSpan(
 			operationName,
 			opentracing.ChildOf(rootSpan.Context()),
 		)
+		subSpan.SetTag("component", "gorm")
 		scope.Set("subSpan", subSpan)
 	}
 }
@@ -93,6 +97,9 @@ func gormFinishSubSpan(scope *gorm.Scope) {
 
 func WithDatabase(opts *DatabaseOptions) NewOption {
 	return func(a *Account) error {
+		span, ctx := tracing.EnterFunc(a.rootContext, opts)
+		defer span.Finish()
+
 		if opts == nil {
 			opts = &DatabaseOptions{}
 		}
@@ -103,11 +110,11 @@ func WithDatabase(opts *DatabaseOptions) NewOption {
 		}
 
 		a.dbDrop = opts.Drop
-		if err := a.openDatabase(); err != nil {
+		if err := a.openDatabase(ctx); err != nil {
 			return err
 		}
 
-		if opts.JaegerAddr != "" {
+		if a.tracer != nil {
 			// create
 			a.db.Callback().Create().Before("gorm:before_create").Register("jaeger:before_create", func(scope *gorm.Scope) { gormCreateSubSpan(scope, fmt.Sprintln("insert", scope.TableName())) })
 			a.db.Callback().Create().Before("gorm:after_create").Register("jaeger:after_create", func(scope *gorm.Scope) { gormFinishSubSpan(scope) })

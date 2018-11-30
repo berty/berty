@@ -10,6 +10,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/core/crypto/keypair"
+	"berty.tech/core/pkg/tracing"
 )
 
 // WithCrypto set the underlying crypto (keypair.Interface) object inside Node
@@ -21,6 +22,9 @@ func WithCrypto(cryptoImpl keypair.Interface) NewNodeOption {
 
 func WithSoftwareCrypto() NewNodeOption {
 	return func(n *Node) {
+		span, ctx := tracing.EnterFunc(n.rootContext)
+		defer span.Finish()
+
 		var privBytes []byte
 
 		if bytes.Compare(n.config.CryptoParams, []byte{}) == 0 {
@@ -38,9 +42,9 @@ func WithSoftwareCrypto() NewNodeOption {
 			}
 
 			n.config.CryptoParams = privBytes
-			if err = n.sql(nil).Save(n.config).Error; err != nil {
+			if err = n.sql(ctx).Save(n.config).Error; err != nil {
 				err := errors.Wrap(err, "failed to save RSA key")
-				n.LogBackgroundError(errors.Wrap(err, "node.WithSoftwareCrypto"))
+				n.LogBackgroundError(ctx, errors.Wrap(err, "node.WithSoftwareCrypto"))
 				return
 
 			}

@@ -67,7 +67,7 @@ func GetLocalGRPCInfos() string {
 func StartLocalGRPC() error {
 	defer panicHandler()
 	waitDaemon(accountName)
-	currentAccount, _ := account.Get(accountName)
+	currentAccount, _ := account.Get(rootContext, accountName)
 
 	if localListener != nil {
 		return errors.New("local gRPC is already running")

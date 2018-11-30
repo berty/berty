@@ -1,6 +1,7 @@
 package node
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"sync"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	uuid "github.com/satori/go.uuid"
 
@@ -16,6 +18,7 @@ import (
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 )
 
@@ -28,15 +31,17 @@ type Node struct {
 	sqlDriver               *gorm.DB
 	config                  *entity.Config
 	initDevice              *entity.Device
-	handleMutex             sync.Mutex
+	handleMutexInst         sync.Mutex
 	networkDriver           network.Driver
 	networkMetrics          network.Metrics
-	asyncWaitGroup          sync.WaitGroup
+	asyncWaitGroupInst      sync.WaitGroup
 	pubkey                  []byte // FIXME: use a crypto instance, i.e., enclave
 	b64pubkey               string // FIXME: same as above
 	sigchain                *sigchain.SigChain
 	crypto                  keypair.Interface
 	ring                    *zapring.Ring // log ring buffer
+	rootSpan                opentracing.Span
+	rootContext             context.Context // only used for tracing
 
 	// devtools
 	createdAt time.Time // used for uptime calculation
@@ -46,12 +51,17 @@ type Node struct {
 }
 
 // New initializes a new Node object
-func New(opts ...NewNodeOption) (*Node, error) {
+func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+
 	n := &Node{
 		// FIXME: fetch myself from db
 		outgoingEvents: make(chan *p2p.Event, 100),
 		clientEvents:   make(chan *p2p.Event, 100),
 		createdAt:      time.Now().UTC(),
+		rootSpan:       span,
+		rootContext:    ctx,
 	}
 
 	// apply optioners
@@ -83,7 +93,7 @@ func New(opts ...NewNodeOption) (*Node, error) {
 
 	// configure network
 	if n.networkDriver != nil {
-		if err := n.UseNetworkDriver(n.networkDriver); err != nil {
+		if err := n.UseNetworkDriver(n.rootContext, n.networkDriver); err != nil {
 			return nil, errors.Wrap(err, "failed to setup network driver")
 		}
 	}
@@ -95,6 +105,7 @@ func New(opts ...NewNodeOption) (*Node, error) {
 //
 // it should be called in a defer from the caller of New()
 func (n *Node) Close() error {
+	n.rootSpan.Finish()
 	return nil
 }
 
@@ -137,4 +148,20 @@ func (n *Node) UserID() string {
 
 func (n *Node) PubKey() string {
 	return n.b64pubkey
+}
+
+func (n *Node) handleMutex(ctx context.Context) func() {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
+	n.handleMutexInst.Lock()
+	return n.handleMutexInst.Unlock
+}
+
+func (n *Node) asyncWaitGroup(ctx context.Context) func() {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
+	n.asyncWaitGroupInst.Add(1)
+	return n.asyncWaitGroupInst.Done
 }

@@ -2,21 +2,20 @@ package node
 
 import (
 	"context"
-
-	"berty.tech/core/entity"
-	"berty.tech/core/errorcodes"
-
-	"github.com/gogo/protobuf/proto"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
-
+	"crypto/x509"
 	"encoding/base64"
 
-	"crypto/x509"
+	"github.com/gogo/protobuf/proto"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
+	"berty.tech/core/entity"
+	"berty.tech/core/errorcodes"
+	"berty.tech/core/pkg/tracing"
 )
 
 // WithP2PGrpcServer registers the Node as a 'berty.p2p' protobuf server implementation
@@ -27,11 +26,20 @@ func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 }
 
 func (n *Node) ID(ctx context.Context, _ *node.Void) (*p2p.Peer, error) {
-	return n.networkDriver.ID(), nil
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
+	return n.networkDriver.ID(ctx), nil
 }
 
 func (n *Node) Protocols(ctx context.Context, p *p2p.Peer) (*node.ProtocolsOutput, error) {
-	pids, err := n.networkDriver.Protocols(p)
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, p)
+	defer span.Finish()
+	defer n.asyncWaitGroup(ctx)()
+
+	pids, err := n.networkDriver.Protocols(ctx, p)
 	if err != nil {
 		return nil, err
 	}
@@ -42,20 +50,28 @@ func (n *Node) Protocols(ctx context.Context, p *p2p.Peer) (*node.ProtocolsOutpu
 }
 
 func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {
-	n.asyncWaitGroup.Add(1)
-	defer n.asyncWaitGroup.Done()
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+	defer n.asyncWaitGroup(ctx)()
+
 	return &p2p.Void{}, n.handleEnvelope(ctx, input)
 }
 
 func (n *Node) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
+	span, _ := tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	return &p2p.Void{}, nil
 }
 
 func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
-	n.asyncWaitGroup.Add(1)
-	defer n.asyncWaitGroup.Done()
-	event, err := n.OpenEnvelope(input)
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+	defer n.asyncWaitGroup(ctx)()
 
+	event, err := n.OpenEnvelope(ctx, input)
 	if err == errorcodes.ErrorUntrustedEnvelope {
 		// ignored error
 	} else if err != nil {
@@ -65,12 +81,14 @@ func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
 	return n.handleEvent(ctx, event)
 }
 
-func (n *Node) OpenEnvelope(envelope *p2p.Envelope) (*p2p.Event, error) {
-	n.asyncWaitGroup.Add(1)
-	defer n.asyncWaitGroup.Done()
+func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.Event, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, envelope)
+	defer span.Finish()
+	defer n.asyncWaitGroup(ctx)()
 
 	trusted := false
-	sql := n.sql(nil)
+	sql := n.sql(ctx)
 	device, err := envelope.GetDeviceForEnvelope(sql)
 
 	if err == errorcodes.ErrorNoDeviceFoundForEnvelope {

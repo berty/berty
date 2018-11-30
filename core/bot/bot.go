@@ -8,16 +8,24 @@ import (
 
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/node"
+	"berty.tech/core/pkg/tracing"
+	opentracing "github.com/opentracing/opentracing-go"
 )
 
 type Bot struct {
-	client   *client.Client
-	handlers []Handler
+	client      *client.Client
+	handlers    []Handler
+	rootContext context.Context
 }
 
-func New(opts ...Option) (*Bot, error) {
+func New(ctx context.Context, opts ...Option) (*Bot, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	bot := Bot{
-		handlers: make([]Handler, 0),
+		handlers:    make([]Handler, 0),
+		rootContext: ctx,
 	}
 
 	for _, opt := range opts {
@@ -34,8 +42,10 @@ func New(opts ...Option) (*Bot, error) {
 }
 
 func (b *Bot) Start() error {
-	ctx := context.Background()
-	stream, err := b.client.Node().EventStream(ctx, &node.EventStreamInput{})
+	span, _ := tracing.EnterFunc(b.rootContext)
+	defer span.Finish()
+
+	stream, err := b.client.Node().EventStream(b.rootContext, &node.EventStreamInput{})
 	if err != nil {
 		return err
 	}
