@@ -1,4 +1,5 @@
 import EventStream from './EventStream'
+import { queries } from '..'
 
 export default context => ({
   ...EventStream(context),
@@ -6,9 +7,13 @@ export default context => ({
     EventStream(context).subscribe({
       updater:
         updater &&
-        ((store, data) => {
+        (async (store, data) => {
           if (data.EventStream.kind === 302) {
-            return updater(store, data.EventStream)
+            const conversation = await queries(context).Conversation.fetch({
+              id: data.EventStream.conversationId,
+            })
+            console.log('ConversationNewMessage: conversation:', conversation)
+            return updater(store, conversation)
           }
         }),
     }),

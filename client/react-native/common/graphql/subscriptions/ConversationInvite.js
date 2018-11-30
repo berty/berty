@@ -1,7 +1,8 @@
 import { btoa } from 'b64-lite'
 
-import EventStream from './EventStream'
 import { parseEmbedded } from '../../helpers/json'
+import { queries } from '..'
+import EventStream from './EventStream'
 
 export default context => ({
   ...EventStream(context),
@@ -9,13 +10,18 @@ export default context => ({
     EventStream(context).subscribe({
       updater:
         updater &&
-        ((store, data) => {
+        (async (store, data) => {
           if (data.EventStream.kind === 301) {
             const attributes = parseEmbedded(data.EventStream.attributes)
             attributes.conversation.id = btoa(
               'conversation:' + attributes.conversation.id
             )
-            return updater && updater(store, attributes.conversation)
+            const conversation = await queries(context).Conversation.fetch({
+              id: attributes.conversation.id,
+            })
+
+            console.log('ConversationInvite: conversation: ', conversation)
+            return updater && updater(store, conversation)
           }
         }),
     }),

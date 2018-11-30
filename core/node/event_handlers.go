@@ -138,7 +138,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	}
 
 	// say that conversation has not been read
-	n.sql.Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
+	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
 	return nil
 }

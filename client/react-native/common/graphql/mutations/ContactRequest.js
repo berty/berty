@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
 
-import { commit, genericUpdater } from '../../relay'
+import { commit } from '../../relay'
 import { contact } from '../../utils'
 
 const ContactRequestMutation = graphql`
@@ -42,11 +42,9 @@ export default context => (input, configs) =>
     },
     {
       updater: (store, data) =>
-        genericUpdater(context.fragments.ContactList, 'ContactList', {
-          ...context.queries.ContactList.defaultVariables,
-          count: undefined,
-          cursor: undefined,
-        })(store, data.ContactRequest),
+        context.updaters.contactList.forEach(updater =>
+          updater(store, data.ContactRequest)
+        ),
       ...configs,
     }
   )

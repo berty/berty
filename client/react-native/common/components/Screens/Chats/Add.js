@@ -151,19 +151,21 @@ export default class ListScreen extends Component {
           variables={queries.ContactList.defaultVariables}
           fragment={fragments.ContactList}
           alias='ContactList'
-          renderItem={props => (
-            <Item
-              {...props}
-              onPress={() => {
-                console.log(props)
-                const index = contactsID.lastIndexOf(props.data.id)
-                index < 0
-                  ? contactsID.push(props.data.id)
-                  : contactsID.splice(index, 1)
-                this.setState({ contactsID })
-              }}
-            />
-          )}
+          renderItem={props =>
+            props.data.status !== 42 ? (
+              <Item
+                {...props}
+                onPress={() => {
+                  console.log(props)
+                  const index = contactsID.lastIndexOf(props.data.id)
+                  index < 0
+                    ? contactsID.push(props.data.id)
+                    : contactsID.splice(index, 1)
+                  this.setState({ contactsID })
+                }}
+              />
+            ) : null
+          }
         />
       </Screen>
     )

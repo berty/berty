@@ -53,15 +53,12 @@ export default context => (input, configs) =>
     ConversationCreateMutation,
     'ConversationCreate',
     input,
-    // {
-    //   updater: (store, data) => {
-    //     updaters.conversationList.forEach(updater =>
-    //       updater(store)
-    //         .add('ConversationEdge', data.ConversationCreate.id)
-    //         .after()
-    //     )
-    //   },
-    //   ...configs,
-    // }
-    configs
+    {
+      updater: (store, data) =>
+        console.log(data) ||
+        context.updaters.conversationList.forEach(updater =>
+          updater(store, data.ConversationCreate)
+        ),
+      ...configs,
+    }
   )

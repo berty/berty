@@ -102,21 +102,21 @@ func (n *Node) EventSeen(ctx context.Context, input *gql.Node) (*p2p.Event, erro
 func (n *Node) ConversationRead(ctx context.Context, input *gql.Node) (*entity.Conversation, error) {
 	// get conversation
 	conversation := &entity.Conversation{ID: input.ID}
-	if err := n.sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+	if err := n.sql(ctx).Model(conversation).Where(conversation).First(conversation).Error; err != nil {
 		return nil, err
 	}
 
 	// check if last message has been read
 	event := &p2p.Event{ConversationID: conversation.ID}
 	count := 0
-	n.sql.Model(event).Where(event).Order("created_at").Count(&count).Last(event)
+	n.sql(ctx).Model(event).Where(event).Order("created_at").Count(&count).Last(event)
 	if count > 0 && event.SeenAt == nil {
 		return conversation, nil
 	}
 
 	// set conversation as read
 	conversation.ReadAt = time.Now().UTC()
-	if err := n.sql.Save(conversation).Error; err != nil {
+	if err := n.sql(ctx).Save(conversation).Error; err != nil {
 		return nil, errors.Wrap(err, "cannot update conversation")
 	}
 
@@ -124,7 +124,7 @@ func (n *Node) ConversationRead(ctx context.Context, input *gql.Node) (*entity.C
 }
 
 // GetEvent implements berty.node.GetEvent
-func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
+func (n *Node) GetEvent(ctx context.Context, input *gql.Node) (*p2p.Event, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -330,7 +330,7 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 }
 
 // GetContact implements berty.node.GetContact
-func (n *Node) GetContact(ctx context.Context, input *entity.Contact) (*entity.Contact, error) {
+func (n *Node) GetContact(ctx context.Context, input *gql.Node) (*entity.Contact, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -510,7 +510,7 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 }
 
 // GetConversation implements berty.node.GetConversation
-func (n *Node) GetConversation(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+func (n *Node) GetConversation(ctx context.Context, input *gql.Node) (*entity.Conversation, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -526,7 +526,7 @@ func (n *Node) GetConversation(ctx context.Context, input *entity.Conversation) 
 }
 
 // GetConversationMember implements berty.node.GetConversationMember
-func (n *Node) GetConversationMember(ctx context.Context, input *entity.ConversationMember) (*entity.ConversationMember, error) {
+func (n *Node) GetConversationMember(ctx context.Context, input *gql.Node) (*entity.ConversationMember, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()

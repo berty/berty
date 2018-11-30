@@ -34,7 +34,7 @@ const Item = fragments.Conversation(({ data, navigation }) => {
           {isRead
             ? 'No new message'
             : isInvite
-              ? 'You have been invited'
+              ? 'New conversation'
               : 'You have a new message'}
         </Text>
       </Flex.Rows>

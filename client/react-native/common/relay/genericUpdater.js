@@ -47,7 +47,8 @@ export default (fragment, alias, args) => {
       ConnectionHandler.deleteNode(connection, data.id)
       return
     }
-
+    console.log(args)
+    // get all edges
     const edges = connection.getLinkedRecords('edges')
     const field = Case.camel(args.orderBy || args.sortBy || 'id')
     const cursor =

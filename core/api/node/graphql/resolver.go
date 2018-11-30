@@ -8,9 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"go.uber.org/zap"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/api/node/graphql/models"
@@ -19,6 +16,8 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"go.uber.org/zap"
 )
 
 type Resolver struct {
@@ -36,20 +35,11 @@ func (r *Resolver) GqlNode() generated.GqlNodeResolver {
 func (r *Resolver) BertyEntityContact() generated.BertyEntityContactResolver {
 	return &bertyEntityContactResolver{r}
 }
-func (r *Resolver) BertyEntityContactPayload() generated.BertyEntityContactPayloadResolver {
-	return &bertyEntityContactResolver{r}
-}
 func (r *Resolver) BertyEntityConversation() generated.BertyEntityConversationResolver {
 	return &bertyEntityConversationResolver{r}
 }
 func (r *Resolver) BertyEntityConversationMember() generated.BertyEntityConversationMemberResolver {
 	return &bertyEntityConversationMemberResolver{r}
-}
-func (r *Resolver) BertyEntityConversationMemberPayload() generated.BertyEntityConversationMemberPayloadResolver {
-	return &bertyEntityConversationMemberResolver{r}
-}
-func (r *Resolver) BertyEntityConversationPayload() generated.BertyEntityConversationPayloadResolver {
-	return &bertyEntityConversationResolver{r}
 }
 func (r *Resolver) BertyEntityDevice() generated.BertyEntityDeviceResolver {
 	return &bertyEntityDeviceResolver{r}
@@ -61,12 +51,6 @@ func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
 // func (r *Resolver) BertyP2pPeer() generated.BertyP2pPeerResolver {
 // 	return &bertyP2pPeerResolver{r}
 // }
-// func (r *Resolver) BertyP2pPeerPayload() generated.BertyP2pPeerPayloadResolver {
-// 	return &bertyP2pPeerResolver{r}
-// }
-func (r *Resolver) BertyP2pEventPayload() generated.BertyP2pEventPayloadResolver {
-	return &bertyP2pEventResolver{r}
-}
 func (r *Resolver) GoogleProtobufFieldDescriptorProto() generated.GoogleProtobufFieldDescriptorProtoResolver {
 	return &googleProtobufFieldDescriptorProtoResolver{r}
 }
@@ -93,7 +77,7 @@ func (r *Resolver) Subscription() generated.SubscriptionResolver {
 type gqlNodeResolver struct{ *Resolver }
 
 func (r *gqlNodeResolver) ID(ctx context.Context, obj *gql.Node) (string, error) {
-	// TODO: find the id in db to define the table
+	// TODO: update entity id in db to have unique IDs in whole database
 	return "unknown:" + obj.ID, nil
 }
 
@@ -264,13 +248,13 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	gID := strings.SplitN(id, ":", 2)
 	switch gID[0] {
 	case "contact":
-		return r.client.GetContact(ctx, &entity.Contact{ID: id})
+		return r.GetContact(ctx, id)
 	case "conversation":
-		return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
+		return r.GetConversation(ctx, id)
 	case "conversation_member":
-		return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
+		return r.GetConversationMember(ctx, id)
 	case "event":
-		return r.client.GetEvent(ctx, &p2p.Event{ID: id})
+		return r.GetEvent(ctx, id)
 	default:
 		logger().Warn("unknown node type", zap.String("node_type", gID[0]))
 		return nil, nil
@@ -390,8 +374,8 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	return output, nil
 }
 
-func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string, seenAt *time.Time, metadata []*p2p.MetadataKeyValue) (*p2p.Event, error) {
-	return r.client.GetEvent(ctx, &p2p.Event{
+func (r *queryResolver) GetEvent(ctx context.Context, id string) (*p2p.Event, error) {
+	return r.client.GetEvent(ctx, &gql.Node{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
@@ -472,8 +456,8 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
-	return r.client.GetContact(ctx, &entity.Contact{ID: id})
+func (r *queryResolver) GetContact(ctx context.Context, id string) (*entity.Contact, error) {
+	return r.client.GetContact(ctx, &gql.Node{ID: strings.SplitN(id, ":", 2)[1]})
 }
 func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {
 	if filter != nil && filter.ID != "" {
@@ -551,11 +535,11 @@ func (r *mutationResolver) ConversationRead(ctx context.Context, id string) (*en
 	})
 }
 
-func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
-	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
+func (r *queryResolver) GetConversation(ctx context.Context, id string) (*entity.Conversation, error) {
+	return r.client.GetConversation(ctx, &gql.Node{ID: strings.SplitN(id, ":", 2)[1]})
 }
-func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
-	return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
+func (r *queryResolver) GetConversationMember(ctx context.Context, id string) (*entity.ConversationMember, error) {
+	return r.client.GetConversationMember(ctx, &gql.Node{ID: strings.SplitN(id, ":", 2)[1]})
 }
 func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error) {
 	return r.client.DeviceInfos(ctx, &node.Void{T: true})
