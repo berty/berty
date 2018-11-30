@@ -6,6 +6,7 @@ import (
 	"Java/chat/berty/ble/Manager"
 
 	"berty.tech/core/network/ble"
+	"go.uber.org/zap"
 )
 
 func initBleFunc() {
@@ -49,4 +50,21 @@ func RealAcceptSender(peerID string, bleUUID string, incPeerID string) {
 func AddToPeerStore(peerID string, rAddr string) {
 	defer panicHandler()
 	ble.AddToPeerStore(peerID, rAddr)
+}
+
+func GoLogger(tag string, level string, log string) {
+	loggerBLE := zap.L().Named(defaultLoggerName + ".ble." + tag)
+
+	switch level {
+	case "debug":
+		loggerBLE.Debug(log)
+	case "info":
+		loggerBLE.Info(log)
+	case "warn":
+		loggerBLE.Warn(log)
+	case "error":
+		loggerBLE.Error(log)
+	default:
+		loggerBLE.Error("unknown level: <" + level + "> for log: <" + log + ">")
+	}
 }

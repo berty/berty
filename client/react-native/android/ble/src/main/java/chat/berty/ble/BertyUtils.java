@@ -20,6 +20,8 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_READ;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 
+import core.Core;
+
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyUtils {
@@ -39,10 +41,14 @@ public class BertyUtils {
     final static BluetoothGattCharacteristic isRdyCharacteristic = new BluetoothGattCharacteristic(IS_READY_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static BluetoothGattCharacteristic closerCharacteristic = new BluetoothGattCharacteristic(CLOSER_UUID, PROPERTY_WRITE, PERMISSION_WRITE);
     final static HashMap<String, BertyDevice> bertyDevices = new HashMap<>();
-    private static final String TAG = "chat.berty.ble.BertyUtils";
+    private static final String TAG = "utils";
+
+    public static void logger(String level, String tag, String log) {
+        Core.goLogger(tag, level, log);
+    }
 
     public static BluetoothGattService createService() {
-        Log.e(TAG, "createService()");
+        logger("debug", TAG, "createService() called");
 
             if (!mService.addCharacteristic(acceptCharacteristic) ||
                     !mService.addCharacteristic(maCharacteristic) ||
@@ -50,7 +56,7 @@ public class BertyUtils {
             !mService.addCharacteristic(writerCharacteristic) ||
             !mService.addCharacteristic(isRdyCharacteristic) ||
             !mService.addCharacteristic(closerCharacteristic)) {
-                Log.e(TAG, "Error adding characteristic");
+                logger("error", TAG, "characteristic adding failed");
             }
 
             return mService;

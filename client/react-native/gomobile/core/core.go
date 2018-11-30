@@ -21,7 +21,7 @@ var (
 )
 
 func logger() *zap.Logger {
-	return zap.L().Named("client.rn.gomobile")
+	return zap.L().Named(defaultLoggerName)
 }
 
 func panicHandler() {
