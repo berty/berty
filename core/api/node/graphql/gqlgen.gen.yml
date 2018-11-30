@@ -1173,6 +1173,7 @@ models:
       conversationId:
         resolver: true
       seenAt:
+      metadata:
   BertyP2pEventInput:
     model: berty.tech/core/api/p2p.Event
     fields:
@@ -1194,6 +1195,7 @@ models:
       conversationId:
         resolver: true
       seenAt:
+      metadata:
   BertyP2pEventPayload:
     model: berty.tech/core/api/p2p.Event
     fields:
@@ -1215,6 +1217,23 @@ models:
       conversationId:
         resolver: true
       seenAt:
+      metadata:
+
+  BertyP2pMetadataKeyValue:
+    model: berty.tech/core/api/p2p.MetadataKeyValue
+    fields:
+      key:
+      values:
+  BertyP2pMetadataKeyValueInput:
+    model: berty.tech/core/api/p2p.MetadataKeyValue
+    fields:
+      key:
+      values:
+  BertyP2pMetadataKeyValuePayload:
+    model: berty.tech/core/api/p2p.MetadataKeyValue
+    fields:
+      key:
+      values:
 
 
   BertyP2pBandwidthStats:

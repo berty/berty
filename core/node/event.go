@@ -36,6 +36,7 @@ func (n *Node) HandleEvent(ctx context.Context, input *p2p.Event) (*node.Void, e
 func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
+
 	defer span.Finish()
 	defer n.asyncWaitGroup(ctx)()
 	n.handleMutex(ctx)()

@@ -89,7 +89,7 @@ func WithBootstrap(addrs ...string) Option {
 }
 
 // WithJaeger configure boostrap connection
-func WithJaeger(jaeger *grpc_ot.Option) Option {
+func WithJaeger(jaeger ...grpc_ot.Option) Option {
 	return func(dc *driverConfig) error {
 		dc.jaeger = jaeger
 		return nil

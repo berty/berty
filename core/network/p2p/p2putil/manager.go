@@ -6,9 +6,11 @@ import (
 	"net"
 	"sync"
 
+	"berty.tech/core/pkg/tracing"
 	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	protocol "github.com/libp2p/go-libp2p-protocol"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -44,6 +46,10 @@ func newClient(m *Manager, target string) *client {
 }
 
 func (c *client) GetClient(ctx context.Context) (*grpc.ClientConn, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx)
+	defer span.Finish()
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -71,6 +77,10 @@ func (c *client) Close() (err error) {
 }
 
 func (m *Manager) GetConn(ctx context.Context, target string) (*grpc.ClientConn, error) {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, target)
+	defer span.Finish()
+
 	m.mu.Lock()
 	var c *client
 

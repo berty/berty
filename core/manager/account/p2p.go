@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/tracing"
+	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/jinzhu/gorm"
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -74,6 +75,7 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 		// @TODO: Allow static identity loaded from a file (useful for relay
 		// server for creating static endpoint for bootstrap)
 		// p2p.WithIdentity(<key>),
+		p2p.WithJaeger(grpc_ot.WithTracer(span.Tracer())),
 		p2p.WithNATPortMap(), // @TODO: Is this a pb on mobile?
 		p2p.WithListenAddrStrings(opts.Bind...),
 		p2p.WithBootstrap(opts.Bootstrap...),
