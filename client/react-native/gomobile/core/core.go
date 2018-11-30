@@ -205,6 +205,7 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 	}
 
 	accountOptions := account.Options{
+		account.WithJaegerAddrName("jaeger.berty.io:6831", nickname+":mobile"),
 		account.WithRing(ring),
 		account.WithName(nickname),
 		account.WithPassphrase("secure"),
