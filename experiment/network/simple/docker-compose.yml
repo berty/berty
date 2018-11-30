@@ -38,7 +38,11 @@ services:
     networks:
       - tools
       - berty
-    command: daemon --bootstrap="" --log-level=debug --jaeger-address=tracer-service:6831
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        USER=relay_$${HOSTNAME} berty daemon --bootstrap="" --log-level=debug --jaeger-address=tracer-service:6831
 
   node:
     build: ../../..
@@ -64,7 +68,7 @@ services:
         BOOTSTRAP="$${RELAY_HOST}/ipfs/$${RELAY_ID}"
 
         # daemon start
-        berty daemon --log-level=debug --log-namespaces='*' --jaeger-address=tracer-service:6831 --mdns=false --bootstrap="$${BOOTSTRAP}"
+        USER=node_$${HOSTNAME} berty daemon --log-level=debug --log-namespaces='*' --jaeger-address=tracer-service:6831 --mdns=false --bootstrap="$${BOOTSTRAP}"
 
 networks:
   tools:
