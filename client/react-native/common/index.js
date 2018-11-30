@@ -12,6 +12,5 @@ if (Platform.OS === 'web') {
   ReactDOM.render(<App />, document.getElementById('root'))
   import('./registerServiceWorker').then()
 } else {
-  global.Buffer = global.Buffer || require('buffer').Buffer
   AppRegistry.registerComponent('root', () => App)
 }
