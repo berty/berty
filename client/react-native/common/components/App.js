@@ -1,8 +1,8 @@
 import { Linking, Platform } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
-import { URL, URLSearchParams } from 'whatwg-url'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
+import { parse as parseUrl } from '../helpers/url'
 
 import { Loader } from './Library'
 import Accounts from './Screens/Accounts'
@@ -40,8 +40,7 @@ export default class App extends PureComponent {
   }
 
   handleOpenURL (event) {
-    let url = new URL(event.url.replace('berty://', 'https://berty.tech/'))
-    let params = new URLSearchParams(url.hash.replace('#', ''))
+    let url = parseUrl(event.url.replace('berty://', 'https://berty.tech/'))
 
     switch (url.pathname) {
       case '/add-contact':
@@ -49,8 +48,8 @@ export default class App extends PureComponent {
           deepLink: {
             routeName: 'modal/contacts/add/by-public-key',
             params: {
-              initialKey: params.get('public-key'),
-              initialName: params.get('display-name'),
+              initialKey: url.hashParts['public-key'] || '',
+              initialName: url.hashParts['display-name'] || '',
             },
           },
         })
