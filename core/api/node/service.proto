@@ -37,12 +37,12 @@ service Service {
     option (gql.graphql_output) = ".berty.node.EventListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc GetEvent (berty.p2p.Event) returns (berty.p2p.Event) {
+  rpc GetEvent (gql.Node) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Query";
   };
   rpc EventSeen (EventIDInput) returns (p2p.Event) {
     option (gql.graphql_type) = "Mutation";
-  };
+  }
 
   //
   // Contacts
@@ -64,7 +64,7 @@ service Service {
     option (gql.graphql_output) = ".berty.node.ContactListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc GetContact (berty.entity.Contact) returns (berty.entity.Contact) {
+  rpc GetContact (gql.Node) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -88,10 +88,10 @@ service Service {
   rpc ConversationAddMessage (ConversationAddMessageInput) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc GetConversation (berty.entity.Conversation) returns (berty.entity.Conversation) {
+  rpc GetConversation (gql.Node) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Query";
   };
-  rpc GetConversationMember (berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
+  rpc GetConversationMember (gql.Node) returns (berty.entity.ConversationMember) {
     option (gql.graphql_type) = "Query";
   };
 

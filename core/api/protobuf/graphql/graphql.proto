@@ -3,6 +3,7 @@ syntax = "proto3";
 package gql;
 
 import "google/protobuf/descriptor.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "berty.tech/core/api/protobuf/graphql";
 
@@ -19,4 +20,8 @@ extend google.protobuf.FieldOptions {
   bool graphql_spread = 53006;
   bool graphql_nullable = 53008;
   bool graphql_non_nullable = 53009;
+}
+
+message Node {
+  string id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "ID"];
 }

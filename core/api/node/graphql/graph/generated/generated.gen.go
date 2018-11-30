@@ -13,6 +13,7 @@ import (
 	node "berty.tech/core/api/node"
 	models "berty.tech/core/api/node/graphql/models"
 	p2p "berty.tech/core/api/p2p"
+	graphql1 "berty.tech/core/api/protobuf/graphql"
 	entity "berty.tech/core/entity"
 	deviceinfo "berty.tech/core/pkg/deviceinfo"
 	graphql "github.com/99designs/gqlgen/graphql"
@@ -51,6 +52,7 @@ type ResolverRoot interface {
 	GoogleProtobufFieldOptions() GoogleProtobufFieldOptionsResolver
 	GoogleProtobufFileOptions() GoogleProtobufFileOptionsResolver
 	GoogleProtobufMethodOptions() GoogleProtobufMethodOptionsResolver
+	GqlNode() GqlNodeResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
 	Subscription() SubscriptionResolver
@@ -606,6 +608,10 @@ type ComplexityRoot struct {
 		IsExtension func(childComplexity int) int
 	}
 
+	GqlNode struct {
+		Id func(childComplexity int) int
+	}
+
 	Mutation struct {
 		EventSeen              func(childComplexity int, eventId string) int
 		ContactRequest         func(childComplexity int, contact *entity.Contact, introText string) int
@@ -626,12 +632,12 @@ type ComplexityRoot struct {
 		Node                  func(childComplexity int, id string) int
 		Id                    func(childComplexity int, T bool) int
 		EventList             func(childComplexity int, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetEvent              func(childComplexity int, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string, seenAt *time.Time) int
+		GetEvent              func(childComplexity int, id string) int
 		ContactList           func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetContact            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		GetContact            func(childComplexity int, id string) int
 		ConversationList      func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetConversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
-		GetConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+		GetConversation       func(childComplexity int, id string) int
+		GetConversationMember func(childComplexity int, id string) int
 		DeviceInfos           func(childComplexity int, T bool) int
 		AppVersion            func(childComplexity int, T bool) int
 		Peers                 func(childComplexity int, T bool) int
@@ -698,6 +704,9 @@ type GoogleProtobufFileOptionsResolver interface {
 type GoogleProtobufMethodOptionsResolver interface {
 	IdempotencyLevel(ctx context.Context, obj *descriptor.MethodOptions) (*int32, error)
 }
+type GqlNodeResolver interface {
+	ID(ctx context.Context, obj *graphql1.Node) (string, error)
+}
 type MutationResolver interface {
 	EventSeen(ctx context.Context, eventId string) (*p2p.Event, error)
 	ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error)
@@ -717,12 +726,12 @@ type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
 	ID(ctx context.Context, T bool) (*p2p.Peer, error)
 	EventList(ctx context.Context, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
-	GetEvent(ctx context.Context, id string, senderId string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderApiVersion uint32, receiverApiVersion uint32, receiverId string, kind *int32, attributes []byte, conversationId string, seenAt *time.Time) (*p2p.Event, error)
+	GetEvent(ctx context.Context, id string) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
-	GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
+	GetContact(ctx context.Context, id string) (*entity.Contact, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
-	GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
-	GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
+	GetConversation(ctx context.Context, id string) (*entity.Conversation, error)
+	GetConversationMember(ctx context.Context, id string) (*entity.ConversationMember, error)
 	DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
 	Peers(ctx context.Context, T bool) (*p2p.Peers, error)
@@ -1570,183 +1579,6 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 		}
 	}
 	args["id"] = arg0
-	var arg1 string
-	if tmp, ok := rawArgs["senderId"]; ok {
-		var err error
-		arg1, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["senderId"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["createdAt"] = arg2
-	var arg3 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["updatedAt"] = arg3
-	var arg4 *time.Time
-	if tmp, ok := rawArgs["sentAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["sentAt"] = arg4
-	var arg5 *time.Time
-	if tmp, ok := rawArgs["receivedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg5 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["receivedAt"] = arg5
-	var arg6 *time.Time
-	if tmp, ok := rawArgs["ackedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg6 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["ackedAt"] = arg6
-	var arg7 *int32
-	if tmp, ok := rawArgs["direction"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg7 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["direction"] = arg7
-	var arg8 uint32
-	if tmp, ok := rawArgs["senderApiVersion"]; ok {
-		var err error
-		arg8, err = models.UnmarshalUint32(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["senderApiVersion"] = arg8
-	var arg9 uint32
-	if tmp, ok := rawArgs["receiverApiVersion"]; ok {
-		var err error
-		arg9, err = models.UnmarshalUint32(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["receiverApiVersion"] = arg9
-	var arg10 string
-	if tmp, ok := rawArgs["receiverId"]; ok {
-		var err error
-		arg10, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["receiverId"] = arg10
-	var arg11 *int32
-	if tmp, ok := rawArgs["kind"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg11 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["kind"] = arg11
-	var arg12 []byte
-	if tmp, ok := rawArgs["attributes"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg12 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg12[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["attributes"] = arg12
-	var arg13 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
-		var err error
-		arg13, err = models.UnmarshalID(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["conversationId"] = arg13
-	var arg14 *time.Time
-	if tmp, ok := rawArgs["seenAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg14 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["seenAt"] = arg14
 	return args, nil
 
 }
@@ -1856,128 +1688,6 @@ func field_Query_GetContact_args(rawArgs map[string]interface{}) (map[string]int
 		}
 	}
 	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 []byte
-	if tmp, ok := rawArgs["sigchain"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg3 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["sigchain"] = arg3
-	var arg4 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["status"] = arg4
-	var arg5 []*entity.Device
-	if tmp, ok := rawArgs["devices"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg5 = make([]*entity.Device, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.Device
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg5[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["devices"] = arg5
-	var arg6 string
-	if tmp, ok := rawArgs["displayName"]; ok {
-		var err error
-		arg6, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["displayName"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
-		var err error
-		arg7, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["displayStatus"] = arg7
-	var arg8 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
-		var err error
-		arg8, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayName"] = arg8
-	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg9, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayStatus"] = arg9
 	return args, nil
 
 }
@@ -2087,76 +1797,6 @@ func field_Query_GetConversation_args(rawArgs map[string]interface{}) (map[strin
 		}
 	}
 	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 string
-	if tmp, ok := rawArgs["title"]; ok {
-		var err error
-		arg3, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["title"] = arg3
-	var arg4 string
-	if tmp, ok := rawArgs["topic"]; ok {
-		var err error
-		arg4, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["topic"] = arg4
-	var arg5 []*entity.ConversationMember
-	if tmp, ok := rawArgs["members"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg5 = make([]*entity.ConversationMember, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.ConversationMember
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
-				arg5[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["members"] = arg5
 	return args, nil
 
 }
@@ -2172,80 +1812,6 @@ func field_Query_GetConversationMember_args(rawArgs map[string]interface{}) (map
 		}
 	}
 	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg3 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["status"] = arg3
-	var arg4 *entity.Contact
-	if tmp, ok := rawArgs["contact"]; ok {
-		var err error
-		var ptr1 entity.Contact
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["contact"] = arg4
-	var arg5 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
-		var err error
-		arg5, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["conversationId"] = arg5
-	var arg6 string
-	if tmp, ok := rawArgs["contactId"]; ok {
-		var err error
-		arg6, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["contactId"] = arg6
 	return args, nil
 
 }
@@ -4684,6 +4250,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.GoogleProtobufUninterpretedOptionNamePart.IsExtension(childComplexity), true
 
+	case "GqlNode.id":
+		if e.complexity.GqlNode.Id == nil {
+			break
+		}
+
+		return e.complexity.GqlNode.Id(childComplexity), true
+
 	case "Mutation.EventSeen":
 		if e.complexity.Mutation.EventSeen == nil {
 			break
@@ -4886,7 +4459,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string), args["seenAt"].(*time.Time)), true
+		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string)), true
 
 	case "Query.ContactList":
 		if e.complexity.Query.ContactList == nil {
@@ -4910,7 +4483,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetContact(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+		return e.complexity.Query.GetContact(childComplexity, args["id"].(string)), true
 
 	case "Query.ConversationList":
 		if e.complexity.Query.ConversationList == nil {
@@ -4934,7 +4507,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetConversation(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember)), true
+		return e.complexity.Query.GetConversation(childComplexity, args["id"].(string)), true
 
 	case "Query.GetConversationMember":
 		if e.complexity.Query.GetConversationMember == nil {
@@ -4946,7 +4519,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
+		return e.complexity.Query.GetConversationMember(childComplexity, args["id"].(string)), true
 
 	case "Query.DeviceInfos":
 		if e.complexity.Query.DeviceInfos == nil {
@@ -5161,6 +4734,9 @@ func (ec *executionContext) _BertyEntityContact(ctx context.Context, sel ast.Sel
 			out.Values[i] = ec._BertyEntityContact_updatedAt(ctx, field, obj)
 		case "sigchain":
 			out.Values[i] = ec._BertyEntityContact_sigchain(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "status":
 			out.Values[i] = ec._BertyEntityContact_status(ctx, field, obj)
 		case "devices":
@@ -5272,6 +4848,9 @@ func (ec *executionContext) _BertyEntityContact_sigchain(ctx context.Context, fi
 		return obj.Sigchain, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
@@ -5487,6 +5066,9 @@ func (ec *executionContext) _BertyEntityContactPayload(ctx context.Context, sel 
 			out.Values[i] = ec._BertyEntityContactPayload_updatedAt(ctx, field, obj)
 		case "sigchain":
 			out.Values[i] = ec._BertyEntityContactPayload_sigchain(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "status":
 			out.Values[i] = ec._BertyEntityContactPayload_status(ctx, field, obj)
 		case "devices":
@@ -5598,6 +5180,9 @@ func (ec *executionContext) _BertyEntityContactPayload_sigchain(ctx context.Cont
 		return obj.Sigchain, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
@@ -8240,6 +7825,9 @@ func (ec *executionContext) _BertyNodeNodeEvent(ctx context.Context, sel ast.Sel
 			out.Values[i] = ec._BertyNodeNodeEvent_kind(ctx, field, obj)
 		case "attributes":
 			out.Values[i] = ec._BertyNodeNodeEvent_attributes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8284,6 +7872,9 @@ func (ec *executionContext) _BertyNodeNodeEvent_attributes(ctx context.Context, 
 		return obj.Attributes, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
@@ -9890,6 +9481,9 @@ func (ec *executionContext) _BertyP2pEvent(ctx context.Context, sel ast.Selectio
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
 				out.Values[i] = ec._BertyP2pEvent_attributes(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
 				wg.Done()
 			}(i, field)
 		case "conversationId":
@@ -10194,6 +9788,9 @@ func (ec *executionContext) _BertyP2pEvent_attributes(ctx context.Context, field
 		return ec.resolvers.BertyP2pEvent().Attributes(rctx, obj)
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
@@ -10319,6 +9916,9 @@ func (ec *executionContext) _BertyP2pEventPayload(ctx context.Context, sel ast.S
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
 				out.Values[i] = ec._BertyP2pEventPayload_attributes(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
 				wg.Done()
 			}(i, field)
 		case "conversationId":
@@ -10623,6 +10223,9 @@ func (ec *executionContext) _BertyP2pEventPayload_attributes(ctx context.Context
 		return ec.resolvers.BertyP2pEventPayload().Attributes(rctx, obj)
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
@@ -10707,6 +10310,9 @@ func (ec *executionContext) _BertyP2pNodeAttrs(ctx context.Context, sel ast.Sele
 			}
 		case "attributes":
 			out.Values[i] = ec._BertyP2pNodeAttrs_attributes(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10754,6 +10360,9 @@ func (ec *executionContext) _BertyP2pNodeAttrs_attributes(ctx context.Context, f
 		return obj.Attributes, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
@@ -16756,6 +16365,9 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption(ctx context.Conte
 			}
 		case "stringValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_stringValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "aggregateValue":
 			out.Values[i] = ec._GoogleProtobufUninterpretedOption_aggregateValue(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -16962,6 +16574,9 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOption_stringValue(ctx c
 		return obj.StringValue, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]byte)
@@ -17101,6 +16716,64 @@ func (ec *executionContext) _GoogleProtobufUninterpretedOptionNamePart_isExtensi
 		return graphql.Null
 	}
 	return models.MarshalBool(*res)
+}
+
+var gqlNodeImplementors = []string{"GqlNode", "Node"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _GqlNode(ctx context.Context, sel ast.SelectionSet, obj *graphql1.Node) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, gqlNodeImplementors)
+
+	var wg sync.WaitGroup
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("GqlNode")
+		case "id":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._GqlNode_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _GqlNode_id(ctx context.Context, field graphql.CollectedField, obj *graphql1.Node) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "GqlNode",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.GqlNode().ID(rctx, obj)
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
 }
 
 var mutationImplementors = []string{"Mutation"}
@@ -17784,7 +17457,7 @@ func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.C
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetEvent(rctx, args["id"].(string), args["senderId"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sentAt"].(*time.Time), args["receivedAt"].(*time.Time), args["ackedAt"].(*time.Time), args["direction"].(*int32), args["senderApiVersion"].(uint32), args["receiverApiVersion"].(uint32), args["receiverId"].(string), args["kind"].(*int32), args["attributes"].([]byte), args["conversationId"].(string), args["seenAt"].(*time.Time))
+		return ec.resolvers.Query().GetEvent(rctx, args["id"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -17846,7 +17519,7 @@ func (ec *executionContext) _Query_GetContact(ctx context.Context, field graphql
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetContact(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+		return ec.resolvers.Query().GetContact(rctx, args["id"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -17908,7 +17581,7 @@ func (ec *executionContext) _Query_GetConversation(ctx context.Context, field gr
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetConversation(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["members"].([]*entity.ConversationMember))
+		return ec.resolvers.Query().GetConversation(rctx, args["id"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -17939,7 +17612,7 @@ func (ec *executionContext) _Query_GetConversationMember(ctx context.Context, fi
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetConversationMember(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string))
+		return ec.resolvers.Query().GetConversationMember(rctx, args["id"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19637,6 +19310,8 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 	switch obj := (*obj).(type) {
 	case nil:
 		return graphql.Null
+	case *graphql1.Node:
+		return ec._GqlNode(ctx, sel, obj)
 	case entity.Device:
 		return ec._BertyEntityDevice(ctx, sel, &obj)
 	case *entity.Device:
@@ -20202,31 +19877,31 @@ type GoogleProtobufFileDescriptorSet  {
     file: [GoogleProtobufFileDescriptorProto]
 }
 type GoogleProtobufFileDescriptorProto  {
-      name: String!
-      package: String!
-      dependency: [String!]
-      publicDependency: [Int32!]
-      weakDependency: [Int32!]
+    name: String!
+    package: String!
+    dependency: [String!]
+    publicDependency: [Int32!]
+    weakDependency: [Int32!]
     messageType: [GoogleProtobufDescriptorProto]
     enumType: [GoogleProtobufEnumDescriptorProto]
     service: [GoogleProtobufServiceDescriptorProto]
     extension: [GoogleProtobufFieldDescriptorProto]
     options: GoogleProtobufFileOptions
     sourceCodeInfo: GoogleProtobufSourceCodeInfo
-      syntax: String!
+    syntax: String!
 }
     
 type GoogleProtobufDescriptorProtoExtensionRange  {
-      start: Int32!
-      end: Int32!
+    start: Int32!
+    end: Int32!
     options: GoogleProtobufExtensionRangeOptions
 }
 type GoogleProtobufDescriptorProtoReservedRange  {
-      start: Int32!
-      end: Int32!
+    start: Int32!
+    end: Int32!
 }
 type GoogleProtobufDescriptorProto  {
-      name: String!
+    name: String!
     field: [GoogleProtobufFieldDescriptorProto]
     extension: [GoogleProtobufFieldDescriptorProto]
     nestedType: [GoogleProtobufDescriptorProto]
@@ -20235,7 +19910,7 @@ type GoogleProtobufDescriptorProto  {
     oneofDecl: [GoogleProtobufOneofDescriptorProto]
     options: GoogleProtobufMessageOptions
     reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
-      reservedName: [String!]
+    reservedName: [String!]
 }
 type GoogleProtobufExtensionRangeOptions  {
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
@@ -20243,146 +19918,146 @@ type GoogleProtobufExtensionRangeOptions  {
       
       
 type GoogleProtobufFieldDescriptorProto  {
-      name: String!
-      number: Int32!
+    name: String!
+    number: Int32!
     label: Enum
     type: Enum
-      typeName: String!
-      extendee: String!
-      defaultValue: String!
-      oneofIndex: Int32!
-      jsonName: String!
+    typeName: String!
+    extendee: String!
+    defaultValue: String!
+    oneofIndex: Int32!
+    jsonName: String!
     options: GoogleProtobufFieldOptions
 }
 type GoogleProtobufOneofDescriptorProto  {
-      name: String!
+    name: String!
     options: GoogleProtobufOneofOptions
 }
     
 type GoogleProtobufEnumDescriptorProtoEnumReservedRange  {
-      start: Int32!
-      end: Int32!
+    start: Int32!
+    end: Int32!
 }
 type GoogleProtobufEnumDescriptorProto  {
-      name: String!
+    name: String!
     value: [GoogleProtobufEnumValueDescriptorProto]
     options: GoogleProtobufEnumOptions
     reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
-      reservedName: [String!]
+    reservedName: [String!]
 }
 type GoogleProtobufEnumValueDescriptorProto  {
-      name: String!
-      number: Int32!
+    name: String!
+    number: Int32!
     options: GoogleProtobufEnumValueOptions
 }
 type GoogleProtobufServiceDescriptorProto  {
-      name: String!
+    name: String!
     method: [GoogleProtobufMethodDescriptorProto]
     options: GoogleProtobufServiceOptions
 }
 type GoogleProtobufMethodDescriptorProto  {
-      name: String!
-      inputType: String!
-      outputType: String!
+    name: String!
+    inputType: String!
+    outputType: String!
     options: GoogleProtobufMethodOptions
-      clientStreaming: Bool!
-      serverStreaming: Bool!
+    clientStreaming: Bool!
+    serverStreaming: Bool!
 }
       
 type GoogleProtobufFileOptions  {
-      javaPackage: String!
-      javaOuterClassname: String!
-      javaMultipleFiles: Bool!
-      javaGenerateEqualsAndHash: Bool!
-      javaStringCheckUtf8: Bool!
+    javaPackage: String!
+    javaOuterClassname: String!
+    javaMultipleFiles: Bool!
+    javaGenerateEqualsAndHash: Bool!
+    javaStringCheckUtf8: Bool!
     optimizeFor: Enum
-      goPackage: String!
-      ccGenericServices: Bool!
-      javaGenericServices: Bool!
-      pyGenericServices: Bool!
-      phpGenericServices: Bool!
-      deprecated: Bool!
-      ccEnableArenas: Bool!
-      objcClassPrefix: String!
-      csharpNamespace: String!
-      swiftPrefix: String!
-      phpClassPrefix: String!
-      phpNamespace: String!
-      phpMetadataNamespace: String!
-      rubyPackage: String!
+    goPackage: String!
+    ccGenericServices: Bool!
+    javaGenericServices: Bool!
+    pyGenericServices: Bool!
+    phpGenericServices: Bool!
+    deprecated: Bool!
+    ccEnableArenas: Bool!
+    objcClassPrefix: String!
+    csharpNamespace: String!
+    swiftPrefix: String!
+    phpClassPrefix: String!
+    phpNamespace: String!
+    phpMetadataNamespace: String!
+    rubyPackage: String!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufMessageOptions  {
-      messageSetWireFormat: Bool!
-      noStandardDescriptorAccessor: Bool!
-      deprecated: Bool!
-      mapEntry: Bool!
+    messageSetWireFormat: Bool!
+    noStandardDescriptorAccessor: Bool!
+    deprecated: Bool!
+    mapEntry: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
       
       
 type GoogleProtobufFieldOptions  {
     ctype: Enum
-      packed: Bool!
+    packed: Bool!
     jstype: Enum
-      lazy: Bool!
-      deprecated: Bool!
-      weak: Bool!
+    lazy: Bool!
+    deprecated: Bool!
+    weak: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufOneofOptions  {
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufEnumOptions  {
-      allowAlias: Bool!
-      deprecated: Bool!
+    allowAlias: Bool!
+    deprecated: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufEnumValueOptions  {
-      deprecated: Bool!
+    deprecated: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufServiceOptions  {
-      deprecated: Bool!
+    deprecated: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
       
 type GoogleProtobufMethodOptions  {
-      deprecated: Bool!
+    deprecated: Bool!
     idempotencyLevel: Enum
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
     
 type GoogleProtobufUninterpretedOptionNamePart  {
-      namePart: String!
-      isExtension: Bool!
+    namePart: String!
+    isExtension: Bool!
 }
 type GoogleProtobufUninterpretedOption  {
     name: [GoogleProtobufUninterpretedOptionNamePart]
-      identifierValue: String!
-      positiveIntValue: Uint64!
-      negativeIntValue: Int64!
-      doubleValue: Double!
-      stringValue: [Byte!],
-      aggregateValue: String!
+    identifierValue: String!
+    positiveIntValue: Uint64!
+    negativeIntValue: Int64!
+    doubleValue: Double!
+    stringValue: [Byte!]!
+    aggregateValue: String!
 }
     
 type GoogleProtobufSourceCodeInfoLocation  {
-      path: [Int32!]
-      span: [Int32!]
-      leadingComments: String!
-      trailingComments: String!
-      leadingDetachedComments: [String!]
+    path: [Int32!]
+    span: [Int32!]
+    leadingComments: String!
+    trailingComments: String!
+    leadingDetachedComments: [String!]
 }
 type GoogleProtobufSourceCodeInfo  {
     location: [GoogleProtobufSourceCodeInfoLocation]
 }
     
 type GoogleProtobufGeneratedCodeInfoAnnotation  {
-      path: [Int32!]
-      sourceFile: String!
-      begin: Int32!
-      end: Int32!
+    path: [Int32!]
+    sourceFile: String!
+    begin: Int32!
+    end: Int32!
 }
 type GoogleProtobufGeneratedCodeInfo  {
     annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
@@ -20395,29 +20070,9 @@ type GoogleProtobufGeneratedCodeInfo  {
   
   
 
-  
-type BertyNodeNodeStartedAttrs  {
-      T: Bool!
+type GqlNode implements Node {
+    id: ID!
 }
-type BertyNodeNodeStoppedAttrs  {
-      errMsg: String!
-}
-type BertyNodeNodeIsAliveAttrs  {
-      T: Bool!
-}
-type BertyNodeBackgroundErrorAttrs  {
-      errMsg: String!
-}
-type BertyNodeBackgroundWarnAttrs  {
-      errMsg: String!
-}
-type BertyNodeDebugAttrs  {
-      msg: String!
-}
-  
-  
-  
-
   
   
   
@@ -20431,10 +20086,10 @@ type BertyEntityDevice implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-      name: String!
+    name: String!
     status: Enum
-      apiVersion: Uint32!
-      contactId: String!
+    apiVersion: Uint32!
+    contactId: String!
 }
   
   
@@ -20445,13 +20100,13 @@ type BertyEntityContact implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-      sigchain: [Byte!],
+    sigchain: [Byte!]!
     status: Enum
     devices: [BertyEntityDevice]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
 }
   
   
@@ -20461,8 +20116,8 @@ type BertyEntityConversation implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-      title: String!
-      topic: String!
+    title: String!
+    topic: String!
     members: [BertyEntityConversationMember]
 }
       
@@ -20472,15 +20127,15 @@ type BertyEntityConversationMember implements Node {
     updatedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
-      conversationId: String!
-      contactId: String!
+    conversationId: String!
+    contactId: String!
 }
   
   
   
 
 type BertyEntityMessage  {
-      text: String!
+    text: String!
 }
   
   
@@ -20488,15 +20143,15 @@ type BertyEntityMessage  {
 
       
 type BertyEntitySenderAlias  {
-      id: String!
+    id: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     status: Enum
-      originDeviceId: String!
-      contactId: String!
-      conversationId: String!
-      aliasIdentifier: String!
-      used: Bool!
+    originDeviceId: String!
+    contactId: String!
+    conversationId: String!
+    aliasIdentifier: String!
+    used: Bool!
 }
   
   
@@ -20504,21 +20159,21 @@ type BertyEntitySenderAlias  {
 
   
 type BertyP2pSentAttrs  {
-      ids: [String!]
+    ids: [String!]
 }
 type BertyP2pAckAttrs  {
-      ids: [String!]
-      errMsg: String!
+    ids: [String!]
+    errMsg: String!
 }
 type BertyP2pPingAttrs  {
-      T: Bool!
+    T: Bool!
 }
 type BertyP2pContactRequestAttrs  {
     me: BertyEntityContact
-      introText: String!
+    introText: String!
 }
 type BertyP2pContactRequestAcceptedAttrs  {
-      T: Bool!
+    T: Bool!
 }
 type BertyP2pContactShareMeAttrs  {
     me: BertyEntityContact
@@ -20533,15 +20188,15 @@ type BertyP2pConversationNewMessageAttrs  {
     message: BertyEntityMessage
 }
 type BertyP2pDevtoolsMapsetAttrs  {
-      key: String!
-      val: String!
+    key: String!
+    val: String!
 }
 type BertyP2pSenderAliasUpdateAttrs  {
     aliases: [BertyEntitySenderAlias]
 }
 type BertyP2pNodeAttrs  {
-      kind: Int32!
-      attributes: [Byte!],
+    kind: Int32!
+    attributes: [Byte!]!
 }
   
   
@@ -20550,18 +20205,18 @@ type BertyP2pNodeAttrs  {
       
 type BertyP2pEvent implements Node {
     id: ID!
-      senderId: String!
+    senderId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
     direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
+    senderApiVersion: Uint32!
+    receiverApiVersion: Uint32!
+    receiverId: String!
     kind: Enum
-      attributes: [Byte!],
+    attributes: [Byte!]!
     conversationId: ID!
     seenAt: GoogleProtobufTimestamp
 }
@@ -20570,12 +20225,35 @@ type BertyP2pEvent implements Node {
   
 
   
+type BertyNodeNodeStartedAttrs  {
+    T: Bool!
+}
+type BertyNodeNodeStoppedAttrs  {
+    errMsg: String!
+}
+type BertyNodeNodeIsAliveAttrs  {
+    T: Bool!
+}
+type BertyNodeBackgroundErrorAttrs  {
+    errMsg: String!
+}
+type BertyNodeBackgroundWarnAttrs  {
+    errMsg: String!
+}
+type BertyNodeDebugAttrs  {
+    msg: String!
+}
+  
+  
+  
+
+  
 type BertyP2pBandwidthStats  {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
+    id: String
+    totalIn: Int64
+    totalOut: Int64
+    rateIn: Double
+    rateOut: Double
     type: Enum
 }
   
@@ -20584,8 +20262,8 @@ type BertyP2pBandwidthStats  {
 
   
 type BertyP2pPeer  {
-      id: String!
-      addrs: [String!]
+    id: String!
+    addrs: [String!]
     connection: Enum
 }
 type BertyP2pPeers  {
@@ -20599,8 +20277,8 @@ type BertyPkgDeviceinfoDeviceInfos  {
     infos: [BertyPkgDeviceinfoDeviceInfo]
 }
 type BertyPkgDeviceinfoDeviceInfo  {
-      key: String!
-      value: String!
+    key: String!
+    value: String!
 }
   
   
@@ -20608,11 +20286,11 @@ type BertyPkgDeviceinfoDeviceInfo  {
 
   
 type BertyNodePingDestination  {
-      destination: String!
+    destination: String!
 }
 type BertyNodeEventEdge  {
     node: BertyP2pEvent
-      cursor: String!
+    cursor: String!
 }
 type BertyNodeEventListConnection  {
     edges: [BertyNodeEventEdge]
@@ -20620,7 +20298,7 @@ type BertyNodeEventListConnection  {
 }
 type BertyNodeContactEdge  {
     node: BertyEntityContact
-      cursor: String!
+    cursor: String!
 }
 type BertyNodeContactListConnection  {
     edges: [BertyNodeContactEdge]
@@ -20628,123 +20306,123 @@ type BertyNodeContactListConnection  {
 }
 type BertyNodeConversationEdge  {
     node: BertyEntityConversation
-      cursor: String!
+    cursor: String!
 }
 type BertyNodeConversationListConnection  {
     edges: [BertyNodeConversationEdge]
     pageInfo: BertyNodePageInfo!
 }
 type BertyNodePagination  {
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
 }
 type BertyNodePageInfo  {
-      startCursor: String!
-      endCursor: String!
-      hasNextPage: Bool!
-      hasPreviousPage: Bool!
-      count: Uint32!
+    startCursor: String!
+    endCursor: String!
+    hasNextPage: Bool!
+    hasPreviousPage: Bool!
+    count: Uint32!
 }
 type BertyNodeVoid  {
-      T: Bool!
+    T: Bool!
 }
 type BertyNodeLogEntry  {
-      line: String!
+    line: String!
 }
 type BertyNodeNodeEvent  {
     kind: Enum
-      attributes: [Byte!],
+    attributes: [Byte!]!
 }
 type BertyP2pPeerPayload {
-      id: String!
-      addrs: [String!]
+    id: String!
+    addrs: [String!]
     connection: Enum
 }
 input BertyP2pEventInput {
     id: ID!
-      senderId: String!
+    senderId: String!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     sentAt: GoogleProtobufTimestampInput
     receivedAt: GoogleProtobufTimestampInput
     ackedAt: GoogleProtobufTimestampInput
     direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
+    senderApiVersion: Uint32!
+    receiverApiVersion: Uint32!
+    receiverId: String!
     kind: Enum
-      attributes: [Byte!],
+    attributes: [Byte!]!
     conversationId: ID!
     seenAt: GoogleProtobufTimestampInput
 }
 type BertyP2pEventPayload {
     id: ID!
-      senderId: String!
+    senderId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
     direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
+    senderApiVersion: Uint32!
+    receiverApiVersion: Uint32!
+    receiverId: String!
     kind: Enum
-      attributes: [Byte!],
+    attributes: [Byte!]!
     conversationId: ID!
     seenAt: GoogleProtobufTimestamp
 }
 input BertyNodePaginationInput {
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
 }
 input BertyEntityDeviceInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      name: String!
+    name: String!
     status: Enum
-      apiVersion: Uint32!
-      contactId: String!
+    apiVersion: Uint32!
+    contactId: String!
 }
 input BertyEntityContactInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]!
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
 }
 type BertyEntityContactPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-      sigchain: [Byte!],
+    sigchain: [Byte!]!
     status: Enum
     devices: [BertyEntityDevice]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
 }
 type BertyEntityConversationPayload {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-      title: String!
-      topic: String!
+    title: String!
+    topic: String!
     members: [BertyEntityConversationMember]
 }
 input BertyEntityConversationMemberInput {
@@ -20753,19 +20431,19 @@ input BertyEntityConversationMemberInput {
     updatedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
-      conversationId: String!
-      contactId: String!
+    conversationId: String!
+    contactId: String!
 }
 input BertyEntityConversationInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      title: String!
-      topic: String!
+    title: String!
+    topic: String!
     members: [BertyEntityConversationMemberInput]
 }
 input BertyEntityMessageInput {
-      text: String!
+    text: String!
 }
 type BertyEntityConversationMemberPayload {
     id: ID!
@@ -20773,16 +20451,16 @@ type BertyEntityConversationMemberPayload {
     updatedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
-      conversationId: String!
-      contactId: String!
+    conversationId: String!
+    contactId: String!
 }
 type BertyNodeVoidPayload {
-      T: Bool!
+    T: Bool!
 }
 type BertyNodeIntegrationTestPayload {
-      name: String!
-      success: Bool!
-      verbose: String!
+    name: String!
+    success: Bool!
+    verbose: String!
     startedAt: GoogleProtobufTimestamp
     finishedAt: GoogleProtobufTimestamp
 }
@@ -20790,121 +20468,87 @@ type BertyPkgDeviceinfoDeviceInfosPayload {
     infos: [BertyPkgDeviceinfoDeviceInfo]
 }
 type BertyNodeAppVersionPayload {
-      version: String!
+    version: String!
 }
 type BertyP2pPeersPayload {
     list: [BertyP2pPeer]
 }
 type BertyNodeProtocolsPayload {
-      protocols: [String!]
+    protocols: [String!]
 }
 type BertyNodeLogEntryPayload {
-      line: String!
+    line: String!
 }
 type BertyP2pBandwidthStatsPayload {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
+    id: String
+    totalIn: Int64
+    totalOut: Int64
+    rateIn: Double
+    rateOut: Double
     type: Enum
 }
   
 type Query {
   node(id: ID!): Node
   ID(
-      T: Bool!
+    T: Bool!
   ): BertyP2pPeerPayload
   EventList(
     filter: BertyP2pEventInput
     onlyWithoutAckedAt: Enum
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
   ): BertyNodeEventListConnection
   GetEvent(
     id: ID!
-      senderId: String!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    sentAt: GoogleProtobufTimestampInput
-    receivedAt: GoogleProtobufTimestampInput
-    ackedAt: GoogleProtobufTimestampInput
-    direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
-    kind: Enum
-      attributes: [Byte!],
-    conversationId: ID!
-    seenAt: GoogleProtobufTimestampInput
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
   ): BertyNodeContactListConnection
   GetContact(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
-    status: Enum
-    devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
   ): BertyEntityContactPayload
   ConversationList(
     filter: BertyEntityConversationInput
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
   ): BertyNodeConversationListConnection
   GetConversation(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-      title: String!
-      topic: String!
-    members: [BertyEntityConversationMemberInput]
   ): BertyEntityConversationPayload
   GetConversationMember(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    status: Enum
-    contact: BertyEntityContactInput
-      conversationId: String!
-      contactId: String!
   ): BertyEntityConversationMemberPayload
   DeviceInfos(
-      T: Bool!
+    T: Bool!
   ): BertyPkgDeviceinfoDeviceInfosPayload
   AppVersion(
-      T: Bool!
+    T: Bool!
   ): BertyNodeAppVersionPayload
   Peers(
-      T: Bool!
+    T: Bool!
   ): BertyP2pPeersPayload
   Protocols(
-      id: String!
-      addrs: [String!]
+    id: String!
+    addrs: [String!]
     connection: Enum
   ): BertyNodeProtocolsPayload
   Panic(
-      T: Bool!
+    T: Bool!
   ): BertyNodeVoidPayload
 }
   
@@ -20914,48 +20558,48 @@ type Mutation {
   ): BertyP2pEventPayload
   ContactRequest(
     contact: BertyEntityContactInput
-      introText: String!
+    introText: String!
   ): BertyEntityContactPayload
   ContactAcceptRequest(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]!
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
   ): BertyEntityContactPayload
   ContactRemove(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]!
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
   ): BertyEntityContactPayload
   ContactUpdate(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]!
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
   ): BertyEntityContactPayload
   ConversationCreate(
     contacts: [BertyEntityContactInput]
-      title: String!
-      topic: String!
+    title: String!
+    topic: String!
   ): BertyEntityConversationPayload
   ConversationInvite(
     conversation: BertyEntityConversationInput
@@ -20970,16 +20614,16 @@ type Mutation {
     message: BertyEntityMessageInput
   ): BertyP2pEventPayload
   GenerateFakeData(
-      T: Bool!
+    T: Bool!
   ): BertyNodeVoidPayload
   RunIntegrationTests(
-      name: String!
+    name: String!
   ): BertyNodeIntegrationTestPayload
   DebugRequeueEvent(
     eventId: ID!
   ): BertyP2pEventPayload
   DebugRequeueAll(
-      T: Bool!
+    T: Bool!
   ): BertyNodeVoidPayload
 }
   
@@ -20988,21 +20632,21 @@ type Subscription {
     filter: BertyP2pEventInput
   ): BertyP2pEventPayload
   LogStream(
-      continues: Bool!
-      logLevel: String!
-      namespaces: String!
-      last: Int32!
+    continues: Bool!
+    logLevel: String!
+    namespaces: String!
+    last: Int32!
   ): BertyNodeLogEntryPayload
   MonitorBandwidth(
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
+    id: String
+    totalIn: Int64
+    totalOut: Int64
+    rateIn: Double
+    rateOut: Double
     type: Enum
   ): BertyP2pBandwidthStatsPayload
   MonitorPeers(
-      T: Bool!
+    T: Bool!
   ): BertyP2pPeerPayload
 }
 `},

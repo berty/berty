@@ -102,26 +102,6 @@ export const ValueGoogleProtobufMethodOptionsInputIdempotencyLevel = {
   2: 'IDEMPOTENT',
 }
 
-export const BertyNodeKindInputKind = {
-  Unknown: 0,
-  NodeStarted: 1,
-  NodeStopped: 2,
-  NodeIsAlive: 3,
-  BackgroundError: 4,
-  BackgroundWarn: 5,
-  Debug: 6,
-}
-
-export const ValueBertyNodeKindInputKind = {
-  0: 'Unknown',
-  1: 'NodeStarted',
-  2: 'NodeStopped',
-  3: 'NodeIsAlive',
-  4: 'BackgroundError',
-  5: 'BackgroundWarn',
-  6: 'Debug',
-}
-
 export const BertyEntityDeviceInputStatus = {
   Unknown: 0,
   Connected: 1,
@@ -230,6 +210,26 @@ export const ValueBertyP2pEventInputDirection = {
   1: 'Incoming',
   2: 'Outgoing',
   99: 'Node',
+}
+
+export const BertyNodeKindInputKind = {
+  Unknown: 0,
+  NodeStarted: 1,
+  NodeStopped: 2,
+  NodeIsAlive: 3,
+  BackgroundError: 4,
+  BackgroundWarn: 5,
+  Debug: 6,
+}
+
+export const ValueBertyNodeKindInputKind = {
+  0: 'Unknown',
+  1: 'NodeStarted',
+  2: 'NodeStopped',
+  3: 'NodeIsAlive',
+  4: 'BackgroundError',
+  5: 'BackgroundWarn',
+  6: 'Debug',
 }
 
 export const BertyP2pMetricsTypeInputMetricsType = {

@@ -2,6 +2,7 @@
 
 schema: service.gen.graphql
 
+struct_tag: gqlgen
 
 # Let gqlgen know where to put the generated server
 exec:
@@ -705,84 +706,21 @@ models:
 
 
 
-  BertyNodeNodeStartedAttrs:
-    model: berty.tech/core/api/node.NodeStartedAttrs
+  GqlNode:
+    model: berty.tech/core/api/protobuf/graphql.Node
     fields:
-      t:
-  BertyNodeNodeStartedAttrsInput:
-    model: berty.tech/core/api/node.NodeStartedAttrs
+      id:
+        resolver: true
+  GqlNodeInput:
+    model: berty.tech/core/api/protobuf/graphql.Node
     fields:
-      t:
-  BertyNodeNodeStartedAttrsPayload:
-    model: berty.tech/core/api/node.NodeStartedAttrs
+      id:
+        resolver: true
+  GqlNodePayload:
+    model: berty.tech/core/api/protobuf/graphql.Node
     fields:
-      t:
-
-  BertyNodeNodeStoppedAttrs:
-    model: berty.tech/core/api/node.NodeStoppedAttrs
-    fields:
-      errMsg:
-  BertyNodeNodeStoppedAttrsInput:
-    model: berty.tech/core/api/node.NodeStoppedAttrs
-    fields:
-      errMsg:
-  BertyNodeNodeStoppedAttrsPayload:
-    model: berty.tech/core/api/node.NodeStoppedAttrs
-    fields:
-      errMsg:
-
-  BertyNodeNodeIsAliveAttrs:
-    model: berty.tech/core/api/node.NodeIsAliveAttrs
-    fields:
-      t:
-  BertyNodeNodeIsAliveAttrsInput:
-    model: berty.tech/core/api/node.NodeIsAliveAttrs
-    fields:
-      t:
-  BertyNodeNodeIsAliveAttrsPayload:
-    model: berty.tech/core/api/node.NodeIsAliveAttrs
-    fields:
-      t:
-
-  BertyNodeBackgroundErrorAttrs:
-    model: berty.tech/core/api/node.BackgroundErrorAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundErrorAttrsInput:
-    model: berty.tech/core/api/node.BackgroundErrorAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundErrorAttrsPayload:
-    model: berty.tech/core/api/node.BackgroundErrorAttrs
-    fields:
-      errMsg:
-
-  BertyNodeBackgroundWarnAttrs:
-    model: berty.tech/core/api/node.BackgroundWarnAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundWarnAttrsInput:
-    model: berty.tech/core/api/node.BackgroundWarnAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundWarnAttrsPayload:
-    model: berty.tech/core/api/node.BackgroundWarnAttrs
-    fields:
-      errMsg:
-
-  BertyNodeDebugAttrs:
-    model: berty.tech/core/api/node.DebugAttrs
-    fields:
-      msg:
-  BertyNodeDebugAttrsInput:
-    model: berty.tech/core/api/node.DebugAttrs
-    fields:
-      msg:
-  BertyNodeDebugAttrsPayload:
-    model: berty.tech/core/api/node.DebugAttrs
-    fields:
-      msg:
-
+      id:
+        resolver: true
 
 
 
@@ -1215,6 +1153,85 @@ models:
       conversationId:
         resolver: true
       seenAt:
+
+
+  BertyNodeNodeStartedAttrs:
+    model: berty.tech/core/api/node.NodeStartedAttrs
+    fields:
+      t:
+  BertyNodeNodeStartedAttrsInput:
+    model: berty.tech/core/api/node.NodeStartedAttrs
+    fields:
+      t:
+  BertyNodeNodeStartedAttrsPayload:
+    model: berty.tech/core/api/node.NodeStartedAttrs
+    fields:
+      t:
+
+  BertyNodeNodeStoppedAttrs:
+    model: berty.tech/core/api/node.NodeStoppedAttrs
+    fields:
+      errMsg:
+  BertyNodeNodeStoppedAttrsInput:
+    model: berty.tech/core/api/node.NodeStoppedAttrs
+    fields:
+      errMsg:
+  BertyNodeNodeStoppedAttrsPayload:
+    model: berty.tech/core/api/node.NodeStoppedAttrs
+    fields:
+      errMsg:
+
+  BertyNodeNodeIsAliveAttrs:
+    model: berty.tech/core/api/node.NodeIsAliveAttrs
+    fields:
+      t:
+  BertyNodeNodeIsAliveAttrsInput:
+    model: berty.tech/core/api/node.NodeIsAliveAttrs
+    fields:
+      t:
+  BertyNodeNodeIsAliveAttrsPayload:
+    model: berty.tech/core/api/node.NodeIsAliveAttrs
+    fields:
+      t:
+
+  BertyNodeBackgroundErrorAttrs:
+    model: berty.tech/core/api/node.BackgroundErrorAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundErrorAttrsInput:
+    model: berty.tech/core/api/node.BackgroundErrorAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundErrorAttrsPayload:
+    model: berty.tech/core/api/node.BackgroundErrorAttrs
+    fields:
+      errMsg:
+
+  BertyNodeBackgroundWarnAttrs:
+    model: berty.tech/core/api/node.BackgroundWarnAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundWarnAttrsInput:
+    model: berty.tech/core/api/node.BackgroundWarnAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundWarnAttrsPayload:
+    model: berty.tech/core/api/node.BackgroundWarnAttrs
+    fields:
+      errMsg:
+
+  BertyNodeDebugAttrs:
+    model: berty.tech/core/api/node.DebugAttrs
+    fields:
+      msg:
+  BertyNodeDebugAttrsInput:
+    model: berty.tech/core/api/node.DebugAttrs
+    fields:
+      msg:
+  BertyNodeDebugAttrsPayload:
+    model: berty.tech/core/api/node.DebugAttrs
+    fields:
+      msg:
 
 
   BertyP2pBandwidthStats:

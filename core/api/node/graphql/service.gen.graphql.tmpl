@@ -65,19 +65,50 @@ interface Node {
   {{- end}}
 {{- end}}
 
+{{- define "MessageField"}}
+  {{- $type := getStore .TypeName}}
+  {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+
+  {{- if (boolFieldExtension 53006 .)}}
+    {{- template "Fields" $type.Field}}
+  {{- else}}
+
+    {{- if eq (boolFieldExtension 53009 .) true}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
+    {{- else}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}]{{else}}{{$typeName}}{{end}}
+    {{- end}}
+  {{- end}}
+{{- end}}
+
+{{- define "InputMessageField"}}
+  {{- $type := getStore .TypeName}}
+  {{- $typeName := .TypeName}}
+
+  {{- if (boolFieldExtension 53006 .)}}
+    {{- template "InputFields" $type.Field}}
+  {{- else}}
+
+    {{- if eq (boolFieldExtension 53009 .) true}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" $typeName}}!]{{else}}{{template "InputName" $typeName}}!{{end}}
+    {{- else}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" $typeName}}]{{else}}{{template "InputName" $typeName}}{{end}}
+    {{- end}}
+  {{- end}}
+{{- end}}
+
 {{- define "ScalarField"}}
   {{- if (boolFieldExtension 53004 .)}}
     {{.JsonName}}: ID!
   {{- else}}
+    {{- $typeName := .Type | string | replace "TYPE_" "" | lower | camelCase}}
     {{- if eq (.Type | string) "TYPE_BYTES"}}
-      {{.JsonName}}: [Byte!],
+      {{- $typeName = "[Byte!]"}}
+    {{- end}}
+    {{- if (boolFieldExtension 53008 .) true}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}{{end}}
     {{- else}}
-      {{- $typeName := .Type | string | replace "TYPE_" "" | lower | camelCase}}
-      {{- if (boolFieldExtension 53008 .) true}}
-      {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}{{end}}
-      {{- else}}
-      {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
-      {{- end}}
+    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
     {{- end}}
   {{- end}}
 {{- end}}
@@ -88,66 +119,40 @@ interface Node {
 {{- end}}
 
 {{- define "Field"}}
-  {{- $messageName := getStore "message_name"}}
+  {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+    {{- template "MessageField" .}}
+  {{- else if (eq (.Type | string) "TYPE_ENUM")}}
+    {{- template "EnumField" .}}
+  {{- else}}
+    {{- template "ScalarField" .}}
+  {{- end}}
+{{- end}}
 
+{{- define "InputField"}}
+  {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
+    {{- template "InputMessageField" .}}
+  {{- else if (eq (.Type | string) "TYPE_ENUM")}}
+    {{- template "EnumField" .}}
+  {{- else }}
+    {{- template "ScalarField" .}}
+  {{- end}}
+{{- end}}
+
+{{- define "Fields"}}
+  {{- $messageName := getStore "message_name"}}
   {{- if .}}
     {{- range .}}
-      {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
-        {{- if (boolFieldExtension 53006 .)}}
-          {{- template "Field" (getStore .TypeName).Field}}
-        {{- else}}
-          {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
-          {{- if eq (boolFieldExtension 53009 .) true}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
-          {{- else}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}]{{else}}{{$typeName}}{{end}}
-          {{- end}}
-        {{- end}}
-      {{- else if (eq (.Type | string) "TYPE_ENUM")}}
-        {{- template "EnumField" .}}
-      {{- else }}
-        {{- template "ScalarField" .}}
-      {{- end}}
+      {{- template "Field" .}}
     {{- end}}
   {{- else}}
     T: Boolean
   {{- end}}
 {{- end}}
 
-{{- define "ArgumentScalarField"}}
-  {{- if (boolFieldExtension 53004 .)}}
-    {{.JsonName}}: ID!
-  {{- else}}
-    {{- if eq (.Type | string) "TYPE_BYTES"}}
-      {{.JsonName}}: [Byte!],
-    {{- else}}
-      {{- $typeName := .Type | string | replace "TYPE_" "" | lower | camelCase}}
-      {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}{{end}}
-    {{- end}}
-  {{- end}}
-{{- end}}
-
-{{- define "InputField"}}
-  {{- $messageName := getStore "message_name"}}
-
+{{- define "InputFields"}}
   {{- if .}}
     {{- range .}}
-      {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
-        {{- if (boolFieldExtension 53006 .)}}
-          {{- template "InputField" (getStore .TypeName).Field}}
-        {{- else}}
-        {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
-          {{- if eq (boolFieldExtension 53009 .) true}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}!]{{else}}{{template "InputName" .TypeName}}!{{end}}
-          {{- else}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
-          {{- end}}
-        {{- end}}
-      {{- else if (eq (.Type | string) "TYPE_ENUM")}}
-        {{- template "EnumField" .}}
-      {{- else }}
-        {{- template "ScalarField" .}}
-      {{- end}}
+      {{- template "InputField" .}}
     {{- end}}
   {{- else}}
     T: Boolean
@@ -171,7 +176,7 @@ enum {{$file.Package | replace "." "_" | camelCase}}{{$messageName}}{{.Name}} {
   {{- if eq (concat .Name "") "Timestamp"}}
   {{- else if (and (eq (.Name | regexMatch ".*Input") false) (eq (.Name | regexMatch ".*Output") false)) }}
 type {{$file.Package | replace "." "_" | camelCase}}{{$messageName}}{{.Name}} {{template "ImplementNode" .}} {
-  {{- template "Field" .Field}}
+  {{- template "Fields" .Field}}
 }
   {{- end}}
 {{- end}}
@@ -182,7 +187,7 @@ type {{$file.Package | replace "." "_" | camelCase}}{{$messageName}}{{.Name}} {{
     {{- if eq (concat $type.Name "") "Timestamp"}}
     {{- else}}
 input {{template "InputName" .}} {
-    {{- template "InputField" $type.Field}}
+    {{- template "InputFields" $type.Field}}
 }
     {{- end}}
   {{- end}}
@@ -195,7 +200,7 @@ input {{template "InputName" .}} {
     {{- else }}
       {{- template "ImplementNode"}}
 type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
-    {{- template "Field" $type.Field}}
+    {{- template "Fields" $type.Field}}
 }
     {{- end}}
   {{- end}}
@@ -285,7 +290,7 @@ type {{template "PayloadName" .}} {{- template "ImplementNode"}} {
   {{.Name}}
   {{- if .InputType -}}
   (
-    {{- template "Arguments" (getStore .InputType).Field}}
+    {{- template "InputFields" (getStore .InputType).Field}}
   )
   {{- end}}
   {{- if (stringMethodOptionsExtension 53007 .) -}}

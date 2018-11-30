@@ -6,6 +6,7 @@ import (
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
+	gql "berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
@@ -94,7 +95,7 @@ func (n *Node) EventSeen(ctx context.Context, input *node.EventIDInput) (*p2p.Ev
 }
 
 // GetEvent implements berty.node.GetEvent
-func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
+func (n *Node) GetEvent(ctx context.Context, input *gql.Node) (*p2p.Event, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -273,7 +274,7 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 }
 
 // GetContact implements berty.node.GetContact
-func (n *Node) GetContact(ctx context.Context, input *entity.Contact) (*entity.Contact, error) {
+func (n *Node) GetContact(ctx context.Context, input *gql.Node) (*entity.Contact, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -453,7 +454,7 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 }
 
 // GetConversation implements berty.node.GetConversation
-func (n *Node) GetConversation(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+func (n *Node) GetConversation(ctx context.Context, input *gql.Node) (*entity.Conversation, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -469,7 +470,7 @@ func (n *Node) GetConversation(ctx context.Context, input *entity.Conversation) 
 }
 
 // GetConversationMember implements berty.node.GetConversationMember
-func (n *Node) GetConversationMember(ctx context.Context, input *entity.ConversationMember) (*entity.ConversationMember, error) {
+func (n *Node) GetConversationMember(ctx context.Context, input *gql.Node) (*entity.ConversationMember, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()

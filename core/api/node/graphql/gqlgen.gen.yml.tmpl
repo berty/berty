@@ -5,6 +5,7 @@
 
 schema: service.gen.graphql
 
+struct_tag: gqlgen
 
 # Let gqlgen know where to put the generated server
 exec:
@@ -140,9 +141,11 @@ models:
     model: {{$GoPackage}}.{{$name}}
     fields:
             {{- range .Field}}
+              {{- if not (stringFieldExtension 53010 .)}}
       {{.Name | lowerCamelCase}}:
-              {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
         resolver: true
+                {{- end}}
               {{- end}}
             {{- end}}
             {{- if eq ($modelName | regexMatch ".*Input$") false}}
@@ -150,9 +153,11 @@ models:
     model: {{$GoPackage}}.{{$name}}
     fields:
               {{- range .Field}}
+                {{- if not (stringFieldExtension 53010 .)}}
       {{.Name | lowerCamelCase}}:
-                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+                  {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
         resolver: true
+                  {{- end}}
                 {{- end}}
               {{- end}}
             {{- end}}
@@ -161,9 +166,11 @@ models:
     model: {{$GoPackage}}.{{$name}}
     fields:
               {{- range .Field}}
+                {{- if not (stringFieldExtension 53010 .)}}
       {{.Name | lowerCamelCase}}:
-                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+                  {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
         resolver: true
+                  {{- end}}
                 {{- end}}
               {{- end}}
             {{- end}}

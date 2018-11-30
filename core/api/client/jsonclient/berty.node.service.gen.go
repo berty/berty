@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
 	"go.uber.org/zap"
 )
@@ -120,7 +121,7 @@ func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) 
 		zap.String("method", "GetEvent"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput p2p.Event
+	var typedInput graphql.Node
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -220,7 +221,7 @@ func NodeGetContact(client *client.Client, ctx context.Context, jsonInput []byte
 		zap.String("method", "GetContact"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput entity.Contact
+	var typedInput graphql.Node
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -308,7 +309,7 @@ func NodeGetConversation(client *client.Client, ctx context.Context, jsonInput [
 		zap.String("method", "GetConversation"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput entity.Conversation
+	var typedInput graphql.Node
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -320,7 +321,7 @@ func NodeGetConversationMember(client *client.Client, ctx context.Context, jsonI
 		zap.String("method", "GetConversationMember"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput entity.ConversationMember
+	var typedInput graphql.Node
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
