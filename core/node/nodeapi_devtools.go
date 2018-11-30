@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"math/rand"
+	"net/url"
 	"strings"
 	"time"
 
@@ -179,6 +180,8 @@ func (n *Node) NodeInfos(ctx context.Context) (map[string]string, error) {
 
 	infos["node: pubkey"] = n.b64pubkey
 	infos["node: sigchain"] = n.sigchain.ToJSON()
+
+	infos["runtime: jaeger URL"] = "http://jaeger.berty.io:16686/search?service=" + url.PathEscape(n.initDevice.Name+":mobile")
 
 	if peer, err := n.ID(ctx, nil); err != nil {
 		infos["p2p: ID"] = err.Error()
