@@ -133,7 +133,7 @@ clean.bundler_and_pkgs:
 .PHONY: clean.android
 clean.android:
 	$(MAKE) -C $(GOMOB) clean.android
-	cd $(ANDROID) && rm -rf app/build && ./gradlew clean
+	cd $(ANDROID) && rm -rf app/build ble/build && ./gradlew clean
 
 .PHONY: clean.ios
 clean.ios:
