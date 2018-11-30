@@ -7,6 +7,7 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
@@ -178,6 +179,13 @@ func (n *Node) NodeInfos(ctx context.Context) (map[string]string, error) {
 
 	infos["node: pubkey"] = n.b64pubkey
 	infos["node: sigchain"] = n.sigchain.ToJSON()
+
+	if peer, err := n.ID(ctx, nil); err != nil {
+		infos["p2p: ID"] = err.Error()
+	} else {
+		out, _ := json.Marshal(peer)
+		infos["p2p: ID"] = string(out)
+	}
 
 	return infos, nil
 }
