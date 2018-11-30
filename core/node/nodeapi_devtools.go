@@ -7,9 +7,11 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
+	"net/url"
 	"strings"
 	"time"
 
@@ -178,6 +180,18 @@ func (n *Node) NodeInfos(ctx context.Context) (map[string]string, error) {
 
 	infos["node: pubkey"] = n.b64pubkey
 	infos["node: sigchain"] = n.sigchain.ToJSON()
+
+	infos["runtime: jaeger URL"] = "http://jaeger.berty.io:16686/search?service=" + url.PathEscape(n.initDevice.Name+":mobile")
+
+	if peer, err := n.ID(ctx, nil); err != nil {
+		infos["p2p: ID"] = err.Error()
+	} else {
+		out, _ := json.MarshalIndent(peer, "", "  ")
+		infos["p2p: ID"] = string(out)
+	}
+
+	out, _ := json.MarshalIndent(n.initDevice, "", "  ")
+	infos["node: init-device"] = string(out)
 
 	return infos, nil
 }
