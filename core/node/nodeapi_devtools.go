@@ -183,9 +183,12 @@ func (n *Node) NodeInfos(ctx context.Context) (map[string]string, error) {
 	if peer, err := n.ID(ctx, nil); err != nil {
 		infos["p2p: ID"] = err.Error()
 	} else {
-		out, _ := json.Marshal(peer)
+		out, _ := json.MarshalIndent(peer, "", "  ")
 		infos["p2p: ID"] = string(out)
 	}
+
+	out, _ := json.MarshalIndent(n.initDevice, "", "  ")
+	infos["node: init-device"] = string(out)
 
 	return infos, nil
 }
