@@ -1,9 +1,26 @@
 package entity
 
+import (
+	"crypto/x509"
+	"encoding/base64"
+
+	"github.com/pkg/errors"
+)
+
 func (c Contact) Validate() error {
 	if c.ID == "" {
 		return ErrInvalidEntity
 	}
+
+	pubKeyBytes, err := base64.StdEncoding.DecodeString(c.ID)
+	if err != nil {
+		return err
+	}
+
+	if _, err := x509.ParsePKIXPublicKey(pubKeyBytes); err != nil {
+		return errors.Wrap(ErrInvalidEntity, "invalid public key")
+	}
+
 	return nil
 }
 

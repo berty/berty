@@ -2,7 +2,7 @@ import { ScrollView, TextInput, Platform, Clipboard } from 'react-native'
 import { btoa } from 'b64-lite'
 import React, { PureComponent } from 'react'
 
-import { Button, Flex, TextInputMultilineFix } from './index'
+import { Button, Flex, TextInputMultilineFix, Text } from './index'
 import { RelayContext } from '../../relay'
 import { colors } from '../../constants'
 import {
@@ -67,6 +67,7 @@ export default class PublicKeyWithActions extends PureComponent {
       : [props.initialKey, props.initialName]
     const missingInitialData = props.initialKey === undefined
     this.state = {
+      err: null,
       contact: {
         id: initialKey || '',
         displayName: initialName || '',
@@ -102,7 +103,6 @@ export default class PublicKeyWithActions extends PureComponent {
       this.props.navigation.goBack(null)
     } catch (err) {
       this.setState({ err })
-      console.error(err)
     }
   }
 
@@ -118,6 +118,13 @@ export default class PublicKeyWithActions extends PureComponent {
     const {
       contact: { id, displayName },
     } = this.state
+
+    let errors = []
+    try {
+      errors = this.state.err.res.errors
+    } catch (e) {
+      // noop
+    }
 
     return (
       <ScrollView>
@@ -178,6 +185,7 @@ export default class PublicKeyWithActions extends PureComponent {
               onPress={this.onSubmit}
             />
           ) : null}
+          {errors.map((err, i) => <Text multiline key={i}>{err.message}</Text>)}
         </Flex.Rows>
       </ScrollView>
     )

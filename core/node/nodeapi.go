@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/jinzhu/gorm"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
@@ -162,19 +164,35 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 
 	// input validation
 	if err := req.Contact.Validate(); err != nil {
-		return nil, errors.Wrap(err, ErrInvalidInput.Error())
+		return nil, ErrInvalidInput
 	}
 
 	// check for duplicate
 	sql := n.sql(ctx)
 	contact, err := bsql.FindContact(sql, req.Contact)
-	if err != nil {
+
+	if errors.Cause(err) == gorm.ErrRecordNotFound {
 		// save contact in database
 		contact = req.Contact
 		contact.Status = entity.Contact_IsRequested
 		if err = sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 			return nil, errors.Wrap(err, "failed to save contact")
 		}
+	} else if err != nil {
+		return nil, err
+
+	} else if contact.Status == entity.Contact_RequestedMe {
+		logger().Info("this contact has already asked us, accepting the request")
+		return n.ContactAcceptRequest(ctx, contact)
+
+	} else if contact.Status == entity.Contact_IsRequested {
+		logger().Info("contact has already been requested, sending event again")
+
+	} else if contact.Status == entity.Contact_Myself {
+		return nil, ErrContactIsMyself
+
+	} else {
+		return nil, ErrEntityAlreadyExists
 	}
 
 	// send request to peer
