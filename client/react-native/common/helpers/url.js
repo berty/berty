@@ -3,7 +3,7 @@ const splitKeyValue = input => {
     return {}
   }
 
-  return input.substring(1).split('&')
+  return decodeURIComponent(input.substring(1)).split('&')
     .map(part => part.split('='))
     .reduce((acc, [key, value]) => ({
       ...acc,
