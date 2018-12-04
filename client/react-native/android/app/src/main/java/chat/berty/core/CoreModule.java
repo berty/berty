@@ -46,7 +46,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void initialize(Promise promise) {
         try {
-            Core.initialize(this.logger);
+            Core.initialize(this.logger, this.filesDir);
             promise.resolve(null);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to init core: %s", err);

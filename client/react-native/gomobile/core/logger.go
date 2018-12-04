@@ -1,13 +1,10 @@
 package core
 
 import (
-	"fmt"
-	"io/ioutil"
 	"os"
+	"path"
 
-	"berty.tech/core/pkg/zapring"
-	p2plog "github.com/ipfs/go-log"
-	"github.com/whyrusleeping/go-logging"
+	"berty.tech/core/pkg/logmanager"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -44,113 +41,41 @@ func (mc *mobileCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
-type p2pLogBackendWrapper struct {
-	logger *zap.Logger
-}
-
-func (l *p2pLogBackendWrapper) Log(level logging.Level, calldepth int, rec *logging.Record) error {
-	module := l.logger.Named(rec.Module)
-	switch level {
-	case logging.DEBUG:
-		module.Debug(rec.Message())
-	case logging.WARNING:
-		module.Warn(rec.Message())
-	case logging.ERROR:
-		module.Error(rec.Message())
-	case logging.CRITICAL:
-		module.Panic(rec.Message())
-	case logging.NOTICE:
-	case logging.INFO:
-		module.Info(rec.Message())
+func setupLogger(logLevel, datastorePath string, mlogger Logger) error {
+	// native logger
+	nativeEncoderConfig := zap.NewDevelopmentEncoderConfig()
+	nativeEncoderConfig.LevelKey = ""
+	nativeEncoderConfig.TimeKey = ""
+	nativeEncoderConfig.NameKey = ""
+	nativeEncoderConfig.CallerKey = ""
+	nativeEncoder := zapcore.NewConsoleEncoder(nativeEncoderConfig)
+	nativeOutput := zapcore.Lock(os.Stderr)
+	zapLogLevel, err := logmanager.ZapLogLevel(logLevel)
+	if err != nil {
+		return err
 	}
-
-	return nil
-}
-
-func getP2PLogLevel(level zapcore.Level) logging.Level {
-	switch level {
-	case zap.DebugLevel:
-		return logging.DEBUG
-	case zap.InfoLevel:
-		return logging.INFO
-	case zap.WarnLevel:
-		return logging.WARNING
-	case zap.ErrorLevel:
-		return logging.ERROR
-	}
-
-	return logging.CRITICAL
-}
-
-var ring = zapring.New(10 * 1024 * 1024)
-
-func setupLogger(logLevel string, mlogger Logger) error {
-	var zapLogLevel zapcore.Level
-	switch logLevel {
-	case "debug":
-		zapLogLevel = zap.DebugLevel
-	case "info":
-		zapLogLevel = zap.InfoLevel
-	case "warn":
-		zapLogLevel = zap.WarnLevel
-	case "error":
-		zapLogLevel = zap.ErrorLevel
-	default:
-		return fmt.Errorf("unknown log level: %q", logLevel)
-	}
-
-	// console core configuration
-	consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
-	consoleEncoderConfig.LevelKey = ""
-	consoleEncoderConfig.TimeKey = ""
-	consoleEncoderConfig.NameKey = ""
-	consoleEncoderConfig.CallerKey = ""
-	consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
-
-	consoleOutput := zapcore.Lock(os.Stderr)
-
-	consoleLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+	nativeLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapLogLevel
 	})
-
-	// console core creation
-	consoleCore := newMobileCore(
-		zapcore.NewCore(consoleEncoder, consoleOutput, consoleLevel),
-		consoleEncoder,
+	nativeCore := newMobileCore(
+		zapcore.NewCore(nativeEncoder, nativeOutput, nativeLevel),
+		nativeEncoder,
 		mlogger,
 	)
 
-	// gRPC ring core configuration
-	grpcRingEncoder := zapcore.NewJSONEncoder(zap.NewDevelopmentEncoderConfig())
-
-	grpcRingOutput := zapcore.AddSync(ioutil.Discard)
-
-	grpcRingLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return true
+	// start logmanager
+	logman, err := logmanager.New(logmanager.Opts{
+		RingSize:        10 * 1024 * 1024,
+		LogLevel:        logLevel,
+		LogNamespaces:   "*",
+		LogDirectory:    path.Join(datastorePath, "logs"),
+		AdditionalCores: []zapcore.Core{nativeCore},
 	})
-
-	// gRPC ring core creation
-	grpcRingCore := ring.Wrap(
-		zapcore.NewCore(grpcRingEncoder, grpcRingOutput, grpcRingLevel),
-		grpcRingEncoder,
-	)
-
-	// logger creation
-	l := zap.New(
-		zapcore.NewTee(consoleCore, grpcRingCore),
-		zap.ErrorOutput(consoleOutput),
-		zap.Development(),
-		zap.AddCaller(),
-	)
-	zap.ReplaceGlobals(l)
-	logger().Debug("logger initialized")
-
-	// configure p2p log
-	logging.SetBackend(&p2pLogBackendWrapper{
-		logger: zap.L().Named("vendor.libp2p").WithOptions(zap.AddCallerSkip(4)),
-	})
-	if err := p2plog.SetLogLevel("*", getP2PLogLevel(zapLogLevel).String()); err != nil {
-		logger().Warn("failed to set p2p log level", zap.Error(err))
+	if err != nil {
+		return err
 	}
+	logman.SetGlobal()
+
+	logger().Debug("logger initialized")
 	return nil
 }

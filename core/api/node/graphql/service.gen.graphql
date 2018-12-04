@@ -479,6 +479,12 @@ type BertyNodeVoid  {
 type BertyNodeLogEntry  {
       line: String!
 }
+type BertyNodeLogfileEntry  {
+      path: String!
+      filesize: Int32!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+}
 type BertyNodeNodeEvent  {
     kind: Enum
       attributes: [Byte!],
@@ -625,6 +631,12 @@ type BertyNodeProtocolsPayload {
 type BertyNodeLogEntryPayload {
       line: String!
 }
+type BertyNodeLogfileEntryPayload {
+      path: String!
+      filesize: Int32!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+}
 type BertyP2pBandwidthStatsPayload {
       id: String
       totalIn: Int64
@@ -727,6 +739,9 @@ type Query {
       addrs: [String!]
     connection: Enum
   ): BertyNodeProtocolsPayload
+  LogfileList(
+      T: Bool!
+  ): [BertyNodeLogfileEntryPayload]
   Panic(
       T: Bool!
   ): BertyNodeVoidPayload
@@ -816,6 +831,9 @@ type Subscription {
       logLevel: String!
       namespaces: String!
       last: Int32!
+  ): BertyNodeLogEntryPayload
+  LogfileRead(
+      path: String!
   ): BertyNodeLogEntryPayload
   MonitorBandwidth(
       id: String

@@ -42,6 +42,8 @@ func init() {
 	registerUnary("berty.node.Peers", NodePeers)
 	registerUnary("berty.node.Protocols", NodeProtocols)
 	registerServerStream("berty.node.LogStream", NodeLogStream)
+	registerServerStream("berty.node.LogfileList", NodeLogfileList)
+	registerServerStream("berty.node.LogfileRead", NodeLogfileRead)
 	registerServerStream("berty.node.MonitorBandwidth", NodeMonitorBandwidth)
 	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
 	registerUnary("berty.node.Panic", NodePanic)
@@ -457,6 +459,62 @@ func NodeLogStream(client *client.Client, ctx context.Context, jsonInput []byte)
 		return nil, err
 	}
 	stream, err := client.Node().LogStream(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+	return streamProxy, nil
+}
+func NodeLogfileList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "LogfileList"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().LogfileList(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+	return streamProxy, nil
+}
+func NodeLogfileRead(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "LogfileRead"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.LogfileReadInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().LogfileRead(ctx, &typedInput)
 	if err != nil {
 		return nil, err
 	}

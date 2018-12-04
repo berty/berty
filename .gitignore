@@ -1,3 +1,5 @@
+/go.mod
+
 # core
 core/.generated
 core/.*.generated

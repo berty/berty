@@ -8,14 +8,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"go.uber.org/zap"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/api/node/graphql/models"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/deviceinfo"
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"go.uber.org/zap"
 )
 
 type Resolver struct {
@@ -263,6 +264,27 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 		logger().Warn("unknown node type", zap.String("node_type", gID[0]))
 		return nil, nil
 	}
+}
+
+func (r *queryResolver) LogfileList(ctx context.Context, T bool) ([]*node.LogfileEntry, error) {
+	stream, err := r.client.LogfileList(ctx, &node.Void{})
+	if err != nil {
+		return nil, err
+	}
+
+	entries := []*node.LogfileEntry{}
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+
+	return entries, nil
 }
 
 func (r *queryResolver) ID(ctx context.Context, T bool) (*p2p.Peer, error) {
@@ -546,7 +568,32 @@ func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Even
 				break
 			}
 			if err != nil {
-				// logger().Error(err.Error())
+				logger().Error(err.Error())
+				break
+			}
+			channel <- elem
+		}
+	}()
+	return channel, nil
+}
+
+func (r *subscriptionResolver) LogfileRead(ctx context.Context, path string) (<-chan *node.LogEntry, error) {
+	stream, err := r.client.LogfileRead(ctx, &node.LogfileReadInput{
+		Path: path,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	channel := make(chan *node.LogEntry, 1)
+	go func() {
+		for {
+			elem, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				logger().Error(err.Error())
 				break
 			}
 			channel <- elem
@@ -573,7 +620,7 @@ func (r *subscriptionResolver) LogStream(ctx context.Context, continues bool, lo
 				break
 			}
 			if err != nil {
-				// logger().Error(err.Error())
+				logger().Error(err.Error())
 				break
 			}
 			channel <- elem
@@ -596,7 +643,7 @@ func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan
 				break
 			}
 			if err != nil {
-				// logger().Error(err.Error())
+				logger().Error(err.Error())
 				break
 			}
 			channel <- elem
@@ -634,7 +681,7 @@ func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string,
 				break
 			}
 			if err != nil {
-				// logger().Error(err.Error())
+				logger().Error(err.Error())
 				break
 			}
 			channel <- elem

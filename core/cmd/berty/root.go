@@ -2,62 +2,30 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"strings"
 
-	p2plog "github.com/ipfs/go-log"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	logging "github.com/whyrusleeping/go-logging"
 	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 
 	"berty.tech/core"
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
-	"berty.tech/core/pkg/filteredzap"
-	"berty.tech/core/pkg/zapring"
+	"berty.tech/core/pkg/logmanager"
 )
 
-type p2pLogBackendWrapper struct {
-	logger *zap.Logger
-}
-
-func (l *p2pLogBackendWrapper) Log(level logging.Level, calldepth int, rec *logging.Record) error {
-	module := l.logger.Named(rec.Module)
-	switch level {
-	case logging.DEBUG:
-		module.Debug(rec.Message())
-	case logging.WARNING:
-		module.Warn(rec.Message())
-	case logging.ERROR:
-		module.Error(rec.Message())
-	case logging.CRITICAL:
-		module.Panic(rec.Message())
-	case logging.NOTICE:
-	case logging.INFO:
-		module.Info(rec.Message())
+func setupRand(cmd *cobra.Command, args []string) error {
+	randSeed, err := cmd.Flags().GetInt64("rand-seed")
+	if err != nil {
+		return err
 	}
-
+	if randSeed != 0 {
+		rand.Seed(randSeed)
+	}
 	return nil
-}
-
-func getP2PLogLevel(level zapcore.Level) logging.Level {
-	switch level {
-	case zap.DebugLevel:
-		return logging.DEBUG
-	case zap.InfoLevel:
-		return logging.INFO
-	case zap.WarnLevel:
-		return logging.WARNING
-	case zap.ErrorLevel:
-		return logging.ERROR
-	}
-
-	return logging.CRITICAL
 }
 
 func newRootCommand() *cobra.Command {
@@ -68,6 +36,9 @@ func newRootCommand() *cobra.Command {
 			core.Version, p2p.Version, node.Version, core.GitSha, core.GitBranch, core.GitTag, core.BuildMode, core.CommitDate(),
 		),
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			if err := setupRand(cmd, args); err != nil {
+				return err
+			}
 			if err := setupLogger(cmd, args); err != nil {
 				return err
 			}
@@ -84,6 +55,7 @@ func newRootCommand() *cobra.Command {
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
 	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
+	cmd.PersistentFlags().StringP("log-dir", "", "/tmp/berty-logs", "local log files directory")
 	cmd.PersistentFlags().StringP("jaeger-address", "", "127.0.0.1:6831", "ip address / hostname and port of jaeger-agent: <hostname>:<port>")
 	cmd.PersistentFlags().StringP("jaeger-name", "", defaultJaegerName, "tracer name")
 	cmd.PersistentFlags().Int64P("rand-seed", "", 0, "seed used to initialize the default rand source")
@@ -102,90 +74,34 @@ func newRootCommand() *cobra.Command {
 	return cmd
 }
 
-var ring = zapring.New(10 * 1024 * 1024)
-
 func setupLogger(cmd *cobra.Command, args []string) error {
-	randSeed, err := cmd.Flags().GetInt64("rand-seed")
-	if err != nil {
-		return err
-	}
-	if randSeed != 0 {
-		rand.Seed(randSeed)
-	}
-
 	cfgLogLevel, err := cmd.Flags().GetString("log-level")
 	if err != nil {
 		return err
 	}
-
-	var logLevel zapcore.Level
-	switch cfgLogLevel {
-	case "debug":
-		logLevel = zap.DebugLevel
-	case "info":
-		logLevel = zap.InfoLevel
-	case "warn":
-		logLevel = zap.WarnLevel
-	case "error":
-		logLevel = zap.ErrorLevel
-	default:
-		return fmt.Errorf("unknown log level: %q", cfgLogLevel)
-	}
-
 	patternsString, err := cmd.Flags().GetString("log-namespaces")
 	if err != nil {
 		panic(err)
 	}
-
-	// console core configuration
-	consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
-	consoleEncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-	consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
-
-	consoleOutput := zapcore.Lock(os.Stderr)
-
-	consoleLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= logLevel
-	})
-
-	// console core creation with namespace filtering
-	consoleCore := filteredzap.FilterByNamespace(
-		zapcore.NewCore(consoleEncoder, consoleOutput, consoleLevel),
-		patternsString,
-	)
-
-	// gRPC ring core configuration
-	grpcRingEncoder := zapcore.NewJSONEncoder(zap.NewDevelopmentEncoderConfig())
-
-	grpcRingOutput := zapcore.AddSync(ioutil.Discard)
-
-	grpcRingLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return true
-	})
-
-	// gRPC ring core creation
-	grpcRingCore := ring.Wrap(
-		zapcore.NewCore(grpcRingEncoder, grpcRingOutput, grpcRingLevel),
-		grpcRingEncoder,
-	)
-
-	// logger creation
-	l := zap.New(
-		zapcore.NewTee(consoleCore, grpcRingCore),
-		zap.ErrorOutput(consoleOutput),
-		zap.Development(),
-		zap.AddCaller(),
-	)
-	zap.ReplaceGlobals(l)
-	logger().Debug("logger initialized")
-
-	// configure p2p log
-	logging.SetBackend(&p2pLogBackendWrapper{
-		logger: zap.L().Named("vendor.libp2p").WithOptions(zap.AddCallerSkip(4)),
-	})
-	if err := p2plog.SetLogLevel("*", getP2PLogLevel(logLevel).String()); err != nil {
-		logger().Warn("failed to set p2p log level", zap.Error(err))
+	// local file
+	logDir, err := cmd.Flags().GetString("log-dir")
+	if err != nil {
+		panic(err)
 	}
+
+	// start logmanager
+	logman, err := logmanager.New(logmanager.Opts{
+		RingSize:      10 * 1024 * 1024,
+		LogLevel:      cfgLogLevel,
+		LogNamespaces: patternsString,
+		LogDirectory:  logDir,
+	})
+	if err != nil {
+		return err
+	}
+	logman.SetGlobal()
+
+	zap.L().Debug("logger initialized")
 	return nil
 }
 

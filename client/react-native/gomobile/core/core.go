@@ -10,6 +10,7 @@ import (
 	"time"
 
 	account "berty.tech/core/manager/account"
+	"berty.tech/core/pkg/logmanager"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -67,10 +68,10 @@ func GetPort() (int, error) {
 	return strconv.Atoi(strings.Split(a.GQLBind, ":")[1])
 }
 
-func Initialize(loggerNative Logger) error {
+func Initialize(loggerNative Logger, datastorePath string) error {
 	defer panicHandler()
 
-	if err := setupLogger("debug", loggerNative); err != nil {
+	if err := setupLogger("debug", datastorePath, loggerNative); err != nil {
 		return err
 	}
 
@@ -187,6 +188,7 @@ func waitDaemon(nickname string) {
 
 func daemon(nickname, datastorePath string, loggerNative Logger) error {
 	defer panicHandler()
+	_ = logmanager.G().LogRotate()
 
 	grpcPort, err := getRandomPort()
 	if err != nil {
@@ -206,7 +208,7 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 
 	accountOptions := account.Options{
 		account.WithJaegerAddrName("jaeger.berty.io:6831", nickname+":mobile"),
-		account.WithRing(ring),
+		account.WithRing(logmanager.G().Ring()),
 		account.WithName(nickname),
 		account.WithPassphrase("secure"),
 		account.WithDatabase(&account.DatabaseOptions{
