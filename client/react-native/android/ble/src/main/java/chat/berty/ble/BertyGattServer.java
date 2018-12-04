@@ -17,7 +17,7 @@ import android.util.Log;
 import java.nio.charset.Charset;
 import java.util.UUID;
 
-import core.Core;
+////import core.Core;
 
 import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
@@ -164,7 +164,7 @@ public class BertyGattServer extends BluetoothGattServerCallback {
         BertyDevice bDevice = BertyUtils.getDeviceFromAddr(device.getAddress());
         if (charID.equals(BertyUtils.WRITER_UUID)) {
             BertyUtils.logger("debug", TAG, "rep needed: " + responseNeeded + "prepared: " + preparedWrite + " transid: " + requestId  + " offset: " + offset + " len: " + value.length);
-            Core.bytesToConn(bDevice.ma, value);
+////            Core.bytesToConn(bDevice.ma, value);
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
             }

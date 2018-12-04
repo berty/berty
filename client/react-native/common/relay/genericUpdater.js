@@ -47,21 +47,26 @@ export default (fragment, alias, args) => {
       ConnectionHandler.deleteNode(connection, data.id)
       return
     }
-    console.log(args)
+
     // get all edges
+    const node =
+      store.get(data.id) ||
+      store.create(data.id, connectionHelper.getEdgeNodeType())
+    console.log('node', node)
     const edges = connection.getLinkedRecords('edges')
     const field = Case.camel(args.orderBy || args.sortBy || 'id')
     const cursor =
-      field === 'id' ? atob(data.id).split(/:(.+)/)[1] : data[field]
+      field === 'id'
+        ? atob(node.getValue('id')).split(/:(.+)/)[1]
+        : node.getValue(field)
+    console.log('cursor', cursor)
     if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
       // update
       return
     }
 
+    console.log('add connection', { connection })
     // add
-    const node =
-      store.get(data.id) ||
-      store.create(data.id, connectionHelper.getEdgeNodeType())
     const edge = ConnectionHandler.createEdge(
       store,
       connection,
@@ -71,9 +76,11 @@ export default (fragment, alias, args) => {
     edge.setValue(cursor, 'cursor')
 
     if (connectionHelper.direction === 'forward' && args.orderDesc === false) {
+      console.log('forward')
       ConnectionHandler.insertEdgeAfter(connection, edge, cursor)
       return
     }
+    console.log('backward')
     ConnectionHandler.insertEdgeBefore(connection, edge, cursor)
   }
 }

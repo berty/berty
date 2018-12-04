@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.Semaphore;
 
-import core.Core;
+////import core.Core;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class BertyDevice {
@@ -71,7 +71,7 @@ public class BertyDevice {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                     try {
                         latchRdy.await();
-                        Core.addToPeerStore(peerID, ma);
+////                        Core.addToPeerStore(peerID, ma);
                     } catch (Exception e) {
                         BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
                     }

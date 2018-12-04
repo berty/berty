@@ -131,8 +131,8 @@ func (n *Node) GetEvent(ctx context.Context, input *gql.Node) (*p2p.Event, error
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var event *p2p.Event
-	if err := sql.First(event, "ID = ?", input.ID).Error; err != nil {
+	event := &p2p.Event{}
+	if err := sql.Where(input).First(event).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
@@ -337,8 +337,8 @@ func (n *Node) GetContact(ctx context.Context, input *gql.Node) (*entity.Contact
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var contact *entity.Contact
-	if err := sql.First(contact, "ID = ?", input.ID).Error; err != nil {
+	contact := &entity.Contact{}
+	if err := sql.Where(input).First(contact).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
@@ -517,8 +517,8 @@ func (n *Node) GetConversation(ctx context.Context, input *gql.Node) (*entity.Co
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var conversation *entity.Conversation
-	if err := sql.First(conversation, "ID = ?", input.ID).Error; err != nil {
+	conversation := &entity.Conversation{}
+	if err := sql.Where(input).First(conversation).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
@@ -533,8 +533,8 @@ func (n *Node) GetConversationMember(ctx context.Context, input *gql.Node) (*ent
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var conversationMember *entity.ConversationMember
-	if err := sql.First(conversationMember, "ID = ?", input.ID).Error; err != nil {
+	conversationMember := &entity.ConversationMember{}
+	if err := sql.Where(input).First(conversationMember).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
