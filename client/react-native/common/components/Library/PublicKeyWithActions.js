@@ -13,6 +13,8 @@ import {
 import { marginTop, padding, rounded, textTiny } from '../../styles'
 import QRGenerator from './QRGenerator'
 import { ThemeProvider, ButtonGroup } from 'react-native-elements'
+import { parse as parseUrl } from '../../helpers/url'
+import QRReader from './QRReader'
 
 const CopyKeyButton = ({ id }) => (
   <ActionButton
@@ -142,39 +144,40 @@ export default class PublicKeyWithActions extends PureComponent {
       <ScrollView>
         <Flex.Rows style={[padding]} align='center'>
           <Flex.Cols style={{ width: 330 }}>
-            <TextInput
-              placeholder={'Contact name (optional)'}
-              onChangeText={displayName =>
-                this.setState({ contact: { ...this.state.contact, displayName } })
-              }
-              value={displayName}
-              style={[
-                {
-                  backgroundColor: colors.grey7,
-                  color: colors.black,
-                  textAlign: 'left',
-                  flex: 1,
-                  ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
-                },
-                padding,
-                rounded,
-              ]}
-            />
+            {mode === 'key' || (readOnly)
+              ? <TextInput
+                placeholder={'Contact name (optional)'}
+                onChangeText={displayName =>
+                  this.setState({ contact: { ...this.state.contact, displayName } })
+                }
+                value={displayName}
+                style={[
+                  {
+                    backgroundColor: colors.grey7,
+                    color: colors.black,
+                    textAlign: 'left',
+                    flex: 1,
+                    ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
+                  },
+                  padding,
+                  rounded,
+                ]}
+              />
+              : <Text style={{ flex: 1 }}>{' '}</Text>
+            }
             {/* TODO: Use a lighter button group impl? */}
-            {readOnly
-              ? <ThemeProvider theme={{ colors: { primary: colors.blue } }}>
-                <ButtonGroup
-                  onPress={() => this.setState({ mode: mode === 'key' ? 'qrcode' : 'key' })}
-                  selectedIndex={mode === 'key' ? 0 : 1}
-                  buttons={modeButtons}
-                  containerStyle={{ height: 32, flex: 1 }}
-                  selectedBackgroundColor={colors.green}
-                  component={Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity}
-                />
-              </ThemeProvider>
-              : null}
+            <ThemeProvider theme={{ colors: { primary: colors.blue } }}>
+              <ButtonGroup
+                onPress={() => this.setState({ mode: mode === 'key' ? 'qrcode' : 'key' })}
+                selectedIndex={mode === 'key' ? 0 : 1}
+                buttons={modeButtons}
+                containerStyle={{ height: 32, flex: 1 }}
+                selectedBackgroundColor={colors.green}
+                component={Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity}
+              />
+            </ThemeProvider>
           </Flex.Cols>
-          {(!readOnly || mode === 'key')
+          {mode === 'key'
             ? <TextInputMultilineFix
               style={[
                 {
@@ -200,6 +203,24 @@ export default class PublicKeyWithActions extends PureComponent {
               selectTextOnFocus
             />
             : null}
+
+          {!readOnly && mode === 'qrcode'
+            ? <QRReader style={{ width: 248, height: 248 }} onFound={data => {
+              const url = parseUrl(data)
+
+              if (!url || url.pathname !== '/add-contact' || url.hashParts['public-key'] === '') {
+                return
+              }
+
+              this.setState({
+                mode: 'key',
+                contact: {
+                  ...this.state.contact,
+                  id: url.hashParts['public-key'],
+                  displayName: url.hashParts['display-name'] || '',
+                },
+              })
+            }} /> : null}
           {readOnly && mode === 'qrcode'
             ? <QRGenerator
               value={makeShareableUrl({ id, displayName })}
@@ -212,7 +233,7 @@ export default class PublicKeyWithActions extends PureComponent {
             <ShareKeyButton id={id} displayName={displayName} self={self} />
           ) : null}
           {copyButton ? <CopyKeyButton id={id} /> : null}
-          {addButton ? (
+          {addButton && mode === 'key' ? (
             <AddButton
               id={id}
               displayName={displayName}

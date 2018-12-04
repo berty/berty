@@ -5075,6 +5075,13 @@ react-lifecycles-compat@^3, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
+react-native-camera@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-1.4.3.tgz#71359ae8efdf372fb1b8b5ec72ecae1c6708da4b"
+  dependencies:
+    lodash "^4.17.10"
+    prop-types "^15.6.2"
+
 react-native-collapsible@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/react-native-collapsible/-/react-native-collapsible-1.3.0.tgz#5eabe4d529730582e72c5cefd2476bb55e81ce05"
@@ -5121,6 +5128,17 @@ react-native-keyboard-spacer@^0.4.1:
 react-native-network-info@^4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-native-network-info/-/react-native-network-info-4.0.0.tgz#aade28ddcf38f5d2c4d8055078dd7f0d97c51cff"
+
+react-native-permissions@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-permissions/-/react-native-permissions-1.1.1.tgz#4876004681ff8556454613d85249b01baff9b35b"
+
+react-native-qrcode-scanner@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-qrcode-scanner/-/react-native-qrcode-scanner-1.1.0.tgz#6a2e88110e0c1def94690a4d52fc383634ed6e4c"
+  dependencies:
+    prop-types "^15.5.10"
+    react-native-permissions "^1.1.1"
 
 react-native-qrcode-svg@^5.1.1:
   version "5.1.1"
