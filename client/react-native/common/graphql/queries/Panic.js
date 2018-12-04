@@ -10,6 +10,6 @@ const query = graphql`
 
 export default context => ({
   graphql: query,
-  fetch: (variables = {}) =>
-    fetchQuery(context.environment, query, variables),
+  fetch: async (variables = {}) =>
+    (await fetchQuery(context.environment, query, variables)).Panic,
 })

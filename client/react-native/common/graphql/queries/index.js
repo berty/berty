@@ -1,4 +1,5 @@
 export ConversationList from './ConversationList'
+export Conversation from './Conversation'
 export ContactList from './ContactList'
 export Contact from './Contact'
 export DeviceInfos from './DeviceInfos'

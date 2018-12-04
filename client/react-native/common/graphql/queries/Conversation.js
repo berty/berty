@@ -18,10 +18,10 @@ const defaultVariables = {
 export default context => ({
   graphql: query,
   defaultVariables,
-  fetch: variables =>
-    fetchQuery(
+  fetch: async variables =>
+    (await fetchQuery(
       context.environment,
       query,
       merge([defaultVariables, variables])
-    ),
+    )).GetConversation,
 })

@@ -14,5 +14,5 @@ const query = graphql`
 
 export default context => ({
   graphql: query,
-  fetch: () => fetchQuery(context.environment, query, { t: true }),
+  fetch: async () => (await fetchQuery(context.environment, query, { t: true })).Peers,
 })
