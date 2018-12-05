@@ -72,7 +72,9 @@ func UnmarshalString(v interface{}) (string, error) {
 }
 
 func MarshalTime(t time.Time) graphql.Marshaler {
-	return graphql.MarshalTime(t)
+	return graphql.WriterFunc(func(w io.Writer) {
+		io.WriteString(w, strconv.Quote(t.String()))
+	})
 }
 
 func UnmarshalTime(v interface{}) (time.Time, error) {
@@ -84,9 +86,9 @@ func UnmarshalTime(v interface{}) (time.Time, error) {
 		if len(v) == 0 {
 			return time.Time{}, nil
 		}
-		return graphql.UnmarshalTime(v)
+		return time.Parse(time.RFC3339Nano, v)
 	default:
-		return graphql.UnmarshalTime(v)
+		return time.Time{}, errors.New("time should be RFC3339Nano formatted string")
 	}
 	return graphql.UnmarshalTime(v)
 }

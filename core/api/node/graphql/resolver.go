@@ -349,9 +349,9 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.String()
+			cursor = n.CreatedAt.Format(time.RFC3339Nano)
 		case "updated_at":
-			cursor = n.UpdatedAt.String()
+			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
 		}
 
 		output.Edges = append(output.Edges, &node.EventEdge{
@@ -432,9 +432,9 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.String()
+			cursor = n.CreatedAt.Format(time.RFC3339Nano)
 		case "updated_at":
-			cursor = n.UpdatedAt.String()
+			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
 		}
 
 		output.Edges = append(output.Edges, &node.ContactEdge{
@@ -503,9 +503,9 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.String()
+			cursor = n.CreatedAt.Format(time.RFC3339Nano)
 		case "updated_at":
-			cursor = n.UpdatedAt.String()
+			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
 		}
 
 		output.Edges = append(output.Edges, &node.ConversationEdge{
