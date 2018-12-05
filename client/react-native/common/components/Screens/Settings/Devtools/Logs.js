@@ -11,7 +11,7 @@ import {
 import React, { PureComponent } from 'react'
 
 import { Menu, Header, Text, Flex } from '../../../Library'
-import { borderBottom, padding } from '../../../../styles'
+import { borderBottom } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { createSubStackNavigator } from '../../../../helpers/react-navigation'
 
@@ -286,8 +286,9 @@ class Line extends PureComponent {
         style={[
           {
             backgroundColor: colors.white,
+            paddingHorizontal: compact ? 8 : 16,
+            paddingVertical: compact ? 4 : 12,
           },
-          padding,
           borderBottom,
         ]}
       >
@@ -304,7 +305,7 @@ class Line extends PureComponent {
             <Flex.Cols
               justify='space-between'
               align='stretch'
-              style={{ marginTop: 0.5 }}
+              style={{ marginTop: compact ? 0 : 0.5 }}
             >
               <Text
                 multiline={compact ? 1 : true}
@@ -325,7 +326,7 @@ class Line extends PureComponent {
                 {log.caller}
               </Text>
             </Flex.Cols>
-            <Flex.Cols style={{ marginTop: 2 }}>
+            <Flex.Cols style={{ marginTop: compact ? 0 : 2 }}>
               <Text left multiline={compact ? 1 : true}>
                 {log.message}
               </Text>
