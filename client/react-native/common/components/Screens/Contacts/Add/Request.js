@@ -190,7 +190,7 @@ const Item = fragments.Contact(
 class Received extends PureComponent {
   render () {
     const { navigation, screenProps } = this.props
-    const { queries } = screenProps.context
+    const { queries, subscriptions } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
@@ -202,6 +202,10 @@ class Received extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
+          subscriptions={[
+            subscriptions.contactRequest,
+            subscriptions.contactRequestAccepted,
+          ]}
           renderItem={props => (
             <Item
               {...props}
@@ -218,7 +222,7 @@ class Received extends PureComponent {
 class Sent extends PureComponent {
   render () {
     const { navigation, screenProps } = this.props
-    const { queries } = screenProps.context
+    const { queries, subscriptions } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
@@ -230,6 +234,10 @@ class Sent extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
+          subscriptions={[
+            subscriptions.contactRequest,
+            subscriptions.contactRequestAccepted,
+          ]}
           renderItem={props => (
             <Item
               {...props}

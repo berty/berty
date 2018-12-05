@@ -1,13 +1,15 @@
-version: '3'
+version: '3.4'
 
 services:
   web-service:
-    build: .
-    image: bertychat/web
+    build:
+      context: .
+      target: web
+    image: bertychat/dev-web
     ports:
       - "3001:3000"
     volumes:
-      - ./common:/usr/src/app/common
+      - .:/usr/src/app
 
   tracer-service:
     image: jaegertracing/all-in-one:1.6
@@ -23,12 +25,15 @@ services:
       - "9411:9411"
 
   core-service:
-    build: ../..
-    image: bertychat/berty
+    build:
+      context: .
+      target: core
+    image: bertychat/dev-core
     ports:
       - "8701-8801:8700"
       - "1338-1438:1337"
     depends_on:
       - web-service
       - tracer-service
-    command: daemon --log-level=debug --jaeger-address=react-native_tracer-service_1:6831
+    volumes:
+      - $GOPATH/src:/go/src

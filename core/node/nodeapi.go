@@ -329,8 +329,8 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	return nil
 }
 
-// GetContact implements berty.node.GetContact
-func (n *Node) GetContact(ctx context.Context, input *gql.Node) (*entity.Contact, error) {
+// Contact implements berty.node.Contact
+func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.Contact, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -338,11 +338,11 @@ func (n *Node) GetContact(ctx context.Context, input *gql.Node) (*entity.Contact
 
 	sql := n.sql(ctx)
 	contact := &entity.Contact{}
-	if err := sql.Where(input).First(contact).Error; err != nil {
+	if err := sql.Where(input).First(input).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
-	return contact, nil
+	return input, nil
 }
 
 //

@@ -64,7 +64,7 @@ service Service {
     option (gql.graphql_output) = ".berty.node.ContactListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc GetContact (gql.Node) returns (berty.entity.Contact) {
+  rpc Contact (ContactInput) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -240,6 +240,9 @@ message ContactEdge {
 message ContactListConnection {
   repeated ContactEdge edges = 1;
   PageInfo page_info = 99 [(gql.graphql_non_nullable) = true];
+}
+message ContactInput {
+  berty.entity.Contact filter = 1;
 }
 
 

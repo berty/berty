@@ -456,8 +456,11 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetContact(ctx context.Context, id string) (*entity.Contact, error) {
-	return r.client.GetContact(ctx, &gql.Node{ID: strings.SplitN(id, ":", 2)[1]})
+func (r *queryResolver) Contact(ctx context.Context, filter *entity.Contact) (*entity.Contact, error) {
+	if filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+	}
+	return r.client.Contact(ctx, &node.ContactInput{Filter: filter})
 }
 func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {
 	if filter != nil && filter.ID != "" {

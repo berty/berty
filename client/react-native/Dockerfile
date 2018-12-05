@@ -1,26 +1,35 @@
-# Base image
-FROM node:10.10.0-alpine
-
-# Create needed directories
-RUN mkdir -p /usr/src/app
-RUN mkdir /usr/src/app/common
+# Web
+FROM node:10.14.1-slim as web
 
 # Install watchman
-RUN mkdir /var/run/watchman
-RUN echo "@testing http://dl-4.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories && \
-    apk update && apk add --no-cache watchman@testing
+RUN apt-get update \
+    && apt-get install -y git libtool pkg-config libssl-dev build-essential python-dev automake autoconf \
+    && cd /tmp \
+    && git clone https://github.com/facebook/watchman.git \
+    && cd watchman \
+    && git checkout v4.9.0 \
+    && ./autogen.sh \
+    && ./configure --enable-statedir=/tmp \
+    && make \
+    && make install \
+    && mv watchman /usr/local/bin/watchman
 
-# Install common dependencies
-COPY common/schema.graphql /usr/src/app/common/schema.graphql
-COPY .eslintrc /usr/src/app/.eslintrc
-COPY package.json /usr/src/app/package.json
-COPY yarn.lock /usr/src/app/yarn.lock
-RUN cd /usr/src/app && yarn --silent
+VOLUME /usr/src/app
 
-# Install web dependencies
-COPY web /usr/src/app/web
-RUN cd /usr/src/app/web && yarn --silent
+WORKDIR /usr/src/app
 
-# Start app
-WORKDIR /usr/src/app/web
-CMD ["yarn", "start"]
+CMD cd web && yarn start
+
+# Core
+FROM golang:1.11-alpine as core
+
+RUN apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git
+
+ENV GO111MODULE=on GOPROXY=http://goproxy.berty.io:3000
+
+VOLUME /go/src
+
+CMD cd /go/src/berty.tech/core \
+    && make dev RUN_DAEMON_OPTS="--log-level=debug --jaeger-address=react-native_tracer-service_1:6831"
+
+
