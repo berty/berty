@@ -1529,6 +1529,15 @@ models:
       edges:
       pageInfo:
 
+  BertyNodeContactInput:
+    model: berty.tech/core/api/node.ContactInput
+    fields:
+      filter:
+  BertyNodeContactInputPayload:
+    model: berty.tech/core/api/node.ContactInput
+    fields:
+      filter:
+
   BertyNodeConversationListInput:
     model: berty.tech/core/api/node.ConversationListInput
     fields:

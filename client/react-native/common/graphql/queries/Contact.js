@@ -3,7 +3,7 @@ import { contact } from '../../utils'
 import { merge } from '../../helpers'
 
 const query = graphql`
-  query ContactQuery($filter: BertyEntityContact) {
+  query ContactQuery($filter: BertyEntityContactInput) {
     Contact(filter: $filter) {
       id
       ...Contact

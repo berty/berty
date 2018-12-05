@@ -248,7 +248,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	gID := strings.SplitN(id, ":", 2)
 	switch gID[0] {
 	case "contact":
-		return r.GetContact(ctx, id)
+		return r.Contact(ctx, &entity.Contact{ID: id})
 	case "conversation":
 		return r.GetConversation(ctx, id)
 	case "conversation_member":

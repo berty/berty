@@ -25,7 +25,7 @@ func init() {
 	registerUnary("berty.node.ContactRemove", NodeContactRemove)
 	registerUnary("berty.node.ContactUpdate", NodeContactUpdate)
 	registerServerStream("berty.node.ContactList", NodeContactList)
-	registerUnary("berty.node.GetContact", NodeGetContact)
+	registerUnary("berty.node.Contact", NodeContact)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
@@ -219,17 +219,17 @@ func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byt
 	}()
 	return streamProxy, nil
 }
-func NodeGetContact(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
 		zap.String("service", "Service"),
-		zap.String("method", "GetContact"),
+		zap.String("method", "Contact"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput graphql.Node
+	var typedInput node.ContactInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().GetContact(ctx, &typedInput)
+	return client.Node().Contact(ctx, &typedInput)
 }
 func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",

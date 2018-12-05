@@ -8,6 +8,7 @@ export default context => ({
         updater &&
         (async (store, data) => {
           if (data.EventStream.kind === 302) {
+            console.log('new message', data.EventStream)
             const conversation = await context.queries.Conversation.fetch({
               id: data.EventStream.conversationId,
             })

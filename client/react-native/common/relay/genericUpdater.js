@@ -34,6 +34,8 @@ export default (fragment, alias, args) => {
     const helper = new FragmentHelper(fragment)
     const connectionHelper = helper.getConnection(alias)
     const root = store.getRoot()
+    console.log({ fragment, alias, args })
+    console.log({ store, data, deletion })
     const connection = ConnectionHandler.getConnection(
       root,
       helper.getConnection(alias).key,
@@ -55,12 +57,20 @@ export default (fragment, alias, args) => {
     console.log('node', node)
     const edges = connection.getLinkedRecords('edges')
     const field = Case.camel(args.orderBy || args.sortBy || 'id')
+    console.log('btoa', node.getValue('id'))
     const cursor =
       field === 'id'
         ? atob(node.getValue('id')).split(/:(.+)/)[1]
         : node.getValue(field)
     console.log('cursor', cursor)
-    if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
+    if (
+      edges.length > 0 &&
+      edges.some(
+        e =>
+          console.log('edges: cursor: ', e.getValue('cursor')) ||
+          e.getValue('cursor') === cursor
+      )
+    ) {
       // update
       return
     }
@@ -75,6 +85,7 @@ export default (fragment, alias, args) => {
     )
     edge.setValue(cursor, 'cursor')
 
+    console.log(store)
     if (connectionHelper.direction === 'forward' && args.orderDesc === false) {
       console.log('forward')
       ConnectionHandler.insertEdgeAfter(connection, edge, cursor)

@@ -9,11 +9,13 @@ export default context => ({
     EventStream(context).subscribe({
       updater:
         updater &&
-        ((store, data) => {
+        (async (store, data) => {
           if (data.EventStream.kind === 201) {
             const attributes = parseEmbedded(data.EventStream.attributes)
-            attributes.me.id = btoa('contact:' + attributes.me.id)
-            return updater && updater(store, attributes.me)
+            const contact = await context.queries.Contact.fetch({
+              id: btoa('contact:' + attributes.me.id),
+            })
+            return updater(store, contact)
           }
         }),
     }),

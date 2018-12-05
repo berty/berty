@@ -98,11 +98,16 @@ export default class Pagination extends PureComponent {
     const { subscriptions = [], fragment, alias, variables } = this.props
     this.subscribers = subscriptions.map(s =>
       s.subscribe({
-        updater: genericUpdater(fragment, alias, {
-          ...variables,
-          count: undefined,
-          cursor: undefined,
-        }),
+        updater: genericUpdater(
+          fragment,
+          alias,
+          Object.keys(variables).reduce((a, k) => {
+            if (k !== 'cursor' && k !== 'count') {
+              a[k] = variables[k]
+            }
+            return a
+          }, {})
+        ),
       })
     )
   }

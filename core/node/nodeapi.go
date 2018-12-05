@@ -337,12 +337,12 @@ func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.C
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	contact := &entity.Contact{}
-	if err := sql.Where(input).First(input).Error; err != nil {
+	output := &entity.Contact{}
+	if err := n.sql.Where(input.Filter).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
-	return input, nil
+	return output, nil
 }
 
 //
