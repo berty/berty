@@ -82,7 +82,7 @@ func (n *Node) cron(ctx context.Context) {
 	}
 }
 
-func (n *Node) handleClientEvent(event *p2p.Event) {
+func (n *Node) handleClientEvent(ctx context.Context, event *p2p.Event) {
 	logger().Debug("client event", zap.Stringer("event", event))
 
 	// @FIXME: Don't create a span here for now
@@ -98,10 +98,10 @@ func (n *Node) handleClientEvent(event *p2p.Event) {
 	n.clientEventsMutex.Unlock()
 }
 
-func (n *Node) handleOutgoingEvent(event *p2p.Event) {
+func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 	logger().Debug("outgoing event", zap.Stringer("event", event))
 
-	span, ctx := event.CreateSpan(context.Background())
+	span, ctx := event.CreateSpan(ctx)
 
 	envelope := p2p.Envelope{}
 	eventBytes, err := proto.Marshal(event)
@@ -183,10 +183,10 @@ func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
 	for {
 		select {
 		case event := <-n.outgoingEvents:
-			n.handleOutgoingEvent(event)
+			n.handleOutgoingEvent(ctx, event)
 			// emit the outgoing event on the node event stream
 		case event := <-n.clientEvents:
-			n.handleClientEvent(event)
+			n.handleClientEvent(ctx, event)
 		}
 	}
 }
