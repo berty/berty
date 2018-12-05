@@ -3,7 +3,7 @@ const splitKeyValue = input => {
     return {}
   }
 
-  return input.substring(1).split('&')
+  return decodeURIComponent(input.substring(1)).split('&')
     .map(part => part.split('='))
     .reduce((acc, [key, value]) => ({
       ...acc,
@@ -14,6 +14,10 @@ const splitKeyValue = input => {
 export const parse = url => {
   // We don't need to be fully compliant with URL spec yet
   // this is a quick and dirty replacement for whatwg-url
+
+  if (typeof url !== 'string') {
+    return {}
+  }
 
   // eslint-disable-next-line
   const parts = url.match(/([^:]+):\/+([^/]+)([^#?]*)(\?[^#]*)?(#.*)?/)

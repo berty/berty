@@ -1,4 +1,4 @@
-import { ScrollView, TextInput, Platform, Clipboard } from 'react-native'
+import { ScrollView, TextInput, Platform, Clipboard, TouchableNativeFeedback, TouchableOpacity } from 'react-native'
 import { btoa } from 'b64-lite'
 import React, { PureComponent } from 'react'
 
@@ -6,11 +6,15 @@ import { Button, Flex, TextInputMultilineFix, Text } from './index'
 import { RelayContext } from '../../relay'
 import { colors } from '../../constants'
 import {
-  extractPublicKeyFromId,
+  extractPublicKeyFromId, makeShareableUrl,
   shareLinkOther,
   shareLinkSelf,
 } from '../../helpers/contacts'
 import { marginTop, padding, rounded, textTiny } from '../../styles'
+import QRGenerator from './QRGenerator'
+import { ThemeProvider, ButtonGroup } from 'react-native-elements'
+import { parse as parseUrl } from '../../helpers/url'
+import QRReader from './QRReader'
 
 const CopyKeyButton = ({ id }) => (
   <ActionButton
@@ -75,6 +79,7 @@ export default class PublicKeyWithActions extends PureComponent {
         overrideDisplayName: '',
         overrideDisplayStatus: '',
       },
+      mode: props.mode || 'key',
     }
 
     if (missingInitialData && props.data !== undefined) {
@@ -117,6 +122,7 @@ export default class PublicKeyWithActions extends PureComponent {
     } = this.props
     const {
       contact: { id, displayName },
+      mode,
     } = this.state
 
     let errors = []
@@ -126,58 +132,108 @@ export default class PublicKeyWithActions extends PureComponent {
       // noop
     }
 
+    const modeButtons = [
+      { element: () => <Text icon={'edit'} big color={mode === 'key' ? colors.white : colors.grey1} /> },
+      {
+        element: () => <Text icon={'material-qrcode-scan'} big
+          color={mode === 'qrcode' ? colors.white : colors.grey1} />,
+      },
+    ]
+
     return (
       <ScrollView>
         <Flex.Rows style={[padding]} align='center'>
-          <TextInput
-            placeholder={'Contact name (optional)'}
-            onChangeText={displayName =>
-              this.setState({ contact: { ...this.state.contact, displayName } })
+          <Flex.Cols style={{ width: 330 }}>
+            {mode === 'key' || (readOnly)
+              ? <TextInput
+                placeholder={'Contact name (optional)'}
+                onChangeText={displayName =>
+                  this.setState({ contact: { ...this.state.contact, displayName } })
+                }
+                value={displayName}
+                style={[
+                  {
+                    backgroundColor: colors.grey7,
+                    color: colors.black,
+                    textAlign: 'left',
+                    flex: 1,
+                    ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
+                  },
+                  padding,
+                  rounded,
+                ]}
+              />
+              : <Text style={{ flex: 1 }}>{' '}</Text>
             }
-            value={displayName}
-            style={[
-              {
-                backgroundColor: colors.grey7,
-                color: colors.black,
-                textAlign: 'left',
-                width: 330,
-                flex: 0,
-                ...(Platform.OS === 'web' ? { outline: 'none' } : {}),
-              },
-              padding,
-              rounded,
-            ]}
-          />
-          <TextInputMultilineFix
-            style={[
-              {
-                width: 330,
-                height: 165,
-                backgroundColor: colors.grey7,
-                color: colors.black,
-                flexWrap: 'wrap',
-                fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-              },
-              textTiny,
-              padding,
-              marginTop,
-              rounded,
-            ]}
-            multiline
-            placeholder='Type or copy/paste a berty user public key here'
-            value={id}
-            onChangeText={id =>
-              this.setState({ contact: { ...this.state.contact, id } })
-            }
-            editable={!readOnly}
-            selectTextOnFocus
-          />
+            {/* TODO: Use a lighter button group impl? */}
+            <ThemeProvider theme={{ colors: { primary: colors.blue } }}>
+              <ButtonGroup
+                onPress={() => this.setState({ mode: mode === 'key' ? 'qrcode' : 'key' })}
+                selectedIndex={mode === 'key' ? 0 : 1}
+                buttons={modeButtons}
+                containerStyle={{ height: 32, flex: 1 }}
+                selectedBackgroundColor={colors.green}
+                component={Platform.OS === 'android' ? TouchableNativeFeedback : TouchableOpacity}
+              />
+            </ThemeProvider>
+          </Flex.Cols>
+          {mode === 'key'
+            ? <TextInputMultilineFix
+              style={[
+                {
+                  width: 330,
+                  height: 248,
+                  backgroundColor: colors.grey7,
+                  color: colors.black,
+                  flexWrap: 'wrap',
+                  fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+                },
+                textTiny,
+                padding,
+                marginTop,
+                rounded,
+              ]}
+              multiline
+              placeholder='Type or copy/paste a berty user public key here'
+              value={id}
+              onChangeText={id =>
+                this.setState({ contact: { ...this.state.contact, id } })
+              }
+              editable={!readOnly}
+              selectTextOnFocus
+            />
+            : null}
+
+          {!readOnly && mode === 'qrcode'
+            ? <QRReader style={{ width: 248, height: 248 }} onFound={data => {
+              const url = parseUrl(data)
+
+              if (!url || url.pathname !== '/add-contact' || url.hashParts['public-key'] === '') {
+                return
+              }
+
+              this.setState({
+                mode: 'key',
+                contact: {
+                  ...this.state.contact,
+                  id: url.hashParts['public-key'],
+                  displayName: url.hashParts['display-name'] || '',
+                },
+              })
+            }} /> : null}
+          {readOnly && mode === 'qrcode'
+            ? <QRGenerator
+              value={makeShareableUrl({ id, displayName })}
+              size={248}
+              style={[marginTop]} />
+            : null // TODO: implement camera
+          }
 
           {shareButton ? (
             <ShareKeyButton id={id} displayName={displayName} self={self} />
           ) : null}
           {copyButton ? <CopyKeyButton id={id} /> : null}
-          {addButton ? (
+          {addButton && mode === 'key' ? (
             <AddButton
               id={id}
               displayName={displayName}
