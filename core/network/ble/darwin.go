@@ -61,7 +61,8 @@ func (b *Conn) Close() error {
 		return err
 	}
 	ma := C.CString(val)
-	defer C.free(unsafe.Pointer(ma))
+	logger().Debug("BLEConn close", zap.String("VALUE",val))
+	// defer C.free(unsafe.Pointer(ma))
 	C.closeConn(ma)
 	return nil
 }

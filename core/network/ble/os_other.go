@@ -69,7 +69,7 @@ func (t *Transport) String() string {
 }
 
 func (b *Listener) closeNative() {
-
+	/** intentionally empty */
 }
 
 func (b *Conn) Write(p []byte) (n int, err error) {

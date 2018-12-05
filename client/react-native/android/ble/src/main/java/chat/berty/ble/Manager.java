@@ -23,6 +23,7 @@ import android.util.Log;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import static android.content.Context.BLUETOOTH_SERVICE;
@@ -59,6 +60,14 @@ public class Manager {
         mGattServerCallback.mGattCallback = mGattCallback;
     }
 
+    public static String getMa() {
+        return instance.ma;
+    }
+
+    public static String getPeerID() {
+        return instance.peerID;
+    }
+
     public static Manager getInstance() {
         if (instance == null) {
             synchronized (Manager.class) {
@@ -83,7 +92,7 @@ public class Manager {
     public void setMa(String ma) {
         this.ma = ma;
         BertyUtils.maCharacteristic.setValue(ma);
-        if (this.peerID != "") {
+        if (this.peerID != null && !this.peerID.equals("")) {
             AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
             AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
             mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
@@ -94,7 +103,7 @@ public class Manager {
     public void setPeerID(String peerID) {
         this.peerID = peerID;
         BertyUtils.peerIDCharacteristic.setValue(peerID);
-        if (this.ma != "") {
+        if (this.ma != null && !this.ma.equals("")) {
             AdvertiseSettings settings = BertyAdvertise.createAdvSettings(true, 0);
             AdvertiseData advData = BertyAdvertise.makeAdvertiseData();
             mBluetoothLeAdvertiser.startAdvertising(settings, advData, mAdvertisingCallback);
@@ -133,6 +142,8 @@ public class Manager {
 
 
                     mBluetoothGattServer = mb.openGattServer(mContext, mGattServerCallback);
+                    mBluetoothGattServer.getServices();
+
                     mGattServerCallback.mBluetoothGattServer = mBluetoothGattServer;
                     BertyUtils.logger("debug", TAG, "test " + svc + " " + mBluetoothGattServer);
 
@@ -143,7 +154,6 @@ public class Manager {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         mBluetoothLeScanner.startScan(Arrays.asList(filter), settings2, mScanCallback);
                     }
-
                 }
 
             } catch (Exception e) {
@@ -165,6 +175,10 @@ public class Manager {
         BertyDevice bDevice = BertyUtils.getDeviceFromMa(rMa);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             bDevice.gatt.disconnect();
+            bDevice.gatt.close();
+            bDevice.gatt = null;
+            bDevice.device = null;
+            Log.e(TAG, "CLOSE");
         }
         synchronized (bertyDevices) {
             bertyDevices.remove(bDevice.addr);
