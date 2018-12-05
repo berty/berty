@@ -157,11 +157,13 @@ func (m *Metrics) handlePeer(ctx context.Context, id peer.ID) {
 	peer := m.peerInfoToPeer(pi)
 
 	m.muHPeers.Lock()
-	for i, h := range m.peersHandlers {
-		if err := h(peer, nil); err != nil {
-			m.peersHandlers = append(m.peersHandlers[:i], m.peersHandlers[i+1:]...)
+	var newPeersHandlers = make([]func(*p2p.Peer, error) error, 0)
+	for _, h := range m.peersHandlers {
+		if err := h(peer, nil); err == nil {
+			newPeersHandlers = append(newPeersHandlers, h)
 		}
 	}
+	m.peersHandlers = newPeersHandlers
 	m.muHPeers.Unlock()
 }
 
