@@ -138,7 +138,7 @@ public class BertyDevice {
         }).start();
     }
 
-    public void waitRead() {
+    public void waitWriteMaThenPeerID() {
         BertyUtils.logger("debug", TAG, "waitRead() called");
         new Thread(new Runnable() {
             @Override
