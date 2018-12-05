@@ -177,6 +177,7 @@ re.web: fclean.web debug.web
 
 ### Dockerized webapp part ###
 webapp.start:
+	cd ../../core && make generate
 	@docker-compose up -d --build --scale core-service=$(SCALE)
 
 webapp.stop:

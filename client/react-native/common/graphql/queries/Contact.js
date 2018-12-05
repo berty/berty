@@ -6,6 +6,23 @@ const query = graphql`
   query ContactQuery($filter: BertyEntityContactInput) {
     Contact(filter: $filter) {
       id
+      createdAt
+      updatedAt
+      sigchain
+      status
+      devices {
+        id
+        createdAt
+        updatedAt
+        name
+        status
+        apiVersion
+        contactId
+      }
+      displayName
+      displayStatus
+      overrideDisplayName
+      overrideDisplayStatus
       ...Contact
     }
   }

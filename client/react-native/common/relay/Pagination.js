@@ -1,12 +1,12 @@
 import { ActivityIndicator, FlatList } from 'react-native'
-import React, { PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
 import Relay from 'react-relay'
 
 import { Flex } from '../components/Library'
 import { QueryReducer } from '.'
 import genericUpdater from './genericUpdater'
 
-class PaginationContainer extends PureComponent {
+class PaginationContainer extends Component {
   state = {
     refetching: false,
     loadingMore: false,
@@ -98,16 +98,11 @@ export default class Pagination extends PureComponent {
     const { subscriptions = [], fragment, alias, variables } = this.props
     this.subscribers = subscriptions.map(s =>
       s.subscribe({
-        updater: genericUpdater(
-          fragment,
-          alias,
-          Object.keys(variables).reduce((a, k) => {
-            if (k !== 'cursor' && k !== 'count') {
-              a[k] = variables[k]
-            }
-            return a
-          }, {})
-        ),
+        updater: genericUpdater(fragment, alias, {
+          ...variables,
+          count: undefined,
+          cursor: undefined,
+        }),
       })
     )
   }

@@ -460,6 +460,11 @@ func (r *queryResolver) Contact(ctx context.Context, filter *entity.Contact) (*e
 	if filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
+	if filter.Devices != nil && len(filter.Devices) != 0 {
+		for i := range filter.Devices {
+			filter.Devices[i].ID = strings.SplitN(filter.Devices[i].ID, ":", 2)[1]
+		}
+	}
 	return r.client.Contact(ctx, &node.ContactInput{Filter: filter})
 }
 func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {

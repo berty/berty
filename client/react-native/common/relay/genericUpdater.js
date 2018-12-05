@@ -31,16 +31,22 @@ const deepFilterEqual = (a, b) => {
 //
 export default (fragment, alias, args) => {
   return (store, data, deletion) => {
+    console.log(data, args)
     const helper = new FragmentHelper(fragment)
     const connectionHelper = helper.getConnection(alias)
+
     const root = store.getRoot()
-    console.log({ fragment, alias, args })
-    console.log({ store, data, deletion })
+
     const connection = ConnectionHandler.getConnection(
       root,
       helper.getConnection(alias).key,
       args
     )
+
+    if (connection == null) {
+      return
+    }
+
     if (
       deletion ||
       deepFilterEqual(args, merge([args, { filter: data }])) === false
@@ -54,28 +60,22 @@ export default (fragment, alias, args) => {
     const node =
       store.get(data.id) ||
       store.create(data.id, connectionHelper.getEdgeNodeType())
-    console.log('node', node)
+
     const edges = connection.getLinkedRecords('edges')
+
     const field = Case.camel(args.orderBy || args.sortBy || 'id')
-    console.log('btoa', node.getValue('id'))
+
     const cursor =
       field === 'id'
         ? atob(node.getValue('id')).split(/:(.+)/)[1]
         : node.getValue(field)
     console.log('cursor', cursor)
-    if (
-      edges.length > 0 &&
-      edges.some(
-        e =>
-          console.log('edges: cursor: ', e.getValue('cursor')) ||
-          e.getValue('cursor') === cursor
-      )
-    ) {
+
+    if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
       // update
       return
     }
 
-    console.log('add connection', { connection })
     // add
     const edge = ConnectionHandler.createEdge(
       store,
@@ -85,13 +85,10 @@ export default (fragment, alias, args) => {
     )
     edge.setValue(cursor, 'cursor')
 
-    console.log(store)
     if (connectionHelper.direction === 'forward' && args.orderDesc === false) {
-      console.log('forward')
-      ConnectionHandler.insertEdgeAfter(connection, edge, cursor)
-      return
+      ConnectionHandler.insertEdgeBefore(connection, edge, cursor)
+    } else {
+      ConnectionHandler.insertEdgeBefore(connection, edge, cursor)
     }
-    console.log('backward')
-    ConnectionHandler.insertEdgeBefore(connection, edge, cursor)
   }
 }

@@ -234,10 +234,7 @@ class Sent extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
-          subscriptions={[
-            subscriptions.contactRequest,
-            subscriptions.contactRequestAccepted,
-          ]}
+          subscriptions={[subscriptions.contactRequestAccepted]}
           renderItem={props => (
             <Item
               {...props}

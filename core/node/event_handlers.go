@@ -120,7 +120,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 		Topic:   attrs.Conversation.Topic,
 	}
 
-	// save conversation
+	// save c donversation
 	if err := n.sql(ctx).Set("gorm:association_autoupdate", true).Save(conversation).Error; err != nil {
 		return errorcodes.ErrDbUpdate.Wrap(err)
 	}

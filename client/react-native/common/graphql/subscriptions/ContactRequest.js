@@ -1,7 +1,7 @@
 import { btoa } from 'b64-lite'
 
-import EventStream from './EventStream'
 import { parseEmbedded } from '../../helpers/json'
+import EventStream from './EventStream'
 
 export default context => ({
   ...EventStream(context),
@@ -11,11 +11,14 @@ export default context => ({
         updater &&
         (async (store, data) => {
           if (data.EventStream.kind === 201) {
+            console.log(store)
+            console.log(context)
             const attributes = parseEmbedded(data.EventStream.attributes)
-            const contact = await context.queries.Contact.fetch({
-              id: btoa('contact:' + attributes.me.id),
+            const id = btoa('contact:' + attributes.me.id)
+            updater(store, { id })
+            await context.queries.Contact.fetch({
+              filter: { id },
             })
-            return updater(store, contact)
           }
         }),
     }),
