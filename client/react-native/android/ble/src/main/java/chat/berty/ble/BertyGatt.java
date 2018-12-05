@@ -12,9 +12,6 @@ import android.bluetooth.BluetoothProfile;
 import android.os.Build;
 import android.util.Log;
 
-import java.nio.charset.Charset;
-import java.util.UUID;
-
 import static android.bluetooth.BluetoothGatt.GATT_CONNECTION_CONGESTED;
 import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
 import static android.bluetooth.BluetoothGatt.GATT_INSUFFICIENT_AUTHENTICATION;
@@ -134,21 +131,6 @@ public class BertyGatt extends BluetoothGattCallback {
     @Override
     public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         BertyUtils.logger("debug", TAG, "onCharacteristicRead() - gatt: " + gatt.getDevice().getAddress() + " characteristic: " + characteristic.getUuid() + " status: " + status);
-        UUID uuid = characteristic.getUuid();
-        if (uuid.equals(BertyUtils.MA_UUID)) {
-            BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
-            String ma = new String(characteristic.getValue(), Charset.forName("UTF-8"));
-            bDevice.ma = ma;
-            bDevice.latchRead.countDown();
-        } else if (uuid.equals(BertyUtils.PEER_ID_UUID)) {
-            BertyDevice bDevice = BertyUtils.getDeviceFromAddr(gatt.getDevice().getAddress());
-            String peerID = new String(characteristic.getValue(), Charset.forName("UTF-8"));
-            bDevice.peerID = peerID;
-            bDevice.latchRead.countDown();
-        } else {
-            BertyUtils.logger("error", TAG, "unknown read characteristic: " + uuid);
-        }
-
         super.onCharacteristicRead(gatt, characteristic, status);
     }
 

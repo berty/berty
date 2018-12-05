@@ -38,7 +38,7 @@ public class Manager {
     public boolean isScanning = false;
     protected HashMap<String, BertyDevice> bertyDevices;
     protected BluetoothAdapter mBluetoothAdapter;
-    protected BluetoothGattServer mBluetoothGattServer;
+    public BluetoothGattServer mBluetoothGattServer;
     protected BluetoothLeAdvertiser mBluetoothLeAdvertiser;
     protected BluetoothLeScanner mBluetoothLeScanner;
     protected BluetoothGattService mService;
@@ -174,8 +174,10 @@ public class Manager {
     public void closeConnFromMa(String rMa) {
         BertyDevice bDevice = BertyUtils.getDeviceFromMa(rMa);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            bDevice.gatt.disconnect();
-            bDevice.gatt.close();
+            if (bDevice.gatt != null) {
+                bDevice.gatt.disconnect();
+                bDevice.gatt.close();
+            }
             bDevice.gatt = null;
             bDevice.device = null;
             Log.e(TAG, "CLOSE");

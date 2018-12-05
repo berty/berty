@@ -38,7 +38,6 @@ public class BertyDevice {
     public CountDownLatch latchRdy;
     public CountDownLatch latchConn;
     public CountDownLatch latchChar;
-    public CountDownLatch latchRead;
     public Semaphore svcSema;
     public Semaphore isWaiting;
     public List<byte[]> toSend;
@@ -57,11 +56,11 @@ public class BertyDevice {
         this.latchRdy = new CountDownLatch(2);
         this.latchConn = new CountDownLatch(1);
         this.latchChar = new CountDownLatch(4);
-        this.latchRead = new CountDownLatch(2);
         this.toSend = new ArrayList<>();
         this.mtu = 23;
         waitRdy();
         waitConn();
+        waitService();
     }
 
     public void waitRdy() {

@@ -112,7 +112,7 @@
                     [self.peripheral writeValue:self.toSend[0] forCharacteristic:self.peerIDChar type:CBCharacteristicWriteWithResponse];
                     [self.toSend removeObjectAtIndex:0];
                 }
-
+                NSLog(@"pa 1st COUNTDOWN " );
                 [self.latchRdy countDown];
             }
         });

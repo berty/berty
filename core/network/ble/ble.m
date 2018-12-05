@@ -23,6 +23,10 @@ void initSignalHandling() {
     signal(SIGINT, handleSigInt);
 }
 
+void handleException(NSException* exception) {
+    NSLog(@"Unhandled exception %@", exception);
+}
+
 void init(char *ma, char *peerID) {
     if (centralManager == nil && peripheralManager == nil) {
         BertyPeripheralDelegate *peripheralDelegate = [[BertyPeripheralDelegate alloc] init];
@@ -40,7 +44,7 @@ void init(char *ma, char *peerID) {
 
         [BertyUtils setMa:[NSString stringWithUTF8String:ma]];
         [BertyUtils setPeerID:[NSString stringWithUTF8String:peerID]];
-        
+        NSSetUncaughtExceptionHandler(handleException);
         initSignalHandling();
     }
 }

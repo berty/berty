@@ -161,11 +161,13 @@
  *
  */
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(nullable NSError *)error {
-    NSLog(@"centralManger: central didDisconnectPeripheral: %@", [peripheral.identifier UUIDString]);
+    NSLog(@"centralManger: central didDisconnectPeripheral: %@ %@", [peripheral.identifier UUIDString], error);
     BertyDevice *bDevice = [BertyUtils getDevice:peripheral];
     [BertyUtils removeDevice:bDevice];
     setConnClosed([bDevice.ma UTF8String]);
+    bDevice.peripheral = nil;
     bDevice = nil;
+    NSLog(@"FINISHED disco");
 }
 
 @end

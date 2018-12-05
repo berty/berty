@@ -171,6 +171,10 @@ public class BertyGattServer extends BluetoothGattServerCallback {
         } else if (charID.equals(BertyUtils.CLOSER_UUID)) {
 //            // TODO
         } else if (charID.equals(BertyUtils.PEER_ID_UUID)) {
+            if (responseNeeded) {
+                Log.e(TAG, "GATT RESP " +mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value));
+                mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
+            }
             Log.e(TAG, "recv " + new String(value, Charset.forName("UTF-8")));
             if (bDevice.peerID != null) {
                 bDevice.peerID += new String(value, Charset.forName("UTF-8"));
@@ -179,24 +183,22 @@ public class BertyGattServer extends BluetoothGattServerCallback {
             }
 
             Log.e(TAG, "rep needed" + responseNeeded+ "prepared " + preparedWrite + " transid " + requestId  + " offset " + offset + " len: " + value.length);
-            if (responseNeeded) {
-                mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
-            }
+
             if (bDevice.peerID.length() == 46) {
                 Log.e(TAG, "COUNTDONW");
                 bDevice.latchRdy.countDown();
             }
         } else if(charID.equals(BertyUtils.MA_UUID)) {
+            if (responseNeeded) {
+
+                Log.e(TAG, "GATT RESP " +mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value));
+            }
             Log.e(TAG, "recv " + new String(value, Charset.forName("UTF-8")));
             Log.e(TAG, "rep needed" + responseNeeded+ "prepared " + preparedWrite + " transid " + requestId  + " offset " + offset + " len: " + value.length);
             if (bDevice.ma != null) {
                 bDevice.ma += new String(value, Charset.forName("UTF-8"));
             } else {
                 bDevice.ma = new String(value, Charset.forName("UTF-8"));
-            }
-
-            if (responseNeeded) {
-                mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
             }
         }
         else {
@@ -250,10 +252,10 @@ public class BertyGattServer extends BluetoothGattServerCallback {
      * @param requestId The Id of the request
      * @param execute   Whether the pending writes should be executed (true) or
      */
-    @Override
-    public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
-        super.onExecuteWrite(device, requestId, execute);
-    }
+//    @Override
+//    public void onExecuteWrite(BluetoothDevice device, int requestId, boolean execute) {
+//        super.onExecuteWrite(device, requestId, execute);
+//    }
 
     /**
      * Callback invoked when a notification or indication has been sent to
