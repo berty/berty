@@ -24,6 +24,11 @@ GOPATH ?=		$(HOME)/go
 
 CGO_CPPFLAGS ?= -I$(MAKEFILE_DIR)/../../common/openssl/built/include
 
+CGO_OS_LDFLAGS ?= -L/usr/local/opt/openssl/lib
+CGO_OS_CPPFLAGS ?= -I/usr/local/opt/openssl/include
+
+
+
 LIBS_PATH := $(MAKEFILE_DIR)/../../common/openssl/built
 
 IOS_BUILD_PATH := $(MAKEFILE_DIR)/../ios
@@ -71,7 +76,7 @@ init: deps
 
 .PHONY: test
 test:
-	cd $(CORE_MOBILE) && go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
+	cd $(CORE_MOBILE) && CGO_LDFLAGS="$(CGO_OS_LDFLAGS)" CGO_CPPFLAGS="$(CGO_OS_CPPFLAGS)" go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
 
 .PHONY: build.core
 build.core: $(ANDROID_BUILD_PATH)/core.aar

@@ -147,6 +147,14 @@ service Service {
     option (gql.graphql_type) = "Subscription";
   };
 
+  rpc LogfileList (Void) returns (stream LogfileEntry) {
+    option (gql.graphql_type) = "Query";
+  }
+
+  rpc LogfileRead (LogfileReadInput) returns (stream LogEntry) {
+    option (gql.graphql_type) = "Subscription";
+  }
+
   //
   // Metrics
   //
@@ -314,17 +322,29 @@ message EventIDInput {
 //
 
 message LogStreamInput {
-  bool continues = 1;    // stay connected and wait for new lines
-  string log_level = 2;  // "debug", "info", "warn", "error"
+  bool continues = 1;     // stay connected and wait for new lines
+  string log_level = 2;   // "debug", "info", "warn", "error"
   string namespaces = 3;  // "core.*", "*", ...
-  int32 last = 4;        // number of previous lines to return, capped by the rotating buffer size
+  int32 last = 4;         // number of previous lines to return, capped by the rotating buffer size
 }
 
 message LogEntry {
-  string line = 1;       // line
+  string line = 1;        // line
   // string log_level = 2;
   // namespace
   // ...
+}
+
+message LogfileEntry {
+  string path = 1;
+  int32 filesize = 2;
+  google.protobuf.Timestamp created_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+  google.protobuf.Timestamp updated_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = true];
+}
+
+message LogfileReadInput {
+  string path = 1;
+  // position
 }
 
 //

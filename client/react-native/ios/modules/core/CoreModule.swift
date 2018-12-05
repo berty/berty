@@ -29,7 +29,7 @@ class CoreModule: NSObject {
         var err: NSError?
 
         do {
-            CoreInitialize(logger, &err)
+            CoreInitialize(logger, try self.getFilesDir(), &err)
             if let error = err {
                 throw error
             }

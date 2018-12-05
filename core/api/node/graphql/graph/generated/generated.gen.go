@@ -212,6 +212,20 @@ type ComplexityRoot struct {
 		Line func(childComplexity int) int
 	}
 
+	BertyNodeLogfileEntry struct {
+		Path      func(childComplexity int) int
+		Filesize  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
+	BertyNodeLogfileEntryPayload struct {
+		Path      func(childComplexity int) int
+		Filesize  func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
 	BertyNodeNodeEvent struct {
 		Kind       func(childComplexity int) int
 		Attributes func(childComplexity int) int
@@ -636,12 +650,14 @@ type ComplexityRoot struct {
 		AppVersion            func(childComplexity int, T bool) int
 		Peers                 func(childComplexity int, T bool) int
 		Protocols             func(childComplexity int, id string, addrs []string, connection *int32) int
+		LogfileList           func(childComplexity int, T bool) int
 		Panic                 func(childComplexity int, T bool) int
 	}
 
 	Subscription struct {
 		EventStream      func(childComplexity int, filter *p2p.Event) int
 		LogStream        func(childComplexity int, continues bool, logLevel string, namespaces string, last int32) int
+		LogfileRead      func(childComplexity int, path string) int
 		MonitorBandwidth func(childComplexity int, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) int
 		MonitorPeers     func(childComplexity int, T bool) int
 	}
@@ -727,11 +743,13 @@ type QueryResolver interface {
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
 	Peers(ctx context.Context, T bool) (*p2p.Peers, error)
 	Protocols(ctx context.Context, id string, addrs []string, connection *int32) (*node.ProtocolsOutput, error)
+	LogfileList(ctx context.Context, T bool) ([]*node.LogfileEntry, error)
 	Panic(ctx context.Context, T bool) (*node.Void, error)
 }
 type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
 	LogStream(ctx context.Context, continues bool, logLevel string, namespaces string, last int32) (<-chan *node.LogEntry, error)
+	LogfileRead(ctx context.Context, path string) (<-chan *node.LogEntry, error)
 	MonitorBandwidth(ctx context.Context, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) (<-chan *p2p.BandwidthStats, error)
 	MonitorPeers(ctx context.Context, T bool) (<-chan *p2p.Peer, error)
 }
@@ -2344,6 +2362,21 @@ func field_Query_Protocols_args(rawArgs map[string]interface{}) (map[string]inte
 
 }
 
+func field_Query_LogfileList_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
 func field_Query_Panic_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 bool
@@ -2432,6 +2465,21 @@ func field_Subscription_LogStream_args(rawArgs map[string]interface{}) (map[stri
 		}
 	}
 	args["last"] = arg3
+	return args, nil
+
+}
+
+func field_Subscription_LogfileRead_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["path"]; ok {
+		var err error
+		arg0, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["path"] = arg0
 	return args, nil
 
 }
@@ -3185,6 +3233,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeLogEntryPayload.Line(childComplexity), true
+
+	case "BertyNodeLogfileEntry.path":
+		if e.complexity.BertyNodeLogfileEntry.Path == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntry.Path(childComplexity), true
+
+	case "BertyNodeLogfileEntry.filesize":
+		if e.complexity.BertyNodeLogfileEntry.Filesize == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntry.Filesize(childComplexity), true
+
+	case "BertyNodeLogfileEntry.createdAt":
+		if e.complexity.BertyNodeLogfileEntry.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntry.CreatedAt(childComplexity), true
+
+	case "BertyNodeLogfileEntry.updatedAt":
+		if e.complexity.BertyNodeLogfileEntry.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntry.UpdatedAt(childComplexity), true
+
+	case "BertyNodeLogfileEntryPayload.path":
+		if e.complexity.BertyNodeLogfileEntryPayload.Path == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntryPayload.Path(childComplexity), true
+
+	case "BertyNodeLogfileEntryPayload.filesize":
+		if e.complexity.BertyNodeLogfileEntryPayload.Filesize == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntryPayload.Filesize(childComplexity), true
+
+	case "BertyNodeLogfileEntryPayload.createdAt":
+		if e.complexity.BertyNodeLogfileEntryPayload.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntryPayload.CreatedAt(childComplexity), true
+
+	case "BertyNodeLogfileEntryPayload.updatedAt":
+		if e.complexity.BertyNodeLogfileEntryPayload.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeLogfileEntryPayload.UpdatedAt(childComplexity), true
 
 	case "BertyNodeNodeEvent.kind":
 		if e.complexity.BertyNodeNodeEvent.Kind == nil {
@@ -4996,6 +5100,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Protocols(childComplexity, args["id"].(string), args["addrs"].([]string), args["connection"].(*int32)), true
 
+	case "Query.LogfileList":
+		if e.complexity.Query.LogfileList == nil {
+			break
+		}
+
+		args, err := field_Query_LogfileList_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.LogfileList(childComplexity, args["T"].(bool)), true
+
 	case "Query.Panic":
 		if e.complexity.Query.Panic == nil {
 			break
@@ -5031,6 +5147,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Subscription.LogStream(childComplexity, args["continues"].(bool), args["logLevel"].(string), args["namespaces"].(string), args["last"].(int32)), true
+
+	case "Subscription.LogfileRead":
+		if e.complexity.Subscription.LogfileRead == nil {
+			break
+		}
+
+		args, err := field_Subscription_LogfileRead_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.LogfileRead(childComplexity, args["path"].(string)), true
 
 	case "Subscription.MonitorBandwidth":
 		if e.complexity.Subscription.MonitorBandwidth == nil {
@@ -8220,6 +8348,272 @@ func (ec *executionContext) _BertyNodeLogEntryPayload_line(ctx context.Context, 
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var bertyNodeLogfileEntryImplementors = []string{"BertyNodeLogfileEntry"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeLogfileEntry(ctx context.Context, sel ast.SelectionSet, obj *node.LogfileEntry) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeLogfileEntryImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeLogfileEntry")
+		case "path":
+			out.Values[i] = ec._BertyNodeLogfileEntry_path(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "filesize":
+			out.Values[i] = ec._BertyNodeLogfileEntry_filesize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "createdAt":
+			out.Values[i] = ec._BertyNodeLogfileEntry_createdAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._BertyNodeLogfileEntry_updatedAt(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntry_path(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntry",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Path, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntry_filesize(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntry",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Filesize, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	rctx.Result = res
+	return models.MarshalInt32(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntry_createdAt(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntry",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalTime(*res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntry_updatedAt(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntry",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalTime(*res)
+}
+
+var bertyNodeLogfileEntryPayloadImplementors = []string{"BertyNodeLogfileEntryPayload"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeLogfileEntryPayload(ctx context.Context, sel ast.SelectionSet, obj *node.LogfileEntry) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeLogfileEntryPayloadImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeLogfileEntryPayload")
+		case "path":
+			out.Values[i] = ec._BertyNodeLogfileEntryPayload_path(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "filesize":
+			out.Values[i] = ec._BertyNodeLogfileEntryPayload_filesize(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "createdAt":
+			out.Values[i] = ec._BertyNodeLogfileEntryPayload_createdAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._BertyNodeLogfileEntryPayload_updatedAt(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntryPayload_path(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntryPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Path, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntryPayload_filesize(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntryPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Filesize, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	rctx.Result = res
+	return models.MarshalInt32(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntryPayload_createdAt(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntryPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalTime(*res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeLogfileEntryPayload_updatedAt(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeLogfileEntryPayload",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+	return models.MarshalTime(*res)
 }
 
 var bertyNodeNodeEventImplementors = []string{"BertyNodeNodeEvent"}
@@ -17658,6 +18052,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_Protocols(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "LogfileList":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_LogfileList(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "Panic":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -18079,6 +18479,69 @@ func (ec *executionContext) _Query_Protocols(ctx context.Context, field graphql.
 }
 
 // nolint: vetshadow
+func (ec *executionContext) _Query_LogfileList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_LogfileList_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().LogfileList(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*node.LogfileEntry)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyNodeLogfileEntryPayload(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
+}
+
+// nolint: vetshadow
 func (ec *executionContext) _Query_Panic(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args, err := field_Query_Panic_args(rawArgs)
@@ -18183,6 +18646,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_EventStream(ctx, fields[0])
 	case "LogStream":
 		return ec._Subscription_LogStream(ctx, fields[0])
+	case "LogfileRead":
+		return ec._Subscription_LogfileRead(ctx, fields[0])
 	case "MonitorBandwidth":
 		return ec._Subscription_MonitorBandwidth(ctx, fields[0])
 	case "MonitorPeers":
@@ -18237,6 +18702,39 @@ func (ec *executionContext) _Subscription_LogStream(ctx context.Context, field g
 	})
 	rctx := ctx // FIXME: subscriptions are missing request middleware stack https://github.com/99designs/gqlgen/issues/259
 	results, err := ec.resolvers.Subscription().LogStream(rctx, args["continues"].(bool), args["logLevel"].(string), args["namespaces"].(string), args["last"].(int32))
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-results
+		if !ok {
+			return nil
+		}
+		var out graphql.OrderedMap
+		out.Add(field.Alias, func() graphql.Marshaler {
+			if res == nil {
+				return graphql.Null
+			}
+
+			return ec._BertyNodeLogEntryPayload(ctx, field.Selections, res)
+		}())
+		return &out
+	}
+}
+
+func (ec *executionContext) _Subscription_LogfileRead(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Subscription_LogfileRead_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Field: field,
+	})
+	rctx := ctx // FIXME: subscriptions are missing request middleware stack https://github.com/99designs/gqlgen/issues/259
+	results, err := ec.resolvers.Subscription().LogfileRead(rctx, args["path"].(string))
 	if err != nil {
 		ec.Error(ctx, err)
 		return nil
@@ -20655,6 +21153,12 @@ type BertyNodeVoid  {
 type BertyNodeLogEntry  {
       line: String!
 }
+type BertyNodeLogfileEntry  {
+      path: String!
+      filesize: Int32!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+}
 type BertyNodeNodeEvent  {
     kind: Enum
       attributes: [Byte!],
@@ -20801,6 +21305,12 @@ type BertyNodeProtocolsPayload {
 type BertyNodeLogEntryPayload {
       line: String!
 }
+type BertyNodeLogfileEntryPayload {
+      path: String!
+      filesize: Int32!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+}
 type BertyP2pBandwidthStatsPayload {
       id: String
       totalIn: Int64
@@ -20903,6 +21413,9 @@ type Query {
       addrs: [String!]
     connection: Enum
   ): BertyNodeProtocolsPayload
+  LogfileList(
+      T: Bool!
+  ): [BertyNodeLogfileEntryPayload]
   Panic(
       T: Bool!
   ): BertyNodeVoidPayload
@@ -20992,6 +21505,9 @@ type Subscription {
       logLevel: String!
       namespaces: String!
       last: Int32!
+  ): BertyNodeLogEntryPayload
+  LogfileRead(
+      path: String!
   ): BertyNodeLogEntryPayload
   MonitorBandwidth(
       id: String

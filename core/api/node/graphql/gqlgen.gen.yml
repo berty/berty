@@ -1658,6 +1658,37 @@ models:
     fields:
       line:
 
+  BertyNodeLogfileEntry:
+    model: berty.tech/core/api/node.LogfileEntry
+    fields:
+      path:
+      filesize:
+      createdAt:
+      updatedAt:
+  BertyNodeLogfileEntryInput:
+    model: berty.tech/core/api/node.LogfileEntry
+    fields:
+      path:
+      filesize:
+      createdAt:
+      updatedAt:
+  BertyNodeLogfileEntryPayload:
+    model: berty.tech/core/api/node.LogfileEntry
+    fields:
+      path:
+      filesize:
+      createdAt:
+      updatedAt:
+
+  BertyNodeLogfileReadInput:
+    model: berty.tech/core/api/node.LogfileReadInput
+    fields:
+      path:
+  BertyNodeLogfileReadInputPayload:
+    model: berty.tech/core/api/node.LogfileReadInput
+    fields:
+      path:
+
   BertyNodeNodeEvent:
     model: berty.tech/core/api/node.NodeEvent
     fields:

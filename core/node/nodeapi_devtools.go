@@ -2,6 +2,7 @@ package node
 
 import (
 	"bufio"
+	"compress/gzip"
 	"context"
 	crand "crypto/rand"
 	"crypto/rsa"
@@ -10,8 +11,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"math/rand"
 	"net/url"
+	"os"
+	"path"
 	"strings"
 	"time"
 
@@ -27,6 +31,7 @@ import (
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/deviceinfo"
+	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/sql"
 	"berty.tech/core/testrunner"
@@ -305,12 +310,88 @@ func (n *Node) LogStream(input *node.LogStreamInput, stream node.Service_LogStre
 
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
-		err := stream.Send(&node.LogEntry{
+		if err := stream.Send(&node.LogEntry{
 			Line: scanner.Text(),
-		})
-		if err != nil {
+		}); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func (n *Node) LogfileList(_ *node.Void, stream node.Service_LogfileListServer) error {
+	span, _ := tracing.EnterFunc(stream.Context())
+	defer span.Finish()
+
+	dir := logmanager.G().LogDirectory()
+	if dir == "" {
+		return fmt.Errorf("no log directory configured")
+	}
+
+	files, err := ioutil.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+
+	for _, f := range files {
+		if f.IsDir() == true {
+			continue
+		}
+		modTime := f.ModTime()
+
+		// creation date is dependent of the architecture, faking it for now
+		createTime := modTime
+		//stat := f.Sys().(*syscall.Stat_t)
+		//createTime := time.Unix(int64(stat.Ctim.Sec), int64(stat.Ctim.Nsec))
+
+		if err := stream.Send(&node.LogfileEntry{
+			Path:      f.Name(),
+			Filesize:  int32(f.Size()),
+			CreatedAt: &createTime,
+			UpdatedAt: &modTime,
+		}); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (n *Node) LogfileRead(input *node.LogfileReadInput, stream node.Service_LogfileReadServer) error {
+	span, _ := tracing.EnterFunc(stream.Context(), input)
+	defer span.Finish()
+
+	dir := logmanager.G().LogDirectory()
+	if dir == "" {
+		return fmt.Errorf("no log directory configured")
+	}
+
+	var reader io.Reader
+
+	filepath := path.Join(dir, input.Path)
+	file, err := os.Open(filepath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	reader = file
+
+	if strings.HasSuffix(input.Path, ".gz") {
+		zfile, err := gzip.NewReader(file)
+		if err != nil {
+			return err
+		}
+		defer zfile.Close()
+		reader = zfile
+	}
+
+	scanner := bufio.NewScanner(reader)
+	for scanner.Scan() {
+		if err := stream.Send(&node.LogEntry{
+			Line: scanner.Text(),
+		}); err != nil {
+			return err
+		}
+	}
+
+	return scanner.Err()
 }

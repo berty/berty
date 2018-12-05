@@ -104,6 +104,42 @@ func (c *Client) LogStream(ctx context.Context, input *node.LogStreamInput) ([]*
 	}
 	return entries, nil
 }
+func (c *Client) LogfileList(ctx context.Context, input *node.Void) ([]*node.LogfileEntry, error) {
+	stream, err := c.Node().LogfileList(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*node.LogfileEntry
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
+func (c *Client) LogfileRead(ctx context.Context, input *node.LogfileReadInput) ([]*node.LogEntry, error) {
+	stream, err := c.Node().LogfileRead(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*node.LogEntry
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
 func (c *Client) MonitorBandwidth(ctx context.Context, input *p2p.BandwidthStats) ([]*p2p.BandwidthStats, error) {
 	stream, err := c.Node().MonitorBandwidth(ctx, input)
 	if err != nil {

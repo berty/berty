@@ -15,6 +15,7 @@ import (
 	"berty.tech/core/manager/account"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/banner"
+	"berty.tech/core/pkg/logmanager"
 )
 
 type daemonOptions struct {
@@ -88,10 +89,13 @@ func daemon(opts *daemonOptions) error {
 	a := &account.Account{}
 
 	defer a.PanicHandler()
+	defer func() {
+		_ = logmanager.G().LogRotate()
+	}()
 
 	accountOptions := account.Options{
 		account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
-		account.WithRing(ring),
+		account.WithRing(logmanager.G().Ring()),
 		account.WithName(opts.nickname),
 		account.WithPassphrase(opts.sql.key),
 		account.WithDatabase(&account.DatabaseOptions{
