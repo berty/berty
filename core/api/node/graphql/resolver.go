@@ -560,7 +560,7 @@ func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, 
 		ID: id,
 	})
 }
-func (r *queryResolver) ConversationMember(ctx context.Context, id string, createAt, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId, contactId string) (*entity.ConversationMember, error) {
+func (r *queryResolver) ConversationMember(ctx context.Context, id string, createAt, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationID, contactID string) (*entity.ConversationMember, error) {
 	if id != "" {
 		id = strings.SplitN(id, ":", 2)[1]
 	}
@@ -572,12 +572,12 @@ func (r *queryResolver) ConversationMember(ctx context.Context, id string, creat
 			contact.Devices[i].ID = strings.SplitN(contact.Devices[i].ID, ":", 2)[1]
 		}
 	}
-	if conversationId != "" {
-		conversationId = strings.SplitN(conversationId, ":", 2)[1]
-	}
-	if contactId != "" {
-		contactId = strings.SplitN(contactId, ":", 2)[1]
-	}
+	// if conversationID != "" {
+	// 	conversationID = strings.SplitN(conversationID, ":", 2)[1]
+	// }
+	// if contactID != "" {
+	// 	contactID = strings.SplitN(contactID, ":", 2)[1]
+	// }
 	return r.client.ConversationMember(ctx, &entity.ConversationMember{
 		ID: id,
 	})

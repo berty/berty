@@ -2,7 +2,7 @@
 FROM node:10.14.1-slim as web
 
 # Install watchman
-RUN apt-get update \
+RUN apt-get update --no-install-recommends \
     && apt-get install -y git libtool pkg-config libssl-dev build-essential python-dev automake autoconf \
     && cd /tmp \
     && git clone https://github.com/facebook/watchman.git \

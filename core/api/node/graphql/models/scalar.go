@@ -73,7 +73,10 @@ func UnmarshalString(v interface{}) (string, error) {
 
 func MarshalTime(t time.Time) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
-		io.WriteString(w, strconv.Quote(t.Format(time.RFC3339Nano)))
+		_, err := io.WriteString(w, strconv.Quote(t.Format(time.RFC3339Nano)))
+		if err != nil {
+			logger().Error(err.Error())
+		}
 	})
 }
 
