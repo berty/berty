@@ -7,7 +7,7 @@ import proto "github.com/golang/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import p2p "berty.tech/core/api/p2p"
-import _ "berty.tech/core/api/protobuf/graphql"
+import graphql "berty.tech/core/api/protobuf/graphql"
 import entity "berty.tech/core/entity"
 import network "berty.tech/core/network"
 import deviceinfo "berty.tech/core/pkg/deviceinfo"
@@ -698,6 +698,53 @@ func (m *ContactListConnection) GetEdges() []*ContactEdge {
 func (m *ContactListConnection) GetPageInfo() *PageInfo {
 	if m != nil {
 		return m.PageInfo
+	}
+	return nil
+}
+
+type ContactInput struct {
+	Filter               *entity.Contact `protobuf:"bytes,1,opt,name=filter" json:"filter,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}        `json:"-"`
+	XXX_unrecognized     []byte          `json:"-"`
+	XXX_sizecache        int32           `json:"-"`
+}
+
+func (m *ContactInput) Reset()         { *m = ContactInput{} }
+func (m *ContactInput) String() string { return proto.CompactTextString(m) }
+func (*ContactInput) ProtoMessage()    {}
+func (*ContactInput) Descriptor() ([]byte, []int) {
+	return fileDescriptor_service_92eef75d9f02db36, []int{12}
+}
+func (m *ContactInput) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ContactInput) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ContactInput.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (dst *ContactInput) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ContactInput.Merge(dst, src)
+}
+func (m *ContactInput) XXX_Size() int {
+	return m.Size()
+}
+func (m *ContactInput) XXX_DiscardUnknown() {
+	xxx_messageInfo_ContactInput.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ContactInput proto.InternalMessageInfo
+
+func (m *ContactInput) GetFilter() *entity.Contact {
+	if m != nil {
+		return m.Filter
 	}
 	return nil
 }
@@ -1683,6 +1730,7 @@ func init() {
 	proto.RegisterType((*ContactListInput)(nil), "berty.node.ContactListInput")
 	proto.RegisterType((*ContactEdge)(nil), "berty.node.ContactEdge")
 	proto.RegisterType((*ContactListConnection)(nil), "berty.node.ContactListConnection")
+	proto.RegisterType((*ContactInput)(nil), "berty.node.ContactInput")
 	proto.RegisterType((*ConversationListInput)(nil), "berty.node.ConversationListInput")
 	proto.RegisterType((*ConversationEdge)(nil), "berty.node.ConversationEdge")
 	proto.RegisterType((*ConversationListConnection)(nil), "berty.node.ConversationListConnection")
@@ -1720,21 +1768,22 @@ type ServiceClient interface {
 	EventStream(ctx context.Context, in *EventStreamInput, opts ...grpc.CallOption) (Service_EventStreamClient, error)
 	// list old events
 	EventList(ctx context.Context, in *EventListInput, opts ...grpc.CallOption) (Service_EventListClient, error)
-	GetEvent(ctx context.Context, in *p2p.Event, opts ...grpc.CallOption) (*p2p.Event, error)
-	EventSeen(ctx context.Context, in *EventIDInput, opts ...grpc.CallOption) (*p2p.Event, error)
+	GetEvent(ctx context.Context, in *graphql.Node, opts ...grpc.CallOption) (*p2p.Event, error)
+	EventSeen(ctx context.Context, in *graphql.Node, opts ...grpc.CallOption) (*p2p.Event, error)
 	ContactRequest(ctx context.Context, in *ContactRequestInput, opts ...grpc.CallOption) (*entity.Contact, error)
 	ContactAcceptRequest(ctx context.Context, in *entity.Contact, opts ...grpc.CallOption) (*entity.Contact, error)
 	ContactRemove(ctx context.Context, in *entity.Contact, opts ...grpc.CallOption) (*entity.Contact, error)
 	ContactUpdate(ctx context.Context, in *entity.Contact, opts ...grpc.CallOption) (*entity.Contact, error)
 	ContactList(ctx context.Context, in *ContactListInput, opts ...grpc.CallOption) (Service_ContactListClient, error)
-	GetContact(ctx context.Context, in *entity.Contact, opts ...grpc.CallOption) (*entity.Contact, error)
+	Contact(ctx context.Context, in *ContactInput, opts ...grpc.CallOption) (*entity.Contact, error)
 	ConversationCreate(ctx context.Context, in *ConversationCreateInput, opts ...grpc.CallOption) (*entity.Conversation, error)
 	ConversationList(ctx context.Context, in *ConversationListInput, opts ...grpc.CallOption) (Service_ConversationListClient, error)
 	ConversationInvite(ctx context.Context, in *ConversationManageMembersInput, opts ...grpc.CallOption) (*entity.Conversation, error)
 	ConversationExclude(ctx context.Context, in *ConversationManageMembersInput, opts ...grpc.CallOption) (*entity.Conversation, error)
 	ConversationAddMessage(ctx context.Context, in *ConversationAddMessageInput, opts ...grpc.CallOption) (*p2p.Event, error)
-	GetConversation(ctx context.Context, in *entity.Conversation, opts ...grpc.CallOption) (*entity.Conversation, error)
-	GetConversationMember(ctx context.Context, in *entity.ConversationMember, opts ...grpc.CallOption) (*entity.ConversationMember, error)
+	Conversation(ctx context.Context, in *entity.Conversation, opts ...grpc.CallOption) (*entity.Conversation, error)
+	ConversationMember(ctx context.Context, in *entity.ConversationMember, opts ...grpc.CallOption) (*entity.ConversationMember, error)
+	ConversationRead(ctx context.Context, in *graphql.Node, opts ...grpc.CallOption) (*entity.Conversation, error)
 	// HandleEvent is the unencrypted (and unsafe) version of HandleEnvelope.
 	// it's only exposed over the node API, it should be completely deactivated in public releases
 	HandleEvent(ctx context.Context, in *p2p.Event, opts ...grpc.CallOption) (*Void, error)
@@ -1838,7 +1887,7 @@ func (x *serviceEventListClient) Recv() (*p2p.Event, error) {
 	return m, nil
 }
 
-func (c *serviceClient) GetEvent(ctx context.Context, in *p2p.Event, opts ...grpc.CallOption) (*p2p.Event, error) {
+func (c *serviceClient) GetEvent(ctx context.Context, in *graphql.Node, opts ...grpc.CallOption) (*p2p.Event, error) {
 	out := new(p2p.Event)
 	err := c.cc.Invoke(ctx, "/berty.node.Service/GetEvent", in, out, opts...)
 	if err != nil {
@@ -1847,7 +1896,7 @@ func (c *serviceClient) GetEvent(ctx context.Context, in *p2p.Event, opts ...grp
 	return out, nil
 }
 
-func (c *serviceClient) EventSeen(ctx context.Context, in *EventIDInput, opts ...grpc.CallOption) (*p2p.Event, error) {
+func (c *serviceClient) EventSeen(ctx context.Context, in *graphql.Node, opts ...grpc.CallOption) (*p2p.Event, error) {
 	out := new(p2p.Event)
 	err := c.cc.Invoke(ctx, "/berty.node.Service/EventSeen", in, out, opts...)
 	if err != nil {
@@ -1924,9 +1973,9 @@ func (x *serviceContactListClient) Recv() (*entity.Contact, error) {
 	return m, nil
 }
 
-func (c *serviceClient) GetContact(ctx context.Context, in *entity.Contact, opts ...grpc.CallOption) (*entity.Contact, error) {
+func (c *serviceClient) Contact(ctx context.Context, in *ContactInput, opts ...grpc.CallOption) (*entity.Contact, error) {
 	out := new(entity.Contact)
-	err := c.cc.Invoke(ctx, "/berty.node.Service/GetContact", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.node.Service/Contact", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2001,18 +2050,27 @@ func (c *serviceClient) ConversationAddMessage(ctx context.Context, in *Conversa
 	return out, nil
 }
 
-func (c *serviceClient) GetConversation(ctx context.Context, in *entity.Conversation, opts ...grpc.CallOption) (*entity.Conversation, error) {
+func (c *serviceClient) Conversation(ctx context.Context, in *entity.Conversation, opts ...grpc.CallOption) (*entity.Conversation, error) {
 	out := new(entity.Conversation)
-	err := c.cc.Invoke(ctx, "/berty.node.Service/GetConversation", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.node.Service/Conversation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *serviceClient) GetConversationMember(ctx context.Context, in *entity.ConversationMember, opts ...grpc.CallOption) (*entity.ConversationMember, error) {
+func (c *serviceClient) ConversationMember(ctx context.Context, in *entity.ConversationMember, opts ...grpc.CallOption) (*entity.ConversationMember, error) {
 	out := new(entity.ConversationMember)
-	err := c.cc.Invoke(ctx, "/berty.node.Service/GetConversationMember", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/berty.node.Service/ConversationMember", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) ConversationRead(ctx context.Context, in *graphql.Node, opts ...grpc.CallOption) (*entity.Conversation, error) {
+	out := new(entity.Conversation)
+	err := c.cc.Invoke(ctx, "/berty.node.Service/ConversationRead", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -2286,21 +2344,22 @@ type ServiceServer interface {
 	EventStream(*EventStreamInput, Service_EventStreamServer) error
 	// list old events
 	EventList(*EventListInput, Service_EventListServer) error
-	GetEvent(context.Context, *p2p.Event) (*p2p.Event, error)
-	EventSeen(context.Context, *EventIDInput) (*p2p.Event, error)
+	GetEvent(context.Context, *graphql.Node) (*p2p.Event, error)
+	EventSeen(context.Context, *graphql.Node) (*p2p.Event, error)
 	ContactRequest(context.Context, *ContactRequestInput) (*entity.Contact, error)
 	ContactAcceptRequest(context.Context, *entity.Contact) (*entity.Contact, error)
 	ContactRemove(context.Context, *entity.Contact) (*entity.Contact, error)
 	ContactUpdate(context.Context, *entity.Contact) (*entity.Contact, error)
 	ContactList(*ContactListInput, Service_ContactListServer) error
-	GetContact(context.Context, *entity.Contact) (*entity.Contact, error)
+	Contact(context.Context, *ContactInput) (*entity.Contact, error)
 	ConversationCreate(context.Context, *ConversationCreateInput) (*entity.Conversation, error)
 	ConversationList(*ConversationListInput, Service_ConversationListServer) error
 	ConversationInvite(context.Context, *ConversationManageMembersInput) (*entity.Conversation, error)
 	ConversationExclude(context.Context, *ConversationManageMembersInput) (*entity.Conversation, error)
 	ConversationAddMessage(context.Context, *ConversationAddMessageInput) (*p2p.Event, error)
-	GetConversation(context.Context, *entity.Conversation) (*entity.Conversation, error)
-	GetConversationMember(context.Context, *entity.ConversationMember) (*entity.ConversationMember, error)
+	Conversation(context.Context, *entity.Conversation) (*entity.Conversation, error)
+	ConversationMember(context.Context, *entity.ConversationMember) (*entity.ConversationMember, error)
+	ConversationRead(context.Context, *graphql.Node) (*entity.Conversation, error)
 	// HandleEvent is the unencrypted (and unsafe) version of HandleEnvelope.
 	// it's only exposed over the node API, it should be completely deactivated in public releases
 	HandleEvent(context.Context, *p2p.Event) (*Void, error)
@@ -2388,7 +2447,7 @@ func (x *serviceEventListServer) Send(m *p2p.Event) error {
 }
 
 func _Service_GetEvent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(p2p.Event)
+	in := new(graphql.Node)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2400,13 +2459,13 @@ func _Service_GetEvent_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: "/berty.node.Service/GetEvent",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetEvent(ctx, req.(*p2p.Event))
+		return srv.(ServiceServer).GetEvent(ctx, req.(*graphql.Node))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Service_EventSeen_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EventIDInput)
+	in := new(graphql.Node)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -2418,7 +2477,7 @@ func _Service_EventSeen_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: "/berty.node.Service/EventSeen",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).EventSeen(ctx, req.(*EventIDInput))
+		return srv.(ServiceServer).EventSeen(ctx, req.(*graphql.Node))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2516,20 +2575,20 @@ func (x *serviceContactListServer) Send(m *entity.Contact) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func _Service_GetContact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(entity.Contact)
+func _Service_Contact_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ContactInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).GetContact(ctx, in)
+		return srv.(ServiceServer).Contact(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.node.Service/GetContact",
+		FullMethod: "/berty.node.Service/Contact",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetContact(ctx, req.(*entity.Contact))
+		return srv.(ServiceServer).Contact(ctx, req.(*ContactInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2627,38 +2686,56 @@ func _Service_ConversationAddMessage_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_GetConversation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Service_Conversation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(entity.Conversation)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).GetConversation(ctx, in)
+		return srv.(ServiceServer).Conversation(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.node.Service/GetConversation",
+		FullMethod: "/berty.node.Service/Conversation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetConversation(ctx, req.(*entity.Conversation))
+		return srv.(ServiceServer).Conversation(ctx, req.(*entity.Conversation))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_GetConversationMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Service_ConversationMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(entity.ConversationMember)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ServiceServer).GetConversationMember(ctx, in)
+		return srv.(ServiceServer).ConversationMember(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/berty.node.Service/GetConversationMember",
+		FullMethod: "/berty.node.Service/ConversationMember",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetConversationMember(ctx, req.(*entity.ConversationMember))
+		return srv.(ServiceServer).ConversationMember(ctx, req.(*entity.ConversationMember))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_ConversationRead_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(graphql.Node)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).ConversationRead(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/berty.node.Service/ConversationRead",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).ConversationRead(ctx, req.(*graphql.Node))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -2999,8 +3076,8 @@ var _Service_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Service_ContactUpdate_Handler,
 		},
 		{
-			MethodName: "GetContact",
-			Handler:    _Service_GetContact_Handler,
+			MethodName: "Contact",
+			Handler:    _Service_Contact_Handler,
 		},
 		{
 			MethodName: "ConversationCreate",
@@ -3019,12 +3096,16 @@ var _Service_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Service_ConversationAddMessage_Handler,
 		},
 		{
-			MethodName: "GetConversation",
-			Handler:    _Service_GetConversation_Handler,
+			MethodName: "Conversation",
+			Handler:    _Service_Conversation_Handler,
 		},
 		{
-			MethodName: "GetConversationMember",
-			Handler:    _Service_GetConversationMember_Handler,
+			MethodName: "ConversationMember",
+			Handler:    _Service_ConversationMember_Handler,
+		},
+		{
+			MethodName: "ConversationRead",
+			Handler:    _Service_ConversationRead_Handler,
 		},
 		{
 			MethodName: "HandleEvent",
@@ -3575,6 +3656,37 @@ func (m *ContactListConnection) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *ContactInput) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ContactInput) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Filter != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintService(dAtA, i, uint64(m.Filter.Size()))
+		n13, err := m.Filter.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n13
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
 func (m *ConversationListInput) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -3594,11 +3706,11 @@ func (m *ConversationListInput) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintService(dAtA, i, uint64(m.Filter.Size()))
-		n13, err := m.Filter.MarshalTo(dAtA[i:])
+		n14, err := m.Filter.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n13
+		i += n14
 	}
 	if m.Paginate != nil {
 		dAtA[i] = 0x9a
@@ -3606,11 +3718,11 @@ func (m *ConversationListInput) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x6
 		i++
 		i = encodeVarintService(dAtA, i, uint64(m.Paginate.Size()))
-		n14, err := m.Paginate.MarshalTo(dAtA[i:])
+		n15, err := m.Paginate.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n14
+		i += n15
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -3637,11 +3749,11 @@ func (m *ConversationEdge) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintService(dAtA, i, uint64(m.Node.Size()))
-		n15, err := m.Node.MarshalTo(dAtA[i:])
+		n16, err := m.Node.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n15
+		i += n16
 	}
 	if len(m.Cursor) > 0 {
 		dAtA[i] = 0x12
@@ -3688,11 +3800,11 @@ func (m *ConversationListConnection) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x6
 		i++
 		i = encodeVarintService(dAtA, i, uint64(m.PageInfo.Size()))
-		n16, err := m.PageInfo.MarshalTo(dAtA[i:])
+		n17, err := m.PageInfo.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n16
+		i += n17
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -3764,11 +3876,11 @@ func (m *ConversationManageMembersInput) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintService(dAtA, i, uint64(m.Conversation.Size()))
-		n17, err := m.Conversation.MarshalTo(dAtA[i:])
+		n18, err := m.Conversation.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n17
+		i += n18
 	}
 	if len(m.Members) > 0 {
 		for _, msg := range m.Members {
@@ -3972,19 +4084,19 @@ func (m *IntegrationTestOutput) MarshalTo(dAtA []byte) (int, error) {
 	dAtA[i] = 0x22
 	i++
 	i = encodeVarintService(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.StartedAt)))
-	n18, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.StartedAt, dAtA[i:])
-	if err != nil {
-		return 0, err
-	}
-	i += n18
-	dAtA[i] = 0x2a
-	i++
-	i = encodeVarintService(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.FinishedAt)))
-	n19, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.FinishedAt, dAtA[i:])
+	n19, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.StartedAt, dAtA[i:])
 	if err != nil {
 		return 0, err
 	}
 	i += n19
+	dAtA[i] = 0x2a
+	i++
+	i = encodeVarintService(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.FinishedAt)))
+	n20, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.FinishedAt, dAtA[i:])
+	if err != nil {
+		return 0, err
+	}
+	i += n20
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
 	}
@@ -4154,21 +4266,21 @@ func (m *LogfileEntry) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x1a
 		i++
 		i = encodeVarintService(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.CreatedAt)))
-		n20, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.CreatedAt, dAtA[i:])
+		n21, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.CreatedAt, dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n20
+		i += n21
 	}
 	if m.UpdatedAt != nil {
 		dAtA[i] = 0x22
 		i++
 		i = encodeVarintService(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.UpdatedAt)))
-		n21, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.UpdatedAt, dAtA[i:])
+		n22, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.UpdatedAt, dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n21
+		i += n22
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -4470,6 +4582,22 @@ func (m *ContactListConnection) Size() (n int) {
 	if m.PageInfo != nil {
 		l = m.PageInfo.Size()
 		n += 2 + l + sovService(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ContactInput) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Filter != nil {
+		l = m.Filter.Size()
+		n += 1 + l + sovService(uint64(l))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -6078,6 +6206,90 @@ func (m *ContactListConnection) Unmarshal(dAtA []byte) error {
 				m.PageInfo = &PageInfo{}
 			}
 			if err := m.PageInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ContactInput) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ContactInput: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ContactInput: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Filter", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Filter == nil {
+				m.Filter = &entity.Contact{}
+			}
+			if err := m.Filter.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

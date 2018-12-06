@@ -26,31 +26,31 @@ type GoogleProtobufFileDescriptorSet  {
     file: [GoogleProtobufFileDescriptorProto]
 }
 type GoogleProtobufFileDescriptorProto  {
-      name: String!
-      package: String!
-      dependency: [String!]
-      publicDependency: [Int32!]
-      weakDependency: [Int32!]
+    name: String!
+    package: String!
+    dependency: [String!]
+    publicDependency: [Int32!]
+    weakDependency: [Int32!]
     messageType: [GoogleProtobufDescriptorProto]
     enumType: [GoogleProtobufEnumDescriptorProto]
     service: [GoogleProtobufServiceDescriptorProto]
     extension: [GoogleProtobufFieldDescriptorProto]
     options: GoogleProtobufFileOptions
     sourceCodeInfo: GoogleProtobufSourceCodeInfo
-      syntax: String!
+    syntax: String!
 }
     
 type GoogleProtobufDescriptorProtoExtensionRange  {
-      start: Int32!
-      end: Int32!
+    start: Int32!
+    end: Int32!
     options: GoogleProtobufExtensionRangeOptions
 }
 type GoogleProtobufDescriptorProtoReservedRange  {
-      start: Int32!
-      end: Int32!
+    start: Int32!
+    end: Int32!
 }
 type GoogleProtobufDescriptorProto  {
-      name: String!
+    name: String!
     field: [GoogleProtobufFieldDescriptorProto]
     extension: [GoogleProtobufFieldDescriptorProto]
     nestedType: [GoogleProtobufDescriptorProto]
@@ -59,7 +59,7 @@ type GoogleProtobufDescriptorProto  {
     oneofDecl: [GoogleProtobufOneofDescriptorProto]
     options: GoogleProtobufMessageOptions
     reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
-      reservedName: [String!]
+    reservedName: [String!]
 }
 type GoogleProtobufExtensionRangeOptions  {
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
@@ -67,146 +67,146 @@ type GoogleProtobufExtensionRangeOptions  {
       
       
 type GoogleProtobufFieldDescriptorProto  {
-      name: String!
-      number: Int32!
+    name: String!
+    number: Int32!
     label: Enum
     type: Enum
-      typeName: String!
-      extendee: String!
-      defaultValue: String!
-      oneofIndex: Int32!
-      jsonName: String!
+    typeName: String!
+    extendee: String!
+    defaultValue: String!
+    oneofIndex: Int32!
+    jsonName: String!
     options: GoogleProtobufFieldOptions
 }
 type GoogleProtobufOneofDescriptorProto  {
-      name: String!
+    name: String!
     options: GoogleProtobufOneofOptions
 }
     
 type GoogleProtobufEnumDescriptorProtoEnumReservedRange  {
-      start: Int32!
-      end: Int32!
+    start: Int32!
+    end: Int32!
 }
 type GoogleProtobufEnumDescriptorProto  {
-      name: String!
+    name: String!
     value: [GoogleProtobufEnumValueDescriptorProto]
     options: GoogleProtobufEnumOptions
     reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
-      reservedName: [String!]
+    reservedName: [String!]
 }
 type GoogleProtobufEnumValueDescriptorProto  {
-      name: String!
-      number: Int32!
+    name: String!
+    number: Int32!
     options: GoogleProtobufEnumValueOptions
 }
 type GoogleProtobufServiceDescriptorProto  {
-      name: String!
+    name: String!
     method: [GoogleProtobufMethodDescriptorProto]
     options: GoogleProtobufServiceOptions
 }
 type GoogleProtobufMethodDescriptorProto  {
-      name: String!
-      inputType: String!
-      outputType: String!
+    name: String!
+    inputType: String!
+    outputType: String!
     options: GoogleProtobufMethodOptions
-      clientStreaming: Bool!
-      serverStreaming: Bool!
+    clientStreaming: Bool!
+    serverStreaming: Bool!
 }
       
 type GoogleProtobufFileOptions  {
-      javaPackage: String!
-      javaOuterClassname: String!
-      javaMultipleFiles: Bool!
-      javaGenerateEqualsAndHash: Bool!
-      javaStringCheckUtf8: Bool!
+    javaPackage: String!
+    javaOuterClassname: String!
+    javaMultipleFiles: Bool!
+    javaGenerateEqualsAndHash: Bool!
+    javaStringCheckUtf8: Bool!
     optimizeFor: Enum
-      goPackage: String!
-      ccGenericServices: Bool!
-      javaGenericServices: Bool!
-      pyGenericServices: Bool!
-      phpGenericServices: Bool!
-      deprecated: Bool!
-      ccEnableArenas: Bool!
-      objcClassPrefix: String!
-      csharpNamespace: String!
-      swiftPrefix: String!
-      phpClassPrefix: String!
-      phpNamespace: String!
-      phpMetadataNamespace: String!
-      rubyPackage: String!
+    goPackage: String!
+    ccGenericServices: Bool!
+    javaGenericServices: Bool!
+    pyGenericServices: Bool!
+    phpGenericServices: Bool!
+    deprecated: Bool!
+    ccEnableArenas: Bool!
+    objcClassPrefix: String!
+    csharpNamespace: String!
+    swiftPrefix: String!
+    phpClassPrefix: String!
+    phpNamespace: String!
+    phpMetadataNamespace: String!
+    rubyPackage: String!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufMessageOptions  {
-      messageSetWireFormat: Bool!
-      noStandardDescriptorAccessor: Bool!
-      deprecated: Bool!
-      mapEntry: Bool!
+    messageSetWireFormat: Bool!
+    noStandardDescriptorAccessor: Bool!
+    deprecated: Bool!
+    mapEntry: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
       
       
 type GoogleProtobufFieldOptions  {
     ctype: Enum
-      packed: Bool!
+    packed: Bool!
     jstype: Enum
-      lazy: Bool!
-      deprecated: Bool!
-      weak: Bool!
+    lazy: Bool!
+    deprecated: Bool!
+    weak: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufOneofOptions  {
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufEnumOptions  {
-      allowAlias: Bool!
-      deprecated: Bool!
+    allowAlias: Bool!
+    deprecated: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufEnumValueOptions  {
-      deprecated: Bool!
+    deprecated: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufServiceOptions  {
-      deprecated: Bool!
+    deprecated: Bool!
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
       
 type GoogleProtobufMethodOptions  {
-      deprecated: Bool!
+    deprecated: Bool!
     idempotencyLevel: Enum
     uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
     
 type GoogleProtobufUninterpretedOptionNamePart  {
-      namePart: String!
-      isExtension: Bool!
+    namePart: String!
+    isExtension: Bool!
 }
 type GoogleProtobufUninterpretedOption  {
     name: [GoogleProtobufUninterpretedOptionNamePart]
-      identifierValue: String!
-      positiveIntValue: Uint64!
-      negativeIntValue: Int64!
-      doubleValue: Double!
-      stringValue: [Byte!],
-      aggregateValue: String!
+    identifierValue: String!
+    positiveIntValue: Uint64!
+    negativeIntValue: Int64!
+    doubleValue: Double!
+    stringValue: [Byte!]
+    aggregateValue: String!
 }
     
 type GoogleProtobufSourceCodeInfoLocation  {
-      path: [Int32!]
-      span: [Int32!]
-      leadingComments: String!
-      trailingComments: String!
-      leadingDetachedComments: [String!]
+    path: [Int32!]
+    span: [Int32!]
+    leadingComments: String!
+    trailingComments: String!
+    leadingDetachedComments: [String!]
 }
 type GoogleProtobufSourceCodeInfo  {
     location: [GoogleProtobufSourceCodeInfoLocation]
 }
     
 type GoogleProtobufGeneratedCodeInfoAnnotation  {
-      path: [Int32!]
-      sourceFile: String!
-      begin: Int32!
-      end: Int32!
+    path: [Int32!]
+    sourceFile: String!
+    begin: Int32!
+    end: Int32!
 }
 type GoogleProtobufGeneratedCodeInfo  {
     annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
@@ -273,10 +273,10 @@ type BertyEntityDevice implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-      name: String!
+    name: String!
     status: Enum
-      apiVersion: Uint32!
-      contactId: String!
+    apiVersion: Uint32!
+    contactId: String!
 }
   
   
@@ -287,13 +287,13 @@ type BertyEntityContact implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
-      sigchain: [Byte!],
+    sigchain: [Byte!]
     status: Enum
     devices: [BertyEntityDevice]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
 }
   
   
@@ -304,8 +304,8 @@ type BertyEntityConversation implements Node {
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     readAt: GoogleProtobufTimestamp
-      title: String!
-      topic: String!
+    title: String!
+    topic: String!
     members: [BertyEntityConversationMember]
 }
       
@@ -315,15 +315,15 @@ type BertyEntityConversationMember implements Node {
     updatedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
-      conversationId: String!
-      contactId: String!
+    conversationId: String!
+    contactId: String!
 }
   
   
   
 
 type BertyEntityMessage  {
-      text: String!
+    text: String!
 }
   
   
@@ -331,15 +331,15 @@ type BertyEntityMessage  {
 
       
 type BertyEntitySenderAlias  {
-      id: String!
+    id: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     status: Enum
-      originDeviceId: String!
-      contactId: String!
-      conversationId: String!
-      aliasIdentifier: String!
-      used: Bool!
+    originDeviceId: String!
+    contactId: String!
+    conversationId: String!
+    aliasIdentifier: String!
+    used: Bool!
 }
   
   
@@ -347,21 +347,21 @@ type BertyEntitySenderAlias  {
 
   
 type BertyP2pSentAttrs  {
-      ids: [String!]
+    ids: [String!]
 }
 type BertyP2pAckAttrs  {
-      ids: [String!]
-      errMsg: String!
+    ids: [String!]
+    errMsg: String!
 }
 type BertyP2pPingAttrs  {
-      T: Bool!
+    T: Bool!
 }
 type BertyP2pContactRequestAttrs  {
     me: BertyEntityContact
-      introText: String!
+    introText: String!
 }
 type BertyP2pContactRequestAcceptedAttrs  {
-      T: Bool!
+    T: Bool!
 }
 type BertyP2pContactShareMeAttrs  {
     me: BertyEntityContact
@@ -376,15 +376,15 @@ type BertyP2pConversationNewMessageAttrs  {
     message: BertyEntityMessage
 }
 type BertyP2pDevtoolsMapsetAttrs  {
-      key: String!
-      val: String!
+    key: String!
+    val: String!
 }
 type BertyP2pSenderAliasUpdateAttrs  {
     aliases: [BertyEntitySenderAlias]
 }
 type BertyP2pNodeAttrs  {
-      kind: Int32!
-      attributes: [Byte!],
+    kind: Int32!
+    attributes: [Byte!]
 }
   
   
@@ -393,25 +393,48 @@ type BertyP2pNodeAttrs  {
       
 type BertyP2pEvent implements Node {
     id: ID!
-      senderId: String!
+    senderId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
     direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
+    senderApiVersion: Uint32!
+    receiverApiVersion: Uint32!
+    receiverId: String!
     kind: Enum
-      attributes: [Byte!],
+    attributes: [Byte!]
     conversationId: ID!
     seenAt: GoogleProtobufTimestamp
     metadata: [BertyP2pMetadataKeyValue]
 }
 type BertyP2pMetadataKeyValue  {
-      key: String!
-      values: [String!]
+    key: String!
+    values: [String!]
+}
+  
+  
+  
+
+  
+type BertyNodeNodeStartedAttrs  {
+    T: Bool!
+}
+type BertyNodeNodeStoppedAttrs  {
+    errMsg: String!
+}
+type BertyNodeNodeIsAliveAttrs  {
+    T: Bool!
+}
+type BertyNodeBackgroundErrorAttrs  {
+    errMsg: String!
+}
+type BertyNodeBackgroundWarnAttrs  {
+    errMsg: String!
+}
+type BertyNodeDebugAttrs  {
+    msg: String!
 }
   
   
@@ -448,12 +471,18 @@ type BertyPkgDeviceinfoDeviceInfo  {
   
 
   
+type BertyNodeProtocolsOutput  {
+    protocols: [String!]
+}
+type BertyNodeAppVersionOutput  {
+    version: String!
+}
 type BertyNodePingDestination  {
-      destination: String!
+    destination: String!
 }
 type BertyNodeEventEdge  {
     node: BertyP2pEvent
-      cursor: String!
+    cursor: String!
 }
 type BertyNodeEventListConnection  {
     edges: [BertyNodeEventEdge]
@@ -461,7 +490,7 @@ type BertyNodeEventListConnection  {
 }
 type BertyNodeContactEdge  {
     node: BertyEntityContact
-      cursor: String!
+    cursor: String!
 }
 type BertyNodeContactListConnection  {
     edges: [BertyNodeContactEdge]
@@ -469,36 +498,43 @@ type BertyNodeContactListConnection  {
 }
 type BertyNodeConversationEdge  {
     node: BertyEntityConversation
-      cursor: String!
+    cursor: String!
 }
 type BertyNodeConversationListConnection  {
     edges: [BertyNodeConversationEdge]
     pageInfo: BertyNodePageInfo!
 }
 type BertyNodePagination  {
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
 }
 type BertyNodePageInfo  {
-      startCursor: String!
-      endCursor: String!
-      hasNextPage: Bool!
-      hasPreviousPage: Bool!
-      count: Uint32!
+    startCursor: String!
+    endCursor: String!
+    hasNextPage: Bool!
+    hasPreviousPage: Bool!
+    count: Uint32!
+}
+type BertyNodeIntegrationTestOutput  {
+    name: String!
+    success: Bool!
+    verbose: String!
+    startedAt: GoogleProtobufTimestamp
+    finishedAt: GoogleProtobufTimestamp
 }
 type BertyNodeVoid  {
-      T: Bool!
+    T: Bool!
 }
 type BertyNodeLogEntry  {
-      line: String!
+    line: String!
 }
 type BertyNodeLogfileEntry  {
-      path: String!
-      filesize: Int32!
+    path: String!
+    filesize: Int32!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
 }
@@ -512,94 +548,55 @@ type BertyNetworkPeerPayload {
     connection: Enum
 }
 input BertyP2pMetadataKeyValueInput {
-      key: String!
-      values: [String!]
+    key: String!
+    values: [String!]
 }
 input BertyP2pEventInput {
     id: ID!
-      senderId: String!
+    senderId: String!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     sentAt: GoogleProtobufTimestampInput
     receivedAt: GoogleProtobufTimestampInput
     ackedAt: GoogleProtobufTimestampInput
     direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
+    senderApiVersion: Uint32!
+    receiverApiVersion: Uint32!
+    receiverId: String!
     kind: Enum
-      attributes: [Byte!],
+    attributes: [Byte!]
     conversationId: ID!
     seenAt: GoogleProtobufTimestampInput
     metadata: [BertyP2pMetadataKeyValueInput]
 }
-type BertyP2pEventPayload {
-    id: ID!
-      senderId: String!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    sentAt: GoogleProtobufTimestamp
-    receivedAt: GoogleProtobufTimestamp
-    ackedAt: GoogleProtobufTimestamp
-    direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
-    kind: Enum
-      attributes: [Byte!],
-    conversationId: ID!
-    seenAt: GoogleProtobufTimestamp
-    metadata: [BertyP2pMetadataKeyValue]
-}
 input BertyNodePaginationInput {
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
 }
 input BertyEntityDeviceInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      name: String!
+    name: String!
     status: Enum
-      apiVersion: Uint32!
-      contactId: String!
+    apiVersion: Uint32!
+    contactId: String!
 }
 input BertyEntityContactInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
-}
-type BertyEntityContactPayload {
-    id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-      sigchain: [Byte!],
-    status: Enum
-    devices: [BertyEntityDevice]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
-}
-type BertyEntityConversationPayload {
-    id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    readAt: GoogleProtobufTimestamp
-      title: String!
-      topic: String!
-    members: [BertyEntityConversationMember]
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
 }
 input BertyEntityConversationMemberInput {
     id: ID!
@@ -607,16 +604,16 @@ input BertyEntityConversationMemberInput {
     updatedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
-      conversationId: String!
-      contactId: String!
+    conversationId: String!
+    contactId: String!
 }
 input BertyEntityConversationInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     readAt: GoogleProtobufTimestampInput
-      title: String!
-      topic: String!
+    title: String!
+    topic: String!
     members: [BertyEntityConversationMemberInput]
 }
 input BertyEntityMessageInput {
@@ -679,198 +676,174 @@ type Query {
   EventList(
     filter: BertyP2pEventInput
     onlyWithoutAckedAt: Enum
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
   ): BertyNodeEventListConnection
   GetEvent(
     id: ID!
-      senderId: String!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    sentAt: GoogleProtobufTimestampInput
-    receivedAt: GoogleProtobufTimestampInput
-    ackedAt: GoogleProtobufTimestampInput
-    direction: Enum
-      senderApiVersion: Uint32!
-      receiverApiVersion: Uint32!
-      receiverId: String!
-    kind: Enum
-      attributes: [Byte!],
-    conversationId: ID!
-    seenAt: GoogleProtobufTimestampInput
-    metadata: [BertyP2pMetadataKeyValueInput]
-  ): BertyP2pEventPayload
+  ): BertyP2pEvent
   ContactList(
     filter: BertyEntityContactInput
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
   ): BertyNodeContactListConnection
-  GetContact(
-    id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
-    status: Enum
-    devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
-  ): BertyEntityContactPayload
+  Contact(
+    filter: BertyEntityContactInput
+  ): BertyEntityContact
   ConversationList(
     filter: BertyEntityConversationInput
-      orderBy: String!
-      orderDesc: Bool!
-      first: Int32
-      after: String
-      last: Int32
-      before: String
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
   ): BertyNodeConversationListConnection
-  GetConversation(
+  Conversation(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     readAt: GoogleProtobufTimestampInput
-      title: String!
-      topic: String!
+    title: String!
+    topic: String!
     members: [BertyEntityConversationMemberInput]
-  ): BertyEntityConversationPayload
-  GetConversationMember(
+  ): BertyEntityConversation
+  ConversationMember(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
-      conversationId: String!
-      contactId: String!
-  ): BertyEntityConversationMemberPayload
+    conversationId: String!
+    contactId: String!
+  ): BertyEntityConversationMember
   DeviceInfos(
-      T: Bool!
-  ): BertyPkgDeviceinfoDeviceInfosPayload
+    T: Bool!
+  ): BertyPkgDeviceinfoDeviceInfos
   AppVersion(
-      T: Bool!
-  ): BertyNodeAppVersionPayload
+    T: Bool!
+  ): BertyNodeAppVersionOutput
   Peers(
       T: Bool!
   ): BertyNetworkPeersPayload
   Protocols(
-      id: String!
-      addrs: [String!]
+    id: String!
+    addrs: [String!]
     connection: Enum
-  ): BertyNodeProtocolsPayload
+  ): BertyNodeProtocolsOutput
   LogfileList(
-      T: Bool!
-  ): [BertyNodeLogfileEntryPayload]
+    T: Bool!
+  ): [BertyNodeLogfileEntry]
   Panic(
-      T: Bool!
-  ): BertyNodeVoidPayload
+    T: Bool!
+  ): BertyNodeVoid
 }
   
 type Mutation {
   EventSeen(
     id: ID!
-  ): BertyP2pEventPayload
+  ): BertyP2pEvent
   ContactRequest(
     contact: BertyEntityContactInput
-      introText: String!
-  ): BertyEntityContactPayload
+    introText: String!
+  ): BertyEntityContact
   ContactAcceptRequest(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
-  ): BertyEntityContactPayload
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
+  ): BertyEntityContact
   ContactRemove(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
-  ): BertyEntityContactPayload
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
+  ): BertyEntityContact
   ContactUpdate(
     id: ID!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
-      sigchain: [Byte!],
+    sigchain: [Byte!]
     status: Enum
     devices: [BertyEntityDeviceInput]
-      displayName: String!
-      displayStatus: String!
-      overrideDisplayName: String!
-      overrideDisplayStatus: String!
-  ): BertyEntityContactPayload
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
+  ): BertyEntityContact
   ConversationCreate(
     contacts: [BertyEntityContactInput]
-      title: String!
-      topic: String!
-  ): BertyEntityConversationPayload
+    title: String!
+    topic: String!
+  ): BertyEntityConversation
   ConversationInvite(
     conversation: BertyEntityConversationInput
     members: [BertyEntityConversationMemberInput]
-  ): BertyEntityConversationPayload
+  ): BertyEntityConversation
   ConversationExclude(
     conversation: BertyEntityConversationInput
     members: [BertyEntityConversationMemberInput]
-  ): BertyEntityConversationPayload
+  ): BertyEntityConversation
   ConversationAddMessage(
     conversation: BertyEntityConversationInput
     message: BertyEntityMessageInput
-  ): BertyP2pEventPayload
+  ): BertyP2pEvent
   ConversationRead(
     id: ID!
-  ): BertyEntityConversationPayload
+  ): BertyEntityConversation
   GenerateFakeData(
-      T: Bool!
-  ): BertyNodeVoidPayload
+    T: Bool!
+  ): BertyNodeVoid
   RunIntegrationTests(
-      name: String!
-  ): BertyNodeIntegrationTestPayload
+    name: String!
+  ): BertyNodeIntegrationTestOutput
   DebugRequeueEvent(
     eventId: ID!
-  ): BertyP2pEventPayload
+  ): BertyP2pEvent
   DebugRequeueAll(
-      T: Bool!
-  ): BertyNodeVoidPayload
+    T: Bool!
+  ): BertyNodeVoid
 }
   
 type Subscription {
   EventStream(
     filter: BertyP2pEventInput
-  ): BertyP2pEventPayload
+  ): BertyP2pEvent
   LogStream(
-      continues: Bool!
-      logLevel: String!
-      namespaces: String!
-      last: Int32!
-  ): BertyNodeLogEntryPayload
+    continues: Bool!
+    logLevel: String!
+    namespaces: String!
+    last: Int32!
+  ): BertyNodeLogEntry
   LogfileRead(
-      path: String!
-  ): BertyNodeLogEntryPayload
+    path: String!
+  ): BertyNodeLogEntry
   MonitorBandwidth(
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
+    id: String
+    totalIn: Int64
+    totalOut: Int64
+    rateIn: Double
+    rateOut: Double
     type: Enum
   ): BertyNetworkBandwidthStatsPayload
   MonitorPeers(

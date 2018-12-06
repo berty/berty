@@ -27,6 +27,9 @@ class Message extends React.PureComponent {
     await this.props.screenProps.context.mutations.eventSeen({
       id: this.props.data.id,
     })
+    await this.props.screenProps.context.mutations.conversationRead({
+      id: conversation.id,
+    })
   }
 
   async componentDidUpdate (prevProps) {
@@ -114,6 +117,7 @@ class Input extends PureComponent {
     this.setState({ input: '' }, async () => {
       try {
         const conversation = this.props.navigation.getParam('conversation')
+        console.log('conversation', conversation)
         await this.props.screenProps.context.mutations.conversationAddMessage({
           conversation: {
             id: conversation.id,

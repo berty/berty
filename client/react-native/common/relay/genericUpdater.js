@@ -31,9 +31,9 @@ const deepFilterEqual = (a, b) => {
 //
 export default (fragment, alias, args) => {
   return (store, data, deletion) => {
-    console.log(data, args)
     const helper = new FragmentHelper(fragment)
     const connectionHelper = helper.getConnection(alias)
+    console.log(alias, data, args)
 
     const root = store.getRoot()
 
@@ -60,17 +60,19 @@ export default (fragment, alias, args) => {
 
     const edges = connection.getLinkedRecords('edges')
 
-    const field = args.orderBy || args.sortBy || 'id'
+    let field = args.orderBy || args.sortBy || 'id'
+    field = data[field] ? field : Case.camel(field)
 
     const node =
       store.get(data.id) ||
       store.create(data.id, connectionHelper.getEdgeNodeType())
     node.setValue(data.id, 'id')
+    node.setValue(data[field], 'field')
 
     const cursor =
       field === 'id'
         ? atob(data.id).split(/:(.+)/)[1]
-        : data[Case.camel(field)] || data[field]
+        : atob(data.id).split(/:(.+)/)[1] + ':' + data[field]
 
     if (
       edges.length > 0 &&

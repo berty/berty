@@ -10,8 +10,8 @@ import { conversation as utils } from '../../../utils'
 
 const Item = fragments.Conversation(({ data, navigation }) => {
   const { id, updatedAt, readAt } = data
-  const isInvite = new Date(updatedAt).getTime() > 0
   const isRead = new Date(readAt).getTime() > 0
+  const isInvite = new Date(updatedAt).getTime() > 0 && !isRead
   return (
     <Flex.Cols
       align='center'
@@ -31,10 +31,10 @@ const Item = fragments.Conversation(({ data, navigation }) => {
           {utils.getTitle(data)}
         </Text>
         <Text color={colors.subtleGrey} tiny middle left bold={!isRead}>
-          {isRead
-            ? 'No new message'
-            : isInvite
-              ? 'New conversation'
+          {isInvite
+            ? 'New conversation'
+            : isRead
+              ? 'No new message'
               : 'You have a new message'}
         </Text>
       </Flex.Rows>
@@ -81,10 +81,7 @@ export default class ListScreen extends PureComponent {
           variables={queries.ConversationList.defaultVariables}
           fragment={fragments.ConversationList}
           alias='ConversationList'
-          subscriptions={[
-            subscriptions.conversationInvite,
-            subscriptions.conversationNewMessage,
-          ]}
+          subscriptions={[subscriptions.conversationInvite]}
           renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>

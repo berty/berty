@@ -1,4 +1,6 @@
 import { graphql } from 'react-relay'
+
+import { enums } from '..'
 import { subscriber } from '../../relay'
 
 const EventStream = graphql`
@@ -28,10 +30,15 @@ let _subscriber = null
 
 export default context => {
   if (subscriber === null || context !== _context) {
-    return (_subscriber = subscriber({
+    _subscriber = subscriber({
       environment: context.environment,
       subscription: EventStream,
-    }))
+    })
+    _subscriber.subscribe({
+      updater: (store, data) => {
+        console.log(enums.ValueBertyP2pKindInputKind[data.EventStream.kind])
+      },
+    })
   }
   return _subscriber
 }

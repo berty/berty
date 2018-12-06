@@ -188,7 +188,7 @@ webapp.list:
 		| sed 's/\(0\.\)\{3\}0:1\([0-9]\)\{3\}->1\([0-9]\)\{3\}\/tcp\, \(0\.\)\{3\}0://g' | sed 's/->.*$$//g'
 
 webapp.logs:
-	@docker-compose logs -f $(SERV)
+	@docker-compose logs --tail=100 -f $(SERV)
 
 webapp.open:
 	@GQL_PORTS=`docker ps -f name=react-native_core-service --format "{{.Ports}}" |			\

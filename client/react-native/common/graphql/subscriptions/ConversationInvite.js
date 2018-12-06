@@ -14,7 +14,6 @@ export default context => ({
               'conversation:' + attributes.conversation.id
             )
             updater(store, attributes.conversation)
-            console.log('ConversationInvite', attributes)
             await context.queries.Conversation.fetch({
               id: attributes.conversation.id,
             })
