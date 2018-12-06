@@ -4,16 +4,27 @@ WEB := $(ROOT)/web
 GOMOB := $(ROOT)/gomobile
 IOS := $(ROOT)/ios
 ANDROID := $(ROOT)/android
-IOS_UDID := ''
 
 # Fastlane build related
-IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
-ANDROID_VERSION ?= $(shell git rev-list --all --count)
+
 
 NAME ?= Berty
 BUILD ?= .build
-BUILD_IOS ?= $(BUILD)/ios
-BUILD_ANDROID ?= $(BUILD)/android
+
+# ios related env
+IOS_UDID := ''
+IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
+IOS_BUILD := $(BUILD)/ios
+
+# android related env
+ANDROID_VERSION ?= $(shell git rev-list --all --count)
+ANDROID_BUILD ?= $(BUILD)/android
+ANDROID_STORE_FILE_B64 ?=
+ANDROID_STORE_FILE := berty.keystore
+ANDROID_KEY_ALIAS ?= berty-keystore
+ANDROID_STORE_PASSWORD ?= ""
+ANDROID_KEY_PASSWORD ?= ""
+
 
 KEYCHAIN_NAME ?= berty_keychain
 KEYCHAIN_PASSWORD ?= berty_pass
@@ -256,25 +267,37 @@ fastlane.setup_circle:
 	security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(KEYCHAIN_PASSWORD) $(KEYCHAIN_NAME)
 
 fastlane.ios.build:
-	mkdir -p $(BUILD_IOS)
+	mkdir -p $(IOS_BUILD)
 
 	GYM_CLEAN=false \
 	GYM_OPTION_METHOD=ad-hoc \
 	GYM_OPTION_APP_ID=chat.berty.ios \
 	GYM_OPTION_PROVISIONING_PROFILE='match AdHoc chat.berty.ios' \
 	GYM_OUTPUT_NAME=$(NAME) \
-	GYM_OUTPUT_DIRECTORY=$(BUILD_IOS) \
+	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
 	GYM_PROJECT=ios/Berty.xcodeproj \
 	GYM_SCHEME=adhoc \
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
 
 	# test if ipa has been correctly exported
-	test -f $(BUILD_IOS)/$(NAME).ipa
+	test -f $(IOS_BUILD)/$(NAME).ipa
 
 	# extract build informations
-	unzip -p $(BUILD_IOS)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(BUILD_IOS)/$(NAME).embedded.mobileprovision.txt
+	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
+
+fastlane.android.build:
+	mkdir -p $(ANDROID_BUILD) /tmp/android/keystore
+
+	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(PWD)/$(ANDROID_BUILD)" \
+	FL_GRADLE_PROJECT_DIR=android \
+	FL_BUILD_TYPE=release \
+	FL_GRADLE_TASK=assembleReleaseAndPublish \
+		time bundle exec fastlane run gradle --verbose
+
+	# test if apk has been correctly exported
+	test -f $(ANDROID_BUILD)/*.apk
 
 fastlane.ios.release:
-	time bundle exec fastlane run pilot upload --verbose ipa:$(BUILD_IOS)/Berty.ipa skip_waiting_for_build_processing:true
+	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 ##############################

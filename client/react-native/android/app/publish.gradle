@@ -1,0 +1,32 @@
+def publish = project.tasks.create("assembleReleaseAndPublish")
+publish.description "Assemble and copies release apk to custom directory"
+
+android {
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            // Copy apk to custom dir
+            if (variant.buildType.name.equals("release")
+                && project.hasProperty('BERTY_APK_OUTPUT_DIR')
+                && output.outputFile != null
+                && output.outputFile.name.endsWith('.apk')) {
+
+                def task = project.tasks.create("copy${variant.name}Apk", Copy)
+                task.doFirst {
+                    println "Creating ${rootProject.name} (${versionName}.${versionCode}) from ${project.name}-${variant.name}.apk"
+                }
+
+                def outputFile = output.outputFile
+
+
+                def fileName = outputFile.name.replace(project.name + "-${variant.name}.apk", "${rootProject.name}.apk")
+                output.outputFileName = new File(fileName)
+
+                task.from(output.outputFile)
+                task.into(BERTY_APK_OUTPUT_DIR)
+
+                task.dependsOn variant.assemble
+                publish.dependsOn task
+            }
+        }
+    }
+}

@@ -3,6 +3,13 @@ package chat.berty.main;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.horcrux.svg.SvgPackage;
+import com.avishayil.rnrestart.ReactNativeRestartPackage;
+import com.pusherman.networkinfo.RNNetworkInfoPackage;
+import com.imagepicker.ImagePickerPackage;
+import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
+import org.reactnative.camera.RNCameraPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.horcrux.svg.SvgPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
@@ -34,6 +41,13 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
                 new MainReactPackage(),
+            new VectorIconsPackage(),
+            new SvgPackage(),
+            new ReactNativeRestartPackage(),
+            new RNNetworkInfoPackage(),
+            new ImagePickerPackage(),
+            new ReactNativeExceptionHandlerPackage(),
+            new RNCameraPackage(),
             new RNCameraPackage(),
             new SvgPackage(),
             new ReactNativeRestartPackage(),

@@ -95,7 +95,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "chat.berty"
@@ -109,11 +109,20 @@ android {
     }
     signingConfigs {
         release {
-            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
-                storeFile file(MYAPP_RELEASE_STORE_FILE)
-                storePassword MYAPP_RELEASE_STORE_PASSWORD
-                keyAlias MYAPP_RELEASE_KEY_ALIAS
-                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            if (project.hasProperty('BERTY_RELEASE_STORE_RAW_B64')) {
+                def rawFile = BERTY_RELEASE_STORE_RAW_B64.decodeBase64()
+                def file = File.createTempFile("berty", "keystore", null)
+                println "generating keystore into ${file.getAbsolutePath()}"
+                def stream =  new FileOutputStream(file.getAbsolutePath())
+                stream.write(rawFile)
+                project.setProperty('BERTY_RELEASE_STORE_FILE', file.getAbsolutePath())
+            }
+
+            if (project.hasProperty('BERTY_RELEASE_STORE_FILE')) {
+                storeFile file(BERTY_RELEASE_STORE_FILE)
+                storePassword BERTY_RELEASE_STORE_PASSWORD
+                keyAlias BERTY_RELEASE_KEY_ALIAS
+                keyPassword BERTY_RELEASE_KEY_PASSWORD
             }
         }
     }
@@ -136,6 +145,7 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -152,13 +162,13 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-camera')
+    compile project(':react-native-vector-icons')
     compile project(':react-native-svg')
     compile project(':react-native-restart')
-    compile project(':react-native-exception-handler')
-    compile project(':react-native-vector-icons')
     compile project(':react-native-network-info')
     compile project(':react-native-image-picker')
+    compile project(':react-native-exception-handler')
+    compile project(':react-native-camera')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':ble')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
@@ -172,3 +182,5 @@ task copyDownloadableDepsToLibs(type: Copy) {
     from configurations.compile
     into 'libs'
 }
+
+apply from: 'publish.gradle'

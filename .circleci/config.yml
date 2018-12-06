@@ -215,6 +215,12 @@ jobs:
 
   client.rn.android:
     working_directory: ~/go/src/berty.tech/client/react-native/android
+    environment:
+      FASTLANE_SKIP_UPDATE_CHECK: 1
+      FASTLANE_HIDE_CHANGELOG: 1
+      FL_BUILDLOG_PATH: /tmp/fl/log/build/android
+      BUILD: /tmp/fl/build
+
     docker:
       - image: bertychat/android-ci:v2
     steps:
@@ -257,8 +263,17 @@ jobs:
           command: make patch.android
 
       - run:
+          name: set version
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: make version
+
+      - run:
           name: build app
-          command: /tmp/retry -m 3 bundle exec fastlane android beta
+          command: /tmp/retry -m 3 make fastlane.android.build
+
+      - store_artifacts:
+          path: /tmp/fl
+
 
   client.rn.ios:
     working_directory: ~/go/src/berty.tech
@@ -269,7 +284,7 @@ jobs:
       FASTLANE_HIDE_CHANGELOG: 1
       SCAN_OUTPUT_DIRECTORY: /tmp/fl/log/scan
       GYM_OUTPUT_DIRECTORY: /tmp/fl/log/gym
-      FL_BUILDLOG_PATH: /tmp/fl/log/build
+      FL_BUILDLOG_PATH: /tmp/fl/log/build/ios
       SCAN_INCLUDE_SIMULATOR_LOGS: true
       BUILD: /tmp/fl/build
 
@@ -351,7 +366,7 @@ jobs:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
-            /tmp/retry -m 3 make fastlane.setup_circle
+            make fastlane.setup_circle
             /tmp/retry -m 3 make fastlane.ios.build
 
       - store_artifacts:
