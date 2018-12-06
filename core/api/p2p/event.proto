@@ -60,6 +60,9 @@ message Event {
   // SeenAt is set to the date when the event has been displayed on the user's screen
   google.protobuf.Timestamp seen_at = 16 [(gogoproto.stdtime) = true];
 
+  // Additional metadata
+  repeated MetadataKeyValue metadata = 99 [(gogoproto.moretags) = "gorm:\"-\""];
+
   //
   // enums
   //
@@ -75,4 +78,9 @@ message Event {
     // Node is the value for local events, see ./core/api/node/kind.proto
     Node = 99;
   }
+}
+
+message MetadataKeyValue {
+  string key = 1;
+  repeated string values = 2;
 }

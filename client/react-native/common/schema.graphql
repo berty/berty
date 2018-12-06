@@ -388,6 +388,11 @@ type BertyP2pEvent implements Node {
       attributes: [Byte!],
     conversationId: ID!
     seenAt: GoogleProtobufTimestamp
+    metadata: [BertyP2pMetadataKeyValue]
+}
+type BertyP2pMetadataKeyValue  {
+      key: String!
+      values: [String!]
 }
   
   
@@ -494,6 +499,10 @@ type BertyP2pPeerPayload {
       addrs: [String!]
     connection: Enum
 }
+input BertyP2pMetadataKeyValueInput {
+      key: String!
+      values: [String!]
+}
 input BertyP2pEventInput {
     id: ID!
       senderId: String!
@@ -510,6 +519,7 @@ input BertyP2pEventInput {
       attributes: [Byte!],
     conversationId: ID!
     seenAt: GoogleProtobufTimestampInput
+    metadata: [BertyP2pMetadataKeyValueInput]
 }
 type BertyP2pEventPayload {
     id: ID!
@@ -527,6 +537,7 @@ type BertyP2pEventPayload {
       attributes: [Byte!],
     conversationId: ID!
     seenAt: GoogleProtobufTimestamp
+    metadata: [BertyP2pMetadataKeyValue]
 }
 input BertyNodePaginationInput {
       orderBy: String!
@@ -677,6 +688,7 @@ type Query {
       attributes: [Byte!],
     conversationId: ID!
     seenAt: GoogleProtobufTimestampInput
+    metadata: [BertyP2pMetadataKeyValueInput]
   ): BertyP2pEventPayload
   ContactList(
     filter: BertyEntityContactInput

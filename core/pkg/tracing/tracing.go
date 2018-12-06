@@ -11,12 +11,17 @@ import (
 	"github.com/opentracing/opentracing-go/log"
 )
 
+func GetCallerName(prefix string, skip int) string {
+	function, _, _, _ := runtime.Caller(skip + 1)
+	funcName := runtime.FuncForPC(function).Name()
+	caller := strings.Replace(funcName, "berty.tech/core/", "./", 1)
+	return fmt.Sprintf("%s::%s()", prefix, caller)
+}
+
 func EnterFunc(ctx context.Context, args ...interface{}) (opentracing.Span, context.Context) {
 	// FIXME: add a way to completely disable the following behavior
-	function, _, _, _ := runtime.Caller(1)
-	funcName := runtime.FuncForPC(function).Name()
-	topic := fmt.Sprintf("call::%s()", funcName)
-	topic = strings.Replace(topic, "call::berty.tech/core/", "call::./", 1)
+	topic := GetCallerName("call", 1)
+
 	if ctx == nil {
 		ctx = context.Background()
 		logger().Warn("context is not set")

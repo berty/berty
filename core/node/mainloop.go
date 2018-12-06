@@ -72,7 +72,7 @@ func (n *Node) cron(ctx context.Context) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx)
 	defer span.Finish()
-	for true {
+	for {
 		before := time.Now().Add(-time.Second * 60 * 10)
 		if _, err := n.EventsRetry(ctx, before); err != nil {
 			n.LogBackgroundError(ctx, err)
@@ -80,6 +80,78 @@ func (n *Node) cron(ctx context.Context) {
 
 		time.Sleep(time.Second * 60)
 	}
+}
+
+func (n *Node) handleClientEvent(ctx context.Context, event *p2p.Event) {
+	logger().Debug("client event", zap.Stringer("event", event))
+
+	// @FIXME: Don't create a span here for now
+	// span, _ := event.CreateSpan(context.Background())
+	// defer span.Finish()
+
+	n.clientEventsMutex.Lock()
+	for _, sub := range n.clientEventsSubscribers {
+		if sub.filter(event) {
+			sub.queue <- event
+		}
+	}
+	n.clientEventsMutex.Unlock()
+}
+
+func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
+	logger().Debug("outgoing event", zap.Stringer("event", event))
+
+	span, ctx := event.CreateSpan(ctx)
+
+	envelope := p2p.Envelope{}
+	eventBytes, err := proto.Marshal(event)
+	if err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to marshal outgoing event"))
+		span.Finish()
+		return
+	}
+
+	event.SenderID = n.b64pubkey
+
+	switch {
+	case event.ReceiverID != "": // ContactEvent
+		envelope.Source = n.aliasEnvelopeForContact(ctx, &envelope, event)
+		envelope.ChannelID = event.ReceiverID
+		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
+
+	case event.ConversationID != "": //ConversationEvent
+		envelope.Source = n.aliasEnvelopeForConversation(ctx, &envelope, event)
+		envelope.ChannelID = event.ConversationID
+		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
+
+	default:
+		n.LogBackgroundError(ctx, fmt.Errorf("unhandled event type"))
+	}
+
+	if envelope.Signature, err = keypair.Sign(n.crypto, &envelope); err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
+		span.Finish()
+		return
+	}
+
+	// Async subscribe to conversation
+	// wait for 1s to simulate a sync subscription,
+	// if too long, the task will be done in background
+	done := make(chan bool, 1)
+	go func() {
+		// FIXME: make something smarter, i.e., grouping events by contact or network driver
+		if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
+			n.LogBackgroundError(ctx, errors.Wrap(err, "failed to emit envelope on network"))
+		}
+		done <- true
+		span.Finish()
+	}()
+	select {
+	case <-done:
+	case <-time.After(1 * time.Second):
+	}
+	// push the outgoing event on the client stream
+	n.clientEvents <- event
 }
 
 // Start is the node's mainloop
@@ -111,65 +183,10 @@ func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
 	for {
 		select {
 		case event := <-n.outgoingEvents:
-			logger().Debug("outgoing event", zap.Stringer("event", event))
-			envelope := p2p.Envelope{}
-			eventBytes, err := proto.Marshal(event)
-			if err != nil {
-				n.LogBackgroundError(ctx, errors.Wrap(err, "failed to marshal outgoing event"))
-				continue
-			}
-
-			event.SenderID = n.b64pubkey
-
-			switch {
-			case event.ReceiverID != "": // ContactEvent
-				envelope.Source = n.aliasEnvelopeForContact(ctx, &envelope, event)
-				envelope.ChannelID = event.ReceiverID
-				envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
-
-			case event.ConversationID != "": //ConversationEvent
-				envelope.Source = n.aliasEnvelopeForConversation(ctx, &envelope, event)
-				envelope.ChannelID = event.ConversationID
-				envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
-
-			default:
-				n.LogBackgroundError(ctx, fmt.Errorf("unhandled event type"))
-			}
-
-			if envelope.Signature, err = keypair.Sign(n.crypto, &envelope); err != nil {
-				n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
-				continue
-			}
-
-			// Async subscribe to conversation
-			// wait for 1s to simulate a sync subscription,
-			// if too long, the task will be done in background
-			done := make(chan bool, 1)
-			go func() {
-				// FIXME: make something smarter, i.e., grouping events by contact or network driver
-				if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
-					n.LogBackgroundError(ctx, errors.Wrap(err, "failed to emit envelope on network"))
-				}
-				done <- true
-			}()
-			select {
-			case <-done:
-			case <-time.After(1 * time.Second):
-			}
-
-			// push the outgoing event on the client stream
-			n.clientEvents <- event
-
+			n.handleOutgoingEvent(ctx, event)
 			// emit the outgoing event on the node event stream
 		case event := <-n.clientEvents:
-			logger().Debug("client event", zap.Stringer("event", event))
-			n.clientEventsMutex.Lock()
-			for _, sub := range n.clientEventsSubscribers {
-				if sub.filter(event) {
-					sub.queue <- event
-				}
-			}
-			n.clientEventsMutex.Unlock()
+			n.handleClientEvent(ctx, event)
 		}
 	}
 }

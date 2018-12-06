@@ -251,7 +251,7 @@ func getClient(opts *clientOptions) (*client.Client, context.Context, error) {
 	}
 
 	if jaegerAddr != "" {
-		tracer, closer, err := jaeger.InitTracer(jaegerAddr, jaegerName+":client")
+		tracer, closer, err := jaeger.InitTracer(jaegerAddr, jaegerName+"client")
 		if err != nil {
 			return nil, nil, err
 		}

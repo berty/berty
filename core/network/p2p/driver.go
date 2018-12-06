@@ -45,7 +45,7 @@ var ProtocolID = protocol.ID(p2pgrpc.GetGrpcID(ID))
 type driverConfig struct {
 	libp2pOpt []libp2p.Option
 
-	jaeger *grpc_ot.Option
+	jaeger []grpc_ot.Option
 
 	bootstrap     []string
 	bootstrapSync bool
@@ -168,10 +168,10 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	)
 
 	if cfg.jaeger != nil {
-		serverStreamOpts = append(serverStreamOpts, grpc_ot.StreamServerInterceptor(*cfg.jaeger))
-		serverUnaryOpts = append(serverUnaryOpts, grpc_ot.UnaryServerInterceptor(*cfg.jaeger))
-		clientStreamOpts = append(clientStreamOpts, grpc_ot.StreamClientInterceptor(*cfg.jaeger))
-		clientUnaryOpts = append(clientUnaryOpts, grpc_ot.UnaryClientInterceptor(*cfg.jaeger))
+		serverStreamOpts = append(serverStreamOpts, grpc_ot.StreamServerInterceptor(cfg.jaeger...))
+		serverUnaryOpts = append(serverUnaryOpts, grpc_ot.UnaryServerInterceptor(cfg.jaeger...))
+		clientStreamOpts = append(clientStreamOpts, grpc_ot.StreamClientInterceptor(cfg.jaeger...))
+		clientUnaryOpts = append(clientUnaryOpts, grpc_ot.UnaryClientInterceptor(cfg.jaeger...))
 	}
 
 	p2pInterceptorsServer := []grpc.ServerOption{
@@ -408,10 +408,19 @@ func (d *Driver) Find(ctx context.Context, pid peer.ID) (pstore.PeerInfo, error)
 }
 
 func (d *Driver) Emit(ctx context.Context, e *p2p.Envelope) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, e)
+	defer span.Finish()
+
 	return d.EmitTo(ctx, e.GetChannelID(), e)
 }
 
 func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) error {
+	var span opentracing.Span
+	span, ctx = tracing.EnterFunc(ctx, channel, e)
+
+	defer span.Finish()
+
 	ss, err := d.FindSubscribers(ctx, channel)
 	if err != nil {
 		return err
@@ -421,30 +430,56 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 		return fmt.Errorf("no subscribers found")
 	}
 
-	for _, s := range ss {
-		go func(pi pstore.PeerInfo) {
+	success := make([]chan bool, len(ss))
+	for i, s := range ss {
+		success[i] = make(chan bool, 1)
+		go func(pi pstore.PeerInfo, index int, done chan bool) {
+			var gospan opentracing.Span
+			var goctx context.Context
+			gospan, goctx = tracing.EnterFunc(ctx, index)
+			defer gospan.Finish()
+
 			peerID := pi.ID.Pretty()
 			if pi.ID == d.host.ID() {
+				done <- false
 				return
 			}
 
-			if err := d.Connect(ctx, pi); err != nil {
+			if err := d.Connect(goctx, pi); err != nil {
 				logger().Warn("failed to connect", zap.String("id", peerID), zap.Error(err))
+				done <- false
+				return
 			}
 
-			c, err := d.ccmanager.GetConn(ctx, peerID)
+			c, err := d.ccmanager.GetConn(goctx, peerID)
 			if err != nil {
 				logger().Warn("failed to dial", zap.String("id", peerID), zap.Error(err))
+				done <- false
+				return
 			}
 
 			sc := p2p.NewServiceClient(c)
 
-			_, err = sc.HandleEnvelope(ctx, e)
+			_, err = sc.HandleEnvelope(goctx, e)
 			if err != nil {
 				logger().Error("failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
+				done <- false
+				return
 			}
-		}(s)
+
+			done <- true
+		}(s, i, success[i])
 	}
+
+	var ok bool
+	for _, cc := range success {
+		ok = ok || <-cc
+	}
+
+	if !ok {
+		return fmt.Errorf("failed to emit envelope")
+	}
+
 	return nil
 }
 

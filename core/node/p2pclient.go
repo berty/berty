@@ -11,21 +11,22 @@ import (
 )
 
 func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact, kind p2p.Kind) *p2p.Event {
-	span, _ := tracing.EnterFunc(ctx, destination, kind)
+	span, ctx := tracing.EnterFunc(ctx, destination, kind)
 	defer span.Finish()
 
-	event := p2p.NewOutgoingEvent(n.b64pubkey, destination.ID, kind)
+	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination.ID, kind)
 	event.ID = n.NewID()
 	return event
 }
 
 func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Conversation, kind p2p.Kind) *p2p.Event {
-	span, _ := tracing.EnterFunc(ctx, destination, kind)
+	span, ctx := tracing.EnterFunc(ctx, destination, kind)
 	defer span.Finish()
 
-	event := p2p.NewOutgoingEvent(n.b64pubkey, "", kind)
+	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, "", kind)
 	event.ConversationID = destination.ID
 	event.ID = n.NewID()
+
 	return event
 }
 
@@ -42,6 +43,7 @@ func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event) error
 		return errors.Wrap(err, "failed to write event to db")
 	}
 	n.outgoingEvents <- event
+
 	return nil
 }
 
@@ -57,14 +59,15 @@ func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
 	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
 		return err
 	}
+
 	return nil
 }
 
 func (n *Node) NewSenderAliasEvent(ctx context.Context, destination string, aliases []*entity.SenderAlias) (*p2p.Event, error) {
-	span, _ := tracing.EnterFunc(ctx, destination, aliases)
+	span, ctx := tracing.EnterFunc(ctx, destination, aliases)
 	defer span.Finish()
 
-	event := p2p.NewOutgoingEvent(n.b64pubkey, destination, p2p.Kind_SenderAliasUpdate)
+	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, p2p.Kind_SenderAliasUpdate)
 	event.ID = n.NewID()
 	if err := event.SetAttrs(&p2p.SenderAliasUpdateAttrs{Aliases: aliases}); err != nil {
 		return nil, err
