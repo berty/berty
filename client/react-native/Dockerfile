@@ -28,6 +28,7 @@ RUN apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git
 ENV GO111MODULE=on GOPROXY=http://goproxy.berty.io:3000
 
 VOLUME /go/src
+VOLUME /go/bin
 
 CMD cd /go/src/berty.tech/core \
     && make dev RUN_DAEMON_OPTS="--log-level=debug --jaeger-address=react-native_tracer-service_1:6831"

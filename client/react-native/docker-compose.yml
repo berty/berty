@@ -38,4 +38,5 @@ services:
     volumes:
       - $GOPATH/src:/go/src
       - /tmp/go/pkg:/go/pkg
+      - /tmp/go/bin:/go/bin
 
