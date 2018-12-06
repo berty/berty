@@ -72,9 +72,12 @@ const Item = fragments.Contact(
 
     render () {
       const {
-        data: { id, overrideDisplayName, displayName },
+        data: { id, overrideDisplayName, displayName, status },
         navigation,
       } = this.props
+      if (status === 42) {
+        return null
+      }
       return (
         <Flex.Cols
           align='center'

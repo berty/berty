@@ -12,6 +12,7 @@ export default context => ({
         (async (store, data) => {
           if (data.EventStream.kind === 201) {
             const attributes = parseEmbedded(data.EventStream.attributes)
+            console.log(attributes)
             const id = btoa('contact:' + attributes.me.id)
             updater(store, { id })
             await context.queries.Contact.fetch({
