@@ -48,7 +48,7 @@ class PaginationContainer extends Component {
     })
   }
 
-  keyExtractor = item => item.cursor || item.node.id
+  keyExtractor = item => item.node.cursor + ':' + item.node.id
 
   renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
 

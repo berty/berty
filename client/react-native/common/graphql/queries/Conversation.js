@@ -1,10 +1,27 @@
 import { fetchQuery, graphql } from 'react-relay'
 
+import { conversation } from '../../utils'
 import { merge } from '../../helpers'
 
 const query = graphql`
-  query ConversationQuery($id: ID!) {
-    Conversation(id: $id) {
+  query ConversationQuery(
+    $id: ID!
+    $createdAt: GoogleProtobufTimestampInput
+    $updatedAt: GoogleProtobufTimestampInput
+    $readAt: GoogleProtobufTimestampInput
+    $title: String!
+    $topic: String!
+    $members: [BertyEntityConversationMemberInput]
+  ) {
+    Conversation(
+      id: $id
+      createdAt: $createdAt
+      updatedAt: $updatedAt
+      readAt: $readAt
+      title: $title
+      topic: $topic
+      members: $members
+    ) {
       id
       createdAt
       updatedAt
@@ -44,9 +61,7 @@ const query = graphql`
   }
 `
 
-const defaultVariables = {
-  id: '',
-}
+export const defaultVariables = conversation.default
 
 export default context => ({
   graphql: query,

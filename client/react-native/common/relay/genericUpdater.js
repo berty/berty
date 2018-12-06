@@ -57,19 +57,29 @@ export default (fragment, alias, args) => {
     }
 
     // get all edges
+
+    const edges = connection.getLinkedRecords('edges')
+
+    const field = args.orderBy || args.sortBy || 'id'
+
     const node =
       store.get(data.id) ||
       store.create(data.id, connectionHelper.getEdgeNodeType())
     node.setValue(data.id, 'id')
 
-    const edges = connection.getLinkedRecords('edges')
-
-    const field = Case.camel(args.orderBy || args.sortBy || 'id')
-
     const cursor =
-      field === 'id' ? atob(data.id).split(/:(.+)/)[1] : data[field]
+      field === 'id'
+        ? atob(data.id).split(/:(.+)/)[1]
+        : data[Case.camel(field)] || data[field]
 
-    if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
+    if (
+      edges.length > 0 &&
+      edges.some(
+        e =>
+          console.log(e.getLinkedRecord('node')) ||
+          e.getLinkedRecord('node').getValue('id') === data.id
+      )
+    ) {
       // update
       return
     }
