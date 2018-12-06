@@ -44,7 +44,6 @@ const Item = fragments.Contact(
         console.error(err)
       }
       Item.isLoading[id] = false
-      this.forceUpdate()
     }
 
     onDecline = async () => {
@@ -202,10 +201,7 @@ class Received extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
-          subscriptions={[
-            subscriptions.contactRequest,
-            subscriptions.contactRequestAccepted,
-          ]}
+          subscriptions={[subscriptions.contactRequest]}
           renderItem={props => (
             <Item
               {...props}

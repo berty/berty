@@ -2,6 +2,7 @@ import { graphql } from 'react-relay'
 
 import { commit } from '../../relay'
 import { contact } from '../../utils'
+import { merge } from '../../helpers'
 
 const ContactRequestMutation = graphql`
   mutation ContactRequestMutation(
@@ -36,10 +37,7 @@ export default context => (input, configs) =>
     context.environment,
     ContactRequestMutation,
     'ContactRequest',
-    {
-      ...contact.default,
-      ...input,
-    },
+    merge([contact.default, input]),
     {
       updater: (store, data) =>
         context.updaters.contactList.forEach(updater =>
