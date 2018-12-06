@@ -136,7 +136,7 @@ NSString* const PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A23E6B3";
     self.peerUUID = [CBUUID UUIDWithString:PEER_ID_UUID];
     self.writerUUID = [CBUUID UUIDWithString:WRITER_UUID];
     self.closerUUID = [CBUUID UUIDWithString:CLOSER_UUID];
-    
+
     self.maCharacteristic = [[CBMutableCharacteristic alloc]
                              initWithType:self.maUUID
                              properties:CBCharacteristicPropertyWrite
@@ -173,7 +173,7 @@ NSString* const PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A23E6B3";
 
     [self addObserver:self forKeyPath:@"CentralIsOn" options:0 context:nil];
     [self addObserver:self forKeyPath:@"PeripharalIsOn" options:0 context:nil];
-    
+
     return self;
 }
 
@@ -183,13 +183,11 @@ NSString* const PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A23E6B3";
                        context:(void *)context {
     NSLog(@"LALALLA");
     @synchronized (self) {
-     
-    if (self.CentralIsOn == YES && self.PeripharalIsOn == YES && self.serviceAdded == NO) {
-        self.serviceAdded = YES;
-        [peripheralManager addService:[BertyUtils sharedUtils].bertyService];
-        
+        if (self.CentralIsOn == YES && self.PeripharalIsOn == YES && self.serviceAdded == NO) {
+            self.serviceAdded = YES;
+            [peripheralManager addService:[BertyUtils sharedUtils].bertyService];
 //        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], CBCentralManagerScanOptionAllowDuplicatesKey, nil];
-    }
+        }
     }
 }
 

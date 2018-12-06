@@ -87,7 +87,6 @@ void writeNSData(NSData *data, char *ma) {
 }
 
 int dialPeer(char *peerID) {
-    
     if ([BertyUtils inDevicesWithMa:[NSString stringWithUTF8String:peerID]] == YES) {
         NSLog(@"TEST 1 %@", [NSString stringWithUTF8String:peerID]);
         return 1;

@@ -72,58 +72,57 @@
     NSLog(@"waitRead");
     dispatch_async(self.dispatch_queue, ^{
         @synchronized (self.toSend) {
-                NSData *value = [[BertyUtils sharedUtils].ma dataUsingEncoding:NSUTF8StringEncoding];
-                NSUInteger length = [value length];
-                NSUInteger chunkSize = [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse];
-                NSUInteger offset = 0;
-                do {
-                    NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
-                    NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[value bytes] + offset
-                                                         length:thisChunkSize
-                                                   freeWhenDone:NO];
-                    offset += thisChunkSize;
-                    [self.toSend addObject:chunk];
-                } while (offset < length);
-                while ([self.toSend count] > 0) {
-                    NSLog(@"Ma 1st [self.toSend count] %lu", [self.toSend count]);
-                    dispatch_semaphore_wait(self.writeWaiter, DISPATCH_TIME_FOREVER);
-                    [self.peripheral writeValue:self.toSend[0] forCharacteristic:self.maChar type:CBCharacteristicWriteWithResponse];
-                    NSLog(@"Ma 2st [self.toSend count] %lu", [self.toSend count]);
-                    [self.toSend removeObjectAtIndex:0];
-                    NSLog(@"Ma 3st [self.toSend count] %lu", [self.toSend count]);
-                }
-            
-                value = [[BertyUtils sharedUtils].peerID dataUsingEncoding:NSUTF8StringEncoding];
-                length = [value length];
-                chunkSize = [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse];
-                offset = 0;
-                do {
-                    NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
-                    NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[value bytes] + offset
-                                                         length:thisChunkSize
-                                                   freeWhenDone:NO];
-                    offset += thisChunkSize;
-                    [self.toSend addObject:chunk];
-                } while (offset < length);
-
-                while ([self.toSend count] > 0) {
-                    NSLog(@"pa 1st [self.toSend count] %lu", [self.toSend count]);
-                    dispatch_semaphore_wait(self.writeWaiter, DISPATCH_TIME_FOREVER);
-                    [self.peripheral writeValue:self.toSend[0] forCharacteristic:self.peerIDChar type:CBCharacteristicWriteWithResponse];
-                    [self.toSend removeObjectAtIndex:0];
-                }
-                NSLog(@"pa 1st COUNTDOWN " );
-                [self.latchRdy countDown];
+            NSData *value = [[BertyUtils sharedUtils].ma dataUsingEncoding:NSUTF8StringEncoding];
+            NSUInteger length = [value length];
+            NSUInteger chunkSize = [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse];
+            NSUInteger offset = 0;
+            do {
+                NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
+                NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[value bytes] + offset
+                                                     length:thisChunkSize
+                                               freeWhenDone:NO];
+                offset += thisChunkSize;
+                [self.toSend addObject:chunk];
+            } while (offset < length);
+            while ([self.toSend count] > 0) {
+                NSLog(@"Ma 1st [self.toSend count] %lu", [self.toSend count]);
+                dispatch_semaphore_wait(self.writeWaiter, DISPATCH_TIME_FOREVER);
+                [self.peripheral writeValue:self.toSend[0] forCharacteristic:self.maChar type:CBCharacteristicWriteWithResponse];
+                NSLog(@"Ma 2st [self.toSend count] %lu", [self.toSend count]);
+                [self.toSend removeObjectAtIndex:0];
+                NSLog(@"Ma 3st [self.toSend count] %lu", [self.toSend count]);
             }
-        });
-    }
+
+            value = [[BertyUtils sharedUtils].peerID dataUsingEncoding:NSUTF8StringEncoding];
+            length = [value length];
+            chunkSize = [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse];
+            offset = 0;
+            do {
+                NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
+                NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[value bytes] + offset
+                                                     length:thisChunkSize
+                                               freeWhenDone:NO];
+                offset += thisChunkSize;
+                [self.toSend addObject:chunk];
+            } while (offset < length);
+
+            while ([self.toSend count] > 0) {
+                NSLog(@"pa 1st [self.toSend count] %lu", [self.toSend count]);
+                dispatch_semaphore_wait(self.writeWaiter, DISPATCH_TIME_FOREVER);
+                [self.peripheral writeValue:self.toSend[0] forCharacteristic:self.peerIDChar type:CBCharacteristicWriteWithResponse];
+                [self.toSend removeObjectAtIndex:0];
+            }
+            NSLog(@"pa 1st COUNTDOWN " );
+            [self.latchRdy countDown];
+        }
+    });
+}
 
 - (void)waitChar {
     NSLog(@"waitChar");
     dispatch_async(self.dispatch_queue, ^{
         [self.latchChar await];
         [self waitWriteMaThenPeerID];
-        
     });
 }
 
@@ -145,8 +144,8 @@
         do {
             NSUInteger thisChunkSize = length - offset > chunkSize ? chunkSize : length - offset;
             NSData* chunk = [NSData dataWithBytesNoCopy:(char *)[data bytes] + offset
-                                                length:thisChunkSize
-                                            freeWhenDone:NO];
+                                                 length:thisChunkSize
+                                           freeWhenDone:NO];
             offset += thisChunkSize;
             [self.toSend addObject:chunk];
         } while (offset < length);

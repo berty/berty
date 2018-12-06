@@ -24,7 +24,6 @@
 }
 
 - (void)countDown {
-    NSLog(@"C");
     dispatch_async(self.dispatch_queue, ^{
         self.count--;
         if (self.count == 0) {

@@ -13,7 +13,7 @@
 
 - (instancetype)initWithPeripheralDelegate:(BertyPeripheralDelegate *)delegate {
     self = [super init];
-    
+
     self.peripheralDelegate = delegate;
     return self;
 }
@@ -45,13 +45,6 @@
         case CBManagerStatePoweredOn: {
             stateString = @"CBManagerStatePoweredOn";
             [BertyUtils sharedUtils].PeripharalIsOn = true;
-//            if (self.serviceAdded == NO) {
-//                dispatch_async(self.dispatch_queue, ^{
-//                    dispatch_semaphore_wait(self.centralWaiter, DISPATCH_TIME_FOREVER);
-//                    self.serviceAdded = YES;
-            
-//                });
-//            }
             break;
         }
         default: {
@@ -59,7 +52,7 @@
             break;
         }
     }
-    
+
     NSLog(@"peripheralManagerDidUpdateState: %@", stateString);
 }
 
@@ -135,7 +128,7 @@
 - (void)peripheralManager:(CBPeripheralManager *)peripheral central:(CBCentral *)central didSubscribeToCharacteristic:(CBCharacteristic *)characteristic {
     NSLog(@"peripheralManager:peripheral central: %@ didSubscribeToCharacteristic:%@", central.identifier, characteristic.UUID);
 }
- 
+
 /*!
  *  @method peripheralManager:central:didUnsubscribeFromCharacteristic:
  *
@@ -155,12 +148,12 @@
         request.value = [NSData dataWithBytes:(unsigned char[]){0x00} length:1];
         [peripheral respondToRequest:request withResult:CBATTErrorRequestNotSupported];
     }
-    
+
     NSUInteger size = val.length - request.offset;
     NSData  *resp = [NSData dataWithBytesNoCopy:(char *)[val bytes] + request.offset
                                          length:size
                                    freeWhenDone:NO];
-    
+
     request.value = resp;
     [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
 }
@@ -181,11 +174,11 @@
 //    NSLog(@"peripheralManager:peripheral didReceiveReadRequest: %@ %lu", request.central.identifier, request.offset);
 //    BertyUtils *me = [BertyUtils sharedUtils];
 //    BertyDevice *bDevice = [BertyUtils getDeviceFromRequest:request];
-//    
+//
 //    if (bDevice == nil) {
-//        
+//
 //        NSArray<CBPeripheral *> *peripherals = [centralManager retrieveConnectedPeripheralsWithServices:@[me.serviceUUID]];
-//        
+//
 //        for (CBPeripheral *peripheral in peripherals) {
 //            if ([peripheral.identifier isEqual:request.central.identifier]) {
 //                NSLog(@"ICI %@", peripheral);
@@ -197,12 +190,12 @@
 //                    NSLog(@"ICI bis %@", peripheral);
 //                [NSThread sleepForTimeInterval:1.0f];
 //                NSLog(@"ICI bis2 %@", peripheral);
-//                
+//
 //                dispatch_semaphore_signal(device.connSema);
 //                });
 //            }
 //        }
-//        
+//
 //        NSLog(@"peripheral: didReceiveReadRequest error unknown peripheral connected");
 //        [peripheral respondToRequest:request withResult:CBATTErrorRequestNotSupported];
 //        return;
@@ -227,7 +220,7 @@
 //                NSLog(@"peerID countDown other %@", bDevice);
 //                [bDevice.latchOtherRead coundDown];
 //            };
-//        
+//
 //        });
 //    } else {
 //        [peripheral respondToRequest:request withResult:CBATTErrorInvalidHandle];
@@ -251,7 +244,7 @@
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didReceiveWriteRequests:(NSArray<CBATTRequest *> *)requests {
     int i = 0;
     for (CBATTRequest *request in requests) {
-        
+
         NSLog(@"peripheralManager:peripheral didReceiveWriteRequests: %@ %d", request.central.identifier, i);
         i += 1;
         BertyDevice *bDevice = [BertyUtils getDeviceFromRequest:request];
@@ -274,7 +267,7 @@
             } else {
                 bDevice.ma = [NSString stringWithUTF8String:value];
             }
-            
+
         } else if ([request.characteristic.UUID isEqual:utils.peerUUID]) {
             [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
             char *value = [request.value bytes];
@@ -285,8 +278,8 @@
             } else {
                 bDevice.peerID = [NSString stringWithUTF8String:value];
             }
-            
-            
+
+
             NSLog(@"%lu", bDevice.peerID.length);
             if (bDevice.peerID.length == 46) {
                 NSLog(@"COUNTDOWN %@", bDevice);

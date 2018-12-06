@@ -80,7 +80,6 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 
 	ma := C.CString(val)
 	defer C.free(unsafe.Pointer(ma))
-
 	C.writeNSData(
 		C.Bytes2NSData(
 			unsafe.Pointer(&p[0]),

@@ -145,7 +145,7 @@
         NSLog(@"peripheral: %@ didUpdateValueForCharacteristic: %@ error: %@", [peripheral.identifier UUIDString], [characteristic.UUID UUIDString], error);
         return ;
     }
-    
+
     if ([characteristic.UUID isEqual:utils.maUUID]) {
         bDevice.ma = [[NSString alloc] initWithData:characteristic.value encoding:NSUTF8StringEncoding];
         [bDevice.latchRead countDown];

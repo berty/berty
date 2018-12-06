@@ -13,7 +13,7 @@
 
 - (instancetype)initWithPeripheralDelegate:(BertyPeripheralDelegate *)delegate {
     self = [super init];
-    
+
     self.peripheralDelegate = delegate;
     NSLog(@"BertyCentralManagerDelegate init");
     return self;
@@ -110,7 +110,7 @@
         [BertyUtils addDevice:device];
         [central connectPeripheral:peripheral options:nil];
     }
-} 
+}
 
 /*!
  *  @method centralManager:didConnectPeripheral:
