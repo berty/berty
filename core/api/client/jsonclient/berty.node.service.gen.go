@@ -31,8 +31,8 @@ func init() {
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
 	registerUnary("berty.node.ConversationExclude", NodeConversationExclude)
 	registerUnary("berty.node.ConversationAddMessage", NodeConversationAddMessage)
-	registerUnary("berty.node.GetConversation", NodeGetConversation)
-	registerUnary("berty.node.GetConversationMember", NodeGetConversationMember)
+	registerUnary("berty.node.Conversation", NodeConversation)
+	registerUnary("berty.node.ConversationMember", NodeConversationMember)
 	registerUnary("berty.node.ConversationRead", NodeConversationRead)
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
@@ -307,29 +307,29 @@ func NodeConversationAddMessage(client *client.Client, ctx context.Context, json
 	}
 	return client.Node().ConversationAddMessage(ctx, &typedInput)
 }
-func NodeGetConversation(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversation(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
 		zap.String("service", "Service"),
-		zap.String("method", "GetConversation"),
+		zap.String("method", "Conversation"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput graphql.Node
+	var typedInput entity.Conversation
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().GetConversation(ctx, &typedInput)
+	return client.Node().Conversation(ctx, &typedInput)
 }
-func NodeGetConversationMember(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationMember(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
 		zap.String("service", "Service"),
-		zap.String("method", "GetConversationMember"),
+		zap.String("method", "ConversationMember"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput graphql.Node
+	var typedInput entity.ConversationMember
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().GetConversationMember(ctx, &typedInput)
+	return client.Node().ConversationMember(ctx, &typedInput)
 }
 func NodeConversationRead(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",

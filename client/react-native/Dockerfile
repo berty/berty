@@ -31,5 +31,3 @@ VOLUME /go/src
 
 CMD cd /go/src/berty.tech/core \
     && make dev RUN_DAEMON_OPTS="--log-level=debug --jaeger-address=react-native_tracer-service_1:6831"
-
-

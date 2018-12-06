@@ -250,9 +250,9 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	case "contact":
 		return r.Contact(ctx, &entity.Contact{ID: id})
 	case "conversation":
-		return r.GetConversation(ctx, id)
+		return r.client.Conversation(ctx, &entity.Conversation{ID: id})
 	case "conversation_member":
-		return r.GetConversationMember(ctx, id)
+		return r.client.ConversationMember(ctx, &entity.ConversationMember{ID: id})
 	case "event":
 		return r.GetEvent(ctx, id)
 	default:
@@ -543,11 +543,44 @@ func (r *mutationResolver) ConversationRead(ctx context.Context, id string) (*en
 	})
 }
 
-func (r *queryResolver) GetConversation(ctx context.Context, id string) (*entity.Conversation, error) {
-	return r.client.GetConversation(ctx, &gql.Node{ID: strings.SplitN(id, ":", 2)[1]})
+func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+	if id != "" {
+		id = strings.SplitN(id, ":", 2)[1]
+	}
+	if members != nil && len(members) > 0 {
+		for i := range members {
+			if members[i] == nil || members[i].ID == "" {
+				continue
+			}
+			members[i].ID = strings.SplitN(members[i].ID, ":", 2)[1]
+		}
+	}
+
+	return r.client.Conversation(ctx, &entity.Conversation{
+		ID: id,
+	})
 }
-func (r *queryResolver) GetConversationMember(ctx context.Context, id string) (*entity.ConversationMember, error) {
-	return r.client.GetConversationMember(ctx, &gql.Node{ID: strings.SplitN(id, ":", 2)[1]})
+func (r *queryResolver) ConversationMember(ctx context.Context, id string, createAt, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId, contactId string) (*entity.ConversationMember, error) {
+	if id != "" {
+		id = strings.SplitN(id, ":", 2)[1]
+	}
+	if contact.ID != "" {
+		contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
+	}
+	if contact.Devices != nil && len(contact.Devices) != 0 {
+		for i := range contact.Devices {
+			contact.Devices[i].ID = strings.SplitN(contact.Devices[i].ID, ":", 2)[1]
+		}
+	}
+	if conversationId != "" {
+		conversationId = strings.SplitN(conversationId, ":", 2)[1]
+	}
+	if contactId != "" {
+		contactId = strings.SplitN(contactId, ":", 2)[1]
+	}
+	return r.client.ConversationMember(ctx, &entity.ConversationMember{
+		ID: id,
+	})
 }
 func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error) {
 	return r.client.DeviceInfos(ctx, &node.Void{T: true})

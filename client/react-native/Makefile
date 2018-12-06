@@ -192,7 +192,7 @@ webapp.logs:
 
 webapp.open:
 	@GQL_PORTS=`docker ps -f name=react-native_core-service --format "{{.Ports}}" |			\
-				awk 'match($$0,/:8[0-9]{3}->/) {print substr($$0,RSTART+1,RLENGTH-3)}'`;	\
+				awk 'match($$0,/:8[0-]{3}->/) {print substr($$0,RSTART+1,RLENGTH-3)}'`;	\
 	COUNT=$$(echo "$$GQL_PORTS" | sed '/^\s*$$/d' | wc -l | tr -d ' ');						\
 	if [[ $$(docker ps -f name=react-native_tracer-service -q) ]]; then						\
 		COUNT=$$((COUNT+1));																\

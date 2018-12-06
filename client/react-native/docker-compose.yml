@@ -37,3 +37,5 @@ services:
       - tracer-service
     volumes:
       - $GOPATH/src:/go/src
+      - /tmp/go/pkg:/go/pkg
+

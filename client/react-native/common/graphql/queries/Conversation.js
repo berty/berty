@@ -4,8 +4,41 @@ import { merge } from '../../helpers'
 
 const query = graphql`
   query ConversationQuery($id: ID!) {
-    GetConversation(id: $id) {
+    Conversation(id: $id) {
       id
+      createdAt
+      updatedAt
+      readAt
+      title
+      topic
+      members {
+        id
+        createdAt
+        updatedAt
+        status
+        contact {
+          id
+          createdAt
+          updatedAt
+          sigchain
+          status
+          devices {
+            id
+            createdAt
+            updatedAt
+            name
+            status
+            apiVersion
+            contactId
+          }
+          displayName
+          displayStatus
+          overrideDisplayName
+          overrideDisplayStatus
+        }
+        conversationId
+        contactId
+      }
       ...Conversation
     }
   }

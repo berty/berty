@@ -8,13 +8,10 @@ export default context => ({
         updater &&
         (async (store, data) => {
           if (data.EventStream.kind === 301) {
-            console.log('new invite', data.EventStream)
-            const conversation = await context.queries.Conversation.fetch({
+            updater(store, { id: data.EventStream.conversationId })
+            await context.queries.Conversation.fetch({
               id: data.EventStream.conversationId,
             })
-
-            console.log('ConversationInvite: conversation: ', conversation)
-            return updater && updater(store, conversation)
           }
         }),
     }),

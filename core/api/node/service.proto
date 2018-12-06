@@ -88,10 +88,10 @@ service Service {
   rpc ConversationAddMessage (ConversationAddMessageInput) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc GetConversation (gql.Node) returns (berty.entity.Conversation) {
+  rpc Conversation (berty.entity.Conversation) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Query";
   };
-  rpc GetConversationMember (gql.Node) returns (berty.entity.ConversationMember) {
+  rpc ConversationMember (berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
     option (gql.graphql_type) = "Query";
   };
   rpc ConversationRead (gql.Node) returns (berty.entity.Conversation) {

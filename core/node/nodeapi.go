@@ -510,35 +510,35 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 }
 
 // GetConversation implements berty.node.GetConversation
-func (n *Node) GetConversation(ctx context.Context, input *gql.Node) (*entity.Conversation, error) {
+func (n *Node) Conversation(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	conversation := &entity.Conversation{}
-	if err := sql.Where(input).First(conversation).Error; err != nil {
+	output := &entity.Conversation{}
+	if err := sql.Where(input).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
-	return conversation, nil
+	return output, nil
 }
 
 // GetConversationMember implements berty.node.GetConversationMember
-func (n *Node) GetConversationMember(ctx context.Context, input *gql.Node) (*entity.ConversationMember, error) {
+func (n *Node) ConversationMember(ctx context.Context, input *entity.ConversationMember) (*entity.ConversationMember, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	conversationMember := &entity.ConversationMember{}
-	if err := sql.Where(input).First(conversationMember).Error; err != nil {
+	output := &entity.ConversationMember{}
+	if err := sql.Where(input).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
-	return conversationMember, nil
+	return output, nil
 }
 
 func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*node.Void, error) {
