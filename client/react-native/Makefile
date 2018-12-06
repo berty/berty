@@ -243,10 +243,15 @@ webapp.rm: webapp.stop
 .PHONY: version
 version:
 	mkdir -p $(BUILD)
-
-	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
-	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:$(ANDROID)/app/build.gradle
 	echo "ios:$(IOS_VERSION)\nandroid:$(ANDROID_VERSION)\n" > $(BUILD)/version
+
+.PHONY: version.android
+version.android: version
+	bundle exec fastlane run increment_version_code version_code:$(ANDROID_VERSION) gradle_file_path:$(ANDROID)/app/build.gradle
+
+.PHONY: version.ios
+version.ios: version
+	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
 
 fastlane.match.development:
 	time bundle exec fastlane run match type:development
@@ -289,11 +294,11 @@ fastlane.ios.build:
 fastlane.android.build:
 	mkdir -p $(ANDROID_BUILD) /tmp/android/keystore
 
-	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(PWD)/$(ANDROID_BUILD)" \
+	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \
 	FL_GRADLE_PROJECT_DIR=android \
 	FL_BUILD_TYPE=release \
 	FL_GRADLE_TASK=assembleReleaseAndPublish \
-		time bundle exec fastlane run gradle --verbose
+		bundle exec fastlane run gradle --verbose
 
 	# test if apk has been correctly exported
 	test -f $(ANDROID_BUILD)/*.apk

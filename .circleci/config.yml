@@ -265,10 +265,11 @@ jobs:
       - run:
           name: set version
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: make version
+          command: make version.android
 
       - run:
           name: build app
+          working_directory: ~/go/src/berty.tech/client/react-native
           command: /tmp/retry -m 3 make fastlane.android.build
 
       - store_artifacts:
@@ -355,7 +356,7 @@ jobs:
       - run:
           name: set version
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: make version
+          command: make version.ios
 
       - run:
           name: install fsevents

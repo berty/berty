@@ -95,7 +95,7 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion '28.0.3'
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "chat.berty"
@@ -110,15 +110,19 @@ android {
     signingConfigs {
         release {
             if (project.hasProperty('BERTY_RELEASE_STORE_RAW_B64')) {
+                print "decoding base64 keystore... "
                 def rawFile = BERTY_RELEASE_STORE_RAW_B64.decodeBase64()
+                println "SUCCESS"
                 def file = File.createTempFile("berty", "keystore", null)
-                println "generating keystore into ${file.getAbsolutePath()}"
+                print "generating keystore into ${file.getAbsolutePath()}... "
                 def stream =  new FileOutputStream(file.getAbsolutePath())
                 stream.write(rawFile)
-                project.setProperty('BERTY_RELEASE_STORE_FILE', file.getAbsolutePath())
+                project.ext { BERTY_RELEASE_STORE_FILE = file.getAbsolutePath() }
+                println "SUCCESS"
             }
 
             if (project.hasProperty('BERTY_RELEASE_STORE_FILE')) {
+                println "app will be signed using ${BERTY_RELEASE_STORE_FILE}"
                 storeFile file(BERTY_RELEASE_STORE_FILE)
                 storePassword BERTY_RELEASE_STORE_PASSWORD
                 keyAlias BERTY_RELEASE_KEY_ALIAS

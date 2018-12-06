@@ -11,15 +11,12 @@ android {
                 && output.outputFile.name.endsWith('.apk')) {
 
                 def task = project.tasks.create("copy${variant.name}Apk", Copy)
-                task.doFirst {
-                    println "Creating ${rootProject.name} (${versionName}.${versionCode}) from ${project.name}-${variant.name}.apk"
-                }
-
                 def outputFile = output.outputFile
+                output.outputFileName = "${rootProject.name}.apk"
 
-
-                def fileName = outputFile.name.replace(project.name + "-${variant.name}.apk", "${rootProject.name}.apk")
-                output.outputFileName = new File(fileName)
+                task.doFirst {
+                    println "Creating ${BERTY_APK_OUTPUT_DIR}/${output.outputFileName}.apk (${versionName}.${versionCode})"
+                }
 
                 task.from(output.outputFile)
                 task.into(BERTY_APK_OUTPUT_DIR)

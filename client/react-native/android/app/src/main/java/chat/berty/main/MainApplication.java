@@ -40,22 +40,15 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         protected List<ReactPackage> getPackages() {
             return Arrays.<ReactPackage>asList(
-                new MainReactPackage(),
-            new VectorIconsPackage(),
-            new SvgPackage(),
-            new ReactNativeRestartPackage(),
-            new RNNetworkInfoPackage(),
-            new ImagePickerPackage(),
-            new ReactNativeExceptionHandlerPackage(),
-            new RNCameraPackage(),
-            new RNCameraPackage(),
-            new SvgPackage(),
-            new ReactNativeRestartPackage(),
-            new ReactNativeExceptionHandlerPackage(),
                 new CorePackage(),
-                new VectorIconsPackage(),
+                new ImagePickerPackage(),
+                new MainReactPackage(),
+                new RNCameraPackage(),
                 new RNNetworkInfoPackage(),
-                new ImagePickerPackage()
+                new ReactNativeExceptionHandlerPackage(),
+                new ReactNativeRestartPackage(),
+                new SvgPackage(),
+                new VectorIconsPackage()
             );
         }
 
