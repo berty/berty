@@ -1092,6 +1092,19 @@ models:
     fields:
       t:
 
+  BertyP2pSeenAttrs:
+    model: berty.tech/core/api/p2p.SeenAttrs
+    fields:
+      ids:
+  BertyP2pSeenAttrsInput:
+    model: berty.tech/core/api/p2p.SeenAttrs
+    fields:
+      ids:
+  BertyP2pSeenAttrsPayload:
+    model: berty.tech/core/api/p2p.SeenAttrs
+    fields:
+      ids:
+
   BertyP2pContactRequestAttrs:
     model: berty.tech/core/api/p2p.ContactRequestAttrs
     fields:
@@ -1172,6 +1185,19 @@ models:
     model: berty.tech/core/api/p2p.ConversationNewMessageAttrs
     fields:
       message:
+
+  BertyP2pConversationReadAttrs:
+    model: berty.tech/core/api/p2p.ConversationReadAttrs
+    fields:
+      conversation:
+  BertyP2pConversationReadAttrsInput:
+    model: berty.tech/core/api/p2p.ConversationReadAttrs
+    fields:
+      conversation:
+  BertyP2pConversationReadAttrsPayload:
+    model: berty.tech/core/api/p2p.ConversationReadAttrs
+    fields:
+      conversation:
 
   BertyP2pDevtoolsMapsetAttrs:
     model: berty.tech/core/api/p2p.DevtoolsMapsetAttrs

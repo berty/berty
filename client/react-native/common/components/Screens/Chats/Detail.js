@@ -13,31 +13,10 @@ import { parseEmbedded } from '../../../helpers/json'
 class Message extends React.PureComponent {
   static contextType = RelayContext
 
-  async componentDidMount () {
-    const conversation = this.props.navigation.getParam('conversation')
-    const contactId = this.props.data.senderId
-    const isMyself =
-      conversation.members.find(m => m.contactId === contactId).contact
-        .status === 42
-
-    if (isMyself || this.props.data.seenAt !== null) {
-      return
-    }
-
+  messageSeen = async () => {
     await this.props.screenProps.context.mutations.eventSeen({
       id: this.props.data.id,
     })
-    await this.props.screenProps.context.mutations.conversationRead({
-      id: conversation.id,
-    })
-  }
-
-  async componentDidUpdate (prevProps) {
-    if (prevProps.data.id === this.props.data.id) {
-      return
-    }
-
-    await this.componentDidMount()
   }
 
   render () {
@@ -49,6 +28,10 @@ class Message extends React.PureComponent {
 
     const { data } = this.props
 
+    // TODO: implement message seen
+    // if (new Date(this.props.data.seenAt).getTime() <= 0) {
+    //   this.messageSeen()
+    // }
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
@@ -85,9 +68,15 @@ class Message extends React.PureComponent {
         >
           {new Date(data.createdAt).toTimeString()}{' '}
           {isMyself ? (
-            <Icon name={data.ackedAt ? 'check-circle' : 'circle'} />
+            <Icon
+              name={
+                new Date(data.ackedAt).getTime() > 0 ? 'check-circle' : 'circle'
+              }
+            />
           ) : null}{' '}
-          <Icon name={data.seenAt ? 'eye' : 'eye-off'} />{' '}
+          <Icon
+            name={new Date(data.seenAt).getTime() > 0 ? 'eye' : 'eye-off'}
+          />{' '}
           {/* TODO: used for debugging, remove me */}
         </Text>
       </Flex.Rows>
@@ -112,12 +101,18 @@ class Input extends PureComponent {
     })
   }
 
+  async componentWillUnmount () {
+    const conversation = this.props.navigation.getParam('conversation')
+    await this.props.screenProps.context.mutations.conversationRead({
+      id: conversation.id,
+    })
+  }
+
   onSubmit = () => {
     const { input } = this.state
     this.setState({ input: '' }, async () => {
       try {
         const conversation = this.props.navigation.getParam('conversation')
-        console.log('conversation', conversation)
         await this.props.screenProps.context.mutations.conversationAddMessage({
           conversation: {
             id: conversation.id,
@@ -231,7 +226,7 @@ export default class Detail extends PureComponent {
               },
             },
           ])}
-          subscriptions={[subscriptions.conversationNewMessage]}
+          subscriptions={[subscriptions.newMessage]}
           fragment={fragments.EventList}
           alias='EventList'
           renderItem={props => (

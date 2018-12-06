@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"berty.tech/core/pkg/errorcodes"
@@ -143,6 +144,42 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	return nil
 }
 
+func (n *Node) handleConversationRead(ctx context.Context, input *p2p.Event) error {
+	_, err := input.GetConversationReadAttrs()
+	if err != nil {
+		return err
+	}
+
+	sql := n.sql(ctx)
+
+	conversation := &entity.Conversation{ID: input.ConversationID}
+	if err := sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+		return err
+	}
+
+	attrs, err := input.GetConversationReadAttrs()
+	if err != nil {
+		return err
+	}
+
+	count := 0
+	// set all messagse as seen
+	if err := sql.
+		Model(&p2p.Event{}).
+		Where(&p2p.Event{
+			ConversationID: input.ConversationID,
+			Kind:           p2p.Kind_ConversationNewMessage,
+			Direction:      p2p.Event_Outgoing,
+		}).
+		Count(&count).
+		Update("seen_at", attrs.Conversation.ReadAt).
+		Error; err != nil {
+		return err
+	}
+	logger().Debug(fmt.Sprintf("CONVERSATION_READ %+v", count))
+	return nil
+}
+
 //
 // Devtools handlers
 //
@@ -183,6 +220,33 @@ func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) er
 		alias.Status = entity.SenderAlias_RECEIVED
 
 		n.sql(ctx).Save(&alias)
+	}
+
+	return nil
+}
+
+func (n *Node) handleSeen(ctx context.Context, input *p2p.Event) error {
+	var seenEvents []*p2p.Event
+	seenCount := 0
+	seenAttrs, err := input.GetSeenAttrs()
+
+	if err != nil {
+		return errors.Wrap(err, "unable to unmarshal seen attrs")
+	}
+
+	baseQuery := n.sql(ctx).
+		Model(&p2p.Event{}).
+		Where("id in (?)", seenAttrs.IDs)
+
+	if err = baseQuery.
+		Count(&seenCount).
+		UpdateColumn("seen_at", input.SeenAt).
+		Error; err != nil {
+		return errors.Wrap(err, "unable to mark events as seen")
+	}
+
+	for _, seenEvent := range seenEvents {
+		n.clientEvents <- seenEvent
 	}
 
 	return nil

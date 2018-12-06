@@ -6,16 +6,16 @@ import (
 	"fmt"
 	"time"
 
+	"berty.tech/core/api/node"
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
-
+	"berty.tech/core/pkg/tracing"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 
-	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/entity"
-	"berty.tech/core/pkg/tracing"
+	"go.uber.org/zap"
 )
 
 func (n *Node) AsyncWait(ctx context.Context) {
@@ -85,9 +85,11 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		p2p.Kind_ContactShareMe:         n.handleContactShareMe,
 		p2p.Kind_ConversationInvite:     n.handleConversationInvite,
 		p2p.Kind_ConversationNewMessage: n.handleConversationNewMessage,
+		p2p.Kind_ConversationRead:       n.handleConversationRead,
 		p2p.Kind_DevtoolsMapset:         n.handleDevtoolsMapset,
 		p2p.Kind_SenderAliasUpdate:      n.handleSenderAliasUpdate,
 		p2p.Kind_Ack:                    n.handleAck,
+		p2p.Kind_Seen:                   n.handleSeen,
 	}[input.Kind]
 	var handlingError error
 	if !found {

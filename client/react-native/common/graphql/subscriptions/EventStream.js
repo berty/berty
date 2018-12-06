@@ -25,11 +25,10 @@ const EventStream = graphql`
   }
 `
 
-let _context = null
 let _subscriber = null
 
 export default context => {
-  if (subscriber === null || context !== _context) {
+  if (_subscriber === null) {
     _subscriber = subscriber({
       environment: context.environment,
       subscription: EventStream,

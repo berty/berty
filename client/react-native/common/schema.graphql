@@ -356,6 +356,9 @@ type BertyP2pAckAttrs  {
 type BertyP2pPingAttrs  {
     T: Bool!
 }
+type BertyP2pSeenAttrs  {
+    ids: [String!]
+}
 type BertyP2pContactRequestAttrs  {
     me: BertyEntityContact
     introText: String!
@@ -374,6 +377,9 @@ type BertyP2pConversationInviteAttrs  {
 }
 type BertyP2pConversationNewMessageAttrs  {
     message: BertyEntityMessage
+}
+type BertyP2pConversationReadAttrs  {
+    conversation: BertyEntityConversation
 }
 type BertyP2pDevtoolsMapsetAttrs  {
     key: String!

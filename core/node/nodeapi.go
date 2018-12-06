@@ -79,13 +79,28 @@ func (n *Node) EventSeen(ctx context.Context, input *gql.Node) (*p2p.Event, erro
 	event := &p2p.Event{}
 
 	sql := n.sql(ctx)
+
+	// get event
 	if err := sql.
 		Model(&p2p.Event{}).
 		Where(&p2p.Event{ID: input.ID}).
-		UpdateColumn("seen_at", time.Now().UTC()).
 		First(event).
 		Error; err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
+	// check if event is from another contact
+	if event.Direction != p2p.Event_Incoming {
+		return event, nil
+	}
+
+	// then mark as seen
+	if err := sql.
+		Model(event).
+		Where(&p2p.Event{ID: event.ID}).
+		UpdateColumn("seen_at", time.Now().UTC()).
+		First(event).Error; err != nil {
+		return nil, errors.Wrap(err, "cannot set event as seen")
 	}
 
 	// mark conversation as read
@@ -100,26 +115,35 @@ func (n *Node) EventSeen(ctx context.Context, input *gql.Node) (*p2p.Event, erro
 }
 
 func (n *Node) ConversationRead(ctx context.Context, input *gql.Node) (*entity.Conversation, error) {
+	var err error
+
 	// get conversation
 	conversation := &entity.Conversation{ID: input.ID}
-	if err := n.sql(ctx).Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+	if err = n.sql(ctx).Model(conversation).Where(conversation).First(conversation).Error; err != nil {
 		return nil, err
-	}
-
-	// check if last message has been read
-	event := &p2p.Event{ConversationID: conversation.ID}
-	count := 0
-	n.sql(ctx).Model(event).Where(event).Order("created_at").Count(&count).Last(event)
-	if count > 0 && event.SeenAt == nil {
-		return conversation, nil
 	}
 
 	// set conversation as read
 	conversation.ReadAt = time.Now().UTC()
-	if err := n.sql(ctx).Save(conversation).Error; err != nil {
+	if err = n.sql(ctx).Save(conversation).Error; err != nil {
 		return nil, errors.Wrap(err, "cannot update conversation")
 	}
 
+	// check if last message has been read
+	event := &p2p.Event{ConversationID: conversation.ID, Direction: p2p.Event_Incoming}
+	n.sql(ctx).Model(event).Where(event).Order("created_at").Last(event)
+	if event.SeenAt == nil {
+		return conversation, nil
+	}
+
+	// send conversation as read
+	event = n.NewConversationEvent(ctx, conversation, p2p.Kind_ConversationRead)
+	if err = event.SetConversationReadAttrs(&p2p.ConversationReadAttrs{Conversation: conversation}); err != nil {
+		return nil, err
+	}
+	if err = n.EnqueueOutgoingEvent(ctx, event); err != nil {
+		return nil, err
+	}
 	return conversation, nil
 }
 
@@ -168,7 +192,6 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) 
 
 	// send ContactRequestAccepted event
 	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequestAccepted)
-
 	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
 		return nil, err
 	}

@@ -76,3 +76,16 @@ func (n *Node) NewSenderAliasEvent(ctx context.Context, destination string, alia
 
 	return event, nil
 }
+
+func (n *Node) NewSeenEvent(ctx context.Context, destination string, ids []string) (*p2p.Event, error) {
+	span, ctx := tracing.EnterFunc(ctx, destination, ids)
+	defer span.Finish()
+
+	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, p2p.Kind_Seen)
+	event.ID = n.NewID()
+	event.Kind = p2p.Kind_Seen
+	if err := event.SetAttrs(&p2p.SeenAttrs{IDs: ids}); err != nil {
+		return event, nil
+	}
+	return event, nil
+}

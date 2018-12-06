@@ -55,7 +55,6 @@ export default context => (input, configs) =>
     input,
     {
       updater: (store, data) =>
-        console.log('ConversationCreate', data) ||
         context.updaters.conversationList.forEach(updater =>
           updater(store, data.ConversationCreate)
         ),

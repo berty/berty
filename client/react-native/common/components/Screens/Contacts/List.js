@@ -76,7 +76,6 @@ export default class ContactList extends PureComponent {
         context: { queries, subscriptions },
       },
     } = this.props
-    console.log(this.context)
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination

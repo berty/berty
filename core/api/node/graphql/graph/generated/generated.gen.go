@@ -303,6 +303,10 @@ type ComplexityRoot struct {
 		Message func(childComplexity int) int
 	}
 
+	BertyP2pConversationReadAttrs struct {
+		Conversation func(childComplexity int) int
+	}
+
 	BertyP2pDevtoolsMapsetAttrs struct {
 		Key func(childComplexity int) int
 		Val func(childComplexity int) int
@@ -339,6 +343,10 @@ type ComplexityRoot struct {
 
 	BertyP2pPingAttrs struct {
 		T func(childComplexity int) int
+	}
+
+	BertyP2pSeenAttrs struct {
+		Ids func(childComplexity int) int
 	}
 
 	BertyP2pSenderAliasUpdateAttrs struct {
@@ -3141,6 +3149,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyP2pConversationNewMessageAttrs.Message(childComplexity), true
+
+	case "BertyP2pConversationReadAttrs.conversation":
+		if e.complexity.BertyP2pConversationReadAttrs.Conversation == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pConversationReadAttrs.Conversation(childComplexity), true
 
 	case "BertyP2pDevtoolsMapsetAttrs.key":
 		if e.complexity.BertyP2pDevtoolsMapsetAttrs.Key == nil {
@@ -11615,6 +11630,62 @@ func (ec *executionContext) _BertyP2pPingAttrs_T(ctx context.Context, field grap
 	res := resTmp.(bool)
 	rctx.Result = res
 	return models.MarshalBool(res)
+}
+
+var bertyP2pSeenAttrsImplementors = []string{"BertyP2pSeenAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pSeenAttrs(ctx context.Context, sel ast.SelectionSet, obj *p2p.SeenAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pSeenAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pSeenAttrs")
+		case "ids":
+			out.Values[i] = ec._BertyP2pSeenAttrs_ids(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pSeenAttrs_ids(ctx context.Context, field graphql.CollectedField, obj *p2p.SeenAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pSeenAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IDs, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalString(res[idx1])
+		}()
+	}
+
+	return arr1
 }
 
 var bertyP2pSenderAliasUpdateAttrsImplementors = []string{"BertyP2pSenderAliasUpdateAttrs"}
@@ -21255,6 +21326,9 @@ type BertyP2pAckAttrs  {
 type BertyP2pPingAttrs  {
     T: Bool!
 }
+type BertyP2pSeenAttrs  {
+    ids: [String!]
+}
 type BertyP2pContactRequestAttrs  {
     me: BertyEntityContact
     introText: String!
@@ -21273,6 +21347,9 @@ type BertyP2pConversationInviteAttrs  {
 }
 type BertyP2pConversationNewMessageAttrs  {
     message: BertyEntityMessage
+}
+type BertyP2pConversationReadAttrs  {
+    conversation: BertyEntityConversation
 }
 type BertyP2pDevtoolsMapsetAttrs  {
     key: String!

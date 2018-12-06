@@ -156,7 +156,6 @@ export default class ListScreen extends Component {
               <Item
                 {...props}
                 onPress={() => {
-                  console.log(props)
                   const index = contactsID.lastIndexOf(props.data.id)
                   index < 0
                     ? contactsID.push(props.data.id)

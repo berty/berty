@@ -33,7 +33,6 @@ export default (fragment, alias, args) => {
   return (store, data, deletion) => {
     const helper = new FragmentHelper(fragment)
     const connectionHelper = helper.getConnection(alias)
-    console.log(alias, data, args)
 
     const root = store.getRoot()
 
@@ -76,11 +75,7 @@ export default (fragment, alias, args) => {
 
     if (
       edges.length > 0 &&
-      edges.some(
-        e =>
-          console.log(e.getLinkedRecord('node')) ||
-          e.getLinkedRecord('node').getValue('id') === data.id
-      )
+      edges.some(e => e.getLinkedRecord('node').getValue('id') === data.id)
     ) {
       // update
       return

@@ -65,6 +65,25 @@ func (e *Event) SetPingAttrs(attrs *PingAttrs) error {
 	return nil
 }
 
+// GetSeenAttrs is a typesafe version of GetAttrs
+func (e *Event) GetSeenAttrs() (*SeenAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &SeenAttrs{}, nil
+	}
+	var attrs SeenAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetSeenAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetSeenAttrs(attrs *SeenAttrs) error {
+	raw, err := proto.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetContactRequestAttrs is a typesafe version of GetAttrs
 func (e *Event) GetContactRequestAttrs() (*ContactRequestAttrs, error) {
 	if e.Attributes == nil || len(e.Attributes) == 0 {
@@ -179,6 +198,25 @@ func (e *Event) SetConversationNewMessageAttrs(attrs *ConversationNewMessageAttr
 	return nil
 }
 
+// GetConversationReadAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationReadAttrs() (*ConversationReadAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationReadAttrs{}, nil
+	}
+	var attrs ConversationReadAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationReadAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationReadAttrs(attrs *ConversationReadAttrs) error {
+	raw, err := proto.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetDevtoolsMapsetAttrs is a typesafe version of GetAttrs
 func (e *Event) GetDevtoolsMapsetAttrs() (*DevtoolsMapsetAttrs, error) {
 	if e.Attributes == nil || len(e.Attributes) == 0 {
@@ -245,6 +283,8 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetAckAttrs()
 	case Kind_Ping:
 		return e.GetPingAttrs()
+	case Kind_Seen:
+		return e.GetSeenAttrs()
 	case Kind_ContactRequest:
 		return e.GetContactRequestAttrs()
 	case Kind_ContactRequestAccepted:
@@ -257,6 +297,8 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetConversationInviteAttrs()
 	case Kind_ConversationNewMessage:
 		return e.GetConversationNewMessageAttrs()
+	case Kind_ConversationRead:
+		return e.GetConversationReadAttrs()
 	case Kind_DevtoolsMapset:
 		return e.GetDevtoolsMapsetAttrs()
 	case Kind_SenderAliasUpdate:

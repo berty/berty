@@ -111,8 +111,6 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
 ]
 
 export const setup = async ({ getIp, getPort }) => {
-  const store = new Store(new RecordSource())
-  console.log(store, store.getSource())
   return new Environment({
     network: new RelayNetworkLayer(await setupMiddlewares({ getIp, getPort }), {
       subscribeFn: setupSubscription({

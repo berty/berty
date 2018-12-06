@@ -71,5 +71,5 @@ export default context => ({
       context.environment,
       query,
       merge([defaultVariables, variables])
-    )).GetConversation,
+    )).Conversation,
 })
