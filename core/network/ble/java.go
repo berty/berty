@@ -88,8 +88,8 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, e
 	InitScannerAndAdvertiser()
 	SetMa(ma)
 	SetPeerID(peerID)
-	defer StartScanning()
-	defer StartAdvertising()
+	StartScanning()
+	StartAdvertising()
 
 	listener := &Listener{
 		lAddr:           lAddr,

@@ -9,6 +9,8 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -36,16 +38,13 @@ public class BertyDevice {
     public CountDownLatch latchRdy;
     public CountDownLatch latchConn;
     public CountDownLatch latchChar;
-    public CountDownLatch latchRead;
     public Semaphore svcSema;
     public Semaphore isWaiting;
     public List<byte[]> toSend;
     protected BluetoothGattService svc;
-    protected BluetoothGattCharacteristic acceptCharacteristic;
     protected BluetoothGattCharacteristic maCharacteristic;
     protected BluetoothGattCharacteristic peerIDCharacteristic;
     protected BluetoothGattCharacteristic writerCharacteristic;
-    protected BluetoothGattCharacteristic isRdyCharacteristic;
     protected BluetoothGattCharacteristic closerCharacteristic;
 
     public BertyDevice(BluetoothDevice device, BluetoothGatt gatt, String address) {
@@ -55,13 +54,13 @@ public class BertyDevice {
         this.isWaiting = new Semaphore(1);
         this.svcSema = new Semaphore(0);
         this.latchRdy = new CountDownLatch(2);
-        this.latchConn = new CountDownLatch(2);
-        this.latchChar = new CountDownLatch(6);
-        this.latchRead = new CountDownLatch(2);
+        this.latchConn = new CountDownLatch(1);
+        this.latchChar = new CountDownLatch(4);
         this.toSend = new ArrayList<>();
         this.mtu = 23;
         waitRdy();
         waitConn();
+        waitService();
     }
 
     public void waitRdy() {
@@ -86,6 +85,7 @@ public class BertyDevice {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                Log.e(TAG, "waitConn()2");
                 Thread.currentThread().setName("WaitConn");
                 try {
                     latchConn.await();
@@ -128,9 +128,7 @@ public class BertyDevice {
                 Thread.currentThread().setName("WaitChar");
                 try {
                     latchChar.await();
-                    waitRead();
-                    launchRead(maCharacteristic);
-                    launchRead(peerIDCharacteristic);
+                    waitWriteMaThenPeerID();
                 } catch (Exception e) {
                     BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
                 }
@@ -139,71 +137,88 @@ public class BertyDevice {
         }).start();
     }
 
-    public void waitRead() {
+    public void waitWriteMaThenPeerID() {
         BertyUtils.logger("debug", TAG, "waitRead() called");
         new Thread(new Runnable() {
             @Override
             public void run() {
                 Thread.currentThread().setName("WaitChar");
                 try {
-                    latchRead.await();
-                    launchWriteIsRdy();
+                    synchronized (toSend) {
+                        gatt.requestMtu(555);
+                        byte[] value = Manager.getMa().getBytes(Charset.forName("UTF-8"));
+                        int length = value.length;
+                        int offset = 0;
+
+                        do {
+                            // You always need to detuct 3bytes from the mtu
+                            int chunckSize = length - offset > mtu - 3 ? mtu - 3 : length - offset;
+                            ByteArrayOutputStream output = new ByteArrayOutputStream();
+                            output.write(Arrays.copyOfRange(value, offset, offset + chunckSize));
+                            output.write(new byte[]{0});
+                            byte[] chunck = output.toByteArray();
+                            offset += chunckSize;
+                            toSend.add(chunck);
+                        } while (offset < length);
+
+                        while (!toSend.isEmpty()) {
+                            Log.e(TAG, "MA");
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                                maCharacteristic.setValue(toSend.get(0));
+                                while (!gatt.writeCharacteristic(maCharacteristic)) {
+                                    /** intentionally empty */
+                                }
+                                isWaiting.acquire();
+                            }
+                            toSend.remove(0);
+                        }
+
+                        value = Manager.getPeerID().getBytes(Charset.forName("UTF-8"));
+                        length = value.length;
+                        offset = 0;
+
+                        do {
+                            // You always need to detuct 3bytes from the mtu
+                            int chunckSize = length - offset > mtu - 3 ? mtu - 3 : length - offset;
+                            ByteArrayOutputStream output = new ByteArrayOutputStream();
+                            output.write(Arrays.copyOfRange(value, offset, offset + chunckSize));
+                            output.write(new byte[]{0});
+                            byte[] chunck = output.toByteArray();
+                            offset += chunckSize;
+                            toSend.add(chunck);
+                        } while (offset < length);
+
+                        while (!toSend.isEmpty()) {
+                            Log.e(TAG, "PeerID");
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                                peerIDCharacteristic.setValue(toSend.get(0));
+                                while (!gatt.writeCharacteristic(peerIDCharacteristic)) {
+                                    /** intentionally empty */
+                                }
+                                isWaiting.acquire();
+                            }
+                            toSend.remove(0);
+                        }
+                        Log.e(TAG, "COUNTDOWN1");
+                        latchRdy.countDown();
+                    }
                 } catch (Exception e) {
-                    BertyUtils.logger("error", TAG, "waiting/writing failed: " + e.getMessage());
+                    Log.e(TAG, "Error waiting/writing " + e.getMessage());
                 }
 
-            }
-        }).start();
-    }
-
-    public void launchRead(BluetoothGattCharacteristic characteristic) {
-        BertyUtils.logger("debug", TAG, "launchRead() called: characteristic=" + characteristic.getUuid());
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Thread.currentThread().setName("LaunchRead");
-                while (!gatt.readCharacteristic(characteristic)) {
-                    BertyUtils.logger("debug", TAG, "waiting launchRead()");
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    public void launchWriteIsRdy() {
-        BertyUtils.logger("debug", TAG, "launchWriteIsRdy() called");
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Thread.currentThread().setName("LaunchWrite");
-                isRdyCharacteristic.setValue("");
-                while (!gatt.writeCharacteristic(isRdyCharacteristic)) {
-                    BertyUtils.logger("debug", TAG, "waiting launchWrite()");
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }).start();
     }
 
     public void populateCharacteristic() {
         BertyUtils.logger("debug", TAG, "populateCharacteristic() called");
-        ExecutorService es = Executors.newFixedThreadPool(6);
-        List<PopulateCharacteristic> todo = new ArrayList<>(6);
+        ExecutorService es = Executors.newFixedThreadPool(4);
+        List<PopulateCharacteristic> todo = new ArrayList<>(4);
 
         todo.add(new PopulateCharacteristic(BertyUtils.MA_UUID));
         todo.add(new PopulateCharacteristic(BertyUtils.PEER_ID_UUID));
         todo.add(new PopulateCharacteristic(BertyUtils.CLOSER_UUID));
         todo.add(new PopulateCharacteristic(BertyUtils.WRITER_UUID));
-        todo.add(new PopulateCharacteristic(BertyUtils.IS_READY_UUID));
-        todo.add(new PopulateCharacteristic(BertyUtils.ACCEPT_UUID));
 
         try {
             List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
@@ -221,12 +236,6 @@ public class BertyDevice {
                     latchChar.countDown();
                 } else if (c != null && c.getUuid().equals(BertyUtils.WRITER_UUID)) {
                     writerCharacteristic = c;
-                    latchChar.countDown();
-                } else if (c != null && c.getUuid().equals(BertyUtils.IS_READY_UUID)) {
-                    isRdyCharacteristic = c;
-                    latchChar.countDown();
-                } else if (c != null && c.getUuid().equals(BertyUtils.ACCEPT_UUID)) {
-                    acceptCharacteristic = c;
                     latchChar.countDown();
                 } else {
                     BertyUtils.logger("error", TAG, "unknown characteristic retrieved");

@@ -6,8 +6,6 @@
 //  Copyright © 2018 berty. All rights reserved.
 //
 
-
-
 #ifndef CountDownLatch_h
 #define CountDownLatch_h
 
@@ -20,7 +18,7 @@
 @property (nonatomic, strong) dispatch_queue_t dispatch_queue;
 
 - (instancetype)init:(int)count;
-- (void)coundDown;
+- (void)countDown;
 - (void)await;
 
 @end

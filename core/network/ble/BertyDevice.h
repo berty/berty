@@ -13,6 +13,8 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "CountDownLatch.h"
 
+extern void AddToPeerStoreC(char *, char*);
+
 @interface BertyDevice : NSObject
 
 @property (nonatomic, readwrite, strong) NSMutableArray *toSend;
@@ -26,19 +28,17 @@
 @property (atomic, readwrite, strong) CBPeripheral *peripheral;
 @property (atomic, readwrite, strong) CBService *svc;
 @property (atomic, readwrite, strong) CBCharacteristic *writer;
-@property (atomic, readwrite, strong) CBCharacteristic *isRdy;
 @property (atomic, readwrite, strong) CBCharacteristic *closer;
-@property (atomic, readwrite, strong) CBCharacteristic *accepter;
 @property (atomic, readwrite, strong) CBCharacteristic *peerIDChar;
 @property (atomic, readwrite, strong) CBCharacteristic *maChar;
-@property (atomic, readwrite, strong) dispatch_semaphore_t writeWaiter;
-@property (atomic, readwrite, strong) dispatch_semaphore_t acceptWaiterSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t closerWaiterSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t connSema;
-@property (atomic, readwrite, strong) dispatch_semaphore_t svcSema;
+@property (nonatomic, readwrite, strong) dispatch_semaphore_t writeWaiter;
+@property (nonatomic, readwrite, strong) dispatch_semaphore_t closerWaiterSema;
+@property (nonatomic, readwrite, strong) dispatch_semaphore_t connSema;
+@property (nonatomic, readwrite, strong) dispatch_semaphore_t svcSema;
 @property (nonatomic, readwrite, strong) CountDownLatch *latchRdy;
 @property (nonatomic, readwrite, strong) CountDownLatch *latchChar;
 @property (nonatomic, readwrite, strong) CountDownLatch *latchRead;
+@property (nonatomic, readwrite, strong) CountDownLatch *latchOtherRead;
 @property (nonatomic, strong) CBCentralManager *centralManager;
 
 - (instancetype)initWithPeripheral:(CBPeripheral *)peripheral withCentralManager:(CBCentralManager *)manager;
