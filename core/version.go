@@ -18,6 +18,26 @@ var (
 	commitDate = "undefined"
 )
 
+type All struct {
+	Version    string
+	GitSha     string
+	GitTag     string
+	GitBranch  string
+	BuildMode  string
+	CommitDate time.Time
+}
+
+func Everything() All {
+	return All{
+		Version:    Version,
+		GitSha:     GitSha,
+		GitTag:     GitTag,
+		GitBranch:  GitBranch,
+		BuildMode:  BuildMode,
+		CommitDate: CommitDate(),
+	}
+}
+
 func CommitDate() time.Time {
 	if commitDate == "undefined" {
 		return time.Time{}

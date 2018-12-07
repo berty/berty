@@ -9,7 +9,21 @@ message DeviceInfos {
   repeated DeviceInfo infos = 1;
 }
 
+enum Type {
+  Unknown = 0;
+  Raw = 1;     // displays text as is
+  Json = 2;    // pretty-print json
+  // Protobuf = x;
+  // Time = x; -> for time ago?
+  // Markdown = x;
+}
+
 message DeviceInfo {
   string key = 1;
   string value = 2;
+  string category = 3; // if set, group by category
+  string link = 4;     // if set, redirect on click
+  Type type = 5;
+  string err_msg = 6;
+  int32 weight = 7;
 }

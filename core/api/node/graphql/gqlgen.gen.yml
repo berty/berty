@@ -1316,16 +1316,31 @@ models:
     fields:
       key:
       value:
+      category:
+      link:
+      type:
+      errMsg:
+      weight:
   BertyPkgDeviceinfoDeviceInfoInput:
     model: berty.tech/core/pkg/deviceinfo.DeviceInfo
     fields:
       key:
       value:
+      category:
+      link:
+      type:
+      errMsg:
+      weight:
   BertyPkgDeviceinfoDeviceInfoPayload:
     model: berty.tech/core/pkg/deviceinfo.DeviceInfo
     fields:
       key:
       value:
+      category:
+      link:
+      type:
+      errMsg:
+      weight:
 
 
   BertyNodeProtocolsOutput:

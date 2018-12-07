@@ -8,7 +8,6 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -155,50 +154,70 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 	return &node.Void{}, nil
 }
 
-func (n *Node) NodeInfos(ctx context.Context) (map[string]string, error) {
+func (n *Node) NodeInfos(ctx context.Context) (*deviceinfo.DeviceInfos, error) {
 	span, _ := tracing.EnterFunc(ctx)
 	defer span.Finish()
 
-	infos := map[string]string{}
+	infos := deviceinfo.DeviceInfos{}
 
-	infos["runtime: versions"] = fmt.Sprintf("core=%s\np2p=%d\nnode=%d", core.Version, p2p.Version, node.Version)
-	infos["build: git"] = fmt.Sprintf("sha=%s\ntag=%s\nbranch=%s\nmode=%s\ncommit-date=%s", core.GitSha, core.GitTag, core.GitBranch, core.BuildMode, core.CommitDate())
+	// versions
+	infos.Add(deviceinfo.NewInfo("node", "versions").SetJSON(deviceinfo.VersionInfo{
+		Core:    core.Everything(),
+		P2PApi:  p2p.Version,
+		NodeAPI: node.Version,
+	}))
 
-	infos["time: node uptime"] = fmt.Sprintf("%s", time.Since(n.createdAt))
-	infos["time: node db creation"] = fmt.Sprintf("%s", time.Since(n.config.CreatedAt))
+	// dates
+	type dateInfo struct {
+		At  time.Time
+		Ago string
+	}
+	dates := map[string]dateInfo{}
+	dates["node-creation"] = dateInfo{
+		n.createdAt,
+		fmt.Sprintf("%s", time.Since(n.createdAt)),
+	}
+	dates["db-creation"] = dateInfo{
+		n.config.CreatedAt,
+		fmt.Sprintf("%s", time.Since(n.config.CreatedAt)),
+	}
+	infos.Add(deviceinfo.NewInfo("node", "dates").SetJSON(dates))
 
+	// sql
+	sqlMetrics := map[string]int{}
+	// FIXME: add some info about last addition date, last modification date
 	db := n.sql(ctx)
-	sqlStats := []string{}
 	for _, table := range sql.AllTables() {
-		var count uint32
+		var count int
 		if err := db.Table(table).Count(&count).Error; err != nil {
-			sqlStats = append(sqlStats, fmt.Sprintf("%s: %v", table, err))
+			sqlMetrics[table] = -1
+			// FIXME: append error
 		} else {
-			sqlStats = append(sqlStats, fmt.Sprintf("%s: %d", table, count))
+			sqlMetrics[table] = count
 		}
 	}
-	infos["sql: entries"] = strings.Join(sqlStats, "\n")
+	infos.Add(deviceinfo.NewInfo("node", "sql-entries").SetJSON(sqlMetrics))
 
-	infos["queues: client events"] = fmt.Sprintf("%d", len(n.clientEvents))
-	infos["queues: clients"] = fmt.Sprintf("%d", len(n.clientEventsSubscribers))
-	infos["queues: outgoing events"] = fmt.Sprintf("%d", len(n.outgoingEvents))
+	// queues
+	infos.Add(deviceinfo.NewInfo("node", "queues").SetJSON(map[string]int{
+		"client-events":      len(n.clientEvents),
+		"client-subscribers": len(n.clientEventsSubscribers),
+		"outgoing-events":    len(n.outgoingEvents),
+	}))
 
-	infos["node: pubkey"] = n.b64pubkey
-	infos["node: sigchain"] = n.sigchain.ToJSON()
+	// crypto
+	infos.Add(deviceinfo.NewInfo("node", "pubkey").SetString(n.b64pubkey))
+	infos.Add(deviceinfo.NewInfo("node", "sigchain").SetJSON(n.sigchain))
+	peer, err := n.ID(ctx, nil)
+	infos.Add(deviceinfo.NewInfo("node", "peer").SetJSON(peer).SetError(err))
 
-	infos["runtime: jaeger URL"] = "http://jaeger.berty.io:16686/search?service=" + url.PathEscape(n.initDevice.Name+":mobile")
+	// links
+	infos.Add(deviceinfo.NewInfo("links", "jaeger-url").SetURL("http://jaeger.berty.io:16686/search?service=" + url.PathEscape(n.initDevice.Name+":mobile")))
 
-	if peer, err := n.ID(ctx, nil); err != nil {
-		infos["p2p: ID"] = err.Error()
-	} else {
-		out, _ := json.MarshalIndent(peer, "", "  ")
-		infos["p2p: ID"] = string(out)
-	}
+	// config
+	infos.Add(deviceinfo.NewInfo("node", "init-device").SetJSON(n.initDevice))
 
-	out, _ := json.MarshalIndent(n.initDevice, "", "  ")
-	infos["node: init-device"] = string(out)
-
-	return infos, nil
+	return &infos, nil
 }
 
 func (n *Node) DeviceInfos(ctx context.Context, input *node.Void) (*deviceinfo.DeviceInfos, error) {
@@ -206,17 +225,17 @@ func (n *Node) DeviceInfos(ctx context.Context, input *node.Void) (*deviceinfo.D
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 
-	entries, err := n.NodeInfos(ctx)
+	nodeInfos, err := n.NodeInfos(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// append runtime
-	for key, value := range deviceinfo.Runtime() {
-		entries[key] = value
+	runtimeInfos, err := deviceinfo.Runtime()
+	if err != nil {
+		return nil, err
 	}
 
-	return deviceinfo.FromMap(entries), nil
+	return deviceinfo.Merge(nodeInfos, runtimeInfos), nil
 }
 
 func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationTestInput) (*node.IntegrationTestOutput, error) {
