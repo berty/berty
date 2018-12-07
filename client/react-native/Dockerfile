@@ -21,14 +21,12 @@ WORKDIR /usr/src/app
 CMD cd web && yarn start
 
 # Core
-FROM golang:1.11-alpine as core
+FROM golang:1.11-stretch as core
 
-RUN apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git
+RUN apt-get update --no-install-recommends \
+    && apt-get install -y yarn make gcc g++ musl-dev libssl-dev git
 
 ENV GO111MODULE=on GOPROXY=http://goproxy.berty.io:3000
-
-VOLUME /go/src
-VOLUME /go/bin
 
 CMD cd /go/src/berty.tech/core \
     && make dev RUN_DAEMON_OPTS="--log-level=debug --jaeger-address=react-native_tracer-service_1:6831"

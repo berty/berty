@@ -174,21 +174,30 @@ re.ios: fclean.ios debug.ios
 re.web: fclean.web debug.web
 ##############################
 
-
 ### Dockerized webapp part ###
-webapp.start:
+COMPOSE ?= docker-compose
+
+webapp.generate:
 	cd ../../core && make generate
-	@docker-compose up -d --build --scale core-service=$(SCALE)
+
+.dockerbuild: Dockerfile
+	@$(COMPOSE) build --pull --parallel
+	touch .dockerbuild
+
+webapp.build: .dockerbuild
+
+webapp.start: webapp.generate webapp.build
+	@$(COMPOSE) up -d --scale core-service=$(SCALE)
 
 webapp.stop:
-	@docker-compose stop -t 42
+	@$(COMPOSE) kill
 
 webapp.list:
 	@docker ps -f name=react-native_core-service --format "{{.Names}}\tid: {{.ID}}\tport: {{.Ports}}" | sort \
 		| sed 's/\(0\.\)\{3\}0:1\([0-9]\)\{3\}->1\([0-9]\)\{3\}\/tcp\, \(0\.\)\{3\}0://g' | sed 's/->.*$$//g'
 
 webapp.logs:
-	@docker-compose logs --tail=100 -f $(SERV)
+	@$(COMPOSE) logs --tail=100 -f $(SERV)
 
 webapp.open:
 	@GQL_PORTS=`docker ps -f name=react-native_core-service --format "{{.Ports}}" |			\
@@ -222,7 +231,8 @@ webapp.reset:
 	done
 
 webapp.rebuild: webapp.rm
-	@docker-compose build --pull
+	@rm -f .dockerbuild
+	@$(COMPOSE) build --pull
 
 webapp.rm: webapp.stop
 	@CONT_ID=`echo $$(docker ps -a -f name=react-native_core-service -q)		\
