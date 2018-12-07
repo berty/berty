@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/api/node/graphql/models"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
 )
 
@@ -128,7 +129,7 @@ func (r *bertyP2pEventResolver) Attributes(ctx context.Context, obj *p2p.Event) 
 
 // type bertyP2pPeerResolver struct{ *Resolver }
 
-// func (r *bertyP2pPeerResolver) Addrs(ctx context.Context, obj *p2p.Peer) ([]byte, error) {
+// func (r *bertyP2pPeerResolver) Addrs(ctx context.Context, obj *network.Peer) ([]byte, error) {
 // 	return json.Marshal(obj.GetAddrs())
 // }
 
@@ -287,12 +288,12 @@ func (r *queryResolver) LogfileList(ctx context.Context, T bool) ([]*node.Logfil
 	return entries, nil
 }
 
-func (r *queryResolver) ID(ctx context.Context, T bool) (*p2p.Peer, error) {
+func (r *queryResolver) ID(ctx context.Context, T bool) (*network.Peer, error) {
 	return r.client.ID(ctx, &node.Void{T: T})
 }
 
 func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ *int32) (*node.ProtocolsOutput, error) {
-	return r.client.Protocols(ctx, &p2p.Peer{
+	return r.client.Protocols(ctx, &network.Peer{
 		ID: id,
 	})
 }
@@ -548,7 +549,7 @@ func (r *queryResolver) Panic(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.Panic(ctx, &node.Void{})
 }
 
-func (r *queryResolver) Peers(ctx context.Context, _ bool) (*p2p.Peers, error) {
+func (r *queryResolver) Peers(ctx context.Context, _ bool) (*network.Peers, error) {
 	return r.client.Peers(ctx, &node.Void{})
 }
 
@@ -629,13 +630,13 @@ func (r *subscriptionResolver) LogStream(ctx context.Context, continues bool, lo
 	return channel, nil
 }
 
-func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *p2p.Peer, error) {
+func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *network.Peer, error) {
 	stream, err := r.client.MonitorPeers(ctx, &node.Void{})
 	if err != nil {
 		return nil, err
 	}
 
-	channel := make(chan *p2p.Peer, 10)
+	channel := make(chan *network.Peer, 10)
 	go func() {
 		for {
 			elem, err := stream.Recv()
@@ -652,9 +653,9 @@ func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan
 	return channel, nil
 }
 
-func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string, _ *int64, _ *int64, _ *float64, _ *float64, mtype *int32) (<-chan *p2p.BandwidthStats, error) {
+func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string, _ *int64, _ *int64, _ *float64, _ *float64, mtype *int32) (<-chan *network.BandwidthStats, error) {
 	if mtype == nil {
-		_mtype := int32(p2p.MetricsType_GLOBAL)
+		_mtype := int32(network.MetricsType_GLOBAL)
 		mtype = &_mtype
 	}
 
@@ -663,9 +664,9 @@ func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string,
 		id = &_id
 	}
 
-	stream, err := r.client.MonitorBandwidth(ctx, &p2p.BandwidthStats{
+	stream, err := r.client.MonitorBandwidth(ctx, &network.BandwidthStats{
 		ID:   *id,
-		Type: p2p.MetricsType(*mtype),
+		Type: network.MetricsType(*mtype),
 	})
 
 	if err != nil {
@@ -673,7 +674,7 @@ func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string,
 		return nil, err
 	}
 
-	channel := make(chan *p2p.BandwidthStats, 10)
+	channel := make(chan *network.BandwidthStats, 10)
 	go func() {
 		for {
 			elem, err := stream.Recv()

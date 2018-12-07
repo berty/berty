@@ -16,7 +16,6 @@ import (
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/tracing"
 )
@@ -27,7 +26,7 @@ var _ network.Metrics = (*Metrics)(nil)
 type Metrics struct {
 	host host.Host
 
-	peersHandlers []func(*p2p.Peer, error) error
+	peersHandlers []func(*network.Peer, error) error
 	muHPeers      sync.Mutex
 
 	bw     *bw.BandwidthCounter
@@ -44,7 +43,7 @@ func NewMetrics(ctx context.Context, d *Driver) network.Metrics {
 	m := &Metrics{
 		host:          d.host,
 		driver:        d,
-		peersHandlers: make([]func(*p2p.Peer, error) error, 0),
+		peersHandlers: make([]func(*network.Peer, error) error, 0),
 		bw:            bw.NewBandwidthCounter(),
 		rootContext:   ctx,
 	}
@@ -53,13 +52,13 @@ func NewMetrics(ctx context.Context, d *Driver) network.Metrics {
 	return m
 }
 
-func (m *Metrics) Peers(ctx context.Context) *p2p.Peers {
+func (m *Metrics) Peers(ctx context.Context) *network.Peers {
 	span, _ := tracing.EnterFunc(ctx)
 	defer span.Finish()
 
 	peers := m.peers()
-	pis := &p2p.Peers{
-		List: make([]*p2p.Peer, len(peers)),
+	pis := &network.Peers{
+		List: make([]*network.Peer, len(peers)),
 	}
 
 	for j, p := range peers {
@@ -69,8 +68,8 @@ func (m *Metrics) Peers(ctx context.Context) *p2p.Peers {
 	return pis
 }
 
-func (m *Metrics) bandwidthToStats(b bw.Stats) *p2p.BandwidthStats {
-	return &p2p.BandwidthStats{
+func (m *Metrics) bandwidthToStats(b bw.Stats) *network.BandwidthStats {
+	return &network.BandwidthStats{
 		TotalIn:  b.TotalIn,
 		TotalOut: b.TotalOut,
 		RateIn:   b.RateIn,
@@ -78,13 +77,13 @@ func (m *Metrics) bandwidthToStats(b bw.Stats) *p2p.BandwidthStats {
 	}
 }
 
-func (m *Metrics) MonitorPeers(handler func(*p2p.Peer, error) error) {
+func (m *Metrics) MonitorPeers(handler func(*network.Peer, error) error) {
 	m.muHPeers.Lock()
 	defer m.muHPeers.Unlock()
 	m.peersHandlers = append(m.peersHandlers, handler)
 }
 
-func (m *Metrics) MonitorBandwidth(interval time.Duration, handler func(*p2p.BandwidthStats, error) error) {
+func (m *Metrics) MonitorBandwidth(interval time.Duration, handler func(*network.BandwidthStats, error) error) {
 	ticker := time.NewTicker(interval)
 	go func() {
 		for {
@@ -94,7 +93,7 @@ func (m *Metrics) MonitorBandwidth(interval time.Duration, handler func(*p2p.Ban
 			logger().Debug("monitoring bandwidth", zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
 
 			stats := m.bandwidthToStats(out)
-			stats.Type = p2p.MetricsType_GLOBAL
+			stats.Type = network.MetricsType_GLOBAL
 			if err := handler(stats, nil); err != nil {
 				return
 			}
@@ -102,7 +101,7 @@ func (m *Metrics) MonitorBandwidth(interval time.Duration, handler func(*p2p.Ban
 	}()
 }
 
-func (m *Metrics) MonitorBandwidthProtocol(id string, interval time.Duration, handler func(*p2p.BandwidthStats, error) error) {
+func (m *Metrics) MonitorBandwidthProtocol(id string, interval time.Duration, handler func(*network.BandwidthStats, error) error) {
 	pid := protocol.ID(id)
 	ticker := time.NewTicker(interval)
 	go func() {
@@ -113,7 +112,7 @@ func (m *Metrics) MonitorBandwidthProtocol(id string, interval time.Duration, ha
 			logger().Debug("monitoring bandwidth protocol", zap.String("protocol", id), zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
 
 			stats := m.bandwidthToStats(out)
-			stats.Type = p2p.MetricsType_PROTOCOL
+			stats.Type = network.MetricsType_PROTOCOL
 			stats.ID = id
 			if err := handler(stats, nil); err != nil {
 				return
@@ -122,7 +121,7 @@ func (m *Metrics) MonitorBandwidthProtocol(id string, interval time.Duration, ha
 	}()
 }
 
-func (m *Metrics) MonitorBandwidthPeer(id string, interval time.Duration, handler func(*p2p.BandwidthStats, error) error) {
+func (m *Metrics) MonitorBandwidthPeer(id string, interval time.Duration, handler func(*network.BandwidthStats, error) error) {
 	peerid, err := peer.IDFromString(id)
 	if err != nil {
 		if err := handler(nil, fmt.Errorf("monitor bandwidth peer: %s", err)); err != nil {
@@ -140,7 +139,7 @@ func (m *Metrics) MonitorBandwidthPeer(id string, interval time.Duration, handle
 			logger().Debug("monitor bandwidth peer", zap.String("peer id", id), zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
 
 			stats := m.bandwidthToStats(out)
-			stats.Type = p2p.MetricsType_PEER
+			stats.Type = network.MetricsType_PEER
 			stats.ID = id
 			if err := handler(stats, nil); err != nil {
 				return
@@ -157,7 +156,7 @@ func (m *Metrics) handlePeer(ctx context.Context, id peer.ID) {
 	peer := m.peerInfoToPeer(pi)
 
 	m.muHPeers.Lock()
-	var newPeersHandlers = make([]func(*p2p.Peer, error) error, 0)
+	var newPeersHandlers = make([]func(*network.Peer, error) error, 0)
 	for _, h := range m.peersHandlers {
 		if err := h(peer, nil); err == nil {
 			newPeersHandlers = append(newPeersHandlers, h)
@@ -171,32 +170,32 @@ func (m *Metrics) peers() []pstore.PeerInfo {
 	return pstore.PeerInfos(m.host.Peerstore(), m.host.Peerstore().Peers())
 }
 
-func (m *Metrics) peerInfoToPeer(pi pstore.PeerInfo) *p2p.Peer {
+func (m *Metrics) peerInfoToPeer(pi pstore.PeerInfo) *network.Peer {
 	addrs := make([]string, len(pi.Addrs))
 	for i, addr := range pi.Addrs {
 		addrs[i] = addr.String()
 	}
 
-	var connection p2p.ConnectionType
+	var connection network.ConnectionType
 	switch m.host.Network().Connectedness(pi.ID) {
 	case inet.NotConnected:
-		connection = p2p.ConnectionType_NOT_CONNECTED
+		connection = network.ConnectionType_NOT_CONNECTED
 		break
 	case inet.Connected:
-		connection = p2p.ConnectionType_CONNECTED
+		connection = network.ConnectionType_CONNECTED
 		break
 	case inet.CanConnect:
-		connection = p2p.ConnectionType_CAN_CONNECT
+		connection = network.ConnectionType_CAN_CONNECT
 		break
 	case inet.CannotConnect:
-		connection = p2p.ConnectionType_CANNOT_CONNECT
+		connection = network.ConnectionType_CANNOT_CONNECT
 		break
 	default:
-		connection = p2p.ConnectionType_NOT_CONNECTED
+		connection = network.ConnectionType_NOT_CONNECTED
 
 	}
 
-	return &p2p.Peer{
+	return &network.Peer{
 		ID:         pi.ID.Pretty(),
 		Addrs:      addrs,
 		Connection: connection,

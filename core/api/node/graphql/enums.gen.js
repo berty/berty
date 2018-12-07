@@ -232,26 +232,26 @@ export const ValueBertyP2pEventInputDirection = {
   99: 'Node',
 }
 
-export const BertyP2pMetricsTypeInputMetricsType = {
+export const BertyNetworkMetricsTypeInputMetricsType = {
   PEER: 0,
   PROTOCOL: 1,
   GLOBAL: 2,
 }
 
-export const ValueBertyP2pMetricsTypeInputMetricsType = {
+export const ValueBertyNetworkMetricsTypeInputMetricsType = {
   0: 'PEER',
   1: 'PROTOCOL',
   2: 'GLOBAL',
 }
 
-export const BertyP2pConnectionTypeInputConnectionType = {
+export const BertyNetworkConnectionTypeInputConnectionType = {
   NOT_CONNECTED: 0,
   CONNECTED: 1,
   CAN_CONNECT: 2,
   CANNOT_CONNECT: 3,
 }
 
-export const ValueBertyP2pConnectionTypeInputConnectionType = {
+export const ValueBertyNetworkConnectionTypeInputConnectionType = {
   0: 'NOT_CONNECTED',
   1: 'CONNECTED',
   2: 'CAN_CONNECT',

@@ -15,6 +15,7 @@ import (
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/errorcodes"
+	"berty.tech/core/network"
 	"berty.tech/core/pkg/tracing"
 )
 
@@ -25,7 +26,7 @@ func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 	}
 }
 
-func (n *Node) ID(ctx context.Context, _ *node.Void) (*p2p.Peer, error) {
+func (n *Node) ID(ctx context.Context, _ *node.Void) (*network.Peer, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx)
 	defer span.Finish()
@@ -33,7 +34,7 @@ func (n *Node) ID(ctx context.Context, _ *node.Void) (*p2p.Peer, error) {
 	return n.networkDriver.ID(ctx), nil
 }
 
-func (n *Node) Protocols(ctx context.Context, p *p2p.Peer) (*node.ProtocolsOutput, error) {
+func (n *Node) Protocols(ctx context.Context, p *network.Peer) (*node.ProtocolsOutput, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, p)
 	defer span.Finish()

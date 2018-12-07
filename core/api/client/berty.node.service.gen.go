@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/network"
 )
 
 // Service returns the native gRPC client
@@ -140,12 +141,12 @@ func (c *Client) LogfileRead(ctx context.Context, input *node.LogfileReadInput) 
 	}
 	return entries, nil
 }
-func (c *Client) MonitorBandwidth(ctx context.Context, input *p2p.BandwidthStats) ([]*p2p.BandwidthStats, error) {
+func (c *Client) MonitorBandwidth(ctx context.Context, input *network.BandwidthStats) ([]*network.BandwidthStats, error) {
 	stream, err := c.Node().MonitorBandwidth(ctx, input)
 	if err != nil {
 		return nil, err
 	}
-	var entries []*p2p.BandwidthStats
+	var entries []*network.BandwidthStats
 	for {
 		entry, err := stream.Recv()
 		if err == io.EOF {
@@ -158,12 +159,12 @@ func (c *Client) MonitorBandwidth(ctx context.Context, input *p2p.BandwidthStats
 	}
 	return entries, nil
 }
-func (c *Client) MonitorPeers(ctx context.Context, input *node.Void) ([]*p2p.Peer, error) {
+func (c *Client) MonitorPeers(ctx context.Context, input *node.Void) ([]*network.Peer, error) {
 	stream, err := c.Node().MonitorPeers(ctx, input)
 	if err != nil {
 		return nil, err
 	}
-	var entries []*p2p.Peer
+	var entries []*network.Peer
 	for {
 		entry, err := stream.Recv()
 		if err == io.EOF {

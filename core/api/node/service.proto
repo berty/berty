@@ -5,8 +5,8 @@ package berty.node;
 import "api/protobuf/graphql/graphql.proto";
 import "api/p2p/event.proto";
 import "api/node/kind.proto";
-import "api/p2p/metrics.proto";
-import "api/p2p/peer.proto";
+import "network/metrics.proto";
+import "network/peer.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
@@ -20,7 +20,7 @@ option go_package = "berty.tech/core/api/node";
 
 service Service {
   // return node current ID
-  rpc ID (Void) returns (berty.p2p.Peer) {
+  rpc ID (Void) returns (berty.network.Peer) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -40,7 +40,7 @@ service Service {
   rpc GetEvent (berty.p2p.Event) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Query";
   };
-  rpc EventSeen (EventIDInput) returns (p2p.Event) {
+  rpc EventSeen (EventIDInput) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Mutation";
   };
 
@@ -119,7 +119,7 @@ service Service {
   rpc DebugPing (PingDestination) returns (Void) {
   };
 
-  rpc DebugRequeueEvent (EventIDInput) returns (p2p.Event) {
+  rpc DebugRequeueEvent (EventIDInput) returns (berty.p2p.Event) {
     option (gql.graphql_type) = "Mutation";
   };
 
@@ -135,11 +135,11 @@ service Service {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc Peers (Void) returns (p2p.Peers) {
+  rpc Peers (Void) returns (berty.network.Peers) {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc Protocols (p2p.Peer) returns (ProtocolsOutput) {
+  rpc Protocols (berty.network.Peer) returns (ProtocolsOutput) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -160,12 +160,12 @@ service Service {
   //
 
   // Yield bandwidth in real-time
-  rpc MonitorBandwidth (berty.p2p.BandwidthStats) returns (stream berty.p2p.BandwidthStats) {
+  rpc MonitorBandwidth (berty.network.BandwidthStats) returns (stream berty.network.BandwidthStats) {
     option (gql.graphql_type) = "Subscription";
   };
 
   // Yield new peers in real-time
-  rpc MonitorPeers (Void) returns (stream p2p.Peer) {
+  rpc MonitorPeers (Void) returns (stream berty.network.Peer) {
     option (gql.graphql_type) = "Subscription";
   };
 
