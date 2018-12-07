@@ -429,12 +429,18 @@ type BertyNetworkPeers  {
   
   
 
+  
 type BertyPkgDeviceinfoDeviceInfos  {
     infos: [BertyPkgDeviceinfoDeviceInfo]
 }
 type BertyPkgDeviceinfoDeviceInfo  {
       key: String!
       value: String!
+      category: String!
+      link: String!
+    type: Enum
+      errMsg: String!
+      weight: Int32!
 }
   
   

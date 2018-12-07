@@ -260,6 +260,14 @@ export const ValueBertyNetworkConnectionTypeInputConnectionType = {
   3: 'CANNOT_CONNECT',
 }
 
+export const BertyPkgDeviceinfoTypeInputType = { Unknown: 0, Raw: 1, Json: 2 }
+
+export const ValueBertyPkgDeviceinfoTypeInputType = {
+  0: 'Unknown',
+  1: 'Raw',
+  2: 'Json',
+}
+
 export const BertyNodeNullableTrueFalseInputNullableTrueFalse = {
   Null: 0,
   True: 1,

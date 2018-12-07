@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"time"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -116,7 +117,11 @@ func clientPrettyLogStream(recv func() (*node.LogEntry, error)) error {
 		return err
 	}
 
-	defer logger.Sync()
+	defer func() {
+		if err := logger.Sync(); err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "%v\n", err)
+		}
+	}()
 	for {
 		entry, err := recv()
 		if err == io.EOF {

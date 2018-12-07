@@ -20,6 +20,32 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type Type int32
+
+const (
+	Type_Unknown Type = 0
+	Type_Raw     Type = 1
+	Type_Json    Type = 2
+)
+
+var Type_name = map[int32]string{
+	0: "Unknown",
+	1: "Raw",
+	2: "Json",
+}
+var Type_value = map[string]int32{
+	"Unknown": 0,
+	"Raw":     1,
+	"Json":    2,
+}
+
+func (x Type) String() string {
+	return proto.EnumName(Type_name, int32(x))
+}
+func (Type) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_deviceinfo_e9ac7e44e338b048, []int{0}
+}
+
 // DeviceInfos is a graphql-friendly, sortable map container
 type DeviceInfos struct {
 	Infos                []*DeviceInfo `protobuf:"bytes,1,rep,name=infos" json:"infos,omitempty"`
@@ -32,7 +58,7 @@ func (m *DeviceInfos) Reset()         { *m = DeviceInfos{} }
 func (m *DeviceInfos) String() string { return proto.CompactTextString(m) }
 func (*DeviceInfos) ProtoMessage()    {}
 func (*DeviceInfos) Descriptor() ([]byte, []int) {
-	return fileDescriptor_deviceinfo_a97b5e515419e7d8, []int{0}
+	return fileDescriptor_deviceinfo_e9ac7e44e338b048, []int{0}
 }
 func (m *DeviceInfos) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -71,6 +97,11 @@ func (m *DeviceInfos) GetInfos() []*DeviceInfo {
 type DeviceInfo struct {
 	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	Value                string   `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
+	Category             string   `protobuf:"bytes,3,opt,name=category,proto3" json:"category,omitempty"`
+	Link                 string   `protobuf:"bytes,4,opt,name=link,proto3" json:"link,omitempty"`
+	Type                 Type     `protobuf:"varint,5,opt,name=type,proto3,enum=berty.pkg.deviceinfo.Type" json:"type,omitempty"`
+	ErrMsg               string   `protobuf:"bytes,6,opt,name=err_msg,json=errMsg,proto3" json:"err_msg,omitempty"`
+	Weight               int32    `protobuf:"varint,7,opt,name=weight,proto3" json:"weight,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
@@ -80,7 +111,7 @@ func (m *DeviceInfo) Reset()         { *m = DeviceInfo{} }
 func (m *DeviceInfo) String() string { return proto.CompactTextString(m) }
 func (*DeviceInfo) ProtoMessage()    {}
 func (*DeviceInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_deviceinfo_a97b5e515419e7d8, []int{1}
+	return fileDescriptor_deviceinfo_e9ac7e44e338b048, []int{1}
 }
 func (m *DeviceInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -123,9 +154,45 @@ func (m *DeviceInfo) GetValue() string {
 	return ""
 }
 
+func (m *DeviceInfo) GetCategory() string {
+	if m != nil {
+		return m.Category
+	}
+	return ""
+}
+
+func (m *DeviceInfo) GetLink() string {
+	if m != nil {
+		return m.Link
+	}
+	return ""
+}
+
+func (m *DeviceInfo) GetType() Type {
+	if m != nil {
+		return m.Type
+	}
+	return Type_Unknown
+}
+
+func (m *DeviceInfo) GetErrMsg() string {
+	if m != nil {
+		return m.ErrMsg
+	}
+	return ""
+}
+
+func (m *DeviceInfo) GetWeight() int32 {
+	if m != nil {
+		return m.Weight
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*DeviceInfos)(nil), "berty.pkg.deviceinfo.DeviceInfos")
 	proto.RegisterType((*DeviceInfo)(nil), "berty.pkg.deviceinfo.DeviceInfo")
+	proto.RegisterEnum("berty.pkg.deviceinfo.Type", Type_name, Type_value)
 }
 func (m *DeviceInfos) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
@@ -187,6 +254,34 @@ func (m *DeviceInfo) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Value)))
 		i += copy(dAtA[i:], m.Value)
 	}
+	if len(m.Category) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Category)))
+		i += copy(dAtA[i:], m.Category)
+	}
+	if len(m.Link) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.Link)))
+		i += copy(dAtA[i:], m.Link)
+	}
+	if m.Type != 0 {
+		dAtA[i] = 0x28
+		i++
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(m.Type))
+	}
+	if len(m.ErrMsg) > 0 {
+		dAtA[i] = 0x32
+		i++
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(len(m.ErrMsg)))
+		i += copy(dAtA[i:], m.ErrMsg)
+	}
+	if m.Weight != 0 {
+		dAtA[i] = 0x38
+		i++
+		i = encodeVarintDeviceinfo(dAtA, i, uint64(m.Weight))
+	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
 	}
@@ -233,6 +328,24 @@ func (m *DeviceInfo) Size() (n int) {
 	l = len(m.Value)
 	if l > 0 {
 		n += 1 + l + sovDeviceinfo(uint64(l))
+	}
+	l = len(m.Category)
+	if l > 0 {
+		n += 1 + l + sovDeviceinfo(uint64(l))
+	}
+	l = len(m.Link)
+	if l > 0 {
+		n += 1 + l + sovDeviceinfo(uint64(l))
+	}
+	if m.Type != 0 {
+		n += 1 + sovDeviceinfo(uint64(m.Type))
+	}
+	l = len(m.ErrMsg)
+	if l > 0 {
+		n += 1 + l + sovDeviceinfo(uint64(l))
+	}
+	if m.Weight != 0 {
+		n += 1 + sovDeviceinfo(uint64(m.Weight))
 	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
@@ -422,6 +535,131 @@ func (m *DeviceInfo) Unmarshal(dAtA []byte) error {
 			}
 			m.Value = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Category", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDeviceinfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDeviceinfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Category = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Link", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDeviceinfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDeviceinfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Link = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDeviceinfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= (Type(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrMsg", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDeviceinfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDeviceinfo
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ErrMsg = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Weight", wireType)
+			}
+			m.Weight = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDeviceinfo
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Weight |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDeviceinfo(dAtA[iNdEx:])
@@ -550,20 +788,28 @@ var (
 )
 
 func init() {
-	proto.RegisterFile("pkg/deviceinfo/deviceinfo.proto", fileDescriptor_deviceinfo_a97b5e515419e7d8)
+	proto.RegisterFile("pkg/deviceinfo/deviceinfo.proto", fileDescriptor_deviceinfo_e9ac7e44e338b048)
 }
 
-var fileDescriptor_deviceinfo_a97b5e515419e7d8 = []byte{
-	// 175 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2f, 0xc8, 0x4e, 0xd7,
-	0x4f, 0x49, 0x2d, 0xcb, 0x4c, 0x4e, 0xcd, 0xcc, 0x4b, 0xcb, 0x47, 0x62, 0xea, 0x15, 0x14, 0xe5,
-	0x97, 0xe4, 0x0b, 0x89, 0x24, 0xa5, 0x16, 0x95, 0x54, 0xea, 0x15, 0x64, 0xa7, 0xeb, 0x21, 0xe4,
-	0x94, 0x5c, 0xb9, 0xb8, 0x5d, 0xc0, 0x3c, 0xcf, 0xbc, 0xb4, 0xfc, 0x62, 0x21, 0x33, 0x2e, 0x56,
-	0x90, 0x70, 0xb1, 0x04, 0xa3, 0x02, 0xb3, 0x06, 0xb7, 0x91, 0x82, 0x1e, 0x36, 0x4d, 0x7a, 0x08,
-	0x1d, 0x41, 0x10, 0xe5, 0x4a, 0x26, 0x5c, 0x5c, 0x08, 0x41, 0x21, 0x01, 0x2e, 0xe6, 0xec, 0xd4,
-	0x4a, 0x09, 0x46, 0x05, 0x46, 0x0d, 0xce, 0x20, 0x10, 0x53, 0x48, 0x84, 0x8b, 0xb5, 0x2c, 0x31,
-	0xa7, 0x34, 0x55, 0x82, 0x09, 0x2c, 0x06, 0xe1, 0x38, 0x19, 0x9c, 0x78, 0x24, 0xc7, 0x78, 0xe1,
-	0x91, 0x1c, 0xe3, 0x83, 0x47, 0x72, 0x8c, 0x33, 0x1e, 0xcb, 0x31, 0x44, 0xc9, 0x41, 0xec, 0x2b,
-	0x49, 0x4d, 0xce, 0xd0, 0x4f, 0xce, 0x2f, 0x4a, 0xd5, 0x47, 0xf5, 0x55, 0x12, 0x1b, 0xd8, 0x2f,
-	0xc6, 0x80, 0x00, 0x00, 0x00, 0xff, 0xff, 0x50, 0xe0, 0x56, 0x97, 0xee, 0x00, 0x00, 0x00,
+var fileDescriptor_deviceinfo_e9ac7e44e338b048 = []byte{
+	// 303 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x6c, 0x91, 0xcf, 0x4a, 0xc3, 0x40,
+	0x10, 0xc6, 0xbb, 0xcd, 0xbf, 0x3a, 0x05, 0x09, 0x43, 0xd1, 0xa5, 0x87, 0x18, 0x7a, 0x90, 0xe0,
+	0x21, 0x95, 0x0a, 0x3e, 0x80, 0xe8, 0x41, 0xc1, 0x4b, 0xd0, 0x8b, 0x17, 0x69, 0xe3, 0x74, 0x1b,
+	0x52, 0x77, 0xc3, 0x66, 0x6d, 0xc9, 0x9b, 0xf8, 0x42, 0x82, 0x47, 0x1f, 0x41, 0xea, 0x8b, 0x48,
+	0xb7, 0x62, 0x15, 0x7a, 0xfb, 0xbe, 0xdf, 0xcc, 0x37, 0x0c, 0x7c, 0x70, 0x54, 0x95, 0x62, 0xf8,
+	0x44, 0x8b, 0x22, 0xa7, 0x42, 0x4e, 0xd5, 0x1f, 0x99, 0x56, 0x5a, 0x19, 0x85, 0xbd, 0x09, 0x69,
+	0xd3, 0xa4, 0x55, 0x29, 0xd2, 0xed, 0x6c, 0x70, 0x05, 0xdd, 0x4b, 0xeb, 0xae, 0xe5, 0x54, 0xd5,
+	0x78, 0x0e, 0xde, 0x1a, 0xd7, 0x9c, 0xc5, 0x4e, 0xd2, 0x1d, 0xc5, 0xe9, 0xae, 0x50, 0xba, 0x4d,
+	0x64, 0x9b, 0xf5, 0xc1, 0x1b, 0x03, 0xd8, 0x52, 0x0c, 0xc1, 0x29, 0xa9, 0xe1, 0x2c, 0x66, 0xc9,
+	0x5e, 0xb6, 0x96, 0xd8, 0x03, 0x6f, 0x31, 0x9e, 0xbf, 0x10, 0x6f, 0x5b, 0xb6, 0x31, 0xd8, 0x87,
+	0x4e, 0x3e, 0x36, 0x24, 0x94, 0x6e, 0xb8, 0x63, 0x07, 0xbf, 0x1e, 0x11, 0xdc, 0x79, 0x21, 0x4b,
+	0xee, 0x5a, 0x6e, 0x35, 0xa6, 0xe0, 0x9a, 0xa6, 0x22, 0xee, 0xc5, 0x2c, 0xd9, 0x1f, 0xf5, 0x77,
+	0x7f, 0x77, 0xd7, 0x54, 0x94, 0xd9, 0x3d, 0x3c, 0x84, 0x80, 0xb4, 0x7e, 0x7c, 0xae, 0x05, 0xf7,
+	0xed, 0x19, 0x9f, 0xb4, 0xbe, 0xad, 0x05, 0x1e, 0x80, 0xbf, 0xa4, 0x42, 0xcc, 0x0c, 0x0f, 0x62,
+	0x96, 0x78, 0xd9, 0x8f, 0x3b, 0x39, 0x06, 0x77, 0x1d, 0xc7, 0x2e, 0x04, 0xf7, 0xb2, 0x94, 0x6a,
+	0x29, 0xc3, 0x16, 0x06, 0xe0, 0x64, 0xe3, 0x65, 0xc8, 0xb0, 0x03, 0xee, 0x4d, 0xad, 0x64, 0xd8,
+	0xbe, 0x38, 0x7d, 0x5f, 0x45, 0xec, 0x63, 0x15, 0xb1, 0xcf, 0x55, 0xc4, 0x5e, 0xbf, 0xa2, 0xd6,
+	0x43, 0xb4, 0xf9, 0xc5, 0x50, 0x3e, 0x1b, 0xe6, 0x4a, 0xd3, 0xf0, 0x7f, 0x1f, 0x13, 0xdf, 0xb6,
+	0x70, 0xf6, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x65, 0x47, 0x0d, 0x5f, 0xa8, 0x01, 0x00, 0x00,
 }

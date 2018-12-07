@@ -1,41 +1,82 @@
 package deviceinfo
 
 import (
-	"fmt"
 	"os"
 	"runtime"
 	"strings"
+
+	"berty.tech/core"
 )
 
-func Runtime() map[string]string {
-	infos := map[string]string{}
+type MemoryInfo struct {
+	AllocMiB      uint64
+	TotalAllocMiB uint64
+	SysMiB        uint64
+	NumGC         uint32
+	Raw           *runtime.MemStats
+}
+
+type SystemInfo struct {
+	OS           string
+	Arch         string
+	NumCPU       int
+	GoVersion    string
+	Compiler     string
+	NumCgoCall   int64
+	NumGoroutine int
+	PID          int
+	UID          int
+	Hostname     string
+	Executable   string
+	Workdir      string
+}
+
+type VersionInfo struct {
+	Core    core.All
+	P2PApi  uint32
+	NodeAPI uint32
+}
+
+func Runtime() (*DeviceInfos, error) {
+	infos := DeviceInfos{}
+
+	// memory
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	infos["runtime: memory"] = fmt.Sprintf(
-		"Alloc=%vMiB, TotalAlloc=%vMiB, Sys=%vMiB, NumGC=%v",
-		m.Alloc/1024/1024,
-		m.TotalAlloc/1024/1024,
-		m.Sys/1024/1024,
-		m.NumGC,
-	)
-	infos["runtime: platform"] = fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)
-	infos["runtime: CPUs"] = fmt.Sprintf("%d", runtime.NumCPU())
-	infos["build: GO version"] = fmt.Sprintf("%s (compiler: %s)", runtime.Version(), runtime.Compiler)
-	infos["runtime: CGO calls"] = fmt.Sprintf("%d", runtime.NumCgoCall())
-	infos["runtime: Go routines"] = fmt.Sprintf("%d", runtime.NumGoroutine())
-	if hn, err := os.Hostname(); err != nil {
-		infos["runtime: hostname"] = hn
+	infos.Add(NewInfo("runtime", "memory").SetJSON(MemoryInfo{
+		AllocMiB:      m.Alloc / 1024 / 1024,
+		TotalAllocMiB: m.TotalAlloc / 1024 / 1024,
+		SysMiB:        m.Sys / 1024 / 1024,
+		NumGC:         m.NumGC,
+		// Raw:           &m, // if enabled, there will be a huge amount of information
+	}))
+
+	// system
+	systemInfo := SystemInfo{
+		OS:           runtime.GOOS,
+		Arch:         runtime.GOARCH,
+		NumCPU:       runtime.NumCPU(),
+		GoVersion:    runtime.Version(),
+		Compiler:     runtime.Compiler,
+		NumCgoCall:   runtime.NumCgoCall(),
+		NumGoroutine: runtime.NumGoroutine(),
+		PID:          os.Getpid(),
+		UID:          os.Geteuid(),
 	}
-	if exe, err := os.Executable(); err != nil {
-		infos["runtime: executable"] = exe
+	// FIXME: aggregates err in multierr and set info.ErrMsg if any
+	if hn, err := os.Hostname(); err == nil {
+		systemInfo.Hostname = hn
 	}
-	infos["runtime: pid"] = fmt.Sprintf("%d", os.Getpid())
-	infos["runtime: uid"] = fmt.Sprintf("%d", os.Geteuid())
-	if wd, err := os.Getwd(); err != nil {
-		infos["runtime: pwd"] = wd
+	if exe, err := os.Executable(); err == nil {
+		systemInfo.Executable = exe
 	}
+	if wd, err := os.Getwd(); err == nil {
+		systemInfo.Workdir = wd
+	}
+	infos.Add(NewInfo("runtime", "system").SetJSON(systemInfo))
 
 	// env
-	infos["env: vars"] = strings.Join(os.Environ(), "\n")
-	return infos
+	infos.Add(NewInfo("runtime", "environment").SetString(strings.Join(os.Environ(), "\n")))
+
+	return &infos, nil
 }
