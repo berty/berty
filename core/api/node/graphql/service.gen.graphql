@@ -220,6 +220,23 @@ type GoogleProtobufGeneratedCodeInfo  {
   
 
   
+  
+  
+
+  
+type BertyNetworkBandwidthStats  {
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+}
+  
+  
+  
+
+  
 type BertyNodeNodeStartedAttrs  {
       T: Bool!
 }
@@ -238,10 +255,11 @@ type BertyNodeBackgroundWarnAttrs  {
 type BertyNodeDebugAttrs  {
       msg: String!
 }
-  
-  
-  
-
+type BertyNodeStatisticsAttrs  {
+      errMsg: String!
+    totalNetworkBandwidth: BertyNetworkBandwidthStats
+      peersCount: Int32!
+}
   
   
   
@@ -399,26 +417,13 @@ type BertyP2pMetadataKeyValue  {
   
 
   
-type BertyP2pBandwidthStats  {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
-    type: Enum
-}
-  
-  
-  
-
-  
-type BertyP2pPeer  {
+type BertyNetworkPeer  {
       id: String!
       addrs: [String!]
     connection: Enum
 }
-type BertyP2pPeers  {
-    list: [BertyP2pPeer]
+type BertyNetworkPeers  {
+    list: [BertyNetworkPeer]
 }
   
   
@@ -494,7 +499,7 @@ type BertyNodeNodeEvent  {
     kind: Enum
       attributes: [Byte!],
 }
-type BertyP2pPeerPayload {
+type BertyNetworkPeerPayload {
       id: String!
       addrs: [String!]
     connection: Enum
@@ -633,8 +638,8 @@ type BertyPkgDeviceinfoDeviceInfosPayload {
 type BertyNodeAppVersionPayload {
       version: String!
 }
-type BertyP2pPeersPayload {
-    list: [BertyP2pPeer]
+type BertyNetworkPeersPayload {
+    list: [BertyNetworkPeer]
 }
 type BertyNodeProtocolsPayload {
       protocols: [String!]
@@ -648,7 +653,7 @@ type BertyNodeLogfileEntryPayload {
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
 }
-type BertyP2pBandwidthStatsPayload {
+type BertyNetworkBandwidthStatsPayload {
       id: String
       totalIn: Int64
       totalOut: Int64
@@ -661,7 +666,7 @@ type Query {
   node(id: ID!): Node
   ID(
       T: Bool!
-  ): BertyP2pPeerPayload
+  ): BertyNetworkPeerPayload
   EventList(
     filter: BertyP2pEventInput
     onlyWithoutAckedAt: Enum
@@ -745,7 +750,7 @@ type Query {
   ): BertyNodeAppVersionPayload
   Peers(
       T: Bool!
-  ): BertyP2pPeersPayload
+  ): BertyNetworkPeersPayload
   Protocols(
       id: String!
       addrs: [String!]
@@ -854,8 +859,8 @@ type Subscription {
       rateIn: Double
       rateOut: Double
     type: Enum
-  ): BertyP2pBandwidthStatsPayload
+  ): BertyNetworkBandwidthStatsPayload
   MonitorPeers(
       T: Bool!
-  ): BertyP2pPeerPayload
+  ): BertyNetworkPeerPayload
 }

@@ -9,6 +9,7 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/network"
 	"go.uber.org/zap"
 )
 
@@ -442,7 +443,7 @@ func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte)
 		zap.String("method", "Protocols"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput p2p.Peer
+	var typedInput network.Peer
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -538,7 +539,7 @@ func NodeMonitorBandwidth(client *client.Client, ctx context.Context, jsonInput 
 		zap.String("method", "MonitorBandwidth"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput p2p.BandwidthStats
+	var typedInput network.BandwidthStats
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}

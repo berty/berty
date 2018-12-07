@@ -68,7 +68,7 @@ require (
 	github.com/libp2p/go-buffer-pool v0.1.1 // indirect
 	github.com/libp2p/go-conn-security v0.1.13 // indirect
 	github.com/libp2p/go-conn-security-multistream v0.1.13 // indirect
-	github.com/libp2p/go-floodsub v0.10.2
+	github.com/libp2p/go-floodsub v0.10.2 // indirect
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v6.0.19+incompatible
 	github.com/libp2p/go-libp2p-blankhost v0.3.13 // indirect

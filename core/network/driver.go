@@ -10,26 +10,35 @@ import (
 )
 
 type Metrics interface {
+	// Same as MonitorBandwidthGlobal, but once
+	//GetBandwidthGlobal(context.Context) (*BandwidthStats, error)
+
+	// Same as MonitorBandwidthProtocol, but once
+	//GetBandwidthProtocol(context.Context) (*BandwidthStats, error)
+
+	// Same as MonitorBandwidthPeer, but once
+	//GetBandwidthPeer(context.Context) (*BandwidthStats, error)
+
 	// Return a list of peers
-	Peers(context.Context) *p2p.Peers
+	Peers(context.Context) *Peers
 
 	// Monitor connected/disconnected peers
-	MonitorPeers(func(*p2p.Peer, error) error)
+	MonitorPeers(func(*Peer, error) error)
 
 	// Monitor bandwidth globally with the given interval
-	MonitorBandwidth(time.Duration, func(*p2p.BandwidthStats, error) error)
+	MonitorBandwidth(time.Duration, func(*BandwidthStats, error) error)
 
 	// Monitor bandwidth of a specific protocol with the given protocol id
 	// and interval
-	MonitorBandwidthProtocol(string, time.Duration, func(*p2p.BandwidthStats, error) error)
+	MonitorBandwidthProtocol(string, time.Duration, func(*BandwidthStats, error) error)
 
 	// Monitor bandwidth of a specific peer with the given peer id and interval
-	MonitorBandwidthPeer(string, time.Duration, func(*p2p.BandwidthStats, error) error)
+	MonitorBandwidthPeer(string, time.Duration, func(*BandwidthStats, error) error)
 }
 
 type Driver interface {
 	// Return driver current id
-	ID(context.Context) *p2p.Peer
+	ID(context.Context) *Peer
 
 	// Emit sends an envelope to a channel
 	Emit(context.Context, *p2p.Envelope) error
@@ -50,7 +59,7 @@ type Driver interface {
 	Start(context.Context) error
 
 	// Return the supported protocols of the given peer
-	Protocols(context.Context, *p2p.Peer) ([]string, error)
+	Protocols(context.Context, *Peer) ([]string, error)
 
 	// Close cleanups things
 	Close(context.Context) error

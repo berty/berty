@@ -234,7 +234,7 @@ func (d *Driver) getPeerInfo(ctx context.Context, addr string) (*pstore.PeerInfo
 	return pstore.InfoFromP2pAddr(iaddr.Multiaddr())
 }
 
-func (d *Driver) Protocols(ctx context.Context, p *p2p.Peer) ([]string, error) {
+func (d *Driver) Protocols(ctx context.Context, p *network.Peer) ([]string, error) {
 	span, _ := tracing.EnterFunc(ctx, p)
 	defer span.Finish()
 
@@ -250,7 +250,7 @@ func (d *Driver) Addrs() []ma.Multiaddr {
 	return d.host.Addrs()
 }
 
-func (d *Driver) ID(ctx context.Context) *p2p.Peer {
+func (d *Driver) ID(ctx context.Context) *network.Peer {
 	span, _ := tracing.EnterFunc(ctx)
 	defer span.Finish()
 
@@ -259,10 +259,10 @@ func (d *Driver) ID(ctx context.Context) *p2p.Peer {
 		addrs[i] = addr.String()
 	}
 
-	return &p2p.Peer{
+	return &network.Peer{
 		ID:         d.host.ID().Pretty(),
 		Addrs:      addrs,
-		Connection: p2p.ConnectionType_CONNECTED,
+		Connection: network.ConnectionType_CONNECTED,
 	}
 }
 

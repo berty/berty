@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package berty.p2p;
+package berty.network;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "berty.tech/core/api/p2p";
+option go_package = "berty.tech/core/network";
 
 enum ConnectionType {
   // sender does not have a connection to peer, and no extra information (default)

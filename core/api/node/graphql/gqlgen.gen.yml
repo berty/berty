@@ -705,6 +705,36 @@ models:
 
 
 
+
+  BertyNetworkBandwidthStats:
+    model: berty.tech/core/network.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyNetworkBandwidthStatsInput:
+    model: berty.tech/core/network.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyNetworkBandwidthStatsPayload:
+    model: berty.tech/core/network.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+
+
   BertyNodeNodeStartedAttrs:
     model: berty.tech/core/api/node.NodeStartedAttrs
     fields:
@@ -783,6 +813,24 @@ models:
     fields:
       msg:
 
+  BertyNodeStatisticsAttrs:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
+  BertyNodeStatisticsAttrsInput:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
+  BertyNodeStatisticsAttrsPayload:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
 
 
 
@@ -1236,64 +1284,35 @@ models:
       values:
 
 
-  BertyP2pBandwidthStats:
-    model: berty.tech/core/api/p2p.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-  BertyP2pBandwidthStatsInput:
-    model: berty.tech/core/api/p2p.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-  BertyP2pBandwidthStatsPayload:
-    model: berty.tech/core/api/p2p.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-
-
-  BertyP2pPeer:
-    model: berty.tech/core/api/p2p.Peer
+  BertyNetworkPeer:
+    model: berty.tech/core/network.Peer
     fields:
       id:
       addrs:
       connection:
-  BertyP2pPeerInput:
-    model: berty.tech/core/api/p2p.Peer
+  BertyNetworkPeerInput:
+    model: berty.tech/core/network.Peer
     fields:
       id:
       addrs:
       connection:
-  BertyP2pPeerPayload:
-    model: berty.tech/core/api/p2p.Peer
+  BertyNetworkPeerPayload:
+    model: berty.tech/core/network.Peer
     fields:
       id:
       addrs:
       connection:
 
-  BertyP2pPeers:
-    model: berty.tech/core/api/p2p.Peers
+  BertyNetworkPeers:
+    model: berty.tech/core/network.Peers
     fields:
       list:
-  BertyP2pPeersInput:
-    model: berty.tech/core/api/p2p.Peers
+  BertyNetworkPeersInput:
+    model: berty.tech/core/network.Peers
     fields:
       list:
-  BertyP2pPeersPayload:
-    model: berty.tech/core/api/p2p.Peers
+  BertyNetworkPeersPayload:
+    model: berty.tech/core/network.Peers
     fields:
       list:
 
