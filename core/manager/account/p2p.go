@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"io"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/tracing"
@@ -12,7 +14,6 @@ import (
 	"github.com/jinzhu/gorm"
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
 )
 
 type P2PNetworkOptions struct {
@@ -48,12 +49,12 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 	} else {
 		bytes, err := base64.StdEncoding.DecodeString(opts.Identity)
 		if err != nil {
-			return nil, nil, errors.Wrap(err, "failed to decode identity opt, should be base64 encoded")
+			return nil, nil, errorcodes.ErrNetP2PIdentity.Wrap(err)
 		}
 
 		prvKey, err := p2pcrypto.UnmarshalPrivateKey(bytes)
 		if err != nil {
-			return nil, nil, errors.Wrap(err, "failed to unmarshal private key")
+			return nil, nil, errorcodes.ErrNetP2PPublicKey.Wrap(err)
 		}
 
 		identity = p2p.WithIdentity(prvKey)

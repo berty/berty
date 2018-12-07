@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/base64"
 
+	"berty.tech/core/pkg/errorcodes"
+
+	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
-	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/p2p"
@@ -95,24 +97,24 @@ func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
 	defer span.Finish()
 
 	if n.crypto == nil {
-		return nil, errors.New("unable to get crypto instance")
+		return nil, errorcodes.ErrCrypto.Wrap(errors.New("unable to get crypto instance"))
 	}
 
 	pubBytes, err := n.crypto.GetPubKey()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to init config")
+		return nil, errorcodes.ErrCryptoKey.Wrap(err)
 	}
 
 	sc := sigchain.SigChain{}
 
 	if err := sc.Init(n.crypto, pubBytes); err != nil {
-		return nil, errors.Wrap(err, "failed to initialize sigchain")
+		return nil, errorcodes.ErrCryptoSigchain.Wrap(err)
 	}
 
 	scBytes, err := proto.Marshal(&sc)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal sigchain")
+		return nil, errorcodes.ErrCryptoSigchain.Wrap(err)
 	}
 
 	myself := &entity.Contact{
@@ -123,7 +125,7 @@ func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
 	}
 
 	if err := n.sql(ctx).Create(myself).Error; err != nil {
-		return nil, errors.Wrap(err, "unable to save myself")
+		return nil, errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	// db object
@@ -136,7 +138,7 @@ func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
 	}
 
 	if err := n.sql(ctx).Create(currentDevice).Error; err != nil {
-		return nil, errors.Wrap(err, "unable to save config")
+		return nil, errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	n.config.CurrentDevice = currentDevice
@@ -147,7 +149,7 @@ func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
 	if err := n.sql(ctx).
 		Save(&n.config).
 		Error; err != nil {
-		return nil, errors.Wrap(err, "failed to save config")
+		return nil, errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	return n.config, nil
@@ -162,11 +164,12 @@ func (n *Node) Config(ctx context.Context) (*entity.Config, error) {
 
 	if err := n.sql(ctx).Preload("CurrentDevice").Preload("Myself").Preload("Myself.Devices").Find(&config, &entity.Config{}).Error; err != nil {
 		// if err := n.sql.First(config).Error; err != nil {
-		return nil, errors.Wrap(err, "unable to get config")
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	if len(config) == 0 {
-		return nil, errors.New("config not found")
+
+		return nil, errorcodes.ErrDbNothingFound.New()
 	}
 
 	n.config = config[0]

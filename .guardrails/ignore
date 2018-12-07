@@ -1,2 +1,3 @@
 # skipping false-positive about too weak RSA key (used by fake data)
 core/node/nodeapi_devtools.go
+core/packrd/packed-packr.go

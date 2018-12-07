@@ -6,12 +6,12 @@ import (
 	"context"
 	"time"
 
-	host "github.com/libp2p/go-libp2p-host"
-	peer "github.com/libp2p/go-libp2p-peer"
+	"berty.tech/core/pkg/errorcodes"
+	"github.com/libp2p/go-libp2p-host"
+	"github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/pkg/errors"
 )
 
 // BLETransport is the TCP transport.
@@ -27,10 +27,8 @@ type Transport struct {
 	reuse          rtpt.Transport
 }
 
-var ErrNotImplemented = errors.New("not implemented yet")
-
 func NewBLETransport(ID string, lAddr ma.Multiaddr) (func(me host.Host) *Transport, error) {
-	return nil, errors.Wrap(ErrNotImplemented, "NewTransport")
+	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 // CanDial returns true if this transport believes it can dial the given
@@ -41,7 +39,7 @@ func (t *Transport) CanDial(addr ma.Multiaddr) bool {
 
 // Dial dials the   peer at the remote address.
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
-	return nil, errors.Wrap(ErrNotImplemented, "Dial")
+	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 // UseReuseport returns true if reuseport is enabled and available.
@@ -51,7 +49,7 @@ func (t *Transport) UseReuseport() bool {
 
 // Listen listens on the given multiaddr.
 func (t *Transport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
-	return nil, errors.Wrap(ErrNotImplemented, "Listen")
+	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 // Protocols returns the list of terminal protocols this transport can dial.
@@ -73,5 +71,5 @@ func (b *Listener) closeNative() {
 }
 
 func (b *Conn) Write(p []byte) (n int, err error) {
-	return 0, errors.Wrap(ErrNotImplemented, "Write")
+	return 0, errorcodes.ErrUnimplemented.New()
 }

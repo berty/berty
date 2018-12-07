@@ -18,10 +18,11 @@ import (
 	"strings"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"github.com/brianvoe/gofakeit"
 	"github.com/gogo/protobuf/proto"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
 
 	"berty.tech/core"
 	"berty.tech/core/api/node"
@@ -51,27 +52,27 @@ func (n *Node) generateFakeContact(ctx context.Context) (*entity.Contact, error)
 
 	priv, err := rsa.GenerateKey(crand.Reader, 512)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to generate rsa key")
+		return nil, errorcodes.ErrCryptoKeyGen.Wrap(err)
 	}
 	privBytes, err := x509.MarshalPKCS8PrivateKey(priv)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal private key")
+		return nil, errorcodes.ErrCryptoKeyDecode.Wrap(err)
 	}
 	pubBytes, err := x509.MarshalPKIXPublicKey(priv.Public())
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal public key")
+		return nil, errorcodes.ErrCryptoKeyDecode.Wrap(err)
 	}
 	kp := keypair.InsecureCrypto{}
 	if err := kp.SetPrivateKeyData(privBytes); err != nil {
-		return nil, errors.Wrap(err, "failed to set private key in kp")
+		return nil, errorcodes.ErrCrypto.Wrap(err)
 	}
 	sc := sigchain.SigChain{}
 	if err := sc.Init(&kp, pubBytes); err != nil {
-		return nil, errors.Wrap(err, "failed to init sigchain")
+		return nil, errorcodes.ErrCryptoSigchain.Wrap(err)
 	}
 	scBytes, err := proto.Marshal(&sc)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to marshal sigchain")
+		return nil, errorcodes.ErrCryptoSigchain.Wrap(err)
 	}
 	contact := &entity.Contact{
 		ID:          base64.StdEncoding.EncodeToString(pubBytes),
@@ -89,7 +90,7 @@ func (n *Node) generateFakeContact(ctx context.Context) (*entity.Contact, error)
 	}
 	sql := n.sql(ctx)
 	if err := sql.Set("gorm:association_autoupdate", true).Save(&contact).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to save contacts")
+		return nil, errorcodes.ErrDbCreate.Wrap(err)
 	}
 	return contact, nil
 }
@@ -129,7 +130,7 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 				Title:    strings.Title(fmt.Sprintf("%s %s", gofakeit.HipsterWord(), gofakeit.HackerNoun())),
 				Topic:    gofakeit.HackerPhrase(),
 			}); err != nil {
-				return errors.Wrap(err, "failed to create conversation")
+				return errorcodes.ErrDbCreate.Wrap(err)
 			}
 			return nil
 		}(); err != nil {
@@ -227,7 +228,7 @@ func (n *Node) DeviceInfos(ctx context.Context, input *node.Void) (*deviceinfo.D
 
 	nodeInfos, err := n.NodeInfos(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
 
 	runtimeInfos, err := deviceinfo.Runtime()
@@ -285,11 +286,11 @@ func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) 
 	sql := n.sql(ctx)
 	var event p2p.Event
 	if err := sql.First(&event, "ID = ?", input.EventID).Error; err != nil {
-		return nil, errors.Wrap(err, "unable to fetch event")
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
 	if err := n.EventRequeue(ctx, &event); err != nil {
-		return nil, errors.Wrap(err, "unable to requeue event")
+		return nil, errorcodes.ErrNetQueue.Wrap(err)
 	}
 
 	return &event, nil
@@ -301,7 +302,7 @@ func (n *Node) DebugRequeueAll(ctx context.Context, _ *node.Void) (*node.Void, e
 	defer span.Finish()
 
 	if _, err := n.EventsRetry(ctx, time.Now()); err != nil {
-		return nil, errors.Wrap(err, "unable to requeue events")
+		return nil, errorcodes.ErrNetQueue.Wrap(err)
 	}
 
 	return &node.Void{}, nil
@@ -312,7 +313,7 @@ func (n *Node) LogStream(input *node.LogStreamInput, stream node.Service_LogStre
 	defer span.Finish()
 
 	if n.ring == nil {
-		return fmt.Errorf("ring not configured")
+		return errorcodes.ErrUndefined.Wrap(fmt.Errorf("ring not configured"))
 	}
 
 	// FIXME: support Continue
@@ -332,8 +333,9 @@ func (n *Node) LogStream(input *node.LogStreamInput, stream node.Service_LogStre
 		if err := stream.Send(&node.LogEntry{
 			Line: scanner.Text(),
 		}); err != nil {
-			return err
+			return errorcodes.ErrUndefined.Wrap(err)
 		}
+
 	}
 	return nil
 }
@@ -369,7 +371,7 @@ func (n *Node) LogfileList(_ *node.Void, stream node.Service_LogfileListServer) 
 			CreatedAt: &createTime,
 			UpdatedAt: &modTime,
 		}); err != nil {
-			return err
+			return errorcodes.ErrUndefined.Wrap(err)
 		}
 	}
 	return nil

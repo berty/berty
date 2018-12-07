@@ -10,6 +10,7 @@ import (
         "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
         {{ end -}}
 	"berty.tech/core/api/client"
+	"berty.tech/core/errorcodes"
 )
 
 {{- range $svc := .File.Service}}

@@ -9,9 +9,9 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
-	"berty.tech/core/errorcodes"
 	"berty.tech/core/network/mock"
 	p2pnet "berty.tech/core/network/p2p"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/testrunner"
 	"github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
@@ -80,7 +80,7 @@ func TestWithEnqueuer(t *testing.T) {
 					So(bob.node.DevtoolsMapget("test"), ShouldEqual, fmt.Sprintf("%d", i))
 					envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 					event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
-					So(err, ShouldBeIn, nil, errorcodes.ErrorUntrustedEnvelope)
+					So(true, ShouldBeIn, err == nil, errorcodes.ErrEnvelopeUntrusted.Is(err))
 					So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 					//jsonPrintIndent(event)
 				}
@@ -270,7 +270,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
-				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
+				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
 				So(event.Author(), ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
@@ -333,7 +333,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
-				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
+				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
@@ -376,7 +376,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
-				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
+				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -491,7 +491,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
-				So(err, ShouldEqual, errorcodes.ErrorUntrustedEnvelope)
+				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())

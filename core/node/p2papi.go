@@ -14,8 +14,8 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
-	"berty.tech/core/errorcodes"
 	"berty.tech/core/network"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 )
 
@@ -73,7 +73,7 @@ func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
 	defer n.asyncWaitGroup(ctx)()
 
 	event, err := n.OpenEnvelope(ctx, input)
-	if err == errorcodes.ErrorUntrustedEnvelope {
+	if errorcodes.ErrEnvelopeUntrusted.Is(err) {
 		// ignored error
 	} else if err != nil {
 		return errors.Wrap(err, "unable to open envelope")
@@ -92,7 +92,7 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 	sql := n.sql(ctx)
 	device, err := envelope.GetDeviceForEnvelope(sql)
 
-	if err == errorcodes.ErrorNoDeviceFoundForEnvelope {
+	if errorcodes.ErrEnvelopeNoDeviceFound.Is(err) {
 		// No device found, lets try to use the pubkey if provided,
 		// it can be useful when receiving a contact request for instance
 		pubKeyBytes, err := base64.StdEncoding.DecodeString(envelope.Source)
@@ -134,7 +134,7 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 	}
 
 	if trusted == false {
-		err = errorcodes.ErrorUntrustedEnvelope
+		err = errorcodes.ErrEnvelopeUntrusted.New()
 	}
 
 	return &event, err

@@ -5,13 +5,15 @@ import (
 	"testing"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"berty.tech/core/test/mock"
 )
 
 func TestSenderAliasGenerateRandom(t *testing.T) {
 	alias, err := SenderAliasGenerateRandom("self", "", "")
 
-	if err == nil || err.Error() != "a contactID or a conversationID must be defined" {
+	if errorcodes.ErrValidationInput.Is(err) == false {
 		t.Error("invalid error message")
 	}
 
@@ -214,7 +216,7 @@ func TestGetAliasForContact(t *testing.T) {
 
 	if err == nil {
 		t.Error(fmt.Sprintf("no alias expected: an error was expected, alias is %s", alias))
-	} else if err.Error() != "unable to get an alias" {
+	} else if errorcodes.ErrSenderAliasNoCandidates.Is(err) == false {
 		t.Error(fmt.Sprintf("no alias expected: wrong error %s", err))
 	}
 
@@ -248,7 +250,7 @@ func TestGetAliasForConversation(t *testing.T) {
 
 	if err == nil {
 		t.Error("no alias expected: an error was expected")
-	} else if err.Error() != "unable to get an alias" {
+	} else if errorcodes.ErrSenderAliasNoCandidates.Is(err) == false {
 		t.Error(fmt.Sprintf("no alias expected: wrong error %s", err))
 	}
 	for i := 0; i < 3; i++ {

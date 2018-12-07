@@ -7,11 +7,11 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
-	uuid "github.com/satori/go.uuid"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"

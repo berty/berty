@@ -7,6 +7,11 @@ import (
 	"strings"
 	"sync"
 
+	"google.golang.org/grpc/status"
+
+	"berty.tech/core/pkg/errorcodes"
+	"github.com/vektah/gqlparser/gqlerror"
+
 	nodeapi "berty.tech/core/api/node"
 	gql "berty.tech/core/api/node/graphql"
 	graph "berty.tech/core/api/node/graphql/graph/generated"
@@ -18,10 +23,10 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
-	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"github.com/grpc-ecosystem/go-grpc-middleware"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
@@ -41,7 +46,7 @@ func WithName(name string) NewOption {
 	return func(a *Account) error {
 		a.Name = name
 		if a.Name == "" {
-			return errors.New("cannot have empty name")
+			return errorcodes.ErrValidationInput.Wrap(errors.New("cannot have empty name"))
 		}
 		return nil
 	}
@@ -51,7 +56,7 @@ func WithPassphrase(passphrase string) NewOption {
 	return func(a *Account) error {
 		a.Passphrase = passphrase
 		if a.Passphrase == "" {
-			return errors.New("cannot have empty passphrase")
+			return errorcodes.ErrValidationInput.Wrap(errors.New("cannot have empty passphrase"))
 		}
 		return nil
 	}
@@ -195,7 +200,7 @@ func WithGQL(opts *GQLOptions) NewOption {
 
 		conn, err := grpc.Dial("", dialOpts...)
 		if err != nil {
-			return errors.Wrap(err, "failed to dial local node ")
+			return errorcodes.ErrNetDial.Wrap(err)
 		}
 
 		resolver := gql.New(nodeapi.NewServiceClient(conn))
@@ -213,6 +218,22 @@ func WithGQL(opts *GQLOptions) NewOption {
 					return true
 				},
 			}),
+			gqlhandler.ErrorPresenter(
+				func(ctx context.Context, e error) *gqlerror.Error {
+					exportedError := graphql.DefaultErrorPresenter(ctx, e)
+
+					if grpcError, ok := status.FromError(e); ok {
+						details := grpcError.Details()
+						bertyErrorDetails, ok := details[0].(*errorcodes.BertyError)
+
+						if ok {
+							exportedError.Extensions = bertyErrorDetails.Extensions()
+						}
+					}
+
+					return exportedError
+				},
+			),
 			gqlhandler.RequestMiddleware(
 				func(ctx context.Context, next func(ctx context.Context) []byte) []byte {
 					req := graphql.GetRequestContext(ctx)

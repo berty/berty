@@ -241,7 +241,7 @@ export default class PublicKeyWithActions extends PureComponent {
               onPress={this.onSubmit}
             />
           ) : null}
-          {errors.map((err, i) => <Text multiline key={i}>{err.message}</Text>)}
+          {errors.map((err, i) => <Text multiline key={i}>{err.extensions.message}</Text>)}
         </Flex.Rows>
       </ScrollView>
     )

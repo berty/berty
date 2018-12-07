@@ -3,9 +3,10 @@ package node
 import (
 	"fmt"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"berty.tech/core/api/node"
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 )
 
 func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
@@ -13,10 +14,10 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 		return query, nil
 	}
 	if paginate.Last > 0 {
-		return nil, errors.Wrap(ErrNotImplemented, "input.Paginate.Last not supported")
+		return nil, errorcodes.ErrUnimplemented.New()
 	}
 	if paginate.Before != "" {
-		return nil, errors.Wrap(ErrNotImplemented, "input.Paginate.Before not supported")
+		return nil, errorcodes.ErrUnimplemented.New()
 	}
 	switch paginate.OrderBy {
 	case "":
@@ -27,7 +28,7 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 	case "updated_at":
 		break
 	default:
-		return nil, errors.Wrap(ErrNotImplemented, "'OrderBy' is only supported for 'id', 'created_at', 'updated_at'")
+		return nil, errorcodes.ErrUnimplemented.New()
 	}
 
 	// apply defaults to paginate

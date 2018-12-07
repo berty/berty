@@ -4,9 +4,10 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 
+	"berty.tech/core/pkg/errorcodes"
+
+	"github.com/gofrs/uuid"
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
-	uuid "github.com/satori/go.uuid"
 )
 
 // AliasLength as of now alias length is short by design, we want to
@@ -21,7 +22,7 @@ func generateRandomAlias() (string, error) {
 	_, err := rand.Read(data)
 
 	if err != nil {
-		return "", errors.Wrap(err, "unable to generate random bytes")
+		return "", errorcodes.ErrRandomGeneratorFailed.Wrap(err)
 	}
 
 	return base64.StdEncoding.EncodeToString(data), nil
@@ -29,19 +30,19 @@ func generateRandomAlias() (string, error) {
 
 func SenderAliasGenerateRandom(originContactID string, contactID string, conversationID string) (*SenderAlias, error) {
 	if contactID == "" && conversationID == "" {
-		return nil, errors.New("a contactID or a conversationID must be defined")
+		return nil, errorcodes.ErrValidationInput.New()
 	}
 
 	alias, err := generateRandomAlias()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to generate a random alias")
+		return nil, errorcodes.ErrSenderAliasGen.Wrap(err)
 	}
 
 	ID, err := uuid.NewV4()
 
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to generate a uuid")
+		return nil, errorcodes.ErrUUIDGeneratorFailed.Wrap(err)
 	}
 
 	return &SenderAlias{
@@ -67,7 +68,7 @@ func SenderAliasGetCandidates(db *gorm.DB, alias string) ([]*Device, error) {
 		Error
 
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get candidates for alias")
+		return nil, errorcodes.ErrDb.Wrap(err)
 
 	} else if len(aliases) != 0 {
 		for _, alias := range aliases {
@@ -87,7 +88,7 @@ func SenderAliasGetCandidates(db *gorm.DB, alias string) ([]*Device, error) {
 	}
 
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get candidates for alias")
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	return out, nil
@@ -115,12 +116,12 @@ func getAlias(db *gorm.DB, query *SenderAlias) (string, error) {
 	err := db.Where(query).Order("created_at desc", true).Limit(1).Find(&out).Error
 
 	if err != nil {
-		return "", errors.Wrap(err, "db error")
+		return "", errorcodes.ErrDb.Wrap(err)
 
 	}
 
 	if len(out) == 0 {
-		return "", errors.New("unable to get an alias")
+		return "", errorcodes.ErrSenderAliasNoCandidates.New()
 	}
 
 	senderAlias := out[0]
@@ -129,7 +130,7 @@ func getAlias(db *gorm.DB, query *SenderAlias) (string, error) {
 		senderAlias.Used = true
 
 		if err := db.Save(senderAlias).Error; err != nil {
-			return "", errors.Wrap(err, "unable to mark senderAlias as used")
+			return "", errorcodes.ErrSenderAliasUpdateFailed.Wrap(err)
 		}
 	}
 

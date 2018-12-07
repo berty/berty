@@ -6,12 +6,13 @@ import (
 	"net"
 	"sync"
 
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
+
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
@@ -128,7 +129,7 @@ func NewDialer(host host.Host, pid protocol.ID) func(context.Context, string) (n
 		s, err := host.NewStream(ctx, peerID, pid)
 		if err != nil {
 			logger().Error("new stream failed", zap.Error(err))
-			return nil, errors.Wrap(err, "new stream failed")
+			return nil, errorcodes.ErrNetStream.Wrap(err)
 		}
 
 		return NewConnFromStream(s)

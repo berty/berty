@@ -4,11 +4,13 @@ import (
 	"context"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	bsql "berty.tech/core/sql"
+	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
-	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 )
 
@@ -28,7 +30,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	sql := n.sql(ctx)
 	_, err = bsql.FindContact(sql, &entity.Contact{ID: attrs.Me.ID})
 	if err == nil {
-		return errors.New("contact already known")
+		return errorcodes.ErrContactReqExisting.New()
 	}
 
 	// save requester in db
@@ -53,7 +55,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 	sql := n.sql(ctx)
 	contact, err := bsql.ContactByID(sql, input.SenderID)
 	if err != nil {
-		return errors.Wrap(err, "no such contact")
+		return errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
 	contact.Status = entity.Contact_IsFriend
@@ -83,7 +85,7 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	sql := n.sql(ctx)
 	contact, err := bsql.ContactByID(sql, input.SenderID)
 	if err != nil {
-		return errors.Wrap(err, "no such contact")
+		return errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
 	// FIXME: UI: ask for confirmation before update
@@ -120,7 +122,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 
 	// save conversation
 	if err := n.sql(ctx).Set("gorm:association_autoupdate", true).Save(conversation).Error; err != nil {
-		return errors.Wrap(err, "failed to save conversation")
+		return errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	if err := n.networkDriver.Join(ctx, attrs.Conversation.ID); err != nil {
@@ -164,7 +166,7 @@ func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) er
 	aliasesList, err := input.GetSenderAliasUpdateAttrs()
 
 	if err != nil {
-		return errors.Wrap(err, "unable to unmarshal aliases list")
+		return errorcodes.ErrDeserialization.Wrap(err)
 	}
 
 	for i := range aliasesList.Aliases {
@@ -173,7 +175,7 @@ func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) er
 		ID, err := uuid.NewV4()
 
 		if err != nil {
-			return errors.Wrap(err, "unable to generate a uuid")
+			return errorcodes.ErrUUIDGeneratorFailed.Wrap(err)
 		}
 
 		alias.ID = ID.String()
