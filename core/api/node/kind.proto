@@ -3,6 +3,7 @@ syntax = "proto3";
 package berty.node;
 
 import "gogoproto/gogo.proto";
+import "network/metrics.proto";
 
 option go_package = "berty.tech/core/api/node";
 
@@ -16,8 +17,8 @@ enum Kind {
   BackgroundError = 4;
   BackgroundWarn = 5;
   Debug = 6;
+  Statistics = 7;
   // FIXME: add connection established
-  // FIXME: statistics (every N secs)
 }
 
 message NodeStartedAttrs { bool T = 1; }
@@ -26,3 +27,10 @@ message NodeIsAliveAttrs { bool T = 1; }
 message BackgroundErrorAttrs { string err_msg = 1; }
 message BackgroundWarnAttrs { string err_msg = 1; }
 message DebugAttrs { string msg = 1; }
+
+message StatisticsAttrs {
+  string err_msg = 1;
+  berty.network.BandwidthStats total_network_bandwidth = 2;
+  int32 peers_count = 3;
+  // FIXME: other interesting info (CPU?)
+}

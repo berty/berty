@@ -307,6 +307,12 @@ type ComplexityRoot struct {
 		Protocols func(childComplexity int) int
 	}
 
+	BertyNodeStatisticsAttrs struct {
+		ErrMsg                func(childComplexity int) int
+		TotalNetworkBandwidth func(childComplexity int) int
+		PeersCount            func(childComplexity int) int
+	}
+
 	BertyNodeVoid struct {
 		T func(childComplexity int) int
 	}
@@ -3587,6 +3593,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeProtocolsPayload.Protocols(childComplexity), true
+
+	case "BertyNodeStatisticsAttrs.errMsg":
+		if e.complexity.BertyNodeStatisticsAttrs.ErrMsg == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeStatisticsAttrs.ErrMsg(childComplexity), true
+
+	case "BertyNodeStatisticsAttrs.totalNetworkBandwidth":
+		if e.complexity.BertyNodeStatisticsAttrs.TotalNetworkBandwidth == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeStatisticsAttrs.TotalNetworkBandwidth(childComplexity), true
+
+	case "BertyNodeStatisticsAttrs.peersCount":
+		if e.complexity.BertyNodeStatisticsAttrs.PeersCount == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeStatisticsAttrs.PeersCount(childComplexity), true
 
 	case "BertyNodeVoid.T":
 		if e.complexity.BertyNodeVoid.T == nil {
@@ -10048,6 +10075,114 @@ func (ec *executionContext) _BertyNodeProtocolsPayload_protocols(ctx context.Con
 	}
 
 	return arr1
+}
+
+var bertyNodeStatisticsAttrsImplementors = []string{"BertyNodeStatisticsAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeStatisticsAttrs(ctx context.Context, sel ast.SelectionSet, obj *node.StatisticsAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeStatisticsAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeStatisticsAttrs")
+		case "errMsg":
+			out.Values[i] = ec._BertyNodeStatisticsAttrs_errMsg(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "totalNetworkBandwidth":
+			out.Values[i] = ec._BertyNodeStatisticsAttrs_totalNetworkBandwidth(ctx, field, obj)
+		case "peersCount":
+			out.Values[i] = ec._BertyNodeStatisticsAttrs_peersCount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeStatisticsAttrs_errMsg(ctx context.Context, field graphql.CollectedField, obj *node.StatisticsAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeStatisticsAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ErrMsg, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeStatisticsAttrs_totalNetworkBandwidth(ctx context.Context, field graphql.CollectedField, obj *node.StatisticsAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeStatisticsAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalNetworkBandwidth, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*network.BandwidthStats)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNetworkBandwidthStats(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeStatisticsAttrs_peersCount(ctx context.Context, field graphql.CollectedField, obj *node.StatisticsAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeStatisticsAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PeersCount, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int32)
+	rctx.Result = res
+	return models.MarshalInt32(res)
 }
 
 var bertyNodeVoidImplementors = []string{"BertyNodeVoid"}
@@ -21212,6 +21347,23 @@ type GoogleProtobufGeneratedCodeInfo  {
   
 
   
+  
+  
+
+  
+type BertyNetworkBandwidthStats  {
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+}
+  
+  
+  
+
+  
 type BertyNodeNodeStartedAttrs  {
       T: Bool!
 }
@@ -21230,10 +21382,11 @@ type BertyNodeBackgroundWarnAttrs  {
 type BertyNodeDebugAttrs  {
       msg: String!
 }
-  
-  
-  
-
+type BertyNodeStatisticsAttrs  {
+      errMsg: String!
+    totalNetworkBandwidth: BertyNetworkBandwidthStats
+      peersCount: Int32!
+}
   
   
   
@@ -21385,19 +21538,6 @@ type BertyP2pEvent implements Node {
 type BertyP2pMetadataKeyValue  {
       key: String!
       values: [String!]
-}
-  
-  
-  
-
-  
-type BertyNetworkBandwidthStats  {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
-    type: Enum
 }
   
   

@@ -220,6 +220,23 @@ type GoogleProtobufGeneratedCodeInfo  {
   
 
   
+  
+  
+
+  
+type BertyNetworkBandwidthStats  {
+      id: String
+      totalIn: Int64
+      totalOut: Int64
+      rateIn: Double
+      rateOut: Double
+    type: Enum
+}
+  
+  
+  
+
+  
 type BertyNodeNodeStartedAttrs  {
       T: Bool!
 }
@@ -238,10 +255,11 @@ type BertyNodeBackgroundWarnAttrs  {
 type BertyNodeDebugAttrs  {
       msg: String!
 }
-  
-  
-  
-
+type BertyNodeStatisticsAttrs  {
+      errMsg: String!
+    totalNetworkBandwidth: BertyNetworkBandwidthStats
+      peersCount: Int32!
+}
   
   
   
@@ -393,19 +411,6 @@ type BertyP2pEvent implements Node {
 type BertyP2pMetadataKeyValue  {
       key: String!
       values: [String!]
-}
-  
-  
-  
-
-  
-type BertyNetworkBandwidthStats  {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
-    type: Enum
 }
   
   

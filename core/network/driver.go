@@ -10,6 +10,15 @@ import (
 )
 
 type Metrics interface {
+	// Same as MonitorBandwidthGlobal, but once
+	//GetBandwidthGlobal(context.Context) (*BandwidthStats, error)
+
+	// Same as MonitorBandwidthProtocol, but once
+	//GetBandwidthProtocol(context.Context) (*BandwidthStats, error)
+
+	// Same as MonitorBandwidthPeer, but once
+	//GetBandwidthPeer(context.Context) (*BandwidthStats, error)
+
 	// Return a list of peers
 	Peers(context.Context) *Peers
 

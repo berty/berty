@@ -705,6 +705,36 @@ models:
 
 
 
+
+  BertyNetworkBandwidthStats:
+    model: berty.tech/core/network.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyNetworkBandwidthStatsInput:
+    model: berty.tech/core/network.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyNetworkBandwidthStatsPayload:
+    model: berty.tech/core/network.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+
+
   BertyNodeNodeStartedAttrs:
     model: berty.tech/core/api/node.NodeStartedAttrs
     fields:
@@ -783,6 +813,24 @@ models:
     fields:
       msg:
 
+  BertyNodeStatisticsAttrs:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
+  BertyNodeStatisticsAttrsInput:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
+  BertyNodeStatisticsAttrsPayload:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
 
 
 
@@ -1234,35 +1282,6 @@ models:
     fields:
       key:
       values:
-
-
-  BertyNetworkBandwidthStats:
-    model: berty.tech/core/network.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-  BertyNetworkBandwidthStatsInput:
-    model: berty.tech/core/network.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-  BertyNetworkBandwidthStatsPayload:
-    model: berty.tech/core/network.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
 
 
   BertyNetworkPeer:

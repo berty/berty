@@ -178,6 +178,25 @@ func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
 				time.Sleep(30 * time.Second)
 			}
 		}()
+
+		// statistics events
+		go func() {
+			for {
+				time.Sleep(10 * time.Second)
+				stats := node.StatisticsAttrs{}
+				// FIXME: support multierr
+
+				// peers count
+				peers, err := n.Peers(ctx, nil)
+				if err != nil {
+					stats.ErrMsg = err.Error()
+				} else {
+					stats.PeersCount = int32(len(peers.List))
+				}
+
+				n.EnqueueNodeEvent(ctx, node.Kind_Statistics, &stats)
+			}
+		}()
 	}
 
 	for {
