@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package berty.pkg.errors;
+
+option go_package = "berty.tech/core/pkg/errors";
+
+import "api/protobuf/graphql/graphql.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+message Error {
+  // ID should:
+  // * always be unique
+  // * never change once set
+  // * not necessarily follow a suite number
+  // * errors should be sorted by categoryID in this file
+  int32 id = 1 [(gogoproto.customname) = "ID"];
+
+  // See:
+  // * https://www.restapitutorial.com/httpstatuscodes.html
+  int32 grpc_code = 2 [(gogoproto.customname) = "GRPCCode",
+                       (gogoproto.customtype) = "google.golang.org/grpc/codes.Code",
+                       (gogoproto.nullable) = false];
+
+  // See:
+  // * https://github.com/grpc/grpc/blob/master/doc/statuscodes.md
+  // * https://godoc.org/google.golang.org/grpc/codes
+  int32 http_status = 3 [(gogoproto.customname) = "HTTPStatus"];
+}
