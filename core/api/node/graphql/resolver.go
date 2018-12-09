@@ -191,22 +191,63 @@ func (r *mutationResolver) ContactRequest(ctx context.Context, contact *entity.C
 		IntroText: introText,
 	})
 }
-func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *mutationResolver) ContactAcceptRequest(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	sigchain []byte,
+	status *int32,
+	devices []*entity.Device,
+	displayName string,
+	displayStatus string,
+	overrideDisplayName string,
+	overrideDisplayStatus string,
+) (*entity.Contact, error) {
 	return r.client.ContactAcceptRequest(ctx, &entity.Contact{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *mutationResolver) ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *mutationResolver) ContactRemove(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	sigchain []byte,
+	status *int32,
+	devices []*entity.Device,
+	displayName string,
+	displayStatus string,
+	overrideDisplayName string,
+	overrideDisplayStatus string,
+) (*entity.Contact, error) {
 	return r.client.ContactRemove(ctx, &entity.Contact{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *mutationResolver) ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *mutationResolver) ContactUpdate(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	sigchain []byte,
+	status *int32,
+	devices []*entity.Device,
+	displayName string,
+	displayStatus string,
+	overrideDisplayName string,
+	overrideDisplayStatus string,
+) (*entity.Contact, error) {
 	return r.client.ContactUpdate(ctx, &entity.Contact{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
-func (r *mutationResolver) ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error) {
+func (r *mutationResolver) ConversationCreate(
+	ctx context.Context,
+	contacts []*entity.Contact,
+	title string,
+	topic string,
+) (*entity.Conversation, error) {
 	if contacts != nil {
 		for i, contact := range contacts {
 			contacts[i].ID = strings.SplitN(contact.ID, ":", 2)[1]
@@ -218,14 +259,24 @@ func (r *mutationResolver) ConversationCreate(ctx context.Context, contacts []*e
 		Topic:    topic,
 	})
 }
-func (r *mutationResolver) ConversationInvite(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error) {
-
+func (r *mutationResolver) ConversationInvite(
+	ctx context.Context,
+	conversation *entity.Conversation,
+	members []*entity.ConversationMember,
+) (*entity.Conversation, error) {
 	return r.client.ConversationInvite(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Members: members})
 }
-func (r *mutationResolver) ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *mutationResolver) ConversationExclude(
+	ctx context.Context,
+	conversation *entity.Conversation,
+	members []*entity.ConversationMember,
+) (*entity.Conversation, error) {
 	return r.client.ConversationExclude(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Members: members})
 }
-func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error) {
+func (r *mutationResolver) ConversationAddMessage(ctx context.Context,
+	conversation *entity.Conversation,
+	message *entity.Message,
+) (*p2p.Event, error) {
 	if conversation != nil {
 		if conversation.ID != "" {
 			conversation.ID = strings.SplitN(conversation.ID, ":", 2)[1]
@@ -233,10 +284,16 @@ func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversat
 	}
 	return r.client.ConversationAddMessage(ctx, &node.ConversationAddMessageInput{Conversation: conversation, Message: message})
 }
-func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.Void, error) {
+func (r *mutationResolver) GenerateFakeData(
+	ctx context.Context,
+	T bool,
+) (*node.Void, error) {
 	return r.client.GenerateFakeData(ctx, &node.Void{T: true})
 }
-func (r *mutationResolver) DebugRequeueEvent(ctx context.Context, eventID string) (*p2p.Event, error) {
+func (r *mutationResolver) DebugRequeueEvent(
+	ctx context.Context,
+	eventID string,
+) (*p2p.Event, error) {
 	eventID = strings.SplitN(eventID, ":", 2)[1]
 
 	return r.client.DebugRequeueEvent(ctx, &node.EventIDInput{
@@ -298,7 +355,17 @@ func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ 
 	})
 }
 
-func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
+func (r *queryResolver) EventList(
+	ctx context.Context,
+	filter *p2p.Event,
+	rawOnlyWithoutAckedAt *int32,
+	orderBy string,
+	orderDesc bool,
+	first *int32,
+	after *string,
+	last *int32,
+	before *string,
+) (*node.EventListConnection, error) {
 	onlyWithoutAckedAt := node.NullableTrueFalse_Null
 	if rawOnlyWithoutAckedAt != nil {
 		onlyWithoutAckedAt = node.NullableTrueFalse(*rawOnlyWithoutAckedAt)
@@ -380,7 +447,25 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	return output, nil
 }
 
-func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string, seenAt *time.Time, metadata []*p2p.MetadataKeyValue) (*p2p.Event, error) {
+func (r *queryResolver) GetEvent(
+	ctx context.Context,
+	id string,
+	senderID string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	sentAt *time.Time,
+	receivedAt *time.Time,
+	ackedAt *time.Time,
+	direction *int32,
+	senderAPIVersion uint32,
+	receiverAPIVersion uint32,
+	receiverID string,
+	kind *int32,
+	attributes []byte,
+	conversationID string,
+	seenAt *time.Time,
+	metadata []*p2p.MetadataKeyValue,
+) (*p2p.Event, error) {
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
@@ -394,7 +479,16 @@ func (r *mutationResolver) EventSeen(ctx context.Context, eventID string) (*p2p.
 	})
 }
 
-func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error) {
+func (r *queryResolver) ContactList(
+	ctx context.Context,
+	filter *entity.Contact,
+	orderBy string,
+	orderDesc bool,
+	first *int32,
+	after *string,
+	last *int32,
+	before *string,
+) (*node.ContactListConnection, error) {
 	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
@@ -462,10 +556,31 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
+func (r *queryResolver) GetContact(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	sigchain []byte,
+	status *int32,
+	devices []*entity.Device,
+	displayName string,
+	displayStatus string,
+	overrideDisplayName string,
+	overrideDisplayStatus string,
+) (*entity.Contact, error) {
 	return r.client.GetContact(ctx, &entity.Contact{ID: id})
 }
-func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {
+func (r *queryResolver) ConversationList(
+	ctx context.Context,
+	filter *entity.Conversation,
+	orderBy string,
+	orderDesc bool,
+	first *int32,
+	after *string,
+	last *int32,
+	before *string,
+) (*node.ConversationListConnection, error) {
 	if filter != nil && filter.ID != "" {
 		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 	}
@@ -533,10 +648,27 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *queryResolver) GetConversation(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	title string,
+	topic string,
+	members []*entity.ConversationMember,
+) (*entity.Conversation, error) {
 	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
 }
-func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
+func (r *queryResolver) GetConversationMember(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	status *int32,
+	contact *entity.Contact,
+	conversationID string,
+	contactID string,
+) (*entity.ConversationMember, error) {
 	return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
 }
 func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error) {
