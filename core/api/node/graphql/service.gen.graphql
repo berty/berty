@@ -219,46 +219,8 @@ type GoogleProtobufGeneratedCodeInfo  {
   
   
 
-  
-  
-  
-
-  
-type BertyNetworkBandwidthStats  {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
-    type: Enum
-}
-  
-  
-  
-
-  
-type BertyNodeNodeStartedAttrs  {
-      T: Bool!
-}
-type BertyNodeNodeStoppedAttrs  {
-      errMsg: String!
-}
-type BertyNodeNodeIsAliveAttrs  {
-      T: Bool!
-}
-type BertyNodeBackgroundErrorAttrs  {
-      errMsg: String!
-}
-type BertyNodeBackgroundWarnAttrs  {
-      errMsg: String!
-}
-type BertyNodeDebugAttrs  {
-      msg: String!
-}
-type BertyNodeStatisticsAttrs  {
-      errMsg: String!
-    totalNetworkBandwidth: BertyNetworkBandwidthStats
-      peersCount: Int32!
+type GqlNode implements Node {
+    id: ID!
 }
   
   
@@ -424,6 +386,19 @@ type BertyP2pMetadataKeyValue  {
   
 
   
+type BertyNetworkBandwidthStats  {
+    id: String
+    totalIn: Int64
+    totalOut: Int64
+    rateIn: Double
+    rateOut: Double
+    type: Enum
+}
+  
+  
+  
+
+  
 type BertyNodeNodeStartedAttrs  {
     T: Bool!
 }
@@ -442,14 +417,19 @@ type BertyNodeBackgroundWarnAttrs  {
 type BertyNodeDebugAttrs  {
     msg: String!
 }
+type BertyNodeStatisticsAttrs  {
+    errMsg: String!
+    totalNetworkBandwidth: BertyNetworkBandwidthStats
+    peersCount: Int32!
+}
   
   
   
 
   
 type BertyNetworkPeer  {
-      id: String!
-      addrs: [String!]
+    id: String!
+    addrs: [String!]
     connection: Enum
 }
 type BertyNetworkPeers  {
@@ -464,13 +444,13 @@ type BertyPkgDeviceinfoDeviceInfos  {
     infos: [BertyPkgDeviceinfoDeviceInfo]
 }
 type BertyPkgDeviceinfoDeviceInfo  {
-      key: String!
-      value: String!
-      category: String!
-      link: String!
+    key: String!
+    value: String!
+    category: String!
+    link: String!
     type: Enum
-      errMsg: String!
-      weight: Int32!
+    errMsg: String!
+    weight: Int32!
 }
   
   
@@ -546,12 +526,7 @@ type BertyNodeLogfileEntry  {
 }
 type BertyNodeNodeEvent  {
     kind: Enum
-      attributes: [Byte!],
-}
-type BertyNetworkPeerPayload {
-      id: String!
-      addrs: [String!]
-    connection: Enum
+    attributes: [Byte!]
 }
 input BertyP2pMetadataKeyValueInput {
     key: String!
@@ -623,62 +598,14 @@ input BertyEntityConversationInput {
     members: [BertyEntityConversationMemberInput]
 }
 input BertyEntityMessageInput {
-      text: String!
-}
-type BertyEntityConversationMemberPayload {
-    id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    status: Enum
-    contact: BertyEntityContact
-      conversationId: String!
-      contactId: String!
-}
-type BertyNodeVoidPayload {
-      T: Bool!
-}
-type BertyNodeIntegrationTestPayload {
-      name: String!
-      success: Bool!
-      verbose: String!
-    startedAt: GoogleProtobufTimestamp
-    finishedAt: GoogleProtobufTimestamp
-}
-type BertyPkgDeviceinfoDeviceInfosPayload {
-    infos: [BertyPkgDeviceinfoDeviceInfo]
-}
-type BertyNodeAppVersionPayload {
-      version: String!
-}
-type BertyNetworkPeersPayload {
-    list: [BertyNetworkPeer]
-}
-type BertyNodeProtocolsPayload {
-      protocols: [String!]
-}
-type BertyNodeLogEntryPayload {
-      line: String!
-}
-type BertyNodeLogfileEntryPayload {
-      path: String!
-      filesize: Int32!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-}
-type BertyNetworkBandwidthStatsPayload {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
-    type: Enum
+    text: String!
 }
   
 type Query {
   node(id: ID!): Node
   ID(
-      T: Bool!
-  ): BertyNetworkPeerPayload
+    T: Bool!
+  ): BertyNetworkPeer
   EventList(
     filter: BertyP2pEventInput
     onlyWithoutAckedAt: Enum
@@ -738,8 +665,8 @@ type Query {
     T: Bool!
   ): BertyNodeAppVersionOutput
   Peers(
-      T: Bool!
-  ): BertyNetworkPeersPayload
+    T: Bool!
+  ): BertyNetworkPeers
   Protocols(
     id: String!
     addrs: [String!]
@@ -747,7 +674,8 @@ type Query {
   ): BertyNodeProtocolsOutput
   LogfileList(
     T: Bool!
-  ): [BertyNodeLogfileEntry]
+  )
+      : [BertyNodeLogfileEntry]
   Panic(
     T: Bool!
   ): BertyNodeVoid
@@ -851,8 +779,8 @@ type Subscription {
     rateIn: Double
     rateOut: Double
     type: Enum
-  ): BertyNetworkBandwidthStatsPayload
+  ): BertyNetworkBandwidthStats
   MonitorPeers(
-      T: Bool!
-  ): BertyNetworkPeerPayload
+    T: Bool!
+  ): BertyNetworkPeer
 }

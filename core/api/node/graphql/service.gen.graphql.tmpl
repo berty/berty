@@ -236,7 +236,7 @@ input {{template "InputName" .}} {
   {{- end}}
 {{- end}}
 
-{{- block "InputPayload" .File.Service}}
+{{- block "ServiceInputs" .File.Service}}
   {{- $file := getStore "file"}}
   {{- range .}}
     {{- range .Method}}
@@ -252,39 +252,21 @@ input {{template "InputName" .}} {
   {{.Name}}
   {{- if .InputType -}}
   (
-    {{- template "InputFields" (getStore .InputType).Field}}
+    {{- $inputType := .InputType}}
+    {{- if (stringMethodOptionsExtension 53010 .)}}
+      {{- $inputType = stringMethodOptionsExtension 53010 .}}
+    {{- end}}
+    {{- template "InputFields" (getStore $inputType).Field}}
   )
   {{- end}}
   {{- if (stringMethodOptionsExtension 53007 .) -}}
       : {{template "PayloadName" (stringMethodOptionsExtension 53007 .)}}
   {{- else if .OutputType}}
-    {{- if .ServerStreaming -}}
+    {{- if (and (.ServerStreaming) (not (eq (stringMethodOptionsExtension 53002 . | lower) "subscription")))}}
       : [{{template "PayloadName" .OutputType}}]
     {{- else -}}
       : {{template "PayloadName" .OutputType}}
     {{- end}}
-  {{- end}}
-{{- end}}
-
-{{- define "Arguments"}}
-  {{- $messageName := getStore "message_name"}}
-
-  {{- if .}}
-    {{- range .}}
-      {{- if (eq (.Type | string) "TYPE_MESSAGE")}}
-        {{- if (boolFieldExtension 53006 .)}}
-          {{- template "Arguments" (getStore .TypeName).Field}}
-        {{- else}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" .TypeName}}]{{else}}{{template "InputName" .TypeName}}{{end}}
-        {{- end}}
-      {{- else if (eq (.Type | string) "TYPE_ENUM")}}
-        {{- template "EnumField" .}}
-      {{- else }}
-        {{- template "ScalarField" .}}
-      {{- end}}
-    {{- end}}
-  {{- else}}
-      T: Boolean
   {{- end}}
 {{- end}}
 
@@ -324,13 +306,7 @@ type Mutation {
 type Subscription {
     {{- range .Method}}
       {{- if eq (stringMethodOptionsExtension 53002 . | lower) "subscription"}}
-  {{.Name}}
-  {{- if .InputType -}}
-  (
-    {{- template "Arguments" (getStore .InputType).Field}}
-  )
-  {{- end}}
-  {{- if .OutputType}}: {{template "PayloadName" .OutputType}}{{- end}}
+        {{- template "Method" .}}
       {{- end}}
     {{- end}}
 }

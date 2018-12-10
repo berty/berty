@@ -127,22 +127,7 @@ type ComplexityRoot struct {
 		Type     func(childComplexity int) int
 	}
 
-	BertyNetworkBandwidthStatsPayload struct {
-		Id       func(childComplexity int) int
-		TotalIn  func(childComplexity int) int
-		TotalOut func(childComplexity int) int
-		RateIn   func(childComplexity int) int
-		RateOut  func(childComplexity int) int
-		Type     func(childComplexity int) int
-	}
-
 	BertyNetworkPeer struct {
-		Id         func(childComplexity int) int
-		Addrs      func(childComplexity int) int
-		Connection func(childComplexity int) int
-	}
-
-	BertyNetworkPeerPayload struct {
 		Id         func(childComplexity int) int
 		Addrs      func(childComplexity int) int
 		Connection func(childComplexity int) int
@@ -152,11 +137,7 @@ type ComplexityRoot struct {
 		List func(childComplexity int) int
 	}
 
-	BertyNetworkPeersPayload struct {
-		List func(childComplexity int) int
-	}
-
-	BertyNodeAppVersionPayload struct {
+	BertyNodeAppVersionOutput struct {
 		Version func(childComplexity int) int
 	}
 
@@ -2646,48 +2627,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNetworkBandwidthStats.Type(childComplexity), true
 
-	case "BertyNetworkBandwidthStatsPayload.id":
-		if e.complexity.BertyNetworkBandwidthStatsPayload.Id == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkBandwidthStatsPayload.Id(childComplexity), true
-
-	case "BertyNetworkBandwidthStatsPayload.totalIn":
-		if e.complexity.BertyNetworkBandwidthStatsPayload.TotalIn == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkBandwidthStatsPayload.TotalIn(childComplexity), true
-
-	case "BertyNetworkBandwidthStatsPayload.totalOut":
-		if e.complexity.BertyNetworkBandwidthStatsPayload.TotalOut == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkBandwidthStatsPayload.TotalOut(childComplexity), true
-
-	case "BertyNetworkBandwidthStatsPayload.rateIn":
-		if e.complexity.BertyNetworkBandwidthStatsPayload.RateIn == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkBandwidthStatsPayload.RateIn(childComplexity), true
-
-	case "BertyNetworkBandwidthStatsPayload.rateOut":
-		if e.complexity.BertyNetworkBandwidthStatsPayload.RateOut == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkBandwidthStatsPayload.RateOut(childComplexity), true
-
-	case "BertyNetworkBandwidthStatsPayload.type":
-		if e.complexity.BertyNetworkBandwidthStatsPayload.Type == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkBandwidthStatsPayload.Type(childComplexity), true
-
 	case "BertyNetworkPeer.id":
 		if e.complexity.BertyNetworkPeer.Id == nil {
 			break
@@ -2709,27 +2648,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNetworkPeer.Connection(childComplexity), true
 
-	case "BertyNetworkPeerPayload.id":
-		if e.complexity.BertyNetworkPeerPayload.Id == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkPeerPayload.Id(childComplexity), true
-
-	case "BertyNetworkPeerPayload.addrs":
-		if e.complexity.BertyNetworkPeerPayload.Addrs == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkPeerPayload.Addrs(childComplexity), true
-
-	case "BertyNetworkPeerPayload.connection":
-		if e.complexity.BertyNetworkPeerPayload.Connection == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkPeerPayload.Connection(childComplexity), true
-
 	case "BertyNetworkPeers.list":
 		if e.complexity.BertyNetworkPeers.List == nil {
 			break
@@ -2737,15 +2655,8 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNetworkPeers.List(childComplexity), true
 
-	case "BertyNetworkPeersPayload.list":
-		if e.complexity.BertyNetworkPeersPayload.List == nil {
-			break
-		}
-
-		return e.complexity.BertyNetworkPeersPayload.List(childComplexity), true
-
-	case "BertyNodeAppVersionPayload.version":
-		if e.complexity.BertyNodeAppVersionPayload.Version == nil {
+	case "BertyNodeAppVersionOutput.version":
+		if e.complexity.BertyNodeAppVersionOutput.Version == nil {
 			break
 		}
 
@@ -3080,13 +2991,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNodeVoid.T(childComplexity), true
 
-	case "BertyNodeVoidPayload.T":
-		if e.complexity.BertyNodeVoidPayload.T == nil {
-			break
-		}
-
-		return e.complexity.BertyNodeVoidPayload.T(childComplexity), true
-
 	case "BertyP2pAckAttrs.ids":
 		if e.complexity.BertyP2pAckAttrs.Ids == nil {
 			break
@@ -3317,6 +3221,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyP2pPingAttrs.T(childComplexity), true
+
+	case "BertyP2pSeenAttrs.ids":
+		if e.complexity.BertyP2pSeenAttrs.Ids == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pSeenAttrs.Ids(childComplexity), true
 
 	case "BertyP2pSenderAliasUpdateAttrs.aliases":
 		if e.complexity.BertyP2pSenderAliasUpdateAttrs.Aliases == nil {
@@ -6038,6 +5949,353 @@ func (ec *executionContext) _BertyEntitySenderAlias_used(ctx context.Context, fi
 	return models.MarshalBool(res)
 }
 
+var bertyNetworkBandwidthStatsImplementors = []string{"BertyNetworkBandwidthStats"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNetworkBandwidthStats(ctx context.Context, sel ast.SelectionSet, obj *network.BandwidthStats) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkBandwidthStatsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNetworkBandwidthStats")
+		case "id":
+			out.Values[i] = ec._BertyNetworkBandwidthStats_id(ctx, field, obj)
+		case "totalIn":
+			out.Values[i] = ec._BertyNetworkBandwidthStats_totalIn(ctx, field, obj)
+		case "totalOut":
+			out.Values[i] = ec._BertyNetworkBandwidthStats_totalOut(ctx, field, obj)
+		case "rateIn":
+			out.Values[i] = ec._BertyNetworkBandwidthStats_rateIn(ctx, field, obj)
+		case "rateOut":
+			out.Values[i] = ec._BertyNetworkBandwidthStats_rateOut(ctx, field, obj)
+		case "type":
+			out.Values[i] = ec._BertyNetworkBandwidthStats_type(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkBandwidthStats_id(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkBandwidthStats_totalIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalIn, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	return models.MarshalInt64(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkBandwidthStats_totalOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TotalOut, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	return models.MarshalInt64(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkBandwidthStats_rateIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RateIn, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	rctx.Result = res
+	return models.MarshalDouble(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkBandwidthStats_rateOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RateOut, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	rctx.Result = res
+	return models.MarshalDouble(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkBandwidthStats_type(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkBandwidthStats",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Type, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(network.MetricsType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyNetworkPeerImplementors = []string{"BertyNetworkPeer"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNetworkPeer(ctx context.Context, sel ast.SelectionSet, obj *network.Peer) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeerImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNetworkPeer")
+		case "id":
+			out.Values[i] = ec._BertyNetworkPeer_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "addrs":
+			out.Values[i] = ec._BertyNetworkPeer_addrs(ctx, field, obj)
+		case "connection":
+			out.Values[i] = ec._BertyNetworkPeer_connection(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkPeer_id(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkPeer",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkPeer_addrs(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkPeer",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Addrs, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalString(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkPeer_connection(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkPeer",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Connection, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(network.ConnectionType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyNetworkPeersImplementors = []string{"BertyNetworkPeers"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNetworkPeers(ctx context.Context, sel ast.SelectionSet, obj *network.Peers) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeersImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNetworkPeers")
+		case "list":
+			out.Values[i] = ec._BertyNetworkPeers_list(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkPeers_list(ctx context.Context, field graphql.CollectedField, obj *network.Peers) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkPeers",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.List, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*network.Peer)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyNetworkPeer(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
+}
+
 var bertyNodeAppVersionOutputImplementors = []string{"BertyNodeAppVersionOutput"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -7003,1671 +7261,6 @@ func (ec *executionContext) _BertyNodeIntegrationTestOutput_finishedAt(ctx conte
 	return models.MarshalTime(res)
 }
 
-var bertyNetworkBandwidthStatsImplementors = []string{"BertyNetworkBandwidthStats"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkBandwidthStats(ctx context.Context, sel ast.SelectionSet, obj *network.BandwidthStats) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkBandwidthStatsImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkBandwidthStats")
-		case "id":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_id(ctx, field, obj)
-		case "totalIn":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_totalIn(ctx, field, obj)
-		case "totalOut":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_totalOut(ctx, field, obj)
-		case "rateIn":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_rateIn(ctx, field, obj)
-		case "rateOut":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_rateOut(ctx, field, obj)
-		case "type":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_type(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_id(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_totalIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TotalIn, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int64)
-	rctx.Result = res
-	return models.MarshalInt64(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_totalOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TotalOut, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int64)
-	rctx.Result = res
-	return models.MarshalInt64(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_rateIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.RateIn, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(float64)
-	rctx.Result = res
-	return models.MarshalDouble(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_rateOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.RateOut, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(float64)
-	rctx.Result = res
-	return models.MarshalDouble(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_type(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(network.MetricsType)
-	rctx.Result = res
-	return models.MarshalEnum(int32(res))
-}
-
-var bertyNetworkBandwidthStatsPayloadImplementors = []string{"BertyNetworkBandwidthStatsPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkBandwidthStatsPayload(ctx context.Context, sel ast.SelectionSet, obj *network.BandwidthStats) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkBandwidthStatsPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkBandwidthStatsPayload")
-		case "id":
-			out.Values[i] = ec._BertyNetworkBandwidthStatsPayload_id(ctx, field, obj)
-		case "totalIn":
-			out.Values[i] = ec._BertyNetworkBandwidthStatsPayload_totalIn(ctx, field, obj)
-		case "totalOut":
-			out.Values[i] = ec._BertyNetworkBandwidthStatsPayload_totalOut(ctx, field, obj)
-		case "rateIn":
-			out.Values[i] = ec._BertyNetworkBandwidthStatsPayload_rateIn(ctx, field, obj)
-		case "rateOut":
-			out.Values[i] = ec._BertyNetworkBandwidthStatsPayload_rateOut(ctx, field, obj)
-		case "type":
-			out.Values[i] = ec._BertyNetworkBandwidthStatsPayload_type(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStatsPayload_id(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStatsPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int32)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStatsPayload_totalIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStatsPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TotalIn, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int64)
-	rctx.Result = res
-	return models.MarshalInt64(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStatsPayload_totalOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStatsPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.TotalOut, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(int64)
-	rctx.Result = res
-	return models.MarshalInt64(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStatsPayload_rateIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStatsPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.RateIn, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(float64)
-	rctx.Result = res
-	return models.MarshalDouble(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStatsPayload_rateOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStatsPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.RateOut, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(float64)
-	rctx.Result = res
-	return models.MarshalDouble(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStatsPayload_type(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStatsPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Type, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(network.MetricsType)
-	rctx.Result = res
-	return models.MarshalEnum(int32(res))
-}
-
-var bertyNetworkPeerImplementors = []string{"BertyNetworkPeer"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkPeer(ctx context.Context, sel ast.SelectionSet, obj *network.Peer) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeerImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkPeer")
-		case "id":
-			out.Values[i] = ec._BertyNetworkPeer_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "addrs":
-			out.Values[i] = ec._BertyNetworkPeer_addrs(ctx, field, obj)
-		case "connection":
-			out.Values[i] = ec._BertyNetworkPeer_connection(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeer_id(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeer",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeer_addrs(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeer",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Addrs, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]string)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalString(res[idx1])
-		}()
-	}
-
-	return arr1
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeer_connection(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeer",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Connection, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(network.ConnectionType)
-	rctx.Result = res
-	return models.MarshalEnum(int32(res))
-}
-
-var bertyNetworkPeerPayloadImplementors = []string{"BertyNetworkPeerPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkPeerPayload(ctx context.Context, sel ast.SelectionSet, obj *network.Peer) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeerPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkPeerPayload")
-		case "id":
-			out.Values[i] = ec._BertyNetworkPeerPayload_id(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "addrs":
-			out.Values[i] = ec._BertyNetworkPeerPayload_addrs(ctx, field, obj)
-		case "connection":
-			out.Values[i] = ec._BertyNetworkPeerPayload_connection(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeerPayload_id(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeerPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeerPayload_addrs(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeerPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Addrs, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]string)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalString(res[idx1])
-		}()
-	}
-
-	return arr1
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeerPayload_connection(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeerPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Connection, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(network.ConnectionType)
-	rctx.Result = res
-	return models.MarshalEnum(int32(res))
-}
-
-var bertyNetworkPeersImplementors = []string{"BertyNetworkPeers"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkPeers(ctx context.Context, sel ast.SelectionSet, obj *network.Peers) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeersImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkPeers")
-		case "list":
-			out.Values[i] = ec._BertyNetworkPeers_list(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeers_list(ctx context.Context, field graphql.CollectedField, obj *network.Peers) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeers",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.List, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*network.Peer)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
-	}
-
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyNetworkPeer(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
-}
-
-var bertyNetworkPeersPayloadImplementors = []string{"BertyNetworkPeersPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkPeersPayload(ctx context.Context, sel ast.SelectionSet, obj *network.Peers) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeersPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkPeersPayload")
-		case "list":
-			out.Values[i] = ec._BertyNetworkPeersPayload_list(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeersPayload_list(ctx context.Context, field graphql.CollectedField, obj *network.Peers) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeersPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.List, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*network.Peer)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
-	}
-
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyNetworkPeer(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
-}
-
-var bertyNodeAppVersionPayloadImplementors = []string{"BertyNodeAppVersionPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeAppVersionPayload(ctx context.Context, sel ast.SelectionSet, obj *node.AppVersionOutput) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeAppVersionPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeAppVersionPayload")
-		case "version":
-			out.Values[i] = ec._BertyNodeAppVersionPayload_version(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeAppVersionPayload_version(ctx context.Context, field graphql.CollectedField, obj *node.AppVersionOutput) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeAppVersionPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Version, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-var bertyNodeBackgroundErrorAttrsImplementors = []string{"BertyNodeBackgroundErrorAttrs"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeBackgroundErrorAttrs(ctx context.Context, sel ast.SelectionSet, obj *node.BackgroundErrorAttrs) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeBackgroundErrorAttrsImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeBackgroundErrorAttrs")
-		case "errMsg":
-			out.Values[i] = ec._BertyNodeBackgroundErrorAttrs_errMsg(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeBackgroundErrorAttrs_errMsg(ctx context.Context, field graphql.CollectedField, obj *node.BackgroundErrorAttrs) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeBackgroundErrorAttrs",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ErrMsg, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-var bertyNodeBackgroundWarnAttrsImplementors = []string{"BertyNodeBackgroundWarnAttrs"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeBackgroundWarnAttrs(ctx context.Context, sel ast.SelectionSet, obj *node.BackgroundWarnAttrs) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeBackgroundWarnAttrsImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeBackgroundWarnAttrs")
-		case "errMsg":
-			out.Values[i] = ec._BertyNodeBackgroundWarnAttrs_errMsg(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeBackgroundWarnAttrs_errMsg(ctx context.Context, field graphql.CollectedField, obj *node.BackgroundWarnAttrs) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeBackgroundWarnAttrs",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ErrMsg, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-var bertyNodeContactEdgeImplementors = []string{"BertyNodeContactEdge"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeContactEdge(ctx context.Context, sel ast.SelectionSet, obj *node.ContactEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeContactEdgeImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeContactEdge")
-		case "node":
-			out.Values[i] = ec._BertyNodeContactEdge_node(ctx, field, obj)
-		case "cursor":
-			out.Values[i] = ec._BertyNodeContactEdge_cursor(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeContactEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.ContactEdge) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeContactEdge",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*entity.Contact)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-
-	return ec._BertyEntityContact(ctx, field.Selections, res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeContactEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.ContactEdge) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeContactEdge",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.EndCursor, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-var bertyNodeContactListConnectionImplementors = []string{"BertyNodeContactListConnection"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeContactListConnection(ctx context.Context, sel ast.SelectionSet, obj *node.ContactListConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeContactListConnectionImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeContactListConnection")
-		case "edges":
-			out.Values[i] = ec._BertyNodeContactListConnection_edges(ctx, field, obj)
-		case "pageInfo":
-			out.Values[i] = ec._BertyNodeContactListConnection_pageInfo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.HasNextPage, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	rctx.Result = res
-	return models.MarshalBool(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeContactListConnection_edges(ctx context.Context, field graphql.CollectedField, obj *node.ContactListConnection) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeContactListConnection",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.HasPreviousPage, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*node.ContactEdge)
-	rctx.Result = res
-	return models.MarshalBool(res)
-}
-
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
-	}
-
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyNodeContactEdge(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeContactListConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.ContactListConnection) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeContactListConnection",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Count, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(uint32)
-	rctx.Result = res
-	return models.MarshalUint32(res)
-}
-
-var bertyNodeConversationEdgeImplementors = []string{"BertyNodeConversationEdge"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeConversationEdge(ctx context.Context, sel ast.SelectionSet, obj *node.ConversationEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationEdgeImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeConversationEdge")
-		case "node":
-			out.Values[i] = ec._BertyNodeConversationEdge_node(ctx, field, obj)
-		case "cursor":
-			out.Values[i] = ec._BertyNodeConversationEdge_cursor(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeConversationEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.ConversationEdge) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeConversationEdge",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*entity.Conversation)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-
-	return ec._BertyEntityConversation(ctx, field.Selections, res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeConversationEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.ConversationEdge) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeConversationEdge",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-var bertyNodeConversationListConnectionImplementors = []string{"BertyNodeConversationListConnection"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeConversationListConnection(ctx context.Context, sel ast.SelectionSet, obj *node.ConversationListConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeConversationListConnectionImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeConversationListConnection")
-		case "edges":
-			out.Values[i] = ec._BertyNodeConversationListConnection_edges(ctx, field, obj)
-		case "pageInfo":
-			out.Values[i] = ec._BertyNodeConversationListConnection_pageInfo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeConversationListConnection_edges(ctx context.Context, field graphql.CollectedField, obj *node.ConversationListConnection) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeConversationListConnection",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*node.ConversationEdge)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
-	}
-
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyNodeConversationEdge(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeConversationListConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.ConversationListConnection) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeConversationListConnection",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*node.PageInfo)
-	rctx.Result = res
-
-	if res == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-
-	return ec._BertyNodePageInfo(ctx, field.Selections, res)
-}
-
-var bertyNodeDebugAttrsImplementors = []string{"BertyNodeDebugAttrs"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeDebugAttrs(ctx context.Context, sel ast.SelectionSet, obj *node.DebugAttrs) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeDebugAttrsImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeDebugAttrs")
-		case "msg":
-			out.Values[i] = ec._BertyNodeDebugAttrs_msg(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeDebugAttrs_msg(ctx context.Context, field graphql.CollectedField, obj *node.DebugAttrs) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeDebugAttrs",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Msg, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]string)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalString(res[idx1])
-		}()
-	}
-
-	return arr1
-}
-
-var bertyNodeEventEdgeImplementors = []string{"BertyNodeEventEdge"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeEventEdge(ctx context.Context, sel ast.SelectionSet, obj *node.EventEdge) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeEventEdgeImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeEventEdge")
-		case "node":
-			out.Values[i] = ec._BertyNodeEventEdge_node(ctx, field, obj)
-		case "cursor":
-			out.Values[i] = ec._BertyNodeEventEdge_cursor(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeEventEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.EventEdge) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeEventEdge",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Node, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*p2p.Event)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-
-	return ec._BertyP2pEvent(ctx, field.Selections, res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeEventEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.EventEdge) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeEventEdge",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Cursor, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-var bertyNodeEventListConnectionImplementors = []string{"BertyNodeEventListConnection"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeEventListConnection(ctx context.Context, sel ast.SelectionSet, obj *node.EventListConnection) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeEventListConnectionImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeEventListConnection")
-		case "edges":
-			out.Values[i] = ec._BertyNodeEventListConnection_edges(ctx, field, obj)
-		case "pageInfo":
-			out.Values[i] = ec._BertyNodeEventListConnection_pageInfo(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeEventListConnection_edges(ctx context.Context, field graphql.CollectedField, obj *node.EventListConnection) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeEventListConnection",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Edges, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*node.EventEdge)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
-	}
-
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyNodeEventEdge(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeEventListConnection_pageInfo(ctx context.Context, field graphql.CollectedField, obj *node.EventListConnection) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeEventListConnection",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.PageInfo, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*node.PageInfo)
-	rctx.Result = res
-
-	if res == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-
-	return ec._BertyNodePageInfo(ctx, field.Selections, res)
-}
-
-var bertyNodeIntegrationTestPayloadImplementors = []string{"BertyNodeIntegrationTestPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeIntegrationTestPayload(ctx context.Context, sel ast.SelectionSet, obj *node.IntegrationTestOutput) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeIntegrationTestPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeIntegrationTestPayload")
-		case "name":
-			out.Values[i] = ec._BertyNodeIntegrationTestPayload_name(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "success":
-			out.Values[i] = ec._BertyNodeIntegrationTestPayload_success(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "verbose":
-			out.Values[i] = ec._BertyNodeIntegrationTestPayload_verbose(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "startedAt":
-			out.Values[i] = ec._BertyNodeIntegrationTestPayload_startedAt(ctx, field, obj)
-		case "finishedAt":
-			out.Values[i] = ec._BertyNodeIntegrationTestPayload_finishedAt(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeIntegrationTestPayload_name(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeIntegrationTestPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Name, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeIntegrationTestPayload_success(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeIntegrationTestPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Success, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	rctx.Result = res
-	return models.MarshalBool(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeIntegrationTestPayload_verbose(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeIntegrationTestPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Verbose, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeIntegrationTestPayload_startedAt(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeIntegrationTestPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.StartedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	rctx.Result = res
-	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeIntegrationTestPayload_finishedAt(ctx context.Context, field graphql.CollectedField, obj *node.IntegrationTestOutput) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeIntegrationTestPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.FinishedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	rctx.Result = res
-	return models.MarshalTime(res)
-}
-
 var bertyNodeLogEntryImplementors = []string{"BertyNodeLogEntry"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -8702,59 +7295,6 @@ func (ec *executionContext) _BertyNodeLogEntry(ctx context.Context, sel ast.Sele
 func (ec *executionContext) _BertyNodeLogEntry_line(ctx context.Context, field graphql.CollectedField, obj *node.LogEntry) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyNodeLogEntry",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Line, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-var bertyNodeLogEntryPayloadImplementors = []string{"BertyNodeLogEntryPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeLogEntryPayload(ctx context.Context, sel ast.SelectionSet, obj *node.LogEntry) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeLogEntryPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeLogEntryPayload")
-		case "line":
-			out.Values[i] = ec._BertyNodeLogEntryPayload_line(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeLogEntryPayload_line(ctx context.Context, field graphql.CollectedField, obj *node.LogEntry) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeLogEntryPayload",
 		Args:   nil,
 		Field:  field,
 	}
@@ -8826,16 +7366,14 @@ func (ec *executionContext) _BertyNodeLogfileEntry_path(ctx context.Context, fie
 		return obj.Path, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*entity.Contact)
+	res := resTmp.(string)
 	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-
-	return ec._BertyEntityContact(ctx, field.Selections, res)
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
@@ -8851,6 +7389,9 @@ func (ec *executionContext) _BertyNodeLogfileEntry_filesize(ctx context.Context,
 		return obj.Filesize, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.(int32)
@@ -8886,134 +7427,6 @@ func (ec *executionContext) _BertyNodeLogfileEntry_createdAt(ctx context.Context
 func (ec *executionContext) _BertyNodeLogfileEntry_updatedAt(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyNodeLogfileEntry",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
-}
-
-var bertyNodeLogfileEntryPayloadImplementors = []string{"BertyNodeLogfileEntryPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeLogfileEntryPayload(ctx context.Context, sel ast.SelectionSet, obj *node.LogfileEntry) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeLogfileEntryPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeLogfileEntryPayload")
-		case "path":
-			out.Values[i] = ec._BertyNodeLogfileEntryPayload_path(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "filesize":
-			out.Values[i] = ec._BertyNodeLogfileEntryPayload_filesize(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "createdAt":
-			out.Values[i] = ec._BertyNodeLogfileEntryPayload_createdAt(ctx, field, obj)
-		case "updatedAt":
-			out.Values[i] = ec._BertyNodeLogfileEntryPayload_updatedAt(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeLogfileEntryPayload_path(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeLogfileEntryPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Path, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*entity.Message)
-	rctx.Result = res
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeLogfileEntryPayload_filesize(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeLogfileEntryPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Filesize, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int32)
-	rctx.Result = res
-	return models.MarshalInt32(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeLogfileEntryPayload_createdAt(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeLogfileEntryPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeLogfileEntryPayload_updatedAt(ctx context.Context, field graphql.CollectedField, obj *node.LogfileEntry) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeLogfileEntryPayload",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9658,11 +8071,11 @@ func (ec *executionContext) _BertyNodePingDestination_destination(ctx context.Co
 	return models.MarshalString(res)
 }
 
-var bertyNodeProtocolsPayloadImplementors = []string{"BertyNodeProtocolsPayload"}
+var bertyNodeProtocolsOutputImplementors = []string{"BertyNodeProtocolsOutput"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeProtocolsPayload(ctx context.Context, sel ast.SelectionSet, obj *node.ProtocolsOutput) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeProtocolsPayloadImplementors)
+func (ec *executionContext) _BertyNodeProtocolsOutput(ctx context.Context, sel ast.SelectionSet, obj *node.ProtocolsOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeProtocolsOutputImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
@@ -9671,9 +8084,9 @@ func (ec *executionContext) _BertyNodeProtocolsPayload(ctx context.Context, sel 
 
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeProtocolsPayload")
+			out.Values[i] = graphql.MarshalString("BertyNodeProtocolsOutput")
 		case "protocols":
-			out.Values[i] = ec._BertyNodeProtocolsPayload_protocols(ctx, field, obj)
+			out.Values[i] = ec._BertyNodeProtocolsOutput_protocols(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -9686,9 +8099,9 @@ func (ec *executionContext) _BertyNodeProtocolsPayload(ctx context.Context, sel 
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNodeProtocolsPayload_protocols(ctx context.Context, field graphql.CollectedField, obj *node.ProtocolsOutput) graphql.Marshaler {
+func (ec *executionContext) _BertyNodeProtocolsOutput_protocols(ctx context.Context, field graphql.CollectedField, obj *node.ProtocolsOutput) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeProtocolsPayload",
+		Object: "BertyNodeProtocolsOutput",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9856,59 +8269,6 @@ func (ec *executionContext) _BertyNodeVoid(ctx context.Context, sel ast.Selectio
 func (ec *executionContext) _BertyNodeVoid_T(ctx context.Context, field graphql.CollectedField, obj *node.Void) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyNodeVoid",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.T, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	rctx.Result = res
-	return models.MarshalBool(res)
-}
-
-var bertyNodeVoidPayloadImplementors = []string{"BertyNodeVoidPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeVoidPayload(ctx context.Context, sel ast.SelectionSet, obj *node.Void) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeVoidPayloadImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeVoidPayload")
-		case "T":
-			out.Values[i] = ec._BertyNodeVoidPayload_T(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeVoidPayload_T(ctx context.Context, field graphql.CollectedField, obj *node.Void) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeVoidPayload",
 		Args:   nil,
 		Field:  field,
 	}
@@ -10351,6 +8711,58 @@ func (ec *executionContext) _BertyP2pConversationNewMessageAttrs_message(ctx con
 	}
 
 	return ec._BertyEntityMessage(ctx, field.Selections, res)
+}
+
+var bertyP2pConversationReadAttrsImplementors = []string{"BertyP2pConversationReadAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pConversationReadAttrs(ctx context.Context, sel ast.SelectionSet, obj *p2p.ConversationReadAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pConversationReadAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pConversationReadAttrs")
+		case "conversation":
+			out.Values[i] = ec._BertyP2pConversationReadAttrs_conversation(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pConversationReadAttrs_conversation(ctx context.Context, field graphql.CollectedField, obj *p2p.ConversationReadAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pConversationReadAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Conversation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
 }
 
 var bertyP2pDevtoolsMapsetAttrsImplementors = []string{"BertyP2pDevtoolsMapsetAttrs"}
@@ -10922,494 +9334,6 @@ func (ec *executionContext) _BertyP2pEvent_metadata(ctx context.Context, field g
 	return arr1
 }
 
-var bertyP2pEventPayloadImplementors = []string{"BertyP2pEventPayload"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyP2pEventPayload(ctx context.Context, sel ast.SelectionSet, obj *p2p.Event) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyP2pEventPayloadImplementors)
-
-	var wg sync.WaitGroup
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyP2pEventPayload")
-		case "id":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._BertyP2pEventPayload_id(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
-		case "senderId":
-			out.Values[i] = ec._BertyP2pEventPayload_senderId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "createdAt":
-			out.Values[i] = ec._BertyP2pEventPayload_createdAt(ctx, field, obj)
-		case "updatedAt":
-			out.Values[i] = ec._BertyP2pEventPayload_updatedAt(ctx, field, obj)
-		case "sentAt":
-			out.Values[i] = ec._BertyP2pEventPayload_sentAt(ctx, field, obj)
-		case "receivedAt":
-			out.Values[i] = ec._BertyP2pEventPayload_receivedAt(ctx, field, obj)
-		case "ackedAt":
-			out.Values[i] = ec._BertyP2pEventPayload_ackedAt(ctx, field, obj)
-		case "direction":
-			out.Values[i] = ec._BertyP2pEventPayload_direction(ctx, field, obj)
-		case "senderApiVersion":
-			out.Values[i] = ec._BertyP2pEventPayload_senderApiVersion(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "receiverApiVersion":
-			out.Values[i] = ec._BertyP2pEventPayload_receiverApiVersion(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "receiverId":
-			out.Values[i] = ec._BertyP2pEventPayload_receiverId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		case "kind":
-			out.Values[i] = ec._BertyP2pEventPayload_kind(ctx, field, obj)
-		case "attributes":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._BertyP2pEventPayload_attributes(ctx, field, obj)
-				wg.Done()
-			}(i, field)
-		case "conversationId":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._BertyP2pEventPayload_conversationId(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
-		case "seenAt":
-			out.Values[i] = ec._BertyP2pEventPayload_seenAt(ctx, field, obj)
-		case "metadata":
-			out.Values[i] = ec._BertyP2pEventPayload_metadata(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	wg.Wait()
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_id(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.BertyP2pEventPayload().ID(rctx, obj)
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalID(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_senderId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SenderID, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_createdAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	rctx.Result = res
-	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_updatedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	rctx.Result = res
-	return models.MarshalTime(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_sentAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SentAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_receivedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ReceivedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_ackedAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AckedAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_direction(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Direction, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(p2p.Event_Direction)
-	rctx.Result = res
-	return models.MarshalEnum(int32(res))
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_senderApiVersion(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SenderAPIVersion, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(uint32)
-	rctx.Result = res
-	return models.MarshalUint32(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_receiverApiVersion(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ReceiverAPIVersion, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(uint32)
-	rctx.Result = res
-	return models.MarshalUint32(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_receiverId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ReceiverID, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_kind(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Kind, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(p2p.Kind)
-	rctx.Result = res
-	return models.MarshalEnum(int32(res))
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_attributes(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.BertyP2pEventPayload().Attributes(rctx, obj)
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]byte)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalByte(res[idx1])
-		}()
-	}
-
-	return arr1
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_conversationId(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.BertyP2pEventPayload().ConversationID(rctx, obj)
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalID(res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_seenAt(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SeenAt, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	rctx.Result = res
-
-	if res == nil {
-		return graphql.Null
-	}
-	return models.MarshalTime(*res)
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyP2pEventPayload_metadata(ctx context.Context, field graphql.CollectedField, obj *p2p.Event) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyP2pEventPayload",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Metadata, nil
-	})
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]*p2p.MetadataKeyValue)
-	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-	var wg sync.WaitGroup
-
-	isLen1 := len(res) == 1
-	if !isLen1 {
-		wg.Add(len(res))
-	}
-
-	for idx1 := range res {
-		idx1 := idx1
-		rctx := &graphql.ResolverContext{
-			Index:  &idx1,
-			Result: res[idx1],
-		}
-		ctx := graphql.WithResolverContext(ctx, rctx)
-		f := func(idx1 int) {
-			if !isLen1 {
-				defer wg.Done()
-			}
-			arr1[idx1] = func() graphql.Marshaler {
-
-				if res[idx1] == nil {
-					return graphql.Null
-				}
-
-				return ec._BertyP2pMetadataKeyValue(ctx, field.Selections, res[idx1])
-			}()
-		}
-		if isLen1 {
-			f(idx1)
-		} else {
-			go f(idx1)
-		}
-
-	}
-	wg.Wait()
-	return arr1
-}
-
 var bertyP2pMetadataKeyValueImplementors = []string{"BertyP2pMetadataKeyValue"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -11439,8 +9363,7 @@ func (ec *executionContext) _BertyP2pMetadataKeyValue(ctx context.Context, sel a
 	if invalid {
 		return graphql.Null
 	}
-
-	return arr1
+	return out
 }
 
 // nolint: vetshadow
@@ -18366,7 +16289,7 @@ func (ec *executionContext) _Query_ID(ctx context.Context, field graphql.Collect
 		return graphql.Null
 	}
 
-	return ec._BertyNetworkPeerPayload(ctx, field.Selections, res)
+	return ec._BertyNetworkPeer(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -18676,7 +16599,7 @@ func (ec *executionContext) _Query_Peers(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 
-	return ec._BertyNetworkPeersPayload(ctx, field.Selections, res)
+	return ec._BertyNetworkPeers(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -19015,7 +16938,7 @@ func (ec *executionContext) _Subscription_MonitorBandwidth(ctx context.Context, 
 				return graphql.Null
 			}
 
-			return ec._BertyNetworkBandwidthStatsPayload(ctx, field.Selections, res)
+			return ec._BertyNetworkBandwidthStats(ctx, field.Selections, res)
 		}())
 		return &out
 	}
@@ -19048,7 +16971,7 @@ func (ec *executionContext) _Subscription_MonitorPeers(ctx context.Context, fiel
 				return graphql.Null
 			}
 
-			return ec._BertyNetworkPeerPayload(ctx, field.Selections, res)
+			return ec._BertyNetworkPeer(ctx, field.Selections, res)
 		}())
 		return &out
 	}
@@ -21189,46 +19112,8 @@ type GoogleProtobufGeneratedCodeInfo  {
   
   
 
-  
-  
-  
-
-  
-type BertyNetworkBandwidthStats  {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
-    type: Enum
-}
-  
-  
-  
-
-  
-type BertyNodeNodeStartedAttrs  {
-      T: Bool!
-}
-type BertyNodeNodeStoppedAttrs  {
-      errMsg: String!
-}
-type BertyNodeNodeIsAliveAttrs  {
-      T: Bool!
-}
-type BertyNodeBackgroundErrorAttrs  {
-      errMsg: String!
-}
-type BertyNodeBackgroundWarnAttrs  {
-      errMsg: String!
-}
-type BertyNodeDebugAttrs  {
-      msg: String!
-}
-type BertyNodeStatisticsAttrs  {
-      errMsg: String!
-    totalNetworkBandwidth: BertyNetworkBandwidthStats
-      peersCount: Int32!
+type GqlNode implements Node {
+    id: ID!
 }
   
   
@@ -21394,6 +19279,19 @@ type BertyP2pMetadataKeyValue  {
   
 
   
+type BertyNetworkBandwidthStats  {
+    id: String
+    totalIn: Int64
+    totalOut: Int64
+    rateIn: Double
+    rateOut: Double
+    type: Enum
+}
+  
+  
+  
+
+  
 type BertyNodeNodeStartedAttrs  {
     T: Bool!
 }
@@ -21412,14 +19310,19 @@ type BertyNodeBackgroundWarnAttrs  {
 type BertyNodeDebugAttrs  {
     msg: String!
 }
+type BertyNodeStatisticsAttrs  {
+    errMsg: String!
+    totalNetworkBandwidth: BertyNetworkBandwidthStats
+    peersCount: Int32!
+}
   
   
   
 
   
 type BertyNetworkPeer  {
-      id: String!
-      addrs: [String!]
+    id: String!
+    addrs: [String!]
     connection: Enum
 }
 type BertyNetworkPeers  {
@@ -21434,13 +19337,13 @@ type BertyPkgDeviceinfoDeviceInfos  {
     infos: [BertyPkgDeviceinfoDeviceInfo]
 }
 type BertyPkgDeviceinfoDeviceInfo  {
-      key: String!
-      value: String!
-      category: String!
-      link: String!
+    key: String!
+    value: String!
+    category: String!
+    link: String!
     type: Enum
-      errMsg: String!
-      weight: Int32!
+    errMsg: String!
+    weight: Int32!
 }
   
   
@@ -21516,12 +19419,7 @@ type BertyNodeLogfileEntry  {
 }
 type BertyNodeNodeEvent  {
     kind: Enum
-      attributes: [Byte!],
-}
-type BertyNetworkPeerPayload {
-      id: String!
-      addrs: [String!]
-    connection: Enum
+    attributes: [Byte!]
 }
 input BertyP2pMetadataKeyValueInput {
     key: String!
@@ -21593,62 +19491,14 @@ input BertyEntityConversationInput {
     members: [BertyEntityConversationMemberInput]
 }
 input BertyEntityMessageInput {
-      text: String!
-}
-type BertyEntityConversationMemberPayload {
-    id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    status: Enum
-    contact: BertyEntityContact
-      conversationId: String!
-      contactId: String!
-}
-type BertyNodeVoidPayload {
-      T: Bool!
-}
-type BertyNodeIntegrationTestPayload {
-      name: String!
-      success: Bool!
-      verbose: String!
-    startedAt: GoogleProtobufTimestamp
-    finishedAt: GoogleProtobufTimestamp
-}
-type BertyPkgDeviceinfoDeviceInfosPayload {
-    infos: [BertyPkgDeviceinfoDeviceInfo]
-}
-type BertyNodeAppVersionPayload {
-      version: String!
-}
-type BertyNetworkPeersPayload {
-    list: [BertyNetworkPeer]
-}
-type BertyNodeProtocolsPayload {
-      protocols: [String!]
-}
-type BertyNodeLogEntryPayload {
-      line: String!
-}
-type BertyNodeLogfileEntryPayload {
-      path: String!
-      filesize: Int32!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-}
-type BertyNetworkBandwidthStatsPayload {
-      id: String
-      totalIn: Int64
-      totalOut: Int64
-      rateIn: Double
-      rateOut: Double
-    type: Enum
+    text: String!
 }
   
 type Query {
   node(id: ID!): Node
   ID(
-      T: Bool!
-  ): BertyNetworkPeerPayload
+    T: Bool!
+  ): BertyNetworkPeer
   EventList(
     filter: BertyP2pEventInput
     onlyWithoutAckedAt: Enum
@@ -21708,8 +19558,8 @@ type Query {
     T: Bool!
   ): BertyNodeAppVersionOutput
   Peers(
-      T: Bool!
-  ): BertyNetworkPeersPayload
+    T: Bool!
+  ): BertyNetworkPeers
   Protocols(
     id: String!
     addrs: [String!]
@@ -21717,7 +19567,8 @@ type Query {
   ): BertyNodeProtocolsOutput
   LogfileList(
     T: Bool!
-  ): [BertyNodeLogfileEntry]
+  )
+      : [BertyNodeLogfileEntry]
   Panic(
     T: Bool!
   ): BertyNodeVoid
@@ -21821,10 +19672,10 @@ type Subscription {
     rateIn: Double
     rateOut: Double
     type: Enum
-  ): BertyNetworkBandwidthStatsPayload
+  ): BertyNetworkBandwidthStats
   MonitorPeers(
-      T: Bool!
-  ): BertyNetworkPeerPayload
+    T: Bool!
+  ): BertyNetworkPeer
 }
 `},
 )

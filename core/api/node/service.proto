@@ -37,10 +37,12 @@ service Service {
     option (gql.graphql_output) = ".berty.node.EventListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc GetEvent (gql.Node) returns (berty.p2p.Event) {
+  rpc GetEvent (berty.p2p.Event) returns (berty.p2p.Event) {
+    option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Query";
   };
-  rpc EventSeen (EventIDInput) returns (berty.p2p.Event) {
+  rpc EventSeen (berty.p2p.Event) returns (berty.p2p.Event) {
+    option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
 
@@ -94,7 +96,8 @@ service Service {
   rpc ConversationMember (berty.entity.ConversationMember) returns (berty.entity.ConversationMember) {
     option (gql.graphql_type) = "Query";
   };
-  rpc ConversationRead (gql.Node) returns (berty.entity.Conversation) {
+  rpc ConversationRead (berty.entity.Conversation) returns (berty.entity.Conversation) {
+    option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
 

@@ -6,7 +6,6 @@ import (
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
-	gql "berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
@@ -70,7 +69,7 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
-func (n *Node) EventSeen(ctx context.Context, input *gql.Node) (*p2p.Event, error) {
+func (n *Node) EventSeen(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
@@ -105,7 +104,7 @@ func (n *Node) EventSeen(ctx context.Context, input *gql.Node) (*p2p.Event, erro
 
 	// mark conversation as read
 	if event.ConversationID != "" {
-		_, err := n.ConversationRead(ctx, &gql.Node{ID: event.ConversationID})
+		_, err := n.ConversationRead(ctx, &entity.Conversation{ID: event.ConversationID})
 		if err != nil {
 			return nil, err
 		}
@@ -114,7 +113,7 @@ func (n *Node) EventSeen(ctx context.Context, input *gql.Node) (*p2p.Event, erro
 	return event, nil
 }
 
-func (n *Node) ConversationRead(ctx context.Context, input *gql.Node) (*entity.Conversation, error) {
+func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	var err error
 
 	// get conversation
@@ -148,7 +147,7 @@ func (n *Node) ConversationRead(ctx context.Context, input *gql.Node) (*entity.C
 }
 
 // GetEvent implements berty.node.GetEvent
-func (n *Node) GetEvent(ctx context.Context, input *gql.Node) (*p2p.Event, error) {
+func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
