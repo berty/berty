@@ -10,6 +10,7 @@ services:
       - "3001:3000"
     volumes:
       - .:/usr/src/app
+    command: yarn start
 
   tracer-service:
     image: jaegertracing/all-in-one:1.6
