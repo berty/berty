@@ -28,7 +28,7 @@ void handleException(NSException* exception) {
     NSLog(@"Unhandled exception %@", exception);
 }
 
-void init(char *ma, char *peerID) {
+void init() {
     if (centralManager == nil && peripheralManager == nil) {
         BertyPeripheralDelegate *peripheralDelegate = [[BertyPeripheralDelegate alloc] init];
 
@@ -43,11 +43,25 @@ void init(char *ma, char *peerID) {
                              queue:dispatch_queue_create("PeripheralManager", DISPATCH_QUEUE_SERIAL)
                              options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
 
-        [BertyUtils setMa:[NSString stringWithUTF8String:ma]];
-        [BertyUtils setPeerID:[NSString stringWithUTF8String:peerID]];
         NSSetUncaughtExceptionHandler(handleException);
         initSignalHandling();
     }
+}
+
+void setMa(char *ma) {
+  [BertyUtils setMa:[NSString stringWithUTF8String:ma]];
+}
+
+void setPeerID(char *peerID) {
+  [BertyUtils setPeerID:[NSString stringWithUTF8String:peerID]];
+}
+
+int centralManagerIsOn(void) {
+    return (int)[BertyUtils sharedUtils].CentralIsOn;
+}
+
+int peripheralManagerIsOn(void) {
+    return (int)[BertyUtils sharedUtils].PeripharalIsOn;
 }
 
 void connDevice(CBPeripheral *peripheral) {

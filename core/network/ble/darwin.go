@@ -98,16 +98,20 @@ func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.cha
 	go RealAcceptSender(goPeerID, goble, goIncPeerID)
 }
 
+func SetMa(ma string) {
+	cMa := C.CString(ma)
+	defer C.free(unsafe.Pointer(cMa))
+	C.setMa(cMa)
+}
+
+func SetPeerID(peerID string) {
+	cPeerID := C.CString(peerID)
+	defer C.free(unsafe.Pointer(cPeerID))
+	C.setPeerID(cPeerID)
+}
+
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
-	m, err := lAddr.ValueForProtocol(PBle)
-	if err != nil {
-		return nil, err
-	}
-	val := C.CString(m)
-	peerID := C.CString(hostID.Pretty())
-	defer C.free(unsafe.Pointer(val))
-	defer C.free(unsafe.Pointer(peerID))
-	C.init(val, peerID)
+	C.init()
 	time.Sleep(1 * time.Second)
 	go C.startAdvertising()
 	go C.startDiscover()

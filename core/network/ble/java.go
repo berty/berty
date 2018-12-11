@@ -79,15 +79,7 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 }
 
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
-	ma, err := lAddr.ValueForProtocol(PBle)
-	if err != nil {
-		return nil, err
-	}
-	peerID := hostID.Pretty()
-
 	InitScannerAndAdvertiser()
-	SetMa(ma)
-	SetPeerID(peerID)
 	StartScanning()
 	StartAdvertising()
 
