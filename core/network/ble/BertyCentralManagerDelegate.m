@@ -71,25 +71,6 @@
 }
 
 /*!
- *  @method centralManager:willRestoreState:
- *
- *  @param central      The central manager providing this information.
- *  @param dict			A dictionary containing information about <i>central</i> that was preserved by the system at the time the app was terminated.
- *
- *  @discussion			For apps that opt-in to state preservation and restoration, this is the first method invoked when your app is relaunched into
- *						the background to complete some Bluetooth-related task. Use this method to synchronize your app's state with the state of the
- *						Bluetooth system.
- *
- *  @seealso            CBCentralManagerRestoredStatePeripheralsKey;
- *  @seealso            CBCentralManagerRestoredStateScanServicesKey;
- *  @seealso            CBCentralManagerRestoredStateScanOptionsKey;
- *
- */
-- (void)centralManager:(CBCentralManager *)central willRestoreState:(NSDictionary<NSString *, id> *)dict {
-    NSLog(@"centralManger: central willRestoreState: %@", dict);
-}
-
-/*!
  *  @method centralManager:didDiscoverPeripheral:advertisementData:RSSI:
  *
  *  @param central              The central manager providing this update.
