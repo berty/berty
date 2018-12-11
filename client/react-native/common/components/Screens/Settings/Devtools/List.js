@@ -66,6 +66,21 @@ export default class List extends PureComponent {
     })
   }
 
+  testError = async () => {
+    this.props.navigation.setParams({ testError: true })
+    this.setState({ testError: true }, async () => {
+      if (Platform.OS === 'web') {
+        await this.props.screenProps.queries.TestError.fetch() // FIXME: the 'kind' should be selectable
+      } else {
+        CoreModule.error()
+      }
+      this.props.navigation.setParams({
+        testError: false,
+      })
+      this.setState({ testError: false })
+    })
+  }
+
   testLogBackgroundError = async () => {
     this.props.navigation.setParams({ testLogBackgroundError: true })
     this.setState({ testLogBackgroundError: true }, async () => {
@@ -227,6 +242,7 @@ export default class List extends PureComponent {
             onPress={this.restartDaemon}
           />
           <Menu.Item icon='alert-triangle' title='Panic' onPress={this.testPanic} />
+          <Menu.Item icon='alert-triangle' title='Error' onPress={this.testError} />
           <Menu.Item icon='info' title='Log bg Error' onPress={this.testLogBackgroundError} />
           <Menu.Item icon='info' title='Log bg Warn' onPress={this.testLogBackgroundWarn} />
           <Menu.Item icon='info' title='Log bg Debug' onPress={this.testLogBackgroundDebug} />

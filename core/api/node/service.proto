@@ -177,6 +177,7 @@ service Service {
   rpc TestLogBackgroundWarn  (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
   rpc TestLogBackgroundDebug (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
   rpc TestPanic              (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
+  rpc TestError              (TestErrorInput) returns (Void) { option (gql.graphql_type) = "Query"; };
 
   //
   // Metrics
@@ -192,6 +193,10 @@ service Service {
     option (gql.graphql_type) = "Subscription";
   };
 }
+
+message TestErrorInput {
+  string kind = 1;
+};
 
 message ProtocolsOutput {
   repeated string protocols = 1;

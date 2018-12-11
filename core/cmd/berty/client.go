@@ -243,7 +243,7 @@ func clientUnary(opts *clientOptions) error {
 
 	ret, err := jsonclient.CallUnary(ctx, client, opts.endpoint, input)
 	if err != nil {
-		return errors.Wrap(err, "failed calling endpoint")
+		return errors.Wrap(err, "client error")
 	}
 
 	jsonPrint(ret, opts)

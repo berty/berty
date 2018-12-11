@@ -6,6 +6,7 @@ import (
 	"os"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/logmanager"
 )
 
@@ -17,7 +18,7 @@ func main() {
 	defer func() {
 		if logman := logmanager.G(); logman != nil {
 			if err := logman.Close(); err != nil {
-				_, _ = fmt.Fprintf(os.Stderr, "%v\n", err)
+				_, _ = fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 				os.Exit(1)
 			}
 		}
@@ -25,8 +26,9 @@ func main() {
 
 	// init cobra
 	rootCmd := newRootCommand()
+
 	if err := rootCmd.Execute(); err != nil {
-		_, _ = fmt.Fprintf(os.Stderr, "%v\n", err)
+		fmt.Fprintf(os.Stderr, "%+v\n", errorcodes.Convert(err))
 		os.Exit(1)
 	}
 }

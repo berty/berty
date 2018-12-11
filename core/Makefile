@@ -1,6 +1,6 @@
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 GOPATH ?= $(HOME)/go
-BIN = $(GOPATH)/bin/berty
+BIN ?= $(GOPATH)/bin/berty
 BUILD_MODE ?= dev
 SOURCES = $(call rwildcard, $(CODE_PATHS), *.go)
 OUR_SOURCES = $(filter-out $(call rwildcard,vendor//, *.go),$(SOURCES))
@@ -36,6 +36,7 @@ TEST_CMD ?= go test -test.timeout $(TEST_TIMEOUT) $(TEST_OPTS) $(TEST_PATHS)
 PROTOC ?= protoc
 GQLGEN ?= gqlgen
 GIN_OPTS ?= --immediate --port=2999 --appPort=1337 --build=./cmd/berty --excludeDir vendor
+IGNORE_GQLGEN ?= 0
 
 
 ##
@@ -103,7 +104,7 @@ generate: .generated
 		--entrypoint="sh" \
 		--rm \
 		bertychat/protoc:v5 \
-		-xec 'make generate_local'
+		-xec 'make IGNORE_GQLGEN=$(IGNORE_GQLGEN) generate_local'
 	touch $@
 
 .PHONY: clean
@@ -168,10 +169,16 @@ dev-deps:
 	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/service.proto
 	goimports -w ./api/node/*.gen.go ./api/node/graphql/*.gen.go
-	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
-	cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
-	prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
-	cp ./api/node/graphql/enums.gen.js ../client/react-native/common/graphql/enums.gen.js
+
+	@# gqlgen
+	cd ./api/node/graphql; test "$(IGNORE_GQLGEN)" = "1" || $(GQLGEN) -c gqlgen.gen.yml -v gen
+	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
+	test "$(IGNORE_GQLGEN)" = "1" || prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
+	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/enums.gen.js ../client/react-native/common/graphql/enums.gen.js
+	test "$(IGNORE_GQLGEN)" = "0" || git checkout api/node/graphql/models/generated.gen.go api/node/graphql/graph/generated/generated.gen.go
+
+
+	@# everything worked as expected
 	touch $@
 
 .pb.generated: $(patsubst %.proto,%.pb.go,$(OUR_PROTOS))

@@ -30,7 +30,9 @@ func setupRand(cmd *cobra.Command, args []string) error {
 
 func newRootCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use: "berty",
+		Use:           "berty",
+		SilenceUsage:  true,
+		SilenceErrors: true,
 		Version: fmt.Sprintf(
 			"core=%s p2p=%d node=%d git_sha=%s git_branch=%s git_tag=%s build_mode=%s commit_date=%s",
 			core.Version, p2p.Version, node.Version, core.GitSha, core.GitBranch, core.GitTag, core.BuildMode, core.CommitDate(),
