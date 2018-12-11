@@ -9,6 +9,7 @@
 
 #import "BertyDevice.h"
 #import "BertyUtils.h"
+#import "_cgo_export.h"
 
 @implementation BertyDevice
 

@@ -6,22 +6,19 @@
 //  Copyright © 2018 sacha. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <CoreBluetooth/CoreBluetooth.h>
+#import <signal.h>
+
 #ifndef ble_h
 #define ble_h
 
-#import "BertyUtils.h"
-#import "BertyCentralManagerDelegate.h"
-#import "BertyPeripheralManagerDelegate.h"
-#import <Foundation/Foundation.h>
-#import <CoreBluetooth/CoreBluetooth.h>
-#import "BertyDevice.h"
-
 void init(char *ma, char *peerID);
-int startAdvertising();
-int startDiscover();
-int isDiscovering();
+int startAdvertising(void);
+int startDiscover(void);
+int isDiscovering(void);
 void connDevice(CBPeripheral *peripheral);
-int isAdvertising();
+int isAdvertising(void);
 int dialPeer(char *peerID);
 char *readPeerID(char *peerID);
 NSData *Bytes2NSData(void *bytes, int length);

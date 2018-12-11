@@ -8,6 +8,8 @@
 //
 
 #import "BertyPeripheralDelegate.h"
+#import "BertyUtils.h"
+#import "ble.h"
 
 @implementation BertyPeripheralDelegate
 

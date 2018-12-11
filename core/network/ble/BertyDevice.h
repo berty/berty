@@ -6,14 +6,14 @@
 //  Copyright © 2018 Facebook. All rights reserved.
 //
 
-#ifndef BertyDevice_h
-#define BertyDevice_h
-
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import "CountDownLatch.h"
 
-extern void AddToPeerStoreC(char *, char*);
+#ifndef BertyDevice_h
+#define BertyDevice_h
+
+//extern void AddToPeerStoreC(char *, char*);
 
 @interface BertyDevice : NSObject
 
@@ -45,7 +45,6 @@ extern void AddToPeerStoreC(char *, char*);
 - (void)write:(NSData *)data;
 - (void)checkAndWrite;
 - (void)popToSend;
-- (void)writeIsRdy;
 
 @end
 
