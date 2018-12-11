@@ -81,6 +81,7 @@ enum BertyErrorCodes {
   ErrAccManagerCfgGrpcSrv = 9105;
   ErrAccManagerBot = 9200;
   ErrAccManagerBotInit = 9201;
+  ErrAccManagerBotExited = 9202;
 
   ErrContactReq = 10000;
   ErrContactReqKey = 10001;
