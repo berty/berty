@@ -7,32 +7,30 @@ import (
 	"strings"
 	"sync"
 
-	"google.golang.org/grpc/status"
-
-	"berty.tech/core/pkg/errorcodes"
-	"github.com/vektah/gqlparser/gqlerror"
-
 	nodeapi "berty.tech/core/api/node"
 	gql "berty.tech/core/api/node/graphql"
 	graph "berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/network/mock"
 	"berty.tech/core/network/netutil"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/jaeger"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 	"github.com/99designs/gqlgen/graphql"
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
-	"github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
-	"github.com/grpc-ecosystem/go-grpc-middleware/recovery"
-	"github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/pkg/errors"
 	"github.com/rs/cors"
+	"github.com/vektah/gqlparser/gqlerror"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 )
 
 func WithRing(ring *zapring.Ring) NewOption {

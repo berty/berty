@@ -13,8 +13,6 @@ import (
 	"syscall"
 	"time"
 
-	"berty.tech/core/pkg/errorcodes"
-
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	p2papi "berty.tech/core/api/p2p"
@@ -23,6 +21,7 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 	"berty.tech/core/sql"
@@ -64,10 +63,11 @@ type Account struct {
 	dbDir  string
 	dbDrop bool
 
-	gqlHandler  http.Handler
-	GQLBind     string
-	ioGrpc      *netutil.IOGrpc
-	gqlListener net.Listener
+	gqlHandler     http.Handler
+	GQLBind        string
+	ioGrpc         *netutil.IOGrpc
+	ioGrpcListener net.Listener
+	gqlServer      *http.Server
 
 	GrpcServer   *grpc.Server
 	GrpcBind     string
@@ -270,11 +270,14 @@ func (a *Account) Close(ctx context.Context) {
 	if a.tracingCloser != nil {
 		_ = a.tracingCloser.Close()
 	}
-	if a.ioGrpc != nil {
-		_ = a.ioGrpc.Listener().Close()
-	}
 	if a.grpcListener != nil {
 		a.grpcListener.Close()
+	}
+	if a.ioGrpcListener != nil {
+		_ = a.ioGrpcListener.Close()
+	}
+	if a.gqlServer != nil {
+		_ = a.gqlServer.Close()
 	}
 	if a.BotRunning {
 		_ = a.StopBot(ctx)
@@ -282,6 +285,8 @@ func (a *Account) Close(ctx context.Context) {
 	if a.ring != nil {
 		a.ring.Close()
 	}
+
+	logger().Info("account closed")
 }
 
 // Database
@@ -339,6 +344,7 @@ func (a *Account) startNetwork(ctx context.Context) error {
 	go func() {
 		defer a.PanicHandler()
 		a.errChan <- a.network.Start(ctx)
+		logger().Debug("network closed")
 	}()
 	return nil
 }
@@ -367,6 +373,7 @@ func (a *Account) startGrpcServer(ctx context.Context) error {
 	go func() {
 		defer a.PanicHandler()
 		a.errChan <- a.GrpcServer.Serve(a.grpcListener)
+		logger().Debug("grpc server closed")
 	}()
 
 	return nil
@@ -426,9 +433,12 @@ func (a *Account) startGQL(ctx context.Context) error {
 		return nil
 	}
 
+	a.ioGrpcListener = a.ioGrpc.Listener()
+
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.GrpcServer.Serve(a.ioGrpc.Listener())
+		a.errChan <- a.GrpcServer.Serve(a.ioGrpcListener)
+		logger().Debug("io grpc server closed")
 	}()
 
 	addr, err := net.ResolveTCPAddr("tcp", a.GQLBind)
@@ -444,15 +454,13 @@ func (a *Account) startGQL(ctx context.Context) error {
 		a.GQLBind = ":8700"
 	}
 
-	a.gqlListener, err = reuse.Listen(addr.Network(), fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port))
-	if err != nil {
-		return err
-	}
+	a.gqlServer = &http.Server{Addr: fmt.Sprintf("%s:%d", addr.IP.String(), addr.Port), Handler: a.gqlHandler}
 
 	// start gql server
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- http.Serve(a.gqlListener, a.gqlHandler)
+		a.errChan <- a.gqlServer.ListenAndServe()
+		logger().Debug("gql server closed")
 	}()
 	return nil
 }
@@ -491,6 +499,7 @@ func (a *Account) startNode(ctx context.Context) error {
 	go func() {
 		defer a.PanicHandler()
 		a.errChan <- a.node.Start(a.rootContext, true, true)
+		logger().Debug("node stopped")
 	}()
 
 	// show banner
