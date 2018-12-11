@@ -6,13 +6,11 @@
 //  Copyright © 2018 berty. All rights reserved.
 //
 
-#ifndef BertyCentralDelegate_h
-#define BertyCentralDelegate_h
-
-#import "BertyUtils.h"
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 
+#ifndef BertyCentralDelegate_h
+#define BertyCentralDelegate_h
 
 @interface BertyPeripheralDelegate: NSObject <CBPeripheralDelegate>
 

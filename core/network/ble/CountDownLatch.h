@@ -6,10 +6,10 @@
 //  Copyright © 2018 berty. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+
 #ifndef CountDownLatch_h
 #define CountDownLatch_h
-
-#import <Foundation/Foundation.h>
 
 @interface CountDownLatch : NSObject
 

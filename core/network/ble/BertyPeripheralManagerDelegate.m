@@ -8,6 +8,8 @@
 //
 
 #import "BertyPeripheralManagerDelegate.h"
+#import "BertyUtils.h"
+#import "_cgo_export.h"
 
 @implementation BertyPeripheralManagerDelegate
 

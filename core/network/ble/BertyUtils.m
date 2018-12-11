@@ -8,6 +8,7 @@
 //
 
 #import "BertyUtils.h"
+#import "ble.h"
 
 @implementation BertyUtils
 

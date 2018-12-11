@@ -6,16 +6,14 @@
 //  Copyright © 2018 berty. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <CoreBluetooth/CoreBluetooth.h>
+#import "BertyPeripheralDelegate.h"
+
 #ifndef BertyCentralManagerDelegate_h
 #define BertyCentralManagerDelegate_h
 
-#import "BertyUtils.h"
-#import "BertyPeripheralDelegate.h"
-#import "BertyDevice.h"
-#import <Foundation/Foundation.h>
-#import <CoreBluetooth/CoreBluetooth.h>
-
-extern void setConnClosed(char *);
+//extern void setConnClosed(char *);
 
 @interface BertyCentralManagerDelegate : NSObject <CBCentralManagerDelegate>
 

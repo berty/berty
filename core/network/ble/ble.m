@@ -8,9 +8,10 @@
 //
 
 #import "ble.h"
-#import <CoreBluetooth/CoreBluetooth.h>
-#import <Foundation/Foundation.h>
-#include <signal.h>
+#import "BertyUtils.h"
+#import "BertyDevice.h"
+#import "BertyCentralManagerDelegate.h"
+#import "BertyPeripheralManagerDelegate.h"
 
 CBCentralManager *centralManager;
 CBPeripheralManager *peripheralManager;

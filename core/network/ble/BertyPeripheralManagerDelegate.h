@@ -6,15 +6,14 @@
 //  Copyright © 2018 berty. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
+#import <CoreBluetooth/CoreBluetooth.h>
+#import "BertyPeripheralDelegate.h"
+
 #ifndef BertyPeripheralManagerDelegate_h
 #define BertyPeripheralManagerDelegate_h
 
-#import "BertyUtils.h"
-#import "BertyPeripheralDelegate.h"
-#import <Foundation/Foundation.h>
-#import <CoreBluetooth/CoreBluetooth.h>
-
-extern void sendBytesToConn(char *, void *, int);
+//extern void sendBytesToConn(char *, void *, int);
 
 @interface BertyPeripheralManagerDelegate: NSObject <CBPeripheralManagerDelegate>
 

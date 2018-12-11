@@ -8,50 +8,48 @@
 
 
 #import "BertyDevice.h"
+#import <CoreBluetooth/CoreBluetooth.h>
+#import <Foundation/Foundation.h>
 
 #ifndef BertyUtils_h
 #define BertyUtils_h
 
-#import <CoreBluetooth/CoreBluetooth.h>
-#import <Foundation/Foundation.h>
-
-extern CBCentralManager *centralManager;
-extern CBPeripheralManager *peripheralManager;
+extern CBCentralManager *__nullable centralManager;
+extern CBPeripheralManager *__nullable peripheralManager;
 
 @interface BertyUtils : NSObject
 
-@property (nonatomic, strong) CBMutableService *bertyService;
-@property (nonatomic, strong) CBMutableCharacteristic *maCharacteristic;
-@property (nonatomic, strong) CBMutableCharacteristic *peerIDCharacteristic;
-@property (nonatomic, strong) CBMutableCharacteristic *writerCharacteristic;
-@property (nonatomic, strong) CBMutableCharacteristic *closerCharacteristic;
-@property (nonatomic, strong) NSString *ma;
-@property (nonatomic, strong) NSString *peerID;
-@property (nonatomic, strong) CBUUID *serviceUUID;
-@property (nonatomic, strong) CBUUID *maUUID;
-@property (nonatomic, strong) CBUUID *peerUUID;
-@property (nonatomic, strong) CBUUID *writerUUID;
-@property (nonatomic, strong) CBUUID *closerUUID;
-@property (nonatomic, strong) NSMutableDictionary *bertyDevices;
+@property (nonatomic, strong, nonnull) CBMutableService *bertyService;
+@property (nonatomic, strong, nonnull) CBMutableCharacteristic *maCharacteristic;
+@property (nonatomic, strong, nonnull) CBMutableCharacteristic *peerIDCharacteristic;
+@property (nonatomic, strong, nonnull) CBMutableCharacteristic *writerCharacteristic;
+@property (nonatomic, strong, nonnull) CBMutableCharacteristic *closerCharacteristic;
+@property (nonatomic, strong, nullable) NSString *ma;
+@property (nonatomic, strong, nullable) NSString *peerID;
+@property (nonatomic, strong, nonnull) CBUUID *serviceUUID;
+@property (nonatomic, strong, nonnull) CBUUID *maUUID;
+@property (nonatomic, strong, nonnull) CBUUID *peerUUID;
+@property (nonatomic, strong, nonnull) CBUUID *writerUUID;
+@property (nonatomic, strong, nonnull) CBUUID *closerUUID;
+@property (nonatomic, strong, nonnull) NSMutableDictionary *bertyDevices;
 @property (nonatomic, assign) BOOL CentralIsOn;
 @property (nonatomic, assign) BOOL PeripharalIsOn;
 @property (atomic, assign) BOOL serviceAdded;
 
-
-+ (NSString *)arrayServiceToSting:(NSArray *)array;
-+ (NSString *)arrayCharacteristicToSting:(NSArray *)array;
-+ (BertyUtils *)sharedUtils;
-+ (nullable BertyDevice *)getDevice:(CBPeripheral *)peripheral;
-+ (nullable BertyDevice *)getDeviceFromRequest:(CBATTRequest *)request;
-+ (nullable BertyDevice *)getDeviceFromMa:(NSString *)ma;
-+ (nullable BertyDevice *)getDeviceFromPeerID:(NSString *)peerID;
-+ (Boolean)inDevices:(CBPeripheral *)peripheral;
-+ (Boolean)inDevicesWithPeerID:(NSString *)peerID;
-+ (Boolean)inDevicesWithMa:(NSString *)Ma;
-+ (void)setMa:(NSString *)ma;
-+ (void)setPeerID:(NSString *)peerID;
-+ (void)addDevice:(BertyDevice *)device;
-+ (void)removeDevice:(BertyDevice *)device;
++ (nonnull NSString *)arrayServiceToSting:(nonnull NSArray *)array;
++ (nonnull NSString *)arrayCharacteristicToSting:(nonnull NSArray *)array;
++ (nonnull BertyUtils *)sharedUtils;
++ (nullable BertyDevice *)getDevice:(nonnull CBPeripheral *)peripheral;
++ (nullable BertyDevice *)getDeviceFromRequest:(nonnull CBATTRequest *)request;
++ (nullable BertyDevice *)getDeviceFromMa:(nonnull NSString *)ma;
++ (nullable BertyDevice *)getDeviceFromPeerID:(nonnull NSString *)peerID;
++ (Boolean)inDevices:(nonnull CBPeripheral *)peripheral;
++ (Boolean)inDevicesWithPeerID:(nonnull NSString *)peerID;
++ (Boolean)inDevicesWithMa:(nonnull NSString *)Ma;
++ (void)setMa:(nonnull NSString *)ma;
++ (void)setPeerID:(nonnull NSString *)peerID;
++ (void)addDevice:(nonnull BertyDevice *)device;
++ (void)removeDevice:(nonnull BertyDevice *)device;
 
 @end
 
