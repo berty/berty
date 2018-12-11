@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+	"time"
 
 	"berty.tech/core/pkg/errorcodes"
 
@@ -387,15 +388,19 @@ func (a *Account) StartBot(ctx context.Context) error {
 	if err != nil {
 		return errorcodes.ErrAccManagerBotInit.Wrap(err)
 	}
-	a.BotRunning = true
 
 	go func() {
-		logger().Debug("starting bot...")
-		if err := b.Start(); err != nil {
-			logger().Error("bot error", zap.Error(err))
-			a.BotRunning = false
-			defer a.PanicHandler()
-			a.errChan <- err
+		defer a.PanicHandler()
+		for {
+			a.BotRunning = true
+			logger().Debug("starting bot...")
+			if err := b.Start(); err != nil {
+				err = errorcodes.ErrAccManagerBotExited.Wrap(err)
+				a.node.LogBackgroundError(ctx, err)
+				a.BotRunning = false
+				//a.errChan <- err
+			}
+			time.Sleep(time.Second) // retry in 1 sec
 		}
 	}()
 
