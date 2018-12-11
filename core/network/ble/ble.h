@@ -15,10 +15,11 @@
 
 void init(void);
 int startAdvertising(void);
-int startDiscover(void);
+int startScanning(void);
 int isDiscovering(void);
 int centralManagerIsOn(void);
 int peripheralManagerIsOn(void);
+void addService(void);
 void setMa(char *ma);
 void setPeerID(char *peerID);
 void connDevice(CBPeripheral *peripheral);

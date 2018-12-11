@@ -7,7 +7,8 @@ import (
 	"fmt"
 	"time"
 	"unsafe"
-
+	"sync"
+	
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"
@@ -110,11 +111,41 @@ func SetPeerID(peerID string) {
 	C.setPeerID(cPeerID)
 }
 
+func waitForOn() bool {
+	var wg sync.WaitGroup
+
+	centralIsOn := false
+	peripheralIsOn := false
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		if int(C.centralManagerIsOn()) == 1 {
+			centralIsOn = true
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		if int(C.peripheralManagerIsOn()) == 1 {
+			peripheralIsOn = true
+		}
+	}()
+	wg.Wait()
+
+	return centralIsOn && peripheralIsOn
+}
+
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
 	C.init()
-	time.Sleep(1 * time.Second)
-	go C.startAdvertising()
-	go C.startDiscover()
+
+	for !waitForOn() {
+		logger().Debug("Ble centralManager or peripheralManager isn't on wait 1sec and retry")
+		time.Sleep(1 * time.Second)
+	}
+
+	C.addService()
+	C.startAdvertising()
+	C.startScanning()
+
 	listerner := &Listener{
 		lAddr:           lAddr,
 		incomingBLEUUID: make(chan string),
@@ -130,7 +161,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, e
 // Dial dials the peer at the remote address.
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	if int(C.isDiscovering()) != 1 {
-		go C.startDiscover()
+		go C.startScanning()
 	}
 	s, err := rAddr.ValueForProtocol(PBle)
 	if err != nil {

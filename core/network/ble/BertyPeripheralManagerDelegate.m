@@ -91,10 +91,6 @@
     if (error) {
         NSLog(@"error: %@", [error localizedFailureReason]);
     }
-    [centralManager scanForPeripheralsWithServices:@[[BertyUtils sharedUtils].serviceUUID] options:@{CBCentralManagerScanOptionAllowDuplicatesKey:@YES}];
-    [peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey:@[[BertyUtils sharedUtils].serviceUUID]}];
-    NSArray<CBPeripheral *> *peripherals = [centralManager retrieveConnectedPeripheralsWithServices:@[[BertyUtils sharedUtils].serviceUUID]];
-    NSLog(@"%@", peripherals);
     NSLog(@"peripheralManager: didAddService: %@", [service.UUID UUIDString]);
 }
 
