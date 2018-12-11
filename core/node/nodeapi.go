@@ -11,7 +11,6 @@ import (
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
-	"github.com/opentracing/opentracing-go"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
@@ -360,7 +359,7 @@ func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.C
 
 	sql := n.sql(ctx)
 	output := &entity.Contact{}
-	if err := n.sql.Where(input.Filter).First(output).Error; err != nil {
+	if err := sql.Where(input.Filter).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 

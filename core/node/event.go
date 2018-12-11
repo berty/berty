@@ -14,8 +14,6 @@ import (
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-
-	"go.uber.org/zap"
 )
 
 func (n *Node) AsyncWait(ctx context.Context) {
