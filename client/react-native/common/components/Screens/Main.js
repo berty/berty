@@ -11,6 +11,8 @@ import { colors } from '../../constants'
 import Chats from './Chats'
 import Contacts from './Contacts'
 import Settings from './Settings'
+import ContactCardModal from './Contacts/ContactCardModal'
+import { ViewExportComponent } from '../Library/SaveViewToCamera'
 
 const TabBarIcon = (tintColor, routeName, badgeValue) => {
   let iconName = {
@@ -107,16 +109,17 @@ export default createStackNavigator(
     'modal/devtools/event/list/filters': {
       screen: EventListFilterModal,
     },
+    'modal/contacts/card': {
+      screen: ContactCardModal,
+    },
+    'virtual/view-export': {
+      screen: ViewExportComponent,
+    },
   },
   {
     mode: 'card',
     headerMode: 'none',
     transparentCard: true,
-    cardStyle: [
-      {
-        backgroundColor: colors.transparentGrey,
-      },
-    ],
     navigationOptions: {
       gesturesEnabled: false,
     },

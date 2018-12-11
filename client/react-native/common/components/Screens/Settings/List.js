@@ -30,7 +30,15 @@ export default class List extends PureComponent {
           <Menu.Item
             icon='user'
             title='My account'
-            onPress={() => navigation.push('settings/my-account')}
+            onPress={() =>
+              navigation.push('modal/contacts/card', {
+                data: {
+                  id,
+                  displayName,
+                },
+                self: true,
+              })
+            }
           />
           {availableUpdate ? (
             <Menu.Item

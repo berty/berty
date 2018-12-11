@@ -108,7 +108,7 @@ export default createTabNavigator(
 )
 
 export const ByPublicKeyModal = props => (
-  <ModalScreen navigation={props.navigation}>
+  <ModalScreen navigation={props.navigation} showDismiss>
     <PublicKeyWithActions
       addButton
       initialKey={props.navigation.getParam('initialKey', '')}
