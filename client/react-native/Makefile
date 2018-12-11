@@ -294,8 +294,8 @@ fastlane.android.build:
 	FL_GRADLE_TASK=assembleReleaseAndPublish \
 		bundle exec fastlane run gradle --verbose
 
-	# test if apk has been correctly exported
-	test -f $(ANDROID_BUILD)/*.apk
+	# check if apk is correctly signed
+	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
 fastlane.ios.release:
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
