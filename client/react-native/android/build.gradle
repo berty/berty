@@ -2,9 +2,9 @@
 
 buildscript {
     ext {
-        buildToolsVersion = "27.0.3"
+        buildToolsVersion = "28.0.3"
         minSdkVersion = 16
-        compileSdkVersion = 27
+        compileSdkVersion = 28
         targetSdkVersion = 26
         supportLibVersion = "27.1.1"
     }
@@ -13,7 +13,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -28,6 +28,17 @@ allprojects {
         maven {
             // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
             url "$rootDir/../node_modules/react-native/android"
+        }
+    }
+}
+
+// Set android-tools as maeven url for each broken packages
+subprojects {project ->
+    if (project.name.contains('react-native-')) {
+        buildscript {
+            repositories {
+                maven { url "https://dl.bintray.com/android/android-tools/" }
+            }
         }
     }
 }

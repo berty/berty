@@ -3,6 +3,7 @@
 # core
 core/.generated
 core/.*.generated
+core/core-sources.jar
 gin-bin
 
 #ag
