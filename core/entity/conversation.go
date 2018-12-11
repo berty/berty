@@ -1,8 +1,10 @@
 package entity
 
+import "berty.tech/core/pkg/errorcodes"
+
 func (c Conversation) Validate() error {
 	if c.ID == "" {
-		return ErrInvalidEntity
+		return errorcodes.ErrEntityData.New()
 	}
 	return nil
 }
@@ -22,7 +24,7 @@ func (c Conversation) Filtered() *Conversation {
 
 func (m ConversationMember) Validate() error {
 	if m.ID == "" || m.Contact == nil {
-		return ErrInvalidEntity
+		return errorcodes.ErrEntityData.New()
 	}
 	return m.Contact.Validate()
 }

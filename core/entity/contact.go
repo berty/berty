@@ -4,21 +4,21 @@ import (
 	"crypto/x509"
 	"encoding/base64"
 
-	"github.com/pkg/errors"
+	"berty.tech/core/pkg/errorcodes"
 )
 
 func (c Contact) Validate() error {
 	if c.ID == "" {
-		return ErrInvalidEntity
+		return errorcodes.ErrContactReqKeyMissing.New()
 	}
 
 	pubKeyBytes, err := base64.StdEncoding.DecodeString(c.ID)
 	if err != nil {
-		return err
+		return errorcodes.ErrContactReqKey.Wrap(err)
 	}
 
 	if _, err := x509.ParsePKIXPublicKey(pubKeyBytes); err != nil {
-		return errors.Wrap(ErrInvalidEntity, "invalid public key")
+		return errorcodes.ErrContactReqKey.Wrap(err)
 	}
 
 	return nil

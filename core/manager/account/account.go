@@ -12,6 +12,8 @@ import (
 	"strings"
 	"syscall"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	p2papi "berty.tech/core/api/p2p"
@@ -127,7 +129,8 @@ func Get(ctx context.Context, name string) (*Account, error) {
 			return account, nil
 		}
 	}
-	return nil, errors.New("account with name " + name + " isn't opened")
+
+	return nil, errorcodes.ErrAccManagerNotOpened.NewArgs(map[string]string{"name": name})
 }
 
 func List(ctx context.Context, datastorePath string) ([]string, error) {
@@ -179,17 +182,17 @@ func ForEach(ctx context.Context, callback func(context.Context, int, *Account))
 
 func (a *Account) Validate() error {
 	if a.Name == "" {
-		return errors.New("missing required field (Name) for account")
+		return errorcodes.ErrAccManagerCfgName.New()
 	} else if a.Passphrase == "" {
-		return errors.New("missing required field (Passphrase) for account")
+		return errorcodes.ErrAccManagerCfgPassphrase.New()
 	} else if a.dbDir == "" {
-		return errors.New("missing required field (dbDir) for account")
+		return errorcodes.ErrAccManagerDbDir.New()
 	} else if a.db == nil {
-		return errors.New("connecting to the db failed with the provided (dbDir/Passphrase) for account")
+		return errorcodes.ErrAccManagerDb.New()
 	} else if a.network == nil {
-		return errors.New("missing required field (network) for account")
+		return errorcodes.ErrAccManagerCfgNet.New()
 	} else if a.GrpcServer == nil {
-		return errors.New("missing required field (GrpcServer) for Account")
+		return errorcodes.ErrAccManagerCfgGrpcSrv.New()
 	}
 	return nil
 }
@@ -293,19 +296,19 @@ func (a *Account) openDatabase(ctx context.Context) error {
 	var err error
 	a.db, err = sqlcipher.Open(a.dbPath(), []byte(a.Passphrase))
 	if err != nil {
-		return errors.Wrap(err, "failed to open sqlcipher")
+		return errorcodes.ErrAccManagerDb.Wrap(err)
 	}
 	a.db, err = sql.Init(a.db)
 	if err != nil {
-		return errors.Wrap(err, "failed to initialize sql")
+		return errorcodes.ErrAccManagerDbInit.Wrap(err)
 	}
 	if a.dbDrop {
 		if err = a.DropDatabase(ctx); err != nil {
-			return errors.Wrap(err, "failed to drop database")
+			return errorcodes.ErrAccManagerDbDrop.Wrap(err)
 		}
 	}
 	if err = sql.Migrate(a.db); err != nil {
-		return errors.Wrap(err, "failed to apply sql migrations")
+		return errorcodes.ErrAccManagerDbMig.Wrap(err)
 	}
 	return nil
 }
@@ -318,7 +321,7 @@ func (a *Account) DropDatabase(ctx context.Context) error {
 	var err error
 
 	if err = sql.DropDatabase(a.db); err != nil {
-		return errors.Wrap(err, "failed to drop database")
+		return errorcodes.ErrAccManagerDbDrop.Wrap(err)
 	}
 	return a.openDatabase(ctx)
 }
@@ -382,7 +385,7 @@ func (a *Account) StartBot(ctx context.Context) error {
 	)
 	b, err := bot.New(ctx, options...)
 	if err != nil {
-		return errors.Wrap(err, "failed to initialize bot")
+		return errorcodes.ErrAccManagerBotInit.Wrap(err)
 	}
 	a.BotRunning = true
 
@@ -405,7 +408,7 @@ func (a *Account) StopBot(ctx context.Context) error {
 
 	// TODO: implement bot closing function
 	// Then set a.BotRunning = false
-	return errors.New("stop bot not implemented yet")
+	return errorcodes.ErrUnimplemented.New()
 }
 
 func (a *Account) startGQL(ctx context.Context) error {
@@ -470,7 +473,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithRing(a.ring),
 	)
 	if err != nil {
-		return errors.Wrap(err, "failed to initialize node")
+		return errorcodes.ErrAccManagerInitNode.Wrap(err)
 	}
 	return nil
 }

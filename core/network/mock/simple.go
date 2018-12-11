@@ -7,8 +7,8 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/p2p"
-	"berty.tech/core/errorcodes"
 	"berty.tech/core/network"
+	"berty.tech/core/pkg/errorcodes"
 )
 
 //
@@ -69,7 +69,7 @@ func (d *SimpleDriver) Emit(ctx context.Context, envelope *p2p.Envelope) error {
 
 				_, err := peer.handler(ctx, envelope)
 
-				if err == errorcodes.ErrorUntrustedEnvelope {
+				if errorcodes.ErrEnvelopeUntrusted.Is(err) {
 					logger().Error("signature check failed", zap.Error(err))
 				} else if err != nil {
 					logger().Error("peer.driver.handler failed", zap.Error(err))

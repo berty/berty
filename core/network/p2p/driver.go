@@ -7,6 +7,8 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p/p2putil"
@@ -32,7 +34,6 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -534,11 +535,11 @@ func (d *Driver) PingOtherNode(ctx context.Context, destination string) error {
 
 	c, err := d.ccmanager.GetConn(ctx, destination)
 	if err != nil {
-		return errors.Wrap(err, "unable to ping")
+		return errorcodes.ErrNetPing.Wrap(err)
 	}
 
 	if _, err = p2p.NewServiceClient(c).Ping(ctx, &p2p.Void{}); err != nil {
-		return errors.Wrap(err, "unable to ping")
+		return errorcodes.ErrNetPing.Wrap(err)
 	}
 
 	return nil

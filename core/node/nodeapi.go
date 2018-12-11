@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"github.com/jinzhu/gorm"
 
 	"berty.tech/core/api/node"
@@ -11,7 +13,7 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
@@ -50,19 +52,19 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	var err error
 	query, err = paginate(query, input.Paginate)
 	if err != nil {
-		return errors.Wrap(err, "pagination error")
+		return errorcodes.ErrPagination.Wrap(err)
 	}
 
 	// perform query
 	var events []*p2p.Event
 	if err := query.Find(&events).Error; err != nil {
-		return errors.Wrap(err, "failed to get events from database")
+		return errorcodes.ErrDb.Wrap(err)
 	}
 
 	// stream results
 	for _, event := range events {
 		if err := stream.Send(event); err != nil {
-			return err
+			return errorcodes.ErrNetStream.Wrap(err)
 		}
 	}
 	return nil
@@ -85,11 +87,11 @@ func (n *Node) EventSeen(ctx context.Context, input *node.EventIDInput) (*p2p.Ev
 		UpdateColumn("seen_at", time.Now().UTC()).
 		First(event).
 		Error; err != nil {
-		return nil, errors.Wrap(err, "unable to mark event as seen")
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	if count == 0 {
-		return nil, errors.New("event not found")
+		return nil, errorcodes.ErrDbNothingFound.New()
 	}
 
 	return event, nil
@@ -105,7 +107,7 @@ func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, erro
 	sql := n.sql(ctx)
 	var event *p2p.Event
 	if err := sql.First(event, "ID = ?", input.ID).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to get event from database")
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
 	return event, nil
@@ -124,25 +126,23 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) 
 
 	// input validation
 	if err := input.Validate(); err != nil {
-		return nil, errors.Wrap(err, ErrInvalidInput.Error())
+		return nil, errorcodes.ErrValidation.Wrap(err)
 	}
 	sql := n.sql(ctx)
 	contact, err := bsql.FindContact(sql, input)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to get contact")
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	// mark contact as friend
 	contact.Status = entity.Contact_IsFriend
 	if err := sql.Save(contact).Error; err != nil {
-		return nil, err
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	// send ContactRequestAccepted event
 	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequestAccepted)
-	if err != nil {
-		return nil, err
-	}
+
 	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
 		return nil, err
 	}
@@ -164,7 +164,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 
 	// input validation
 	if err := req.Contact.Validate(); err != nil {
-		return nil, ErrInvalidInput
+		return nil, errorcodes.ErrValidation.Wrap(err)
 	}
 
 	// check for duplicate
@@ -176,7 +176,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 		contact = req.Contact
 		contact.Status = entity.Contact_IsRequested
 		if err = sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
-			return nil, errors.Wrap(err, "failed to save contact")
+			return nil, errorcodes.ErrDbCreate.Wrap(err)
 		}
 	} else if err != nil {
 		return nil, err
@@ -189,10 +189,10 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 		logger().Info("contact has already been requested, sending event again")
 
 	} else if contact.Status == entity.Contact_Myself {
-		return nil, ErrContactIsMyself
+		return nil, errorcodes.ErrContactReqMyself.New()
 
 	} else {
-		return nil, ErrEntityAlreadyExists
+		return nil, errorcodes.ErrContactReqExisting.New()
 	}
 
 	// send request to peer
@@ -204,10 +204,10 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 		},
 		IntroText: req.IntroText,
 	}); err != nil {
-		return nil, err
+		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
 	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
-		return nil, err
+		return nil, errorcodes.ErrNet.Wrap(err)
 	}
 
 	return contact, nil
@@ -222,16 +222,21 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 
 	// input validation
 	if contact == nil || contact.ID == "" {
-		return nil, ErrInvalidInput
+		return nil, errorcodes.ErrValidation.New()
 	}
 	if err := contact.Validate(); err != nil {
-		return nil, errors.Wrap(err, ErrInvalidInput.Error())
+		return nil, errorcodes.ErrValidation.Wrap(err)
 	}
 
-	// FIXME: protect import fields from updatind
+	// FIXME: protect import fields from updating
 
 	sql := n.sql(ctx)
-	return contact, sql.Model(contact).Update("displayName", contact.DisplayName).Error
+
+	if err := sql.Model(contact).Update("displayName", contact.DisplayName).Error; err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
+	return contact, nil
 }
 
 // ContactRemove implements berty.node.ContactRemove
@@ -243,18 +248,26 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 
 	// input validation
 	if contact == nil || contact.ID == "" {
-		return nil, ErrInvalidInput
+		return nil, errorcodes.ErrValidation.New()
 	}
 
 	if err := contact.Validate(); err != nil {
-		return nil, errors.Wrap(err, ErrInvalidInput.Error())
+		return nil, errorcodes.ErrValidation.Wrap(err)
 	}
 
-	// FIXME: should not be able to delete myself
+	if contact.ID == n.config.Myself.ID {
+		return nil, errorcodes.ErrValidationMyself.New()
+	}
 
 	// remove from sql
 	sql := n.sql(ctx)
-	return contact, sql.Delete(contact).Error
+	err := sql.Delete(contact).Error
+
+	if err != nil {
+		return nil, errorcodes.ErrDbDelete.Wrap(err)
+	}
+
+	return contact, nil
 }
 
 // ContactList implements berty.node.ContactList
@@ -272,19 +285,19 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	var err error
 	query, err = paginate(query, input.Paginate)
 	if err != nil {
-		return errors.Wrap(err, "pagination error")
+		return errorcodes.ErrPagination.Wrap(err)
 	}
 
 	// perform query
 	var contacts []*entity.Contact
 	if err := query.Find(&contacts).Error; err != nil {
-		return errors.Wrap(err, "failed to get contacts from database")
+		return errorcodes.ErrDb.Wrap(err)
 	}
 
 	// stream results
 	for _, contact := range contacts {
 		if err := stream.Send(contact); err != nil {
-			return err
+			return errorcodes.ErrNetStream.Wrap(err)
 		}
 	}
 	return nil
@@ -300,7 +313,7 @@ func (n *Node) GetContact(ctx context.Context, input *entity.Contact) (*entity.C
 	sql := n.sql(ctx)
 	var contact *entity.Contact
 	if err := sql.First(contact, "ID = ?", input.ID).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to get contact from database")
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	return contact, nil
@@ -349,13 +362,13 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 	sql := n.sql(ctx)
 
 	if err := sql.Set("gorm:association_autoupdate", true).Save(&createConversation).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to save conversation")
+		return nil, errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	// load new conversation again, to preload associations
 	conversation, err := bsql.ConversationByID(sql, createConversation.ID)
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to load freshly created conversation")
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	// Async subscribe to conversation
@@ -384,14 +397,14 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 		if err := event.SetAttrs(&p2p.ConversationInviteAttrs{
 			Conversation: filtered,
 		}); err != nil {
-			return nil, err
+			return nil, errorcodes.ErrUndefined.Wrap(err)
 		}
 		if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
 			return nil, err
 		}
 	}
 
-	return conversation, err
+	return conversation, nil
 }
 
 func (n *Node) ConversationAcceptInvite(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
@@ -400,7 +413,7 @@ func (n *Node) ConversationAcceptInvite(ctx context.Context, input *entity.Conve
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
-	return nil, ErrNotImplemented
+	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationManageMembersInput) (*entity.Conversation, error) {
@@ -409,7 +422,7 @@ func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationM
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
-	return nil, ErrNotImplemented
+	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 func (n *Node) ConversationExclude(ctx context.Context, input *node.ConversationManageMembersInput) (*entity.Conversation, error) {
@@ -418,7 +431,7 @@ func (n *Node) ConversationExclude(ctx context.Context, input *node.Conversation
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
-	return nil, ErrNotImplemented
+	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 func (n *Node) ConversationList(input *node.ConversationListInput, stream node.Service_ConversationListServer) error {
@@ -434,19 +447,19 @@ func (n *Node) ConversationList(input *node.ConversationListInput, stream node.S
 	var err error
 	query, err = paginate(query, input.Paginate)
 	if err != nil {
-		return errors.Wrap(err, "pagination error")
+		return errorcodes.ErrPagination.Wrap(err)
 	}
 
 	// perform query
 	var conversations []*entity.Conversation
 	if err := query.Find(&conversations).Error; err != nil {
-		return errors.Wrap(err, "failed to get conversations from database")
+		return errorcodes.ErrDb.Wrap(err)
 	}
 
 	// stream results
 	for _, conversation := range conversations {
 		if err := stream.Send(conversation); err != nil {
-			return err
+			return errorcodes.ErrNet.Wrap(err)
 		}
 	}
 	return nil
@@ -462,10 +475,10 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 	if err := event.SetAttrs(&p2p.ConversationNewMessageAttrs{
 		Message: input.Message,
 	}); err != nil {
-		return nil, err
+		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
 	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
-		return nil, err
+		return nil, errorcodes.ErrNet.Wrap(err)
 	}
 	return event, nil
 }
@@ -480,7 +493,7 @@ func (n *Node) GetConversation(ctx context.Context, input *entity.Conversation) 
 	sql := n.sql(ctx)
 	var conversation *entity.Conversation
 	if err := sql.First(conversation, "ID = ?", input.ID).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to get conversation from database")
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
 	return conversation, nil
@@ -496,7 +509,7 @@ func (n *Node) GetConversationMember(ctx context.Context, input *entity.Conversa
 	sql := n.sql(ctx)
 	var conversationMember *entity.ConversationMember
 	if err := sql.First(conversationMember, "ID = ?", input.ID).Error; err != nil {
-		return nil, errors.Wrap(err, "failed to get conversationMember from database")
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
 	return conversationMember, nil
@@ -508,5 +521,7 @@ func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*nod
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
-	return &node.Void{}, n.networkDriver.PingOtherNode(ctx, input.Destination)
+	err := n.networkDriver.PingOtherNode(ctx, input.Destination)
+
+	return &node.Void{}, errorcodes.ErrNet.Wrap(err)
 }

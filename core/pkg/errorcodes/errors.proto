@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package berty.errors;
+
+option go_package = "berty.tech/core/pkg/errorcodes";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+enum BertyErrorCodes {
+  option (gogoproto.goproto_enum_prefix) = false;
+
+  ErrUndefined = 0;
+  ErrBase = 1;
+  ErrUnimplemented = 2;
+  ErrRandomGeneratorFailed = 3;
+  ErrUUIDGeneratorFailed = 4;
+  ErrSerialization = 5;
+  ErrDeserialization = 6;
+
+  ErrEnvelope = 1000;
+  ErrEnvelopeUntrusted = 1001;
+  ErrEnvelopeNoDeviceFound = 1002;
+
+  ErrEntity = 2000;
+  ErrEntityInput = 2001;
+  ErrEntityData = 2002;
+  ErrEntityExists = 2003;
+
+  ErrNet = 3000;
+  ErrNetAnotherClientConnected = 3001;
+  ErrNetStream = 3002;
+  ErrNetQueue = 3003;
+  ErrNetDial = 3004;
+  ErrNetPing = 3005;
+
+  ErrNetP2P = 3100;
+  ErrNetP2PIdentity = 3101;
+  ErrNetP2PPublicKey = 3102;
+
+
+  ErrEvent = 4000;
+  ErrEventSender = 4001;
+  ErrEventData = 4002;
+
+  ErrValidation = 5000;
+  ErrValidationInput = 5001;
+  ErrValidationMyself = 5002;
+
+  ErrPagination = 6000;
+
+  ErrDb = 7000;
+  ErrDbCreate = 7001;
+  ErrDbUpdate = 7002;
+  ErrDbDelete = 7003;
+  ErrDbNothingFound = 7004;
+
+  ErrCrypto = 8000;
+  ErrCryptoSig = 8100;
+  ErrCryptoSigMismatch = 8101;
+  ErrCryptoSigFormat = 8102;
+  ErrCryptoEncrypt = 8200;
+  ErrCryptoDecrypt = 8300;
+  ErrCryptoKey = 8400;
+  ErrCryptoKeyGen = 8401;
+  ErrCryptoKeyDecode = 8402;
+  ErrCryptoSigchain = 8500;
+
+  ErrAccManager = 9000;
+  ErrAccManagerInitNode = 9001;
+  ErrAccManagerDb = 9002;
+  ErrAccManagerDbInit = 9003;
+  ErrAccManagerDbDrop = 9004;
+  ErrAccManagerDbMig = 9005;
+  ErrAccManagerDbDir = 9006;
+  ErrAccManagerNotOpened = 9007;
+  ErrAccManagerCfg = 9100;
+  ErrAccManagerCfgName = 9101;
+  ErrAccManagerCfgPassphrase = 9102;
+
+  ErrAccManagerCfgNet = 9104;
+  ErrAccManagerCfgGrpcSrv = 9105;
+  ErrAccManagerBot = 9200;
+  ErrAccManagerBotInit = 9201;
+
+  ErrContactReq = 10000;
+  ErrContactReqKey = 10001;
+  ErrContactReqKeyMissing = 10002;
+  ErrContactReqExisting = 10003;
+  ErrContactReqMyself = 10004;
+
+  ErrCfg = 11000;
+  ErrCfgMissing = 11001;
+  ErrCfgMyself = 11002;
+  ErrCfgDevices = 11003;
+
+  ErrSenderAlias = 12000;
+  ErrSenderAliasGen = 12001;
+  ErrSenderAliasNoCandidates = 12002;
+  ErrSenderAliasUpdateFailed = 12003;
+
+}
+
+
+message BertyError {
+  BertyErrorCodes code = 1;
+  repeated BertyErrorCodes ExtendedCodes = 2;
+  string message = 3;
+  map<string, string> placeholders = 4;
+  string url = 5;
+  string dev_info = 6;
+
+  BertyError outer = 7;
+}

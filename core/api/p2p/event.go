@@ -6,10 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	context "golang.org/x/net/context"
 )
@@ -158,7 +158,7 @@ func FindNonAcknowledgedEventDestinations(db *gorm.DB, before time.Time) ([]*Eve
 		Error
 
 	if err != nil {
-		return nil, errors.Wrap(err, "unable to get non acknowledged events")
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	return events, nil

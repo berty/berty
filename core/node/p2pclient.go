@@ -3,11 +3,12 @@ package node
 import (
 	"context"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
 )
 
 func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact, kind p2p.Kind) *p2p.Event {
@@ -36,11 +37,11 @@ func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event) error
 	defer span.Finish()
 
 	if err := event.Validate(); err != nil {
-		return errors.Wrap(err, "invalid event")
+		return errorcodes.ErrEventData.Wrap(err)
 	}
 	sql := n.sql(ctx)
 	if err := sql.Create(event).Error; err != nil {
-		return errors.Wrap(err, "failed to write event to db")
+		return errorcodes.ErrDbCreate.Wrap(err)
 	}
 	n.outgoingEvents <- event
 

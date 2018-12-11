@@ -10,6 +10,7 @@ import (
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network/ble"
+	"github.com/gofrs/uuid"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/jinzhu/gorm"
 	libp2p "github.com/libp2p/go-libp2p"
@@ -24,7 +25,6 @@ import (
 	pnet "github.com/libp2p/go-libp2p-pnet"
 	"github.com/libp2p/go-libp2p/config"
 	ma "github.com/multiformats/go-multiaddr"
-	uuid "github.com/satori/go.uuid"
 )
 
 const DefaultSwarmKey = `/key/swarm/psk/1.0.0/

@@ -1,8 +1,8 @@
 package ble
 
 import (
+	"github.com/gofrs/uuid"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/satori/go.uuid"
 	mafmt "github.com/whyrusleeping/mafmt"
 )
 

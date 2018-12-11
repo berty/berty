@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
+
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -89,7 +91,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	}[input.Kind]
 	var handlingError error
 	if !found {
-		handlingError = ErrNotImplemented
+		handlingError = errorcodes.ErrUnimplemented.New()
 	} else {
 		handlingError = handler(ctx, input)
 	}
@@ -108,7 +110,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	}
 
 	if err := sql.Save(input).Error; err != nil {
-		return errors.Wrap(err, "failed to save event in db")
+		return errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	// asynchronously ack, maybe we can ignore this one?
@@ -124,7 +126,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	input.AckedAt = &now
 
 	if err := sql.Save(input).Error; err != nil {
-		return errors.Wrap(err, "failed to save event acked at in db")
+		return errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	return handlingError

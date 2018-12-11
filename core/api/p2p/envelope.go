@@ -6,9 +6,8 @@ import (
 
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
-	"berty.tech/core/errorcodes"
+	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 )
 
 func (e *Envelope) GetDataToSign() ([]byte, error) {
@@ -23,7 +22,7 @@ func (e *Envelope) GetDeviceForEnvelope(db *gorm.DB) (*entity.Device, error) {
 	devices, err := entity.SenderAliasGetCandidates(db, e.Source)
 
 	if err != nil {
-		return nil, errors.Wrap(err, "unable go retrieve candidate devices")
+		return nil, errorcodes.ErrEnvelopeNoDeviceFound.Wrap(err)
 	}
 
 	for _, device := range devices {
@@ -46,5 +45,5 @@ func (e *Envelope) GetDeviceForEnvelope(db *gorm.DB) (*entity.Device, error) {
 		}
 	}
 
-	return nil, errorcodes.ErrorNoDeviceFoundForEnvelope
+	return nil, errorcodes.ErrEnvelopeNoDeviceFound.New()
 }

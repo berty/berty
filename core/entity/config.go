@@ -1,26 +1,25 @@
 package entity
 
 import (
-	"errors"
-
+	"berty.tech/core/pkg/errorcodes"
 	"go.uber.org/zap"
 )
 
 func (c *Config) Validate() error {
 	if c == nil {
-		err := errors.New("invalid config")
+		err := errorcodes.ErrCfgMissing.New()
 		logger().Warn("Config.Validate", zap.Error(err))
 		return err
 	}
 
 	if c.Myself == nil {
-		err := errors.New("invalid config: myself is not defined")
+		err := errorcodes.ErrCfgMyself.New()
 		logger().Warn("Config.Validate", zap.Error(err))
 		return err
 	}
 
 	if len(c.Myself.Devices) < 1 {
-		err := errors.New("invalid config: no devices listed")
+		err := errorcodes.ErrCfgDevices.New()
 		logger().Warn("Config.Validate", zap.Error(err))
 		return err
 	}
