@@ -20,7 +20,7 @@ import static android.bluetooth.BluetoothGattCharacteristic.PERMISSION_WRITE;
 import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 
-////import core.Core;
+import core.Core;
 
 @SuppressLint("LongLogTag")
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -40,7 +40,7 @@ public class BertyUtils {
     private static final String TAG = "utils";
 
     public static void logger(String level, String tag, String log) {
-////        Core.goLogger(tag, level, log);
+        Core.goLogger(tag, level, log);
     }
 
     public String ma;
