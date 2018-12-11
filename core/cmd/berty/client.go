@@ -28,6 +28,8 @@ type clientOptions struct {
 	args        []string `mapstructure:"args"`
 	unarize     bool     `mapstructure:"unarize"`
 	noIndent    bool     `mapstructure:"no-indent"`
+
+	daemonOpts daemonOptions `mapstructure:"daemon-options"`
 }
 
 func newClientCommand() *cobra.Command {

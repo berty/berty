@@ -51,18 +51,51 @@ export default class List extends PureComponent {
     })
   }
 
-  panic = async () => {
-    this.props.navigation.setParams({ panic: true })
-    this.setState({ panic: true }, async () => {
+  testPanic = async () => {
+    this.props.navigation.setParams({ testPanic: true })
+    this.setState({ testPanic: true }, async () => {
       if (Platform.OS === 'web') {
-        await this.props.screenProps.queries.Panic.fetch()
+        await this.props.screenProps.queries.TestPanic.fetch()
       } else {
         CoreModule.panic()
       }
       this.props.navigation.setParams({
-        panic: false,
+        testPanic: false,
       })
-      this.setState({ panic: false })
+      this.setState({ testPanic: false })
+    })
+  }
+
+  testLogBackgroundError = async () => {
+    this.props.navigation.setParams({ testLogBackgroundError: true })
+    this.setState({ testLogBackgroundError: true }, async () => {
+      await this.props.screenProps.queries.TestLogBackgroundError.fetch()
+      this.props.navigation.setParams({
+        testLogBackgroundError: false,
+      })
+      this.setState({ testLogBackgroundError: false })
+    })
+  }
+
+  testLogBackgroundWarn = async () => {
+    this.props.navigation.setParams({ testLogBackgroundWarn: true })
+    this.setState({ testLogBackgroundWarn: true }, async () => {
+      await this.props.screenProps.queries.TestLogBackgroundWarn.fetch()
+      this.props.navigation.setParams({
+        testLogBackgroundWarn: false,
+      })
+      this.setState({ testLogBackgroundWarn: false })
+    })
+  }
+
+  testLogBackgroundDebug = async () => {
+    this.props.navigation.setParams({ testLogBackgroundDebug: true })
+    this.setState({ testLogBackgroundDebug: true }, async () => {
+      await this.props.screenProps.queries.TestLogBackgroundDebug.fetch()
+      this.props.navigation.setParams({
+        testLogBackgroundDebug: false,
+      })
+      this.setState({ testLogBackgroundDebug: false })
     })
   }
 
@@ -193,7 +226,10 @@ export default class List extends PureComponent {
             title='Restart daemon'
             onPress={this.restartDaemon}
           />
-          <Menu.Item icon='alert-triangle' title='Panic' onPress={this.panic} />
+          <Menu.Item icon='alert-triangle' title='Panic' onPress={this.testPanic} />
+          <Menu.Item icon='info' title='Log bg Error' onPress={this.testLogBackgroundError} />
+          <Menu.Item icon='info' title='Log bg Warn' onPress={this.testLogBackgroundWarn} />
+          <Menu.Item icon='info' title='Log bg Debug' onPress={this.testLogBackgroundDebug} />
           <Menu.Item
             icon='slash'
             title='Throw native exception'

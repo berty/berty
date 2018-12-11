@@ -46,9 +46,12 @@ func init() {
 	registerServerStream("berty.node.LogStream", NodeLogStream)
 	registerServerStream("berty.node.LogfileList", NodeLogfileList)
 	registerServerStream("berty.node.LogfileRead", NodeLogfileRead)
+	registerUnary("berty.node.TestLogBackgroundError", NodeTestLogBackgroundError)
+	registerUnary("berty.node.TestLogBackgroundWarn", NodeTestLogBackgroundWarn)
+	registerUnary("berty.node.TestLogBackgroundDebug", NodeTestLogBackgroundDebug)
+	registerUnary("berty.node.TestPanic", NodeTestPanic)
 	registerServerStream("berty.node.MonitorBandwidth", NodeMonitorBandwidth)
 	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
-	registerUnary("berty.node.Panic", NodePanic)
 }
 func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",
@@ -546,6 +549,54 @@ func NodeLogfileRead(client *client.Client, ctx context.Context, jsonInput []byt
 	}()
 	return streamProxy, nil
 }
+func NodeTestLogBackgroundError(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "TestLogBackgroundError"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().TestLogBackgroundError(ctx, &typedInput)
+}
+func NodeTestLogBackgroundWarn(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "TestLogBackgroundWarn"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().TestLogBackgroundWarn(ctx, &typedInput)
+}
+func NodeTestLogBackgroundDebug(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "TestLogBackgroundDebug"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().TestLogBackgroundDebug(ctx, &typedInput)
+}
+func NodeTestPanic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "TestPanic"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().TestPanic(ctx, &typedInput)
+}
 func NodeMonitorBandwidth(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
 		zap.String("service", "Service"),
@@ -601,16 +652,4 @@ func NodeMonitorPeers(client *client.Client, ctx context.Context, jsonInput []by
 		// FIXME: wait for queue to be empty, then close chan
 	}()
 	return streamProxy, nil
-}
-func NodePanic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "Panic"),
-		zap.String("input", string(jsonInput)),
-	)
-	var typedInput node.Void
-	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
-	}
-	return client.Node().Panic(ctx, &typedInput)
 }

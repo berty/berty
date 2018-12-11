@@ -588,8 +588,17 @@ func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*deviceinfo.De
 func (r *queryResolver) AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error) {
 	return r.client.AppVersion(ctx, &node.Void{T: true})
 }
-func (r *queryResolver) Panic(ctx context.Context, T bool) (*node.Void, error) {
-	return r.client.Panic(ctx, &node.Void{})
+func (r *queryResolver) TestPanic(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.TestPanic(ctx, &node.Void{})
+}
+func (r *queryResolver) TestLogBackgroundError(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.TestLogBackgroundError(ctx, &node.Void{})
+}
+func (r *queryResolver) TestLogBackgroundWarn(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.TestLogBackgroundWarn(ctx, &node.Void{})
+}
+func (r *queryResolver) TestLogBackgroundDebug(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.TestLogBackgroundDebug(ctx, &node.Void{})
 }
 
 func (r *queryResolver) Peers(ctx context.Context, _ bool) (*network.Peers, error) {
