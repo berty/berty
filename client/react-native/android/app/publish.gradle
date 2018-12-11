@@ -15,7 +15,7 @@ android {
                 output.outputFileName = "${rootProject.name}.apk"
 
                 task.doFirst {
-                    println "Creating ${BERTY_APK_OUTPUT_DIR}/${output.outputFileName}.apk (${versionName}.${versionCode})"
+                    println "Creating ${BERTY_APK_OUTPUT_DIR}/${output.outputFileName} (${versionName}.${versionCode})"
                 }
 
                 task.from(output.outputFile)

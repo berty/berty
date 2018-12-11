@@ -19,12 +19,6 @@ IOS_BUILD := $(BUILD)/ios
 # android related env
 ANDROID_VERSION ?= $(shell git rev-list --all --count)
 ANDROID_BUILD ?= $(BUILD)/android
-ANDROID_STORE_FILE_B64 ?=
-ANDROID_STORE_FILE := berty.keystore
-ANDROID_KEY_ALIAS ?= berty-keystore
-ANDROID_STORE_PASSWORD ?= ""
-ANDROID_KEY_PASSWORD ?= ""
-
 
 KEYCHAIN_NAME ?= berty_keychain
 KEYCHAIN_PASSWORD ?= berty_pass
@@ -292,7 +286,7 @@ fastlane.ios.build:
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 fastlane.android.build:
-	mkdir -p $(ANDROID_BUILD) /tmp/android/keystore
+	mkdir -p $(ANDROID_BUILD)
 
 	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \
 	FL_GRADLE_PROJECT_DIR=android \
