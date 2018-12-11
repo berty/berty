@@ -17,7 +17,7 @@ export const getAvailableUpdate = async context => {
       return null
     }
 
-    const [gitData] = deviceData.DeviceInfos.infos
+    const [gitData] = deviceData.infos
       .filter(d => d.key === 'build: git')
       .map(({ key, value }) =>
         value
