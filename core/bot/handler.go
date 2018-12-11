@@ -60,7 +60,7 @@ type MessageHandlerFunc func(*Bot, *Event, *entity.Message) error
 func (b *Bot) AddMessageHandlerFunc(f MessageHandlerFunc) {
 	b.AddHandler(Trigger{
 		If: func(b *Bot, e *Event) bool {
-			return e.Kind == p2p.Kind_ConversationNewMessage
+			return e.Kind == p2p.Kind_ConversationNewMessage && e.IsJustReceived()
 		},
 		Then: func(b *Bot, e *Event) error {
 			nm, err := e.GetConversationNewMessageAttrs()

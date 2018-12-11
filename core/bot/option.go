@@ -44,7 +44,7 @@ func WithClient(client *client.Client) Option {
 func WithAutoAcceptInvites() Option {
 	return func(b *Bot) error {
 		b.AddHandlerFunc(func(b *Bot, e *Event) error {
-			if e.Kind != p2p.Kind_ContactRequest {
+			if e.Kind != p2p.Kind_ContactRequest || !e.IsJustReceived() {
 				return nil
 			}
 			_, err := b.client.Node().ContactAcceptRequest(e.ctx, &entity.Contact{

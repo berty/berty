@@ -30,6 +30,10 @@ func NewOutgoingEvent(ctx context.Context, sender, receiver string, kind Kind) *
 
 }
 
+func (e Event) IsJustReceived() bool {
+	return e.Direction == Event_Incoming && (e.AckedAt == nil || e.AckedAt.IsZero())
+}
+
 func (e Event) Validate() error {
 	// FIXME: generate validation
 	return nil
