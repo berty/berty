@@ -4,16 +4,14 @@ import (
 	"context"
 	"time"
 
-	"berty.tech/core/pkg/errorcodes"
-
-	"github.com/jinzhu/gorm"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
-	"github.com/opentracing/opentracing-go"
+	"github.com/jinzhu/gorm"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
@@ -70,31 +68,81 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
-func (n *Node) EventSeen(ctx context.Context, input *node.EventIDInput) (*p2p.Event, error) {
+func (n *Node) EventSeen(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
 	event := &p2p.Event{}
-	count := 0
 
 	sql := n.sql(ctx)
+
+	// get event
 	if err := sql.
 		Model(&p2p.Event{}).
-		Where(&p2p.Event{ID: input.EventID}).
-		Count(&count).
-		UpdateColumn("seen_at", time.Now().UTC()).
+		Where(&p2p.Event{ID: input.ID}).
 		First(event).
 		Error; err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
-	if count == 0 {
-		return nil, errorcodes.ErrDbNothingFound.New()
+	// check if event is from another contact
+	if event.Direction != p2p.Event_Incoming {
+		return event, nil
+	}
+
+	// then mark as seen
+	if err := sql.
+		Model(event).
+		Where(&p2p.Event{ID: event.ID}).
+		UpdateColumn("seen_at", time.Now().UTC()).
+		First(event).Error; err != nil {
+		return nil, errors.Wrap(err, "cannot set event as seen")
+	}
+
+	// mark conversation as read
+	if event.ConversationID != "" {
+		_, err := n.ConversationRead(ctx, &entity.Conversation{ID: event.ConversationID})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return event, nil
+}
+
+func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	var err error
+
+	// get conversation
+	conversation := &entity.Conversation{ID: input.ID}
+	if err = n.sql(ctx).Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+		return nil, err
+	}
+
+	// set conversation as read
+	conversation.ReadAt = time.Now().UTC()
+	if err = n.sql(ctx).Save(conversation).Error; err != nil {
+		return nil, errors.Wrap(err, "cannot update conversation")
+	}
+
+	// check if last message has been read
+	event := &p2p.Event{ConversationID: conversation.ID, Direction: p2p.Event_Incoming}
+	n.sql(ctx).Model(event).Where(event).Order("created_at").Last(event)
+	if event.SeenAt == nil {
+		return conversation, nil
+	}
+
+	// send conversation as read
+	event = n.NewConversationEvent(ctx, conversation, p2p.Kind_ConversationRead)
+	if err = event.SetConversationReadAttrs(&p2p.ConversationReadAttrs{Conversation: conversation}); err != nil {
+		return nil, err
+	}
+	if err = n.EnqueueOutgoingEvent(ctx, event); err != nil {
+		return nil, err
+	}
+	return conversation, nil
 }
 
 // GetEvent implements berty.node.GetEvent
@@ -105,8 +153,8 @@ func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, erro
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var event *p2p.Event
-	if err := sql.First(event, "ID = ?", input.ID).Error; err != nil {
+	event := &p2p.Event{}
+	if err := sql.Where(input).First(event).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
@@ -142,7 +190,6 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) 
 
 	// send ContactRequestAccepted event
 	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequestAccepted)
-
 	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
 		return nil, err
 	}
@@ -303,20 +350,20 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	return nil
 }
 
-// GetContact implements berty.node.GetContact
-func (n *Node) GetContact(ctx context.Context, input *entity.Contact) (*entity.Contact, error) {
+// Contact implements berty.node.Contact
+func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.Contact, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var contact *entity.Contact
-	if err := sql.First(contact, "ID = ?", input.ID).Error; err != nil {
+	output := &entity.Contact{}
+	if err := sql.Where(input.Filter).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
-	return contact, nil
+	return output, nil
 }
 
 //
@@ -484,35 +531,35 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 }
 
 // GetConversation implements berty.node.GetConversation
-func (n *Node) GetConversation(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+func (n *Node) Conversation(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var conversation *entity.Conversation
-	if err := sql.First(conversation, "ID = ?", input.ID).Error; err != nil {
+	output := &entity.Conversation{}
+	if err := sql.Where(input).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
-	return conversation, nil
+	return output, nil
 }
 
 // GetConversationMember implements berty.node.GetConversationMember
-func (n *Node) GetConversationMember(ctx context.Context, input *entity.ConversationMember) (*entity.ConversationMember, error) {
+func (n *Node) ConversationMember(ctx context.Context, input *entity.ConversationMember) (*entity.ConversationMember, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	var conversationMember *entity.ConversationMember
-	if err := sql.First(conversationMember, "ID = ?", input.ID).Error; err != nil {
+	output := &entity.ConversationMember{}
+	if err := sql.Where(input).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
-	return conversationMember, nil
+	return output, nil
 }
 
 func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*node.Void, error) {

@@ -102,40 +102,6 @@ export const ValueGoogleProtobufMethodOptionsInputIdempotencyLevel = {
   2: 'IDEMPOTENT',
 }
 
-export const BertyNetworkMetricsTypeInputMetricsType = {
-  PEER: 0,
-  PROTOCOL: 1,
-  GLOBAL: 2,
-}
-
-export const ValueBertyNetworkMetricsTypeInputMetricsType = {
-  0: 'PEER',
-  1: 'PROTOCOL',
-  2: 'GLOBAL',
-}
-
-export const BertyNodeKindInputKind = {
-  Unknown: 0,
-  NodeStarted: 1,
-  NodeStopped: 2,
-  NodeIsAlive: 3,
-  BackgroundError: 4,
-  BackgroundWarn: 5,
-  Debug: 6,
-  Statistics: 7,
-}
-
-export const ValueBertyNodeKindInputKind = {
-  0: 'Unknown',
-  1: 'NodeStarted',
-  2: 'NodeStopped',
-  3: 'NodeIsAlive',
-  4: 'BackgroundError',
-  5: 'BackgroundWarn',
-  6: 'Debug',
-  7: 'Statistics',
-}
-
 export const BertyEntityDeviceInputStatus = {
   Unknown: 0,
   Connected: 1,
@@ -205,12 +171,14 @@ export const BertyP2pKindInputKind = {
   Sent: 101,
   Ack: 102,
   Ping: 103,
+  Seen: 104,
   ContactRequest: 201,
   ContactRequestAccepted: 202,
   ContactShareMe: 203,
   ContactShare: 204,
   ConversationInvite: 301,
   ConversationNewMessage: 302,
+  ConversationRead: 303,
   DevtoolsMapset: 401,
   SenderAliasUpdate: 501,
   Node: 99,
@@ -221,12 +189,14 @@ export const ValueBertyP2pKindInputKind = {
   101: 'Sent',
   102: 'Ack',
   103: 'Ping',
+  104: 'Seen',
   201: 'ContactRequest',
   202: 'ContactRequestAccepted',
   203: 'ContactShareMe',
   204: 'ContactShare',
   301: 'ConversationInvite',
   302: 'ConversationNewMessage',
+  303: 'ConversationRead',
   401: 'DevtoolsMapset',
   501: 'SenderAliasUpdate',
   99: 'Node',
@@ -244,6 +214,40 @@ export const ValueBertyP2pEventInputDirection = {
   1: 'Incoming',
   2: 'Outgoing',
   99: 'Node',
+}
+
+export const BertyNetworkMetricsTypeInputMetricsType = {
+  PEER: 0,
+  PROTOCOL: 1,
+  GLOBAL: 2,
+}
+
+export const ValueBertyNetworkMetricsTypeInputMetricsType = {
+  0: 'PEER',
+  1: 'PROTOCOL',
+  2: 'GLOBAL',
+}
+
+export const BertyNodeKindInputKind = {
+  Unknown: 0,
+  NodeStarted: 1,
+  NodeStopped: 2,
+  NodeIsAlive: 3,
+  BackgroundError: 4,
+  BackgroundWarn: 5,
+  Debug: 6,
+  Statistics: 7,
+}
+
+export const ValueBertyNodeKindInputKind = {
+  0: 'Unknown',
+  1: 'NodeStarted',
+  2: 'NodeStopped',
+  3: 'NodeIsAlive',
+  4: 'BackgroundError',
+  5: 'BackgroundWarn',
+  6: 'Debug',
+  7: 'Statistics',
 }
 
 export const BertyNetworkConnectionTypeInputConnectionType = {

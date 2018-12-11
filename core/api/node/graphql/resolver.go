@@ -8,16 +8,16 @@ import (
 	"strings"
 	"time"
 
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	"go.uber.org/zap"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/api/node/graphql/models"
 	"berty.tech/core/api/p2p"
+	gql "berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
+	"github.com/golang/protobuf/protoc-gen-go/descriptor"
+	"go.uber.org/zap"
 )
 
 type Resolver struct {
@@ -29,11 +29,10 @@ func New(client node.ServiceClient) generated.Config {
 		Resolvers: &Resolver{client},
 	}
 }
-
-func (r *Resolver) BertyEntityContact() generated.BertyEntityContactResolver {
-	return &bertyEntityContactResolver{r}
+func (r *Resolver) GqlNode() generated.GqlNodeResolver {
+	return &gqlNodeResolver{r}
 }
-func (r *Resolver) BertyEntityContactPayload() generated.BertyEntityContactPayloadResolver {
+func (r *Resolver) BertyEntityContact() generated.BertyEntityContactResolver {
 	return &bertyEntityContactResolver{r}
 }
 func (r *Resolver) BertyEntityConversation() generated.BertyEntityConversationResolver {
@@ -41,12 +40,6 @@ func (r *Resolver) BertyEntityConversation() generated.BertyEntityConversationRe
 }
 func (r *Resolver) BertyEntityConversationMember() generated.BertyEntityConversationMemberResolver {
 	return &bertyEntityConversationMemberResolver{r}
-}
-func (r *Resolver) BertyEntityConversationMemberPayload() generated.BertyEntityConversationMemberPayloadResolver {
-	return &bertyEntityConversationMemberResolver{r}
-}
-func (r *Resolver) BertyEntityConversationPayload() generated.BertyEntityConversationPayloadResolver {
-	return &bertyEntityConversationResolver{r}
 }
 func (r *Resolver) BertyEntityDevice() generated.BertyEntityDeviceResolver {
 	return &bertyEntityDeviceResolver{r}
@@ -58,12 +51,6 @@ func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
 // func (r *Resolver) BertyP2pPeer() generated.BertyP2pPeerResolver {
 // 	return &bertyP2pPeerResolver{r}
 // }
-// func (r *Resolver) BertyP2pPeerPayload() generated.BertyP2pPeerPayloadResolver {
-// 	return &bertyP2pPeerResolver{r}
-// }
-func (r *Resolver) BertyP2pEventPayload() generated.BertyP2pEventPayloadResolver {
-	return &bertyP2pEventResolver{r}
-}
 func (r *Resolver) GoogleProtobufFieldDescriptorProto() generated.GoogleProtobufFieldDescriptorProtoResolver {
 	return &googleProtobufFieldDescriptorProtoResolver{r}
 }
@@ -85,6 +72,13 @@ func (r *Resolver) Query() generated.QueryResolver {
 }
 func (r *Resolver) Subscription() generated.SubscriptionResolver {
 	return &subscriptionResolver{r}
+}
+
+type gqlNodeResolver struct{ *Resolver }
+
+func (r *gqlNodeResolver) ID(ctx context.Context, obj *gql.Node) (string, error) {
+	// TODO: update entity id in db to have unique IDs in whole database
+	return "unknown:" + obj.ID, nil
 }
 
 type bertyEntityContactResolver struct{ *Resolver }
@@ -254,13 +248,13 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	gID := strings.SplitN(id, ":", 2)
 	switch gID[0] {
 	case "contact":
-		return r.client.GetContact(ctx, &entity.Contact{ID: id})
+		return r.Contact(ctx, &entity.Contact{ID: id})
 	case "conversation":
-		return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
+		return r.client.Conversation(ctx, &entity.Conversation{ID: id})
 	case "conversation_member":
-		return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
+		return r.client.ConversationMember(ctx, &entity.ConversationMember{ID: id})
 	case "event":
-		return r.client.GetEvent(ctx, &p2p.Event{ID: id})
+		return r.GetEvent(ctx, id)
 	default:
 		logger().Warn("unknown node type", zap.String("node_type", gID[0]))
 		return nil, nil
@@ -355,9 +349,9 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.String()
+			cursor = n.CreatedAt.Format(time.RFC3339Nano)
 		case "updated_at":
-			cursor = n.UpdatedAt.String()
+			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
 		}
 
 		output.Edges = append(output.Edges, &node.EventEdge{
@@ -380,17 +374,17 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	return output, nil
 }
 
-func (r *queryResolver) GetEvent(ctx context.Context, id string, senderID string, createdAt *time.Time, updatedAt *time.Time, sentAt *time.Time, receivedAt *time.Time, ackedAt *time.Time, direction *int32, senderAPIVersion uint32, receiverAPIVersion uint32, receiverID string, kind *int32, attributes []byte, conversationID string, seenAt *time.Time, metadata []*p2p.MetadataKeyValue) (*p2p.Event, error) {
+func (r *queryResolver) GetEvent(ctx context.Context, id string) (*p2p.Event, error) {
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
 
-func (r *mutationResolver) EventSeen(ctx context.Context, eventID string) (*p2p.Event, error) {
-	eventID = strings.SplitN(eventID, ":", 2)[1]
+func (r *mutationResolver) EventSeen(ctx context.Context, id string) (*p2p.Event, error) {
+	id = strings.SplitN(id, ":", 2)[1]
 
-	return r.client.EventSeen(ctx, &node.EventIDInput{
-		EventID: eventID,
+	return r.client.EventSeen(ctx, &p2p.Event{
+		ID: id,
 	})
 }
 
@@ -438,9 +432,9 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.String()
+			cursor = n.CreatedAt.Format(time.RFC3339Nano)
 		case "updated_at":
-			cursor = n.UpdatedAt.String()
+			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
 		}
 
 		output.Edges = append(output.Edges, &node.ContactEdge{
@@ -462,8 +456,16 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetContact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
-	return r.client.GetContact(ctx, &entity.Contact{ID: id})
+func (r *queryResolver) Contact(ctx context.Context, filter *entity.Contact) (*entity.Contact, error) {
+	if filter.ID != "" {
+		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+	}
+	if filter.Devices != nil && len(filter.Devices) != 0 {
+		for i := range filter.Devices {
+			filter.Devices[i].ID = strings.SplitN(filter.Devices[i].ID, ":", 2)[1]
+		}
+	}
+	return r.client.Contact(ctx, &node.ContactInput{Filter: filter})
 }
 func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {
 	if filter != nil && filter.ID != "" {
@@ -509,9 +511,9 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.String()
+			cursor = n.CreatedAt.Format(time.RFC3339Nano)
 		case "updated_at":
-			cursor = n.UpdatedAt.String()
+			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
 		}
 
 		output.Edges = append(output.Edges, &node.ConversationEdge{
@@ -533,11 +535,52 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) GetConversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
-	return r.client.GetConversation(ctx, &entity.Conversation{ID: id})
+func (r *mutationResolver) ConversationRead(ctx context.Context, id string) (*entity.Conversation, error) {
+	id = strings.SplitN(id, ":", 2)[1]
+
+	return r.client.ConversationRead(ctx, &entity.Conversation{
+		ID: id,
+	})
 }
-func (r *queryResolver) GetConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationID string, contactID string) (*entity.ConversationMember, error) {
-	return r.client.GetConversationMember(ctx, &entity.ConversationMember{ID: id})
+
+func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+	if id != "" {
+		id = strings.SplitN(id, ":", 2)[1]
+	}
+	if members != nil && len(members) > 0 {
+		for i := range members {
+			if members[i] == nil || members[i].ID == "" {
+				continue
+			}
+			members[i].ID = strings.SplitN(members[i].ID, ":", 2)[1]
+		}
+	}
+
+	return r.client.Conversation(ctx, &entity.Conversation{
+		ID: id,
+	})
+}
+func (r *queryResolver) ConversationMember(ctx context.Context, id string, createAt, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationID, contactID string) (*entity.ConversationMember, error) {
+	if id != "" {
+		id = strings.SplitN(id, ":", 2)[1]
+	}
+	if contact.ID != "" {
+		contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
+	}
+	if contact.Devices != nil && len(contact.Devices) != 0 {
+		for i := range contact.Devices {
+			contact.Devices[i].ID = strings.SplitN(contact.Devices[i].ID, ":", 2)[1]
+		}
+	}
+	// if conversationID != "" {
+	// 	conversationID = strings.SplitN(conversationID, ":", 2)[1]
+	// }
+	// if contactID != "" {
+	// 	contactID = strings.SplitN(contactID, ":", 2)[1]
+	// }
+	return r.client.ConversationMember(ctx, &entity.ConversationMember{
+		ID: id,
+	})
 }
 func (r *queryResolver) DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error) {
 	return r.client.DeviceInfos(ctx, &node.Void{T: true})

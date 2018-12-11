@@ -53,7 +53,7 @@ const perfLogger = (msg, req, res) => {
         : `Server return empty response with Status Code: ${res.status}.`
 
       console.group('%c RELAY %c %s', logStyle.relayERROR, logStyle.title, msg)
-      console.error(errorReason)
+      console.warn(errorReason)
     }
 
     if (typeof req !== 'undefined') {
@@ -77,8 +77,8 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
     url: `http://${await getIp()}:${await getPort()}/query`,
   }),
   retryMiddleware({
-    fetchTimeout: 1000,
-    retryDelays: () => 1000,
+    fetchTimeout: 3000,
+    retryDelays: () => 2000,
     beforeRetry: async ({
       forceRetry,
       abort,
@@ -97,6 +97,7 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
           logStyle.title,
           'fetch query error'
         )
+        console.log(req)
         console.warn(lastError)
 
         console.warn(
@@ -110,8 +111,8 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
   }),
 ]
 
-export const setup = async ({ getIp, getPort }) =>
-  new Environment({
+export const setup = async ({ getIp, getPort }) => {
+  return new Environment({
     network: new RelayNetworkLayer(await setupMiddlewares({ getIp, getPort }), {
       subscribeFn: setupSubscription({
         ip: await getIp(),
@@ -120,3 +121,4 @@ export const setup = async ({ getIp, getPort }) =>
     }),
     store: new Store(new RecordSource()),
   })
+}

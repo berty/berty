@@ -27,6 +27,9 @@ enum Kind {
   // Ping events can be use to check and measure the availability of a peer.
   Ping = 103;
 
+  // Seen events are sent by frontend
+  Seen = 104;
+
   //
   // Contact events
   //
@@ -42,6 +45,7 @@ enum Kind {
 
   ConversationInvite = 301;
   ConversationNewMessage = 302;
+  ConversationRead = 303;
 
   // Devtool events
   DevtoolsMapset = 401;
@@ -68,6 +72,7 @@ enum Kind {
 message SentAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
 message AckAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; string err_msg = 2; }
 message PingAttrs { bool T = 1; }
+message SeenAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
 
 //
 // Contact events
@@ -84,6 +89,7 @@ message ContactShareAttrs { berty.entity.Contact contact = 1; }
 
 message ConversationInviteAttrs { berty.entity.Conversation conversation = 1; }
 message ConversationNewMessageAttrs { berty.entity.Message message = 1; }
+message ConversationReadAttrs { berty.entity.Conversation conversation = 1; }
 
 //
 // Devtools events

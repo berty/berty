@@ -23,8 +23,8 @@ const query = graphql`
 
 const defaultVariables = {
   filter: null,
-  orderBy: '',
-  orderDesc: false,
+  orderBy: 'updated_at',
+  orderDesc: true,
   count: 50,
   cursor: '',
 }
@@ -32,10 +32,10 @@ const defaultVariables = {
 export default context => ({
   graphql: query,
   defaultVariables,
-  fetch: variables =>
-    fetchQuery(
+  fetch: async variables =>
+    (await fetchQuery(
       context.environment,
       query,
       merge([defaultVariables, variables])
-    ),
+    )).ConversationList,
 })

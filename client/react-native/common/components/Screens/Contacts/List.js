@@ -9,7 +9,11 @@ import { colors } from '../../../constants'
 import { fragments, enums } from '../../../graphql'
 
 const Item = fragments.Contact(
-  ({ data: { id, overrideDisplayName, displayName, status }, navigation }) => (
+  ({
+    data: { id, overrideDisplayName, displayName, status },
+    navigation,
+    screenProps,
+  }) => (
     <Flex.Cols
       align='center'
       onPress={() => {
@@ -72,7 +76,6 @@ export default class ContactList extends PureComponent {
         context: { queries, subscriptions },
       },
     } = this.props
-    console.log(this.context)
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <Pagination

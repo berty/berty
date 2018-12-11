@@ -53,7 +53,7 @@ class SharePublicKeyScreen extends PureComponent {
                     shareButton
                     copyButton
                     self
-                    data={state.data.ContactList.edges[0].node}
+                    data={state.data.Contact}
                   />
                 )
               }

@@ -44,7 +44,6 @@ const Item = fragments.Contact(
         console.error(err)
       }
       Item.isLoading[id] = false
-      this.forceUpdate()
     }
 
     onDecline = async () => {
@@ -73,9 +72,12 @@ const Item = fragments.Contact(
 
     render () {
       const {
-        data: { id, overrideDisplayName, displayName },
+        data: { id, overrideDisplayName, displayName, status },
         navigation,
       } = this.props
+      if (status === 42) {
+        return null
+      }
       return (
         <Flex.Cols
           align='center'
@@ -190,7 +192,7 @@ const Item = fragments.Contact(
 class Received extends PureComponent {
   render () {
     const { navigation, screenProps } = this.props
-    const { queries } = screenProps.context
+    const { queries, subscriptions } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
@@ -202,6 +204,7 @@ class Received extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
+          subscriptions={[subscriptions.contactRequest]}
           renderItem={props => (
             <Item
               {...props}
@@ -218,7 +221,7 @@ class Received extends PureComponent {
 class Sent extends PureComponent {
   render () {
     const { navigation, screenProps } = this.props
-    const { queries } = screenProps.context
+    const { queries, subscriptions } = screenProps.context
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
@@ -230,6 +233,7 @@ class Sent extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
+          subscriptions={[subscriptions.contactRequestAccepted]}
           renderItem={props => (
             <Item
               {...props}

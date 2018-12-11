@@ -14,7 +14,7 @@ export default class List extends PureComponent {
 
   componentDidMount () {
     this.props.screenProps.context.queries.AppVersion.fetch().then(data => {
-      this.setState({ version: data.AppVersion.version })
+      this.setState({ version: data.version })
     })
   }
 

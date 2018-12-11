@@ -1,18 +1,13 @@
 import { graphql } from 'react-relay'
-
 import { commit } from '../../relay'
-// import { updaters } from '..'
 
-const ConversationCreateMutation = graphql`
-  mutation ConversationCreateMutation(
-    $title: String!
-    $topic: String!
-    $contacts: [BertyEntityContactInput]
-  ) {
-    ConversationCreate(title: $title, topic: $topic, contacts: $contacts) {
+const ConversationReadMutation = graphql`
+  mutation ConversationReadMutation($id: ID!) {
+    ConversationRead(id: $id) {
       id
       createdAt
       updatedAt
+      readAt
       title
       topic
       members {
@@ -50,14 +45,8 @@ const ConversationCreateMutation = graphql`
 export default context => (input, configs) =>
   commit(
     context.environment,
-    ConversationCreateMutation,
-    'ConversationCreate',
+    ConversationReadMutation,
+    'ConversationRead',
     input,
-    {
-      updater: (store, data) =>
-        context.updaters.conversationList.forEach(updater =>
-          updater(store, data.ConversationCreate)
-        ),
-      ...configs,
-    }
+    configs
   )

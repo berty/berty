@@ -3,9 +3,8 @@ package p2p
 import (
 	"testing"
 
-	. "github.com/smartystreets/goconvey/convey"
-
 	"berty.tech/core/entity"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestEvent_GetAttrs(t *testing.T) {

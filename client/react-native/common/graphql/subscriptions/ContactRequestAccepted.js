@@ -6,9 +6,20 @@ export default context => ({
     EventStream(context).subscribe({
       updater:
         updater &&
-        ((store, data) => {
+        (async (store, data) => {
           if (data.EventStream.kind === 202) {
-            return updater()
+            const [
+              senderId,
+              // receiverId,
+            ] = [
+              btoa('contact:' + data.EventStream.senderId),
+              // btoa('contact:', data.EventStream.receiverId),
+            ]
+            updater(store, { id: senderId }, true)
+            // updater(store, { id: receiverId }, true)
+            await context.queries.Contact.fetch({
+              filter: { id: senderId },
+            })
           }
         }),
     }),

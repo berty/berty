@@ -3,9 +3,8 @@ package sql
 import (
 	"errors"
 
-	"github.com/jinzhu/gorm"
-
 	"berty.tech/core/entity"
+	"github.com/jinzhu/gorm"
 )
 
 func ContactByID(db *gorm.DB, id string) (*entity.Contact, error) {

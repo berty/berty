@@ -32,7 +32,7 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.0.0-rc.12
 	github.com/gofrs/uuid v3.1.0+incompatible
-	github.com/gogo/protobuf v1.1.1
+	github.com/gogo/protobuf v1.2.0
 	github.com/golang/protobuf v1.2.0
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/uuid v1.0.0 // indirect
@@ -72,25 +72,25 @@ require (
 	github.com/libp2p/go-libp2p-circuit v2.2.8+incompatible
 	github.com/libp2p/go-libp2p-crypto v2.0.1+incompatible
 	github.com/libp2p/go-libp2p-host v3.0.13+incompatible
-	github.com/libp2p/go-libp2p-interface-connmgr v0.0.19
+	github.com/libp2p/go-libp2p-interface-connmgr v0.0.21
 	github.com/libp2p/go-libp2p-interface-pnet v3.0.0+incompatible
-	github.com/libp2p/go-libp2p-kad-dht v4.4.8+incompatible
+	github.com/libp2p/go-libp2p-kad-dht v4.4.12+incompatible
 	github.com/libp2p/go-libp2p-kbucket v2.2.11+incompatible // indirect
 	github.com/libp2p/go-libp2p-loggables v1.1.22 // indirect
 	github.com/libp2p/go-libp2p-metrics v2.1.6+incompatible
 	github.com/libp2p/go-libp2p-nat v0.8.7 // indirect
 	github.com/libp2p/go-libp2p-net v3.0.13+incompatible
 	github.com/libp2p/go-libp2p-netutil v0.4.11 // indirect
-	github.com/libp2p/go-libp2p-peer v2.3.8+incompatible
+	github.com/libp2p/go-libp2p-peer v2.4.0+incompatible
 	github.com/libp2p/go-libp2p-peerstore v2.0.4+incompatible
 	github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible
 	github.com/libp2p/go-libp2p-protocol v1.0.0
 	github.com/libp2p/go-libp2p-pubsub v0.10.2 // indirect
 	github.com/libp2p/go-libp2p-record v4.1.7+incompatible // indirect
-	github.com/libp2p/go-libp2p-routing v2.6.5+incompatible // indirect
+	github.com/libp2p/go-libp2p-routing v2.7.1+incompatible // indirect
 	github.com/libp2p/go-libp2p-secio v2.0.15+incompatible // indirect
 	github.com/libp2p/go-libp2p-swarm v3.0.19+incompatible // indirect
-	github.com/libp2p/go-libp2p-transport v3.0.13+incompatible
+	github.com/libp2p/go-libp2p-transport v3.0.15+incompatible
 	github.com/libp2p/go-libp2p-transport-upgrader v0.1.14 // indirect
 	github.com/libp2p/go-maddr-filter v1.1.9 // indirect
 	github.com/libp2p/go-mplex v0.2.30 // indirect
@@ -135,7 +135,7 @@ require (
 	github.com/uber-go/atomic v1.3.2 // indirect
 	github.com/uber/jaeger-client-go v2.15.0+incompatible
 	github.com/uber/jaeger-lib v1.5.0 // indirect
-	github.com/vektah/gqlparser v0.0.0-20181002002754-f119686bf1d4
+	github.com/vektah/gqlparser v1.0.0
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	github.com/whyrusleeping/cbor v0.0.0-20171005072247-63513f603b11 // indirect
 	github.com/whyrusleeping/go-keyspace v0.0.0-20160322163242-5b898ac5add1 // indirect

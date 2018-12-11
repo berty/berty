@@ -31,5 +31,4 @@ export const contextValue = ({
 }
 
 const RelayContext = React.createContext()
-console.log(RelayContext)
 export default RelayContext

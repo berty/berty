@@ -13,37 +13,25 @@ import { parseEmbedded } from '../../../helpers/json'
 class Message extends React.PureComponent {
   static contextType = RelayContext
 
-  async componentDidMount () {
-    const conversation = this.props.navigation.getParam('conversation')
-    const contactId = this.props.data.senderId
-    const isMyself =
-      conversation.members.find(m => m.contactId === contactId).contact.status ===
-      42
-
-    if (isMyself || this.props.data.seenAt !== null) {
-      return
-    }
-
-    await this.props.screenProps.context.mutations.eventSeen({ eventId: this.props.data.id })
-  }
-
-  async componentDidUpdate (prevProps) {
-    if (prevProps.data.id === this.props.data.id) {
-      return
-    }
-
-    await this.componentDidMount()
+  messageSeen = async () => {
+    await this.props.screenProps.context.mutations.eventSeen({
+      id: this.props.data.id,
+    })
   }
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
     const contactId = this.props.data.senderId
     const isMyself =
-      conversation.members.find(m => m.contactId === contactId).contact.status ===
-      42
+      conversation.members.find(m => m.contactId === contactId).contact
+        .status === 42
 
     const { data } = this.props
 
+    // TODO: implement message seen
+    // if (new Date(this.props.data.seenAt).getTime() <= 0) {
+    //   this.messageSeen()
+    // }
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
@@ -78,13 +66,18 @@ class Message extends React.PureComponent {
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
-          {new Date(data.createdAt).toTimeString()}
-          {' '}
-          {isMyself
-            ? <Icon name={data.ackedAt ? 'check-circle' : 'circle'} />
-            : null}
-          {' '}
-          <Icon name={data.seenAt ? 'eye' : 'eye-off'} /> {/* TODO: used for debugging, remove me */}
+          {new Date(data.createdAt).toTimeString()}{' '}
+          {isMyself ? (
+            <Icon
+              name={
+                new Date(data.ackedAt).getTime() > 0 ? 'check-circle' : 'circle'
+              }
+            />
+          ) : null}{' '}
+          <Icon
+            name={new Date(data.seenAt).getTime() > 0 ? 'eye' : 'eye-off'}
+          />{' '}
+          {/* TODO: used for debugging, remove me */}
         </Text>
       </Flex.Rows>
     )
@@ -99,6 +92,20 @@ class Input extends PureComponent {
   state = {
     input: '',
     height: 16,
+  }
+
+  async componentDidMount () {
+    const conversation = this.props.navigation.getParam('conversation')
+    await this.props.screenProps.context.mutations.conversationRead({
+      id: conversation.id,
+    })
+  }
+
+  async componentWillUnmount () {
+    const conversation = this.props.navigation.getParam('conversation')
+    await this.props.screenProps.context.mutations.conversationRead({
+      id: conversation.id,
+    })
   }
 
   onSubmit = () => {
@@ -219,11 +226,16 @@ export default class Detail extends PureComponent {
               },
             },
           ])}
-          subscriptions={[subscriptions.conversationNewMessage]}
+          subscriptions={[subscriptions.newMessage]}
           fragment={fragments.EventList}
           alias='EventList'
-          renderItem={props => <MessageContainer {...props} navigation={navigation}
-            screenProps={this.props.screenProps} />}
+          renderItem={props => (
+            <MessageContainer
+              {...props}
+              navigation={navigation}
+              screenProps={this.props.screenProps}
+            />
+          )}
           inverted
           style={{ paddingTop: 48 }}
         />

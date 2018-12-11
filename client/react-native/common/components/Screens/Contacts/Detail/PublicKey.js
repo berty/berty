@@ -16,7 +16,6 @@ export default class DetailPublicKey extends PureComponent {
   })
 
   render () {
-    console.log(this.props)
     const id = this.props.navigation.getParam('id')
     const displayName = this.props.navigation.getParam('displayName')
 

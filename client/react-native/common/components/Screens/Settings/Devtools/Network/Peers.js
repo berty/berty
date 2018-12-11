@@ -93,7 +93,7 @@ export default class Peers extends Component {
 
   fetchPeers = () => {
     this.props.screenProps.context.queries.Peers.fetch().then(data =>
-      this.updatePeers(data.Peers.list)
+      this.updatePeers(data.list)
     )
   }
 

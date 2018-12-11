@@ -174,24 +174,34 @@ re.ios: fclean.ios debug.ios
 re.web: fclean.web debug.web
 ##############################
 
-
 ### Dockerized webapp part ###
-webapp.start:
-	@docker-compose up -d --build --scale core-service=$(SCALE)
+COMPOSE ?= docker-compose
+
+webapp.generate:
+	cd ../../core && make generate
+
+.dockerbuild: Dockerfile
+	@$(COMPOSE) build --pull --parallel
+	touch .dockerbuild
+
+webapp.build: .dockerbuild
+
+webapp.start: webapp.generate webapp.build
+	@$(COMPOSE) up -d --scale core-service=$(SCALE)
 
 webapp.stop:
-	@docker-compose stop -t 42
+	@$(COMPOSE) kill
 
 webapp.list:
 	@docker ps -f name=react-native_core-service --format "{{.Names}}\tid: {{.ID}}\tport: {{.Ports}}" | sort \
 		| sed 's/\(0\.\)\{3\}0:1\([0-9]\)\{3\}->1\([0-9]\)\{3\}\/tcp\, \(0\.\)\{3\}0://g' | sed 's/->.*$$//g'
 
 webapp.logs:
-	@docker-compose logs -f $(SERV)
+	@$(COMPOSE) logs --tail=100 -f $(SERV)
 
 webapp.open:
 	@GQL_PORTS=`docker ps -f name=react-native_core-service --format "{{.Ports}}" |			\
-				awk 'match($$0,/:8[0-9]{3}->/) {print substr($$0,RSTART+1,RLENGTH-3)}'`;	\
+				awk 'match($$0,/:8[0-]{3}->/) {print substr($$0,RSTART+1,RLENGTH-3)}'`;	\
 	COUNT=$$(echo "$$GQL_PORTS" | sed '/^\s*$$/d' | wc -l | tr -d ' ');						\
 	if [[ $$(docker ps -f name=react-native_tracer-service -q) ]]; then						\
 		COUNT=$$((COUNT+1));																\
@@ -221,7 +231,8 @@ webapp.reset:
 	done
 
 webapp.rebuild: webapp.rm
-	@docker-compose build --pull
+	@rm -f .dockerbuild
+	@$(COMPOSE) build --pull
 
 webapp.rm: webapp.stop
 	@CONT_ID=`echo $$(docker ps -a -f name=react-native_core-service -q)		\

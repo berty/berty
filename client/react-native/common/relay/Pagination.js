@@ -1,12 +1,12 @@
 import { ActivityIndicator, FlatList } from 'react-native'
-import React, { PureComponent } from 'react'
+import React, { Component, PureComponent } from 'react'
 import Relay from 'react-relay'
 
 import { Flex } from '../components/Library'
 import { QueryReducer } from '.'
 import genericUpdater from './genericUpdater'
 
-class PaginationContainer extends PureComponent {
+class PaginationContainer extends Component {
   state = {
     refetching: false,
     loadingMore: false,
@@ -48,7 +48,7 @@ class PaginationContainer extends PureComponent {
     })
   }
 
-  keyExtractor = item => item.node.id
+  keyExtractor = item => item.node.cursor + ':' + item.node.id
 
   renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
 

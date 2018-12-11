@@ -2,7 +2,10 @@ import React, { PureComponent } from 'react'
 import { Image, ActionSheetIOS, Platform, Alert } from 'react-native'
 import { Menu, Header, Screen } from '../../../Library'
 import { colors } from '../../../../constants'
-import { shareLinkOther, extractPublicKeyFromId } from '../../../../helpers/contacts'
+import {
+  shareLinkOther,
+  extractPublicKeyFromId,
+} from '../../../../helpers/contacts'
 
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -63,6 +66,16 @@ export default class Detail extends PureComponent {
     }
   }
 
+  deleteContact = async () => {
+    try {
+      await this.props.screenProps.context.mutations.contactRemove({
+        id: this.props.navigation.getParam('contact').id,
+      })
+      this.props.navigation.goBack(null)
+    } catch (err) {
+      console.error(err)
+    }
+  }
   render () {
     const { navigation } = this.props
     const contact = navigation.getParam('contact')
@@ -109,10 +122,12 @@ export default class Detail extends PureComponent {
             <Menu.Item
               icon='share'
               title='Share this contact'
-              onPress={() => shareLinkOther({
-                id: extractPublicKeyFromId(contact.id),
-                displayName: contact.displayName,
-              })}
+              onPress={() =>
+                shareLinkOther({
+                  id: extractPublicKeyFromId(contact.id),
+                  displayName: contact.displayName,
+                })
+              }
             />
           </Menu.Section>
           <Menu.Section>
@@ -121,6 +136,14 @@ export default class Detail extends PureComponent {
               title='Block this contact'
               color={colors.error}
               onPress={() => this.blockConfirm()}
+            />
+          </Menu.Section>
+          <Menu.Section>
+            <Menu.Item
+              icon='slash'
+              title='Delete this contact'
+              color={colors.error}
+              onPress={this.deleteContact}
             />
           </Menu.Section>
         </Menu>

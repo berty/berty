@@ -33,12 +33,19 @@ export default (fragment, alias, args) => {
   return (store, data, deletion) => {
     const helper = new FragmentHelper(fragment)
     const connectionHelper = helper.getConnection(alias)
+
     const root = store.getRoot()
+
     const connection = ConnectionHandler.getConnection(
       root,
       helper.getConnection(alias).key,
       args
     )
+
+    if (connection == null) {
+      return
+    }
+
     if (
       deletion ||
       deepFilterEqual(args, merge([args, { filter: data }])) === false
@@ -48,21 +55,33 @@ export default (fragment, alias, args) => {
       return
     }
 
+    // get all edges
+
     const edges = connection.getLinkedRecords('edges')
+
+    let field = args.orderBy || args.sortBy || 'id'
+    field = data[field] ? field : Case.camel(field)
+
+    const node =
+      store.get(data.id) ||
+      store.create(data.id, connectionHelper.getEdgeNodeType())
+    node.setValue(data.id, 'id')
+    node.setValue(data[field], 'field')
+
     const cursor =
-      (args.orderBy && args.orderBy !== 'id') ||
-      (args.sortBy && args.sortBy !== 'id')
-        ? data[Case.camel(args.orderBy || args.sortBy)]
-        : atob(data.id).split(':')[1]
-    if (edges.length > 0 && edges.some(e => e.getValue('cursor') === cursor)) {
+      field === 'id'
+        ? atob(data.id).split(/:(.+)/)[1]
+        : atob(data.id).split(/:(.+)/)[1] + ':' + data[field]
+
+    if (
+      edges.length > 0 &&
+      edges.some(e => e.getLinkedRecord('node').getValue('id') === data.id)
+    ) {
       // update
       return
     }
 
     // add
-    const node =
-      store.get(data.id) ||
-      store.create(data.id, connectionHelper.getEdgeNodeType())
     const edge = ConnectionHandler.createEdge(
       store,
       connection,
@@ -72,9 +91,9 @@ export default (fragment, alias, args) => {
     edge.setValue(cursor, 'cursor')
 
     if (connectionHelper.direction === 'forward' && args.orderDesc === false) {
-      ConnectionHandler.insertEdgeAfter(connection, edge, cursor)
-      return
+      ConnectionHandler.insertEdgeBefore(connection, edge, cursor)
+    } else {
+      ConnectionHandler.insertEdgeBefore(connection, edge, cursor)
     }
-    ConnectionHandler.insertEdgeBefore(connection, edge, cursor)
   }
 }

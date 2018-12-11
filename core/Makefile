@@ -15,10 +15,10 @@ GENERATED_FILES = \
 	$(call rwildcard $(CODE_PATHS), *.gen.js) \
 	$(call rwildcard $(CODE_PATHS), *.gen.graphql)
 GENERATION_TARGETS = \
-	.client.generated \
-	.gql.generated \
 	.kind.generated \
-	.pb.generated
+	.client.generated \
+	.pb.generated \
+	.gql.generated \
 
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
@@ -166,7 +166,7 @@ dev-deps:
 
 .gql.generated: $(PROTOS) .pb.generated
 	mkdir -p ./api/node/graphql
-	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/*.proto
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/service.proto
 	goimports -w ./api/node/*.gen.go ./api/node/graphql/*.gen.go
 	cd ./api/node/graphql && $(GQLGEN) -c gqlgen.gen.yml -v gen
 	cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
