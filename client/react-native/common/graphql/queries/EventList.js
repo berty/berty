@@ -24,12 +24,12 @@ const query = graphql`
   }
 `
 
-const defaultVariables = {
+export const defaultVariables = {
   filter: event.default,
   orderBy: 'created_at',
   orderDesc: true,
   count: 5,
-  cursor: new Date(Date.now()).toISOString(),
+  cursor: '',
   onlyWithoutAckedAt: 0,
 }
 

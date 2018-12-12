@@ -3,9 +3,8 @@ package node
 import (
 	"fmt"
 
-	"berty.tech/core/pkg/errorcodes"
-
 	"berty.tech/core/api/node"
+	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
 )
 
@@ -36,6 +35,11 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 		query = query.Limit(paginate.First)
 	}
 
+	if paginate.Last > 0 {
+		query = query.Limit(paginate.Last)
+		paginate.OrderBy = paginate.OrderBy + " DESC"
+	}
+
 	// build the query
 	orderBy := paginate.OrderBy
 	if paginate.OrderDesc {
@@ -43,13 +47,16 @@ func paginate(query *gorm.DB, paginate *node.Pagination) (*gorm.DB, error) {
 	}
 	query = query.Order(orderBy, true)
 
-	if paginate.After != "" {
-		if paginate.OrderDesc {
-			query = query.Where(fmt.Sprintf("%s < ?", paginate.OrderBy), paginate.After)
-		} else {
+	if paginate.First > 0 && paginate.After != "" {
+		if !paginate.OrderDesc && paginate.First > 0 {
 			query = query.Where(fmt.Sprintf("%s > ?", paginate.OrderBy), paginate.After)
+		} else {
+			query = query.Where(fmt.Sprintf("%s < ?", paginate.OrderBy), paginate.After)
 		}
 	}
 
+	if paginate.Last > 0 && paginate.Before != "" {
+		query = query.Where(fmt.Sprintf("%s > ?", paginate.OrderBy), paginate.Before)
+	}
 	return query, nil
 }

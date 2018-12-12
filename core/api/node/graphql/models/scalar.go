@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/99designs/gqlgen/graphql"
+	sqlcipher "github.com/xeodou/go-sqlcipher"
 )
 
 // type ID struct {
@@ -73,7 +74,7 @@ func UnmarshalString(v interface{}) (string, error) {
 
 func MarshalTime(t time.Time) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
-		_, err := io.WriteString(w, strconv.Quote(t.Format(time.RFC3339Nano)))
+		_, err := io.WriteString(w, strconv.Quote(t.Format(sqlcipher.SQLiteTimestampFormats[0])))
 		if err != nil {
 			logger().Error(err.Error())
 		}
@@ -89,9 +90,9 @@ func UnmarshalTime(v interface{}) (time.Time, error) {
 		if len(v) == 0 {
 			return time.Time{}, nil
 		}
-		return time.Parse(time.RFC3339Nano, v)
+		return time.Parse(sqlcipher.SQLiteTimestampFormats[0], v)
 	default:
-		return time.Time{}, errors.New("time should be RFC3339Nano formatted string")
+		return time.Time{}, errors.New("time should be formatted as " + sqlcipher.SQLiteTimestampFormats[0])
 	}
 	return graphql.UnmarshalTime(v)
 }
