@@ -31,6 +31,12 @@ type ConnForSmux struct {
 }
 
 var conns sync.Map
+var readers sync.Map
+
+type reader struct {
+	sync.Mutex
+	funcSlice []func(*Conn)
+}
 
 func getConn(bleUUID string) (*Conn, bool) {
 	c, ok := conns.Load(bleUUID)
@@ -40,17 +46,40 @@ func getConn(bleUUID string) (*Conn, bool) {
 	return c.(*Conn), ok
 }
 
+func LoadOrCreate(bleUUID string) *reader {
+	c, ok := readers.Load(bleUUID)
+	if !ok {
+		newReader := &reader{
+			funcSlice: make([]func(*Conn), 0),
+		}
+		readers.Store(bleUUID, newReader)
+		return newReader
+	}
+	return c.(*reader)
+}
+
+func makeFunc(tmp []byte) func(c *Conn) {
+	return func(c *Conn) {
+		c.incoming <- tmp
+	}
+}
+
 func BytesToConn(bleUUID string, b []byte) {
 	tmp := make([]byte, len(b))
 	copy(tmp, b)
-	go func(bleUUID string, tmp []byte) {
+	r := LoadOrCreate(bleUUID)
+	r.funcSlice = append(r.funcSlice, makeFunc(tmp))
+	go func(bleUUID string, r *reader) {
+		r.Lock()
+		defer r.Unlock()
 		for {
 			if conn, ok := getConn(bleUUID); ok {
-				conn.incoming <- tmp
+				r.funcSlice[0](conn)
+				r.funcSlice = r.funcSlice[1:]
 				return
 			}
 		}
-	}(bleUUID, tmp)
+	}(bleUUID, r)
 }
 
 func ConnClosed(bleUUID string) {
