@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"time"
 
-	"berty.tech/core/sql"
 	"github.com/99designs/gqlgen/graphql"
 )
 
@@ -74,7 +73,7 @@ func UnmarshalString(v interface{}) (string, error) {
 
 func MarshalTime(t time.Time) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
-		_, err := io.WriteString(w, strconv.Quote(t.Format(sql.TimestampFormat)))
+		_, err := io.WriteString(w, strconv.Quote(t.Format(time.RFC3339Nano)))
 		if err != nil {
 			logger().Error(err.Error())
 		}
@@ -90,9 +89,9 @@ func UnmarshalTime(v interface{}) (time.Time, error) {
 		if len(v) == 0 {
 			return time.Time{}, nil
 		}
-		return time.Parse(sql.TimestampFormat, v)
+		return time.Parse(time.RFC3339Nano, v)
 	default:
-		return time.Time{}, errors.New("time should be formatted as " + sql.TimestampFormat)
+		return time.Time{}, errors.New("time should be RFC3339Nano formatted string")
 	}
 	return graphql.UnmarshalTime(v)
 }
