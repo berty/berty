@@ -56,15 +56,16 @@ func (b *Conn) IsClosed() bool {
 func (b *Conn) Close() error {
 	logger().Debug("BLEConn Close")
 	b.closed = true
-	val, err := b.rAddr.ValueForProtocol(PBle)
+	close(b.closer)
+	_, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		logger().Debug("BLEConn close", zap.Error(err))
 		return err
 	}
-	ma := C.CString(val)
-	logger().Debug("BLEConn close", zap.String("VALUE",val))
+	// ma := C.CString(val)
+	// logger().Debug("BLEConn close", zap.String("VALUE",val))
 	// defer C.free(unsafe.Pointer(ma))
-	C.closeConn(ma)
+	// C.closeConn(ma)
 	return nil
 }
 

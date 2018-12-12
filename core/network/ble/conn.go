@@ -1,6 +1,7 @@
 package ble
 
 import (
+	"fmt"
 	"sync"
 
 	ic "github.com/libp2p/go-libp2p-crypto"
@@ -141,10 +142,14 @@ func (b *Conn) Read(p []byte) (n int, err error) {
 		return copied, nil
 	}
 
-	b.notFinishedToRead = <-b.incoming
-	copied := copy(p, b.notFinishedToRead)
-	b.notFinishedToRead = b.notFinishedToRead[copied:]
-	return copied, nil
+	select {
+	case b.notFinishedToRead = <-b.incoming:
+		copied := copy(p, b.notFinishedToRead)
+		b.notFinishedToRead = b.notFinishedToRead[copied:]
+		return copied, nil
+	case <-b.closer:
+		return 0, fmt.Errorf("conn closed")
+	}
 }
 
 func (b *Conn) LocalPeer() peer.ID {
