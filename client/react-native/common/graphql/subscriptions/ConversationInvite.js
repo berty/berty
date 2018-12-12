@@ -1,5 +1,6 @@
 import { parseEmbedded } from '../../helpers/json'
 import EventStream from './EventStream'
+import { btoa } from 'b64-lite'
 
 export default context => ({
   ...EventStream(context),
