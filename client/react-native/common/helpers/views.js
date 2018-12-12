@@ -1,4 +1,6 @@
 import React from 'react'
+import Icon from '../components/Library/Icon'
+import colors from '../constants/colors'
 
 export const withScreenProps = (WrappedComponent) => {
   class WithScreenProps extends React.Component {
@@ -7,6 +9,13 @@ export const withScreenProps = (WrappedComponent) => {
 
   WithScreenProps.displayName = `WithScreenProps(${getDisplayName(WrappedComponent)})`
   return WithScreenProps
+}
+
+export const tabIcon = (iconName) => {
+  const NamedTabIcon = ({ focused }) => <Icon name={iconName} color={focused ? colors.blue : colors.darkGrey}
+    size={20} />
+
+  return NamedTabIcon
 }
 
 const getDisplayName = (WrappedComponent) => WrappedComponent.displayName || WrappedComponent.name || 'Component'

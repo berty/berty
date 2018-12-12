@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react'
-import { TouchableOpacity, Image } from 'react-native'
+import { TouchableOpacity } from 'react-native'
 import { colors } from '../../constants'
-import { Flex, Text } from '.'
+import { Flex, Text, Avatar } from '.'
 import { marginLeft, padding, borderBottom } from '../../styles'
 
 export default class ListItem extends PureComponent {
   render () {
-    const { id, title, subtitle, onPress } = this.props
+    const { title, subtitle, onPress } = this.props
     return (
       <TouchableOpacity
         onPress={onPress}
@@ -21,12 +21,7 @@ export default class ListItem extends PureComponent {
       >
         <Flex.Cols align='center'>
           <Flex.Rows size={1} align='center'>
-            <Image
-              style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
-              source={{
-                uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
-              }}
-            />
+            <Avatar data={this.props} size={40} />
           </Flex.Rows>
           <Flex.Rows
             size={7}

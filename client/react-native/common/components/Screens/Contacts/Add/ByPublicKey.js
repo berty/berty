@@ -1,119 +1,100 @@
-import { ActivityIndicator } from 'react-native'
 import React, { PureComponent } from 'react'
-
-import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
-
-import { QueryReducer } from '../../../../relay'
-import {
-  Screen,
-  Text,
-  ModalScreen,
-  PublicKeyWithActions,
-} from '../../../Library'
-import { borderBottom, paddingVertical } from '../../../../styles'
+import { View, Clipboard, Platform } from 'react-native'
+import { TextInputMultilineFix, Button } from '../../../Library'
 import { colors } from '../../../../constants'
-import { fragments } from '../../../../graphql'
-import { merge } from '../../../../helpers'
+import { marginTop, padding, rounded, textTiny } from '../../../../styles'
+import { monospaceFont } from '../../../../constants/styling'
+import RelayContext from '../../../../relay/RelayContext'
+import { showContactModal } from '../../../../helpers/contacts'
 
-const ByPublicKey = fragments.Contact(PublicKeyWithActions)
+class ByPublicKey extends PureComponent {
+  constructor (props) {
+    super(props)
 
-const AddByPublicKeyScreen = props => (
-  <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
-    <PublicKeyWithActions {...props} initialKey={''} addButton />
-  </Screen>
-)
+    this.state = {
+      id: '',
+    }
+  }
 
-class SharePublicKeyScreen extends PureComponent {
   render () {
-    const {
-      navigation,
-      screenProps: {
-        context: { queries },
-      },
-    } = this.props
-    return (
-      <Screen style={[{ backgroundColor: colors.white }, paddingVertical]}>
-        <QueryReducer
-          query={queries.Contact.graphql}
-          variables={merge([
-            queries.Contact.defaultVariables,
-            { filter: { status: 42 } },
-          ])}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return <ActivityIndicator />
-              case state.success: {
-                return (
-                  <ByPublicKey
-                    navigation={navigation}
-                    readOnly
-                    shareButton
-                    copyButton
-                    self
-                    data={state.data.Contact}
-                  />
-                )
-              }
-              case state.error:
-                return (
-                  <Text
-                    background={colors.error}
-                    color={colors.white}
-                    medium
-                    middle
-                    center
-                    self='center'
-                  >
-                    An unexpected error occurred, please restart the application
-                  </Text>
-                )
-            }
-          }}
-        </QueryReducer>
-      </Screen>
-    )
+    return <RelayContext.Consumer>{relayContext =>
+      <View style={{
+        flex: 1,
+        paddingTop: 48,
+        backgroundColor: colors.white,
+        alignItems: 'center',
+      }}>
+        <View style={{
+          height: 320,
+          width: 320,
+        }}>
+          <TextInputMultilineFix
+            style={[
+              {
+                width: 310,
+                height: 248,
+                backgroundColor: colors.grey7,
+                color: colors.black,
+                flexWrap: 'wrap',
+                fontFamily: monospaceFont,
+              },
+              textTiny,
+              padding,
+              marginTop,
+              rounded,
+            ]}
+            multiline
+            placeholder='Paste the public key of a Berty user here'
+            value={this.state.id}
+            onChangeText={id => this.setState({ id })}
+            selectTextOnFocus
+          />
+
+          <Button
+            background={colors.blue}
+            margin
+            padding
+            rounded={23}
+            height={24}
+            medium
+            middle
+            center
+            self='stretch'
+            onPress={async () => {
+              await showContactModal({
+                relayContext,
+                navigation: this.props.topNavigation,
+                data: {
+                  id: this.state.id,
+                },
+              })
+            }}
+            icon={'plus'}
+          >
+            Add this key
+          </Button>
+          {Platform.OS !== 'web'
+            ? <Button
+              icon={'clipboard'}
+              background={colors.blue}
+              margin
+              padding
+              rounded={23}
+              height={24}
+              medium
+              middle
+              center
+              self='stretch'
+              onPress={async () => {
+                this.setState({ id: await Clipboard.getString() })
+              }}>
+              Paste key
+            </Button>
+            : null}
+        </View>
+      </View>
+    }</RelayContext.Consumer>
   }
 }
 
-export default createTabNavigator(
-  {
-    'Enter a public key': AddByPublicKeyScreen,
-    'View my public key': SharePublicKeyScreen,
-  },
-  {
-    initialRouteName: 'Enter a public key',
-    swipeEnabled: true,
-    animationEnabled: true,
-    tabBarPosition: 'top',
-
-    tabBarOptions: {
-      labelStyle: {
-        color: colors.black,
-      },
-      indicatorStyle: {
-        backgroundColor: colors.black,
-      },
-      style: [
-        {
-          backgroundColor: colors.white,
-          borderTopWidth: 0,
-        },
-        borderBottom,
-      ],
-    },
-  }
-)
-
-export const ByPublicKeyModal = props => (
-  <ModalScreen navigation={props.navigation} showDismiss>
-    <PublicKeyWithActions
-      addButton
-      initialKey={props.navigation.getParam('initialKey', '')}
-      initialName={props.navigation.getParam('initialName', '')}
-      {...props}
-    />
-  </ModalScreen>
-)
+export default ByPublicKey

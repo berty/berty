@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react'
 import { parse as parseUrl } from '../helpers/url'
 import LottieView from 'lottie-react-native'
 import { Flex } from './Library'
+import FlashMessage from 'react-native-flash-message'
 import Accounts from './Screens/Accounts'
 import { colors } from './../constants'
 
@@ -106,6 +107,15 @@ export default class App extends PureComponent {
               deepLink,
             }}
           /> : null }
+        <Accounts
+          ref={nav => {
+            this.navigation = nav
+          }}
+          screenProps={{
+            deepLink,
+          }}
+        />
+        <FlashMessage position='top' />
         {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>
     )

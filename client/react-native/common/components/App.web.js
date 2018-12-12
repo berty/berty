@@ -1,8 +1,9 @@
-import { Linking, Platform } from 'react-native'
+import { Linking } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 import { parse as parseUrl } from '../helpers/url'
+import FlashMessage from 'react-native-flash-message'
 
 import { Loader } from './Library'
 import Accounts from './Screens/Accounts'
@@ -75,7 +76,8 @@ export default class App extends PureComponent {
             deepLink,
           }}
         />
-        {Platform.OS === 'ios' && <KeyboardSpacer />}
+        <KeyboardSpacer />
+        <FlashMessage position='top' />
       </SafeAreaView>
     )
   }

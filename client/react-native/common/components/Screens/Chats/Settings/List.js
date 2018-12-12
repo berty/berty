@@ -1,7 +1,6 @@
-import { Image } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Screen, Menu, Header, Badge } from '../../../Library'
+import { Screen, Menu, Header, Badge, Avatar } from '../../../Library'
 import { choosePicture } from '../../../../helpers/react-native-image-picker'
 import { colors } from '../../../../constants'
 import { conversation as utils } from '../../../../utils'
@@ -46,13 +45,13 @@ export default class List extends PureComponent {
 
   onEdit = () => {
     this.setState({ edit: true }, () =>
-      this.props.navigation.setParams({ state: this.state })
+      this.props.navigation.setParams({ state: this.state }),
     )
   }
 
   onSave = () => {
     this.setState({ edit: false }, () =>
-      this.props.navigation.setParams({ state: this.state })
+      this.props.navigation.setParams({ state: this.state }),
     )
   }
 
@@ -88,16 +87,7 @@ export default class List extends PureComponent {
                 medium
                 onPress={this.onChoosePicture}
               >
-                <Image
-                  style={{ width: 78, height: 78, borderRadius: 39 }}
-                  source={{
-                    uri:
-                      this.state.uri ||
-                      'https://api.adorable.io/avatars/285/' +
-                        conversation.id +
-                        '.png',
-                  }}
-                />
+                <Avatar data={conversation} uri={this.state.uri} size={78} />
               </Badge>
             }
             title={!edit && title}
@@ -149,23 +139,15 @@ export default class List extends PureComponent {
                 onPress={() => console.log('Invite to group with a link')}
               />
               {conversation.members.map(
-                ({ id, contact: { displayName, overrideDisplayName } }) => (
+                ({ id, contact: { contactId, displayName, overrideDisplayName } }) => (
                   <Menu.Item
                     key={id}
                     icon={
-                      <Image
-                        style={{ height: 28, width: 28, borderRadius: 14 }}
-                        source={{
-                          uri:
-                            'https://api.adorable.io/avatars/285/' +
-                            (overrideDisplayName || displayName) +
-                            '.png',
-                        }}
-                      />
+                      <Avatar data={{ id: contactId }} size={28} />
                     }
                     title={overrideDisplayName || displayName}
                   />
-                )
+                ),
               )}
             </Menu.Section>
           )}

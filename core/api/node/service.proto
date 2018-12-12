@@ -69,6 +69,9 @@ service Service {
   rpc Contact (ContactInput) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Query";
   };
+  rpc ContactCheckPublicKey (ContactInput) returns (Bool) {
+    option (gql.graphql_type) = "Query";
+  };
 
   //
   // Conversations
@@ -318,6 +321,10 @@ message IntegrationTestOutput {
 
 message Void {
   bool T = 1;
+}
+
+message Bool {
+  bool ret = 1;
 }
 
 enum NullableTrueFalse {

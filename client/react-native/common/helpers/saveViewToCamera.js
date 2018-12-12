@@ -1,6 +1,6 @@
 import ViewShot from 'react-native-view-shot'
 import React, { Component } from 'react'
-import { View, CameraRoll } from 'react-native'
+import { View, CameraRoll, Platform } from 'react-native'
 import { StackActions } from 'react-navigation'
 
 export class ViewExportComponent extends Component {
@@ -35,6 +35,10 @@ export class ViewExportComponent extends Component {
 }
 
 export default async ({ view, navigation }) => {
+  if (Platform.os === 'web') {
+    throw new Error('unsupported on web')
+  }
+
   try {
     const uri = await new Promise((resolve, reject) => {
       navigation.push('virtual/view-export', {

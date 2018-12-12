@@ -1,7 +1,6 @@
-import { Image } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Screen, Text } from '../../Library'
+import { Flex, Header, Screen, Text, Avatar } from '../../Library'
 import { Pagination } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
@@ -9,7 +8,7 @@ import { fragments } from '../../../graphql'
 import { conversation as utils } from '../../../utils'
 
 const Item = fragments.Conversation(({ data, navigation }) => {
-  const { id, updatedAt, readAt } = data
+  const { updatedAt, readAt } = data
   const isRead = new Date(readAt).getTime() > 0
   const isInvite = !isRead && new Date(updatedAt).getTime() <= 0
   return (
@@ -19,12 +18,7 @@ const Item = fragments.Conversation(({ data, navigation }) => {
       style={[{ height: 72 }, padding, borderBottom]}
     >
       <Flex.Rows size={1} align='center'>
-        <Image
-          style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
-          source={{
-            uri: 'https://api.adorable.io/avatars/40/' + id + '.png',
-          }}
-        />
+        <Avatar data={data} size={40} />
       </Flex.Rows>
       <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
         <Text color={colors.black} left middle bold={!isRead}>

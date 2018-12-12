@@ -1,11 +1,12 @@
-import { Image, ActivityIndicator, Linking } from 'react-native'
+import { ActivityIndicator, Linking } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Menu, Text, Screen } from '../../Library'
+import { Menu, Text, Screen, Avatar } from '../../Library'
 import { QueryReducer } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
+import { extractPublicKeyFromId } from '../../../helpers/contacts'
 
 export default class List extends PureComponent {
   static Menu = fragments.Contact(
@@ -13,16 +14,11 @@ export default class List extends PureComponent {
       navigation,
       data: { id, displayName, overrideDisplayName },
       availableUpdate,
-    }) => (
-      <Menu absolute>
+    }) => {
+      return <Menu absolute>
         <Menu.Header
           icon={
-            <Image
-              style={{ width: 78, height: 78, borderRadius: 39 }}
-              source={{
-                uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
-              }}
-            />
+            <Avatar data={{ id }} size={78} />
           }
           title={overrideDisplayName || displayName}
         />
@@ -30,10 +26,16 @@ export default class List extends PureComponent {
           <Menu.Item
             icon='user'
             title='My account'
+            onPress={() => navigation.push('settings/my-account', {})
+            }
+          />
+          <Menu.Item
+            icon='share'
+            title='Share my account'
             onPress={() =>
               navigation.push('modal/contacts/card', {
                 data: {
-                  id,
+                  id: extractPublicKeyFromId(id),
                   displayName,
                 },
                 self: true,
@@ -102,7 +104,7 @@ export default class List extends PureComponent {
           />
         </Menu.Section>
       </Menu>
-    )
+    }
   )
 
   render () {

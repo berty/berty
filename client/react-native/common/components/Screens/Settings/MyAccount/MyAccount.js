@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
-import { Image, ActivityIndicator } from 'react-native'
-import { Screen, Menu, Header, Text, Badge, Flex } from '../../../Library'
+import { ActivityIndicator } from 'react-native'
+import { Screen, Menu, Header, Text, Badge, Flex, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
 import { QueryReducer } from '../../../../relay'
 import { choosePicture } from '../../../../helpers/react-native-image-picker'
@@ -42,7 +42,7 @@ export default class MyAccount extends PureComponent {
   }
 
   static Menu = ({ navigation, data, state, onChoosePicture }) => {
-    const { id, displayName, overrideDisplayName } = data
+    const { displayName, overrideDisplayName } = data
     return (
       <Menu absolute>
         <Menu.Header
@@ -53,14 +53,7 @@ export default class MyAccount extends PureComponent {
               medium
               onPress={onChoosePicture}
             >
-              <Image
-                style={{ width: 78, height: 78, borderRadius: 39 }}
-                source={{
-                  uri:
-                    state.uri ||
-                    `https://api.adorable.io/avatars/285/${id}.png`,
-                }}
-              />
+              <Avatar data={data} size={78} />
             </Badge>
           }
         />
@@ -72,18 +65,6 @@ export default class MyAccount extends PureComponent {
         <Menu.Section title='Lastname'>
           <Menu.Input
             value={(overrideDisplayName || displayName).split(' ')[1] || ''}
-          />
-        </Menu.Section>
-        <Menu.Section>
-          <Menu.Item
-            icon='awesome-qrcode'
-            title='View QR code'
-            onPress={() => navigation.push('my-account/my-qrcode', { data })}
-          />
-          <Menu.Item
-            icon='eye'
-            title='View public key'
-            onPress={() => navigation.push('my-account/my-publickey', { data })}
           />
         </Menu.Section>
         <Menu.Section>

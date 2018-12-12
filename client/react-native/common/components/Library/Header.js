@@ -17,6 +17,7 @@ export default class Header extends PureComponent {
       title,
       titleIcon,
       backBtn,
+      rightBtn,
       rightBtnIcon,
       onPressRightBtn,
       searchBar,
@@ -83,7 +84,12 @@ export default class Header extends PureComponent {
             >
               {title}
             </Text>
-            {rightBtnIcon !== null && (
+            {rightBtn
+              ? <View>
+                {rightBtn}
+              </View>
+              : null}
+            {!rightBtn && rightBtnIcon !== null && (
               <HeaderButton
                 icon={rightBtnIcon}
                 color={colorBtnRight}
@@ -100,3 +106,5 @@ export default class Header extends PureComponent {
     )
   }
 }
+
+Header.HeaderButton = HeaderButton

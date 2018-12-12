@@ -544,6 +544,14 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
+func (r *queryResolver) ContactCheckPublicKey(ctx context.Context, contact *entity.Contact) (*node.Bool, error) {
+	contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
+
+	return r.client.ContactCheckPublicKey(ctx, &node.ContactInput{
+		Filter: contact,
+	})
+}
+
 func (r *mutationResolver) ConversationRead(ctx context.Context, id string) (*entity.Conversation, error) {
 	id = strings.SplitN(id, ":", 2)[1]
 

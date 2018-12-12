@@ -1726,6 +1726,19 @@ models:
     fields:
       t:
 
+  BertyNodeBool:
+    model: berty.tech/core/api/node.Bool
+    fields:
+      ret:
+  BertyNodeBoolInput:
+    model: berty.tech/core/api/node.Bool
+    fields:
+      ret:
+  BertyNodeBoolPayload:
+    model: berty.tech/core/api/node.Bool
+    fields:
+      ret:
+
   BertyNodeEventIDInput:
     model: berty.tech/core/api/node.EventIDInput
     fields:

@@ -515,6 +515,9 @@ type BertyNodeIntegrationTestOutput  {
 type BertyNodeVoid  {
     T: Bool!
 }
+type BertyNodeBool  {
+    ret: Bool!
+}
 type BertyNodeLogEntry  {
     line: String!
 }
@@ -631,6 +634,9 @@ type Query {
   Contact(
     filter: BertyEntityContactInput
   ): BertyEntityContact
+  ContactCheckPublicKey(
+    filter: BertyEntityContactInput
+  ): BertyNodeBool
   ConversationList(
     filter: BertyEntityConversationInput
     orderBy: String!

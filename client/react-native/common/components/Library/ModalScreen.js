@@ -14,6 +14,8 @@ const ModalScreen = props => {
     ...otherProps
   } = props
 
+  const beforeDismiss = navigation.getParam('beforeDismiss')
+
   return <>
     <View style={{
       position: 'absolute',
@@ -51,13 +53,13 @@ const ModalScreen = props => {
             zIndex: 1,
           }}>
             <Button onPress={() => {
-              if (props.onDismiss !== undefined) {
-                props.onDismiss()
-              } else {
-                navigation.dispatch(StackActions.pop({
-                  n: 1,
-                }))
+              if (beforeDismiss !== undefined) {
+                beforeDismiss()
               }
+
+              navigation.dispatch(StackActions.pop({
+                n: 1,
+              }))
             }} icon={'x'} color={colors.fakeBlack} large />
 
           </View>

@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Image } from 'react-native'
-import { Header, Menu, Badge } from '../../../Library'
+import { Header, Menu, Badge, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
 import { choosePicture } from '../../../../helpers/react-native-image-picker'
 
@@ -35,14 +34,7 @@ export default class Edit extends PureComponent {
               medium
               onPress={this.onChoosePicture}
             >
-              <Image
-                style={{ width: 78, height: 78, borderRadius: 39 }}
-                source={{
-                  uri:
-                    this.state.uri ||
-                    `https://api.adorable.io/avatars/285/${contact.id}.png`,
-                }}
-              />
+              <Avatar data={contact} size={78} />
             </Badge>
           }
         />

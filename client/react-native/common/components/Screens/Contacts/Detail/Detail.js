@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react'
-import { Image, ActionSheetIOS, Platform, Alert } from 'react-native'
-import { Menu, Header, Screen } from '../../../Library'
+import { ActionSheetIOS, Platform, Alert } from 'react-native'
+import { Menu, Header, Screen, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
+import { extractPublicKeyFromId } from '../../../../helpers/contacts'
 
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -80,15 +81,7 @@ export default class Detail extends PureComponent {
         <Menu absolute>
           <Menu.Header
             icon={
-              <Image
-                style={{ width: 78, height: 78, borderRadius: 39 }}
-                source={{
-                  uri:
-                    'https://api.adorable.io/avatars/285/' +
-                    contact.id +
-                    '.png',
-                }}
-              />
+              <Avatar data={contact} size={78} />
             }
             title={contact.overrideDisplayName || contact.displayName}
           />
@@ -111,7 +104,7 @@ export default class Detail extends PureComponent {
               onPress={() =>
                 navigation.push('modal/contacts/card', {
                   data: {
-                    id: contact.id,
+                    id: extractPublicKeyFromId(contact.id),
                     displayName: contact.displayName,
                   },
                 })

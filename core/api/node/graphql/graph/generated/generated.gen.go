@@ -149,6 +149,10 @@ type ComplexityRoot struct {
 		ErrMsg func(childComplexity int) int
 	}
 
+	BertyNodeBool struct {
+		Ret func(childComplexity int) int
+	}
+
 	BertyNodeContactEdge struct {
 		Node   func(childComplexity int) int
 		Cursor func(childComplexity int) int
@@ -585,6 +589,7 @@ type ComplexityRoot struct {
 		GetEvent               func(childComplexity int, id string) int
 		ContactList            func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		Contact                func(childComplexity int, filter *entity.Contact) int
+		ContactCheckPublicKey  func(childComplexity int, filter *entity.Contact) int
 		ConversationList       func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		Conversation           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
 		ConversationMember     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
@@ -670,6 +675,7 @@ type QueryResolver interface {
 	GetEvent(ctx context.Context, id string) (*p2p.Event, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
 	Contact(ctx context.Context, filter *entity.Contact) (*entity.Contact, error)
+	ContactCheckPublicKey(ctx context.Context, filter *entity.Contact) (*node.Bool, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
 	Conversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
@@ -1639,6 +1645,26 @@ func field_Query_ContactList_args(rawArgs map[string]interface{}) (map[string]in
 }
 
 func field_Query_Contact_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Contact
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 entity.Contact
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	return args, nil
+
+}
+
+func field_Query_ContactCheckPublicKey_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *entity.Contact
 	if tmp, ok := rawArgs["filter"]; ok {
@@ -2726,6 +2752,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeBackgroundWarnAttrs.ErrMsg(childComplexity), true
+
+	case "BertyNodeBool.ret":
+		if e.complexity.BertyNodeBool.Ret == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeBool.Ret(childComplexity), true
 
 	case "BertyNodeContactEdge.node":
 		if e.complexity.BertyNodeContactEdge.Node == nil {
@@ -4464,6 +4497,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Contact(childComplexity, args["filter"].(*entity.Contact)), true
+
+	case "Query.ContactCheckPublicKey":
+		if e.complexity.Query.ContactCheckPublicKey == nil {
+			break
+		}
+
+		args, err := field_Query_ContactCheckPublicKey_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ContactCheckPublicKey(childComplexity, args["filter"].(*entity.Contact)), true
 
 	case "Query.ConversationList":
 		if e.complexity.Query.ConversationList == nil {
@@ -6540,6 +6585,59 @@ func (ec *executionContext) _BertyNodeBackgroundWarnAttrs_errMsg(ctx context.Con
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var bertyNodeBoolImplementors = []string{"BertyNodeBool"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeBool(ctx context.Context, sel ast.SelectionSet, obj *node.Bool) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeBoolImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeBool")
+		case "ret":
+			out.Values[i] = ec._BertyNodeBool_ret(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeBool_ret(ctx context.Context, field graphql.CollectedField, obj *node.Bool) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeBool",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Ret, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	return models.MarshalBool(res)
 }
 
 var bertyNodeContactEdgeImplementors = []string{"BertyNodeContactEdge"}
@@ -16252,6 +16350,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_Contact(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "ContactCheckPublicKey":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ContactCheckPublicKey(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "ConversationList":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -16519,6 +16623,37 @@ func (ec *executionContext) _Query_Contact(ctx context.Context, field graphql.Co
 	}
 
 	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_ContactCheckPublicKey(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_ContactCheckPublicKey_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ContactCheckPublicKey(rctx, args["filter"].(*entity.Contact))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Bool)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeBool(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -19606,6 +19741,9 @@ type BertyNodeIntegrationTestOutput  {
 type BertyNodeVoid  {
     T: Bool!
 }
+type BertyNodeBool  {
+    ret: Bool!
+}
 type BertyNodeLogEntry  {
     line: String!
 }
@@ -19722,6 +19860,9 @@ type Query {
   Contact(
     filter: BertyEntityContactInput
   ): BertyEntityContact
+  ContactCheckPublicKey(
+    filter: BertyEntityContactInput
+  ): BertyNodeBool
   ConversationList(
     filter: BertyEntityConversationInput
     orderBy: String!

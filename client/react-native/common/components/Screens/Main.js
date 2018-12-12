@@ -4,7 +4,6 @@ import React from 'react'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
-import { ByPublicKeyModal } from './Contacts/Add/ByPublicKey'
 import { EventListFilterModal } from './Settings/Devtools/EventList'
 import { Icon } from '../Library'
 import { colors } from '../../constants'
@@ -12,7 +11,7 @@ import Chats from './Chats'
 import Contacts from './Contacts'
 import Settings from './Settings'
 import ContactCardModal from './Contacts/ContactCardModal'
-import { ViewExportComponent } from '../Library/SaveViewToCamera'
+import { ViewExportComponent } from '../../helpers/saveViewToCamera'
 
 const TabBarIcon = (tintColor, routeName, badgeValue) => {
   let iconName = {
@@ -103,13 +102,13 @@ export const tabs = createTabNavigator(
 export default createStackNavigator(
   {
     tabs: tabs,
-    'modal/contacts/add/by-public-key': {
-      screen: ByPublicKeyModal,
-    },
     'modal/devtools/event/list/filters': {
       screen: EventListFilterModal,
     },
     'modal/contacts/card': {
+      screen: ContactCardModal,
+    },
+    'modal/contacts/card/add': {
       screen: ContactCardModal,
     },
     'virtual/view-export': {

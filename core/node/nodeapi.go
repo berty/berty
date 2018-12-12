@@ -369,6 +369,12 @@ func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.C
 	return output, nil
 }
 
+func (n *Node) ContactCheckPublicKey(ctx context.Context, input *node.ContactInput) (*node.Bool, error) {
+	err := input.Filter.Validate()
+
+	return &node.Bool{Ret: err == nil}, err
+}
+
 //
 // Conversation
 //
