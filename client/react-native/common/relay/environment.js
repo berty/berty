@@ -77,6 +77,7 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
     url: `http://${await getIp()}:${await getPort()}/query`,
   }),
   retryMiddleware({
+    allowMutations: true,
     fetchTimeout: 3000,
     retryDelays: () => 2000,
     beforeRetry: async ({
