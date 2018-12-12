@@ -8,7 +8,7 @@ import (
 	"time"
 	"unsafe"
 	"sync"
-	
+
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	ma "github.com/multiformats/go-multiaddr"

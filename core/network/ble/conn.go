@@ -47,7 +47,7 @@ func getConn(bleUUID string) (*Conn, bool) {
 	return c.(*Conn), ok
 }
 
-func LoadOrCreate(bleUUID string) *reader {
+func loadOrCreate(bleUUID string) *reader {
 	c, ok := readers.Load(bleUUID)
 	if !ok {
 		newReader := &reader{
@@ -68,7 +68,7 @@ func makeFunc(tmp []byte) func(c *Conn) {
 func BytesToConn(bleUUID string, b []byte) {
 	tmp := make([]byte, len(b))
 	copy(tmp, b)
-	r := LoadOrCreate(bleUUID)
+	r := loadOrCreate(bleUUID)
 	r.funcSlice = append(r.funcSlice, makeFunc(tmp))
 	go func(bleUUID string, r *reader) {
 		r.Lock()
