@@ -225,40 +225,58 @@
     int i = 0;
     for (CBATTRequest *request in requests) {
 
-        NSLog(@"peripheralManager:peripheral didReceiveWriteRequests: %@ %d", request.central.identifier, i);
+        // NSLog(@"peripheralManager:peripheral didReceiveWriteRequests: %@ %d", request.central.identifier, i);
         i += 1;
         BertyDevice *bDevice = [BertyUtils getDeviceFromRequest:request];
         BertyUtils *utils = [BertyUtils sharedUtils];
         if (bDevice == nil) {
-            NSLog(@"peripheral: write error unknown peripheral connected");
-            [peripheral respondToRequest:request withResult:CBATTErrorRequestNotSupported];
-            return;
+            CBPeripheral *cliPeripheral = nil;
+            NSArray<CBPeripheral *> *cliPeripherals = [centralManager retrieveConnectedPeripheralsWithServices:@[[BertyUtils sharedUtils].serviceUUID]];
+            for (CBPeripheral *p in cliPeripherals) {
+                if ([[p.identifier UUIDString] isEqualToString:[request.central.identifier UUIDString]]) {
+                    cliPeripheral = p;
+                    break;
+                }
+            }
+
+            if (cliPeripheral == nil) {
+                NSLog(@"error didReceiveWriteRequests");
+                [peripheral respondToRequest:request withResult:CBATTErrorRequestNotSupported];
+                return;
+            }
+            [cliPeripheral setDelegate:self.peripheralDelegate];
+
+            bDevice = [[BertyDevice alloc] initWithPeripheral:cliPeripheral withCentralManager:centralManager];
+            [BertyUtils addDevice:bDevice];
+            @try {
+                [centralManager connectPeripheral:cliPeripheral options:nil];
+            } @catch (NSException *exception) {
+                NSLog(@"didReceiveWriteRequests connect failed");
+            } @finally {
+                NSLog(@"didReceiveWriteRequests connect called");
+            }
         }
         if ([request.characteristic.UUID isEqual:utils.writerUUID]) {
             sendBytesToConn([bDevice.ma UTF8String], [request.value bytes], (int)[request.value length]);
             [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
         } else if ([request.characteristic.UUID isEqual:utils.maUUID]) {
-            char *value = [request.value bytes];
-            value[[bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse]] = 0;
             [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-            NSLog(@"val %@ %@ %lu %@ %@", [NSString stringWithUTF8String:value], [request.characteristic.UUID UUIDString], [bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.ma);
+            NSString *ma = [[NSString alloc] initWithData:request.value encoding:NSUTF8StringEncoding];
+            NSLog(@"val %@ %@ %lu %@ %@", ma, [request.characteristic.UUID UUIDString], [bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.ma);
             if (bDevice.ma != nil) {
-                bDevice.ma =  [NSString stringWithFormat:@"%@%@", bDevice.peerID, [NSString stringWithUTF8String:value]];
+                bDevice.ma =  [NSString stringWithFormat:@"%@%@", bDevice.ma, ma];
             } else {
-                bDevice.ma = [NSString stringWithUTF8String:value];
+                bDevice.ma = ma;
             }
-
         } else if ([request.characteristic.UUID isEqual:utils.peerUUID]) {
             [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
-            char *value = [request.value bytes];
-            value[[bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse]] = 0;
-            NSLog(@"val %@ %@ %lu %@ %@", [NSString stringWithUTF8String:value], [request.characteristic.UUID UUIDString], [bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.peerID);
+            NSString *peerID = [[NSString alloc] initWithData:request.value encoding:NSUTF8StringEncoding];
+            NSLog(@"val %@ %@ %lu %@ %@", peerID, [request.characteristic.UUID UUIDString], [bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.peerID);
             if (bDevice.peerID != nil) {
-                bDevice.peerID =  [NSString stringWithFormat:@"%@%@", bDevice.peerID, [NSString stringWithUTF8String:value]];
+                bDevice.peerID =  [NSString stringWithFormat:@"%@%@", bDevice.peerID, peerID];
             } else {
-                bDevice.peerID = [NSString stringWithUTF8String:value];
+                bDevice.peerID = peerID;
             }
-
 
             NSLog(@"%lu", bDevice.peerID.length);
             if (bDevice.peerID.length == 46) {

@@ -167,7 +167,7 @@
  *  @discussion                This method returns the result of a {@link writeValue:forCharacteristic:type:} call, when the <code>CBCharacteristicWriteWithResponse</code> type is used.
  */
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(nullable NSError *)error {
-    NSLog(@"peripheral: %@ didWriteValueForCharacteristic: %@", [peripheral.identifier UUIDString], [characteristic.UUID UUIDString]);
+    // NSLog(@"peripheral: %@ didWriteValueForCharacteristic: %@", [peripheral.identifier UUIDString], [characteristic.UUID UUIDString]);
     BertyDevice *bDevice = [BertyUtils getDevice:peripheral];
     BertyUtils *utils = [BertyUtils sharedUtils];
     if (bDevice == nil) {

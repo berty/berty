@@ -87,11 +87,13 @@
  *
  */
 - (void)centralManager:(CBCentralManager *)central didDiscoverPeripheral:(CBPeripheral *)peripheral advertisementData:(NSDictionary<NSString *, id> *)advertisementData RSSI:(NSNumber *)RSSI {
-    if (![BertyUtils inDevices:peripheral]) {
+    // NSLog(@"centralManger: central didDiscoverPeripheral");
+    BertyDevice *bDevice = [BertyUtils getDevice:peripheral];
+    if (bDevice == nil) {
         NSLog(@"centralManger: central didDiscoverPeripheral: %@ RSSI %@ advertisementData: %@", [peripheral.identifier UUIDString], [RSSI stringValue], advertisementData);
         [peripheral setDelegate:self.peripheralDelegate];
-        BertyDevice *device = [[BertyDevice alloc] initWithPeripheral:peripheral withCentralManager:central];
-        [BertyUtils addDevice:device];
+        bDevice = [[BertyDevice alloc] initWithPeripheral:peripheral withCentralManager:central];
+        [BertyUtils addDevice:bDevice];
         [central connectPeripheral:peripheral options:nil];
     }
 }
@@ -107,11 +109,13 @@
  */
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     NSLog(@"centralManger: central didConnectPeripheral: %@ %@", [peripheral.identifier UUIDString], peripheral.delegate);
+    [peripheral setDelegate:self.peripheralDelegate];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^{
         BertyDevice *bDevice = [BertyUtils getDevice:peripheral];
         if (bDevice == nil) {
             NSLog(@"centralManger: central didConnectPeripheral error unknown peripheral connected");
-            return;
+            bDevice = [[BertyDevice alloc] initWithPeripheral:peripheral withCentralManager:central];
+            [BertyUtils addDevice:bDevice];
         }
         dispatch_semaphore_signal(bDevice.connSema);
     });
