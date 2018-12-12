@@ -7,6 +7,8 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+const TimestampFormat = "2006-01-02 15:04:05.999999999-07:00"
+
 func ContactByID(db *gorm.DB, id string) (*entity.Contact, error) {
 	var contact entity.Contact
 	return &contact, db.First(&contact, "ID = ?", id).Error

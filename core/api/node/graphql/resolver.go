@@ -16,8 +16,8 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
+	"berty.tech/core/sql"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
-	sqlcipher "github.com/xeodou/go-sqlcipher"
 	"go.uber.org/zap"
 )
 
@@ -354,9 +354,9 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.Format(sqlcipher.SQLiteTimestampFormats[0])
+			cursor = n.CreatedAt.Format(sql.TimestampFormat)
 		case "updated_at":
-			cursor = n.UpdatedAt.Format(sqlcipher.SQLiteTimestampFormats[0])
+			cursor = n.UpdatedAt.Format(sql.TimestampFormat)
 		}
 
 		output.Edges = append(output.Edges, &node.EventEdge{
@@ -441,9 +441,9 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.Format(sqlcipher.SQLiteTimestampFormats[0])
+			cursor = n.CreatedAt.Format(sql.TimestampFormat)
 		case "updated_at":
-			cursor = n.UpdatedAt.Format(sqlcipher.SQLiteTimestampFormats[0])
+			cursor = n.UpdatedAt.Format(sql.TimestampFormat)
 		}
 
 		output.Edges = append(output.Edges, &node.ContactEdge{
@@ -520,9 +520,9 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.Format(sqlcipher.SQLiteTimestampFormats[0])
+			cursor = n.CreatedAt.Format(sql.TimestampFormat)
 		case "updated_at":
-			cursor = n.UpdatedAt.Format(sqlcipher.SQLiteTimestampFormats[0])
+			cursor = n.UpdatedAt.Format(sql.TimestampFormat)
 		}
 
 		output.Edges = append(output.Edges, &node.ConversationEdge{
