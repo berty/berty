@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
+	"berty.tech/core/sql"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"go.uber.org/zap"
 )
@@ -317,7 +318,11 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	input.Paginate.OrderBy = orderBy
 	input.Paginate.OrderDesc = orderDesc
 
-	input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
+	if input.Paginate.First > 0 || input.Paginate.Last == 0 {
+		input.Paginate.First++ // querying one more field to fullfil HasNextPage, FIXME: optimize this
+	} else if input.Paginate.Last > 0 {
+		input.Paginate.Last++
+	}
 
 	stream, err := r.client.EventList(ctx, input)
 
@@ -338,7 +343,7 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 		if err != nil {
 			return nil, err
 		}
-		if count >= input.Paginate.First-1 { // related to input.Paginate.First++
+		if (input.Paginate.First > 0 && count >= input.Paginate.First-1) || (input.Paginate.Last > 0 && count >= input.Paginate.Last-1) { // related to input.Paginate.First++
 			hasNextPage = true
 			break
 		}
@@ -349,9 +354,9 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.Format(time.RFC3339Nano)
+			cursor = n.CreatedAt.Format(sql.TimestampFormat)
 		case "updated_at":
-			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
+			cursor = n.UpdatedAt.Format(sql.TimestampFormat)
 		}
 
 		output.Edges = append(output.Edges, &node.EventEdge{
@@ -369,7 +374,11 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 		output.PageInfo.EndCursor = output.Edges[len(output.Edges)-1].Cursor
 	}
 
-	output.PageInfo.HasPreviousPage = input.Paginate.After != ""
+	if input.Paginate.First > 0 || input.Paginate.Last == 0 {
+		output.PageInfo.HasPreviousPage = input.Paginate.After != ""
+	} else {
+		output.PageInfo.HasPreviousPage = input.Paginate.Before != ""
+	}
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
@@ -432,9 +441,9 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.Format(time.RFC3339Nano)
+			cursor = n.CreatedAt.Format(sql.TimestampFormat)
 		case "updated_at":
-			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
+			cursor = n.UpdatedAt.Format(sql.TimestampFormat)
 		}
 
 		output.Edges = append(output.Edges, &node.ContactEdge{
@@ -511,9 +520,9 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 		case "", "id":
 			cursor = n.ID
 		case "created_at":
-			cursor = n.CreatedAt.Format(time.RFC3339Nano)
+			cursor = n.CreatedAt.Format(sql.TimestampFormat)
 		case "updated_at":
-			cursor = n.UpdatedAt.Format(time.RFC3339Nano)
+			cursor = n.UpdatedAt.Format(sql.TimestampFormat)
 		}
 
 		output.Edges = append(output.Edges, &node.ConversationEdge{
@@ -738,24 +747,20 @@ func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string,
 // Helpers
 func getPagination(first *int32, after *string, last *int32, before *string) *node.Pagination {
 	pagination := &node.Pagination{}
-	if first == nil {
-		pagination.First = 0
-	} else {
+	if first != nil {
 		pagination.First = *first
+	} else if last == nil {
+		pagination.First = 10
 	}
-	if after == nil {
-		pagination.After = ""
-	} else {
+	if last != nil {
+		pagination.Last = *last
+	} else if first == nil {
+		pagination.Last = 10
+	}
+	if after != nil {
 		pagination.After = *after
 	}
-	if last == nil {
-		pagination.Last = 0
-	} else {
-		pagination.Last = *last
-	}
-	if before == nil {
-		pagination.Before = ""
-	} else {
+	if before != nil {
 		pagination.Before = *before
 	}
 	return pagination
