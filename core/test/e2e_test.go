@@ -179,13 +179,13 @@ func TestWithEnqueuer(t *testing.T) {
 				So(res.DisplayStatus, ShouldBeEmpty)
 				So(len(res.Devices), ShouldEqual, 0)
 
-				in, out, err := asyncEventsWithTimeout(alice.eventStream, 1)
+				in, out, err := asyncEventsWithTimeout(alice.eventStream, 2)
 				So(err, ShouldBeNil)
 				So(len(in), ShouldEqual, 0)
-				So(len(out), ShouldEqual, 1)
-				So(out[0].Kind, ShouldEqual, p2p.Kind_ContactRequest)
+				So(len(out), ShouldEqual, 2)
+				So(out[1].Kind, ShouldEqual, p2p.Kind_ContactRequest)
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 0, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 0, 0, 0, 0})
 
 				everythingWentFine()
 			})
@@ -211,6 +211,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				envelope = <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
@@ -704,11 +705,11 @@ func TestAliasesFlow(t *testing.T) {
 
 			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 1)
+			So(len(conversations), ShouldEqual, 2)
 
 			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 1)
+			So(len(conversations), ShouldEqual, 2)
 
 			everythingWentFine()
 		})
@@ -746,11 +747,11 @@ func TestAliasesFlow(t *testing.T) {
 
 			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 2)
+			So(len(conversations), ShouldEqual, 3)
 
 			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 2)
+			So(len(conversations), ShouldEqual, 3)
 
 			envelope = bob.networkDriver.(*mock.SimpleDriver).GetLastReceivedEnvelope()
 			So(envelope.Source, ShouldEqual, alias.AliasIdentifier)
@@ -777,11 +778,11 @@ func TestAliasesFlow(t *testing.T) {
 
 			conversations, err = bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 3)
+			So(len(conversations), ShouldEqual, 4)
 
 			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 3)
+			So(len(conversations), ShouldEqual, 4)
 
 			envelope = bob.networkDriver.(*mock.SimpleDriver).GetLastReceivedEnvelope()
 			So(envelope.Source, ShouldNotEqual, alias.AliasIdentifier)

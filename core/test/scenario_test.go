@@ -6,11 +6,10 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/smartystreets/goconvey/convey"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 var cache = map[string]interface{}{}
@@ -60,6 +59,12 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			time.Sleep(sleepBetweenSteps)
 
 			everythingWentFine()
+		})
+		Convey("Alice has a new Conversation", FailureHalts, func() {
+			res, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			So(err, ShouldBeNil)
+			So(len(res), ShouldEqual, 1)
+			cache["conversation_id"] = res[0].ID
 		})
 		Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
 			shouldIContinue(t)
@@ -122,21 +127,21 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 	})
 	Convey("Bob creates a conversation with Alice", FailureHalts, func() {
 
-		Convey("Bob has no conversation", FailureHalts, func() {
+		Convey("Bob has a conversation", FailureHalts, func() {
 			shouldIContinue(t)
 
 			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 0)
+			So(len(conversations), ShouldEqual, 1)
 
 			everythingWentFine()
 		})
-		Convey("Alice has no conversation", FailureHalts, func() {
+		Convey("Alice has a conversation", FailureHalts, func() {
 			shouldIContinue(t)
 
 			conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
-			So(len(conversations), ShouldEqual, 0)
+			So(len(conversations), ShouldEqual, 1)
 
 			everythingWentFine()
 		})
@@ -149,60 +154,55 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			everythingWentFine()
 		})
-		Convey("Bob creates a conversation with Alice", FailureHalts, func() {
-			shouldIContinue(t)
-
-			res, err := bob.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
-				Title: "Alice & Bob",
-				Topic: "hey!",
-				Contacts: []*entity.Contact{
-					{ID: alice.node.UserID()},
-				},
-			})
-			So(err, ShouldBeNil)
-			So(res, ShouldNotBeNil)
-			cache["conversation_id"] = res.ID
-			time.Sleep(sleepBetweenSteps)
-
-			everythingWentFine()
-		})
-		Convey("Bob has a conversation with Alice", FailureHalts, func() {
+		Convey("Bob has a conversations with Alice", FailureHalts, func() {
 			shouldIContinue(t)
 
 			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
-
-			So(conversations[0].Title, ShouldEqual, "Alice & Bob")
+			So(conversations[0].Title, ShouldEqual, "")
 			So(len(conversations[0].Members), ShouldEqual, 2)
-			So(conversations[0].Members[0].ContactID, ShouldEqual, bob.node.UserID())
-			So(conversations[0].Members[1].ContactID, ShouldEqual, alice.node.UserID())
-			So(conversations[0].Members[0].Status, ShouldEqual, entity.ConversationMember_Owner)
-			So(conversations[0].Members[1].Status, ShouldEqual, entity.ConversationMember_Active)
+			memberBob := &entity.ConversationMember{}
+			memberAlice := &entity.ConversationMember{}
+			for _, member := range conversations[0].Members {
+				switch member.ContactID {
+				case alice.node.UserID():
+					memberAlice = member
+				case bob.node.UserID():
+					memberBob = member
+				}
+			}
+			So(memberBob.Contact.DisplayName, ShouldEqual, "Bob")
+			So(memberAlice.Contact.DisplayName, ShouldEqual, "Alice")
+			So(memberBob.ContactID, ShouldEqual, bob.node.UserID())
+			So(memberAlice.ContactID, ShouldEqual, alice.node.UserID())
+			So(memberBob.Status, ShouldEqual, entity.ConversationMember_Active)
+			So(memberAlice.Status, ShouldEqual, entity.ConversationMember_Owner)
 
 			everythingWentFine()
 		})
-		Convey("Alice has the conversation with Bob", FailureHalts, func() {
+		Convey("Alice has a conversation with Bob", FailureHalts, func() {
 			shouldIContinue(t)
 
 			conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
-			So(conversations[0].Title, ShouldEqual, "Alice & Bob")
+			So(conversations[0].Title, ShouldEqual, "")
 			So(len(conversations[0].Members), ShouldEqual, 2)
 			So(conversations[0].Members[0].ContactID, ShouldNotEqual, conversations[0].Members[1].ContactID)
 			for _, member := range conversations[0].Members {
 				switch member.ContactID {
 				case alice.node.UserID():
-					So(member.Status, ShouldEqual, entity.ConversationMember_Active)
-				case bob.node.UserID():
 					So(member.Status, ShouldEqual, entity.ConversationMember_Owner)
+				case bob.node.UserID():
+					So(member.Status, ShouldEqual, entity.ConversationMember_Active)
 				}
 			}
 
 			everythingWentFine()
 		})
+
 		Convey("Eve has no conversation (again)", FailureHalts, func() {
 			shouldIContinue(t)
 
