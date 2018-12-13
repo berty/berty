@@ -35,12 +35,6 @@ func setConnClosed(bleUUID *C.char) {
 	ConnClosed(goBleUUID)
 }
 
-//export callConnClose
-func callConnClose(bleUUID *C.char) {
-	goBleUUID := C.GoString(bleUUID)
-	ConnClose(goBleUUID)
-}
-
 func (b *Conn) IsClosed() bool {
 	val, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
@@ -54,9 +48,11 @@ func (b *Conn) IsClosed() bool {
 }
 
 func (b *Conn) Close() error {
-	logger().Debug("BLEConn Close")
-	b.closed = true
-	close(b.closer)
+	logger().Debug("BLEConn Close", zap.Bool("CLOSED ", b.closed))
+	if (b.closed != true) {
+		close(b.closer)
+		b.closed = true
+	}
 	_, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		logger().Debug("BLEConn close", zap.Error(err))
@@ -177,6 +173,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 
 	if conn, ok := getConn(s); ok {
 		conn.closed = false
+		conn.closer = make(chan struct{}) 
 		return conn, nil
 	}
 	c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr, 0)

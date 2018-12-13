@@ -58,7 +58,10 @@ void init() {
 }
 
 void addService() {
-  [peripheralManager addService:[BertyUtils sharedUtils].bertyService];
+  if ([BertyUtils sharedUtils].serviceAdded == NO) {
+    [BertyUtils sharedUtils].serviceAdded = YES;
+    [peripheralManager addService:[BertyUtils sharedUtils].bertyService];
+  }
 }
 
 void setMa(char *ma) {

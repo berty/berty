@@ -86,14 +86,6 @@ func BytesToConn(bleUUID string, b []byte) {
 func ConnClosed(bleUUID string) {
 	if conn, ok := getConn(bleUUID); ok {
 		conns.Delete(bleUUID)
-		conn.closed = true
-		conn.sess.Close()
-	}
-}
-
-func ConnClose(bleUUID string) {
-	if conn, ok := getConn(bleUUID); ok {
-		conns.Delete(bleUUID)
 		conn.sess.Close()
 	}
 }
