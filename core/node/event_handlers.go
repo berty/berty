@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"berty.tech/core/pkg/errorcodes"
-
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/pkg/errorcodes"
 	bsql "berty.tech/core/sql"
 	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
@@ -73,6 +72,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 	if err := n.networkDriver.Join(ctx, input.SenderID); err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -121,9 +121,8 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 		Topic:   attrs.Conversation.Topic,
 	}
 
-	// save c donversation
-	if err := n.sql(ctx).Set("gorm:association_autoupdate", true).Save(conversation).Error; err != nil {
-		return errorcodes.ErrDbUpdate.Wrap(err)
+	if _, err := bsql.CreateConversation(n.sql(ctx), conversation); err != nil {
+		return err
 	}
 
 	if err := n.networkDriver.Join(ctx, attrs.Conversation.ID); err != nil {
