@@ -1,8 +1,8 @@
 import { fetchQuery, graphql } from 'react-relay'
 
 const query = graphql`
-  query PanicQuery {
-    Panic(T: true) {
+  query TestPanicQuery {
+    TestPanic(T: true) {
       T
     }
   }
@@ -11,5 +11,5 @@ const query = graphql`
 export default context => ({
   graphql: query,
   fetch: async (variables = {}) =>
-    (await fetchQuery(context.environment, query, variables)).Panic,
+    (await fetchQuery(context.environment, query, variables)).TestPanic,
 })

@@ -579,21 +579,24 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Node               func(childComplexity int, id string) int
-		Id                 func(childComplexity int, T bool) int
-		EventList          func(childComplexity int, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		GetEvent           func(childComplexity int, id string) int
-		ContactList        func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		Contact            func(childComplexity int, filter *entity.Contact) int
-		ConversationList   func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		Conversation       func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
-		ConversationMember func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
-		DeviceInfos        func(childComplexity int, T bool) int
-		AppVersion         func(childComplexity int, T bool) int
-		Peers              func(childComplexity int, T bool) int
-		Protocols          func(childComplexity int, id string, addrs []string, connection *int32) int
-		LogfileList        func(childComplexity int, T bool) int
-		Panic              func(childComplexity int, T bool) int
+		Node                   func(childComplexity int, id string) int
+		Id                     func(childComplexity int, T bool) int
+		EventList              func(childComplexity int, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
+		GetEvent               func(childComplexity int, id string) int
+		ContactList            func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
+		Contact                func(childComplexity int, filter *entity.Contact) int
+		ConversationList       func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
+		Conversation           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
+		ConversationMember     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+		DeviceInfos            func(childComplexity int, T bool) int
+		AppVersion             func(childComplexity int, T bool) int
+		Peers                  func(childComplexity int, T bool) int
+		Protocols              func(childComplexity int, id string, addrs []string, connection *int32) int
+		LogfileList            func(childComplexity int, T bool) int
+		TestLogBackgroundError func(childComplexity int, T bool) int
+		TestLogBackgroundWarn  func(childComplexity int, T bool) int
+		TestLogBackgroundDebug func(childComplexity int, T bool) int
+		TestPanic              func(childComplexity int, T bool) int
 	}
 
 	Subscription struct {
@@ -675,7 +678,10 @@ type QueryResolver interface {
 	Peers(ctx context.Context, T bool) (*network.Peers, error)
 	Protocols(ctx context.Context, id string, addrs []string, connection *int32) (*node.ProtocolsOutput, error)
 	LogfileList(ctx context.Context, T bool) ([]*node.LogfileEntry, error)
-	Panic(ctx context.Context, T bool) (*node.Void, error)
+	TestLogBackgroundError(ctx context.Context, T bool) (*node.Void, error)
+	TestLogBackgroundWarn(ctx context.Context, T bool) (*node.Void, error)
+	TestLogBackgroundDebug(ctx context.Context, T bool) (*node.Void, error)
+	TestPanic(ctx context.Context, T bool) (*node.Void, error)
 }
 type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
@@ -2043,7 +2049,52 @@ func field_Query_LogfileList_args(rawArgs map[string]interface{}) (map[string]in
 
 }
 
-func field_Query_Panic_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func field_Query_TestLogBackgroundError_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_TestLogBackgroundWarn_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_TestLogBackgroundDebug_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_TestPanic_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 bool
 	if tmp, ok := rawArgs["T"]; ok {
@@ -4510,17 +4561,53 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.LogfileList(childComplexity, args["T"].(bool)), true
 
-	case "Query.Panic":
-		if e.complexity.Query.Panic == nil {
+	case "Query.TestLogBackgroundError":
+		if e.complexity.Query.TestLogBackgroundError == nil {
 			break
 		}
 
-		args, err := field_Query_Panic_args(rawArgs)
+		args, err := field_Query_TestLogBackgroundError_args(rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Panic(childComplexity, args["T"].(bool)), true
+		return e.complexity.Query.TestLogBackgroundError(childComplexity, args["T"].(bool)), true
+
+	case "Query.TestLogBackgroundWarn":
+		if e.complexity.Query.TestLogBackgroundWarn == nil {
+			break
+		}
+
+		args, err := field_Query_TestLogBackgroundWarn_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TestLogBackgroundWarn(childComplexity, args["T"].(bool)), true
+
+	case "Query.TestLogBackgroundDebug":
+		if e.complexity.Query.TestLogBackgroundDebug == nil {
+			break
+		}
+
+		args, err := field_Query_TestLogBackgroundDebug_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TestLogBackgroundDebug(childComplexity, args["T"].(bool)), true
+
+	case "Query.TestPanic":
+		if e.complexity.Query.TestPanic == nil {
+			break
+		}
+
+		args, err := field_Query_TestPanic_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TestPanic(childComplexity, args["T"].(bool)), true
 
 	case "Subscription.EventStream":
 		if e.complexity.Subscription.EventStream == nil {
@@ -16213,10 +16300,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_LogfileList(ctx, field)
 				wg.Done()
 			}(i, field)
-		case "Panic":
+		case "TestLogBackgroundError":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._Query_Panic(ctx, field)
+				out.Values[i] = ec._Query_TestLogBackgroundError(ctx, field)
+				wg.Done()
+			}(i, field)
+		case "TestLogBackgroundWarn":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_TestLogBackgroundWarn(ctx, field)
+				wg.Done()
+			}(i, field)
+		case "TestLogBackgroundDebug":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_TestLogBackgroundDebug(ctx, field)
+				wg.Done()
+			}(i, field)
+		case "TestPanic":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_TestPanic(ctx, field)
 				wg.Done()
 			}(i, field)
 		case "__type":
@@ -16697,9 +16802,9 @@ func (ec *executionContext) _Query_LogfileList(ctx context.Context, field graphq
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _Query_Panic(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Query_TestLogBackgroundError(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := field_Query_Panic_args(rawArgs)
+	args, err := field_Query_TestLogBackgroundError_args(rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -16712,7 +16817,100 @@ func (ec *executionContext) _Query_Panic(ctx context.Context, field graphql.Coll
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Panic(rctx, args["T"].(bool))
+		return ec.resolvers.Query().TestLogBackgroundError(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Void)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_TestLogBackgroundWarn(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_TestLogBackgroundWarn_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TestLogBackgroundWarn(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Void)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_TestLogBackgroundDebug(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_TestLogBackgroundDebug_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TestLogBackgroundDebug(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Void)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_TestPanic(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_TestPanic_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TestPanic(rctx, args["T"].(bool))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19569,7 +19767,16 @@ type Query {
     T: Bool!
   )
       : [BertyNodeLogfileEntry]
-  Panic(
+  TestLogBackgroundError(
+    T: Bool!
+  ): BertyNodeVoid
+  TestLogBackgroundWarn(
+    T: Bool!
+  ): BertyNodeVoid
+  TestLogBackgroundDebug(
+    T: Bool!
+  ): BertyNodeVoid
+  TestPanic(
     T: Bool!
   ): BertyNodeVoid
 }

@@ -676,7 +676,16 @@ type Query {
     T: Bool!
   )
       : [BertyNodeLogfileEntry]
-  Panic(
+  TestLogBackgroundError(
+    T: Bool!
+  ): BertyNodeVoid
+  TestLogBackgroundWarn(
+    T: Bool!
+  ): BertyNodeVoid
+  TestLogBackgroundDebug(
+    T: Bool!
+  ): BertyNodeVoid
+  TestPanic(
     T: Bool!
   ): BertyNodeVoid
 }

@@ -161,6 +161,11 @@ service Service {
     option (gql.graphql_type) = "Subscription";
   }
 
+  rpc TestLogBackgroundError (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
+  rpc TestLogBackgroundWarn  (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
+  rpc TestLogBackgroundDebug (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
+  rpc TestPanic              (Void) returns (Void) { option (gql.graphql_type) = "Query"; };
+
   //
   // Metrics
   //
@@ -173,10 +178,6 @@ service Service {
   // Yield new peers in real-time
   rpc MonitorPeers (Void) returns (stream berty.network.Peer) {
     option (gql.graphql_type) = "Subscription";
-  };
-
-  rpc Panic (Void) returns (Void) {
-    option (gql.graphql_type) = "Query";
   };
 }
 
@@ -373,4 +374,3 @@ message NodeEvent {
   // Attributes is a nested protobuf message containing per-event-type additional attributes.
   bytes attributes = 2;
 }
-

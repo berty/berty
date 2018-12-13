@@ -23,6 +23,7 @@ import (
 	"github.com/brianvoe/gofakeit"
 	"github.com/gogo/protobuf/proto"
 	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
 
 	"berty.tech/core"
 	"berty.tech/core/api/node"
@@ -271,11 +272,35 @@ func (n *Node) AppVersion(ctx context.Context, input *node.Void) (*node.AppVersi
 	return &node.AppVersionOutput{Version: core.Version}, nil
 }
 
-func (n *Node) Panic(ctx context.Context, input *node.Void) (*node.Void, error) {
+func (n *Node) TestPanic(ctx context.Context, input *node.Void) (*node.Void, error) {
 	span, _ := tracing.EnterFunc(ctx, input)
 	defer span.Finish()
 
 	panic("panic from client")
+}
+
+func (n *Node) TestLogBackgroundError(ctx context.Context, input *node.Void) (*node.Void, error) {
+	span, _ := tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+
+	n.LogBackgroundError(ctx, errorcodes.ErrUndefined.Wrap(errors.New("just an error test")))
+	return &node.Void{}, nil
+}
+
+func (n *Node) TestLogBackgroundWarn(ctx context.Context, input *node.Void) (*node.Void, error) {
+	span, _ := tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+
+	n.LogBackgroundWarn(ctx, errorcodes.ErrUndefined.Wrap(errors.New("just a warn test")))
+	return &node.Void{}, nil
+}
+
+func (n *Node) TestLogBackgroundDebug(ctx context.Context, input *node.Void) (*node.Void, error) {
+	span, _ := tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+
+	n.LogBackgroundDebug(ctx, "just a debug test")
+	return &node.Void{}, nil
 }
 
 func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) (*p2p.Event, error) {
