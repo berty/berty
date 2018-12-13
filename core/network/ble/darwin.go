@@ -173,7 +173,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 
 	if conn, ok := getConn(s); ok {
 		conn.closed = false
-		conn.closer = make(chan struct{}) 
+		conn.closer = make(chan struct{})
 		return conn, nil
 	}
 	c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr, 0)

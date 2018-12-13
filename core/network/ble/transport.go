@@ -80,11 +80,21 @@ func NewBLETransport(ID string, lAddr ma.Multiaddr) (func(me host.Host) *Transpo
 func (t *Transport) ListenNewPeer() {
 	for {
 		pi := <-peerAdder
-		t.MySelf.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
 		bleUUID, err := pi.Addrs[0].ValueForProtocol(PBle)
 		if err != nil {
 			panic(err)
 		}
+		for _, v := range t.MySelf.Peerstore().Peers() {
+			otherPi := t.MySelf.Peerstore().PeerInfo(v)
+			for _, addr := range otherPi.Addrs {
+				otherBleUUID, err := addr.ValueForProtocol(PBle)
+				if err == nil && bleUUID == otherBleUUID {
+					t.MySelf.Peerstore().ClearAddrs(v)
+				}
+			}
+		}
+
+		t.MySelf.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
 		lBleUUID, err := t.lAddr.ValueForProtocol(PBle)
 		if err != nil {
 			panic(err)

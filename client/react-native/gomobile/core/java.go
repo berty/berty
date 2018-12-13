@@ -27,11 +27,6 @@ func JavaToGo() string {
 	return "COMING FROM GOLANG"
 }
 
-func ConnClose(bleUUID string) {
-	defer panicHandler()
-	ble.ConnClose(bleUUID)
-}
-
 func ConnClosed(bleUUID string) {
 	defer panicHandler()
 	ble.ConnClosed(bleUUID)

@@ -88,7 +88,7 @@ func (b *Listener) Close() error {
 		}
 	default:
 		b.closeNative()
-		close(b.closer)
+		defer close(b.closer)
 	}
 	return nil
 }
