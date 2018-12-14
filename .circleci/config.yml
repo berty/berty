@@ -373,6 +373,104 @@ jobs:
           path: /tmp/fl
 
 
+  client.rn.ios-beta:
+    working_directory: ~/go/src/berty.tech
+    macos:
+      xcode: "9.4.1"
+    environment:
+      FASTLANE_SKIP_UPDATE_CHECK: 1
+      FASTLANE_HIDE_CHANGELOG: 1
+      SCAN_OUTPUT_DIRECTORY: /tmp/flb/log/scan
+      GYM_OUTPUT_DIRECTORY: /tmp/flb/log/gym
+      FL_BUILDLOG_PATH: /tmp/flb/log/build/ios
+      SCAN_INCLUDE_SIMULATOR_LOGS: true
+      BUILD: /tmp/flb/build
+
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - *install_retry
+      - run:
+          name: set Ruby version
+          command: echo "ruby-2.4" > ~/.ruby-version
+
+      - checkout:
+          path: ~/go/src/berty.tech/
+
+      - attach_workspace:
+          at: ~/go/src/berty.tech/
+
+      # if build breaks, increment vX in both restore_cache and save_cache
+      - restore_cache:
+          key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
+
+      - run:
+          name: install-go
+          command: |
+            if [ ! -f ~/go-install/go/bin/go ]; then
+              cd ~ && git clone https://github.com/udhos/update-golang
+              cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install ./update-golang.sh
+            fi
+            echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+
+      - run:
+          name: install gomobile
+          command: |
+            if [ ! -f ~/go/bin/gomobile ]; then
+              go get golang.org/x/mobile/cmd/gomobile
+              cd ~/go/src/golang.org/x/mobile
+              git remote add upstream git@github.com:sfroment/mobile
+              git fetch upstream
+              git cherry-pick af3c051e0603af005260579c432830164f68933b
+              go install golang.org/x/mobile/cmd/gomobile
+              gomobile init
+            fi
+
+      - save_cache:
+          key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
+          paths:
+            - ~/go/pkg
+            - ~/go/src/github.com
+            - ~/go-install
+
+      - run:
+          name: install core
+          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
+
+      - restore_cache:
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
+
+      - run:
+          name: install bundle
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+
+      - save_cache:
+          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-4
+          paths:
+            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+
+      - run:
+          name: set version
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: make version.ios
+
+      - run:
+          name: install fsevents
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 yarn add fsevents
+
+      - run:
+          name: build app
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: |
+            make fastlane.setup_circle
+            /tmp/retry -m 3 make fastlane.ios.house
+
+      - store_artifacts:
+          path: /tmp/flb
+
+
   client.rn.web:
     working_directory: ~/go/src/berty.tech
     docker:
@@ -417,6 +515,12 @@ workflows:
           requires:
             - client.rn.node
       - client.rn.ios:
+          requires:
+            - client.rn.node
+      - client.rn.ios-beta:
+          filters:
+            branches:
+              only: master
           requires:
             - client.rn.node
       - client.rn.web:
