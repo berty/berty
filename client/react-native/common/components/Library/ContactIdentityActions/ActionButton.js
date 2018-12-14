@@ -1,12 +1,35 @@
 import React from 'react'
-import { Text, TouchableOpacity } from 'react-native'
-import { Button, Icon } from '..'
+import { TouchableOpacity, View } from 'react-native'
+import { Text } from '..'
 import colors from '../../../constants/colors'
 
-const ActionButton = ({ icon, title, onPress }) => <TouchableOpacity style={{ flex: 1 }} onPress={onPress}>
-  <Button rounded={'circle'} background={colors.blue} color={colors.white}
-    icon={<Icon name={icon} color={colors.white} />} />
-  <Text style={{ color: colors.white }}>{title}</Text>
-</TouchableOpacity>
+const ActionButton = ({ onPress, color, title, icon }) => <View style={{ flex: 1 }}>
+  <TouchableOpacity onPress={onPress}>
+    <Text rounded={22} background={color} color={color === colors.white ? colors.subtleGrey : colors.white} icon={icon}
+      shadow big center padding margin opacity={onPress ? 1 : 0.3} />
+    <Text center color={colors.white} tiny opacity={onPress ? 1 : 0.3}>{title}</Text>
+  </TouchableOpacity>
+</View>
+
+export const ActionButtonLarge = ({ onPress, color, title, icon }) => <Text
+  icon={icon}
+  background={color}
+  color={color === colors.white ? colors.subtleGrey : colors.white}
+  margin={{ left: 8 }}
+  padding={{
+    vertical: 6,
+    horizontal: 4,
+  }}
+  middle
+  center
+  shadow
+  tiny
+  rounded={22}
+  onPress={onPress}
+  opacity={onPress ? 1 : 0.3}
+>
+  {title}
+</Text>
 
 export default ActionButton
+ActionButton.Large = ActionButtonLarge

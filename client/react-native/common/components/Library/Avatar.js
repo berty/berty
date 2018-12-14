@@ -1,7 +1,6 @@
 import React from 'react'
 import { Image } from 'react-native'
 import { fingerprint } from '../../helpers/fingerprint'
-import { extractPublicKeyFromId } from '../../helpers/contacts'
 
 const Avatar = ({ data, size = 40, margin = 4, uri = null, style = [] }) => {
   if (uri !== null) {
@@ -21,8 +20,7 @@ const Avatar = ({ data, size = 40, margin = 4, uri = null, style = [] }) => {
     console.error(['No id provided', data])
   }
 
-  const id = extractPublicKeyFromId(data.id) || data.id
-  const hexCode = fingerprint(id).substring(0, 16)
+  const hexCode = fingerprint(data.id).substring(0, 16)
   const retinaMode = 2
 
   return <Image

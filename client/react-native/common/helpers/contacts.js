@@ -4,6 +4,7 @@ import { atob, btoa } from 'b64-lite'
 import { NavigationActions } from 'react-navigation'
 import { showMessage } from 'react-native-flash-message'
 import defaultValuesContact from '../utils/contact'
+import NavigationService from './NavigationService'
 
 export const requestContact = async (contactId, displayName, navigation, errorHandler) => {
   try {
@@ -71,6 +72,15 @@ export const isPubKeyValid = async ({ queries, data: { id } }) => {
 }
 
 export const showContactModal = async ({ relayContext: { queries }, navigation, beforeDismiss, data }) => {
+  const extractedPublicKey = extractPublicKeyFromId(data.id)
+
+  if (extractedPublicKey && extractedPublicKey !== '') {
+    data = {
+      ...data,
+      id: extractedPublicKey,
+    }
+  }
+
   if (!(await isPubKeyValid({ queries, data }))) {
     showMessage({
       message: 'This public key is invalid',
@@ -82,7 +92,7 @@ export const showContactModal = async ({ relayContext: { queries }, navigation, 
     return false
   }
 
-  navigation.dispatch(NavigationActions.navigate({
+  NavigationService.action(NavigationActions.navigate({
     routeName: 'modal/contacts/card',
     params: {
       data: {

@@ -1,5 +1,5 @@
 import React from 'react'
-import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
+import { createMaterialTopTabNavigator } from 'react-navigation'
 import ByQRCode from './ByQRCode'
 import ByPublicKey from './ByPublicKey'
 import Invite from './Invite'
@@ -25,7 +25,6 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
     },
     'nearby': {
       screen: withScreenProps(Invite),
-      // screen: withScreenProps(ByBump),
       navigationOptions: {
         title: 'Nearby',
         tabBarIcon: tabIcon('radio'),
@@ -45,8 +44,8 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
   },
 )
 
-const AddScreen = ({ navigation }) => <View style={{ flex: 1 }}>
-  {<AddContactTabbedContent screenProps={{ topNavigation: navigation }} />}
+const AddScreen = () => <View style={{ flex: 1 }}>
+  <AddContactTabbedContent />
 </View>
 
-export default withNavigation(AddScreen)
+export default AddScreen

@@ -14,6 +14,7 @@ import {
   updaters,
 } from '../../../graphql'
 import Main from '../Main'
+import NavigationService from '../../../helpers/NavigationService'
 
 const { CoreModule } = NativeModules
 
@@ -91,7 +92,10 @@ export default class Current extends PureComponent {
     return (
       <RelayContext.Provider value={context}>
         <Main
-          ref={nav => (this.mainNav = nav)}
+          ref={nav => {
+            this.mainNav = nav
+            NavigationService.setTopLevelNavigator(nav)
+          }}
           screenProps={{
             ...this.props.screenProps,
             context,

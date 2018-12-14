@@ -2,8 +2,8 @@ import React from 'react'
 import { createSubStackNavigator } from '../../../helpers/react-navigation'
 import List from './List'
 import Add from './Add'
-import Detail from './Detail'
 import { Header, SelfAvatarIcon } from '../../Library'
+import Detail from './Detail'
 
 export default createSubStackNavigator(
   {

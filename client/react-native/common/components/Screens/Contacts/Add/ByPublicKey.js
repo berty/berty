@@ -63,7 +63,6 @@ class ByPublicKey extends PureComponent {
             onPress={async () => {
               await showContactModal({
                 relayContext,
-                navigation: this.props.topNavigation,
                 data: {
                   id: this.state.id,
                 },

@@ -1,46 +1,33 @@
 import React from 'react'
-import { withNavigation } from 'react-navigation'
 import { Clipboard } from 'react-native'
 import { makeShareableUrl, shareLinkOther, shareLinkSelf } from '../../../helpers/contacts'
 import saveViewToCamera from '../../../helpers/saveViewToCamera'
 import QRCodeExport from '../QRExport'
-import ActionButton from './ActionButton'
-import { showMessage } from 'react-native-flash-message'
+import ActionList from './ActionList'
 
-const ActionsShare = ({ data, self, navigation }) => {
+const ActionsShare = ({ data, self, inModal }) => {
   const { id, displayName } = data
 
-  return <>
-    <ActionButton icon={'share'} title={'Share'}
-      onPress={() =>
+  return <ActionList inModal={inModal}>
+    <ActionList.Action icon={'share'} title={'Share'} action={
+      () =>
         self
           ? shareLinkSelf({ id, displayName })
           : shareLinkOther({ id, displayName })
-      }
-    />
-    <ActionButton icon={'image'} title={'Save QR code'}
-      onPress={async () => {
-        try {
-          await saveViewToCamera({ view: <QRCodeExport data={data} />, navigation })
-          showMessage({
-            message: 'The QR Code has been added to your Camera Roll',
-            type: 'info',
-            icon: 'info',
-            position: 'center',
-          })
-        } catch (e) {
-          showMessage({
-            message: String(e),
-            type: 'danger',
-            icon: 'danger',
-            position: 'center',
-          })
-        }
-      }} />
-    <ActionButton icon={'link'} title={'Copy link'}
-      onPress={() => Clipboard.setString(makeShareableUrl({ id, displayName }))} />
-    <ActionButton icon={'copy'} title={'Copy public key'} onPress={() => Clipboard.setString(id)} />
-  </>
+    } />
+
+    <ActionList.Action icon={'image'} title={'Save QR code'} action={() =>
+      saveViewToCamera({ view: <QRCodeExport data={data} /> })
+    } successMessage={'The QR Code has been added to your Camera Roll'} />
+
+    <ActionList.Action icon={'link'} title={'Copy link'} action={() =>
+      Clipboard.setString(makeShareableUrl({ id, displayName }))
+    } successMessage={'Invite link has been copied'} />
+
+    <ActionList.Action icon={'copy'} title={'Copy public key'} action={() =>
+      Clipboard.setString(id)
+    } successMessage={'Public key has been copied'} />
+  </ActionList>
 }
 
-export default withNavigation(ActionsShare)
+export default ActionsShare

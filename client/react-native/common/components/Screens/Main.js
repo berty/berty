@@ -53,7 +53,7 @@ export const tabs = createTabNavigator(
   },
   {
     initialRouteName: 'chats',
-    swipeEnabled: true,
+    swipeEnabled: false,
     animationEnabled: true,
     tabBarPosition: 'bottom',
     navigationOptions: ({ navigation, screenProps }) => {
@@ -106,9 +106,6 @@ export default createStackNavigator(
       screen: EventListFilterModal,
     },
     'modal/contacts/card': {
-      screen: ContactCardModal,
-    },
-    'modal/contacts/card/add': {
       screen: ContactCardModal,
     },
     'virtual/view-export': {

@@ -104,8 +104,8 @@ export default class Detail extends PureComponent {
               onPress={() =>
                 navigation.push('modal/contacts/card', {
                   data: {
+                    ...contact,
                     id: extractPublicKeyFromId(contact.id),
-                    displayName: contact.displayName,
                   },
                 })
               }

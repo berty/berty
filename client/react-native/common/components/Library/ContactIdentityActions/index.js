@@ -5,28 +5,31 @@ import { Text, View } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import ActionsAdd from './ActionsAdd'
 import ActionsShare from './ActionsShare'
+import ReceivedActions from './ActionsReceived'
+import ActionsSent from './ActionsSent'
 
 const ContactIdentityActions = ({ data, navigation, modalWidth }) => <View
   style={{ width: modalWidth, flexDirection: 'row', marginTop: 12 }}>
   <WithContact id={data.id}>{(user, state) => {
-    if (state.type === state.success && (user === null || user.status === enums.BertyEntityContactInputStatus.Unknown)) {
-      return <ActionsAdd data={data} navigation={navigation} />
+    if (user === null) {
+      return <ActionsAdd data={data} navigation={navigation} inModal />
     } else if (user === null) {
       return <View><Text>LOADING (or error)</Text></View>
     } else {
       switch (user.status) {
         case enums.BertyEntityContactInputStatus.Myself:
-          return <ActionsShare data={data} self navigation={navigation} />
+          return <ActionsShare data={user} self navigation={navigation} inModal />
 
         case enums.BertyEntityContactInputStatus.IsFriend:
         case enums.BertyEntityContactInputStatus.IsTrustedFriend:
-          return <ActionsShare data={data} navigation={navigation} />
+          return <ActionsShare data={user} navigation={navigation} inModal />
 
         case enums.BertyEntityContactInputStatus.IsRequested:
-          return <Text>Is requested</Text>
+          console.log(user)
+          return <ActionsSent data={user} inModal />
 
         case enums.BertyEntityContactInputStatus.RequestedMe:
-          return <Text>Requested me</Text>
+          return <ReceivedActions data={user} inModal />
 
         case enums.BertyEntityContactInputStatus.IsBlocked:
           return <Text>Is blocked</Text>

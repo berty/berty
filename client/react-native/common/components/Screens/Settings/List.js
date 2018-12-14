@@ -12,9 +12,11 @@ export default class List extends PureComponent {
   static Menu = fragments.Contact(
     ({
       navigation,
-      data: { id, displayName, overrideDisplayName },
+      data,
       availableUpdate,
     }) => {
+      const { id, displayName, overrideDisplayName } = data
+
       return <Menu absolute>
         <Menu.Header
           icon={
@@ -35,8 +37,8 @@ export default class List extends PureComponent {
             onPress={() =>
               navigation.push('modal/contacts/card', {
                 data: {
+                  ...data,
                   id: extractPublicKeyFromId(id),
-                  displayName,
                 },
                 self: true,
               })
@@ -48,7 +50,7 @@ export default class List extends PureComponent {
               title='An update of the app is available'
               onPress={() =>
                 Linking.openURL(availableUpdate['manifest-url']).catch(e =>
-                  console.error(e)
+                  console.error(e),
                 )
               }
               color={colors.red}
@@ -104,7 +106,7 @@ export default class List extends PureComponent {
           />
         </Menu.Section>
       </Menu>
-    }
+    },
   )
 
   render () {
