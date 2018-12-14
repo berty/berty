@@ -99,6 +99,9 @@ enum BertyErrorCodes {
   ErrSenderAliasNoCandidates = 12002;
   ErrSenderAliasUpdateFailed = 12003;
 
+  ErrConversation = 13000;
+  ErrConversationMembers = 13001;
+  ErrConversationNotEnoughMembers = 13002;
 }
 
 

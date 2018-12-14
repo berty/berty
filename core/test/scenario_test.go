@@ -176,7 +176,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(memberAlice.Contact.DisplayName, ShouldEqual, "Alice")
 			So(memberBob.ContactID, ShouldEqual, bob.node.UserID())
 			So(memberAlice.ContactID, ShouldEqual, alice.node.UserID())
-			So(memberBob.Status, ShouldEqual, entity.ConversationMember_Active)
+			So(memberBob.Status, ShouldEqual, entity.ConversationMember_Owner)
 			So(memberAlice.Status, ShouldEqual, entity.ConversationMember_Owner)
 
 			everythingWentFine()
@@ -196,7 +196,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 				case alice.node.UserID():
 					So(member.Status, ShouldEqual, entity.ConversationMember_Owner)
 				case bob.node.UserID():
-					So(member.Status, ShouldEqual, entity.ConversationMember_Active)
+					So(member.Status, ShouldEqual, entity.ConversationMember_Owner)
 				}
 			}
 
