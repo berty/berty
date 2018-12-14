@@ -31,7 +31,7 @@
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "Berty.app"
                BlueprintName = "Berty"
-               ReferencedContainer = "container:berty.xcodeproj">
+               ReferencedContainer = "container:Berty.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -49,7 +49,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Berty.app"
             BlueprintName = "Berty"
-            ReferencedContainer = "container:berty.xcodeproj">
+            ReferencedContainer = "container:Berty.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -72,14 +72,14 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Berty.app"
             BlueprintName = "Berty"
-            ReferencedContainer = "container:berty.xcodeproj">
+            ReferencedContainer = "container:Berty.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
-      buildConfiguration = "Release"
+      buildConfiguration = "adhoc"
       shouldUseLaunchSchemeArgsEnv = "YES"
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
@@ -91,7 +91,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Berty.app"
             BlueprintName = "Berty"
-            ReferencedContainer = "container:berty.xcodeproj">
+            ReferencedContainer = "container:Berty.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
@@ -99,7 +99,7 @@
       buildConfiguration = "Debug">
    </AnalyzeAction>
    <ArchiveAction
-      buildConfiguration = "Release"
+      buildConfiguration = "adhoc"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

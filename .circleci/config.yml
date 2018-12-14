@@ -367,7 +367,7 @@ jobs:
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             make fastlane.setup_circle
-            /tmp/retry -m 3 make fastlane.ios.build
+            /tmp/retry -m 3 make fastlane.ios.adhoc
 
       - store_artifacts:
           path: /tmp/fl

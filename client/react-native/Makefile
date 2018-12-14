@@ -15,6 +15,9 @@ BUILD ?= .build
 IOS_UDID := ''
 IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 IOS_BUILD := $(BUILD)/ios
+# @TODO: find a better way to pass thoses arguments >
+MATCH_ENTERPRISE_TEAM_ID ?=
+MATCH_COMPANY_TEAM_ID ?=
 
 # android related env
 ANDROID_VERSION ?= $(shell git rev-list --all --count)
@@ -259,24 +262,59 @@ version.ios: version
 	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
 
 fastlane.match.development:
-	time bundle exec fastlane run match type:development
+	time bundle exec fastlane run match type:development app_identifier:chat.berty.ios team_id:$(MATCH_COMPANY_TEAM_ID)
 
 fastlane.match.appstore:
-	time bundle exec fastlane run match type:appstore
+	time bundle exec fastlane run match type:appstore app_identifier:chat.berty.ios team_id:$(MATCH_COMPANY_TEAM_ID)
 
 fastlane.match.adhoc:
-	time bundle exec fastlane run match force_for_new_devices:true type:adhoc
+	time bundle exec fastlane run match force_for_new_devices:true type:adhoc app_identifier:chat.berty.ios team_id:$(MATCH_COMPANY_TEAM_ID)
 
 fastlane.match.enterprise:
-	time bundle exec fastlane run match type:enterprise
+	time bundle exec fastlane run match type:enterprise app_identifier:chat.berty.house.ios team_id:$(MATCH_ENTERPRISE_TEAM_ID)
 
 fastlane.setup_circle:
 	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
-	bundle exec fastlane run match type:appstore readonly:true keychain_name:$(KEYCHAIN_NAME) keychain_password:$(KEYCHAIN_PASSWORD)
-	bundle exec fastlane run match type:adhoc readonly:true keychain_name:$(KEYCHAIN_NAME) keychain_password:$(KEYCHAIN_PASSWORD)
+
+	# fetch app store profile
+	bundle exec fastlane run match type:appstore \
+									app_identifier:chat.berty.ios \
+									readonly:true keychain_name:$(KEYCHAIN_NAME) \
+									keychain_password:$(KEYCHAIN_PASSWORD) \
+									team_id:"$(MATCH_COMPANY_TEAM_ID)"
+
+	# fetch adhoc profile
+	bundle exec fastlane run match type:adhoc \
+									app_identifier:chat.berty.ios \
+									readonly:true keychain_name:$(KEYCHAIN_NAME) \
+									keychain_password:$(KEYCHAIN_PASSWORD) \
+									team_id:"$(MATCH_COMPANY_TEAM_ID)"
+
+	# fetch enterprise profile
+	bundle exec fastlane run match type:enterprise \
+									app_identifier:chat.berty.house.ios \
+									readonly:true keychain_name:$(KEYCHAIN_NAME) \
+									keychain_password:$(KEYCHAIN_PASSWORD) \
+									team_id:"$(MATCH_ENTERPRISE_TEAM_ID)"
+
 	security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(KEYCHAIN_PASSWORD) $(KEYCHAIN_NAME)
 
-fastlane.ios.build:
+
+fastlane.ios.debug:
+	mkdir -p $(IOS_BUILD)
+
+	GYM_CLEAN=false \
+	GYM_OPTION_METHOD=development \
+	GYM_OPTION_APP_ID=chat.berty.ios \
+	GYM_OPTION_PROVISIONING_PROFILE='match Development chat.berty.ios' \
+	GYM_OUTPUT_NAME=$(NAME) \
+	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
+	GYM_PROJECT=ios/Berty.xcodeproj \
+	GYM_SCHEME=debug \
+	GYM_INCLUDE_SYMBOLS=false \
+		time bundle exec fastlane ios build --verbose
+
+fastlane.ios.adhoc:
 	mkdir -p $(IOS_BUILD)
 
 	GYM_CLEAN=false \
@@ -295,6 +333,28 @@ fastlane.ios.build:
 
 	# extract build informations
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
+
+fastlane.ios.house:
+	mkdir -p $(IOS_BUILD)
+
+	GYM_CLEAN=true \
+	GYM_OPTION_METHOD=enterprise \
+	GYM_OPTION_APP_ID=chat.berty.house.ios \
+	GYM_OPTION_PROVISIONING_PROFILE='match InHouse chat.berty.house.ios' \
+	GYM_OUTPUT_NAME=$(NAME) \
+	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
+	GYM_PROJECT=ios/Berty.xcodeproj \
+	GYM_SCHEME=house \
+	GYM_SKIP_PROFILE_DETECTION=true \
+	GYM_INCLUDE_SYMBOLS=false \
+		time bundle exec fastlane ios build --verbose
+
+	# test if ipa has been correctly exported
+	test -f $(IOS_BUILD)/$(NAME).ipa
+
+	# extract build informations
+	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
+
 
 fastlane.android.build:
 	mkdir -p $(ANDROID_BUILD)
