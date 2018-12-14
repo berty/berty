@@ -62,9 +62,16 @@ func AddToPeerStore(peerID string, rAddr string) {
 // NewBLETransport creates a tcp transport object that tracks dialers and listeners
 // created. It represents an entire tcp stack (though it might not necessarily be)
 func NewBLETransport(ID string, lAddr ma.Multiaddr) (func(me host.Host) *Transport, error) {
+	ma, err := lAddr.ValueForProtocol(PBle)
+	if err != nil {
+		return nil, err
+	}
 	return func(me host.Host) *Transport {
 		logger().Debug("BLETransport NewBLETransport")
 		ret := &Transport{ConnectTimeout: DefaultConnectTimeout, MySelf: me, ID: ID, lAddr: lAddr}
+		peerID := me.ID().Pretty()
+		SetMa(ma)
+		SetPeerID(peerID)
 		go ret.ListenNewPeer()
 		return ret
 	}, nil
@@ -73,11 +80,21 @@ func NewBLETransport(ID string, lAddr ma.Multiaddr) (func(me host.Host) *Transpo
 func (t *Transport) ListenNewPeer() {
 	for {
 		pi := <-peerAdder
-		t.MySelf.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
 		bleUUID, err := pi.Addrs[0].ValueForProtocol(PBle)
 		if err != nil {
 			panic(err)
 		}
+		for _, v := range t.MySelf.Peerstore().Peers() {
+			otherPi := t.MySelf.Peerstore().PeerInfo(v)
+			for _, addr := range otherPi.Addrs {
+				otherBleUUID, err := addr.ValueForProtocol(PBle)
+				if err == nil && bleUUID == otherBleUUID {
+					t.MySelf.Peerstore().ClearAddrs(v)
+				}
+			}
+		}
+
+		t.MySelf.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
 		lBleUUID, err := t.lAddr.ValueForProtocol(PBle)
 		if err != nil {
 			panic(err)

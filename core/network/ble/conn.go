@@ -1,6 +1,7 @@
 package ble
 
 import (
+	"fmt"
 	"sync"
 
 	ic "github.com/libp2p/go-libp2p-crypto"
@@ -31,6 +32,12 @@ type ConnForSmux struct {
 }
 
 var conns sync.Map
+var readers sync.Map
+
+type reader struct {
+	sync.Mutex
+	funcSlice []func(*Conn)
+}
 
 func getConn(bleUUID string) (*Conn, bool) {
 	c, ok := conns.Load(bleUUID)
@@ -40,28 +47,43 @@ func getConn(bleUUID string) (*Conn, bool) {
 	return c.(*Conn), ok
 }
 
-func BytesToConn(bleUUID string, b []byte) {
-	tmp := make([]byte, len(b))
-	copy(tmp, b)
-	go func(bleUUID string, tmp []byte) {
-		for {
-			if conn, ok := getConn(bleUUID); ok {
-				conn.incoming <- tmp
-				return
-			}
+func loadOrCreate(bleUUID string) *reader {
+	c, ok := readers.Load(bleUUID)
+	if !ok {
+		newReader := &reader{
+			funcSlice: make([]func(*Conn), 0),
 		}
-	}(bleUUID, tmp)
+		readers.Store(bleUUID, newReader)
+		return newReader
+	}
+	return c.(*reader)
 }
 
-func ConnClosed(bleUUID string) {
-	if conn, ok := getConn(bleUUID); ok {
-		conns.Delete(bleUUID)
-		conn.closed = true
-		conn.sess.Close()
+func makeFunc(tmp []byte) func(c *Conn) {
+	return func(c *Conn) {
+		c.incoming <- tmp
 	}
 }
 
-func ConnClose(bleUUID string) {
+func BytesToConn(bleUUID string, b []byte) {
+	tmp := make([]byte, len(b))
+	copy(tmp, b)
+	r := loadOrCreate(bleUUID)
+	r.funcSlice = append(r.funcSlice, makeFunc(tmp))
+	go func(bleUUID string, r *reader) {
+		r.Lock()
+		defer r.Unlock()
+		for {
+			if conn, ok := getConn(bleUUID); ok {
+				r.funcSlice[0](conn)
+				r.funcSlice = r.funcSlice[1:]
+				return
+			}
+		}
+	}(bleUUID, r)
+}
+
+func ConnClosed(bleUUID string) {
 	if conn, ok := getConn(bleUUID); ok {
 		conns.Delete(bleUUID)
 		conn.sess.Close()
@@ -112,10 +134,14 @@ func (b *Conn) Read(p []byte) (n int, err error) {
 		return copied, nil
 	}
 
-	b.notFinishedToRead = <-b.incoming
-	copied := copy(p, b.notFinishedToRead)
-	b.notFinishedToRead = b.notFinishedToRead[copied:]
-	return copied, nil
+	select {
+	case b.notFinishedToRead = <-b.incoming:
+		copied := copy(p, b.notFinishedToRead)
+		b.notFinishedToRead = b.notFinishedToRead[copied:]
+		return copied, nil
+	case <-b.closer:
+		return 0, fmt.Errorf("conn closed")
+	}
 }
 
 func (b *Conn) LocalPeer() peer.ID {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"io"
+	"runtime"
 
 	"berty.tech/core/pkg/errorcodes"
 
@@ -27,6 +28,17 @@ type P2PNetworkOptions struct {
 	Identity  string
 }
 
+func makeTransport(opts *P2PNetworkOptions, p2pOptions []p2p.Option, db *gorm.DB) []p2p.Option {
+	for _, v := range opts.Transport {
+		if v == "default" {
+			p2pOptions = append(p2pOptions, p2p.WithDefaultTransports())
+		} else if v == "ble" && runtime.GOOS != "android" {
+			p2pOptions = append(p2pOptions, p2p.WithTransportBle(opts.Bind, db))
+		}
+	}
+	return p2pOptions
+}
+
 func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, network.Metrics, error) {
 	var span opentracing.Span
 	span, ctx = tracing.EnterFunc(ctx)
@@ -41,6 +53,9 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 	// Bind
 	if opts.Bind == nil {
 		opts.Bind = []string{"/ip4/0.0.0.0/tcp/0"}
+		if runtime.GOOS != "android" {
+			opts.Bind = append(opts.Bind, "/ble/00000000-0000-0000-0000-000000000000")
+		}
 	}
 
 	var identity p2p.Option
@@ -60,14 +75,7 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 		identity = p2p.WithIdentity(prvKey)
 	}
 
-	for _, v := range opts.Transport {
-		switch v {
-		case "default":
-			p2pOptions = append(p2pOptions, p2p.WithDefaultTransports())
-		case "ble":
-			p2pOptions = append(p2pOptions, p2p.WithTransportBle(opts.Bind, db))
-		}
-	}
+	p2pOptions = makeTransport(opts, p2pOptions, db)
 
 	p2pOptions = append(p2pOptions,
 		p2p.WithDefaultMuxers(),

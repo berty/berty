@@ -13,10 +13,15 @@
 #ifndef ble_h
 #define ble_h
 
-void init(char *ma, char *peerID);
+void init(void);
 int startAdvertising(void);
-int startDiscover(void);
+int startScanning(void);
 int isDiscovering(void);
+int centralManagerIsOn(void);
+int peripheralManagerIsOn(void);
+void addService(void);
+void setMa(char *ma);
+void setPeerID(char *peerID);
 void connDevice(CBPeripheral *peripheral);
 int isAdvertising(void);
 int dialPeer(char *peerID);

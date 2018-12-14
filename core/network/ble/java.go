@@ -36,6 +36,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 
 	if conn, ok := getConn(s); ok {
 		conn.closed = false
+		conn.closer = make(chan struct{})
 		return conn, nil
 	}
 	c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr, 0)
@@ -79,15 +80,7 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 }
 
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
-	ma, err := lAddr.ValueForProtocol(PBle)
-	if err != nil {
-		return nil, err
-	}
-	peerID := hostID.Pretty()
-
 	InitScannerAndAdvertiser()
-	SetMa(ma)
-	SetPeerID(peerID)
 	StartScanning()
 	StartAdvertising()
 

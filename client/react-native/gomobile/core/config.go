@@ -7,7 +7,7 @@ package core
 var (
 	initialNetConf = networkConfig{
 		DefaultTransport:   true,
-		BluetoothTransport: false,
+		BluetoothTransport: true,
 		DefaultBootstrap:   true,
 		CustomBootstrap:    []string{},
 		MDNS:               false,

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"time"
 	"unsafe"
+	"sync"
 
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
@@ -34,12 +35,6 @@ func setConnClosed(bleUUID *C.char) {
 	ConnClosed(goBleUUID)
 }
 
-//export callConnClose
-func callConnClose(bleUUID *C.char) {
-	goBleUUID := C.GoString(bleUUID)
-	ConnClose(goBleUUID)
-}
-
 func (b *Conn) IsClosed() bool {
 	val, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
@@ -53,17 +48,20 @@ func (b *Conn) IsClosed() bool {
 }
 
 func (b *Conn) Close() error {
-	logger().Debug("BLEConn Close")
-	b.closed = true
-	val, err := b.rAddr.ValueForProtocol(PBle)
+	logger().Debug("BLEConn Close", zap.Bool("CLOSED ", b.closed))
+	if (b.closed != true) {
+		close(b.closer)
+		b.closed = true
+	}
+	_, err := b.rAddr.ValueForProtocol(PBle)
 	if err != nil {
 		logger().Debug("BLEConn close", zap.Error(err))
 		return err
 	}
-	ma := C.CString(val)
-	logger().Debug("BLEConn close", zap.String("VALUE",val))
+	// ma := C.CString(val)
+	// logger().Debug("BLEConn close", zap.String("VALUE",val))
 	// defer C.free(unsafe.Pointer(ma))
-	C.closeConn(ma)
+	// C.closeConn(ma)
 	return nil
 }
 
@@ -98,19 +96,53 @@ func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.cha
 	go RealAcceptSender(goPeerID, goble, goIncPeerID)
 }
 
+func SetMa(ma string) {
+	cMa := C.CString(ma)
+	defer C.free(unsafe.Pointer(cMa))
+	C.setMa(cMa)
+}
+
+func SetPeerID(peerID string) {
+	cPeerID := C.CString(peerID)
+	defer C.free(unsafe.Pointer(cPeerID))
+	C.setPeerID(cPeerID)
+}
+
+func waitForOn() bool {
+	var wg sync.WaitGroup
+
+	centralIsOn := false
+	peripheralIsOn := false
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		if int(C.centralManagerIsOn()) == 1 {
+			centralIsOn = true
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		if int(C.peripheralManagerIsOn()) == 1 {
+			peripheralIsOn = true
+		}
+	}()
+	wg.Wait()
+
+	return centralIsOn && peripheralIsOn
+}
+
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
-	m, err := lAddr.ValueForProtocol(PBle)
-	if err != nil {
-		return nil, err
+	C.init()
+
+	for !waitForOn() {
+		logger().Debug("Ble centralManager or peripheralManager isn't on wait 1sec and retry")
+		time.Sleep(1 * time.Second)
 	}
-	val := C.CString(m)
-	peerID := C.CString(hostID.Pretty())
-	defer C.free(unsafe.Pointer(val))
-	defer C.free(unsafe.Pointer(peerID))
-	C.init(val, peerID)
-	time.Sleep(1 * time.Second)
-	go C.startAdvertising()
-	go C.startDiscover()
+
+	C.addService()
+	C.startAdvertising()
+	C.startScanning()
+
 	listerner := &Listener{
 		lAddr:           lAddr,
 		incomingBLEUUID: make(chan string),
@@ -126,7 +158,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, e
 // Dial dials the peer at the remote address.
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
 	if int(C.isDiscovering()) != 1 {
-		go C.startDiscover()
+		go C.startScanning()
 	}
 	s, err := rAddr.ValueForProtocol(PBle)
 	if err != nil {
@@ -141,6 +173,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 
 	if conn, ok := getConn(s); ok {
 		conn.closed = false
+		conn.closer = make(chan struct{})
 		return conn, nil
 	}
 	c := NewConn(t, t.MySelf.ID(), p, t.lAddr, rAddr, 0)

@@ -182,13 +182,7 @@ NSString* const PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A23E6B3";
                       ofObject:(id)object
                         change:(NSDictionary *)change
                        context:(void *)context {
-    NSLog(@"LALALLA");
     @synchronized (self) {
-        if (self.CentralIsOn == YES && self.PeripharalIsOn == YES && self.serviceAdded == NO) {
-            self.serviceAdded = YES;
-            [peripheralManager addService:[BertyUtils sharedUtils].bertyService];
-//        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], CBCentralManagerScanOptionAllowDuplicatesKey, nil];
-        }
     }
 }
 
