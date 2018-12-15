@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { View, Clipboard, Platform } from 'react-native'
-import { TextInputMultilineFix, Button } from '../../../Library'
+import { TextInputMultilineFix, Button, Flex } from '../../../Library'
 import { colors } from '../../../../constants'
 import { marginTop, padding, rounded, textTiny } from '../../../../styles'
 import { monospaceFont } from '../../../../constants/styling'
@@ -24,10 +24,7 @@ class ByPublicKey extends PureComponent {
         backgroundColor: colors.white,
         alignItems: 'center',
       }}>
-        <View style={{
-          height: 320,
-          width: 320,
-        }}>
+        <Flex.Rows>
           <TextInputMultilineFix
             style={[
               {
@@ -50,47 +47,56 @@ class ByPublicKey extends PureComponent {
             selectTextOnFocus
           />
 
-          <Button
-            background={colors.blue}
-            margin
-            padding
-            rounded={23}
-            height={24}
-            medium
-            middle
-            center
-            self='stretch'
-            onPress={async () => {
-              await showContactModal({
-                relayContext,
-                data: {
-                  id: this.state.id,
-                },
-              })
-            }}
-            icon={'plus'}
-          >
-            Add this key
-          </Button>
-          {Platform.OS !== 'web'
-            ? <Button
-              icon={'clipboard'}
-              background={colors.blue}
-              margin
-              padding
-              rounded={23}
-              height={24}
-              medium
-              middle
-              center
-              self='stretch'
-              onPress={async () => {
-                this.setState({ id: await Clipboard.getString() })
-              }}>
-              Paste key
-            </Button>
-            : null}
-        </View>
+          <View style={{ height: 40, paddingTop: 8, flexDirection: 'row' }}>
+            {Platform.OS !== 'web'
+              ? <View style={{ paddingRight: 4, flex: 1 }}>
+                <Button
+                  icon={'clipboard'}
+                  background={colors.blue}
+                  padding
+                  rounded={4}
+                  medium
+                  middle
+                  center
+                  self='stretch'
+                  onPress={async () => {
+                    const clipboardContent = await Clipboard.getString()
+                    await new Promise(resolve => this.setState({ id: clipboardContent }, resolve))
+                    await showContactModal({
+                      relayContext,
+                      data: {
+                        id: this.state.id,
+                      },
+                    })
+                  }}>
+                  Paste key
+                </Button>
+              </View> : null}
+
+            <View style={{ paddingLeft: Platform.OS !== 'web' ? 4 : 0, flex: 1 }}>
+              <Button
+                background={colors.blue}
+                padding
+                rounded={4}
+                medium
+                middle
+                center
+                self='stretch'
+                onPress={async () => {
+                  await showContactModal({
+                    relayContext,
+                    data: {
+                      id: this.state.id,
+                    },
+                  })
+                }}
+                icon={'plus'}
+              >
+                Add this key
+              </Button>
+            </View>
+          </View>
+        </Flex.Rows>
       </View>
     }</RelayContext.Consumer>
   }

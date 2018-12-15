@@ -1,5 +1,4 @@
 import React from 'react'
-import { withNavigation } from 'react-navigation'
 import { Screen } from '../../../Library'
 import { colors } from '../../../../constants'
 import { Pagination } from '../../../../relay'
@@ -8,7 +7,7 @@ import { fragments } from '../../../../graphql'
 import Item from './Item'
 import RelayContext from '../../../../relay/RelayContext'
 
-const GenericList = ({ navigation, screenProps, filter }) =>
+const GenericList = ({ filter, ignoreMyself }) =>
   <RelayContext.Consumer>{context => {
     const { queries, subscriptions } = context
 
@@ -29,13 +28,12 @@ const GenericList = ({ navigation, screenProps, filter }) =>
         renderItem={props => (
           <Item
             {...props}
-            navigation={navigation}
-            screenProps={screenProps}
             context={context}
+            ignoreMyself={ignoreMyself}
           />
         )}
       />
     </Screen>
   }}</RelayContext.Consumer>
 
-export default withNavigation(GenericList)
+export default GenericList

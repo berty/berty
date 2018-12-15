@@ -52,10 +52,12 @@ export default class App extends PureComponent {
       case '/add-contact':
         this.setState({
           deepLink: {
-            routeName: 'modal/contacts/add/by-public-key',
+            routeName: 'modal/contacts/card',
             params: {
-              initialKey: url.hashParts['public-key'] || '',
-              initialName: url.hashParts['display-name'] || '',
+              data: {
+                id: url.hashParts['public-key'] || '',
+                displayName: url.hashParts['display-name'] || '',
+              },
             },
           },
         })
@@ -76,6 +78,10 @@ export default class App extends PureComponent {
         this.setState({ hide: false })
       }
     })
+  }
+
+  clearDeepLink () {
+    this.setState({ deepLink: null })
   }
 
   render () {
@@ -105,16 +111,9 @@ export default class App extends PureComponent {
             }}
             screenProps={{
               deepLink,
+              clearDeepLink: () => this.clearDeepLink(),
             }}
           /> : null }
-        <Accounts
-          ref={nav => {
-            this.navigation = nav
-          }}
-          screenProps={{
-            deepLink,
-          }}
-        />
         <FlashMessage position='top' />
         {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>

@@ -4,7 +4,7 @@ import { Text } from '..'
 import colors from '../../../constants/colors'
 
 const ActionButton = ({ onPress, color, title, icon }) => <View style={{ flex: 1 }}>
-  <TouchableOpacity onPress={onPress}>
+  <TouchableOpacity onPress={onPress || (() => {})}>
     <Text rounded={22} background={color} color={color === colors.white ? colors.subtleGrey : colors.white} icon={icon}
       shadow big center padding margin opacity={onPress ? 1 : 0.3} />
     <Text center color={colors.white} tiny opacity={onPress ? 1 : 0.3}>{title}</Text>
@@ -25,7 +25,7 @@ export const ActionButtonLarge = ({ onPress, color, title, icon }) => <Text
   shadow
   tiny
   rounded={22}
-  onPress={onPress}
+  onPress={onPress || (() => {})}
   opacity={onPress ? 1 : 0.3}
 >
   {title}

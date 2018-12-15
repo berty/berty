@@ -39,8 +39,8 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
     },
   },
   {
-    initialRouteName: 'qrcode',
     ...tabNavigatorOptions,
+    animationEnabled: false,
   },
 )
 

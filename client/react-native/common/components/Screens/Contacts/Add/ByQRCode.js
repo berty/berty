@@ -41,7 +41,7 @@ class ByQRCode extends PureComponent {
             showMessage({
               message: 'This is not a Berty QR Code',
               type: 'danger',
-              position: 'center',
+              position: 'top',
               icon: 'danger',
             })
             setTimeout(() => this.reactivate(), 2000)

@@ -8,7 +8,7 @@ const ReceivedActions = ({ data: { id } }, inModal) => <RelayContext.Consumer>{(
     <ActionList.Action icon={'check'} color={colors.blue} title={'Accept'}
       action={() => mutations.contactAcceptRequest({ id })}
       successMessage={'Contact request has been accepted'} />
-    <ActionList.Action icon={'x'} color={colors.white} title={'Decline'}
+    <ActionList.Action icon={'x'} color={colors.white} title={inModal ? 'Remove' : null}
       action={() => mutations.contactRemove({ id })}
       successMessage={'Contact request has been declined'} />
   </ActionList>

@@ -1,8 +1,7 @@
 import React, { PureComponent } from 'react'
-import { TouchableOpacity } from 'react-native'
 import { fragments, enums } from '../../../../graphql'
 import { Avatar, Flex, Text } from '../../../Library'
-import { borderBottom, padding } from '../../../../styles'
+import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import Case from 'case'
 import { showContactModal } from '../../../../helpers/contacts'
@@ -12,20 +11,6 @@ import ActionsSent from '../../../Library/ContactIdentityActions/ActionsSent'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
-    onAccept = async () => {
-      await this.props.context.mutations.contactAcceptRequest({
-        id: this.props.data.id,
-      })
-    }
-
-    onDecline = async () => {
-      await this.props.context.mutations.contactRemove({ id: this.props.data.id })
-    }
-
-    onRemove = async () => {
-      await this.props.context.mutations.contactRemove({ id: this.props.data.id })
-    }
-
     async showDetails () {
       const {
         data: { id, displayName, status, overrideDisplayName },
@@ -57,36 +42,36 @@ const Item = fragments.Contact(
     }
 
     render () {
-      const { data } = this.props
+      const { data, ignoreMyself } = this.props
       const { overrideDisplayName, displayName, status } = data
+
+      if (ignoreMyself && status === enums.BertyEntityContactInputStatus.Myself) {
+        return null
+      }
 
       return <Flex.Cols
         align='center'
         style={[{ height: 72 }, padding, borderBottom]}
+        onPress={() => this.showDetails()}
       >
-        <TouchableOpacity onPress={() => this.showDetails()}>
-          <Avatar data={this.props.data} size={40} />
-        </TouchableOpacity>
-
-        <Flex.Rows>
-          <TouchableOpacity onPress={() => this.showDetails()}>
-            <Text color={colors.black} left middle margin={{ left: 16 }}>
-              {overrideDisplayName || displayName}
-            </Text>
-            <Text color={colors.subtleGrey} left middle margin={{ left: 16 }}>
-              {Case.lower(enums.ValueBertyEntityContactInputStatus[status]).replace(
-                /^is /g,
-                '',
-              )}
-            </Text>
-          </TouchableOpacity>
+        <Flex.Rows size={1} align='center'>
+          <Avatar data={data} size={40} />
         </Flex.Rows>
-
-        <Flex.Cols size={4} justify='start'>
-        </Flex.Cols>
-
-        {status === enums.BertyEntityContactInputStatus.RequestedMe && <ActionsReceived data={data} />}
-        {status === enums.BertyEntityContactInputStatus.IsRequested && <ActionsSent data={data} />}
+        <Flex.Rows size={3} align='stretch' justify='left' style={[marginLeft]} >
+          <Text color={colors.black} left margin={{ left: 16 }}>
+            {overrideDisplayName || displayName}
+          </Text>
+          <Text color={colors.subtleGrey} left margin={{ left: 16 }}>
+            {Case.lower(enums.ValueBertyEntityContactInputStatus[status]).replace(
+              /^is /g,
+              '',
+            )}
+          </Text>
+        </Flex.Rows>
+        <Flex.Rows size={4} align='center'>
+          {status === enums.BertyEntityContactInputStatus.RequestedMe && <ActionsReceived data={data} />}
+          {status === enums.BertyEntityContactInputStatus.IsRequested && <ActionsSent data={data} />}
+        </Flex.Rows>
       </Flex.Cols>
     }
   })

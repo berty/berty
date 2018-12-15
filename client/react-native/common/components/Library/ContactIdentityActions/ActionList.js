@@ -8,10 +8,12 @@ import { showMessage } from 'react-native-flash-message'
 class ActionList extends PureComponent {
   render = () => {
     let { children, inModal } = this.props
-    const count = React.Children.count(children)
+    children = React.Children.toArray(children).filter(c => c !== null)
+
+    const count = children.length
 
     if (count > 4) {
-      children = React.Children.toArray(children).slice(0, 4)
+      children = children.slice(0, 4)
     }
 
     const large = count < 3
@@ -29,7 +31,6 @@ class Action extends PureComponent {
 
     this.state = {
       loading: false,
-      success: false,
     }
 
     this._mounted = false

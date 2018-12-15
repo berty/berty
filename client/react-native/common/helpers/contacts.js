@@ -85,7 +85,7 @@ export const showContactModal = async ({ relayContext: { queries }, navigation, 
     showMessage({
       message: 'This public key is invalid',
       type: 'danger',
-      position: 'center',
+      position: 'top',
       icon: 'danger',
     })
 

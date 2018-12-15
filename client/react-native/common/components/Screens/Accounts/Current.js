@@ -66,9 +66,18 @@ export default class Current extends PureComponent {
 
   openDeepLink = () => {
     const {
-      screenProps: { deepLink },
+      screenProps: {
+        deepLink,
+        clearDeepLink,
+      },
     } = this.props
+
+    if (!deepLink) {
+      return
+    }
+
     this.mainNav.dispatch(NavigationActions.navigate(deepLink))
+    clearDeepLink()
   }
 
   getRelayContext = async () =>

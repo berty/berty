@@ -1,7 +1,7 @@
 import React from 'react'
 import { WithContact } from '../../../utils/contact'
 import { enums } from '../../../graphql'
-import { Text, View } from 'react-native'
+import { Text, View, ActivityIndicator } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import ActionsAdd from './ActionsAdd'
 import ActionsShare from './ActionsShare'
@@ -11,10 +11,12 @@ import ActionsSent from './ActionsSent'
 const ContactIdentityActions = ({ data, navigation, modalWidth }) => <View
   style={{ width: modalWidth, flexDirection: 'row', marginTop: 12 }}>
   <WithContact id={data.id}>{(user, state) => {
-    if (user === null) {
-      return <ActionsAdd data={data} navigation={navigation} inModal />
+    if (state.type === state.error) {
+      return <View style={{ flex: 1 }}><Text>Error</Text></View>
+    } else if (state.type !== state.success) {
+      return <View style={{ flex: 1 }}><ActivityIndicator /></View>
     } else if (user === null) {
-      return <View><Text>LOADING (or error)</Text></View>
+      return <ActionsAdd data={data} navigation={navigation} inModal />
     } else {
       switch (user.status) {
         case enums.BertyEntityContactInputStatus.Myself:

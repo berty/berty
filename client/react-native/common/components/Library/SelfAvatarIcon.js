@@ -1,21 +1,16 @@
 import React, { PureComponent } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Avatar, Header } from '.'
-import { NavigationActions, withNavigation } from 'react-navigation'
 import { colors } from '../../constants'
 import { CurrentUser } from '../../utils/contact'
 import { extractPublicKeyFromId } from '../../helpers/contacts'
+import NavigationService from '../../helpers/NavigationService'
 
 class SelfAvatarLink extends PureComponent {
   onPress = (data) => {
-    const { navigation } = this.props
-
-    navigation.dispatch(NavigationActions.navigate({
-      routeName: 'modal/contacts/card',
-      params: {
-        data,
-      },
-    }))
+    NavigationService.navigate('modal/contacts/card', {
+      data,
+    })
   }
 
   render = () => <CurrentUser>{user => {
@@ -35,6 +30,4 @@ class SelfAvatarLink extends PureComponent {
   }</CurrentUser>
 }
 
-const ConnectedSelfAvatarLink = withNavigation(SelfAvatarLink)
-
-export default ConnectedSelfAvatarLink
+export default SelfAvatarLink

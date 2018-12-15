@@ -15,7 +15,7 @@ export default createSubStackNavigator(
           <Header
             navigation={navigation}
             title='Add a contact'
-            rightBtn={<SelfAvatarIcon data={{}} />}
+            rightBtn={<SelfAvatarIcon />}
             rightBtnIcon={'save'}
             onPressRightBtn={() => {}}
             backBtn

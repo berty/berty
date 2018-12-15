@@ -38,7 +38,7 @@ const ContactsHome = createMaterialTopTabNavigator(
         color: colors.black,
       },
       indicatorStyle: {
-        backgroundColor: colors.black,
+        backgroundColor: colors.blue,
       },
       style: [
         {

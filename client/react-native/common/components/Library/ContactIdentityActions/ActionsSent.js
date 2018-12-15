@@ -14,7 +14,7 @@ const ActionsSent = ({ data, inModal }) => <RelayContext.Consumer>{({ mutations 
         introText: '',
       })}
       successMessage={'Contact invitation has been sent again'} />
-    <ActionList.Action icon={'x'} color={colors.white} title={'Remove'}
+    <ActionList.Action icon={'x'} color={colors.white} title={inModal ? 'Remove' : null}
       action={() => mutations.contactRemove({ id: data.id })}
       successMessage={'Contact invitation has been removed'} />
   </ActionList>
