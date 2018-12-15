@@ -166,6 +166,7 @@ android {
 }
 
 dependencies {
+    compile project(':lottie-react-native')
     compile project(':react-native-vector-icons')
     compile project(':react-native-svg')
     compile project(':react-native-restart')

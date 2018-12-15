@@ -1,19 +1,15 @@
-import { Linking, Platform, Animated, Easing } from 'react-native'
+import { Linking, Platform } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 import { parse as parseUrl } from '../helpers/url'
-import LottieView from 'lottie-react-native'
-import { Flex } from './Library'
+
+import { Loader } from './Library'
 import Accounts from './Screens/Accounts'
-import { colors } from './../constants'
 
 export default class App extends PureComponent {
   state = {
     loading: true,
-    hide: true,
-    duration: 4000,
-    progress: new Animated.Value(0),
     deepLink: {
       routeName: 'main',
       params: {},
@@ -34,7 +30,6 @@ export default class App extends PureComponent {
     }
 
     Linking.addEventListener('url', this._handleOpenURL)
-    this.startAnimation()
     this.setState({ loading: false })
   }
 
@@ -65,47 +60,21 @@ export default class App extends PureComponent {
     }
   }
 
-  startAnimation () {
-    Animated.timing(this.state.progress, {
-      toValue: 1,
-      duration: this.state.duration,
-      easing: Easing.linear,
-    }).start(({ finished }) => {
-      if (finished) {
-        this.setState({ hide: false })
-      }
-    })
-  }
-
   render () {
-    console.log(this.onAnimationFinished)
-    const { loading, deepLink, hide, progress } = this.state
+    const { loading, deepLink } = this.state
+    if (loading) {
+      return <Loader />
+    }
     return (
       <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-        { hide && Platform.OS !== 'web'
-          ? <Flex.Rows
-            align='center'
-            justify='center'
-            style={{ 'width': '100%',  height: '100%', zIndex: 1000, position: 'absolute', backgroundColor: colors.white }}
-          >
-            <LottieView
-              source={require('./../static/animation/BertyAnimation.json')}
-              progress={progress}
-              loop={false}
-              style={{ 'width': 320 }}
-              autoSize
-            />
-          </Flex.Rows>
-          : null }
-        { !loading
-          ? <Accounts
-            ref={nav => {
-              this.navigation = nav
-            }}
-            screenProps={{
-              deepLink,
-            }}
-          /> : null }
+        <Accounts
+          ref={nav => {
+            this.navigation = nav
+          }}
+          screenProps={{
+            deepLink,
+          }}
+        />
         {Platform.OS === 'ios' && <KeyboardSpacer />}
       </SafeAreaView>
     )
