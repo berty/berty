@@ -20,6 +20,11 @@ const Item = fragments.Contact(
         data: { id, status, displayName, overrideDisplayName, displayStatus },
       } = this.props
       const { selected } = this.state
+
+      if (status === 42) {
+        return null
+      }
+
       return (
         <Flex.Cols
           align='start'

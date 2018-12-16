@@ -242,23 +242,8 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 		return nil, errorcodes.ErrContactReqExisting.New()
 	}
 
-	// check if already have contact request from/to this contact
-	// if not, create a conversation
-	count := 0
-	sql.Model(&p2p.Event{}).
-		Where(&p2p.Event{
-			SenderID: contact.ID,
-			Kind:     p2p.Kind_ContactRequest,
-		}).
-		Or(&p2p.Event{
-			ReceiverID: contact.ID,
-			Kind:       p2p.Kind_ContactRequest,
-		}).
-		Count(&count).
-		First(&p2p.Event{})
-	if count == 0 {
-		n.ConversationCreate(ctx, &node.ConversationCreateInput{Contacts: []*entity.Contact{contact}})
-	}
+	// create conversation if doesn't exist
+	n.ConversationCreate(ctx, &node.ConversationCreateInput{Contacts: []*entity.Contact{contact}})
 
 	// send request to peer
 	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequest)
