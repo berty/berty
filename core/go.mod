@@ -2,6 +2,7 @@ module berty.tech/core
 
 require (
 	cloud.google.com/go v0.30.0 // indirect
+	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
 	github.com/99designs/gqlgen v0.6.0
 	github.com/Yawning/chacha20 v0.0.0-20170904085104-e3b1f968fc63 // indirect
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
@@ -17,6 +18,7 @@ require (
 	github.com/emicklei/proto v1.6.6 // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fd/go-nat v1.0.0 // indirect
+	github.com/gen2brain/beeep v0.0.0-20180718162406-4e430518395f
 	github.com/getlantern/context v0.0.0-20181106182922-539649cc3118 // indirect
 	github.com/getlantern/ema v0.0.0-20180718025023-42474605965c // indirect
 	github.com/getlantern/errors v0.0.0-20180829142810-e24b7f4ff7c7 // indirect
@@ -65,7 +67,7 @@ require (
 	github.com/libp2p/go-buffer-pool v0.1.1 // indirect
 	github.com/libp2p/go-conn-security v0.1.13 // indirect
 	github.com/libp2p/go-conn-security-multistream v0.1.13 // indirect
-	github.com/libp2p/go-floodsub v0.10.2 // indirect
+	github.com/libp2p/go-floodsub v0.10.2
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v6.0.19+incompatible
 	github.com/libp2p/go-libp2p-blankhost v0.3.13 // indirect

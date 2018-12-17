@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/logmanager"
+	"berty.tech/core/pkg/notification"
 )
 
 type daemonOptions struct {
@@ -27,6 +28,7 @@ type daemonOptions struct {
 	dropDatabase bool   `mapstructure:"drop-database"`
 	initOnly     bool   `mapstructure:"init-only"`
 	withBot      bool   `mapstructure:"with-bot"`
+	notification bool   `mapstructure:"notification"`
 
 	// p2p
 	identity       string   `mapstructure:"identity"`
@@ -45,6 +47,7 @@ type daemonOptions struct {
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.nickname, "nickname", "berty-daemon", "set account nickname")
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
+	flags.BoolVar(&opts.notification, "notification", false, "enable local notification")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
@@ -146,6 +149,11 @@ func daemon(opts *daemonOptions) error {
 
 	if opts.withBot {
 		accountOptions = append(accountOptions, account.WithBot())
+	}
+
+	if opts.notification {
+		notificationDriver := notification.NewDesktopNotification()
+		accountOptions = append(accountOptions, account.WithNotificationDriver(notificationDriver))
 	}
 
 	if opts.initOnly {

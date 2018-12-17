@@ -30,7 +30,7 @@ enum Scope {
 }
 
 
-class Logger: NSObject, CoreLoggerProtocol {
+class Logger: NSObject, CoreNativeLoggerProtocol {
     var subsytem: String
     var category: String
     var scope: Scope

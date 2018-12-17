@@ -5,6 +5,7 @@ package ble
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 	"unsafe"
 
@@ -58,7 +59,7 @@ func (b *Conn) IsClosed() bool {
 
 func (b *Conn) Close() error {
 	logger().Debug("BLEConn Close", zap.Bool("CLOSED ", b.closed))
-	if (b.closed != true) {
+	if b.closed != true {
 		close(b.closer)
 		b.closed = true
 	}

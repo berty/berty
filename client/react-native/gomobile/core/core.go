@@ -68,7 +68,7 @@ func GetPort() (int, error) {
 	return strconv.Atoi(strings.Split(a.GQLBind, ":")[1])
 }
 
-func Initialize(loggerNative Logger, datastorePath string) error {
+func Initialize(loggerNative NativeLogger, datastorePath string) error {
 	defer panicHandler()
 
 	if err := setupLogger("debug", datastorePath, loggerNative); err != nil {
@@ -117,23 +117,58 @@ func initOrRestoreAppState(datastorePath string) error {
 	return nil
 }
 
-func Start(nickname, datastorePath string, loggerNative Logger) error {
+type MobileOption func(*MobileOptions) error
+type MobileOptions struct {
+	logger        NativeLogger
+	notification  NativeNotification
+	datastorePath string
+	nickname      string
+}
+
+func (cfg *MobileOptions) WithNotificationDriver(driver NativeNotification) *MobileOptions {
+	cfg.notification = driver
+	return cfg
+}
+
+func (cfg *MobileOptions) WithDatastorePath(path string) *MobileOptions {
+	cfg.datastorePath = path
+	return cfg
+}
+
+func (cfg *MobileOptions) WithLoggerDriver(logger NativeLogger) *MobileOptions {
+	cfg.logger = logger
+	return cfg
+}
+
+func (cfg *MobileOptions) WithNickname(nickname string) *MobileOptions {
+	cfg.nickname = nickname
+	return cfg
+}
+
+func WithNickname(nickname string) MobileOption {
+	return func(cfg *MobileOptions) error {
+		cfg.nickname = nickname
+		return nil
+	}
+}
+
+func Start(cfg MobileOptions) error {
 	defer panicHandler()
 
-	accountName = nickname
+	accountName = cfg.nickname
 
-	a, _ := account.Get(rootContext, nickname)
+	a, _ := account.Get(rootContext, cfg.nickname)
 	if a != nil {
 		// daemon already started, no errors to return
 		return nil
 	}
 
-	if err := initOrRestoreAppState(datastorePath); err != nil {
+	if err := initOrRestoreAppState(cfg.datastorePath); err != nil {
 		return errors.Wrap(err, "app init/restore state failed")
 	}
 
-	run(nickname, datastorePath, loggerNative)
-	waitDaemon(nickname)
+	run(cfg.nickname, cfg.datastorePath, cfg.logger)
+	waitDaemon(cfg.nickname)
 	return nil
 }
 
@@ -163,7 +198,7 @@ func DropDatabase(datastorePath string) error {
 	return Restart()
 }
 
-func run(nickname, datastorePath string, loggerNative Logger) {
+func run(nickname, datastorePath string, loggerNative NativeLogger) {
 	go func() {
 		for {
 			err := daemon(nickname, datastorePath, loggerNative)
@@ -186,7 +221,7 @@ func waitDaemon(nickname string) {
 	}
 }
 
-func daemon(nickname, datastorePath string, loggerNative Logger) error {
+func daemon(nickname, datastorePath string, loggerNative NativeLogger) error {
 	defer panicHandler()
 	_ = logmanager.G().LogRotate()
 
