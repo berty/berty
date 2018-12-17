@@ -301,9 +301,9 @@ jobs:
       - attach_workspace:
           at: ~/go/src/berty.tech/
 
-      # if build breaks, increment vX in both restore_cache and save_cache
-      - restore_cache:
-          key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
+      # # if build breaks, increment vX in both restore_cache and save_cache
+      # - restore_cache:
+      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
 
       - run:
           name: install-go
@@ -327,12 +327,12 @@ jobs:
               gomobile init
             fi
 
-      - save_cache:
-          key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
-          paths:
-            - ~/go/pkg
-            - ~/go/src/github.com
-            - ~/go-install
+      # - save_cache:
+      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
+      #     paths:
+      #       - ~/go/pkg
+      #       - ~/go/src/github.com
+      #       - ~/go-install
 
       - run:
           name: install core
@@ -400,8 +400,8 @@ jobs:
           at: ~/go/src/berty.tech/
 
       # if build breaks, increment vX in both restore_cache and save_cache
-      - restore_cache:
-          key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
+      # - restore_cache:
+      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
 
       - run:
           name: install-go
@@ -425,12 +425,12 @@ jobs:
               gomobile init
             fi
 
-      - save_cache:
-          key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
-          paths:
-            - ~/go/pkg
-            - ~/go/src/github.com
-            - ~/go-install
+      # - save_cache:
+      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
+      #     paths:
+      #       - ~/go/pkg
+      #       - ~/go/src/github.com
+      #       - ~/go-install
 
       - run:
           name: install core
