@@ -624,6 +624,29 @@ func (r *queryResolver) Peers(ctx context.Context, _ bool) (*network.Peers, erro
 
 type subscriptionResolver struct{ *Resolver }
 
+func (r *subscriptionResolver) CommitLogStream(ctx context.Context, t bool) (<-chan *node.CommitLog, error) {
+	stream, err := r.client.CommitLogStream(ctx, &node.Void{T: t})
+	channel := make(chan *node.CommitLog, 1)
+
+	if err != nil {
+		return nil, err
+	}
+	go func() {
+		for {
+			elem, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				logger().Error(err.Error())
+				break
+			}
+			channel <- elem
+		}
+	}()
+	return channel, nil
+}
+
 func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error) {
 	stream, err := r.client.EventStream(ctx, &node.EventStreamInput{Filter: filter})
 	channel := make(chan *p2p.Event, 1)

@@ -5,15 +5,14 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
-	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/pkg/tracing"
+	"github.com/gogo/protobuf/proto"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 // EventsRetry updates SentAt and requeue an event
@@ -96,6 +95,16 @@ func (n *Node) handleClientEvent(ctx context.Context, event *p2p.Event) {
 		}
 	}
 	n.clientEventsMutex.Unlock()
+}
+
+func (n *Node) handleClientCommitLogs(ctx context.Context, commitLog *node.CommitLog) {
+	logger().Debug("commit log", zap.Stringer("commit log", commitLog))
+
+	n.clientCommitLogsMutex.Lock()
+	defer n.clientCommitLogsMutex.Unlock()
+	for _, sub := range n.clientCommitLogsSubscribers {
+		sub.queue <- commitLog
+	}
 }
 
 func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {

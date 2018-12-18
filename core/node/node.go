@@ -7,12 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/gofrs/uuid"
-	"github.com/gogo/protobuf/proto"
-	"github.com/jinzhu/gorm"
-	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
-
+	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
@@ -20,28 +15,36 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
+	"github.com/gofrs/uuid"
+	"github.com/gogo/protobuf/proto"
+	"github.com/jinzhu/gorm"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
 )
 
 // Node is the top-level object of a Berty peer
 type Node struct {
-	clientEvents            chan *p2p.Event
-	clientEventsSubscribers []clientEventSubscriber
-	clientEventsMutex       sync.Mutex
-	outgoingEvents          chan *p2p.Event
-	sqlDriver               *gorm.DB
-	config                  *entity.Config
-	initDevice              *entity.Device
-	handleMutexInst         sync.Mutex
-	networkDriver           network.Driver
-	networkMetrics          network.Metrics
-	asyncWaitGroupInst      sync.WaitGroup
-	pubkey                  []byte // FIXME: use a crypto instance, i.e., enclave
-	b64pubkey               string // FIXME: same as above
-	sigchain                *sigchain.SigChain
-	crypto                  keypair.Interface
-	ring                    *zapring.Ring // log ring buffer
-	rootSpan                opentracing.Span
-	rootContext             context.Context // only used for tracing
+	clientCommitLogs            chan *node.CommitLog
+	clientCommitLogsSubscribers []clientCommitLogsSubscriber
+	clientCommitLogsMutex       sync.Mutex
+	clientEvents                chan *p2p.Event
+	clientEventsSubscribers     []clientEventSubscriber
+	clientEventsMutex           sync.Mutex
+	outgoingEvents              chan *p2p.Event
+	sqlDriver                   *gorm.DB
+	config                      *entity.Config
+	initDevice                  *entity.Device
+	handleMutexInst             sync.Mutex
+	networkDriver               network.Driver
+	networkMetrics              network.Metrics
+	asyncWaitGroupInst          sync.WaitGroup
+	pubkey                      []byte // FIXME: use a crypto instance, i.e., enclave
+	b64pubkey                   string // FIXME: same as above
+	sigchain                    *sigchain.SigChain
+	crypto                      keypair.Interface
+	ring                        *zapring.Ring // log ring buffer
+	rootSpan                    opentracing.Span
+	rootContext                 context.Context // only used for tracing
 
 	// devtools
 	createdAt time.Time // used for uptime calculation
@@ -57,11 +60,12 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 
 	n := &Node{
 		// FIXME: fetch myself from db
-		outgoingEvents: make(chan *p2p.Event, 100),
-		clientEvents:   make(chan *p2p.Event, 100),
-		createdAt:      time.Now().UTC(),
-		rootSpan:       span,
-		rootContext:    ctx,
+		outgoingEvents:   make(chan *p2p.Event, 100),
+		clientEvents:     make(chan *p2p.Event, 100),
+		clientCommitLogs: make(chan *node.CommitLog, 100),
+		createdAt:        time.Now().UTC(),
+		rootSpan:         span,
+		rootContext:      ctx,
 	}
 
 	// apply optioners

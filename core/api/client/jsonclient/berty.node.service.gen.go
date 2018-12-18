@@ -15,6 +15,7 @@ import (
 
 func init() {
 	registerUnary("berty.node.ID", NodeID)
+	registerServerStream("berty.node.CommitLogStream", NodeCommitLogStream)
 	registerServerStream("berty.node.EventStream", NodeEventStream)
 	registerServerStream("berty.node.EventList", NodeEventList)
 	registerUnary("berty.node.GetEvent", NodeGetEvent)
@@ -65,6 +66,34 @@ func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (inter
 		return nil, err
 	}
 	return client.Node().ID(ctx, &typedInput)
+}
+func NodeCommitLogStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "CommitLogStream"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().CommitLogStream(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+	return streamProxy, nil
 }
 func NodeEventStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",

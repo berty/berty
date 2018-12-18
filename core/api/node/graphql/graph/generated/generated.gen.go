@@ -59,6 +59,17 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	BertyEntityConfig struct {
+		Id              func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		Myself          func(childComplexity int) int
+		MyselfId        func(childComplexity int) int
+		CurrentDevice   func(childComplexity int) int
+		CurrentDeviceId func(childComplexity int) int
+		CryptoParams    func(childComplexity int) int
+	}
+
 	BertyEntityContact struct {
 		Id                    func(childComplexity int) int
 		CreatedAt             func(childComplexity int) int
@@ -151,6 +162,20 @@ type ComplexityRoot struct {
 
 	BertyNodeBool struct {
 		Ret func(childComplexity int) int
+	}
+
+	BertyNodeCommitLog struct {
+		Operation func(childComplexity int) int
+		Entity    func(childComplexity int) int
+	}
+
+	BertyNodeCommitLogEntity struct {
+		Config             func(childComplexity int) int
+		Contact            func(childComplexity int) int
+		Device             func(childComplexity int) int
+		Conversation       func(childComplexity int) int
+		ConversationMember func(childComplexity int) int
+		Event              func(childComplexity int) int
 	}
 
 	BertyNodeContactEdge struct {
@@ -605,6 +630,7 @@ type ComplexityRoot struct {
 	}
 
 	Subscription struct {
+		CommitLogStream  func(childComplexity int, T bool) int
 		EventStream      func(childComplexity int, filter *p2p.Event) int
 		LogStream        func(childComplexity int, continues bool, logLevel string, namespaces string, last int32) int
 		LogfileRead      func(childComplexity int, path string) int
@@ -690,6 +716,7 @@ type QueryResolver interface {
 	TestPanic(ctx context.Context, T bool) (*node.Void, error)
 }
 type SubscriptionResolver interface {
+	CommitLogStream(ctx context.Context, T bool) (<-chan *node.CommitLog, error)
 	EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error)
 	LogStream(ctx context.Context, continues bool, logLevel string, namespaces string, last int32) (<-chan *node.LogEntry, error)
 	LogfileRead(ctx context.Context, path string) (<-chan *node.LogEntry, error)
@@ -2150,6 +2177,21 @@ func field_Query___type_args(rawArgs map[string]interface{}) (map[string]interfa
 
 }
 
+func field_Subscription_CommitLogStream_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
 func field_Subscription_EventStream_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *p2p.Event
@@ -2374,6 +2416,62 @@ func (e *executableSchema) Schema() *ast.Schema {
 
 func (e *executableSchema) Complexity(typeName, field string, childComplexity int, rawArgs map[string]interface{}) (int, bool) {
 	switch typeName + "." + field {
+
+	case "BertyEntityConfig.id":
+		if e.complexity.BertyEntityConfig.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.Id(childComplexity), true
+
+	case "BertyEntityConfig.createdAt":
+		if e.complexity.BertyEntityConfig.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.CreatedAt(childComplexity), true
+
+	case "BertyEntityConfig.updatedAt":
+		if e.complexity.BertyEntityConfig.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.UpdatedAt(childComplexity), true
+
+	case "BertyEntityConfig.myself":
+		if e.complexity.BertyEntityConfig.Myself == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.Myself(childComplexity), true
+
+	case "BertyEntityConfig.myselfId":
+		if e.complexity.BertyEntityConfig.MyselfId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.MyselfId(childComplexity), true
+
+	case "BertyEntityConfig.currentDevice":
+		if e.complexity.BertyEntityConfig.CurrentDevice == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.CurrentDevice(childComplexity), true
+
+	case "BertyEntityConfig.currentDeviceId":
+		if e.complexity.BertyEntityConfig.CurrentDeviceId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.CurrentDeviceId(childComplexity), true
+
+	case "BertyEntityConfig.cryptoParams":
+		if e.complexity.BertyEntityConfig.CryptoParams == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.CryptoParams(childComplexity), true
 
 	case "BertyEntityContact.id":
 		if e.complexity.BertyEntityContact.Id == nil {
@@ -2759,6 +2857,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeBool.Ret(childComplexity), true
+
+	case "BertyNodeCommitLog.operation":
+		if e.complexity.BertyNodeCommitLog.Operation == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLog.Operation(childComplexity), true
+
+	case "BertyNodeCommitLog.entity":
+		if e.complexity.BertyNodeCommitLog.Entity == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLog.Entity(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.config":
+		if e.complexity.BertyNodeCommitLogEntity.Config == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.Config(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.contact":
+		if e.complexity.BertyNodeCommitLogEntity.Contact == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.Contact(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.device":
+		if e.complexity.BertyNodeCommitLogEntity.Device == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.Device(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.conversation":
+		if e.complexity.BertyNodeCommitLogEntity.Conversation == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.Conversation(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.conversationMember":
+		if e.complexity.BertyNodeCommitLogEntity.ConversationMember == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.ConversationMember(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.event":
+		if e.complexity.BertyNodeCommitLogEntity.Event == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.Event(childComplexity), true
 
 	case "BertyNodeContactEdge.node":
 		if e.complexity.BertyNodeContactEdge.Node == nil {
@@ -4654,6 +4808,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.TestPanic(childComplexity, args["T"].(bool)), true
 
+	case "Subscription.CommitLogStream":
+		if e.complexity.Subscription.CommitLogStream == nil {
+			break
+		}
+
+		args, err := field_Subscription_CommitLogStream_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Subscription.CommitLogStream(childComplexity, args["T"].(bool)), true
+
 	case "Subscription.EventStream":
 		if e.complexity.Subscription.EventStream == nil {
 			break
@@ -4787,6 +4953,244 @@ func (e *executableSchema) Subscription(ctx context.Context, op *ast.OperationDe
 type executionContext struct {
 	*graphql.RequestContext
 	*executableSchema
+}
+
+var bertyEntityConfigImplementors = []string{"BertyEntityConfig"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConfig(ctx context.Context, sel ast.SelectionSet, obj *entity.Config) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConfigImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConfig")
+		case "id":
+			out.Values[i] = ec._BertyEntityConfig_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "createdAt":
+			out.Values[i] = ec._BertyEntityConfig_createdAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._BertyEntityConfig_updatedAt(ctx, field, obj)
+		case "myself":
+			out.Values[i] = ec._BertyEntityConfig_myself(ctx, field, obj)
+		case "myselfId":
+			out.Values[i] = ec._BertyEntityConfig_myselfId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "currentDevice":
+			out.Values[i] = ec._BertyEntityConfig_currentDevice(ctx, field, obj)
+		case "currentDeviceId":
+			out.Values[i] = ec._BertyEntityConfig_currentDeviceId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "cryptoParams":
+			out.Values[i] = ec._BertyEntityConfig_cryptoParams(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_id(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_myself(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Myself, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_myselfId(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.MyselfID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_currentDevice(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrentDevice, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Device)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevice(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_currentDeviceId(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CurrentDeviceID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_cryptoParams(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CryptoParams, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
 }
 
 var bertyEntityContactImplementors = []string{"BertyEntityContact", "Node"}
@@ -6638,6 +7042,267 @@ func (ec *executionContext) _BertyNodeBool_ret(ctx context.Context, field graphq
 	res := resTmp.(bool)
 	rctx.Result = res
 	return models.MarshalBool(res)
+}
+
+var bertyNodeCommitLogImplementors = []string{"BertyNodeCommitLog"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeCommitLog(ctx context.Context, sel ast.SelectionSet, obj *node.CommitLog) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeCommitLogImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeCommitLog")
+		case "operation":
+			out.Values[i] = ec._BertyNodeCommitLog_operation(ctx, field, obj)
+		case "entity":
+			out.Values[i] = ec._BertyNodeCommitLog_entity(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLog_operation(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLog",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Operation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(node.CommitLog_Operation)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLog_entity(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLog",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Entity, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.CommitLog_Entity)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeCommitLogEntity(ctx, field.Selections, res)
+}
+
+var bertyNodeCommitLogEntityImplementors = []string{"BertyNodeCommitLogEntity"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeCommitLogEntity(ctx context.Context, sel ast.SelectionSet, obj *node.CommitLog_Entity) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeCommitLogEntityImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeCommitLogEntity")
+		case "config":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_config(ctx, field, obj)
+		case "contact":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_contact(ctx, field, obj)
+		case "device":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_device(ctx, field, obj)
+		case "conversation":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_conversation(ctx, field, obj)
+		case "conversationMember":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_conversationMember(ctx, field, obj)
+		case "event":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_event(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_config(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Config, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Config)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConfig(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_contact(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Contact, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_device(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Device, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Device)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevice(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_conversation(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Conversation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_conversationMember(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ConversationMember, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.ConversationMember)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversationMember(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_event(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Event, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pEvent(ctx, field.Selections, res)
 }
 
 var bertyNodeContactEdgeImplementors = []string{"BertyNodeContactEdge"}
@@ -17130,6 +17795,8 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 	}
 
 	switch fields[0].Name {
+	case "CommitLogStream":
+		return ec._Subscription_CommitLogStream(ctx, fields[0])
 	case "EventStream":
 		return ec._Subscription_EventStream(ctx, fields[0])
 	case "LogStream":
@@ -17142,6 +17809,39 @@ func (ec *executionContext) _Subscription(ctx context.Context, sel ast.Selection
 		return ec._Subscription_MonitorPeers(ctx, fields[0])
 	default:
 		panic("unknown field " + strconv.Quote(fields[0].Name))
+	}
+}
+
+func (ec *executionContext) _Subscription_CommitLogStream(ctx context.Context, field graphql.CollectedField) func() graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Subscription_CommitLogStream_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
+		Field: field,
+	})
+	rctx := ctx // FIXME: subscriptions are missing request middleware stack https://github.com/99designs/gqlgen/issues/259
+	results, err := ec.resolvers.Subscription().CommitLogStream(rctx, args["T"].(bool))
+	if err != nil {
+		ec.Error(ctx, err)
+		return nil
+	}
+	return func() graphql.Marshaler {
+		res, ok := <-results
+		if !ok {
+			return nil
+		}
+		var out graphql.OrderedMap
+		out.Add(field.Alias, func() graphql.Marshaler {
+			if res == nil {
+				return graphql.Null
+			}
+
+			return ec._BertyNodeCommitLog(ctx, field.Selections, res)
+		}())
+		return &out
 	}
 }
 
@@ -19665,6 +20365,20 @@ type BertyNetworkPeers  {
   
   
 
+type BertyEntityConfig  {
+    id: String!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    myself: BertyEntityContact
+    myselfId: String!
+    currentDevice: BertyEntityDevice
+    currentDeviceId: String!
+    cryptoParams: [Byte!]
+}
+  
+  
+  
+
   
 type BertyPkgDeviceinfoDeviceInfos  {
     infos: [BertyPkgDeviceinfoDeviceInfo]
@@ -19691,6 +20405,20 @@ type BertyNodeAppVersionOutput  {
 }
 type BertyNodePingDestination  {
     destination: String!
+}
+      
+    
+type BertyNodeCommitLogEntity  {
+    config: BertyEntityConfig
+    contact: BertyEntityContact
+    device: BertyEntityDevice
+    conversation: BertyEntityConversation
+    conversationMember: BertyEntityConversationMember
+    event: BertyP2pEvent
+}
+type BertyNodeCommitLog  {
+    operation: Enum
+    entity: BertyNodeCommitLogEntity
 }
 type BertyNodeEventEdge  {
     node: BertyP2pEvent
@@ -20001,6 +20729,9 @@ type Mutation {
 }
   
 type Subscription {
+  CommitLogStream(
+    T: Bool!
+  ): BertyNodeCommitLog
   EventStream(
     filter: BertyP2pEventInput
   ): BertyP2pEvent

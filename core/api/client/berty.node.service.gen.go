@@ -15,6 +15,24 @@ import (
 func (c *Client) Node() node.ServiceClient {
 	return node.NewServiceClient(c.conn)
 }
+func (c *Client) CommitLogStream(ctx context.Context, input *node.Void) ([]*node.CommitLog, error) {
+	stream, err := c.Node().CommitLogStream(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*node.CommitLog
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
 func (c *Client) EventStream(ctx context.Context, input *node.EventStreamInput) ([]*p2p.Event, error) {
 	stream, err := c.Node().EventStream(ctx, input)
 	if err != nil {
