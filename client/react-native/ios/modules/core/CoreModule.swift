@@ -8,6 +8,10 @@
 import Foundation
 import os
 
+enum CoreError: Error {
+    case invalidOptions
+}
+
 var logger = Logger("chat.berty.io", "CoreModule")
 
 @objc(CoreModule)
@@ -59,7 +63,19 @@ class CoreModule: NSObject {
         var err: NSError?
 
         do {
-            CoreStart(nickname as String, try self.getFilesDir(), logger, &err)
+            let datastore = try self.getFilesDir()
+            let notificationDriver = Notitification()
+
+            guard let
+                    CoreOptions = CoreMobileOptions()?
+                    .withDatastorePath(datastore)?
+                    .withLoggerDriver(logger)?
+                    .withNotificationDriver(notificationDriver)?
+                    .withNickname(nickname as String)
+            else { throw CoreError.invalidOptions }
+
+
+            CoreStart(CoreOptions, &err)
             if let error = err {
                 throw error
             }

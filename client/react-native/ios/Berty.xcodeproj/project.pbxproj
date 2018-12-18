@@ -43,6 +43,7 @@
 		3FD46C36ED444780B7A88579 /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 404393F653304CE5B3D2FECF /* libRNVectorIcons-tvOS.a */; };
 		4345EBFF9B7A402B9CC2405B /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 229720DFD15E4E569BD1D6D2 /* FontAwesome5_Regular.ttf */; };
 		480E37C42190874600BE10A5 /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 480E37A42190872400BE10A5 /* libRCTPushNotification.a */; };
+		486CFD2A21C8FE9F00E7113B /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 486CFCF921C8FE9F00E7113B /* Notification.swift */; };
 		48E2A93E2177575C005C6F40 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 48E2A93D2177575C005C6F40 /* Logger.swift */; };
 		48FBC710B1FF4A4890B3C836 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4852AC444E8740FEAA4DFAE9 /* EvilIcons.ttf */; };
 		5097099ECB874846A7B9FA6A /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C98BB2E01D1E436A800597C6 /* Entypo.ttf */; };
@@ -550,6 +551,7 @@
 		404393F653304CE5B3D2FECF /* libRNVectorIcons-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNVectorIcons-tvOS.a"; sourceTree = "<group>"; };
 		480E37922190872400BE10A5 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		4852AC444E8740FEAA4DFAE9 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		486CFCF921C8FE9F00E7113B /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		48B5C9A179E04E4CA39C6E06 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
 		48E2A93D2177575C005C6F40 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		4FF677D5EFF1404DB500EEBC /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -1023,6 +1025,7 @@
 		F8799D742136F3A7003B9FD7 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				486CFCF921C8FE9F00E7113B /* Notification.swift */,
 				F8799D752136F3C5003B9FD7 /* CoreModule.m */,
 				F8799D782136F3EA003B9FD7 /* CoreModule.swift */,
 				48E2A93D2177575C005C6F40 /* Logger.swift */,
@@ -1776,6 +1779,7 @@
 			files = (
 				F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */,
 				F8799D7A2136F44B003B9FD7 /* CoreModule.m in Sources */,
+				486CFD2A21C8FE9F00E7113B /* Notification.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				48E2A93E2177575C005C6F40 /* Logger.swift in Sources */,

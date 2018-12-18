@@ -93,9 +93,9 @@ class Logger: NSObject, CoreNativeLoggerProtocol {
         let message = NSString(format: format, args) as String
         try! self.log(level.rawValue, namespace: self.category, message: message)
     }
-open
+
     // @TODO: implement this
-    func levelEnabler(_ level: String!) -> Bool {
+    open func levelEnabler(_ level: String!) -> Bool {
         return self.isEnabled
     }
 }

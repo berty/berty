@@ -15,6 +15,13 @@ import (
 	"go.uber.org/zap"
 )
 
+type MobileOptions struct {
+	logger        NativeLogger
+	notification  NativeNotification
+	datastorePath string
+	nickname      string
+}
+
 var (
 	accountName = ""
 	appConfig   *account.StateDB
@@ -117,45 +124,14 @@ func initOrRestoreAppState(datastorePath string) error {
 	return nil
 }
 
-type MobileOption func(*MobileOptions) error
-type MobileOptions struct {
-	logger        NativeLogger
-	notification  NativeNotification
-	datastorePath string
-	nickname      string
-}
-
-func (cfg *MobileOptions) WithNotificationDriver(driver NativeNotification) *MobileOptions {
-	cfg.notification = driver
-	return cfg
-}
-
-func (cfg *MobileOptions) WithDatastorePath(path string) *MobileOptions {
-	cfg.datastorePath = path
-	return cfg
-}
-
-func (cfg *MobileOptions) WithLoggerDriver(logger NativeLogger) *MobileOptions {
-	cfg.logger = logger
-	return cfg
-}
-
-func (cfg *MobileOptions) WithNickname(nickname string) *MobileOptions {
-	cfg.nickname = nickname
-	return cfg
-}
-
-func WithNickname(nickname string) MobileOption {
-	return func(cfg *MobileOptions) error {
-		cfg.nickname = nickname
-		return nil
+func Start(cfg *MobileOptions) error {
+	if cfg == nil {
+		return fmt.Errorf("core empty configuration")
 	}
-}
-
-func Start(cfg MobileOptions) error {
-	defer panicHandler()
 
 	accountName = cfg.nickname
+
+	defer panicHandler()
 
 	a, _ := account.Get(rootContext, cfg.nickname)
 	if a != nil {
@@ -167,7 +143,7 @@ func Start(cfg MobileOptions) error {
 		return errors.Wrap(err, "app init/restore state failed")
 	}
 
-	run(cfg.nickname, cfg.datastorePath, cfg.logger)
+	run(cfg)
 	waitDaemon(cfg.nickname)
 	return nil
 }
@@ -198,10 +174,10 @@ func DropDatabase(datastorePath string) error {
 	return Restart()
 }
 
-func run(nickname, datastorePath string, loggerNative NativeLogger) {
+func run(cfg *MobileOptions) {
 	go func() {
 		for {
-			err := daemon(nickname, datastorePath, loggerNative)
+			err := daemon(cfg)
 			if err != nil {
 				logger().Error("handle error, try to restart", zap.Error(err))
 				time.Sleep(time.Second)
@@ -221,7 +197,7 @@ func waitDaemon(nickname string) {
 	}
 }
 
-func daemon(nickname, datastorePath string, loggerNative NativeLogger) error {
+func daemon(cfg *MobileOptions) error {
 	defer panicHandler()
 	_ = logmanager.G().LogRotate()
 
@@ -241,13 +217,15 @@ func daemon(nickname, datastorePath string, loggerNative NativeLogger) error {
 		return err
 	}
 
+	notificationDriver := &nativeNotificationModule{cfg.notification}
 	accountOptions := account.Options{
-		account.WithJaegerAddrName("jaeger.berty.io:6831", nickname+":mobile"),
+		account.WithJaegerAddrName("jaeger.berty.io:6831", cfg.nickname+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
-		account.WithName(nickname),
+		account.WithName(cfg.nickname),
 		account.WithPassphrase("secure"),
+		account.WithNotificationDriver(notificationDriver),
 		account.WithDatabase(&account.DatabaseOptions{
-			Path: datastorePath,
+			Path: cfg.datastorePath,
 			Drop: false,
 		}),
 		account.WithP2PNetwork(netConf),
