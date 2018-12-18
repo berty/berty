@@ -8,6 +8,7 @@ import About from './About'
 import Help from './Help'
 import Legal from './Legal'
 import Devtools from './Devtools'
+import Update from './Update'
 
 export default createSubStackNavigator(
   {
@@ -18,6 +19,7 @@ export default createSubStackNavigator(
     'settings/help': Help,
     'settings/legal': Legal,
     'settings/devtools': Devtools,
+    'settings/update': Update,
   },
   {
     initialRouteName: 'settings/list',
