@@ -1140,7 +1140,7 @@
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = WMBQ84HN4T;
 						LastSwiftMigration = "";
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1935,7 +1935,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Berty/Berty.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
@@ -1974,8 +1974,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				PRODUCT_NAME = Berty;
-				PROVISIONING_PROFILE = "9a258409-f99e-4278-b782-5856bd4b3095";
-				PROVISIONING_PROFILE_SPECIFIER = "match Development chat.berty.ios";
+				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REACT_HEADERS_PATH = "";
 				REACT_LIBRARY_PATH = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
@@ -2032,7 +2032,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "cc9cd83e-751b-4542-8a1a-9a6469467be5";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
 				REACT_HEADERS_PATH = "";
 				REACT_LIBRARY_PATH = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
