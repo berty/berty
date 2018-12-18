@@ -70,7 +70,7 @@
  */
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(nullable NSError *)error {
     if (error) {
-        NSLog(@"peripheralManagerDidStartAdvertising errorCode: %ld domain: %@ userInfo: %@", error.code, error.domain, error.userInfo);
+        NSLog(@"peripheralManagerDidStartAdvertising errorCode: %ld domain: %@ userInfo: %@", (long)error.code, error.domain, error.userInfo);
         return;
     }
     NSLog(@"peripheralManagerDidStartAdvertising success");
@@ -193,7 +193,7 @@
         } else if ([request.characteristic.UUID isEqual:utils.maUUID]) {
             [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
             NSString *ma = [[NSString alloc] initWithData:request.value encoding:NSUTF8StringEncoding];
-            NSLog(@"val %@ %@ %lu %@ %@", ma, [request.characteristic.UUID UUIDString], [bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.ma);
+            NSLog(@"val %@ %@ %lu %@ %@", ma, [request.characteristic.UUID UUIDString], (long)[bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.ma);
             if (bDevice.ma != nil) {
                 bDevice.ma =  [NSString stringWithFormat:@"%@%@", bDevice.ma, ma];
             } else {
@@ -202,16 +202,14 @@
         } else if ([request.characteristic.UUID isEqual:utils.peerUUID]) {
             [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
             NSString *peerID = [[NSString alloc] initWithData:request.value encoding:NSUTF8StringEncoding];
-            NSLog(@"val %@ %@ %lu %@ %@", peerID, [request.characteristic.UUID UUIDString], [bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.peerID);
+            NSLog(@"val %@ %@ %lu %@ %@", peerID, [request.characteristic.UUID UUIDString], (long)[bDevice.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse], bDevice, bDevice.peerID);
             if (bDevice.peerID != nil) {
                 bDevice.peerID =  [NSString stringWithFormat:@"%@%@", bDevice.peerID, peerID];
             } else {
                 bDevice.peerID = peerID;
             }
 
-            NSLog(@"%lu", bDevice.peerID.length);
             if (bDevice.peerID.length == 46) {
-                NSLog(@"COUNTDOWN %@", bDevice);
                 [bDevice.latchRdy countDown];
             }
         } else {

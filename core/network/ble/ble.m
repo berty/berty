@@ -72,12 +72,12 @@ void setPeerID(char *peerID) {
   [BertyUtils setPeerID:[NSString stringWithUTF8String:peerID]];
 }
 
-int centralManagerIsOn(void) {
-    return (int)[BertyUtils sharedUtils].CentralIsOn;
+int centralManagerGetState(void) {
+    return centralManager.state;
 }
 
-int peripheralManagerIsOn(void) {
-    return (int)[BertyUtils sharedUtils].PeripharalIsOn;
+int peripheralManagerGetState(void) {
+    return peripheralManager.state;
 }
 
 void connDevice(CBPeripheral *peripheral) {

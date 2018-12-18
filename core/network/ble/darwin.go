@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 	"unsafe"
-	"sync"
 
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
@@ -21,6 +20,16 @@ import (
 #import "ble.h"
 */
 import "C"
+
+const (
+	CBManagerStateUnknown = iota
+	CBManagerStateResetting
+	CBManagerStateUnsupported
+	CBManagerStateUnauthorized
+	CBManagerStatePoweredOff
+	CBManagerStatePoweredOn
+)
+
 
 //export sendBytesToConn
 func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
@@ -108,33 +117,32 @@ func SetPeerID(peerID string) {
 	C.setPeerID(cPeerID)
 }
 
-func waitForOn() bool {
-	var wg sync.WaitGroup
+func waitForOn() int {
+	realState := 0
+	cState := int(C.centralManagerGetState())
+	if cState  == CBManagerStatePoweredOn {
+		realState = 1
+	} else if cState == CBManagerStateUnsupported {
+		return -1
+	}
 
-	centralIsOn := false
-	peripheralIsOn := false
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		if int(C.centralManagerIsOn()) == 1 {
-			centralIsOn = true
-		}
-	}()
-	go func() {
-		defer wg.Done()
-		if int(C.peripheralManagerIsOn()) == 1 {
-			peripheralIsOn = true
-		}
-	}()
-	wg.Wait()
+	pState := int(C.peripheralManagerGetState())
+	if pState == CBManagerStatePoweredOn {
+		realState = 1
+	} else if pState == CBManagerStateUnsupported {
+		return -1
+	}
 
-	return centralIsOn && peripheralIsOn
+	return realState
 }
 
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
 	C.init()
 
-	for !waitForOn() {
+	for res := waitForOn(); res == 1; res = waitForOn() {
+		if res == -1 {
+			return nil, fmt.Errorf("error ble not supported")
+		}
 		logger().Debug("Ble centralManager or peripheralManager isn't on wait 1sec and retry")
 		time.Sleep(1 * time.Second)
 	}
