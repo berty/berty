@@ -38,7 +38,7 @@ require (
 	github.com/google/uuid v1.0.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181004151105-1babbf986f6f // indirect
 	github.com/gorilla/websocket v1.4.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20181112102510-3304cc886352
 	github.com/gxed/GoEndian v0.0.0-20160916112711-0f5c6873267e // indirect
 	github.com/gxed/eventfd v0.0.0-20160916113412-80a92cca79a8 // indirect
 	github.com/gxed/hashland v0.0.0-20180221191214-d9f6b97f8db2 // indirect
@@ -116,7 +116,7 @@ require (
 	github.com/multiformats/go-multiaddr-net v1.6.3
 	github.com/multiformats/go-multibase v0.3.0 // indirect
 	github.com/multiformats/go-multicodec v0.1.6 // indirect
-	github.com/multiformats/go-multihash v1.0.8
+	github.com/multiformats/go-multihash v1.0.9-0.20181210174334-1dbee63c8258
 	github.com/multiformats/go-multistream v0.3.9 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.0.0-beta.6
 	github.com/opentracing/opentracing-go v1.0.2
