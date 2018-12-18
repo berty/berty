@@ -1,8 +1,8 @@
-import { Image, View } from 'react-native'
+import { View } from 'react-native'
 import React, { Component, PureComponent } from 'react'
 
 import { Pagination, RelayContext } from '../../../relay'
-import { Screen, Flex, Text, Header } from '../../Library'
+import { Screen, Flex, Text, Header, Avatar } from '../../Library'
 import { border, borderBottom, marginHorizontal } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
@@ -17,7 +17,7 @@ const Item = fragments.Contact(
 
     render () {
       const {
-        data: { id, status, displayName, overrideDisplayName, displayStatus },
+        data: { status, displayName, overrideDisplayName, displayStatus },
       } = this.props
       const { selected } = this.state
 
@@ -40,18 +40,13 @@ const Item = fragments.Contact(
           ]}
         >
           <Flex.Rows size={1} align='start'>
-            <Image
-              style={{ width: 40, height: 40, borderRadius: 50 }}
-              source={{
-                uri: 'https://api.adorable.io/avatars/285/' + id + '.png',
-              }}
-            />
+            <Avatar data={this.props.data} size={40} />
           </Flex.Rows>
           <Flex.Rows size={6} align='start' style={{ marginLeft: 14 }}>
             <Text color={colors.black} left middle>
               {(status === 42 && 'Myself') ||
-                overrideDisplayName ||
-                displayName}
+              overrideDisplayName ||
+              displayName}
             </Text>
             <Text color={colors.subtleGrey} tiny>
               {displayStatus}
@@ -75,7 +70,7 @@ const Item = fragments.Contact(
         </Flex.Cols>
       )
     }
-  }
+  },
 )
 
 export default class ListScreen extends Component {

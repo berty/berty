@@ -4,6 +4,8 @@ export default {
   white: '#FFFFFF',
   black: '#000000',
 
+  constantBlack: '#000000', // do not depend on theming
+
   fakeBlack: '#3D4169',
 
   darkGrey: '#A1A1B2',

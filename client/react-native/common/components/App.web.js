@@ -1,8 +1,9 @@
-import { Linking, Platform } from 'react-native'
+import { Linking } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 import { parse as parseUrl } from '../helpers/url'
+import FlashMessage from 'react-native-flash-message'
 
 import { Loader } from './Library'
 import Accounts from './Screens/Accounts'
@@ -46,10 +47,12 @@ export default class App extends PureComponent {
       case '/add-contact':
         this.setState({
           deepLink: {
-            routeName: 'modal/contacts/add/by-public-key',
+            routeName: 'modal/contacts/card',
             params: {
-              initialKey: url.hashParts['public-key'] || '',
-              initialName: url.hashParts['display-name'] || '',
+              data: {
+                id: url.hashParts['public-key'] || '',
+                displayName: url.hashParts['display-name'] || '',
+              },
             },
           },
         })
@@ -58,6 +61,10 @@ export default class App extends PureComponent {
         console.warn(`Unhandled deep link, URL: ${event.url}`)
         break
     }
+  }
+
+  clearDeepLink () {
+    this.setState({ deepLink: null })
   }
 
   render () {
@@ -73,9 +80,11 @@ export default class App extends PureComponent {
           }}
           screenProps={{
             deepLink,
+            clearDeepLink: () => this.clearDeepLink(),
           }}
         />
-        {Platform.OS === 'ios' && <KeyboardSpacer />}
+        <KeyboardSpacer />
+        <FlashMessage position='top' />
       </SafeAreaView>
     )
   }

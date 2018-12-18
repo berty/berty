@@ -1,31 +1,51 @@
-import { createSubStackNavigator } from '../../../../helpers/react-navigation'
-import Choice from './Choice'
-import Request from './Request'
-import ByPublicKey from './ByPublicKey'
-import ByBump from './ByBump'
-import Invite from './Invite'
 import React from 'react'
-import { Header } from '../../../Library'
+import { createMaterialTopTabNavigator } from 'react-navigation'
+import ByQRCode from './ByQRCode'
+import ByPublicKey from './ByPublicKey'
+import Invite from './Invite'
+import { tabIcon, withScreenProps } from '../../../../helpers/views'
+import { tabNavigatorOptions } from '../../../../constants/styling'
+import { View } from 'react-native'
 
-export default createSubStackNavigator(
+const AddContactTabbedContent = createMaterialTopTabNavigator(
   {
-    'contacts/add/request': Request,
-    'contacts/add/by-public-key': ByPublicKey,
-    'contacts/add/by-bump': ByBump,
-    'contacts/add/invite': Invite,
-    'contacts/add/choice': Choice,
+    'qrcode': {
+      screen: withScreenProps(ByQRCode),
+      navigationOptions: {
+        title: 'QR Code',
+        tabBarIcon: tabIcon('material-qrcode'),
+      },
+    },
+    'public-key': {
+      screen: withScreenProps(ByPublicKey),
+      navigationOptions: {
+        title: 'Public key',
+        tabBarIcon: tabIcon('material-key-variant'),
+      },
+    },
+    'nearby': {
+      screen: withScreenProps(Invite),
+      navigationOptions: {
+        title: 'Nearby',
+        tabBarIcon: tabIcon('radio'),
+      },
+    },
+    'invite': {
+      screen: withScreenProps(Invite),
+      navigationOptions: {
+        title: 'Invite',
+        tabBarIcon: tabIcon('material-email'),
+      },
+    },
   },
   {
-    initialRouteName: 'contacts/add/choice',
-    navigationOptions: ({ navigation }) => ({
-      header: (
-        <Header
-          navigation={navigation}
-          title='Add a contact'
-          titleIcon='user-plus'
-          backBtn
-        />
-      ),
-    }),
-  }
+    ...tabNavigatorOptions,
+    animationEnabled: false,
+  },
 )
+
+const AddScreen = () => <View style={{ flex: 1 }}>
+  <AddContactTabbedContent />
+</View>
+
+export default AddScreen

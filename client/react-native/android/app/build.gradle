@@ -168,6 +168,7 @@ android {
 dependencies {
     compile project(':lottie-react-native')
     compile project(':react-native-vector-icons')
+    compile project(':react-native-view-shot')
     compile project(':react-native-svg')
     compile project(':react-native-restart')
     compile project(':react-native-network-info')

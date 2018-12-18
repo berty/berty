@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react'
-import { Image, ActionSheetIOS, Platform, Alert } from 'react-native'
-import { Menu, Header, Screen } from '../../../Library'
+import { ActionSheetIOS, Platform, Alert } from 'react-native'
+import { Menu, Header, Screen, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
-import {
-  shareLinkOther,
-  extractPublicKeyFromId,
-} from '../../../../helpers/contacts'
+import { extractPublicKeyFromId } from '../../../../helpers/contacts'
 
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -84,15 +81,7 @@ export default class Detail extends PureComponent {
         <Menu absolute>
           <Menu.Header
             icon={
-              <Image
-                style={{ width: 78, height: 78, borderRadius: 39 }}
-                source={{
-                  uri:
-                    'https://api.adorable.io/avatars/285/' +
-                    contact.id +
-                    '.png',
-                }}
-              />
+              <Avatar data={contact} size={78} />
             }
             title={contact.overrideDisplayName || contact.displayName}
           />
@@ -113,19 +102,11 @@ export default class Detail extends PureComponent {
               icon='eye'
               title='View public key'
               onPress={() =>
-                navigation.push('detail/publickey', {
-                  id: extractPublicKeyFromId(contact.id),
-                  displayName: contact.displayName,
-                })
-              }
-            />
-            <Menu.Item
-              icon='share'
-              title='Share this contact'
-              onPress={() =>
-                shareLinkOther({
-                  id: extractPublicKeyFromId(contact.id),
-                  displayName: contact.displayName,
+                navigation.push('modal/contacts/card', {
+                  data: {
+                    ...contact,
+                    id: extractPublicKeyFromId(contact.id),
+                  },
                 })
               }
             />

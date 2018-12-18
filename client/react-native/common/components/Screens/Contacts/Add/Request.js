@@ -1,9 +1,9 @@
-import { ActivityIndicator, Image } from 'react-native'
+import { ActivityIndicator } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
-import { Flex, Screen, Text } from '../../../Library'
+import { Avatar, Flex, Screen, Text } from '../../../Library'
 import { Pagination, RelayContext } from '../../../../relay'
 import { borderBottom, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
@@ -84,12 +84,7 @@ const Item = fragments.Contact(
           style={[{ height: 72 }, padding, borderBottom]}
         >
           <Flex.Cols size={4} justify='start'>
-            <Image
-              style={{ width: 40, height: 40, borderRadius: 20, margin: 4 }}
-              source={{
-                uri: 'https://api.adorable.io/avatars/40/' + id + '.png',
-              }}
-            />
+            <Avatar data={this.props.data} size={40} />
             <Flex.Rows>
               <Text color={colors.black} left middle margin={{ left: 16 }}>
                 {overrideDisplayName || displayName}

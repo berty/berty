@@ -11,6 +11,7 @@ import com.pusherman.networkinfo.RNNetworkInfoPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.masteratul.exceptionhandler.ReactNativeExceptionHandlerPackage;
 import org.reactnative.camera.RNCameraPackage;
+import fr.greweb.reactnativeviewshot.RNViewShotPackage;
 import org.reactnative.camera.RNCameraPackage;
 import com.horcrux.svg.SvgPackage;
 import com.avishayil.rnrestart.ReactNativeRestartPackage;
@@ -44,7 +45,8 @@ public class MainApplication extends Application implements ReactApplication {
                 new CorePackage(),
                 new ImagePickerPackage(),
                 new MainReactPackage(),
-            new LottiePackage(),
+                new LottiePackage(),
+                new RNViewShotPackage(),
                 new RNCameraPackage(),
                 new RNNetworkInfoPackage(),
                 new ReactNativeExceptionHandlerPackage(),
