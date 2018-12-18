@@ -344,6 +344,7 @@ github.com/libp2p/go-libp2p-peer v2.4.0+incompatible h1:1THIuO/h7GuITklYS7RgGCyo
 github.com/libp2p/go-libp2p-peer v2.4.0+incompatible/go.mod h1:fS2eFKRO1IomwBAf+SuE8P1XOT/AAiqSgVPNIFA7Jc0=
 github.com/libp2p/go-libp2p-peerstore v2.0.4+incompatible h1:4dOjYQ/y38mBw9m9/pcAGSv+5PxK4dS37cEOSsaF7zo=
 github.com/libp2p/go-libp2p-peerstore v2.0.4+incompatible/go.mod h1:lLfgn0N3z2t+ER57a88K7NTZjMO27ez5TyWSURd428E=
+github.com/libp2p/go-libp2p-peerstore v2.0.6+incompatible/go.mod h1:lLfgn0N3z2t+ER57a88K7NTZjMO27ez5TyWSURd428E=
 github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible h1:+jY7/4M41k86g0E/ctEmabLdQeXGrwl+8ZxDK16Nt88=
 github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible/go.mod h1:S0NLmMHBDsJsTz4TC0g+5iy81d+5xrtJbrDnz6+UroU=
 github.com/libp2p/go-libp2p-protocol v1.0.0 h1:6AnF76m2VjjiaDisOahQnWSnX2WWaISOXC7q9/YJIrM=
