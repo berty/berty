@@ -1,8 +1,9 @@
-import { NativeModules } from 'react-native'
+import { NativeModules, TextInput, View, Text, TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Loader, Screen, Text } from '../../Library'
+import { Flex, Loader, Screen } from '../../Library'
 import { colors } from '../../../constants'
+import { defaultUsername } from '../../../helpers/contacts'
 
 const { CoreModule } = NativeModules
 
@@ -12,6 +13,7 @@ export default class Auth extends PureComponent {
     current: null,
     loading: true,
     message: null,
+    nickname: null,
   }
 
   init = async () => {
@@ -53,7 +55,11 @@ export default class Auth extends PureComponent {
       await this.init()
       const list = await this.list()
       if (list.length <= 0) {
-        this.setState({ loading: false, message: null })
+        const deviceName = defaultUsername()
+
+        this.setState({ loading: false, message: null, nickname: deviceName })
+        this.nicknameInput.blur()
+
         return
       }
       nickname = list[0]
@@ -80,22 +86,35 @@ export default class Auth extends PureComponent {
     }
     if (current === null) {
       return (
-        <Screen style={{ backgroundColor: colors.white }}>
-          <Flex.Rows align='center'>
-            <Flex.Cols align='center' self='stretch'>
-              <Text
-                size={0}
-                large
-                rounded
-                color={colors.black}
-                input={{
-                  placeholder: 'Enter a nickname',
-                  focus: true,
+        <Screen style={{ backgroundColor: colors.background, flex: 1 }}>
+          <Flex.Cols align='center'>
+            <View style={{ height: 320, padding: 20, backgroundColor: colors.background, width: '100%' }} >
+              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', fontSize: 24 }} >Welcome to Berty</Text>
+              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', marginTop: 5 }} >To get started, only a name is required</Text>
+              <TextInput
+                style={{ color: colors.fakeBlack, borderColor: colors.borderGrey, borderWidth: 1, marginTop: 10, padding: 10 }}
+                placeholder={'Enter a nickname'}
+                ref={nicknameInput => {
+                  this.nicknameInput = nicknameInput
                 }}
-                onSubmit={({ nativeEvent }) => this.open(nativeEvent.text)}
+                textContentType={'name'}
+                onChangeText={nickname => this.setState({ nickname })}
+                value={this.state.nickname}
               />
-            </Flex.Cols>
-          </Flex.Rows>
+              <TouchableOpacity onPress={() => this.open(this.state.nickname)}>
+                <Text style={{
+                  color: colors.white,
+                  backgroundColor: colors.blue,
+                  textAlign: 'center',
+                  fontSize: 18,
+                  marginTop: 10,
+                  padding: 8,
+                }} >
+                  Let's chat
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </Flex.Cols>
         </Screen>
       )
     }
