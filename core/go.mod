@@ -2,7 +2,7 @@ module berty.tech/core
 
 require (
 	cloud.google.com/go v0.30.0 // indirect
-	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
+	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21 // indirect
 	github.com/99designs/gqlgen v0.6.0
 	github.com/Yawning/chacha20 v0.0.0-20170904085104-e3b1f968fc63 // indirect
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
@@ -33,12 +33,14 @@ require (
 	github.com/go-sql-driver/mysql v1.4.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.0.0-rc.12
+	github.com/godbus/dbus v4.1.0+incompatible // indirect
 	github.com/gofrs/uuid v3.1.0+incompatible
 	github.com/gogo/protobuf v1.2.0
 	github.com/golang/protobuf v1.2.0
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/uuid v1.0.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181004151105-1babbf986f6f // indirect
+	github.com/gopherjs/gopherwasm v1.0.1 // indirect
 	github.com/gorilla/websocket v1.4.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20181112102510-3304cc886352
 	github.com/gxed/GoEndian v0.0.0-20160916112711-0f5c6873267e // indirect
@@ -121,6 +123,7 @@ require (
 	github.com/multiformats/go-multihash v1.0.9-0.20181210174334-1dbee63c8258
 	github.com/multiformats/go-multistream v0.3.9 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.0.0-beta.6
+	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/oxtoacart/bpool v0.0.0-20150712133111-4e1c5567d7c2 // indirect
 	github.com/pkg/errors v0.8.0
@@ -163,5 +166,6 @@ require (
 	google.golang.org/grpc v1.15.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
+	gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )

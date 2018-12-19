@@ -39,12 +39,12 @@ class CoreModule: NSObject {
             }
             resolve(nil)
         } catch let error as NSError {
-            logger.format("unable to init core: %@", level: .Error, error.userInfo.description)
+            logger.format("unable to init core: %@", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
 
-    @objc func listAccounts(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
+    @objc func listAccounts(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
         var err: NSError?
 
         do {
@@ -54,7 +54,7 @@ class CoreModule: NSObject {
             }
             resolve(list)
         } catch let error as NSError {
-            logger.format("unable to list accounts: %@", level: .Error, error.userInfo.description)
+            logger.format("unable to list accounts: %@", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.userInfo.description, error)
         }
     }
@@ -66,27 +66,27 @@ class CoreModule: NSObject {
             let datastore = try self.getFilesDir()
             let notificationDriver = Notitification()
 
-            guard let
-                    CoreOptions = CoreMobileOptions()?
+            guard let coreOptions = CoreMobileOptions()?
                     .withDatastorePath(datastore)?
                     .withLoggerDriver(logger)?
                     .withNotificationDriver(notificationDriver)?
                     .withNickname(nickname as String)
-            else { throw CoreError.invalidOptions }
+            else {
+                throw CoreError.invalidOptions
+            }
 
-
-            CoreStart(CoreOptions, &err)
+            CoreStart(coreOptions, &err)
             if let error = err {
                 throw error
             }
             resolve(nil)
         } catch let error as NSError {
-            logger.format("unable to start core: %@", level: .Error, error.userInfo.description)
+            logger.format("unable to start core: %@", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
     }
 
-    @objc func restart(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
+    @objc func restart(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
         var err: NSError?
 
         do {
@@ -96,12 +96,12 @@ class CoreModule: NSObject {
             }
             resolve(nil)
         } catch let error as NSError {
-            logger.format("unable to restart core: %@", level: .Error, error.userInfo.description)
+            logger.format("unable to restart core: %@", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
     }
 
-    @objc func panic(_ resolve: RCTPromiseResolveBlock!,  reject: RCTPromiseRejectBlock!) {
+    @objc func panic(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
         CorePanic()
         resolve(nil)
     }
@@ -117,7 +117,7 @@ class CoreModule: NSObject {
             }
             resolve(nil)
         } catch let error as NSError {
-            logger.format("unable to drop database: %@", level: .Error, error.userInfo.description)
+            logger.format("unable to drop database: %@", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         }
     }
@@ -128,7 +128,7 @@ class CoreModule: NSObject {
 
         CoreGetPort(&port, &err)
         if let error = err {
-            logger.format("unable to get port: ", level: .Error, error.userInfo.description)
+            logger.format("unable to get port: ", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         } else {
             resolve(port)
@@ -144,7 +144,7 @@ class CoreModule: NSObject {
 
         CoreUpdateNetworkConfig(config, &err)
         if let error = err {
-            logger.format("update network config error: ", level: .Error, error.userInfo.description)
+            logger.format("update network config error: ", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         } else {
             resolve(nil)
@@ -160,7 +160,7 @@ class CoreModule: NSObject {
 
         CoreStartBot(&err)
         if let error = err {
-            logger.format("start bot error: ", level: .Error, error.userInfo.description)
+            logger.format("start bot error: ", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         } else {
             resolve(nil)
@@ -172,7 +172,7 @@ class CoreModule: NSObject {
 
         CoreStopBot(&err)
         if let error = err {
-            logger.format("stop bot error: ", level: .Error, error.userInfo.description)
+            logger.format("stop bot error: ", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         } else {
             resolve(nil)
@@ -188,7 +188,7 @@ class CoreModule: NSObject {
 
         CoreStartLocalGRPC(&err)
         if let error = err {
-            logger.format("start local gRPC error: ", level: .Error, error.userInfo.description)
+            logger.format("start local gRPC error: ", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         } else {
             resolve(nil)
@@ -200,7 +200,7 @@ class CoreModule: NSObject {
 
         CoreStopLocalGRPC(&err)
         if let error = err {
-            logger.format("stop local gRPC error: ", level: .Error, error.userInfo.description)
+            logger.format("stop local gRPC error: ", level: .error, error.userInfo.description)
             reject("\(String(describing: error.code))", error.localizedDescription, error)
         } else {
             resolve(nil)

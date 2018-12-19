@@ -5,7 +5,6 @@ package ble
 import (
 	"context"
 	"fmt"
-	"sync"
 	"time"
 	"unsafe"
 
@@ -30,7 +29,6 @@ const (
 	CBManagerStatePoweredOff
 	CBManagerStatePoweredOn
 )
-
 
 //export sendBytesToConn
 func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
@@ -121,7 +119,7 @@ func SetPeerID(peerID string) {
 func waitForOn() int {
 	realState := 0
 	cState := int(C.centralManagerGetState())
-	if cState  == CBManagerStatePoweredOn {
+	if cState == CBManagerStatePoweredOn {
 		realState = 1
 	} else if cState == CBManagerStateUnsupported {
 		return -1

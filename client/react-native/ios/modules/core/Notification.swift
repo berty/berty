@@ -15,29 +15,34 @@ enum NotificationError: Error {
 
 class Notitification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotificationProtocol {
 
-  override init() {
+    override init() {
         super.init()
-    
-        // @FIXME: thene action doesn't belong here
+
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().delegate = self
-            //requesting for authorization
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: {didAllow, error in
-                                                                                                       })
+
+            // Requesting for authorization
+            // FIXME: these action doesn't belong here, improve this and make it
+            // available for < ios10.0
+            UNUserNotificationCenter.current().requestAuthorization(
+              options: [.alert, .sound, .badge],
+              completionHandler: {_, _ in }
+            )
         }
     }
 
     @available(iOS 10.0, *)
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-      completionHandler([.alert, .badge, .sound])
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler:
+                                  @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.alert, .badge, .sound])
     }
-  
-    func display(_ title: String?, body: String?, icon: String?, sound: String?) throws {
-        guard
-          let utitle = title,
-          let ubody = body
-        else { throw NotificationError.invalidArgument }
 
+    func display(_ title: String?, body: String?, icon: String?, sound: String?) throws {
+        guard let utitle = title, let ubody = body else {
+            throw NotificationError.invalidArgument
+        }
 
         if #available(iOS 10.0, *) {
 
