@@ -2,7 +2,7 @@ package chat.berty.core;
 
 import android.util.Log;
 
-public class Logger implements core.Logger {
+public class Logger implements core.NativeLogger {
     boolean isEnabled = true;
     String subsytem = "logger";
 
