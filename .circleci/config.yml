@@ -10,7 +10,7 @@ references:
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
-      - image: circleci/golang:latest
+      - image: circleci/golang:1.11.4
 
   install_retry: &install_retry
     run:
