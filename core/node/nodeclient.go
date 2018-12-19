@@ -89,7 +89,7 @@ func (n *Node) CommitLogStream(input *node.Void, stream node.Service_CommitLogSt
 
 	logger().Debug("CommitLogStream connected", zap.Stringer("input", input))
 
-	sub := clientCommitLogsSubscriber{
+	sub := &clientCommitLogsSubscriber{
 		queue: make(chan *node.CommitLog, 100),
 	}
 
@@ -97,11 +97,24 @@ func (n *Node) CommitLogStream(input *node.Void, stream node.Service_CommitLogSt
 	n.clientCommitLogsSubscribers = append(n.clientCommitLogsSubscribers, sub)
 	n.clientCommitLogsMutex.Unlock()
 
+	n.handleCommitLogs()
+
 	defer func() {
 		logger().Debug("CommitLogStream disconnected", zap.Stringer("input", input))
 
-		// write lock
-		// FIXME: remove sub
+		n.clientCommitLogsMutex.Lock()
+		defer n.clientCommitLogsMutex.Unlock()
+		for i, s := range n.clientCommitLogsSubscribers {
+			if s == sub {
+				n.clientCommitLogsSubscribers = append(
+					n.clientCommitLogsSubscribers[:i],
+					n.clientCommitLogsSubscribers[i:]...,
+				)
+			}
+		}
+		if len(n.clientCommitLogsSubscribers) == 0 {
+			n.unhandleCommitLogs()
+		}
 	}()
 
 	for {

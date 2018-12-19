@@ -25,7 +25,7 @@ import (
 // Node is the top-level object of a Berty peer
 type Node struct {
 	clientCommitLogs            chan *node.CommitLog
-	clientCommitLogsSubscribers []clientCommitLogsSubscriber
+	clientCommitLogsSubscribers []*clientCommitLogsSubscriber
 	clientCommitLogsMutex       sync.Mutex
 	clientEvents                chan *p2p.Event
 	clientEventsSubscribers     []clientEventSubscriber
