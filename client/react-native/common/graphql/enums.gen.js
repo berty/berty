@@ -272,6 +272,18 @@ export const ValueBertyPkgDeviceinfoTypeInputType = {
   2: 'Json',
 }
 
+export const BertyNodeCommitLogInputOperation = {
+  Create: 0,
+  Update: 1,
+  Delete: 2,
+}
+
+export const ValueBertyNodeCommitLogInputOperation = {
+  0: 'Create',
+  1: 'Update',
+  2: 'Delete',
+}
+
 export const BertyNodeNullableTrueFalseInputNullableTrueFalse = {
   Null: 0,
   True: 1,

@@ -7,7 +7,9 @@ import "api/p2p/event.proto";
 import "api/node/kind.proto";
 import "network/metrics.proto";
 import "network/peer.proto";
+import "entity/config.proto";
 import "entity/contact.proto";
+import "entity/device.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
 import "pkg/deviceinfo/deviceinfo.proto";
@@ -23,6 +25,13 @@ service Service {
   rpc ID (Void) returns (berty.network.Peer) {
     option (gql.graphql_type) = "Query";
   };
+
+  //
+  // Storage sync
+  //
+  rpc CommitLogStream (Void) returns (stream CommitLog) {
+    option (gql.graphql_type) = "Subscription";
+  }
 
   //
   // Events
@@ -211,8 +220,26 @@ message EventStreamInput {
 }
 
 
-// Node
+// Storage sync
+message CommitLog {
+  enum Operation {
+    Create = 0;
+    Update = 1;
+    Delete = 2;
+  }
 
+  message Entity {
+    berty.entity.Config config = 101;
+    berty.entity.Contact contact = 102;
+    berty.entity.Device device = 103;
+    berty.entity.Conversation conversation = 104;
+    berty.entity.ConversationMember conversation_member = 105;
+    berty.p2p.Event event = 106;
+  }
+
+  Operation operation = 1;
+  Entity entity = 2;
+}
 
 //
 // EventList

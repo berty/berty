@@ -78,3 +78,44 @@ func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_Eve
 		}
 	}
 }
+
+type clientCommitLogsSubscriber struct {
+	queue chan *node.CommitLog
+}
+
+func (n *Node) CommitLogStream(input *node.Void, stream node.Service_CommitLogStreamServer) error {
+	span, _ := tracing.EnterFunc(stream.Context(), input)
+	defer span.Finish()
+
+	logger().Debug("CommitLogStream connected", zap.Stringer("input", input))
+
+	sub := clientCommitLogsSubscriber{
+		queue: make(chan *node.CommitLog, 100),
+	}
+
+	n.clientCommitLogsMutex.Lock()
+	n.clientCommitLogsSubscribers = append(n.clientCommitLogsSubscribers, sub)
+	n.clientCommitLogsMutex.Unlock()
+
+	defer func() {
+		logger().Debug("CommitLogStream disconnected", zap.Stringer("input", input))
+
+		// write lock
+		// FIXME: remove sub
+	}()
+
+	for {
+		select {
+		case <-stream.Context().Done():
+			return stream.Context().Err()
+		case commitLog, ok := <-sub.queue:
+			if !ok {
+				logger().Error("CommitLogStream chan closed")
+				return errors.New("commitLogStream chan closed")
+			}
+			if err := stream.Send(commitLog); err != nil {
+				return err
+			}
+		}
+	}
+}

@@ -82,7 +82,7 @@ require (
 	github.com/libp2p/go-libp2p-net v3.0.13+incompatible
 	github.com/libp2p/go-libp2p-netutil v0.4.11 // indirect
 	github.com/libp2p/go-libp2p-peer v2.4.0+incompatible
-	github.com/libp2p/go-libp2p-peerstore v2.0.4+incompatible
+	github.com/libp2p/go-libp2p-peerstore v2.0.6+incompatible
 	github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible
 	github.com/libp2p/go-libp2p-protocol v1.0.0
 	github.com/libp2p/go-libp2p-pubsub v0.10.2 // indirect

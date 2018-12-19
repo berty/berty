@@ -439,6 +439,20 @@ type BertyNetworkPeers  {
   
   
 
+type BertyEntityConfig  {
+    id: String!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    myself: BertyEntityContact
+    myselfId: String!
+    currentDevice: BertyEntityDevice
+    currentDeviceId: String!
+    cryptoParams: [Byte!]
+}
+  
+  
+  
+
   
 type BertyPkgDeviceinfoDeviceInfos  {
     infos: [BertyPkgDeviceinfoDeviceInfo]
@@ -465,6 +479,20 @@ type BertyNodeAppVersionOutput  {
 }
 type BertyNodePingDestination  {
     destination: String!
+}
+      
+    
+type BertyNodeCommitLogEntity  {
+    config: BertyEntityConfig
+    contact: BertyEntityContact
+    device: BertyEntityDevice
+    conversation: BertyEntityConversation
+    conversationMember: BertyEntityConversationMember
+    event: BertyP2pEvent
+}
+type BertyNodeCommitLog  {
+    operation: Enum
+    entity: BertyNodeCommitLogEntity
 }
 type BertyNodeEventEdge  {
     node: BertyP2pEvent
@@ -775,6 +803,9 @@ type Mutation {
 }
   
 type Subscription {
+  CommitLogStream(
+    T: Bool!
+  ): BertyNodeCommitLog
   EventStream(
     filter: BertyP2pEventInput
   ): BertyP2pEvent

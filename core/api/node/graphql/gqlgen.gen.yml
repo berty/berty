@@ -1362,6 +1362,41 @@ models:
       list:
 
 
+  BertyEntityConfig:
+    model: berty.tech/core/entity.Config
+    fields:
+      id:
+      createdAt:
+      updatedAt:
+      myself:
+      myselfId:
+      currentDevice:
+      currentDeviceId:
+      cryptoParams:
+  BertyEntityConfigInput:
+    model: berty.tech/core/entity.Config
+    fields:
+      id:
+      createdAt:
+      updatedAt:
+      myself:
+      myselfId:
+      currentDevice:
+      currentDeviceId:
+      cryptoParams:
+  BertyEntityConfigPayload:
+    model: berty.tech/core/entity.Config
+    fields:
+      id:
+      createdAt:
+      updatedAt:
+      myself:
+      myselfId:
+      currentDevice:
+      currentDeviceId:
+      cryptoParams:
+
+
   BertyPkgDeviceinfoDeviceInfos:
     model: berty.tech/core/pkg/deviceinfo.DeviceInfos
     fields:
@@ -1476,6 +1511,50 @@ models:
     model: berty.tech/core/api/node.EventStreamInput
     fields:
       filter:
+
+  BertyNodeCommitLog:
+    model: berty.tech/core/api/node.CommitLog
+    fields:
+      operation:
+      entity:
+  BertyNodeCommitLogInput:
+    model: berty.tech/core/api/node.CommitLog
+    fields:
+      operation:
+      entity:
+  BertyNodeCommitLogPayload:
+    model: berty.tech/core/api/node.CommitLog
+    fields:
+      operation:
+      entity:
+
+  BertyNodeCommitLogEntity:
+    model: berty.tech/core/api/node.CommitLog_Entity
+    fields:
+      config:
+      contact:
+      device:
+      conversation:
+      conversationMember:
+      event:
+  BertyNodeEntityInput:
+    model: berty.tech/core/api/node.CommitLog_Entity
+    fields:
+      config:
+      contact:
+      device:
+      conversation:
+      conversationMember:
+      event:
+  BertyNodeEntityPayload:
+    model: berty.tech/core/api/node.CommitLog_Entity
+    fields:
+      config:
+      contact:
+      device:
+      conversation:
+      conversationMember:
+      event:
 
   BertyNodeEventListInput:
     model: berty.tech/core/api/node.EventListInput
