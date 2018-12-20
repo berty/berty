@@ -120,14 +120,8 @@ const CommitLogStream = graphql`
   }
 `
 
-let _subscriber = null
-
-export default context => {
-  if (_subscriber === null) {
-    _subscriber = subscriber({
-      environment: context.environment,
-      subscription: CommitLogStream,
-    })
-  }
-  return _subscriber
-}
+export default context =>
+  subscriber({
+    environment: context.environment,
+    subscription: CommitLogStream,
+  })

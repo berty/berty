@@ -90,10 +90,6 @@ func (n *Node) CommitLogStream(input *node.Void, stream node.Service_CommitLogSt
 	logger().Debug("CommitLogStream connected", zap.Stringer("input", input))
 
 	n.clientCommitLogsMutex.Lock()
-	// start retrieve commit logs from db
-	if len(n.clientCommitLogsSubscribers) == 0 {
-		n.handleCommitLogs()
-	}
 	sub := clientCommitLogsSubscriber{
 		queue: make(chan *node.CommitLog, 100),
 	}
@@ -113,10 +109,6 @@ func (n *Node) CommitLogStream(input *node.Void, stream node.Service_CommitLogSt
 				)
 			}
 		}
-		// stop retrieve commit logs from db
-		if len(n.clientCommitLogsSubscribers) == 0 {
-			n.unhandleCommitLogs()
-		}
 	}()
 
 	for {
@@ -124,7 +116,6 @@ func (n *Node) CommitLogStream(input *node.Void, stream node.Service_CommitLogSt
 		case <-stream.Context().Done():
 			return stream.Context().Err()
 		case commitLog, ok := <-sub.queue:
-			logger().Debug("send commit log")
 			if !ok {
 				logger().Error("CommitLogStream chan closed")
 				return errors.New("commitLogStream chan closed")

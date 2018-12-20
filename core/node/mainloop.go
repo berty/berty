@@ -97,16 +97,6 @@ func (n *Node) handleClientEvent(ctx context.Context, event *p2p.Event) {
 	n.clientEventsMutex.Unlock()
 }
 
-func (n *Node) handleClientCommitLogs(ctx context.Context, commitLog *node.CommitLog) {
-	logger().Debug("commit log", zap.Stringer("commit log", commitLog))
-
-	n.clientCommitLogsMutex.Lock()
-	defer n.clientCommitLogsMutex.Unlock()
-	for _, sub := range n.clientCommitLogsSubscribers {
-		sub.queue <- commitLog
-	}
-}
-
 func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 	logger().Debug("outgoing event", zap.Stringer("event", event))
 

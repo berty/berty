@@ -1,9 +1,6 @@
-import CommitLogStream from './CommitLogStream'
-
 export default context => ({
-  ...CommitLogStream(context),
   subscribe: ({ updater }) =>
-    CommitLogStream(context).subscribe({
+    context.subscriptions.commitLogStream.subscribe({
       updater:
         updater &&
         ((store, data) => {
