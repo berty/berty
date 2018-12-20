@@ -132,10 +132,10 @@ dev-deps:
 		github.com/gogo/protobuf/gogoproto \
 		github.com/gogo/protobuf/protoc-gen-gofast \
 		github.com/gogo/protobuf/jsonpb \
-		moul/protoc-gen-gotemplate \
+		moul.io/protoc-gen-gotemplate \
 		golang.org/x/tools/cmd/goimports \
 		github.com/99designs/gqlgen \
-		github.com/99designs/gorunpkg
+		github.com/vektah/gorunpkg
 
 ##
 ## file-based rules
