@@ -59,6 +59,7 @@ require (
 	github.com/libp2p/go-buffer-pool v0.1.1 // indirect
 	github.com/libp2p/go-conn-security v0.1.13 // indirect
 	github.com/libp2p/go-conn-security-multistream v0.1.13 // indirect
+	github.com/libp2p/go-floodsub v0.10.2 // indirect
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v6.0.19+incompatible
 	github.com/libp2p/go-libp2p-blankhost v0.3.13 // indirect
@@ -78,6 +79,7 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v2.0.6+incompatible
 	github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible
 	github.com/libp2p/go-libp2p-protocol v1.0.0
+	github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20181227100204-0363ea8f53a9
 	github.com/libp2p/go-libp2p-record v4.1.7+incompatible // indirect
 	github.com/libp2p/go-libp2p-routing v2.7.1+incompatible // indirect
 	github.com/libp2p/go-libp2p-secio v2.0.15+incompatible // indirect
@@ -140,6 +142,7 @@ require (
 	github.com/whyrusleeping/mafmt v0.0.0-20180627004827-1dc32401ee9f
 	github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30 // indirect
 	github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 // indirect
+	github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee // indirect
 	github.com/whyrusleeping/yamux v1.1.2
 	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f
 	go.uber.org/atomic v1.3.2 // indirect

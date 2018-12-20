@@ -308,6 +308,7 @@ github.com/libp2p/go-conn-security v0.1.13 h1:L9bvgY1oTXHwZhL6xUP/BvZYuabg80dEQh
 github.com/libp2p/go-conn-security v0.1.13/go.mod h1:lIqm8x2wrAxlG+6CzJ3z4Nk5/F73zdjkS6RKbHSbaJ4=
 github.com/libp2p/go-conn-security-multistream v0.1.13 h1:NjEXpXou7jYFxj6NoDxe1Qos/5zXm3eluBfREBIGZKQ=
 github.com/libp2p/go-conn-security-multistream v0.1.13/go.mod h1:hBY3HYjGnK86P3pX3wgr9IAfe3A/vZB830LJAMi1g88=
+github.com/libp2p/go-floodsub v0.10.2/go.mod h1:nfCSvCW4ySBAVDvZoy4B3QbNalFd5Wu0IOvMzEVuUrk=
 github.com/libp2p/go-flow-metrics v0.2.0 h1:GAJSg/g+xLuc7vz0RN96pRA9q/n5b5+Hs6SndagmOR4=
 github.com/libp2p/go-flow-metrics v0.2.0/go.mod h1:Iv1GH0sG8DtYN3SVJ2eG221wMiNpZxBdp967ls1g+k8=
 github.com/libp2p/go-libp2p v6.0.19+incompatible h1:6aMqs0wH9XNJti070uBbCYAZYm8DqISg+R5vq9hsCcM=
@@ -344,6 +345,8 @@ github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible h1:+jY7/4M41k86g0E/ctEmabLd
 github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible/go.mod h1:S0NLmMHBDsJsTz4TC0g+5iy81d+5xrtJbrDnz6+UroU=
 github.com/libp2p/go-libp2p-protocol v1.0.0 h1:6AnF76m2VjjiaDisOahQnWSnX2WWaISOXC7q9/YJIrM=
 github.com/libp2p/go-libp2p-protocol v1.0.0/go.mod h1:Af9n4PiruirSDjHycM1QuiMi/1VZNHYcK8cLgFJLZ4s=
+github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20181227100204-0363ea8f53a9 h1:HB1w0H1Lm4jpHQv6ZTEztNGJdYprWkovQa5/fiaT87U=
+github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20181227100204-0363ea8f53a9/go.mod h1:E2KoEMwM5nWtdGV+wWueN7g/j++VL9tmCfjzk1fLpWc=
 github.com/libp2p/go-libp2p-record v4.1.7+incompatible h1:SDxar7iuh4z03b85lr8tVMSKNWWK73RLkQKyPwcxIeo=
 github.com/libp2p/go-libp2p-record v4.1.7+incompatible/go.mod h1:fsxr7H89UzzL4pG23Aq2n/5aNAXxdGEbyBVepo8oXy8=
 github.com/libp2p/go-libp2p-routing v2.7.1+incompatible h1:uS0k70z1Bmu6LKTofR6FhbNMBzZsS5uwHzLD3LjT3no=
@@ -529,6 +532,8 @@ github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30 h1:nMCC9Pwz1pxf
 github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30/go.mod h1:j4l84WPFclQPj320J9gp0XwNKBb3U0zt5CBqjPp22G4=
 github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 h1:E9S12nwJwEOXe2d6gT6qxdvqMnNq+VnSsKPgm2ZZNds=
 github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7/go.mod h1:X2c0RVCI1eSUFI8eLcY3c0423ykwiUdxLJtkDvruhjI=
+github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee h1:lYbXeSvJi5zk5GLKVuid9TVjS9a0OmLIDKTfoZBL6Ow=
+github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee/go.mod h1:m2aV4LZI4Aez7dP5PMyVKEHhUyEJ/RjmPEDOpDvudHg=
 github.com/whyrusleeping/yamux v1.1.2 h1:oGpjhLpa0mZnRMbthCkEe+61VvkQGFSkQgm9WvaHgRU=
 github.com/whyrusleeping/yamux v1.1.2/go.mod h1:E8LnQQ8HKx5KD29HZFUwM1PxCOdPRzGwur1mcYhXcD8=
 github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f h1:+G16VLt+1NlrpOg/1ECvQybMsI0mnYz4OOQwXit5QzI=

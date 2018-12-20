@@ -5,5 +5,5 @@ package provider
 import "go.uber.org/zap"
 
 func logger() *zap.Logger {
-	return zap.L().Named("core.network.p2p.service.provider")
+	return zap.L().Named("core.network.p2p.protocol.provider")
 }

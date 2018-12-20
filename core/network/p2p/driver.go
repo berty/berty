@@ -7,6 +7,15 @@ import (
 	"sync"
 	"time"
 
+	"berty.tech/core/pkg/errorcodes"
+
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/network"
+	"berty.tech/core/network/p2p/p2putil"
+	"berty.tech/core/network/p2p/protocol/provider"
+	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
+	"berty.tech/core/pkg/tracing"
+
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -28,13 +37,6 @@ import (
 	mh "github.com/multiformats/go-multihash"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/network"
-	"berty.tech/core/network/p2p/p2putil"
-	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
-	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/pkg/tracing"
 )
 
 const ID = "api/p2p/methods"
@@ -68,6 +70,8 @@ type Driver struct {
 
 	subsStack []cid.Cid
 	muSubs    sync.Mutex
+
+	provider *provider.Provider
 
 	// services
 	dht *dht.IpfsDHT
@@ -108,6 +112,10 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	driver := &Driver{
 		host:        host,
 		rootContext: ctx,
+	}
+
+	if driver.provider, err = provider.New(ctx, host, driver.handleNewPovider); err != nil {
+		return nil, err
 	}
 
 	ds := syncdatastore.MutexWrap(datastore.NewMapDatastore())
@@ -270,6 +278,10 @@ func (d *Driver) ID(ctx context.Context) *network.Peer {
 	}
 }
 
+func (d *Driver) handleNewPovider(providerID string, pi pstore.PeerInfo) {
+	logger().Debug("new provider", zap.String("provider ID", providerID), zap.String("peer ID", pi.ID.Pretty()))
+}
+
 func (d *Driver) Close(ctx context.Context) error {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
@@ -426,13 +438,9 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	ss, err := d.FindSubscribers(ctx, channel)
+	ss, err := d.AnnounceAndWait(ctx, channel)
 	if err != nil {
 		return err
-	}
-
-	if len(ss) == 0 {
-		return fmt.Errorf("no subscribers found")
 	}
 
 	success := make([]chan bool, len(ss))
@@ -487,44 +495,49 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	return nil
 }
 
-// Announce yourself on the ring, for the moment just an alias of SubscribeTo
-func (d *Driver) Announce(ctx context.Context, id string) error {
-	return d.Join(ctx, id)
-}
-
 // FindSubscribers with the given ID
-func (d *Driver) FindSubscribers(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
-	logger().Debug("looking for", zap.String("id", id))
+func (d *Driver) FindLocalSubscribers(id string) ([]pstore.PeerInfo, error) {
 	c, err := d.createCid(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return d.dht.FindProviders(ctx, c)
+	return d.provider.GetPeersForProvider(c.String())
 }
 
-func (d *Driver) stackSub(c cid.Cid) {
-	d.muSubs.Lock()
-	d.subsStack = append(d.subsStack, c)
-	d.muSubs.Unlock()
+// FindSubscribers with the given ID
+func (d *Driver) Announce(id string) (<-chan []pstore.PeerInfo, error) {
+	c, err := d.createCid(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return d.provider.Announce(c.String())
 }
 
-// Join to the given ID
+func (d *Driver) AnnounceAndWait(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
+	c, err := d.createCid(id)
+	if err != nil {
+		return nil, err
+	}
+
+	return d.provider.AnnounceAndWait(ctx, c.String())
+}
+
 func (d *Driver) Join(ctx context.Context, id string) error {
 	c, err := d.createCid(id)
 	if err != nil {
 		return err
 	}
 
-	if err := d.dht.Provide(ctx, c, true); err != nil {
-		d.stackSub(c)
-		logger().Warn("provide err", zap.Error(err))
-	} else {
-		logger().Debug("discover: announcing", zap.String("id", id))
+	if err := d.provider.Subscribe(ctx, c.String()); err != nil {
+		return err
 	}
 
-	// Announce that you are subscribed to this conversation, but don't
-	// broadcast it! in this way, if you die, your announcement will die with you!
+	if _, err := d.provider.Announce(c.String()); err != nil {
+		return err
+	}
+
 	return nil
 }
 
