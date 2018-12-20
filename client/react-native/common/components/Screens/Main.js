@@ -61,7 +61,7 @@ export const tabs = createTabNavigator(
 
       if (
         navigation.state.routeName === 'settings' &&
-        !!screenProps.availableUpdate
+        screenProps.availableUpdate
       ) {
         badge = '!'
       }

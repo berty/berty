@@ -1,4 +1,4 @@
-import { ActivityIndicator, Linking } from 'react-native'
+import { ActivityIndicator } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import { Menu, Text, Screen, Avatar } from '../../Library'
@@ -7,6 +7,7 @@ import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { extractPublicKeyFromId } from '../../../helpers/contacts'
+import { installUpdate } from '../../../helpers/update'
 
 export default class List extends PureComponent {
   static Menu = fragments.Contact(
@@ -48,14 +49,15 @@ export default class List extends PureComponent {
             <Menu.Item
               icon='arrow-up-circle'
               title='An update of the app is available'
-              onPress={() =>
-                Linking.openURL(availableUpdate['manifest-url']).catch(e =>
-                  console.error(e),
-                )
-              }
+              onPress={() => installUpdate(availableUpdate)}
               color={colors.red}
             />
           ) : null}
+          <Menu.Item
+            icon='arrow-up-circle'
+            title='Check for updates'
+            onPress={() => navigation.push('settings/update')}
+          />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
