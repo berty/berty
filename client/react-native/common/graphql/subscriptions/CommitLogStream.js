@@ -128,19 +128,6 @@ export default context => {
       environment: context.environment,
       subscription: CommitLogStream,
     })
-    _subscriber.subscribe({
-      updater: (store, data) => {
-        console.log('commit log', data)
-      },
-    })
   }
-  return {
-    subscribe: ({ updater }) =>
-      _subscriber.subscribe({
-        updater: (store, data) => {
-          const entity = Object.values(data.entity).find(entity => entity)
-          updater(store, entity, data.operation === 2)
-        },
-      }),
-  }
+  return _subscriber
 }

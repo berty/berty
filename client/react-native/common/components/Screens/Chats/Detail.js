@@ -1,8 +1,8 @@
 import { Platform, TextInput as RNTextInput } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Pagination, RelayContext } from '../../../relay'
-import { Text, Flex, Screen, Header, Icon } from '../../Library'
+import { Flex, Header, Icon, Loader, Screen, Text } from '../../Library'
+import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
@@ -20,7 +20,7 @@ class Message extends React.PureComponent {
   }
 
   render () {
-    const conversation = this.props.navigation.getParam('conversation')
+    const conversation = this.props.conversation
     const contactId = this.props.data.senderId
     const isMyself =
       conversation.members.find(m => m.contactId === contactId).contact
@@ -214,6 +214,52 @@ class Input extends PureComponent {
   }
 }
 
+class Chat extends PureComponent {
+  render () {
+    const {
+      data,
+      navigation,
+      screenProps: {
+        context: { queries, subscriptions, fragments },
+      },
+    } = this.props
+    return (
+      <Flex.Rows>
+        <Pagination
+          style={[{ flex: 1 }, Platform.OS === 'web' ? { paddingTop: 48 } : {}]}
+          direction='forward'
+          query={queries.EventList.graphql}
+          variables={merge([
+            queries.EventList.defaultVariables,
+            {
+              filter: {
+                kind: 302,
+                conversationId: data.Conversation.id,
+              },
+            },
+          ])}
+          subscriptions={[subscriptions.message]}
+          fragment={fragments.EventList}
+          alias='EventList'
+          renderItem={props => (
+            <MessageContainer
+              {...props}
+              navigation={navigation}
+              screenProps={this.props.screenProps}
+              conversation={data.Conversation}
+            />
+          )}
+          inverted
+        />
+        <Input
+          navigation={this.props.navigation}
+          screenProps={this.props.screenProps}
+        />
+      </Flex.Rows>
+    )
+  }
+}
+
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -236,46 +282,38 @@ export default class Detail extends PureComponent {
     const {
       navigation,
       screenProps: {
-        context: { queries, subscriptions },
+        context: { queries },
       },
     } = this.props
 
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
-        <Flex.Rows>
-          <Pagination
-            style={[
-              { flex: 1 },
-              Platform.OS === 'web' ? { paddingTop: 48 } : {},
-            ]}
-            direction='forward'
-            query={queries.EventList.graphql}
-            variables={merge([
-              queries.EventList.defaultVariables,
-              {
-                filter: {
-                  kind: 302,
-                  conversationId: conversation.id,
-                },
-              },
-            ])}
-            subscriptions={[subscriptions.newMessage]}
-            fragment={fragments.EventList}
-            alias='EventList'
-            renderItem={props => (
-              <MessageContainer
-                {...props}
-                navigation={navigation}
-                screenProps={this.props.screenProps}
-              />
-            )}
-            inverted
-          />
-          <Input
-            navigation={this.props.navigation}
-            screenProps={this.props.screenProps}
-          />
-        </Flex.Rows>
+        <QueryReducer
+          query={queries.Conversation.graphql}
+          variables={merge([
+            queries.Conversation.defaultVariables,
+            { id: conversation.id },
+          ])}
+        >
+          {(state, retry) => {
+            switch (state.type) {
+              default:
+              case state.loading:
+                return <Loader />
+              case state.success:
+                return (
+                  <Chat
+                    navigation={navigation}
+                    screenProps={this.props.screenProps}
+                    data={state.data}
+                  />
+                )
+              case state.error:
+                setTimeout(() => retry(), 1000)
+                return null
+            }
+          }}
+        </QueryReducer>
       </Screen>
     )
   }

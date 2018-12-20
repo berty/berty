@@ -53,11 +53,5 @@ export default context => (input, configs) =>
     ConversationCreateMutation,
     'ConversationCreate',
     input,
-    {
-      updater: (store, data) =>
-        context.updaters.conversationList.forEach(updater =>
-          updater(store, data.ConversationCreate)
-        ),
-      ...configs,
-    }
+    configs,
   )

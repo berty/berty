@@ -39,18 +39,5 @@ export default context => (input, configs) =>
       { conversation: conversation.default, message: { text: '' } },
       input,
     ]),
-    // {
-    //   updater: (store, data) => {
-    //     updaters.eventList[0](store, {
-    //       filter: {
-    //         conversationId: data.ConversationAddMessage.conversationId,
-    //         kind: data.ConversationAddMessage.kind,
-    //       },
-    //     })
-    //       .add('EventEdge', data.ConversationAddMessage.id)
-    //       .before()
-    //   },
-    //   ...configs,
-    // }
     configs
   )

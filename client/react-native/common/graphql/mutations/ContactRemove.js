@@ -49,11 +49,5 @@ export default context => (input, configs) =>
       ...contact.default,
       ...input,
     },
-    {
-      updater: (store, data) =>
-        context.updaters.contactList.forEach(updater =>
-          updater(store, data.ContactRemove, true)
-        ),
-      ...configs,
-    }
+    configs
   )

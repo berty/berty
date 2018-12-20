@@ -199,7 +199,7 @@ class Received extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
-          subscriptions={[subscriptions.contactRequest]}
+          subscriptions={[subscriptions.contact]}
           renderItem={props => (
             <Item
               {...props}
@@ -228,7 +228,7 @@ class Sent extends PureComponent {
           ])}
           fragment={fragments.ContactList}
           alias='ContactList'
-          subscriptions={[subscriptions.contactRequestAccepted]}
+          subscriptions={[subscriptions.contact]}
           renderItem={props => (
             <Item
               {...props}

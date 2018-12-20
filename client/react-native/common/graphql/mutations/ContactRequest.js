@@ -38,11 +38,5 @@ export default context => (input, configs) =>
     ContactRequestMutation,
     'ContactRequest',
     merge([contact.default, input]),
-    {
-      updater: (store, data) =>
-        context.updaters.contactList.forEach(updater =>
-          updater(store, data.ContactRequest)
-        ),
-      ...configs,
-    }
+    configs,
   )

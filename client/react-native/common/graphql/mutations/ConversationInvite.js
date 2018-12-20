@@ -51,11 +51,5 @@ export default context => (input, configs) =>
     ConversationInviteMutation,
     'ConversationInvite',
     input,
-    {
-      updater: (store, data) =>
-        context.updaters.conversationList.forEach(updater =>
-          updater(store, data.ConversationInvite)
-        ),
-      ...configs,
-    }
+    configs,
   )
