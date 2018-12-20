@@ -11,12 +11,14 @@ import core.Core;
 
 public class CoreModule extends ReactContextBaseJavaModule {
     private Logger logger = new Logger("chat.berty.io");
+    private Notification notification;
     private String filesDir = "";
     private ReactApplicationContext reactContext;
 
     public CoreModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
+        this.notification = new Notification(reactContext);
         this.reactContext = reactContext;
 
         Object o = new Manager.ActivityGetter() {
@@ -58,7 +60,13 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void start(String nickname, Promise promise) {
         try {
-            Core.start(nickname, this.filesDir, this.logger);
+            core.MobileOptions coreOptions = new core.MobileOptions()
+                .withNickname(nickname)
+                .withDatastorePath(this.filesDir)
+                .withLoggerDriver(this.logger)
+                .withNotificationDriver(this.notification);
+
+            Core.start(coreOptions);
             promise.resolve(null);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to start core: %s", err);

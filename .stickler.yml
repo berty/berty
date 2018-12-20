@@ -10,7 +10,7 @@ linters:
   #  config: './client/react-native/.eslintrc'
   #  install_plugins: true
 
-  swiftlint: {  }
+  swiftlint:
 
 files:
   ignore:

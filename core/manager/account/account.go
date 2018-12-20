@@ -22,6 +22,7 @@ import (
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
 	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 	"berty.tech/core/sql"
@@ -75,6 +76,8 @@ type Account struct {
 
 	network network.Driver
 	metrics network.Metrics
+
+	notification notification.Driver
 
 	node     *node.Node
 	initOnly bool
@@ -480,6 +483,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithDevice(&entity.Device{Name: a.Name}),
 		node.WithNetworkDriver(a.network),
 		node.WithNetworkMetrics(a.metrics),
+		node.WithNotificationDriver(a.notification),
 		node.WithInitConfig(),
 		node.WithSoftwareCrypto(), // FIXME: use hardware impl if available
 		node.WithConfig(),
@@ -488,6 +492,11 @@ func (a *Account) initNode(ctx context.Context) error {
 	if err != nil {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)
 	}
+
+	a.node.DisplayNotification(notification.Payload{
+		Title: "Node started",
+		Body:  "Berty daemon is now up and running",
+	})
 	return nil
 }
 

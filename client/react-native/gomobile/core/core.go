@@ -15,6 +15,13 @@ import (
 	"go.uber.org/zap"
 )
 
+type MobileOptions struct {
+	logger        NativeLogger
+	notification  NativeNotification
+	datastorePath string
+	nickname      string
+}
+
 var (
 	accountName = ""
 	appConfig   *account.StateDB
@@ -68,7 +75,7 @@ func GetPort() (int, error) {
 	return strconv.Atoi(strings.Split(a.GQLBind, ":")[1])
 }
 
-func Initialize(loggerNative Logger, datastorePath string) error {
+func Initialize(loggerNative NativeLogger, datastorePath string) error {
 	defer panicHandler()
 
 	if err := setupLogger("debug", datastorePath, loggerNative); err != nil {
@@ -117,23 +124,27 @@ func initOrRestoreAppState(datastorePath string) error {
 	return nil
 }
 
-func Start(nickname, datastorePath string, loggerNative Logger) error {
+func Start(cfg *MobileOptions) error {
+	if cfg == nil {
+		return fmt.Errorf("core empty configuration")
+	}
+
+	accountName = cfg.nickname
+
 	defer panicHandler()
 
-	accountName = nickname
-
-	a, _ := account.Get(rootContext, nickname)
+	a, _ := account.Get(rootContext, cfg.nickname)
 	if a != nil {
 		// daemon already started, no errors to return
 		return nil
 	}
 
-	if err := initOrRestoreAppState(datastorePath); err != nil {
+	if err := initOrRestoreAppState(cfg.datastorePath); err != nil {
 		return errors.Wrap(err, "app init/restore state failed")
 	}
 
-	run(nickname, datastorePath, loggerNative)
-	waitDaemon(nickname)
+	run(cfg)
+	waitDaemon(cfg.nickname)
 	return nil
 }
 
@@ -163,10 +174,10 @@ func DropDatabase(datastorePath string) error {
 	return Restart()
 }
 
-func run(nickname, datastorePath string, loggerNative Logger) {
+func run(cfg *MobileOptions) {
 	go func() {
 		for {
-			err := daemon(nickname, datastorePath, loggerNative)
+			err := daemon(cfg)
 			if err != nil {
 				logger().Error("handle error, try to restart", zap.Error(err))
 				time.Sleep(time.Second)
@@ -186,7 +197,7 @@ func waitDaemon(nickname string) {
 	}
 }
 
-func daemon(nickname, datastorePath string, loggerNative Logger) error {
+func daemon(cfg *MobileOptions) error {
 	defer panicHandler()
 	_ = logmanager.G().LogRotate()
 
@@ -206,13 +217,15 @@ func daemon(nickname, datastorePath string, loggerNative Logger) error {
 		return err
 	}
 
+	notificationDriver := &nativeNotificationModule{cfg.notification}
 	accountOptions := account.Options{
-		account.WithJaegerAddrName("jaeger.berty.io:6831", nickname+":mobile"),
+		account.WithJaegerAddrName("jaeger.berty.io:6831", cfg.nickname+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
-		account.WithName(nickname),
+		account.WithName(cfg.nickname),
 		account.WithPassphrase("secure"),
+		account.WithNotificationDriver(notificationDriver),
 		account.WithDatabase(&account.DatabaseOptions{
-			Path: datastorePath,
+			Path: cfg.datastorePath,
 			Drop: false,
 		}),
 		account.WithP2PNetwork(netConf),

@@ -19,6 +19,9 @@ indent_style = tab
 [*.proto]
 indent_size = 2
 
+[*.swift]
+indent_size = 4
+
 [*.tmpl]
 indent_size = 2
 

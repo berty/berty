@@ -14,6 +14,7 @@ import (
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/jaeger"
+	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 	"github.com/99designs/gqlgen/graphql"
@@ -94,6 +95,13 @@ func WithJaegerAddrName(addr string, name string) NewOption {
 		var err error
 		a.tracer, a.tracingCloser, err = jaeger.InitTracer(addr, name)
 		return err
+	}
+}
+
+func WithNotificationDriver(driver notification.Driver) NewOption {
+	return func(a *Account) error {
+		a.notification = driver
+		return nil
 	}
 }
 

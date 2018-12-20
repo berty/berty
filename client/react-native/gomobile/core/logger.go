@@ -9,18 +9,13 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-type Logger interface {
-	Log(level, namespace, message string) error
-	LevelEnabler(level string) bool
-}
-
 type mobileCore struct {
 	zapcore.Core
 	enc zapcore.Encoder
-	l   Logger
+	l   NativeLogger
 }
 
-func newMobileCore(next zapcore.Core, encoder zapcore.Encoder, l Logger) zapcore.Core {
+func newMobileCore(next zapcore.Core, encoder zapcore.Encoder, l NativeLogger) zapcore.Core {
 	return &mobileCore{next, encoder, l}
 }
 
@@ -41,7 +36,7 @@ func (mc *mobileCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
-func setupLogger(logLevel, datastorePath string, mlogger Logger) error {
+func setupLogger(logLevel, datastorePath string, mlogger NativeLogger) error {
 	// native logger
 	nativeEncoderConfig := zap.NewDevelopmentEncoderConfig()
 	nativeEncoderConfig.LevelKey = ""

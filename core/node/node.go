@@ -13,6 +13,7 @@ import (
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 	"github.com/gofrs/uuid"
@@ -35,6 +36,7 @@ type Node struct {
 	config                      *entity.Config
 	initDevice                  *entity.Device
 	handleMutexInst             sync.Mutex
+	notificationDriver          notification.Driver
 	networkDriver               network.Driver
 	networkMetrics              network.Metrics
 	asyncWaitGroupInst          sync.WaitGroup
@@ -71,6 +73,11 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 	// apply optioners
 	for _, opt := range opts {
 		opt(n)
+	}
+
+	// use NoopNotification by default
+	if n.notificationDriver == nil {
+		n.notificationDriver = notification.NewNoopNotification()
 	}
 
 	// check for misconfigurations based on optioners
@@ -123,6 +130,8 @@ func (n *Node) Validate() error {
 		return errors.New("missing required fields (initDevice) to create a new Node")
 	} else if n.networkDriver == nil {
 		return errors.New("missing required fields (networkDriver) to create a new Node")
+	} else if n.notificationDriver == nil {
+		return errors.New("missing required fields (notificationDriver) to create a new Node")
 	} else if n.crypto == nil {
 		return errors.New("missing required fields (crypto) to create a new Node")
 	} else if n.config == nil {

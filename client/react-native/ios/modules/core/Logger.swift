@@ -14,32 +14,31 @@ enum LoggerError: Error {
 }
 
 enum Level: String {
-    case Debug = "DEBUG"
-    case Info = "INFO"
-    case Warn = "WARN"
-    case Error = "ERROR"
-    case Panic = "PANIC"
-    case DPanic = "DPANIC"
-    case Fatal = "FATAL"
-    case Unknow = "UNKNOW"
+    case debug = "DEBUG"
+    case info = "INFO"
+    case warn = "WARN"
+    case error = "ERROR"
+    case panic = "PANIC"
+    case dPanic = "DPANIC"
+    case fatal = "FATAL"
+    case unknow = "UNKNOW"
 }
 
-enum Scope {
-    case Public
-    case Private
+enum Visibility {
+    case visible
+    case hidden
 }
 
-
-class Logger: NSObject, CoreLoggerProtocol {
+class Logger: NSObject, CoreNativeLoggerProtocol {
     var subsytem: String
     var category: String
-    var scope: Scope
+    var scope: Visibility
     var isEnabled: Bool
 
     init(_ subsytem: String = "logger", _ category: String = "log") {
         self.subsytem = subsytem
         self.category = category
-        self.scope = Scope.Public
+        self.scope = Visibility.visible
         self.isEnabled = true
     }
 
@@ -61,27 +60,27 @@ class Logger: NSObject, CoreLoggerProtocol {
 
             var type: OSLogType
             switch level {
-            case Level.Debug:
+            case Level.debug:
                 type = .debug
-            case Level.Info:
+            case Level.info:
                 type = .info
-            case Level.Warn:
+            case Level.warn:
                 type = .error
-            case Level.Error:
+            case Level.error:
                 type = .error
-            case Level.DPanic:
+            case Level.dPanic:
                 type = .fault
-            case Level.Panic:
+            case Level.panic:
                 type = .fault
-            case Level.Fatal:
+            case Level.fatal:
                 type = .fault
             default:
                 type = OSLogType.default
             }
 
             switch self.scope {
-            case Scope.Private: os_log("%{private}@", log: logger, type: type, out)
-            case Scope.Public: os_log("%{public}@", log: logger, type: type, out)
+            case Visibility.hidden: os_log("%{private}@", log: logger, type: type, out)
+            case Visibility.visible: os_log("%{public}@", log: logger, type: type, out)
             }
 
         } else {
@@ -89,13 +88,17 @@ class Logger: NSObject, CoreLoggerProtocol {
         }
     }
 
-    func format(_ format: NSString, level: Level = Level.Info, _ args: CVarArg...) {
+    func format(_ format: NSString, level: Level = Level.info, _ args: CVarArg...) {
         let message = NSString(format: format, args) as String
-        try! self.log(level.rawValue, namespace: self.category, message: message)
+        do {
+           try self.log(level.rawValue, namespace: self.category, message: message)
+        } catch {
+            NSLog("[%@] [%@]: %@", level.rawValue, self.subsytem + ".log", message)
+        }
     }
-open
+
     // @TODO: implement this
-    func levelEnabler(_ level: String!) -> Bool {
+    open func levelEnabler(_ level: String!) -> Bool {
         return self.isEnabled
     }
 }
