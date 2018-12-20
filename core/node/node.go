@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
@@ -25,8 +24,7 @@ import (
 
 // Node is the top-level object of a Berty peer
 type Node struct {
-	clientCommitLogs            chan *node.CommitLog
-	clientCommitLogsSubscribers []*clientCommitLogsSubscriber
+	clientCommitLogsSubscribers []clientCommitLogsSubscriber
 	clientCommitLogsMutex       sync.Mutex
 	clientEvents                chan *p2p.Event
 	clientEventsSubscribers     []clientEventSubscriber
@@ -62,12 +60,11 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 
 	n := &Node{
 		// FIXME: fetch myself from db
-		outgoingEvents:   make(chan *p2p.Event, 100),
-		clientEvents:     make(chan *p2p.Event, 100),
-		clientCommitLogs: make(chan *node.CommitLog, 100),
-		createdAt:        time.Now().UTC(),
-		rootSpan:         span,
-		rootContext:      ctx,
+		outgoingEvents: make(chan *p2p.Event, 100),
+		clientEvents:   make(chan *p2p.Event, 100),
+		createdAt:      time.Now().UTC(),
+		rootSpan:       span,
+		rootContext:    ctx,
 	}
 
 	// apply optioners
