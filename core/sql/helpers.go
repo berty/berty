@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strings"
 
+	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
@@ -26,6 +27,16 @@ func FindContact(db *gorm.DB, input *entity.Contact) (*entity.Contact, error) {
 	return nil, errors.New("not enough information to search contact")
 }
 
+func ConversationMemberByID(db *gorm.DB, id string) (*entity.ConversationMember, error) {
+	var contact entity.ConversationMember
+	return &contact, db.First(&contact, "ID = ?", id).Error
+}
+
+func DeviceByID(db *gorm.DB, id string) (*entity.Device, error) {
+	var device entity.Device
+	return &device, db.First(&device, "ID = ?", id).Error
+}
+
 func ConversationByID(db *gorm.DB, id string) (*entity.Conversation, error) {
 	var conversation entity.Conversation
 	return &conversation, db.First(&conversation, "ID = ?", id).Error
@@ -37,6 +48,11 @@ func MembersByConversationID(db *gorm.DB, conversationID string) ([]*entity.Conv
 		Where(entity.ConversationMember{ConversationID: conversationID}).
 		Find(&members).
 		Error
+}
+
+func EventByID(db *gorm.DB, id string) (*p2p.Event, error) {
+	var contact p2p.Event
+	return &contact, db.First(&contact, "ID = ?", id).Error
 }
 
 func CreateConversation(db *gorm.DB, conversation *entity.Conversation) (*entity.Conversation, error) {

@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
@@ -110,15 +111,35 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 	case *entity.Config:
 		log.Entity = &node.CommitLog_Entity{Config: e}
 	case *entity.Contact:
-		log.Entity = &node.CommitLog_Entity{Contact: e}
+		data, err := sql.ContactByID(n.sqlDriver, e.ID)
+		if err != nil {
+			return nil
+		}
+		log.Entity = &node.CommitLog_Entity{Contact: data}
 	case *entity.Device:
-		log.Entity = &node.CommitLog_Entity{Device: e}
+		data, err := sql.DeviceByID(n.sqlDriver, e.ID)
+		if err != nil {
+			return nil
+		}
+		log.Entity = &node.CommitLog_Entity{Device: data}
 	case *entity.Conversation:
-		log.Entity = &node.CommitLog_Entity{Conversation: e}
+		data, err := sql.ConversationByID(n.sqlDriver, e.ID)
+		if err != nil {
+			return nil
+		}
+		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
-		log.Entity = &node.CommitLog_Entity{ConversationMember: e}
+		data, err := sql.ConversationMemberByID(n.sqlDriver, e.ID)
+		if err != nil {
+			return nil
+		}
+		log.Entity = &node.CommitLog_Entity{ConversationMember: data}
 	case *p2p.Event:
-		log.Entity = &node.CommitLog_Entity{Event: e}
+		data, err := sql.EventByID(n.sqlDriver, e.ID)
+		if err != nil {
+			return nil
+		}
+		log.Entity = &node.CommitLog_Entity{Event: data}
 	default:
 		logger().Warn(fmt.Sprintf("unhandled entity %+v", e))
 		return nil
