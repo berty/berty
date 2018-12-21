@@ -10,6 +10,8 @@ export default context => ({
           ]
           if (entity != null) {
             updater(store, entity, operation === 2)
+            operation !== 2 &&
+              context.queries.Contact.fetch({ filter: { id: entity.id } })
           }
         }),
     }),

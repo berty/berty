@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
@@ -16,7 +17,7 @@ import (
 // WithSQL registers a gorm connection as the node database
 func WithSQL(sql *gorm.DB) NewNodeOption {
 	return func(n *Node) {
-		n.sqlDriver = sql.Unscoped()
+		n.sqlDriver = sql.Set("gorm:auto_preload", true).Unscoped()
 		sql.Callback().Create().Register("berty:after_create", func(scope *gorm.Scope) { n.handleCommitLog("create", scope) })
 		sql.Callback().Update().Register("berty:after_update", func(scope *gorm.Scope) { n.handleCommitLog("update", scope) })
 		sql.Callback().Delete().Register("berty:after_delete", func(scope *gorm.Scope) { n.handleCommitLog("delete", scope) })
@@ -92,10 +93,16 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 
 	switch data := reflectValue.Interface().(type) {
 	case *entity.Contact:
+		if operation != "delete" {
+			data, _ = sql.ContactByID(n.sqlDriver, data.ID)
+		}
 		log.Entity = &node.CommitLog_Entity{Contact: data}
 	case *entity.Device:
 		log.Entity = &node.CommitLog_Entity{Device: data}
 	case *entity.Conversation:
+		if operation != "delete" {
+			data, _ = sql.ConversationByID(n.sqlDriver, data.ID)
+		}
 		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
 		log.Entity = &node.CommitLog_Entity{ConversationMember: data}

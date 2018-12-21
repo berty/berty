@@ -22,6 +22,7 @@ const query = graphql`
       topic: $topic
       members: $members
     ) {
+      ...Conversation
       id
       createdAt
       updatedAt
@@ -56,7 +57,6 @@ const query = graphql`
         conversationId
         contactId
       }
-      ...Conversation
     }
   }
 `

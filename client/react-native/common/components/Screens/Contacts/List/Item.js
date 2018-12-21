@@ -17,7 +17,6 @@ const Item = fragments.Contact(
         context,
       } = this.props
 
-      status === 4 && console.log(this.props.data)
       if (
         [
           enums.BertyEntityContactInputStatus.IsRequested,

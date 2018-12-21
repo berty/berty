@@ -218,51 +218,56 @@ class Input extends PureComponent {
   }
 }
 
-class Chat extends PureComponent {
-  render () {
-    const {
-      data,
-      navigation,
-      screenProps: {
-        context: { queries, subscriptions, fragments },
-      },
-    } = this.props
-    return (
-      <Flex.Rows>
-        <Pagination
-          style={[{ flex: 1 }, Platform.OS === 'web' ? { paddingTop: 48 } : {}]}
-          direction='forward'
-          query={queries.EventList.graphql}
-          variables={merge([
-            queries.EventList.defaultVariables,
-            {
-              filter: {
-                kind: 302,
-                conversationId: data.Conversation.id,
+const Chat = fragments.Conversation(
+  class Chat extends PureComponent {
+    render () {
+      const {
+        data,
+        navigation,
+        screenProps: {
+          context: { queries, subscriptions, fragments },
+        },
+      } = this.props
+      return (
+        <Flex.Rows>
+          <Pagination
+            style={[
+              { flex: 1 },
+              Platform.OS === 'web' ? { paddingTop: 48 } : {},
+            ]}
+            direction='forward'
+            query={queries.EventList.graphql}
+            variables={merge([
+              queries.EventList.defaultVariables,
+              {
+                filter: {
+                  kind: 302,
+                  conversationId: data.id,
+                },
               },
-            },
-          ])}
-          subscriptions={[subscriptions.message]}
-          fragment={fragments.EventList}
-          alias='EventList'
-          renderItem={props => (
-            <MessageContainer
-              {...props}
-              navigation={navigation}
-              screenProps={this.props.screenProps}
-              conversation={data.Conversation}
-            />
-          )}
-          inverted
-        />
-        <Input
-          navigation={this.props.navigation}
-          screenProps={this.props.screenProps}
-        />
-      </Flex.Rows>
-    )
+            ])}
+            subscriptions={[subscriptions.message]}
+            fragment={fragments.EventList}
+            alias='EventList'
+            renderItem={props => (
+              <MessageContainer
+                {...props}
+                navigation={navigation}
+                screenProps={this.props.screenProps}
+                conversation={data}
+              />
+            )}
+            inverted
+          />
+          <Input
+            navigation={this.props.navigation}
+            screenProps={this.props.screenProps}
+          />
+        </Flex.Rows>
+      )
+    }
   }
-}
+)
 
 export default class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -315,7 +320,7 @@ export default class Detail extends PureComponent {
                   <Chat
                     navigation={navigation}
                     screenProps={this.props.screenProps}
-                    data={state.data}
+                    data={state.data.Conversation}
                   />
                 )
               case state.error:
