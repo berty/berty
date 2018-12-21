@@ -1,7 +1,11 @@
-import { Platform, TextInput as RNTextInput } from 'react-native'
+import {
+  ActivityIndicator,
+  Platform,
+  TextInput as RNTextInput,
+} from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Icon, Loader, Screen, Text } from '../../Library'
+import { Flex, Header, Icon, Screen, Text } from '../../Library'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
@@ -299,7 +303,13 @@ export default class Detail extends PureComponent {
             switch (state.type) {
               default:
               case state.loading:
-                return <Loader />
+                return (
+                  <Flex.Rows align='center'>
+                    <Flex.Cols align='center'>
+                      <ActivityIndicator size='large' />
+                    </Flex.Cols>
+                  </Flex.Rows>
+                )
               case state.success:
                 return (
                   <Chat
