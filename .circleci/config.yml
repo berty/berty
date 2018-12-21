@@ -21,6 +21,30 @@ references:
         chmod +x /tmp/retry
         /tmp/retry --version
 
+  install_go: &install_go
+    run:
+      name: install-go
+      command: |
+        if [ ! -f ~/go-install/go/bin/go ]; then
+          cd ~ && git clone https://github.com/udhos/update-golang
+          cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install RELEASE=1.11 ./update-golang.sh
+        fi
+        echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+
+  install_gomobile: &install_gomobile
+    run:
+      name: install gomobile
+      command: |
+        if [ ! -f ~/go/bin/gomobile ]; then
+          go get golang.org/x/mobile/cmd/gomobile
+          cd ~/go/src/golang.org/x/mobile
+          git remote add upstream git@github.com:sfroment/mobile
+          git fetch upstream
+          git cherry-pick af3c051e0603af005260579c432830164f68933b
+          go install golang.org/x/mobile/cmd/gomobile
+          gomobile init
+        fi
+
 jobs:
   lint:
     <<: *golang_workspace
@@ -305,27 +329,8 @@ jobs:
       # - restore_cache:
       #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
 
-      - run:
-          name: install-go
-          command: |
-            if [ ! -f ~/go-install/go/bin/go ]; then
-              cd ~ && git clone https://github.com/udhos/update-golang
-              cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install RELEASE=1.11 ./update-golang.sh
-            fi
-            echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
-
-      - run:
-          name: install gomobile
-          command: |
-            if [ ! -f ~/go/bin/gomobile ]; then
-              go get golang.org/x/mobile/cmd/gomobile
-              cd ~/go/src/golang.org/x/mobile
-              git remote add upstream git@github.com:sfroment/mobile
-              git fetch upstream
-              git cherry-pick af3c051e0603af005260579c432830164f68933b
-              go install golang.org/x/mobile/cmd/gomobile
-              gomobile init
-            fi
+      - *install_go
+      - *install_gomobile
 
       # - save_cache:
       #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
@@ -403,27 +408,8 @@ jobs:
       # - restore_cache:
       #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
 
-      - run:
-          name: install-go
-          command: |
-            if [ ! -f ~/go-install/go/bin/go ]; then
-              cd ~ && git clone https://github.com/udhos/update-golang
-              cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install ./update-golang.sh
-            fi
-            echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
-
-      - run:
-          name: install gomobile
-          command: |
-            if [ ! -f ~/go/bin/gomobile ]; then
-              go get golang.org/x/mobile/cmd/gomobile
-              cd ~/go/src/golang.org/x/mobile
-              git remote add upstream git@github.com:sfroment/mobile
-              git fetch upstream
-              git cherry-pick af3c051e0603af005260579c432830164f68933b
-              go install golang.org/x/mobile/cmd/gomobile
-              gomobile init
-            fi
+      - *install_go
+      - *install_gomobile
 
       # - save_cache:
       #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
