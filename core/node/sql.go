@@ -70,6 +70,7 @@ func (n *Node) sendCommitLog(commitLog *node.CommitLog) {
 }
 
 func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *node.CommitLog {
+	var err error
 
 	// Only get address from non-pointer
 	if reflectValue.CanAddr() && reflectValue.Kind() != reflect.Ptr {
@@ -94,14 +95,20 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 	switch data := reflectValue.Interface().(type) {
 	case *entity.Contact:
 		if operation != "delete" {
-			data, _ = sql.ContactByID(n.sqlDriver, data.ID)
+			data, err = sql.ContactByID(n.sqlDriver, data.ID)
+			if err != nil {
+				return nil
+			}
 		}
 		log.Entity = &node.CommitLog_Entity{Contact: data}
 	case *entity.Device:
 		log.Entity = &node.CommitLog_Entity{Device: data}
 	case *entity.Conversation:
 		if operation != "delete" {
-			data, _ = sql.ConversationByID(n.sqlDriver, data.ID)
+			data, err = sql.ConversationByID(n.sqlDriver, data.ID)
+			if err != nil {
+				return nil
+			}
 		}
 		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
