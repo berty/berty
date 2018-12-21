@@ -75,11 +75,7 @@ export default class ListScreen extends PureComponent {
           variables={queries.ConversationList.defaultVariables}
           fragment={fragments.ConversationList}
           alias='ConversationList'
-          subscriptions={[
-            subscriptions.conversationInvite,
-            subscriptions.conversationNewMessage,
-            subscriptions.conversationRead,
-          ]}
+          subscriptions={[subscriptions.conversation]}
           renderItem={props => <Item {...props} navigation={navigation} />}
         />
       </Screen>

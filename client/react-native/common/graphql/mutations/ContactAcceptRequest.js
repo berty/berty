@@ -47,11 +47,5 @@ export default context => (input, configs) =>
     ContactAcceptRequestMutation,
     'ContactAcceptRequest',
     merge([contact.default, input]),
-    {
-      updater: (store, data) =>
-        context.updaters.contactList.forEach(updater =>
-          updater(store, data.ContactAcceptRequest)
-        ),
-      ...configs,
-    }
+    configs,
   )

@@ -7,33 +7,28 @@ import { fragments } from '../../../../graphql'
 import Item from './Item'
 import RelayContext from '../../../../relay/RelayContext'
 
-const GenericList = ({ filter, ignoreMyself }) =>
-  <RelayContext.Consumer>{context => {
-    const { queries, subscriptions } = context
+const GenericList = ({ filter, ignoreMyself }) => (
+  <RelayContext.Consumer>
+    {context => {
+      const { queries, subscriptions } = context
 
-    return <Screen style={[{ backgroundColor: colors.white }]}>
-      <Pagination
-        direction='forward'
-        query={queries.ContactList.graphql}
-        variables={merge([
-          queries.ContactList.defaultVariables,
-          filter,
-        ])}
-        fragment={fragments.ContactList}
-        alias='ContactList'
-        subscriptions={[
-          subscriptions.contactRequestAccepted,
-          subscriptions.contactRequest,
-        ]}
-        renderItem={props => (
-          <Item
-            {...props}
-            context={context}
-            ignoreMyself={ignoreMyself}
+      return (
+        <Screen style={[{ backgroundColor: colors.white }]}>
+          <Pagination
+            direction='forward'
+            query={queries.ContactList.graphql}
+            variables={merge([queries.ContactList.defaultVariables, filter])}
+            fragment={fragments.ContactList}
+            alias='ContactList'
+            subscriptions={[subscriptions.contact]}
+            renderItem={props => (
+              <Item {...props} context={context} ignoreMyself={ignoreMyself} />
+            )}
           />
-        )}
-      />
-    </Screen>
-  }}</RelayContext.Consumer>
+        </Screen>
+      )
+    }}
+  </RelayContext.Consumer>
+)
 
 export default GenericList

@@ -8,14 +8,19 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
 )
 
 // WithSQL registers a gorm connection as the node database
 func WithSQL(sql *gorm.DB) NewNodeOption {
 	return func(n *Node) {
-		n.sqlDriver = sql.Unscoped()
+		n.sqlDriver = sql.Set("gorm:auto_preload", true).Unscoped()
+		sql.Callback().Create().Register("berty:after_create", func(scope *gorm.Scope) { n.handleCommitLog("create", scope) })
+		sql.Callback().Update().Register("berty:after_update", func(scope *gorm.Scope) { n.handleCommitLog("update", scope) })
+		sql.Callback().Delete().Register("berty:after_delete", func(scope *gorm.Scope) { n.handleCommitLog("delete", scope) })
 	}
 }
 
@@ -28,26 +33,6 @@ func (n *Node) sql(ctx context.Context) *gorm.DB {
 		return n.sqlDriver.Set("rootSpan", span)
 	}
 	return n.sqlDriver
-}
-
-func (n *Node) handleCommitLogs() {
-	clbk := n.sqlDriver.Callback()
-
-	clbk.Create().Register("berty:after_create", func(scope *gorm.Scope) { n.handleCommitLog("create", scope) })
-	clbk.Update().Register("berty:after_update", func(scope *gorm.Scope) { n.handleCommitLog("update", scope) })
-	clbk.Delete().Register("berty:after_delete", func(scope *gorm.Scope) { n.handleCommitLog("delete", scope) })
-
-	logger().Debug("commit logs handled")
-}
-
-func (n *Node) unhandleCommitLogs() {
-	clbk := n.sqlDriver.Callback()
-
-	clbk.Create().Remove("berty:after_create")
-	clbk.Update().Remove("berty:after_update")
-	clbk.Delete().Remove("berty:after_delete")
-
-	logger().Debug("commit logs unhandled")
 }
 
 func (n *Node) handleCommitLog(operation string, scope *gorm.Scope) {
@@ -63,21 +48,36 @@ func (n *Node) handleCommitLog(operation string, scope *gorm.Scope) {
 
 	if indirectScopeValue := scope.IndirectValue(); indirectScopeValue.Kind() == reflect.Slice {
 		for i := 0; i < indirectScopeValue.Len(); i++ {
-			log := n.createCommitLog(operation, indirectScopeValue.Index(i))
-			if log != nil {
-				n.clientCommitLogs <- log
-			}
+			n.sendCommitLog(n.createCommitLog(operation, indirectScopeValue.Index(i)))
 		}
 	} else {
-		log := n.createCommitLog(operation, indirectScopeValue)
-		if log != nil {
-			n.clientCommitLogs <- log
-		}
+		n.sendCommitLog(n.createCommitLog(operation, indirectScopeValue))
+	}
+}
+
+func (n *Node) sendCommitLog(commitLog *node.CommitLog) {
+	if commitLog == nil {
+		return
+	}
+
+	logger().Debug("commit log", zap.Stringer("commit log", commitLog))
+
+	n.clientCommitLogsMutex.Lock()
+	defer n.clientCommitLogsMutex.Unlock()
+	for _, sub := range n.clientCommitLogsSubscribers {
+		sub.queue <- commitLog
 	}
 }
 
 func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *node.CommitLog {
+	var err error
 
+	// Only get address from non-pointer
+	if reflectValue.CanAddr() && reflectValue.Kind() != reflect.Ptr {
+		reflectValue = reflectValue.Addr()
+	}
+
+	logger().Debug(fmt.Sprintf("OPERATION COMMIT LOG %+v", operation))
 	log := &node.CommitLog{}
 
 	switch operation {
@@ -92,26 +92,31 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 		return nil
 	}
 
-	// Only get address from non-pointer
-	if reflectValue.CanAddr() && reflectValue.Kind() != reflect.Ptr {
-		reflectValue = reflectValue.Addr()
-	}
-
-	switch e := reflectValue.Interface().(type) {
-	case *entity.Config:
-		log.Entity = &node.CommitLog_Entity{Config: e}
+	switch data := reflectValue.Interface().(type) {
 	case *entity.Contact:
-		log.Entity = &node.CommitLog_Entity{Contact: e}
+		if operation != "delete" {
+			data, err = sql.ContactByID(n.sqlDriver, data.ID)
+			if err != nil {
+				return nil
+			}
+		}
+		log.Entity = &node.CommitLog_Entity{Contact: data}
 	case *entity.Device:
-		log.Entity = &node.CommitLog_Entity{Device: e}
+		log.Entity = &node.CommitLog_Entity{Device: data}
 	case *entity.Conversation:
-		log.Entity = &node.CommitLog_Entity{Conversation: e}
+		if operation != "delete" {
+			data, err = sql.ConversationByID(n.sqlDriver, data.ID)
+			if err != nil {
+				return nil
+			}
+		}
+		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
-		log.Entity = &node.CommitLog_Entity{ConversationMember: e}
+		log.Entity = &node.CommitLog_Entity{ConversationMember: data}
 	case *p2p.Event:
-		log.Entity = &node.CommitLog_Entity{Event: e}
+		log.Entity = &node.CommitLog_Entity{Event: data}
 	default:
-		logger().Warn(fmt.Sprintf("unhandled entity %+v", e))
+		logger().Warn(fmt.Sprintf("unhandled entity %+v", data))
 		return nil
 	}
 	return log

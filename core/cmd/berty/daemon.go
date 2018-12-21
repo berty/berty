@@ -8,15 +8,14 @@ import (
 	"os"
 	"strings"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
-
 	"berty.tech/core/manager/account"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/pkg/notification"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 type daemonOptions struct {
@@ -62,7 +61,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", p2p.DefaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
-	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default", "ble"}, "p2p transport to enable")
+	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default" /*, "ble"*/}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
 }
 

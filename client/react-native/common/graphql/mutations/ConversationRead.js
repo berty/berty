@@ -5,8 +5,6 @@ const ConversationReadMutation = graphql`
   mutation ConversationReadMutation($id: ID!) {
     ConversationRead(id: $id) {
       id
-      createdAt
-      updatedAt
       readAt
       title
       topic

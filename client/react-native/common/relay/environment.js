@@ -78,7 +78,7 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
   }),
   retryMiddleware({
     allowMutations: true,
-    fetchTimeout: 3000,
+    fetchTimeout: 5000,
     retryDelays: () => 2000,
     beforeRetry: async ({
       forceRetry,
