@@ -4,6 +4,7 @@ import List from './List'
 import Add from './Add'
 import { Header, SelfAvatarIcon } from '../../Library'
 import Detail from './Detail'
+import I18n from 'i18next'
 
 export default createSubStackNavigator(
   {
@@ -14,7 +15,7 @@ export default createSubStackNavigator(
         header: (
           <Header
             navigation={navigation}
-            title='Add a contact'
+            title={I18n.t('contacts.add.title')}
             rightBtn={<SelfAvatarIcon />}
             rightBtnIcon={'save'}
             onPressRightBtn={() => {}}

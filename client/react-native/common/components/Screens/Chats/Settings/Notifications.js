@@ -2,10 +2,12 @@ import React, { PureComponent } from 'react'
 import { Switch, Text } from 'react-native'
 import { Header, Menu } from '../../../Library'
 import { colors } from '../../../../constants'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
-export default class Notifications extends PureComponent {
+class Notifications extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} title='Notifications' backBtn />,
+    header: <Header navigation={navigation} title={I18n.t('chats.notifications')} backBtn />,
   })
 
   state = {
@@ -16,12 +18,14 @@ export default class Notifications extends PureComponent {
   }
 
   render () {
+    const { t } = this.props
+
     return (
       <Menu>
         <Menu.Section>
           <Menu.Item
             icon='bell-off'
-            title='Mute this conversation'
+            title={t('chats.notifications-mute')}
             boldLeft
             customRight={
               <Switch
@@ -48,7 +52,7 @@ export default class Notifications extends PureComponent {
         <Menu.Section customMarginTop={1}>
           <Menu.Item
             icon='bell'
-            title='Override app notifications'
+            title={t('chats.notifications-override')}
             boldLeft
             customRight={
               <Switch
@@ -78,7 +82,7 @@ export default class Notifications extends PureComponent {
               }
             />
             <Menu.Item
-              title='Message preview'
+              title={t('chats.notifications-preview')}
               boldLeft
               customRight={
                 <Switch
@@ -99,3 +103,5 @@ export default class Notifications extends PureComponent {
     )
   }
 }
+
+export default withNamespaces(Notifications)

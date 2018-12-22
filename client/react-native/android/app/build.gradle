@@ -166,6 +166,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-languages')
     compile project(':rn-fetch-blob')
     compile project(':react-native-device-info')
     compile project(':lottie-react-native')

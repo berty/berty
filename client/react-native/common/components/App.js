@@ -8,6 +8,9 @@ import { Flex } from './Library'
 import FlashMessage from 'react-native-flash-message'
 import Accounts from './Screens/Accounts'
 import { colors } from './../constants'
+import { I18nextProvider } from 'react-i18next'
+import ReactNativeLanguages from 'react-native-languages'
+import i18n from '../i18n'
 
 export default class App extends PureComponent {
   state = {
@@ -22,6 +25,8 @@ export default class App extends PureComponent {
   }
 
   componentDidMount () {
+    ReactNativeLanguages.addEventListener('change', this._onLanguageChange)
+
     Linking.getInitialURL()
       .then(url => {
         if (url !== null) {
@@ -40,9 +45,16 @@ export default class App extends PureComponent {
   }
 
   componentWillUnmount () {
+    ReactNativeLanguages.removeEventListener('change', this._onLanguageChange)
+
     if (this._handleOpenURL !== undefined) {
       Linking.removeEventListener('url', this._handleOpenURL)
     }
+  }
+
+
+  _onLanguageChange = ({ language, languages }) => {
+    i18n.changeLanguage(language);
   }
 
   handleOpenURL (event) {
@@ -88,35 +100,37 @@ export default class App extends PureComponent {
     console.log(this.onAnimationFinished)
     const { loading, deepLink, hide, progress } = this.state
     return (
-      <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-        { hide && Platform.OS !== 'web'
-          ? <Flex.Rows
-            align='center'
-            justify='center'
-            style={{ 'width': '100%',  height: '100%', zIndex: 1000, position: 'absolute', backgroundColor: colors.white }}
-          >
-            <LottieView
-              source={require('./../static/animation/BertyAnimation.json')}
-              progress={progress}
-              loop={false}
-              style={{ 'width': 320 }}
-              autoSize
-            />
-          </Flex.Rows>
-          : null }
-        { !loading
-          ? <Accounts
-            ref={nav => {
-              this.navigation = nav
-            }}
-            screenProps={{
-              deepLink,
-              clearDeepLink: () => this.clearDeepLink(),
-            }}
-          /> : null }
-        <FlashMessage position='top' />
-        {Platform.OS === 'ios' && <KeyboardSpacer />}
-      </SafeAreaView>
+      <I18nextProvider i18n={i18n}>
+        <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
+          { hide && Platform.OS !== 'web'
+            ? <Flex.Rows
+              align='center'
+              justify='center'
+              style={{ 'width': '100%',  height: '100%', zIndex: 1000, position: 'absolute', backgroundColor: colors.white }}
+            >
+              <LottieView
+                source={require('./../static/animation/BertyAnimation.json')}
+                progress={progress}
+                loop={false}
+                style={{ 'width': 320 }}
+                autoSize
+              />
+            </Flex.Rows>
+            : null }
+          { !loading
+            ? <Accounts
+              ref={nav => {
+                this.navigation = nav
+              }}
+              screenProps={{
+                deepLink,
+                clearDeepLink: () => this.clearDeepLink(),
+              }}
+            /> : null }
+          <FlashMessage position='top' />
+          {Platform.OS === 'ios' && <KeyboardSpacer />}
+        </SafeAreaView>
+      </I18nextProvider>
     )
   }
 }

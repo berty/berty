@@ -12,6 +12,7 @@ import Contacts from './Contacts'
 import Settings from './Settings'
 import ContactCardModal from './Contacts/ContactCardModal'
 import { ViewExportComponent } from '../../helpers/saveViewToCamera'
+import I18n from 'i18next'
 
 const TabBarIcon = (tintColor, routeName, badgeValue) => {
   let iconName = {
@@ -34,21 +35,21 @@ export const tabs = createTabNavigator(
   {
     contacts: {
       screen: Contacts,
-      navigationOptions: {
-        title: 'Contacts',
-      },
+      navigationOptions: () => ({
+        title: I18n.t('contacts.title'),
+      }),
     },
     chats: {
       screen: Chats,
-      navigationOptions: {
-        title: 'Chats',
-      },
+      navigationOptions: () => ({
+        title: I18n.t('chats.title'),
+      }),
     },
     settings: {
       screen: Settings,
-      navigationOptions: {
-        title: 'Settings',
-      },
+      navigationOptions: () => ({
+        title: I18n.t('settings.title'),
+      }),
     },
   },
   {

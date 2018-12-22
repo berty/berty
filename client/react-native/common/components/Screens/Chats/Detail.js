@@ -13,6 +13,7 @@ import { merge } from '../../../helpers'
 import { parseEmbedded } from '../../../helpers/json'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
+import { withNamespaces } from 'react-i18next'
 
 class Message extends React.PureComponent {
   static contextType = RelayContext
@@ -90,7 +91,7 @@ class Message extends React.PureComponent {
 
 const MessageContainer = fragments.Event(Message)
 
-class TextInput extends PureComponent {
+class TextInputBase extends PureComponent {
   state = {
     height: 16,
     value: '',
@@ -104,7 +105,7 @@ class TextInput extends PureComponent {
 
   render () {
     const { height } = this.state
-    const { value } = this.props
+    const { value, t } = this.props
     return (
       <RNTextInput
         style={[
@@ -119,7 +120,7 @@ class TextInput extends PureComponent {
         ]}
         onContentSizeChange={this.onContentSizeChange}
         autoFocus
-        placeholder='Write a secure message...'
+        placeholder={t('chats.write-message')}
         onChangeText={this.props.onChangeText}
         value={value}
         multiline
@@ -127,6 +128,8 @@ class TextInput extends PureComponent {
     )
   }
 }
+
+const TextInput = withNamespaces()(TextInputBase)
 
 class Input extends PureComponent {
   static contextType = RelayContext

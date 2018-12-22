@@ -3,6 +3,7 @@ import { Platform, NativeModules } from 'react-native'
 import sleep from '../../../helpers/sleep'
 import React, { PureComponent } from 'react'
 import { getAvailableUpdate } from '../../../helpers/update'
+import { withNamespaces } from 'react-i18next'
 
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
@@ -18,7 +19,7 @@ import NavigationService from '../../../helpers/NavigationService'
 
 const { CoreModule } = NativeModules
 
-export default class Current extends PureComponent {
+class Current extends PureComponent {
   state = {
     loading: true,
     context: null,
@@ -94,9 +95,10 @@ export default class Current extends PureComponent {
     })
 
   render () {
+    const { t } = this.props
     const { loading, context, availableUpdate } = this.state
     if (loading) {
-      return <Loader message='Setting up berty :)' />
+      return <Loader message={t('setting-up')} />
     }
     return (
       <RelayContext.Provider value={context}>
@@ -115,3 +117,5 @@ export default class Current extends PureComponent {
     )
   }
 }
+
+export default withNamespaces()(Current)

@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react'
 import { Header, Text, Flex } from '../../../Library'
+import I18n from 'i18next'
 
 export default class More extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} title='More about Berty' backBtn />,
+    header: <Header navigation={navigation} title={I18n.t('settings.learn-more')} backBtn />,
   })
   render () {
     return (

@@ -9,6 +9,7 @@ import { formattedFingerprint } from '../../helpers/fingerprint'
 import { padding } from '../../styles'
 import { tabIcon, withScreenProps } from '../../helpers/views'
 import { monospaceFont, tabNavigatorOptions } from '../../constants/styling'
+import I18n from 'i18next'
 
 const PublicKey = ({ data: { id } }) => <View
   style={[{ flexDirection: 'row', justifyContent: 'center' }, padding]}>
@@ -55,24 +56,24 @@ const ContactIdentityTabbedContent = createMaterialTopTabNavigator(
   {
     'qrcode': {
       screen: withScreenProps(QrCode),
-      navigationOptions: {
-        title: 'QR Code',
+      navigationOptions: () => ({
+        title: I18n.t('qrcode'),
         tabBarIcon: tabIcon('material-qrcode'),
-      },
+      }),
     },
     'public-key': {
       screen: withScreenProps(PublicKey),
-      navigationOptions: {
-        title: 'Public key',
+      navigationOptions: () => ({
+        title: I18n.t('public-key'),
         tabBarIcon: tabIcon('material-key-variant'),
-      },
+      }),
     },
     'fingerprint': {
       screen: withScreenProps(Fingerprint),
-      navigationOptions: {
-        title: 'Fingerprint',
+      navigationOptions: () => ({
+        title: I18n.t('fingerprint'),
         tabBarIcon: tabIcon('material-fingerprint'),
-      },
+      }),
     },
   },
   {

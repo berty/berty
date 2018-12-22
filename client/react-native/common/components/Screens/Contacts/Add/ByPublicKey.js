@@ -6,6 +6,7 @@ import { marginTop, padding, rounded, textTiny } from '../../../../styles'
 import { monospaceFont } from '../../../../constants/styling'
 import RelayContext from '../../../../relay/RelayContext'
 import { showContactModal } from '../../../../helpers/contacts'
+import { withNamespaces } from 'react-i18next'
 
 class ByPublicKey extends PureComponent {
   constructor (props) {
@@ -17,6 +18,8 @@ class ByPublicKey extends PureComponent {
   }
 
   render () {
+    const { t } = this.props
+
     return <RelayContext.Consumer>{relayContext =>
       <View style={{
         flex: 1,
@@ -41,7 +44,7 @@ class ByPublicKey extends PureComponent {
               rounded,
             ]}
             multiline
-            placeholder='Paste the public key of a Berty user here'
+            placeholder={t('contacts.add.pub-key-paste-here')}
             value={this.state.id}
             onChangeText={id => this.setState({ id })}
             selectTextOnFocus
@@ -69,7 +72,7 @@ class ByPublicKey extends PureComponent {
                       },
                     })
                   }}>
-                  Paste key
+                  {t('contacts.add.pub-key-paste')}
                 </Button>
               </View> : null}
 
@@ -92,7 +95,7 @@ class ByPublicKey extends PureComponent {
                 }}
                 icon={'plus'}
               >
-                Add this key
+                {t('contacts.add.pub-key-add')}
               </Button>
             </View>
           </View>
@@ -102,4 +105,4 @@ class ByPublicKey extends PureComponent {
   }
 }
 
-export default ByPublicKey
+export default withNamespaces()(ByPublicKey)

@@ -4,10 +4,11 @@ import React, { PureComponent } from 'react'
 import { Flex, Loader, Screen } from '../../Library'
 import { colors } from '../../../constants'
 import { defaultUsername } from '../../../helpers/contacts'
+import { withNamespaces } from 'react-i18next'
 
 const { CoreModule } = NativeModules
 
-export default class Auth extends PureComponent {
+class Auth extends PureComponent {
   state = {
     list: [],
     current: null,
@@ -17,7 +18,9 @@ export default class Auth extends PureComponent {
   }
 
   init = async () => {
-    this.setState({ loading: true, message: 'Initialize core' })
+    const { t } = this.props
+
+    this.setState({ loading: true, message: t('core.initializing') })
     try {
       await CoreModule.initialize()
     } catch (error) {
@@ -26,7 +29,9 @@ export default class Auth extends PureComponent {
   }
 
   list = async () => {
-    this.setState({ loading: true, message: 'Retrieving accounts' })
+    const { t } = this.props
+
+    this.setState({ loading: true, message: t('core.account-listing') })
     try {
       let list = await CoreModule.listAccounts()
       if (list === '') {
@@ -42,7 +47,9 @@ export default class Auth extends PureComponent {
   }
 
   start = async nickname => {
-    this.setState({ loading: true, message: 'Starting daemon' })
+    const { t } = this.props
+
+    this.setState({ loading: true, message: t('daemon.initializing') })
     try {
       await CoreModule.start(nickname)
     } catch (error) {
@@ -79,6 +86,7 @@ export default class Auth extends PureComponent {
   }
 
   render () {
+    const { t } = this.props
     const { loading, message, current } = this.state
 
     if (loading === true) {
@@ -89,11 +97,11 @@ export default class Auth extends PureComponent {
         <Screen style={{ backgroundColor: colors.background, flex: 1 }}>
           <Flex.Cols align='center'>
             <View style={{ height: 320, padding: 20, backgroundColor: colors.background, width: '100%' }} >
-              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', fontSize: 24 }} >Welcome to Berty</Text>
-              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', marginTop: 5 }} >To get started, only a name is required</Text>
+              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', fontSize: 24 }} >{t('auth.welcome-to-berty')}</Text>
+              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', marginTop: 5 }} >{t('auth.get-started')}</Text>
               <TextInput
                 style={{ color: colors.fakeBlack, borderColor: colors.borderGrey, borderWidth: 1, marginTop: 10, padding: 10 }}
-                placeholder={'Enter a nickname'}
+                placeholder={t('auth.nickname-placeholder')}
                 ref={nicknameInput => {
                   this.nicknameInput = nicknameInput
                 }}
@@ -110,7 +118,7 @@ export default class Auth extends PureComponent {
                   marginTop: 10,
                   padding: 8,
                 }} >
-                  Let's chat
+                  {t('auth.lets-chat')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -121,3 +129,5 @@ export default class Auth extends PureComponent {
     return null
   }
 }
+
+export default withNamespaces()(Auth)

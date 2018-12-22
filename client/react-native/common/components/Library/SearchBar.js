@@ -4,6 +4,7 @@ import React from 'react'
 import { Flex } from '.'
 import { colors } from '../../constants'
 import { paddingBottom, paddingLeft, paddingRight } from '../../styles'
+import { withNamespaces } from 'react-i18next'
 
 const SearchBar = props => (
   <Flex.Cols size={1} style={[paddingBottom]}>
@@ -26,7 +27,7 @@ const SearchBar = props => (
         paddingRight,
       ]}
       placeholder={
-        props.placeholder !== undefined ? props.placeholder : 'Search...'
+        props.placeholder !== undefined ? props.placeholder : props.t('search-placeholder')
       }
       onChangeText={props.onChangeText}
     />
@@ -34,4 +35,4 @@ const SearchBar = props => (
   </Flex.Cols>
 )
 
-export default SearchBar
+export default withNamespaces()(SearchBar)

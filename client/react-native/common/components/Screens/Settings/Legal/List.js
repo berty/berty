@@ -1,15 +1,17 @@
 import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
 import { Header, Menu } from '../../../Library'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
-export default class List extends PureComponent {
+class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} title='Legal terms' backBtn />,
+    header: <Header navigation={navigation} title={I18n.t('settings.legal')} backBtn />,
     tabBarVisible: false,
   })
 
   render () {
-    const { navigation } = this.props
+    const { navigation, t } = this.props
     return (
       <View style={{ flex: 1 }}>
         <Image
@@ -21,24 +23,24 @@ export default class List extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='book-open'
-              title='Privacy policy'
+              title={t('settings.privacy-policy')}
               onPress={() => navigation.push('legal/privacy')}
             />
             <Menu.Item
               icon='book-open'
-              title='Terms of service'
+              title={t('settings.terms-of-service')}
               onPress={() => navigation.push('legal/terms')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
               icon='layers'
-              title='App credits'
+              title={t('settings.app-credits')}
               onPress={() => navigation.push('legal/credits')}
             />
             <Menu.Item
               icon='layers'
-              title='Software license'
+              title={t('settings.software-license')}
               onPress={() => navigation.push('legal/license')}
             />
           </Menu.Section>
@@ -47,3 +49,5 @@ export default class List extends PureComponent {
     )
   }
 }
+
+export default withNamespaces()(List)

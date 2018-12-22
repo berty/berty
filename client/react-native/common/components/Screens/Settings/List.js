@@ -8,13 +8,15 @@ import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { extractPublicKeyFromId } from '../../../helpers/contacts'
 import { installUpdate } from '../../../helpers/update'
+import { withNamespaces } from 'react-i18next'
 
-export default class List extends PureComponent {
+class List extends PureComponent {
   static Menu = fragments.Contact(
     ({
       navigation,
       data,
       availableUpdate,
+      t,
     }) => {
       const { id, displayName, overrideDisplayName } = data
 
@@ -28,13 +30,13 @@ export default class List extends PureComponent {
         <Menu.Section>
           <Menu.Item
             icon='user'
-            title='My account'
+            title={t('settings.my-account')}
             onPress={() => navigation.push('settings/my-account', {})
             }
           />
           <Menu.Item
             icon='share'
-            title='Share my account'
+            title={t('settings.my-account-share')}
             onPress={() =>
               navigation.push('modal/contacts/card', {
                 data: {
@@ -48,62 +50,62 @@ export default class List extends PureComponent {
           {availableUpdate ? (
             <Menu.Item
               icon='arrow-up-circle'
-              title='An update of the app is available'
+              title={t('settings.update-available')}
               onPress={() => installUpdate(availableUpdate)}
               color={colors.red}
             />
           ) : null}
           <Menu.Item
             icon='arrow-up-circle'
-            title='Check for updates'
+            title={t('settings.updates-check')}
             onPress={() => navigation.push('settings/update')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='terminal'
-            title='Dev tools'
+            title={t('settings.dev-tools')}
             onPress={() => navigation.push('settings/devtools')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='lock'
-            title='Security & privacy (not implem.)'
+            title={t('settings.security-privacy')}
             onPress={() => navigation.push('settings/security-and-privacy')}
           />
           <Menu.Item
             icon='send'
-            title='Messages settings (not implem.)'
+            title={t('settings.messages')}
             onPress={() => navigation.push('settings/messages-settings')}
           />
           <Menu.Item
             icon='bell'
-            title='Notifications'
+            title={t('settings.notifications')}
             onPress={() => navigation.push('settings/notifications')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='info'
-            title='About berty'
+            title={t('settings.about')}
             onPress={() => navigation.push('settings/about')}
           />
           <Menu.Item
             icon='activity'
-            title='News (not implem.)'
+            title={t('settings.news')}
             onPress={() => navigation.push('settings/news')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='life-buoy'
-            title='Help'
+            title={t('settings.help')}
             onPress={() => navigation.push('settings/help')}
           />
           <Menu.Item
             icon='layers'
-            title='Legal terms'
+            title={t('settings.legal')}
             onPress={() => navigation.push('settings/legal')}
           />
         </Menu.Section>
@@ -117,6 +119,7 @@ export default class List extends PureComponent {
       screenProps: {
         context: { queries },
       },
+      t,
     } = this.props
 
     return (
@@ -143,6 +146,7 @@ export default class List extends PureComponent {
                     navigation={navigation}
                     data={state.data.Contact}
                     availableUpdate={this.props.screenProps.availableUpdate}
+                    t={t}
                   />
                 )
               case state.error:
@@ -165,3 +169,5 @@ export default class List extends PureComponent {
     )
   }
 }
+
+export default withNamespaces()(List)

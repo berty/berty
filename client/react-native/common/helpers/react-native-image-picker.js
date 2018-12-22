@@ -1,12 +1,13 @@
 import ImagePicker from 'react-native-image-picker'
 import { Alert, Platform } from 'react-native'
+import I18n from 'i18next'
 
 export let defaultOptions
 export let choosePicture
 
 if (['ios', 'android'].some(_ => _ === Platform.OS)) {
   defaultOptions = {
-    title: 'Select a picture',
+    title: I18n.t('select-picture'),
   }
 
   choosePicture = (options = defaultOptions) =>
@@ -18,7 +19,7 @@ if (['ios', 'android'].some(_ => _ === Platform.OS)) {
         }
         if (response.error) {
           Alert.alert(
-            'An unexpected error occured :(',
+            I18n.t('unexpected-error'),
             response.error.toString()
           )
           console.error(response.error)

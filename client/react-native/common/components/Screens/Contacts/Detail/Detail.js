@@ -3,13 +3,15 @@ import { ActionSheetIOS, Platform, Alert } from 'react-native'
 import { Menu, Header, Screen, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
 import { extractPublicKeyFromId } from '../../../../helpers/contacts'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
-export default class Detail extends PureComponent {
+class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Contact details'
+        title={I18n.t('contacts.details')}
         rightBtnIcon={'edit-2'}
         onPressRightBtn={() =>
           navigation.push('detail/edit', {
@@ -26,10 +28,12 @@ export default class Detail extends PureComponent {
   }
 
   blockConfirm = () => {
+    const { t } = this.props
+
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: ['Block this contact', 'Cancel'],
+          options: [t('contact.block-confirm-action'), t('cancel')],
           destructiveButtonIndex: 0,
           cancelButtonIndex: 1,
         },
@@ -41,17 +45,17 @@ export default class Detail extends PureComponent {
       )
     } else if (Platform.OS === 'android') {
       Alert.alert(
-        'Confirm',
-        'Are you sure you want to block this contact?',
+        t('confirm'),
+        t('contact.block-confirm-question'),
         [
           {
-            text: 'Block it (not implem.)',
+            text: t('contact.block-confirm-action'),
             onPress: () => this.blockContact(),
             style: 'destructive',
           },
           {
-            text: 'Cancel',
-            onPress: () => this.blockContact(),
+            text: t('cancel'),
+            onPress: () => {},
             style: 'cancel',
           },
         ],
@@ -74,7 +78,7 @@ export default class Detail extends PureComponent {
     }
   }
   render () {
-    const { navigation } = this.props
+    const { navigation, t } = this.props
     const contact = navigation.getParam('contact')
     return (
       <Screen>
@@ -88,19 +92,19 @@ export default class Detail extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='message-circle'
-              title='Send a message (not implem.)'
+              title={t('contacts.send-message')}
               onPress={() => console.log('Send')}
             />
             <Menu.Item
               icon='phone'
-              title='Call (not implem.)'
+              title={t('contacts.call')}
               onPress={() => console.log('Call')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
               icon='eye'
-              title='View public key'
+              title={t('contacts.view-pub-key')}
               onPress={() =>
                 navigation.push('modal/contacts/card', {
                   data: {
@@ -114,7 +118,7 @@ export default class Detail extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='slash'
-              title='Block this contact'
+              title={t('contacts.block')}
               color={colors.error}
               onPress={() => this.blockConfirm()}
             />
@@ -122,7 +126,7 @@ export default class Detail extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='slash'
-              title='Delete this contact'
+              title={t('contacts.delete')}
               color={colors.error}
               onPress={this.deleteContact}
             />
@@ -132,3 +136,5 @@ export default class Detail extends PureComponent {
     )
   }
 }
+
+export default withNamespaces()(Detail)

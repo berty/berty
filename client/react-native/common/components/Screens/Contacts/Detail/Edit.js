@@ -2,13 +2,14 @@ import React, { PureComponent } from 'react'
 import { Header, Menu, Badge, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
 import { choosePicture } from '../../../../helpers/react-native-image-picker'
+import I18n from 'i18next'
 
 export default class Edit extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Contact details'
+        title={I18n.t('contacts.details')}
         rightBtnIcon={'save'}
         onPressRightBtn={() => console.log('Saved')}
         backBtn

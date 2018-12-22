@@ -7,6 +7,7 @@ import colors from '../../../../constants/colors'
 import { showMessage } from 'react-native-flash-message'
 import { showContactModal } from '../../../../helpers/contacts'
 import RelayContext from '../../../../relay/RelayContext'
+import { withNamespaces } from 'react-i18next'
 
 class ByQRCode extends PureComponent {
   reactivate () {
@@ -14,6 +15,8 @@ class ByQRCode extends PureComponent {
   }
 
   render () {
+    const { t } = this.props
+
     const size = Math.min(
       Dimensions.get('window').width,
       Dimensions.get('window').height,
@@ -39,7 +42,7 @@ class ByQRCode extends PureComponent {
 
           if (!url || url.pathname !== '/add-contact') {
             showMessage({
-              message: 'This is not a Berty QR Code',
+              message: t('contacts.add.qrcode-not-from-berty'),
               type: 'danger',
               position: 'top',
               icon: 'danger',
@@ -63,4 +66,4 @@ class ByQRCode extends PureComponent {
   }
 }
 
-export default withOrientation(ByQRCode)
+export default withNamespaces()(withOrientation(ByQRCode))

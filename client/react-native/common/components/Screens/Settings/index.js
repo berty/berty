@@ -9,6 +9,7 @@ import Help from './Help'
 import Legal from './Legal'
 import Devtools from './Devtools'
 import Update from './Update'
+import I18n from 'i18next'
 
 export default createSubStackNavigator(
   {
@@ -25,7 +26,7 @@ export default createSubStackNavigator(
     initialRouteName: 'settings/list',
     navigationOptions: ({ navigation }) => ({
       header: (
-        <Header navigation={navigation} title='Settings' titleIcon='settings' />
+        <Header navigation={navigation} title={I18n.t('settings.title')} titleIcon='settings' />
       ),
       tabBarVisible: false,
     }),
