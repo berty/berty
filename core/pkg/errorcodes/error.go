@@ -34,8 +34,23 @@ type Error struct {
 	// FIXME: stackTrace length (for Error())
 }
 
+func (e *Error) localizedMessages() map[string]string {
+	out := map[string]string{}
+	for _, detail := range e.status.Details() {
+		switch d := detail.(type) {
+		case *errdetails.LocalizedMessage:
+			out[d.Locale] = d.Message
+		}
+	}
+	return out
+}
+
 func (e *Error) Error() string {
 	out := e.message
+	localized := e.localizedMessages()
+	if system, ok := localized["system"]; ok {
+		out += fmt.Sprintf(" (%s)", system)
+	}
 	if e.status.Code() != codes.Unknown {
 		out += fmt.Sprintf(" (gRPC=%q)", e.status.Code())
 	}
@@ -69,10 +84,18 @@ func (e *Error) Placeholders() map[string]string {
 }
 
 func (e *Error) Metadata() *Metadata {
-	if e.metadata.IsEmpty() {
-		return nil
+	if !e.metadata.IsEmpty() {
+		return &e.metadata
 	}
-	return &e.metadata
+	for _, detail := range e.status.Details() {
+		switch d := detail.(type) {
+		case *Metadata:
+			if !d.IsEmpty() {
+				return d
+			}
+		}
+	}
+	return nil
 }
 
 func (e *Error) ExtendedCodes() []Code {
@@ -188,10 +211,7 @@ func fromError(err error, code codes.Code, topLevel bool) (*Error, bool) {
 		st := grpcStatuser.GRPCStatus()
 		fromThisModule := false
 		if st != nil {
-			e := &Error{
-				status:  st,
-				message: st.Message(),
-			}
+			e := FromStatus(st)
 			for _, detail := range st.Details() {
 				switch d := detail.(type) {
 				case *errdetails.DebugInfo:
@@ -201,6 +221,8 @@ func fromError(err error, code codes.Code, topLevel bool) (*Error, bool) {
 					logger().Error("should not happen")
 				case *Metadata:
 					fromThisModule = true
+				case *errdetails.RetryInfo, *errdetails.LocalizedMessage: // nothing to do here, these details will be inherited
+					continue
 				default:
 					logger().Debug("unhandled detail type", zap.String("detail", fmt.Sprintf("%v", d)))
 				}
@@ -319,16 +341,23 @@ func Convert(err error) *Error {
 
 func convert(err error, code codes.Code, stack *stack) *Error {
 	e, _ := fromError(err, code, true)
-	e.setStack(stack)
-	return e
+	return e.setStack(stack)
 }
 
 // Extensions is used for GraphQL errors enrichment
 func (e *Error) Extensions() map[string]interface{} {
+	extensions := make(map[string]interface{})
 	if m := e.Metadata(); m != nil {
-		return m.Extensions()
+		extensions = m.Extensions()
 	}
-	return nil
+	localizedMessages := e.localizedMessages()
+	// FIXME: check if there is a localization for current language
+	if message, ok := localizedMessages["user"]; ok {
+		extensions["message"] = message
+	} else {
+		extensions["message"] = e.message
+	}
+	return extensions
 }
 
 func (e *Error) Format(s fmt.State, verb rune) {
@@ -357,6 +386,8 @@ func (e *Error) Format(s fmt.State, verb rune) {
 					fmt.Fprintf(s, "debug: *errorcodes.Code: %v\n", d)
 				case *errdetails.RetryInfo:
 					fmt.Fprintf(s, "debug: *errdetails.RetryInfo: %v\n", d)
+				case *errdetails.LocalizedMessage:
+					fmt.Fprintf(s, "debug: *errdetails.LocalizedMessage: %v\n", d)
 				case *errdetails.BadRequest:
 					fmt.Fprintf(s, "debug: *errdetails.BadRequest: %v\n", d)
 				default:

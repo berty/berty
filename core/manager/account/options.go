@@ -31,7 +31,6 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 )
 
 func WithRing(ring *zapring.Ring) NewOption {
@@ -231,12 +230,8 @@ func WithGQL(opts *GQLOptions) NewOption {
 				func(ctx context.Context, e error) *gqlerror.Error {
 					exportedError := graphql.DefaultErrorPresenter(ctx, e)
 
-					if grpcError, ok := status.FromError(e); ok {
-						details := grpcError.Details()
-						if bertyErrorDetails, ok := details[0].(*errorcodes.Error); ok {
-							exportedError.Extensions = bertyErrorDetails.Extensions()
-						}
-					}
+					err := errorcodes.Convert(e)
+					exportedError.Extensions = err.Extensions()
 
 					return exportedError
 				},

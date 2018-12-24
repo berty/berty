@@ -3,6 +3,8 @@ package errorcodes
 import (
 	"errors"
 
+	"berty.tech/core/pkg/i18n"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 )
 
@@ -53,15 +55,27 @@ func (c Code) newError(placeholders map[string]string, stack *stack, cause error
 	if !ok {
 		grpcCode = codes.Unknown
 	}
+	localized := i18n.T(codeName) // FIXME: support placeholders
 	e := convert(
-		errors.New(codeName),
+		errors.New(localized),
 		grpcCode,
 		stack,
 	)
 	e.metadata.Code = c
 	e.metadata.ExtendedCodes = c.Extends()
 	e.metadata.Placeholders = placeholders
-	e.cause = cause
+	e.setCause(cause)
+	e.WithDetails(
+		&errdetails.LocalizedMessage{
+			Message: localized,
+			Locale:  "user", // FIXME: set user language
+		},
+		&errdetails.LocalizedMessage{
+			Message: codeName,
+			Locale:  "system",
+		},
+	)
+	e.message = localized
 	// FIXME: add more metadata
 	// FIXME: translate error
 	return e

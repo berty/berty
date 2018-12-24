@@ -9,8 +9,8 @@ func (m *Metadata) IsEmpty() bool {
 
 func (m *Metadata) Extensions() map[string]interface{} {
 	ext := map[string]interface{}{
-		"code":          m.Code,
-		"message":       m.Message,
+		"code": m.Code,
+		// "message":       m.Message,
 		"placeholders":  m.Placeholders,
 		"extendedCodes": m.ExtendedCodes,
 	}

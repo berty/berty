@@ -50,31 +50,33 @@ func Test(t *testing.T) {
 
 	Convey("Test Error.Error()", t, func() {
 		expected := map[string]string{
-			"errcode-serialization-wrap-wrap-basic": "ErrSerialization: wrapmsg: basic error",
-			"wrap-grpc-status":                      "wrap: rpc error: code = DataLoss desc = grpc-status",
-			"wrap-wrap-wrap":                        "ErrContactReqKey: ErrSerialization: wrapmsg: basic error",
-			"wrap-basic-wrap":                       "wrapmsg: ErrContactReqKey: ErrSerialization: wrapmsg: basic error",
-			"basic":                                 "basic error",
-			"errcode-with-extensions":               "ErrContactReqKey",
-			"errcode-grpc-status":                   "ErrContactReqKey: rpc error: code = DataLoss desc = grpc-status",
-			"wrap-nil":                              "ErrContactReqKey",
-			"errcode-serialization":                 "ErrSerialization",
-			"errcode-serialization-wrap-basic":      "ErrSerialization: basic error",
-			"errcode-newargs":                       `ErrContactReqKey {"hello":"world","hi":"planet"}`,
-			"grpc-status":                           "rpc error: code = DataLoss desc = grpc-status",
-			"badrequest2":                           "ErrValidationInput",
-			"wrap-wrap-wrap-basic":                  "wrapmsg: wrapmsg: wrapmsg: basic error",
-			"wrap-wrap-basic":                       "wrapmsg: wrapmsg: basic error",
-			"badrequest1":                           "ErrValidationInput",
 			"wrap-basic":                            "wrapmsg: basic error",
+			"grpc-status":                           "rpc error: code = DataLoss desc = grpc-status",
+			"basic":                                 "basic error",
+			"wrap-nil":                              "The public key is invalid (ErrContactReqKey)",
+			"badrequest2":                           "The supplied value is not valid, please check your input (ErrValidationInput)",
+			"wrap-wrap-wrap-basic":                  "wrapmsg: wrapmsg: wrapmsg: basic error",
+			"errcode-serialization":                 "ErrSerialization (ErrSerialization)",
+			"errcode-with-extensions":               "The public key is invalid (ErrContactReqKey)",
+			"errcode-grpc-status":                   "The public key is invalid (ErrContactReqKey): rpc error: code = DataLoss desc = grpc-status",
+			"wrap-basic-wrap":                       "wrapmsg: The public key is invalid (ErrContactReqKey): ErrSerialization (ErrSerialization): wrapmsg: basic error",
+			"wrap-wrap-wrap":                        "The public key is invalid (ErrContactReqKey): ErrSerialization (ErrSerialization): wrapmsg: basic error",
+			"badrequest1":                           "The supplied value is not valid, please check your input (ErrValidationInput)",
+			"wrap-wrap-basic":                       "wrapmsg: wrapmsg: basic error",
+			"errcode-serialization-wrap-basic":      "ErrSerialization (ErrSerialization): basic error",
+			"errcode-serialization-wrap-wrap-basic": "ErrSerialization (ErrSerialization): wrapmsg: basic error",
+			"errcode-newargs":                       "The public key is invalid (ErrContactReqKey) {\"hello\":\"world\",\"hi\":\"planet\"}",
+			"wrap-grpc-status":                      "wrap: rpc error: code = DataLoss desc = grpc-status",
 		}
+		_ = expected
 		for key, errFn := range errs {
 			err := errFn()
-			So(err, ShouldNotBeNil)
 			//fmt.Printf("%q: %q,\n", key, err.Error())
+			So(err, ShouldNotBeNil)
 			So(err.Error(), ShouldEqual, expected[key])
 		}
 	})
 	Convey(`Test Error.Format("%+v")`, t, nil)
 	Convey("Test with gRPC", t, nil)
+	Convey("Test i18n with placeholders", t, nil)
 }
