@@ -1,10 +1,11 @@
-import { Share } from 'react-native'
+import { Share, Platform } from 'react-native'
 import { mutations } from '../graphql'
 import { atob, btoa } from 'b64-lite'
 import { NavigationActions } from 'react-navigation'
 import { showMessage } from 'react-native-flash-message'
 import defaultValuesContact from '../utils/contact'
 import NavigationService from './NavigationService'
+import DeviceInfo from 'react-native-device-info'
 
 export const requestContact = async (contactId, displayName, navigation, errorHandler) => {
   try {
@@ -102,4 +103,35 @@ export const showContactModal = async ({ relayContext: { queries }, navigation, 
       beforeDismiss: beforeDismiss,
     },
   }))
+}
+
+export const defaultUsername = () => {
+  if (Platform.OS !== 'ios') {
+    return ''
+  }
+
+  let deviceName = DeviceInfo.getDeviceName()
+  const defaultNamesParts = ['iPhone', 'iPad', 'iPod']
+
+  if (!deviceName) {
+    return ''
+  }
+
+  deviceName = deviceName.replace('\'s ', ' ')
+
+  const hasDefaultName = defaultNamesParts.some(defaultPart => deviceName.indexOf(defaultPart) !== -1)
+
+  if (hasDefaultName) {
+    return deviceName
+      // Split device name
+      .split(' ')
+      // Remove product name
+      .filter(part => !defaultNamesParts.some(
+        defaultPart => part.indexOf(defaultPart) !== -1
+      ))
+      // Keep the longest word
+      .sort((a, b) => b.length - a.length)[0]
+  }
+
+  return deviceName
 }

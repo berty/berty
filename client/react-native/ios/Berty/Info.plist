@@ -34,7 +34,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>LSApplicationCategoryType</key>
-	<string></string>
+	<string/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -51,7 +51,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Berty would like to use your camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Berty would like to use your microphone (for videos)</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
