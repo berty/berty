@@ -54,7 +54,7 @@ export default class App extends PureComponent {
 
 
   _onLanguageChange = ({ language, languages }) => {
-    i18n.changeLanguage(language);
+    i18n.changeLanguage(language)
   }
 
   handleOpenURL (event) {

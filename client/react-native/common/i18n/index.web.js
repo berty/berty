@@ -5,6 +5,8 @@ import LanguageDetector from 'i18next-browser-languagedetector'
 import en from './en/messages.json'
 import fr from './fr/messages.json'
 
+export { languages } from './languages'
+
 const options = {
   fallbackLng: 'en',
   resources: {

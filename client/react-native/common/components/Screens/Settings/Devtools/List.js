@@ -237,6 +237,11 @@ export default class List extends PureComponent {
             />
           )}
           <Menu.Item
+            icon='globe'
+            title='Language'
+            onPress={() => navigation.push('devtools/language')}
+          />
+          <Menu.Item
             icon='refresh-ccw'
             title='Restart daemon'
             onPress={this.restartDaemon}
