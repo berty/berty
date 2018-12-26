@@ -5,8 +5,10 @@ import { choosePicture } from '../../../../helpers/react-native-image-picker'
 import { colors } from '../../../../constants'
 import { conversation as utils } from '../../../../utils'
 import { RelayContext } from '../../../../relay'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
-export default class List extends PureComponent {
+class List extends PureComponent {
   static contextType = RelayContext
 
   static navigationOptions = ({ navigation }) => {
@@ -23,7 +25,7 @@ export default class List extends PureComponent {
       header: (
         <Header
           navigation={navigation}
-          title='Conversation details'
+          title={I18n.t('chats.details')}
           rightBtnIcon={conversation.members.length > 2 && rightIcon}
           backBtn
           onPressRightBtn={conversation.members.length > 2 && onPressRight}
@@ -72,7 +74,7 @@ export default class List extends PureComponent {
   }
 
   render () {
-    const { navigation } = this.props
+    const { navigation, t } = this.props
     const { edit } = this.state
     const conversation = this.props.navigation.getParam('conversation')
     const title = utils.getTitle(conversation)
@@ -91,10 +93,10 @@ export default class List extends PureComponent {
               </Badge>
             }
             title={!edit && title}
-            description={!edit && 'Conversation started 2 days ago'}
+            description={!edit && 'NOT TRANSLATED Conversation started 2 days ago'}
           />
           {edit && (
-            <Menu.Section title='Name'>
+            <Menu.Section title={t('chats.name')}>
               <Menu.Input value={title} />
             </Menu.Section>
           )}
@@ -102,12 +104,12 @@ export default class List extends PureComponent {
             <Menu.Section>
               <Menu.Item
                 icon='bell'
-                title='Notifications'
+                title={t('chats.notification')}
                 onPress={() => navigation.push('settings/notifications')}
               />
               <Menu.Item
                 icon='clock'
-                title='Message retention (not implem.)'
+                title={t('chats.message-retention')}
                 onPress={() => console.log('Message retention')}
               />
             </Menu.Section>
@@ -116,7 +118,7 @@ export default class List extends PureComponent {
             <Menu.Section>
               <Menu.Item
                 icon='user'
-                title='Contact details (not implem.)'
+                title={t('contacts.details')}
                 onPress={() => console.log('Contact details')}
               />
             </Menu.Section>
@@ -124,7 +126,7 @@ export default class List extends PureComponent {
             <Menu.Section title={`${conversation.members.length} members`}>
               <Menu.Item
                 icon='user-plus'
-                title='Add members'
+                title={t('chats.add-members')}
                 color={colors.blue}
                 onPress={() =>
                   this.props.navigation.push('chats/add', {
@@ -134,7 +136,7 @@ export default class List extends PureComponent {
               />
               <Menu.Item
                 icon='link'
-                title='Invite to group with a link (not implem.)'
+                title={t('chats.link-invite')}
                 color={colors.blue}
                 onPress={() => console.log('Invite to group with a link')}
               />
@@ -154,7 +156,7 @@ export default class List extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='trash-2'
-              title='Delete this conversation (not implem.)'
+              title={t('chats.delete')}
               color={colors.error}
               onPress={() => console.log('Delete this conversation')}
             />
@@ -164,3 +166,5 @@ export default class List extends PureComponent {
     )
   }
 }
+
+export default withNamespaces(List)

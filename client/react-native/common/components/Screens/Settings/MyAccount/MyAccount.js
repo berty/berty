@@ -5,8 +5,10 @@ import { colors } from '../../../../constants'
 import { QueryReducer } from '../../../../relay'
 import { choosePicture } from '../../../../helpers/react-native-image-picker'
 import { graphql } from 'react-relay'
+import I18n from 'i18next'
+import { withNamespaces } from 'react-i18next'
 
-export default class MyAccount extends PureComponent {
+class MyAccount extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const onSave = navigation.getParam('onSave')
     return {
@@ -14,7 +16,7 @@ export default class MyAccount extends PureComponent {
       header: (
         <Header
           navigation={navigation}
-          title='My account'
+          title={I18n.t('my-account.title')}
           rightBtnIcon={'save'}
           onPressRightBtn={onSave}
           backBtn
@@ -41,7 +43,7 @@ export default class MyAccount extends PureComponent {
     )
   }
 
-  static Menu = ({ navigation, data, state, onChoosePicture }) => {
+  static Menu = ({ navigation, data, state, onChoosePicture, t }) => {
     const { displayName, overrideDisplayName } = data
     return (
       <Menu absolute>
@@ -57,12 +59,12 @@ export default class MyAccount extends PureComponent {
             </Badge>
           }
         />
-        <Menu.Section title='Firstname'>
+        <Menu.Section title={t('contacts.first-name')}>
           <Menu.Input
             value={(overrideDisplayName || displayName).split(' ')[0] || ''}
           />
         </Menu.Section>
-        <Menu.Section title='Lastname'>
+        <Menu.Section title={t('contacts.last-name')}>
           <Menu.Input
             value={(overrideDisplayName || displayName).split(' ')[1] || ''}
           />
@@ -70,7 +72,7 @@ export default class MyAccount extends PureComponent {
         <Menu.Section>
           <Menu.Item
             icon='trash-2'
-            title='Delete my account (not implem.)'
+            title={t('my-account.delete-my-account')}
             color={colors.error}
             onPress={() => console.error('delete my account: not implemented')}
           />
@@ -80,6 +82,8 @@ export default class MyAccount extends PureComponent {
   }
 
   render () {
+    const { t } = this.props
+
     return (
       <Screen>
         <QueryReducer
@@ -128,6 +132,7 @@ export default class MyAccount extends PureComponent {
                     data={state.data.ContactList.edges[0].node}
                     state={this.state}
                     onChoosePicture={this.onChoosePicture}
+                    t={t}
                   />
                 )
               case state.error:
@@ -140,7 +145,7 @@ export default class MyAccount extends PureComponent {
                     center
                     self='center'
                   >
-                    An unexpected error occurred, please restart the application
+                    {t('fatal-unexpected-error')}
                   </Text>
                 )
             }
@@ -150,3 +155,5 @@ export default class MyAccount extends PureComponent {
     )
   }
 }
+
+export default withNamespaces()(MyAccount)

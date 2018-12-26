@@ -4,10 +4,11 @@ import RelayContext from '../../../relay/RelayContext'
 import defaultValuesContact from '../../../utils/contact'
 import { btoa } from 'b64-lite'
 import ActionList from './ActionList'
+import { withNamespaces } from 'react-i18next'
 
-const ActionsAdd = ({ data, self, navigation, inModal }) => <RelayContext.Consumer>{({ mutations }) =>
+const ActionsAdd = ({ data, self, navigation, inModal, t }) => <RelayContext.Consumer>{({ mutations }) =>
   <ActionList inModal={inModal}>
-    <ActionList.Action icon={'plus'} title={'Add contact'} dismissOnSuccess action={async () => {
+    <ActionList.Action icon={'plus'} title={t('contacts.add-action')} dismissOnSuccess action={async () => {
       await mutations.contactRequest({
         contact: {
           ...defaultValuesContact,
@@ -21,8 +22,8 @@ const ActionsAdd = ({ data, self, navigation, inModal }) => <RelayContext.Consum
       if (beforeDismiss) {
         beforeDismiss()
       }
-    }} successMessage={'A request has been sent to this contact'} />
+    }} successMessage={t('contacts.add-action-feedback')} />
   </ActionList>
 }</RelayContext.Consumer>
 
-export default withNavigation(ActionsAdd)
+export default withNamespaces()(withNavigation(ActionsAdd))

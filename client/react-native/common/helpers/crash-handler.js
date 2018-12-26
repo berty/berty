@@ -4,19 +4,20 @@ import {
   setNativeExceptionHandler,
 } from 'react-native-exception-handler'
 import RNRestart from 'react-native-restart'
+import I18n from 'i18next'
 
 const exceptionHandler = (error, isFatal) => {
   Alert.alert(
-    'An unexpected error has occurred.',
+    I18n.t('unexpected-error'),
     `${isFatal ? 'Fatal: ' : ''}${
       !error || typeof error === 'string' ? error : error.toString()
     }`,
     [
       {
-        text: 'Restart',
+        text: I18n.t('restart'),
         onPress: () => RNRestart.Restart(),
       },
-      !isFatal && { text: 'Cancel' },
+      !isFatal && { text: I18n.t('cancel') },
     ],
     { cancelable: false }
   )

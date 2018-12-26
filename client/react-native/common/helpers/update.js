@@ -5,6 +5,7 @@ import { Linking, Platform, PermissionsAndroid } from 'react-native'
 import RNFetchBlob from './rn-fetch-blob'
 import { showMessage } from 'react-native-flash-message'
 import { requestAndroidPermission } from './permissions'
+import I18n from 'i18next'
 
 const updateApiSources = {
   'chat.berty.ios': {
@@ -87,19 +88,26 @@ export const getLatestVersion = async () => {
 
 export const installUpdate = async installUrl => {
   if (Platform.OS === 'ios') {
+    showMessage({
+      message: I18n.t('settings.update-downloading'),
+      type: 'info',
+      icon: 'info',
+      position: 'top',
+    })
+
     Linking.openURL(installUrl).catch(e =>
       console.error(e),
     )
   } else if (Platform.OS === 'android') {
     const allowed = await requestAndroidPermission({
       permission: PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-      title: 'Write to external storage',
-      message: 'This permission is required to download the application update',
+      title: I18n.t('settings.update-write-perm'),
+      message: I18n.t('settings.update-write-perm-desc'),
     })
 
     if (!allowed) {
       showMessage({
-        message: 'Unable to download app, not allowed to write file',
+        message: I18n.t('settings.update-write-fail'),
         type: 'danger',
         icon: 'danger',
         position: 'top',
@@ -109,7 +117,7 @@ export const installUpdate = async installUrl => {
     }
 
     showMessage({
-      message: 'Downloading application update',
+      message: I18n.t('settings.update-downloading'),
       type: 'info',
       icon: 'info',
       position: 'top',

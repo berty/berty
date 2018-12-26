@@ -3,6 +3,7 @@ package chat.berty.main;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.airbnb.android.react.lottie.LottiePackage;
@@ -47,6 +48,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new CorePackage(),
                 new ImagePickerPackage(),
                 new MainReactPackage(),
+            new RNLanguagesPackage(),
             new RNFetchBlobPackage(),
             new RNDeviceInfo(),
                 new LottiePackage(),

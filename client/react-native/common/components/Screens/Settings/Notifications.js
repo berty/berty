@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react'
 import { Switch } from 'react-native'
 import { Header, Menu } from '../../Library'
+import I18n from 'i18next'
+import { withNamespaces } from 'react-i18next'
 
-export default class Notifications extends PureComponent {
+class Notifications extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} title='Notifications' backBtn />,
+    header: <Header navigation={navigation} title={I18n.t('chats.notifications')} backBtn />,
   })
 
   state = {
@@ -13,11 +15,13 @@ export default class Notifications extends PureComponent {
   }
 
   render () {
+    const { t } = this.props
+
     return (
       <Menu>
         <Menu.Section customMarginTop={1}>
           <Menu.Item
-            title='Alert'
+            title={t('chats.notifications-enabled')}
             boldLeft
             customRight={
               <Switch
@@ -32,7 +36,7 @@ export default class Notifications extends PureComponent {
             }
           />
           <Menu.Item
-            title='Message preview'
+            title={t('chats.notifications-preview')}
             boldLeft
             customRight={
               <Switch
@@ -46,9 +50,11 @@ export default class Notifications extends PureComponent {
               />
             }
           />
-          <Menu.Item title='Sound' textRight='Paulette' boldLeft />
+          <Menu.Item title={t('chats.notifications-sound')} textRight='Paulette' boldLeft />
         </Menu.Section>
       </Menu>
     )
   }
 }
+
+export default withNamespaces()(Notifications)

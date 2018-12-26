@@ -6,6 +6,7 @@ import { showMessage } from 'react-native-flash-message'
 import defaultValuesContact from '../utils/contact'
 import NavigationService from './NavigationService'
 import DeviceInfo from 'react-native-device-info'
+import I18n from 'i18next'
 
 export const requestContact = async (contactId, displayName, navigation, errorHandler) => {
   try {
@@ -41,8 +42,8 @@ export const shareLinkSelf = ({ id, displayName }) => {
   const url = makeShareableUrl({ id, displayName })
 
   Share.share({
-    title: 'Add me on Berty',
-    message: `Use this link to add me on Berty ${url}`,
+    title: I18n.t('contacts.add.invite-text-self'),
+    message: I18n.t('contacts.add.invite-text-link-self', { url }),
     url: url,
   }).catch(() => null)
 }
@@ -51,8 +52,8 @@ export const shareLinkOther = ({ id, displayName }) => {
   const url = makeShareableUrl({ id, displayName })
 
   Share.share({
-    title: `Add ${displayName} on Berty`,
-    message: `Use this link to add ${displayName} on Berty ${url}`,
+    title: I18n.t('contacts.add.invite-text', { displayName }),
+    message: I18n.t('contacts.add.invite-text-link', { displayName, url }),
     url: url,
   }).catch(() => null)
 }
@@ -84,7 +85,7 @@ export const showContactModal = async ({ relayContext: { queries }, navigation, 
 
   if (!(await isPubKeyValid({ queries, data }))) {
     showMessage({
-      message: 'This public key is invalid',
+      message: I18n.t('contacts.add.invalid-public-key'),
       type: 'danger',
       position: 'top',
       icon: 'danger',

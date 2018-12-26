@@ -3,11 +3,11 @@ import { fragments, enums } from '../../../../graphql'
 import { Avatar, Flex, Text } from '../../../Library'
 import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
-import Case from 'case'
 import { showContactModal } from '../../../../helpers/contacts'
 import NavigationService from '../../../../helpers/NavigationService'
 import ActionsReceived from '../../../Library/ContactIdentityActions/ActionsReceived'
 import ActionsSent from '../../../Library/ContactIdentityActions/ActionsSent'
+import { withNamespaces } from 'react-i18next'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -44,7 +44,7 @@ const Item = fragments.Contact(
     }
 
     render () {
-      const { data, ignoreMyself } = this.props
+      const { data, ignoreMyself, t } = this.props
       const { overrideDisplayName, displayName, status } = data
 
       if (
@@ -69,9 +69,7 @@ const Item = fragments.Contact(
                 {overrideDisplayName || displayName}
               </Text>
               <Text color={colors.subtleGrey} left>
-                {Case.lower(
-                  enums.ValueBertyEntityContactInputStatus[status]
-                ).replace(/^is /g, '')}
+                {t('contacts.statuses.' + enums.ValueBertyEntityContactInputStatus[status])}
               </Text>
             </Flex.Rows>
           </Flex.Cols>
@@ -89,4 +87,4 @@ const Item = fragments.Contact(
   }
 )
 
-export default Item
+export default withNamespaces()(Item)

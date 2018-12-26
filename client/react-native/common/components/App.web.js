@@ -7,6 +7,8 @@ import FlashMessage from 'react-native-flash-message'
 
 import { Loader } from './Library'
 import Accounts from './Screens/Accounts'
+import { I18nextProvider } from 'react-i18next'
+import i18n from '../i18n'
 
 export default class App extends PureComponent {
   state = {
@@ -73,19 +75,21 @@ export default class App extends PureComponent {
       return <Loader />
     }
     return (
-      <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-        <Accounts
-          ref={nav => {
-            this.navigation = nav
-          }}
-          screenProps={{
-            deepLink,
-            clearDeepLink: () => this.clearDeepLink(),
-          }}
-        />
-        <KeyboardSpacer />
-        <FlashMessage position='top' />
-      </SafeAreaView>
+      <I18nextProvider i18n={i18n}>
+        <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
+          <Accounts
+            ref={nav => {
+              this.navigation = nav
+            }}
+            screenProps={{
+              deepLink,
+              clearDeepLink: () => this.clearDeepLink(),
+            }}
+          />
+          <KeyboardSpacer />
+          <FlashMessage position='top' />
+        </SafeAreaView>
+      </I18nextProvider>
     )
   }
 }

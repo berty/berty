@@ -6,6 +6,8 @@ import { Screen, Flex, Text, Header, Avatar } from '../../Library'
 import { border, borderBottom, marginHorizontal } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -73,12 +75,12 @@ const Item = fragments.Contact(
   },
 )
 
-export default class ListScreen extends Component {
+class ListScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Add members'
+        title={I18n.t('chats.add-members')}
         titleIcon='users'
         rightBtnIcon='check-circle'
         searchBar
@@ -170,3 +172,5 @@ export default class ListScreen extends Component {
     )
   }
 }
+
+export default withNamespaces()(ListScreen)

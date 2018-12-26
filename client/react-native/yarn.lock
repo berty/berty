@@ -564,6 +564,12 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
+"@babel/runtime@^7.1.2":
+  version "7.2.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.2.0.tgz#b03e42eeddf5898e00646e4c840fa07ba8dcad7f"
+  dependencies:
+    regenerator-runtime "^0.12.0"
+
 "@babel/template@^7.0.0", "@babel/template@^7.1.0", "@babel/template@^7.1.2":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.1.2.tgz#090484a574fef5a2d2d7726a674eceda5c5b5644"
@@ -1933,6 +1939,13 @@ create-react-context@0.2.2:
     fbjs "^0.8.0"
     gud "^1.0.0"
 
+create-react-context@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/create-react-context/-/create-react-context-0.2.3.tgz#9ec140a6914a22ef04b8b09b7771de89567cb6f3"
+  dependencies:
+    fbjs "^0.8.0"
+    gud "^1.0.0"
+
 cross-spawn@^5.0.1, cross-spawn@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-5.1.0.tgz#e8bd0efee58fcff6f8f94510a0a554bbfa235449"
@@ -3160,6 +3173,12 @@ has@^1.0.1, has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+hoist-non-react-statics@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-3.0.1.tgz#fba3e7df0210eb9447757ca1a7cb607162f0a364"
+  dependencies:
+    react-is "^16.3.2"
+
 hoist-non-react-statics@^2.2.0, hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.0:
   version "2.5.5"
   resolved "https://registry.yarnpkg.com/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
@@ -3183,6 +3202,12 @@ hosted-git-info@^2.1.4:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-2.7.1.tgz#97f236977bd6e125408930ff6de3eec6281ec047"
 
+html-parse-stringify2@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/html-parse-stringify2/-/html-parse-stringify2-2.0.1.tgz#dc5670b7292ca158b7bc916c9a6735ac8872834a"
+  dependencies:
+    void-elements "^2.0.1"
+
 http-errors@~1.6.2:
   version "1.6.3"
   resolved "http://registry.npmjs.org/http-errors/-/http-errors-1.6.3.tgz#8b55680bb4be283a0b5bf4ea2e38580be1d9320d"
@@ -3199,6 +3224,10 @@ http-signature@~1.2.0:
     assert-plus "^1.0.0"
     jsprim "^1.2.2"
     sshpk "^1.7.0"
+
+i18next@^13.0.0:
+  version "13.0.0"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-13.0.0.tgz#3d8de7ff3c2cf23cd6d91c4d5861c4756d8a73c6"
 
 iconv-lite@^0.4.17, iconv-lite@^0.4.24, iconv-lite@^0.4.4, iconv-lite@~0.4.13:
   version "0.4.24"
@@ -5088,6 +5117,19 @@ react-dom@16.4.2:
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
+react-i18next@^8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/react-i18next/-/react-i18next-8.4.0.tgz#e9f0c5b9938b155eaa6051360614719c08cae72f"
+  dependencies:
+    "@babel/runtime" "^7.1.2"
+    create-react-context "0.2.3"
+    hoist-non-react-statics "3.0.1"
+    html-parse-stringify2 "2.0.1"
+
+react-is@^16.3.2:
+  version "16.7.0"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.7.0.tgz#c1bd21c64f1f1364c6f70695ec02d69392f41bfa"
+
 react-is@^16.6.0-alpha.8af6728:
   version "16.6.0-alpha.8af6728"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.6.0-alpha.8af6728.tgz#3ce01f13f164b90a76ad902735834fc12d06e30e"
@@ -5155,6 +5197,10 @@ react-native-image-picker@^0.27.1:
 react-native-keyboard-spacer@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/react-native-keyboard-spacer/-/react-native-keyboard-spacer-0.4.1.tgz#46f18a320432098a25ea9fa89f5143dd254d332d"
+
+react-native-languages@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-languages/-/react-native-languages-3.0.1.tgz#a35cf89e69e6722205d96cf418411444c328e6c2"
 
 react-native-network-info@^4.0.0:
   version "4.0.0"
@@ -6481,6 +6527,10 @@ verror@1.10.0:
     assert-plus "^1.0.0"
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
+
+void-elements@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
 vue-eslint-parser@^2.0.2:
   version "2.0.3"

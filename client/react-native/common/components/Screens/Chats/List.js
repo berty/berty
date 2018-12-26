@@ -6,8 +6,10 @@ import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { conversation as utils } from '../../../utils'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
-const Item = fragments.Conversation(({ data, navigation }) => {
+const ItemBase = fragments.Conversation(({ data, navigation, t }) => {
   const { updatedAt, readAt } = data
   const isRead = new Date(readAt).getTime() > 0
   const isInvite = !isRead && new Date(updatedAt).getTime() <= 0
@@ -26,22 +28,24 @@ const Item = fragments.Conversation(({ data, navigation }) => {
         </Text>
         <Text color={colors.subtleGrey} tiny middle left bold={!isRead}>
           {isRead
-            ? 'No new message'
+            ? t('chats.no-new-messages')
             : isInvite
-              ? 'New conversation'
-              : 'You have a new message'}
+              ? t('chats.new-conversation')
+              : t('chats.new-message')}
         </Text>
       </Flex.Rows>
     </Flex.Cols>
   )
 })
 
+const Item = withNamespaces()(ItemBase)
+
 export default class ListScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
-        title='Chats'
+        title={I18n.t('chats.title')}
         titleIcon='message-circle'
         rightBtnIcon='edit'
         searchBar

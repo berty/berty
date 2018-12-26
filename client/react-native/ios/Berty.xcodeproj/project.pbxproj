@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -62,6 +61,7 @@
 		998384AC21C5339200739E0B /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9939FC3721C4045E0035F747 /* Lottie.framework */; };
 		998384AD21C5339200739E0B /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9939FC3721C4045E0035F747 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		998B6ADC2179E1B90029B33C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */; };
+		9B739150E7CB483DA4A73015 /* libRNLanguages-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AF2E7B686F48199DEE12B2 /* libRNLanguages-tvOS.a */; };
 		A01BCBB91C754A66BB19B7C5 /* libRCTRestart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA451D571EE54153BD6C7A36 /* libRCTRestart.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B40E0A9F7F7B4896A7D74589 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07047A03625844F59A6C0185 /* libRNImagePicker.a */; };
@@ -78,6 +78,7 @@
 		F8799D7A2136F44B003B9FD7 /* CoreModule.m in Sources */ = {isa = PBXBuildFile; fileRef = F8799D752136F3C5003B9FD7 /* CoreModule.m */; };
 		F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8799D782136F3EA003B9FD7 /* CoreModule.swift */; };
 		F8EF7F482136A10600FDCCB5 /* core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EF7F472136A10500FDCCB5 /* core.framework */; };
+		FAA74460343842B9897A0195 /* libRNLanguages.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 25D4C398936D46D188F94D87 /* libRNLanguages.a */; };
 		FCA390D83E0043E4B3C3DDBF /* libRNSVG-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A5CF2EBACA6944FB80758D67 /* libRNSVG-tvOS.a */; };
 /* End PBXBuildFile section */
 
@@ -474,6 +475,20 @@
 			remoteGlobalIDString = 94DDAC5C1F3D024300EED511;
 			remoteInfo = "RNSVG-tvOS";
 		};
+		F04C701E21D39CFD00E7FD49 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43BA67C9174044EB85A12EC4 /* RNLanguages.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNLanguages;
+		};
+		F04C702021D39CFD00E7FD49 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 43BA67C9174044EB85A12EC4 /* RNLanguages.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2D2A28471D9B043800D4039D;
+			remoteInfo = "RNLanguages-tvOS";
+		};
 		F09B392121C0115E000AA9A8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = DA7073E531C04F2A8B987F86 /* RNViewShot.xcodeproj */;
@@ -567,12 +582,14 @@
 		1C535EC78581401BA4695219 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
 		21CCBE643C8E4CB7906A9EB3 /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; };
 		229720DFD15E4E569BD1D6D2 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
+		25D4C398936D46D188F94D87 /* libRNLanguages.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNLanguages.a; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* Berty-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Berty-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* Berty-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Berty-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		315E18D636B840518CA9A54F /* RNImagePicker.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNImagePicker.xcodeproj; path = "../node_modules/react-native-image-picker/ios/RNImagePicker.xcodeproj"; sourceTree = "<group>"; };
 		400CAEE705C04D549AC5B5BF /* RNCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RNCamera.xcodeproj"; sourceTree = "<group>"; };
 		404393F653304CE5B3D2FECF /* libRNVectorIcons-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNVectorIcons-tvOS.a"; sourceTree = "<group>"; };
+		43BA67C9174044EB85A12EC4 /* RNLanguages.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNLanguages.xcodeproj; path = "../node_modules/react-native-languages/ios/RNLanguages.xcodeproj"; sourceTree = "<group>"; };
 		480E37922190872400BE10A5 /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		4852AC444E8740FEAA4DFAE9 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		486CFCF921C8FE9F00E7113B /* Notification.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
@@ -597,6 +614,7 @@
 		998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		99F33B395D4B4F3080F42DAA /* libRNViewShot.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNViewShot.a; sourceTree = "<group>"; };
 		9AAFBAF85DB74DEBB774026B /* libLottieReactNative.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libLottieReactNative.a; sourceTree = "<group>"; };
+		A1AF2E7B686F48199DEE12B2 /* libRNLanguages-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNLanguages-tvOS.a"; sourceTree = "<group>"; };
 		A3B480CF049A42D3B1CC815D /* ReactNativePermissions.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = ReactNativePermissions.xcodeproj; path = "../node_modules/react-native-permissions/ios/ReactNativePermissions.xcodeproj"; sourceTree = "<group>"; };
 		A5CF2EBACA6944FB80758D67 /* libRNSVG-tvOS.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = "libRNSVG-tvOS.a"; sourceTree = "<group>"; };
 		AA451D571EE54153BD6C7A36 /* libRCTRestart.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTRestart.a; sourceTree = "<group>"; };
@@ -669,6 +687,7 @@
 				0DE0D24C91BD4129BA607672 /* libRNViewShot.a in Frameworks */,
 				069ED191C07B47EB9B3D1A58 /* libRNDeviceInfo.a in Frameworks */,
 				7E5A2067F32748CCA009CD7B /* libRNFetchBlob.a in Frameworks */,
+				FAA74460343842B9897A0195 /* libRNLanguages.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -687,6 +706,7 @@
 				3FD46C36ED444780B7A88579 /* libRNVectorIcons-tvOS.a in Frameworks */,
 				FCA390D83E0043E4B3C3DDBF /* libRNSVG-tvOS.a in Frameworks */,
 				77F47068D2CA4705A0DF1B7A /* libRNDeviceInfo-tvOS.a in Frameworks */,
+				9B739150E7CB483DA4A73015 /* libRNLanguages-tvOS.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -892,6 +912,7 @@
 				DA7073E531C04F2A8B987F86 /* RNViewShot.xcodeproj */,
 				F21FCED0D1034C54ACF33F05 /* RNDeviceInfo.xcodeproj */,
 				7D5F34DA44DA43D69497F135 /* RNFetchBlob.xcodeproj */,
+				43BA67C9174044EB85A12EC4 /* RNLanguages.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -977,6 +998,8 @@
 				EA6D87ECC1124C58A5918D63 /* libRNDeviceInfo.a */,
 				FF901C50CB09437EA89C5241 /* libRNFetchBlob.a */,
 				5D668F1688A8479E8A548A0B /* libRNDeviceInfo-tvOS.a */,
+				25D4C398936D46D188F94D87 /* libRNLanguages.a */,
+				A1AF2E7B686F48199DEE12B2 /* libRNLanguages-tvOS.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -1030,6 +1053,15 @@
 			children = (
 				F04B5CB321B6B96C002AA715 /* libRNSVG.a */,
 				F04B5CB521B6B96C002AA715 /* libRNSVG-tvOS.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F04C701A21D39CFD00E7FD49 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F04C701F21D39CFD00E7FD49 /* libRNLanguages.a */,
+				F04C702121D39CFD00E7FD49 /* libRNLanguages-tvOS.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1324,6 +1356,10 @@
 				{
 					ProductGroup = 8D5E0FB0216E15690085BF34 /* Products */;
 					ProjectRef = 315E18D636B840518CA9A54F /* RNImagePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = F04C701A21D39CFD00E7FD49 /* Products */;
+					ProjectRef = 43BA67C9174044EB85A12EC4 /* RNLanguages.xcodeproj */;
 				},
 				{
 					ProductGroup = 8D5E0FAC216E15690085BF34 /* Products */;
@@ -1717,6 +1753,20 @@
 			remoteRef = F04B5CB421B6B96C002AA715 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		F04C701F21D39CFD00E7FD49 /* libRNLanguages.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNLanguages.a;
+			remoteRef = F04C701E21D39CFD00E7FD49 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F04C702121D39CFD00E7FD49 /* libRNLanguages-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRNLanguages-tvOS.a";
+			remoteRef = F04C702021D39CFD00E7FD49 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		F09B392221C0115E000AA9A8 /* libRNViewShot.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1947,6 +1997,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = BertyTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1960,6 +2011,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1996,6 +2049,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = BertyTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2009,6 +2063,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2057,6 +2113,7 @@
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = Berty/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -2116,6 +2173,7 @@
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = Berty/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -2169,6 +2227,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2181,6 +2240,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2226,6 +2287,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2238,6 +2300,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2282,6 +2346,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2294,6 +2359,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2338,6 +2405,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2350,6 +2418,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2433,6 +2503,7 @@
 					"$(REACT_HEADERS_PATH)",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = Berty/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -2477,12 +2548,15 @@
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = BertyTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2526,11 +2600,14 @@
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2576,11 +2653,14 @@
 					"$(SRCROOT)/../node_modules/react-native-permissions/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2672,6 +2752,7 @@
 					"$(SRCROOT)/../node_modules/lottie-react-native/src/ios/LottieReactNative",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = Berty/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -2719,6 +2800,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = BertyTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -2732,6 +2814,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2774,6 +2858,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -2786,6 +2871,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -2830,6 +2917,7 @@
 					"$(SRCROOT)/../node_modules/react-native-view-shot/ios",
 					"$(SRCROOT)/../node_modules/react-native-device-info/ios/RNDeviceInfo",
 					"$(SRCROOT)/../node_modules/rn-fetch-blob/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-languages/ios",
 				);
 				INFOPLIST_FILE = "Berty-tvOSTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -2842,6 +2930,8 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)/System/Library/Frameworks\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",

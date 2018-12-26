@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
 import { Header, Menu } from '../../../Library'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
-export default class List extends PureComponent {
+class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} title='About Berty' backBtn />,
+    header: <Header navigation={navigation} title={I18n.t('settings.about')} backBtn />,
     tabBarVisible: false,
   })
 
@@ -19,7 +21,7 @@ export default class List extends PureComponent {
   }
 
   render () {
-    const { navigation } = this.props
+    const { navigation, t } = this.props
     const { version } = this.state
     return (
       <View style={{ flex: 1 }}>
@@ -32,19 +34,19 @@ export default class List extends PureComponent {
           <Menu.Section>
             <Menu.Item
               icon='smartphone'
-              title='App version'
+              title={t('settings.version')}
               textRight={version}
             />
             <Menu.Item
               icon='check-circle'
-              title='Changelog'
+              title={t('settings.changelog')}
               onPress={() => navigation.push('about/changelog')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
               icon='info'
-              title='Learn more about Berty'
+              title={t('settings.learn-more')}
               onPress={() => navigation.push('about/more')}
             />
           </Menu.Section>
@@ -53,3 +55,5 @@ export default class List extends PureComponent {
     )
   }
 }
+
+export default withNamespaces()(List)
