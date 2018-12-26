@@ -1442,6 +1442,15 @@ models:
       weight:
 
 
+  BertyNodeTestErrorInput:
+    model: berty.tech/core/api/node.TestErrorInput
+    fields:
+      kind:
+  BertyNodeTestErrorInputPayload:
+    model: berty.tech/core/api/node.TestErrorInput
+    fields:
+      kind:
+
   BertyNodeProtocolsOutput:
     model: berty.tech/core/api/node.ProtocolsOutput
     fields:

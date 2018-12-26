@@ -722,6 +722,9 @@ type Query {
   TestPanic(
     T: Bool!
   ): BertyNodeVoid
+  TestError(
+    kind: String!
+  ): BertyNodeVoid
 }
   
 type Mutation {

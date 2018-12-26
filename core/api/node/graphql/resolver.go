@@ -608,6 +608,9 @@ func (r *queryResolver) AppVersion(ctx context.Context, T bool) (*node.AppVersio
 func (r *queryResolver) TestPanic(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.TestPanic(ctx, &node.Void{})
 }
+func (r *queryResolver) TestError(ctx context.Context, kind string) (*node.Void, error) {
+	return r.client.TestError(ctx, &node.TestErrorInput{Kind: kind})
+}
 func (r *queryResolver) TestLogBackgroundError(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.TestLogBackgroundError(ctx, &node.Void{})
 }

@@ -627,6 +627,7 @@ type ComplexityRoot struct {
 		TestLogBackgroundWarn  func(childComplexity int, T bool) int
 		TestLogBackgroundDebug func(childComplexity int, T bool) int
 		TestPanic              func(childComplexity int, T bool) int
+		TestError              func(childComplexity int, kind string) int
 	}
 
 	Subscription struct {
@@ -714,6 +715,7 @@ type QueryResolver interface {
 	TestLogBackgroundWarn(ctx context.Context, T bool) (*node.Void, error)
 	TestLogBackgroundDebug(ctx context.Context, T bool) (*node.Void, error)
 	TestPanic(ctx context.Context, T bool) (*node.Void, error)
+	TestError(ctx context.Context, kind string) (*node.Void, error)
 }
 type SubscriptionResolver interface {
 	CommitLogStream(ctx context.Context, T bool) (<-chan *node.CommitLog, error)
@@ -2158,6 +2160,21 @@ func field_Query_TestPanic_args(rawArgs map[string]interface{}) (map[string]inte
 		}
 	}
 	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Query_TestError_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["kind"]; ok {
+		var err error
+		arg0, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["kind"] = arg0
 	return args, nil
 
 }
@@ -4807,6 +4824,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.TestPanic(childComplexity, args["T"].(bool)), true
+
+	case "Query.TestError":
+		if e.complexity.Query.TestError == nil {
+			break
+		}
+
+		args, err := field_Query_TestError_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.TestError(childComplexity, args["kind"].(string)), true
 
 	case "Subscription.CommitLogStream":
 		if e.complexity.Subscription.CommitLogStream == nil {
@@ -17093,6 +17122,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_TestPanic(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "TestError":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_TestError(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "__type":
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
@@ -17711,6 +17746,37 @@ func (ec *executionContext) _Query_TestPanic(ctx context.Context, field graphql.
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Query().TestPanic(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Void)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_TestError(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_TestError_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().TestError(rctx, args["kind"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -20647,6 +20713,9 @@ type Query {
   ): BertyNodeVoid
   TestPanic(
     T: Bool!
+  ): BertyNodeVoid
+  TestError(
+    kind: String!
   ): BertyNodeVoid
 }
   

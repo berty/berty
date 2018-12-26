@@ -31,7 +31,6 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
-	"google.golang.org/grpc/status"
 )
 
 func WithRing(ring *zapring.Ring) NewOption {
@@ -117,10 +116,10 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 		}
 
 		serverStreamOpts := []grpc.StreamServerInterceptor{
-			grpc_recovery.StreamServerInterceptor(),
+			grpc_recovery.StreamServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
 		}
 		serverUnaryOpts := []grpc.UnaryServerInterceptor{
-			grpc_recovery.UnaryServerInterceptor(),
+			grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
 		}
 		if opts.Interceptors {
 			gqlLogger := zap.L().Named("vendor.grpc")
@@ -129,14 +128,12 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 				// grpc_prometheus.StreamServerInterceptor,
 				grpc_ctxtags.StreamServerInterceptor(),
 				grpc_zap.StreamServerInterceptor(gqlLogger),
-				grpc_recovery.StreamServerInterceptor(),
 			)
 			serverUnaryOpts = append(serverUnaryOpts,
 				// grpc_prometheus.UnaryServerInterceptor,
 				// grpc_auth.UnaryServerInterceptor(myAuthFunction),
 				grpc_ctxtags.UnaryServerInterceptor(),
 				grpc_zap.UnaryServerInterceptor(gqlLogger),
-				grpc_recovery.UnaryServerInterceptor(),
 			)
 
 			if a.tracer != nil {
@@ -146,6 +143,11 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 			}
 
 		}
+
+		// should be the last interceptor
+		serverUnaryOpts = append(serverUnaryOpts, errorcodes.UnaryServerInterceptor())
+		serverStreamOpts = append(serverStreamOpts, errorcodes.StreamServerInterceptor())
+
 		interceptors := []grpc.ServerOption{
 			grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
 			grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
@@ -228,14 +230,8 @@ func WithGQL(opts *GQLOptions) NewOption {
 				func(ctx context.Context, e error) *gqlerror.Error {
 					exportedError := graphql.DefaultErrorPresenter(ctx, e)
 
-					if grpcError, ok := status.FromError(e); ok {
-						details := grpcError.Details()
-						bertyErrorDetails, ok := details[0].(*errorcodes.BertyError)
-
-						if ok {
-							exportedError.Extensions = bertyErrorDetails.Extensions()
-						}
-					}
+					err := errorcodes.Convert(e)
+					exportedError.Extensions = err.Extensions()
 
 					return exportedError
 				},

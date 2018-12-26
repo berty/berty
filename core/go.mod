@@ -2,36 +2,22 @@ module berty.tech/core
 
 require (
 	cloud.google.com/go v0.30.0 // indirect
-	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21 // indirect
 	github.com/99designs/gqlgen v0.6.0
-	github.com/Yawning/chacha20 v0.0.0-20170904085104-e3b1f968fc63 // indirect
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/agnivade/levenshtein v1.0.1 // indirect
 	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 // indirect
-	github.com/aristanetworks/goarista v0.0.0-20181109020153-5faa74ffbed7 // indirect
 	github.com/brianvoe/gofakeit v3.13.0+incompatible
 	github.com/btcsuite/btcd v0.0.0-20181013004428-67e573d211ac // indirect
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/coreos/go-semver v0.2.0 // indirect
 	github.com/davidlazar/go-crypto v0.0.0-20170701192655-dcfb0a7ac018 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f // indirect
-	github.com/emicklei/proto v1.6.6 // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fd/go-nat v1.0.0 // indirect
 	github.com/gen2brain/beeep v0.0.0-20180718162406-4e430518395f
-	github.com/getlantern/context v0.0.0-20181106182922-539649cc3118 // indirect
-	github.com/getlantern/ema v0.0.0-20180718025023-42474605965c // indirect
-	github.com/getlantern/errors v0.0.0-20180829142810-e24b7f4ff7c7 // indirect
-	github.com/getlantern/golog v0.0.0-20170508214112-cca714f7feb5 // indirect
-	github.com/getlantern/hex v0.0.0-20160523043825-083fba3033ad // indirect
-	github.com/getlantern/hidden v0.0.0-20160523043807-d52a649ab33a // indirect
-	github.com/getlantern/lampshade v0.0.0-20181026012137-44db2076fd5b // indirect
-	github.com/getlantern/mtime v0.0.0-20170117193331-ba114e4a82b0 // indirect
-	github.com/getlantern/ops v0.0.0-20170904182230-37353306c908 // indirect
 	github.com/go-check/check v0.0.0-20180628173108-788fd7840127 // indirect
 	github.com/go-gormigrate/gormigrate v1.2.1
 	github.com/go-sql-driver/mysql v1.4.0 // indirect
-	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.0.0-rc.12
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
 	github.com/gofrs/uuid v3.1.0+incompatible
@@ -69,7 +55,6 @@ require (
 	github.com/libp2p/go-buffer-pool v0.1.1 // indirect
 	github.com/libp2p/go-conn-security v0.1.13 // indirect
 	github.com/libp2p/go-conn-security-multistream v0.1.13 // indirect
-	github.com/libp2p/go-floodsub v0.10.2
 	github.com/libp2p/go-flow-metrics v0.2.0 // indirect
 	github.com/libp2p/go-libp2p v6.0.19+incompatible
 	github.com/libp2p/go-libp2p-blankhost v0.3.13 // indirect
@@ -89,7 +74,6 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v2.0.6+incompatible
 	github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible
 	github.com/libp2p/go-libp2p-protocol v1.0.0
-	github.com/libp2p/go-libp2p-pubsub v0.10.2 // indirect
 	github.com/libp2p/go-libp2p-record v4.1.7+incompatible // indirect
 	github.com/libp2p/go-libp2p-routing v2.7.1+incompatible // indirect
 	github.com/libp2p/go-libp2p-secio v2.0.15+incompatible // indirect
@@ -125,10 +109,8 @@ require (
 	github.com/nicksnyder/go-i18n/v2 v2.0.0-beta.6
 	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/opentracing/opentracing-go v1.0.2
-	github.com/oxtoacart/bpool v0.0.0-20150712133111-4e1c5567d7c2 // indirect
 	github.com/pkg/errors v0.8.0
 	github.com/rs/cors v1.6.0
-	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sergi/go-diff v1.0.0 // indirect
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/smartystreets/goconvey v0.0.0-20180222194500-ef6db91d284a
@@ -152,17 +134,15 @@ require (
 	github.com/whyrusleeping/mafmt v0.0.0-20180627004827-1dc32401ee9f
 	github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30 // indirect
 	github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 // indirect
-	github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee // indirect
 	github.com/whyrusleeping/yamux v1.1.2
 	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f
 	go.uber.org/atomic v1.3.2 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
-	golang.org/x/exp v0.0.0-20181112044915-a3060d491354 // indirect
 	golang.org/x/net v0.0.0-20181207154023-610586996380
 	golang.org/x/text v0.3.0
 	google.golang.org/appengine v1.2.0 // indirect
-	google.golang.org/genproto v0.0.0-20181004005441-af9cb2a35e7f // indirect
+	google.golang.org/genproto v0.0.0-20181004005441-af9cb2a35e7f
 	google.golang.org/grpc v1.15.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect

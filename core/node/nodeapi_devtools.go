@@ -18,12 +18,11 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/core/pkg/errorcodes"
-
 	"github.com/brianvoe/gofakeit"
 	"github.com/gogo/protobuf/proto"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 
 	"berty.tech/core"
 	"berty.tech/core/api/node"
@@ -32,6 +31,7 @@ import (
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/deviceinfo"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/sql"
@@ -277,6 +277,70 @@ func (n *Node) TestPanic(ctx context.Context, input *node.Void) (*node.Void, err
 	defer span.Finish()
 
 	panic("panic from client")
+}
+
+func (n *Node) TestError(ctx context.Context, input *node.TestErrorInput) (*node.Void, error) {
+	span, _ := tracing.EnterFunc(ctx, input)
+	defer span.Finish()
+
+	errs := map[string]func() error{}
+	errs["basic"] = func() error { return fmt.Errorf("basic error") }
+	errs["wrap-basic"] = func() error { return errors.Wrap(errs["basic"](), "wrapmsg") }
+	errs["wrap-wrap-basic"] = func() error { return errors.Wrap(errs["wrap-basic"](), "wrapmsg") }
+	errs["wrap-wrap-wrap-basic"] = func() error { return errors.Wrap(errs["wrap-wrap-basic"](), "wrapmsg") }
+	errs["errcode-serialization"] = func() error { return errorcodes.ErrSerialization.New() }
+	errs["errcode-serialization-wrap-basic"] = func() error { return errorcodes.ErrSerialization.Wrap(errs["basic"]()) }
+	errs["errcode-serialization-wrap-wrap-basic"] = func() error { return errorcodes.ErrSerialization.Wrap(errs["wrap-basic"]()) }
+	errs["errcode-with-extensions"] = func() error { return errorcodes.ErrContactReqKey.New() }
+	errs["errcode-newargs"] = func() error {
+		return errorcodes.ErrContactReqKey.NewArgs(map[string]string{"hello": "world", "hi": "planet"})
+	}
+	errs["wrap-wrap-wrap"] = func() error { return errorcodes.ErrContactReqKey.Wrap(errs["errcode-serialization-wrap-wrap-basic"]()) }
+	errs["wrap-nil"] = func() error { return errorcodes.ErrContactReqKey.Wrap(nil) }
+	errs["wrap-basic-wrap"] = func() error { return errors.Wrap(errs["wrap-wrap-wrap"](), "wrapmsg") }
+	errs["badrequest1"] = func() error {
+		return errorcodes.WithDetails(
+			errorcodes.ErrValidationInput.New(),
+			&errdetails.BadRequest{FieldViolations: []*errdetails.BadRequest_FieldViolation{
+				{Field: "abcd", Description: "invalid input"},
+				{Field: "efgh", Description: "field should not be empty"},
+			}},
+		)
+	}
+	errs["badrequest2"] = func() error {
+		return errorcodes.ErrValidationInput.New().WithDetails(
+			&errdetails.BadRequest{FieldViolations: []*errdetails.BadRequest_FieldViolation{
+				{Field: "abcd", Description: "invalid input"},
+				{Field: "efgh", Description: "field should not be empty"},
+			}},
+		)
+	}
+	// FIXME: add placeholders
+
+	var err error
+
+	if input.Kind != "" {
+		if errFn, ok := errs[input.Kind]; ok {
+			err = errFn()
+		} else {
+			err = fmt.Errorf("unknown error kind: %s", input.Kind)
+		}
+	}
+
+	if err == nil {
+		// pick a random one
+		i := rand.Intn(len(errs))
+		var k string
+		for k = range errs {
+			if i == 0 {
+				break
+			}
+			i--
+		}
+		err = errs[k]()
+	}
+
+	return nil, err
 }
 
 func (n *Node) TestLogBackgroundError(ctx context.Context, input *node.Void) (*node.Void, error) {

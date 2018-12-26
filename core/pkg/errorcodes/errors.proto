@@ -1,21 +1,25 @@
 syntax = "proto3";
 
-package berty.errors;
+package berty.errorcodes;
 
 option go_package = "berty.tech/core/pkg/errorcodes";
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+//import "google/protobuf/any.proto";
 
-enum BertyErrorCodes {
+enum Code {
   option (gogoproto.goproto_enum_prefix) = false;
 
+
   ErrUndefined = 0;
-  ErrBase = 1;
-  ErrUnimplemented = 2;
-  ErrRandomGeneratorFailed = 3;
-  ErrUUIDGeneratorFailed = 4;
-  ErrSerialization = 5;
-  ErrDeserialization = 6;
+  OK = 1; // when wrapped error is nil
+  ErrBase = 2;
+  ErrUnimplemented = 3;
+  ErrRandomGeneratorFailed = 4;
+  ErrUUIDGeneratorFailed = 5;
+  ErrSerialization = 6;
+  ErrDeserialization = 7;
+  ErrPanic = 8;
 
   ErrEnvelope = 1000;
   ErrEnvelopeUntrusted = 1001;
@@ -104,14 +108,26 @@ enum BertyErrorCodes {
   ErrConversationNotEnoughMembers = 13002;
 }
 
+// Metadata is designed to be used as grpc status detail
+message Metadata {
+  // unique enum code number to identify the error
+  Code code = 1;
 
-message BertyError {
-  BertyErrorCodes code = 1;
-  repeated BertyErrorCodes ExtendedCodes = 2;
-  string message = 3;
-  map<string, string> placeholders = 4;
-  string url = 5;
-  string dev_info = 6;
+  // extended code (see hierarchy.go)
+  repeated Code extended_codes = 2;
 
-  BertyError outer = 7;
+  // used for templated errors (i18n)
+  map<string, string> placeholders = 3;
+
+  // nested/wraped errors
+  Metadata parent = 4;
+
+  // this field will be a duplicate for the top-level error and then skipped,
+  // but this field is particularly useful to get debugging info when looking up parent errors.
+  string message = 5;
+
+  // caller is the first line of a stacktrace.
+  string caller = 6;
+
+  // other ideas: UUID, date, severity/log-level
 }

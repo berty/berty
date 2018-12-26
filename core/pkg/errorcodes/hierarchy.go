@@ -4,7 +4,7 @@ import (
 	"google.golang.org/grpc/codes"
 )
 
-var errorHierarchy = map[BertyErrorCodes][]BertyErrorCodes{
+var errorHierarchy = map[Code][]Code{
 	ErrEnvelopeUntrusted:         {ErrEnvelope},
 	ErrEnvelopeNoDeviceFound:     {ErrEnvelope},
 	ErrEntityInput:               {ErrEntity},
@@ -33,8 +33,9 @@ var errorHierarchy = map[BertyErrorCodes][]BertyErrorCodes{
 	ErrContactReqMyself:          {ErrContactReq, ErrValidationMyself},
 }
 
-var grpcStatuses = map[BertyErrorCodes]codes.Code{
+var grpcStatuses = map[Code]codes.Code{
 	ErrEnvelope:                  codes.DataLoss,
+	ErrPanic:                     codes.Internal,
 	ErrEntityInput:               codes.InvalidArgument,
 	ErrEntityExists:              codes.Internal,
 	ErrNetAnotherClientConnected: codes.Internal,
