@@ -334,14 +334,12 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 		return nil, errorcodes.ErrDbDelete.Wrap(err)
 	}
 
-	conversation, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
-	if err != nil {
-		return nil, err
-	}
-
 	// remove 1-1 conversation
 	// don't return error if not found
-	n.ConversationRemove(ctx, &entity.Conversation{ID: conversation.ID})
+	conversation, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
+	if err == nil {
+		n.ConversationRemove(ctx, &entity.Conversation{ID: conversation.ID})
+	}
 
 	return contact, nil
 }
