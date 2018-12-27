@@ -58,13 +58,13 @@
     "name": "Name",
     "message-retention": "Message retention (not implem.)",
     "notifications": "Notifications",
-    "notifications-sound": "Soundn",
+    "notifications-sound": "Sound",
     "notifications-enabled": "Enabled",
     "notifications-mute": "Mute conversation",
     "notifications-override": "Override app notifications",
     "notifications-preview": "Message preview",
     "link-invite": "Invite to group with a link (not implem.)",
-    "delete": "Delete this conversation (not implem.)"
+    "delete": "Delete this conversation"
   },
   "contacts": {
     "title": "Contacts",

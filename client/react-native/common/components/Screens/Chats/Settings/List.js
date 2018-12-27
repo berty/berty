@@ -1,12 +1,12 @@
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
+import { RelayContext } from '../../../../relay'
 import { Screen, Menu, Header, Badge, Avatar } from '../../../Library'
 import { choosePicture } from '../../../../helpers/react-native-image-picker'
 import { colors } from '../../../../constants'
 import { conversation as utils } from '../../../../utils'
-import { RelayContext } from '../../../../relay'
-import { withNamespaces } from 'react-i18next'
-import I18n from 'i18next'
 
 class List extends PureComponent {
   static contextType = RelayContext
@@ -47,13 +47,13 @@ class List extends PureComponent {
 
   onEdit = () => {
     this.setState({ edit: true }, () =>
-      this.props.navigation.setParams({ state: this.state }),
+      this.props.navigation.setParams({ state: this.state })
     )
   }
 
   onSave = () => {
     this.setState({ edit: false }, () =>
-      this.props.navigation.setParams({ state: this.state }),
+      this.props.navigation.setParams({ state: this.state })
     )
   }
 
@@ -73,98 +73,127 @@ class List extends PureComponent {
     this.props.navigation.goBack(null)
   }
 
+  onDeleteConversation = async () => {
+    const conversation = this.props.navigation.getParam('conversation')
+    const { id } = conversation
+    try {
+      await this.context.mutations.conversationRemove({ id })
+      this.props.navigation.popToTop()
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   render () {
     const { navigation, t } = this.props
     const { edit } = this.state
     const conversation = this.props.navigation.getParam('conversation')
     const title = utils.getTitle(conversation)
     return (
-      <Screen>
-        <Menu absolute>
-          <Menu.Header
-            icon={
-              <Badge
-                background={colors.blue}
-                icon={edit && 'camera'}
-                medium
-                onPress={this.onChoosePicture}
-              >
-                <Avatar data={conversation} uri={this.state.uri} size={78} />
-              </Badge>
-            }
-            title={!edit && title}
-            description={!edit && 'NOT TRANSLATED Conversation started 2 days ago'}
-          />
-          {edit && (
-            <Menu.Section title={t('chats.name')}>
-              <Menu.Input value={title} />
-            </Menu.Section>
-          )}
-          {!edit && (
-            <Menu.Section>
-              <Menu.Item
-                icon='bell'
-                title={t('chats.notification')}
-                onPress={() => navigation.push('settings/notifications')}
-              />
-              <Menu.Item
-                icon='clock'
-                title={t('chats.message-retention')}
-                onPress={() => console.log('Message retention')}
-              />
-            </Menu.Section>
-          )}
-          {conversation.members.length <= 2 ? (
-            <Menu.Section>
-              <Menu.Item
-                icon='user'
-                title={t('contacts.details')}
-                onPress={() => console.log('Contact details')}
-              />
-            </Menu.Section>
-          ) : (
-            <Menu.Section title={`${conversation.members.length} members`}>
-              <Menu.Item
-                icon='user-plus'
-                title={t('chats.add-members')}
-                color={colors.blue}
-                onPress={() =>
-                  this.props.navigation.push('chats/add', {
-                    onSubmit: this.addMembers,
-                  })
-                }
-              />
-              <Menu.Item
-                icon='link'
-                title={t('chats.link-invite')}
-                color={colors.blue}
-                onPress={() => console.log('Invite to group with a link')}
-              />
-              {conversation.members.map(
-                ({ id, contact: { contactId, displayName, overrideDisplayName } }) => (
+      <RelayContext.Consumer>
+        {context =>
+          (this.context = context) && (
+            <Screen>
+              <Menu absolute>
+                <Menu.Header
+                  icon={
+                    <Badge
+                      background={colors.blue}
+                      icon={edit && 'camera'}
+                      medium
+                      onPress={this.onChoosePicture}
+                    >
+                      <Avatar
+                        data={conversation}
+                        uri={this.state.uri}
+                        size={78}
+                      />
+                    </Badge>
+                  }
+                  title={!edit && title}
+                  description={
+                    !edit && 'NOT TRANSLATED Conversation started 2 days ago'
+                  }
+                />
+                {edit && (
+                  <Menu.Section title={t('chats.name')}>
+                    <Menu.Input value={title} />
+                  </Menu.Section>
+                )}
+                {!edit && (
+                  <Menu.Section>
+                    <Menu.Item
+                      icon='bell'
+                      title={t('chats.notifications')}
+                      onPress={() =>
+                        navigation.push('chats/settings/notifications')
+                      }
+                    />
+                    <Menu.Item
+                      icon='clock'
+                      title={t('chats.message-retention')}
+                      onPress={() => console.log('Message retention')}
+                    />
+                  </Menu.Section>
+                )}
+                {conversation.members.length <= 2 ? (
+                  <Menu.Section>
+                    <Menu.Item
+                      icon='user'
+                      title={t('contacts.details')}
+                      onPress={() => console.log('Contact details')}
+                    />
+                  </Menu.Section>
+                ) : (
+                  <Menu.Section
+                    title={`${conversation.members.length} members`}
+                  >
+                    <Menu.Item
+                      icon='user-plus'
+                      title={t('chats.add-members')}
+                      color={colors.blue}
+                      onPress={() =>
+                        this.props.navigation.push('chats/add', {
+                          onSubmit: this.addMembers,
+                        })
+                      }
+                    />
+                    <Menu.Item
+                      icon='link'
+                      title={t('chats.link-invite')}
+                      color={colors.blue}
+                      onPress={() => console.log('Invite to group with a link')}
+                    />
+                    {conversation.members.map(member => {
+                      const { id, contact, contactId } = member
+                      const { displayName, overrideDisplayName } = contact || {
+                        displayName: '?????',
+                      }
+                      return (
+                        <Menu.Item
+                          key={id}
+                          icon={<Avatar data={{ id: contactId }} size={28} />}
+                          title={overrideDisplayName || displayName}
+                        />
+                      )
+                    })}
+                  </Menu.Section>
+                )}
+                <Menu.Section>
                   <Menu.Item
-                    key={id}
-                    icon={
-                      <Avatar data={{ id: contactId }} size={28} />
-                    }
-                    title={overrideDisplayName || displayName}
+                    icon='trash-2'
+                    title={t('chats.delete')}
+                    color={colors.error}
+                    onPress={this.onDeleteConversation}
                   />
-                ),
-              )}
-            </Menu.Section>
-          )}
-          <Menu.Section>
-            <Menu.Item
-              icon='trash-2'
-              title={t('chats.delete')}
-              color={colors.error}
-              onPress={() => console.log('Delete this conversation')}
-            />
-          </Menu.Section>
-        </Menu>
-      </Screen>
+                </Menu.Section>
+              </Menu>
+            </Screen>
+          )
+        }
+      </RelayContext.Consumer>
     )
   }
 }
 
-export default withNamespaces(List)
+export default withNamespaces()(List)

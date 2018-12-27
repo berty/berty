@@ -55,6 +55,23 @@ func EventByID(db *gorm.DB, id string) (*p2p.Event, error) {
 	return &contact, db.First(&contact, "ID = ?", id).Error
 }
 
+func ConversationOneToOne(db *gorm.DB, myselfID, contactID string) (*entity.Conversation, error) {
+	var err error
+
+	c := &entity.Conversation{}
+
+	// get 1-1 conversation with this contactID
+	if err = db.
+		Model(&entity.Conversation{}).
+		Where(&entity.Conversation{ID: myselfID + ":" + contactID}).
+		Or(&entity.Conversation{ID: contactID + ":" + myselfID}).
+		First(c).Error; err != nil {
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+	}
+
+	return c, nil
+}
+
 func CreateConversation(db *gorm.DB, conversation *entity.Conversation) (*entity.Conversation, error) {
 
 	// remove members duplicates and sort them by contact id

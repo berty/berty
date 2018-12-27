@@ -64,11 +64,16 @@ export default class Header extends PureComponent {
             align='center'
             style={[searchBar ? paddingBottom : {}]}
           >
-            {backBtn === true && (
+            {backBtn && (
               <HeaderButton
                 icon='arrow-left'
                 color={colorBtnLeft}
-                onPress={() => navigation.goBack(null)}
+                onPress={() => {
+                  if (typeof backBtn === 'function') {
+                    backBtn()
+                  }
+                  navigation.goBack(null)
+                }}
                 justify='start'
                 middle
               />
@@ -84,12 +89,9 @@ export default class Header extends PureComponent {
             >
               {title}
             </Text>
-            {rightBtn
-              ? <View>
-                {rightBtn}
-              </View>
-              : null}
-            {!rightBtn && rightBtnIcon !== null && (
+            {rightBtn ? <View>{rightBtn}</View> : null}
+            {!rightBtn &&
+              rightBtnIcon !== null && (
               <HeaderButton
                 icon={rightBtnIcon}
                 color={colorBtnRight}

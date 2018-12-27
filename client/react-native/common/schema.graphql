@@ -791,6 +791,9 @@ type Mutation {
   ConversationRead(
     id: ID!
   ): BertyEntityConversation
+  ConversationRemove(
+    id: ID!
+  ): BertyEntityConversation
   GenerateFakeData(
     T: Bool!
   ): BertyNodeVoid

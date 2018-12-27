@@ -601,6 +601,7 @@ type ComplexityRoot struct {
 		ConversationExclude    func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
 		ConversationAddMessage func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
 		ConversationRead       func(childComplexity int, id string) int
+		ConversationRemove     func(childComplexity int, id string) int
 		GenerateFakeData       func(childComplexity int, T bool) int
 		RunIntegrationTests    func(childComplexity int, name string) int
 		DebugRequeueEvent      func(childComplexity int, eventId string) int
@@ -690,6 +691,7 @@ type MutationResolver interface {
 	ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error)
 	ConversationRead(ctx context.Context, id string) (*entity.Conversation, error)
+	ConversationRemove(ctx context.Context, id string) (*entity.Conversation, error)
 	GenerateFakeData(ctx context.Context, T bool) (*node.Void, error)
 	RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error)
 	DebugRequeueEvent(ctx context.Context, eventId string) (*p2p.Event, error)
@@ -1352,6 +1354,21 @@ func field_Mutation_ConversationAddMessage_args(rawArgs map[string]interface{}) 
 }
 
 func field_Mutation_ConversationRead_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_ConversationRemove_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
@@ -4548,6 +4565,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ConversationRead(childComplexity, args["id"].(string)), true
+
+	case "Mutation.ConversationRemove":
+		if e.complexity.Mutation.ConversationRemove == nil {
+			break
+		}
+
+		args, err := field_Mutation_ConversationRemove_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ConversationRemove(childComplexity, args["id"].(string)), true
 
 	case "Mutation.GenerateFakeData":
 		if e.complexity.Mutation.GenerateFakeData == nil {
@@ -16536,6 +16565,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_ConversationAddMessage(ctx, field)
 		case "ConversationRead":
 			out.Values[i] = ec._Mutation_ConversationRead(ctx, field)
+		case "ConversationRemove":
+			out.Values[i] = ec._Mutation_ConversationRemove(ctx, field)
 		case "GenerateFakeData":
 			out.Values[i] = ec._Mutation_GenerateFakeData(ctx, field)
 		case "RunIntegrationTests":
@@ -16851,6 +16882,37 @@ func (ec *executionContext) _Mutation_ConversationRead(ctx context.Context, fiel
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().ConversationRead(rctx, args["id"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_ConversationRemove(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_ConversationRemove_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ConversationRemove(rctx, args["id"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -20781,6 +20843,9 @@ type Mutation {
     message: BertyEntityMessageInput
   ): BertyP2pEvent
   ConversationRead(
+    id: ID!
+  ): BertyEntityConversation
+  ConversationRemove(
     id: ID!
   ): BertyEntityConversation
   GenerateFakeData(

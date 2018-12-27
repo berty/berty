@@ -145,6 +145,22 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	return conversation, nil
 }
 
+func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	var err error
+
+	// get conversation
+	if err = n.sql(ctx).First(input).Error; err != nil {
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+	}
+
+	// remove conversation
+	if err = n.sql(ctx).Delete(input).Error; err != nil {
+		return nil, errorcodes.ErrDbDelete.Wrap(err)
+	}
+
+	return input, nil
+}
+
 // GetEvent implements berty.node.GetEvent
 func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
 	var span opentracing.Span
@@ -314,10 +330,18 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 	// remove from sql
 	sql := n.sql(ctx)
 	err := sql.Delete(contact).Error
-
 	if err != nil {
 		return nil, errorcodes.ErrDbDelete.Wrap(err)
 	}
+
+	conversation, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// remove 1-1 conversation
+	// don't return error if not found
+	n.ConversationRemove(ctx, &entity.Conversation{ID: conversation.ID})
 
 	return contact, nil
 }

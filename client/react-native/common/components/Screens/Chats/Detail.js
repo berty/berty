@@ -138,20 +138,6 @@ class Input extends PureComponent {
     input: '',
   }
 
-  async componentDidMount () {
-    const conversation = this.props.navigation.getParam('conversation')
-    await this.props.screenProps.context.mutations.conversationRead({
-      id: conversation.id,
-    })
-  }
-
-  async componentWillUnmount () {
-    const conversation = this.props.navigation.getParam('conversation')
-    await this.props.screenProps.context.mutations.conversationRead({
-      id: conversation.id,
-    })
-  }
-
   onSubmit = () => {
     const { input } = this.state
     this.setState({ input: '' }, async () => {
@@ -278,16 +264,33 @@ export default class Detail extends PureComponent {
       <Header
         navigation={navigation}
         title={utils.getTitle(navigation.getParam('conversation'))}
-        backBtn
         rightBtnIcon='settings'
         onPressRightBtn={() =>
           navigation.push('chats/settings', {
             conversation: navigation.getParam('conversation'),
           })
         }
+        backBtn={() => {
+          const backBtn = navigation.getParam('backBtn')
+          if (backBtn) {
+            backBtn()
+          }
+        }}
       />
     ),
   })
+
+  async componentDidMount () {
+    this.props.navigation.setParams({ backBtn: this.onConversationRead })
+    this.onConversationRead()
+  }
+
+  onConversationRead = async () => {
+    const conversation = this.props.navigation.getParam('conversation')
+    await this.props.screenProps.context.mutations.conversationRead({
+      id: conversation.id,
+    })
+  }
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
