@@ -47,13 +47,13 @@ class List extends PureComponent {
 
   onEdit = () => {
     this.setState({ edit: true }, () =>
-      this.props.navigation.setParams({ state: this.state }),
+      this.props.navigation.setParams({ state: this.state })
     )
   }
 
   onSave = () => {
     this.setState({ edit: false }, () =>
-      this.props.navigation.setParams({ state: this.state }),
+      this.props.navigation.setParams({ state: this.state })
     )
   }
 
@@ -93,7 +93,9 @@ class List extends PureComponent {
               </Badge>
             }
             title={!edit && title}
-            description={!edit && 'NOT TRANSLATED Conversation started 2 days ago'}
+            description={
+              !edit && 'NOT TRANSLATED Conversation started 2 days ago'
+            }
           />
           {edit && (
             <Menu.Section title={t('chats.name')}>
@@ -104,8 +106,8 @@ class List extends PureComponent {
             <Menu.Section>
               <Menu.Item
                 icon='bell'
-                title={t('chats.notification')}
-                onPress={() => navigation.push('settings/notifications')}
+                title={t('chats.notifications')}
+                onPress={() => navigation.push('chats/settings/notifications')}
               />
               <Menu.Item
                 icon='clock'
@@ -140,17 +142,19 @@ class List extends PureComponent {
                 color={colors.blue}
                 onPress={() => console.log('Invite to group with a link')}
               />
-              {conversation.members.map(
-                ({ id, contact: { contactId, displayName, overrideDisplayName } }) => (
+              {conversation.members.map(member => {
+                const { id, contact, contactId } = member
+                const { displayName, overrideDisplayName } = contact || {
+                  displayName: '?????',
+                }
+                return (
                   <Menu.Item
                     key={id}
-                    icon={
-                      <Avatar data={{ id: contactId }} size={28} />
-                    }
+                    icon={<Avatar data={{ id: contactId }} size={28} />}
                     title={overrideDisplayName || displayName}
                   />
-                ),
-              )}
+                )
+              })}
             </Menu.Section>
           )}
           <Menu.Section>
@@ -167,4 +171,4 @@ class List extends PureComponent {
   }
 }
 
-export default withNamespaces(List)
+export default withNamespaces()(List)

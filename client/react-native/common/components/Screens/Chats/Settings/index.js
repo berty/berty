@@ -4,10 +4,10 @@ import Notifications from './Notifications'
 
 export default createSubStackNavigator(
   {
-    'settings/list': List,
-    'settings/notifications': Notifications,
+    'chats/settings/list': List,
+    'chats/settings/notifications': Notifications,
   },
   {
-    initialRouteName: 'settings/list',
+    initialRouteName: 'chats/settings/list',
   }
 )

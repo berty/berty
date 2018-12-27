@@ -7,7 +7,13 @@ import I18n from 'i18next'
 
 class Notifications extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: <Header navigation={navigation} title={I18n.t('chats.notifications')} backBtn />,
+    header: (
+      <Header
+        navigation={navigation}
+        title={I18n.t('chats.notifications')}
+        backBtn
+      />
+    ),
   })
 
   state = {
@@ -104,4 +110,4 @@ class Notifications extends PureComponent {
   }
 }
 
-export default withNamespaces(Notifications)
+export default withNamespaces()(Notifications)

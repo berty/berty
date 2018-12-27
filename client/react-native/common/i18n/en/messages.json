@@ -58,7 +58,7 @@
     "name": "Name",
     "message-retention": "Message retention (not implem.)",
     "notifications": "Notifications",
-    "notifications-sound": "Soundn",
+    "notifications-sound": "Sound",
     "notifications-enabled": "Enabled",
     "notifications-mute": "Mute conversation",
     "notifications-override": "Override app notifications",
