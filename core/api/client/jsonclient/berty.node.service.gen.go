@@ -35,6 +35,7 @@ func init() {
 	registerUnary("berty.node.Conversation", NodeConversation)
 	registerUnary("berty.node.ConversationMember", NodeConversationMember)
 	registerUnary("berty.node.ConversationRead", NodeConversationRead)
+	registerUnary("berty.node.ConversationRemove", NodeConversationRemove)
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
 	registerUnary("berty.node.RunIntegrationTests", NodeRunIntegrationTests)
@@ -387,6 +388,18 @@ func NodeConversationRead(client *client.Client, ctx context.Context, jsonInput 
 		return nil, err
 	}
 	return client.Node().ConversationRead(ctx, &typedInput)
+}
+func NodeConversationRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "ConversationRemove"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput entity.Conversation
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	return client.Node().ConversationRemove(ctx, &typedInput)
 }
 func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
 	logger().Debug("client call",

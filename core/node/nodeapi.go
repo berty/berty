@@ -145,6 +145,22 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	return conversation, nil
 }
 
+func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	var err error
+
+	// get conversation
+	if err = n.sql(ctx).First(input).Error; err != nil {
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+	}
+
+	// remove conversation
+	if err = n.sql(ctx).Delete(input).Error; err != nil {
+		return nil, errorcodes.ErrDbDelete.Wrap(err)
+	}
+
+	return input, nil
+}
+
 // GetEvent implements berty.node.GetEvent
 func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
 	var span opentracing.Span

@@ -112,6 +112,10 @@ service Service {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
+  rpc ConversationRemove (berty.entity.Conversation) returns (berty.entity.Conversation) {
+    option (gql.graphql_input) = ".gql.Node";
+    option (gql.graphql_type) = "Mutation";
+  }
 
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);

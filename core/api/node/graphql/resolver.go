@@ -560,6 +560,14 @@ func (r *mutationResolver) ConversationRead(ctx context.Context, id string) (*en
 	})
 }
 
+func (r *mutationResolver) ConversationRemove(ctx context.Context, id string) (*entity.Conversation, error) {
+	id = strings.SplitN(id, ":", 2)[1]
+
+	return r.client.ConversationRemove(ctx, &entity.Conversation{
+		ID: id,
+	})
+}
+
 func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	if id != "" {
 		id = strings.SplitN(id, ":", 2)[1]
