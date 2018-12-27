@@ -94,6 +94,7 @@
     },
     "first-name": "First name",
     "last-name": "Last name",
+    "full-name": "Full name",
     "add-action": "Add contact",
     "add-action-feedback": "A request has been sent to this contact",
     "accept-action": "Accept",
@@ -121,7 +122,8 @@
     "all": "All",
     "received": "Received",
     "sent": "Sent",
-    "unknown": "Unknown"
+    "unknown": "Unknown",
+    "info-updated": "Contact information has been updated"
   },
   "setting-up": "Setting up Berty :)",
   "qrcode": "QR Code",

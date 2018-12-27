@@ -1,4 +1,5 @@
 import React from 'react'
+import { View } from 'react-native'
 import { QueryReducer } from '../relay'
 import { merge } from '../helpers'
 import RelayContext from '../relay/RelayContext'
@@ -38,20 +39,40 @@ export const WithContact = ({ id, children }) => <RelayContext.Consumer>{({ quer
   </QueryReducer>}
 </RelayContext.Consumer>
 
-export const CurrentUser = ({ children }) => <RelayContext.Consumer>{({ queries }) =>
-  <QueryReducer
-    query={queries.Contact.graphql}
-    variables={merge([
-      queries.Contact.defaultVariables,
-      {
-        filter: {
-          status: 42,
-        },
-      },
-    ])}
-  >
-    {(state, retry) => children(state.type === state.success ? state.data.Contact : null, state, retry)}
-  </QueryReducer>}
-</RelayContext.Consumer>
+export const withCurrentUser = (WrappedComponent, opts) => {
+  const { showOnlyLoaded } = opts || {}
+
+  class WithCurrentUser extends React.Component {
+    render = () => <RelayContext.Consumer>{({ queries }) =>
+      <QueryReducer
+        query={queries.Contact.graphql}
+        variables={merge([
+          queries.Contact.defaultVariables,
+          {
+            filter: {
+              status: 42,
+            },
+          },
+        ])}
+      >
+        {(state, retry) => (
+          (state.type === state.success || !showOnlyLoaded)
+            ? <WrappedComponent
+              {...this.props}
+              {...this.props.screenProps}
+              currentUser={state.type === state.success ? state.data.Contact : null}
+              currentUserState={state}
+              currentUserRetry={retry} />
+            : <View />
+        )}
+      </QueryReducer>}
+    </RelayContext.Consumer>
+  }
+
+  WithCurrentUser.displayName = `WithCurrentUser(${getDisplayName(WrappedComponent)})`
+  return WithCurrentUser
+}
+
+const getDisplayName = (WrappedComponent) => WrappedComponent.displayName || WrappedComponent.name || 'Component'
 
 export default defaultValuesContact

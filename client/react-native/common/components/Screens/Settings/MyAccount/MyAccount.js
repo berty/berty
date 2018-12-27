@@ -1,14 +1,85 @@
-import React, { PureComponent } from 'react'
-import { ActivityIndicator } from 'react-native'
-import { Screen, Menu, Header, Text, Badge, Flex, Avatar } from '../../../Library'
+import React from 'react'
+import { Screen, Menu, Header, Badge, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
-import { QueryReducer } from '../../../../relay'
 import { choosePicture } from '../../../../helpers/react-native-image-picker'
-import { graphql } from 'react-relay'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
+import { withCurrentUser } from '../../../../utils/contact'
+import RelayContext from '../../../../relay/RelayContext'
+import { showMessage } from 'react-native-flash-message'
 
-class MyAccount extends PureComponent {
+class MyAccountBase extends React.PureComponent {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      displayName: props.currentUser.displayName,
+      uri: '',
+    }
+  }
+
+  componentDidMount () {
+    this.props.navigation.setParams({
+      onSave: this.onSave,
+    })
+  }
+
+  onSave = async () => {
+    await this.props.context.mutations.contactUpdate({
+      ...this.props.currentUser,
+      displayName: this.state.displayName,
+    })
+
+    showMessage({
+      message: I18n.t('contacts.info-updated'),
+      type: 'info',
+      position: 'top',
+      icon: 'info',
+    })
+
+    this.props.navigation.goBack(null)
+  }
+
+  onChoosePicture = async event => this.setState(await choosePicture(event))
+
+  render = () => {
+    const { t, currentUser } = this.props
+    const { displayName } = this.state
+
+    return <Menu absolute>
+      <Menu.Header
+        icon={
+          <Badge
+            background={colors.blue}
+            icon='camera'
+            medium
+            onPress={this.onChoosePicture}
+          >
+            <Avatar data={currentUser} size={78} />
+          </Badge>
+        }
+      />
+      <Menu.Section title={t('contacts.full-name')}>
+        <Menu.Input
+          value={displayName}
+          onChangeText={displayName => this.setState({ displayName })}
+        />
+      </Menu.Section>
+      <Menu.Section>
+        <Menu.Item
+          icon='trash-2'
+          title={t('my-account.delete-my-account')}
+          color={colors.error}
+          onPress={() => console.error('delete my account: not implemented')}
+        />
+      </Menu.Section>
+    </Menu>
+  }
+}
+
+const MyAccountContent = withNamespaces()(withCurrentUser(MyAccountBase, { showOnlyLoaded: true }))
+
+export default class MyAccount extends  React.Component {
   static navigationOptions = ({ navigation }) => {
     const onSave = navigation.getParam('onSave')
     return {
@@ -25,135 +96,13 @@ class MyAccount extends PureComponent {
     }
   }
 
-  componentDidMount () {
-    this.props.navigation.setParams({
-      onSave: this.onSave,
-    })
-  }
-
-  state = {
-    uri: null,
-  }
-
-  onChoosePicture = async event => this.setState(await choosePicture(event))
-
-  onSave = () => {
-    this.setState({ edit: false }, () =>
-      this.props.navigation.setParams({ state: this.state })
-    )
-  }
-
-  static Menu = ({ navigation, data, state, onChoosePicture, t }) => {
-    const { displayName, overrideDisplayName } = data
-    return (
-      <Menu absolute>
-        <Menu.Header
-          icon={
-            <Badge
-              background={colors.blue}
-              icon='camera'
-              medium
-              onPress={onChoosePicture}
-            >
-              <Avatar data={data} size={78} />
-            </Badge>
-          }
-        />
-        <Menu.Section title={t('contacts.first-name')}>
-          <Menu.Input
-            value={(overrideDisplayName || displayName).split(' ')[0] || ''}
-          />
-        </Menu.Section>
-        <Menu.Section title={t('contacts.last-name')}>
-          <Menu.Input
-            value={(overrideDisplayName || displayName).split(' ')[1] || ''}
-          />
-        </Menu.Section>
-        <Menu.Section>
-          <Menu.Item
-            icon='trash-2'
-            title={t('my-account.delete-my-account')}
-            color={colors.error}
-            onPress={() => console.error('delete my account: not implemented')}
-          />
-        </Menu.Section>
-      </Menu>
-    )
-  }
-
   render () {
-    const { t } = this.props
-
-    return (
-      <Screen>
-        <QueryReducer
-          query={graphql`
-            query MyAccountSettingsQuery($filter: BertyEntityContactInput) {
-              ContactList(
-                filter: $filter
-                first: 1
-                orderBy: ""
-                orderDesc: false
-              ) {
-                edges {
-                  node {
-                    id
-                    displayName
-                    overrideDisplayName
-                  }
-                }
-              }
-            }
-          `}
-          variables={{
-            filter: {
-              id: '',
-              status: 42,
-              displayName: '',
-              displayStatus: '',
-              overrideDisplayName: '',
-              overrideDisplayStatus: '',
-            },
-          }}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return (
-                  <Flex.Rows justify='center' align='center'>
-                    <ActivityIndicator size='large' />
-                  </Flex.Rows>
-                )
-              case state.success:
-                return (
-                  <MyAccount.Menu
-                    navigation={this.props.navigation}
-                    data={state.data.ContactList.edges[0].node}
-                    state={this.state}
-                    onChoosePicture={this.onChoosePicture}
-                    t={t}
-                  />
-                )
-              case state.error:
-                return (
-                  <Text
-                    background={colors.error}
-                    color={colors.white}
-                    medium
-                    middle
-                    center
-                    self='center'
-                  >
-                    {t('fatal-unexpected-error')}
-                  </Text>
-                )
-            }
-          }}
-        </QueryReducer>
-      </Screen>
-    )
+    return <Screen>
+      <RelayContext.Consumer>
+        {context =>
+          <MyAccountContent navigation={this.props.navigation} context={context} />
+        }
+      </RelayContext.Consumer>
+    </Screen>
   }
 }
-
-export default withNamespaces()(MyAccount)

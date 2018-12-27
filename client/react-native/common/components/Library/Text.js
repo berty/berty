@@ -352,7 +352,7 @@ export class ForegroundText extends PureComponent {
   }
 
   render () {
-    const { icon, input, children, multiline, onSubmit, flip } = this.props
+    const { icon, input, children, multiline, onSubmit, onChangeText, value, flip } = this.props
     const numberOfLines = typeof multiline === 'number' ? multiline : undefined
 
     const styles = ForegroundText.getStyles(this.props)
@@ -370,8 +370,10 @@ export class ForegroundText extends PureComponent {
             placeholder={children || input.placeholder}
             placeholderTextColor={colors.subtleGrey}
             onSubmitEditing={onSubmit}
+            onChangeText={onChangeText || (() => {})}
             multiline={!!multiline}
             numberOfLines={numberOfLines}
+            value={value}
           />
         ) : (
           <TextNative

@@ -87,6 +87,7 @@ export default class Menu extends Component {
         color,
         children,
         onPress,
+        onChangeText,
         onDelete,
         boldLeft,
         boldRight,
@@ -103,16 +104,14 @@ export default class Menu extends Component {
             <Flex.Cols justify='start' size={5}>
               {children || (
                 <Text
-                  input={
-                    input && {
-                      value,
-                    }
-                  }
+                  input={input}
+                  value={value}
                   left
                   small
                   icon={icon}
                   color={color || colors.textBlack}
                   align='center'
+                  onChangeText={onChangeText}
                   bold={boldLeft ? true : null}
                 >
                   {title}
