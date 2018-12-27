@@ -120,7 +120,8 @@
     "delete": "Delete this contact",
     "all": "All",
     "received": "Received",
-    "sent": "Sent"
+    "sent": "Sent",
+    "unknown": "Unknown"
   },
   "setting-up": "Setting up berty :)",
   "qrcode": "QR Code",
