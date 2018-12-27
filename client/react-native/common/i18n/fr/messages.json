@@ -64,7 +64,7 @@
     "notifications-override": "Paramètres spécifiques à la conversation",
     "notifications-preview": "Aperçu des messages",
     "link-invite": "Inviter à rejoindre la conversation par un lien (pas implem.)",
-    "delete": "Supprimer cette conversation (pas implem.)"
+    "delete": "Supprimer cette conversation"
   },
   "contacts": {
     "title": "Contacts",
