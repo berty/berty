@@ -5,7 +5,7 @@ import {
 } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Icon, Screen, Text } from '../../Library'
+import { Flex, Header, Icon, Screen, Text, Avatar } from '../../Library'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
@@ -25,13 +25,14 @@ class Message extends React.PureComponent {
   }
 
   render () {
-    const conversation = this.props.conversation
-    const contactId = this.props.data.senderId
-    const isMyself =
-      conversation.members.find(m => m.contactId === contactId).contact
-        .status === 42
+    const { conversation, data, t } = this.props
 
-    const { data } = this.props
+    const contactId = data.senderId
+    const contact = (conversation.members.find(m => m.contactId === contactId) || {}).contact
+
+    const contactName = contact ? contact.displayName : t('contacts.unknown')
+    const isMyself = contact && contact.status === 42
+    const isOneToOne = conversation.members.length <= 2
 
     // TODO: implement message seen
     // if (new Date(this.props.data.seenAt).getTime() <= 0) {
@@ -42,6 +43,18 @@ class Message extends React.PureComponent {
         align={isMyself ? 'end' : 'start'}
         style={{ marginHorizontal: 10, marginVertical: 10 }}
       >
+        {!isMyself && !isOneToOne
+          ? <Flex.Cols
+            style={{
+              marginRight: 42,
+              zIndex: 2,
+            }}
+          >
+            <Avatar size={22} data={contact} style={{ margin: 0, marginBottom: -4, marginRight: 4 }} />
+            <Text tiny color={colors.fakeBlack} padding={{ top: 6 }}>{contactName}</Text>
+          </Flex.Cols>
+          : null}
+
         <Text
           padding={{
             vertical: 6,
@@ -58,6 +71,7 @@ class Message extends React.PureComponent {
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
+
           {parseEmbedded(data.attributes).message.text}
         </Text>
         <Text
@@ -66,7 +80,7 @@ class Message extends React.PureComponent {
           tiny
           color={colors.subtleGrey}
           margin={{
-            top: 6,
+            top: 0,
             bottom: 6,
             [isMyself ? 'left' : 'right']: 42,
           }}
@@ -77,19 +91,16 @@ class Message extends React.PureComponent {
               name={
                 new Date(data.ackedAt).getTime() > 0 ? 'check-circle' : 'circle'
               }
+              size={10}
             />
           ) : null}{' '}
-          <Icon
-            name={new Date(data.seenAt).getTime() > 0 ? 'eye' : 'eye-off'}
-          />{' '}
-          {/* TODO: used for debugging, remove me */}
         </Text>
       </Flex.Rows>
     )
   }
 }
 
-const MessageContainer = fragments.Event(Message)
+const MessageContainer = fragments.Event(withNamespaces()(Message))
 
 class TextInputBase extends PureComponent {
   state = {
