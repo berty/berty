@@ -15,6 +15,7 @@ require (
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fd/go-nat v1.0.0 // indirect
 	github.com/gen2brain/beeep v0.0.0-20180718162406-4e430518395f
+	github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a // indirect
 	github.com/go-check/check v0.0.0-20180628173108-788fd7840127 // indirect
 	github.com/go-gormigrate/gormigrate v1.2.1
 	github.com/go-sql-driver/mysql v1.4.0 // indirect

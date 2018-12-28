@@ -183,7 +183,8 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(len(in), ShouldEqual, 0)
 				So(len(out), ShouldEqual, 2)
-				So(out[1].Kind, ShouldEqual, p2p.Kind_ContactRequest)
+				So(out[0].Kind, ShouldEqual, p2p.Kind_ContactRequest)
+				So(out[1].Kind, ShouldEqual, p2p.Kind_ConversationInvite)
 
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 0, 0, 0, 0})
 
@@ -207,11 +208,20 @@ func TestWithEnqueuer(t *testing.T) {
 
 				everythingWentFine()
 			})
+			Convey("Alice has a conversation with Bob", FailureHalts, func() {
+				shouldIContinue(t)
+
+				conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 1)
+				So(len(conversations[0].Members), ShouldEqual, 2)
+
+				everythingWentFine()
+			})
 			Convey("Alice sends a ContactRequest event to Bob", FailureHalts, func() {
 				shouldIContinue(t)
 
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
-				envelope = <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
@@ -235,7 +245,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -262,7 +272,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
 				So(attrs.Me.Devices, ShouldBeNil)
 				So(attrs.IntroText, ShouldEqual, "hello, I want to chat!")
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 1, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 0, 0, 0})
 
 				everythingWentFine()
 			})
@@ -286,7 +296,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 1, 0, 0, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 1, 0, 0, 0, 0})
 				// FIXME: check that event is acked in db
 
 				everythingWentFine()
@@ -309,6 +319,29 @@ func TestWithEnqueuer(t *testing.T) {
 
 				everythingWentFine()
 			})
+			Convey("Bob has a conversation with Alice", FailureHalts, func() {
+				shouldIContinue(t)
+
+				conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+				So(err, ShouldBeNil)
+				So(len(conversations), ShouldEqual, 1)
+				So(len(conversations[0].Members), ShouldEqual, 2)
+
+				everythingWentFine()
+			})
+
+			// Convey("Bob has a conversation with Alice", FailureHalts, func() {
+			// 	shouldIContinue(T)
+
+			// 	_, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			// 	So(err, ShouldBeNil)
+			// 	// So(len(conversations), ShouldEqual, 1)
+			// 	// So(len(conversations[0].Members), ShouldEqual, 2)
+			// 	// So(conversations[0].Members[0].ContactID, ShouldEqual, alice.node.UserID())
+			// 	// So(conversations[0].Members[1].ContactID, ShouldEqual, bob.node.UserID())
+
+			// 	everythingWentFine()
+			// })
 			Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
 				shouldIContinue(t)
 
@@ -325,7 +358,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				time.Sleep(time.Second * 1)
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 1, 2, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 1, 2, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -347,7 +380,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 4, 1, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 4, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -368,7 +401,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
 				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 1, 1, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 1, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -391,7 +424,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(res, ShouldResemble, &node.Void{})
 
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 3, 0, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{4, 3, 0, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -412,7 +445,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(attrs.Me.DisplayName, ShouldEqual, "Bob")
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
-				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 0, 2, 0, 0})
+				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{4, 1, 0, 2, 0, 0})
 
 				everythingWentFine()
 			})
@@ -420,6 +453,7 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				envelope := <-alice.networkDriver.(*mock.Enqueuer).Queue()
+				envelope = <-alice.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 

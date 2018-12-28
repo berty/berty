@@ -65,8 +65,6 @@ export default (fragment, alias, args) => {
     const node =
       store.get(data.id) ||
       store.create(data.id, connectionHelper.getEdgeNodeType())
-    node.setValue(data.id, 'id')
-    node.setValue(data[field], 'field')
 
     const cursor =
       field === 'id'

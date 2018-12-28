@@ -62,6 +62,6 @@ message ConversationMember {
   //
 
   Contact contact = 100;
-  string conversation_id = 101 [(gogoproto.customname) = "ConversationID"]; // backref
-  string contact_id = 102 [(gogoproto.customname) = "ContactID"];
+  string conversation_id = 101 [(gql.graphql_id) = true, (gogoproto.customname) = "ConversationID"]; // backref
+  string contact_id = 102 [(gql.graphql_id) = true, (gogoproto.customname) = "ContactID"];
 }
