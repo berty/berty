@@ -15,9 +15,9 @@ import (
 )
 
 func NewOutgoingEvent(ctx context.Context, sender, receiver string, kind Kind) *Event {
-	var span opentracing.Span
-	span, _ = tracing.EnterFunc(ctx, sender, receiver, kind)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, sender, receiver, kind)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	return &Event{
 		SenderAPIVersion: Version,

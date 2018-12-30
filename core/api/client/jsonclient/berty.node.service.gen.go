@@ -10,7 +10,10 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	"berty.tech/core/pkg/tracing"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 func init() {
@@ -58,16 +61,24 @@ func init() {
 	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
 }
 func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ID"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ID")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ID(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ID(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeCommitLogStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -154,76 +165,124 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 	return streamProxy, nil
 }
 func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "GetEvent"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.GetEvent")
 	var typedInput p2p.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().GetEvent(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().GetEvent(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "EventSeen"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.EventSeen")
 	var typedInput p2p.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().EventSeen(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().EventSeen(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ContactRequest"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactRequest")
 	var typedInput node.ContactRequestInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ContactRequest(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactRequest(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeContactAcceptRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ContactAcceptRequest"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactAcceptRequest")
 	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ContactAcceptRequest(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactAcceptRequest(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeContactRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ContactRemove"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactRemove")
 	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ContactRemove(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactRemove(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ContactUpdate"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactUpdate")
 	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ContactUpdate(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactUpdate(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -254,40 +313,64 @@ func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byt
 	return streamProxy, nil
 }
 func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "Contact"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.Contact")
 	var typedInput node.ContactInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().Contact(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().Contact(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeContactCheckPublicKey(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ContactCheckPublicKey"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ContactCheckPublicKey")
 	var typedInput node.ContactInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ContactCheckPublicKey(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ContactCheckPublicKey(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationCreate"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationCreate")
 	var typedInput node.ConversationCreateInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ConversationCreate(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationCreate(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversationList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -318,208 +401,344 @@ func NodeConversationList(client *client.Client, ctx context.Context, jsonInput 
 	return streamProxy, nil
 }
 func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationInvite"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationInvite")
 	var typedInput node.ConversationManageMembersInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ConversationInvite(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationInvite(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversationExclude(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationExclude"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationExclude")
 	var typedInput node.ConversationManageMembersInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ConversationExclude(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationExclude(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversationAddMessage(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationAddMessage"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationAddMessage")
 	var typedInput node.ConversationAddMessageInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ConversationAddMessage(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationAddMessage(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversation(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "Conversation"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.Conversation")
 	var typedInput entity.Conversation
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().Conversation(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().Conversation(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversationMember(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationMember"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationMember")
 	var typedInput entity.ConversationMember
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ConversationMember(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationMember(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversationRead(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationRead"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationRead")
 	var typedInput entity.Conversation
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ConversationRead(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationRead(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeConversationRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "ConversationRemove"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationRemove")
 	var typedInput entity.Conversation
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().ConversationRemove(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationRemove(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "HandleEvent"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.HandleEvent")
 	var typedInput p2p.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().HandleEvent(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().HandleEvent(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeGenerateFakeData(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "GenerateFakeData"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.GenerateFakeData")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().GenerateFakeData(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().GenerateFakeData(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeRunIntegrationTests(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "RunIntegrationTests"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.RunIntegrationTests")
 	var typedInput node.IntegrationTestInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().RunIntegrationTests(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().RunIntegrationTests(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeDebugPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "DebugPing"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DebugPing")
 	var typedInput node.PingDestination
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().DebugPing(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().DebugPing(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeDebugRequeueEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "DebugRequeueEvent"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DebugRequeueEvent")
 	var typedInput node.EventIDInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().DebugRequeueEvent(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().DebugRequeueEvent(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeDebugRequeueAll(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "DebugRequeueAll"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DebugRequeueAll")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().DebugRequeueAll(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().DebugRequeueAll(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeDeviceInfos(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "DeviceInfos"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DeviceInfos")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().DeviceInfos(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().DeviceInfos(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeAppVersion(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "AppVersion"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.AppVersion")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().AppVersion(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().AppVersion(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodePeers(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "Peers"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.Peers")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().Peers(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().Peers(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "Protocols"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.Protocols")
 	var typedInput network.Peer
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().Protocols(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().Protocols(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeLogStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -606,64 +825,104 @@ func NodeLogfileRead(client *client.Client, ctx context.Context, jsonInput []byt
 	return streamProxy, nil
 }
 func NodeTestLogBackgroundError(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "TestLogBackgroundError"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.TestLogBackgroundError")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().TestLogBackgroundError(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().TestLogBackgroundError(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeTestLogBackgroundWarn(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "TestLogBackgroundWarn"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.TestLogBackgroundWarn")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().TestLogBackgroundWarn(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().TestLogBackgroundWarn(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeTestLogBackgroundDebug(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "TestLogBackgroundDebug"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.TestLogBackgroundDebug")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().TestLogBackgroundDebug(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().TestLogBackgroundDebug(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeTestPanic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "TestPanic"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.TestPanic")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().TestPanic(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().TestPanic(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeTestError(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "TestError"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.TestError")
 	var typedInput node.TestErrorInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.Node().TestError(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.Node().TestError(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func NodeMonitorBandwidth(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",

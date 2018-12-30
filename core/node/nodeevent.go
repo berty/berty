@@ -11,8 +11,9 @@ import (
 )
 
 func (n *Node) EnqueueNodeEvent(ctx context.Context, kind node.Kind, attributes proto.Message) {
-	span, _ := tracing.EnterFunc(ctx, kind, attributes)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, kind, attributes)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	event, err := node.NewEvent(kind, attributes)
 	if err != nil {

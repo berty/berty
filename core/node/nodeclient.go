@@ -11,8 +11,9 @@ import (
 )
 
 func (n *Node) EnqueueClientEvent(ctx context.Context, event *p2p.Event) error {
-	span, _ := tracing.EnterFunc(ctx, event)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if err := event.Validate(); err != nil {
 		return errors.Wrap(err, "invalid event")
@@ -32,11 +33,11 @@ type clientEventSubscriber struct {
 
 // EventStream implements berty.node.EventStream
 func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_EventStreamServer) error {
-	span, _ := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 
 	logger().Debug("EventStream connected", zap.Stringer("input", input))
-
 	sub := clientEventSubscriber{
 		filter: func(e *p2p.Event) bool {
 			if input.Filter == nil {
@@ -84,8 +85,9 @@ type clientCommitLogsSubscriber struct {
 }
 
 func (n *Node) CommitLogStream(input *node.Void, stream node.Service_CommitLogStreamServer) error {
-	span, _ := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 
 	logger().Debug("CommitLogStream connected", zap.Stringer("input", input))
 

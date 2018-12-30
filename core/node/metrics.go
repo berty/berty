@@ -17,13 +17,15 @@ func (n *Node) Peers(ctx context.Context, _ *node.Void) (*network.Peers, error) 
 }
 
 func (n *Node) MonitorPeers(_ *node.Void, stream node.Service_MonitorPeersServer) error {
-	span, ctx := tracing.EnterFunc(stream.Context())
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context())
+	defer tracer.Finish()
+	ctx := tracer.Context()
 
 	cerr := make(chan error, 1)
 	n.networkMetrics.MonitorPeers(func(p *network.Peer, err error) error {
-		span, _ := tracing.EnterFunc(ctx, p, err)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(ctx, p, err)
+		defer tracer.Finish()
+
 		if err != nil {
 			cerr <- err
 			return err
@@ -42,14 +44,15 @@ func (n *Node) MonitorPeers(_ *node.Void, stream node.Service_MonitorPeersServer
 
 // Monitor bandwidth globally with the given interval
 func (n *Node) MonitorBandwidth(input *network.BandwidthStats, stream node.Service_MonitorBandwidthServer) error {
-	span, ctx := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	ctx := tracer.Context()
 
 	cerr := make(chan error, 1)
 
 	handler := func(bs *network.BandwidthStats, err error) error {
-		span, _ := tracing.EnterFunc(ctx, bs, err)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(ctx, bs, err)
+		defer tracer.Finish()
 
 		if err != nil {
 			cerr <- err

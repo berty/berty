@@ -6,7 +6,6 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/tracing"
-	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 )
 
@@ -23,9 +22,9 @@ func WithNetworkMetrics(metrics network.Metrics) NewNodeOption {
 }
 
 func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, driver)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, driver)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	// FIXME: use a locking system
 

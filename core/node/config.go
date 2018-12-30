@@ -26,8 +26,9 @@ func WithRing(ring *zapring.Ring) NewNodeOption {
 
 func WithInitConfig() NewNodeOption {
 	return func(n *Node) {
-		span, ctx := tracing.EnterFunc(n.rootContext)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(n.rootContext)
+		defer tracer.Finish()
+		ctx := tracer.Context()
 
 		// get config from sql
 		config, err := n.Config(ctx)
@@ -55,8 +56,9 @@ func WithInitConfig() NewNodeOption {
 
 func WithConfig() NewNodeOption {
 	return func(n *Node) {
-		span, ctx := tracing.EnterFunc(n.rootContext)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(n.rootContext)
+		defer tracer.Finish()
+		ctx := tracer.Context()
 
 		// get config from sql
 		config, err := n.Config(ctx)
@@ -93,8 +95,9 @@ func WithConfig() NewNodeOption {
 }
 
 func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if n.crypto == nil {
 		return nil, errorcodes.ErrCrypto.Wrap(errors.New("unable to get crypto instance"))
@@ -157,8 +160,9 @@ func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
 
 // Config gets config from database
 func (n *Node) Config(ctx context.Context) (*entity.Config, error) {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	var config []*entity.Config
 

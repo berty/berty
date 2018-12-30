@@ -3,17 +3,16 @@ package node
 import (
 	"context"
 
-	"berty.tech/core/pkg/errorcodes"
-
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
-	opentracing "github.com/opentracing/opentracing-go"
 )
 
 func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact, kind p2p.Kind) *p2p.Event {
-	span, ctx := tracing.EnterFunc(ctx, destination, kind)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, destination, kind)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination.ID, kind)
 	event.ID = n.NewID()
@@ -21,8 +20,9 @@ func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact,
 }
 
 func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Conversation, kind p2p.Kind) *p2p.Event {
-	span, ctx := tracing.EnterFunc(ctx, destination, kind)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, destination, kind)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, "", kind)
 	event.ConversationID = destination.ID
@@ -32,9 +32,9 @@ func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Con
 }
 
 func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, event)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if err := event.Validate(); err != nil {
 		return errorcodes.ErrEventData.Wrap(err)
@@ -49,9 +49,9 @@ func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event) error
 }
 
 func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, to)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, to)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	event := n.NewContactEvent(ctx, to, p2p.Kind_ContactShareMe)
 	if err := event.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered()}); err != nil {
@@ -65,8 +65,9 @@ func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
 }
 
 func (n *Node) NewSenderAliasEvent(ctx context.Context, destination string, aliases []*entity.SenderAlias) (*p2p.Event, error) {
-	span, ctx := tracing.EnterFunc(ctx, destination, aliases)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, destination, aliases)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, p2p.Kind_SenderAliasUpdate)
 	event.ID = n.NewID()
@@ -78,8 +79,9 @@ func (n *Node) NewSenderAliasEvent(ctx context.Context, destination string, alia
 }
 
 func (n *Node) NewSeenEvent(ctx context.Context, destination string, ids []string) (*p2p.Event, error) {
-	span, ctx := tracing.EnterFunc(ctx, destination, ids)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, destination, ids)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, p2p.Kind_Seen)
 	event.ID = n.NewID()
