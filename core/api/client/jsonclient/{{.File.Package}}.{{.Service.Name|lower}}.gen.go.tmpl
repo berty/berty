@@ -12,6 +12,7 @@ import (
         "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
         {{ end -}}
 	"berty.tech/core/api/client"
+        "google.golang.org/grpc"
 )
 
 {{- range $svc := .File.Service}}
@@ -30,7 +31,7 @@ import (
 
     {{ range $method := .Method}}
       {{if and (not .ClientStreaming) (not .ServerStreaming)}}
-      func {{$file.Package|splitList "."|last|title}}{{$method.Name}}(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+      func {{$file.Package|splitList "."|last|title}}{{$method.Name}}(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -40,7 +41,7 @@ import (
         {{ $in := $method.InputType | getMessageType $file }}
         var typedInput {{$in.GoType "."}}
         if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-              return nil, err
+              return nil, nil, nil, err
         }
 
 	var header, trailer metadata.MD
@@ -54,7 +55,7 @@ import (
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
 
-	return ret, err
+        return ret, header, trailer, err
       }
     {{- end}}
     {{if and (not .ClientStreaming) (.ServerStreaming)}}

@@ -141,14 +141,14 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 
 	/*
 		// enqueue fake incoming event
-		in := n.NewContactEvent(&entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
-		if err := n.EnqueueClientEvent(in); err != nil {
+		in := n.NewContactEvent(ctx, &entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
+		if err := n.EnqueueClientEvent(ctx, in); err != nil {
 			return nil, err
 		}
 
 		// enqueue fake outgoing event
-		out := n.NewContactEvent(&entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
-		if err := n.EnqueueOutgoingEvent(out); err != nil {
+		out := n.NewContactEvent(ctx, &entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
+		if err := n.EnqueueOutgoingEvent(ctx, out); err != nil {
 			return nil, err
 		}
 	*/
