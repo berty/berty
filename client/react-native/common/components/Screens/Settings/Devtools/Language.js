@@ -20,7 +20,7 @@ class Language extends PureComponent {
       <Menu.Section customMarginTop={1}>
         {Object.entries(languages).map(([k, v]) => <Menu.Item
           icon={this.props.lng === k ? 'check-circle' : 'circle'}
-          title={v}
+          title={`${v.localName} - ${v.englishName}`}
           key={k}
           onPress={() => this.setLanguage(k)}
         />

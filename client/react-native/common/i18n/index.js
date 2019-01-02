@@ -1,19 +1,17 @@
 import i18n from 'i18next'
 import { reactI18nextModule } from 'react-i18next'
 import ReactNativeLanguages from 'react-native-languages'
-import { AsyncStorage } from 'react-native'
-
-import en from './en/messages.json'
-import fr from './fr/messages.json'
+import { I18nManager, AsyncStorage } from 'react-native'
 
 import { languages } from './languages'
 
+I18nManager.allowRTL(true)
+
+const isRTL = () => i18n.dir(i18n.language) === 'rtl'
+
 const options = {
   fallbackLng: 'en',
-  resources: {
-    en: { translation: en },
-    fr: { translation: fr },
-  },
+  resources: languages,
   lng: ReactNativeLanguages.language,
   interpolation: { escapeValue: false }, // not needed for react
   react: {
@@ -25,6 +23,8 @@ const options = {
 i18n
   .use(reactI18nextModule) // passes i18n down to react-i18next
   .init(options, () => {
+    I18nManager.forceRTL(isRTL())
+
     AsyncStorage.getItem('@BertyApp:i18n-language', (err, language) => {
       if (err) {
         return
@@ -43,6 +43,8 @@ i18n.on('languageChanged', language => {
     return
   }
 
+  I18nManager.forceRTL(isRTL())
+
   AsyncStorage.getItem('@BertyApp:i18n-language', (_, oldLanguage) => {
     if (oldLanguage === language) {
       return
@@ -53,4 +55,4 @@ i18n.on('languageChanged', language => {
 })
 
 export default i18n
-export { languages }
+export { languages, isRTL }

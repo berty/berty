@@ -1,8 +1,6 @@
 import { Animated, Easing, Platform } from 'react-native'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, createBottomTabNavigator } from 'react-navigation'
 import React from 'react'
-
-import createTabNavigator from 'react-navigation-deprecated-tab-navigator/src/createTabNavigator'
 
 import { EventListFilterModal } from './Settings/Devtools/EventList'
 import { Icon } from '../Library'
@@ -31,7 +29,7 @@ const TabBarIcon = (tintColor, routeName, badgeValue) => {
   )
 }
 
-export const tabs = createTabNavigator(
+export const tabs = createBottomTabNavigator(
   {
     contacts: {
       screen: Contacts,
@@ -56,7 +54,6 @@ export const tabs = createTabNavigator(
     initialRouteName: 'chats',
     swipeEnabled: false,
     animationEnabled: true,
-    tabBarPosition: 'bottom',
     navigationOptions: ({ navigation, screenProps }) => {
       let badge = null
 

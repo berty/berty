@@ -352,14 +352,14 @@ export class ForegroundText extends PureComponent {
   }
 
   render () {
-    const { icon, input, children, multiline, onSubmit } = this.props
+    const { icon, input, children, multiline, onSubmit, flip } = this.props
     const numberOfLines = typeof multiline === 'number' ? multiline : undefined
 
     const styles = ForegroundText.getStyles(this.props)
     return (
       <Fragment>
         {icon && typeof icon === 'string' ? (
-          <Icon name={icon} style={styles.icon} />
+          <Icon name={icon} style={styles.icon} flip={flip} />
         ) : (
           icon && <Flex.Rows style={styles.iconView}>{icon}</Flex.Rows>
         )}
