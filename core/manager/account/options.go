@@ -21,7 +21,7 @@ import (
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
@@ -91,9 +91,16 @@ func WithInitOnly() NewOption {
 
 func WithJaegerAddrName(addr string, name string) NewOption {
 	return func(a *Account) error {
-		var err error
-		a.tracer, a.tracingCloser, err = jaeger.InitTracer(addr, name)
-		return err
+		go func() {
+		re:
+			var err error
+			a.tracer, a.tracingCloser, err = jaeger.InitTracer(addr, name)
+			if err != nil {
+				logger().Error("jaeger init error", zap.Error(err))
+				goto re
+			}
+		}()
+		return nil
 	}
 }
 
