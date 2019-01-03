@@ -113,6 +113,7 @@ clean:
 
 .PHONY: generate_local
 generate_local: $(GENERATION_TARGETS)
+	gofmt -w -s `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
 
 .PHONY: generate_prepare
 generate_prepare:

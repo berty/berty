@@ -95,7 +95,7 @@ jobs:
               git checkout . && \
               make generate_prepare clean && \
               make generate_local && \
-              git checkout core/go.mod && \
+              git checkout go.mod && \
               git status | cat && \
               git diff -w | cat && \
               git diff-index -w --quiet HEAD -- \
