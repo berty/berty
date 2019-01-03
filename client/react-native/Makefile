@@ -15,9 +15,24 @@ BUILD ?= .build
 IOS_UDID := ''
 IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 IOS_BUILD := $(BUILD)/ios
+
 # @TODO: find a better way to pass thoses arguments >
+
+# fastlane match
 MATCH_ENTERPRISE_TEAM_ID ?=
 MATCH_COMPANY_TEAM_ID ?=
+
+MATCH_PROVISIONING_PROFILE_ADHOC ?= 'match AdHoc chat.berty.ios.staff'
+MATCH_PROVISIONING_PROFILE_DEBUG ?= 'match Development chat.berty.ios.debug'
+MATCH_PROVISIONING_PROFILE_HOUSE ?= 'match InHouse chat.berty.ios.yolo'
+MATCH_PROVISIONING_PROFILE_RELEASE ?= 'match AppStore chat.berty.ios'
+
+# ios bundle ID
+
+IOS_BUNDLE_ID_ADHOC ?= chat.berty.ios.staff
+IOS_BUNDLE_ID_DEBUG ?= chat.berty.ios.debug
+IOS_BUNDLE_ID_HOUSE ?= chat.berty.ios.yolo
+IOS_BUNDLE_ID_RELEASE ?= chat.berty.ios
 
 # android related env
 ANDROID_VERSION ?= $(shell git rev-list --all --count)
@@ -262,37 +277,37 @@ version.ios: version
 	plutil -replace CFBundleShortVersionString -string $(IOS_VERSION) $(IOS)/Berty/Info.plist
 
 fastlane.match.development:
-	time bundle exec fastlane run match type:development app_identifier:chat.berty.ios team_id:$(MATCH_COMPANY_TEAM_ID)
+	time bundle exec fastlane run match type:development app_identifier:$(IOS_BUNDLE_ID_DEBUG) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 fastlane.match.appstore:
-	time bundle exec fastlane run match type:appstore app_identifier:chat.berty.ios team_id:$(MATCH_COMPANY_TEAM_ID)
+	time bundle exec fastlane run match type:appstore app_identifier:$(IOS_BUNDLE_ID_RELEASE) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 fastlane.match.adhoc:
-	time bundle exec fastlane run match force_for_new_devices:true type:adhoc app_identifier:chat.berty.ios team_id:$(MATCH_COMPANY_TEAM_ID)
+	time bundle exec fastlane run match force_for_new_devices:true type:adhoc app_identifier:$(IOS_BUNDLE_ID_ADHOC) team_id:$(MATCH_COMPANY_TEAM_ID)
 
 fastlane.match.enterprise:
-	time bundle exec fastlane run match type:enterprise app_identifier:chat.berty.house.ios team_id:$(MATCH_ENTERPRISE_TEAM_ID)
+	time bundle exec fastlane run match type:enterprise app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(MATCH_ENTERPRISE_TEAM_ID)
 
 fastlane.setup_circle:
 	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
 
 	# fetch app store profile
 	bundle exec fastlane run match type:appstore \
-									app_identifier:chat.berty.ios \
+									app_identifier:$(IOS_BUNDLE_ID_RELEASE) \
 									readonly:true keychain_name:$(KEYCHAIN_NAME) \
 									keychain_password:$(KEYCHAIN_PASSWORD) \
 									team_id:"$(MATCH_COMPANY_TEAM_ID)"
 
 	# fetch adhoc profile
 	bundle exec fastlane run match type:adhoc \
-									app_identifier:chat.berty.ios \
+									app_identifier:$(IOS_BUNDLE_ID_ADHOC) \
 									readonly:true keychain_name:$(KEYCHAIN_NAME) \
 									keychain_password:$(KEYCHAIN_PASSWORD) \
 									team_id:"$(MATCH_COMPANY_TEAM_ID)"
 
 	# fetch enterprise profile
 	bundle exec fastlane run match type:enterprise \
-									app_identifier:chat.berty.house.ios \
+									app_identifier:$(IOS_BUNDLE_ID_HOUSE) \
 									readonly:true keychain_name:$(KEYCHAIN_NAME) \
 									keychain_password:$(KEYCHAIN_PASSWORD) \
 									team_id:"$(MATCH_ENTERPRISE_TEAM_ID)"
@@ -305,8 +320,8 @@ fastlane.ios.debug:
 
 	GYM_CLEAN=false \
 	GYM_OPTION_METHOD=development \
-	GYM_OPTION_APP_ID=chat.berty.ios \
-	GYM_OPTION_PROVISIONING_PROFILE='match Development chat.berty.ios' \
+	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_DEBUG) \
+	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_DEBUG) \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
 	GYM_PROJECT=ios/Berty.xcodeproj \
@@ -319,8 +334,8 @@ fastlane.ios.adhoc:
 
 	GYM_CLEAN=false \
 	GYM_OPTION_METHOD=ad-hoc \
-	GYM_OPTION_APP_ID=chat.berty.ios \
-	GYM_OPTION_PROVISIONING_PROFILE='match AdHoc chat.berty.ios' \
+	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_ADHOC) \
+	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_ADHOC) \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
 	GYM_PROJECT=ios/Berty.xcodeproj \
@@ -339,8 +354,8 @@ fastlane.ios.house:
 
 	GYM_CLEAN=true \
 	GYM_OPTION_METHOD=enterprise \
-	GYM_OPTION_APP_ID=chat.berty.house.ios \
-	GYM_OPTION_PROVISIONING_PROFILE='match InHouse chat.berty.house.ios' \
+	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_HOUSE) \
+	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_HOUSE) \
 	GYM_OUTPUT_NAME=$(NAME) \
 	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
 	GYM_PROJECT=ios/Berty.xcodeproj \
@@ -355,6 +370,29 @@ fastlane.ios.house:
 	# extract build informations
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
+fastlane.ios.release:
+	mkdir -p $(IOS_BUILD)
+
+	GYM_CLEAN=true \
+	GYM_OPTION_METHOD=app-store \
+	GYM_OPTION_APP_ID=$(IOS_BUNDLE_ID_RELEASE) \
+	GYM_OPTION_PROVISIONING_PROFILE=$(MATCH_PROVISIONING_PROFILE_RELEASE) \
+	GYM_OUTPUT_NAME=$(NAME) \
+	GYM_OUTPUT_DIRECTORY=$(IOS_BUILD) \
+	GYM_PROJECT=ios/Berty.xcodeproj \
+	GYM_SCHEME=house \
+	GYM_SKIP_PROFILE_DETECTION=true \
+	GYM_INCLUDE_SYMBOLS=false \
+		time bundle exec fastlane ios build --verbose
+
+	# test if ipa has been correctly exported
+	test -f $(IOS_BUILD)/$(NAME).ipa
+
+	# extract build informations
+	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
+
+fastlane.ios.release.appstore: fastlane.ios.release
+	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
 fastlane.android.build:
 	mkdir -p $(ANDROID_BUILD)
@@ -367,7 +405,3 @@ fastlane.android.build:
 
 	# check if apk is correctly signed
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
-
-fastlane.ios.release:
-	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
-##############################

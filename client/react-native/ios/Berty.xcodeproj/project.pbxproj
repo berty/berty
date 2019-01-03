@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -2128,7 +2129,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.debug;
 				PRODUCT_NAME = Berty;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2190,7 +2191,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
 				PRODUCT_NAME = Berty;
-				PROVISIONING_PROFILE = "cc9cd83e-751b-4542-8a1a-9a6469467be5";
+				PROVISIONING_PROFILE = "180f67c5-ba82-4ef0-ba95-228b27fcf162";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
 				REACT_HEADERS_PATH = "";
 				REACT_LIBRARY_PATH = "";
@@ -2455,7 +2456,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Berty technologies (WMBQ84HN4T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Berty Technologies (WMBQ84HN4T)";
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2518,10 +2519,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.house.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.yolo;
 				PRODUCT_NAME = Berty;
-				PROVISIONING_PROFILE = "cf48c0b3-552a-4656-949b-b3c5b99d08ac";
-				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.house.ios";
+				PROVISIONING_PROFILE = "9fce9842-13d9-44c0-877f-f1bd4f500c5e";
+				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				REACT_LIBRARY_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
@@ -2700,7 +2701,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Berty technologies (WMBQ84HN4T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Berty Technologies (WMBQ84HN4T)";
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -2767,10 +2768,10 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.staff;
 				PRODUCT_NAME = Berty;
-				PROVISIONING_PROFILE = "be3bc5ce-0dd6-4a4c-b70a-f482266bd1d3";
-				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios";
+				PROVISIONING_PROFILE = "afb27267-0513-4c17-9d35-a62fedd441bf";
+				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				REACT_LIBRARY_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
@@ -3008,7 +3009,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Berty technologies (WMBQ84HN4T)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Berty Technologies (WMBQ84HN4T)";
 				COPY_PHASE_STRIP = YES;
 				DEVELOPMENT_TEAM = WMBQ84HN4T;
 				ENABLE_NS_ASSERTIONS = NO;
