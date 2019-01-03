@@ -7,13 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/core/pkg/errorcodes"
-
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/network"
-	"berty.tech/core/network/p2p/p2putil"
-	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
-	"berty.tech/core/pkg/tracing"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
@@ -33,9 +26,15 @@ import (
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
-	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
+
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/network"
+	"berty.tech/core/network/p2p/p2putil"
+	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
+	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/pkg/tracing"
 )
 
 const ID = "api/p2p/methods"
@@ -83,9 +82,9 @@ type Driver struct {
 var _ network.Driver = (*Driver)(nil)
 
 func NewDriver(ctx context.Context, opts ...Option) (*Driver, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	var cfg driverConfig
 	if err := cfg.Apply(opts...); err != nil {
@@ -97,9 +96,9 @@ func NewDriver(ctx context.Context, opts ...Option) (*Driver, error) {
 
 // New create a new driver
 func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, cfg)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, cfg)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	host, err := libp2p.New(ctx, cfg.libp2pOpt...)
 	if err != nil {
@@ -203,8 +202,9 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 }
 
 func (d *Driver) Start(ctx context.Context) error {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	if err := d.gs.Serve(d.listener); err != nil {
 		logger().Error("Listen error", zap.Error(err))
@@ -224,8 +224,9 @@ func (d *Driver) logHostInfos() {
 }
 
 func (d *Driver) getPeerInfo(ctx context.Context, addr string) (*pstore.PeerInfo, error) {
-	span, _ := tracing.EnterFunc(ctx, addr)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, addr)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	iaddr, err := ipfsaddr.ParseString(addr)
 	if err != nil {
@@ -236,8 +237,9 @@ func (d *Driver) getPeerInfo(ctx context.Context, addr string) (*pstore.PeerInfo
 }
 
 func (d *Driver) Protocols(ctx context.Context, p *network.Peer) ([]string, error) {
-	span, _ := tracing.EnterFunc(ctx, p)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, p)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	peerid, err := peer.IDB58Decode(p.ID)
 	if err != nil {
@@ -252,8 +254,9 @@ func (d *Driver) Addrs() []ma.Multiaddr {
 }
 
 func (d *Driver) ID(ctx context.Context) *network.Peer {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	addrs := make([]string, len(d.host.Addrs()))
 	for i, addr := range d.host.Addrs() {
@@ -268,8 +271,9 @@ func (d *Driver) ID(ctx context.Context) *network.Peer {
 }
 
 func (d *Driver) Close(ctx context.Context) error {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	// FIXME: save cache to speedup next connections
 	var err error
@@ -297,16 +301,17 @@ func (d *Driver) Close(ctx context.Context) error {
 }
 
 func (d *Driver) Peerstore(ctx context.Context) pstore.Peerstore {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	return d.host.Peerstore()
 }
 
 func (d *Driver) Bootstrap(ctx context.Context, sync bool, addrs ...string) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, sync, addrs)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, sync, addrs)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	bf := d.BootstrapPeerAsync
 	if sync {
@@ -323,9 +328,9 @@ func (d *Driver) Bootstrap(ctx context.Context, sync bool, addrs ...string) erro
 }
 
 func (d *Driver) BootstrapPeerAsync(ctx context.Context, addr string) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, addr)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, addr)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	go func() {
 		if err := d.BootstrapPeer(ctx, addr); err != nil {
@@ -337,9 +342,9 @@ func (d *Driver) BootstrapPeerAsync(ctx context.Context, addr string) error {
 }
 
 func (d *Driver) BootstrapPeer(ctx context.Context, bootstrapAddr string) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, bootstrapAddr)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, bootstrapAddr)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if bootstrapAddr == "" {
 		return nil
@@ -388,9 +393,9 @@ func (d *Driver) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 }
 
 func (d *Driver) Dial(ctx context.Context, peerID string, pid protocol.ID) (net.Conn, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, peerID, pid)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, peerID, pid)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	return p2putil.NewDialer(d.host, pid)(ctx, peerID)
 }
@@ -409,18 +414,17 @@ func (d *Driver) Find(ctx context.Context, pid peer.ID) (pstore.PeerInfo, error)
 }
 
 func (d *Driver) Emit(ctx context.Context, e *p2p.Envelope) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, e)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, e)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	return d.EmitTo(ctx, e.GetChannelID(), e)
 }
 
 func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, channel, e)
-
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, channel, e)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	ss, err := d.FindSubscribers(ctx, channel)
 	if err != nil {
@@ -435,10 +439,9 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	for i, s := range ss {
 		success[i] = make(chan bool, 1)
 		go func(pi pstore.PeerInfo, index int, done chan bool) {
-			var gospan opentracing.Span
-			var goctx context.Context
-			gospan, goctx = tracing.EnterFunc(ctx, index)
-			defer gospan.Finish()
+			gotracer := tracing.EnterFunc(ctx, index)
+			defer gotracer.Finish()
+			goctx := tracer.Context()
 
 			peerID := pi.ID.Pretty()
 			if pi.ID == d.host.ID() {

@@ -7,7 +7,9 @@ import (
 
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/p2p"
-	"go.uber.org/zap"
+	"berty.tech/core/pkg/tracing"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 func init() {
@@ -15,26 +17,42 @@ func init() {
 	registerUnary("berty.p2p.Ping", P2pPing)
 }
 func P2pHandleEnvelope(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "HandleEnvelope"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.p2p.HandleEnvelope")
 	var typedInput p2p.Envelope
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.P2p().HandleEnvelope(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.P2p().HandleEnvelope(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }
 func P2pPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
-	logger().Debug("client call",
-		zap.String("service", "Service"),
-		zap.String("method", "Ping"),
-		zap.String("input", string(jsonInput)),
-	)
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.p2p.Ping")
 	var typedInput p2p.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
-	return client.P2p().Ping(ctx, &typedInput)
+	var header, trailer metadata.MD
+	ret, err := client.P2p().Ping(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, err
 }

@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 
 	"github.com/gogo/protobuf/proto"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 
@@ -27,17 +26,18 @@ func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 }
 
 func (n *Node) ID(ctx context.Context, _ *node.Void) (*network.Peer, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	return n.networkDriver.ID(ctx), nil
 }
 
 func (n *Node) Protocols(ctx context.Context, p *network.Peer) (*node.ProtocolsOutput, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, p)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, p)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	defer n.asyncWaitGroup(ctx)()
 
 	pids, err := n.networkDriver.Protocols(ctx, p)
@@ -51,25 +51,28 @@ func (n *Node) Protocols(ctx context.Context, p *network.Peer) (*node.ProtocolsO
 }
 
 func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	defer n.asyncWaitGroup(ctx)()
 
 	return &p2p.Void{}, n.handleEnvelope(ctx, input)
 }
 
 func (n *Node) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	return &p2p.Void{}, nil
 }
 
 func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	defer n.asyncWaitGroup(ctx)()
 
 	event, err := n.OpenEnvelope(ctx, input)
@@ -83,9 +86,10 @@ func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
 }
 
 func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.Event, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, envelope)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, envelope)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	defer n.asyncWaitGroup(ctx)()
 
 	trusted := false

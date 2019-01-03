@@ -22,8 +22,9 @@ func WithCrypto(cryptoImpl keypair.Interface) NewNodeOption {
 
 func WithSoftwareCrypto() NewNodeOption {
 	return func(n *Node) {
-		span, ctx := tracing.EnterFunc(n.rootContext)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(n.rootContext)
+		defer tracer.Finish()
+		ctx := tracer.Context()
 
 		var privBytes []byte
 

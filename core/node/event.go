@@ -11,33 +11,34 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
 func (n *Node) AsyncWait(ctx context.Context) {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	n.asyncWaitGroupInst.Wait()
 }
 
 // HandleEvent implements berty.p2p.HandleEvent (synchronous unary)
 func (n *Node) HandleEvent(ctx context.Context, input *p2p.Event) (*node.Void, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	defer n.asyncWaitGroup(ctx)()
 
 	return &node.Void{}, n.handleEvent(ctx, input)
 }
 
 func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
-	defer span.Finish()
 	defer n.asyncWaitGroup(ctx)()
 	n.handleMutex(ctx)()
 

@@ -7,16 +7,6 @@ import (
 	"strings"
 	"sync"
 
-	nodeapi "berty.tech/core/api/node"
-	gql "berty.tech/core/api/node/graphql"
-	graph "berty.tech/core/api/node/graphql/graph/generated"
-	"berty.tech/core/network/mock"
-	"berty.tech/core/network/netutil"
-	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/pkg/jaeger"
-	"berty.tech/core/pkg/notification"
-	"berty.tech/core/pkg/tracing"
-	"berty.tech/core/pkg/zapring"
 	"github.com/99designs/gqlgen/graphql"
 	gqlhandler "github.com/99designs/gqlgen/handler"
 	"github.com/gorilla/websocket"
@@ -31,6 +21,17 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+
+	nodeapi "berty.tech/core/api/node"
+	gql "berty.tech/core/api/node/graphql"
+	graph "berty.tech/core/api/node/graphql/graph/generated"
+	"berty.tech/core/network/mock"
+	"berty.tech/core/network/netutil"
+	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/pkg/jaeger"
+	"berty.tech/core/pkg/notification"
+	"berty.tech/core/pkg/tracing"
+	"berty.tech/core/pkg/zapring"
 )
 
 func WithRing(ring *zapring.Ring) NewOption {
@@ -74,8 +75,9 @@ func WithBanner(banner string) NewOption {
 
 func WithEnqueurNetwork() NewOption {
 	return func(a *Account) error {
-		span, ctx := tracing.EnterFunc(a.rootContext)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(a.rootContext)
+		defer tracer.Finish()
+		ctx := tracer.Context()
 
 		a.network = mock.NewEnqueuer(ctx)
 		return nil

@@ -14,7 +14,6 @@ import (
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	"github.com/jinzhu/gorm"
 	p2pcrypto "github.com/libp2p/go-libp2p-crypto"
-	opentracing "github.com/opentracing/opentracing-go"
 )
 
 type P2PNetworkOptions struct {
@@ -40,9 +39,10 @@ func makeTransport(opts *P2PNetworkOptions, p2pOptions []p2p.Option, db *gorm.DB
 }
 
 func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB) (network.Driver, network.Metrics, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	span := tracer.Span()
 
 	if opts == nil {
 		opts = &P2PNetworkOptions{}
@@ -120,8 +120,9 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 
 func WithP2PNetwork(opts *P2PNetworkOptions) NewOption {
 	return func(a *Account) error {
-		span, ctx := tracing.EnterFunc(a.rootContext)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(a.rootContext)
+		defer tracer.Finish()
+		ctx := tracer.Context()
 
 		var err error
 
@@ -135,13 +136,11 @@ func WithP2PNetwork(opts *P2PNetworkOptions) NewOption {
 }
 
 func (a *Account) UpdateP2PNetwork(ctx context.Context, opts *P2PNetworkOptions) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, opts)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
-	var err error
-
-	err = a.network.Close(ctx)
+	err := a.network.Close(ctx)
 	if err != nil {
 		return err
 	}

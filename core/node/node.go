@@ -55,15 +55,16 @@ type Node struct {
 
 // New initializes a new Node object
 func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
+	tracer := tracing.EnterFunc(ctx)
+	// FIXME: defer tracer.Finish() // ???
+	ctx = tracer.Context()
 
 	n := &Node{
 		// FIXME: fetch myself from db
 		outgoingEvents: make(chan *p2p.Event, 100),
 		clientEvents:   make(chan *p2p.Event, 100),
 		createdAt:      time.Now().UTC(),
-		rootSpan:       span,
+		rootSpan:       tracer.Span(),
 		rootContext:    ctx,
 	}
 
@@ -161,16 +162,18 @@ func (n *Node) PubKey() string {
 }
 
 func (n *Node) handleMutex(ctx context.Context) func() {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	n.handleMutexInst.Lock()
 	return n.handleMutexInst.Unlock
 }
 
 func (n *Node) asyncWaitGroup(ctx context.Context) func() {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	n.asyncWaitGroupInst.Add(1)
 	return n.asyncWaitGroupInst.Done

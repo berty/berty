@@ -13,7 +13,6 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	ma "github.com/multiformats/go-multiaddr"
-	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 
 	"berty.tech/core/network"
@@ -36,9 +35,9 @@ type Metrics struct {
 }
 
 func NewMetrics(ctx context.Context, d *Driver) network.Metrics {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, d)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	m := &Metrics{
 		host:          d.host,
@@ -53,8 +52,9 @@ func NewMetrics(ctx context.Context, d *Driver) network.Metrics {
 }
 
 func (m *Metrics) Peers(ctx context.Context) *network.Peers {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	peers := m.peers()
 	pis := &network.Peers{
@@ -149,8 +149,9 @@ func (m *Metrics) MonitorBandwidthPeer(id string, interval time.Duration, handle
 }
 
 func (m *Metrics) handlePeer(ctx context.Context, id peer.ID) {
-	span, _ := tracing.EnterFunc(ctx, id)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, id.Pretty())
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	pi := m.host.Peerstore().PeerInfo(id)
 	peer := m.peerInfoToPeer(pi)

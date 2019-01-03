@@ -5,14 +5,13 @@ import (
 
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 )
 
 func (n *Node) RegisterDevice(ctx context.Context, device *entity.Device) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, device)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, device)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	err := n.sigchain.AddDevice(n.crypto, n.pubkey, []byte(device.ID), []byte(device.ID))
 
@@ -24,8 +23,9 @@ func (n *Node) RegisterDevice(ctx context.Context, device *entity.Device) error 
 }
 
 func (n *Node) RevokeDevice(ctx context.Context, device *entity.Device) error {
-	span, _ := tracing.EnterFunc(ctx, device)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, device)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	// TODO: implement
 	return errors.New("unimplemented")
@@ -33,9 +33,9 @@ func (n *Node) RevokeDevice(ctx context.Context, device *entity.Device) error {
 }
 
 func (n *Node) persistSigChain(ctx context.Context) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	data, err := n.sigchain.Marshal()
 	if err != nil {

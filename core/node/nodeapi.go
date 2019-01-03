@@ -11,7 +11,6 @@ import (
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 )
@@ -32,8 +31,10 @@ func WithNodeGrpcServer(gs *grpc.Server) NewNodeOption {
 
 // EventList implements berty.node.EventList
 func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventListServer) error {
-	span, ctx := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	ctx := tracer.Context()
+
 	n.handleMutex(ctx)()
 	sql := n.sql(ctx)
 
@@ -69,9 +70,10 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 }
 
 func (n *Node) EventSeen(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	event := &p2p.Event{}
@@ -163,9 +165,10 @@ func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversatio
 
 // GetEvent implements berty.node.GetEvent
 func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
@@ -183,9 +186,10 @@ func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, erro
 
 // ContactAcceptRequest implements berty.node.ContactAcceptRequest
 func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) (*entity.Contact, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	// input validation
@@ -220,9 +224,10 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) 
 
 // ContactRequest implements berty.node.ContactRequest
 func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput) (*entity.Contact, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, req)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, req)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	// input validation
@@ -283,9 +288,10 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 
 // ContactUpdate implements berty.node.ContactUpdate
 func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*entity.Contact, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, contact)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, contact)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	// input validation
@@ -309,9 +315,10 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 
 // ContactRemove implements berty.node.ContactRemove
 func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*entity.Contact, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, contact)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, contact)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	// input validation
@@ -346,8 +353,10 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 
 // ContactList implements berty.node.ContactList
 func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_ContactListServer) error {
-	span, ctx := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	ctx := tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
@@ -379,9 +388,10 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 
 // Contact implements berty.node.Contact
 func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.Contact, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
@@ -404,18 +414,19 @@ func (n *Node) ContactCheckPublicKey(ctx context.Context, input *node.ContactInp
 //
 
 func (n *Node) ConversationCreate(ctx context.Context, input *node.ConversationCreateInput) (*entity.Conversation, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	return n.conversationCreate(ctx, input)
 }
 
 func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationCreateInput) (*entity.Conversation, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	members := []*entity.ConversationMember{
 		{
@@ -482,35 +493,40 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 }
 
 func (n *Node) ConversationAcceptInvite(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationManageMembersInput) (*entity.Conversation, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 func (n *Node) ConversationExclude(ctx context.Context, input *node.ConversationManageMembersInput) (*entity.Conversation, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	return nil, errorcodes.ErrUnimplemented.New()
 }
 
 func (n *Node) ConversationList(input *node.ConversationListInput, stream node.Service_ConversationListServer) error {
-	span, ctx := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	ctx := tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	// prepare query
@@ -540,9 +556,10 @@ func (n *Node) ConversationList(input *node.ConversationListInput, stream node.S
 }
 
 func (n *Node) ConversationAddMessage(ctx context.Context, input *node.ConversationAddMessageInput) (*p2p.Event, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	event := n.NewConversationEvent(ctx, input.Conversation, p2p.Kind_ConversationNewMessage)
@@ -559,9 +576,10 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 
 // GetConversation implements berty.node.GetConversation
 func (n *Node) Conversation(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
@@ -575,9 +593,10 @@ func (n *Node) Conversation(ctx context.Context, input *entity.Conversation) (*e
 
 // GetConversationMember implements berty.node.GetConversationMember
 func (n *Node) ConversationMember(ctx context.Context, input *entity.ConversationMember) (*entity.ConversationMember, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
@@ -590,9 +609,10 @@ func (n *Node) ConversationMember(ctx context.Context, input *entity.Conversatio
 }
 
 func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*node.Void, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	n.handleMutex(ctx)()
 
 	err := n.networkDriver.PingOtherNode(ctx, input.Destination)

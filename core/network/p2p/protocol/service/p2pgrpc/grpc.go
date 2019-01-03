@@ -7,7 +7,6 @@ import (
 
 	host "github.com/libp2p/go-libp2p-host"
 	protocol "github.com/libp2p/go-libp2p-protocol"
-	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 
 	"berty.tech/core/network/p2p/p2putil"
@@ -39,8 +38,9 @@ func (pg *P2Pgrpc) hasProtocol(proto string) bool {
 }
 
 func (pg *P2Pgrpc) NewListener(ctx context.Context, proto string) net.Listener {
-	span, _ := tracing.EnterFunc(ctx, proto)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, proto)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	id := GetGrpcID(proto)
 
@@ -65,9 +65,9 @@ func (pg *P2Pgrpc) NewDialer(ctx context.Context, proto string) func(string, tim
 	pid := protocol.ID(GetGrpcID(proto))
 
 	return func(target string, timeout time.Duration) (net.Conn, error) {
-		var span opentracing.Span
-		span, ctx = tracing.EnterFunc(ctx, proto, target, timeout)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(ctx, proto, target, timeout)
+		defer tracer.Finish()
+		ctx = tracer.Context()
 
 		ctx, cancel := context.WithTimeout(ctx, timeout)
 		defer cancel()

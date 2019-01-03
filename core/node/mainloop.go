@@ -10,16 +10,15 @@ import (
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/pkg/tracing"
 	"github.com/gogo/protobuf/proto"
-	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
 // EventsRetry updates SentAt and requeue an event
 func (n *Node) EventRequeue(ctx context.Context, event *p2p.Event) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	sql := n.sql(ctx)
 
@@ -35,9 +34,9 @@ func (n *Node) EventRequeue(ctx context.Context, event *p2p.Event) error {
 
 // EventsRetry sends events which lack an AckedAt value emitted before the supplied time value
 func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*p2p.Event, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, before)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	sql := n.sql(ctx)
 	var retriedEvents []*p2p.Event
@@ -68,9 +67,10 @@ func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*p2p.Event,
 }
 
 func (n *Node) cron(ctx context.Context) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	for {
 		before := time.Now().Add(-time.Second * 60 * 10)
 		if _, err := n.EventsRetry(ctx, before); err != nil {
@@ -155,9 +155,9 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 
 // Start is the node's mainloop
 func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if withCron {
 		go n.cron(ctx)

@@ -13,6 +13,13 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jinzhu/gorm"
+	reuse "github.com/libp2p/go-reuseport"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
+
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	p2papi "berty.tech/core/api/p2p"
@@ -27,18 +34,13 @@ import (
 	"berty.tech/core/pkg/zapring"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
-	"github.com/jinzhu/gorm"
-	reuse "github.com/libp2p/go-reuseport"
-	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 // Info is used in berty.node.DeviceInfos
 func Info(ctx context.Context) map[string]string {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	if len(list) < 1 {
 		return map[string]string{"accounts": "none!"}
@@ -101,12 +103,13 @@ type NewOption func(*Account) error
 type Options []NewOption
 
 func New(ctx context.Context, opts ...NewOption) (*Account, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	a := &Account{
 		errChan:     make(chan error, 1),
-		rootSpan:    span,
+		rootSpan:    tracer.Span(),
 		rootContext: ctx,
 	}
 
@@ -125,8 +128,9 @@ func New(ctx context.Context, opts ...NewOption) (*Account, error) {
 }
 
 func Get(ctx context.Context, name string) (*Account, error) {
-	span, _ := tracing.EnterFunc(ctx, name)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, name)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	for _, account := range list {
 		if account != nil && account.Name == name {
@@ -138,8 +142,9 @@ func Get(ctx context.Context, name string) (*Account, error) {
 }
 
 func List(ctx context.Context, datastorePath string) ([]string, error) {
-	span, _ := tracing.EnterFunc(ctx, datastorePath)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, datastorePath)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	var names []string
 
@@ -163,9 +168,9 @@ func List(ctx context.Context, datastorePath string) ([]string, error) {
 }
 
 func Delete(ctx context.Context, a *Account) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, a)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, a)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	ForEach(ctx, func(ctx context.Context, i int, current *Account) {
 		if a == current {
@@ -175,9 +180,9 @@ func Delete(ctx context.Context, a *Account) {
 }
 
 func ForEach(ctx context.Context, callback func(context.Context, int, *Account)) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	for index, account := range list {
 		callback(ctx, index, account)
@@ -202,9 +207,9 @@ func (a *Account) Validate() error {
 }
 
 func (a *Account) Open(ctx context.Context) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if err := a.initNode(ctx); err != nil {
 		a.Close(ctx)
@@ -257,9 +262,9 @@ func (a *Account) Open(ctx context.Context) error {
 }
 
 func (a *Account) Close(ctx context.Context) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if a.node != nil {
 		_ = a.node.Close()
@@ -298,9 +303,9 @@ func (a *Account) dbPath() string {
 }
 
 func (a *Account) openDatabase(ctx context.Context) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	var err error
 	a.db, err = sqlcipher.Open(a.dbPath(), []byte(a.Passphrase))
@@ -323,9 +328,9 @@ func (a *Account) openDatabase(ctx context.Context) error {
 }
 
 func (a *Account) DropDatabase(ctx context.Context) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	var err error
 
@@ -336,9 +341,9 @@ func (a *Account) DropDatabase(ctx context.Context) error {
 }
 
 func (a *Account) startNetwork(ctx context.Context) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if a.network == nil {
 		return nil
@@ -353,10 +358,9 @@ func (a *Account) startNetwork(ctx context.Context) error {
 }
 
 func (a *Account) startGrpcServer(ctx context.Context) error {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
-
-	var err error
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	addr, err := net.ResolveTCPAddr("tcp", a.GrpcBind)
 	if err != nil {
@@ -383,9 +387,9 @@ func (a *Account) startGrpcServer(ctx context.Context) error {
 }
 
 func (a *Account) StartBot(ctx context.Context) error {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	options := append(
 		[]bot.Option{
@@ -418,8 +422,9 @@ func (a *Account) StartBot(ctx context.Context) error {
 }
 
 func (a *Account) StopBot(ctx context.Context) error {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	// TODO: implement bot closing function
 	// Then set a.BotRunning = false
@@ -427,10 +432,9 @@ func (a *Account) StopBot(ctx context.Context) error {
 }
 
 func (a *Account) startGQL(ctx context.Context) error {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
-
-	var err error
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	if a.gqlHandler == nil {
 		return nil
@@ -469,8 +473,9 @@ func (a *Account) startGQL(ctx context.Context) error {
 }
 
 func (a *Account) initNode(ctx context.Context) error {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	var err error
 
@@ -501,8 +506,9 @@ func (a *Account) initNode(ctx context.Context) error {
 }
 
 func (a *Account) startNode(ctx context.Context) error {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	// start node
 	go func() {
@@ -554,8 +560,9 @@ func (a *Account) ErrChan() chan error {
 }
 
 func (a *Account) PanicHandler() {
-	span, _ := tracing.EnterFunc(a.rootContext)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(a.rootContext)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 
 	r := recover()
 	if r != nil {

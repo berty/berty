@@ -39,9 +39,9 @@ import (
 )
 
 func (n *Node) generateFakeContact(ctx context.Context) (*entity.Contact, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	var (
 		username   = gofakeit.Username()
@@ -97,9 +97,9 @@ func (n *Node) generateFakeContact(ctx context.Context) (*entity.Contact, error)
 }
 
 func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Void, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	// FIXME: enable mutex, but allow calling submethod, i.e., node.CreateConversation
 	//n.handleMutex.Lock()
@@ -157,8 +157,9 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 }
 
 func (n *Node) NodeInfos(ctx context.Context) (*deviceinfo.DeviceInfos, error) {
-	span, _ := tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	infos := deviceinfo.DeviceInfos{}
 
@@ -223,9 +224,9 @@ func (n *Node) NodeInfos(ctx context.Context) (*deviceinfo.DeviceInfos, error) {
 }
 
 func (n *Node) DeviceInfos(ctx context.Context, input *node.Void) (*deviceinfo.DeviceInfos, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	nodeInfos, err := n.NodeInfos(ctx)
 	if err != nil {
@@ -241,8 +242,9 @@ func (n *Node) DeviceInfos(ctx context.Context, input *node.Void) (*deviceinfo.D
 }
 
 func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationTestInput) (*node.IntegrationTestOutput, error) {
-	span, _ := tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	tests := listIntegrationTests()
 
@@ -266,22 +268,25 @@ func (n *Node) RunIntegrationTests(ctx context.Context, input *node.IntegrationT
 }
 
 func (n *Node) AppVersion(ctx context.Context, input *node.Void) (*node.AppVersionOutput, error) {
-	span, _ := tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	return &node.AppVersionOutput{Version: core.Version}, nil
 }
 
 func (n *Node) TestPanic(ctx context.Context, input *node.Void) (*node.Void, error) {
-	span, _ := tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	panic("panic from client")
 }
 
 func (n *Node) TestError(ctx context.Context, input *node.TestErrorInput) (*node.Void, error) {
-	span, _ := tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	errs := map[string]func() error{}
 	errs["basic"] = func() error { return fmt.Errorf("basic error") }
@@ -344,33 +349,36 @@ func (n *Node) TestError(ctx context.Context, input *node.TestErrorInput) (*node
 }
 
 func (n *Node) TestLogBackgroundError(ctx context.Context, input *node.Void) (*node.Void, error) {
-	span, _ := tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	n.LogBackgroundError(ctx, errorcodes.ErrUndefined.Wrap(errors.New("just an error test")))
 	return &node.Void{}, nil
 }
 
 func (n *Node) TestLogBackgroundWarn(ctx context.Context, input *node.Void) (*node.Void, error) {
-	span, _ := tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	n.LogBackgroundWarn(ctx, errorcodes.ErrUndefined.Wrap(errors.New("just a warn test")))
 	return &node.Void{}, nil
 }
 
 func (n *Node) TestLogBackgroundDebug(ctx context.Context, input *node.Void) (*node.Void, error) {
-	span, _ := tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	n.LogBackgroundDebug(ctx, "just a debug test")
 	return &node.Void{}, nil
 }
 
 func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) (*p2p.Event, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx, input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	sql := n.sql(ctx)
 	var event p2p.Event
@@ -386,9 +394,9 @@ func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) 
 }
 
 func (n *Node) DebugRequeueAll(ctx context.Context, _ *node.Void) (*node.Void, error) {
-	var span opentracing.Span
-	span, ctx = tracing.EnterFunc(ctx)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	if _, err := n.EventsRetry(ctx, time.Now()); err != nil {
 		return nil, errorcodes.ErrNetQueue.Wrap(err)
@@ -398,8 +406,9 @@ func (n *Node) DebugRequeueAll(ctx context.Context, _ *node.Void) (*node.Void, e
 }
 
 func (n *Node) LogStream(input *node.LogStreamInput, stream node.Service_LogStreamServer) error {
-	span, _ := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	//ctx := tracer.Context()
 
 	if n.ring == nil {
 		return errorcodes.ErrUndefined.Wrap(fmt.Errorf("ring not configured"))
@@ -430,8 +439,9 @@ func (n *Node) LogStream(input *node.LogStreamInput, stream node.Service_LogStre
 }
 
 func (n *Node) LogfileList(_ *node.Void, stream node.Service_LogfileListServer) error {
-	span, _ := tracing.EnterFunc(stream.Context())
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context())
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 
 	dir := logmanager.G().LogDirectory()
 	if dir == "" {
@@ -467,8 +477,9 @@ func (n *Node) LogfileList(_ *node.Void, stream node.Service_LogfileListServer) 
 }
 
 func (n *Node) LogfileRead(input *node.LogfileReadInput, stream node.Service_LogfileReadServer) error {
-	span, _ := tracing.EnterFunc(stream.Context(), input)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 
 	dir := logmanager.G().LogDirectory()
 	if dir == "" {

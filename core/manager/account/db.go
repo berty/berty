@@ -97,8 +97,9 @@ func gormFinishSubSpan(scope *gorm.Scope) {
 
 func WithDatabase(opts *DatabaseOptions) NewOption {
 	return func(a *Account) error {
-		span, ctx := tracing.EnterFunc(a.rootContext, opts)
-		defer span.Finish()
+		tracer := tracing.EnterFunc(a.rootContext, opts)
+		defer tracer.Finish()
+		ctx := tracer.Context()
 
 		if opts == nil {
 			opts = &DatabaseOptions{}

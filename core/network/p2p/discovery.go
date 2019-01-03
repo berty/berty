@@ -22,21 +22,26 @@ var _ discovery.Notifee = (*driverDiscoveryNotify)(nil)
 type driverDiscoveryNotify Driver
 
 func DiscoveryNotify(ctx context.Context, d *Driver) discovery.Notifee {
-	span, _ := tracing.EnterFunc(ctx, d)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, d)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
+
 	return (*driverDiscoveryNotify)(d)
 }
 
 func Notify(ctx context.Context, d *Driver) inet.Notifiee {
-	span, _ := tracing.EnterFunc(ctx, d)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ctx, d)
+	defer tracer.Finish()
+	// ctx = tracer.Context()
+
 	return (*driverDiscoveryNotify)(d)
 }
 
 // Driver Notify
 func (ddn *driverDiscoveryNotify) HandlePeerFound(pi pstore.PeerInfo) {
-	span, ctx := tracing.EnterFunc(ddn.rootContext, pi)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ddn.rootContext, pi)
+	defer tracer.Finish()
+	ctx := tracer.Context()
 
 	if err := ddn.host.Connect(ctx, pi); err != nil {
 		logger().Warn("mdns discovery failed", zap.String("remoteID", pi.ID.Pretty()), zap.Error(err))
@@ -47,25 +52,30 @@ func (ddn *driverDiscoveryNotify) HandlePeerFound(pi pstore.PeerInfo) {
 }
 
 func (ddn *driverDiscoveryNotify) Listen(net inet.Network, a ma.Multiaddr) {
-	span, _ := tracing.EnterFunc(ddn.rootContext, net, a)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ddn.rootContext, net, a)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 }
 func (ddn *driverDiscoveryNotify) ListenClose(net inet.Network, a ma.Multiaddr) {
-	span, _ := tracing.EnterFunc(ddn.rootContext, net, a)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ddn.rootContext, net, a)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 }
 func (ddn *driverDiscoveryNotify) OpenedStream(net inet.Network, s inet.Stream) {
-	span, _ := tracing.EnterFunc(ddn.rootContext, net, s)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ddn.rootContext, net, s)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 }
 func (ddn *driverDiscoveryNotify) ClosedStream(net inet.Network, s inet.Stream) {
-	span, _ := tracing.EnterFunc(ddn.rootContext, net, s)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ddn.rootContext, net, s)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 }
 
 func (ddn *driverDiscoveryNotify) Connected(s inet.Network, c inet.Conn) {
-	span, ctx := tracing.EnterFunc(ddn.rootContext, s, c)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ddn.rootContext, s, c)
+	defer tracer.Finish()
+	ctx := tracer.Context()
 
 	go func(id peer.ID) {
 		ddn.muSubs.Lock()
@@ -88,6 +98,7 @@ func (ddn *driverDiscoveryNotify) Connected(s inet.Network, c inet.Conn) {
 }
 
 func (ddn *driverDiscoveryNotify) Disconnected(s inet.Network, c inet.Conn) {
-	span, _ := tracing.EnterFunc(ddn.rootContext, s, c)
-	defer span.Finish()
+	tracer := tracing.EnterFunc(ddn.rootContext, s, c)
+	defer tracer.Finish()
+	// ctx := tracer.Context()
 }
