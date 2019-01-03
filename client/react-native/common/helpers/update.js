@@ -71,18 +71,33 @@ export const getLatestVersion = async () => {
 
   const { channel, url } = updateApiSources[bundleId]
 
-  const releases = await fetch(url).then(res => res.json())
+  const releasesTimeout = new Promise((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(new Error('timeouted'))
+    }, 5000)
 
-  if (!releases.master) {
+    fetch(url).then(res => res.json()).then((r) => {
+      clearTimeout(timeoutId)
+      resolve(r)
+    })
+  })
+
+  try {
+    const releases = await releasesTimeout
+
+    if (!releases.master) {
+      return null
+    }
+
+    return {
+      channel,
+      branch: 'master',
+      hash: releases.master['git-sha'],
+      buildDate: moment(releases.master['stop-time']),
+      installUrl: releases.master['manifest-url'],
+    }
+  } catch (e) {
     return null
-  }
-
-  return {
-    channel,
-    branch: 'master',
-    hash: releases.master['git-sha'],
-    buildDate: moment(releases.master['stop-time']),
-    installUrl: releases.master['manifest-url'],
   }
 }
 

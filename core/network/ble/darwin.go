@@ -138,11 +138,16 @@ func waitForOn() int {
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
 	C.init()
 
-	for res := waitForOn(); res == 1; res = waitForOn() {
+	i := 0
+	for res := waitForOn(); res != 1; res = waitForOn() {
 		if res == -1 {
 			return nil, fmt.Errorf("error ble not supported")
 		}
 		logger().Debug("Ble centralManager or peripheralManager isn't on wait 1sec and retry")
+		i++
+		if i == 5 {
+			return nil, fmt.Errorf("error ble not activated")
+		}
 		time.Sleep(1 * time.Second)
 	}
 
