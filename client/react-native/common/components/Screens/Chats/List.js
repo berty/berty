@@ -13,6 +13,13 @@ const ItemBase = fragments.Conversation(({ data, navigation, t }) => {
   const { updatedAt, readAt } = data
   const isRead = new Date(readAt).getTime() > 0
   const isInvite = !isRead && new Date(updatedAt).getTime() <= 0
+  // fix when contact request is send after conversation invite
+  if (
+    data.members.length === 2 &&
+    data.members.some(m => m.contact == null || m.contact.displayName === '')
+  ) {
+    return null
+  }
   return (
     <Flex.Cols
       align='center'

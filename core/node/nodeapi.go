@@ -263,11 +263,6 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 		return nil, errorcodes.ErrContactReqExisting.New()
 	}
 
-	// create conversation if doesn't exist
-	if _, err := n.ConversationCreate(ctx, &node.ConversationCreateInput{Contacts: []*entity.Contact{contact}}); err != nil {
-		return nil, errorcodes.ErrUndefined.Wrap(err)
-	}
-
 	// send request to peer
 	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequest)
 	if err := event.SetAttrs(&p2p.ContactRequestAttrs{
@@ -283,6 +278,10 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 		return nil, errorcodes.ErrNet.Wrap(err)
 	}
 
+	// create conversation if doesn't exist
+	if _, err := n.ConversationCreate(ctx, &node.ConversationCreateInput{Contacts: []*entity.Contact{contact}}); err != nil {
+		return nil, errorcodes.ErrUndefined.Wrap(err)
+	}
 	return contact, nil
 }
 

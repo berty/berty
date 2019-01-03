@@ -277,8 +277,8 @@ type BertyEntityConversationMember implements Node {
     updatedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
-    conversationId: String!
-    contactId: String!
+    conversationId: ID!
+    contactId: ID!
 }
   
   
@@ -616,8 +616,8 @@ input BertyEntityConversationMemberInput {
     updatedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
-    conversationId: String!
-    contactId: String!
+    conversationId: ID!
+    contactId: ID!
 }
 input BertyEntityConversationInput {
     id: ID!
@@ -689,8 +689,8 @@ type Query {
     updatedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
-    conversationId: String!
-    contactId: String!
+    conversationId: ID!
+    contactId: ID!
   ): BertyEntityConversationMember
   DeviceInfos(
     T: Bool!

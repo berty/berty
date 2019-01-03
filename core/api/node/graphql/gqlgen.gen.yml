@@ -846,7 +846,9 @@ models:
       status:
       contact:
       conversationId:
+        resolver: true
       contactId:
+        resolver: true
   BertyEntityConversationMemberInput:
     model: berty.tech/core/entity.ConversationMember
     fields:
@@ -857,7 +859,9 @@ models:
       status:
       contact:
       conversationId:
+        resolver: true
       contactId:
+        resolver: true
   BertyEntityConversationMemberPayload:
     model: berty.tech/core/entity.ConversationMember
     fields:
@@ -868,7 +872,9 @@ models:
       status:
       contact:
       conversationId:
+        resolver: true
       contactId:
+        resolver: true
 
 
   BertyEntityMessage:

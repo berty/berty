@@ -47,6 +47,8 @@ github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
 github.com/gen2brain/beeep v0.0.0-20180718162406-4e430518395f h1:eyHMPp7tXlBMF8PZHdsL89G0ehuRNflu7zKUeoQjcJ0=
 github.com/gen2brain/beeep v0.0.0-20180718162406-4e430518395f/go.mod h1:GprdPCZglWh5OMcIDpeKBxuUJI+fEDOTVUfxZeda4zo=
+github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a h1:yU/FENpkHYISWsQrbr3pcZOBj0EuRjPzNc1+dTCLu44=
+github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a/go.mod h1:AEugkNu3BjBxyz958nJ5holD9PRjta6iprcoUauDbU4=
 github.com/go-check/check v0.0.0-20180628173108-788fd7840127 h1:0gkP6mzaMqkmpcJYCFOLkIBwI7xFExG03bbkOkCvUPI=
 github.com/go-check/check v0.0.0-20180628173108-788fd7840127/go.mod h1:9ES+weclKsC9YodN5RgxqK/VD9HM9JsCSh7rNhMZE98=
 github.com/go-gormigrate/gormigrate v1.2.1 h1:y3jmLDVVxVkuIR4CR5Qu+lLiUUOtpGt+4zjkLH53Bls=

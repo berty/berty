@@ -8,7 +8,12 @@ import NavigationService from './NavigationService'
 import DeviceInfo from 'react-native-device-info'
 import I18n from 'i18next'
 
-export const requestContact = async (contactId, displayName, navigation, errorHandler) => {
+export const requestContact = async (
+  contactId,
+  displayName,
+  navigation,
+  errorHandler
+) => {
   try {
     await mutations.contactRequest.commit({
       contact: {
@@ -36,7 +41,10 @@ export const extractPublicKeyFromId = contactId => {
   return ''
 }
 
-export const makeShareableUrl = ({ id, displayName }) => `https://berty.tech/add-contact#public-key=${encodeURIComponent(id)}&display-name=${encodeURIComponent(displayName)}`
+export const makeShareableUrl = ({ id, displayName }) =>
+  `https://berty.tech/add-contact#public-key=${encodeURIComponent(
+    id
+  )}&display-name=${encodeURIComponent(displayName)}`
 
 export const shareLinkSelf = ({ id, displayName }) => {
   const url = makeShareableUrl({ id, displayName })
@@ -73,7 +81,12 @@ export const isPubKeyValid = async ({ queries, data: { id } }) => {
   }
 }
 
-export const showContactModal = async ({ relayContext: { queries }, navigation, beforeDismiss, data }) => {
+export const showContactModal = async ({
+  relayContext: { queries },
+  navigation,
+  beforeDismiss,
+  data,
+}) => {
   const extractedPublicKey = extractPublicKeyFromId(data.id)
 
   if (extractedPublicKey && extractedPublicKey !== '') {
@@ -94,16 +107,18 @@ export const showContactModal = async ({ relayContext: { queries }, navigation, 
     return false
   }
 
-  NavigationService.action(NavigationActions.navigate({
-    routeName: 'modal/contacts/card',
-    params: {
-      data: {
-        ...data,
-        displayName: data.displayName || '',
+  NavigationService.action(
+    NavigationActions.navigate({
+      routeName: 'modal/contacts/card',
+      params: {
+        data: {
+          ...data,
+          displayName: data.displayName || '',
+        },
+        beforeDismiss: beforeDismiss,
       },
-      beforeDismiss: beforeDismiss,
-    },
-  }))
+    })
+  )
 }
 
 export const defaultUsername = () => {
@@ -118,20 +133,27 @@ export const defaultUsername = () => {
     return ''
   }
 
-  deviceName = deviceName.replace('\'s ', ' ')
+  deviceName = deviceName.replace("'s ", ' ')
 
-  const hasDefaultName = defaultNamesParts.some(defaultPart => deviceName.indexOf(defaultPart) !== -1)
+  const hasDefaultName = defaultNamesParts.some(
+    defaultPart => deviceName.indexOf(defaultPart) !== -1
+  )
 
   if (hasDefaultName) {
-    return deviceName
-      // Split device name
-      .split(' ')
-      // Remove product name
-      .filter(part => !defaultNamesParts.some(
-        defaultPart => part.indexOf(defaultPart) !== -1
-      ))
-      // Keep the longest word
-      .sort((a, b) => b.length - a.length)[0]
+    return (
+      deviceName
+        // Split device name
+        .split(' ')
+        // Remove product name
+        .filter(
+          part =>
+            !defaultNamesParts.some(
+              defaultPart => part.indexOf(defaultPart) !== -1
+            )
+        )
+        // Keep the longest word
+        .sort((a, b) => b.length - a.length)[0]
+    )
   }
 
   return deviceName

@@ -649,6 +649,9 @@ type BertyEntityConversationResolver interface {
 }
 type BertyEntityConversationMemberResolver interface {
 	ID(ctx context.Context, obj *entity.ConversationMember) (string, error)
+
+	ConversationID(ctx context.Context, obj *entity.ConversationMember) (string, error)
+	ContactID(ctx context.Context, obj *entity.ConversationMember) (string, error)
 }
 type BertyEntityDeviceResolver interface {
 	ID(ctx context.Context, obj *entity.Device) (string, error)
@@ -1993,7 +1996,7 @@ func field_Query_ConversationMember_args(rawArgs map[string]interface{}) (map[st
 	var arg5 string
 	if tmp, ok := rawArgs["conversationId"]; ok {
 		var err error
-		arg5, err = models.UnmarshalString(tmp)
+		arg5, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2002,7 +2005,7 @@ func field_Query_ConversationMember_args(rawArgs map[string]interface{}) (map[st
 	var arg6 string
 	if tmp, ok := rawArgs["contactId"]; ok {
 		var err error
-		arg6, err = models.UnmarshalString(tmp)
+		arg6, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -5849,15 +5852,23 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 		case "contact":
 			out.Values[i] = ec._BertyEntityConversationMember_contact(ctx, field, obj)
 		case "conversationId":
-			out.Values[i] = ec._BertyEntityConversationMember_conversationId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityConversationMember_conversationId(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "contactId":
-			out.Values[i] = ec._BertyEntityConversationMember_contactId(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityConversationMember_contactId(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5987,7 +5998,7 @@ func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx co
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ConversationID, nil
+		return ec.resolvers.BertyEntityConversationMember().ConversationID(rctx, obj)
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -5997,7 +6008,7 @@ func (ec *executionContext) _BertyEntityConversationMember_conversationId(ctx co
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return models.MarshalString(res)
+	return models.MarshalID(res)
 }
 
 // nolint: vetshadow
@@ -6010,7 +6021,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ContactID, nil
+		return ec.resolvers.BertyEntityConversationMember().ContactID(rctx, obj)
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -6020,7 +6031,7 @@ func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return models.MarshalString(res)
+	return models.MarshalID(res)
 }
 
 var bertyEntityDeviceImplementors = []string{"BertyEntityDevice", "Node"}
@@ -19694,13 +19705,13 @@ func UnmarshalBertyEntityConversationMemberInput(v interface{}) (entity.Conversa
 			}
 		case "conversationId":
 			var err error
-			it.ConversationID, err = models.UnmarshalString(v)
+			it.ConversationID, err = models.UnmarshalID(v)
 			if err != nil {
 				return it, err
 			}
 		case "contactId":
 			var err error
-			it.ContactID, err = models.UnmarshalString(v)
+			it.ContactID, err = models.UnmarshalID(v)
 			if err != nil {
 				return it, err
 			}
@@ -20331,8 +20342,8 @@ type BertyEntityConversationMember implements Node {
     updatedAt: GoogleProtobufTimestamp
     status: Enum
     contact: BertyEntityContact
-    conversationId: String!
-    contactId: String!
+    conversationId: ID!
+    contactId: ID!
 }
   
   
@@ -20670,8 +20681,8 @@ input BertyEntityConversationMemberInput {
     updatedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
-    conversationId: String!
-    contactId: String!
+    conversationId: ID!
+    contactId: ID!
 }
 input BertyEntityConversationInput {
     id: ID!
@@ -20743,8 +20754,8 @@ type Query {
     updatedAt: GoogleProtobufTimestampInput
     status: Enum
     contact: BertyEntityContactInput
-    conversationId: String!
-    contactId: String!
+    conversationId: ID!
+    contactId: ID!
   ): BertyEntityConversationMember
   DeviceInfos(
     T: Bool!

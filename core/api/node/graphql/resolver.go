@@ -99,6 +99,12 @@ type bertyEntityConversationMemberResolver struct{ *Resolver }
 func (r *bertyEntityConversationMemberResolver) ID(ctx context.Context, obj *entity.ConversationMember) (string, error) {
 	return "conversation_member:" + obj.ID, nil
 }
+func (r *bertyEntityConversationMemberResolver) ContactID(ctx context.Context, obj *entity.ConversationMember) (string, error) {
+	return "contact:" + obj.ContactID, nil
+}
+func (r *bertyEntityConversationMemberResolver) ConversationID(ctx context.Context, obj *entity.ConversationMember) (string, error) {
+	return "conversation:" + obj.ConversationID, nil
+}
 
 type bertyEntityDeviceResolver struct{ *Resolver }
 
