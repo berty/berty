@@ -6,7 +6,7 @@ import React from 'react'
 
 import { colors } from '../../constants'
 
-const Icon = ({ name, color, rotate, src, style, ...props }) => {
+const Icon = ({ name, color, rotate, src, style, flip, ...props }) => {
   if (name == null) return null
   const [type, iconName] = [
     name.split('-', 1)[0],
@@ -19,9 +19,10 @@ const Icon = ({ name, color, rotate, src, style, ...props }) => {
     name: iconName,
     color: color || colors.textGrey,
     style: [
-      rotate && {
+      {
         transform: [
-          { rotate: typeof rotate === 'boolean' ? '90deg' : `${rotate}deg` },
+          { scaleX: typeof flip === 'boolean' && flip ? -1 : 1 },
+          { rotate: typeof rotate === 'boolean' && rotate ? '90deg' : `${rotate || 0}deg` },
         ],
       },
       style,

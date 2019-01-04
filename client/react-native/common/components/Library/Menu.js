@@ -8,6 +8,7 @@ import {
   padding,
 } from '../../styles'
 import { colors } from '../../constants'
+import { isRTL } from '../../i18n'
 
 export default class Menu extends Component {
   static Header = ({ icon, title, description }) => (
@@ -138,6 +139,7 @@ export default class Menu extends Component {
                 right
                 bold={boldRight ? true : null}
                 justify='end'
+                flip={isRTL()}
               />
             )}
             {textRight && (
