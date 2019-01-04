@@ -83,29 +83,25 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: cleanup existing generated files
-          command: |
-            cd core
-            make clean
-      - run:
-          name: make generate_prepare
-          command: |
-            cd core
-            make generate_prepare
-      - run:
           name: make generate_local
           command: |
+            # 1. checkout
+            # 2. generate prepare
+            # 3. generate
+            # 4. ignore go.mod (this file regularly changes with useless information (adding `// indirect`)
+            # 5. check if files changed
             cd core
-            /tmp/retry -m 100 -t 100 make generate_local
-      - run:
-          name: ignore some files
-          command: git checkout core/go.mod # this file regularly changes with useless information (adding `// indirect`)
-      - run:
-          name: check if files changed
-          command: |
-            git status | cat
-            git diff | cat
-            git diff-index --quiet HEAD --
+            /tmp/retry -m 5 -t 300 sh -xec ' \
+              git checkout . && \
+              make generate_prepare clean && \
+              make generate_local && \
+              git checkout go.mod && \
+              git status | cat && \
+              git diff -w | cat && \
+              git diff-index -w --quiet HEAD -- \
+            '
+            # IDEA: diff-index -w is not working as expected, maybe we should ignore some of the parts of the output
+            # IDEA: try to pass a `goimports -w -s` on files listed in `git diff-index` output to remove whitespaces
 
   docker.build:
     docker:
