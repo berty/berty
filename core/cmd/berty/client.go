@@ -241,9 +241,18 @@ func clientUnary(opts *clientOptions) error {
 		input = []byte(opts.args[0])
 	}
 
-	ret, err := jsonclient.CallUnary(ctx, client, opts.endpoint, input)
+	ret, _, trailer, err := jsonclient.CallUnary(ctx, client, opts.endpoint, input)
 	if err != nil {
 		return errors.Wrap(err, "client error")
+	}
+	if len(trailer) > 0 {
+		fmt.Fprint(os.Stderr, "gRPC trailer:\n")
+		for key, values := range trailer {
+			fmt.Fprintf(os.Stderr, "  %s: (%d values)\n", key, len(values))
+			for _, value := range values {
+				fmt.Fprintf(os.Stderr, "    - %s\n", value)
+			}
+		}
 	}
 
 	jsonPrint(ret, opts)

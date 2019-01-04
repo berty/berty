@@ -60,14 +60,14 @@ func init() {
 	registerServerStream("berty.node.MonitorBandwidth", NodeMonitorBandwidth)
 	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
 }
-func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ID")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ID(
@@ -78,7 +78,7 @@ func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (inter
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
 func NodeCommitLogStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -164,14 +164,14 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 	}()
 	return streamProxy, nil
 }
-func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.GetEvent")
 	var typedInput p2p.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().GetEvent(
@@ -182,16 +182,16 @@ func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) 
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.EventSeen")
 	var typedInput p2p.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().EventSeen(
@@ -202,16 +202,16 @@ func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte)
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ContactRequest")
 	var typedInput node.ContactRequestInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ContactRequest(
@@ -222,16 +222,16 @@ func NodeContactRequest(client *client.Client, ctx context.Context, jsonInput []
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeContactAcceptRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeContactAcceptRequest(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ContactAcceptRequest")
 	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ContactAcceptRequest(
@@ -242,16 +242,16 @@ func NodeContactAcceptRequest(client *client.Client, ctx context.Context, jsonIn
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeContactRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeContactRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ContactRemove")
 	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ContactRemove(
@@ -262,16 +262,16 @@ func NodeContactRemove(client *client.Client, ctx context.Context, jsonInput []b
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ContactUpdate")
 	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ContactUpdate(
@@ -282,7 +282,7 @@ func NodeContactUpdate(client *client.Client, ctx context.Context, jsonInput []b
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
 func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -312,14 +312,14 @@ func NodeContactList(client *client.Client, ctx context.Context, jsonInput []byt
 	}()
 	return streamProxy, nil
 }
-func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.Contact")
 	var typedInput node.ContactInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().Contact(
@@ -330,16 +330,16 @@ func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeContactCheckPublicKey(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeContactCheckPublicKey(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ContactCheckPublicKey")
 	var typedInput node.ContactInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ContactCheckPublicKey(
@@ -350,16 +350,16 @@ func NodeContactCheckPublicKey(client *client.Client, ctx context.Context, jsonI
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ConversationCreate")
 	var typedInput node.ConversationCreateInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationCreate(
@@ -370,7 +370,7 @@ func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInpu
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
 func NodeConversationList(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -400,14 +400,14 @@ func NodeConversationList(client *client.Client, ctx context.Context, jsonInput 
 	}()
 	return streamProxy, nil
 }
-func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ConversationInvite")
 	var typedInput node.ConversationManageMembersInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationInvite(
@@ -418,16 +418,16 @@ func NodeConversationInvite(client *client.Client, ctx context.Context, jsonInpu
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeConversationExclude(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationExclude(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ConversationExclude")
 	var typedInput node.ConversationManageMembersInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationExclude(
@@ -438,16 +438,16 @@ func NodeConversationExclude(client *client.Client, ctx context.Context, jsonInp
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeConversationAddMessage(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationAddMessage(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ConversationAddMessage")
 	var typedInput node.ConversationAddMessageInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationAddMessage(
@@ -458,16 +458,16 @@ func NodeConversationAddMessage(client *client.Client, ctx context.Context, json
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeConversation(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversation(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.Conversation")
 	var typedInput entity.Conversation
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().Conversation(
@@ -478,16 +478,16 @@ func NodeConversation(client *client.Client, ctx context.Context, jsonInput []by
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeConversationMember(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationMember(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ConversationMember")
 	var typedInput entity.ConversationMember
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationMember(
@@ -498,16 +498,16 @@ func NodeConversationMember(client *client.Client, ctx context.Context, jsonInpu
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeConversationRead(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationRead(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ConversationRead")
 	var typedInput entity.Conversation
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationRead(
@@ -518,16 +518,16 @@ func NodeConversationRead(client *client.Client, ctx context.Context, jsonInput 
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeConversationRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeConversationRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ConversationRemove")
 	var typedInput entity.Conversation
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationRemove(
@@ -538,16 +538,16 @@ func NodeConversationRemove(client *client.Client, ctx context.Context, jsonInpu
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.HandleEvent")
 	var typedInput p2p.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().HandleEvent(
@@ -558,16 +558,16 @@ func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byt
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeGenerateFakeData(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeGenerateFakeData(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.GenerateFakeData")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().GenerateFakeData(
@@ -578,16 +578,16 @@ func NodeGenerateFakeData(client *client.Client, ctx context.Context, jsonInput 
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeRunIntegrationTests(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeRunIntegrationTests(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.RunIntegrationTests")
 	var typedInput node.IntegrationTestInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().RunIntegrationTests(
@@ -598,16 +598,16 @@ func NodeRunIntegrationTests(client *client.Client, ctx context.Context, jsonInp
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeDebugPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeDebugPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.DebugPing")
 	var typedInput node.PingDestination
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().DebugPing(
@@ -618,16 +618,16 @@ func NodeDebugPing(client *client.Client, ctx context.Context, jsonInput []byte)
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeDebugRequeueEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeDebugRequeueEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.DebugRequeueEvent")
 	var typedInput node.EventIDInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().DebugRequeueEvent(
@@ -638,16 +638,16 @@ func NodeDebugRequeueEvent(client *client.Client, ctx context.Context, jsonInput
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeDebugRequeueAll(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeDebugRequeueAll(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.DebugRequeueAll")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().DebugRequeueAll(
@@ -658,16 +658,16 @@ func NodeDebugRequeueAll(client *client.Client, ctx context.Context, jsonInput [
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeDeviceInfos(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeDeviceInfos(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.DeviceInfos")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().DeviceInfos(
@@ -678,16 +678,16 @@ func NodeDeviceInfos(client *client.Client, ctx context.Context, jsonInput []byt
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeAppVersion(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeAppVersion(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.AppVersion")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().AppVersion(
@@ -698,16 +698,16 @@ func NodeAppVersion(client *client.Client, ctx context.Context, jsonInput []byte
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodePeers(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodePeers(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.Peers")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().Peers(
@@ -718,16 +718,16 @@ func NodePeers(client *client.Client, ctx context.Context, jsonInput []byte) (in
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.Protocols")
 	var typedInput network.Peer
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().Protocols(
@@ -738,7 +738,7 @@ func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte)
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
 func NodeLogStream(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",
@@ -824,14 +824,14 @@ func NodeLogfileRead(client *client.Client, ctx context.Context, jsonInput []byt
 	}()
 	return streamProxy, nil
 }
-func NodeTestLogBackgroundError(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeTestLogBackgroundError(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.TestLogBackgroundError")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().TestLogBackgroundError(
@@ -842,16 +842,16 @@ func NodeTestLogBackgroundError(client *client.Client, ctx context.Context, json
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeTestLogBackgroundWarn(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeTestLogBackgroundWarn(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.TestLogBackgroundWarn")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().TestLogBackgroundWarn(
@@ -862,16 +862,16 @@ func NodeTestLogBackgroundWarn(client *client.Client, ctx context.Context, jsonI
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeTestLogBackgroundDebug(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeTestLogBackgroundDebug(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.TestLogBackgroundDebug")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().TestLogBackgroundDebug(
@@ -882,16 +882,16 @@ func NodeTestLogBackgroundDebug(client *client.Client, ctx context.Context, json
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeTestPanic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeTestPanic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.TestPanic")
 	var typedInput node.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().TestPanic(
@@ -902,16 +902,16 @@ func NodeTestPanic(client *client.Client, ctx context.Context, jsonInput []byte)
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
-func NodeTestError(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, error) {
+func NodeTestError(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.TestError")
 	var typedInput node.TestErrorInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
-		return nil, err
+		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().TestError(
@@ -922,7 +922,7 @@ func NodeTestError(client *client.Client, ctx context.Context, jsonInput []byte)
 	)
 	tracer.SetAnyField("header", header)
 	tracer.SetAnyField("trailer", trailer)
-	return ret, err
+	return ret, header, trailer, err
 }
 func NodeMonitorBandwidth(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
 	logger().Debug("client call",

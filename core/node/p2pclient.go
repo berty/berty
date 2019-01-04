@@ -45,6 +45,8 @@ func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event) error
 	}
 	n.outgoingEvents <- event
 
+	tracer.SetMetadata("new-outgoing-event", event.ID)
+
 	return nil
 }
 

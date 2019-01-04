@@ -111,9 +111,9 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 		}
 		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
-		log.Entity = &node.CommitLog_Entity{
-			ConversationMember: data,
-		}
+		log.Entity = &node.CommitLog_Entity{ConversationMember: data}
+	case *entity.Config:
+		log.Entity = &node.CommitLog_Entity{Config: data}
 	case *p2p.Event:
 		log.Entity = &node.CommitLog_Entity{Event: data}
 	default:

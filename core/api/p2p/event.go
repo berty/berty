@@ -70,7 +70,7 @@ func (e Event) ToJSON() string {
 
 func (e Event) CreateSpan(ctx context.Context) (opentracing.Span, context.Context) {
 	tracer := opentracing.GlobalTracer()
-	caller := tracing.GetCallerName("call", 1)
+	caller := tracing.GetCallerName(1)
 	topic := fmt.Sprintf("event::/%s/%s", e.Direction.String(), e.Kind.String())
 
 	// Retrieve span context inside the event if needed
