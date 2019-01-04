@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"go.uber.org/zap"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
@@ -92,4 +93,34 @@ func (n *Node) NewSeenEvent(ctx context.Context, destination string, ids []strin
 		return event, nil
 	}
 	return event, nil
+}
+
+func (n *Node) BroadcastEventToContacts(ctx context.Context, event *p2p.Event) error {
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	var contacts []*entity.Contact
+
+	sql := n.sql(ctx)
+	query := sql.Model(entity.Contact{}).Where("status IN (?)", []entity.Contact_Status{
+		entity.Contact_IsFriend,
+		entity.Contact_IsTrustedFriend,
+	})
+
+	if err := query.Find(&contacts).Error; err != nil {
+		return errorcodes.ErrDb.Wrap(err)
+	}
+
+	for _, contact := range contacts {
+		contactEvent := event.Copy()
+		contactEvent.ReceiverID = contact.ID
+
+		if err := n.EnqueueOutgoingEvent(ctx, contactEvent); err != nil {
+			logger().Error("node.BroadcastEventToContacts", zap.Error(err))
+			return errorcodes.ErrEvent.New()
+		}
+	}
+
+	return nil
 }

@@ -309,6 +309,21 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
+	if contact.ID == n.config.Myself.ID {
+		if err := n.sql(ctx).Where(&entity.Contact{ID: contact.ID}).First(&n.config.Myself).Error; err != nil {
+			return nil, errorcodes.ErrDb.Wrap(err)
+		}
+
+		evt := n.NewContactEvent(ctx, n.config.Myself, p2p.Kind_ContactShareMe)
+		if err := evt.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered()}); err != nil {
+			return nil, err
+		}
+
+		if err := n.BroadcastEventToContacts(ctx, evt); err != nil {
+			return nil, err
+		}
+	}
+
 	return contact, nil
 }
 

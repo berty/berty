@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { Avatar, Header } from '.'
 import { colors } from '../../constants'
-import { CurrentUser } from '../../utils/contact'
+import { withCurrentUser } from '../../utils/contact'
 import { extractPublicKeyFromId } from '../../helpers/contacts'
 import NavigationService from '../../helpers/NavigationService'
 
@@ -13,7 +13,8 @@ class SelfAvatarLink extends PureComponent {
     })
   }
 
-  render = () => <CurrentUser>{user => {
+  render = () => {
+    let user = this.props.currentUser
     user = user ? { ...user, id: extractPublicKeyFromId(user.id) } : null
 
     return user
@@ -27,7 +28,6 @@ class SelfAvatarLink extends PureComponent {
         middle
       />
   }
-  }</CurrentUser>
 }
 
-export default SelfAvatarLink
+export default withCurrentUser(SelfAvatarLink)

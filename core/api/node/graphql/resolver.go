@@ -204,7 +204,11 @@ func (r *mutationResolver) ContactRemove(ctx context.Context, id string, created
 }
 func (r *mutationResolver) ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
 	return r.client.ContactUpdate(ctx, &entity.Contact{
-		ID: strings.SplitN(id, ":", 2)[1],
+		ID:                    strings.SplitN(id, ":", 2)[1],
+		DisplayName:           displayName,
+		OverrideDisplayName:   overrideDisplayName,
+		DisplayStatus:         displayStatus,
+		OverrideDisplayStatus: overrideDisplayStatus,
 	})
 }
 func (r *mutationResolver) ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error) {
