@@ -24,24 +24,24 @@ class List extends PureComponent {
             <Menu.Item
               icon='book-open'
               title={t('settings.privacy-policy')}
-              onPress={() => navigation.push('legal/privacy')}
+              onPress={() => navigation.navigate('legal/privacy')}
             />
             <Menu.Item
               icon='book-open'
               title={t('settings.terms-of-service')}
-              onPress={() => navigation.push('legal/terms')}
+              onPress={() => navigation.navigate('legal/terms')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
               icon='layers'
               title={t('settings.app-credits')}
-              onPress={() => navigation.push('legal/credits')}
+              onPress={() => navigation.navigate('legal/credits')}
             />
             <Menu.Item
               icon='layers'
               title={t('settings.software-license')}
-              onPress={() => navigation.push('legal/license')}
+              onPress={() => navigation.navigate('legal/license')}
             />
           </Menu.Section>
         </Menu>

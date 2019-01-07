@@ -24,14 +24,14 @@ class List extends PureComponent {
             <Menu.Item
               icon='book-open'
               title={t('settings.faq')}
-              onPress={() => navigation.push('help/faq')}
+              onPress={() => navigation.navigate('help/faq')}
             />
           </Menu.Section>
           <Menu.Section>
             <Menu.Item
               icon='message-circle'
               title={t('settings.contact-us')}
-              onPress={() => navigation.push('help/contact')}
+              onPress={() => navigation.navigate('help/contact')}
             />
           </Menu.Section>
         </Menu>

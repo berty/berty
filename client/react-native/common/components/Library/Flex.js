@@ -1,5 +1,7 @@
+import { View } from 'react-native'
 import React from 'react'
-import { View, TouchableOpacity } from 'react-native'
+
+import Touchable from './Touchable'
 
 const getDirection = (key, directions = { rows: 'column', cols: 'row' }) =>
   directions[key] || null
@@ -49,7 +51,7 @@ const getProps = ({
 
 export const Block = props => {
   return props.onPress ? (
-    <TouchableOpacity {...getProps(props)} style={getStyle(props)} />
+    <Touchable {...getProps(props)} style={getStyle(props)} />
   ) : (
     <View {...getProps(props)} style={getStyle(props)} />
   )
@@ -58,7 +60,7 @@ export const Block = props => {
 export const Rows = ({ direction, ...props }) => {
   props.direction = 'rows'
   return props.onPress ? (
-    <TouchableOpacity {...getProps(props)} style={getStyle(props)} />
+    <Touchable {...getProps(props)} style={getStyle(props)} />
   ) : (
     <View {...getProps(props)} style={getStyle(props)} />
   )
@@ -67,7 +69,7 @@ export const Rows = ({ direction, ...props }) => {
 export const Cols = ({ direction, ...props }) => {
   props.direction = 'cols'
   return props.onPress ? (
-    <TouchableOpacity {...getProps(props)} style={getStyle(props)} />
+    <Touchable {...getProps(props)} style={getStyle(props)} />
   ) : (
     <View {...getProps(props)} style={getStyle(props)} />
   )

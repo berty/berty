@@ -31,14 +31,14 @@ class List extends PureComponent {
           <Menu.Item
             icon='user'
             title={t('settings.my-account')}
-            onPress={() => navigation.push('settings/my-account', {})
+            onPress={() => navigation.navigate('settings/my-account', {})
             }
           />
           <Menu.Item
             icon='share'
             title={t('settings.my-account-share')}
             onPress={() =>
-              navigation.push('modal/contacts/card', {
+              navigation.navigate('modal/contacts/card', {
                 data: {
                   ...data,
                   id: extractPublicKeyFromId(id),
@@ -58,55 +58,55 @@ class List extends PureComponent {
           <Menu.Item
             icon='arrow-up-circle'
             title={t('settings.updates-check')}
-            onPress={() => navigation.push('settings/update')}
+            onPress={() => navigation.navigate('settings/update')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='terminal'
             title={t('settings.dev-tools')}
-            onPress={() => navigation.push('settings/devtools')}
+            onPress={() => navigation.navigate('settings/devtools')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='lock'
             title={t('settings.security-privacy')}
-            onPress={() => navigation.push('settings/security-and-privacy')}
+            onPress={() => navigation.navigate('settings/security-and-privacy')}
           />
           <Menu.Item
             icon='send'
             title={t('settings.messages')}
-            onPress={() => navigation.push('settings/messages-settings')}
+            onPress={() => navigation.navigate('settings/messages-settings')}
           />
           <Menu.Item
             icon='bell'
             title={t('settings.notifications')}
-            onPress={() => navigation.push('settings/notifications')}
+            onPress={() => navigation.navigate('settings/notifications')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='info'
             title={t('settings.about')}
-            onPress={() => navigation.push('settings/about')}
+            onPress={() => navigation.navigate('settings/about')}
           />
           <Menu.Item
             icon='activity'
             title={t('settings.news')}
-            onPress={() => navigation.push('settings/news')}
+            onPress={() => navigation.navigate('settings/news')}
           />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item
             icon='life-buoy'
             title={t('settings.help')}
-            onPress={() => navigation.push('settings/help')}
+            onPress={() => navigation.navigate('settings/help')}
           />
           <Menu.Item
             icon='layers'
             title={t('settings.legal')}
-            onPress={() => navigation.push('settings/legal')}
+            onPress={() => navigation.navigate('settings/legal')}
           />
         </Menu.Section>
       </Menu>

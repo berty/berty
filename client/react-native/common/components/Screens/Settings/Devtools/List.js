@@ -218,7 +218,7 @@ export default class List extends PureComponent {
           <Menu.Item
             icon='info'
             title='Device infos'
-            onPress={() => navigation.push('devtools/deviceinfos')}
+            onPress={() => navigation.navigate('devtools/deviceinfos')}
           />
         </Menu.Section>
         <Menu.Section>
@@ -239,7 +239,7 @@ export default class List extends PureComponent {
           <Menu.Item
             icon='globe'
             title='Language'
-            onPress={() => navigation.push('devtools/language')}
+            onPress={() => navigation.navigate('devtools/language')}
           />
           <Menu.Item
             icon='refresh-ccw'
@@ -269,7 +269,7 @@ export default class List extends PureComponent {
           <Menu.Item
             icon='list'
             title='List events'
-            onPress={() => navigation.push('devtools/eventlist')}
+            onPress={() => navigation.navigate('devtools/eventlist')}
           />
         </Menu.Section>
         <Menu.Section>
@@ -297,7 +297,7 @@ export default class List extends PureComponent {
             <Menu.Item
               icon='file-text'
               title='Console logs'
-              onPress={() => navigation.push('devtools/logs')}
+              onPress={() => navigation.navigate('devtools/logs')}
             />
           )}
           {Platform.OS === 'android' && (
@@ -311,17 +311,17 @@ export default class List extends PureComponent {
           <Menu.Item
             icon='database'
             title='Database'
-            onPress={() => navigation.push('devtools/database')}
+            onPress={() => navigation.navigate('devtools/database')}
           />
           <Menu.Item
             icon='activity'
             title='Network'
-            onPress={() => navigation.push('devtools/network')}
+            onPress={() => navigation.navigate('devtools/network')}
           />
           <Menu.Item
             icon='check-circle'
             title='Integration tests'
-            onPress={() => navigation.push('devtools/tests')}
+            onPress={() => navigation.navigate('devtools/tests')}
           />
         </Menu.Section>
       </Menu>

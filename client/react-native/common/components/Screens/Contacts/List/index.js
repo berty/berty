@@ -60,7 +60,7 @@ export default class ContactList extends PureComponent {
         title={I18n.t('contacts.title')}
         titleIcon='feather-users'
         rightBtnIcon='user-plus'
-        onPressRightBtn={() => navigation.push('contacts/add')}
+        onPressRightBtn={() => navigation.navigate('contacts/add')}
       />
     ),
     tabBarVisible: true,

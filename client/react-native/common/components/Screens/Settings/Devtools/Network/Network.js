@@ -22,7 +22,7 @@ export default class Network extends PureComponent {
             icon='list'
             title='List peers'
             onPress={() => {
-              navigation.push('network/peers')
+              navigation.navigate('network/peers')
             }}
           />
         </Menu.Section>
@@ -32,7 +32,7 @@ export default class Network extends PureComponent {
               icon='sliders'
               title='Network configuration'
               onPress={() => {
-                navigation.push('network/config')
+                navigation.navigate('network/config')
               }}
             />
           </Menu.Section>

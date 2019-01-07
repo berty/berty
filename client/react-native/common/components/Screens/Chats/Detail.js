@@ -285,7 +285,7 @@ export default class Detail extends PureComponent {
         title={utils.getTitle(navigation.getParam('conversation'))}
         rightBtnIcon='settings'
         onPressRightBtn={() =>
-          navigation.push('chats/settings', {
+          navigation.navigate('chats/settings', {
             conversation: navigation.getParam('conversation'),
           })
         }

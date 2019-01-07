@@ -126,7 +126,7 @@ class List extends PureComponent {
                       icon='bell'
                       title={t('chats.notifications')}
                       onPress={() =>
-                        navigation.push('chats/settings/notifications')
+                        navigation.navigate('chats/settings/notifications')
                       }
                     />
                     <Menu.Item
@@ -153,7 +153,7 @@ class List extends PureComponent {
                       title={t('chats.add-members')}
                       color={colors.blue}
                       onPress={() =>
-                        this.props.navigation.push('chats/add', {
+                        this.props.navigation.navigate('chats/add', {
                           onSubmit: this.addMembers,
                         })
                       }
