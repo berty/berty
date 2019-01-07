@@ -353,22 +353,18 @@ func (p *Provider) GetPeersForProvider(id string) ([]pstore.PeerInfo, error) {
 	return p.getPeers(id)
 }
 
-func (p *Provider) Announce(id string) (<-chan []pstore.PeerInfo, error) {
+func (p *Provider) Announce(id string) error {
 	pi, err := p.newProviderInfo(id)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	b, err := pi.Marshal()
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	if err := p.ps.Publish(TopicID, b); err != nil {
-		return nil, err
-	}
-
-	return p.createPub(id), nil
+	return p.ps.Publish(TopicID, b)
 }
 
 func (p *Provider) AnnounceAndWait(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
@@ -376,7 +372,10 @@ func (p *Provider) AnnounceAndWait(ctx context.Context, id string) ([]pstore.Pee
 		return ps, nil
 	}
 
-	c, err := p.Announce(id)
+	cpub := p.createPub(id)
+	defer p.consumePubs(id)
+
+	err := p.Announce(id)
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +383,7 @@ func (p *Provider) AnnounceAndWait(ctx context.Context, id string) ([]pstore.Pee
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
-	case ps := <-c:
+	case ps := <-cpub:
 		return ps, nil
 	}
 }

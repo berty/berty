@@ -506,10 +506,10 @@ func (d *Driver) FindLocalSubscribers(id string) ([]pstore.PeerInfo, error) {
 }
 
 // FindSubscribers with the given ID
-func (d *Driver) Announce(id string) (<-chan []pstore.PeerInfo, error) {
+func (d *Driver) Announce(id string) error {
 	c, err := d.createCid(id)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	return d.provider.Announce(c.String())
@@ -534,11 +534,7 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 		return err
 	}
 
-	if _, err := d.provider.Announce(c.String()); err != nil {
-		return err
-	}
-
-	return nil
+	return d.provider.Announce(c.String())
 }
 
 func (d *Driver) OnEnvelopeHandler(f func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {

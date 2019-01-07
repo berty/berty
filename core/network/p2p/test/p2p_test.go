@@ -96,13 +96,9 @@ func TestP2PNetwork(t *testing.T) {
 		}
 	}()
 
+	ctx := context.Background()
 	Convey("p2p test", t, FailureHalts, func() {
 		Convey("setup test", FailureHalts, func() {
-			// ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-			// defer cancel()
-
-			ctx := context.Background()
-
 			homer, err = setupDriver()
 			So(err, ShouldBeNil)
 
@@ -120,23 +116,25 @@ func TestP2PNetwork(t *testing.T) {
 			patrick, err = setupDriver(b...)
 			So(err, ShouldBeNil)
 
-			err = lisa.Announce(ctx, "Lisa")
+			err = lisa.Join(ctx, "Lisa")
 			So(err, ShouldBeNil)
 
-			err = bart.Announce(ctx, "Bart")
+			err = bart.Join(ctx, "Bart")
 			So(err, ShouldBeNil)
 
-			err = patrick.Announce(ctx, "Patrick")
+			err = patrick.Join(ctx, "Patrick")
 			So(err, ShouldBeNil)
 
-			err = roger.Announce(ctx, "Roger")
+			err = roger.Join(ctx, "Roger")
 			So(err, ShouldBeNil)
 
 			time.Sleep(time.Second * 2)
 		})
 
 		Convey("Roger send an event to Lisa", FailureHalts, func(c C) {
-			ctx := context.Background()
+			tctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
+			defer cancel()
+
 			e := &api.Envelope{
 				ChannelID: "Lisa",
 			}
@@ -151,9 +149,8 @@ func TestP2PNetwork(t *testing.T) {
 				return &api.Void{}, nil
 			})
 
-			err = roger.Emit(ctx, e)
+			err = roger.Emit(tctx, e)
 			So(err, ShouldBeNil)
-
 			So(<-lisaQueue, ShouldNotBeNil)
 			// So(len(lisaQueue), ShouldEqual, 1)
 		})
