@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/pkg/notification"
 	bsql "berty.tech/core/sql"
 	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
@@ -46,6 +47,10 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 		return err
 	}
 
+	n.DisplayNotification(notification.Payload{
+		Title: "Contact request",
+		Body:  attrs.Me.DisplayName + " wants to add you",
+	})
 	// nothing more to do, now we wait for the UI to accept the request
 	return nil
 }
@@ -73,6 +78,10 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 		return err
 	}
 
+	n.DisplayNotification(notification.Payload{
+		Title: "Contact request accepted",
+		Body:  contact.DisplayName + " accepted your request",
+	})
 	return nil
 }
 
@@ -128,6 +137,12 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 	if err := n.networkDriver.Join(ctx, attrs.Conversation.ID); err != nil {
 		return err
 	}
+
+	n.DisplayNotification(notification.Payload{
+		Title: "Conversation invite",
+		Body:  "You have been invited to a new conversation",
+	})
+
 	return nil
 }
 
@@ -140,6 +155,10 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
+	n.DisplayNotification(notification.Payload{
+		Title: "New message",
+		Body:  "You have a new message",
+	})
 	return nil
 }
 

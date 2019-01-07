@@ -69,7 +69,10 @@ const Item = fragments.Contact(
                 {overrideDisplayName || displayName}
               </Text>
               <Text color={colors.subtleGrey} left>
-                {t('contacts.statuses.' + enums.ValueBertyEntityContactInputStatus[status])}
+                {t(
+                  'contacts.statuses.' +
+                    enums.ValueBertyEntityContactInputStatus[status]
+                )}
               </Text>
             </Flex.Rows>
           </Flex.Cols>
