@@ -120,6 +120,11 @@ func CreateConversation(db *gorm.DB, conversation *entity.Conversation) (*entity
 		conversation.Members[1].Status = entity.ConversationMember_Owner
 	}
 
+	// prevent duplicates for conversation members
+	for _, member := range conversation.Members {
+		member.ID = conversation.ID + ":" + member.ContactID
+	}
+
 	// save conversation
 	if err := db.Set("gorm:association_autoupdate", true).Create(conversation).Error; err != nil {
 		return nil, errorcodes.ErrDbCreate.Wrap(err)
