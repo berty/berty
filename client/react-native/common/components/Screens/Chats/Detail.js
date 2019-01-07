@@ -3,6 +3,8 @@ import {
   Platform,
   TextInput as RNTextInput,
 } from 'react-native'
+import { btoa } from 'b64-lite'
+import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Icon, Screen, Text, Avatar } from '../../Library'
@@ -13,7 +15,6 @@ import { merge } from '../../../helpers'
 import { parseEmbedded } from '../../../helpers/json'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
-import { withNamespaces } from 'react-i18next'
 
 class Message extends React.PureComponent {
   static contextType = RelayContext
