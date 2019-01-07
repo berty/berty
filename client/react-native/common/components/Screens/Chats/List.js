@@ -23,7 +23,9 @@ const ItemBase = fragments.Conversation(({ data, navigation, t }) => {
   return (
     <Flex.Cols
       align='center'
-      onPress={() => navigation.push('chats/detail', { conversation: data })}
+      onPress={() =>
+        navigation.navigate('chats/detail', { conversation: data })
+      }
       style={[{ height: 72 }, padding, borderBottom]}
     >
       <Flex.Rows size={1} align='center'>
@@ -58,7 +60,7 @@ export default class ListScreen extends PureComponent {
         searchBar
         searchHandler={navigation.getParam('searchHandler')} // Placeholder
         onPressRightBtn={() =>
-          navigation.push('chats/add', {
+          navigation.navigate('chats/add', {
             goBack: () => {
               navigation.goBack(null)
               const retry = navigation.getParam('retry')

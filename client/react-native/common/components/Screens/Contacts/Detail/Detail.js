@@ -14,7 +14,7 @@ class Detail extends PureComponent {
         title={I18n.t('contacts.details')}
         rightBtnIcon={'edit-2'}
         onPressRightBtn={() =>
-          navigation.push('detail/edit', {
+          navigation.navigate('detail/edit', {
             contact: navigation.getParam('contact'),
           })
         }
@@ -106,7 +106,7 @@ class Detail extends PureComponent {
               icon='eye'
               title={t('contacts.view-pub-key')}
               onPress={() =>
-                navigation.push('modal/contacts/card', {
+                navigation.navigate('modal/contacts/card', {
                   data: {
                     ...contact,
                     id: extractPublicKeyFromId(contact.id),

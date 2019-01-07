@@ -20,7 +20,7 @@ import Button from '../../../Library/Button'
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
     onPress={() => {
-      navigation.push('devtools/eventdetails', { details: data })
+      navigation.navigate('devtools/eventdetails', { details: data })
     }}
     style={[
       {
@@ -136,7 +136,7 @@ export default class EventList extends PureComponent {
                 middle
                 large
                 onPress={() =>
-                  navigation.push('modal/devtools/event/list/filters', {
+                  navigation.navigate('modal/devtools/event/list/filters', {
                     defaultData: navigation.getParam('filters'),
                     onSave: filters => navigation.setParams({ filters }),
                   })

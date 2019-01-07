@@ -36,7 +36,7 @@ export default class ContactList extends PureComponent {
             id={data.item.id}
             title={data.item.overrideDisplayName || data.item.displayName}
             subtitle={subtitle}
-            onPress={() => navigation.push(action, { id: data.item.id })}
+            onPress={() => navigation.navigate(action, { id: data.item.id })}
             separators={data.separators}
           />
         )}

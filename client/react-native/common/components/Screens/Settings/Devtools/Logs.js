@@ -349,7 +349,7 @@ class LogStream extends PureComponent {
         onPressRightBtn={() => {
           if (!antispamModalOpen) {
             antispamModalOpen = true
-            navigation.push('devtools/logs/filter', {
+            navigation.navigate('devtools/logs/filter', {
               updateConfig: navigation.state.params.updateConfig,
               currentConfig: navigation.state.params.currentConfig,
             })

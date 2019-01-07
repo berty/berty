@@ -90,7 +90,7 @@ export default class Tests extends PureComponent {
                   const obs = new Observable()
 
                   try {
-                    this.props.navigation.push('devtools/testresult', {
+                    this.props.navigation.navigate('devtools/testresult', {
                       result: promise,
                       title: title,
                       resultObserver: obs,
