@@ -28,7 +28,7 @@ GIT_TAG ?= $(shell git describe --tags --always)
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT_DATE ?= $(shell git show -s --format=%ct $(GIT_SHA))
 EXT_LDFLAGS ?= -ldflags "-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH) -X berty.tech/core.BuildMode=$(BUILD_MODE) -X berty.tech/core.commitDate=$(GIT_COMMIT_DATE)"
-RUN_DAEMON_OPTS ?= --log-level=debug
+RUN_DAEMON_OPTS ?= --log-level=debug --notification
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
 TEST_TIMEOUT ?= 3m
