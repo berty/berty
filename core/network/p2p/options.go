@@ -32,9 +32,9 @@ const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
 7beb018da4c79cb018e05305335d265046909f060c1b65e8eef94a107b9387cc`
 
 var DefaultBootstrap = []string{
-	"/ip4/104.248.78.238/tcp/4004/ipfs/QmTeeg5PbTmrJKNiBndzmJmvpvBtZArhMxsgDdzxZXLE29",
-	"/ip4/104.248.78.238/tcp/443/ipfs/QmTeeg5PbTmrJKNiBndzmJmvpvBtZArhMxsgDdzxZXLE29",
-	"/ip4/104.248.78.238/tcp/80/ipfs/QmTeeg5PbTmrJKNiBndzmJmvpvBtZArhMxsgDdzxZXLE29",
+	"/ip4/104.248.78.238/tcp/4004/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	"/ip4/104.248.78.238/tcp/443/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	"/ip4/104.248.78.238/tcp/80/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
 }
 
 var BootstrapIpfs = []string{
