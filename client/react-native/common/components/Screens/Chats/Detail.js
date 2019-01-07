@@ -27,8 +27,11 @@ class Message extends React.PureComponent {
   render () {
     const { conversation, data, t } = this.props
 
-    const contactId = data.senderId
-    const contact = (conversation.members.find(m => m.contactId === contactId) || {}).contact
+    const contactId = btoa(`contact:${data.senderId}`)
+    const contact = (
+      conversation.members.find(m => m.contact && m.contact.id === contactId) ||
+      {}
+    ).contact
 
     const contactName = contact ? contact.displayName : t('contacts.unknown')
     const isMyself = contact && contact.status === 42
@@ -43,17 +46,23 @@ class Message extends React.PureComponent {
         align={isMyself ? 'end' : 'start'}
         style={{ marginHorizontal: 10, marginVertical: 10 }}
       >
-        {!isMyself && !isOneToOne
-          ? <Flex.Cols
+        {!isMyself && !isOneToOne ? (
+          <Flex.Cols
             style={{
               marginRight: 42,
               zIndex: 2,
             }}
           >
-            <Avatar size={22} data={contact} style={{ margin: 0, marginBottom: -4, marginRight: 4 }} />
-            <Text tiny color={colors.fakeBlack} padding={{ top: 6 }}>{contactName}</Text>
+            <Avatar
+              size={22}
+              data={contact}
+              style={{ margin: 0, marginBottom: -4, marginRight: 4 }}
+            />
+            <Text tiny color={colors.fakeBlack} padding={{ top: 6 }}>
+              {contactName}
+            </Text>
           </Flex.Cols>
-          : null}
+        ) : null}
 
         <Text
           padding={{
@@ -71,7 +80,6 @@ class Message extends React.PureComponent {
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
-
           {parseEmbedded(data.attributes).message.text}
         </Text>
         <Text
@@ -311,7 +319,6 @@ export default class Detail extends PureComponent {
         context: { queries },
       },
     } = this.props
-
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
         <QueryReducer
