@@ -1,4 +1,6 @@
-import { View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 import React, { Component, PureComponent } from 'react'
 
 import { Pagination, RelayContext } from '../../../relay'
@@ -6,8 +8,6 @@ import { Screen, Flex, Text, Header, Avatar } from '../../Library'
 import { border, borderBottom, marginHorizontal } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
-import { withNamespaces } from 'react-i18next'
-import I18n from 'i18next'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -47,8 +47,8 @@ const Item = fragments.Contact(
           <Flex.Rows size={6} align='start' style={{ marginLeft: 14 }}>
             <Text color={colors.black} left middle>
               {(status === 42 && 'Myself') ||
-              overrideDisplayName ||
-              displayName}
+                overrideDisplayName ||
+                displayName}
             </Text>
             <Text color={colors.subtleGrey} tiny>
               {displayStatus}
@@ -72,16 +72,19 @@ const Item = fragments.Contact(
         </Flex.Cols>
       )
     }
-  },
+  }
 )
 
 class ListScreen extends Component {
+  static contextType = RelayContext
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
         navigation={navigation}
         title={I18n.t('chats.add-members')}
         titleIcon='users'
+        rightBtn={navigation.getParam('rightBtn')}
         rightBtnIcon='check-circle'
         searchBar
         backBtn
@@ -92,7 +95,14 @@ class ListScreen extends Component {
     tabBarVisible: true,
   })
 
-  static contextType = RelayContext
+  setNavigationParams = (
+    params = {
+      onSubmit: this.onSubmit(
+        this.props.navigation.getParam('onSubmit') || this.onDefaultSubmit
+      ),
+      rightBtn: null,
+    }
+  ) => this.props.navigation.setParams(params)
 
   state = {
     contactsID: [],
@@ -103,20 +113,13 @@ class ListScreen extends Component {
   }
 
   componentDidMount () {
-    const onSubmit = this.props.navigation.getParam('onSubmit')
-    if (!onSubmit) {
-      this.props.navigation.setParams({
-        onSubmit: this.onSubmit(this.onDefaultSubmit),
-      })
-    } else {
-      this.props.navigation.setParams({
-        onSubmit: this.onSubmit(onSubmit),
-      })
-    }
+    this.setNavigationParams()
   }
 
   onDefaultSubmit = async ({ contactsID }) => {
-    await this.props.screenProps.context.mutations.conversationCreate({
+    const {
+      ConversationCreate: conversation,
+    } = await this.props.screenProps.context.mutations.conversationCreate({
       title: '',
       topic: '',
       contacts: contactsID.map(id => ({
@@ -127,13 +130,18 @@ class ListScreen extends Component {
         overrideDisplayStatus: '',
       })),
     })
-    this.props.navigation.goBack(null)
+    this.props.navigation.replace('chats/detail', { conversation })
   }
 
   onSubmit = onSubmit => async () => {
     try {
+      this.setNavigationParams({
+        onSubmit: null,
+        rightBtn: <ActivityIndicator size='small' />,
+      })
       await onSubmit(this.state)
     } catch (err) {
+      this.setNavigationParams()
       console.error(err)
     }
   }
