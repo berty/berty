@@ -22,7 +22,7 @@ const (
 	TopicID = "berty/provider"
 )
 
-type ProviderHandler func(string, pstore.PeerInfo)
+type Handler func(string, pstore.PeerInfo)
 
 type Provider struct {
 	sub      *pubsub.Subscription
@@ -31,7 +31,7 @@ type Provider struct {
 	host host.Host
 	ps   *pubsub.PubSub
 
-	handler ProviderHandler
+	handler Handler
 
 	pubs  map[string][]chan []pstore.PeerInfo
 	muPub sync.Mutex
@@ -53,7 +53,7 @@ func getID(k string) (string, error) {
 	return h.String(), nil
 }
 
-func New(ctx context.Context, host host.Host, handler ProviderHandler) (*Provider, error) {
+func New(ctx context.Context, host host.Host, handler Handler) (*Provider, error) {
 	ps, err := pubsub.NewGossipSub(ctx, host)
 	if err != nil {
 		return nil, err

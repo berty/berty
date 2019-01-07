@@ -127,8 +127,6 @@ func TestP2PNetwork(t *testing.T) {
 
 			err = roger.Join(ctx, "Roger")
 			So(err, ShouldBeNil)
-
-			time.Sleep(time.Second * 2)
 		})
 
 		Convey("Roger send an event to Lisa", FailureHalts, func(c C) {
