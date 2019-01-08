@@ -44,6 +44,7 @@ type ResolverRoot interface {
 	BertyEntityConversation() BertyEntityConversationResolver
 	BertyEntityConversationMember() BertyEntityConversationMemberResolver
 	BertyEntityDevice() BertyEntityDeviceResolver
+	BertyEntityDevicePushIdentifier() BertyEntityDevicePushIdentifierResolver
 	BertyP2pEvent() BertyP2pEventResolver
 	GoogleProtobufFieldDescriptorProto() GoogleProtobufFieldDescriptorProtoResolver
 	GoogleProtobufFieldOptions() GoogleProtobufFieldOptionsResolver
@@ -104,13 +105,23 @@ type ComplexityRoot struct {
 	}
 
 	BertyEntityDevice struct {
-		Id         func(childComplexity int) int
-		CreatedAt  func(childComplexity int) int
-		UpdatedAt  func(childComplexity int) int
-		Name       func(childComplexity int) int
-		Status     func(childComplexity int) int
-		ApiVersion func(childComplexity int) int
-		ContactId  func(childComplexity int) int
+		Id              func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+		Name            func(childComplexity int) int
+		Status          func(childComplexity int) int
+		ApiVersion      func(childComplexity int) int
+		ContactId       func(childComplexity int) int
+		PushIdentifiers func(childComplexity int) int
+	}
+
+	BertyEntityDevicePushIdentifier struct {
+		Id          func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		PushInfo    func(childComplexity int) int
+		PushRelayId func(childComplexity int) int
+		DeviceId    func(childComplexity int) int
 	}
 
 	BertyEntityMessage struct {
@@ -315,6 +326,16 @@ type ComplexityRoot struct {
 
 	BertyP2pConversationReadAttrs struct {
 		Conversation func(childComplexity int) int
+	}
+
+	BertyP2pDevicePushToAttrs struct {
+		PushIdentifier func(childComplexity int) int
+		Envelope       func(childComplexity int) int
+		Priority       func(childComplexity int) int
+	}
+
+	BertyP2pDeviceUpdatePushConfigAttrs struct {
+		Device func(childComplexity int) int
 	}
 
 	BertyP2pDevtoolsMapsetAttrs struct {
@@ -655,6 +676,9 @@ type BertyEntityConversationMemberResolver interface {
 }
 type BertyEntityDeviceResolver interface {
 	ID(ctx context.Context, obj *entity.Device) (string, error)
+}
+type BertyEntityDevicePushIdentifierResolver interface {
+	ID(ctx context.Context, obj *entity.DevicePushIdentifier) (string, error)
 }
 type BertyP2pEventResolver interface {
 	ID(ctx context.Context, obj *p2p.Event) (string, error)
@@ -2727,6 +2751,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityDevice.ContactId(childComplexity), true
 
+	case "BertyEntityDevice.pushIdentifiers":
+		if e.complexity.BertyEntityDevice.PushIdentifiers == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevice.PushIdentifiers(childComplexity), true
+
+	case "BertyEntityDevicePushIdentifier.id":
+		if e.complexity.BertyEntityDevicePushIdentifier.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushIdentifier.Id(childComplexity), true
+
+	case "BertyEntityDevicePushIdentifier.createdAt":
+		if e.complexity.BertyEntityDevicePushIdentifier.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushIdentifier.CreatedAt(childComplexity), true
+
+	case "BertyEntityDevicePushIdentifier.updatedAt":
+		if e.complexity.BertyEntityDevicePushIdentifier.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushIdentifier.UpdatedAt(childComplexity), true
+
+	case "BertyEntityDevicePushIdentifier.pushInfo":
+		if e.complexity.BertyEntityDevicePushIdentifier.PushInfo == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushIdentifier.PushInfo(childComplexity), true
+
+	case "BertyEntityDevicePushIdentifier.pushRelayId":
+		if e.complexity.BertyEntityDevicePushIdentifier.PushRelayId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushIdentifier.PushRelayId(childComplexity), true
+
+	case "BertyEntityDevicePushIdentifier.deviceId":
+		if e.complexity.BertyEntityDevicePushIdentifier.DeviceId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushIdentifier.DeviceId(childComplexity), true
+
 	case "BertyEntityMessage.text":
 		if e.complexity.BertyEntityMessage.Text == nil {
 			break
@@ -3335,6 +3408,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyP2pConversationReadAttrs.Conversation(childComplexity), true
+
+	case "BertyP2pDevicePushToAttrs.pushIdentifier":
+		if e.complexity.BertyP2pDevicePushToAttrs.PushIdentifier == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pDevicePushToAttrs.PushIdentifier(childComplexity), true
+
+	case "BertyP2pDevicePushToAttrs.envelope":
+		if e.complexity.BertyP2pDevicePushToAttrs.Envelope == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pDevicePushToAttrs.Envelope(childComplexity), true
+
+	case "BertyP2pDevicePushToAttrs.priority":
+		if e.complexity.BertyP2pDevicePushToAttrs.Priority == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pDevicePushToAttrs.Priority(childComplexity), true
+
+	case "BertyP2pDeviceUpdatePushConfigAttrs.device":
+		if e.complexity.BertyP2pDeviceUpdatePushConfigAttrs.Device == nil {
+			break
+		}
+
+		return e.complexity.BertyP2pDeviceUpdatePushConfigAttrs.Device(childComplexity), true
 
 	case "BertyP2pDevtoolsMapsetAttrs.key":
 		if e.complexity.BertyP2pDevtoolsMapsetAttrs.Key == nil {
@@ -6079,6 +6180,8 @@ func (ec *executionContext) _BertyEntityDevice(ctx context.Context, sel ast.Sele
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "pushIdentifiers":
+			out.Values[i] = ec._BertyEntityDevice_pushIdentifiers(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6230,6 +6333,252 @@ func (ec *executionContext) _BertyEntityDevice_contactId(ctx context.Context, fi
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.ContactID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevice_pushIdentifiers(ctx context.Context, field graphql.CollectedField, obj *entity.Device) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevice",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushIdentifiers, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.DevicePushIdentifier)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntityDevicePushIdentifier(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
+}
+
+var bertyEntityDevicePushIdentifierImplementors = []string{"BertyEntityDevicePushIdentifier", "Node"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityDevicePushIdentifier(ctx context.Context, sel ast.SelectionSet, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityDevicePushIdentifierImplementors)
+
+	var wg sync.WaitGroup
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityDevicePushIdentifier")
+		case "id":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityDevicePushIdentifier_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
+		case "createdAt":
+			out.Values[i] = ec._BertyEntityDevicePushIdentifier_createdAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._BertyEntityDevicePushIdentifier_updatedAt(ctx, field, obj)
+		case "pushInfo":
+			out.Values[i] = ec._BertyEntityDevicePushIdentifier_pushInfo(ctx, field, obj)
+		case "pushRelayId":
+			out.Values[i] = ec._BertyEntityDevicePushIdentifier_pushRelayId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "deviceId":
+			out.Values[i] = ec._BertyEntityDevicePushIdentifier_deviceId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushIdentifier_id(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityDevicePushIdentifier().ID(rctx, obj)
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushIdentifier_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushIdentifier_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushIdentifier_pushInfo(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushInfo, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushIdentifier_pushRelayId(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushRelayId, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushIdentifier_deviceId(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeviceID, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -9682,6 +10031,167 @@ func (ec *executionContext) _BertyP2pConversationReadAttrs_conversation(ctx cont
 	}
 
 	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+var bertyP2pDevicePushToAttrsImplementors = []string{"BertyP2pDevicePushToAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pDevicePushToAttrs(ctx context.Context, sel ast.SelectionSet, obj *p2p.DevicePushToAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pDevicePushToAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pDevicePushToAttrs")
+		case "pushIdentifier":
+			out.Values[i] = ec._BertyP2pDevicePushToAttrs_pushIdentifier(ctx, field, obj)
+		case "envelope":
+			out.Values[i] = ec._BertyP2pDevicePushToAttrs_envelope(ctx, field, obj)
+		case "priority":
+			out.Values[i] = ec._BertyP2pDevicePushToAttrs_priority(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pDevicePushToAttrs_pushIdentifier(ctx context.Context, field graphql.CollectedField, obj *p2p.DevicePushToAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pDevicePushToAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushIdentifier, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pDevicePushToAttrs_envelope(ctx context.Context, field graphql.CollectedField, obj *p2p.DevicePushToAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pDevicePushToAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Envelope, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pDevicePushToAttrs_priority(ctx context.Context, field graphql.CollectedField, obj *p2p.DevicePushToAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pDevicePushToAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Priority, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(p2p.Priority)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyP2pDeviceUpdatePushConfigAttrsImplementors = []string{"BertyP2pDeviceUpdatePushConfigAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyP2pDeviceUpdatePushConfigAttrs(ctx context.Context, sel ast.SelectionSet, obj *p2p.DeviceUpdatePushConfigAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyP2pDeviceUpdatePushConfigAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyP2pDeviceUpdatePushConfigAttrs")
+		case "device":
+			out.Values[i] = ec._BertyP2pDeviceUpdatePushConfigAttrs_device(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyP2pDeviceUpdatePushConfigAttrs_device(ctx context.Context, field graphql.CollectedField, obj *p2p.DeviceUpdatePushConfigAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyP2pDeviceUpdatePushConfigAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Device, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Device)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevice(ctx, field.Selections, res)
 }
 
 var bertyP2pDevtoolsMapsetAttrsImplementors = []string{"BertyP2pDevtoolsMapsetAttrs"}
@@ -19464,6 +19974,10 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 		return graphql.Null
 	case *graphql1.Node:
 		return ec._GqlNode(ctx, sel, obj)
+	case entity.DevicePushIdentifier:
+		return ec._BertyEntityDevicePushIdentifier(ctx, sel, &obj)
+	case *entity.DevicePushIdentifier:
+		return ec._BertyEntityDevicePushIdentifier(ctx, sel, obj)
 	case entity.Device:
 		return ec._BertyEntityDevice(ctx, sel, &obj)
 	case *entity.Device:
@@ -19769,6 +20283,86 @@ func UnmarshalBertyEntityDeviceInput(v interface{}) (entity.Device, error) {
 		case "contactId":
 			var err error
 			it.ContactID, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "pushIdentifiers":
+			var err error
+			var rawIf1 []interface{}
+			if v != nil {
+				if tmp1, ok := v.([]interface{}); ok {
+					rawIf1 = tmp1
+				} else {
+					rawIf1 = []interface{}{v}
+				}
+			}
+			it.PushIdentifiers = make([]*entity.DevicePushIdentifier, len(rawIf1))
+			for idx1 := range rawIf1 {
+				var ptr2 entity.DevicePushIdentifier
+				if rawIf1[idx1] != nil {
+					ptr2, err = UnmarshalBertyEntityDevicePushIdentifierInput(rawIf1[idx1])
+					it.PushIdentifiers[idx1] = &ptr2
+				}
+			}
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
+func UnmarshalBertyEntityDevicePushIdentifierInput(v interface{}) (entity.DevicePushIdentifier, error) {
+	var it entity.DevicePushIdentifier
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "id":
+			var err error
+			it.ID, err = models.UnmarshalID(v)
+			if err != nil {
+				return it, err
+			}
+		case "createdAt":
+			var err error
+			it.CreatedAt, err = models.UnmarshalTime(v)
+			if err != nil {
+				return it, err
+			}
+		case "updatedAt":
+			var err error
+			it.UpdatedAt, err = models.UnmarshalTime(v)
+			if err != nil {
+				return it, err
+			}
+		case "pushInfo":
+			var err error
+			var rawIf1 []interface{}
+			if v != nil {
+				if tmp1, ok := v.([]interface{}); ok {
+					rawIf1 = tmp1
+				} else {
+					rawIf1 = []interface{}{v}
+				}
+			}
+			it.PushInfo = make([]byte, len(rawIf1))
+			for idx1 := range rawIf1 {
+				it.PushInfo[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+			}
+			if err != nil {
+				return it, err
+			}
+		case "pushRelayId":
+			var err error
+			it.PushRelayId, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "deviceId":
+			var err error
+			it.DeviceID, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -20295,6 +20889,14 @@ type GqlNode implements Node {
   
   
 
+type BertyEntityDevicePushIdentifier implements Node {
+    id: ID!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    pushInfo: [Byte!]
+    pushRelayId: String!
+    deviceId: String!
+}
       
 type BertyEntityDevice implements Node {
     id: ID!
@@ -20304,6 +20906,7 @@ type BertyEntityDevice implements Node {
     status: Enum
     apiVersion: Uint32!
     contactId: String!
+    pushIdentifiers: [BertyEntityDevicePushIdentifier]
 }
   
   
@@ -20373,6 +20976,7 @@ type BertyEntitySenderAlias  {
   
 
   
+  
 type BertyP2pSentAttrs  {
     ids: [String!]
 }
@@ -20414,6 +21018,14 @@ type BertyP2pDevtoolsMapsetAttrs  {
 }
 type BertyP2pSenderAliasUpdateAttrs  {
     aliases: [BertyEntitySenderAlias]
+}
+type BertyP2pDeviceUpdatePushConfigAttrs  {
+    device: BertyEntityDevice
+}
+type BertyP2pDevicePushToAttrs  {
+    pushIdentifier: [Byte!]
+    envelope: [Byte!]
+    priority: Enum
 }
 type BertyP2pNodeAttrs  {
     kind: Int32!
@@ -20654,6 +21266,14 @@ input BertyNodePaginationInput {
     last: Int32
     before: String
 }
+input BertyEntityDevicePushIdentifierInput {
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    pushInfo: [Byte!]
+    pushRelayId: String!
+    deviceId: String!
+}
 input BertyEntityDeviceInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
@@ -20662,6 +21282,7 @@ input BertyEntityDeviceInput {
     status: Enum
     apiVersion: Uint32!
     contactId: String!
+    pushIdentifiers: [BertyEntityDevicePushIdentifierInput]
 }
 input BertyEntityContactInput {
     id: ID!

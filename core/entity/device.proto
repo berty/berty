@@ -8,6 +8,17 @@ import "api/protobuf/graphql/graphql.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
+message DevicePushIdentifier {
+  string id = 1 [(gql.graphql_id) = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  bytes push_info = 4;
+  string push_relay_id = 5;
+
+  string device_id = 6 [(gogoproto.customname) = "DeviceID"];
+}
+
 message Device {
   enum Status {
     Unknown = 0;
@@ -43,4 +54,6 @@ message Device {
   //
 
   string contact_id = 12 [(gogoproto.customname) = "ContactID"]; // backref to Contact.Device
+
+  repeated DevicePushIdentifier push_identifiers = 13; // HasMany to DevicePushIdentifier
 }

@@ -57,27 +57,115 @@ func (x Device_Status) String() string {
 	return proto.EnumName(Device_Status_name, int32(x))
 }
 func (Device_Status) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_device_8edb5c9c2a343bb3, []int{0, 0}
+	return fileDescriptor_device_75b0d6827524ff2d, []int{1, 0}
+}
+
+type DevicePushIdentifier struct {
+	ID                   string    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" gorm:"primary_key"`
+	CreatedAt            time.Time `protobuf:"bytes,2,opt,name=created_at,json=createdAt,stdtime" json:"created_at"`
+	UpdatedAt            time.Time `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,stdtime" json:"updated_at"`
+	PushInfo             []byte    `protobuf:"bytes,4,opt,name=push_info,json=pushInfo,proto3" json:"push_info,omitempty"`
+	PushRelayId          string    `protobuf:"bytes,5,opt,name=push_relay_id,json=pushRelayId,proto3" json:"push_relay_id,omitempty"`
+	DeviceID             string    `protobuf:"bytes,6,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *DevicePushIdentifier) Reset()         { *m = DevicePushIdentifier{} }
+func (m *DevicePushIdentifier) String() string { return proto.CompactTextString(m) }
+func (*DevicePushIdentifier) ProtoMessage()    {}
+func (*DevicePushIdentifier) Descriptor() ([]byte, []int) {
+	return fileDescriptor_device_75b0d6827524ff2d, []int{0}
+}
+func (m *DevicePushIdentifier) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *DevicePushIdentifier) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_DevicePushIdentifier.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (dst *DevicePushIdentifier) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DevicePushIdentifier.Merge(dst, src)
+}
+func (m *DevicePushIdentifier) XXX_Size() int {
+	return m.Size()
+}
+func (m *DevicePushIdentifier) XXX_DiscardUnknown() {
+	xxx_messageInfo_DevicePushIdentifier.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DevicePushIdentifier proto.InternalMessageInfo
+
+func (m *DevicePushIdentifier) GetID() string {
+	if m != nil {
+		return m.ID
+	}
+	return ""
+}
+
+func (m *DevicePushIdentifier) GetCreatedAt() time.Time {
+	if m != nil {
+		return m.CreatedAt
+	}
+	return time.Time{}
+}
+
+func (m *DevicePushIdentifier) GetUpdatedAt() time.Time {
+	if m != nil {
+		return m.UpdatedAt
+	}
+	return time.Time{}
+}
+
+func (m *DevicePushIdentifier) GetPushInfo() []byte {
+	if m != nil {
+		return m.PushInfo
+	}
+	return nil
+}
+
+func (m *DevicePushIdentifier) GetPushRelayId() string {
+	if m != nil {
+		return m.PushRelayId
+	}
+	return ""
+}
+
+func (m *DevicePushIdentifier) GetDeviceID() string {
+	if m != nil {
+		return m.DeviceID
+	}
+	return ""
 }
 
 type Device struct {
-	ID                   string        `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" gorm:"primary_key"`
-	CreatedAt            time.Time     `protobuf:"bytes,2,opt,name=created_at,json=createdAt,stdtime" json:"created_at"`
-	UpdatedAt            time.Time     `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,stdtime" json:"updated_at"`
-	Name                 string        `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	Status               Device_Status `protobuf:"varint,10,opt,name=status,proto3,enum=berty.entity.Device_Status" json:"status,omitempty"`
-	ApiVersion           uint32        `protobuf:"varint,11,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
-	ContactID            string        `protobuf:"bytes,12,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
-	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
-	XXX_unrecognized     []byte        `json:"-"`
-	XXX_sizecache        int32         `json:"-"`
+	ID                   string                  `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty" gorm:"primary_key"`
+	CreatedAt            time.Time               `protobuf:"bytes,2,opt,name=created_at,json=createdAt,stdtime" json:"created_at"`
+	UpdatedAt            time.Time               `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,stdtime" json:"updated_at"`
+	Name                 string                  `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
+	Status               Device_Status           `protobuf:"varint,10,opt,name=status,proto3,enum=berty.entity.Device_Status" json:"status,omitempty"`
+	ApiVersion           uint32                  `protobuf:"varint,11,opt,name=api_version,json=apiVersion,proto3" json:"api_version,omitempty"`
+	ContactID            string                  `protobuf:"bytes,12,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	PushIdentifiers      []*DevicePushIdentifier `protobuf:"bytes,13,rep,name=push_identifiers,json=pushIdentifiers" json:"push_identifiers,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                `json:"-"`
+	XXX_unrecognized     []byte                  `json:"-"`
+	XXX_sizecache        int32                   `json:"-"`
 }
 
 func (m *Device) Reset()         { *m = Device{} }
 func (m *Device) String() string { return proto.CompactTextString(m) }
 func (*Device) ProtoMessage()    {}
 func (*Device) Descriptor() ([]byte, []int) {
-	return fileDescriptor_device_8edb5c9c2a343bb3, []int{0}
+	return fileDescriptor_device_75b0d6827524ff2d, []int{1}
 }
 func (m *Device) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -155,11 +243,19 @@ func (m *Device) GetContactID() string {
 	return ""
 }
 
+func (m *Device) GetPushIdentifiers() []*DevicePushIdentifier {
+	if m != nil {
+		return m.PushIdentifiers
+	}
+	return nil
+}
+
 func init() {
+	proto.RegisterType((*DevicePushIdentifier)(nil), "berty.entity.DevicePushIdentifier")
 	proto.RegisterType((*Device)(nil), "berty.entity.Device")
 	proto.RegisterEnum("berty.entity.Device_Status", Device_Status_name, Device_Status_value)
 }
-func (m *Device) Marshal() (dAtA []byte, err error) {
+func (m *DevicePushIdentifier) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -169,7 +265,7 @@ func (m *Device) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Device) MarshalTo(dAtA []byte) (int, error) {
+func (m *DevicePushIdentifier) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -196,6 +292,67 @@ func (m *Device) MarshalTo(dAtA []byte) (int, error) {
 		return 0, err
 	}
 	i += n2
+	if len(m.PushInfo) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintDevice(dAtA, i, uint64(len(m.PushInfo)))
+		i += copy(dAtA[i:], m.PushInfo)
+	}
+	if len(m.PushRelayId) > 0 {
+		dAtA[i] = 0x2a
+		i++
+		i = encodeVarintDevice(dAtA, i, uint64(len(m.PushRelayId)))
+		i += copy(dAtA[i:], m.PushRelayId)
+	}
+	if len(m.DeviceID) > 0 {
+		dAtA[i] = 0x32
+		i++
+		i = encodeVarintDevice(dAtA, i, uint64(len(m.DeviceID)))
+		i += copy(dAtA[i:], m.DeviceID)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *Device) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Device) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.ID) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintDevice(dAtA, i, uint64(len(m.ID)))
+		i += copy(dAtA[i:], m.ID)
+	}
+	dAtA[i] = 0x12
+	i++
+	i = encodeVarintDevice(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
+	n3, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if err != nil {
+		return 0, err
+	}
+	i += n3
+	dAtA[i] = 0x1a
+	i++
+	i = encodeVarintDevice(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
+	n4, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	if err != nil {
+		return 0, err
+	}
+	i += n4
 	if len(m.Name) > 0 {
 		dAtA[i] = 0x2a
 		i++
@@ -218,6 +375,18 @@ func (m *Device) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintDevice(dAtA, i, uint64(len(m.ContactID)))
 		i += copy(dAtA[i:], m.ContactID)
 	}
+	if len(m.PushIdentifiers) > 0 {
+		for _, msg := range m.PushIdentifiers {
+			dAtA[i] = 0x6a
+			i++
+			i = encodeVarintDevice(dAtA, i, uint64(msg.Size()))
+			n, err := msg.MarshalTo(dAtA[i:])
+			if err != nil {
+				return 0, err
+			}
+			i += n
+		}
+	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
 	}
@@ -233,6 +402,38 @@ func encodeVarintDevice(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return offset + 1
 }
+func (m *DevicePushIdentifier) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.ID)
+	if l > 0 {
+		n += 1 + l + sovDevice(uint64(l))
+	}
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)
+	n += 1 + l + sovDevice(uint64(l))
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)
+	n += 1 + l + sovDevice(uint64(l))
+	l = len(m.PushInfo)
+	if l > 0 {
+		n += 1 + l + sovDevice(uint64(l))
+	}
+	l = len(m.PushRelayId)
+	if l > 0 {
+		n += 1 + l + sovDevice(uint64(l))
+	}
+	l = len(m.DeviceID)
+	if l > 0 {
+		n += 1 + l + sovDevice(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
 func (m *Device) Size() (n int) {
 	if m == nil {
 		return 0
@@ -261,6 +462,12 @@ func (m *Device) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovDevice(uint64(l))
 	}
+	if len(m.PushIdentifiers) > 0 {
+		for _, e := range m.PushIdentifiers {
+			l = e.Size()
+			n += 1 + l + sovDevice(uint64(l))
+		}
+	}
 	if m.XXX_unrecognized != nil {
 		n += len(m.XXX_unrecognized)
 	}
@@ -279,6 +486,235 @@ func sovDevice(x uint64) (n int) {
 }
 func sozDevice(x uint64) (n int) {
 	return sovDevice(uint64((x << 1) ^ uint64((int64(x) >> 63))))
+}
+func (m *DevicePushIdentifier) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDevice
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: DevicePushIdentifier: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: DevicePushIdentifier: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDevice
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDevice
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDevice
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDevice
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.CreatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UpdatedAt", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDevice
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDevice
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.UpdatedAt, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PushInfo", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDevice
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthDevice
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PushInfo = append(m.PushInfo[:0], dAtA[iNdEx:postIndex]...)
+			if m.PushInfo == nil {
+				m.PushInfo = []byte{}
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PushRelayId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDevice
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDevice
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PushRelayId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DeviceID", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDevice
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDevice
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DeviceID = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDevice(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDevice
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
 }
 func (m *Device) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
@@ -494,6 +930,37 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 			}
 			m.ContactID = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 13:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PushIdentifiers", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDevice
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDevice
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PushIdentifiers = append(m.PushIdentifiers, &DevicePushIdentifier{})
+			if err := m.PushIdentifiers[len(m.PushIdentifiers)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipDevice(dAtA[iNdEx:])
@@ -621,35 +1088,42 @@ var (
 	ErrIntOverflowDevice   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("entity/device.proto", fileDescriptor_device_8edb5c9c2a343bb3) }
+func init() { proto.RegisterFile("entity/device.proto", fileDescriptor_device_75b0d6827524ff2d) }
 
-var fileDescriptor_device_8edb5c9c2a343bb3 = []byte{
-	// 426 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x90, 0xbf, 0x8e, 0xd3, 0x40,
-	0x10, 0xc6, 0xb3, 0x0e, 0x18, 0x32, 0x49, 0x90, 0xb5, 0x20, 0x64, 0x82, 0x14, 0x5b, 0xae, 0x2c,
-	0x84, 0x6c, 0x74, 0xd7, 0xd1, 0x25, 0x97, 0x26, 0x05, 0x05, 0xe6, 0x4f, 0x41, 0x13, 0x6d, 0xec,
-	0x39, 0xdf, 0xea, 0x6c, 0xaf, 0x59, 0x6f, 0x82, 0xfc, 0x16, 0x94, 0xbc, 0x05, 0xaf, 0x71, 0x25,
-	0x4f, 0x10, 0x4e, 0xe6, 0x05, 0x10, 0x4f, 0x80, 0xec, 0xb5, 0x81, 0x96, 0x6a, 0x47, 0xdf, 0xfc,
-	0xbe, 0xf9, 0x76, 0x06, 0x1e, 0x62, 0xa1, 0xb8, 0xaa, 0xc3, 0x04, 0x8f, 0x3c, 0xc6, 0xa0, 0x94,
-	0x42, 0x09, 0x3a, 0xdb, 0xa3, 0x54, 0x75, 0xa0, 0x5b, 0x0b, 0x8f, 0x95, 0x3c, 0xec, 0x1a, 0xfb,
-	0xc3, 0x65, 0x98, 0x4a, 0x56, 0x5e, 0x7d, 0xcc, 0x86, 0x57, 0x3b, 0x16, 0x8f, 0x52, 0x91, 0x8a,
-	0xae, 0x0c, 0xdb, 0xaa, 0x57, 0x9d, 0x54, 0x88, 0x34, 0xc3, 0xbf, 0x66, 0xc5, 0x73, 0xac, 0x14,
-	0xcb, 0x4b, 0x0d, 0x78, 0x5f, 0xc7, 0x60, 0x6e, 0xba, 0x64, 0xfa, 0x02, 0x0c, 0x9e, 0xd8, 0xc4,
-	0x25, 0xfe, 0x64, 0xed, 0xde, 0xfe, 0x7c, 0x42, 0x9a, 0x93, 0x63, 0x6c, 0x37, 0xbf, 0x4e, 0x0e,
-	0x4d, 0x85, 0xcc, 0x5f, 0x7a, 0xa5, 0xe4, 0x39, 0x93, 0xf5, 0xee, 0x1a, 0x6b, 0x2f, 0x32, 0x78,
-	0x42, 0x2f, 0x00, 0x62, 0x89, 0x4c, 0x61, 0xb2, 0x63, 0xca, 0x36, 0x5c, 0xe2, 0x4f, 0xcf, 0x16,
-	0x81, 0x8e, 0x0c, 0x86, 0xc8, 0xe0, 0xed, 0x10, 0xb9, 0xbe, 0x7f, 0x73, 0x72, 0x46, 0x9f, 0xbf,
-	0x3b, 0x24, 0x9a, 0xf4, 0xbe, 0x95, 0x6a, 0x87, 0x1c, 0xca, 0x64, 0x18, 0x32, 0xfe, 0x9f, 0x21,
-	0xbd, 0x6f, 0xa5, 0x28, 0x85, 0x3b, 0x05, 0xcb, 0xd1, 0xbe, 0xdb, 0xfe, 0x3e, 0xea, 0x6a, 0x7a,
-	0x0e, 0x66, 0xa5, 0x98, 0x3a, 0x54, 0x36, 0xb8, 0xc4, 0x7f, 0x70, 0xf6, 0x34, 0xf8, 0xf7, 0xa8,
-	0x81, 0xde, 0x3a, 0x78, 0xd3, 0x21, 0x51, 0x8f, 0x52, 0x07, 0xa6, 0xac, 0xe4, 0xbb, 0x23, 0xca,
-	0x8a, 0x8b, 0xc2, 0x9e, 0xba, 0xc4, 0x9f, 0x47, 0xc0, 0x4a, 0xfe, 0x5e, 0x2b, 0xf4, 0x39, 0x40,
-	0x2c, 0x0a, 0xc5, 0x62, 0xb5, 0xe3, 0x89, 0x3d, 0xeb, 0xae, 0x35, 0x6f, 0x4e, 0xce, 0xe4, 0x42,
-	0xab, 0xdb, 0x4d, 0x34, 0xe9, 0x81, 0x6d, 0xe2, 0xbd, 0x06, 0x53, 0x07, 0xd0, 0x29, 0xdc, 0x7b,
-	0x57, 0x5c, 0x17, 0xe2, 0x53, 0x61, 0x8d, 0xe8, 0x1c, 0x5a, 0xbc, 0xc0, 0x58, 0x61, 0x62, 0x11,
-	0x6a, 0xc1, 0x6c, 0xc3, 0xab, 0xf8, 0x8f, 0x62, 0xb4, 0xc0, 0xea, 0xc8, 0x78, 0xc6, 0xf6, 0x19,
-	0x5a, 0x63, 0x0a, 0x60, 0xbe, 0xaa, 0x2b, 0xcc, 0x2e, 0xad, 0x67, 0x6b, 0xff, 0xa6, 0x59, 0x92,
-	0x6f, 0xcd, 0x92, 0xdc, 0x36, 0x4b, 0xf2, 0xe5, 0xc7, 0x72, 0xf4, 0xe1, 0xb1, 0xde, 0x4b, 0x61,
-	0x7c, 0x15, 0xc6, 0x42, 0x62, 0xa8, 0x37, 0xdc, 0x9b, 0xdd, 0xf5, 0xce, 0x7f, 0x07, 0x00, 0x00,
-	0xff, 0xff, 0x30, 0x51, 0xb0, 0x52, 0x62, 0x02, 0x00, 0x00,
+var fileDescriptor_device_75b0d6827524ff2d = []byte{
+	// 536 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x52, 0xbd, 0x8e, 0xd3, 0x40,
+	0x10, 0xbe, 0x75, 0x0e, 0x13, 0x8f, 0x13, 0xb0, 0x96, 0x13, 0x32, 0x39, 0x29, 0xb6, 0x5c, 0x19,
+	0x84, 0x6c, 0x94, 0xeb, 0xe8, 0x92, 0x4b, 0xe3, 0xe2, 0x24, 0x30, 0x3f, 0x05, 0x4d, 0xb4, 0xb1,
+	0x37, 0xce, 0xea, 0x1c, 0xaf, 0xb1, 0x37, 0x41, 0x7e, 0x0b, 0x4a, 0x9e, 0x86, 0xfa, 0x4a, 0x9e,
+	0x20, 0x9c, 0xcc, 0x0b, 0x20, 0x1e, 0x00, 0x21, 0x7b, 0x9d, 0x83, 0x93, 0x68, 0x28, 0xa9, 0x3c,
+	0xfe, 0xe6, 0x9b, 0x99, 0x6f, 0xbf, 0x19, 0x78, 0x40, 0x33, 0xc1, 0x44, 0xe5, 0xc7, 0x74, 0xc7,
+	0x22, 0xea, 0xe5, 0x05, 0x17, 0x1c, 0x0f, 0x96, 0xb4, 0x10, 0x95, 0x27, 0x53, 0x23, 0x87, 0xe4,
+	0xcc, 0x6f, 0x13, 0xcb, 0xed, 0xca, 0x4f, 0x0a, 0x92, 0xaf, 0xdf, 0xa7, 0x87, 0xaf, 0xac, 0x18,
+	0x9d, 0x24, 0x3c, 0xe1, 0x6d, 0xe8, 0x37, 0x51, 0x87, 0x5a, 0x09, 0xe7, 0x49, 0x4a, 0x7f, 0x17,
+	0x0b, 0xb6, 0xa1, 0xa5, 0x20, 0x9b, 0x5c, 0x12, 0x9c, 0xcf, 0x0a, 0x9c, 0xcc, 0xdb, 0xc9, 0x2f,
+	0xb6, 0xe5, 0x3a, 0x88, 0x9b, 0x89, 0x2b, 0x46, 0x0b, 0xfc, 0x0c, 0x14, 0x16, 0x9b, 0xc8, 0x46,
+	0xae, 0x36, 0xb3, 0xaf, 0xbf, 0x3f, 0x42, 0xf5, 0xde, 0x52, 0x82, 0xf9, 0x8f, 0xbd, 0x85, 0x13,
+	0x5e, 0x6c, 0x9e, 0x3b, 0x79, 0xc1, 0x36, 0xa4, 0xa8, 0x16, 0x97, 0xb4, 0x72, 0x42, 0x85, 0xc5,
+	0xf8, 0x1c, 0x20, 0x2a, 0x28, 0x11, 0x34, 0x5e, 0x10, 0x61, 0x2a, 0x36, 0x72, 0xf5, 0xc9, 0xc8,
+	0x93, 0x02, 0xbc, 0x83, 0x00, 0xef, 0xf5, 0x41, 0xc0, 0xac, 0x7f, 0xb5, 0xb7, 0x8e, 0x3e, 0x7e,
+	0xb5, 0x50, 0xa8, 0x75, 0x75, 0x53, 0xd1, 0x34, 0xd9, 0xe6, 0xf1, 0xa1, 0x49, 0xef, 0x5f, 0x9a,
+	0x74, 0x75, 0x53, 0x81, 0x4f, 0x41, 0xcb, 0xb7, 0xe5, 0x7a, 0xc1, 0xb2, 0x15, 0x37, 0x8f, 0x6d,
+	0xe4, 0x0e, 0xc2, 0x7e, 0x03, 0x04, 0xd9, 0x8a, 0x63, 0x07, 0x86, 0x6d, 0xb2, 0xa0, 0x29, 0xa9,
+	0x16, 0x2c, 0x36, 0xef, 0x34, 0x6f, 0x0c, 0xf5, 0x06, 0x0c, 0x1b, 0x2c, 0x88, 0xf1, 0x63, 0xd0,
+	0xe4, 0x3a, 0x9a, 0xbc, 0xda, 0x7a, 0x30, 0xa8, 0xf7, 0x56, 0x5f, 0x3a, 0x15, 0xcc, 0xc3, 0xbe,
+	0x4c, 0x07, 0xb1, 0xf3, 0xb3, 0x07, 0xaa, 0x84, 0xff, 0x6b, 0xcb, 0x30, 0x1c, 0x67, 0x64, 0x43,
+	0x3b, 0x33, 0xda, 0x18, 0x9f, 0x81, 0x5a, 0x0a, 0x22, 0xb6, 0xa5, 0x09, 0x36, 0x72, 0xef, 0x4d,
+	0x4e, 0xbd, 0x3f, 0xaf, 0xd2, 0x93, 0xaf, 0xf6, 0x5e, 0xb5, 0x94, 0xb0, 0xa3, 0x62, 0x0b, 0x74,
+	0x92, 0xb3, 0xc5, 0x8e, 0x16, 0x25, 0xe3, 0x99, 0xa9, 0xdb, 0xc8, 0x1d, 0x86, 0x40, 0x72, 0xf6,
+	0x56, 0x22, 0xf8, 0x29, 0x40, 0xc4, 0x33, 0x41, 0x22, 0xd1, 0x98, 0x3b, 0x68, 0xdd, 0x1a, 0xd6,
+	0x7b, 0x4b, 0x3b, 0x97, 0x68, 0x30, 0x0f, 0xb5, 0x8e, 0x10, 0xc4, 0xf8, 0x02, 0x0c, 0xb9, 0xca,
+	0x9b, 0xcb, 0x2c, 0xcd, 0xa1, 0xdd, 0x73, 0xf5, 0x89, 0xf3, 0x37, 0x35, 0xb7, 0x8f, 0x38, 0xbc,
+	0x9f, 0xdf, 0xfa, 0x2f, 0x9d, 0x97, 0xa0, 0x4a, 0xbd, 0x58, 0x87, 0xbb, 0x6f, 0xb2, 0xcb, 0x8c,
+	0x7f, 0xc8, 0x8c, 0x23, 0x3c, 0x84, 0x66, 0x7a, 0x46, 0x23, 0x41, 0x63, 0x03, 0x61, 0x03, 0x06,
+	0x73, 0x56, 0x46, 0x37, 0x88, 0xd2, 0x10, 0xa6, 0x3b, 0xc2, 0x52, 0xb2, 0x4c, 0xa9, 0xd1, 0xc3,
+	0x00, 0xea, 0x45, 0x55, 0xd2, 0x74, 0x65, 0x3c, 0x99, 0xb9, 0x57, 0xf5, 0x18, 0x7d, 0xa9, 0xc7,
+	0xe8, 0xba, 0x1e, 0xa3, 0x4f, 0xdf, 0xc6, 0x47, 0xef, 0x1e, 0x4a, 0x61, 0x82, 0x46, 0x6b, 0x3f,
+	0xe2, 0x05, 0xf5, 0xa5, 0xc4, 0xa5, 0xda, 0x2e, 0xe3, 0xec, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0x3d, 0xf6, 0x94, 0x24, 0xf2, 0x03, 0x00, 0x00,
 }

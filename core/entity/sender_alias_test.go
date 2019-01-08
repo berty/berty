@@ -73,7 +73,7 @@ func TestSenderAliasGenerateRandom(t *testing.T) {
 }
 
 func TestSenderAliasGetCandidates(t *testing.T) {
-	filename, db, _ := mock.GetMockedDb(SenderAlias{}, Device{}, Contact{}, Conversation{}, ConversationMember{})
+	filename, db, _ := mock.GetMockedDb(SenderAlias{}, Device{}, DevicePushIdentifier{}, Contact{}, Conversation{}, ConversationMember{})
 	defer mock.RemoveDb(filename, db)
 
 	db.Save(&Contact{ID: "ContactA"})
