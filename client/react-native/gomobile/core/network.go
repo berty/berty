@@ -102,7 +102,7 @@ func UpdateNetworkConfig(jsonConf string) error {
 		return errors.Wrap(err, "state DB save failed")
 	}
 
-	// if Create is successfull assign the newState to our global
+	// if Create is successful assign the newState to our global
 	appConfig = newState
 
 	return nil
