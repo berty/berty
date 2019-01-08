@@ -1,6 +1,6 @@
 import React from 'react'
 import GenericList from './GenericList'
 
-const Sent = () => <GenericList filter={{ filter: { status: 3 } }} ignoreMyself />
+const Sent = (props) => <GenericList filter={{ filter: { status: 3 } }} {...props} ignoreMyself />
 
 export default Sent

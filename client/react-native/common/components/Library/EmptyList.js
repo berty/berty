@@ -1,0 +1,58 @@
+import { Image, View, Text } from 'react-native'
+import React, { PureComponent } from 'react'
+
+import colors from '../../constants/colors'
+import Icon from './Icon'
+
+export default class EmptyList extends PureComponent {
+  state = {
+    fontWidth: 0,
+  }
+
+  static defaultProps = {
+    source: '',
+    text: '',
+    onPress: null,
+    icon: '',
+    btnText: '',
+  }
+
+  render () {
+    const { source, text, onPress, icon, btnText } = this.props
+    const fontSize = 0.05 * this.state.fontWidth
+
+    return (
+      <View style={{ flex: 1, marginTop: 15 }}>
+        <Image
+          style={{ width: undefined, height: undefined, flex: 7, marginHorizontal: 30 }}
+          source={source}
+          resizeMode='contain'
+        />
+        <Text style={{ alignSelf: 'center', color: colors.lightGrey, flex: 1 }} >{text}</Text>
+        <View style={{
+          backgroundColor: colors.blue,
+          borderRadius: 25,
+          marginBottom: 30,
+          marginTop: 25,
+          width: '51%',
+          alignSelf: 'center',
+          paddingHorizontal: 14,
+          minHeight: '7%',
+        }}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onLayout={(e) => this.setState({ fontWidth: e.nativeEvent.layout.width })}
+          >
+            <Icon style={{ color: colors.white }} name={icon} />
+            <Text onPress={onPress} style={{ fontSize: fontSize, textTransform: 'uppercase', color: colors.white, display: 'flex', textAlign: 'center', flex: 1, flexDirection: 'column', justifyContent: 'center' }} >{btnText}</Text>
+          </View>
+        </View>
+      </View>
+    )
+  }
+}

@@ -60,13 +60,21 @@ export default class ContactList extends PureComponent {
         title={I18n.t('contacts.title')}
         titleIcon='feather-users'
         rightBtnIcon='user-plus'
-        onPressRightBtn={() => navigation.navigate('contacts/add')}
+        onPressRightBtn={() => ContactList.onPress(navigation)}
       />
     ),
     tabBarVisible: true,
   })
 
-  render = () => <Screen style={{ backgroundColor: colors.white }}>
-    <ContactsHome screenProps={{ topNavigator: this.props.navigation }} />
-  </Screen>
+  static onPress = (navigation) => navigation.navigate('contacts/add')
+
+  render = () => {
+    const { navigation } = this.props
+
+    return (
+      <Screen style={{ backgroundColor: colors.white }}>
+        <ContactsHome screenProps={{ onPress: () => ContactList.onPress(navigation), topNavigator: navigation }} />
+      </Screen>
+    )
+  }
 }

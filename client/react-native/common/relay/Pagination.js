@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, View } from 'react-native'
 import React, { Component, PureComponent } from 'react'
 import Relay from 'react-relay'
 
@@ -53,19 +53,29 @@ class PaginationContainer extends Component {
   renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
 
   render () {
-    const { data, alias, renderItem, inverted, style } = this.props
-    return (
-      <FlatList
-        data={data[alias] && data[alias].edges ? data[alias].edges : []}
-        inverted={inverted}
-        refreshing={this.state.refetching}
-        onRefresh={this.refetch}
-        onEndReached={this.onEndReached}
-        keyExtractor={this.keyExtractor}
-        renderItem={renderItem && this.renderItem}
-        style={style}
-      />
-    )
+    const { data, alias, renderItem, inverted, style, emptyItem, cond, condComponent } = this.props
+
+    if (data[alias] && data[alias].edges.length > 0) {
+      return (
+        <View style={{ width: '100%', height: '100%' }}>
+          <View style={{ marginBottom: 'auto' }}>
+            <FlatList
+              data={data[alias].edges}
+              inverted={inverted}
+              refreshing={this.state.refetching}
+              onRefresh={this.refetch}
+              onEndReached={this.onEndReached}
+              keyExtractor={this.keyExtractor}
+              renderItem={renderItem && this.renderItem}
+              style={style}
+            />
+          </View>
+          {cond != null && cond(data[alias]) && condComponent != null ? condComponent() : null }
+        </View>
+      )
+    }
+
+    return emptyItem != null ? emptyItem() : null
   }
 }
 

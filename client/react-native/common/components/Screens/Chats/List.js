@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Screen, Text, Avatar } from '../../Library'
+import { Flex, Header, Screen, Text, Avatar, EmptyList } from '../../Library'
 import { Pagination } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
@@ -60,18 +60,22 @@ export default class ListScreen extends PureComponent {
         searchBar
         searchHandler={navigation.getParam('searchHandler')} // Placeholder
         onPressRightBtn={() =>
-          navigation.navigate('chats/add', {
-            goBack: () => {
-              navigation.goBack(null)
-              const retry = navigation.getParam('retry')
-              retry && retry()
-            },
-          })
+          ListScreen.onPress(navigation)
         }
       />
     ),
     tabBarVisible: true,
   })
+
+  static onPress = (navigation) => {
+    navigation.navigate('chats/add', {
+      goBack: () => {
+        navigation.goBack(null)
+        const retry = navigation.getParam('retry')
+        retry && retry()
+      },
+    })
+  }
 
   render () {
     const {
@@ -90,6 +94,13 @@ export default class ListScreen extends PureComponent {
           alias='ConversationList'
           subscriptions={[subscriptions.conversation]}
           renderItem={props => <Item {...props} navigation={navigation} />}
+          emptyItem={() => <EmptyList
+            source={require('../../../static/img/empty-conversation.png')}
+            text={I18n.t('chats.no-new-messages')}
+            icon={'edit'}
+            btnText={I18n.t('chats.new-conversation')}
+            onPress={() => ListScreen.onPress(navigation)}
+          />}
         />
       </Screen>
     )

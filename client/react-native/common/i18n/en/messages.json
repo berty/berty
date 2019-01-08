@@ -69,6 +69,7 @@
   "contacts": {
     "title": "Contacts",
     "details": "Contact details",
+    "empty": "You don't have any contacts yet",
     "add": {
       "title": "Add a contact",
       "pub-key-paste-here": "Paste the public key of a Berty user here",
