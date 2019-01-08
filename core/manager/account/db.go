@@ -15,7 +15,7 @@ import (
 //
 
 type StateDB struct {
-	gorm *gorm.DB `gorm:"-"`
+	Gorm *gorm.DB `gorm:"-"`
 	gorm.Model
 
 	StartCounter int
@@ -39,20 +39,16 @@ func OpenStateDB(path string, initialState StateDB) (*StateDB, error) {
 
 	// preload last state
 	var state StateDB
-	if err := db.FirstOrInit(&state).Error; err != nil {
+	if err := db.Last(&state).Error; err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
-	}
-
-	// if no previous state found, set initial state
-	if state.StartCounter == 0 {
+	} else if err == gorm.ErrRecordNotFound {
 		state = initialState
-		state.gorm = db
-		if err := state.Save(); err != nil {
+		if err := db.Save(&state).Error; err != nil {
 			return nil, err
 		}
-	} else {
-		state.gorm = db
 	}
+
+	state.Gorm = db
 
 	return &state, nil
 }
@@ -63,11 +59,15 @@ func (state StateDB) String() string {
 }
 
 func (state *StateDB) Save() error {
-	return state.gorm.Save(state).Error
+	return state.Gorm.Save(state).Error
+}
+
+func (state *StateDB) Create() error {
+	return state.Gorm.Create(state).Error
 }
 
 func (state *StateDB) Close() {
-	state.gorm.Close()
+	state.Gorm.Close()
 }
 
 //

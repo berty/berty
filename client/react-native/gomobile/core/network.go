@@ -78,13 +78,14 @@ func UpdateNetworkConfig(jsonConf string) error {
 	defer panicHandler()
 	waitDaemon(accountName)
 	currentAccount, _ := account.Get(rootContext, accountName)
+	newState := &account.StateDB{}
 
 	var newNetworkConfig networkConfig
 	if err := json.Unmarshal([]byte(jsonConf), &newNetworkConfig); err != nil {
 		return err
 	}
 
-	appConfig.JSONNetConf = jsonConf
+	newState.JSONNetConf = jsonConf
 	netConf, err := createNetworkConfig()
 	if err != nil {
 		return err
@@ -93,10 +94,16 @@ func UpdateNetworkConfig(jsonConf string) error {
 		return err
 	}
 
-	appConfig.StartCounter++
-	if err := appConfig.Save(); err != nil {
+	newState.StartCounter = appConfig.StartCounter + 1
+	newState.BotMode = appConfig.BotMode
+	newState.LocalGRPC = appConfig.LocalGRPC
+	newState.Gorm = appConfig.Gorm
+	if err := newState.Create(); err != nil {
 		return errors.Wrap(err, "state DB save failed")
 	}
+
+	// if Create is successfull assign the newState to our global
+	appConfig = newState
 
 	return nil
 }
