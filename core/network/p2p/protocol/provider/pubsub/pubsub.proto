@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package provider;
 
-option go_package = "berty.tech/core/network/p2p/protocol/provider";
+option go_package = "berty.tech/core/network/p2p/protocol/provider/pubsub";
 
 message ProviderInfo {
   string id = 1;

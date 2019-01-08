@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"fmt"
-	"os"
 	"testing"
 	"time"
 
@@ -59,11 +58,9 @@ func setupDriver(bootstrap ...string) (*p2p.Driver, error) {
 func setupTestLogging() {
 	// initialize zap
 	config := zap.NewDevelopmentConfig()
-	if os.Getenv("LOG_LEVEL") == "debug" {
-		config.Level.SetLevel(zap.DebugLevel)
-	} else {
-		config.Level.SetLevel(zap.InfoLevel)
-	}
+
+	config.Level.SetLevel(zap.DebugLevel)
+
 	config.DisableStacktrace = true
 	config.EncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
 	logger, err := config.Build()
@@ -75,14 +72,14 @@ func setupTestLogging() {
 
 func TestP2PNetwork(t *testing.T) {
 	var (
-		homer, lisa, bart, roger, patrick *p2p.Driver
-		err                               error
+		homer, lisa, bart *p2p.Driver
+		err               error
 	)
 	setupTestLogging()
 	// logging.SetDebugLogging()
 
 	dht.PoolSize = 3
-	ds := []*p2p.Driver{homer, lisa, bart, roger, patrick}
+	ds := []*p2p.Driver{homer, lisa, bart}
 	defer func() {
 		for _, d := range ds {
 			if d != nil {
@@ -107,30 +104,15 @@ func TestP2PNetwork(t *testing.T) {
 			lisa, err = setupDriver(b...)
 			So(err, ShouldBeNil)
 
-			bart, err = setupDriver(b...)
-			So(err, ShouldBeNil)
-
-			roger, err = setupDriver(b...)
-			So(err, ShouldBeNil)
-
-			patrick, err = setupDriver(b...)
-			So(err, ShouldBeNil)
-
 			err = lisa.Join(ctx, "Lisa")
 			So(err, ShouldBeNil)
 
-			err = bart.Join(ctx, "Bart")
-			So(err, ShouldBeNil)
-
-			err = patrick.Join(ctx, "Patrick")
-			So(err, ShouldBeNil)
-
-			err = roger.Join(ctx, "Roger")
+			bart, err = setupDriver(b...)
 			So(err, ShouldBeNil)
 		})
 
 		Convey("Roger send an event to Lisa", FailureHalts, func(c C) {
-			tctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
+			tctx, cancel := context.WithTimeout(ctx, time.Second*4)
 			defer cancel()
 
 			e := &api.Envelope{
@@ -141,13 +123,13 @@ func TestP2PNetwork(t *testing.T) {
 			lisa.OnEnvelopeHandler(func(ctx context.Context, envelope *api.Envelope) (*api.Void, error) {
 				if envelope == nil {
 					lisaQueue <- nil
-					return nil, err
+					return nil, fmt.Errorf("empty envelope")
 				}
 				lisaQueue <- envelope
 				return &api.Void{}, nil
 			})
 
-			err = roger.Emit(tctx, e)
+			err = bart.Emit(tctx, e)
 			So(err, ShouldBeNil)
 			So(<-lisaQueue, ShouldNotBeNil)
 			// So(len(lisaQueue), ShouldEqual, 1)

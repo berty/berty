@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"sync"
 	"time"
 
 	"berty.tech/core/pkg/errorcodes"
@@ -15,6 +14,9 @@ import (
 	"berty.tech/core/network/p2p/protocol/provider"
 	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
 	"berty.tech/core/pkg/tracing"
+
+	provider_dht "berty.tech/core/network/p2p/protocol/provider/dht"
+	provider_pubsub "berty.tech/core/network/p2p/protocol/provider/pubsub"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -68,10 +70,7 @@ type Driver struct {
 	ccmanager *p2putil.Manager
 	handler   func(context.Context, *p2p.Envelope) (*p2p.Void, error)
 
-	subsStack []cid.Cid
-	muSubs    sync.Mutex
-
-	provider *provider.Provider
+	providers *provider.Manager
 
 	// services
 	dht *dht.IpfsDHT
@@ -112,10 +111,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	driver := &Driver{
 		host:        host,
 		rootContext: ctx,
-	}
-
-	if driver.provider, err = provider.New(ctx, host, driver.handleNewPovider); err != nil {
-		return nil, err
+		providers:   provider.NewManager(),
 	}
 
 	ds := syncdatastore.MutexWrap(datastore.NewMapDatastore())
@@ -196,6 +192,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	sgrpc := p2pgrpc.NewP2PGrpcService(host)
 
 	dialOpts := append([]grpc.DialOption{
+		grpc.WithDefaultCallOptions(grpc.FailFast(true)),
 		grpc.WithInsecure(),
 		grpc.WithDialer(sgrpc.NewDialer(ctx, ID)),
 	}, p2pInterceptorsClient...)
@@ -204,6 +201,15 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	p2p.RegisterServiceServer(driver.gs, ServiceServer(driver))
 
 	driver.listener = sgrpc.NewListener(ctx, ID)
+
+	driver.providers.Register(provider_dht.New(driver.host, driver.dht))
+
+	pubsubProvider, err := provider_pubsub.New(ctx, host)
+	if err != nil {
+		logger().Warn("pubsub provider", zap.Error(err))
+	} else {
+		driver.providers.Register(pubsubProvider)
+	}
 
 	driver.logHostInfos()
 	return driver, nil
@@ -279,7 +285,7 @@ func (d *Driver) ID(ctx context.Context) *network.Peer {
 }
 
 func (d *Driver) handleNewPovider(providerID string, pi pstore.PeerInfo) {
-	logger().Debug("new provider", zap.String("provider ID", providerID), zap.String("peer ID", pi.ID.Pretty()))
+	logger().Debug("new providers", zap.String("providers ID", providerID), zap.String("peer ID", pi.ID.Pretty()))
 }
 
 func (d *Driver) Close(ctx context.Context) error {
@@ -438,11 +444,13 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	ss, err := d.AnnounceAndWait(ctx, channel)
+	logger().Debug("looking for peers", zap.String("channel", channel))
+	ss, err := d.FindProvidersAndWait(ctx, channel)
 	if err != nil {
 		return err
 	}
 
+	logger().Debug("found peers", zap.String("channel", channel), zap.Int("number", len(ss)))
 	success := make([]chan bool, len(ss))
 	for i, s := range ss {
 		success[i] = make(chan bool, 1)
@@ -457,6 +465,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 				return
 			}
 
+			logger().Debug("connecting", zap.String("channel", channel), zap.String("peerID", peerID))
 			if err := d.Connect(goctx, pi); err != nil {
 				logger().Warn("failed to connect", zap.String("id", peerID), zap.Error(err))
 				done <- false
@@ -472,20 +481,23 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 
 			sc := p2p.NewServiceClient(c)
 
+			logger().Debug("sending envelope", zap.String("channel", channel), zap.String("peerID", peerID))
 			_, err = sc.HandleEnvelope(goctx, e)
 			if err != nil {
-				logger().Error("failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
+				logger().Error("failed to send envelope", zap.String("channel", channel), zap.String("peerID", peerID), zap.String("error", err.Error()))
 				done <- false
 				return
 			}
 
 			done <- true
-		}(s, i, success[i])
+		}(*s, i, success[i])
 	}
 
-	var ok bool
+	ok := false
 	for _, cc := range success {
-		ok = ok || <-cc
+		if ok = ok || <-cc; ok {
+			break
+		}
 	}
 
 	if !ok {
@@ -495,33 +507,17 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	return nil
 }
 
-// FindSubscribers with the given ID
-func (d *Driver) FindLocalSubscribers(id string) ([]pstore.PeerInfo, error) {
+func (d *Driver) FindProvidersAndWait(ctx context.Context, id string) ([]*pstore.PeerInfo, error) {
 	c, err := d.createCid(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return d.provider.GetPeersForProvider(c.String())
-}
-
-// FindSubscribers with the given ID
-func (d *Driver) Announce(id string) error {
-	c, err := d.createCid(id)
-	if err != nil {
-		return err
-	}
-
-	return d.provider.Announce(c.String())
-}
-
-func (d *Driver) AnnounceAndWait(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
-	c, err := d.createCid(id)
-	if err != nil {
+	if err := d.providers.FindProviders(ctx, c); err != nil {
 		return nil, err
 	}
 
-	return d.provider.AnnounceAndWait(ctx, c.String())
+	return d.providers.WaitForProviders(ctx, c)
 }
 
 func (d *Driver) Join(ctx context.Context, id string) error {
@@ -530,11 +526,7 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 		return err
 	}
 
-	if err := d.provider.Subscribe(ctx, c.String()); err != nil {
-		return err
-	}
-
-	return d.provider.Announce(c.String())
+	return d.providers.Provide(ctx, c)
 }
 
 func (d *Driver) OnEnvelopeHandler(f func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
