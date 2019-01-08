@@ -95,14 +95,17 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    // buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        applicationId "chat.berty.main"
+        applicationId rootProject.ext.applicationId
+
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -178,10 +181,12 @@ dependencies {
     compile project(':react-native-image-picker')
     compile project(':react-native-exception-handler')
     compile project(':react-native-camera')
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':ble')
+    implementation "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation 'com.facebook.react:react-native:+' // From node_modules
+    implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project(':ble')
     implementation project(':core')
 }
 
@@ -193,3 +198,6 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: 'publish.gradle'
+
+apply plugin: 'com.google.gms.google-services'
+

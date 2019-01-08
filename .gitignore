@@ -10,6 +10,10 @@ gin-bin
 .agignore
 .env
 
+# Android
+google-services.json
+core-sources.jar
+
 # OSX
 .DS_Store
 

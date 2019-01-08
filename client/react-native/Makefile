@@ -70,6 +70,14 @@ deps:
 
 .PHONY: deps.android
 deps.android: deps
+	[ -e $(PWD)/android/app/google-services.json ] \
+		|| (echo '\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' \
+		&& echo '!!! google-services.json not configured !!!' \
+		&& echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' \
+		&& echo 'Go to Berty Technologies project from https://console.firebase.google.com/' \
+		&& echo 'Go to chat.berty.main.debug or chat.berty.main and dl google-services.json' \
+		&& echo 'Add google-services.json in:\n$(PWD)/android/app\n' \
+		&& false)
 	$(MAKE) -C $(GOMOB) build.android
 	cd $(ROOT) && react-native link
 
