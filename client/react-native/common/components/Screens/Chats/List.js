@@ -95,7 +95,7 @@ export default class ListScreen extends PureComponent {
           subscriptions={[subscriptions.conversation]}
           renderItem={props => <Item {...props} navigation={navigation} />}
           emptyItem={() => <EmptyList
-            source={require('../../../static/img/emptyConversation.png')}
+            source={require('../../../static/img/empty-conversation.png')}
             text={I18n.t('chats.no-new-messages')}
             icon={'edit'}
             btnText={I18n.t('chats.new-conversation')}
