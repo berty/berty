@@ -53,19 +53,25 @@ class PaginationContainer extends Component {
   renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
 
   render () {
-    const { data, alias, renderItem, inverted, style } = this.props
-    return (
-      <FlatList
-        data={data[alias] && data[alias].edges ? data[alias].edges : []}
-        inverted={inverted}
-        refreshing={this.state.refetching}
-        onRefresh={this.refetch}
-        onEndReached={this.onEndReached}
-        keyExtractor={this.keyExtractor}
-        renderItem={renderItem && this.renderItem}
-        style={style}
-      />
-    )
+    const { data, alias, renderItem, inverted, style, emptyItem } = this.props
+    console.log('data', data[alias], data[alias].edges)
+
+    if (data[alias] && data[alias].edges.length > 0) {
+      return (
+        <FlatList
+          data={data[alias].edges}
+          inverted={inverted}
+          refreshing={this.state.refetching}
+          onRefresh={this.refetch}
+          onEndReached={this.onEndReached}
+          keyExtractor={this.keyExtractor}
+          renderItem={renderItem && this.renderItem}
+          style={style}
+        />
+      )
+    }
+
+    return emptyItem != null ? emptyItem() : null
   }
 }
 
