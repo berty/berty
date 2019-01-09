@@ -1,8 +1,9 @@
 package core
 
-func (cfg *MobileOptions) WithNotificationDriver(driver NativeNotification) *MobileOptions {
-	cfg.notification = driver
-	return cfg
+type MobileOptions struct {
+	logger        NativeLogger
+	datastorePath string
+	nickname      string
 }
 
 func (cfg *MobileOptions) WithDatastorePath(path string) *MobileOptions {

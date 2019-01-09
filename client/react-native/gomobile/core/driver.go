@@ -6,5 +6,5 @@ type NativeLogger interface {
 }
 
 type NativeNotification interface {
-	DisplayNativeNotification(title, body, icon, sound string) error
+	DisplayNotification(title, body, icon, sound string) error
 }

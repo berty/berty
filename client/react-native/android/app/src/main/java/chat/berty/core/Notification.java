@@ -13,23 +13,34 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
+import com.google.firebase.messaging.RemoteMessage;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.gson.Gson;
+
+import java.util.Map;
+
 import chat.berty.ble.Manager;
 import chat.berty.main.R;
 import core.Core;
+import core.MobileNotification;
+import core.NativeNotification;
 
-public class Notification implements core.NativeNotification {
+public class Notification extends FirebaseMessagingService implements NativeNotification {
     private ReactApplicationContext reactContext;
+
     private static final String CHANNEL_ID = "berty-chat-android-notification-id";
     private static final String CHANNEL_NAME = "berty.chat.android.core.notification.name";
     private static final String CHANNEL_DESCRIPTION = "berty.chat.android.core.notification.description";
 
-    public Notification(final ReactApplicationContext reactContext) {
+    private static MobileNotification handler;
+
+    public Notification(final ReactApplicationContext reactContext, MobileNotification handler) {
         this.reactContext = reactContext;
         this.createNotificationChannel();
+        this.handler = handler;
     }
 
-    @Override
-    public void displayNativeNotification(String title, String body, String icon, String sound) throws Exception {
+    public void displayNotification(String title, String body, String icon, String sound) throws Exception {
         NotificationManager notificationManager = (NotificationManager)this.reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent intent = new Intent(this.reactContext, Notification.class);
@@ -60,5 +71,28 @@ public class Notification implements core.NativeNotification {
             NotificationManager notificationManager = (NotificationManager)this.reactContext.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+
+    /**
+     * Called when message is received.
+     *
+     * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
+     */
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        Map<String, String> map = remoteMessage.getData();
+        String data = new Gson().toJson(map);
+        this.handler.receiveNotification(data);
+    }
+
+    /**
+     * Called if InstanceID token is updated. This may occur if the security of
+     * the previous token had been compromised. Note that this is called when the InstanceID token
+     * is initially generated so this is where you would retrieve the token.
+     */
+    @Override
+    public void onNewToken(String token) {
+        this.handler.receivePushID(token, "fcm");
     }
 }

@@ -185,6 +185,7 @@ dependencies {
     implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation 'com.facebook.react:react-native:+' // From node_modules
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
+    implementation 'com.google.code.gson:gson:2.8.2'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':ble')
     implementation project(':core')
