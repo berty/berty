@@ -111,7 +111,7 @@ func initOrRestoreAppState(datastorePath string) error {
 		LocalGRPC:   initiallocalGRPC,
 	}
 
-	appState, err := account.OpenStateDB(datastorePath+"berty.state.db", initialState)
+	appState, err := account.OpenStateDB(datastorePath+"/berty.state.db", initialState)
 	if err != nil {
 		return errors.Wrap(err, "state DB init failed")
 	}
