@@ -2,6 +2,7 @@
 
 # Fastlane
 .build
+certs/
 
 # junk files
 #
