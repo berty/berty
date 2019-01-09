@@ -358,8 +358,12 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 	// remove 1-1 conversation
 	// don't return error if not found
 	conversation, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
-	if err == nil {
+	switch {
+	case err == nil: // conversation exists, delete it
 		n.ConversationRemove(ctx, &entity.Conversation{ID: conversation.ID})
+	case gorm.IsRecordNotFoundError(errors.Cause(err)): // conversation is not found, do nothing
+	case err != nil: // another error is triggered, returning it
+		return nil, err
 	}
 
 	return contact, nil
