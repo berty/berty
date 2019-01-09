@@ -64,7 +64,6 @@ export default class EmptyList extends PureComponent {
               onPress={onPress}
               style={{
                 fontSize: fontSize,
-                textTransform: 'uppercase',
                 color: colors.white,
                 display: 'flex',
                 textAlign: 'center',
@@ -73,7 +72,7 @@ export default class EmptyList extends PureComponent {
                 justifyContent: 'center',
               }}
             >
-              {btnText}
+              {btnText.toUpperCase()}
             </Text>
           </View>
         </View>

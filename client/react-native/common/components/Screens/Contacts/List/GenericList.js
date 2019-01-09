@@ -47,7 +47,6 @@ class CondComponent extends PureComponent {
           <Text
             style={{
               fontSize: fontSize,
-              textTransform: 'uppercase',
               color: colors.white,
               display: 'flex',
               textAlign: 'center',
@@ -56,7 +55,7 @@ class CondComponent extends PureComponent {
               justifyContent: 'center',
             }}
           >
-            {I18n.t('contacts.add.title')}
+            {I18n.t('contacts.add.title').toUpperCase()}
           </Text>
         </View>
       </View>
