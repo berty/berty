@@ -55,7 +55,7 @@ func (c Code) newError(placeholders map[string]string, stack *stack, cause error
 	if !ok {
 		grpcCode = codes.Unknown
 	}
-	localized := i18n.T(codeName) // FIXME: support placeholders
+	localized := i18n.T(codeName, nil) // FIXME: support placeholders
 	e := convert(
 		errors.New(localized),
 		grpcCode,

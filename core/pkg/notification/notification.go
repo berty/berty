@@ -3,7 +3,12 @@
 package notification
 
 import (
-	"github.com/gen2brain/beeep"
+	"path"
+	"runtime"
+	"sync"
+
+	"github.com/0xAX/notificator"
+
 	"go.uber.org/zap"
 )
 
@@ -55,6 +60,8 @@ func (n *NoopNotification) ReceivePushID(pushID, pushIDType string) {
 
 // NoopNotification is a Driver
 var _ Driver = (*DesktopNotification)(nil)
+var notify *notificator.Notificator
+var once sync.Once
 
 func NewDesktopNotification() Driver {
 	return &DesktopNotification{}
@@ -63,7 +70,16 @@ func NewDesktopNotification() Driver {
 type DesktopNotification struct{}
 
 func (n *DesktopNotification) DisplayNotification(p Payload) error {
-	return beeep.Notify(p.Title, p.Body, p.Icon)
+	once.Do(func() {
+		_, filename, _, _ := runtime.Caller(0)
+		iconPath := path.Dir(filename) + "/../../../client/react-native/common/static/img/logo.png"
+		notify = notificator.New(notificator.Options{
+			DefaultIcon: iconPath,
+			AppName:     "Berty",
+		})
+	})
+
+	return notify.Push(p.Title, p.Body, p.Icon, notificator.UR_NORMAL)
 }
 
 func (n *DesktopNotification) ReceiveNotification(data string) {}

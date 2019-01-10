@@ -9,7 +9,7 @@ import (
 	"github.com/gobuffalo/packr/v2"
 	goI18n "github.com/nicksnyder/go-i18n/v2/i18n"
 	"golang.org/x/text/language"
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 type singleton struct {
@@ -58,11 +58,11 @@ func SetLanguage(tag *language.Tag) {
 	i18n().language = tag
 }
 
-func T(messageID string, templateData ...string) string {
-	return TCount(messageID, 1, templateData...)
+func T(messageID string, templateData interface{}) string {
+	return TCount(messageID, 1, templateData)
 }
 
-func TCount(messageID string, count int, templateData ...string) string {
+func TCount(messageID string, count int, templateData interface{}) string {
 	i18nInstance := i18n()
 
 	localizer := goI18n.NewLocalizer(i18nInstance.bundle, i18nInstance.language.String())
@@ -71,6 +71,7 @@ func TCount(messageID string, count int, templateData ...string) string {
 		DefaultMessage: &goI18n.Message{
 			ID: messageID,
 		},
+		TemplateData: templateData,
 	})
 
 	if err != nil {

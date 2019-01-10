@@ -15,3 +15,33 @@ ErrContactReqExisting:
 
 ErrContactReqMyself:
     other: "Vous ne pouvez pas vous ajouter comme contact"
+
+DaemonStartBody:
+    other: "Le daemon berty est désormais opérationnel"
+
+DaemonStartTitle:
+    other: "Nœud démarré"
+
+ContactRequestTitle:
+    other: "Demande de contact"
+
+ContactRequestBody:
+    other: "{{.Name}} veut vous ajouter à sa liste de contact"
+
+ContactRequestAccpetedTitle:
+    other: "Demande de contact acceptée"
+
+ContactRequestAccpetedBody:
+    other: "{{.Name}} a accepté votre demande de contact"
+
+ConversationInviteTitle:
+    other: "Invitation de conversation"
+
+ConversationInviteBody:
+    other: "Vous avez été invité à joindre une conversation"
+
+NewMessageTitle:
+    other: "Nouveau message"
+
+NewMessageBody:
+    other: "Vous avez un nouveau message"

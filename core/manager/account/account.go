@@ -29,6 +29,7 @@ import (
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
 	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
@@ -499,8 +500,8 @@ func (a *Account) initNode(ctx context.Context) error {
 	}
 
 	a.node.DisplayNotification(notification.Payload{
-		Title: "Node started",
-		Body:  "Berty daemon is now up and running",
+		Title: i18n.T("DaemonStartTitle", nil),
+		Body:  i18n.T("DaemonStartBody", nil),
 	})
 	return nil
 }

@@ -46,7 +46,7 @@ type daemonOptions struct {
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.nickname, "nickname", "berty-daemon", "set account nickname")
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
-	flags.BoolVar(&opts.notification, "notification", false, "enable local notification")
+	flags.BoolVar(&opts.notification, "notification", true, "enable local notification")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
