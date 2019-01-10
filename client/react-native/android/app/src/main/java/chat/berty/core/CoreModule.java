@@ -8,17 +8,18 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
 import chat.berty.ble.Manager;
 import core.Core;
+import core.MobileNotification;
+import core.NativeNotification;
 
 public class CoreModule extends ReactContextBaseJavaModule {
     private Logger logger = new Logger("chat.berty.io");
-    private Notification notification;
+    private MobileNotification notificationDriver = Core.getNotificationDriver();
     private String filesDir = "";
     private ReactApplicationContext reactContext;
 
     public CoreModule(final ReactApplicationContext reactContext) {
         super(reactContext);
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
-        this.notification = new Notification(reactContext);
         this.reactContext = reactContext;
 
         Object o = new Manager.ActivityGetter() {
@@ -28,6 +29,8 @@ public class CoreModule extends ReactContextBaseJavaModule {
         };
 
         Manager.getInstance().setmReactContext(o, reactContext);
+
+        this.notificationDriver.setNativeNotification(new Notification(reactContext, this.notificationDriver));
     }
 
     public String getName() {
@@ -63,8 +66,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
             core.MobileOptions coreOptions = new core.MobileOptions()
                 .withNickname(nickname)
                 .withDatastorePath(this.filesDir)
-                .withLoggerDriver(this.logger)
-                .withNotificationDriver(this.notification);
+                .withLoggerDriver(this.logger);
 
             Core.start(coreOptions);
             promise.resolve(null);

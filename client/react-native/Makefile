@@ -70,6 +70,14 @@ deps:
 
 .PHONY: deps.android
 deps.android: deps
+	[ -e $(PWD)/android/app/google-services.json ] \
+		|| (echo '\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' \
+		&& echo '!!! google-services.json not configured !!!' \
+		&& echo '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!' \
+		&& echo 'Go to Berty Technologies project from https://console.firebase.google.com/' \
+		&& echo 'Go to chat.berty.main.debug or chat.berty.main and dl google-services.json' \
+		&& echo 'Add google-services.json in:\n$(PWD)/android/app\n' \
+		&& false)
 	$(MAKE) -C $(GOMOB) build.android
 	cd $(ROOT) && react-native link
 
@@ -395,6 +403,10 @@ fastlane.ios.release.appstore: fastlane.ios.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
 fastlane.android.build:
+	# get the google-services.json
+	[ -e $(ROOT)/android/app/google-services.json ] \
+		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
+
 	mkdir -p $(ANDROID_BUILD)
 
 	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \

@@ -15,17 +15,11 @@ import (
 	"go.uber.org/zap"
 )
 
-type MobileOptions struct {
-	logger        NativeLogger
-	notification  NativeNotification
-	datastorePath string
-	nickname      string
-}
-
 var (
-	accountName = ""
-	appConfig   *account.StateDB
-	rootContext = context.Background()
+	accountName        = ""
+	appConfig          *account.StateDB
+	rootContext        = context.Background()
+	NotificationDriver = &MobileNotification{}
 )
 
 func logger() *zap.Logger {
@@ -217,13 +211,12 @@ func daemon(cfg *MobileOptions) error {
 		return err
 	}
 
-	notificationDriver := &nativeNotificationModule{cfg.notification}
 	accountOptions := account.Options{
 		account.WithJaegerAddrName("jaeger.berty.io:6831", cfg.nickname+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(cfg.nickname),
 		account.WithPassphrase("secure"),
-		account.WithNotificationDriver(notificationDriver),
+		account.WithNotificationDriver(NotificationDriver),
 		account.WithDatabase(&account.DatabaseOptions{
 			Path: cfg.datastorePath,
 			Drop: false,
