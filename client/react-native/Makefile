@@ -403,6 +403,10 @@ fastlane.ios.release.appstore: fastlane.ios.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
 fastlane.android.build:
+	# get the google-services.json
+	[ -e $(ROOT)/android/app/google-services.json ] \
+		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
+
 	mkdir -p $(ANDROID_BUILD)
 
 	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \
