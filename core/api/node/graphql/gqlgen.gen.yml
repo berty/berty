@@ -723,6 +723,37 @@ models:
 
 
 
+  BertyEntityDevicePushIdentifier:
+    model: berty.tech/core/entity.DevicePushIdentifier
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      pushInfo:
+      pushRelayId:
+      deviceId:
+  BertyEntityDevicePushIdentifierInput:
+    model: berty.tech/core/entity.DevicePushIdentifier
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      pushInfo:
+      pushRelayId:
+      deviceId:
+  BertyEntityDevicePushIdentifierPayload:
+    model: berty.tech/core/entity.DevicePushIdentifier
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      pushInfo:
+      pushRelayId:
+      deviceId:
+
   BertyEntityDevice:
     model: berty.tech/core/entity.Device
     fields:
@@ -734,6 +765,7 @@ models:
       status:
       apiVersion:
       contactId:
+      pushIdentifiers:
   BertyEntityDeviceInput:
     model: berty.tech/core/entity.Device
     fields:
@@ -745,6 +777,7 @@ models:
       status:
       apiVersion:
       contactId:
+      pushIdentifiers:
   BertyEntityDevicePayload:
     model: berty.tech/core/entity.Device
     fields:
@@ -756,6 +789,7 @@ models:
       status:
       apiVersion:
       contactId:
+      pushIdentifiers:
 
 
   BertyEntityContact:
@@ -1106,6 +1140,38 @@ models:
     model: berty.tech/core/api/p2p.SenderAliasUpdateAttrs
     fields:
       aliases:
+
+  BertyP2pDeviceUpdatePushConfigAttrs:
+    model: berty.tech/core/api/p2p.DeviceUpdatePushConfigAttrs
+    fields:
+      device:
+  BertyP2pDeviceUpdatePushConfigAttrsInput:
+    model: berty.tech/core/api/p2p.DeviceUpdatePushConfigAttrs
+    fields:
+      device:
+  BertyP2pDeviceUpdatePushConfigAttrsPayload:
+    model: berty.tech/core/api/p2p.DeviceUpdatePushConfigAttrs
+    fields:
+      device:
+
+  BertyP2pDevicePushToAttrs:
+    model: berty.tech/core/api/p2p.DevicePushToAttrs
+    fields:
+      pushIdentifier:
+      envelope:
+      priority:
+  BertyP2pDevicePushToAttrsInput:
+    model: berty.tech/core/api/p2p.DevicePushToAttrs
+    fields:
+      pushIdentifier:
+      envelope:
+      priority:
+  BertyP2pDevicePushToAttrsPayload:
+    model: berty.tech/core/api/p2p.DevicePushToAttrs
+    fields:
+      pushIdentifier:
+      envelope:
+      priority:
 
   BertyP2pNodeAttrs:
     model: berty.tech/core/api/p2p.NodeAttrs

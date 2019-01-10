@@ -230,6 +230,14 @@ type GqlNode implements Node {
   
   
 
+type BertyEntityDevicePushIdentifier implements Node {
+    id: ID!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    pushInfo: [Byte!]
+    pushRelayId: String!
+    deviceId: String!
+}
       
 type BertyEntityDevice implements Node {
     id: ID!
@@ -239,6 +247,7 @@ type BertyEntityDevice implements Node {
     status: Enum
     apiVersion: Uint32!
     contactId: String!
+    pushIdentifiers: [BertyEntityDevicePushIdentifier]
 }
   
   
@@ -308,6 +317,7 @@ type BertyEntitySenderAlias  {
   
 
   
+  
 type BertyP2pSentAttrs  {
     ids: [String!]
 }
@@ -349,6 +359,14 @@ type BertyP2pDevtoolsMapsetAttrs  {
 }
 type BertyP2pSenderAliasUpdateAttrs  {
     aliases: [BertyEntitySenderAlias]
+}
+type BertyP2pDeviceUpdatePushConfigAttrs  {
+    device: BertyEntityDevice
+}
+type BertyP2pDevicePushToAttrs  {
+    pushIdentifier: [Byte!]
+    envelope: [Byte!]
+    priority: Enum
 }
 type BertyP2pNodeAttrs  {
     kind: Int32!
@@ -589,6 +607,14 @@ input BertyNodePaginationInput {
     last: Int32
     before: String
 }
+input BertyEntityDevicePushIdentifierInput {
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    pushInfo: [Byte!]
+    pushRelayId: String!
+    deviceId: String!
+}
 input BertyEntityDeviceInput {
     id: ID!
     createdAt: GoogleProtobufTimestampInput
@@ -597,6 +623,7 @@ input BertyEntityDeviceInput {
     status: Enum
     apiVersion: Uint32!
     contactId: String!
+    pushIdentifiers: [BertyEntityDevicePushIdentifierInput]
 }
 input BertyEntityContactInput {
     id: ID!

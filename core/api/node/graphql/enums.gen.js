@@ -181,6 +181,8 @@ export const BertyP2pKindInputKind = {
   ConversationRead: 303,
   DevtoolsMapset: 401,
   SenderAliasUpdate: 501,
+  DeviceUpdatePushConfig: 601,
+  DevicePushTo: 602,
   Node: 99,
 }
 
@@ -199,7 +201,21 @@ export const ValueBertyP2pKindInputKind = {
   303: 'ConversationRead',
   401: 'DevtoolsMapset',
   501: 'SenderAliasUpdate',
+  601: 'DeviceUpdatePushConfig',
+  602: 'DevicePushTo',
   99: 'Node',
+}
+
+export const BertyP2pPriorityInputPriority = {
+  UnknownPriority: 0,
+  Low: 1,
+  Normal: 2,
+}
+
+export const ValueBertyP2pPriorityInputPriority = {
+  0: 'UnknownPriority',
+  1: 'Low',
+  2: 'Normal',
 }
 
 export const BertyP2pEventInputDirection = {

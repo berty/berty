@@ -45,6 +45,10 @@ func (r *Resolver) BertyEntityConversationMember() generated.BertyEntityConversa
 func (r *Resolver) BertyEntityDevice() generated.BertyEntityDeviceResolver {
 	return &bertyEntityDeviceResolver{r}
 }
+
+func (r *Resolver) BertyEntityDevicePushIdentifier() generated.BertyEntityDevicePushIdentifierResolver {
+	return &bertyEntityDevicePushIdentifierResolver{r}
+}
 func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
 	return &bertyP2pEventResolver{r}
 }
@@ -104,6 +108,12 @@ func (r *bertyEntityConversationMemberResolver) ContactID(ctx context.Context, o
 }
 func (r *bertyEntityConversationMemberResolver) ConversationID(ctx context.Context, obj *entity.ConversationMember) (string, error) {
 	return "conversation:" + obj.ConversationID, nil
+}
+
+type bertyEntityDevicePushIdentifierResolver struct{ *Resolver }
+
+func (r *bertyEntityDevicePushIdentifierResolver) ID(ctx context.Context, obj *entity.DevicePushIdentifier) (string, error) {
+	return "device_push_identifier:" + obj.ID, nil
 }
 
 type bertyEntityDeviceResolver struct{ *Resolver }

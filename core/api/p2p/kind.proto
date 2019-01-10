@@ -5,6 +5,7 @@ package berty.p2p;
 import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
+import "entity/device.proto";
 import "entity/sender_alias.proto";
 import "gogoproto/gogo.proto";
 
@@ -57,6 +58,13 @@ enum Kind {
   SenderAliasUpdate = 501;
 
   //
+  // Device events
+  //
+
+  DeviceUpdatePushConfig = 601;
+  DevicePushTo = 602;
+
+  //
   // Other events
   //
 
@@ -104,6 +112,13 @@ message DevtoolsMapsetAttrs { string key = 1; string val = 2; }
 message SenderAliasUpdateAttrs { repeated berty.entity.SenderAlias aliases = 1; }
 
 //
+// Device events
+//
+
+message DeviceUpdatePushConfigAttrs { berty.entity.Device device = 1; }
+message DevicePushToAttrs { bytes push_identifier = 1; bytes envelope = 2; Priority priority = 3; }
+
+//
 // Other events
 //
 
@@ -112,4 +127,10 @@ message SenderAliasUpdateAttrs { repeated berty.entity.SenderAlias aliases = 1; 
 message NodeAttrs {
   int32 kind = 1;
   bytes attributes = 2;
+}
+
+enum Priority {
+  UnknownPriority = 0;
+  Low = 1;
+  Normal = 2;
 }
