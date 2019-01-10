@@ -2,6 +2,7 @@ module berty.tech/core
 
 require (
 	cloud.google.com/go v0.30.0 // indirect
+	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
 	github.com/99designs/gqlgen v0.6.0
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/agnivade/levenshtein v1.0.1 // indirect
@@ -14,7 +15,6 @@ require (
 	github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fd/go-nat v1.0.0 // indirect
-	github.com/gen2brain/beeep v0.0.0-20180718162406-4e430518395f
 	github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a // indirect
 	github.com/go-check/check v0.0.0-20180628173108-788fd7840127 // indirect
 	github.com/go-gormigrate/gormigrate v1.2.1
