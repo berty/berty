@@ -1,6 +1,7 @@
 package account
 
 import (
+	"berty.tech/core/push"
 	"context"
 	"fmt"
 	"io"
@@ -95,7 +96,8 @@ type Account struct {
 
 	errChan chan error
 
-	ring *zapring.Ring
+	ring        *zapring.Ring
+	pushManager *push.Manager
 }
 
 var list []*Account
@@ -494,6 +496,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithSoftwareCrypto(), // FIXME: use hardware impl if available
 		node.WithConfig(),
 		node.WithRing(a.ring),
+		node.WithPushManager(a.pushManager),
 	)
 	if err != nil {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)
