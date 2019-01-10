@@ -18,6 +18,7 @@ class CondComponent extends PureComponent {
 
   render () {
     const fontSize = this.state.fontWidth * 0.07
+    const { onPress } = this.props
 
     return (
       <View
@@ -54,6 +55,7 @@ class CondComponent extends PureComponent {
               flexDirection: 'column',
               justifyContent: 'center',
             }}
+            onPress={() => onPress()}
           >
             {I18n.t('contacts.add.title').toUpperCase()}
           </Text>
@@ -81,7 +83,7 @@ const GenericList = ({ filter, ignoreMyself, onPress }) => (
               <Item {...props} context={context} ignoreMyself={ignoreMyself} />
             )}
             cond={cond}
-            condComponent={() => <CondComponent />}
+            condComponent={() => <CondComponent onPress={() => onPress()} />}
             emptyItem={() => (
               <EmptyList
                 source={require('../../../../static/img/empty-contact.png')}
