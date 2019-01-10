@@ -8,6 +8,7 @@ import (
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
 	bsql "berty.tech/core/sql"
 	"github.com/gofrs/uuid"
@@ -48,8 +49,10 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	}
 
 	n.DisplayNotification(notification.Payload{
-		Title: "Contact request",
-		Body:  attrs.Me.DisplayName + " wants to add you",
+		Title: i18n.T("ContactRequestTitle", nil),
+		Body: i18n.T("ContactRequestBody", map[string]interface{}{
+			"Name": attrs.Me.DisplayName,
+		}),
 	})
 	// nothing more to do, now we wait for the UI to accept the request
 	return nil
@@ -79,8 +82,10 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 	}
 
 	n.DisplayNotification(notification.Payload{
-		Title: "Contact request accepted",
-		Body:  contact.DisplayName + " accepted your request",
+		Title: i18n.T("ContactRequestAccpetedTitle", nil),
+		Body: i18n.T("ContactRequestAccpetedBody", map[string]interface{}{
+			"Name": contact.DisplayName,
+		}),
 	})
 	return nil
 }
@@ -139,8 +144,8 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 	}
 
 	n.DisplayNotification(notification.Payload{
-		Title: "Conversation invite",
-		Body:  "You have been invited to a new conversation",
+		Title: i18n.T("ConversationInviteTitle", nil),
+		Body:  i18n.T("ConversationInviteBody", nil),
 	})
 
 	return nil
@@ -156,8 +161,8 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
 	n.DisplayNotification(notification.Payload{
-		Title: "New message",
-		Body:  "You have a new message",
+		Title: i18n.T("NewMessageTitle", nil),
+		Body:  i18n.T("NewMessageBody", nil),
 	})
 	return nil
 }
