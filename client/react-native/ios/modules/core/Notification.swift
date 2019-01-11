@@ -14,36 +14,21 @@ enum NotificationError: Error {
   case invalidArgument
 }
 
-class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotificationProtocol {
+class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotificationDriverProtocol {
 
-  @objc var handler: CoreMobileNotification!
-
-  init(handler: CoreMobileNotification!) {
+  override init () {
     super.init()
-    self.handler = handler
-
-    if #available(iOS 10.0, *) {
-      UNUserNotificationCenter.current().delegate = self
-
-      // Requesting for authorization
-      // FIXME: these action doesn't belong here, improve this and make it
-      // available for < ios10.0
-      UNUserNotificationCenter.current().requestAuthorization(
-        options: [.alert, .sound, .badge],
-        completionHandler: { _, _ in }
-      )
-    }
   }
 
   @available(iOS 10.0, *)
   func userNotificationCenter(_ center: UNUserNotificationCenter,
-                              willPresent notification: UNNotification,
-                              withCompletionHandler completionHandler:
-                                @escaping (UNNotificationPresentationOptions) -> Void) {
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler:
+      @escaping (UNNotificationPresentationOptions) -> Void) {
     completionHandler([.alert, .badge, .sound])
   }
 
-  func display(_ title: String?, body: String?, icon: String?, sound: String?) throws {
+  func display(_ title: String?, body: String?, icon: String?, sound: String?, badge: String?) throws {
     guard let utitle = title, let ubody = body else {
       throw NotificationError.invalidArgument
     }
@@ -73,5 +58,84 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       UIApplication.shared.scheduleLocalNotification(notification)
 
     }
+  }
+
+  func register() throws {
+
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self
+
+      UNUserNotificationCenter.current().requestAuthorization(
+        options: [.alert, .sound, .badge],
+        completionHandler: { granted, error in
+          guard granted else {
+            do {
+              try self.unregister()
+            } catch { }
+            return
+          }
+        }
+      )
+    }
+
+    let application = UIApplication.shared
+    application.registerForRemoteNotifications()
+  }
+
+  func unregister() throws {
+    let application = UIApplication.shared
+    application.unregisterForRemoteNotifications()
+  }
+
+  func refreshToken() throws {
+    let application = UIApplication.shared
+    application.unregisterForRemoteNotifications()
+    application.registerForRemoteNotifications()
+  }
+
+}
+
+extension AppDelegate {
+
+  override func application(_ application: UIApplication,
+    didRegister notificationSettings: UIUserNotificationSettings) {
+    // RCTPushNotificationManager.didRegister(notificationSettings)
+  }
+
+  override func application(_ application: UIApplication,
+    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+    // RCTPushNotificationManager.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
+    Core.notificationDriver().receiveToken(
+      deviceToken,
+      tokenType: "apns"
+    )
+  }
+
+  override func application(_ application: UIApplication,
+    didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    // RCTPushNotificationManager.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
+
+    do {
+      let json = try JSONSerialization.data(withJSONObject: userInfo, options: [])
+      let data = String(decoding: json, as: UTF8.self)
+      Core.notificationDriver().receive(data)
+    } catch {
+      logger.format("failed to register for remote notification : %@", level: .error, error.localizedDescription)
+      // Core.notificationDriver().Error("didReceiveRemoteNotification", error.localizedDescription)
+    }
+  }
+
+  override func application(_ application: UIApplication,
+    didFailToRegisterForRemoteNotificationsWithError error: Error) {
+    // TODO: try to get this error in Notification::register
+    
+    // Core.notificationDriver().Error("didFailToRegisterForRemoteNotificationsWithError", error.localizedDescription)
+    logger.format("failed to register for remote notification : %@", level: .error, error.localizedDescription)
+    // RCTPushNotificationManager.didFailToRegisterForRemoteNotificationsWithError(error)
+  }
+
+  override func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+    // RCTPushNotificationManager.didReceive(notification)
   }
 }

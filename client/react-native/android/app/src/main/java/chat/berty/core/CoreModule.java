@@ -9,11 +9,11 @@ import com.facebook.react.bridge.ReactMethod;
 import chat.berty.ble.Manager;
 import core.Core;
 import core.MobileNotification;
-import core.NativeNotification;
+import core.NativeNotificationDriver;
 
 public class CoreModule extends ReactContextBaseJavaModule {
     private Logger logger = new Logger("chat.berty.io");
-    private MobileNotification notificationDriver = Core.getNotificationDriver();
+    private MobileNotification notificationDriver = Core.getNativeNotificationDriver();
     private String filesDir = "";
     private ReactApplicationContext reactContext;
 
@@ -30,7 +30,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
         Manager.getInstance().setmReactContext(o, reactContext);
 
-        this.notificationDriver.setNativeNotification(new Notification(reactContext, this.notificationDriver));
+        this.notificationDriver.setNativeNotificationDriver(new Notification(reactContext, this.notificationDriver));
     }
 
     public String getName() {

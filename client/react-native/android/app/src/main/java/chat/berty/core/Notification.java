@@ -13,6 +13,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.gson.Gson;
@@ -23,9 +24,11 @@ import chat.berty.ble.Manager;
 import chat.berty.main.R;
 import core.Core;
 import core.MobileNotification;
-import core.NativeNotification;
+import core.NativeNotificationDriver;
 
-public class Notification extends FirebaseMessagingService implements NativeNotification {
+public class Notification extends FirebaseMessagingService implements NativeNotificationDriver {
+    private Logger logger = new Logger("chat.berty.io");
+
     private ReactApplicationContext reactContext;
 
     private static final String CHANNEL_ID = "berty-chat-android-notification-id";
@@ -40,26 +43,6 @@ public class Notification extends FirebaseMessagingService implements NativeNoti
         this.handler = handler;
     }
 
-    public void displayNotification(String title, String body, String icon, String sound) throws Exception {
-        NotificationManager notificationManager = (NotificationManager)this.reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        Intent intent = new Intent(this.reactContext, Notification.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this.reactContext, 0, intent, 0);
-
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.reactContext, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
-            // .setLargeIcon(largeIconBitmap)
-            .setContentTitle(title)
-            .setContentText(body)
-            .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
-            .setAutoCancel(true)
-            .setVibrate(new long[]{0, 1000})
-            .setContentIntent(pendingIntent);
-
-        notificationManager.notify(10, mBuilder.build());
-    }
-
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -68,11 +51,35 @@ public class Notification extends FirebaseMessagingService implements NativeNoti
             channel.setDescription(CHANNEL_DESCRIPTION);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
-            NotificationManager notificationManager = (NotificationManager)this.reactContext.getSystemService(NotificationManager.class);
+            NotificationManager notificationManager = (NotificationManager) this.reactContext.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
     }
 
+    public void displayNotification(String title, String body, String icon, String sound) throws Exception {
+        NotificationManager notificationManager = (NotificationManager) this.reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = new Intent(this.reactContext, Notification.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this.reactContext, 0, intent, 0);
+
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.reactContext, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                // .setLargeIcon(largeIconBitmap)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+                .setAutoCancel(true)
+                .setVibrate(new long[]{0, 1000})
+                .setContentIntent(pendingIntent);
+
+        notificationManager.notify(10, mBuilder.build());
+    }
+
+    public void refreshPushID() throws Exception {
+        FirebaseInstanceId.getInstance().deleteInstanceId();
+        FirebaseInstanceId.getInstance().getInstanceId();
+    }
 
     /**
      * Called when message is received.
@@ -93,6 +100,7 @@ public class Notification extends FirebaseMessagingService implements NativeNoti
      */
     @Override
     public void onNewToken(String token) {
-        this.handler.receivePushID(token, "fcm");
+        this.handler.receivePushID(token.getBytes(), "fcm");
     }
+
 }
