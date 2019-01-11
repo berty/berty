@@ -47,4 +47,17 @@
     return YES;
 }
 
+
+// Required for the localNotification event.
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+    if (notification.userInfo[@"url"] != nil && [(NSString *)notification.userInfo[@"url"] length]) {
+      [self application:application openURL:[NSURL URLWithString:notification.userInfo[@"url"]] options:@{
+                                    UIApplicationOpenURLOptionsSourceApplicationKey: [[NSBundle mainBundle] bundleIdentifier],
+                                    UIApplicationOpenURLOptionsOpenInPlaceKey: @NO,
+                             }];
+    }
+    [RCTPushNotificationManager didReceiveLocalNotification:notification];
+}
+
 @end

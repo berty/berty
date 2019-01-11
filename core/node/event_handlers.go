@@ -3,6 +3,7 @@ package node
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"time"
 
 	"berty.tech/core/api/p2p"
@@ -53,6 +54,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
 			"Name": attrs.Me.DisplayName,
 		}),
+		DeepLink: "berty://add-contact#public-key=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
 	})
 	// nothing more to do, now we wait for the UI to accept the request
 	return nil
@@ -86,6 +88,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 		Body: i18n.T("ContactRequestAccpetedBody", map[string]interface{}{
 			"Name": contact.DisplayName,
 		}),
+		// DeepLink: "berty://add-contact#public-key=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
 	})
 	return nil
 }
@@ -160,9 +163,10 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
-	n.DisplayNotification(&notification.Payload{
-		Title: i18n.T("NewMessageTitle", nil),
-		Body:  i18n.T("NewMessageBody", nil),
+	n.DisplayNotification(notification.Payload{
+		Title:    i18n.T("NewMessageTitle", nil),
+		Body:     i18n.T("NewMessageBody", nil),
+		DeepLink: "berty://conversation#id=" + url.PathEscape(input.ConversationID),
 	})
 	return nil
 }

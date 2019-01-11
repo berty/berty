@@ -35,11 +35,12 @@ func (t *Token) String() string {
 }
 
 type Payload struct {
-	Title string `json:"title,omitempty"`
-	Body  string `json:"body,omitempty"`
-	Icon  string `json:"icon,omitempty"`
-	Sound string `json:"sound,omitempty"`
-	Badge string `json:"badge,omitempty"`
+	Title    string `json:"title,omitempty"`
+	Body     string `json:"body,omitempty"`
+	Icon     string `json:"icon,omitempty"`
+	Sound    string `json:"sound,omitempty"`
+	Badge    string `json:"badge,omitempty"`
+	DeepLink string `json:"deep-link,omitempty"`
 }
 
 // NoopNotification is a Driver

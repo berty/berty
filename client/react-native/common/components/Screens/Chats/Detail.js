@@ -307,9 +307,11 @@ export default class Detail extends PureComponent {
 
   onConversationRead = async () => {
     const conversation = this.props.navigation.getParam('conversation')
-    await this.props.screenProps.context.mutations.conversationRead({
+    const res = await this.props.screenProps.context.mutations.conversationRead({
       id: conversation.id,
     })
+
+    this.props.navigation.setParams({ conversation: res.ConversationRead })
   }
 
   render () {

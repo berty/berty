@@ -121,6 +121,10 @@ func (n *MobileNotification) Register() error {
 	return n.Native.Register()
 }
 
+func (n *MobileNotification) DisplayNotification(p notification.Payload) error {
+	return n.NativeNotification.DisplayNotification(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+}
+
 func (n *MobileNotification) Unregister() error {
 	return n.Native.Unregister()
 }

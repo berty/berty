@@ -29,7 +29,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     completionHandler([.alert, .badge, .sound])
   }
 
-  func display(_ title: String?, body: String?, icon: String?, sound: String?, badge: String?) throws {
+  func display(_ title: String?, body: String?, icon: String?, sound: String?, url: String?) throws {
     guard let utitle = title, let ubody = body else {
       throw NotificationError.invalidArgument
     }
@@ -40,6 +40,9 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       let content = UNMutableNotificationContent()
       content.title = utitle
       content.body = ubody
+      content.userInfo =  [
+        "url" : url,
+      ]
       content.categoryIdentifier = "berty.core.notification"
       content.sound = UNNotificationSound.default()
 
