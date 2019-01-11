@@ -47,6 +47,8 @@
     rootViewController.view = rootView;
     self.window.rootViewController = rootViewController;
     [self.window makeKeyAndVisible];
+    // permit to show local notifications in background mode
+    [application beginBackgroundTaskWithName:@"showNotification" expirationHandler: nil];
     return YES;
 }
 
