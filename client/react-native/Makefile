@@ -16,11 +16,13 @@ IOS_UDID := ''
 IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 IOS_BUILD := $(BUILD)/ios
 
-# @TODO: find a better way to pass thoses arguments >
+# @TODO: find a better way to pass those arguments >
 
 # fastlane match
-MATCH_ENTERPRISE_TEAM_ID ?=
-MATCH_COMPANY_TEAM_ID ?=
+MATCH_COMPANY_TEAM_ID=WMBQ84HN4T
+MATCH_ENTERPRISE_TEAM_ID=GR5463T564
+PEM_COMPANY_TEAM_ID=WMBQ84HN4T
+PEM_ENTERPRISE_TEAM_ID=GR5463T564
 
 MATCH_PROVISIONING_PROFILE_ADHOC ?= 'match AdHoc chat.berty.ios.staff'
 MATCH_PROVISIONING_PROFILE_DEBUG ?= 'match Development chat.berty.ios.debug'
@@ -295,6 +297,21 @@ fastlane.match.adhoc:
 
 fastlane.match.enterprise:
 	time bundle exec fastlane run match type:enterprise app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(MATCH_ENTERPRISE_TEAM_ID)
+
+fastlane.pem.development:
+	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_DEBUG) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_DEBUG)-dev.pem --development
+
+fastlane.pem.appstore:
+	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE).pem
+	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_RELEASE) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_RELEASE)-dev.pem  --development
+
+fastlane.pem.adhoc:
+	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC).pem
+	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_ADHOC) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_ADHOC)-dev.pem --development
+
+fastlane.pem.enterprise:
+	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE).pem
+	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_HOUSE) --team_id $(PEM_ENTERPRISE_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_HOUSE)-dev.pem --development
 
 fastlane.setup_circle:
 	bundle exec fastlane run create_keychain timeout:3600 default_keychain:true unlock:true add_to_search_list:true
