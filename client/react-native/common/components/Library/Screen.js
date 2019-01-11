@@ -1,4 +1,5 @@
-import { Dimensions, View } from 'react-native'
+import { Dimensions } from 'react-native'
+import { SafeAreaView } from 'react-navigation'
 import React, { Component } from 'react'
 
 import { screen, colors } from '../../constants'
@@ -39,7 +40,7 @@ export default class Screen extends Component {
     const { absolute, style, onResize, ...props } = this.props
     const { dimensions } = this.state
     return (
-      <View
+      <SafeAreaView
         style={[
           {
             flex: 1,
