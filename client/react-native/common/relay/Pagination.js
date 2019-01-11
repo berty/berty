@@ -64,7 +64,7 @@ class PaginationContainer extends Component {
       condComponent,
     } = this.props
 
-    if (data[alias] && data[alias].edges.length > 0) {
+    if (!emptyItem || (data[alias] && data[alias].edges.length > 0)) {
       return (
         <>
           <FlatList
