@@ -1,4 +1,4 @@
-package tech.berty.bletesting;
+package chat.berty.ble;
 
 import android.os.Build;
 import android.annotation.TargetApi;

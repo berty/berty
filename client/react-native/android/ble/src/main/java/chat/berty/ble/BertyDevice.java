@@ -1,4 +1,6 @@
-package tech.berty.bletesting;
+package chat.berty.ble;
+
+import core.Core;
 
 import android.os.Build;
 import android.content.Context;
@@ -152,7 +154,7 @@ class BertyDevice {
                                 if (bertyHandshake()) {
                                     Log.i(TAG, "asyncConnectionToDevice() succeeded with device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID);
                                     identified = true;
-                                    // TODO: core.addToPeerstore
+                                    Core.addToPeerStore(dPeerID, dMultiAddr);
                                 } else {
                                     Log.d(TAG, "asyncConnectionToDevice() Berty handshake failed with device: " + dDevice);
                                     disconnectFromDevice();
@@ -167,7 +169,9 @@ class BertyDevice {
                     } else {
                         if (identified) {
                             Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID);
-                            // TODO: core.connClosed
+                            // TODO: Check with sfroment if it's ok to use connClosed that way
+                            // TODO: Check with sfroment how libp2p handle a reconnection with a different mac address
+                            Core.connClosed(dMultiAddr);
                         } else {
                             Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice);
                         }
@@ -182,7 +186,7 @@ class BertyDevice {
     }
 
     // Disconnect device and remove it from index
-    private void disconnectFromDevice() {
+    void disconnectFromDevice() {
         Log.d(TAG, "disconnectFromDevice() called for device: " + dDevice);
 
         try {
@@ -201,7 +205,7 @@ class BertyDevice {
         Log.d(TAG, "setGatt() called for device: " + dDevice);
 
         if (dGatt == null) {
-            dGatt = dDevice.connectGatt(AppData.getCurrContext(), false, BleManager.getGattCallback());
+            dGatt = dDevice.connectGatt(BleManager.getContext(), false, BleManager.getGattCallback());
         }
     }
 
@@ -247,8 +251,7 @@ class BertyDevice {
         return false;
     }
 
-    // TODO: set this as private
-    void disconnectGatt() {
+    private void disconnectGatt() {
         Log.d(TAG, "disconnectGatt() called for device: " + dDevice);
 
         if (dGatt != null) {
@@ -267,7 +270,7 @@ class BertyDevice {
     int getGattClientState() {
         Log.v(TAG, "getGattClientState() called for device: " + dDevice);
 
-        final Context context = AppData.getCurrContext();
+        final Context context = BleManager.getContext();
         final BluetoothManager manager = (BluetoothManager)context.getSystemService(Context.BLUETOOTH_SERVICE);
         if (manager == null) {
             Log.e(TAG, "Can't get BLE Manager");
@@ -280,7 +283,7 @@ class BertyDevice {
     int getGattServerState() {
         Log.v(TAG, "getGattServerState() called for device: " + dDevice);
 
-        final Context context = AppData.getCurrContext();
+        final Context context = BleManager.getContext();
         final BluetoothManager manager = (BluetoothManager)context.getSystemService(Context.BLUETOOTH_SERVICE);
         if (manager == null) {
             Log.e(TAG, "Can't get BLE Manager");

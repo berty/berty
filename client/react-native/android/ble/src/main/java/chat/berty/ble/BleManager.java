@@ -1,4 +1,4 @@
-package tech.berty.bletesting;
+package chat.berty.ble;
 
 import android.app.Activity;
 import android.content.Context;
@@ -27,14 +27,38 @@ import static android.bluetooth.BluetoothGattCharacteristic.PROPERTY_WRITE;
 import static android.bluetooth.BluetoothGattService.SERVICE_TYPE_PRIMARY;
 import static android.content.Context.BLUETOOTH_SERVICE;
 
-import java.util.concurrent.Semaphore;
 import java.util.Collections;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-final class BleManager {
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+public final class BleManager {
     private static String TAG = "ble_manager";
+
+    private static Context context;
+    private static Activity activity;
+
+    // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
+    // See https://facebook.github.io/react-native/docs/native-modules-android
+    public static void setActivity(Activity rActivity) {
+        Log.d(TAG, "Activity set: " + rActivity);
+
+        activity = rActivity;
+    }
+
+    static Activity getActivity() {
+        return activity;
+    }
+
+    public static void setContext(Context rContext) {
+        Log.d(TAG, "Context set: " + rContext);
+
+        context = rContext;
+    }
+
+    static Context getContext() {
+        return context;
+    }
+    /////////////////////////////////////////////////////////////////
 
     private static boolean bluetoothReady;
     private static boolean advertising;
@@ -51,12 +75,8 @@ final class BleManager {
 
     static final int BLUETOOTH_ENABLE_REQUEST = 42;
     static final int LOCATION_PERMISSION_REQUEST = 24;
-    static boolean bleTurnedOn;
-    static boolean permGranted;
-    static Semaphore waitRequestResponse = new Semaphore(0);
-    private static final int waitRequestTimeout = 60000;
 
-    static final UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6669");
+    static final UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6664");
     static final UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C");
     static final UUID MA_UUID = UUID.fromString("9B827770-DC72-4C55-B8AE-0870C7AC15A8");
     static final UUID PEER_ID_UUID = UUID.fromString("0EF50D30-E208-4315-B323-D05E0A23E6B3");
@@ -69,10 +89,10 @@ final class BleManager {
 
     private BleManager() {
         Log.d(TAG, "BleManager constructor called");
-        Thread.currentThread().setName("BleManager");
     }
 
     // Compatibility checker
+    // TODO: Use this function to hide bluetooth option from app settings if device isn't compatible
     static boolean isBleAdvAndScanCompatible() {
         if (mBluetoothAdapter == null) {
             Log.e(TAG, "Device doesn't support Bluetooth");
@@ -91,13 +111,13 @@ final class BleManager {
     }
 
     // Setters
-    static void setMultiAddr(String multiAddr) {
+    public static void setMultiAddr(String multiAddr) {
         Log.i(TAG, "Own multiAddr set: " + multiAddr);
 
         maCharacteristic.setValue(multiAddr);
     }
 
-    static void setPeerID(String peerID) {
+    public static void setPeerID(String peerID) {
         Log.i(TAG, "Own peerID set: " + peerID);
 
         peerIDCharacteristic.setValue(peerID);
@@ -122,11 +142,9 @@ final class BleManager {
 
     static GattClient getGattCallback() { return mGattCallback; }
 
-    static BluetoothAdapter getAdapter() { return mBluetoothAdapter; }
-
 
     // State related
-    static boolean isBluetoothReady() {
+    private static boolean isBluetoothReady() {
         if (!bluetoothReady) {
             Log.d(TAG, "Bluetooth Service not initialized yet");
         }
@@ -152,62 +170,36 @@ final class BleManager {
 
 
     // Bluetooth service related
-    static boolean initBluetoothService(final Activity currentActivity) {
+    // TODO: Check return in libp2p
+    // public static boolean initBluetoothService() {
+    public static void initBluetoothService() {
         Log.d(TAG, "initBluetoothService() called");
-        Context context = AppData.getCurrContext();
 
         try {
             // Turn on Bluetooth adapter
             if (!mBluetoothAdapter.isEnabled()) {
                 Log.d(TAG, "initBluetoothService() Bluetooth adapter is off: turning it on");
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        currentActivity.startActivityForResult(enableBluetoothIntent, BLUETOOTH_ENABLE_REQUEST);
-                    }
-                }).start();
+                Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                activity.startActivityForResult(enableBluetoothIntent, BLUETOOTH_ENABLE_REQUEST);
 
-                if (waitRequestResponse.tryAcquire(waitRequestTimeout, TimeUnit.MILLISECONDS)) {
-                    if (!bleTurnedOn) {
-                        Log.e(TAG, "initBluetoothService() failed: Bluetooth adapter enabling request denied");
-                        return false;
-                    }
-                } else {
-                    Log.e(TAG, "initBluetoothService() failed: Bluetooth adapter enabling request timeouted");
-                    return false;
-                }
-                Log.i(TAG, "initBluetoothService() Bluetooth adapter turned on");
+                // TODO: Check result of BLUETOOTH_ENABLE_REQUEST
+                // See: https://facebook.github.io/react-native/docs/native-modules-android#getting-activity-result-from-startactivityforresult
             }
 
             // Check Location permission (required by BLE)
-            if (ContextCompat.checkSelfPermission(currentActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(activity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 Log.d(TAG, "initBluetoothService() location permission isn't granted: requesting it");
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        ActivityCompat.requestPermissions(currentActivity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
-                    }
-                }).start();
-
-                if (waitRequestResponse.tryAcquire(waitRequestTimeout, TimeUnit.MILLISECONDS)) {
-                    if (!permGranted) {
-                        Log.e(TAG, "initBluetoothService() failed: location permission request denied");
-                        return false;
-                    }
-                } else {
-                    Log.e(TAG, "initBluetoothService() failed: location permission request timeouted");
-                    return false;
-                }
-                Log.i(TAG, "initBluetoothService() location permission granted");
+                ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+                // TODO: Check result of ACCESS_FINE_LOCATION
+                // See: https://developer.android.com/training/permissions/requesting#handle-response
             }
 
             BluetoothManager bleManager = (BluetoothManager)context.getSystemService(BLUETOOTH_SERVICE);
             if (bleManager == null) {
                 Log.e(TAG, "initBluetoothService() failed: BLE Manager is null");
-                return false;
+                return;
             }
 
             BluetoothGattService bertyService = createService();
@@ -219,20 +211,19 @@ final class BleManager {
 
             bluetoothReady = true;
             Log.i(TAG, "initBluetoothService() succeeded");
-
-            return true;
         } catch (Exception e) {
             Log.e(TAG, "initBluetoothService() failed: " + e.getMessage());
-            return false;
         }
     }
 
-    static boolean closeBluetoothService() {
+    // TODO: Check return in libp2p
+    // public static boolean closeBluetoothService() {
+    public static void closeBluetoothService() {
         Log.d(TAG, "closeBluetoothService() called");
 
         if (!isBluetoothReady()) {
             Log.w(TAG, "closeBluetoothService() canceled");
-            return false;
+            return;
         }
 
         if (scanning) stopScanning();
@@ -241,7 +232,7 @@ final class BleManager {
 
         bluetoothReady = false;
 
-        return true;
+        return;
     }
 
     private static BluetoothGattService createService() {
@@ -258,7 +249,7 @@ final class BleManager {
 
 
     // Advertise related
-    static void startAdvertising() {
+    public static void startAdvertising() {
         Log.d(TAG, "startAdvertising() called");
 
         if (!isBluetoothReady()) {
@@ -272,7 +263,7 @@ final class BleManager {
         mBluetoothLeAdvertiser.startAdvertising(settings, data, mAdvertisingCallback);
     }
 
-    static void stopAdvertising() {
+    private static void stopAdvertising() {
         Log.d(TAG, "stopAdvertising() called");
 
         if (!isBluetoothReady() || !isAdvertising()) {
@@ -286,7 +277,7 @@ final class BleManager {
 
 
     // Scan related
-    static void startScanning() {
+    public static void startScanning() {
         Log.d(TAG, "startScanning() called");
 
         if (!isBluetoothReady()) {
@@ -303,7 +294,7 @@ final class BleManager {
         mBluetoothLeScanner.startScan(Collections.singletonList(filter), settings, mScanCallback);
     }
 
-    static void stopScanning() {
+    private static void stopScanning() {
         Log.d(TAG, "stopScanning() called");
 
         if (!isBluetoothReady() || !isScanning()) {

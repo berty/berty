@@ -1,4 +1,6 @@
-package tech.berty.bletesting;
+package chat.berty.ble;
+
+import core.Core;
 
 import java.util.UUID;
 import android.os.Build;
@@ -16,10 +18,6 @@ import android.bluetooth.BluetoothProfile;
 
 import static android.bluetooth.BluetoothGatt.GATT_FAILURE;
 import static android.bluetooth.BluetoothGatt.GATT_SUCCESS;
-import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
-import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
-import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
-import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTING;
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class GattServer extends BluetoothGattServerCallback {
@@ -103,7 +101,7 @@ public class GattServer extends BluetoothGattServerCallback {
         }
 
         if (charID.equals(BleManager.WRITER_UUID)) {
-            AppData.addMessageToList(device.getAddress(), "Received: " + new String(value, Charset.forName("UTF-8")));
+            Core.bytesToConn(bertyDevice.getMultiAddr(), value);
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
             }

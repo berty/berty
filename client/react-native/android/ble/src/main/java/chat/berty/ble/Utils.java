@@ -1,4 +1,6 @@
-package tech.berty.bletesting;
+package chat.berty.ble;
+
+import core.Core;
 
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
@@ -8,23 +10,23 @@ import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTING;
 class Log {
 
     static void v(String tag, String log) {
-        android.util.Log.v(tag, log);
+        Core.goLogger(tag, "verbose", log);
     }
 
     static void d(String tag, String log) {
-        android.util.Log.d(tag, log);
+        Core.goLogger(tag, "debug", log);
     }
 
     static void i(String tag, String log) {
-        android.util.Log.i(tag, log);
+        Core.goLogger(tag, "info", log);
     }
 
     static void w(String tag, String log) {
-        android.util.Log.w(tag, log);
+        Core.goLogger(tag, "warn", log);
     }
 
     static void e(String tag, String log) {
-        android.util.Log.e(tag, log);
+        Core.goLogger(tag, "error", log);
     }
 }
 

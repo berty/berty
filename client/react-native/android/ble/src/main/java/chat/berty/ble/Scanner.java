@@ -1,4 +1,4 @@
-package tech.berty.bletesting;
+package chat.berty.ble;
 
 import android.os.Build;
 import android.annotation.TargetApi;
@@ -104,6 +104,13 @@ public class Scanner extends ScanCallback {
         }
 
         BluetoothDevice device = result.getDevice();
-        AppData.addDeviceToList(device.getAddress());
+        BertyDevice bertyDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
+
+        if (bertyDevice == null) {
+            Log.i(TAG, "onConnectionStateChange() server: incoming connection from device: " + bertyDevice.getAddr());
+            bertyDevice = new BertyDevice(device);
+            DeviceManager.addDeviceToIndex(bertyDevice);
+            bertyDevice.asyncConnectionToDevice(); // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+        }
     }
 }

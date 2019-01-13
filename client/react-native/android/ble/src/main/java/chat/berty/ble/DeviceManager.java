@@ -1,4 +1,4 @@
-package tech.berty.bletesting;
+package chat.berty.ble;
 
 import android.os.Build;
 import android.annotation.TargetApi;
@@ -77,24 +77,46 @@ final class DeviceManager {
     }
 
 
-    // Write functions
-    static boolean write(byte[] payload, String multiAddr) {
-        return write(payload, getDeviceFromMultiAddr(multiAddr));
+    // Libp2p bound functions
+    public static void disconnectFromDevice(String multiAddr) {
+        Log.d(TAG, "disconnectFromDevice() called with MultiAddr: " + multiAddr);
+
+        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
+
+        if (bertyDevice != null) {
+            bertyDevice.disconnectFromDevice();
+        } else {
+            Log.e(TAG, "disconnectFromDevice() failed: unknown device");
+        }
     }
 
-    private static boolean write(byte[] payload, BertyDevice bertyDevice) {
-        Log.d(TAG, "write() called with payload: " + new String(payload, Charset.forName("UTF-8")) + ", len: " + payload.length + ", device: " + bertyDevice);
+    public static boolean writeToDevice(byte[] payload, String multiAddr) {
+        Log.d(TAG, "writeToDevice() called with payload: " + new String(payload, Charset.forName("UTF-8")) + ", len: " + payload.length + ", MultiAddr: " + multiAddr);
+
+        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
 
         if (bertyDevice == null) {
             // Could happen if device has disconnected and libp2p isn't aware of it
-            Log.e(TAG, "write() failed: unknown device");
+            Log.e(TAG, "writeToDevice() failed: unknown device");
             return false;
         } else if (!bertyDevice.isIdentified()) {
             // Could happen if device has disconnected, libp2p isn't aware of it and device is reconnecting right now
-            Log.e(TAG, "write() failed: device not ready yet");
+            Log.e(TAG, "writeToDevice() failed: device not ready yet");
             return false;
         }
 
         return bertyDevice.writeOnCharacteristic(payload, bertyDevice.writerCharacteristic);
+    }
+
+    public static boolean dialPeer(String multiAddr) {
+        Log.v(TAG, "dialPeer() called with MultiAddr: " + multiAddr);
+
+        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
+
+        if (bertyDevice != null) {
+            return true;
+        }
+
+        return false;
     }
 }

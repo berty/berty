@@ -3,7 +3,8 @@
 package core
 
 import (
-	"Java/chat/berty/ble/Manager"
+	"Java/chat/berty/ble/BleManager"
+	"Java/chat/berty/ble/DeviceManager"
 
 	"berty.tech/core/network/ble"
 	"go.uber.org/zap"
@@ -11,15 +12,16 @@ import (
 
 func initBleFunc() {
 	// fmt.Printf("INSTANCE: %+v\n\n\n\n\n", Manager.GetInstance())
-	ble.SetMa = Manager.GetInstance().SetMa
-	ble.SetPeerID = Manager.GetInstance().SetPeerID
-	ble.StartScanning = Manager.GetInstance().StartScanning
-	ble.StartAdvertising = Manager.GetInstance().StartAdvertising
-	ble.Write = Manager.GetInstance().Write
-	ble.DialPeer = Manager.GetInstance().DialPeer
-	ble.InitScannerAndAdvertiser = Manager.GetInstance().InitScannerAndAdvertiser
-	ble.CloseScannerAndAdvertiser = Manager.GetInstance().CloseScannerAndAdvertiser
-	ble.CloseConnFromMa = Manager.GetInstance().CloseConnFromMa
+	// TODO: Check return of startScanning / startAdvertising / initScannerAndAdvertiser / closeScannerAndAdvertiser / etc...
+	ble.SetMa = BleManager.SetMultiAddr
+	ble.SetPeerID = BleManager.SetPeerID
+	ble.StartScanning = BleManager.StartScanning
+	ble.StartAdvertising = BleManager.StartAdvertising
+	ble.Write = DeviceManager.WriteToDevice
+	ble.DialPeer = DeviceManager.DialPeer
+	ble.InitScannerAndAdvertiser = BleManager.InitBluetoothService
+	ble.CloseScannerAndAdvertiser = BleManager.CloseBluetoothService
+	ble.CloseConnFromMa = DeviceManager.DisconnectFromDevice
 }
 
 func JavaToGo() string {
