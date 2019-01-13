@@ -1,7 +1,5 @@
 package core
 
-import "runtime"
-
 // This file contain the configuration by default
 
 // Initial configs will be used to set default settings in state DB
@@ -33,9 +31,3 @@ const (
 
 	defaultLocalGRPCPort = 4242
 )
-
-func init() {
-	if runtime.GOOS == "android" {
-		initialNetConf.BluetoothTransport = false
-	}
-}
