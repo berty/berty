@@ -23,6 +23,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.gson.Gson;
 
+import java.util.Date;
 import java.util.Map;
 
 import chat.berty.main.R;
@@ -46,29 +47,26 @@ public class Notification implements NativeNotificationDriver {
         this.reactContext = reactContext;
     }
 
-    public static class FCM extends FirebaseMessagingService {
-        /**
-         * Called when message is received.
-         *s
-         * @param remoteMessage Object representing the message received from Firebase Cloud Messaging.
-         */
-        @Override
-        public void onMessageReceived(RemoteMessage remoteMessage) {
-            Map<String, String> map = remoteMessage.getData();
-            String data = new Gson().toJson(map);
-            Notification.GoCore.receive(data);
-        }
+    public void displayNotification(String title, String body, String icon, String sound, String url) throws Exception {
+        NotificationManager notificationManager = (NotificationManager)this.reactContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        /**
-         * Called if InstanceID token is updated. This may occur if the security of
-         * the previous token had been compromised. Note that this is called when the InstanceID token
-         * is initially generated so this is where you would retrieve the token.
-         */
-        @Override
-        public void onNewToken(String token) {
-            Notification.GoCore.receiveFCMToken(token.getBytes());
-        }
+        Intent intent = new Intent(this.reactContext, Notification.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this.reactContext, 0, intent, 0);
 
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this.reactContext, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            // .setLargeIcon(largeIconBitmap)
+            .setContentTitle(title)
+            .setContentText(body)
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(body))
+            .setAutoCancel(true)
+            .setVibrate(new long[]{0, 1000})
+            .setContentIntent(pendingIntent);
+
+        int m = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+
+        notificationManager.notify(m, mBuilder.build());
     }
 
     private void createNotificationChannel() {
