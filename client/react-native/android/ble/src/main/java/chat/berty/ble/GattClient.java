@@ -46,7 +46,7 @@ public class GattClient extends BluetoothGattCallback {
      */
     @Override
     public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-        Log.d(TAG, "onConnectionStateChange() client called with gatt: " + gatt + ", status: " + status + ", newState: " + Helper.connectionStateToString(newState));
+        Log.d(TAG, "onConnectionStateChange() client called with gatt: " + gatt + ", status: " + status + ", newState: " + Log.connectionStateToString(newState));
 
         BluetoothDevice device = gatt.getDevice();
         BertyDevice bertyDevice = DeviceManager.getDeviceFromAddr(device.getAddress());

@@ -215,7 +215,7 @@ class BertyDevice {
         try {
             setGatt();
             for (int attempt = 0; attempt < gattConnectMaxAttempts; attempt++) {
-                Log.d(TAG, "connectGatt() attempt: " + (attempt + 1) + "/" + gattConnectMaxAttempts + ", device:" + dDevice + ", client state: " + Helper.connectionStateToString(getGattClientState()) + ", server state: "  + Helper.connectionStateToString(getGattServerState()));
+                Log.d(TAG, "connectGatt() attempt: " + (attempt + 1) + "/" + gattConnectMaxAttempts + ", device:" + dDevice + ", client state: " + Log.connectionStateToString(getGattClientState()) + ", server state: "  + Log.connectionStateToString(getGattServerState()));
 
                 dGatt.connect();
 

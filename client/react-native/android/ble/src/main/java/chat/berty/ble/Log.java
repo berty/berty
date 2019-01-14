@@ -7,32 +7,29 @@ import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTING;
 
-class Log {
+final class Log {
 
-    static void v(String tag, String log) {
+    final static void v(String tag, String log) {
         Core.goLogger(tag, "verbose", log);
     }
 
-    static void d(String tag, String log) {
+    final static void d(String tag, String log) {
         Core.goLogger(tag, "debug", log);
     }
 
-    static void i(String tag, String log) {
+    final static void i(String tag, String log) {
         Core.goLogger(tag, "info", log);
     }
 
-    static void w(String tag, String log) {
+    final static void w(String tag, String log) {
         Core.goLogger(tag, "warn", log);
     }
 
-    static void e(String tag, String log) {
+    final static void e(String tag, String log) {
         Core.goLogger(tag, "error", log);
     }
-}
 
-class Helper {
-
-    static String connectionStateToString(int state) {
+    final static String connectionStateToString(int state) {
         switch (state) {
             case STATE_DISCONNECTED:
                 return "disconnected";
