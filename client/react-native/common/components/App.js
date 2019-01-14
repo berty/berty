@@ -11,6 +11,7 @@ import { colors } from './../constants'
 import { I18nextProvider } from 'react-i18next'
 import ReactNativeLanguages from 'react-native-languages'
 import i18n from '../i18n'
+import { btoa } from 'b64-lite'
 
 export default class App extends PureComponent {
   state = {
