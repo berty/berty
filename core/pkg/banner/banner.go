@@ -73,6 +73,11 @@ func Say(message string) string {
 	return strings.Join(output, "\n") + "\n"
 }
 
+func QOTD() string {
+	q := quote.QOTD()
+	return Say(q.String())
+}
+
 func Quote() string {
 	q := quote.Pick()
 	return Say(q.String())
