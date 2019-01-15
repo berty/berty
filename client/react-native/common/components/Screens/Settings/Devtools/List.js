@@ -55,7 +55,7 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ testPanic: true })
     this.setState({ testPanic: true }, async () => {
       if (Platform.OS === 'web') {
-        await this.props.screenProps.queries.TestPanic.fetch()
+        await this.props.screenProps.context.queries.TestPanic.fetch()
       } else {
         CoreModule.panic()
       }
@@ -70,7 +70,7 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ testError: true })
     this.setState({ testError: true }, async () => {
       if (Platform.OS === 'web') {
-        await this.props.screenProps.queries.TestError.fetch() // FIXME: the 'kind' should be selectable
+        await this.props.screenProps.context.queries.TestError.fetch() // FIXME: the 'kind' should be selectable
       } else {
         CoreModule.error()
       }
@@ -84,7 +84,8 @@ export default class List extends PureComponent {
   testLogBackgroundError = async () => {
     this.props.navigation.setParams({ testLogBackgroundError: true })
     this.setState({ testLogBackgroundError: true }, async () => {
-      await this.props.screenProps.queries.TestLogBackgroundError.fetch()
+      console.log(this.props)
+      await this.props.screenProps.context.queries.TestLogBackgroundError.fetch()
       this.props.navigation.setParams({
         testLogBackgroundError: false,
       })
@@ -95,7 +96,7 @@ export default class List extends PureComponent {
   testLogBackgroundWarn = async () => {
     this.props.navigation.setParams({ testLogBackgroundWarn: true })
     this.setState({ testLogBackgroundWarn: true }, async () => {
-      await this.props.screenProps.queries.TestLogBackgroundWarn.fetch()
+      await this.props.screenProps.context.queries.TestLogBackgroundWarn.fetch()
       this.props.navigation.setParams({
         testLogBackgroundWarn: false,
       })
@@ -106,7 +107,7 @@ export default class List extends PureComponent {
   testLogBackgroundDebug = async () => {
     this.props.navigation.setParams({ testLogBackgroundDebug: true })
     this.setState({ testLogBackgroundDebug: true }, async () => {
-      await this.props.screenProps.queries.TestLogBackgroundDebug.fetch()
+      await this.props.screenProps.context.queries.TestLogBackgroundDebug.fetch()
       this.props.navigation.setParams({
         testLogBackgroundDebug: false,
       })
@@ -246,11 +247,31 @@ export default class List extends PureComponent {
             title='Restart daemon'
             onPress={this.restartDaemon}
           />
-          <Menu.Item icon='alert-triangle' title='Panic' onPress={this.testPanic} />
-          <Menu.Item icon='alert-triangle' title='Error' onPress={this.testError} />
-          <Menu.Item icon='info' title='Log bg Error' onPress={this.testLogBackgroundError} />
-          <Menu.Item icon='info' title='Log bg Warn' onPress={this.testLogBackgroundWarn} />
-          <Menu.Item icon='info' title='Log bg Debug' onPress={this.testLogBackgroundDebug} />
+          <Menu.Item
+            icon='alert-triangle'
+            title='Panic'
+            onPress={this.testPanic}
+          />
+          <Menu.Item
+            icon='alert-triangle'
+            title='Error'
+            onPress={this.testError}
+          />
+          <Menu.Item
+            icon='info'
+            title='Log bg Error'
+            onPress={this.testLogBackgroundError}
+          />
+          <Menu.Item
+            icon='info'
+            title='Log bg Warn'
+            onPress={this.testLogBackgroundWarn}
+          />
+          <Menu.Item
+            icon='info'
+            title='Log bg Debug'
+            onPress={this.testLogBackgroundDebug}
+          />
           <Menu.Item
             icon='slash'
             title='Throw native exception'
