@@ -52,12 +52,13 @@ public class GattClient extends BluetoothGattCallback {
         BertyDevice bertyDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
 
         if (bertyDevice == null) {
-            Log.i(TAG, "onConnectionStateChange() client: incoming connection from device: " + bertyDevice.getAddr());
+            Log.i(TAG, "onConnectionStateChange() client: incoming connection from device: " + device.getAddress());
             bertyDevice = new BertyDevice(device);
             DeviceManager.addDeviceToIndex(bertyDevice);
         }
 
-        bertyDevice.asyncConnectionToDevice(); // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+        // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+        bertyDevice.asyncConnectionToDevice("onConnectionStateChange() client state: " + Log.connectionStateToString(newState));
 
         super.onConnectionStateChange(gatt, status, newState);
     }

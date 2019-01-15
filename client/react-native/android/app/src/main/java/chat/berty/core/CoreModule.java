@@ -23,8 +23,16 @@ public class CoreModule extends ReactContextBaseJavaModule {
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
         this.reactContext = reactContext;
 
-        BleManager.setContext(reactContext.getApplicationContext());
-        BleManager.setActivity(reactContext.getCurrentActivity());
+        // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
+        // See https://facebook.github.io/react-native/docs/native-modules-android
+        Object activityGetter = new BleManager.ActivityGetter() {
+            public Activity getCurrentActivity() {
+                return reactContext.getCurrentActivity();
+            }
+        };
+
+        BleManager.setReactContext(activityGetter, reactContext);
+        /////////////////////////////////////////////////////////////////////////
 
         this.notificationDriver.setNativeNotification(new Notification(reactContext, this.notificationDriver));
     }

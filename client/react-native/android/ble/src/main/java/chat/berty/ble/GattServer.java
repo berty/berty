@@ -6,6 +6,7 @@ import java.util.UUID;
 import android.os.Build;
 import android.annotation.TargetApi;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -60,12 +61,13 @@ public class GattServer extends BluetoothGattServerCallback {
         BertyDevice bertyDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
 
         if (bertyDevice == null) {
-            Log.i(TAG, "onConnectionStateChange() server: incoming connection from device: " + bertyDevice.getAddr());
+            Log.i(TAG, "onConnectionStateChange() server: incoming connection from device: " + device.getAddress());
             bertyDevice = new BertyDevice(device);
             DeviceManager.addDeviceToIndex(bertyDevice);
         }
 
-        bertyDevice.asyncConnectionToDevice(); // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+        // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+        bertyDevice.asyncConnectionToDevice("onConnectionStateChange() server state: " + Log.connectionStateToString(newState));
 
         super.onConnectionStateChange(device, status, newState);
     }
@@ -101,7 +103,10 @@ public class GattServer extends BluetoothGattServerCallback {
         }
 
         if (charID.equals(BleManager.WRITER_UUID)) {
+//            Log.i(TAG, "onCharacteristicWriteRequest() writer called with payload: " + value + ", as string: " + new String(value, Charset.forName("UTF-8")) + ", len: " + value.length + ", from MultiAddr: " + bertyDevice.getMultiAddr());
+            Log.i(TAG, "Rcvd: " + Arrays.toString(value) + ", hash: " + Arrays.toString(value).hashCode() + ", string: " + new String(value, Charset.forName("ASCII")).replaceAll("\\p{C}", "?"));
             Core.bytesToConn(bertyDevice.getMultiAddr(), value);
+
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);
             }

@@ -107,10 +107,12 @@ public class Scanner extends ScanCallback {
         BertyDevice bertyDevice = DeviceManager.getDeviceFromAddr(device.getAddress());
 
         if (bertyDevice == null) {
-            Log.i(TAG, "onConnectionStateChange() server: incoming connection from device: " + bertyDevice.getAddr());
+            Log.i(TAG, "parseResult() scanned a new device: " + device.getAddress());
             bertyDevice = new BertyDevice(device);
             DeviceManager.addDeviceToIndex(bertyDevice);
-            bertyDevice.asyncConnectionToDevice(); // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+
+            // Everything is handled in this method: GATT connection/reconnection and handshake if necessary
+            bertyDevice.asyncConnectionToDevice("parseResult()");
         }
     }
 }

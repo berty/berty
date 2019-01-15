@@ -18,7 +18,6 @@ import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,12 +40,13 @@ class BertyDevice {
     private static final int gattWaitConnectMaxAttempts = 10;
     private static final int gattConnectingAttemptTimeout = 240;
     private static final int gattConnectingMaxAttempts = 5;
+    private static final int waitAfterHandshakeAndGattConnectAttempt = 1000;
 
-    // Timeout and maximum attempts for service discovery and check
-    private static final int deviceCheckTimeout = 30000;
+    // Timeout and maximum attempts for service/characteristics discovery and check
     private static final int servDiscoveryAttemptTimeout = 1000;
     private static final int servDiscoveryMaxAttempts = 20;
     private static final int servCheckTimeout = 30000;
+    private static final int charDiscoveryTimeout = 1000;
 
     // Timeout for remote device response
     private static final int waitInfosReceptionTimeout = 60000;
@@ -135,59 +135,69 @@ class BertyDevice {
 
 
     // Attempt to (re)connect GATT then, if device isn't already identified, init Berty handshake
-    void asyncConnectionToDevice() {
-        Log.d(TAG, "asyncConnectionToDevice() called for device: " + dDevice);
+    void asyncConnectionToDevice(final String caller) {
+        Log.d(TAG, "asyncConnectionToDevice() called for device: " + dDevice + ", caller: " + caller);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (lockConnAttempt.tryAcquire()) {
-                    Log.d(TAG, "asyncConnectionToDevice() try to connect GATT with device: " + dDevice);
+        if (lockConnAttempt.tryAcquire()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Thread.currentThread().setName("asyncConnectionToDevice() " + dDevice + ", caller: " + caller);
 
-                    if (connectGatt()) {
-                        lockConnAttempt.release(); // Released now because it could be useful to reconnect during handshake
+                    String callerAndThread = caller + ", thread: " + Thread.currentThread().getId();
+                    Log.i(TAG, "asyncConnectionToDevice() try to connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
 
-                        if (!identified) {
-                            if (lockHandshakeAttempt.tryAcquire()) {
-                                Log.d(TAG, "asyncConnectionToDevice() try to Berty handshake with device: " + dDevice);
+                    try {
+                        if (connectGatt(callerAndThread)) {
+                            Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
+                            lockConnAttempt.release(); // Released now because it could be useful to reconnect during handshake
 
-                                if (bertyHandshake()) {
-                                    Log.i(TAG, "asyncConnectionToDevice() succeeded with device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID);
-                                    identified = true;
-                                    Core.addToPeerStore(dPeerID, dMultiAddr);
+                            if (!identified) {
+                                if (lockHandshakeAttempt.tryAcquire()) {
+                                    Log.i(TAG, "asyncConnectionToDevice() try to Berty handshake with device: " + dDevice + ", caller: " + callerAndThread);
+
+                                    if (bertyHandshake(callerAndThread)) {
+                                        Log.i(TAG, "asyncConnectionToDevice() succeeded with device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
+                                        identified = true;
+                                        Core.addToPeerStore(dPeerID, dMultiAddr);
+                                    } else {
+                                        Log.d(TAG, "asyncConnectionToDevice() Berty handshake failed with device: " + dDevice + ", caller: " + callerAndThread);
+                                        disconnectFromDevice("Berty handshake failed, caller: " + callerAndThread);
+                                    }
+                                    Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
+                                    lockHandshakeAttempt.release();
                                 } else {
-                                    Log.d(TAG, "asyncConnectionToDevice() Berty handshake failed with device: " + dDevice);
-                                    disconnectFromDevice();
+                                    Log.d(TAG, "asyncConnectionToDevice() skipped Berty handshake: already running for device: " + dDevice);
                                 }
-                                lockHandshakeAttempt.release();
                             } else {
-                                Log.d(TAG, "asyncConnectionToDevice() skipped Berty handshake: already running for device: " + dDevice);
+                                Log.i(TAG, "asyncConnectionToDevice() GATT reconnection succeeded for device: " + dDevice + ", caller: " + callerAndThread);
                             }
                         } else {
-                            Log.i(TAG, "asyncConnectionToDevice() GATT reconnection succeeded for device: " + dDevice);
+                            if (identified) {
+                                Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
+                                // TODO: Check with sfroment if it's ok to use connClosed that way
+                                // TODO: Check with sfroment how libp2p handle a reconnection with a different mac address
+                                Core.connClosed(dMultiAddr);
+                            } else {
+                                Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
+                            }
+                            Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
+                            lockConnAttempt.release();
+                            disconnectFromDevice("GATT failed" + ", caller: " + callerAndThread);
                         }
-                    } else {
-                        if (identified) {
-                            Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID);
-                            // TODO: Check with sfroment if it's ok to use connClosed that way
-                            // TODO: Check with sfroment how libp2p handle a reconnection with a different mac address
-                            Core.connClosed(dMultiAddr);
-                        } else {
-                            Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice);
-                        }
-                        lockConnAttempt.release();
-                        disconnectFromDevice();
+                    } catch (Exception e) {
+                        Log.e(TAG, "asyncConnectionToDevice() failed: " + e.getMessage() + " for device: " + dDevice + ", caller: " + callerAndThread);
                     }
-                } else {
-                    Log.d(TAG, "asyncConnectionToDevice() skipped GATT connection attempt: already running for device: " + dDevice);
                 }
-            }
-        }).start();
+            }).start();
+        } else {
+            Log.w(TAG, "asyncConnectionToDevice() skipped GATT connection attempt: already running for device: " + dDevice + ", caller: " + caller);
+        }
     }
 
     // Disconnect device and remove it from index
-    void disconnectFromDevice() {
-        Log.d(TAG, "disconnectFromDevice() called for device: " + dDevice);
+    void disconnectFromDevice(String cause) {
+        Log.w(TAG, "disconnectFromDevice() called for device: " + dDevice + " caused by: " + cause);
 
         try {
             lockConnAttempt.acquire();
@@ -209,8 +219,8 @@ class BertyDevice {
         }
     }
 
-    private boolean connectGatt() {
-        Log.d(TAG, "connectGatt() called for device: " + dDevice);
+    private boolean connectGatt(String caller) {
+        Log.i(TAG, "connectGatt() called for device: " + dDevice + ", caller: " + caller);
 
         try {
             setGatt();
@@ -235,7 +245,7 @@ class BertyDevice {
                     }
 
                     if (isGattConnected()) {
-                        Log.i(TAG, "connectGatt() succeeded for device: " + dDevice);
+                        Log.i(TAG, "connectGatt() succeeded for device: " + dDevice + " caller: " + caller);
                         return true;
                     }
                 }
@@ -301,8 +311,8 @@ class BertyDevice {
 
 
     // Check if remote device is Berty compliant then, if yes, two-way exchange MultiAddr and PeerID
-    private boolean bertyHandshake() {
-        Log.d(TAG, "bertyHandshake() called for device: " + dDevice);
+    private boolean bertyHandshake(String caller) {
+        Log.i(TAG, "bertyHandshake() called for device: " + dDevice + ", caller: " + caller);
 
         if (checkBertyDeviceCompliance() && sendInfosToRemoteDevice() && receiveInfosFromRemoteDevice()) {
             Log.i(TAG, "bertyHandshake() succeeded for device: " + dDevice);
@@ -389,7 +399,7 @@ class BertyDevice {
         try {
             List<Future<BluetoothGattCharacteristic>> answers = es.invokeAll(todo);
             for (Future<BluetoothGattCharacteristic> future : answers) {
-                BluetoothGattCharacteristic characteristic = future.get();
+                BluetoothGattCharacteristic characteristic = future.get(charDiscoveryTimeout, TimeUnit.MILLISECONDS);
 
                 if (characteristic != null && characteristic.getUuid().equals(BleManager.MA_UUID)) {
                     Log.d(TAG, "checkBertyCharacteristicsCompliance() MultiAddr characteristic retrieved: " + characteristic + " on device: " + dDevice);
@@ -400,6 +410,9 @@ class BertyDevice {
                 } else if (characteristic != null && characteristic.getUuid().equals(BleManager.WRITER_UUID)) {
                     Log.d(TAG, "checkBertyCharacteristicsCompliance() Writer characteristic retrieved: " + characteristic + " on device: " + dDevice);
                     writerCharacteristic = characteristic;
+                } else if (characteristic == null) {
+                    Log.e(TAG, "checkBertyCharacteristicsCompliance() timeouted on device: " + dDevice);
+                    break;
                 } else {
                     Log.e(TAG, "checkBertyCharacteristicsCompliance() unknown characteristic retrieved: " + characteristic + " on device: " + dDevice);
                 }
@@ -423,8 +436,8 @@ class BertyDevice {
     private boolean sendInfosToRemoteDevice() {
         Log.d(TAG, "sendInfosToRemoteDevice() called for device: " + dDevice);
 
-        if (writeOnCharacteristic(BleManager.getMultiAddr().getBytes(Charset.forName("UTF-8")), maCharacteristic)) {
-            if (writeOnCharacteristic(BleManager.getPeerID().getBytes(Charset.forName("UTF-8")), peerIDCharacteristic)) {
+        if (writeOnCharacteristic(BleManager.getMultiAddr().getBytes(), maCharacteristic)) {
+            if (writeOnCharacteristic(BleManager.getPeerID().getBytes(), peerIDCharacteristic)) {
                 Log.i(TAG, "sendInfosToRemoteDevice() succeeded for device: " + dDevice);
                 return true;
             } else {
@@ -461,7 +474,7 @@ class BertyDevice {
 
         try {
             synchronized (toSend) {
-                String data = new String(payload, Charset.forName("UTF-8"));
+                String data = new String(payload);
                 int length = data.length();
                 int offset = 0;
 
@@ -469,7 +482,7 @@ class BertyDevice {
                     // BLE protocol reserves 3 bytes out of MTU_SIZE for metadata
                     // https://www.oreilly.com/library/view/getting-started-with/9781491900550/ch04.html#gatt_writes
                     int chunkSize = (length - offset > dMtu - 3) ? dMtu - 3 : length - offset;
-                    byte[] chunk = data.substring(offset, offset + chunkSize).getBytes(Charset.forName("UTF-8"));
+                    byte[] chunk = data.substring(offset, offset + chunkSize).getBytes();
                     offset += chunkSize;
                     toSend.add(chunk);
                 } while (offset < length);
@@ -491,11 +504,11 @@ class BertyDevice {
                     }
                     toSend.remove(0);
                 }
-                Log.d(TAG, "writeOnCharacteristic() succeeded for device:" + dDevice + " with payload: " + new String(payload, Charset.forName("UTF-8")));
+                Log.d(TAG, "writeOnCharacteristic() succeeded for device:" + dDevice + " with payload: " + new String(payload));
                 return true;
             }
         } catch (Exception e) {
-            Log.e(TAG, "writeOnCharacteristic() failed: " + e.getMessage() + "for device: " + dDevice);
+            Log.e(TAG, "writeOnCharacteristic() failed: " + e.getMessage() + " for device: " + dDevice);
             return false;
         }
     }

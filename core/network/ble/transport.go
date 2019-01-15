@@ -111,12 +111,13 @@ func (t *Transport) ListenNewPeer() {
 		if lVal < rVal {
 			err := t.MySelf.Connect(context.Background(), *pi)
 			if err != nil {
-				logger().Error("BLETransport Error connecting", zap.Error(err))
+				logger().Error("424242 BLETransport Error connecting", zap.Error(err))
 			} else {
-				logger().Debug("SUCCESS CONNECTING")
+				logger().Debug("424242 SUCCESS CONNECTING")
 			}
 		} else {
 			peerID := pi.ID.Pretty()
+			logger().Debug("424242 REAL ACCEPT")
 			RealAcceptSender(lBleUUID, bleUUID, peerID)
 		}
 	}

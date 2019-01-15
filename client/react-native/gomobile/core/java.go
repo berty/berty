@@ -39,11 +39,6 @@ func BytesToConn(bleUUID string, b []byte) {
 	ble.BytesToConn(bleUUID, b)
 }
 
-func RealAcceptSender(peerID string, bleUUID string, incPeerID string) {
-	defer panicHandler()
-	ble.RealAcceptSender(peerID, bleUUID, incPeerID)
-}
-
 func AddToPeerStore(peerID string, rAddr string) {
 	defer panicHandler()
 	ble.AddToPeerStore(peerID, rAddr)

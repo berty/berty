@@ -2,6 +2,8 @@ package chat.berty.ble;
 
 import core.Core;
 
+import java.math.BigInteger;
+
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
@@ -10,7 +12,8 @@ import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTING;
 final class Log {
 
     final static void v(String tag, String log) {
-        Core.goLogger(tag, "verbose", log);
+        // No verbose level on zap
+        // Core.goLogger(tag, "verbose", log);
     }
 
     final static void d(String tag, String log) {
@@ -42,5 +45,10 @@ final class Log {
             default:
                 return "unknown";
         }
+    }
+
+    final static String isStringPrintable(byte[] bytes) {
+        BigInteger big = new BigInteger(1, bytes);
+        return String.format("%0" + (bytes.length << 1) + "X", big);
     }
 }

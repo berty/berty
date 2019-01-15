@@ -2,8 +2,8 @@ package chat.berty.ble;
 
 import android.os.Build;
 import android.annotation.TargetApi;
-import java.nio.charset.Charset;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -65,7 +65,7 @@ final class DeviceManager {
 
             for (Map.Entry<String, BertyDevice> entry : bertyDevices.entrySet()) {
                 bertyDevice = entry.getValue();
-                if (bertyDevice.getMultiAddr().equals(multiAddr)) {
+                if (bertyDevice != null && bertyDevice.getMultiAddr() != null && bertyDevice.getMultiAddr().equals(multiAddr)) {
                     return bertyDevice;
                 }
             }
@@ -79,28 +79,33 @@ final class DeviceManager {
 
     // Libp2p bound functions
     public static void disconnectFromDevice(String multiAddr) {
-        Log.d(TAG, "disconnectFromDevice() called with MultiAddr: " + multiAddr);
+        Log.i(TAG, "disconnectFromDevice() called with MultiAddr: " + multiAddr);
 
         BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
 
         if (bertyDevice != null) {
-            bertyDevice.disconnectFromDevice();
+            bertyDevice.disconnectFromDevice("libp2p request");
         } else {
             Log.e(TAG, "disconnectFromDevice() failed: unknown device");
         }
     }
 
     public static boolean writeToDevice(byte[] payload, String multiAddr) {
-        Log.d(TAG, "writeToDevice() called with payload: " + new String(payload, Charset.forName("UTF-8")) + ", len: " + payload.length + ", MultiAddr: " + multiAddr);
+//        Log.i(TAG, "writeToDevice() called with payload: " + payload + ", as string: " + new String(payload) + ", len: " + payload.length + ", to MultiAddr: " + multiAddr);
+        Log.i(TAG, "Sent: " + Arrays.toString(payload) + ", hash: " + Arrays.toString(payload).hashCode() + ", string: " + new String(payload).replaceAll("\\p{C}", "?"));
 
         BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
 
         if (bertyDevice == null) {
-            // Could happen if device has disconnected and libp2p isn't aware of it
+            // Could happen if device has fully disconnected and libp2p isn't aware of it
             Log.e(TAG, "writeToDevice() failed: unknown device");
             return false;
+        } else if (!bertyDevice.isGattConnected()) {
+            // Could happen if device has GATT disconnected and is reconnecting right now
+            Log.e(TAG, "writeToDevice() failed: device GATT disconnected");
+            return false;
         } else if (!bertyDevice.isIdentified()) {
-            // Could happen if device has disconnected, libp2p isn't aware of it and device is reconnecting right now
+            // Could happen if device has fully disconnected, libp2p isn't aware of it and device is reconnecting right now
             Log.e(TAG, "writeToDevice() failed: device not ready yet");
             return false;
         }
@@ -109,11 +114,9 @@ final class DeviceManager {
     }
 
     public static boolean dialPeer(String multiAddr) {
-        Log.v(TAG, "dialPeer() called with MultiAddr: " + multiAddr);
+        Log.i(TAG, "dialPeer() called with MultiAddr: " + multiAddr);
 
-        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
-
-        if (bertyDevice != null) {
+        if (getDeviceFromMultiAddr(multiAddr) != null) {
             return true;
         }
 
