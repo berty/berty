@@ -66,7 +66,7 @@ public class Notification implements NativeNotificationDriver {
          */
         @Override
         public void onNewToken(String token) {
-            Notification.GoCore.receiveToken(token.getBytes(), "fcm");
+            Notification.GoCore.receiveFCMToken(token.getBytes());
         }
 
     }
@@ -133,6 +133,7 @@ public class Notification implements NativeNotificationDriver {
 
     public void unregister() throws Exception {
         FirebaseInstanceId.getInstance().deleteInstanceId();
+        this.GoCore.receiveFCMToken(null);
     }
 
 
