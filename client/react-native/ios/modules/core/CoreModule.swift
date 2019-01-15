@@ -23,7 +23,7 @@ class CoreModule: NSObject {
     super.init()
     self.notificationDriver.setNative(Notification())
   }
-  
+
   func getFilesDir() throws -> String {
     let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
     let filesPath = filesDir?.path

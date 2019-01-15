@@ -21,7 +21,8 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
   }
 
   @available(iOS 10.0, *)
-  func userNotificationCenter(_ center: UNUserNotificationCenter,
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
     willPresent notification: UNNotification,
     withCompletionHandler completionHandler:
       @escaping (UNNotificationPresentationOptions) -> Void) {
@@ -61,21 +62,25 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
   }
 
   func register() throws {
+    var err: Error?
 
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self
-
       UNUserNotificationCenter.current().requestAuthorization(
         options: [.alert, .sound, .badge],
         completionHandler: { granted, error in
           guard granted else {
-            do {
-              try self.unregister()
-            } catch { }
+            let application = UIApplication.shared
+            application.unregisterForRemoteNotifications()
+            err = error
             return
           }
         }
       )
+    }
+
+    if err != nil {
+      throw err!
     }
 
     let application = UIApplication.shared
@@ -96,13 +101,14 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
 }
 
 extension AppDelegate {
-
-  override func application(_ application: UIApplication,
+  override func application(
+    _ application: UIApplication,
     didRegister notificationSettings: UIUserNotificationSettings) {
     // RCTPushNotificationManager.didRegister(notificationSettings)
   }
 
-  override func application(_ application: UIApplication,
+  override func application(
+    _ application: UIApplication,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     // RCTPushNotificationManager.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
     Core.notificationDriver().receiveToken(
@@ -111,7 +117,8 @@ extension AppDelegate {
     )
   }
 
-  override func application(_ application: UIApplication,
+  override func application(
+    _ application: UIApplication,
     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
     // RCTPushNotificationManager.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
@@ -126,10 +133,11 @@ extension AppDelegate {
     }
   }
 
-  override func application(_ application: UIApplication,
+  override func application(
+    _ application: UIApplication,
     didFailToRegisterForRemoteNotificationsWithError error: Error) {
     // TODO: try to get this error in Notification::register
-    
+
     // Core.notificationDriver().Error("didFailToRegisterForRemoteNotificationsWithError", error.localizedDescription)
     logger.format("failed to register for remote notification : %@", level: .error, error.localizedDescription)
     // RCTPushNotificationManager.didFailToRegisterForRemoteNotificationsWithError(error)
