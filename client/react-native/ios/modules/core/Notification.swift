@@ -70,8 +70,9 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
         options: [.alert, .sound, .badge],
         completionHandler: { granted, error in
           guard granted else {
-            let application = UIApplication.shared
-            application.unregisterForRemoteNotifications()
+            do {
+              try self.unregister()
+            } catch { }
             err = error
             return
           }
@@ -90,6 +91,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
   func unregister() throws {
     let application = UIApplication.shared
     application.unregisterForRemoteNotifications()
+    Core.notificationDriver()?.receiveAPNSToken(nil)
   }
 
   func refreshToken() throws {
@@ -111,10 +113,7 @@ extension AppDelegate {
     _ application: UIApplication,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
     // RCTPushNotificationManager.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
-    Core.notificationDriver().receiveToken(
-      deviceToken,
-      tokenType: "apns"
-    )
+    Core.notificationDriver()?.receiveAPNSToken(deviceToken)
   }
 
   override func application(
@@ -126,20 +125,17 @@ extension AppDelegate {
     do {
       let json = try JSONSerialization.data(withJSONObject: userInfo, options: [])
       let data = String(decoding: json, as: UTF8.self)
-      Core.notificationDriver().receive(data)
+      Core.notificationDriver()?.receive(data)
     } catch {
-      logger.format("failed to register for remote notification : %@", level: .error, error.localizedDescription)
-      // Core.notificationDriver().Error("didReceiveRemoteNotification", error.localizedDescription)
+      logger.format("failed to deserialize remote notification : %@", level: .error, error.localizedDescription)
     }
   }
 
   override func application(
     _ application: UIApplication,
     didFailToRegisterForRemoteNotificationsWithError error: Error) {
-    // TODO: try to get this error in Notification::register
-
-    // Core.notificationDriver().Error("didFailToRegisterForRemoteNotificationsWithError", error.localizedDescription)
     logger.format("failed to register for remote notification : %@", level: .error, error.localizedDescription)
+    Core.notificationDriver()?.receiveAPNSToken(nil)
     // RCTPushNotificationManager.didFailToRegisterForRemoteNotificationsWithError(error)
   }
 

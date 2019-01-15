@@ -7,6 +7,7 @@ import (
 	"runtime"
 	"sync"
 
+	"berty.tech/core/api/p2p"
 	"github.com/0xAX/notificator"
 	"go.uber.org/zap"
 )
@@ -15,9 +16,16 @@ type Driver interface {
 	Display(*Payload) error
 	Register() error
 	Unregister() error
-	Receive(string)
-	ReceiveToken(token []byte, tokenType string)
+	Subscribe() chan *Payload
+	Unsubscribe(chan *Payload)
+	SubscribeToken() chan *Token
+	UnsubscribeToken(chan *Token)
 	RefreshToken() error
+}
+
+type Token struct {
+	Value []byte
+	Type  p2p.DevicePushType
 }
 
 type Payload struct {
@@ -60,19 +68,27 @@ func (n *NoopNotification) Unregister() error {
 	return nil
 }
 
-func (n *NoopNotification) Receive(data string) {
-	logger().Debug("Receive",
-		zap.String("data", data),
-	)
-}
-
-func (n *NoopNotification) ReceiveToken(token []byte, tokenType string) {
-	logger().Debug("ReceiveToken")
-}
-
 func (n *NoopNotification) RefreshToken() error {
 	logger().Debug("RefreshToken")
 	return nil
+}
+
+func (n *NoopNotification) Subscribe() chan *Payload {
+	logger().Debug("noop notification handler not implemented")
+	return nil
+}
+
+func (n *NoopNotification) Unsubscribe(chan *Payload) {
+
+}
+
+func (n *NoopNotification) SubscribeToken() chan *Token {
+	logger().Debug("noop notification token handler not implemented")
+	return nil
+}
+
+func (n *NoopNotification) UnsubscribeToken(chan *Token) {
+
 }
 
 // NoopNotification is a Driver
@@ -107,11 +123,25 @@ func (n *DesktopNotification) Unregister() error {
 	return nil
 }
 
-func (n *DesktopNotification) Receive(data string) {}
-
-func (n *DesktopNotification) ReceiveToken(token []byte, tokenType string) {}
-
 func (n *DesktopNotification) RefreshToken() error {
 	logger().Debug("RefreshToken")
 	return nil
+}
+
+func (n *DesktopNotification) Subscribe() chan *Payload {
+	logger().Debug("noop notification handler not implemented")
+	return nil
+}
+
+func (n *DesktopNotification) Unsubscribe(chan *Payload) {
+
+}
+
+func (n *DesktopNotification) SubscribeToken() chan *Token {
+	logger().Debug("noop notification token handler not implemented")
+	return nil
+}
+
+func (n *DesktopNotification) UnsubscribeToken(chan *Token) {
+
 }

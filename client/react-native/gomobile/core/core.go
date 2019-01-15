@@ -19,7 +19,7 @@ var (
 	accountName        = ""
 	appConfig          *account.StateDB
 	rootContext        = context.Background()
-	NotificationDriver = &MobileNotification{}
+	NotificationDriver = MobileNotification{}.New()
 )
 
 func logger() *zap.Logger {
