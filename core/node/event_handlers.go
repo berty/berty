@@ -48,7 +48,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 		return err
 	}
 
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestTitle", nil),
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
 			"Name": attrs.Me.DisplayName,
@@ -81,7 +81,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 		return err
 	}
 
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestAccpetedTitle", nil),
 		Body: i18n.T("ContactRequestAccpetedBody", map[string]interface{}{
 			"Name": contact.DisplayName,
@@ -143,7 +143,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 		return err
 	}
 
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ConversationInviteTitle", nil),
 		Body:  i18n.T("ConversationInviteBody", nil),
 	})
@@ -160,7 +160,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("NewMessageTitle", nil),
 		Body:  i18n.T("NewMessageBody", nil),
 	})

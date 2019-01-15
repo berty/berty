@@ -198,6 +198,10 @@ func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
 		}()
 	}
 
+	if n.notificationDriver != nil {
+		n.notificationDriver.Register()
+	}
+
 	for {
 		select {
 		case event := <-n.outgoingEvents:

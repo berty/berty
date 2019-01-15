@@ -8,14 +8,16 @@ import (
 	"sync"
 
 	"github.com/0xAX/notificator"
-
 	"go.uber.org/zap"
 )
 
 type Driver interface {
-	DisplayNotification(Payload) error
-	ReceiveNotification(string)
-	ReceivePushID(pushID string, pushIDType string)
+	Display(*Payload) error
+	Register() error
+	Unregister() error
+	Receive(string)
+	ReceiveToken(token []byte, tokenType string)
+	RefreshToken() error
 }
 
 type Payload struct {
@@ -35,9 +37,9 @@ func NewNoopNotification() Driver {
 	return &NoopNotification{}
 }
 
-func (n *NoopNotification) DisplayNotification(p Payload) error {
+func (n *NoopNotification) Display(p *Payload) error {
 	// for debug puprpose
-	logger().Debug("DisplayNotification",
+	logger().Debug("Display",
 		zap.String("title", p.Title),
 		zap.String("body", p.Body),
 		zap.String("Icon", p.Icon),
@@ -48,14 +50,29 @@ func (n *NoopNotification) DisplayNotification(p Payload) error {
 	return nil
 }
 
-func (n *NoopNotification) ReceiveNotification(data string) {
-	logger().Debug("ReceiveNotification",
+func (n *NoopNotification) Register() error {
+	logger().Debug("registered")
+	return nil
+}
+
+func (n *NoopNotification) Unregister() error {
+	logger().Debug("unregister")
+	return nil
+}
+
+func (n *NoopNotification) Receive(data string) {
+	logger().Debug("Receive",
 		zap.String("data", data),
 	)
 }
 
-func (n *NoopNotification) ReceivePushID(pushID, pushIDType string) {
-	logger().Debug("ReceivePushID")
+func (n *NoopNotification) ReceiveToken(token []byte, tokenType string) {
+	logger().Debug("ReceiveToken")
+}
+
+func (n *NoopNotification) RefreshToken() error {
+	logger().Debug("RefreshToken")
+	return nil
 }
 
 // NoopNotification is a Driver
@@ -69,7 +86,7 @@ func NewDesktopNotification() Driver {
 
 type DesktopNotification struct{}
 
-func (n *DesktopNotification) DisplayNotification(p Payload) error {
+func (n *DesktopNotification) Display(p *Payload) error {
 	once.Do(func() {
 		_, filename, _, _ := runtime.Caller(0)
 		iconPath := path.Dir(filename) + "/../../../client/react-native/common/static/img/logo.png"
@@ -82,6 +99,19 @@ func (n *DesktopNotification) DisplayNotification(p Payload) error {
 	return notify.Push(p.Title, p.Body, p.Icon, notificator.UR_NORMAL)
 }
 
-func (n *DesktopNotification) ReceiveNotification(data string) {}
+func (n *DesktopNotification) Register() error {
+	return nil
+}
 
-func (n *DesktopNotification) ReceivePushID(pushID, pushIDType string) {}
+func (n *DesktopNotification) Unregister() error {
+	return nil
+}
+
+func (n *DesktopNotification) Receive(data string) {}
+
+func (n *DesktopNotification) ReceiveToken(token []byte, tokenType string) {}
+
+func (n *DesktopNotification) RefreshToken() error {
+	logger().Debug("RefreshToken")
+	return nil
+}

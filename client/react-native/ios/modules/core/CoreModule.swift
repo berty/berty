@@ -17,12 +17,11 @@ var logger = Logger("chat.berty.io", "CoreModule")
 
 @objc(CoreModule)
 class CoreModule: NSObject {
-
   @objc var notificationDriver: CoreMobileNotification! = Core.notificationDriver()
 
   override init() {
     super.init()
-    self.notificationDriver.setNative(Notification(handler: self.notificationDriver))
+    self.notificationDriver.setNative(Notification())
   }
 
   func getFilesDir() throws -> String {
@@ -30,6 +29,7 @@ class CoreModule: NSObject {
     let filesPath = filesDir?.path
     let fileExist = FileManager.default.fileExists(atPath: filesPath!)
 
+    // do this in gomobile and set storage as global in gomobile
     if fileExist == false {
       try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)
     }

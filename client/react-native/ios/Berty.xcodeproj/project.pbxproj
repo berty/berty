@@ -5,7 +5,6 @@
 	};
 	objectVersion = 46;
 	objects = {
-
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -23,7 +22,6 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		140ED2AC1D01E1AD002B40FF /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		146834051AC3E58100842450 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 146834041AC3E56700842450 /* libReact.a */; };
 		2292CA4AD69F48168B992482 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 08C6539D305C462FAA6F5F85 /* FontAwesome5_Brands.ttf */; };
@@ -31,7 +29,6 @@
 		25A8BAB5E2674DC1AFD11FFB /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FA49C5BF6A3A4426A9FE0AA2 /* AntDesign.ttf */; };
 		2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
-		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2D02E4C21E0B4AEC006451C7 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157351DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		2D02E4C31E0B4AEC006451C7 /* libRCTImage-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E841DF850E9000B6D8A /* libRCTImage-tvOS.a */; };
 		2D02E4C41E0B4AEC006451C7 /* libRCTLinking-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3E881DF850E9000B6D8A /* libRCTLinking-tvOS.a */; };
@@ -76,6 +73,7 @@
 		EFEFDB40F99B499C82D9C417 /* libReactNativeExceptionHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E3263E81D0DF4FCD8CFC71E5 /* libReactNativeExceptionHandler.a */; };
 		F09B398921C02731000AA9A8 /* libRCTCameraRoll.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F09B398821C02721000AA9A8 /* libRCTCameraRoll.a */; };
 		F625BCB39E3C45ADA463C308 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6BCA3B477305485C91CB74DA /* Feather.ttf */; };
+		F844DEC121E8C5FD00A810A1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F844DEC021E8C5FC00A810A1 /* AppDelegate.swift */; };
 		F8799D7A2136F44B003B9FD7 /* CoreModule.m in Sources */ = {isa = PBXBuildFile; fileRef = F8799D752136F3C5003B9FD7 /* CoreModule.m */; };
 		F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8799D782136F3EA003B9FD7 /* CoreModule.swift */; };
 		F8EF7F482136A10600FDCCB5 /* core.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8EF7F472136A10500FDCCB5 /* core.framework */; };
@@ -575,7 +573,6 @@
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Berty/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Berty/Info.plist; sourceTree = "<group>"; };
-		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Berty/main.m; sourceTree = "<group>"; };
 		146833FF1AC3E56700842450 /* React.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = React.xcodeproj; path = "../node_modules/react-native/React/React.xcodeproj"; sourceTree = "<group>"; };
 		17D9618F77704A108128C1D4 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		189BB2B54F564464817850BE /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
@@ -634,8 +631,9 @@
 		F09B398321C02721000AA9A8 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		F0BAE21221906E73003601A0 /* Berty.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = Berty.entitlements; path = Berty/Berty.entitlements; sourceTree = "<group>"; };
 		F21FCED0D1034C54ACF33F05 /* RNDeviceInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNDeviceInfo.xcodeproj; path = "../node_modules/react-native-device-info/ios/RNDeviceInfo.xcodeproj"; sourceTree = "<group>"; };
+		F844DEC021E8C5FC00A810A1 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Berty/AppDelegate.swift; sourceTree = "<group>"; };
+		F844DF1B21E8CDAD00A810A1 /* Berty-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Berty-Bridging-Header.h"; path = "Berty/Berty-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8799D752136F3C5003B9FD7 /* CoreModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CoreModule.m; sourceTree = "<group>"; };
-		F8799D772136F3EA003B9FD7 /* Berty-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Berty-Bridging-Header.h"; sourceTree = "<group>"; };
 		F8799D782136F3EA003B9FD7 /* CoreModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreModule.swift; sourceTree = "<group>"; };
 		F8EF7F472136A10500FDCCB5 /* core.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = core.framework; sourceTree = "<group>"; };
 		FA49C5BF6A3A4426A9FE0AA2 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
@@ -787,6 +785,8 @@
 		13B07FAE1A68108700A75B9A /* Berty */ = {
 			isa = PBXGroup;
 			children = (
+				F844DF1B21E8CDAD00A810A1 /* Berty-Bridging-Header.h */,
+				F844DEC021E8C5FC00A810A1 /* AppDelegate.swift */,
 				F0BAE21221906E73003601A0 /* Berty.entitlements */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -794,7 +794,6 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
-				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = Berty;
 			sourceTree = "<group>";
@@ -1103,7 +1102,6 @@
 		F8799D4D2136F37F003B9FD7 /* modules */ = {
 			isa = PBXGroup;
 			children = (
-				F8799D772136F3EA003B9FD7 /* Berty-Bridging-Header.h */,
 				F8799D742136F3A7003B9FD7 /* core */,
 			);
 			path = modules;
@@ -1911,11 +1909,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F844DEC121E8C5FD00A810A1 /* AppDelegate.swift in Sources */,
 				F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */,
 				F8799D7A2136F44B003B9FD7 /* CoreModule.m in Sources */,
 				486CFD2A21C8FE9F00E7113B /* Notification.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
-				13B07FC11A68108700A75B9A /* main.m in Sources */,
 				48E2A93E2177575C005C6F40 /* Logger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1924,7 +1922,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */,
 				2D02E4BC1E0B4A80006451C7 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2135,7 +2132,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				REACT_HEADERS_PATH = "";
 				REACT_LIBRARY_PATH = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty/Berty-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -2195,7 +2192,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore chat.berty.ios";
 				REACT_HEADERS_PATH = "";
 				REACT_LIBRARY_PATH = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty/Berty-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2525,7 +2522,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match InHouse chat.berty.ios.yolo";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				REACT_LIBRARY_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty/Berty-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -2774,7 +2771,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				REACT_LIBRARY_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "modules/Berty-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "Berty/Berty-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

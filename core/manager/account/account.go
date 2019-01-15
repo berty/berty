@@ -14,13 +14,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jinzhu/gorm"
-	reuse "github.com/libp2p/go-reuseport"
-	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
-
 	"berty.tech/core"
 	nodeapi "berty.tech/core/api/node"
 	p2papi "berty.tech/core/api/p2p"
@@ -36,6 +29,12 @@ import (
 	"berty.tech/core/pkg/zapring"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
+	"github.com/jinzhu/gorm"
+	reuse "github.com/libp2p/go-reuseport"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 // Info is used in berty.node.DeviceInfos
@@ -502,7 +501,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)
 	}
 
-	a.node.DisplayNotification(notification.Payload{
+	a.node.DisplayNotification(&notification.Payload{
 		Title: i18n.T("DaemonStartTitle", nil),
 		Body:  i18n.T("DaemonStartBody", nil),
 	})
