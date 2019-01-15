@@ -3,6 +3,8 @@
 package notification
 
 import (
+	"encoding/hex"
+	"fmt"
 	"path"
 	"runtime"
 	"sync"
@@ -26,6 +28,10 @@ type Driver interface {
 type Token struct {
 	Value []byte
 	Type  p2p.DevicePushType
+}
+
+func (t *Token) String() string {
+	return fmt.Sprintf("hash: %+v, type: %+v", hex.EncodeToString(t.Value), t.Type)
 }
 
 type Payload struct {

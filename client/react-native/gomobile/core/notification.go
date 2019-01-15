@@ -88,6 +88,7 @@ func (n *MobileNotification) Unsubscribe(sub chan *notification.Payload) {
 		}
 	}
 	n.subscribersMutex.Unlock()
+	close(sub)
 }
 
 func (n *MobileNotification) SubscribeToken() chan *notification.Token {
@@ -106,6 +107,7 @@ func (n *MobileNotification) UnsubscribeToken(sub chan *notification.Token) {
 		}
 	}
 	n.tokenSubscribersMutex.Unlock()
+	close(sub)
 }
 
 //
