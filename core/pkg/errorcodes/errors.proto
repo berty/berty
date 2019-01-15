@@ -106,6 +106,14 @@ enum Code {
   ErrConversation = 13000;
   ErrConversationMembers = 13001;
   ErrConversationNotEnoughMembers = 13002;
+
+  ErrPush = 14000;
+  ErrPushUnknownProvider = 14001;
+  ErrPushProvider = 14002;
+  ErrPushInvalidIdentifier = 14003;
+  ErrPushInvalidServerConfig = 14004;
+  ErrPushMissingBundleId = 14005;
+  ErrPushUnknownDestination = 14006;
 }
 
 // Metadata is designed to be used as grpc status detail

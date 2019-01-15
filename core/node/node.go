@@ -1,6 +1,7 @@
 package node
 
 import (
+	"berty.tech/core/push"
 	"context"
 	"encoding/base64"
 	"fmt"
@@ -18,7 +19,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 )
 
@@ -45,6 +46,7 @@ type Node struct {
 	ring                        *zapring.Ring // log ring buffer
 	rootSpan                    opentracing.Span
 	rootContext                 context.Context // only used for tracing
+	pushManager                 *push.Manager
 
 	// devtools
 	createdAt time.Time // used for uptime calculation
@@ -66,6 +68,7 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 		createdAt:      time.Now().UTC(),
 		rootSpan:       tracer.Span(),
 		rootContext:    ctx,
+		pushManager:    &push.Manager{},
 	}
 
 	// apply optioners

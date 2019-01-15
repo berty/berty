@@ -13,6 +13,7 @@ import (
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/pkg/notification"
+	"berty.tech/core/push"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -39,6 +40,8 @@ type daemonOptions struct {
 	mdns           bool     `mapstructure:"mdns"`
 	PrivateNetwork bool     `mapstructure:"private-network"`
 	SwarmKeyPath   string   `mapstructure:"swarm-key"`
+	apnsCerts      []string `mapstructure:"apns-certs"`
+	fcmAPIKeys     []string `mapstructure:"fcm-api-keys"`
 
 	nickname string `mapstructure:"nickname"`
 }
@@ -60,6 +63,8 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", p2p.DefaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
+	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default" /*, "ble"*/}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
@@ -154,6 +159,27 @@ func daemon(opts *daemonOptions) error {
 		notificationDriver := notification.NewDesktopNotification()
 		accountOptions = append(accountOptions, account.WithNotificationDriver(notificationDriver))
 	}
+
+	var pushDispatchers []push.Dispatcher
+	for _, cert := range opts.apnsCerts {
+		dispatcher, err := push.NewAPNSDispatcher(cert)
+		if err != nil {
+			return err
+		}
+
+		pushDispatchers = append(pushDispatchers, dispatcher)
+	}
+
+	for _, apiKey := range opts.fcmAPIKeys {
+		dispatcher, err := push.NewFCMDispatcher(apiKey)
+		if err != nil {
+			return err
+		}
+
+		pushDispatchers = append(pushDispatchers, dispatcher)
+	}
+
+	accountOptions = append(accountOptions, account.WithPushManager(push.New(pushDispatchers...)))
 
 	if opts.initOnly {
 		accountOptions = append(accountOptions, account.WithInitOnly())

@@ -4,6 +4,7 @@ require (
 	cloud.google.com/go v0.30.0 // indirect
 	github.com/0xAX/notificator v0.0.0-20181105090803-d81462e38c21
 	github.com/99designs/gqlgen v0.6.0
+	github.com/NaySoftware/go-fcm v0.0.0-20180207124314-28fff9381d17
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/agnivade/levenshtein v1.0.1 // indirect
 	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 // indirect
@@ -13,6 +14,7 @@ require (
 	github.com/coreos/go-semver v0.2.0 // indirect
 	github.com/davidlazar/go-crypto v0.0.0-20170701192655-dcfb0a7ac018 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20181014144952-4e0d7dc8888f // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fd/go-nat v1.0.0 // indirect
 	github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a // indirect
@@ -115,6 +117,7 @@ require (
 	github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be // indirect
 	github.com/rs/cors v1.6.0
 	github.com/sergi/go-diff v1.0.0 // indirect
+	github.com/sideshow/apns2 v0.0.0-20181014012405-060d44b53d05
 	github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d // indirect
 	github.com/smartystreets/goconvey v0.0.0-20180222194500-ef6db91d284a
 	github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 // indirect

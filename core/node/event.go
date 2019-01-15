@@ -89,6 +89,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		p2p.Kind_SenderAliasUpdate:      n.handleSenderAliasUpdate,
 		p2p.Kind_Ack:                    n.handleAck,
 		p2p.Kind_Seen:                   n.handleSeen,
+		p2p.Kind_DevicePushTo:           n.handleDevicePushTo,
 	}[input.Kind]
 	var handlingError error
 	if !found {

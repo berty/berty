@@ -363,3 +363,29 @@ func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs)
 
 	return nil
 }
+
+func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
+	push, err := event.GetDevicePushToAttrs()
+
+	if err != nil {
+		return errorcodes.ErrDeserialization.New()
+	}
+
+	identifier, err := n.crypto.Decrypt(push.PushIdentifier)
+
+	if err != nil {
+		return errorcodes.ErrPushUnknownDestination.Wrap(err)
+	}
+
+	pushDestination := &p2p.DevicePushToDecrypted{}
+
+	if err := push.Unmarshal(identifier); err != nil {
+		return errorcodes.ErrPushUnknownDestination.Wrap(err)
+	}
+
+	if err := n.pushManager.Dispatch(push, pushDestination); err != nil {
+		return errorcodes.ErrPush.Wrap(err)
+	}
+
+	return nil
+}
