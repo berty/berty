@@ -13,9 +13,9 @@ import core.NativeNotificationDriver;
 
 public class CoreModule extends ReactContextBaseJavaModule {
     private Logger logger = new Logger("chat.berty.io");
-    private MobileNotification notificationDriver = Core.getNativeNotificationDriver();
     private String filesDir = "";
     private ReactApplicationContext reactContext;
+    private MobileNotification notificationDriver = Core.getNotificationDriver();
 
     public CoreModule(final ReactApplicationContext reactContext) {
         super(reactContext);
@@ -30,7 +30,11 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
         Manager.getInstance().setmReactContext(o, reactContext);
 
-        this.notificationDriver.setNativeNotificationDriver(new Notification(reactContext, this.notificationDriver));
+        this.notificationDriver.setNative(new Notification(reactContext));
+    }
+
+    public final ReactApplicationContext getContext() {
+        return getReactApplicationContext();
     }
 
     public String getName() {
