@@ -24,6 +24,7 @@ import java.util.Map;
 
 import chat.berty.core.Level;
 import chat.berty.core.Logger;
+import chat.berty.main.BuildConfig;
 import chat.berty.main.R;
 import core.Core;
 import core.MobileNotification;
@@ -44,18 +45,18 @@ public class NotificationNative implements NativeNotificationDriver {
     }
 
     public void refreshToken() throws Exception {
-        FirebaseInstanceId.getInstance().deleteInstanceId();
-        FirebaseInstanceId.getInstance().getInstanceId();
+            FirebaseInstanceId.getInstance().deleteToken(BuildConfig.APPLICATION_ID, "GCM");
+            FirebaseInstanceId.getInstance().deleteInstanceId();
+            FirebaseInstanceId.getInstance().getInstanceId();
+            FirebaseInstanceId.getInstance().getToken(BuildConfig.APPLICATION_ID, "GCM");
     }
 
     public void askPermissions() {
         ReactApplicationContext context = NotificationModule.getInstance().getReactApplicationContext();
 
         if (ContextCompat.checkSelfPermission(context.getCurrentActivity(), Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED) {
-            this.logger.format(Level.DEBUG, "GRANTED", "GRANTED");
             return;
         }
-        this.logger.format(Level.DEBUG, "NOT_GRANTED", "NOT_GRANTED");
         ActivityCompat.requestPermissions(
                 context.getCurrentActivity(),
                 new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY},
@@ -63,12 +64,15 @@ public class NotificationNative implements NativeNotificationDriver {
     }
 
     public void register() throws Exception {
-        this.logger.format(Level.DEBUG, "REGISTER", "REGISTER");
         this.askPermissions();
-        FirebaseInstanceId.getInstance().getInstanceId();
+        // TODO: do not refresh token every time in prod just uncomment this following lines and remove refreshToken when all good
+        // FirebaseInstanceId.getInstance().getInstanceId();
+        // FirebaseInstanceId.getInstance().getToken(BuildConfig.APPLICATION_ID, "GCM");
+        this.refreshToken();
     }
 
     public void unregister() throws Exception {
+        FirebaseInstanceId.getInstance().deleteToken(BuildConfig.APPLICATION_ID, "GCM");
         FirebaseInstanceId.getInstance().deleteInstanceId();
         gomobile.receiveFCMToken(null);
     }

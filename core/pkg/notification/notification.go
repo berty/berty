@@ -4,7 +4,6 @@ package notification
 
 import (
 	"encoding/hex"
-	"fmt"
 	"path"
 	"runtime"
 	"sync"
@@ -30,8 +29,15 @@ type Token struct {
 	Type  p2p.DevicePushType
 }
 
-func (t *Token) String() string {
-	return fmt.Sprintf("hash: %+v, type: %+v", hex.EncodeToString(t.Value), t.Type)
+func (t *Token) Hash() string {
+	switch t.Type {
+	default:
+		return ""
+	case p2p.DevicePushType_FCM:
+		return string(t.Value)
+	case p2p.DevicePushType_APNS:
+		return hex.EncodeToString(t.Value)
+	}
 }
 
 type Payload struct {

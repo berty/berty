@@ -1,7 +1,6 @@
 package core
 
 import (
-	"encoding/hex"
 	"fmt"
 	"sync"
 
@@ -62,7 +61,7 @@ func (n *MobileNotification) ReceiveFCMToken(token []byte) {
 func (n *MobileNotification) ReceiveToken(token *notification.Token) {
 	logger().Debug("receive token",
 		zap.String("type", token.Type.String()),
-		zap.String("token", hex.EncodeToString(token.Value)),
+		zap.String("hash", token.Hash()),
 	)
 	n.tokenSubscribersMutex.Lock()
 	for i := range n.subscribers {
