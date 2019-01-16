@@ -62,11 +62,11 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", p2p.DefaultBootstrap, "boostrap peers")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
 	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
 	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
-	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default" /*, "ble"*/}, "p2p transport to enable")
+	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default", "quic" /*, "ble"*/}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
 }
 

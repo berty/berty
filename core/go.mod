@@ -8,8 +8,10 @@ require (
 	github.com/agl/ed25519 v0.0.0-20170116200512-5312a6153412 // indirect
 	github.com/agnivade/levenshtein v1.0.1 // indirect
 	github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 // indirect
+	github.com/bifurcation/mint v0.0.0-20181105071958-a14404e9a861 // indirect
 	github.com/brianvoe/gofakeit v3.13.0+incompatible
 	github.com/btcsuite/btcd v0.0.0-20181013004428-67e573d211ac // indirect
+	github.com/cheekybits/genny v1.0.0 // indirect
 	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/coreos/go-semver v0.2.0 // indirect
 	github.com/davidlazar/go-crypto v0.0.0-20170701192655-dcfb0a7ac018 // indirect
@@ -17,22 +19,19 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/fd/go-nat v1.0.0 // indirect
-	github.com/getlantern/deepcopy v0.0.0-20160317154340-7f45deb8130a // indirect
 	github.com/go-check/check v0.0.0-20180628173108-788fd7840127 // indirect
 	github.com/go-gormigrate/gormigrate v1.2.1
 	github.com/go-sql-driver/mysql v1.4.0 // indirect
 	github.com/gobuffalo/packr/v2 v2.0.0-rc.12
-	github.com/godbus/dbus v4.1.0+incompatible // indirect
 	github.com/gofrs/uuid v3.1.0+incompatible
 	github.com/gogo/protobuf v1.2.0
 	github.com/golang/protobuf v1.2.0
 	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/uuid v1.0.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181004151105-1babbf986f6f // indirect
-	github.com/gopherjs/gopherwasm v1.0.1 // indirect
 	github.com/gorilla/websocket v1.4.0
 	github.com/gosimple/slug v1.4.2
-	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20181112102510-3304cc886352
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190104160321-4832df01553a
 	github.com/gxed/GoEndian v0.0.0-20160916112711-0f5c6873267e // indirect
 	github.com/gxed/eventfd v0.0.0-20160916113412-80a92cca79a8 // indirect
 	github.com/gxed/hashland v0.0.0-20180221191214-d9f6b97f8db2 // indirect
@@ -78,6 +77,8 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v2.0.6+incompatible
 	github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible
 	github.com/libp2p/go-libp2p-protocol v1.0.0
+	github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20181227100204-0363ea8f53a9
+	github.com/libp2p/go-libp2p-quic-transport v0.2.9
 	github.com/libp2p/go-libp2p-record v4.1.7+incompatible // indirect
 	github.com/libp2p/go-libp2p-routing v2.7.1+incompatible // indirect
 	github.com/libp2p/go-libp2p-secio v2.0.15+incompatible // indirect
@@ -94,6 +95,9 @@ require (
 	github.com/libp2p/go-tcp-transport v2.0.14+incompatible // indirect
 	github.com/libp2p/go-testutil v1.2.8 // indirect
 	github.com/libp2p/go-ws-transport v2.0.14+incompatible // indirect
+	github.com/lucas-clemente/aes12 v0.0.0-20171027163421-cd47fb39b79f // indirect
+	github.com/lucas-clemente/quic-go v0.10.0 // indirect
+	github.com/lucas-clemente/quic-go-certificates v0.0.0-20160823095156-d2f86524cced // indirect
 	github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43
 	github.com/maruel/ut v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
@@ -111,7 +115,6 @@ require (
 	github.com/multiformats/go-multihash v1.0.9-0.20181210174334-1dbee63c8258
 	github.com/multiformats/go-multistream v0.3.9 // indirect
 	github.com/nicksnyder/go-i18n/v2 v2.0.0-beta.6
-	github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/pkg/errors v0.8.0
 	github.com/rainycape/unidecode v0.0.0-20150907023854-cb7f23ec59be // indirect
@@ -140,6 +143,7 @@ require (
 	github.com/whyrusleeping/mafmt v0.0.0-20180627004827-1dc32401ee9f
 	github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30 // indirect
 	github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 // indirect
+	github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee // indirect
 	github.com/whyrusleeping/yamux v1.1.2
 	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f
 	go.uber.org/atomic v1.3.2 // indirect
@@ -152,6 +156,5 @@ require (
 	google.golang.org/grpc v1.15.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/stretchr/testify.v1 v1.2.2 // indirect
-	gopkg.in/toast.v1 v1.0.0-20180812000517-0a84660828b2 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )

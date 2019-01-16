@@ -4,8 +4,19 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"sync"
 	"time"
+
+	"berty.tech/core/pkg/errorcodes"
+
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/network"
+	"berty.tech/core/network/p2p/p2putil"
+	"berty.tech/core/network/p2p/protocol/provider"
+	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
+	"berty.tech/core/pkg/tracing"
+
+	provider_dht "berty.tech/core/network/p2p/protocol/provider/dht"
+	provider_pubsub "berty.tech/core/network/p2p/protocol/provider/pubsub"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
@@ -28,13 +39,6 @@ import (
 	mh "github.com/multiformats/go-multihash"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/network"
-	"berty.tech/core/network/p2p/p2putil"
-	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
-	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/pkg/tracing"
 )
 
 const ID = "api/p2p/methods"
@@ -66,8 +70,7 @@ type Driver struct {
 	ccmanager *p2putil.Manager
 	handler   func(context.Context, *p2p.Envelope) (*p2p.Void, error)
 
-	subsStack []cid.Cid
-	muSubs    sync.Mutex
+	providers *provider.Manager
 
 	// services
 	dht *dht.IpfsDHT
@@ -108,6 +111,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	driver := &Driver{
 		host:        host,
 		rootContext: ctx,
+		providers:   provider.NewManager(),
 	}
 
 	ds := syncdatastore.MutexWrap(datastore.NewMapDatastore())
@@ -197,6 +201,14 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 
 	driver.listener = sgrpc.NewListener(ctx, ID)
 
+	driver.providers.Register(provider_dht.New(driver.host, driver.dht))
+	pubsubProvider, err := provider_pubsub.New(ctx, host)
+	if err != nil {
+		logger().Warn("pubsub provider", zap.Error(err))
+	} else {
+		driver.providers.Register(pubsubProvider)
+	}
+
 	driver.logHostInfos()
 	return driver, nil
 }
@@ -268,6 +280,10 @@ func (d *Driver) ID(ctx context.Context) *network.Peer {
 		Addrs:      addrs,
 		Connection: network.ConnectionType_CONNECTED,
 	}
+}
+
+func (d *Driver) handleNewPovider(providerID string, pi pstore.PeerInfo) {
+	logger().Debug("new providers", zap.String("providers ID", providerID), zap.String("peer ID", pi.ID.Pretty()))
 }
 
 func (d *Driver) Close(ctx context.Context) error {
@@ -426,15 +442,13 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	ss, err := d.FindSubscribers(ctx, channel)
+	logger().Debug("looking for peers", zap.String("channel", channel))
+	ss, err := d.FindProvidersAndWait(ctx, channel)
 	if err != nil {
 		return err
 	}
 
-	if len(ss) == 0 {
-		return fmt.Errorf("no subscribers found")
-	}
-
+	logger().Debug("found peers", zap.String("channel", channel), zap.Int("number", len(ss)))
 	success := make([]chan bool, len(ss))
 	for i, s := range ss {
 		success[i] = make(chan bool, 1)
@@ -445,10 +459,12 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 
 			peerID := pi.ID.Pretty()
 			if pi.ID == d.host.ID() {
+				logger().Warn("cannot dial to self", zap.String("id", peerID), zap.Error(err))
 				done <- false
 				return
 			}
 
+			logger().Debug("connecting", zap.String("channel", channel), zap.String("peerID", peerID))
 			if err := d.Connect(goctx, pi); err != nil {
 				logger().Warn("failed to connect", zap.String("id", peerID), zap.Error(err))
 				done <- false
@@ -464,9 +480,10 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 
 			sc := p2p.NewServiceClient(c)
 
+			logger().Debug("sending envelope", zap.String("channel", channel), zap.String("peerID", peerID))
 			_, err = sc.HandleEnvelope(goctx, e)
 			if err != nil {
-				logger().Error("failed to send envelope", zap.String("envelope", fmt.Sprintf("%+v", e)), zap.String("error", err.Error()))
+				logger().Error("failed to send envelope", zap.String("channel", channel), zap.String("peerID", peerID), zap.String("error", err.Error()))
 				done <- false
 				return
 			}
@@ -475,9 +492,11 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 		}(s, i, success[i])
 	}
 
-	var ok bool
+	ok := false
 	for _, cc := range success {
-		ok = ok || <-cc
+		if ok = <-cc; ok {
+			break
+		}
 	}
 
 	if !ok {
@@ -487,45 +506,26 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	return nil
 }
 
-// Announce yourself on the ring, for the moment just an alias of SubscribeTo
-func (d *Driver) Announce(ctx context.Context, id string) error {
-	return d.Join(ctx, id)
-}
-
-// FindSubscribers with the given ID
-func (d *Driver) FindSubscribers(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
-	logger().Debug("looking for", zap.String("id", id))
+func (d *Driver) FindProvidersAndWait(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
 	c, err := d.createCid(id)
 	if err != nil {
 		return nil, err
 	}
 
-	return d.dht.FindProviders(ctx, c)
+	if err := d.providers.FindProviders(ctx, c); err != nil {
+		return nil, err
+	}
+
+	return d.providers.WaitForProviders(ctx, c)
 }
 
-func (d *Driver) stackSub(c cid.Cid) {
-	d.muSubs.Lock()
-	d.subsStack = append(d.subsStack, c)
-	d.muSubs.Unlock()
-}
-
-// Join to the given ID
 func (d *Driver) Join(ctx context.Context, id string) error {
 	c, err := d.createCid(id)
 	if err != nil {
 		return err
 	}
 
-	if err := d.dht.Provide(ctx, c, true); err != nil {
-		d.stackSub(c)
-		logger().Warn("provide err", zap.Error(err))
-	} else {
-		logger().Debug("discover: announcing", zap.String("id", id))
-	}
-
-	// Announce that you are subscribed to this conversation, but don't
-	// broadcast it! in this way, if you die, your announcement will die with you!
-	return nil
+	return d.providers.Provide(ctx, c)
 }
 
 func (d *Driver) OnEnvelopeHandler(f func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {

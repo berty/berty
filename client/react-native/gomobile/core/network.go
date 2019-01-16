@@ -14,6 +14,7 @@ import (
 type networkConfig struct {
 	DefaultTransport   bool
 	BluetoothTransport bool
+	QuicTransport      bool
 	IPFSBootstrap      bool
 	DefaultBootstrap   bool
 	CustomBootstrap    []string
@@ -38,6 +39,10 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 	if netConf.DefaultTransport {
 		transport = append(transport, "default")
 		bind = append(bind, defaultBind)
+	}
+	if netConf.QuicTransport {
+		transport = append(transport, "quic")
+		bind = append(bind, quicBind)
 	}
 	if netConf.BluetoothTransport && runtime.GOOS != "android" {
 		transport = append(transport, "ble")

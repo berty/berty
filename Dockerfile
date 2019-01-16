@@ -1,5 +1,5 @@
 # build core
-FROM            golang:1.11-alpine as core-builder
+FROM            golang:1.11.4-alpine as core-builder
 RUN             apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git
 ENV             GO111MODULE=on GOPROXY=http://goproxy.berty.io:3000
 COPY            core/go.* /go/src/berty.tech/core/

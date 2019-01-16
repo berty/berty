@@ -10,6 +10,7 @@ var (
 	initialNetConf = networkConfig{
 		DefaultTransport:   true,
 		BluetoothTransport: true,
+		QuicTransport:      true,
 		DefaultBootstrap:   true,
 		CustomBootstrap:    []string{},
 		MDNS:               false,
@@ -25,6 +26,7 @@ const (
 	defaultLoggerName = "client.rn.gomobile"
 
 	defaultBind     = "/ip4/0.0.0.0/tcp/0"
+	quicBind        = "/ip4/0.0.0.0/udp/0/quic"
 	defaultBLEBind  = "/ble/00000000-0000-0000-0000-000000000000"
 	defaultMetrics  = true
 	defaultIdentity = ""

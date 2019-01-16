@@ -100,8 +100,7 @@ func (m *Manager) GetConn(ctx context.Context, target string) (*grpc.ClientConn,
 	switch cl.GetState() {
 	// @TODO: it appears that, sometimes,
 	// connectivity cannot recover from TransientFailure state on IOS
-	case connectivity.TransientFailure:
-	case connectivity.Shutdown:
+	case connectivity.Shutdown, connectivity.TransientFailure:
 		m.mu.Lock()
 		if err = c.Close(); err != nil {
 			logger().Warn("Failed to close connection", zap.Error(err))

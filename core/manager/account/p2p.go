@@ -81,6 +81,7 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 		p2p.WithDefaultMuxers(),
 		p2p.WithDefaultPeerstore(),
 		p2p.WithDefaultSecurity(),
+		p2p.WithQUICTransport(),
 		// @TODO: Allow static identity loaded from a file (useful for relay
 		// server for creating static endpoint for bootstrap)
 		// p2p.WithIdentity(<key>),

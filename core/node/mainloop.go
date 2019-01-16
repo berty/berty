@@ -138,8 +138,11 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 	// if too long, the task will be done in background
 	done := make(chan bool, 1)
 	go func() {
+		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
+		defer cancel()
+
 		// FIXME: make something smarter, i.e., grouping events by contact or network driver
-		if err := n.networkDriver.Emit(ctx, &envelope); err != nil {
+		if err := n.networkDriver.Emit(tctx, &envelope); err != nil {
 			n.LogBackgroundError(ctx, errors.Wrap(err, "failed to emit envelope on network"))
 		}
 		done <- true
