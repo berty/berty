@@ -11,6 +11,7 @@ import { colors } from './../constants'
 import { I18nextProvider } from 'react-i18next'
 import ReactNativeLanguages from 'react-native-languages'
 import i18n from '../i18n'
+import { btoa } from 'b64-lite'
 
 export default class App extends PureComponent {
   state = {
@@ -61,6 +62,19 @@ export default class App extends PureComponent {
     let url = parseUrl(event.url.replace('berty://', 'https://berty.tech/'))
 
     switch (url.pathname) {
+      case '/conversation':
+        this.setState({
+          deepLink: {
+            routeName: 'chats/detail',
+            params: {
+              conversation: {
+                title: '',
+                id: btoa('conversation:'+url.hashParts['id']),
+              },
+            },
+          },
+        })
+        break
       case '/add-contact':
         this.setState({
           deepLink: {

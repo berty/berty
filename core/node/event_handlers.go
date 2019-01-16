@@ -3,6 +3,7 @@ package node
 import (
 	"context"
 	"fmt"
+	"net/url"
 	"time"
 
 	"berty.tech/core/api/p2p"
@@ -53,6 +54,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
 			"Name": attrs.Me.DisplayName,
 		}),
+		DeepLink: "berty://add-contact#public-key=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
 	})
 	// nothing more to do, now we wait for the UI to accept the request
 	return nil
@@ -81,11 +83,18 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 		return err
 	}
 
+	var deepLink string
+	conv, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
+	if err == nil {
+		deepLink = "berty://conversation#id=" + url.PathEscape(conv.ID)
+	}
+
 	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestAccpetedTitle", nil),
 		Body: i18n.T("ContactRequestAccpetedBody", map[string]interface{}{
 			"Name": contact.DisplayName,
 		}),
+		DeepLink: deepLink,
 	})
 	return nil
 }
@@ -144,8 +153,9 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 	}
 
 	n.DisplayNotification(&notification.Payload{
-		Title: i18n.T("ConversationInviteTitle", nil),
-		Body:  i18n.T("ConversationInviteBody", nil),
+		Title:    i18n.T("ConversationInviteTitle", nil),
+		Body:     i18n.T("ConversationInviteBody", nil),
+		DeepLink: "berty://conversation#id=" + url.PathEscape(attrs.Conversation.ID),
 	})
 
 	return nil
@@ -161,8 +171,9 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
 	n.DisplayNotification(&notification.Payload{
-		Title: i18n.T("NewMessageTitle", nil),
-		Body:  i18n.T("NewMessageBody", nil),
+		Title:    i18n.T("NewMessageTitle", nil),
+		Body:     i18n.T("NewMessageBody", nil),
+		DeepLink: "berty://conversation#id=" + url.PathEscape(input.ConversationID),
 	})
 	return nil
 }

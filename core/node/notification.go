@@ -15,7 +15,7 @@ func WithNotificationDriver(driver notification.Driver) NewNodeOption {
 }
 
 func (n *Node) DisplayNotification(payload *notification.Payload) {
-	if err := n.notificationDriver.Display(payload); err != nil {
+	if err := n.notificationDriver.DisplayNotification(payload); err != nil {
 		logger().Error("Notification", zap.Error(err))
 	}
 }
