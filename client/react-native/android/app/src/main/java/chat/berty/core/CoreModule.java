@@ -17,24 +17,22 @@ public class CoreModule extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
 
-    public CoreModule(final ReactApplicationContext reactContext) {
+    public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
         this.reactContext = reactContext;
 
-        Object o = new Manager.ActivityGetter() {
+        Object o = actGetter(reactContext);
+
+        Manager.getInstance().setmReactContext(o, reactContext);
+    }
+
+    private Object actGetter(final ReactApplicationContext reactContext){
+        return new Manager.ActivityGetter() {
             public Activity getCurrentActivity() {
                 return reactContext.getCurrentActivity();
             }
         };
-
-        Manager.getInstance().setmReactContext(o, reactContext);
-
-        this.notificationDriver.setNative(new Notification(reactContext));
-    }
-
-    public final ReactApplicationContext getContext() {
-        return getReactApplicationContext();
     }
 
     public String getName() {

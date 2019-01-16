@@ -40,9 +40,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       let content = UNMutableNotificationContent()
       content.title = utitle
       content.body = ubody
-      content.userInfo =  [
-        "url" : url,
-      ]
+      content.userInfo =  [ "url" : url ]
       content.categoryIdentifier = "berty.core.notification"
       content.sound = UNNotificationSound.default()
 
