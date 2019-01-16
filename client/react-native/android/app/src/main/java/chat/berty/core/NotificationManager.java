@@ -1,10 +1,14 @@
 package chat.berty.core;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.bridge.Arguments;
@@ -14,6 +18,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
@@ -22,9 +27,13 @@ import java.util.Map;
 
 import core.Core;
 import core.MobileNotification;
-import core.NativeNotification;
+import core.NativeNotificationDriver;
 
-public class NotificationManager extends FirebaseMessagingService implements ActivityEventListener, NativeNotification {
+public class NotificationManager extends FirebaseMessagingService implements ActivityEventListener, NativeNotificationDriver {
+    private Logger logger = new Logger("chat.berty.io");
+
+    public static int PERMISSION_CODE = 200;
+
     public String TAG = "NotificationManager";
 
     private ReactApplicationContext reactContext;
@@ -42,7 +51,7 @@ public class NotificationManager extends FirebaseMessagingService implements Act
         this.reactContext = reactContext;
         this.context = reactContext.getApplicationContext();
         this.notificationManager = (android.app.NotificationManager) this.context.getSystemService(Context.NOTIFICATION_SERVICE);
-        this.notificationDriver.setNativeNotification(this);
+        this.notificationDriver.setNative(this);
 
     }
 
@@ -59,7 +68,7 @@ public class NotificationManager extends FirebaseMessagingService implements Act
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Map<String, String> map = remoteMessage.getData();
         String data = new Gson().toJson(map);
-        this.notificationDriver.receiveNotification(data);
+        this.notificationDriver.receive(data);
     }
 
     /**
@@ -69,7 +78,7 @@ public class NotificationManager extends FirebaseMessagingService implements Act
      */
     @Override
     public void onNewToken(String token) {
-        this.notificationDriver.receivePushID(token, "fcm");
+        this.notificationDriver.receiveFCMToken(token.getBytes());
     }
 
     static WritableMap toNotificationOpenMap(Intent intent) {
@@ -87,6 +96,38 @@ public class NotificationManager extends FirebaseMessagingService implements Act
         }
 
         return notificationOpenMap;
+    }
+
+
+    public void refreshToken() throws Exception {
+        FirebaseInstanceId.getInstance().deleteInstanceId();
+        FirebaseInstanceId.getInstance().getInstanceId();
+    }
+
+    public void askPermissions() {
+        if (ContextCompat.checkSelfPermission(this.reactContext.getCurrentActivity(), Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED) {
+            this.logger.format(Level.DEBUG, "GRANTED", "GRANTED");
+
+            return;
+        }
+
+        this.logger.format(Level.DEBUG, "NOT_GRANTED", "NOT_GRANTED");
+
+        ActivityCompat.requestPermissions(
+                this.reactContext.getCurrentActivity(),
+                new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY},
+                PERMISSION_CODE);
+    }
+
+    public void register() throws Exception {
+        this.logger.format(Level.DEBUG, "REGISTER", "REGISTER");
+        this.askPermissions();
+        FirebaseInstanceId.getInstance().getInstanceId();
+    }
+
+    public void unregister() throws Exception {
+        FirebaseInstanceId.getInstance().deleteInstanceId();
+        this.notificationDriver.receiveFCMToken(null);
     }
 
     /**

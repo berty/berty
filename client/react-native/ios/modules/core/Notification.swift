@@ -29,7 +29,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     completionHandler([.alert, .badge, .sound])
   }
 
-  func display(_ title: String?, body: String?, icon: String?, sound: String?, url: String?) throws {
+  func displayNotification(_ title: String?, body: String?, icon: String?, sound: String?, url: String?) throws {
     guard let utitle = title, let ubody = body else {
       throw NotificationError.invalidArgument
     }
@@ -40,7 +40,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       let content = UNMutableNotificationContent()
       content.title = utitle
       content.body = ubody
-      content.userInfo =  [ "url" : url ]
+      content.userInfo =  [ "url": url ]
       content.categoryIdentifier = "berty.core.notification"
       content.sound = UNNotificationSound.default()
 
@@ -141,6 +141,16 @@ extension AppDelegate {
   }
 
   override func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+    if let data = notification.userInfo as? [String: String] {
+      if let url = data["url"] {
+        if url.count > 0 {
+          self.application(application, open: URL.init(string: url)!, options: [
+          UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
+          UIApplicationOpenURLOptionsKey.openInPlace: false
+          ])
+        }
+      }
+    }
     // RCTPushNotificationManager.didReceive(notification)
   }
 }

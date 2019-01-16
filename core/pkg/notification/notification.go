@@ -15,7 +15,7 @@ import (
 )
 
 type Driver interface {
-	Display(*Payload) error
+	DisplayNotification(*Payload) error
 	Register() error
 	Unregister() error
 	Subscribe() chan *Payload
@@ -52,7 +52,7 @@ func NewNoopNotification() Driver {
 	return &NoopNotification{}
 }
 
-func (n *NoopNotification) Display(p *Payload) error {
+func (n *NoopNotification) DisplayNotification(p *Payload) error {
 	// for debug puprpose
 	logger().Debug("Display",
 		zap.String("title", p.Title),
@@ -109,7 +109,7 @@ func NewDesktopNotification() Driver {
 
 type DesktopNotification struct{}
 
-func (n *DesktopNotification) Display(p *Payload) error {
+func (n *DesktopNotification) DisplayNotification(p *Payload) error {
 	once.Do(func() {
 		_, filename, _, _ := runtime.Caller(0)
 		iconPath := path.Dir(filename) + "/../../../client/react-native/common/static/img/logo.png"

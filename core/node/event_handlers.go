@@ -83,19 +83,13 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 		return err
 	}
 
-<<<<<<< HEAD
-	n.DisplayNotification(&notification.Payload{
-||||||| parent of 1025f3c... feat(ios): handle all local notif
-	n.DisplayNotification(notification.Payload{
-=======
 	var deepLink string
 	conv, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
 	if err == nil {
 		deepLink = "berty://conversation#id=" + url.PathEscape(conv.ID)
 	}
 
-	n.DisplayNotification(notification.Payload{
->>>>>>> 1025f3c... feat(ios): handle all local notif
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("ContactRequestAccpetedTitle", nil),
 		Body: i18n.T("ContactRequestAccpetedBody", map[string]interface{}{
 			"Name": contact.DisplayName,
@@ -158,7 +152,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 		return err
 	}
 
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title:    i18n.T("ConversationInviteTitle", nil),
 		Body:     i18n.T("ConversationInviteBody", nil),
 		DeepLink: "berty://conversation#id=" + url.PathEscape(attrs.Conversation.ID),
@@ -176,7 +170,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title:    i18n.T("NewMessageTitle", nil),
 		Body:     i18n.T("NewMessageBody", nil),
 		DeepLink: "berty://conversation#id=" + url.PathEscape(input.ConversationID),
