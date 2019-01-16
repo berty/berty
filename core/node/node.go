@@ -1,7 +1,6 @@
 package node
 
 import (
-	"berty.tech/core/push"
 	"context"
 	"encoding/base64"
 	"fmt"
@@ -16,6 +15,7 @@ import (
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
+	"berty.tech/core/push"
 	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
@@ -53,6 +53,8 @@ type Node struct {
 	devtools  struct {
 		mapset map[string]string
 	}
+
+	shutdown chan struct{}
 }
 
 // New initializes a new Node object
@@ -69,6 +71,7 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 		rootSpan:       tracer.Span(),
 		rootContext:    ctx,
 		pushManager:    &push.Manager{},
+		shutdown:       make(chan struct{}, 1),
 	}
 
 	// apply optioners
@@ -113,11 +116,16 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 	return n, nil
 }
 
+func (n *Node) Shutdown() {
+	close(n.shutdown)
+}
+
 // Close closes object initialized by Node itself
 //
 // it should be called in a defer from the caller of New()
 func (n *Node) Close() error {
 	n.rootSpan.Finish()
+	n.Shutdown()
 	return nil
 }
 

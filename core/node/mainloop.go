@@ -199,7 +199,7 @@ func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
 	}
 
 	if n.notificationDriver != nil {
-		n.notificationDriver.Register()
+		n.UseNotificationDriver()
 	}
 
 	for {
