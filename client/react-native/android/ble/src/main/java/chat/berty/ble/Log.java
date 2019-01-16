@@ -2,8 +2,6 @@ package chat.berty.ble;
 
 import core.Core;
 
-import java.math.BigInteger;
-
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTED;
@@ -45,10 +43,5 @@ final class Log {
             default:
                 return "unknown";
         }
-    }
-
-    final static String isStringPrintable(byte[] bytes) {
-        BigInteger big = new BigInteger(1, bytes);
-        return String.format("%0" + (bytes.length << 1) + "X", big);
     }
 }

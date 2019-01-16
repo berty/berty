@@ -1,6 +1,7 @@
 package chat.berty.core;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -25,17 +26,23 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
         // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
         // See https://facebook.github.io/react-native/docs/native-modules-android
-        Object activityGetter = new BleManager.ActivityGetter() {
+        Object activityAndContextGetter = actGetter(reactContext);
+
+        BleManager.setReactGetter(activityAndContextGetter, reactContext);
+    }
+
+    private Object actGetter(final ReactApplicationContext reactContext) {
+        return new BleManager.ActivityAndContextGetter() {
             public Activity getCurrentActivity() {
                 return reactContext.getCurrentActivity();
             }
+
+            public Context getApplicationContext() {
+                return reactContext.getApplicationContext();
+            }
         };
-
-        BleManager.setReactContext(activityGetter, reactContext);
-        /////////////////////////////////////////////////////////////////////////
-
-        this.notificationDriver.setNativeNotification(new Notification(reactContext, this.notificationDriver));
     }
+    /////////////////////////////////////////////////////////////////////////
 
     public String getName() {
         return "CoreModule";

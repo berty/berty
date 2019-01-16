@@ -81,18 +81,18 @@ final class DeviceManager {
     public static void disconnectFromDevice(String multiAddr) {
         Log.i(TAG, "disconnectFromDevice() called with MultiAddr: " + multiAddr);
 
-        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
+//        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
 
-        if (bertyDevice != null) {
-            bertyDevice.disconnectFromDevice("libp2p request");
-        } else {
-            Log.e(TAG, "disconnectFromDevice() failed: unknown device");
-        }
+        // TODO: change logic about yamux connexion closer, maybe it will be more relevant to close GATT connexion only
+//        if (bertyDevice != null) {
+//            bertyDevice.asyncdisconnectFromDevice("libp2p request");
+//        } else {
+//            Log.e(TAG, "disconnectFromDevice() failed: unknown device");
+//        }
     }
 
     public static boolean writeToDevice(byte[] payload, String multiAddr) {
-//        Log.i(TAG, "writeToDevice() called with payload: " + payload + ", as string: " + new String(payload) + ", len: " + payload.length + ", to MultiAddr: " + multiAddr);
-        Log.i(TAG, "Sent: " + Arrays.toString(payload) + ", hash: " + Arrays.toString(payload).hashCode() + ", string: " + new String(payload).replaceAll("\\p{C}", "?"));
+        Log.i(TAG, "writeToDevice() called with payload: " + Arrays.toString(payload) + ", hashCode: " + Arrays.toString(payload).hashCode() + ", string: " + new String(payload).replaceAll("\\p{C}", "?") + ", length: " + payload.length + ", to MultiAddr: " + multiAddr);
 
         BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
 
@@ -113,10 +113,26 @@ final class DeviceManager {
         return bertyDevice.writeOnCharacteristic(payload, bertyDevice.writerCharacteristic);
     }
 
+    // TODO: Implement canDialPeer on yamux side
+    public static boolean canDialPeer(String multiAddr) {
+        Log.i(TAG, "dialPeer() called with MultiAddr: " + multiAddr);
+
+        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
+
+        if (bertyDevice != null) {
+            return true;
+        }
+
+        return false;
+
+    }
+
     public static boolean dialPeer(String multiAddr) {
         Log.i(TAG, "dialPeer() called with MultiAddr: " + multiAddr);
 
-        if (getDeviceFromMultiAddr(multiAddr) != null) {
+        BertyDevice bertyDevice = getDeviceFromMultiAddr(multiAddr);
+
+        if (bertyDevice != null && bertyDevice.isGattConnected()) {
             return true;
         }
 

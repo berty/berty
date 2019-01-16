@@ -19,6 +19,7 @@ import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -35,12 +36,12 @@ class BertyDevice {
 
 
     // Timeout and maximum attempts for GATT connection
-    private static final int gattConnectMaxAttempts = 10;
+    private static final int gattConnectMaxAttempts = 20;
     private static final int gattWaitConnectAttemptTimeout = 420;
     private static final int gattWaitConnectMaxAttempts = 10;
     private static final int gattConnectingAttemptTimeout = 240;
     private static final int gattConnectingMaxAttempts = 5;
-    private static final int waitAfterHandshakeAndGattConnectAttempt = 1000;
+    private static final int waitAfterHandshakeAndGattConnectAttempt = 2000;
 
     // Timeout and maximum attempts for service/characteristics discovery and check
     private static final int servDiscoveryAttemptTimeout = 1000;
@@ -159,6 +160,20 @@ class BertyDevice {
                                     if (bertyHandshake(callerAndThread)) {
                                         Log.i(TAG, "asyncConnectionToDevice() succeeded with device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
                                         identified = true;
+
+                                        // TODO: Implement binary search to agree on biggest MTU possible or find a way to retrieve biggest MTU for local device
+                                        // See: https://punchthrough.com/pt-blog-post/maximizing-ble-throughput-part-2-use-larger-att-mtu/
+                                        if (dMtu == DEFAULT_MTU) {
+                                            Log.i(TAG, "asyncConnectionToDevice() try to agree on a new MTU with device: " + dDevice + ", caller: " + callerAndThread);
+                                            if (dGatt.requestMtu(100)) { // Request a (too) big value, it will be decreased automatically during exchange
+                                                Thread.sleep(420);
+                                                if (dMtu == DEFAULT_MTU) {
+                                                    Thread.sleep(420);
+                                                    dGatt.requestMtu(50);
+                                                }
+                                            }
+                                        }
+
                                         Core.addToPeerStore(dPeerID, dMultiAddr);
                                     } else {
                                         Log.d(TAG, "asyncConnectionToDevice() Berty handshake failed with device: " + dDevice + ", caller: " + callerAndThread);
@@ -187,6 +202,14 @@ class BertyDevice {
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "asyncConnectionToDevice() failed: " + e.getMessage() + " for device: " + dDevice + ", caller: " + callerAndThread);
+
+                        if (lockConnAttempt.availablePermits() == 0) {
+                            lockConnAttempt.release();
+                        }
+
+                        if (lockHandshakeAttempt.availablePermits() == 0) {
+                            lockHandshakeAttempt.release();
+                        }
                     }
                 }
             }).start();
@@ -203,10 +226,22 @@ class BertyDevice {
             lockConnAttempt.acquire();
             disconnectGatt();
             DeviceManager.removeDeviceFromIndex(this);
+            Thread.sleep(waitAfterHandshakeAndGattConnectAttempt);
             lockConnAttempt.release();
         } catch (Exception e) {
             Log.d(TAG, "disconnectFromDevice() failed: " + e.getMessage() + " for device: " + dDevice);
         }
+    }
+
+    void asyncDisconnectFromDevice(String cause) {
+        Log.w(TAG, "asyncDisconnectFromDevice() called for device: " + dDevice + " caused by: " + cause);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                disconnectFromDevice(cause);
+            }
+        }).start();
     }
 
 
@@ -249,7 +284,7 @@ class BertyDevice {
                         return true;
                     }
                 }
-                disconnectGatt();
+                dGatt.disconnect();
                 setGatt();
             }
 
@@ -474,22 +509,21 @@ class BertyDevice {
 
         try {
             synchronized (toSend) {
-                String data = new String(payload);
-                int length = data.length();
+                int length = payload.length;
                 int offset = 0;
 
                 do {
                     // BLE protocol reserves 3 bytes out of MTU_SIZE for metadata
                     // https://www.oreilly.com/library/view/getting-started-with/9781491900550/ch04.html#gatt_writes
                     int chunkSize = (length - offset > dMtu - 3) ? dMtu - 3 : length - offset;
-                    byte[] chunk = data.substring(offset, offset + chunkSize).getBytes();
+                    byte[] chunk = Arrays.copyOfRange(payload, offset, offset + chunkSize);
                     offset += chunkSize;
                     toSend.add(chunk);
                 } while (offset < length);
 
                 while (!toSend.isEmpty()) {
                     characteristic.setValue(toSend.get(0));
-                    for (int attempt = 0; !dGatt.writeCharacteristic(characteristic); attempt++) {
+                    for (int attempt = 0; dGatt != null && !dGatt.writeCharacteristic(characteristic); attempt++) {
                         if (attempt == initWriteMaxAttempts) {
                             Log.e(TAG, "writeOnCharacteristic() wait for write init timeouted for device:" + dDevice);
                             return false;
@@ -498,10 +532,17 @@ class BertyDevice {
                         Log.v(TAG, "writeOnCharacteristic() wait for write init: " + (attempt + 1) + "/" + initWriteMaxAttempts + ", device:" + dDevice);
                         Thread.sleep(initWriteAttemptTimeout);
                     }
+
+                    if (dGatt == null) {
+                        Log.e(TAG, "writeOnCharacteristic() device disconnected during write operation:" + dDevice);
+                        return false;
+                    }
+
                     if (!waitWriteDone.tryAcquire(writeDoneTimeout, TimeUnit.MILLISECONDS)) {
                         Log.e(TAG, "writeOnCharacteristic() timeouted for device:" + dDevice);
                         return false;
                     }
+
                     toSend.remove(0);
                 }
                 Log.d(TAG, "writeOnCharacteristic() succeeded for device:" + dDevice + " with payload: " + new String(payload));

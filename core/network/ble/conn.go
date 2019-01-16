@@ -3,6 +3,7 @@ package ble
 import (
 	"fmt"
 	"sync"
+	"time"
 
 	ic "github.com/libp2p/go-libp2p-crypto"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -107,7 +108,8 @@ func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, 
 		&conn,
 	}
 	configDefault := yamux.DefaultConfig()
-	// configDefault.ConnectionWriteTimeout = 120 * time.Second
+	// TODO: remove timout, it should be handled by the native write function
+	configDefault.ConnectionWriteTimeout = 120 * time.Second
 	// configDefault.KeepAliveInterval = 240 * time.Second
 
 	if dir == 1 {

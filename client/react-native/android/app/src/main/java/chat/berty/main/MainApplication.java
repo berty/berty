@@ -32,7 +32,6 @@ import java.lang.System;
 import java.util.List;
 
 import chat.berty.core.CorePackage;
-import chat.berty.ble.BleManager;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -77,10 +76,5 @@ public class MainApplication extends Application implements ReactApplication {
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
-
-        // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
-        // See https://facebook.github.io/react-native/docs/native-modules-android
-        BleManager.setContext(this.getApplicationContext());
-        ///////////////////////////////////////////////////////////////////////
     }
 }

@@ -19,5 +19,6 @@ files:
     - 'experiment/*'
     - 'vendor/*'
     - '*.gen.*'
+    - 'client/react-native/android/ble/logger.sh'
 fixers:
   enable: true

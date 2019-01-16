@@ -37,29 +37,29 @@ public final class BleManager {
 
     // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
     // See https://facebook.github.io/react-native/docs/native-modules-android
-    private static Context context;
-    private static ActivityGetter activityGetter;
+    private static ActivityAndContextGetter activityAndContextGetter;
     private static Object reactContext;
 
-    public static void setContext(Context rContext) {
-        Log.d(TAG, "Context set: " + context);
-
-        context = rContext;
-    }
-
     static Context getContext() {
-        return context;
+        return activityAndContextGetter.getApplicationContext();
     }
 
-    public interface ActivityGetter {
+    static Context getActivity() {
+        return activityAndContextGetter.getCurrentActivity();
+    }
+
+    public interface ActivityAndContextGetter {
         @Nullable
         Activity getCurrentActivity();
+
+        @Nullable
+        Context getApplicationContext();
     }
 
-    public static void setReactContext(Object rActivityGetter, Object rReactContext) {
-        Log.d(TAG, "setmReactContext called with activityGetter: " + activityGetter + ", reactContext: " + reactContext);
+    public static void setReactGetter(Object rActivityAndContextGetter, Object rReactContext) {
+        Log.d(TAG, "setmReactContext called with activityGetter: " + rActivityAndContextGetter + ", reactContext: " + reactContext);
 
-        activityGetter = (ActivityGetter)rActivityGetter;
+        activityAndContextGetter = (ActivityAndContextGetter)rActivityAndContextGetter;
         reactContext = rReactContext;
     }
     /////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ public final class BleManager {
     static final int BLUETOOTH_ENABLE_REQUEST = 42;
     static final int LOCATION_PERMISSION_REQUEST = 24;
 
-    static final UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6665");
+    static final UUID SERVICE_UUID = UUID.fromString("A06C6AB8-886F-4D56-82FC-2CF8610D6664");
     static final UUID WRITER_UUID = UUID.fromString("000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C");
     static final UUID MA_UUID = UUID.fromString("9B827770-DC72-4C55-B8AE-0870C7AC15A8");
     static final UUID PEER_ID_UUID = UUID.fromString("0EF50D30-E208-4315-B323-D05E0A23E6B3");
@@ -178,7 +178,8 @@ public final class BleManager {
     // public static boolean initBluetoothService() {
     public static void initBluetoothService() {
         Log.d(TAG, "initBluetoothService() called");
-        Activity activity = activityGetter.getCurrentActivity();
+        Activity activity = activityAndContextGetter.getCurrentActivity();
+        Context context = activityAndContextGetter.getApplicationContext();
 
         try {
             // Turn on Bluetooth adapter
