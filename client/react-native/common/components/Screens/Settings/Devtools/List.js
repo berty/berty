@@ -215,13 +215,6 @@ export default class List extends PureComponent {
     }
     return (
       <Menu>
-        <Menu.Section customMarginTop={1}>
-          <Menu.Item
-            icon='info'
-            title='Device infos'
-            onPress={() => navigation.navigate('devtools/deviceinfos')}
-          />
-        </Menu.Section>
         <Menu.Section>
           {Platform.OS !== 'web' && (
             <Menu.Item
@@ -238,62 +231,10 @@ export default class List extends PureComponent {
             />
           )}
           <Menu.Item
-            icon='globe'
-            title='Language'
-            onPress={() => navigation.navigate('devtools/language')}
-          />
-          <Menu.Item
             icon='refresh-ccw'
             title='Restart daemon'
             onPress={this.restartDaemon}
           />
-          <Menu.Item
-            icon='alert-triangle'
-            title='Panic'
-            onPress={this.testPanic}
-          />
-          <Menu.Item
-            icon='alert-triangle'
-            title='Error'
-            onPress={this.testError}
-          />
-          <Menu.Item
-            icon='info'
-            title='Log bg Error'
-            onPress={this.testLogBackgroundError}
-          />
-          <Menu.Item
-            icon='info'
-            title='Log bg Warn'
-            onPress={this.testLogBackgroundWarn}
-          />
-          <Menu.Item
-            icon='info'
-            title='Log bg Debug'
-            onPress={this.testLogBackgroundDebug}
-          />
-          <Menu.Item
-            icon='slash'
-            title='Throw native exception'
-            onPress={this.throwNativeException}
-          />
-          <Menu.Item
-            icon='slash'
-            title='Throw JS exception'
-            onPress={this.throwJsException}
-          />
-          <Menu.Item
-            icon='slash'
-            title='JS console error'
-            onPress={this.jsConsoleError}
-          />
-          <Menu.Item
-            icon='list'
-            title='List events'
-            onPress={() => navigation.navigate('devtools/eventlist')}
-          />
-        </Menu.Section>
-        <Menu.Section>
           {Platform.OS !== 'web' && (
             <Menu.Item
               icon='server'
@@ -314,6 +255,33 @@ export default class List extends PureComponent {
               }
             />
           )}
+        </Menu.Section>
+        <Menu.Section>
+          <Menu.Item
+            icon='info'
+            title='Device infos'
+            onPress={() => navigation.navigate('devtools/deviceinfos')}
+          />
+          <Menu.Item
+            icon='globe'
+            title='Language'
+            onPress={() => navigation.navigate('devtools/language')}
+          />
+          <Menu.Item
+            icon='database'
+            title='Database'
+            onPress={() => navigation.navigate('devtools/database')}
+          />
+          <Menu.Item
+            icon='activity'
+            title='Network'
+            onPress={() => navigation.navigate('devtools/network')}
+          />
+          <Menu.Item
+            icon='list'
+            title='List events'
+            onPress={() => navigation.navigate('devtools/eventlist')}
+          />
           {Platform.OS !== 'android' && (
             <Menu.Item
               icon='file-text'
@@ -327,22 +295,37 @@ export default class List extends PureComponent {
               title='Console logs (crash on Android cf. #627)'
             />
           )}
-        </Menu.Section>
-        <Menu.Section>
           <Menu.Item
-            icon='database'
-            title='Database'
-            onPress={() => navigation.navigate('devtools/database')}
-          />
-          <Menu.Item
-            icon='activity'
-            title='Network'
-            onPress={() => navigation.navigate('devtools/network')}
+            icon='bell'
+            title={'Notifications'}
+            onPress={() => navigation.navigate('devtools/notifications')}
           />
           <Menu.Item
             icon='check-circle'
             title='Integration tests'
             onPress={() => navigation.navigate('devtools/tests')}
+          />
+        </Menu.Section>
+        <Menu.Section>
+          <Menu.Item icon='alert-triangle' title='Panic' onPress={this.testPanic} />
+          <Menu.Item icon='alert-triangle' title='Error' onPress={this.testError} />
+          <Menu.Item icon='info' title='Log bg Error' onPress={this.testLogBackgroundError} />
+          <Menu.Item icon='info' title='Log bg Warn' onPress={this.testLogBackgroundWarn} />
+          <Menu.Item icon='info' title='Log bg Debug' onPress={this.testLogBackgroundDebug} />
+          <Menu.Item
+            icon='slash'
+            title='Throw native exception'
+            onPress={this.throwNativeException}
+          />
+          <Menu.Item
+            icon='slash'
+            title='Throw JS exception'
+            onPress={this.throwJsException}
+          />
+          <Menu.Item
+            icon='slash'
+            title='JS console error'
+            onPress={this.jsConsoleError}
           />
         </Menu.Section>
       </Menu>

@@ -2,23 +2,18 @@ syntax = "proto3";
 
 package berty.p2p;
 
-import "gogoproto/gogo.proto";
-
 option go_package = "berty.tech/core/api/p2p";
 
-enum DevicePushType {
-  UnknownDevicePushType = 0;
-  APNS = 1;
-  FCM = 2;
-}
+import "gogoproto/gogo.proto";
+import "entity/device.proto";
 
 message DevicePushToDecrypted {
   bytes nonce = 1;
-  DevicePushType push_type = 2;
+  berty.entity.DevicePushType push_type = 2;
   bytes push_id = 3;
 }
 
-message DevicePushIdentifier {
+message PushNativeIdentifier {
   string package_id = 1 [(gogoproto.customname) = "PackageID"];
-  string device_token = 2;
+  bytes device_token = 2;
 }

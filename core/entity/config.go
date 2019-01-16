@@ -26,3 +26,13 @@ func (c *Config) Validate() error {
 
 	return nil
 }
+
+func (c *Config) Filtered() *Config {
+	return &Config{
+		ID:              c.ID,
+		PushRelayIDAPNS: c.PushRelayIDAPNS,
+		PushRelayIDFCM:  c.PushRelayIDFCM,
+		UpdatedAt:       c.UpdatedAt,
+		CreatedAt:       c.CreatedAt,
+	}
+}

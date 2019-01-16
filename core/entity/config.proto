@@ -29,4 +29,7 @@ message Config {
   string current_device_id = 8 [(gogoproto.customname) = "CurrentDeviceID"];
 
   bytes crypto_params = 9;
+
+  bytes push_relay_id_apns = 10 [(gogoproto.customname) = "PushRelayIDAPNS"];
+  bytes push_relay_id_fcm = 11 [(gogoproto.customname) = "PushRelayIDFCM"];
 }

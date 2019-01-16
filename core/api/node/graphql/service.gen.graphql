@@ -230,6 +230,7 @@ type GqlNode implements Node {
   
   
 
+  
 type BertyEntityDevicePushIdentifier implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
@@ -237,6 +238,15 @@ type BertyEntityDevicePushIdentifier implements Node {
     pushInfo: [Byte!]
     pushRelayId: String!
     deviceId: String!
+}
+type BertyEntityDevicePushConfig implements Node {
+    id: ID!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
 }
       
 type BertyEntityDevice implements Node {
@@ -466,6 +476,8 @@ type BertyEntityConfig  {
     currentDevice: BertyEntityDevice
     currentDeviceId: String!
     cryptoParams: [Byte!]
+    pushRelayIdApns: [Byte!]
+    pushRelayIdFcm: [Byte!]
 }
   
   
@@ -507,6 +519,8 @@ type BertyNodeCommitLogEntity  {
     conversation: BertyEntityConversation
     conversationMember: BertyEntityConversationMember
     event: BertyP2pEvent
+    devicePushConfig: BertyEntityDevicePushConfig
+    devicePushIdentifier: BertyEntityDevicePushIdentifier
 }
 type BertyNodeCommitLog  {
     operation: Enum
@@ -535,6 +549,13 @@ type BertyNodeConversationEdge  {
 type BertyNodeConversationListConnection  {
     edges: [BertyNodeConversationEdge]
     pageInfo: BertyNodePageInfo!
+}
+type BertyNodeDevicePushConfigEdge  {
+    node: BertyEntityDevicePushConfig
+    cursor: String!
+}
+type BertyNodeDevicePushConfigListOutput  {
+    edges: [BertyEntityDevicePushConfig]
 }
 type BertyNodePagination  {
     orderBy: String!
@@ -677,6 +698,9 @@ type Query {
   GetEvent(
     id: ID!
   ): BertyP2pEvent
+  ConfigPublic(
+    T: Bool!
+  ): BertyEntityConfig
   ContactList(
     filter: BertyEntityContactInput
     orderBy: String!
@@ -719,6 +743,9 @@ type Query {
     conversationId: ID!
     contactId: ID!
   ): BertyEntityConversationMember
+  DevicePushConfigList(
+    T: Bool!
+  ): BertyNodeDevicePushConfigListOutput
   DeviceInfos(
     T: Bool!
   ): BertyPkgDeviceinfoDeviceInfos
@@ -758,6 +785,18 @@ type Mutation {
   EventSeen(
     id: ID!
   ): BertyP2pEvent
+  ConfigUpdate(
+    id: String!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    myself: BertyEntityContactInput
+    myselfId: String!
+    currentDevice: BertyEntityDeviceInput
+    currentDeviceId: String!
+    cryptoParams: [Byte!]
+    pushRelayIdApns: [Byte!]
+    pushRelayIdFcm: [Byte!]
+  ): BertyEntityConfig
   ContactRequest(
     contact: BertyEntityContactInput
     introText: String!
@@ -821,6 +860,33 @@ type Mutation {
   ConversationRemove(
     id: ID!
   ): BertyEntityConversation
+  DevicePushConfigCreate(
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
+  ): BertyEntityDevicePushConfig
+  DevicePushConfigNativeRegister(
+    T: Bool!
+  ): BertyNodeVoid
+  DevicePushConfigNativeUnregister(
+    T: Bool!
+  ): BertyNodeVoid
+  DevicePushConfigRemove(
+    id: ID!
+  ): BertyEntityDevicePushConfig
+  DevicePushConfigUpdate(
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
+  ): BertyEntityDevicePushConfig
   GenerateFakeData(
     T: Bool!
   ): BertyNodeVoid

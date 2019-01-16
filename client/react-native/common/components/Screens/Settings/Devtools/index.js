@@ -9,6 +9,7 @@ import Logs from './Logs'
 import Tests from './Tests'
 import TestResult from './TestResult'
 import Language from './Language'
+import Notifications from './Notifications'
 
 export default createSubStackNavigator(
   {
@@ -23,6 +24,7 @@ export default createSubStackNavigator(
     'devtools/tests': Tests,
     'devtools/testresult': TestResult,
     'devtools/language': Language,
+    'devtools/notifications': Notifications,
   },
   {
     initialRouteName: 'devtools/list',

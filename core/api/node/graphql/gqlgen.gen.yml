@@ -754,6 +754,40 @@ models:
       pushRelayId:
       deviceId:
 
+  BertyEntityDevicePushConfig:
+    model: berty.tech/core/entity.DevicePushConfig
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deviceId:
+      pushType:
+      pushId:
+      relayId:
+  BertyEntityDevicePushConfigInput:
+    model: berty.tech/core/entity.DevicePushConfig
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deviceId:
+      pushType:
+      pushId:
+      relayId:
+  BertyEntityDevicePushConfigPayload:
+    model: berty.tech/core/entity.DevicePushConfig
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deviceId:
+      pushType:
+      pushId:
+      relayId:
+
   BertyEntityDevice:
     model: berty.tech/core/entity.Device
     fields:
@@ -1445,6 +1479,8 @@ models:
       currentDevice:
       currentDeviceId:
       cryptoParams:
+      pushRelayIdApns:
+      pushRelayIdFcm:
   BertyEntityConfigInput:
     model: berty.tech/core/entity.Config
     fields:
@@ -1456,6 +1492,8 @@ models:
       currentDevice:
       currentDeviceId:
       cryptoParams:
+      pushRelayIdApns:
+      pushRelayIdFcm:
   BertyEntityConfigPayload:
     model: berty.tech/core/entity.Config
     fields:
@@ -1467,6 +1505,8 @@ models:
       currentDevice:
       currentDeviceId:
       cryptoParams:
+      pushRelayIdApns:
+      pushRelayIdFcm:
 
 
   BertyPkgDeviceinfoDeviceInfos:
@@ -1618,6 +1658,8 @@ models:
       conversation:
       conversationMember:
       event:
+      devicePushConfig:
+      devicePushIdentifier:
   BertyNodeEntityInput:
     model: berty.tech/core/api/node.CommitLog_Entity
     fields:
@@ -1627,6 +1669,8 @@ models:
       conversation:
       conversationMember:
       event:
+      devicePushConfig:
+      devicePushIdentifier:
   BertyNodeEntityPayload:
     model: berty.tech/core/api/node.CommitLog_Entity
     fields:
@@ -1636,6 +1680,8 @@ models:
       conversation:
       conversationMember:
       event:
+      devicePushConfig:
+      devicePushIdentifier:
 
   BertyNodeEventListInput:
     model: berty.tech/core/api/node.EventListInput
@@ -1785,6 +1831,50 @@ models:
     fields:
       conversation:
       members:
+
+  BertyNodeDevicePushConfigEdge:
+    model: berty.tech/core/api/node.DevicePushConfigEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeDevicePushConfigEdgeInput:
+    model: berty.tech/core/api/node.DevicePushConfigEdge
+    fields:
+      node:
+      cursor:
+  BertyNodeDevicePushConfigEdgePayload:
+    model: berty.tech/core/api/node.DevicePushConfigEdge
+    fields:
+      node:
+      cursor:
+
+  BertyNodeDevicePushConfigListOutput:
+    model: berty.tech/core/api/node.DevicePushConfigListOutput
+    fields:
+      edges:
+  BertyNodeDevicePushConfigListOutputInput:
+    model: berty.tech/core/api/node.DevicePushConfigListOutput
+    fields:
+      edges:
+  BertyNodeDevicePushConfigListPayload:
+    model: berty.tech/core/api/node.DevicePushConfigListOutput
+    fields:
+      edges:
+
+  BertyNodeDevicePushConfigCreateInput:
+    model: berty.tech/core/api/node.DevicePushConfigCreateInput
+    fields:
+      relayId:
+      deviceToken:
+      packageId:
+      pushType:
+  BertyNodeDevicePushConfigCreateInputPayload:
+    model: berty.tech/core/api/node.DevicePushConfigCreateInput
+    fields:
+      relayId:
+      deviceToken:
+      packageId:
+      pushType:
 
   BertyNodePagination:
     model: berty.tech/core/api/node.Pagination

@@ -2,8 +2,10 @@ package push
 
 import (
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"encoding/base64"
+	"encoding/hex"
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
 	"github.com/sideshow/apns2/payload"
@@ -59,11 +61,11 @@ func NewAPNSDispatcher(path string) (Dispatcher, error) {
 }
 
 func (n *APNSDispatcher) CanDispatch(push *p2p.DevicePushToAttrs, pushDestination *p2p.DevicePushToDecrypted) bool {
-	if pushDestination.PushType != p2p.DevicePushType_APNS {
+	if pushDestination.PushType != entity.DevicePushType_APNS {
 		return false
 	}
 
-	apnsIdentifier := &p2p.DevicePushIdentifier{}
+	apnsIdentifier := &p2p.PushNativeIdentifier{}
 	if err := apnsIdentifier.Unmarshal(push.PushIdentifier); err != nil {
 		return false
 	}
@@ -76,7 +78,7 @@ func (n *APNSDispatcher) CanDispatch(push *p2p.DevicePushToAttrs, pushDestinatio
 }
 
 func (n *APNSDispatcher) Dispatch(push *p2p.DevicePushToAttrs, pushDestination *p2p.DevicePushToDecrypted) error {
-	apnsIdentifier := &p2p.DevicePushIdentifier{}
+	apnsIdentifier := &p2p.PushNativeIdentifier{}
 	if err := apnsIdentifier.Unmarshal(pushDestination.PushId); err != nil {
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
@@ -87,7 +89,7 @@ func (n *APNSDispatcher) Dispatch(push *p2p.DevicePushToAttrs, pushDestination *
 	}
 
 	notification := &apns2.Notification{}
-	notification.DeviceToken = apnsIdentifier.DeviceToken
+	notification.DeviceToken = hex.EncodeToString(apnsIdentifier.DeviceToken)
 	notification.Topic = "chat.berty"
 	notification.Payload = pushPayload
 

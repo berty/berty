@@ -2,6 +2,7 @@ package push
 
 import (
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"encoding/base64"
 	"github.com/NaySoftware/go-fcm"
@@ -33,11 +34,11 @@ func NewFCMDispatcher(appIDApiKey string) (Dispatcher, error) {
 }
 
 func (n *FCMDispatcher) CanDispatch(push *p2p.DevicePushToAttrs, pushDestination *p2p.DevicePushToDecrypted) bool {
-	if pushDestination.PushType != p2p.DevicePushType_FCM {
+	if pushDestination.PushType != entity.DevicePushType_FCM {
 		return false
 	}
 
-	fcmIdentifier := &p2p.DevicePushIdentifier{}
+	fcmIdentifier := &p2p.PushNativeIdentifier{}
 	if err := fcmIdentifier.Unmarshal(push.PushIdentifier); err != nil {
 		return false
 	}
@@ -50,7 +51,7 @@ func (n *FCMDispatcher) CanDispatch(push *p2p.DevicePushToAttrs, pushDestination
 }
 
 func (n *FCMDispatcher) Dispatch(push *p2p.DevicePushToAttrs, pushDestination *p2p.DevicePushToDecrypted) error {
-	fcmIdentifier := &p2p.DevicePushIdentifier{}
+	fcmIdentifier := &p2p.PushNativeIdentifier{}
 	if err := fcmIdentifier.Unmarshal(push.PushIdentifier); err != nil {
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
@@ -59,7 +60,9 @@ func (n *FCMDispatcher) Dispatch(push *p2p.DevicePushToAttrs, pushDestination *p
 		"berty-envelope": base64.StdEncoding.EncodeToString(push.Envelope),
 	}
 
-	if _, err := n.client.NewFcmMsgTo(fcmIdentifier.DeviceToken, payload).Send(); err != nil {
+	deviceToken := string(fcmIdentifier.DeviceToken)
+
+	if _, err := n.client.NewFcmMsgTo(deviceToken, payload).Send(); err != nil {
 		return errorcodes.ErrPushProvider.Wrap(err)
 	}
 

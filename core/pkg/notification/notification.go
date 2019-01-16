@@ -3,13 +3,13 @@
 package notification
 
 import (
+	"berty.tech/core/entity"
 	"encoding/hex"
 	"fmt"
 	"path"
 	"runtime"
 	"sync"
 
-	"berty.tech/core/api/p2p"
 	"github.com/0xAX/notificator"
 	"go.uber.org/zap"
 )
@@ -27,7 +27,7 @@ type Driver interface {
 
 type Token struct {
 	Value []byte
-	Type  p2p.DevicePushType
+	Type  entity.DevicePushType
 }
 
 func (t *Token) String() string {

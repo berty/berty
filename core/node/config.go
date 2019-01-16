@@ -41,7 +41,9 @@ func WithInitConfig() NewNodeOption {
 			}
 
 			config = &entity.Config{
-				ID: ID.String(),
+				ID:              ID.String(),
+				PushRelayIDAPNS: entity.DefaultPushRelayIds[entity.DevicePushType_APNS],
+				PushRelayIDFCM:  entity.DefaultPushRelayIds[entity.DevicePushType_FCM],
 			}
 
 			if err = n.sql(ctx).Create(config).Error; err != nil {

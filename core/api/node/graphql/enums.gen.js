@@ -118,6 +118,18 @@ export const ValueBertyEntityDeviceInputStatus = {
   42: 'Myself',
 }
 
+export const BertyEntityDevicePushTypeInputDevicePushType = {
+  UnknownDevicePushType: 0,
+  APNS: 1,
+  FCM: 2,
+}
+
+export const ValueBertyEntityDevicePushTypeInputDevicePushType = {
+  0: 'UnknownDevicePushType',
+  1: 'APNS',
+  2: 'FCM',
+}
+
 export const BertyEntityContactInputStatus = {
   Unknown: 0,
   IsFriend: 1,

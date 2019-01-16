@@ -32,9 +32,10 @@ type SystemInfo struct {
 }
 
 type VersionInfo struct {
-	Core    core.All
-	P2PApi  uint32
-	NodeAPI uint32
+	Core      core.All
+	P2PApi    uint32
+	NodeAPI   uint32
+	PackageID string
 }
 
 func Runtime() (*DeviceInfos, error) {

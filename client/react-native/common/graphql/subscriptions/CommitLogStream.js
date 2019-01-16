@@ -115,6 +115,15 @@ const CommitLogStream = graphql`
           attributes
           conversationId
         }
+        devicePushConfig {
+          id
+          createdAt
+          updatedAt
+          deviceId
+          pushType
+          pushId
+          relayId
+        }
       }
     }
   }
