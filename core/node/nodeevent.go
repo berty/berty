@@ -3,13 +3,12 @@ package node
 import (
 	"context"
 
-	"github.com/gogo/protobuf/proto"
-	"go.uber.org/zap"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
+	"github.com/gogo/protobuf/proto"
+	"go.uber.org/zap"
 )
 
 func (n *Node) EnqueueNodeEvent(ctx context.Context, kind node.Kind, attributes proto.Message) {
@@ -30,7 +29,7 @@ func (n *Node) LogBackgroundError(ctx context.Context, err error) {
 	n.EnqueueNodeEvent(ctx, node.Kind_BackgroundError, &node.BackgroundErrorAttrs{
 		ErrMsg: err.Error(),
 	})
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("LogBackgroundError", nil),
 		Body:  err.Error(),
 		// Icon
@@ -44,7 +43,7 @@ func (n *Node) LogBackgroundWarn(ctx context.Context, err error) {
 	n.EnqueueNodeEvent(ctx, node.Kind_BackgroundWarn, &node.BackgroundWarnAttrs{
 		ErrMsg: err.Error(),
 	})
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("LogBackgroundWarn", nil),
 		Body:  err.Error(),
 		// Icon
@@ -58,7 +57,7 @@ func (n *Node) LogBackgroundDebug(ctx context.Context, msg string) {
 	n.EnqueueNodeEvent(ctx, node.Kind_Debug, &node.DebugAttrs{
 		Msg: msg,
 	})
-	n.DisplayNotification(notification.Payload{
+	n.DisplayNotification(&notification.Payload{
 		Title: i18n.T("LogBackgroundDebug", nil),
 		Body:  msg,
 		// Icon
