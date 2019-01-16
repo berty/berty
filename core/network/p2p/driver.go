@@ -203,7 +203,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	driver.listener = sgrpc.NewListener(ctx, ID)
 
 	driver.providers.Register(provider_dht.New(driver.host, driver.dht))
-
 	pubsubProvider, err := provider_pubsub.New(ctx, host)
 	if err != nil {
 		logger().Warn("pubsub provider", zap.Error(err))

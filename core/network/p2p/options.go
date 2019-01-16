@@ -23,6 +23,7 @@ import (
 	metrics "github.com/libp2p/go-libp2p-metrics"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	pnet "github.com/libp2p/go-libp2p-pnet"
+	quic "github.com/libp2p/go-libp2p-quic-transport"
 	"github.com/libp2p/go-libp2p/config"
 	ma "github.com/multiformats/go-multiaddr"
 )
@@ -32,9 +33,10 @@ const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
 7beb018da4c79cb018e05305335d265046909f060c1b65e8eef94a107b9387cc`
 
 var DefaultBootstrap = []string{
-	"/ip4/104.248.78.238/tcp/4004/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/443/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/80/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	"/ip4/104.248.78.238/udp/4004/quic/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	// "/ip4/104.248.78.238/tcp/4004/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	// "/ip4/104.248.78.238/tcp/443/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	// "/ip4/104.248.78.238/tcp/80/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
 }
 
 var BootstrapIpfs = []string{
@@ -94,6 +96,11 @@ func WithJaeger(jaeger ...grpc_ot.Option) Option {
 		dc.jaeger = jaeger
 		return nil
 	}
+}
+
+// WithQUICTransport add support for quic
+func WithQUICTransport() Option {
+	return WithLibp2pOption(libp2p.Transport(quic.NewTransport))
 }
 
 // WithSwarmKey secure connections so they can be only established with
