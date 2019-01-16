@@ -109,7 +109,7 @@ func daemon(opts *daemonOptions) error {
 			Path: "/tmp",
 			Drop: opts.dropDatabase,
 		}),
-		account.WithBanner(banner.Quote()),
+		account.WithBanner(banner.QOTD()),
 		account.WithGrpcServer(&account.GrpcServerOptions{
 			Bind:         opts.grpcBind,
 			Interceptors: true,

@@ -3,6 +3,7 @@ package quote
 import (
 	"fmt"
 	"math/rand"
+	"time"
 )
 
 type Quote struct {
@@ -27,6 +28,13 @@ var quotes = []Quote{
 
 func Pick() Quote {
 	return quotes[rand.Intn(len(quotes))]
+}
+
+func QOTD() Quote {
+	base := time.Date(2000, time.January, 1, 0, 0, 0, 0, time.UTC) // FIXME: use local timezone if available
+	seed := time.Now().Sub(base).Hours() / 24
+	r := rand.New(rand.NewSource(int64(seed)))
+	return quotes[r.Intn(len(quotes))]
 }
 
 func (q Quote) String() string {
