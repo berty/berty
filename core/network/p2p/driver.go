@@ -192,7 +192,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	sgrpc := p2pgrpc.NewP2PGrpcService(host)
 
 	dialOpts := append([]grpc.DialOption{
-		grpc.WithDefaultCallOptions(grpc.FailFast(true)),
 		grpc.WithInsecure(),
 		grpc.WithDialer(sgrpc.NewDialer(ctx, ID)),
 	}, p2pInterceptorsClient...)
@@ -460,6 +459,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 
 			peerID := pi.ID.Pretty()
 			if pi.ID == d.host.ID() {
+				logger().Warn("cannot dial to self", zap.String("id", peerID), zap.Error(err))
 				done <- false
 				return
 			}
@@ -489,12 +489,12 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 			}
 
 			done <- true
-		}(*s, i, success[i])
+		}(s, i, success[i])
 	}
 
 	ok := false
 	for _, cc := range success {
-		if ok = ok || <-cc; ok {
+		if ok = <-cc; ok {
 			break
 		}
 	}
@@ -506,7 +506,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	return nil
 }
 
-func (d *Driver) FindProvidersAndWait(ctx context.Context, id string) ([]*pstore.PeerInfo, error) {
+func (d *Driver) FindProvidersAndWait(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
 	c, err := d.createCid(id)
 	if err != nil {
 		return nil, err

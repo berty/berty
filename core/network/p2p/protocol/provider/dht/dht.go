@@ -80,11 +80,14 @@ func (p *Provider) FindProviders(ctx context.Context, id cid.Cid) error {
 			return
 		}
 
-		for pi := range p.dht.FindProvidersAsync(ctx, id, dht.KValue) {
-			logger().Debug("found provider!", zap.String("peerID", pi.ID.Pretty()), zap.String("id", id.String()))
-			p.handler(id, &pi)
+		pis, err := p.dht.FindProviders(ctx, id)
+		if err != nil {
+			logger().Error("find provider", zap.Error(err))
+			return
 		}
 
+		p.handler(id, pis...)
+		logger().Debug("found provider!", zap.String("id", id.String()))
 	}()
 
 	return nil

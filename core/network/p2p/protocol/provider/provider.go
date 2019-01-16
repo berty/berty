@@ -10,10 +10,10 @@ import (
 	"go.uber.org/zap"
 )
 
-type Handler func(cid.Cid, *pstore.PeerInfo)
+type Handler func(cid.Cid, ...pstore.PeerInfo)
 
-func NoopHandler(id cid.Cid, pi *pstore.PeerInfo) {
-	logger().Debug("noop handler", zap.String("id", id.String()), zap.String("peerID", pi.ID.Pretty()))
+func NoopHandler(id cid.Cid, pi ...pstore.PeerInfo) {
+	logger().Debug("noop handler", zap.String("id", id.String()))
 }
 
 type Provider interface {
@@ -40,7 +40,7 @@ func NewManager() *Manager {
 	}
 }
 
-func (m *Manager) addPeerToSub(id cid.Cid, pi *pstore.PeerInfo) error {
+func (m *Manager) addPeerToSub(id cid.Cid, pi pstore.PeerInfo) error {
 	m.muSubs.Lock()
 	defer m.muSubs.Unlock()
 
@@ -82,7 +82,7 @@ func (m *Manager) createSub(id cid.Cid) error {
 	return nil
 }
 
-func (m *Manager) removePeerFromSub(id cid.Cid, pi *pstore.PeerInfo) error {
+func (m *Manager) removePeerFromSub(id cid.Cid, pi pstore.PeerInfo) error {
 	m.muSubs.Lock()
 	defer m.muSubs.Unlock()
 
@@ -159,7 +159,7 @@ func (m *Manager) Provide(ctx context.Context, id cid.Cid) error {
 	}
 
 	if !ok {
-		return fmt.Errorf("Failed to provide with at last on provider")
+		return fmt.Errorf("failed to provide with at last on provider")
 	}
 
 	return nil
@@ -188,7 +188,7 @@ func (m *Manager) FindProviders(ctx context.Context, id cid.Cid) error {
 	}
 
 	if !ok {
-		return fmt.Errorf("Failed to finding providers with at last one provider")
+		return fmt.Errorf("failed to find providers with at last one provider")
 	}
 
 	return nil
@@ -213,20 +213,21 @@ func (m *Manager) WaitForProviders(ctx context.Context, id cid.Cid) (Peers, erro
 	}
 }
 
-func (m *Manager) PeerHandler(id cid.Cid, pi *pstore.PeerInfo) {
-	if err := m.addPeerToSub(id, pi); err != nil {
-		logger().Warn("peer handler",
-			zap.String("id", id.String()),
-			zap.String("peerID", pi.ID.Pretty()),
-			zap.Error(err))
+func (m *Manager) PeerHandler(id cid.Cid, pis ...pstore.PeerInfo) {
+	for _, pi := range pis {
+		if err := m.addPeerToSub(id, pi); err != nil {
+			logger().Warn("handler, add peers",
+				zap.String("id", id.String()),
+				zap.String("peerID", pi.ID.Pretty()),
+				zap.Error(err))
 
-		return
+			return
+		}
 	}
 
 	if err := m.consumePubs(id); err != nil {
-		logger().Warn("peer handler",
+		logger().Warn("consume pub",
 			zap.String("id", id.String()),
-			zap.String("peerID", pi.ID.Pretty()),
 			zap.Error(err))
 	}
 }

@@ -202,7 +202,7 @@ func (p *Provider) handleStream(s inet.Stream) {
 		zap.String("subID", id.String()),
 		zap.String("peerID", peerID.Pretty()))
 
-	p.handler(id, pinfo)
+	p.handler(id, *pinfo)
 }
 
 func (p *Provider) handleSubscription(ctx context.Context) error {
@@ -286,7 +286,7 @@ func (p *Provider) handleSubscription(ctx context.Context) error {
 		if err := pbw.WriteMsg(self); err != nil {
 			logger().Error("write stream", zap.Error(err))
 		} else {
-			p.handler(id, &pinfo)
+			p.handler(id, pinfo)
 		}
 
 		go inet.FullClose(s)

@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	cid "github.com/ipfs/go-cid"
 	ipfsaddr "github.com/ipfs/go-ipfs-addr"
 	libp2p "github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p-host"
@@ -77,7 +78,7 @@ func setupProviderTest(name string, bootstrap ...string) (*ProviderTest, error) 
 	pt.name = name
 	pt.host = host
 
-	provider, err := New(context.Background(), pt.host, pt.handler)
+	provider, err := New(context.Background(), pt.host)
 	if err != nil {
 		host.Close()
 		return nil, err
@@ -156,20 +157,26 @@ func TestP2PNetwork(t *testing.T) {
 
 			topic := "lisa"
 
+			cps := make(chan []pstore.PeerInfo, 1)
+			roger.provider.RegisterHandler(func(id cid.Cid, ps ...pstore.PeerInfo) {
+				cps <- ps
+			})
+
 			err := lisa.provider.Subscribe(ctx, topic)
 			So(err, ShouldBeNil)
 
-			ps, err := roger.provider.AnnounceAndWait(ctx, topic)
+			err = roger.provider.Announce(topic)
 			So(err, ShouldBeNil)
-			So(ps, ShouldNotBeNil)
-		})
 
-		Convey("Roger get lisa with cached informations", FailureHalts, func(c C) {
-			topic := "lisa"
-			ps, err := roger.provider.GetPeersForProvider(topic)
+			var ps []pstore.PeerInfo
+			select {
+			case <-ctx.Done():
+				err = ctx.Err()
+			case ps = <-cps:
+			}
+
 			So(err, ShouldBeNil)
-			So(ps, ShouldNotBeNil)
+			So(len(ps), ShouldEqual, 1)
 		})
-
 	})
 }
