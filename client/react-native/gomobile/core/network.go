@@ -3,7 +3,6 @@ package core
 import (
 	"encoding/json"
 	"io"
-	"runtime"
 	"strings"
 
 	account "berty.tech/core/manager/account"
@@ -44,7 +43,7 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 		transport = append(transport, "quic")
 		bind = append(bind, quicBind)
 	}
-	if netConf.BluetoothTransport && runtime.GOOS != "android" {
+	if netConf.BluetoothTransport {
 		transport = append(transport, "ble")
 		bind = append(bind, defaultBLEBind)
 	}

@@ -117,6 +117,7 @@ func (t *Transport) ListenNewPeer() {
 			}
 		} else {
 			peerID := pi.ID.Pretty()
+			logger().Debug("REAL ACCEPT")
 			RealAcceptSender(lBleUUID, bleUUID, peerID)
 		}
 	}

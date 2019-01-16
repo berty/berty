@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.lang.System;
 import java.util.List;
 
-import chat.berty.ble.Manager;
 import chat.berty.core.CorePackage;
 
 public class MainApplication extends Application implements ReactApplication {
@@ -77,7 +76,5 @@ public class MainApplication extends Application implements ReactApplication {
     public void onCreate() {
         super.onCreate();
         SoLoader.init(this, /* native exopackage */ false);
-
-        Manager.getInstance().setmContext(this.getApplicationContext());
     }
 }

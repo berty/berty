@@ -1,15 +1,17 @@
 package chat.berty.core;
 
 import android.app.Activity;
+import android.content.Context;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
-import chat.berty.ble.Manager;
 import core.Core;
 import core.MobileNotification;
 import core.NativeNotificationDriver;
+
+import chat.berty.ble.BleManager;
 
 public class CoreModule extends ReactContextBaseJavaModule {
     private Logger logger = new Logger("chat.berty.io");
@@ -22,18 +24,25 @@ public class CoreModule extends ReactContextBaseJavaModule {
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
         this.reactContext = reactContext;
 
-        Object o = actGetter(reactContext);
+        // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
+        // See https://facebook.github.io/react-native/docs/native-modules-android
+        Object activityAndContextGetter = actGetter(reactContext);
 
-        Manager.getInstance().setmReactContext(o, reactContext);
+        BleManager.setReactGetter(activityAndContextGetter, reactContext);
     }
 
-    private Object actGetter(final ReactApplicationContext reactContext){
-        return new Manager.ActivityGetter() {
+    private Object actGetter(final ReactApplicationContext reactContext) {
+        return new BleManager.ActivityAndContextGetter() {
             public Activity getCurrentActivity() {
                 return reactContext.getCurrentActivity();
             }
+
+            public Context getApplicationContext() {
+                return reactContext.getApplicationContext();
+            }
         };
     }
+    /////////////////////////////////////////////////////////////////////////
 
     public String getName() {
         return "CoreModule";

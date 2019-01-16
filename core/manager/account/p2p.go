@@ -31,7 +31,7 @@ func makeTransport(opts *P2PNetworkOptions, p2pOptions []p2p.Option, db *gorm.DB
 	for _, v := range opts.Transport {
 		if v == "default" {
 			p2pOptions = append(p2pOptions, p2p.WithDefaultTransports())
-		} else if v == "ble" && runtime.GOOS != "android" {
+		} else if v == "ble" {
 			p2pOptions = append(p2pOptions, p2p.WithTransportBle(opts.Bind, db))
 		}
 	}
