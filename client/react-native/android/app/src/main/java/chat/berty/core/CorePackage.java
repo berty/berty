@@ -10,14 +10,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import chat.berty.core.notification.NotificationModule;
+
 public class CorePackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
         modules.add(new CoreModule(reactContext));
-        modules.add(new NotificationModule(reactContext));
-
+        modules.add(NotificationModule.getInstance(reactContext));
         return modules;
     }
 

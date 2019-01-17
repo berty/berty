@@ -4,7 +4,6 @@ package notification
 
 import (
 	"encoding/hex"
-	"fmt"
 	"path"
 	"runtime"
 	"sync"
@@ -15,7 +14,7 @@ import (
 )
 
 type Driver interface {
-	DisplayNotification(*Payload) error
+	Display(*Payload) error
 	Register() error
 	Unregister() error
 	Subscribe() chan *Payload
@@ -30,8 +29,15 @@ type Token struct {
 	Type  p2p.DevicePushType
 }
 
-func (t *Token) String() string {
-	return fmt.Sprintf("hash: %+v, type: %+v", hex.EncodeToString(t.Value), t.Type)
+func (t *Token) Hash() string {
+	switch t.Type {
+	default:
+		return ""
+	case p2p.DevicePushType_FCM:
+		return string(t.Value)
+	case p2p.DevicePushType_APNS:
+		return hex.EncodeToString(t.Value)
+	}
 }
 
 type Payload struct {
@@ -52,7 +58,7 @@ func NewNoopNotification() Driver {
 	return &NoopNotification{}
 }
 
-func (n *NoopNotification) DisplayNotification(p *Payload) error {
+func (n *NoopNotification) Display(p *Payload) error {
 	// for debug puprpose
 	logger().Debug("Display",
 		zap.String("title", p.Title),
@@ -109,7 +115,7 @@ func NewDesktopNotification() Driver {
 
 type DesktopNotification struct{}
 
-func (n *DesktopNotification) DisplayNotification(p *Payload) error {
+func (n *DesktopNotification) Display(p *Payload) error {
 	once.Do(func() {
 		_, filename, _, _ := runtime.Caller(0)
 		iconPath := path.Dir(filename) + "/../../../client/react-native/common/static/img/logo.png"

@@ -7,9 +7,9 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
+import chat.berty.core.notification.NotificationNative;
 import core.Core;
 import core.MobileNotification;
-import core.NativeNotificationDriver;
 
 import chat.berty.ble.BleManager;
 
@@ -22,13 +22,13 @@ public class CoreModule extends ReactContextBaseJavaModule {
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
-        this.reactContext = reactContext;
 
         // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
         // See https://facebook.github.io/react-native/docs/native-modules-android
         Object activityAndContextGetter = actGetter(reactContext);
 
         BleManager.setReactGetter(activityAndContextGetter, reactContext);
+        this.notificationDriver.setNative(new NotificationNative());
     }
 
     private Object actGetter(final ReactApplicationContext reactContext) {
