@@ -10,8 +10,11 @@ import "network/peer.proto";
 import "entity/config.proto";
 import "entity/contact.proto";
 import "entity/device.proto";
+import "entity/device_push_config.proto";
+import "entity/device_push_identifier.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
+import "push/push.proto";
 import "pkg/deviceinfo/deviceinfo.proto";
 
 import "gogoproto/gogo.proto";
@@ -364,7 +367,7 @@ message DevicePushConfigCreateInput {
   bytes relay_id = 1 [(gql.graphql_nullable) = true, (gogoproto.customname) = "RelayID"];
   bytes device_token = 2;
   string package_id = 3  [(gogoproto.customname) = "PackageID"];
-  berty.entity.DevicePushType push_type = 4;
+  berty.push.DevicePushType push_type = 4;
 }
 
 //

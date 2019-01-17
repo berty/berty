@@ -1,7 +1,6 @@
 package node
 
 import (
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/push"
@@ -33,7 +32,7 @@ func WithPushTokenSubscriber() NewNodeOption {
 					logger().Error("unable to get push token", zap.Error(err))
 				}
 
-				pushID := &p2p.PushNativeIdentifier{
+				pushID := &push.PushNativeIdentifier{
 					PackageID:   packageID,
 					DeviceToken: token.Value,
 				}

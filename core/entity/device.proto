@@ -5,39 +5,9 @@ package berty.entity;
 option go_package = "berty.tech/core/entity";
 
 import "api/protobuf/graphql/graphql.proto";
+import "entity/device_push_identifier.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
-
-enum DevicePushType {
-  UnknownDevicePushType = 0;
-  APNS = 1;
-  FCM = 2;
-}
-
-message DevicePushIdentifier {
-  string id = 1 [(gql.graphql_id) = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
-  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-
-  bytes push_info = 4;
-  string push_relay_id = 5  [(gogoproto.customname) = "PushRelayID"];
-
-  string device_id = 6 [(gogoproto.customname) = "DeviceID"];
-}
-
-// Local unencrypted push configuration
-message DevicePushConfig {
-  string id = 1 [(gql.graphql_id) = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
-  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
-
-  string device_id = 4 [(gogoproto.customname) = "DeviceID"];
-
-  DevicePushType push_type = 5;
-  bytes push_id = 6  [(gogoproto.customname) = "PushID"];
-  bytes relay_id = 7  [(gogoproto.customname) = "RelayID"];
-}
-
 
 message Device {
   enum Status {

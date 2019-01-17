@@ -1,21 +1,26 @@
 package push
 
 import (
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/pkg/errorcodes"
 )
 
+var DefaultPushRelayIds = map[DevicePushType][]byte{
+	DevicePushType_UnknownDevicePushType: []byte("FILL_ME"),
+	DevicePushType_APNS:                  []byte("FILL_ME"),
+	DevicePushType_FCM:                   []byte("FILL_ME"),
+}
+
 type Dispatcher interface {
-	CanDispatch(*p2p.DevicePushToAttrs, *p2p.DevicePushToDecrypted) bool
-	Dispatch(*p2p.DevicePushToAttrs, *p2p.DevicePushToDecrypted) error
+	CanDispatch(*PushData, *PushDestination) bool
+	Dispatch(*PushData, *PushDestination) error
 }
 
 type Manager struct {
 	dispatchers []Dispatcher
 }
 
-func (n *Manager) Dispatch(push *p2p.DevicePushToAttrs, pushDestination *p2p.DevicePushToDecrypted) error {
-	for _, dispatcher := range n.dispatchers {
+func (m *Manager) Dispatch(push *PushData, pushDestination *PushDestination) error {
+	for _, dispatcher := range m.dispatchers {
 		if !dispatcher.CanDispatch(push, pushDestination) {
 			continue
 		}

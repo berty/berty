@@ -230,7 +230,6 @@ type GqlNode implements Node {
   
   
 
-  
 type BertyEntityDevicePushIdentifier implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
@@ -239,15 +238,10 @@ type BertyEntityDevicePushIdentifier implements Node {
     pushRelayId: String!
     deviceId: String!
 }
-type BertyEntityDevicePushConfig implements Node {
-    id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    deviceId: String!
-    pushType: Enum
-    pushId: [Byte!]
-    relayId: [Byte!]
-}
+  
+  
+  
+
       
 type BertyEntityDevice implements Node {
     id: ID!
@@ -327,6 +321,25 @@ type BertyEntitySenderAlias  {
   
 
   
+  
+type BertyPushPushDestination  {
+    nonce: [Byte!]
+    pushType: Enum
+    pushId: [Byte!]
+}
+type BertyPushPushNativeIdentifier  {
+    packageId: String!
+    deviceToken: [Byte!]
+}
+type BertyPushPushData  {
+    pushIdentifier: [Byte!]
+    envelope: [Byte!]
+    priority: Enum
+}
+  
+  
+  
+
   
 type BertyP2pSentAttrs  {
     ids: [String!]
@@ -478,6 +491,19 @@ type BertyEntityConfig  {
     cryptoParams: [Byte!]
     pushRelayIdApns: [Byte!]
     pushRelayIdFcm: [Byte!]
+}
+  
+  
+  
+
+type BertyEntityDevicePushConfig implements Node {
+    id: ID!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
 }
   
   

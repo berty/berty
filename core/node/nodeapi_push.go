@@ -6,6 +6,7 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
+	"berty.tech/core/push"
 	"context"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
@@ -30,11 +31,11 @@ func (n *Node) DevicePushConfigCreateNative(ctx context.Context, input *node.Dev
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	if len(input.DeviceToken) == 0 || (input.PushType != entity.DevicePushType_APNS && input.PushType != entity.DevicePushType_FCM) {
+	if len(input.DeviceToken) == 0 || (input.PushType != push.DevicePushType_APNS && input.PushType != push.DevicePushType_FCM) {
 		return nil, errorcodes.ErrValidation.Wrap(errors.New("token type is not suitable"))
 	}
 
-	pushID := &p2p.PushNativeIdentifier{
+	pushID := &push.PushNativeIdentifier{
 		PackageID:   input.PackageID,
 		DeviceToken: input.DeviceToken,
 	}
@@ -59,14 +60,14 @@ func (n *Node) DevicePushConfigCreate(ctx context.Context, devicePushConfig *ent
 
 	n.handleMutex(ctx)()
 
-	if devicePushConfig.PushType == entity.DevicePushType_UnknownDevicePushType {
+	if devicePushConfig.PushType == push.DevicePushType_UnknownDevicePushType {
 		return nil, errorcodes.ErrPushInvalidType.New()
 	}
 
 	if len(devicePushConfig.RelayID) == 0 {
-		if devicePushConfig.PushType == entity.DevicePushType_FCM {
+		if devicePushConfig.PushType == push.DevicePushType_FCM {
 			devicePushConfig.RelayID = n.config.PushRelayIDAPNS
-		} else if devicePushConfig.PushType == entity.DevicePushType_FCM {
+		} else if devicePushConfig.PushType == push.DevicePushType_FCM {
 			devicePushConfig.RelayID = n.config.PushRelayIDAPNS
 		}
 	}
@@ -134,7 +135,7 @@ func (n *Node) DevicePushConfigUpdate(ctx context.Context, input *entity.DeviceP
 		devicePushConfig.PushID = input.PushID
 	}
 
-	if input.PushType != entity.DevicePushType_UnknownDevicePushType {
+	if input.PushType != push.DevicePushType_UnknownDevicePushType {
 		devicePushConfig.PushType = input.PushType
 	}
 
@@ -171,7 +172,7 @@ func (n *Node) broadcastDevicePushConfig(ctx context.Context) error {
 		device.PushIdentifiers = []*entity.DevicePushIdentifier{}
 
 		for _, devicePushConfig := range devicePushConfigs {
-			pushIdentifier, err := p2p.CreateDevicePushIdentifier(devicePushConfig)
+			pushIdentifier, err := devicePushConfig.CreateDevicePushIdentifier()
 
 			if err != nil {
 				return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)

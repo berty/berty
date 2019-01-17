@@ -754,39 +754,6 @@ models:
       pushRelayId:
       deviceId:
 
-  BertyEntityDevicePushConfig:
-    model: berty.tech/core/entity.DevicePushConfig
-    fields:
-      id:
-        resolver: true
-      createdAt:
-      updatedAt:
-      deviceId:
-      pushType:
-      pushId:
-      relayId:
-  BertyEntityDevicePushConfigInput:
-    model: berty.tech/core/entity.DevicePushConfig
-    fields:
-      id:
-        resolver: true
-      createdAt:
-      updatedAt:
-      deviceId:
-      pushType:
-      pushId:
-      relayId:
-  BertyEntityDevicePushConfigPayload:
-    model: berty.tech/core/entity.DevicePushConfig
-    fields:
-      id:
-        resolver: true
-      createdAt:
-      updatedAt:
-      deviceId:
-      pushType:
-      pushId:
-      relayId:
 
   BertyEntityDevice:
     model: berty.tech/core/entity.Device
@@ -995,6 +962,61 @@ models:
       conversationId:
       aliasIdentifier:
       used:
+
+
+  BertyPushPushDestination:
+    model: berty.tech/core/push.PushDestination
+    fields:
+      nonce:
+      pushType:
+      pushId:
+  BertyPushPushDestinationInput:
+    model: berty.tech/core/push.PushDestination
+    fields:
+      nonce:
+      pushType:
+      pushId:
+  BertyPushPushDestinationPayload:
+    model: berty.tech/core/push.PushDestination
+    fields:
+      nonce:
+      pushType:
+      pushId:
+
+  BertyPushPushNativeIdentifier:
+    model: berty.tech/core/push.PushNativeIdentifier
+    fields:
+      packageId:
+      deviceToken:
+  BertyPushPushNativeIdentifierInput:
+    model: berty.tech/core/push.PushNativeIdentifier
+    fields:
+      packageId:
+      deviceToken:
+  BertyPushPushNativeIdentifierPayload:
+    model: berty.tech/core/push.PushNativeIdentifier
+    fields:
+      packageId:
+      deviceToken:
+
+  BertyPushPushData:
+    model: berty.tech/core/push.PushData
+    fields:
+      pushIdentifier:
+      envelope:
+      priority:
+  BertyPushPushDataInput:
+    model: berty.tech/core/push.PushData
+    fields:
+      pushIdentifier:
+      envelope:
+      priority:
+  BertyPushPushDataPayload:
+    model: berty.tech/core/push.PushData
+    fields:
+      pushIdentifier:
+      envelope:
+      priority:
 
 
   BertyP2pSentAttrs:
@@ -1507,6 +1529,41 @@ models:
       cryptoParams:
       pushRelayIdApns:
       pushRelayIdFcm:
+
+
+  BertyEntityDevicePushConfig:
+    model: berty.tech/core/entity.DevicePushConfig
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deviceId:
+      pushType:
+      pushId:
+      relayId:
+  BertyEntityDevicePushConfigInput:
+    model: berty.tech/core/entity.DevicePushConfig
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deviceId:
+      pushType:
+      pushId:
+      relayId:
+  BertyEntityDevicePushConfigPayload:
+    model: berty.tech/core/entity.DevicePushConfig
+    fields:
+      id:
+        resolver: true
+      createdAt:
+      updatedAt:
+      deviceId:
+      pushType:
+      pushId:
+      relayId:
 
 
   BertyPkgDeviceinfoDeviceInfos:

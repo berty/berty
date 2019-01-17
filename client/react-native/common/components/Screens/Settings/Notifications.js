@@ -17,12 +17,12 @@ class NotificationsBase extends PureComponent {
     return (
       <Menu>
         <Menu.Section title={t('settings.notifications-transport')}>
-          {nativePushType === enums.BertyEntityDevicePushTypeInputDevicePushType.UnknownDevicePushType
+          {nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.UnknownDevicePushType
             ? <Menu.Item title={t('settings.push-transport-not-supported')} />
             : <Menu.Item
               title={
-                (nativePushType === enums.BertyEntityDevicePushTypeInputDevicePushType.APNS ? t('settings.push-berty-apple-servers') : '') +
-                (nativePushType === enums.BertyEntityDevicePushTypeInputDevicePushType.FCM ? t('settings.push-berty-google-firebase-servers') : '')
+                (nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.APNS ? t('settings.push-berty-apple-servers') : '') +
+                (nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.FCM ? t('settings.push-berty-google-firebase-servers') : '')
               }
               left
               customRight={

@@ -17,6 +17,7 @@ import (
 	entity "berty.tech/core/entity"
 	network "berty.tech/core/network"
 	deviceinfo "berty.tech/core/pkg/deviceinfo"
+	push "berty.tech/core/push"
 	graphql "github.com/99designs/gqlgen/graphql"
 	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -424,6 +425,23 @@ type ComplexityRoot struct {
 
 	BertyPkgDeviceinfoDeviceInfos struct {
 		Infos func(childComplexity int) int
+	}
+
+	BertyPushPushData struct {
+		PushIdentifier func(childComplexity int) int
+		Envelope       func(childComplexity int) int
+		Priority       func(childComplexity int) int
+	}
+
+	BertyPushPushDestination struct {
+		Nonce    func(childComplexity int) int
+		PushType func(childComplexity int) int
+		PushId   func(childComplexity int) int
+	}
+
+	BertyPushPushNativeIdentifier struct {
+		PackageId   func(childComplexity int) int
+		DeviceToken func(childComplexity int) int
 	}
 
 	GoogleProtobufDescriptorProto struct {
@@ -4252,6 +4270,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyPkgDeviceinfoDeviceInfos.Infos(childComplexity), true
 
+	case "BertyPushPushData.pushIdentifier":
+		if e.complexity.BertyPushPushData.PushIdentifier == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushData.PushIdentifier(childComplexity), true
+
+	case "BertyPushPushData.envelope":
+		if e.complexity.BertyPushPushData.Envelope == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushData.Envelope(childComplexity), true
+
+	case "BertyPushPushData.priority":
+		if e.complexity.BertyPushPushData.Priority == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushData.Priority(childComplexity), true
+
+	case "BertyPushPushDestination.nonce":
+		if e.complexity.BertyPushPushDestination.Nonce == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushDestination.Nonce(childComplexity), true
+
+	case "BertyPushPushDestination.pushType":
+		if e.complexity.BertyPushPushDestination.PushType == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushDestination.PushType(childComplexity), true
+
+	case "BertyPushPushDestination.pushId":
+		if e.complexity.BertyPushPushDestination.PushId == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushDestination.PushId(childComplexity), true
+
+	case "BertyPushPushNativeIdentifier.packageId":
+		if e.complexity.BertyPushPushNativeIdentifier.PackageId == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushNativeIdentifier.PackageId(childComplexity), true
+
+	case "BertyPushPushNativeIdentifier.deviceToken":
+		if e.complexity.BertyPushPushNativeIdentifier.DeviceToken == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushNativeIdentifier.DeviceToken(childComplexity), true
+
 	case "GoogleProtobufDescriptorProto.name":
 		if e.complexity.GoogleProtobufDescriptorProto.Name == nil {
 			break
@@ -7288,7 +7362,7 @@ func (ec *executionContext) _BertyEntityDevicePushConfig_pushType(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(entity.DevicePushType)
+	res := resTmp.(push.DevicePushType)
 	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
@@ -11304,7 +11378,7 @@ func (ec *executionContext) _BertyP2pDevicePushToAttrs_priority(ctx context.Cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(p2p.Priority)
+	res := resTmp.(push.Priority)
 	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
@@ -12643,6 +12717,308 @@ func (ec *executionContext) _BertyPkgDeviceinfoDeviceInfos_infos(ctx context.Con
 
 	}
 	wg.Wait()
+	return arr1
+}
+
+var bertyPushPushDataImplementors = []string{"BertyPushPushData"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyPushPushData(ctx context.Context, sel ast.SelectionSet, obj *push.PushData) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyPushPushDataImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyPushPushData")
+		case "pushIdentifier":
+			out.Values[i] = ec._BertyPushPushData_pushIdentifier(ctx, field, obj)
+		case "envelope":
+			out.Values[i] = ec._BertyPushPushData_envelope(ctx, field, obj)
+		case "priority":
+			out.Values[i] = ec._BertyPushPushData_priority(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushData_pushIdentifier(ctx context.Context, field graphql.CollectedField, obj *push.PushData) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushData",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushIdentifier, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushData_envelope(ctx context.Context, field graphql.CollectedField, obj *push.PushData) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushData",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Envelope, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushData_priority(ctx context.Context, field graphql.CollectedField, obj *push.PushData) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushData",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Priority, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(push.Priority)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyPushPushDestinationImplementors = []string{"BertyPushPushDestination"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyPushPushDestination(ctx context.Context, sel ast.SelectionSet, obj *push.PushDestination) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyPushPushDestinationImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyPushPushDestination")
+		case "nonce":
+			out.Values[i] = ec._BertyPushPushDestination_nonce(ctx, field, obj)
+		case "pushType":
+			out.Values[i] = ec._BertyPushPushDestination_pushType(ctx, field, obj)
+		case "pushId":
+			out.Values[i] = ec._BertyPushPushDestination_pushId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushDestination_nonce(ctx context.Context, field graphql.CollectedField, obj *push.PushDestination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushDestination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Nonce, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushDestination_pushType(ctx context.Context, field graphql.CollectedField, obj *push.PushDestination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushDestination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushType, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(push.DevicePushType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushDestination_pushId(ctx context.Context, field graphql.CollectedField, obj *push.PushDestination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushDestination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushId, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+var bertyPushPushNativeIdentifierImplementors = []string{"BertyPushPushNativeIdentifier"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyPushPushNativeIdentifier(ctx context.Context, sel ast.SelectionSet, obj *push.PushNativeIdentifier) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyPushPushNativeIdentifierImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyPushPushNativeIdentifier")
+		case "packageId":
+			out.Values[i] = ec._BertyPushPushNativeIdentifier_packageId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "deviceToken":
+			out.Values[i] = ec._BertyPushPushNativeIdentifier_deviceToken(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushNativeIdentifier_packageId(ctx context.Context, field graphql.CollectedField, obj *push.PushNativeIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushNativeIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PackageID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushNativeIdentifier_deviceToken(ctx context.Context, field graphql.CollectedField, obj *push.PushNativeIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushNativeIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeviceToken, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
 	return arr1
 }
 
@@ -21417,10 +21793,6 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 		return ec._BertyEntityDevicePushIdentifier(ctx, sel, &obj)
 	case *entity.DevicePushIdentifier:
 		return ec._BertyEntityDevicePushIdentifier(ctx, sel, obj)
-	case entity.DevicePushConfig:
-		return ec._BertyEntityDevicePushConfig(ctx, sel, &obj)
-	case *entity.DevicePushConfig:
-		return ec._BertyEntityDevicePushConfig(ctx, sel, obj)
 	case entity.Device:
 		return ec._BertyEntityDevice(ctx, sel, &obj)
 	case *entity.Device:
@@ -21441,6 +21813,10 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 		return ec._BertyP2pEvent(ctx, sel, &obj)
 	case *p2p.Event:
 		return ec._BertyP2pEvent(ctx, sel, obj)
+	case entity.DevicePushConfig:
+		return ec._BertyEntityDevicePushConfig(ctx, sel, &obj)
+	case *entity.DevicePushConfig:
+		return ec._BertyEntityDevicePushConfig(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
@@ -22332,7 +22708,6 @@ type GqlNode implements Node {
   
   
 
-  
 type BertyEntityDevicePushIdentifier implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
@@ -22341,15 +22716,10 @@ type BertyEntityDevicePushIdentifier implements Node {
     pushRelayId: String!
     deviceId: String!
 }
-type BertyEntityDevicePushConfig implements Node {
-    id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    deviceId: String!
-    pushType: Enum
-    pushId: [Byte!]
-    relayId: [Byte!]
-}
+  
+  
+  
+
       
 type BertyEntityDevice implements Node {
     id: ID!
@@ -22429,6 +22799,25 @@ type BertyEntitySenderAlias  {
   
 
   
+  
+type BertyPushPushDestination  {
+    nonce: [Byte!]
+    pushType: Enum
+    pushId: [Byte!]
+}
+type BertyPushPushNativeIdentifier  {
+    packageId: String!
+    deviceToken: [Byte!]
+}
+type BertyPushPushData  {
+    pushIdentifier: [Byte!]
+    envelope: [Byte!]
+    priority: Enum
+}
+  
+  
+  
+
   
 type BertyP2pSentAttrs  {
     ids: [String!]
@@ -22580,6 +22969,19 @@ type BertyEntityConfig  {
     cryptoParams: [Byte!]
     pushRelayIdApns: [Byte!]
     pushRelayIdFcm: [Byte!]
+}
+  
+  
+  
+
+type BertyEntityDevicePushConfig implements Node {
+    id: ID!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
 }
   
   

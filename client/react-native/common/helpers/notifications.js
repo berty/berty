@@ -5,12 +5,12 @@ import { showMessage } from 'react-native-flash-message'
 
 export const getNativePushType = () => {
   if (Platform.OS === 'ios') {
-    return enums.BertyEntityDevicePushTypeInputDevicePushType.APNS
+    return enums.BertyPushDevicePushTypeInputDevicePushType.APNS
   } else if (Platform.OS === 'android') {
-    return enums.BertyEntityDevicePushTypeInputDevicePushType.FCM
+    return enums.BertyPushDevicePushTypeInputDevicePushType.FCM
   }
 
-  return enums.BertyEntityDevicePushTypeInputDevicePushType.UnknownDevicePushType
+  return enums.BertyPushDevicePushTypeInputDevicePushType.UnknownDevicePushType
 }
 
 export const enableNativeNotifications = async ({ context }) => {

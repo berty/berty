@@ -4,12 +4,6 @@ import (
 	"strings"
 )
 
-var DefaultPushRelayIds = map[DevicePushType][]byte{
-	DevicePushType_UnknownDevicePushType: []byte("FILL_ME"),
-	DevicePushType_APNS:                  []byte("FILL_ME"),
-	DevicePushType_FCM:                   []byte("FILL_ME"),
-}
-
 func (d *Device) Username() string {
 	if d == nil {
 		return "unknown username"
@@ -21,7 +15,3 @@ func (d *Device) Username() string {
 }
 
 func (d Device) IsNode() {} // required by gqlgen
-
-func (d DevicePushIdentifier) IsNode() {} // required by gqlgen
-
-func (d DevicePushConfig) IsNode() {} // required by gqlgen

@@ -1,7 +1,7 @@
 package core
 
 import (
-	"berty.tech/core/entity"
+	"berty.tech/core/push"
 	"encoding/hex"
 	"fmt"
 	"sync"
@@ -48,14 +48,14 @@ func (n *MobileNotification) Receive(data string) {
 func (n *MobileNotification) ReceiveAPNSToken(token []byte) {
 	n.ReceiveToken(&notification.Token{
 		Value: token,
-		Type:  entity.DevicePushType_APNS,
+		Type:  push.DevicePushType_APNS,
 	})
 }
 
 func (n *MobileNotification) ReceiveFCMToken(token []byte) {
 	n.ReceiveToken(&notification.Token{
 		Value: token,
-		Type:  entity.DevicePushType_FCM,
+		Type:  push.DevicePushType_FCM,
 	})
 }
 

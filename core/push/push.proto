@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package berty.push;
+
+option go_package = "berty.tech/core/push";
+
+import "gogoproto/gogo.proto";
+
+enum DevicePushType {
+  UnknownDevicePushType = 0;
+  APNS = 1;
+  FCM = 2;
+}
+
+enum Priority {
+  UnknownPriority = 0;
+  Low = 1;
+  Normal = 2;
+}
+
+message PushDestination {
+  bytes nonce = 1;
+  DevicePushType push_type = 2;
+  bytes push_id = 3;
+}
+
+message PushNativeIdentifier {
+  string package_id = 1 [(gogoproto.customname) = "PackageID"];
+  bytes device_token = 2;
+}
+
+
+message PushData {
+  bytes push_identifier = 1;
+  bytes envelope = 2;
+  Priority priority = 3;
+}

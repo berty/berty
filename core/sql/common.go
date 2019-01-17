@@ -8,6 +8,8 @@ func AllTables() []string {
 		// entities
 		"sender_alias",
 		"device",
+		"device_push_identifier",
+		"device_push_config",
 		"contact",
 		"conversation",
 		"conversation_member",

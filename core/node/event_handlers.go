@@ -1,6 +1,7 @@
 package node
 
 import (
+	"berty.tech/core/push"
 	"context"
 	"fmt"
 	"net/url"
@@ -376,25 +377,29 @@ func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs)
 }
 
 func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
-	push, err := event.GetDevicePushToAttrs()
+	pushAttrs, err := event.GetDevicePushToAttrs()
 
 	if err != nil {
 		return errorcodes.ErrDeserialization.New()
 	}
 
-	identifier, err := n.crypto.Decrypt(push.PushIdentifier)
+	identifier, err := n.crypto.Decrypt(pushAttrs.PushIdentifier)
 
 	if err != nil {
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
-	pushDestination := &p2p.DevicePushToDecrypted{}
+	pushDestination := &push.PushDestination{}
 
-	if err := push.Unmarshal(identifier); err != nil {
+	if err := pushAttrs.Unmarshal(identifier); err != nil {
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
-	if err := n.pushManager.Dispatch(push, pushDestination); err != nil {
+	if err := n.pushManager.Dispatch(&push.PushData{
+		PushIdentifier: pushAttrs.PushIdentifier,
+		Envelope:       pushAttrs.Envelope,
+		Priority:       pushAttrs.Priority,
+	}, pushDestination); err != nil {
 		return errorcodes.ErrPush.Wrap(err)
 	}
 

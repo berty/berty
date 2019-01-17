@@ -7,6 +7,7 @@ import "entity/conversation.proto";
 import "entity/message.proto";
 import "entity/device.proto";
 import "entity/sender_alias.proto";
+import "push/push.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "berty.tech/core/api/p2p";
@@ -116,7 +117,7 @@ message SenderAliasUpdateAttrs { repeated berty.entity.SenderAlias aliases = 1; 
 //
 
 message DeviceUpdatePushConfigAttrs { berty.entity.Device device = 1; }
-message DevicePushToAttrs { bytes push_identifier = 1; bytes envelope = 2; Priority priority = 3; }
+message DevicePushToAttrs { bytes push_identifier = 1; bytes envelope = 2; berty.push.Priority priority = 3; }
 
 //
 // Other events
@@ -127,10 +128,4 @@ message DevicePushToAttrs { bytes push_identifier = 1; bytes envelope = 2; Prior
 message NodeAttrs {
   int32 kind = 1;
   bytes attributes = 2;
-}
-
-enum Priority {
-  UnknownPriority = 0;
-  Low = 1;
-  Normal = 2;
 }

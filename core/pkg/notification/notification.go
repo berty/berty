@@ -3,7 +3,7 @@
 package notification
 
 import (
-	"berty.tech/core/entity"
+	"berty.tech/core/push"
 	"encoding/hex"
 	"fmt"
 	"path"
@@ -27,7 +27,7 @@ type Driver interface {
 
 type Token struct {
 	Value []byte
-	Type  entity.DevicePushType
+	Type  push.DevicePushType
 }
 
 func (t *Token) String() string {

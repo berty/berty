@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
+	"berty.tech/core/push"
 	"berty.tech/core/sql"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"go.uber.org/zap"
@@ -216,9 +217,9 @@ func (r *mutationResolver) DevicePushConfigNativeUnregister(ctx context.Context,
 }
 
 func (r *mutationResolver) DevicePushConfigCreate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceID string, pushType *int32, pushID []byte, relayID []byte) (*entity.DevicePushConfig, error) {
-	var pushTypeEnum entity.DevicePushType
+	var pushTypeEnum push.DevicePushType
 	if pushType != nil {
-		pushTypeEnum = entity.DevicePushType(*pushType)
+		pushTypeEnum = push.DevicePushType(*pushType)
 	}
 
 	return r.client.DevicePushConfigCreate(ctx, &entity.DevicePushConfig{
@@ -237,9 +238,9 @@ func (r *mutationResolver) DevicePushConfigRemove(ctx context.Context, id string
 }
 
 func (r *mutationResolver) DevicePushConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceID string, pushType *int32, pushID []byte, relayID []byte) (*entity.DevicePushConfig, error) {
-	var pushTypeEnum entity.DevicePushType
+	var pushTypeEnum push.DevicePushType
 	if pushType != nil {
-		pushTypeEnum = entity.DevicePushType(*pushType)
+		pushTypeEnum = push.DevicePushType(*pushType)
 	}
 
 	return r.client.DevicePushConfigUpdate(ctx, &entity.DevicePushConfig{
