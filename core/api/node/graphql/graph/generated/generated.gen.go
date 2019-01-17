@@ -12959,6 +12959,9 @@ func (ec *executionContext) _BertyPushPushNativeIdentifier(ctx context.Context, 
 			}
 		case "deviceToken":
 			out.Values[i] = ec._BertyPushPushNativeIdentifier_deviceToken(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -13006,20 +13009,14 @@ func (ec *executionContext) _BertyPushPushNativeIdentifier_deviceToken(ctx conte
 		return obj.DeviceToken, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]byte)
+	res := resTmp.(string)
 	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalByte(res[idx1])
-		}()
-	}
-
-	return arr1
+	return models.MarshalString(res)
 }
 
 var googleProtobufDescriptorProtoImplementors = []string{"GoogleProtobufDescriptorProto"}
@@ -22807,7 +22804,7 @@ type BertyPushPushDestination  {
 }
 type BertyPushPushNativeIdentifier  {
     packageId: String!
-    deviceToken: [Byte!]
+    deviceToken: String!
 }
 type BertyPushPushData  {
     pushIdentifier: [Byte!]

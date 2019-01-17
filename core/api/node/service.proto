@@ -365,7 +365,7 @@ message DevicePushConfigListOutput {
 
 message DevicePushConfigCreateInput {
   bytes relay_id = 1 [(gql.graphql_nullable) = true, (gogoproto.customname) = "RelayID"];
-  bytes device_token = 2;
+  string device_token = 2;
   string package_id = 3  [(gogoproto.customname) = "PackageID"];
   berty.push.DevicePushType push_type = 4;
 }

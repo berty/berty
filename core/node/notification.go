@@ -15,7 +15,7 @@ func WithNotificationDriver(driver notification.Driver) NewNodeOption {
 }
 
 func (n *Node) DisplayNotification(payload *notification.Payload) {
-	if err := n.notificationDriver.DisplayNotification(payload); err != nil {
+	if err := n.notificationDriver.Display(payload); err != nil {
 		logger().Error("Notification", zap.Error(err))
 	}
 }
@@ -34,7 +34,8 @@ func (n *Node) UseNotificationDriver() {
 				)
 			case token := <-tokenChan:
 				logger().Debug("node receive notification token",
-					zap.String("token", fmt.Sprintf("%+v", token.String())),
+					zap.String("type", token.Type.String()),
+					zap.String("hash", token.Hash()),
 				)
 			case <-n.shutdown:
 				logger().Debug("node notification driver shutdown")

@@ -58,7 +58,7 @@ func (d *FCMDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDesti
 		"berty-envelope": base64.StdEncoding.EncodeToString(pushAttrs.Envelope),
 	}
 
-	deviceToken := string(fcmIdentifier.DeviceToken)
+	deviceToken := fcmIdentifier.DeviceToken
 
 	if _, err := d.client.NewFcmMsgTo(deviceToken, payload).Send(); err != nil {
 		return errorcodes.ErrPushProvider.Wrap(err)

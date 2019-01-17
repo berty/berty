@@ -26,7 +26,7 @@ message PushDestination {
 
 message PushNativeIdentifier {
   string package_id = 1 [(gogoproto.customname) = "PackageID"];
-  bytes device_token = 2;
+  string device_token = 2;
 }
 
 

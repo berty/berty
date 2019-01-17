@@ -329,7 +329,7 @@ type BertyPushPushDestination  {
 }
 type BertyPushPushNativeIdentifier  {
     packageId: String!
-    deviceToken: [Byte!]
+    deviceToken: String!
 }
 type BertyPushPushData  {
     pushIdentifier: [Byte!]

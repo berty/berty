@@ -3,7 +3,6 @@ package push
 import (
 	"berty.tech/core/pkg/errorcodes"
 	"encoding/base64"
-	"encoding/hex"
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
 	"github.com/sideshow/apns2/payload"
@@ -87,7 +86,7 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 	}
 
 	notification := &apns2.Notification{}
-	notification.DeviceToken = hex.EncodeToString(apnsIdentifier.DeviceToken)
+	notification.DeviceToken = apnsIdentifier.DeviceToken
 	notification.Topic = "chat.berty"
 	notification.Payload = pushPayload
 

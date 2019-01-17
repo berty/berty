@@ -1,9 +1,12 @@
-package chat.berty.core;
+package chat.berty.core.notification;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -15,16 +18,11 @@ import java.util.concurrent.ThreadLocalRandom;
 import chat.berty.main.MainActivity;
 import chat.berty.main.R;
 
-public class DisplayNotification extends AsyncTask {
+public class NotificationDisplay extends AsyncTask {
     private static final String TAG = "DisplayNotification";
     private static final String CHANNEL_ID = "berty-chat-android-notification-id";
     private static final String CHANNEL_NAME = "berty.chat.android.core.notification.name";
     private static final String CHANNEL_DESCRIPTION = "berty.chat.android.core.notification.description";
-
-    private final WeakReference<Context> contextWeakReference;
-    private final WeakReference<ReactApplicationContext> reactContextWeakReference;
-
-    private final android.app.NotificationManager notificationManager;
 
     private final String title;
 
@@ -41,8 +39,6 @@ public class DisplayNotification extends AsyncTask {
      */
     @Override
     protected void onPostExecute(Object o) {
-        contextWeakReference.clear();
-        reactContextWeakReference.clear();
         super.onPostExecute(o);
     }
 
@@ -51,11 +47,8 @@ public class DisplayNotification extends AsyncTask {
     private final String url;
     private final String sound;
 
-    DisplayNotification(Context context, ReactApplicationContext reactContext, android.app.NotificationManager notificationManager,
-                        String title, String body, String icon, String sound, String url) {
-        this.contextWeakReference = new WeakReference<>(context);
-        this.reactContextWeakReference = new WeakReference<>(reactContext);
-        this.notificationManager = notificationManager;
+    NotificationDisplay(String title, String body, String icon, String sound, String url) {
+        this.createNotificationChannel();
         this.title = title;
         this.body = body;
         this.icon = icon;
@@ -63,6 +56,24 @@ public class DisplayNotification extends AsyncTask {
         this.url = url;
     }
 
+    private void createNotificationChannel() {
+        if (!NotificationModule.isInstantiated()) { return; }
+
+        Context context = NotificationModule.getInstance().getReactApplicationContext().getApplicationContext();
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = CHANNEL_NAME;
+            String description = CHANNEL_DESCRIPTION;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     /**
      * Override this method to perform a computation on a background thread. The
@@ -80,9 +91,9 @@ public class DisplayNotification extends AsyncTask {
      */
     @Override
     protected Object doInBackground(Object[] objects) {
-        Context context = contextWeakReference.get();
-        if (context == null) return null;
+        if (!NotificationModule.isInstantiated()) { return null; }
 
+        Context context = NotificationModule.getInstance().getReactApplicationContext().getApplicationContext();
 
         int m =  new Random().nextInt(6) + 5;
         String notificationID = Integer.toString(m);
@@ -106,7 +117,7 @@ public class DisplayNotification extends AsyncTask {
                 .setVibrate(new long[]{0, 1000})
                 .setContentIntent(pendingIntent);
 
-        notificationManager.notify(m, mBuilder.build());
+        ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(m, mBuilder.build());
         return null;
     }
 }

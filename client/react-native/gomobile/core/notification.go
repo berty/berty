@@ -2,7 +2,6 @@ package core
 
 import (
 	"berty.tech/core/push"
-	"encoding/hex"
 	"fmt"
 	"sync"
 
@@ -13,7 +12,7 @@ import (
 var _ notification.Driver = (*MobileNotification)(nil)
 
 type NativeNotificationDriver interface {
-	DisplayNotification(title, body, icon, sound, url string) error
+	Display(title, body, icon, sound, url string) error
 	Register() error
 	Unregister() error
 	RefreshToken() error
@@ -62,7 +61,7 @@ func (n *MobileNotification) ReceiveFCMToken(token []byte) {
 func (n *MobileNotification) ReceiveToken(token *notification.Token) {
 	logger().Debug("receive token",
 		zap.String("type", token.Type.String()),
-		zap.String("token", hex.EncodeToString(token.Value)),
+		zap.String("hash", token.Hash()),
 	)
 	n.tokenSubscribersMutex.Lock()
 	for i := range n.subscribers {
@@ -114,15 +113,11 @@ func (n *MobileNotification) UnsubscribeToken(sub chan *notification.Token) {
 // Native
 //
 func (n *MobileNotification) Display(p *notification.Payload) error {
-	return n.Native.DisplayNotification(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
+	return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
 }
 
 func (n *MobileNotification) Register() error {
 	return n.Native.Register()
-}
-
-func (n *MobileNotification) DisplayNotification(p *notification.Payload) error {
-	return n.Native.DisplayNotification(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
 }
 
 func (n *MobileNotification) Unregister() error {

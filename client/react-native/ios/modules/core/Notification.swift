@@ -29,7 +29,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     completionHandler([.alert, .badge, .sound])
   }
 
-  func displayNotification(_ title: String?, body: String?, icon: String?, sound: String?, url: String?) throws {
+  func display(_ title: String?, body: String?, icon: String?, sound: String?, url: String?) throws {
     guard let utitle = title, let ubody = body else {
       throw NotificationError.invalidArgument
     }
@@ -85,8 +85,10 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       throw err!
     }
 
-    let application = UIApplication.shared
-    application.registerForRemoteNotifications()
+    DispatchQueue.main.async {
+      let application = UIApplication.shared
+      application.registerForRemoteNotifications()
+    }
   }
 
   func unregister() throws {

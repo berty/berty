@@ -34,7 +34,7 @@ func WithPushTokenSubscriber() NewNodeOption {
 
 				pushID := &push.PushNativeIdentifier{
 					PackageID:   packageID,
-					DeviceToken: token.Value,
+					DeviceToken: token.Hash(),
 				}
 
 				pushIDBytes, err := pushID.Marshal()
