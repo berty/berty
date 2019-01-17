@@ -1,9 +1,12 @@
 package chat.berty.core.notification;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -45,11 +48,31 @@ public class NotificationDisplay extends AsyncTask {
     private final String sound;
 
     NotificationDisplay(String title, String body, String icon, String sound, String url) {
+        this.createNotificationChannel();
         this.title = title;
         this.body = body;
         this.icon = icon;
         this.sound = sound;
         this.url = url;
+    }
+
+    private void createNotificationChannel() {
+        if (!NotificationModule.isInstantiated()) { return; }
+
+        Context context = NotificationModule.getInstance().getReactApplicationContext().getApplicationContext();
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = CHANNEL_NAME;
+            String description = CHANNEL_DESCRIPTION;
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
     /**
@@ -94,7 +117,7 @@ public class NotificationDisplay extends AsyncTask {
                 .setVibrate(new long[]{0, 1000})
                 .setContentIntent(pendingIntent);
 
-        ((android.app.NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(m, mBuilder.build());
+        ((NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE)).notify(m, mBuilder.build());
         return null;
     }
 }
