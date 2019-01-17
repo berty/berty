@@ -85,8 +85,10 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       throw err!
     }
 
-    let application = UIApplication.shared
-    application.registerForRemoteNotifications()
+    DispatchQueue.main.async {
+      let application = UIApplication.shared
+      application.registerForRemoteNotifications()
+    }
   }
 
   func unregister() throws {
