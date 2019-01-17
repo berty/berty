@@ -1,4 +1,10 @@
-import { NativeModules, TextInput, View, Text, TouchableOpacity } from 'react-native'
+import {
+  NativeModules,
+  TextInput,
+  View,
+  Text,
+  TouchableOpacity,
+} from 'react-native'
 import React, { PureComponent } from 'react'
 
 import { Flex, Loader, Screen } from '../../Library'
@@ -96,11 +102,42 @@ class Auth extends PureComponent {
       return (
         <Screen style={{ backgroundColor: colors.background, flex: 1 }}>
           <Flex.Cols align='center'>
-            <View style={{ height: 320, padding: 20, backgroundColor: colors.background, width: '100%' }} >
-              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', fontSize: 24 }} >{t('auth.welcome-to-berty')}</Text>
-              <Text style={{ color: colors.blue, textAlign: 'center', alignSelf: 'stretch', marginTop: 5 }} >{t('auth.get-started')}</Text>
+            <View
+              style={{
+                height: 320,
+                padding: 20,
+                backgroundColor: colors.background,
+                width: '100%',
+              }}
+            >
+              <Text
+                style={{
+                  color: colors.blue,
+                  textAlign: 'center',
+                  alignSelf: 'stretch',
+                  fontSize: 24,
+                }}
+              >
+                {t('auth.welcome-to-berty')}
+              </Text>
+              <Text
+                style={{
+                  color: colors.blue,
+                  textAlign: 'center',
+                  alignSelf: 'stretch',
+                  marginTop: 5,
+                }}
+              >
+                {t('auth.get-started')}
+              </Text>
               <TextInput
-                style={{ color: colors.fakeBlack, borderColor: colors.borderGrey, borderWidth: 1, marginTop: 10, padding: 10 }}
+                style={{
+                  color: colors.fakeBlack,
+                  borderColor: colors.borderGrey,
+                  borderWidth: 1,
+                  marginTop: 10,
+                  padding: 10,
+                }}
                 placeholder={t('auth.nickname-placeholder')}
                 ref={nicknameInput => {
                   this.nicknameInput = nicknameInput
@@ -109,15 +146,21 @@ class Auth extends PureComponent {
                 onChangeText={nickname => this.setState({ nickname })}
                 value={this.state.nickname}
               />
-              <TouchableOpacity onPress={() => this.open(this.state.nickname)}>
-                <Text style={{
-                  color: colors.white,
-                  backgroundColor: colors.blue,
-                  textAlign: 'center',
-                  fontSize: 18,
-                  marginTop: 10,
-                  padding: 8,
-                }} >
+              <TouchableOpacity
+                onPress={() => this.open(this.state.nickname)}
+                disabled={this.state.nickname.length === 0}
+              >
+                <Text
+                  style={{
+                    color: colors.white,
+                    backgroundColor: colors.blue,
+                    opacity: this.state.nickname.length === 0 ? 0.3 : 1,
+                    textAlign: 'center',
+                    fontSize: 18,
+                    marginTop: 10,
+                    padding: 8,
+                  }}
+                >
                   {t('auth.lets-chat')}
                 </Text>
               </TouchableOpacity>
