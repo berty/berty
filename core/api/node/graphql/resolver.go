@@ -16,6 +16,7 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/deviceinfo"
+	"berty.tech/core/push"
 	"berty.tech/core/sql"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"go.uber.org/zap"
@@ -49,6 +50,11 @@ func (r *Resolver) BertyEntityDevice() generated.BertyEntityDeviceResolver {
 func (r *Resolver) BertyEntityDevicePushIdentifier() generated.BertyEntityDevicePushIdentifierResolver {
 	return &bertyEntityDevicePushIdentifierResolver{r}
 }
+
+func (r *Resolver) BertyEntityDevicePushConfig() generated.BertyEntityDevicePushConfigResolver {
+	return &bertyEntityDevicePushConfigResolver{r}
+}
+
 func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
 	return &bertyP2pEventResolver{r}
 }
@@ -114,6 +120,12 @@ type bertyEntityDevicePushIdentifierResolver struct{ *Resolver }
 
 func (r *bertyEntityDevicePushIdentifierResolver) ID(ctx context.Context, obj *entity.DevicePushIdentifier) (string, error) {
 	return "device_push_identifier:" + obj.ID, nil
+}
+
+type bertyEntityDevicePushConfigResolver struct{ *Resolver }
+
+func (r *bertyEntityDevicePushConfigResolver) ID(ctx context.Context, obj *entity.DevicePushConfig) (string, error) {
+	return "device_push_config:" + obj.ID, nil
 }
 
 type bertyEntityDeviceResolver struct{ *Resolver }
@@ -188,6 +200,56 @@ func (r *googleProtobufMethodOptionsResolver) IdempotencyLevel(ctx context.Conte
 }
 
 type mutationResolver struct{ *Resolver }
+
+func (r *mutationResolver) ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfID string, currentDevice *entity.Device, currentDeviceID string, cryptoParams []byte, pushRelayIDAPNS []byte, pushRelayIDFCM []byte) (*entity.Config, error) {
+	return r.client.ConfigUpdate(ctx, &entity.Config{
+		PushRelayIDAPNS: pushRelayIDAPNS,
+		PushRelayIDFCM:  pushRelayIDFCM,
+	})
+}
+
+func (r *mutationResolver) DevicePushConfigNativeRegister(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.DevicePushConfigNativeRegister(ctx, &node.Void{})
+}
+
+func (r *mutationResolver) DevicePushConfigNativeUnregister(ctx context.Context, T bool) (*node.Void, error) {
+	return r.client.DevicePushConfigNativeUnregister(ctx, &node.Void{})
+}
+
+func (r *mutationResolver) DevicePushConfigCreate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceID string, pushType *int32, pushID []byte, relayID []byte) (*entity.DevicePushConfig, error) {
+	var pushTypeEnum push.DevicePushType
+	if pushType != nil {
+		pushTypeEnum = push.DevicePushType(*pushType)
+	}
+
+	return r.client.DevicePushConfigCreate(ctx, &entity.DevicePushConfig{
+		PushID:   pushID,
+		PushType: pushTypeEnum,
+		RelayID:  relayID,
+	})
+}
+
+func (r *mutationResolver) DevicePushConfigRemove(ctx context.Context, id string) (*entity.DevicePushConfig, error) {
+	id = strings.SplitN(id, ":", 2)[1]
+
+	return r.client.DevicePushConfigRemove(ctx, &entity.DevicePushConfig{
+		ID: id,
+	})
+}
+
+func (r *mutationResolver) DevicePushConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceID string, pushType *int32, pushID []byte, relayID []byte) (*entity.DevicePushConfig, error) {
+	var pushTypeEnum push.DevicePushType
+	if pushType != nil {
+		pushTypeEnum = push.DevicePushType(*pushType)
+	}
+
+	return r.client.DevicePushConfigUpdate(ctx, &entity.DevicePushConfig{
+		ID:       id,
+		PushID:   pushID,
+		PushType: pushTypeEnum,
+		RelayID:  relayID,
+	})
+}
 
 func (r *mutationResolver) RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error) {
 	return r.client.RunIntegrationTests(ctx, &node.IntegrationTestInput{
@@ -415,6 +477,10 @@ func (r *mutationResolver) EventSeen(ctx context.Context, id string) (*p2p.Event
 	return r.client.EventSeen(ctx, &p2p.Event{
 		ID: id,
 	})
+}
+
+func (r *queryResolver) ConfigPublic(ctx context.Context, void bool) (*entity.Config, error) {
+	return r.client.ConfigPublic(ctx, &node.Void{})
 }
 
 func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error) {
@@ -774,6 +840,10 @@ func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan
 		}
 	}()
 	return channel, nil
+}
+
+func (r *queryResolver) DevicePushConfigList(ctx context.Context, void bool) (*node.DevicePushConfigListOutput, error) {
+	return r.client.DevicePushConfigList(ctx, &node.Void{})
 }
 
 func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string, _ *int64, _ *int64, _ *float64, _ *float64, mtype *int32) (<-chan *network.BandwidthStats, error) {

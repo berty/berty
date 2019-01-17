@@ -1,7 +1,6 @@
 package push
 
 import (
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/pkg/errorcodes"
 	"encoding/base64"
 	"github.com/sideshow/apns2"
@@ -58,31 +57,31 @@ func NewAPNSDispatcher(path string) (Dispatcher, error) {
 	return dispatcher, nil
 }
 
-func (n *APNSDispatcher) CanDispatch(push *p2p.DevicePushToAttrs, pushDestination *p2p.DevicePushToDecrypted) bool {
-	if pushDestination.PushType != p2p.DevicePushType_APNS {
+func (d *APNSDispatcher) CanDispatch(pushAttrs *PushData, pushDestination *PushDestination) bool {
+	if pushDestination.PushType != DevicePushType_APNS {
 		return false
 	}
 
-	apnsIdentifier := &p2p.DevicePushIdentifier{}
-	if err := apnsIdentifier.Unmarshal(push.PushIdentifier); err != nil {
+	apnsIdentifier := &PushNativeIdentifier{}
+	if err := apnsIdentifier.Unmarshal(pushAttrs.PushIdentifier); err != nil {
 		return false
 	}
 
-	if n.bundleID != apnsIdentifier.PackageID {
+	if d.bundleID != apnsIdentifier.PackageID {
 		return false
 	}
 
 	return true
 }
 
-func (n *APNSDispatcher) Dispatch(push *p2p.DevicePushToAttrs, pushDestination *p2p.DevicePushToDecrypted) error {
-	apnsIdentifier := &p2p.DevicePushIdentifier{}
+func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDestination) error {
+	apnsIdentifier := &PushNativeIdentifier{}
 	if err := apnsIdentifier.Unmarshal(pushDestination.PushId); err != nil {
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
-	pushPayload := payload.NewPayload().Custom("berty-envelope", base64.StdEncoding.EncodeToString(push.Envelope))
-	if push.Priority == p2p.Priority_Normal {
+	pushPayload := payload.NewPayload().Custom("berty-envelope", base64.StdEncoding.EncodeToString(pushAttrs.Envelope))
+	if pushAttrs.Priority == Priority_Normal {
 		pushPayload = pushPayload.Badge(1)
 	}
 
@@ -91,7 +90,7 @@ func (n *APNSDispatcher) Dispatch(push *p2p.DevicePushToAttrs, pushDestination *
 	notification.Topic = "chat.berty"
 	notification.Payload = pushPayload
 
-	_, err := n.client.Push(notification)
+	_, err := d.client.Push(notification)
 
 	if err != nil {
 		return errorcodes.ErrPushProvider.Wrap(err)

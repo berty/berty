@@ -10,8 +10,11 @@ import "network/peer.proto";
 import "entity/config.proto";
 import "entity/contact.proto";
 import "entity/device.proto";
+import "entity/device_push_config.proto";
+import "entity/device_push_identifier.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
+import "push/push.proto";
 import "pkg/deviceinfo/deviceinfo.proto";
 
 import "gogoproto/gogo.proto";
@@ -52,6 +55,17 @@ service Service {
   };
   rpc EventSeen (berty.p2p.Event) returns (berty.p2p.Event) {
     option (gql.graphql_input) = ".gql.Node";
+    option (gql.graphql_type) = "Mutation";
+  }
+
+  //
+  // Config
+  //
+  rpc ConfigPublic (Void) returns (berty.entity.Config) {
+    option (gql.graphql_type) = "Query";
+  }
+
+  rpc ConfigUpdate (berty.entity.Config) returns (berty.entity.Config) {
     option (gql.graphql_type) = "Mutation";
   }
 
@@ -116,6 +130,28 @@ service Service {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
+
+  rpc DevicePushConfigList (Void) returns (DevicePushConfigListOutput) {
+    option (gql.graphql_type) = "Query";
+  };
+  rpc DevicePushConfigCreate (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig) {
+    option (gql.graphql_type) = "Mutation";
+  }
+  rpc DevicePushConfigNativeRegister (Void) returns (Void) {
+    option (gql.graphql_type) = "Mutation";
+  }
+  rpc DevicePushConfigNativeUnregister (Void) returns (Void) {
+    option (gql.graphql_type) = "Mutation";
+  }
+
+  rpc DevicePushConfigRemove (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig) {
+    option (gql.graphql_input) = ".gql.Node";
+    option (gql.graphql_type) = "Mutation";
+  }
+  rpc DevicePushConfigUpdate (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig) {
+    option (gql.graphql_type) = "Mutation";
+  }
+
 
   //rpc ConversationLeave(berty.entity.Conversation) returns (berty.entity.Conversation);
   //rpc ConversationJoinRequest(berty.entity.Conversation) returns (berty.entity.Conversation);
@@ -244,6 +280,8 @@ message CommitLog {
     berty.entity.Conversation conversation = 104;
     berty.entity.ConversationMember conversation_member = 105;
     berty.p2p.Event event = 106;
+    berty.entity.DevicePushConfig device_push_config = 107;
+    berty.entity.DevicePushIdentifier device_push_identifier = 108;
   }
 
   Operation operation = 1;
@@ -315,6 +353,21 @@ message ConversationCreateInput {
 message ConversationManageMembersInput {
   berty.entity.Conversation conversation = 1;
   repeated berty.entity.ConversationMember members = 2;
+}
+
+message DevicePushConfigEdge {
+  berty.entity.DevicePushConfig node = 1;
+  string cursor = 2;
+}
+message DevicePushConfigListOutput {
+  repeated entity.DevicePushConfig edges = 1;
+}
+
+message DevicePushConfigCreateInput {
+  bytes relay_id = 1 [(gql.graphql_nullable) = true, (gogoproto.customname) = "RelayID"];
+  string device_token = 2;
+  string package_id = 3  [(gogoproto.customname) = "PackageID"];
+  berty.push.DevicePushType push_type = 4;
 }
 
 //

@@ -23,6 +23,8 @@ func init() {
 	registerServerStream("berty.node.EventList", NodeEventList)
 	registerUnary("berty.node.GetEvent", NodeGetEvent)
 	registerUnary("berty.node.EventSeen", NodeEventSeen)
+	registerUnary("berty.node.ConfigPublic", NodeConfigPublic)
+	registerUnary("berty.node.ConfigUpdate", NodeConfigUpdate)
 	registerUnary("berty.node.ContactRequest", NodeContactRequest)
 	registerUnary("berty.node.ContactAcceptRequest", NodeContactAcceptRequest)
 	registerUnary("berty.node.ContactRemove", NodeContactRemove)
@@ -39,6 +41,12 @@ func init() {
 	registerUnary("berty.node.ConversationMember", NodeConversationMember)
 	registerUnary("berty.node.ConversationRead", NodeConversationRead)
 	registerUnary("berty.node.ConversationRemove", NodeConversationRemove)
+	registerUnary("berty.node.DevicePushConfigList", NodeDevicePushConfigList)
+	registerUnary("berty.node.DevicePushConfigCreate", NodeDevicePushConfigCreate)
+	registerUnary("berty.node.DevicePushConfigNativeRegister", NodeDevicePushConfigNativeRegister)
+	registerUnary("berty.node.DevicePushConfigNativeUnregister", NodeDevicePushConfigNativeUnregister)
+	registerUnary("berty.node.DevicePushConfigRemove", NodeDevicePushConfigRemove)
+	registerUnary("berty.node.DevicePushConfigUpdate", NodeDevicePushConfigUpdate)
 	registerUnary("berty.node.HandleEvent", NodeHandleEvent)
 	registerUnary("berty.node.GenerateFakeData", NodeGenerateFakeData)
 	registerUnary("berty.node.RunIntegrationTests", NodeRunIntegrationTests)
@@ -195,6 +203,46 @@ func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte)
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().EventSeen(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeConfigPublic(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConfigPublic")
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConfigPublic(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeConfigUpdate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConfigUpdate")
+	var typedInput entity.Config
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConfigUpdate(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),
@@ -531,6 +579,126 @@ func NodeConversationRemove(client *client.Client, ctx context.Context, jsonInpu
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationRemove(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeDevicePushConfigList(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DevicePushConfigList")
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().DevicePushConfigList(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeDevicePushConfigCreate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DevicePushConfigCreate")
+	var typedInput entity.DevicePushConfig
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().DevicePushConfigCreate(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeDevicePushConfigNativeRegister(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DevicePushConfigNativeRegister")
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().DevicePushConfigNativeRegister(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeDevicePushConfigNativeUnregister(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DevicePushConfigNativeUnregister")
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().DevicePushConfigNativeUnregister(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeDevicePushConfigRemove(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DevicePushConfigRemove")
+	var typedInput entity.DevicePushConfig
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().DevicePushConfigRemove(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeDevicePushConfigUpdate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.DevicePushConfigUpdate")
+	var typedInput entity.DevicePushConfig
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().DevicePushConfigUpdate(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),

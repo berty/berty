@@ -100,15 +100,9 @@ func (n *Node) BroadcastEventToContacts(ctx context.Context, event *p2p.Event) e
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	var contacts []*entity.Contact
+	contacts, err := n.allTrustedContacts(ctx)
 
-	sql := n.sql(ctx)
-	query := sql.Model(entity.Contact{}).Where("status IN (?)", []entity.Contact_Status{
-		entity.Contact_IsFriend,
-		entity.Contact_IsTrustedFriend,
-	})
-
-	if err := query.Find(&contacts).Error; err != nil {
+	if err != nil {
 		return errorcodes.ErrDb.Wrap(err)
 	}
 

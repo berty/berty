@@ -166,6 +166,30 @@ export const ValueBertyEntitySenderAliasInputStatus = {
   3: 'RECEIVED',
 }
 
+export const BertyPushDevicePushTypeInputDevicePushType = {
+  UnknownDevicePushType: 0,
+  APNS: 1,
+  FCM: 2,
+}
+
+export const ValueBertyPushDevicePushTypeInputDevicePushType = {
+  0: 'UnknownDevicePushType',
+  1: 'APNS',
+  2: 'FCM',
+}
+
+export const BertyPushPriorityInputPriority = {
+  UnknownPriority: 0,
+  Low: 1,
+  Normal: 2,
+}
+
+export const ValueBertyPushPriorityInputPriority = {
+  0: 'UnknownPriority',
+  1: 'Low',
+  2: 'Normal',
+}
+
 export const BertyP2pKindInputKind = {
   Unknown: 0,
   Sent: 101,
@@ -204,18 +228,6 @@ export const ValueBertyP2pKindInputKind = {
   601: 'DeviceUpdatePushConfig',
   602: 'DevicePushTo',
   99: 'Node',
-}
-
-export const BertyP2pPriorityInputPriority = {
-  UnknownPriority: 0,
-  Low: 1,
-  Normal: 2,
-}
-
-export const ValueBertyP2pPriorityInputPriority = {
-  0: 'UnknownPriority',
-  1: 'Low',
-  2: 'Normal',
 }
 
 export const BertyP2pEventInputDirection = {

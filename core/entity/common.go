@@ -5,6 +5,7 @@ func AllEntities() []interface{} {
 		SenderAlias{},
 		Device{},
 		DevicePushIdentifier{},
+		DevicePushConfig{},
 		Contact{},
 		Conversation{},
 		ConversationMember{},

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package berty.entity;
+
+option go_package = "berty.tech/core/entity";
+
+import "api/protobuf/graphql/graphql.proto";
+import "push/push.proto";
+import "gogoproto/gogo.proto";
+import "google/protobuf/timestamp.proto";
+
+// Local unencrypted push configuration
+message DevicePushConfig {
+  string id = 1 [(gql.graphql_id) = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  string device_id = 4 [(gogoproto.customname) = "DeviceID"];
+
+  berty.push.DevicePushType push_type = 5;
+  bytes push_id = 6  [(gogoproto.customname) = "PushID"];
+  bytes relay_id = 7  [(gogoproto.customname) = "RelayID"];
+}

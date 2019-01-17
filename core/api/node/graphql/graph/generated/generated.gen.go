@@ -17,6 +17,7 @@ import (
 	entity "berty.tech/core/entity"
 	network "berty.tech/core/network"
 	deviceinfo "berty.tech/core/pkg/deviceinfo"
+	push "berty.tech/core/push"
 	graphql "github.com/99designs/gqlgen/graphql"
 	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
@@ -44,6 +45,7 @@ type ResolverRoot interface {
 	BertyEntityConversation() BertyEntityConversationResolver
 	BertyEntityConversationMember() BertyEntityConversationMemberResolver
 	BertyEntityDevice() BertyEntityDeviceResolver
+	BertyEntityDevicePushConfig() BertyEntityDevicePushConfigResolver
 	BertyEntityDevicePushIdentifier() BertyEntityDevicePushIdentifierResolver
 	BertyP2pEvent() BertyP2pEventResolver
 	GoogleProtobufFieldDescriptorProto() GoogleProtobufFieldDescriptorProtoResolver
@@ -69,6 +71,8 @@ type ComplexityRoot struct {
 		CurrentDevice   func(childComplexity int) int
 		CurrentDeviceId func(childComplexity int) int
 		CryptoParams    func(childComplexity int) int
+		PushRelayIdApns func(childComplexity int) int
+		PushRelayIdFcm  func(childComplexity int) int
 	}
 
 	BertyEntityContact struct {
@@ -113,6 +117,16 @@ type ComplexityRoot struct {
 		ApiVersion      func(childComplexity int) int
 		ContactId       func(childComplexity int) int
 		PushIdentifiers func(childComplexity int) int
+	}
+
+	BertyEntityDevicePushConfig struct {
+		Id        func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		DeviceId  func(childComplexity int) int
+		PushType  func(childComplexity int) int
+		PushId    func(childComplexity int) int
+		RelayId   func(childComplexity int) int
 	}
 
 	BertyEntityDevicePushIdentifier struct {
@@ -181,12 +195,14 @@ type ComplexityRoot struct {
 	}
 
 	BertyNodeCommitLogEntity struct {
-		Config             func(childComplexity int) int
-		Contact            func(childComplexity int) int
-		Device             func(childComplexity int) int
-		Conversation       func(childComplexity int) int
-		ConversationMember func(childComplexity int) int
-		Event              func(childComplexity int) int
+		Config               func(childComplexity int) int
+		Contact              func(childComplexity int) int
+		Device               func(childComplexity int) int
+		Conversation         func(childComplexity int) int
+		ConversationMember   func(childComplexity int) int
+		Event                func(childComplexity int) int
+		DevicePushConfig     func(childComplexity int) int
+		DevicePushIdentifier func(childComplexity int) int
 	}
 
 	BertyNodeContactEdge struct {
@@ -211,6 +227,15 @@ type ComplexityRoot struct {
 
 	BertyNodeDebugAttrs struct {
 		Msg func(childComplexity int) int
+	}
+
+	BertyNodeDevicePushConfigEdge struct {
+		Node   func(childComplexity int) int
+		Cursor func(childComplexity int) int
+	}
+
+	BertyNodeDevicePushConfigListOutput struct {
+		Edges func(childComplexity int) int
 	}
 
 	BertyNodeEventEdge struct {
@@ -400,6 +425,23 @@ type ComplexityRoot struct {
 
 	BertyPkgDeviceinfoDeviceInfos struct {
 		Infos func(childComplexity int) int
+	}
+
+	BertyPushPushData struct {
+		PushIdentifier func(childComplexity int) int
+		Envelope       func(childComplexity int) int
+		Priority       func(childComplexity int) int
+	}
+
+	BertyPushPushDestination struct {
+		Nonce    func(childComplexity int) int
+		PushType func(childComplexity int) int
+		PushId   func(childComplexity int) int
+	}
+
+	BertyPushPushNativeIdentifier struct {
+		PackageId   func(childComplexity int) int
+		DeviceToken func(childComplexity int) int
 	}
 
 	GoogleProtobufDescriptorProto struct {
@@ -612,21 +654,27 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		EventSeen              func(childComplexity int, id string) int
-		ContactRequest         func(childComplexity int, contact *entity.Contact, introText string) int
-		ContactAcceptRequest   func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ContactRemove          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ContactUpdate          func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ConversationCreate     func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
-		ConversationInvite     func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
-		ConversationExclude    func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
-		ConversationAddMessage func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
-		ConversationRead       func(childComplexity int, id string) int
-		ConversationRemove     func(childComplexity int, id string) int
-		GenerateFakeData       func(childComplexity int, T bool) int
-		RunIntegrationTests    func(childComplexity int, name string) int
-		DebugRequeueEvent      func(childComplexity int, eventId string) int
-		DebugRequeueAll        func(childComplexity int, T bool) int
+		EventSeen                        func(childComplexity int, id string) int
+		ConfigUpdate                     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayIdApns []byte, pushRelayIdFcm []byte) int
+		ContactRequest                   func(childComplexity int, contact *entity.Contact, introText string) int
+		ContactAcceptRequest             func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactRemove                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactUpdate                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ConversationCreate               func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
+		ConversationInvite               func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
+		ConversationExclude              func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
+		ConversationAddMessage           func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
+		ConversationRead                 func(childComplexity int, id string) int
+		ConversationRemove               func(childComplexity int, id string) int
+		DevicePushConfigCreate           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) int
+		DevicePushConfigNativeRegister   func(childComplexity int, T bool) int
+		DevicePushConfigNativeUnregister func(childComplexity int, T bool) int
+		DevicePushConfigRemove           func(childComplexity int, id string) int
+		DevicePushConfigUpdate           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) int
+		GenerateFakeData                 func(childComplexity int, T bool) int
+		RunIntegrationTests              func(childComplexity int, name string) int
+		DebugRequeueEvent                func(childComplexity int, eventId string) int
+		DebugRequeueAll                  func(childComplexity int, T bool) int
 	}
 
 	Query struct {
@@ -634,12 +682,14 @@ type ComplexityRoot struct {
 		Id                     func(childComplexity int, T bool) int
 		EventList              func(childComplexity int, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetEvent               func(childComplexity int, id string) int
+		ConfigPublic           func(childComplexity int, T bool) int
 		ContactList            func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		Contact                func(childComplexity int, filter *entity.Contact) int
 		ContactCheckPublicKey  func(childComplexity int, filter *entity.Contact) int
 		ConversationList       func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		Conversation           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
 		ConversationMember     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+		DevicePushConfigList   func(childComplexity int, T bool) int
 		DeviceInfos            func(childComplexity int, T bool) int
 		AppVersion             func(childComplexity int, T bool) int
 		Peers                  func(childComplexity int, T bool) int
@@ -677,6 +727,9 @@ type BertyEntityConversationMemberResolver interface {
 type BertyEntityDeviceResolver interface {
 	ID(ctx context.Context, obj *entity.Device) (string, error)
 }
+type BertyEntityDevicePushConfigResolver interface {
+	ID(ctx context.Context, obj *entity.DevicePushConfig) (string, error)
+}
 type BertyEntityDevicePushIdentifierResolver interface {
 	ID(ctx context.Context, obj *entity.DevicePushIdentifier) (string, error)
 }
@@ -709,6 +762,7 @@ type GqlNodeResolver interface {
 }
 type MutationResolver interface {
 	EventSeen(ctx context.Context, id string) (*p2p.Event, error)
+	ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayIdApns []byte, pushRelayIdFcm []byte) (*entity.Config, error)
 	ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error)
 	ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
@@ -719,6 +773,11 @@ type MutationResolver interface {
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error)
 	ConversationRead(ctx context.Context, id string) (*entity.Conversation, error)
 	ConversationRemove(ctx context.Context, id string) (*entity.Conversation, error)
+	DevicePushConfigCreate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) (*entity.DevicePushConfig, error)
+	DevicePushConfigNativeRegister(ctx context.Context, T bool) (*node.Void, error)
+	DevicePushConfigNativeUnregister(ctx context.Context, T bool) (*node.Void, error)
+	DevicePushConfigRemove(ctx context.Context, id string) (*entity.DevicePushConfig, error)
+	DevicePushConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) (*entity.DevicePushConfig, error)
 	GenerateFakeData(ctx context.Context, T bool) (*node.Void, error)
 	RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error)
 	DebugRequeueEvent(ctx context.Context, eventId string) (*p2p.Event, error)
@@ -729,12 +788,14 @@ type QueryResolver interface {
 	ID(ctx context.Context, T bool) (*network.Peer, error)
 	EventList(ctx context.Context, filter *p2p.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
 	GetEvent(ctx context.Context, id string) (*p2p.Event, error)
+	ConfigPublic(ctx context.Context, T bool) (*entity.Config, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
 	Contact(ctx context.Context, filter *entity.Contact) (*entity.Contact, error)
 	ContactCheckPublicKey(ctx context.Context, filter *entity.Contact) (*node.Bool, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
 	Conversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
+	DevicePushConfigList(ctx context.Context, T bool) (*node.DevicePushConfigListOutput, error)
 	DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
 	Peers(ctx context.Context, T bool) (*network.Peers, error)
@@ -766,6 +827,155 @@ func field_Mutation_EventSeen_args(rawArgs map[string]interface{}) (map[string]i
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_ConfigUpdate_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *entity.Contact
+	if tmp, ok := rawArgs["myself"]; ok {
+		var err error
+		var ptr1 entity.Contact
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["myself"] = arg3
+	var arg4 string
+	if tmp, ok := rawArgs["myselfId"]; ok {
+		var err error
+		arg4, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["myselfId"] = arg4
+	var arg5 *entity.Device
+	if tmp, ok := rawArgs["currentDevice"]; ok {
+		var err error
+		var ptr1 entity.Device
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityDeviceInput(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["currentDevice"] = arg5
+	var arg6 string
+	if tmp, ok := rawArgs["currentDeviceId"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["currentDeviceId"] = arg6
+	var arg7 []byte
+	if tmp, ok := rawArgs["cryptoParams"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg7 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg7[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["cryptoParams"] = arg7
+	var arg8 []byte
+	if tmp, ok := rawArgs["pushRelayIdApns"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg8 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg8[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pushRelayIdApns"] = arg8
+	var arg9 []byte
+	if tmp, ok := rawArgs["pushRelayIdFcm"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg9 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg9[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pushRelayIdFcm"] = arg9
 	return args, nil
 
 }
@@ -1410,6 +1620,263 @@ func field_Mutation_ConversationRemove_args(rawArgs map[string]interface{}) (map
 
 }
 
+func field_Mutation_DevicePushConfigCreate_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["deviceId"]; ok {
+		var err error
+		arg3, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deviceId"] = arg3
+	var arg4 *int32
+	if tmp, ok := rawArgs["pushType"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pushType"] = arg4
+	var arg5 []byte
+	if tmp, ok := rawArgs["pushId"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg5 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg5[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pushId"] = arg5
+	var arg6 []byte
+	if tmp, ok := rawArgs["relayId"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg6 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg6[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["relayId"] = arg6
+	return args, nil
+
+}
+
+func field_Mutation_DevicePushConfigNativeRegister_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_DevicePushConfigNativeUnregister_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_DevicePushConfigRemove_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_DevicePushConfigUpdate_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["deviceId"]; ok {
+		var err error
+		arg3, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["deviceId"] = arg3
+	var arg4 *int32
+	if tmp, ok := rawArgs["pushType"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pushType"] = arg4
+	var arg5 []byte
+	if tmp, ok := rawArgs["pushId"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg5 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg5[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["pushId"] = arg5
+	var arg6 []byte
+	if tmp, ok := rawArgs["relayId"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg6 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg6[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["relayId"] = arg6
+	return args, nil
+
+}
+
 func field_Mutation_GenerateFakeData_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 bool
@@ -1619,6 +2086,21 @@ func field_Query_GetEvent_args(rawArgs map[string]interface{}) (map[string]inter
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+
+}
+
+func field_Query_ConfigPublic_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
 	return args, nil
 
 }
@@ -2035,6 +2517,21 @@ func field_Query_ConversationMember_args(rawArgs map[string]interface{}) (map[st
 		}
 	}
 	args["contactId"] = arg6
+	return args, nil
+
+}
+
+func field_Query_DevicePushConfigList_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["T"]; ok {
+		var err error
+		arg0, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["T"] = arg0
 	return args, nil
 
 }
@@ -2534,6 +3031,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityConfig.CryptoParams(childComplexity), true
 
+	case "BertyEntityConfig.pushRelayIdApns":
+		if e.complexity.BertyEntityConfig.PushRelayIdApns == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.PushRelayIdApns(childComplexity), true
+
+	case "BertyEntityConfig.pushRelayIdFcm":
+		if e.complexity.BertyEntityConfig.PushRelayIdFcm == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.PushRelayIdFcm(childComplexity), true
+
 	case "BertyEntityContact.id":
 		if e.complexity.BertyEntityContact.Id == nil {
 			break
@@ -2757,6 +3268,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityDevice.PushIdentifiers(childComplexity), true
+
+	case "BertyEntityDevicePushConfig.id":
+		if e.complexity.BertyEntityDevicePushConfig.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushConfig.Id(childComplexity), true
+
+	case "BertyEntityDevicePushConfig.createdAt":
+		if e.complexity.BertyEntityDevicePushConfig.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushConfig.CreatedAt(childComplexity), true
+
+	case "BertyEntityDevicePushConfig.updatedAt":
+		if e.complexity.BertyEntityDevicePushConfig.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushConfig.UpdatedAt(childComplexity), true
+
+	case "BertyEntityDevicePushConfig.deviceId":
+		if e.complexity.BertyEntityDevicePushConfig.DeviceId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushConfig.DeviceId(childComplexity), true
+
+	case "BertyEntityDevicePushConfig.pushType":
+		if e.complexity.BertyEntityDevicePushConfig.PushType == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushConfig.PushType(childComplexity), true
+
+	case "BertyEntityDevicePushConfig.pushId":
+		if e.complexity.BertyEntityDevicePushConfig.PushId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushConfig.PushId(childComplexity), true
+
+	case "BertyEntityDevicePushConfig.relayId":
+		if e.complexity.BertyEntityDevicePushConfig.RelayId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityDevicePushConfig.RelayId(childComplexity), true
 
 	case "BertyEntityDevicePushIdentifier.id":
 		if e.complexity.BertyEntityDevicePushIdentifier.Id == nil {
@@ -3024,6 +3584,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNodeCommitLogEntity.Event(childComplexity), true
 
+	case "BertyNodeCommitLogEntity.devicePushConfig":
+		if e.complexity.BertyNodeCommitLogEntity.DevicePushConfig == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.DevicePushConfig(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.devicePushIdentifier":
+		if e.complexity.BertyNodeCommitLogEntity.DevicePushIdentifier == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.DevicePushIdentifier(childComplexity), true
+
 	case "BertyNodeContactEdge.node":
 		if e.complexity.BertyNodeContactEdge.Node == nil {
 			break
@@ -3086,6 +3660,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeDebugAttrs.Msg(childComplexity), true
+
+	case "BertyNodeDevicePushConfigEdge.node":
+		if e.complexity.BertyNodeDevicePushConfigEdge.Node == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeDevicePushConfigEdge.Node(childComplexity), true
+
+	case "BertyNodeDevicePushConfigEdge.cursor":
+		if e.complexity.BertyNodeDevicePushConfigEdge.Cursor == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeDevicePushConfigEdge.Cursor(childComplexity), true
+
+	case "BertyNodeDevicePushConfigListOutput.edges":
+		if e.complexity.BertyNodeDevicePushConfigListOutput.Edges == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeDevicePushConfigListOutput.Edges(childComplexity), true
 
 	case "BertyNodeEventEdge.node":
 		if e.complexity.BertyNodeEventEdge.Node == nil {
@@ -3674,6 +4269,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyPkgDeviceinfoDeviceInfos.Infos(childComplexity), true
+
+	case "BertyPushPushData.pushIdentifier":
+		if e.complexity.BertyPushPushData.PushIdentifier == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushData.PushIdentifier(childComplexity), true
+
+	case "BertyPushPushData.envelope":
+		if e.complexity.BertyPushPushData.Envelope == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushData.Envelope(childComplexity), true
+
+	case "BertyPushPushData.priority":
+		if e.complexity.BertyPushPushData.Priority == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushData.Priority(childComplexity), true
+
+	case "BertyPushPushDestination.nonce":
+		if e.complexity.BertyPushPushDestination.Nonce == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushDestination.Nonce(childComplexity), true
+
+	case "BertyPushPushDestination.pushType":
+		if e.complexity.BertyPushPushDestination.PushType == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushDestination.PushType(childComplexity), true
+
+	case "BertyPushPushDestination.pushId":
+		if e.complexity.BertyPushPushDestination.PushId == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushDestination.PushId(childComplexity), true
+
+	case "BertyPushPushNativeIdentifier.packageId":
+		if e.complexity.BertyPushPushNativeIdentifier.PackageId == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushNativeIdentifier.PackageId(childComplexity), true
+
+	case "BertyPushPushNativeIdentifier.deviceToken":
+		if e.complexity.BertyPushPushNativeIdentifier.DeviceToken == nil {
+			break
+		}
+
+		return e.complexity.BertyPushPushNativeIdentifier.DeviceToken(childComplexity), true
 
 	case "GoogleProtobufDescriptorProto.name":
 		if e.complexity.GoogleProtobufDescriptorProto.Name == nil {
@@ -4562,6 +5213,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.EventSeen(childComplexity, args["id"].(string)), true
 
+	case "Mutation.ConfigUpdate":
+		if e.complexity.Mutation.ConfigUpdate == nil {
+			break
+		}
+
+		args, err := field_Mutation_ConfigUpdate_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayIdApns"].([]byte), args["pushRelayIdFcm"].([]byte)), true
+
 	case "Mutation.ContactRequest":
 		if e.complexity.Mutation.ContactRequest == nil {
 			break
@@ -4682,6 +5345,66 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.ConversationRemove(childComplexity, args["id"].(string)), true
 
+	case "Mutation.DevicePushConfigCreate":
+		if e.complexity.Mutation.DevicePushConfigCreate == nil {
+			break
+		}
+
+		args, err := field_Mutation_DevicePushConfigCreate_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DevicePushConfigCreate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte)), true
+
+	case "Mutation.DevicePushConfigNativeRegister":
+		if e.complexity.Mutation.DevicePushConfigNativeRegister == nil {
+			break
+		}
+
+		args, err := field_Mutation_DevicePushConfigNativeRegister_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DevicePushConfigNativeRegister(childComplexity, args["T"].(bool)), true
+
+	case "Mutation.DevicePushConfigNativeUnregister":
+		if e.complexity.Mutation.DevicePushConfigNativeUnregister == nil {
+			break
+		}
+
+		args, err := field_Mutation_DevicePushConfigNativeUnregister_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DevicePushConfigNativeUnregister(childComplexity, args["T"].(bool)), true
+
+	case "Mutation.DevicePushConfigRemove":
+		if e.complexity.Mutation.DevicePushConfigRemove == nil {
+			break
+		}
+
+		args, err := field_Mutation_DevicePushConfigRemove_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DevicePushConfigRemove(childComplexity, args["id"].(string)), true
+
+	case "Mutation.DevicePushConfigUpdate":
+		if e.complexity.Mutation.DevicePushConfigUpdate == nil {
+			break
+		}
+
+		args, err := field_Mutation_DevicePushConfigUpdate_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DevicePushConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte)), true
+
 	case "Mutation.GenerateFakeData":
 		if e.complexity.Mutation.GenerateFakeData == nil {
 			break
@@ -4778,6 +5501,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetEvent(childComplexity, args["id"].(string)), true
 
+	case "Query.ConfigPublic":
+		if e.complexity.Query.ConfigPublic == nil {
+			break
+		}
+
+		args, err := field_Query_ConfigPublic_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ConfigPublic(childComplexity, args["T"].(bool)), true
+
 	case "Query.ContactList":
 		if e.complexity.Query.ContactList == nil {
 			break
@@ -4849,6 +5584,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
+
+	case "Query.DevicePushConfigList":
+		if e.complexity.Query.DevicePushConfigList == nil {
+			break
+		}
+
+		args, err := field_Query_DevicePushConfigList_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.DevicePushConfigList(childComplexity, args["T"].(bool)), true
 
 	case "Query.DeviceInfos":
 		if e.complexity.Query.DeviceInfos == nil {
@@ -5156,6 +5903,10 @@ func (ec *executionContext) _BertyEntityConfig(ctx context.Context, sel ast.Sele
 			}
 		case "cryptoParams":
 			out.Values[i] = ec._BertyEntityConfig_cryptoParams(ctx, field, obj)
+		case "pushRelayIdApns":
+			out.Values[i] = ec._BertyEntityConfig_pushRelayIdApns(ctx, field, obj)
+		case "pushRelayIdFcm":
+			out.Values[i] = ec._BertyEntityConfig_pushRelayIdFcm(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -5337,6 +6088,64 @@ func (ec *executionContext) _BertyEntityConfig_cryptoParams(ctx context.Context,
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CryptoParams, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_pushRelayIdApns(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushRelayIDAPNS, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_pushRelayIdFcm(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushRelayIDFCM, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -6402,6 +7211,220 @@ func (ec *executionContext) _BertyEntityDevice_pushIdentifiers(ctx context.Conte
 	return arr1
 }
 
+var bertyEntityDevicePushConfigImplementors = []string{"BertyEntityDevicePushConfig", "Node"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityDevicePushConfig(ctx context.Context, sel ast.SelectionSet, obj *entity.DevicePushConfig) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityDevicePushConfigImplementors)
+
+	var wg sync.WaitGroup
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityDevicePushConfig")
+		case "id":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityDevicePushConfig_id(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
+		case "createdAt":
+			out.Values[i] = ec._BertyEntityDevicePushConfig_createdAt(ctx, field, obj)
+		case "updatedAt":
+			out.Values[i] = ec._BertyEntityDevicePushConfig_updatedAt(ctx, field, obj)
+		case "deviceId":
+			out.Values[i] = ec._BertyEntityDevicePushConfig_deviceId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "pushType":
+			out.Values[i] = ec._BertyEntityDevicePushConfig_pushType(ctx, field, obj)
+		case "pushId":
+			out.Values[i] = ec._BertyEntityDevicePushConfig_pushId(ctx, field, obj)
+		case "relayId":
+			out.Values[i] = ec._BertyEntityDevicePushConfig_relayId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	wg.Wait()
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushConfig_id(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.BertyEntityDevicePushConfig().ID(rctx, obj)
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalID(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushConfig_createdAt(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushConfig_updatedAt(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushConfig_deviceId(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeviceID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushConfig_pushType(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushType, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(push.DevicePushType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushConfig_pushId(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityDevicePushConfig_relayId(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityDevicePushConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RelayID, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
 var bertyEntityDevicePushIdentifierImplementors = []string{"BertyEntityDevicePushIdentifier", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -6555,7 +7578,7 @@ func (ec *executionContext) _BertyEntityDevicePushIdentifier_pushRelayId(ctx con
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.PushRelayId, nil
+		return obj.PushRelayID, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -7562,6 +8585,10 @@ func (ec *executionContext) _BertyNodeCommitLogEntity(ctx context.Context, sel a
 			out.Values[i] = ec._BertyNodeCommitLogEntity_conversationMember(ctx, field, obj)
 		case "event":
 			out.Values[i] = ec._BertyNodeCommitLogEntity_event(ctx, field, obj)
+		case "devicePushConfig":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_devicePushConfig(ctx, field, obj)
+		case "devicePushIdentifier":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_devicePushIdentifier(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -7721,6 +8748,56 @@ func (ec *executionContext) _BertyNodeCommitLogEntity_event(ctx context.Context,
 	}
 
 	return ec._BertyP2pEvent(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_devicePushConfig(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DevicePushConfig, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.DevicePushConfig)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevicePushConfig(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_devicePushIdentifier(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DevicePushIdentifier, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.DevicePushIdentifier)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevicePushIdentifier(ctx, field.Selections, res)
 }
 
 var bertyNodeContactEdgeImplementors = []string{"BertyNodeContactEdge"}
@@ -8174,6 +9251,170 @@ func (ec *executionContext) _BertyNodeDebugAttrs_msg(ctx context.Context, field 
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var bertyNodeDevicePushConfigEdgeImplementors = []string{"BertyNodeDevicePushConfigEdge"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeDevicePushConfigEdge(ctx context.Context, sel ast.SelectionSet, obj *node.DevicePushConfigEdge) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeDevicePushConfigEdgeImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeDevicePushConfigEdge")
+		case "node":
+			out.Values[i] = ec._BertyNodeDevicePushConfigEdge_node(ctx, field, obj)
+		case "cursor":
+			out.Values[i] = ec._BertyNodeDevicePushConfigEdge_cursor(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeDevicePushConfigEdge_node(ctx context.Context, field graphql.CollectedField, obj *node.DevicePushConfigEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeDevicePushConfigEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Node, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.DevicePushConfig)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevicePushConfig(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeDevicePushConfigEdge_cursor(ctx context.Context, field graphql.CollectedField, obj *node.DevicePushConfigEdge) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeDevicePushConfigEdge",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Cursor, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyNodeDevicePushConfigListOutputImplementors = []string{"BertyNodeDevicePushConfigListOutput"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeDevicePushConfigListOutput(ctx context.Context, sel ast.SelectionSet, obj *node.DevicePushConfigListOutput) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeDevicePushConfigListOutputImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeDevicePushConfigListOutput")
+		case "edges":
+			out.Values[i] = ec._BertyNodeDevicePushConfigListOutput_edges(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeDevicePushConfigListOutput_edges(ctx context.Context, field graphql.CollectedField, obj *node.DevicePushConfigListOutput) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeDevicePushConfigListOutput",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Edges, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.DevicePushConfig)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntityDevicePushConfig(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
 }
 
 var bertyNodeEventEdgeImplementors = []string{"BertyNodeEventEdge"}
@@ -10137,7 +11378,7 @@ func (ec *executionContext) _BertyP2pDevicePushToAttrs_priority(ctx context.Cont
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(p2p.Priority)
+	res := resTmp.(push.Priority)
 	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
@@ -11477,6 +12718,305 @@ func (ec *executionContext) _BertyPkgDeviceinfoDeviceInfos_infos(ctx context.Con
 	}
 	wg.Wait()
 	return arr1
+}
+
+var bertyPushPushDataImplementors = []string{"BertyPushPushData"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyPushPushData(ctx context.Context, sel ast.SelectionSet, obj *push.PushData) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyPushPushDataImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyPushPushData")
+		case "pushIdentifier":
+			out.Values[i] = ec._BertyPushPushData_pushIdentifier(ctx, field, obj)
+		case "envelope":
+			out.Values[i] = ec._BertyPushPushData_envelope(ctx, field, obj)
+		case "priority":
+			out.Values[i] = ec._BertyPushPushData_priority(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushData_pushIdentifier(ctx context.Context, field graphql.CollectedField, obj *push.PushData) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushData",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushIdentifier, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushData_envelope(ctx context.Context, field graphql.CollectedField, obj *push.PushData) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushData",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Envelope, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushData_priority(ctx context.Context, field graphql.CollectedField, obj *push.PushData) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushData",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Priority, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(push.Priority)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+var bertyPushPushDestinationImplementors = []string{"BertyPushPushDestination"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyPushPushDestination(ctx context.Context, sel ast.SelectionSet, obj *push.PushDestination) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyPushPushDestinationImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyPushPushDestination")
+		case "nonce":
+			out.Values[i] = ec._BertyPushPushDestination_nonce(ctx, field, obj)
+		case "pushType":
+			out.Values[i] = ec._BertyPushPushDestination_pushType(ctx, field, obj)
+		case "pushId":
+			out.Values[i] = ec._BertyPushPushDestination_pushId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushDestination_nonce(ctx context.Context, field graphql.CollectedField, obj *push.PushDestination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushDestination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Nonce, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushDestination_pushType(ctx context.Context, field graphql.CollectedField, obj *push.PushDestination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushDestination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushType, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(push.DevicePushType)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushDestination_pushId(ctx context.Context, field graphql.CollectedField, obj *push.PushDestination) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushDestination",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PushId, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
+}
+
+var bertyPushPushNativeIdentifierImplementors = []string{"BertyPushPushNativeIdentifier"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyPushPushNativeIdentifier(ctx context.Context, sel ast.SelectionSet, obj *push.PushNativeIdentifier) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyPushPushNativeIdentifierImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyPushPushNativeIdentifier")
+		case "packageId":
+			out.Values[i] = ec._BertyPushPushNativeIdentifier_packageId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "deviceToken":
+			out.Values[i] = ec._BertyPushPushNativeIdentifier_deviceToken(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushNativeIdentifier_packageId(ctx context.Context, field graphql.CollectedField, obj *push.PushNativeIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushNativeIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PackageID, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyPushPushNativeIdentifier_deviceToken(ctx context.Context, field graphql.CollectedField, obj *push.PushNativeIdentifier) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyPushPushNativeIdentifier",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeviceToken, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
 }
 
 var googleProtobufDescriptorProtoImplementors = []string{"GoogleProtobufDescriptorProto"}
@@ -17068,6 +18608,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "EventSeen":
 			out.Values[i] = ec._Mutation_EventSeen(ctx, field)
+		case "ConfigUpdate":
+			out.Values[i] = ec._Mutation_ConfigUpdate(ctx, field)
 		case "ContactRequest":
 			out.Values[i] = ec._Mutation_ContactRequest(ctx, field)
 		case "ContactAcceptRequest":
@@ -17088,6 +18630,16 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_ConversationRead(ctx, field)
 		case "ConversationRemove":
 			out.Values[i] = ec._Mutation_ConversationRemove(ctx, field)
+		case "DevicePushConfigCreate":
+			out.Values[i] = ec._Mutation_DevicePushConfigCreate(ctx, field)
+		case "DevicePushConfigNativeRegister":
+			out.Values[i] = ec._Mutation_DevicePushConfigNativeRegister(ctx, field)
+		case "DevicePushConfigNativeUnregister":
+			out.Values[i] = ec._Mutation_DevicePushConfigNativeUnregister(ctx, field)
+		case "DevicePushConfigRemove":
+			out.Values[i] = ec._Mutation_DevicePushConfigRemove(ctx, field)
+		case "DevicePushConfigUpdate":
+			out.Values[i] = ec._Mutation_DevicePushConfigUpdate(ctx, field)
 		case "GenerateFakeData":
 			out.Values[i] = ec._Mutation_GenerateFakeData(ctx, field)
 		case "RunIntegrationTests":
@@ -17136,6 +18688,37 @@ func (ec *executionContext) _Mutation_EventSeen(ctx context.Context, field graph
 	}
 
 	return ec._BertyP2pEvent(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_ConfigUpdate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_ConfigUpdate_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayIdApns"].([]byte), args["pushRelayIdFcm"].([]byte))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Config)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConfig(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -17449,6 +19032,161 @@ func (ec *executionContext) _Mutation_ConversationRemove(ctx context.Context, fi
 }
 
 // nolint: vetshadow
+func (ec *executionContext) _Mutation_DevicePushConfigCreate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_DevicePushConfigCreate_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DevicePushConfigCreate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.DevicePushConfig)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevicePushConfig(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_DevicePushConfigNativeRegister(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_DevicePushConfigNativeRegister_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DevicePushConfigNativeRegister(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Void)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_DevicePushConfigNativeUnregister(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_DevicePushConfigNativeUnregister_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DevicePushConfigNativeUnregister(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.Void)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeVoid(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_DevicePushConfigRemove(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_DevicePushConfigRemove_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DevicePushConfigRemove(rctx, args["id"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.DevicePushConfig)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevicePushConfig(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_DevicePushConfigUpdate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_DevicePushConfigUpdate_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().DevicePushConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.DevicePushConfig)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityDevicePushConfig(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
 func (ec *executionContext) _Mutation_GenerateFakeData(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args, err := field_Mutation_GenerateFakeData_args(rawArgs)
@@ -17615,6 +19353,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_GetEvent(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "ConfigPublic":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ConfigPublic(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "ContactList":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -17649,6 +19393,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
 				out.Values[i] = ec._Query_ConversationMember(ctx, field)
+				wg.Done()
+			}(i, field)
+		case "DevicePushConfigList":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_DevicePushConfigList(ctx, field)
 				wg.Done()
 			}(i, field)
 		case "DeviceInfos":
@@ -17847,6 +19597,37 @@ func (ec *executionContext) _Query_GetEvent(ctx context.Context, field graphql.C
 }
 
 // nolint: vetshadow
+func (ec *executionContext) _Query_ConfigPublic(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_ConfigPublic_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ConfigPublic(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Config)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConfig(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
 func (ec *executionContext) _Query_ContactList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
 	args, err := field_Query_ContactList_args(rawArgs)
@@ -18030,6 +19811,37 @@ func (ec *executionContext) _Query_ConversationMember(ctx context.Context, field
 	}
 
 	return ec._BertyEntityConversationMember(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_DevicePushConfigList(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_DevicePushConfigList_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().DevicePushConfigList(rctx, args["T"].(bool))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*node.DevicePushConfigListOutput)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyNodeDevicePushConfigListOutput(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -19998,6 +21810,10 @@ func (ec *executionContext) _Node(ctx context.Context, sel ast.SelectionSet, obj
 		return ec._BertyP2pEvent(ctx, sel, &obj)
 	case *p2p.Event:
 		return ec._BertyP2pEvent(ctx, sel, obj)
+	case entity.DevicePushConfig:
+		return ec._BertyEntityDevicePushConfig(ctx, sel, &obj)
+	case *entity.DevicePushConfig:
+		return ec._BertyEntityDevicePushConfig(ctx, sel, obj)
 	default:
 		panic(fmt.Errorf("unexpected type %T", obj))
 	}
@@ -20356,7 +22172,7 @@ func UnmarshalBertyEntityDevicePushIdentifierInput(v interface{}) (entity.Device
 			}
 		case "pushRelayId":
 			var err error
-			it.PushRelayId, err = models.UnmarshalString(v)
+			it.PushRelayID, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -20897,6 +22713,10 @@ type BertyEntityDevicePushIdentifier implements Node {
     pushRelayId: String!
     deviceId: String!
 }
+  
+  
+  
+
       
 type BertyEntityDevice implements Node {
     id: ID!
@@ -20976,6 +22796,25 @@ type BertyEntitySenderAlias  {
   
 
   
+  
+type BertyPushPushDestination  {
+    nonce: [Byte!]
+    pushType: Enum
+    pushId: [Byte!]
+}
+type BertyPushPushNativeIdentifier  {
+    packageId: String!
+    deviceToken: String!
+}
+type BertyPushPushData  {
+    pushIdentifier: [Byte!]
+    envelope: [Byte!]
+    priority: Enum
+}
+  
+  
+  
+
   
 type BertyP2pSentAttrs  {
     ids: [String!]
@@ -21125,6 +22964,21 @@ type BertyEntityConfig  {
     currentDevice: BertyEntityDevice
     currentDeviceId: String!
     cryptoParams: [Byte!]
+    pushRelayIdApns: [Byte!]
+    pushRelayIdFcm: [Byte!]
+}
+  
+  
+  
+
+type BertyEntityDevicePushConfig implements Node {
+    id: ID!
+    createdAt: GoogleProtobufTimestamp
+    updatedAt: GoogleProtobufTimestamp
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
 }
   
   
@@ -21166,6 +23020,8 @@ type BertyNodeCommitLogEntity  {
     conversation: BertyEntityConversation
     conversationMember: BertyEntityConversationMember
     event: BertyP2pEvent
+    devicePushConfig: BertyEntityDevicePushConfig
+    devicePushIdentifier: BertyEntityDevicePushIdentifier
 }
 type BertyNodeCommitLog  {
     operation: Enum
@@ -21194,6 +23050,13 @@ type BertyNodeConversationEdge  {
 type BertyNodeConversationListConnection  {
     edges: [BertyNodeConversationEdge]
     pageInfo: BertyNodePageInfo!
+}
+type BertyNodeDevicePushConfigEdge  {
+    node: BertyEntityDevicePushConfig
+    cursor: String!
+}
+type BertyNodeDevicePushConfigListOutput  {
+    edges: [BertyEntityDevicePushConfig]
 }
 type BertyNodePagination  {
     orderBy: String!
@@ -21336,6 +23199,9 @@ type Query {
   GetEvent(
     id: ID!
   ): BertyP2pEvent
+  ConfigPublic(
+    T: Bool!
+  ): BertyEntityConfig
   ContactList(
     filter: BertyEntityContactInput
     orderBy: String!
@@ -21378,6 +23244,9 @@ type Query {
     conversationId: ID!
     contactId: ID!
   ): BertyEntityConversationMember
+  DevicePushConfigList(
+    T: Bool!
+  ): BertyNodeDevicePushConfigListOutput
   DeviceInfos(
     T: Bool!
   ): BertyPkgDeviceinfoDeviceInfos
@@ -21417,6 +23286,18 @@ type Mutation {
   EventSeen(
     id: ID!
   ): BertyP2pEvent
+  ConfigUpdate(
+    id: String!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    myself: BertyEntityContactInput
+    myselfId: String!
+    currentDevice: BertyEntityDeviceInput
+    currentDeviceId: String!
+    cryptoParams: [Byte!]
+    pushRelayIdApns: [Byte!]
+    pushRelayIdFcm: [Byte!]
+  ): BertyEntityConfig
   ContactRequest(
     contact: BertyEntityContactInput
     introText: String!
@@ -21480,6 +23361,33 @@ type Mutation {
   ConversationRemove(
     id: ID!
   ): BertyEntityConversation
+  DevicePushConfigCreate(
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
+  ): BertyEntityDevicePushConfig
+  DevicePushConfigNativeRegister(
+    T: Bool!
+  ): BertyNodeVoid
+  DevicePushConfigNativeUnregister(
+    T: Bool!
+  ): BertyNodeVoid
+  DevicePushConfigRemove(
+    id: ID!
+  ): BertyEntityDevicePushConfig
+  DevicePushConfigUpdate(
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    deviceId: String!
+    pushType: Enum
+    pushId: [Byte!]
+    relayId: [Byte!]
+  ): BertyEntityDevicePushConfig
   GenerateFakeData(
     T: Bool!
   ): BertyNodeVoid

@@ -1,6 +1,8 @@
 package entity
 
-import "strings"
+import (
+	"strings"
+)
 
 func (d *Device) Username() string {
 	if d == nil {
@@ -13,5 +15,3 @@ func (d *Device) Username() string {
 }
 
 func (d Device) IsNode() {} // required by gqlgen
-
-func (d DevicePushIdentifier) IsNode() {} // required by gqlgen

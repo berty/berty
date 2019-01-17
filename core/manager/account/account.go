@@ -496,6 +496,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithConfig(),
 		node.WithRing(a.ring),
 		node.WithPushManager(a.pushManager),
+		node.WithPushTokenSubscriber(),
 	)
 	if err != nil {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)

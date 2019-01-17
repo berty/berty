@@ -3,12 +3,12 @@
 package notification
 
 import (
+	"berty.tech/core/push"
 	"encoding/hex"
 	"path"
 	"runtime"
 	"sync"
 
-	"berty.tech/core/api/p2p"
 	"github.com/0xAX/notificator"
 	"go.uber.org/zap"
 )
@@ -26,16 +26,16 @@ type Driver interface {
 
 type Token struct {
 	Value []byte
-	Type  p2p.DevicePushType
+	Type  push.DevicePushType
 }
 
 func (t *Token) Hash() string {
 	switch t.Type {
 	default:
 		return ""
-	case p2p.DevicePushType_FCM:
+	case push.DevicePushType_FCM:
 		return string(t.Value)
-	case p2p.DevicePushType_APNS:
+	case push.DevicePushType_APNS:
 		return hex.EncodeToString(t.Value)
 	}
 }

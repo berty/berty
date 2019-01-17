@@ -1,6 +1,7 @@
 package node
 
 import (
+	"berty.tech/core/push"
 	"context"
 	"encoding/base64"
 
@@ -41,7 +42,9 @@ func WithInitConfig() NewNodeOption {
 			}
 
 			config = &entity.Config{
-				ID: ID.String(),
+				ID:              ID.String(),
+				PushRelayIDAPNS: push.DefaultPushRelayIds[push.DevicePushType_APNS],
+				PushRelayIDFCM:  push.DefaultPushRelayIds[push.DevicePushType_FCM],
 			}
 
 			if err = n.sql(ctx).Create(config).Error; err != nil {

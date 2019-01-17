@@ -114,6 +114,8 @@ enum Code {
   ErrPushInvalidServerConfig = 14004;
   ErrPushMissingBundleId = 14005;
   ErrPushUnknownDestination = 14006;
+  ErrPushBroadcastIdentifier = 14007;
+  ErrPushInvalidType = 14008;
 }
 
 // Metadata is designed to be used as grpc status detail

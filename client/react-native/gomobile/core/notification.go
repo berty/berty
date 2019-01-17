@@ -1,10 +1,10 @@
 package core
 
 import (
+	"berty.tech/core/push"
 	"fmt"
 	"sync"
 
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/pkg/notification"
 	"go.uber.org/zap"
 )
@@ -47,14 +47,14 @@ func (n *MobileNotification) Receive(data string) {
 func (n *MobileNotification) ReceiveAPNSToken(token []byte) {
 	n.ReceiveToken(&notification.Token{
 		Value: token,
-		Type:  p2p.DevicePushType_APNS,
+		Type:  push.DevicePushType_APNS,
 	})
 }
 
 func (n *MobileNotification) ReceiveFCMToken(token []byte) {
 	n.ReceiveToken(&notification.Token{
 		Value: token,
-		Type:  p2p.DevicePushType_FCM,
+		Type:  push.DevicePushType_FCM,
 	})
 }
 

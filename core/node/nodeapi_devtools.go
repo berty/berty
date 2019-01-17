@@ -165,9 +165,10 @@ func (n *Node) NodeInfos(ctx context.Context) (*deviceinfo.DeviceInfos, error) {
 
 	// versions
 	infos.Add(deviceinfo.NewInfo("node", "versions").SetJSON(deviceinfo.VersionInfo{
-		Core:    core.Everything(),
-		P2PApi:  p2p.Version,
-		NodeAPI: node.Version,
+		Core:      core.Everything(),
+		P2PApi:    p2p.Version,
+		NodeAPI:   node.Version,
+		PackageID: deviceinfo.PackageID(),
 	}))
 
 	// dates
