@@ -8,12 +8,20 @@ import { requestAndroidPermission } from './permissions'
 import I18n from 'i18next'
 
 const updateApiSources = {
+  'chat.berty.ios.staff': {
+    url: 'https://yolo.berty.io/release/ios-staff.json',
+    channel: 'dev',
+  },
+  'chat.berty.ios.debug': {
+    url: 'https://yolo.berty.io/release/ios-staff.json',
+    channel: 'dev',
+  },
   'chat.berty.ios': {
     url: 'https://yolo.berty.io/release/ios.json',
     channel: 'dev',
   },
-  'chat.berty.house.ios': {
-    url: 'https://yolo.berty.io/release/ios-beta.json',
+  'chat.berty.ios.yolo': {
+    url: 'https://yolo.berty.io/release/ios.json',
     channel: 'beta',
   },
   'chat.berty.main.debug': {
@@ -41,7 +49,6 @@ export const getInstalledVersion = async context => {
   }
 
   const { channel } = updateApiSources[bundleId]
-
   const deviceData = await DeviceInfos(context).fetch()
   const [rawVersionInfo] = deviceData.infos.filter(d => d.key === 'versions').map(d => d.value)
 
