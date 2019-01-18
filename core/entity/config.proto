@@ -5,7 +5,9 @@ package berty.entity;
 option go_package = "berty.tech/core/entity";
 
 import "gogoproto/gogo.proto";
+import "pkg/validate/validate.proto";
 import "google/protobuf/timestamp.proto";
+
 import "entity/contact.proto";
 import "entity/device.proto";
 
@@ -33,7 +35,7 @@ message Config {
   // myself
   //
 
-  Contact myself = 5;
+  Contact myself = 5 [(validate.required) = true, (validate.skip) = false];
   string myself_id = 6 [(gogoproto.customname) = "MyselfID"];
 
   Device current_device = 7;

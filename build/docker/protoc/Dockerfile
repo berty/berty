@@ -1,21 +1,24 @@
 FROM moul/protoc-gen-gotemplate:latest as pgg
 
-FROM    golang:1.11-alpine as builder
+FROM    golang:1.11.4-alpine as builder
 
+# install deps
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker
 
-RUN     go get -u -v \
-        github.com/gogo/protobuf/proto \
-        github.com/gogo/protobuf/protoc-gen-gogo \
-        github.com/gogo/protobuf/gogoproto \
-        github.com/gogo/protobuf/protoc-gen-gofast \
-        github.com/gogo/protobuf/jsonpb \
-        moul.io/protoc-gen-gotemplate \
-        golang.org/x/tools/cmd/goimports \
-        github.com/99designs/gqlgen \
-        github.com/vektah/gorunpkg \
-        github.com/spf13/cobra
+# install compilers
+RUN     go get -u github.com/99designs/gqlgen
+RUN     go get -u github.com/gogo/protobuf/gogoproto
+RUN     go get -u github.com/gogo/protobuf/jsonpb
+RUN     go get -u github.com/gogo/protobuf/proto
+RUN     go get -u github.com/gogo/protobuf/protoc-gen-gofast
+RUN     go get -u github.com/gogo/protobuf/protoc-gen-gogo
+RUN     go get -u github.com/lyft/protoc-gen-validate
+RUN     go get -u github.com/spf13/cobra
+RUN     go get -u github.com/vektah/gorunpkg
+RUN     go get -u golang.org/x/tools/cmd/goimports
+RUN     go get -u moul.io/protoc-gen-gotemplate
 
+# gqlgen
 RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.6.0 && go install github.com/99designs/gqlgen
 RUN     rm -f /go/bin/web-editor
 

@@ -10,10 +10,10 @@ scalar Fixed64
 scalar Fixed32
 scalar Bool
 scalar Uint32
-scalar SFixed64
-scalar SFixed32
-scalar SInt32
-scalar SInt64
+scalar Sfixed64
+scalar Sfixed32
+scalar Sint32
+scalar Sint64
 scalar GoogleProtobufTimestamp
 scalar GoogleProtobufTimestampInput
 scalar GoogleProtobufTimestampPayload
@@ -222,6 +222,10 @@ type GoogleProtobufGeneratedCodeInfo  {
 type GqlNode implements Node {
     id: ID!
 }
+  
+  
+  
+
   
   
   
@@ -855,20 +859,12 @@ type Mutation {
     debugNotificationVerbosity: Enum
   ): BertyEntityConfig
   ContactRequest(
-    contact: BertyEntityContactInput
+    contactId: String!
+    contactOverrideDisplayName: String!
     introText: String!
   ): BertyEntityContact
   ContactAcceptRequest(
-    id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    sigchain: [Byte!]
-    status: Enum
-    devices: [BertyEntityDeviceInput]
-    displayName: String!
-    displayStatus: String!
-    overrideDisplayName: String!
-    overrideDisplayStatus: String!
+    contactId: String!
   ): BertyEntityContact
   ContactRemove(
     id: ID!

@@ -266,16 +266,17 @@ func (r *mutationResolver) RunIntegrationTests(ctx context.Context, name string)
 	})
 }
 
-func (r *mutationResolver) ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error) {
-	contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
+func (r *mutationResolver) ContactRequest(ctx context.Context, contactID, contactOverrideDisplayName, introText string) (*entity.Contact, error) {
+	contactID = strings.SplitN(contactID, ":", 2)[1]
 	return r.client.ContactRequest(ctx, &node.ContactRequestInput{
-		Contact:   contact,
-		IntroText: introText,
+		ContactID:                  contactID,
+		ContactOverrideDisplayName: contactOverrideDisplayName,
+		IntroText:                  introText,
 	})
 }
-func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {
-	return r.client.ContactAcceptRequest(ctx, &entity.Contact{
-		ID: strings.SplitN(id, ":", 2)[1],
+func (r *mutationResolver) ContactAcceptRequest(ctx context.Context, contactID string) (*entity.Contact, error) {
+	return r.client.ContactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
+		ContactID: strings.SplitN(contactID, ":", 2)[1],
 	})
 }
 func (r *mutationResolver) ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error) {

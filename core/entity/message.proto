@@ -4,6 +4,8 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
+import "pkg/validate/validate.proto";
+
 message Message {
-  string text = 1;
+  string text = 1 [(validate.min_len) = 1];
 }

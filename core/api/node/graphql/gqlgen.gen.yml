@@ -723,6 +723,7 @@ models:
 
 
 
+
   BertyEntityDevicePushIdentifier:
     model: berty.tech/core/entity.DevicePushIdentifier
     fields:
@@ -1713,13 +1714,24 @@ models:
   BertyNodeContactRequestInput:
     model: berty.tech/core/api/node.ContactRequestInput
     fields:
-      contact:
+      contactId:
+      contactOverrideDisplayName:
       introText:
   BertyNodeContactRequestInputPayload:
     model: berty.tech/core/api/node.ContactRequestInput
     fields:
-      contact:
+      contactId:
+      contactOverrideDisplayName:
       introText:
+
+  BertyNodeContactAcceptRequestInput:
+    model: berty.tech/core/api/node.ContactAcceptRequestInput
+    fields:
+      contactId:
+  BertyNodeContactAcceptRequestInputPayload:
+    model: berty.tech/core/api/node.ContactAcceptRequestInput
+    fields:
+      contactId:
 
   BertyNodeConversationAddMessageInput:
     model: berty.tech/core/api/node.ConversationAddMessageInput

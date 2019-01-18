@@ -165,11 +165,9 @@ func TestWithEnqueuer(t *testing.T) {
 				shouldIContinue(t)
 
 				res, err := alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
-					Contact: &entity.Contact{
-						OverrideDisplayName: "Bob from school",
-						ID:                  bob.node.UserID(),
-					},
-					IntroText: "hello, I want to chat!",
+					ContactID:                  bob.node.UserID(),
+					ContactOverrideDisplayName: "Bob from school",
+					IntroText:                  "hello, I want to chat!",
 				})
 				So(err, ShouldBeNil)
 				So(res.Status, ShouldEqual, entity.Contact_IsRequested)
@@ -344,8 +342,8 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
 				shouldIContinue(t)
 
-				res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
-					ID: alice.node.UserID(),
+				res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &node.ContactAcceptRequestInput{
+					ContactID: alice.node.UserID(),
 				})
 				So(err, ShouldBeNil)
 				So(res.Status, ShouldEqual, entity.Contact_IsFriend)
@@ -686,11 +684,9 @@ func TestAliasesFlow(t *testing.T) {
 
 			shouldIContinue(t)
 			res, err = alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
-				Contact: &entity.Contact{
-					OverrideDisplayName: "Bob from school",
-					ID:                  bob.node.UserID(),
-				},
-				IntroText: "hello, I want to chat!",
+				ContactID:                  bob.node.UserID(),
+				ContactOverrideDisplayName: "Bob from school",
+				IntroText:                  "hello, I want to chat!",
 			})
 
 			So(err, ShouldBeNil)
@@ -708,8 +704,8 @@ func TestAliasesFlow(t *testing.T) {
 			So(res, ShouldNotBeNil)
 			time.Sleep(timeBetweenSteps)
 
-			res, err = bob.client.Node().ContactAcceptRequest(internalCtx, &entity.Contact{
-				ID: alice.node.UserID(),
+			res, err = bob.client.Node().ContactAcceptRequest(internalCtx, &node.ContactAcceptRequestInput{
+				ContactID: alice.node.UserID(),
 			})
 
 			So(err, ShouldBeNil)

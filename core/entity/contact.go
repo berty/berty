@@ -1,10 +1,6 @@
 package entity
 
 import (
-	"crypto/x509"
-	"encoding/base64"
-
-	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
@@ -13,23 +9,6 @@ var TrustedStatuses = []Contact_Status{
 	Contact_IsTrustedFriend,
 	Contact_IsFriend,
 	Contact_Myself,
-}
-
-func (c Contact) Validate() error {
-	if c.ID == "" {
-		return errorcodes.ErrContactReqKeyMissing.New()
-	}
-
-	pubKeyBytes, err := base64.StdEncoding.DecodeString(c.ID)
-	if err != nil {
-		return errorcodes.ErrContactReqKey.Wrap(err)
-	}
-
-	if _, err := x509.ParsePKIXPublicKey(pubKeyBytes); err != nil {
-		return errorcodes.ErrContactReqKey.Wrap(err)
-	}
-
-	return nil
 }
 
 func (c Contact) Filtered() *Contact {

@@ -167,6 +167,10 @@ func UnmarshalInt64(v interface{}) (int64, error) {
 	}
 	return 0, nil
 }
+
+//func MarshalSfixed64(v int64) graphql.Marshaler     { return MarshalInt64(v) }
+//func UnarshalSfixed64(v interface{}) (int64, error) { return UnmarshalInt64(v) }
+
 func MarshalInt32(v int32) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {
 		_, err := io.WriteString(w, strconv.Itoa(int(v)))
@@ -222,6 +226,9 @@ func UnmarshalUint64(v interface{}) (uint64, error) {
 	}
 	return 0, nil
 }
+
+//func MarshalFixed64(v uint64) graphql.Marshaler     { return MarshalUint64(v) }
+//func UnarshalFixed64(v interface{}) (uint64, error) { return UnmarshalUint64(v) }
 
 func MarshalUint32(v uint32) graphql.Marshaler {
 	return graphql.WriterFunc(func(w io.Writer) {

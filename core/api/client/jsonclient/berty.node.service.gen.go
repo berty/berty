@@ -280,7 +280,7 @@ func NodeContactAcceptRequest(client *client.Client, ctx context.Context, jsonIn
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ContactAcceptRequest")
-	var typedInput entity.Contact
+	var typedInput node.ContactAcceptRequestInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}

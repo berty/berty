@@ -1,4 +1,3 @@
-berty.tech v0.0.0-20190115092212-5264156cf991 h1:vH+UjInB0yVurYKSayrt9d9JeXhSEOHKCbD/gRAXz9Y=
 cloud.google.com/go v0.26.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
 cloud.google.com/go v0.30.0 h1:xKvyLgk56d0nksWq49J0UyGEeUIicTl4+UBiX1NPX9g=
 cloud.google.com/go v0.30.0/go.mod h1:aQUYkXzVsufM+DwF1aE+0xfcU+56JwCaLick0ClmMTw=
@@ -241,8 +240,6 @@ github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/gosimple/slug v1.4.2 h1:jDmprx3q/9Lfk4FkGZtvzDQ9Cj9eAmsjzeQGp24PeiQ=
 github.com/gosimple/slug v1.4.2/go.mod h1:ER78kgg1Mv0NQGlXiDe57DpCyfbNywXXZ9mIorhxAf0=
-github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20181112102510-3304cc886352 h1:2RuZr3wEO3ZsCx48VepiL6VdOJep1jAX5vUZICky22A=
-github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20181112102510-3304cc886352/go.mod h1:FiyG127CGDf3tlThmgyCl78X/SZQqEOJBCDaAfeWzPs=
 github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190104160321-4832df01553a h1:2rNI7/w3PcLz1T96hzGaFRhtKwtB28ELZIrK5oW/euE=
 github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190104160321-4832df01553a/go.mod h1:FiyG127CGDf3tlThmgyCl78X/SZQqEOJBCDaAfeWzPs=
 github.com/gxed/GoEndian v0.0.0-20160916112711-0f5c6873267e h1:eIhARPSF2zPr1hKxiL81XWQ392f5stEEcs38UzZVSWo=
@@ -413,6 +410,8 @@ github.com/lucas-clemente/quic-go v0.10.0 h1:xEF+pSHYAOcu+U10Meunf+DTtc8vhQDRqlA
 github.com/lucas-clemente/quic-go v0.10.0/go.mod h1:wuD+2XqEx8G9jtwx5ou2BEYBsE+whgQmlj0Vz/77PrY=
 github.com/lucas-clemente/quic-go-certificates v0.0.0-20160823095156-d2f86524cced h1:zqEC1GJZFbGZA0tRyNZqRjep92K5fujFtFsu5ZW7Aug=
 github.com/lucas-clemente/quic-go-certificates v0.0.0-20160823095156-d2f86524cced/go.mod h1:NCcRLrOTZbzhZvixZLlERbJtDtYsmMw8Jc4vS8Z0g58=
+github.com/lyft/protoc-gen-validate v0.0.12 h1:4yfI8PSMdUqdTrQqjNIgjTJ7Vl3zFNqtgBGXsB7QJiw=
+github.com/lyft/protoc-gen-validate v0.0.12/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/markbates/deplist v1.0.4/go.mod h1:gRRbPbbuA8TmMiRvaOzUlRfzfjeCCBqX2A6arxN01MM=
