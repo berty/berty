@@ -201,10 +201,10 @@ func (r *googleProtobufMethodOptionsResolver) IdempotencyLevel(ctx context.Conte
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfID string, currentDevice *entity.Device, currentDeviceID string, cryptoParams []byte, pushRelayIDAPNS []byte, pushRelayIDFCM []byte) (*entity.Config, error) {
+func (r *mutationResolver) ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfID string, currentDevice *entity.Device, currentDeviceID string, cryptoParams []byte, pushRelayPubkeyAPNS string, pushRelayPubkeyFCM string) (*entity.Config, error) {
 	return r.client.ConfigUpdate(ctx, &entity.Config{
-		PushRelayIDAPNS: pushRelayIDAPNS,
-		PushRelayIDFCM:  pushRelayIDFCM,
+		PushRelayPubkeyAPNS: pushRelayPubkeyAPNS,
+		PushRelayPubkeyFCM:  pushRelayPubkeyFCM,
 	})
 }
 
@@ -216,16 +216,16 @@ func (r *mutationResolver) DevicePushConfigNativeUnregister(ctx context.Context,
 	return r.client.DevicePushConfigNativeUnregister(ctx, &node.Void{})
 }
 
-func (r *mutationResolver) DevicePushConfigCreate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceID string, pushType *int32, pushID []byte, relayID []byte) (*entity.DevicePushConfig, error) {
+func (r *mutationResolver) DevicePushConfigCreate(ctx context.Context, relayPubkey *string, pushID []byte, pushType *int32) (*entity.DevicePushConfig, error) {
 	var pushTypeEnum push.DevicePushType
 	if pushType != nil {
 		pushTypeEnum = push.DevicePushType(*pushType)
 	}
 
-	return r.client.DevicePushConfigCreate(ctx, &entity.DevicePushConfig{
-		PushID:   pushID,
-		PushType: pushTypeEnum,
-		RelayID:  relayID,
+	return r.client.DevicePushConfigCreate(ctx, &node.DevicePushConfigCreateInput{
+		PushID:      pushID,
+		PushType:    pushTypeEnum,
+		RelayPubkey: *relayPubkey,
 	})
 }
 
@@ -237,17 +237,17 @@ func (r *mutationResolver) DevicePushConfigRemove(ctx context.Context, id string
 	})
 }
 
-func (r *mutationResolver) DevicePushConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceID string, pushType *int32, pushID []byte, relayID []byte) (*entity.DevicePushConfig, error) {
+func (r *mutationResolver) DevicePushConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceID string, pushType *int32, pushID []byte, relayPubkey string) (*entity.DevicePushConfig, error) {
 	var pushTypeEnum push.DevicePushType
 	if pushType != nil {
 		pushTypeEnum = push.DevicePushType(*pushType)
 	}
 
 	return r.client.DevicePushConfigUpdate(ctx, &entity.DevicePushConfig{
-		ID:       id,
-		PushID:   pushID,
-		PushType: pushTypeEnum,
-		RelayID:  relayID,
+		ID:          id,
+		PushID:      pushID,
+		PushType:    pushTypeEnum,
+		RelayPubkey: relayPubkey,
 	})
 }
 

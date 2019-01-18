@@ -1,4 +1,3 @@
-import { btoa } from 'b64-lite'
 import React, { PureComponent } from 'react'
 import { Header, Menu } from '../../../Library'
 import { withConfig } from '../../../../helpers/config'
@@ -13,8 +12,8 @@ class NotificationsBase extends PureComponent {
 
     this.state = {
       config: {
-        pushRelayIdApns: btoa(String.fromCharCode(...new Uint8Array(props.config.pushRelayIdApns))),
-        pushRelayIdFcm: btoa(String.fromCharCode(...new Uint8Array(props.config.pushRelayIdFcm))),
+        pushRelayPubkeyApns: props.config.pushRelayPubkeyApns,
+        pushRelayPubkeyFcm: props.config.pushRelayPubkeyFcm,
       },
     }
   }
@@ -23,11 +22,11 @@ class NotificationsBase extends PureComponent {
     return <Menu>
       <Menu.Section title={'APNS'}>
         <Menu.Item title={'APNS relay id'} boldLeft />
-        <Menu.Item value={this.state.config.pushRelayIdApns} onChangeText={pushRelayIdApns => this.setState({ config: { ...this.state.config, pushRelayIdApns } })} input />
+        <Menu.Item value={this.state.config.pushRelayPubkeyApns} onChangeText={pushRelayPubkeyApns => this.setState({ config: { ...this.state.config, pushRelayPubkeyApns } })} input />
       </Menu.Section>
       <Menu.Section title={'FCM'}>
         <Menu.Item title={'FCM relay id'} boldLeft />
-        <Menu.Item value={this.state.config.pushRelayIdFcm} onChangeText={pushRelayIdFcm => this.setState({ config: { ...this.state.config, pushRelayIdFcm } })} input />
+        <Menu.Item value={this.state.config.pushRelayPubkeyFcm} onChangeText={pushRelayPubkeyFcm  => this.setState({ config: { ...this.state.config, pushRelayPubkeyFcm } })} input />
       </Menu.Section>
       <Menu.Section>
         <Menu.Item title={'Save'} boldLeft color={colors.blue} onPress={() => this.updateConfig()} />
@@ -39,8 +38,8 @@ class NotificationsBase extends PureComponent {
     try {
       const config = {
         ...this.props.config,
-        pushRelayIdApns: [...Uint8Array.from(atob(this.state.config.pushRelayIdApns), c => c.charCodeAt(0))],
-        pushRelayIdFcm: [...Uint8Array.from(atob(this.state.config.pushRelayIdFcm), c => c.charCodeAt(0))],
+        pushRelayPubkeyApns: this.state.config.pushRelayPubkeyApns,
+        pushRelayPubkeyFcm: this.state.config.pushRelayPubkeyFcm,
       }
 
       await this.props.relayContext.mutations.configUpdate(config)

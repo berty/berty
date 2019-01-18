@@ -19,5 +19,5 @@ message DevicePushConfig {
 
   berty.push.DevicePushType push_type = 5;
   bytes push_id = 6  [(gogoproto.customname) = "PushID"];
-  bytes relay_id = 7  [(gogoproto.customname) = "RelayID"];
+  string relay_pubkey = 7  [(gogoproto.customname) = "RelayPubkey"];
 }

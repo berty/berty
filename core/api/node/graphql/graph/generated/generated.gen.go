@@ -63,16 +63,16 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	BertyEntityConfig struct {
-		Id              func(childComplexity int) int
-		CreatedAt       func(childComplexity int) int
-		UpdatedAt       func(childComplexity int) int
-		Myself          func(childComplexity int) int
-		MyselfId        func(childComplexity int) int
-		CurrentDevice   func(childComplexity int) int
-		CurrentDeviceId func(childComplexity int) int
-		CryptoParams    func(childComplexity int) int
-		PushRelayIdApns func(childComplexity int) int
-		PushRelayIdFcm  func(childComplexity int) int
+		Id                  func(childComplexity int) int
+		CreatedAt           func(childComplexity int) int
+		UpdatedAt           func(childComplexity int) int
+		Myself              func(childComplexity int) int
+		MyselfId            func(childComplexity int) int
+		CurrentDevice       func(childComplexity int) int
+		CurrentDeviceId     func(childComplexity int) int
+		CryptoParams        func(childComplexity int) int
+		PushRelayPubkeyApns func(childComplexity int) int
+		PushRelayPubkeyFcm  func(childComplexity int) int
 	}
 
 	BertyEntityContact struct {
@@ -120,13 +120,13 @@ type ComplexityRoot struct {
 	}
 
 	BertyEntityDevicePushConfig struct {
-		Id        func(childComplexity int) int
-		CreatedAt func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-		DeviceId  func(childComplexity int) int
-		PushType  func(childComplexity int) int
-		PushId    func(childComplexity int) int
-		RelayId   func(childComplexity int) int
+		Id          func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		DeviceId    func(childComplexity int) int
+		PushType    func(childComplexity int) int
+		PushId      func(childComplexity int) int
+		RelayPubkey func(childComplexity int) int
 	}
 
 	BertyEntityDevicePushIdentifier struct {
@@ -134,7 +134,7 @@ type ComplexityRoot struct {
 		CreatedAt   func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		PushInfo    func(childComplexity int) int
-		PushRelayId func(childComplexity int) int
+		RelayPubkey func(childComplexity int) int
 		DeviceId    func(childComplexity int) int
 	}
 
@@ -655,7 +655,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		EventSeen                        func(childComplexity int, id string) int
-		ConfigUpdate                     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayIdApns []byte, pushRelayIdFcm []byte) int
+		ConfigUpdate                     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string) int
 		ContactRequest                   func(childComplexity int, contact *entity.Contact, introText string) int
 		ContactAcceptRequest             func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ContactRemove                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
@@ -666,11 +666,11 @@ type ComplexityRoot struct {
 		ConversationAddMessage           func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
 		ConversationRead                 func(childComplexity int, id string) int
 		ConversationRemove               func(childComplexity int, id string) int
-		DevicePushConfigCreate           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) int
+		DevicePushConfigCreate           func(childComplexity int, relayPubkey *string, pushId []byte, pushType *int32) int
 		DevicePushConfigNativeRegister   func(childComplexity int, T bool) int
 		DevicePushConfigNativeUnregister func(childComplexity int, T bool) int
 		DevicePushConfigRemove           func(childComplexity int, id string) int
-		DevicePushConfigUpdate           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) int
+		DevicePushConfigUpdate           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayPubkey string) int
 		GenerateFakeData                 func(childComplexity int, T bool) int
 		RunIntegrationTests              func(childComplexity int, name string) int
 		DebugRequeueEvent                func(childComplexity int, eventId string) int
@@ -762,7 +762,7 @@ type GqlNodeResolver interface {
 }
 type MutationResolver interface {
 	EventSeen(ctx context.Context, id string) (*p2p.Event, error)
-	ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayIdApns []byte, pushRelayIdFcm []byte) (*entity.Config, error)
+	ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string) (*entity.Config, error)
 	ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error)
 	ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
@@ -773,11 +773,11 @@ type MutationResolver interface {
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error)
 	ConversationRead(ctx context.Context, id string) (*entity.Conversation, error)
 	ConversationRemove(ctx context.Context, id string) (*entity.Conversation, error)
-	DevicePushConfigCreate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) (*entity.DevicePushConfig, error)
+	DevicePushConfigCreate(ctx context.Context, relayPubkey *string, pushId []byte, pushType *int32) (*entity.DevicePushConfig, error)
 	DevicePushConfigNativeRegister(ctx context.Context, T bool) (*node.Void, error)
 	DevicePushConfigNativeUnregister(ctx context.Context, T bool) (*node.Void, error)
 	DevicePushConfigRemove(ctx context.Context, id string) (*entity.DevicePushConfig, error)
-	DevicePushConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayId []byte) (*entity.DevicePushConfig, error)
+	DevicePushConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, deviceId string, pushType *int32, pushId []byte, relayPubkey string) (*entity.DevicePushConfig, error)
 	GenerateFakeData(ctx context.Context, T bool) (*node.Void, error)
 	RunIntegrationTests(ctx context.Context, name string) (*node.IntegrationTestOutput, error)
 	DebugRequeueEvent(ctx context.Context, eventId string) (*p2p.Event, error)
@@ -936,46 +936,24 @@ func field_Mutation_ConfigUpdate_args(rawArgs map[string]interface{}) (map[strin
 		}
 	}
 	args["cryptoParams"] = arg7
-	var arg8 []byte
-	if tmp, ok := rawArgs["pushRelayIdApns"]; ok {
+	var arg8 string
+	if tmp, ok := rawArgs["pushRelayPubkeyApns"]; ok {
 		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg8 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg8[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
+		arg8, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pushRelayIdApns"] = arg8
-	var arg9 []byte
-	if tmp, ok := rawArgs["pushRelayIdFcm"]; ok {
+	args["pushRelayPubkeyApns"] = arg8
+	var arg9 string
+	if tmp, ok := rawArgs["pushRelayPubkeyFcm"]; ok {
 		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg9 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg9[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
+		arg9, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pushRelayIdFcm"] = arg9
+	args["pushRelayPubkeyFcm"] = arg9
 	return args, nil
 
 }
@@ -1622,67 +1600,21 @@ func field_Mutation_ConversationRemove_args(rawArgs map[string]interface{}) (map
 
 func field_Mutation_DevicePushConfigCreate_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
+	var arg0 *string
+	if tmp, ok := rawArgs["relayPubkey"]; ok {
 		var err error
-		arg0, err = models.UnmarshalID(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
+		var ptr1 string
 		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
+			ptr1, err = models.UnmarshalString(tmp)
+			arg0 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 string
-	if tmp, ok := rawArgs["deviceId"]; ok {
-		var err error
-		arg3, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["deviceId"] = arg3
-	var arg4 *int32
-	if tmp, ok := rawArgs["pushType"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["pushType"] = arg4
-	var arg5 []byte
+	args["relayPubkey"] = arg0
+	var arg1 []byte
 	if tmp, ok := rawArgs["pushId"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1693,35 +1625,29 @@ func field_Mutation_DevicePushConfigCreate_args(rawArgs map[string]interface{}) 
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg5 = make([]byte, len(rawIf1))
+		arg1 = make([]byte, len(rawIf1))
 		for idx1 := range rawIf1 {
-			arg5[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+			arg1[idx1], err = models.UnmarshalByte(rawIf1[idx1])
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["pushId"] = arg5
-	var arg6 []byte
-	if tmp, ok := rawArgs["relayId"]; ok {
+	args["pushId"] = arg1
+	var arg2 *int32
+	if tmp, ok := rawArgs["pushType"]; ok {
 		var err error
-		var rawIf1 []interface{}
+		var ptr1 int32
 		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg2 = &ptr1
 		}
-		arg6 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg6[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
+
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["relayId"] = arg6
+	args["pushType"] = arg2
 	return args, nil
 
 }
@@ -1853,26 +1779,15 @@ func field_Mutation_DevicePushConfigUpdate_args(rawArgs map[string]interface{}) 
 		}
 	}
 	args["pushId"] = arg5
-	var arg6 []byte
-	if tmp, ok := rawArgs["relayId"]; ok {
+	var arg6 string
+	if tmp, ok := rawArgs["relayPubkey"]; ok {
 		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg6 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg6[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
+		arg6, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["relayId"] = arg6
+	args["relayPubkey"] = arg6
 	return args, nil
 
 }
@@ -3031,19 +2946,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityConfig.CryptoParams(childComplexity), true
 
-	case "BertyEntityConfig.pushRelayIdApns":
-		if e.complexity.BertyEntityConfig.PushRelayIdApns == nil {
+	case "BertyEntityConfig.pushRelayPubkeyApns":
+		if e.complexity.BertyEntityConfig.PushRelayPubkeyApns == nil {
 			break
 		}
 
-		return e.complexity.BertyEntityConfig.PushRelayIdApns(childComplexity), true
+		return e.complexity.BertyEntityConfig.PushRelayPubkeyApns(childComplexity), true
 
-	case "BertyEntityConfig.pushRelayIdFcm":
-		if e.complexity.BertyEntityConfig.PushRelayIdFcm == nil {
+	case "BertyEntityConfig.pushRelayPubkeyFcm":
+		if e.complexity.BertyEntityConfig.PushRelayPubkeyFcm == nil {
 			break
 		}
 
-		return e.complexity.BertyEntityConfig.PushRelayIdFcm(childComplexity), true
+		return e.complexity.BertyEntityConfig.PushRelayPubkeyFcm(childComplexity), true
 
 	case "BertyEntityContact.id":
 		if e.complexity.BertyEntityContact.Id == nil {
@@ -3311,12 +3226,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityDevicePushConfig.PushId(childComplexity), true
 
-	case "BertyEntityDevicePushConfig.relayId":
-		if e.complexity.BertyEntityDevicePushConfig.RelayId == nil {
+	case "BertyEntityDevicePushConfig.relayPubkey":
+		if e.complexity.BertyEntityDevicePushConfig.RelayPubkey == nil {
 			break
 		}
 
-		return e.complexity.BertyEntityDevicePushConfig.RelayId(childComplexity), true
+		return e.complexity.BertyEntityDevicePushConfig.RelayPubkey(childComplexity), true
 
 	case "BertyEntityDevicePushIdentifier.id":
 		if e.complexity.BertyEntityDevicePushIdentifier.Id == nil {
@@ -3346,12 +3261,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityDevicePushIdentifier.PushInfo(childComplexity), true
 
-	case "BertyEntityDevicePushIdentifier.pushRelayId":
-		if e.complexity.BertyEntityDevicePushIdentifier.PushRelayId == nil {
+	case "BertyEntityDevicePushIdentifier.relayPubkey":
+		if e.complexity.BertyEntityDevicePushIdentifier.RelayPubkey == nil {
 			break
 		}
 
-		return e.complexity.BertyEntityDevicePushIdentifier.PushRelayId(childComplexity), true
+		return e.complexity.BertyEntityDevicePushIdentifier.RelayPubkey(childComplexity), true
 
 	case "BertyEntityDevicePushIdentifier.deviceId":
 		if e.complexity.BertyEntityDevicePushIdentifier.DeviceId == nil {
@@ -5223,7 +5138,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayIdApns"].([]byte), args["pushRelayIdFcm"].([]byte)), true
+		return e.complexity.Mutation.ConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayPubkeyApns"].(string), args["pushRelayPubkeyFcm"].(string)), true
 
 	case "Mutation.ContactRequest":
 		if e.complexity.Mutation.ContactRequest == nil {
@@ -5355,7 +5270,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DevicePushConfigCreate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte)), true
+		return e.complexity.Mutation.DevicePushConfigCreate(childComplexity, args["relayPubkey"].(*string), args["pushId"].([]byte), args["pushType"].(*int32)), true
 
 	case "Mutation.DevicePushConfigNativeRegister":
 		if e.complexity.Mutation.DevicePushConfigNativeRegister == nil {
@@ -5403,7 +5318,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DevicePushConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte)), true
+		return e.complexity.Mutation.DevicePushConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayPubkey"].(string)), true
 
 	case "Mutation.GenerateFakeData":
 		if e.complexity.Mutation.GenerateFakeData == nil {
@@ -5903,10 +5818,16 @@ func (ec *executionContext) _BertyEntityConfig(ctx context.Context, sel ast.Sele
 			}
 		case "cryptoParams":
 			out.Values[i] = ec._BertyEntityConfig_cryptoParams(ctx, field, obj)
-		case "pushRelayIdApns":
-			out.Values[i] = ec._BertyEntityConfig_pushRelayIdApns(ctx, field, obj)
-		case "pushRelayIdFcm":
-			out.Values[i] = ec._BertyEntityConfig_pushRelayIdFcm(ctx, field, obj)
+		case "pushRelayPubkeyApns":
+			out.Values[i] = ec._BertyEntityConfig_pushRelayPubkeyApns(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "pushRelayPubkeyFcm":
+			out.Values[i] = ec._BertyEntityConfig_pushRelayPubkeyFcm(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6107,7 +6028,7 @@ func (ec *executionContext) _BertyEntityConfig_cryptoParams(ctx context.Context,
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyEntityConfig_pushRelayIdApns(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+func (ec *executionContext) _BertyEntityConfig_pushRelayPubkeyApns(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConfig",
 		Args:   nil,
@@ -6116,27 +6037,21 @@ func (ec *executionContext) _BertyEntityConfig_pushRelayIdApns(ctx context.Conte
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.PushRelayIDAPNS, nil
+		return obj.PushRelayPubkeyAPNS, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]byte)
+	res := resTmp.(string)
 	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalByte(res[idx1])
-		}()
-	}
-
-	return arr1
+	return models.MarshalString(res)
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyEntityConfig_pushRelayIdFcm(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+func (ec *executionContext) _BertyEntityConfig_pushRelayPubkeyFcm(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConfig",
 		Args:   nil,
@@ -6145,23 +6060,17 @@ func (ec *executionContext) _BertyEntityConfig_pushRelayIdFcm(ctx context.Contex
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.PushRelayIDFCM, nil
+		return obj.PushRelayPubkeyFCM, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]byte)
+	res := resTmp.(string)
 	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalByte(res[idx1])
-		}()
-	}
-
-	return arr1
+	return models.MarshalString(res)
 }
 
 var bertyEntityContactImplementors = []string{"BertyEntityContact", "Node"}
@@ -7248,8 +7157,11 @@ func (ec *executionContext) _BertyEntityDevicePushConfig(ctx context.Context, se
 			out.Values[i] = ec._BertyEntityDevicePushConfig_pushType(ctx, field, obj)
 		case "pushId":
 			out.Values[i] = ec._BertyEntityDevicePushConfig_pushId(ctx, field, obj)
-		case "relayId":
-			out.Values[i] = ec._BertyEntityDevicePushConfig_relayId(ctx, field, obj)
+		case "relayPubkey":
+			out.Values[i] = ec._BertyEntityDevicePushConfig_relayPubkey(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -7397,7 +7309,7 @@ func (ec *executionContext) _BertyEntityDevicePushConfig_pushId(ctx context.Cont
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyEntityDevicePushConfig_relayId(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
+func (ec *executionContext) _BertyEntityDevicePushConfig_relayPubkey(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushConfig) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityDevicePushConfig",
 		Args:   nil,
@@ -7406,23 +7318,17 @@ func (ec *executionContext) _BertyEntityDevicePushConfig_relayId(ctx context.Con
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.RelayID, nil
+		return obj.RelayPubkey, nil
 	})
 	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]byte)
+	res := resTmp.(string)
 	rctx.Result = res
-
-	arr1 := make(graphql.Array, len(res))
-
-	for idx1 := range res {
-		arr1[idx1] = func() graphql.Marshaler {
-			return models.MarshalByte(res[idx1])
-		}()
-	}
-
-	return arr1
+	return models.MarshalString(res)
 }
 
 var bertyEntityDevicePushIdentifierImplementors = []string{"BertyEntityDevicePushIdentifier", "Node"}
@@ -7455,8 +7361,8 @@ func (ec *executionContext) _BertyEntityDevicePushIdentifier(ctx context.Context
 			out.Values[i] = ec._BertyEntityDevicePushIdentifier_updatedAt(ctx, field, obj)
 		case "pushInfo":
 			out.Values[i] = ec._BertyEntityDevicePushIdentifier_pushInfo(ctx, field, obj)
-		case "pushRelayId":
-			out.Values[i] = ec._BertyEntityDevicePushIdentifier_pushRelayId(ctx, field, obj)
+		case "relayPubkey":
+			out.Values[i] = ec._BertyEntityDevicePushIdentifier_relayPubkey(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
@@ -7569,7 +7475,7 @@ func (ec *executionContext) _BertyEntityDevicePushIdentifier_pushInfo(ctx contex
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyEntityDevicePushIdentifier_pushRelayId(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
+func (ec *executionContext) _BertyEntityDevicePushIdentifier_relayPubkey(ctx context.Context, field graphql.CollectedField, obj *entity.DevicePushIdentifier) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityDevicePushIdentifier",
 		Args:   nil,
@@ -7578,7 +7484,7 @@ func (ec *executionContext) _BertyEntityDevicePushIdentifier_pushRelayId(ctx con
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.PushRelayID, nil
+		return obj.RelayPubkey, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -18706,7 +18612,7 @@ func (ec *executionContext) _Mutation_ConfigUpdate(ctx context.Context, field gr
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayIdApns"].([]byte), args["pushRelayIdFcm"].([]byte))
+		return ec.resolvers.Mutation().ConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayPubkeyApns"].(string), args["pushRelayPubkeyFcm"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19047,7 +18953,7 @@ func (ec *executionContext) _Mutation_DevicePushConfigCreate(ctx context.Context
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DevicePushConfigCreate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte))
+		return ec.resolvers.Mutation().DevicePushConfigCreate(rctx, args["relayPubkey"].(*string), args["pushId"].([]byte), args["pushType"].(*int32))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19171,7 +19077,7 @@ func (ec *executionContext) _Mutation_DevicePushConfigUpdate(ctx context.Context
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DevicePushConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayId"].([]byte))
+		return ec.resolvers.Mutation().DevicePushConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["deviceId"].(string), args["pushType"].(*int32), args["pushId"].([]byte), args["relayPubkey"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -22170,9 +22076,9 @@ func UnmarshalBertyEntityDevicePushIdentifierInput(v interface{}) (entity.Device
 			if err != nil {
 				return it, err
 			}
-		case "pushRelayId":
+		case "relayPubkey":
 			var err error
-			it.PushRelayID, err = models.UnmarshalString(v)
+			it.RelayPubkey, err = models.UnmarshalString(v)
 			if err != nil {
 				return it, err
 			}
@@ -22710,7 +22616,7 @@ type BertyEntityDevicePushIdentifier implements Node {
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     pushInfo: [Byte!]
-    pushRelayId: String!
+    relayPubkey: String!
     deviceId: String!
 }
   
@@ -22964,8 +22870,8 @@ type BertyEntityConfig  {
     currentDevice: BertyEntityDevice
     currentDeviceId: String!
     cryptoParams: [Byte!]
-    pushRelayIdApns: [Byte!]
-    pushRelayIdFcm: [Byte!]
+    pushRelayPubkeyApns: String!
+    pushRelayPubkeyFcm: String!
 }
   
   
@@ -22978,7 +22884,7 @@ type BertyEntityDevicePushConfig implements Node {
     deviceId: String!
     pushType: Enum
     pushId: [Byte!]
-    relayId: [Byte!]
+    relayPubkey: String!
 }
   
   
@@ -23134,7 +23040,7 @@ input BertyEntityDevicePushIdentifierInput {
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     pushInfo: [Byte!]
-    pushRelayId: String!
+    relayPubkey: String!
     deviceId: String!
 }
 input BertyEntityDeviceInput {
@@ -23295,8 +23201,8 @@ type Mutation {
     currentDevice: BertyEntityDeviceInput
     currentDeviceId: String!
     cryptoParams: [Byte!]
-    pushRelayIdApns: [Byte!]
-    pushRelayIdFcm: [Byte!]
+    pushRelayPubkeyApns: String!
+    pushRelayPubkeyFcm: String!
   ): BertyEntityConfig
   ContactRequest(
     contact: BertyEntityContactInput
@@ -23362,13 +23268,9 @@ type Mutation {
     id: ID!
   ): BertyEntityConversation
   DevicePushConfigCreate(
-    id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    deviceId: String!
-    pushType: Enum
+    relayPubkey: String
     pushId: [Byte!]
-    relayId: [Byte!]
+    pushType: Enum
   ): BertyEntityDevicePushConfig
   DevicePushConfigNativeRegister(
     T: Bool!
@@ -23386,7 +23288,7 @@ type Mutation {
     deviceId: String!
     pushType: Enum
     pushId: [Byte!]
-    relayId: [Byte!]
+    relayPubkey: String!
   ): BertyEntityDevicePushConfig
   GenerateFakeData(
     T: Bool!

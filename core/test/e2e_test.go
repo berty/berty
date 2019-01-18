@@ -236,7 +236,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.ID, ShouldEqual, alice.node.UserID())
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
-				So(attrs.Me.Devices, ShouldBeNil)
+				So(len(attrs.Me.Devices), ShouldEqual, 1)
 				So(attrs.IntroText, ShouldEqual, "hello, I want to chat!")
 				// unary call
 				res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
@@ -270,7 +270,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.DisplayName, ShouldEqual, "Alice")
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
-				So(attrs.Me.Devices, ShouldBeNil)
+				So(len(attrs.Me.Devices), ShouldEqual, 1)
 				So(attrs.IntroText, ShouldEqual, "hello, I want to chat!")
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{1, 0, 1, 0, 0, 0})
 
@@ -526,7 +526,7 @@ func TestWithEnqueuer(t *testing.T) {
 
 				envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
-				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
+				So(err, ShouldBeNil)
 
 				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
@@ -562,7 +562,7 @@ func TestWithEnqueuer(t *testing.T) {
 				So(attrs.Me.DisplayName, ShouldEqual, "Alice")
 				So(attrs.Me.Status, ShouldEqual, entity.Contact_Unknown)
 				So(attrs.Me.DisplayStatus, ShouldBeEmpty)
-				So(attrs.Me.Devices, ShouldBeNil)
+				So(len(attrs.Me.Devices), ShouldEqual, 1)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 2, 0, 2, 0, 0})
 
 				everythingWentFine()

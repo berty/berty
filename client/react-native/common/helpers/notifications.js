@@ -24,7 +24,7 @@ export const enableNativeNotifications = async ({ context }) => {
       position: 'top',
     })
 
-    // return false
+    return false
   }
 
   await mutations.devicePushConfigNativeRegister({})
@@ -32,7 +32,31 @@ export const enableNativeNotifications = async ({ context }) => {
   return true
 }
 
-export const disableNativeNotifications = async ({ context, pushConfigs }) => {
+export const enableMQTTNotifications = async ({ context, relayPubkey, pushId }) => {
+  const { mutations } = context
+
+  await mutations.devicePushConfigCreate({
+    pushType: enums.BertyPushDevicePushTypeInputDevicePushType.MQTT,
+    pushId: pushId.split('').map(e => e.charCodeAt()),
+    relayPubkey: relayPubkey,
+  })
+
+  return true
+}
+
+export const disableMQTTNotifications = async ({ context, currentPushConfigs }) => {
+  const { mutations } = context
+
+  for (let currentPushConfig of currentPushConfigs) {
+    await mutations.devicePushConfigRemove({
+      id: currentPushConfig.id,
+    })
+  }
+
+  return true
+}
+
+export const disableNativeNotifications = async ({ context }) => {
   const { mutations } = context
 
   await mutations.devicePushConfigNativeUnregister({})

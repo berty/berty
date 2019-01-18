@@ -29,10 +29,10 @@ func (c *Config) Validate() error {
 
 func (c *Config) Filtered() *Config {
 	return &Config{
-		ID:              c.ID,
-		PushRelayIDAPNS: c.PushRelayIDAPNS,
-		PushRelayIDFCM:  c.PushRelayIDFCM,
-		UpdatedAt:       c.UpdatedAt,
-		CreatedAt:       c.CreatedAt,
+		ID:                  c.ID,
+		PushRelayPubkeyAPNS: c.PushRelayPubkeyAPNS,
+		PushRelayPubkeyFCM:  c.PushRelayPubkeyFCM,
+		UpdatedAt:           c.UpdatedAt,
+		CreatedAt:           c.CreatedAt,
 	}
 }

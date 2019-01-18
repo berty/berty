@@ -1,11 +1,10 @@
 package node
 
 import (
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/push"
 	"context"
 	"encoding/base64"
-
-	"berty.tech/core/pkg/errorcodes"
 
 	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"
@@ -42,9 +41,9 @@ func WithInitConfig() NewNodeOption {
 			}
 
 			config = &entity.Config{
-				ID:              ID.String(),
-				PushRelayIDAPNS: push.DefaultPushRelayIds[push.DevicePushType_APNS],
-				PushRelayIDFCM:  push.DefaultPushRelayIds[push.DevicePushType_FCM],
+				ID:                  ID.String(),
+				PushRelayPubkeyAPNS: push.DefaultPushRelayPubkeys[push.DevicePushType_APNS],
+				PushRelayPubkeyFCM:  push.DefaultPushRelayPubkeys[push.DevicePushType_FCM],
 			}
 
 			if err = n.sql(ctx).Create(config).Error; err != nil {

@@ -134,7 +134,7 @@ service Service {
   rpc DevicePushConfigList (Void) returns (DevicePushConfigListOutput) {
     option (gql.graphql_type) = "Query";
   };
-  rpc DevicePushConfigCreate (berty.entity.DevicePushConfig) returns (berty.entity.DevicePushConfig) {
+  rpc DevicePushConfigCreate (DevicePushConfigCreateInput) returns (berty.entity.DevicePushConfig) {
     option (gql.graphql_type) = "Mutation";
   }
   rpc DevicePushConfigNativeRegister (Void) returns (Void) {
@@ -364,10 +364,9 @@ message DevicePushConfigListOutput {
 }
 
 message DevicePushConfigCreateInput {
-  bytes relay_id = 1 [(gql.graphql_nullable) = true, (gogoproto.customname) = "RelayID"];
-  string device_token = 2;
-  string package_id = 3  [(gogoproto.customname) = "PackageID"];
-  berty.push.DevicePushType push_type = 4;
+  string relay_pubkey = 1 [(gql.graphql_nullable) = true, (gogoproto.customname) = "RelayPubkey"];
+  bytes push_id = 2 [(gql.graphql_nullable) = true, (gogoproto.customname) = "PushID"];
+  berty.push.DevicePushType push_type = 3;
 }
 
 //

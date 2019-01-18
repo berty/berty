@@ -14,7 +14,7 @@ message DevicePushIdentifier {
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   bytes push_info = 4;
-  string push_relay_id = 5  [(gogoproto.customname) = "PushRelayID"];
+  string relay_pubkey = 5  [(gogoproto.customname) = "RelayPubkey"];
 
   string device_id = 6 [(gogoproto.customname) = "DeviceID"];
 }

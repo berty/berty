@@ -30,6 +30,6 @@ message Config {
 
   bytes crypto_params = 9;
 
-  bytes push_relay_id_apns = 10 [(gogoproto.customname) = "PushRelayIDAPNS"];
-  bytes push_relay_id_fcm = 11 [(gogoproto.customname) = "PushRelayIDFCM"];
+  string push_relay_pubkey_apns = 10 [(gogoproto.customname) = "PushRelayPubkeyAPNS"];
+  string push_relay_pubkey_fcm = 11 [(gogoproto.customname) = "PushRelayPubkeyFCM"];
 }

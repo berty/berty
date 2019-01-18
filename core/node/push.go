@@ -1,6 +1,7 @@
 package node
 
 import (
+	"berty.tech/core/api/node"
 	"bytes"
 	"context"
 	"encoding/base64"
@@ -63,17 +64,21 @@ func WithPushTokenSubscriber() NewNodeOption {
 						if len(currentToken.PushID) > 0 {
 							_, err = n.DevicePushConfigRemove(ctx, currentToken)
 
-							logger().Error("unable to delete existing push token", zap.Error(err))
+							if err != nil {
+								logger().Error("unable to delete existing push token", zap.Error(err))
+							}
 						}
 
 						if len(token.Value) > 0 {
-							_, err = n.DevicePushConfigCreate(ctx, &entity.DevicePushConfig{
-								RelayID:  []byte{},
-								PushID:   pushIDBytes,
-								PushType: token.Type,
+							_, err = n.DevicePushConfigCreate(ctx, &node.DevicePushConfigCreateInput{
+								RelayPubkey: "",
+								PushID:      pushIDBytes,
+								PushType:    token.Type,
 							})
 
-							logger().Error("unable to create push token", zap.Error(err))
+							if err != nil {
+								logger().Error("unable to create push token", zap.Error(err))
+							}
 						}
 					}
 				case <-n.shutdown:

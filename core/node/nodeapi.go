@@ -266,10 +266,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	// send request to peer
 	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequest)
 	if err := event.SetAttrs(&p2p.ContactRequestAttrs{
-		Me: &entity.Contact{
-			ID:          n.UserID(),
-			DisplayName: n.config.Myself.DisplayName,
-		},
+		Me:        n.config.Myself.Filtered().WithPushInformation(n.sql(ctx)),
 		IntroText: req.IntroText,
 	}); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)
@@ -315,7 +312,7 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 		}
 
 		evt := n.NewContactEvent(ctx, n.config.Myself, p2p.Kind_ContactShareMe)
-		if err := evt.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered()}); err != nil {
+		if err := evt.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
 			return nil, err
 		}
 

@@ -613,7 +613,7 @@ func NodeDevicePushConfigCreate(client *client.Client, ctx context.Context, json
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.DevicePushConfigCreate")
-	var typedInput entity.DevicePushConfig
+	var typedInput node.DevicePushConfigCreateInput
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}
