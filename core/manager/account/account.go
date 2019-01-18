@@ -1,7 +1,6 @@
 package account
 
 import (
-	"berty.tech/core/push"
 	"context"
 	"fmt"
 	"io"
@@ -27,6 +26,7 @@ import (
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
+	"berty.tech/core/push"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
 	"github.com/jinzhu/gorm"
@@ -490,13 +490,14 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithDevice(&entity.Device{Name: a.Name}),
 		node.WithNetworkDriver(a.network),
 		node.WithNetworkMetrics(a.metrics),
-		node.WithNotificationDriver(a.notification),
 		node.WithInitConfig(),
 		node.WithSoftwareCrypto(), // FIXME: use hardware impl if available
 		node.WithConfig(),
 		node.WithRing(a.ring),
+		node.WithNotificationDriver(a.notification),
 		node.WithPushManager(a.pushManager),
 		node.WithPushTokenSubscriber(),
+		node.WithPushNotificationSubscriber(),
 	)
 	if err != nil {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)

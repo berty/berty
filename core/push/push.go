@@ -19,6 +19,10 @@ type Manager struct {
 	dispatchers []Dispatcher
 }
 
+type Payload struct {
+	BertyEnvelope string `json:"berty-envelope"`
+}
+
 func (m *Manager) Dispatch(push *PushData, pushDestination *PushDestination) error {
 	for _, dispatcher := range m.dispatchers {
 		if !dispatcher.CanDispatch(push, pushDestination) {

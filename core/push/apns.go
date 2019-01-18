@@ -1,12 +1,13 @@
 package push
 
 import (
-	"berty.tech/core/pkg/errorcodes"
 	"encoding/base64"
+	"strings"
+
+	"berty.tech/core/pkg/errorcodes"
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
 	"github.com/sideshow/apns2/payload"
-	"strings"
 )
 
 const asn1UID = "0.9.2342.19200300.100.1.1"

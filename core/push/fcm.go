@@ -1,10 +1,11 @@
 package push
 
 import (
-	"berty.tech/core/pkg/errorcodes"
 	"encoding/base64"
-	"github.com/NaySoftware/go-fcm"
 	"strings"
+
+	"berty.tech/core/pkg/errorcodes"
+	"github.com/NaySoftware/go-fcm"
 )
 
 type FCMDispatcher struct {
@@ -54,9 +55,7 @@ func (d *FCMDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDesti
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
-	payload := map[string]interface{}{
-		"berty-envelope": base64.StdEncoding.EncodeToString(pushAttrs.Envelope),
-	}
+	payload := Payload{BertyEnvelope: base64.StdEncoding.EncodeToString(pushAttrs.Envelope)}
 
 	deviceToken := fcmIdentifier.DeviceToken
 

@@ -3,12 +3,12 @@
 package notification
 
 import (
-	"berty.tech/core/push"
 	"encoding/hex"
 	"path"
 	"runtime"
 	"sync"
 
+	"berty.tech/core/push"
 	"github.com/0xAX/notificator"
 	"go.uber.org/zap"
 )
