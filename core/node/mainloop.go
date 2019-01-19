@@ -151,6 +151,7 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 	select {
 	case <-done:
 	case <-time.After(1 * time.Second):
+		n.handleOutgoingPushEvent(ctx, event, &envelope)
 	}
 	// push the outgoing event on the client stream
 	n.clientEvents <- event

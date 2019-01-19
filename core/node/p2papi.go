@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/x509"
 	"encoding/base64"
+	"time"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
@@ -142,4 +143,82 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 	}
 
 	return &event, err
+}
+
+func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.Envelope) error {
+	pushIdentifiers, err := n.getPushDestinationsForEvent(ctx, event)
+	if err != nil {
+		return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
+	}
+
+	marshaledEnvelope, err := envelope.Marshal()
+	if err != nil {
+		return errorcodes.ErrSerialization.Wrap(err)
+	}
+
+	for _, pushIdentifier := range pushIdentifiers {
+		wrappedEvent := n.NewContactEvent(ctx, &entity.Contact{
+			ID: pushIdentifier.PushRelayID,
+		}, p2p.Kind_DevicePushTo)
+
+		if err := wrappedEvent.SetDevicePushToAttrs(&p2p.DevicePushToAttrs{
+			Priority:       event.PushPriority(),
+			PushIdentifier: pushIdentifier.PushInfo,
+			Envelope:       marshaledEnvelope,
+		}); err != nil {
+			return errorcodes.ErrPushBroadcast.Wrap(err)
+		}
+
+		n.outgoingEvents <- wrappedEvent
+	}
+
+	return nil
+}
+
+func (n *Node) handleOutgoingPushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.Envelope) {
+	go func() {
+		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
+		defer cancel()
+
+		if err := n.pushEvent(tctx, event, envelope); err != nil {
+			n.LogBackgroundError(ctx, errors.Wrap(err, "failed queue push event"))
+		}
+	}()
+}
+
+func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event) ([]*entity.DevicePushIdentifier, error) {
+	if event.ReceiverID == "" {
+		return nil, errorcodes.ErrPushUnknownDestination.New()
+	}
+
+	db := n.sql(ctx)
+
+	devices := []*entity.Device{}
+	pushIdentifiers := []*entity.DevicePushIdentifier{}
+
+	if err := db.Find(&devices, &entity.Device{ContactID: event.ReceiverID}).Error; err != nil {
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+	}
+
+	if len(devices) == 0 {
+		return nil, errorcodes.ErrDbNothingFound.New()
+	}
+
+	deviceIDs := []string{}
+	for _, device := range devices {
+		deviceIDs = append(deviceIDs, device.ID)
+	}
+
+	if err := db.
+		Model(&entity.DevicePushIdentifier{}).
+		Find(&pushIdentifiers).
+		Where("device_id IN (?)", deviceIDs).Error; err != nil {
+		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+	}
+
+	if len(pushIdentifiers) == 0 {
+		return nil, errorcodes.ErrDbNothingFound.New()
+	}
+
+	return pushIdentifiers, nil
 }
