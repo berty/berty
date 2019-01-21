@@ -35,6 +35,10 @@ func WithPushTokenSubscriber() NewNodeOption {
 				select {
 				case token := <-tokenSubscription:
 					{
+						logger().Debug("node push token subscriber receive token",
+							zap.String("type", token.Type.String()),
+							zap.String("hash", token.Hash()),
+						)
 						currentToken := &entity.DevicePushConfig{}
 
 						if err = n.sql(ctx).First(&currentToken, &entity.DevicePushConfig{PushType: token.Type}).Error; err != nil {
