@@ -97,6 +97,8 @@ type Account struct {
 
 	ring        *zapring.Ring
 	pushManager *push.Manager
+
+	shutdown chan struct{}
 }
 
 var list []*Account
@@ -111,6 +113,7 @@ func New(ctx context.Context, opts ...NewOption) (*Account, error) {
 
 	a := &Account{
 		errChan:     make(chan error, 1),
+		shutdown:    make(chan struct{}, 1),
 		rootSpan:    tracer.Span(),
 		rootContext: ctx,
 	}
@@ -268,6 +271,8 @@ func (a *Account) Close(ctx context.Context) {
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
+	close(a.shutdown)
+
 	if a.node != nil {
 		a.node.Shutdown(ctx)
 	}
@@ -351,6 +356,8 @@ func (a *Account) startNetwork(ctx context.Context) error {
 		return nil
 	}
 
+	// TODO: don't start network here
+	// network should be independent to the account and be used by multiple account
 	go func() {
 		defer a.PanicHandler()
 		a.errChan <- a.network.Start(ctx)
@@ -381,8 +388,22 @@ func (a *Account) startGrpcServer(ctx context.Context) error {
 
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.GrpcServer.Serve(a.grpcListener)
-		logger().Debug("grpc server closed")
+		errChan := make(chan error, 1)
+		for {
+			go func() {
+				defer a.PanicHandler()
+				errChan <- a.GrpcServer.Serve(a.grpcListener)
+			}()
+			select {
+			case err := <-errChan:
+				a.errChan <- err
+			case <-a.shutdown:
+				a.grpcListener.Close()
+				a.GrpcServer.Stop()
+				logger().Debug("account shutdown grpc server")
+				return
+			}
+		}
 	}()
 
 	return nil
@@ -446,8 +467,22 @@ func (a *Account) startGQL(ctx context.Context) error {
 
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.GrpcServer.Serve(a.ioGrpcListener)
-		logger().Debug("io grpc server closed")
+		errChan := make(chan error, 1)
+		for {
+			go func() {
+				defer a.PanicHandler()
+				errChan <- a.GrpcServer.Serve(a.ioGrpcListener)
+			}()
+			select {
+			case err := <-errChan:
+				a.errChan <- err
+			case <-a.shutdown:
+				logger().Debug("account shutdown grpc server")
+				a.ioGrpcListener.Close()
+				a.GrpcServer.Stop()
+				return
+			}
+		}
 	}()
 
 	addr, err := net.ResolveTCPAddr("tcp", a.GQLBind)
@@ -468,8 +503,21 @@ func (a *Account) startGQL(ctx context.Context) error {
 	// start gql server
 	go func() {
 		defer a.PanicHandler()
-		a.errChan <- a.gqlServer.ListenAndServe()
-		logger().Debug("gql server closed")
+		errChan := make(chan error, 1)
+		for {
+			go func() {
+				defer a.PanicHandler()
+				errChan <- a.gqlServer.ListenAndServe()
+			}()
+			select {
+			case err := <-errChan:
+				a.errChan <- err
+			case <-a.shutdown:
+				logger().Debug("account shutdown gql server")
+				a.gqlServer.Close()
+				return
+			}
+		}
 	}()
 	return nil
 }
