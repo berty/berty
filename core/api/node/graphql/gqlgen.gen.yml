@@ -1358,6 +1358,19 @@ models:
       rateOut:
       type:
 
+  BertyNetworkListAddrs:
+    model: berty.tech/core/network.ListAddrs
+    fields:
+      addrs:
+  BertyNetworkListAddrsInput:
+    model: berty.tech/core/network.ListAddrs
+    fields:
+      addrs:
+  BertyNetworkListAddrsPayload:
+    model: berty.tech/core/network.ListAddrs
+    fields:
+      addrs:
+
 
   BertyNodeNodeStartedAttrs:
     model: berty.tech/core/api/node.NodeStartedAttrs
