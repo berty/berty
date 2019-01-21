@@ -4,11 +4,89 @@ import { Button, Flex, Text, SearchBar } from '.'
 import { colors } from '../../constants'
 import { padding, borderBottom, paddingBottom } from '../../styles'
 import { isRTL } from '../../i18n'
+import RelayContext from '../../relay/RelayContext'
+import Icon from './Icon'
+import multiaddr from 'multiaddr'
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
 
 const HeaderButton = ({ icon, color, style, ...otherProps }) => {
   return <Button icon={icon} large color={color} {...otherProps} />
+}
+
+class StateBadge extends PureComponent {
+  constructor (props) {
+    super(props)
+    this.state = {
+      watchTime: 10000,
+      listenAddrs: [],
+      listenInterfaceAddrs: [],
+      timeouted: false,
+      requestTimeout: 1000,
+    }
+
+    this.fetchListenAddrs()
+    this.fetchListenInterfaceAddrs()
+  }
+
+  reqTimeoutOrRetry = (caller, fetch, resolveF) => {
+    const { watchTime, requestTimeout } = this.state
+    new Promise((resolve, reject) => {
+      let timer = setTimeout(
+        () => {
+          this.setState({ timeouted: true })
+          reject(new Error('Request timed out'))
+        },
+        requestTimeout
+      )
+
+      fetch()
+        .then((e) => {
+          resolveF(e)
+          resolve(e)
+        })
+        .catch((err) => reject(err))
+        .finally(() => clearTimeout(timer))
+    }).then((listenAddrs) => setTimeout(caller, watchTime))
+      .catch((err) => console.log('GetListenAddrsFailed with', err))
+  }
+
+  fetchListenAddrs = () => {
+    const { context } = this.props
+    this.reqTimeoutOrRetry(this.fetchListenAddrs, context.queries.GetListenAddrs.fetch, (e) => this.setState({ listenAddrs: e.addrs }))
+  }
+
+  fetchListenInterfaceAddrs = () => {
+    const { context } = this.props
+    this.reqTimeoutOrRetry(this.fetchListenInterfaceAddrs, context.queries.GetListenInterfaceAddrs.fetch, (e) => this.setState({ listenInterfaceAddrs: e.addrs }))
+  }
+
+  render () {
+    const { listenAddrs, listenInterfaceAddrs, timeouted } = this.state
+    let color = colors.black
+
+    if (listenAddrs.length > 0 && listenInterfaceAddrs.length > 0) {
+      color = colors.yellow
+      listenInterfaceAddrs.forEach((v, i, arr) => {
+        console.log(v)
+        try {
+          const addr = multiaddr(v).nodeAddress()
+          if (addr.address !== '127.0.0.1') {
+            color = colors.green
+          }
+        } catch (e) {
+          // Silence error since /p2p-circuit isn't valid
+          // console.log(e)
+        }
+      })
+    }
+
+    if (timeouted) {
+      color = colors.red
+    }
+
+    return (<Icon style={{ color }} name={'material-checkbox-blank-circle'} />)
+  }
 }
 
 export default class Header extends PureComponent {
@@ -89,6 +167,9 @@ export default class Header extends PureComponent {
               middle
               size={5}
             >
+              <RelayContext.Consumer>
+                {context => <StateBadge context={context} />}
+              </RelayContext.Consumer>
               {title}
             </Text>
             {rightBtn ? <View>{rightBtn}</View> : null}

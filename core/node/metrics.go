@@ -16,6 +16,14 @@ func (n *Node) Peers(ctx context.Context, _ *node.Void) (*network.Peers, error) 
 	return n.networkMetrics.Peers(ctx), nil
 }
 
+func (n *Node) GetListenAddrs(ctx context.Context, _ *node.Void) (*network.ListAddrs, error) {
+	return n.networkMetrics.GetListenAddrs(ctx), nil
+}
+
+func (n *Node) GetListenInterfaceAddrs(ctx context.Context, _ *node.Void) (*network.ListAddrs, error) {
+	return n.networkMetrics.GetListenInterfaceAddrs(ctx)
+}
+
 func (n *Node) MonitorPeers(_ *node.Void, stream node.Service_MonitorPeersServer) error {
 	tracer := tracing.EnterFunc(stream.Context())
 	defer tracer.Finish()

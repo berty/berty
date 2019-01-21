@@ -34,6 +34,34 @@ type Metrics struct {
 	rootContext context.Context
 }
 
+func (m *Metrics) GetListenAddrs(ctx context.Context) *network.ListAddrs {
+	lAddr := m.host.Network().ListenAddresses()
+	lSlice := []string{}
+	for _, l := range lAddr {
+		lSlice = append(lSlice, l.String())
+	}
+
+	return &network.ListAddrs{
+		Addrs: lSlice,
+	}
+}
+
+func (m *Metrics) GetListenInterfaceAddrs(ctx context.Context) (*network.ListAddrs, error) {
+	iAddr, err := m.host.Network().InterfaceListenAddresses()
+	if err != nil {
+		return nil, err
+	}
+
+	iSlice := []string{}
+	for _, i := range iAddr {
+		iSlice = append(iSlice, i.String())
+	}
+
+	return &network.ListAddrs{
+		Addrs: iSlice,
+	}, nil
+}
+
 func NewMetrics(ctx context.Context, d *Driver) network.Metrics {
 	tracer := tracing.EnterFunc(ctx, d)
 	defer tracer.Finish()

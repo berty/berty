@@ -236,6 +236,14 @@ service Service {
   rpc MonitorPeers (Void) returns (stream berty.network.Peer) {
     option (gql.graphql_type) = "Subscription";
   };
+
+  rpc GetListenAddrs (Void) returns (berty.network.ListAddrs) {
+    option (gql.graphql_type) = "Query";
+  };
+
+  rpc GetListenInterfaceAddrs (Void) returns (berty.network.ListAddrs) {
+    option (gql.graphql_type) = "Query";
+  };
 }
 
 message TestErrorInput {
