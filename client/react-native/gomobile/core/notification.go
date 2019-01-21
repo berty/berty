@@ -1,11 +1,11 @@
 package core
 
 import (
-	"berty.tech/core/push"
 	"fmt"
 	"sync"
 
 	"berty.tech/core/pkg/notification"
+	"berty.tech/core/push"
 	"go.uber.org/zap"
 )
 
@@ -65,7 +65,9 @@ func (n *MobileNotification) ReceiveToken(token *notification.Token) {
 	)
 	n.tokenSubscribersMutex.Lock()
 	for i := range n.subscribers {
-		n.tokenSubscribers[i] <- token
+		// make soft copy
+		t := *token
+		n.tokenSubscribers[i] <- &t
 	}
 	n.tokenSubscribersMutex.Unlock()
 
