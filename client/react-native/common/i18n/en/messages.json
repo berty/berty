@@ -12,6 +12,40 @@
     "get-started": "To get started, only a name is required",
     "lets-chat": "Let's chat!"
   },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome aboard",
+      "help-1": "Congratulations, your Berty account is now created and you can chat with other people on the Berty network.",
+      "help-2": "To make your Berty experience the best possible we will help you receive notifications, find people you know and backup your account.",
+      "disclaimer": "Just to let you know, this will slightly lower the confidentiality of your account, if you want to stay off the radar you can skip any these steps.",
+      "skip-everything": "Skip everything"
+    },
+    "notifications": {
+      "title": "Express bottle deliveries",
+      "help": "Let the messages find you instantly, you can receive notifications from the people you added as contacts.",
+      "disclaimer-apple": "Your messages will be encrypted and sent through Berty and Apple servers. Neither Berty nor Apple will have access to your messages, but some metadata can be deduced.",
+      "disclaimer-google": "Your messages will be encrypted and sent through Berty and Google servers. Neither Berty nor Google will have access to your messages, but some metadata can be deduced.",
+      "enable": "Enable notifications"
+    },
+    "contacts": {
+      "title": "Join the crew",
+      "link-help": "You can send an invite link to your contacts now, or you can do it anytime in the settings",
+      "link-disclaimer": "You will be sharing your account via a text message or an email, we won't access your contacts",
+      "link-share": "Share your account",
+      "phone-help": "To let your contacts find you, you can link your phone number to your Berty account, we will ask access to your address book to let you know who is already registered on Berty",
+      "phone-disclaimer": "A fingerprint version of your phone number will be stored on Berty servers, but we won't be able to use it to contact anyone",
+      "phone-link": "Link phone"
+    },
+    "backup": {
+      "title": "Keep your key safe",
+      "help": "Your private key is your identity on Berty. Write down 10 words to retrieve access to it.",
+      "disclaimer": "While it is recommended to backup your private key now, you can do it later in the app settings. However keep in mind that you will be able to do it once. Store it securely, anyone with your key will be able to use your account.",
+      "action": "Backup your key"
+    },
+    "ready": {
+      "title": "You're ready to go"
+    }
+  },
   "settings": {
     "title": "Settings",
     "updates-check": "Check for updates",
@@ -137,6 +171,9 @@
   "qrcode": "QR Code",
   "public-key": "Public Key",
   "fingerprint": "Fingerprint",
+  "next": "Next",
+  "skip": "Skip",
+  "close": "Close",
   "cancel": "Cancel",
   "confirm": "Confirm",
   "search-placeholder": "Search...",

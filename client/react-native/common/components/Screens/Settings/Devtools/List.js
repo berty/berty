@@ -301,6 +301,11 @@ export default class List extends PureComponent {
             onPress={() => navigation.navigate('devtools/notifications')}
           />
           <Menu.Item
+            icon='sunrise'
+            title='Show onboarding'
+            onPress={() => navigation.navigate('switch/onboarding')}
+          />
+          <Menu.Item
             icon='check-circle'
             title='Integration tests'
             onPress={() => navigation.navigate('devtools/tests')}

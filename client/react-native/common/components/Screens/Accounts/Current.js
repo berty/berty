@@ -111,6 +111,7 @@ class Current extends PureComponent {
             ...this.props.screenProps,
             context,
             availableUpdate,
+            firstLaunch: this.props.navigation.getParam('firstLaunch', false),
           }}
         />
       </RelayContext.Provider>
