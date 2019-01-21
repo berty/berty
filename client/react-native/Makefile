@@ -372,7 +372,7 @@ fastlane.ios.adhoc:
 	test -f $(IOS_BUILD)/$(NAME).ipa
 
 	# extract build informations
-	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
+	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 fastlane.ios.house:
 	mkdir -p $(IOS_BUILD)
@@ -393,7 +393,7 @@ fastlane.ios.house:
 	test -f $(IOS_BUILD)/$(NAME).ipa
 
 	# extract build informations
-	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
+	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 fastlane.ios.release:
 	mkdir -p $(IOS_BUILD)
@@ -414,7 +414,7 @@ fastlane.ios.release:
 	test -f $(IOS_BUILD)/$(NAME).ipa
 
 	# extract build informations
-	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/Berty.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
+	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
 fastlane.ios.release.appstore: fastlane.ios.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
