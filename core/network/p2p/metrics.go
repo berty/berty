@@ -34,6 +34,14 @@ type Metrics struct {
 	rootContext context.Context
 }
 
+func (m *Metrics) CanDial(ctx context.Context, pID string) {
+	peerID, err := peer.IDB58Decode(pID)
+	if err != nil {
+		// return nil, err
+	}
+	m.host.ConnManager().GetTagInfo(peerID)
+}
+
 func (m *Metrics) GetListenAddrs(ctx context.Context) *network.ListAddrs {
 	lAddr := m.host.Network().ListenAddresses()
 	lSlice := []string{}
