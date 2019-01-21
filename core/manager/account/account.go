@@ -269,7 +269,7 @@ func (a *Account) Close(ctx context.Context) {
 	ctx = tracer.Context()
 
 	if a.node != nil {
-		_ = a.node.Close()
+		a.node.Shutdown(ctx)
 	}
 	if a.network != nil {
 		_ = a.network.Close(ctx)
@@ -496,8 +496,6 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithRing(a.ring),
 		node.WithNotificationDriver(a.notification),
 		node.WithPushManager(a.pushManager),
-		node.WithPushTokenSubscriber(),
-		node.WithPushNotificationSubscriber(),
 	)
 	if err != nil {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)
@@ -516,11 +514,7 @@ func (a *Account) startNode(ctx context.Context) error {
 	// ctx = tracer.Context()
 
 	// start node
-	go func() {
-		defer a.PanicHandler()
-		a.errChan <- a.node.Start(a.rootContext, true, true)
-		logger().Debug("node stopped")
-	}()
+	a.node.Start(a.rootContext, true, true)
 
 	// show banner
 	if a.banner != "" {
@@ -542,15 +536,16 @@ func (a *Account) startNode(ctx context.Context) error {
 			switch s {
 			case syscall.SIGHUP: // kill -SIGHUP XXXX
 				logger().Info("sighup received")
+				a.Close(ctx)
 			case syscall.SIGINT: // kill -SIGINT XXXX or Ctrl+c
 				logger().Info("sigint received")
-				a.errChan <- nil
+				a.Close(ctx)
 			case syscall.SIGTERM: // kill -SIGTERM XXXX (force stop)
 				logger().Info("sigterm received")
-				a.errChan <- nil
+				a.Close(ctx)
 			case syscall.SIGQUIT: // kill -SIGQUIT XXXX (stop and core dump)
 				logger().Info("sigquit received")
-				a.errChan <- nil
+				a.Close(ctx)
 			default:
 				a.errChan <- fmt.Errorf("unknown signal received")
 			}

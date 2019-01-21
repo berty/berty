@@ -1,7 +1,7 @@
 package node
 
 import (
-	"fmt"
+	"context"
 
 	"berty.tech/core/pkg/notification"
 	"go.uber.org/zap"
@@ -20,29 +20,7 @@ func (n *Node) DisplayNotification(payload *notification.Payload) {
 	}
 }
 
-func (n *Node) UseNotificationDriver() {
-	go func() {
-		// TODO: remove next line
-		n.notificationDriver.Register()
-		payloadChan := n.notificationDriver.Subscribe()
-		tokenChan := n.notificationDriver.SubscribeToken()
-		for {
-			select {
-			case payload := <-payloadChan:
-				logger().Debug("node receive notification",
-					zap.String("payload", fmt.Sprintf("%+v", payload)),
-				)
-			case token := <-tokenChan:
-				logger().Debug("node receive notification token",
-					zap.String("type", token.Type.String()),
-					zap.String("hash", token.Hash()),
-				)
-			case <-n.shutdown:
-				logger().Debug("node notification driver shutdown")
-				n.notificationDriver.Unsubscribe(payloadChan)
-				n.notificationDriver.UnsubscribeToken(tokenChan)
-				return
-			}
-		}
-	}()
+func (n *Node) UseNotificationDriver(ctx context.Context) {
+	n.UsePushTokenSubscriber(ctx)
+	n.UsePushNotificationSubscriber(ctx)
 }

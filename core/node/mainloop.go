@@ -157,35 +157,32 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 	n.clientEvents <- event
 }
 
-// Start is the node's mainloop
-func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
-	tracer := tracing.EnterFunc(ctx)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+func (n *Node) UseNodeEvent(ctx context.Context) {
+	// "node started" event
+	go func() {
+		time.Sleep(time.Second)
+		n.EnqueueNodeEvent(ctx, node.Kind_NodeStarted, nil)
+	}()
 
-	if withCron {
-		go n.cron(ctx)
-	}
-
-	if withNodeEvents {
-		// "node started" event
-		go func() {
-			time.Sleep(time.Second)
-			n.EnqueueNodeEvent(ctx, node.Kind_NodeStarted, nil)
-		}()
-
-		// "node is alive" event
-		go func() {
-			for {
-				n.EnqueueNodeEvent(ctx, node.Kind_NodeIsAlive, nil)
-				time.Sleep(30 * time.Second)
+	// "node is alive" event
+	go func() {
+		for {
+			n.EnqueueNodeEvent(ctx, node.Kind_NodeIsAlive, nil)
+			select {
+			case <-time.After(30 * time.Second):
+				continue
+			case <-n.shutdown:
+				logger().Debug("node shutdown alive emitter")
+				return
 			}
-		}()
+		}
+	}()
 
-		// statistics events
-		go func() {
-			for {
-				time.Sleep(10 * time.Second)
+	// statistics events
+	go func() {
+		for {
+			select {
+			case <-time.After(10 * time.Second):
 				stats := node.StatisticsAttrs{}
 				// FIXME: support multierr
 
@@ -196,23 +193,49 @@ func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) error {
 				} else {
 					stats.PeersCount = int32(len(peers.List))
 				}
-
 				n.EnqueueNodeEvent(ctx, node.Kind_Statistics, &stats)
+			case <-n.shutdown:
+				logger().Debug("node shutdown statistics event emitter")
+				return
 			}
-		}()
+		}
+	}()
+}
+
+func (n *Node) UseEventHandler(ctx context.Context) {
+	go func() {
+		for {
+			select {
+			case event := <-n.outgoingEvents:
+				n.handleOutgoingEvent(ctx, event)
+				// emit the outgoing event on the node event stream
+			case event := <-n.clientEvents:
+				n.handleClientEvent(ctx, event)
+			case <-n.shutdown:
+				logger().Debug("node shutdown events handlers")
+				return
+			}
+		}
+	}()
+}
+
+// Start is the node's mainloop
+func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) {
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	if withCron {
+		go n.cron(ctx)
+	}
+
+	if withNodeEvents {
+		n.UseNodeEvent(ctx)
 	}
 
 	if n.notificationDriver != nil {
-		n.UseNotificationDriver()
+		n.UseNotificationDriver(ctx)
 	}
 
-	for {
-		select {
-		case event := <-n.outgoingEvents:
-			n.handleOutgoingEvent(ctx, event)
-			// emit the outgoing event on the node event stream
-		case event := <-n.clientEvents:
-			n.handleClientEvent(ctx, event)
-		}
-	}
+	n.UseEventHandler(ctx)
 }
