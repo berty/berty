@@ -242,7 +242,7 @@ jobs:
       BUILD: /tmp/fl/build
 
     docker:
-      - image: bertychat/android-ci:v2
+      - image: bertychat/android-ci:v3
     steps:
       - checkout:
           path: ~/go/src/berty.tech/

@@ -1,4 +1,4 @@
-FROM  circleci/android:api-27-node8-alpha
+FROM  circleci/android:api-28-node8-alpha
 
 RUN cd ~ \
 &&  git clone https://github.com/udhos/update-golang \
@@ -8,9 +8,9 @@ RUN echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> ~/.bashrc
 
 ENV PATH="/usr/local/go/bin/:/home/circleci/go/bin:${PATH}"
 
-RUN go get golang.org/x/mobile/cmd/gomobile
+RUN go get -u golang.org/x/mobile/cmd/gomobile
 
-RUN sdkmanager ndk-bundle
+RUN yes | sdkmanager ndk-bundle || true
 
 COPY ./gomobile-env-flag.diff /tmp/gomobile-env-flag.diff
 
