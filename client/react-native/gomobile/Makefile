@@ -22,7 +22,7 @@ EXT_LDFLAGS ?= -ldflags="-X \"berty.tech/client/react-native/gomobile/vendor/ber
 
 GOPATH ?=		$(HOME)/go
 
-CGO_CPPFLAGS ?= -I$(MAKEFILE_DIR)/../../common/openssl/built/include
+CGO_CPPFLAGS ?= -Wno-error=unused-command-line-argument -I$(MAKEFILE_DIR)/../../common/openssl/built/include
 
 CGO_OS_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_OS_CPPFLAGS ?= -I/usr/local/opt/openssl/include
