@@ -40,7 +40,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       let content = UNMutableNotificationContent()
       content.title = utitle
       content.body = ubody
-      content.userInfo =  [ "url": url ]
+      content.userInfo = ["url": url]
       content.categoryIdentifier = "berty.core.notification"
       content.sound = UNNotificationSound.default()
 
@@ -147,9 +147,9 @@ extension AppDelegate {
       if let url = data["url"] {
         if url.count > 0 {
           self.application(application, open: URL.init(string: url)!, options: [
-          UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
-          UIApplicationOpenURLOptionsKey.openInPlace: false
-          ])
+              UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
+              UIApplicationOpenURLOptionsKey.openInPlace: false
+            ])
         }
       }
     }

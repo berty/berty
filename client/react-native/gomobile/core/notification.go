@@ -45,29 +45,25 @@ func (n *MobileNotification) Receive(data string) {
 }
 
 func (n *MobileNotification) ReceiveAPNSToken(token []byte) {
-	n.ReceiveToken(&notification.Token{
-		Value: token,
-		Type:  push.DevicePushType_APNS,
-	})
+	t := &notification.Token{Type: push.DevicePushType_APNS, Value: make([]byte, len(token))}
+	copy(t.Value, token)
+	n.ReceiveToken(t)
 }
 
 func (n *MobileNotification) ReceiveFCMToken(token []byte) {
-	n.ReceiveToken(&notification.Token{
-		Value: token,
-		Type:  push.DevicePushType_FCM,
-	})
+	t := &notification.Token{Type: push.DevicePushType_FCM, Value: make([]byte, len(token))}
+	copy(t.Value, token)
+	n.ReceiveToken(t)
 }
 
 func (n *MobileNotification) ReceiveToken(token *notification.Token) {
-	logger().Debug("receive token",
+	logger().Debug("mobile receive token",
 		zap.String("type", token.Type.String()),
 		zap.String("hash", token.Hash()),
 	)
 	n.tokenSubscribersMutex.Lock()
 	for i := range n.subscribers {
-		// make soft copy
-		t := *token
-		n.tokenSubscribers[i] <- &t
+		n.tokenSubscribers[i] <- token
 	}
 	n.tokenSubscribersMutex.Unlock()
 
