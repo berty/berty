@@ -116,6 +116,7 @@ enum Code {
   ErrPushUnknownDestination = 14006;
   ErrPushBroadcastIdentifier = 14007;
   ErrPushInvalidType = 14008;
+  ErrPushBroadcast = 14009;
 
   ErrNotification = 15000;
   ErrNotificationMarshalFCM = 15001;
@@ -127,6 +128,7 @@ enum Code {
 
   ErrNode = 16000;
   ErrNodePushNotifSub = 16001;
+
 }
 
 // Metadata is designed to be used as grpc status detail

@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"berty.tech/core/push"
+
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	"github.com/jinzhu/gorm"
@@ -183,4 +185,15 @@ func FindNonAcknowledgedEventsForDestination(db *gorm.DB, destination *Event) ([
 	}
 
 	return events, nil
+}
+
+func (e Event) PushPriority() push.Priority {
+	switch e.Kind {
+	case Kind_ConversationInvite,
+		Kind_ConversationNewMessage,
+		Kind_ContactRequestAccepted:
+		return push.Priority_Normal
+	}
+
+	return push.Priority_Low
 }
