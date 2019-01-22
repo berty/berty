@@ -116,17 +116,14 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 	return n, nil
 }
 
-func (n *Node) Shutdown() {
-	close(n.shutdown)
-}
-
-// Close closes object initialized by Node itself
+// Shutdown closes object initialized by Node itself
 //
 // it should be called in a defer from the caller of New()
-func (n *Node) Close() error {
+func (n *Node) Shutdown(ctx context.Context) {
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	close(n.shutdown)
 	n.rootSpan.Finish()
-	n.Shutdown()
-	return nil
 }
 
 // Validate returns an error if object is invalid

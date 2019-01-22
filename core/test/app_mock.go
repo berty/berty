@@ -8,24 +8,21 @@ import (
 	"net"
 	"strings"
 
-	"berty.tech/core/test/mock"
-
-	"berty.tech/core/crypto/keypair"
-
-	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
-	"google.golang.org/grpc"
-
 	"berty.tech/core/api/client"
 	nodeapi "berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
+	"berty.tech/core/test/mock"
+	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 type AppMockOption func(*AppMock) error
@@ -144,11 +141,7 @@ func (a *AppMock) Open() error {
 		}
 	}()
 
-	go func() {
-		if err := a.node.Start(a.ctx, false, false); err != nil {
-			logger().Error("node routine error", zap.Error(err))
-		}
-	}()
+	a.node.Start(a.ctx, false, false)
 
 	a.clientConn, err = grpc.Dial(fmt.Sprintf(":%d", port), grpc.WithInsecure())
 	if err != nil {
@@ -183,7 +176,6 @@ func (a *AppMock) InitEventStream() error {
 }
 
 func (a *AppMock) Close() error {
-	a.cancel()
 	if err := a.db.Close(); err != nil {
 		return err
 	}
@@ -193,8 +185,7 @@ func (a *AppMock) Close() error {
 	if err := a.clientConn.Close(); err != nil {
 		return err
 	}
-	if err := a.node.Close(); err != nil {
-		return err
-	}
+	a.node.Shutdown(a.ctx)
+	a.cancel()
 	return nil
 }
