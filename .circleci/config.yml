@@ -331,7 +331,11 @@ jobs:
 
       - *master_version
       - restore_cache:
-          key: ios-{{checksum "/tmp/master_version"}}
+          key: berty-{{checksum "/tmp/master_version"}}
+      - restore_cache:
+          key: go-pkg-{{checksum "/tmp/master_version"}}
+      - restore_cache:
+          key: go-install-{{checksum "/tmp/master_version"}}
 
       - checkout:
           path: ~/go/src/berty.tech/
@@ -446,10 +450,16 @@ jobs:
 
       - *master_version
       - save_cache:
-          key: ios-{{checksum "/tmp/master_version"}}
+          key: berty-{{checksum "/tmp/master_version"}}
+          paths:
+            - ~/go/src/berty.tech
+      - save_cache:
+          key: go-pkg-{{checksum "/tmp/master_version"}}
           paths:
             - ~/go/pkg
-            - ~/go/src
+      - save_cache:
+          key: go-install-{{checksum "/tmp/master_version"}}
+          paths:
             - ~/go-install
 
       - store_artifacts:
