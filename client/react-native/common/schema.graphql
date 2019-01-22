@@ -235,7 +235,7 @@ type BertyEntityDevicePushIdentifier implements Node {
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     pushInfo: [Byte!]
-    pushRelayId: String!
+    relayPubkey: String!
     deviceId: String!
 }
   
@@ -489,8 +489,8 @@ type BertyEntityConfig  {
     currentDevice: BertyEntityDevice
     currentDeviceId: String!
     cryptoParams: [Byte!]
-    pushRelayIdApns: [Byte!]
-    pushRelayIdFcm: [Byte!]
+    pushRelayPubkeyApns: String!
+    pushRelayPubkeyFcm: String!
 }
   
   
@@ -503,7 +503,7 @@ type BertyEntityDevicePushConfig implements Node {
     deviceId: String!
     pushType: Enum
     pushId: [Byte!]
-    relayId: [Byte!]
+    relayPubkey: String!
 }
   
   
@@ -659,7 +659,7 @@ input BertyEntityDevicePushIdentifierInput {
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     pushInfo: [Byte!]
-    pushRelayId: String!
+    relayPubkey: String!
     deviceId: String!
 }
 input BertyEntityDeviceInput {
@@ -820,8 +820,8 @@ type Mutation {
     currentDevice: BertyEntityDeviceInput
     currentDeviceId: String!
     cryptoParams: [Byte!]
-    pushRelayIdApns: [Byte!]
-    pushRelayIdFcm: [Byte!]
+    pushRelayPubkeyApns: String!
+    pushRelayPubkeyFcm: String!
   ): BertyEntityConfig
   ContactRequest(
     contact: BertyEntityContactInput
@@ -887,13 +887,9 @@ type Mutation {
     id: ID!
   ): BertyEntityConversation
   DevicePushConfigCreate(
-    id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    deviceId: String!
-    pushType: Enum
+    relayPubkey: String
     pushId: [Byte!]
-    relayId: [Byte!]
+    pushType: Enum
   ): BertyEntityDevicePushConfig
   DevicePushConfigNativeRegister(
     T: Bool!
@@ -911,7 +907,7 @@ type Mutation {
     deviceId: String!
     pushType: Enum
     pushId: [Byte!]
-    relayId: [Byte!]
+    relayPubkey: String!
   ): BertyEntityDevicePushConfig
   GenerateFakeData(
     T: Bool!

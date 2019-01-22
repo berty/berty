@@ -1,44 +1,62 @@
 import React, { PureComponent } from 'react'
-import { ActivityIndicator, Switch } from 'react-native'
+import { ActivityIndicator, Switch, Platform } from 'react-native'
 import { Flex, Header, Menu } from '../../Library'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
 import { QueryReducer, RelayContext } from '../../../relay'
 import { merge } from '../../../helpers'
-import { enableNativeNotifications, disableNativeNotifications, getNativePushType } from '../../../helpers/notifications'
+import { enableNativeNotifications, disableNativeNotifications, getNativePushType, enableMQTTNotifications, disableMQTTNotifications } from '../../../helpers/notifications'
 import { enums } from '../../../graphql'
+
+const dummyPubKey = 'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1wyoWXdQZeaQoOKvC2YRwR3+GTb8prpMFNdOmhikU8eionUBKgKnUyIbr/DTvCJQhTlHZfy1pUL6mmRIk9PDQDO1t4ATY9LXfo/O3KoKJ0GmxhGdjheOf1kiKcrem+MJjBVEriZ7tJvuhA/DztQ1zolvflPz9+aNL1qA6qzJD/m2fNYpfEehtZH37MoN/qcn3THnC8H/wwr6soU5GpdPBiXXKcg1IFiaZX9JAoUzKVyzY1xQ/DOzCYCboPSXh1qSsMFsg2LCAmC56s9czKk7foAOV/WZ3Zzbv6yd74K6TdV0xwMgCctZjNa7/Tbq4pCBK2vEMutSXAJlfo+6K9dLQQIDAQAB'
+const dummyPushId = 'dummy-push-id'
 
 class NotificationsBase extends PureComponent {
   render () {
     const { t, data, context } = this.props
     const nativePushType = getNativePushType()
     const currentPushConfigs = data.filter(elt => elt.pushType === nativePushType)
+    const currentMQTTConfigs = data.filter(elt => elt.pushType === enums.BertyPushDevicePushTypeInputDevicePushType.MQTT)
 
     return (
       <Menu>
         <Menu.Section title={t('settings.notifications-transport')}>
-          {nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.UnknownDevicePushType
-            ? <Menu.Item title={t('settings.push-transport-not-supported')} />
-            : <Menu.Item
-              title={
-                (nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.APNS ? t('settings.push-berty-apple-servers') : '') +
-                (nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.FCM ? t('settings.push-berty-google-firebase-servers') : '')
-              }
-              left
-              customRight={
-                <Switch
-                  justify='end'
-                  disabled={false}
-                  value={currentPushConfigs.length > 0}
-                  onValueChange={async value => {
-                    value
-                      ? enableNativeNotifications({ context })
-                      : disableNativeNotifications({ context, pushConfigs: data })
-                    await this.props.refresh()
-                  }}
-                />
-              }
-            /> }
+          {Platform.OS !== 'web' && nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.UnknownDevicePushType && <Menu.Item title={t('settings.push-transport-not-supported')} />}
+          {nativePushType !== enums.BertyPushDevicePushTypeInputDevicePushType.UnknownDevicePushType && <Menu.Item
+            title={
+              (nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.APNS ? t('settings.push-berty-apple-servers') : '') +
+              (nativePushType === enums.BertyPushDevicePushTypeInputDevicePushType.FCM ? t('settings.push-berty-google-firebase-servers') : '')
+            }
+            left
+            customRight={
+              <Switch
+                justify='end'
+                disabled={false}
+                value={currentPushConfigs.length > 0}
+                onValueChange={async value => {
+                  value
+                    ? enableNativeNotifications({ context })
+                    : disableNativeNotifications({ context })
+                  await this.props.refresh()
+                }}
+              />
+            }
+          /> }
+          {Platform.OS === 'web' && <Menu.Item
+            title={t('settings.push-mqtt-berty-servers')}
+            customRight={
+              <Switch
+                justify='end'
+                disabled={false}
+                value={currentMQTTConfigs.length > 0}
+                onValueChange={async value => {
+                  value
+                    ? enableMQTTNotifications({ context, relayPubkey: dummyPubKey, pushId: dummyPushId })
+                    : disableMQTTNotifications({ context, currentPushConfigs: currentMQTTConfigs })
+                  await this.props.refresh()
+                }}
+              />
+            } />}
         </Menu.Section>
         <Menu.Section title={t('settings.notifications-alerts')}>
           <Menu.Item

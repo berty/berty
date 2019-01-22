@@ -11,7 +11,7 @@ const query = graphql`
         updatedAt
         pushType
         pushId
-        relayId
+        relayPubkey
       }
     }
   }

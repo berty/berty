@@ -8,8 +8,9 @@ import (
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/push"
 	"context"
+	"crypto/x509"
+	"encoding/base64"
 	"github.com/google/uuid"
-	"github.com/pkg/errors"
 )
 
 func (n *Node) DevicePushConfigList(ctx context.Context, input *node.Void) (*node.DevicePushConfigListOutput, error) {
@@ -26,56 +27,48 @@ func (n *Node) DevicePushConfigList(ctx context.Context, input *node.Void) (*nod
 	return &node.DevicePushConfigListOutput{Edges: devicePushConfigs}, nil
 }
 
-func (n *Node) DevicePushConfigCreateNative(ctx context.Context, input *node.DevicePushConfigCreateInput) (*entity.DevicePushConfig, error) {
+func (n *Node) DevicePushConfigCreate(ctx context.Context, input *node.DevicePushConfigCreateInput) (*entity.DevicePushConfig, error) {
 	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	if len(input.DeviceToken) == 0 || (input.PushType != push.DevicePushType_APNS && input.PushType != push.DevicePushType_FCM) {
-		return nil, errorcodes.ErrValidation.Wrap(errors.New("token type is not suitable"))
-	}
-
-	pushID := &push.PushNativeIdentifier{
-		PackageID:   input.PackageID,
-		DeviceToken: input.DeviceToken,
-	}
-
-	pushIDBytes, err := pushID.Marshal()
-
-	if err != nil {
-		return nil, errorcodes.ErrSerialization.Wrap(err)
-	}
-
-	return n.DevicePushConfigCreate(ctx, &entity.DevicePushConfig{
-		PushID:   pushIDBytes,
-		PushType: input.PushType,
-		RelayID:  input.RelayID,
-	})
-}
-
-func (n *Node) DevicePushConfigCreate(ctx context.Context, devicePushConfig *entity.DevicePushConfig) (*entity.DevicePushConfig, error) {
-	tracer := tracing.EnterFunc(ctx, devicePushConfig)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	n.handleMutex(ctx)()
 
-	if devicePushConfig.PushType == push.DevicePushType_UnknownDevicePushType {
+	if input.PushType == push.DevicePushType_UnknownDevicePushType {
 		return nil, errorcodes.ErrPushInvalidType.New()
 	}
 
-	if len(devicePushConfig.RelayID) == 0 {
-		if devicePushConfig.PushType == push.DevicePushType_FCM {
-			devicePushConfig.RelayID = n.config.PushRelayIDAPNS
-		} else if devicePushConfig.PushType == push.DevicePushType_FCM {
-			devicePushConfig.RelayID = n.config.PushRelayIDAPNS
+	if input.RelayPubkey == "" {
+		config, err := n.Config(ctx)
+		if err != nil {
+			return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		}
+
+		if input.PushType == push.DevicePushType_APNS {
+			input.RelayPubkey = config.PushRelayPubkeyAPNS
+		} else if input.PushType == push.DevicePushType_FCM {
+			input.RelayPubkey = config.PushRelayPubkeyFCM
 		}
 	}
 
-	devicePushConfig.ID = uuid.New().String()
-	devicePushConfig.DeviceID = n.config.CurrentDeviceID
+	pubKeyBytes, err := base64.StdEncoding.DecodeString(input.RelayPubkey)
+	if err != nil {
+		return nil, errorcodes.ErrCryptoKeyDecode.Wrap(err)
+	}
 
-	if err := n.sql(ctx).Save(devicePushConfig).Error; err != nil {
+	if _, err := x509.ParsePKIXPublicKey(pubKeyBytes); err != nil {
+		return nil, errorcodes.ErrCryptoKeyDecode.Wrap(err)
+	}
+
+	pushConfig := &entity.DevicePushConfig{
+		ID:          uuid.New().String(),
+		DeviceID:    n.config.CurrentDeviceID,
+		RelayPubkey: input.RelayPubkey,
+		PushID:      input.PushID,
+		PushType:    input.PushType,
+	}
+
+	if err := n.sql(ctx).Save(pushConfig).Error; err != nil {
 		return nil, errorcodes.ErrDbCreate.New()
 	}
 
@@ -83,7 +76,7 @@ func (n *Node) DevicePushConfigCreate(ctx context.Context, devicePushConfig *ent
 		return nil, errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 	}
 
-	return devicePushConfig, nil
+	return pushConfig, nil
 }
 
 func (n *Node) DevicePushConfigRemove(ctx context.Context, devicePushConfig *entity.DevicePushConfig) (*entity.DevicePushConfig, error) {
@@ -127,8 +120,8 @@ func (n *Node) DevicePushConfigUpdate(ctx context.Context, input *entity.DeviceP
 		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
 	}
 
-	if len(input.RelayID) > 0 {
-		devicePushConfig.RelayID = input.RelayID
+	if len(input.RelayPubkey) > 0 {
+		devicePushConfig.RelayPubkey = input.RelayPubkey
 	}
 
 	if len(input.PushID) > 0 {
@@ -168,21 +161,10 @@ func (n *Node) broadcastDevicePushConfig(ctx context.Context) error {
 	}
 
 	for _, contact := range contacts {
-		device := *n.config.CurrentDevice
-		device.PushIdentifiers = []*entity.DevicePushIdentifier{}
-
-		for _, devicePushConfig := range devicePushConfigs {
-			pushIdentifier, err := devicePushConfig.CreateDevicePushIdentifier()
-
-			if err != nil {
-				return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
-			}
-
-			device.PushIdentifiers = append(device.PushIdentifiers, pushIdentifier)
-		}
+		device := n.config.CurrentDevice.Filtered().WithPushInformation(n.sql(ctx))
 
 		evt := n.NewContactEvent(ctx, contact, p2p.Kind_DeviceUpdatePushConfig)
-		if err := evt.SetDeviceUpdatePushConfigAttrs(&p2p.DeviceUpdatePushConfigAttrs{Device: &device}); err != nil {
+		if err := evt.SetDeviceUpdatePushConfigAttrs(&p2p.DeviceUpdatePushConfigAttrs{Device: device}); err != nil {
 			return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 		}
 

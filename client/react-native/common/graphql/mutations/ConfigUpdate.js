@@ -2,13 +2,13 @@ import { graphql } from 'react-relay'
 import { commit } from '../../relay'
 
 const ConfigUpdateMutation = graphql`
-  mutation ConfigUpdateMutation($pushRelayIdApns: [Byte!], $pushRelayIdFcm: [Byte!]) {
-    ConfigUpdate(id: "", myselfId: "", currentDeviceId: "", pushRelayIdApns: $pushRelayIdApns, pushRelayIdFcm: $pushRelayIdFcm) {
+  mutation ConfigUpdateMutation($pushRelayPubkeyApns: String!, $pushRelayPubkeyFcm: String!) {
+    ConfigUpdate(id: "", myselfId: "", currentDeviceId: "", pushRelayPubkeyApns: $pushRelayPubkeyApns, pushRelayPubkeyFcm: $pushRelayPubkeyFcm) {
       id
       createdAt
       updatedAt
-      pushRelayIdApns,
-      pushRelayIdFcm,
+      pushRelayPubkeyApns,
+      pushRelayPubkeyFcm,
     }
   }
 `

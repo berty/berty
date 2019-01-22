@@ -38,14 +38,11 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	}
 
 	// save requester in db
+	devices := attrs.Me.Devices
+
 	requester := attrs.Me
+	requester.Devices = []*entity.Device{}
 	requester.Status = entity.Contact_RequestedMe
-	requester.Devices = []*entity.Device{
-		{
-			ID: input.SenderID,
-			//Key: crypto.NewPublicKey(p2p.GetPubkey(ctx)),
-		},
-	}
 	if err := sql.Set("gorm:association_autoupdate", true).Save(requester).Error; err != nil {
 		return err
 	}
@@ -57,6 +54,11 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 		}),
 		DeepLink: "berty://add-contact#public-key=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
 	})
+
+	if err := entity.SaveDevices(sql, attrs.Me.ID, devices); err != nil {
+		return errorcodes.ErrDb.Wrap(err)
+	}
+
 	// nothing more to do, now we wait for the UI to accept the request
 	return nil
 }
@@ -116,8 +118,18 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	// FIXME: UI: ask for confirmation before update
 	contact.DisplayName = attrs.Me.DisplayName
 	contact.DisplayStatus = attrs.Me.DisplayStatus
+	contact.Devices = []*entity.Device{}
+
 	// FIXME: save more attributes
-	return sql.Save(contact).Error
+	if err := sql.Save(contact).Error; err != nil {
+		return errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
+	if err := entity.SaveDevices(sql, attrs.Me.ID, attrs.Me.Devices); err != nil {
+		return errorcodes.ErrDb.Wrap(err)
+	}
+
+	return nil
 }
 
 //
@@ -401,6 +413,30 @@ func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
 		Priority:       pushAttrs.Priority,
 	}, pushDestination); err != nil {
 		return errorcodes.ErrPush.Wrap(err)
+	}
+
+	return nil
+}
+
+func (n *Node) handleDeviceUpdatePushConfig(ctx context.Context, event *p2p.Event) error {
+	attrs, err := event.GetDeviceUpdatePushConfigAttrs()
+
+	if err != nil {
+		return errorcodes.ErrDeserialization.New()
+	}
+
+	device := &entity.Device{}
+
+	if err := n.sql(ctx).First(&device, &entity.Device{ID: attrs.Device.ID}).Error; err != nil {
+		return errorcodes.ErrDb.New()
+	}
+
+	if device == nil {
+		return errorcodes.ErrDbNothingFound.New()
+	}
+
+	if err := attrs.Device.UpdatePushIdentifiers(n.sql(ctx), attrs.Device.PushIdentifiers); err != nil {
+		return errorcodes.ErrPushInvalidIdentifier.Wrap(err)
 	}
 
 	return nil

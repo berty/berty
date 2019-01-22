@@ -26,6 +26,7 @@
     "notifications-alerts": "Alerts",
     "push-berty-apple-servers": "Via Berty and Apple servers",
     "push-berty-google-firebase-servers": "Via Berty and Google's Firebase servers",
+    "push-mqtt-berty-servers": "Via Berty's MQTT servers",
     "push-transport-not-supported": "Delivery unavailable on this platform",
     "about": "About Berty",
     "news": "News (not implem.)",

@@ -122,7 +122,7 @@ const CommitLogStream = graphql`
           deviceId
           pushType
           pushId
-          relayId
+          relayPubkey
         }
       }
     }

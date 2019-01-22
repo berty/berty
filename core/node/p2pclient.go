@@ -57,7 +57,7 @@ func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
 	ctx = tracer.Context()
 
 	event := n.NewContactEvent(ctx, to, p2p.Kind_ContactShareMe)
-	if err := event.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered()}); err != nil {
+	if err := event.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
 		return err
 	}
 	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {

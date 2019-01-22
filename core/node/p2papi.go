@@ -125,7 +125,12 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 	} else if err != nil {
 		return nil, errors.Wrap(err, "unable to fetch candidate devices for envelope")
 	} else {
-		trusted = true
+		contact := &entity.Contact{}
+		if err := n.sql(ctx).First(contact, &entity.Contact{ID: device.ContactID}).Error; err != nil {
+			return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		}
+
+		trusted = contact.IsTrusted()
 	}
 
 	// TODO: Decode event

@@ -170,12 +170,14 @@ export const BertyPushDevicePushTypeInputDevicePushType = {
   UnknownDevicePushType: 0,
   APNS: 1,
   FCM: 2,
+  MQTT: 3,
 }
 
 export const ValueBertyPushDevicePushTypeInputDevicePushType = {
   0: 'UnknownDevicePushType',
   1: 'APNS',
   2: 'FCM',
+  3: 'MQTT',
 }
 
 export const BertyPushPriorityInputPriority = {

@@ -10,6 +10,7 @@ enum DevicePushType {
   UnknownDevicePushType = 0;
   APNS = 1;
   FCM = 2;
+  MQTT = 3;
 }
 
 enum Priority {

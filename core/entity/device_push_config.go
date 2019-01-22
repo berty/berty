@@ -4,6 +4,7 @@ import (
 	"berty.tech/core/crypto/public"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/push"
+	"encoding/base64"
 	"github.com/google/uuid"
 )
 
@@ -24,14 +25,19 @@ func (d *DevicePushConfig) CreateDevicePushIdentifier() (*DevicePushIdentifier, 
 		return nil, errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 	}
 
-	pushInfo, err := public.Encrypt(plainPushInfo, d.RelayID)
+	pubKeyBytes, err := base64.StdEncoding.DecodeString(d.RelayPubkey)
+	if err != nil {
+		return nil, errorcodes.ErrCryptoKeyDecode.Wrap(err)
+	}
+
+	pushInfo, err := public.Encrypt(plainPushInfo, pubKeyBytes)
 	if err != nil {
 		return nil, errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 	}
 
 	return &DevicePushIdentifier{
 		PushInfo:    pushInfo,
-		PushRelayID: string(d.RelayID[:]),
+		RelayPubkey: d.RelayPubkey,
 		DeviceID:    d.DeviceID,
 	}, nil
 }
