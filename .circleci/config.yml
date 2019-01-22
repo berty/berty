@@ -12,6 +12,21 @@ references:
     docker:
       - image: circleci/golang:1.11.4
 
+  master_version: &master_version
+    run:
+      name: retrieve master version
+      command: |
+        cd ~/go/src/berty.tech
+        no_repo=false
+        if [ ! -e .git ]; then
+          no_repo=true
+          git init
+          git remote add origin git@github.com:berty/berty
+        fi
+        git fetch origin master
+        echo $(git rev-list --count origin/master) > /tmp/master_version
+        [ $no_repo = true ] && rm -rf .git || true
+
   install_retry: &install_retry
     run:
       name: install retry
@@ -202,9 +217,9 @@ jobs:
     docker:
       - image: circleci/node:8
     steps:
+
       - *install_retry
       - checkout
-
       - restore_cache:
           key: yarn-v1-{{ checksum "client/react-native/yarn.lock" }}-{{ arch }}
 
@@ -251,7 +266,6 @@ jobs:
           at: ~/go/src/berty.tech/
 
       - *install_retry
-
       - run:
           name: setup golang environment
           command: echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
@@ -315,26 +329,18 @@ jobs:
           name: set Ruby version
           command: echo "ruby-2.4" > ~/.ruby-version
 
+      - *master_version
+      - restore_cache:
+          key: ios-{{checksum "/tmp/master_version"}}
+
       - checkout:
           path: ~/go/src/berty.tech/
 
       - attach_workspace:
           at: ~/go/src/berty.tech/
 
-      # # if build breaks, increment vX in both restore_cache and save_cache
-      # - restore_cache:
-      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
-
       - *install_go
       - *install_gomobile
-
-      # - save_cache:
-      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-2
-      #     paths:
-      #       - ~/go/pkg
-      #       - ~/go/src/github.com
-      #       - ~/go-install
-
       - run:
           name: install core
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
@@ -400,19 +406,8 @@ jobs:
       - attach_workspace:
           at: ~/go/src/berty.tech/
 
-      # if build breaks, increment vX in both restore_cache and save_cache
-      # - restore_cache:
-      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
-
       - *install_go
       - *install_gomobile
-
-      # - save_cache:
-      #     key: v2-ios-golang-{{ .Environment.GOVERSION }}-3
-      #     paths:
-      #       - ~/go/pkg
-      #       - ~/go/src/github.com
-      #       - ~/go-install
 
       - run:
           name: install core
@@ -448,6 +443,14 @@ jobs:
           command: |
             make fastlane.setup_circle
             /tmp/retry -m 3 make fastlane.ios.house
+
+      - *master_version
+      - save_cache:
+          key: ios-{{checksum "/tmp/master_version"}}
+          paths:
+            - ~/go/pkg
+            - ~/go/src
+            - ~/go-install
 
       - store_artifacts:
           path: /tmp/flb
