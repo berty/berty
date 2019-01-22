@@ -163,7 +163,7 @@ func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.En
 
 	for _, pushIdentifier := range pushIdentifiers {
 		wrappedEvent := n.NewContactEvent(ctx, &entity.Contact{
-			ID: pushIdentifier.PushRelayID,
+			ID: pushIdentifier.RelayPubkey,
 		}, p2p.Kind_DevicePushTo)
 
 		if err := wrappedEvent.SetDevicePushToAttrs(&p2p.DevicePushToAttrs{
