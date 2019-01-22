@@ -303,11 +303,70 @@ jobs:
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make fastlane.android.build
+          command: /tmp/retry -m 3 make fastlane.android.staff
 
       - store_artifacts:
           path: /tmp/fl
 
+  client.rn.android-beta:
+    working_directory: ~/go/src/berty.tech/client/react-native/android
+    environment:
+      FASTLANE_SKIP_UPDATE_CHECK: 1
+      FASTLANE_HIDE_CHANGELOG: 1
+      FL_BUILDLOG_PATH: /tmp/fl/log/build/android
+      BUILD: /tmp/fl/build
+
+    docker:
+      - image: bertychat/android-ci:v3
+    steps:
+      - checkout:
+          path: ~/go/src/berty.tech/
+
+      - attach_workspace:
+          at: ~/go/src/berty.tech/
+
+      - *install_retry
+      - run:
+          name: setup golang environment
+          command: echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+
+      - run:
+          name: gomobile android build
+          command: |
+            cd ../gomobile
+            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
+
+      - restore_cache:
+          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
+
+      - run:
+          name: install bundle
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: |
+            bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
+
+      - save_cache:
+          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
+          paths:
+            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+
+      - run:
+          name: patch android repo
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: make patch.android
+
+      - run:
+          name: set version
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: make version.android
+
+      - run:
+          name: build app
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 make fastlane.android.yolo
+
+      - store_artifacts:
+          path: /tmp/fl
 
   client.rn.ios:
     working_directory: ~/go/src/berty.tech
@@ -497,6 +556,12 @@ workflows:
     jobs:
       - client.rn.node
       - client.rn.android:
+          requires:
+            - client.rn.node
+      - client.rn.android-beta:
+          filters:
+            branches:
+              only: master
           requires:
             - client.rn.node
       - client.rn.ios:

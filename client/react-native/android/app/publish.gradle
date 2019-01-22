@@ -1,12 +1,8 @@
-def publish = project.tasks.create("assembleReleaseAndPublish")
-publish.description "Assemble and copies release apk to custom directory"
-
 android {
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
             // Copy apk to custom dir
-            if (variant.buildType.name.equals("release")
-                && project.hasProperty('BERTY_APK_OUTPUT_DIR')
+            if (project.hasProperty('BERTY_APK_OUTPUT_DIR')
                 && output.outputFile != null
                 && output.outputFile.name.endsWith('.apk')) {
 
@@ -22,7 +18,8 @@ android {
                 task.into(BERTY_APK_OUTPUT_DIR)
 
                 task.dependsOn variant.assemble
-                publish.dependsOn task
+                variant.assemble.finalizedBy(task)
+
             }
         }
     }
