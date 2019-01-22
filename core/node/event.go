@@ -112,8 +112,10 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		n.LogBackgroundError(ctx, errors.Wrap(handlingError, "p2p.Handle event"))
 	}
 
-	if err := sql.Save(input).Error; err != nil {
-		return errorcodes.ErrDbUpdate.Wrap(err)
+	if input.Kind != p2p.Kind_DevicePushTo {
+		if err := sql.Save(input).Error; err != nil {
+			return errorcodes.ErrDbUpdate.Wrap(err)
+		}
 	}
 
 	// asynchronously ack, maybe we can ignore this one?
@@ -122,7 +124,8 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	if err := ack.SetAttrs(&p2p.AckAttrs{IDs: []string{input.ID}}); err != nil {
 		return err
 	}
-	if err := n.EnqueueOutgoingEvent(ctx, ack); err != nil {
+
+	if err := n.EnqueueOutgoingEvent(ctx, ack, &OutgoingEventOptions{DisableEventLogging: input.Kind == p2p.Kind_DevicePushTo}); err != nil {
 		return err
 	}
 

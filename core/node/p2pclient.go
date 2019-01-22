@@ -10,6 +10,10 @@ import (
 	"berty.tech/core/pkg/tracing"
 )
 
+type OutgoingEventOptions struct {
+	DisableEventLogging bool
+}
+
 func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact, kind p2p.Kind) *p2p.Event {
 	tracer := tracing.EnterFunc(ctx, destination, kind)
 	defer tracer.Finish()
@@ -32,7 +36,7 @@ func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Con
 	return event
 }
 
-func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event) error {
+func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event, options *OutgoingEventOptions) error {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -40,10 +44,14 @@ func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event) error
 	if err := event.Validate(); err != nil {
 		return errorcodes.ErrEventData.Wrap(err)
 	}
-	sql := n.sql(ctx)
-	if err := sql.Create(event).Error; err != nil {
-		return errorcodes.ErrDbCreate.Wrap(err)
+
+	if options.DisableEventLogging == false {
+		sql := n.sql(ctx)
+		if err := sql.Create(event).Error; err != nil {
+			return errorcodes.ErrDbCreate.Wrap(err)
+		}
 	}
+
 	n.outgoingEvents <- event
 
 	tracer.SetMetadata("new-outgoing-event", event.ID)
@@ -60,7 +68,7 @@ func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
 	if err := event.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
 		return err
 	}
-	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
+	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
 		return err
 	}
 
@@ -110,7 +118,7 @@ func (n *Node) BroadcastEventToContacts(ctx context.Context, event *p2p.Event) e
 		contactEvent := event.Copy()
 		contactEvent.ReceiverID = contact.ID
 
-		if err := n.EnqueueOutgoingEvent(ctx, contactEvent); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx, contactEvent, &OutgoingEventOptions{}); err != nil {
 			logger().Error("node.BroadcastEventToContacts", zap.Error(err))
 			return errorcodes.ErrEvent.New()
 		}

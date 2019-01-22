@@ -168,7 +168,7 @@ func (n *Node) broadcastDevicePushConfig(ctx context.Context) error {
 			return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 		}
 
-		if err := n.EnqueueOutgoingEvent(ctx, evt); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx, evt, &OutgoingEventOptions{}); err != nil {
 			return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 		}
 	}

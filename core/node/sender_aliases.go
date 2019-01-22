@@ -41,7 +41,7 @@ func (node *Node) SenderAliasesRenew(ctx context.Context) error {
 			return errors.Wrap(err, "unable to create event")
 		}
 
-		if err := node.EnqueueOutgoingEvent(ctx, evt); err != nil {
+		if err := node.EnqueueOutgoingEvent(ctx, evt, &OutgoingEventOptions{}); err != nil {
 			logger().Error("node.SenderAliasesRenew", zap.Error(err))
 			return errors.Wrap(err, "unable to emit event")
 		}
@@ -69,7 +69,7 @@ func (node *Node) GenerateAliasForContact(ctx context.Context, contactID string)
 		return nil, errors.Wrap(err, "unable to generate sender alias for contact")
 	}
 
-	if err := node.EnqueueOutgoingEvent(ctx, evt); err != nil {
+	if err := node.EnqueueOutgoingEvent(ctx, evt, &OutgoingEventOptions{}); err != nil {
 		return nil, errors.Wrap(err, "unable to generate sender alias for contact")
 	}
 
