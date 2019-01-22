@@ -122,7 +122,6 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 func (n *Node) Shutdown(ctx context.Context) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
-	ctx = tracer.Context()
 	close(n.shutdown)
 	n.rootSpan.Finish()
 }

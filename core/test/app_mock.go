@@ -176,7 +176,6 @@ func (a *AppMock) InitEventStream() error {
 }
 
 func (a *AppMock) Close() error {
-	a.cancel()
 	if err := a.db.Close(); err != nil {
 		return err
 	}
@@ -186,8 +185,7 @@ func (a *AppMock) Close() error {
 	if err := a.clientConn.Close(); err != nil {
 		return err
 	}
-	if err := a.node.Close(); err != nil {
-		return err
-	}
+	a.node.Shutdown(a.ctx)
+	a.cancel()
 	return nil
 }
