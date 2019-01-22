@@ -124,6 +124,7 @@ android {
                 println "SUCCESS"
             }
 
+
             if (project.hasProperty('BERTY_RELEASE_STORE_FILE')) {
                 println "app will be signed using ${BERTY_RELEASE_STORE_FILE}"
                 storeFile file(BERTY_RELEASE_STORE_FILE)
@@ -147,6 +148,19 @@ android {
             debuggable true
         }
         release {
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+        yolo {
+            applicationIdSuffix ".yolo"
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+        staff {
+            applicationIdSuffix ".staff"
+            debuggable true
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
@@ -201,4 +215,3 @@ task copyDownloadableDepsToLibs(type: Copy) {
 apply from: 'publish.gradle'
 
 apply plugin: 'com.google.gms.google-services'
-
