@@ -769,6 +769,9 @@ type Query {
     conversationId: ID!
     contactId: ID!
   ): BertyEntityConversationMember
+  ConversationLastEvent(
+    id: ID!
+  ): BertyP2pEvent
   DevicePushConfigList(
     T: Bool!
   ): BertyNodeDevicePushConfigListOutput

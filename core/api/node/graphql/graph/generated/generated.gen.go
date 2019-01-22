@@ -689,6 +689,7 @@ type ComplexityRoot struct {
 		ConversationList       func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		Conversation           func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) int
 		ConversationMember     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+		ConversationLastEvent  func(childComplexity int, id string) int
 		DevicePushConfigList   func(childComplexity int, T bool) int
 		DeviceInfos            func(childComplexity int, T bool) int
 		AppVersion             func(childComplexity int, T bool) int
@@ -795,6 +796,7 @@ type QueryResolver interface {
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
 	Conversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
+	ConversationLastEvent(ctx context.Context, id string) (*p2p.Event, error)
 	DevicePushConfigList(ctx context.Context, T bool) (*node.DevicePushConfigListOutput, error)
 	DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
@@ -2432,6 +2434,21 @@ func field_Query_ConversationMember_args(rawArgs map[string]interface{}) (map[st
 		}
 	}
 	args["contactId"] = arg6
+	return args, nil
+
+}
+
+func field_Query_ConversationLastEvent_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
 	return args, nil
 
 }
@@ -5499,6 +5516,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
+
+	case "Query.ConversationLastEvent":
+		if e.complexity.Query.ConversationLastEvent == nil {
+			break
+		}
+
+		args, err := field_Query_ConversationLastEvent_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ConversationLastEvent(childComplexity, args["id"].(string)), true
 
 	case "Query.DevicePushConfigList":
 		if e.complexity.Query.DevicePushConfigList == nil {
@@ -19301,6 +19330,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_ConversationMember(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "ConversationLastEvent":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_ConversationLastEvent(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "DevicePushConfigList":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -19717,6 +19752,37 @@ func (ec *executionContext) _Query_ConversationMember(ctx context.Context, field
 	}
 
 	return ec._BertyEntityConversationMember(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_ConversationLastEvent(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_ConversationLastEvent_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ConversationLastEvent(rctx, args["id"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*p2p.Event)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyP2pEvent(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -23150,6 +23216,9 @@ type Query {
     conversationId: ID!
     contactId: ID!
   ): BertyEntityConversationMember
+  ConversationLastEvent(
+    id: ID!
+  ): BertyP2pEvent
   DevicePushConfigList(
     T: Bool!
   ): BertyNodeDevicePushConfigListOutput

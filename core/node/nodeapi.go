@@ -147,6 +147,17 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	return conversation, nil
 }
 
+func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversation) (*p2p.Event, error) {
+	output := &p2p.Event{ConversationID: input.ID}
+
+	// FIXME: add last_event_id in conversation new message handler to be sure to fetch the last event
+	time.Sleep(time.Second / 3)
+	if err := n.sql(ctx).Order("created_at desc").Where(output).Last(output).Error; err != nil {
+		return nil, err
+	}
+	return output, nil
+}
+
 func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	var err error
 
@@ -494,6 +505,7 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 			continue
 		}
 		event := n.NewContactEvent(ctx, member.Contact, p2p.Kind_ConversationInvite)
+		event.ConversationID = conversation.ID
 		if err := event.SetAttrs(&p2p.ConversationInviteAttrs{
 			Conversation: filtered,
 		}); err != nil {

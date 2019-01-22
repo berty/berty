@@ -163,14 +163,17 @@ class Input extends PureComponent {
     this.setState({ input: '' }, async () => {
       try {
         const conversation = this.props.navigation.getParam('conversation')
-        await this.props.screenProps.context.mutations.conversationAddMessage({
-          conversation: {
-            id: conversation.id,
-          },
-          message: {
-            text: input,
-          },
-        })
+        input &&
+          (await this.props.screenProps.context.mutations.conversationAddMessage(
+            {
+              conversation: {
+                id: conversation.id,
+              },
+              message: {
+                text: input,
+              },
+            }
+          ))
       } catch (err) {
         console.error(err)
       }
@@ -307,9 +310,11 @@ export default class Detail extends PureComponent {
 
   onConversationRead = async () => {
     const conversation = this.props.navigation.getParam('conversation')
-    const res = await this.props.screenProps.context.mutations.conversationRead({
-      id: conversation.id,
-    })
+    const res = await this.props.screenProps.context.mutations.conversationRead(
+      {
+        id: conversation.id,
+      }
+    )
 
     this.props.navigation.setParams({ conversation: res.ConversationRead })
   }
