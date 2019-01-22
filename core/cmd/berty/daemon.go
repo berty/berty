@@ -22,13 +22,16 @@ import (
 type daemonOptions struct {
 	sql sqlOptions `mapstructure:"sql"`
 
-	grpcBind     string `mapstructure:"grpc-bind"`
-	gqlBind      string `mapstructure:"gql-bind"`
-	hideBanner   bool   `mapstructure:"hide-banner"`
-	dropDatabase bool   `mapstructure:"drop-database"`
-	initOnly     bool   `mapstructure:"init-only"`
-	withBot      bool   `mapstructure:"with-bot"`
-	notification bool   `mapstructure:"notification"`
+	grpcBind       string   `mapstructure:"grpc-bind"`
+	gqlBind        string   `mapstructure:"gql-bind"`
+	hideBanner     bool     `mapstructure:"hide-banner"`
+	dropDatabase   bool     `mapstructure:"drop-database"`
+	initOnly       bool     `mapstructure:"init-only"`
+	withBot        bool     `mapstructure:"with-bot"`
+	notification   bool     `mapstructure:"notification"`
+	apnsCerts      []string `mapstructure:"apns-certs"`
+	fcmAPIKeys     []string `mapstructure:"fcm-api-keys"`
+	privateKeyFile string   `mapstructure:"private-key-file"`
 
 	// p2p
 	identity       string   `mapstructure:"identity"`
@@ -40,8 +43,6 @@ type daemonOptions struct {
 	mdns           bool     `mapstructure:"mdns"`
 	PrivateNetwork bool     `mapstructure:"private-network"`
 	SwarmKeyPath   string   `mapstructure:"swarm-key"`
-	apnsCerts      []string `mapstructure:"apns-certs"`
-	fcmAPIKeys     []string `mapstructure:"fcm-api-keys"`
 
 	nickname string `mapstructure:"nickname"`
 }
@@ -65,6 +66,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
 	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
 	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
+	flags.StringVar(&opts.privateKeyFile, "private-key-file", "", "set private key file for node")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default", "quic" /*, "ble"*/}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
@@ -117,6 +119,7 @@ func daemon(opts *daemonOptions) error {
 			Bind:         opts.gqlBind,
 			Interceptors: true,
 		}),
+		account.WithPrivateKeyFile(opts.privateKeyFile),
 	}
 	if !opts.noP2P {
 		var swarmKey io.Reader
