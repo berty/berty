@@ -1,5 +1,6 @@
 export ConversationList from './ConversationList'
 export Conversation from './Conversation'
+export ConversationLastEvent from './ConversationLastEvent'
 export ContactList from './ContactList'
 export Contact from './Contact'
 export ContactCheckPublicKey from './ContactCheckPublicKey'

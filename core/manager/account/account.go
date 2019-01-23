@@ -229,6 +229,7 @@ func (a *Account) Open(ctx context.Context) error {
 		a.Close(ctx)
 		return err
 	}
+
 	if err := a.startGrpcServer(ctx); err != nil {
 		a.Close(ctx)
 		return err

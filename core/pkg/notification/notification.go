@@ -125,6 +125,7 @@ func (n *DesktopNotification) Display(p *Payload) error {
 		})
 	})
 
+	logger().Debug("notify push")
 	return notify.Push(p.Title, p.Body, p.Icon, notificator.UR_NORMAL)
 }
 

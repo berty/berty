@@ -1,7 +1,6 @@
 package node
 
 import (
-	"berty.tech/core/push"
 	"context"
 	"fmt"
 	"net/url"
@@ -12,6 +11,7 @@ import (
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
+	"berty.tech/core/push"
 	bsql "berty.tech/core/sql"
 	"github.com/gofrs/uuid"
 	"github.com/pkg/errors"
@@ -182,7 +182,6 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
-
 	n.DisplayNotification(&notification.Payload{
 		Title:    i18n.T("NewMessageTitle", nil),
 		Body:     i18n.T("NewMessageBody", nil),

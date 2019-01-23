@@ -99,7 +99,6 @@ func daemon(opts *daemonOptions) error {
 	defer func() {
 		_ = logmanager.G().LogRotate()
 	}()
-
 	accountOptions := account.Options{
 		account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
 		account.WithRing(logmanager.G().Ring()),
@@ -188,7 +187,6 @@ func daemon(opts *daemonOptions) error {
 	if err != nil {
 		return err
 	}
-
 	defer a.Close(ctx)
 
 	err = a.Open(ctx)

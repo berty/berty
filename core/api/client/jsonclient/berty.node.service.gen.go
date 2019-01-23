@@ -41,6 +41,7 @@ func init() {
 	registerUnary("berty.node.ConversationMember", NodeConversationMember)
 	registerUnary("berty.node.ConversationRead", NodeConversationRead)
 	registerUnary("berty.node.ConversationRemove", NodeConversationRemove)
+	registerUnary("berty.node.ConversationLastEvent", NodeConversationLastEvent)
 	registerUnary("berty.node.DevicePushConfigList", NodeDevicePushConfigList)
 	registerUnary("berty.node.DevicePushConfigCreate", NodeDevicePushConfigCreate)
 	registerUnary("berty.node.DevicePushConfigNativeRegister", NodeDevicePushConfigNativeRegister)
@@ -579,6 +580,26 @@ func NodeConversationRemove(client *client.Client, ctx context.Context, jsonInpu
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationRemove(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeConversationLastEvent(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationLastEvent")
+	var typedInput entity.Conversation
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationLastEvent(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),

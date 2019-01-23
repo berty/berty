@@ -130,6 +130,10 @@ service Service {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
+  rpc ConversationLastEvent (berty.entity.Conversation) returns (berty.p2p.Event) {
+    option (gql.graphql_input) = ".gql.Node";
+    option (gql.graphql_type) = "Query";
+  }
 
   rpc DevicePushConfigList (Void) returns (DevicePushConfigListOutput) {
     option (gql.graphql_type) = "Query";

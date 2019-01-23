@@ -1,18 +1,87 @@
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Screen, Text, Avatar, EmptyList } from '../../Library'
-import { Pagination } from '../../../relay'
+import { Avatar, EmptyList, Flex, Header, Screen, Text } from '../../Library'
+import { BertyP2pKindInputKind } from '../../../graphql/enums.gen'
+import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
+import { parseEmbedded } from '../../../helpers/json'
 import { conversation as utils } from '../../../utils'
-import { withNamespaces } from 'react-i18next'
-import I18n from 'i18next'
+
+const Message = withNamespaces()(({ data, t, ...props }) => {
+  switch (data.kind) {
+    case BertyP2pKindInputKind.ConversationNewMessage:
+      return (
+        <Text color={colors.subtleGrey} {...props}>
+          {parseEmbedded(data.attributes).message.text || '...'}
+        </Text>
+      )
+    case BertyP2pKindInputKind.ConversationInvite:
+      return (
+        <Text color={colors.subtleGrey} {...props}>
+          {t('chats.new-conversation')}
+        </Text>
+      )
+    default:
+      return (
+        <Text color={colors.subtleGrey} {...props}>
+          {String('chats.new-message')}
+        </Text>
+      )
+  }
+})
+
+const LastMessageBase = ({ conversation }) => {
+  const { updatedAt: refetchWhenUpdate, readAt } = conversation
+  const isRead = new Date(readAt).getTime() > 0
+  return (
+    <RelayContext.Consumer>
+      {({ queries }) => (
+        <QueryReducer
+          query={queries.ConversationLastEvent.graphql}
+          variables={{ id: conversation.id, refetchWhenUpdate }}
+        >
+          {state => {
+            switch (state.type) {
+              default:
+              case state.success:
+                return (
+                  <Message
+                    data={state.data.ConversationLastEvent}
+                    bold={!isRead}
+                    tiny
+                    middle
+                    left
+                  />
+                )
+              case state.loading:
+              case state.error:
+                return (
+                  <Text
+                    color={colors.subtleGrey}
+                    bold={!isRead}
+                    tiny
+                    middle
+                    left
+                  >
+                    ...
+                  </Text>
+                )
+            }
+          }}
+        </QueryReducer>
+      )}
+    </RelayContext.Consumer>
+  )
+}
+const LastMessage = withNamespaces()(LastMessageBase)
 
 const ItemBase = fragments.Conversation(({ data, navigation, t }) => {
-  const { updatedAt, readAt } = data
+  const { readAt } = data
   const isRead = new Date(readAt).getTime() > 0
-  const isInvite = !isRead && new Date(updatedAt).getTime() <= 0
   // fix when contact request is send after conversation invite
   if (
     data.members.length === 2 &&
@@ -35,13 +104,7 @@ const ItemBase = fragments.Conversation(({ data, navigation, t }) => {
         <Text color={colors.black} left middle bold={!isRead}>
           {utils.getTitle(data)}
         </Text>
-        <Text color={colors.subtleGrey} tiny middle left bold={!isRead}>
-          {isRead
-            ? t('chats.no-new-messages')
-            : isInvite
-              ? t('chats.new-conversation')
-              : t('chats.new-message')}
-        </Text>
+        <LastMessage conversation={data} />
       </Flex.Rows>
     </Flex.Cols>
   )
@@ -59,15 +122,13 @@ export default class ListScreen extends PureComponent {
         rightBtnIcon='edit'
         searchBar
         searchHandler={navigation.getParam('searchHandler')} // Placeholder
-        onPressRightBtn={() =>
-          ListScreen.onPress(navigation)
-        }
+        onPressRightBtn={() => ListScreen.onPress(navigation)}
       />
     ),
     tabBarVisible: true,
   })
 
-  static onPress = (navigation) => {
+  static onPress = navigation => {
     navigation.navigate('chats/add', {
       goBack: () => {
         navigation.goBack(null)
@@ -94,13 +155,15 @@ export default class ListScreen extends PureComponent {
           alias='ConversationList'
           subscriptions={[subscriptions.conversation]}
           renderItem={props => <Item {...props} navigation={navigation} />}
-          emptyItem={() => <EmptyList
-            source={require('../../../static/img/empty-conversation.png')}
-            text={I18n.t('chats.no-new-messages')}
-            icon={'edit'}
-            btnText={I18n.t('chats.new-conversation')}
-            onPress={() => ListScreen.onPress(navigation)}
-          />}
+          emptyItem={() => (
+            <EmptyList
+              source={require('../../../static/img/empty-conversation.png')}
+              text={I18n.t('chats.no-new-messages')}
+              icon={'edit'}
+              btnText={I18n.t('chats.new-conversation')}
+              onPress={() => ListScreen.onPress(navigation)}
+            />
+          )}
         />
       </Screen>
     )

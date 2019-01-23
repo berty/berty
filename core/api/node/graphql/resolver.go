@@ -466,6 +466,8 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 }
 
 func (r *queryResolver) GetEvent(ctx context.Context, id string) (*p2p.Event, error) {
+	id = strings.SplitN(id, ":", 2)[1]
+
 	return r.client.GetEvent(ctx, &p2p.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
@@ -690,6 +692,20 @@ func (r *queryResolver) ConversationMember(ctx context.Context, id string, creat
 	// 	contactID = strings.SplitN(contactID, ":", 2)[1]
 	// }
 	return r.client.ConversationMember(ctx, &entity.ConversationMember{
+		ID: id,
+	})
+}
+func (r *queryResolver) ConversationLastEvent(ctx context.Context, id string) (*p2p.Event, error) {
+	if id != "" {
+		id = strings.SplitN(id, ":", 2)[1]
+	}
+	// if conversationID != "" {
+	// 	conversationID = strings.SplitN(conversationID, ":", 2)[1]
+	// }
+	// if contactID != "" {
+	// 	contactID = strings.SplitN(contactID, ":", 2)[1]
+	// }
+	return r.client.ConversationLastEvent(ctx, &entity.Conversation{
 		ID: id,
 	})
 }
