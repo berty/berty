@@ -57,7 +57,8 @@ public class NotificationNative implements NativeNotificationDriver {
 
         this.askPermissions();
         FirebaseInstanceId.getInstance().getInstanceId();
-        FirebaseInstanceId.getInstance().getToken(authorizedEntity, "FCM");
+        String token = FirebaseInstanceId.getInstance().getToken(authorizedEntity, "FCM");
+        gomobile.receiveFCMToken(token.getBytes());
     }
 
     public void unregister() throws Exception {
