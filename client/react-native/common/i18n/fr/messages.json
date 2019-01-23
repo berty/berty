@@ -15,35 +15,39 @@
   "onboarding": {
     "welcome": {
       "title": "Bienvenue à bord",
-      "help-1": "Félicitations, votre compte Berty est désormais créé et vous pouvez discuter avec les autres personnes du réseau Berty.",
+      "help-1": "Félicitations, votre compte Berty est désormais créé. C'était facile, non ? Vous pouvez maintenant contacter les autres personnes déjà sur Berty.",
       "help-2": "Pour que votre expérience soit la meilleure possible nous allons vous aider à paramétrer les notifications, trouver les personnes que vous connaissez et sauvegarder votre compte.",
       "disclaimer": "Pour que vous soyez au courant, ceci va sensiblement réduire la confidentialité de votre compte, si vous souhaitez rester sous le radar vous pouvez passer chacune de ces étapes.",
       "skip-everything": "Tout passer"
     },
     "notifications": {
-      "title": "Livraison express des bouteilles",
-      "help": "Faites en sorte que les messages vous trouvent instantanément en activant les notifications en provenance des personnes que vous ajoutez comme contacts.",
-      "disclaimer-apple": "Vos messages seront chiffrés et envoyés via les serveurs de Berty et d'Apple. Ni Berty ni Apple n'auront accès à vos messages, mais des méta-données pourraient être déduites.",
-      "disclaimer-google": "Vos messages seront chiffrés et envoyés via les serveurs de Berty et de Google. Ni Berty ni Google n'auront accès à vos messages, mais des méta-données pourraient être déduites.",
+      "title": "Livraison en express des messages",
+      "help": "Vous pouvez recevoir une notification pour chaque message envoyé par vos contacts.",
+      "disclaimer-apple": "Vos messages seront chiffrés et envoyés via les serveurs de Berty et d'Apple. Ni Berty ni Apple n'auront accès à vos messages.",
+      "disclaimer-google": "Vos messages seront chiffrés et envoyés via les serveurs de Berty et de Google. Ni Berty ni Google n'auront accès à vos messages.",
       "enable": "Activer les notifications"
     },
     "contacts": {
-      "title": "Rejoignez l'équipage",
-      "link-help": "Vous pouvez inviter vos amis à vous rejoindre en leur envoyant un lien ou le faire à n'importe quel moment en passant par les paramètres de l'application",
-      "link-disclaimer": "Vous enverrez un lien par un SMS ou un email, nous n'aurons pas accès à vos contacts",
+      "title": "Discutez avec les personnes qui comptent pour vous",
+      "link-help": "Vous pouvez inviter vos contacts à vous rejoindre en leur envoyant un lien ou le faire à n'importe quel moment en passant par les paramètres de l'application.",
+      "link-disclaimer": "Ceci vous permet d'envoyer un lien vers votre compte par SMS, email ou l'app de votre choix.",
       "link-share": "Inviter vos contacts",
       "phone-help": "Pour que vos contacts vous trouvent vous pouvez également associer votre numéro de téléphone à votre compte Berty. Nous vous demanderons pour cela l'accès à votre carnet d'adresses pour savoir qui est enregistré sur Berty.",
       "phone-disclaimer": "Une empreinte de votre numéro de téléphone sera stockée sur les serveurs de Berty mais nous ne serons pas en mesure de contacter quiconque avec.",
       "phone-link": "Lier votre numéro"
     },
     "backup": {
-      "title": "Gardez votre clé en lieu sûr",
-      "help": "Votre clé privée est votre identité sur Berty. Écrivez ces 10 mots pour récupérer l'accès à votre compte en cas de problème.",
-      "disclaimer": "Bien qu'il soit recommandé de sauvegarder votre clé privé maintenant, vous pourrez également le faire par la suite dans les réglages de l'application. Cependant gardez à l'esprit que vous ne pourrez effectuer cette action une seule fois. Conservez votre clé de façon sécurisée, n'importe qui ayant accès à celle-ci sera capable d'accèder à votre compte.",
-      "action": "Sauvegarder votre clé"
+      "title": "Ne perdez pas vos données",
+      "help-backup": "Votre clé privée est votre identité sur Berty. Écrivez ces 10 mots pour récupérer l'accès à votre compte en cas de problème.",
+      "disclaimer-backup": "Bien qu'il soit recommandé de sauvegarder votre clé privé maintenant, vous pourrez également le faire par la suite dans les réglages de l'application. Cependant gardez à l'esprit que vous ne pourrez effectuer cette action une seule fois. Conservez votre clé de façon sécurisée, n'importe qui ayant accès à celle-ci sera capable d'accèder à votre compte.",
+      "action-backup": "Sauvegarder votre clé",
+      "help-device": "Vous pouvez également lier un autre appareil pour retrouver l'accès à votre compte dans l'éventualité où vous perdriez celui-ci.",
+      "disclaimer-device": "Les deux appareils auront accès à vos messages et vos contacts, assurez-vous de le sécuriser avec un mot de passe ou un code de déverrouillage.",
+      "action-device": "Lier un autre appareil"
     },
     "ready": {
-      "title": "Vous êtes paré pour le départ"
+      "title": "Vous êtes paré pour le départ",
+      "help": "Nous espérons que vous apprécirez Berty ! N'hésitez pas à contacter l'équipe si vous avez le moindre souci ou une question à nous poser."
     }
   },
   "settings": {
@@ -127,8 +131,8 @@
     },
     "statuses": {
       "Unknown": "Inconnu",
-      "IsFriend": "Ami",
-      "IsTrustedFriend": "Ami de confiance",
+      "IsFriend": "Contact",
+      "IsTrustedFriend": "Contact de confiance",
       "IsRequested": "Demande envoyée",
       "RequestedMe": "Demande reçue",
       "IsBlocked": "Bloqué",

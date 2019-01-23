@@ -10,6 +10,7 @@ const Ready = ({ navigation, t }) =>
   <ScrollView alwaysBounceVertical={false}>
     <Flex.Rows style={onboardingStyle.view}>
       <Text style={onboardingStyle.title}>{t('onboarding.ready.title')}</Text>
+      <Text style={onboardingStyle.help}>{t('onboarding.ready.help')}</Text>
       <View style={{ height: 60, flexDirection: 'row' }}>
         <NextButton
           onPress={() => navigation.navigate('switch/main')}>{t('close')}</NextButton>

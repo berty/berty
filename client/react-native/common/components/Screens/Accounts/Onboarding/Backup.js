@@ -9,13 +9,20 @@ import { withNamespaces } from 'react-i18next'
 const Backup = ({ navigation, t }) => <ScrollView alwaysBounceVertical={false}>
   <Flex.Rows style={onboardingStyle.view}>
     <Text style={onboardingStyle.title}>{t('onboarding.backup.title')}</Text>
-    <Text style={onboardingStyle.help}>{t('onboarding.backup.help')}</Text>
-    <Text style={onboardingStyle.disclaimer}>{t('onboarding.backup.disclaimer')}</Text>
+    <Text style={onboardingStyle.help}>{t('onboarding.backup.help-backup')}</Text>
+    <Text style={onboardingStyle.disclaimer}>{t('onboarding.backup.disclaimer-backup')}</Text>
+    <View style={{ height: 60, flexDirection: 'row' }}>
+      <SkipButton>{' '}</SkipButton>
+      <NextButton>{t('onboarding.backup.action-backup')}</NextButton>
+    </View>
+    <Text style={onboardingStyle.help}>{t('onboarding.backup.help-device')}</Text>
+    <Text style={onboardingStyle.disclaimer}>{t('onboarding.backup.disclaimer-device')}</Text>
     <View style={{ height: 60, flexDirection: 'row' }}>
       <SkipButton
         onPress={() => navigation.navigate('onboarding/ready')}>{t('skip')}</SkipButton>
-      <NextButton>{t('onboarding.backup.action')}</NextButton>
+      <NextButton>{t('onboarding.backup.action-device')}</NextButton>
     </View>
+
   </Flex.Rows>
 </ScrollView>
 
