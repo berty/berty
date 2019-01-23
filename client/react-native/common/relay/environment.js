@@ -89,24 +89,35 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
       req,
     }) => {
       req.fetchOpts.url = `http://${await getIp()}:${await getPort()}/query`
+
       // eslint-disable-next-line
       if (__DEV__) {
-        // Unlock query
-        console.groupCollapsed(
-          '%c RELAY %c %s',
-          logStyle.relayERROR,
-          logStyle.title,
-          'fetch query error'
-        )
-        console.log(req)
-        console.warn(lastError)
+        try {
+          // Unlock query
+          console.groupCollapsed(
+            '%c RELAY %c %s',
+            logStyle.relayERROR,
+            logStyle.title,
+            'fetch query error'
+          )
+          console.log(req)
+          console.warn(lastError)
+
+          console.warn(
+            'call `forceRelayRetry()` for immediately retry! Or wait ' +
+              delay +
+              ' ms.'
+          )
+          console.groupEnd()
+        } catch (err) {
+          console.log('[RELAY_NETWORK]', req, lastError)
+        }
 
         console.warn(
           'call `forceRelayRetry()` for immediately retry! Or wait ' +
             delay +
             ' ms.'
         )
-        console.groupEnd()
       }
     },
   }),

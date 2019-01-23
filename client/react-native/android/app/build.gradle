@@ -73,7 +73,19 @@ import com.android.build.OutputFile
 */
 
 project.ext.react = [
-    entryFile: "index.js"
+    entryFile: "index.js",
+
+    bundleInDebug: false,
+    devDisabledInDebug: false,
+
+    bundleInRelease: true,
+    devDisabledInRelease: true, // set this to false to enable debug mode on Release
+
+    bundleInStaff: true,
+    devDisabledInStaff: true, // set this to false to enable debug mode on Staff release
+
+    bundleInYolo: true,
+    devDisabledInYolo: true, // set this to false to enable debug mode on Yolo release
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -124,6 +136,7 @@ android {
                 println "SUCCESS"
             }
 
+
             if (project.hasProperty('BERTY_RELEASE_STORE_FILE')) {
                 println "app will be signed using ${BERTY_RELEASE_STORE_FILE}"
                 storeFile file(BERTY_RELEASE_STORE_FILE)
@@ -150,6 +163,16 @@ android {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
+        }
+        yolo {
+            initWith(buildTypes.release)
+            applicationIdSuffix ".yolo"
+            matchingFallbacks = ['release']
+        }
+        staff {
+            initWith(buildTypes.release)
+            applicationIdSuffix ".staff"
+            matchingFallbacks = ['release']
         }
     }
 
@@ -201,4 +224,3 @@ task copyDownloadableDepsToLibs(type: Copy) {
 apply from: 'publish.gradle'
 
 apply plugin: 'com.google.gms.google-services'
-

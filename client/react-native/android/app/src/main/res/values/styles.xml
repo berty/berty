@@ -1,5 +1,4 @@
 <resources>
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/background_splash</item>
@@ -14,5 +13,4 @@
     </style>
 
     <color name="white">#FFFFFF</color>
-
 </resources>

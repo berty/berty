@@ -419,7 +419,7 @@ fastlane.ios.release:
 fastlane.ios.release.appstore: fastlane.ios.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
-fastlane.android.build:
+fastlane.android.staff:
 	# get the google-services.json
 	[ -e $(ROOT)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
@@ -428,8 +428,40 @@ fastlane.android.build:
 
 	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \
 	FL_GRADLE_PROJECT_DIR=android \
-	FL_BUILD_TYPE=release \
-	FL_GRADLE_TASK=assembleReleaseAndPublish \
+	FL_GRADLE_BUILD_TYPE=Staff \
+	FL_GRADLE_TASK=assemble \
+		bundle exec fastlane run gradle --verbose
+
+	# check if apk is correctly signed
+	jarsigner -verify $(ANDROID_BUILD)/*.apk
+
+fastlane.android.yolo:
+	# get the google-services.json
+	[ -e $(ROOT)/android/app/google-services.json ] \
+		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
+
+	mkdir -p $(ANDROID_BUILD)
+
+	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \
+	FL_GRADLE_PROJECT_DIR=android \
+	FL_GRADLE_BUILD_TYPE=Yolo \
+	FL_GRADLE_TASK=assemble \
+		bundle exec fastlane run gradle --verbose
+
+	# check if apk is correctly signed
+	jarsigner -verify $(ANDROID_BUILD)/*.apk
+
+fastlane.android.release:
+	# get the google-services.json
+	[ -e $(ROOT)/android/app/google-services.json ] \
+		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
+
+	mkdir -p $(ANDROID_BUILD)
+
+	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \
+	FL_GRADLE_PROJECT_DIR=android \
+	FL_GRADLE_BUILD_TYPE=Release \
+	FL_GRADLE_TASK=assemble \
 		bundle exec fastlane run gradle --verbose
 
 	# check if apk is correctly signed
