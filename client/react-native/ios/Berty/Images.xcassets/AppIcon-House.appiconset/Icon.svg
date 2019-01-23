@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512px" height="512px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.5 (67469) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="-38.4393398" y="174.93934" width="539" height="113"></rect>
+        <filter x="-3.1%" y="-14.6%" width="107.2%" height="134.5%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="3" dy="3" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.35 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <text id="text-3" font-family="MaisonNeue-Bold, Maison Neue" font-size="70" font-weight="bold" letter-spacing="7.5" fill="#FFFFFF">
+            <tspan x="130.223405" y="248.348431">YOLO</tspan>
+        </text>
+        <filter x="-0.9%" y="-2.4%" width="102.3%" height="108.7%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="1" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <path d="M0,369.701434 C35.692537,388.409468 79.811822,374.682374 98.5444946,339.036781 C101.215525,333.949612 103.101373,329.184287 104.472345,323.849251 C80.7167156,322.46828 56.7276809,316.14229 34.2839299,304.409933 L0,369.701434 Z" id="path-5"></path>
+    </defs>
+    <g id="Icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <rect id="Background" fill="#FFFFFF" x="0" y="0" width="512" height="512"></rect>
+        <g id="yolo-banner" transform="translate(142.000000, 139.000000)">
+            <g id="Rectangle-vert" fill-rule="nonzero" transform="translate(231.060660, 231.439340) rotate(-45.000000) translate(-231.060660, -231.439340) ">
+                <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                <use fill="#35D1AF" xlink:href="#path-1"></use>
+            </g>
+            <g id="YOLO" transform="translate(230.168405, 232.294668) rotate(-45.000000) translate(-230.168405, -232.294668) " stroke="#FFFFFF">
+                <use fill="#FFFFFF" fill-opacity="1" stroke-opacity="1" filter="url(#filter-4)" xlink:href="#text-3"></use>
+                <use fill="#FFFFFF" fill-opacity="1" stroke-opacity="1" xlink:href="#text-3"></use>
+                <use xlink:href="#text-3"></use>
+            </g>
+        </g>
+        <g id="berty-logo" transform="translate(64.000000, 58.000000)" fill-rule="nonzero">
+            <g id="Group">
+                <path d="M43.9820077,50.0419544 L19.3590648,36.766895 C-18.4962982,104.764995 6.17081806,190.557855 74.258469,228.36343 L87.3686217,202.835927 C33.2467143,171.174109 14.3862615,104.635939 43.9820077,50.0419544 Z" id="Shape" fill="#FFBF47"></path>
+                <path d="M179.845475,83.4248521 L152.969704,23.8896294 C127.216711,35.492152 110.103204,58.3667082 104.820235,84.0386173 L147.816742,107.774805 C157.579005,98.3440673 168.357679,90.1998754 179.845475,83.4248521 Z" id="Shape" fill="#3442D9"></path>
+                <path d="M104.820235,84.0386173 C110.115022,58.3667082 127.216711,35.492152 152.969704,23.8896294 L142.226487,0.0944254126 C111.166888,14.0811897 89.7277288,40.5911243 81.1237,70.9488944 L104.820235,84.0386173 Z" id="Shape" fill="#FFBF47"></path>
+                <path d="M190.109515,150.219025 C190.109515,149.014231 190.133087,147.809436 190.192019,146.616454 C192.066029,104.944747 227.247924,71.7420359 269.265832,71.6475422 C269.312977,63.8636265 268.440796,58.8082154 268.440796,58.6310398 C268.594017,58.6310398 267.464946,58.2855256 267.606381,58.2855256 C243.998563,58.0611031 221.955907,63.0840538 200.375321,72.1554456 C193.067859,75.2264898 185.972548,78.7936256 179.124749,82.8450415 C170.520802,87.9358877 162.329372,93.7826833 154.656537,100.385428 C152.098925,102.582406 149.600244,104.862066 147.160495,107.224407 L104.293978,83.4474386 L80.6743741,70.360066 L43.9838417,50.0321163 C13.9053841,104.247857 33.3408765,172.614023 87.3689525,202.816561 L34.2719886,304.420875 C56.6776109,316.173524 80.462222,322.457353 104.140757,323.839323 C169.74291,327.678128 235.135319,290.920092 267.606381,228.790507 C224.489946,228.058182 190.109515,193.166396 190.109515,150.219025 Z" id="Shape" fill="#3B41FF"></path>
+                <path d="M210.523264,195.8949 C198.5956,182.760281 191.040627,165.562434 190.192019,146.616454 C190.133087,147.809436 190.109515,149.014231 190.109515,150.219025 C190.109515,193.166396 224.47816,228.069993 267.167883,228.790507 C267.627546,228.802319 268.075423,228.802319 268.535086,228.802319 L268.535086,221.585365 C245.551938,221.597177 224.867106,211.687154 210.523264,195.8949 Z" id="Shape" fill="#FFC14B"></path>
+                <path d="M268.346506,71.6357305 C226.328598,71.7302242 192.077815,104.944747 190.192019,146.616454 C191.040627,165.562434 198.5956,182.760281 210.523264,195.8949 C224.867106,211.687154 245.540152,221.597177 268.535086,221.597177 L268.535086,71.6239188 C268.476155,71.6239188 268.417224,71.6239188 268.346506,71.6357305 Z" id="Shape" fill="#FFFFFF"></path>
+                <path d="M267.495897,166.749407 C267.480138,208.139916 267.480138,228.83517 267.495897,228.83517 C297.089974,228.799761 321.873831,207.375941 327.771373,179.567657 L267.495897,166.749407 Z" id="Shape" fill="#FFAE3A"></path>
+                <path d="M341.871107,86.6176413 C324.036657,70.4472894 300.836508,60.0959035 275.260796,58.4906715 C272.82614,58.3608366 270.391483,58.2782143 267.956827,58.254608 C267.803183,58.254608 267.64954,58.2664111 267.507715,58.2664111 C267.507715,58.6677192 267.507715,166.749407 267.507715,166.749407 L375.507187,189.694782 C376.984527,182.542057 377.776381,175.141466 377.776381,167.552023 C377.752744,135.470989 363.913022,106.612222 341.871107,86.6176413 Z" id="Shape" fill="#FFC14B"></path>
+                <g id="Shape">
+                    <use fill="#2ECAA5" xlink:href="#path-5"></use>
+                    <use fill="#F74868" xlink:href="#path-5"></use>
+                </g>
+                <ellipse id="Oval" fill="#383B62" cx="244.198411" cy="145.851853" rx="14.0879153" ry="14.0693865"></ellipse>
+            </g>
+        </g>
+    </g>
+</svg>
