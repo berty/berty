@@ -2,7 +2,7 @@ import { graphql } from 'react-relay'
 
 import { subscriber } from '../../relay'
 
-const CommitLogStream = graphql`
+export const CommitLogStream = graphql`
   subscription CommitLogStreamSubscription {
     CommitLogStream(T: true) {
       operation

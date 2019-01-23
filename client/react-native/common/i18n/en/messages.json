@@ -12,6 +12,44 @@
     "get-started": "To get started, only a name is required",
     "lets-chat": "Let's chat!"
   },
+  "onboarding": {
+    "welcome": {
+      "title": "Welcome aboard",
+      "help-1": "Congratulations, your Berty account is now created. That was easy, isn't it? From now on you can chat with other people already on Berty.",
+      "help-2": "To make your Berty experience the best possible we will help you receive notifications, find people you know and backup your account.",
+      "disclaimer": "Just to let you know, this will slightly lower the confidentiality of your account. If you want to stay off the radar you can skip any these steps.",
+      "skip-everything": "Skip everything"
+    },
+    "notifications": {
+      "title": "Lightning fast message deliveries",
+      "help": "You can receive a notification every time someone in your contact list sends you a message.",
+      "disclaimer-apple": "Your messages will be encrypted and sent through Berty and Apple servers. Neither Berty nor Apple will have access to your messages, but some metadata can be deduced.",
+      "disclaimer-google": "Your messages will be encrypted and sent through Berty and Google servers. Neither Berty nor Google will have access to your messages, but some metadata can be deduced.",
+      "enable": "Enable notifications"
+    },
+    "contacts": {
+      "title": "Talk securely with the people that matters to you",
+      "link-help": "You can send an invite link to your contacts now, or do it anytime in the app settings.",
+      "link-disclaimer": "This will let you share a link to your account via a text message, an email, or any app of your choice.",
+      "link-share": "Share your account",
+      "phone-help": "To let your contacts find you, you can link your phone number to your Berty account, we will ask access to your address book to let you know who is already registered on Berty.",
+      "phone-disclaimer": "A fingerprint version of your phone number will be stored on Berty servers, but we won't be able to use it to contact anyone.",
+      "phone-link": "Link phone"
+    },
+    "backup": {
+      "title": "Keep access to your data",
+      "help-backup": "Your private key is your identity on Berty. Write down 10 words to retrieve access to it.",
+      "disclaimer-backup": "While it is recommended to backup your private key now, you can do it later in the app settings. However keep in mind that you will be able to do it once. Store it securely, anyone with your key will be able to use your account.",
+      "action-backup": "Backup your key",
+      "help-device": "You can also link another device to keep access to your account in the event you lose this one.",
+      "disclaimer-device": "Both devices will have access to your messages and contacts, be sure to set a strong password or PIN on it.",
+      "action-device": "Link another device"
+    },
+    "ready": {
+      "title": "You're ready to go",
+      "help": "We hope you will enjoy Berty! Don't hesitate to contact the team if you have any issue or question."
+    }
+  },
   "settings": {
     "title": "Settings",
     "updates-check": "Check for updates",
@@ -93,8 +131,8 @@
     },
     "statuses": {
       "Unknown": "Unknown",
-      "IsFriend": "Friend",
-      "IsTrustedFriend": "Trusted friend",
+      "IsFriend": "Contact",
+      "IsTrustedFriend": "Trusted contact",
       "IsRequested": "Request sent",
       "RequestedMe": "Request received",
       "IsBlocked": "Blocked",
@@ -137,6 +175,9 @@
   "qrcode": "QR Code",
   "public-key": "Public Key",
   "fingerprint": "Fingerprint",
+  "next": "Next",
+  "skip": "Skip",
+  "close": "Close",
   "cancel": "Cancel",
   "confirm": "Confirm",
   "search-placeholder": "Search...",

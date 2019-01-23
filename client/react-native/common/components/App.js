@@ -110,8 +110,11 @@ export default class App extends PureComponent {
     this.setState({ deepLink: null })
   }
 
+  setDeepLink (deepLink) {
+    this.setState({ deepLink })
+  }
+
   render () {
-    console.log(this.onAnimationFinished)
     const { loading, deepLink, hide, progress } = this.state
     return (
       <I18nextProvider i18n={i18n}>
@@ -138,6 +141,7 @@ export default class App extends PureComponent {
               }}
               screenProps={{
                 deepLink,
+                setDeepLink: (deepLink) => this.setDeepLink(deepLink),
                 clearDeepLink: () => this.clearDeepLink(),
               }}
             /> : null }

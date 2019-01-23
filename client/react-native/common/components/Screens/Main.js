@@ -1,5 +1,9 @@
-import { Animated, Easing, Platform } from 'react-native'
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation'
+import { Animated, Easing, Platform, View } from 'react-native'
+import {
+  createStackNavigator,
+  createBottomTabNavigator,
+  createSwitchNavigator,
+} from 'react-navigation'
 import React from 'react'
 
 import { EventListFilterModal } from './Settings/Devtools/EventList'
@@ -11,6 +15,7 @@ import Settings from './Settings'
 import ContactCardModal from './Contacts/ContactCardModal'
 import { ViewExportComponent } from '../../helpers/saveViewToCamera'
 import I18n from 'i18next'
+import Onboarding from './Accounts/Onboarding'
 
 const TabBarIcon = (tintColor, routeName, badgeValue) => {
   let iconName = {
@@ -96,10 +101,27 @@ export const tabs = createBottomTabNavigator(
   }
 )
 
+class Picker extends React.Component {
+  constructor (props) {
+    super(props)
+
+    this.props.navigation.navigate(
+      this.props.screenProps.firstLaunch
+        ? 'switch/onboarding'
+        : 'switch/main'
+    )
+  }
+
+  render () {
+    return <View />
+  }
+}
+
 // Navigator handling modals
-export default createStackNavigator(
+const Main = createStackNavigator(
   {
     tabs: tabs,
+    'main/onboarding': Onboarding,
     'modal/devtools/event/list/filters': {
       screen: EventListFilterModal,
     },
@@ -143,3 +165,9 @@ export default createStackNavigator(
     }),
   }
 )
+
+export default createSwitchNavigator({
+  'switch/picker': Picker,
+  'switch/onboarding': Onboarding,
+  'switch/main': Main,
+})

@@ -63,7 +63,9 @@ class Auth extends PureComponent {
     }
   }
 
-  open = async nickname => {
+  open = async (nickname, options) => {
+    let { firstLaunch } = options || {}
+
     if (nickname == null) {
       await this.init()
       const list = await this.list()
@@ -78,7 +80,10 @@ class Auth extends PureComponent {
       nickname = list[0]
     }
     await this.start(nickname)
-    this.props.navigation.navigate('accounts/current')
+
+    this.props.navigation.navigate('accounts/current', {
+      firstLaunch,
+    })
   }
 
   async componentDidMount () {
@@ -147,7 +152,7 @@ class Auth extends PureComponent {
                 value={this.state.nickname}
               />
               <TouchableOpacity
-                onPress={() => this.open(this.state.nickname)}
+                onPress={() => this.open(this.state.nickname, { firstLaunch: true })}
                 disabled={this.state.nickname.length === 0}
               >
                 <Text
