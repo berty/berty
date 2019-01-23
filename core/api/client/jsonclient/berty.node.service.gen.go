@@ -1212,3 +1212,23 @@ func NodeGetListenInterfaceAddrs(client *client.Client, ctx context.Context, jso
 	tracer.SetAnyField("trailer", trailer)
 	return ret, header, trailer, err
 }
+func NodeGetTagInfo(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.GetTagInfo")
+	var typedInput node.GetTagInfoReq
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().GetTagInfo(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}

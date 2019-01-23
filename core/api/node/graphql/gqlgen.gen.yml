@@ -2057,6 +2057,19 @@ models:
     fields:
       ret:
 
+  BertyNodeGetTagInfoReq:
+    model: berty.tech/core/api/node.GetTagInfoReq
+    fields:
+      str:
+  BertyNodeGetTagInfoReqInput:
+    model: berty.tech/core/api/node.GetTagInfoReq
+    fields:
+      str:
+  BertyNodeGetTagInfoReqPayload:
+    model: berty.tech/core/api/node.GetTagInfoReq
+    fields:
+      str:
+
   BertyNodeEventIDInput:
     model: berty.tech/core/api/node.EventIDInput
     fields:
