@@ -205,7 +205,7 @@ module.exports = {
           // The preset includes JSX, Flow, and some ESnext features.
           {
             test: /\.(js|mjs|jsx)$/,
-            include: [paths.appSrc],
+            include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
               presets: [
@@ -241,6 +241,7 @@ module.exports = {
             include: [
               /node_modules\/react-native.*/,
               /node_modules\/react-navigation/,
+              /node_modules\/cavy/,
             ],
             loader: require.resolve('babel-loader'),
             options: {

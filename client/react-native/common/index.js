@@ -6,31 +6,16 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import App from './components/App'
+import AppTest from './integration/AppWrapper'
 
-if (process.env['ENVIRONMENT'] === 'integration_test') {
-  console.error('LOLOLOLOLOL')
-}
-// import { Tester, TestHookStore } from 'cavy'
-// import AppSpec from './specs/AppSpec'
-//
-// const testHookStore = new TestHookStore()
-//
-// class AppWrapper extends Component {
-//   render() {
-//     return (
-//       <Tester specs={[AppSpec]} store={testHookStore} waitTime={4000}>
-//         <App />
-//       </Tester>
-//     )
-//   }
-// }
-//
+const isIntegrationMode = (process.env['ENVIRONMENT'] === 'integration_test')
+console.log('App started ' + (isIntegrationMode === true ? 'with' : 'without') + ' integration tests')
+console.log('ENVIRONMENT:', process.env['ENVIRONMENT'])
 
 if (Platform.OS === 'web') {
-  console.error('LILILI')
   import('./helpers/patch-web.js')
-  ReactDOM.render(<App />, document.getElementById('root'))
+  ReactDOM.render(isIntegrationMode === true ? <AppTest /> : <App />, document.getElementById('root'))
   import('./registerServiceWorker').then()
 } else {
-  AppRegistry.registerComponent('root', () => App)
+  AppRegistry.registerComponent('root', () => isIntegrationMode === true ? AppTest : App)
 }

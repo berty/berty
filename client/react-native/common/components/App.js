@@ -53,7 +53,6 @@ export default class App extends PureComponent {
     }
   }
 
-
   _onLanguageChange = ({ language, languages }) => {
     i18n.changeLanguage(language)
   }
@@ -69,7 +68,7 @@ export default class App extends PureComponent {
             params: {
               conversation: {
                 title: '',
-                id: btoa('conversation:'+url.hashParts['id']),
+                id: btoa('conversation:' + url.hashParts['id']),
               },
             },
           },

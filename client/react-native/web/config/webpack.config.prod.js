@@ -311,6 +311,7 @@ module.exports = {
             include: [
               /node_modules\/react-native.*/,
               /node_modules\/react-navigation/,
+              /node_modules\/cavy/,
             ],
             loader: require.resolve('babel-loader'),
             options: {
