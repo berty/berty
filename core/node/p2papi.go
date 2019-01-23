@@ -180,7 +180,7 @@ func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.En
 	return nil
 }
 
-func (n *Node) handleOutgoingPushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.Envelope) {
+func (n *Node) queuePushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.Envelope) {
 	go func() {
 		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
 		defer cancel()
@@ -192,33 +192,29 @@ func (n *Node) handleOutgoingPushEvent(ctx context.Context, event *p2p.Event, en
 }
 
 func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event) ([]*entity.DevicePushIdentifier, error) {
-	if event.ReceiverID == "" {
-		return nil, errorcodes.ErrPushUnknownDestination.New()
-	}
-
 	db := n.sql(ctx)
-
-	devices := []*entity.Device{}
+	var subqueryContactIDs interface{}
 	pushIdentifiers := []*entity.DevicePushIdentifier{}
 
-	if err := db.Find(&devices, &entity.Device{ContactID: event.ReceiverID}).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
-	}
-
-	if len(devices) == 0 {
-		return nil, errorcodes.ErrDbNothingFound.New()
-	}
-
-	deviceIDs := []string{}
-	for _, device := range devices {
-		deviceIDs = append(deviceIDs, device.ID)
+	if event.ConversationID != "" {
+		subqueryContactIDs = db.
+			Model(&entity.ConversationMember{}).
+			Select("contact_id").
+			Where(&entity.ConversationMember{ConversationID: event.ConversationID}).
+			QueryExpr()
+	} else if event.ReceiverID != "" {
+		subqueryContactIDs = []string{event.ReceiverID}
 	}
 
 	if err := db.
 		Model(&entity.DevicePushIdentifier{}).
 		Find(&pushIdentifiers).
-		Where("device_id IN (?)", deviceIDs).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		Where("device_id IN (?)", db.
+			Model(&entity.Device{}).
+			Select("device_id").
+			Where("contact_id IN (?)", subqueryContactIDs).
+			SubQuery()).Error; err != nil {
+		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	if len(pushIdentifiers) == 0 {

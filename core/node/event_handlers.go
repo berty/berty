@@ -388,6 +388,7 @@ func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs)
 }
 
 func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
+	logger().Info("Sending push to device")
 	pushAttrs, err := event.GetDevicePushToAttrs()
 
 	if err != nil {
