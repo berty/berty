@@ -105,7 +105,7 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	# GOOS=android gobind -lang=go,java -outdir=$(BLE_BIND_PATH) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar berty.tech/core/network/ble
 	mkdir -p $(ANDROID_BUILD_PATH)
-	GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
+	GO111MODULE=off GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
 		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android/arm -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/client/react-native/gomobile/core
 
 .PHONY: build.ios
@@ -114,7 +114,7 @@ build.ios: $(IOS_BUILD_PATH)/core.framework/Core
 $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	mkdir -p $(IOS_BUILD_PATH)
-	CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
+	GO111MODULE=off CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
 		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/client/react-native/gomobile/core
 
 .PHONY: build
