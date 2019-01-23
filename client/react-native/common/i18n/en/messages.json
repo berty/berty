@@ -15,13 +15,13 @@
   "onboarding": {
     "welcome": {
       "title": "Welcome aboard",
-      "help-1": "Congratulations, your Berty account is now created. That was easy, isn't it? From now on you can chat with other people already on Berty.",
+      "help-1": "Congratulations, your Berty account is now created. That was easy, right? From now on you can chat with other people already on Berty.",
       "help-2": "To make your Berty experience the best possible we will help you receive notifications, find people you know and backup your account.",
       "disclaimer": "Just to let you know, this will slightly lower the confidentiality of your account. If you want to stay off the radar you can skip any these steps.",
       "skip-everything": "Skip everything"
     },
     "notifications": {
-      "title": "Lightning fast message deliveries",
+      "title": "Lightning fast message delivery",
       "help": "You can receive a notification every time someone in your contact list sends you a message.",
       "disclaimer-apple": "Your messages will be encrypted and sent through Berty and Apple servers. Neither Berty nor Apple will have access to your messages, but some metadata can be deduced.",
       "disclaimer-google": "Your messages will be encrypted and sent through Berty and Google servers. Neither Berty nor Google will have access to your messages, but some metadata can be deduced.",
