@@ -64,30 +64,33 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
 
   func register() throws {
     var err: Error?
+    let group = DispatchGroup()
 
+    group.enter()
     if #available(iOS 10.0, *) {
       UNUserNotificationCenter.current().delegate = self
       UNUserNotificationCenter.current().requestAuthorization(
         options: [.alert, .sound, .badge],
         completionHandler: { granted, error in
           guard granted else {
-            do {
-              try self.unregister()
-            } catch { }
             err = error
+            group.leave()
+
             return
           }
+          group.leave()
         }
       )
     }
+    group.wait()
 
     if err != nil {
-      throw err!
-    }
-
-    DispatchQueue.main.async {
-      let application = UIApplication.shared
-      application.registerForRemoteNotifications()
+      try self.unregister()
+    } else {
+      DispatchQueue.main.async {
+        let application = UIApplication.shared
+        application.registerForRemoteNotifications()
+      }
     }
   }
 

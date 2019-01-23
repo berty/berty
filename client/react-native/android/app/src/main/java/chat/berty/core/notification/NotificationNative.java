@@ -54,21 +54,18 @@ public class NotificationNative implements NativeNotificationDriver {
     public void askPermissions() {
         ReactApplicationContext context = NotificationModule.getInstance().getReactApplicationContext();
 
-        if (ContextCompat.checkSelfPermission(context.getCurrentActivity(), Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED) {
-            return;
+        if (ContextCompat.checkSelfPermission(context.getCurrentActivity(), Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                    context.getCurrentActivity(),
+                    new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY},
+                    PERMISSION_CODE);
         }
-        ActivityCompat.requestPermissions(
-                context.getCurrentActivity(),
-                new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY},
-                PERMISSION_CODE);
     }
 
     public void register() throws Exception {
         this.askPermissions();
-        // TODO: do not refresh token every time in prod just uncomment this following lines and remove refreshToken when all good
-        // FirebaseInstanceId.getInstance().getInstanceId();
-        // FirebaseInstanceId.getInstance().getToken(BuildConfig.APPLICATION_ID, "GCM");
-        this.refreshToken();
+        FirebaseInstanceId.getInstance().getInstanceId();
+        FirebaseInstanceId.getInstance().getToken(BuildConfig.APPLICATION_ID, "GCM");
     }
 
     public void unregister() throws Exception {
