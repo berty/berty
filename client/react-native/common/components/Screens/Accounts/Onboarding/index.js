@@ -12,35 +12,30 @@ export default createMaterialTopTabNavigator(
     'onboarding/welcome': {
       screen: Welcome,
       navigationOptions: () => ({
-        title: '',
         tabBarIcon: tabIcon('lock'),
       }),
     },
     'onboarding/notifications': {
       screen: Notifications,
       navigationOptions: () => ({
-        title: '',
         tabBarIcon: tabIcon('bell'),
       }),
     },
     'onboarding/contacts': {
       screen: Contacts,
       navigationOptions: () => ({
-        title: '',
         tabBarIcon: tabIcon('users'),
       }),
     },
     'onboarding/backup': {
       screen: Backup,
       navigationOptions: () => ({
-        title: '',
         tabBarIcon: tabIcon('archive'),
       }),
     },
     'onboarding/ready': {
       screen: Ready,
       navigationOptions: () => ({
-        title: '',
         tabBarIcon: tabIcon('check-circle'),
       }),
     },
@@ -48,5 +43,13 @@ export default createMaterialTopTabNavigator(
   {
     initialRouteName: 'onboarding/welcome',
     ...tabNavigatorOptions,
+    tabBarOptions: {
+      ...tabNavigatorOptions.tabBarOptions,
+      labelStyle: {
+        fontSize: 0,
+        marginBottom: 0,
+        marginTop: 0,
+      },
+    },
   },
 )
