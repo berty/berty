@@ -6,6 +6,8 @@ import (
 	"net"
 	"time"
 
+	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
+
 	"berty.tech/core/pkg/errorcodes"
 
 	"berty.tech/core/api/p2p"
@@ -15,7 +17,6 @@ import (
 	"berty.tech/core/network/p2p/protocol/service/p2pgrpc"
 	"berty.tech/core/pkg/tracing"
 
-	provider_dht "berty.tech/core/network/p2p/protocol/provider/dht"
 	provider_pubsub "berty.tech/core/network/p2p/protocol/provider/pubsub"
 
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
@@ -33,7 +34,7 @@ import (
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
-	"github.com/libp2p/go-libp2p-protocol"
+	protocol "github.com/libp2p/go-libp2p-protocol"
 	mdns "github.com/libp2p/go-libp2p/p2p/discovery"
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
@@ -79,6 +80,7 @@ type Driver struct {
 	gs       *grpc.Server
 
 	rootContext context.Context
+	PingSvc     *ping.PingService
 }
 
 // Driver is a network.Driver
@@ -190,6 +192,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 
 	driver.gs = grpc.NewServer(p2pInterceptorsServer...)
 	sgrpc := p2pgrpc.NewP2PGrpcService(host)
+	driver.PingSvc = ping.NewPingService(host)
 
 	dialOpts := append([]grpc.DialOption{
 		grpc.WithInsecure(),
@@ -201,7 +204,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 
 	driver.listener = sgrpc.NewListener(ctx, ID)
 
-	driver.providers.Register(provider_dht.New(driver.host, driver.dht))
+	// driver.providers.Register(provider_dht.New(driver.host, driver.dht))
 	pubsubProvider, err := provider_pubsub.New(ctx, host)
 	if err != nil {
 		logger().Warn("pubsub provider", zap.Error(err))
@@ -443,7 +446,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	ctx = tracer.Context()
 
 	logger().Debug("looking for peers", zap.String("channel", channel))
-	ss, err := d.FindProvidersAndWait(ctx, channel)
+	ss, err := d.FindProvidersAndWait(ctx, channel, true)
 	if err != nil {
 		return err
 	}
@@ -506,13 +509,17 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	return nil
 }
 
-func (d *Driver) FindProvidersAndWait(ctx context.Context, id string) ([]pstore.PeerInfo, error) {
+func (d *Driver) GetConn(ctx context.Context, peerID string) (*grpc.ClientConn, error) {
+	return d.ccmanager.GetConn(ctx, peerID)
+}
+
+func (d *Driver) FindProvidersAndWait(ctx context.Context, id string, cache bool) ([]pstore.PeerInfo, error) {
 	c, err := d.createCid(id)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := d.providers.FindProviders(ctx, c); err != nil {
+	if err := d.providers.FindProviders(ctx, c, cache); err != nil {
 		return nil, err
 	}
 

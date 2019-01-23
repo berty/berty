@@ -6,7 +6,7 @@ import { padding, borderBottom, paddingBottom } from '../../styles'
 import { isRTL } from '../../i18n'
 import RelayContext from '../../relay/RelayContext'
 import Icon from './Icon'
-import multiaddr from 'multiaddr'
+// import multiaddr from 'multiaddr'
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
 
@@ -70,8 +70,10 @@ class StateBadge extends PureComponent {
       listenInterfaceAddrs.forEach((v, i, arr) => {
         console.log(v)
         try {
-          const addr = multiaddr(v).nodeAddress()
-          if (addr.address !== '127.0.0.1') {
+          const splited = v.split('/')
+          if (splited[1] === 'ip4' && splited[2] !== '127.0.0.1') {
+          // const addr = multiaddr(v).nodeAddress()
+          // if (addr.address !== '127.0.0.1') {
             color = colors.green
           }
         } catch (e) {

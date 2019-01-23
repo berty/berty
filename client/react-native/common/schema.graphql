@@ -614,6 +614,9 @@ type BertyNodeVoid  {
 type BertyNodeBool  {
     ret: Bool!
 }
+type BertyNodeGetTagInfoReq  {
+    str: String!
+}
 type BertyNodeLogEntry  {
     line: String!
 }
@@ -817,6 +820,9 @@ type Query {
   GetListenInterfaceAddrs(
     T: Bool!
   ): BertyNetworkListAddrs
+  GetTagInfo(
+    str: String!
+  ): BertyNodeBool
 }
   
 type Mutation {

@@ -1,3 +1,4 @@
+export GetTagInfo from './GetTagInfo'
 export GetListenAddrs from './GetListenAddrs'
 export GetListenInterfaceAddrs from './GetListenInterfaceAddrs'
 export ConversationList from './ConversationList'

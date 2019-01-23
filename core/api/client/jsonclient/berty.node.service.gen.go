@@ -70,6 +70,7 @@ func init() {
 	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
 	registerUnary("berty.node.GetListenAddrs", NodeGetListenAddrs)
 	registerUnary("berty.node.GetListenInterfaceAddrs", NodeGetListenInterfaceAddrs)
+	registerUnary("berty.node.GetTagInfo", NodeGetTagInfo)
 }
 func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))

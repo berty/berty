@@ -3,6 +3,7 @@ package p2p
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"sync"
 	"time"
 
@@ -34,12 +35,56 @@ type Metrics struct {
 	rootContext context.Context
 }
 
-func (m *Metrics) CanDial(ctx context.Context, pID string) {
-	peerID, err := peer.IDB58Decode(pID)
+func (m *Metrics) GetTagInfo(ctx context.Context, channelID string) (bool, error) {
+	newCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	psID, err := m.driver.FindProvidersAndWait(ctx, channelID, false)
 	if err != nil {
-		// return nil, err
+		return false, nil
 	}
-	m.host.ConnManager().GetTagInfo(peerID)
+	success := make([]chan bool, len(psID))
+	for i, p := range psID {
+		success[i] = make(chan bool, 1)
+		go func(pi pstore.PeerInfo, index int) {
+			pID := pi.ID
+			go func(pID peer.ID) {
+				if err := m.driver.Connect(newCtx, pi); err != nil {
+					success[index] <- false
+					return
+				}
+				ch, err := m.driver.PingSvc.Ping(newCtx, pID)
+
+				waiting := <-ch
+				if err == nil && waiting != 0 {
+					success[index] <- true
+				} else {
+					success[index] <- false
+					return
+				}
+				cancel()
+			}(pID)
+		}(p, i)
+	}
+
+	cases := make([]reflect.SelectCase, len(psID))
+	for i, ch := range success {
+		cases[i] = reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(ch)}
+	}
+
+	remaining := len(psID)
+	for remaining > 0 {
+		chosen, value, ok := reflect.Select(cases)
+		remaining -= 1
+		if !ok {
+			cases[chosen].Chan = reflect.ValueOf(nil)
+			continue
+		}
+		res := value.Bool()
+		fmt.Printf("Read from channel %#v and received %d\n", success[chosen], value.Bool())
+		if res == true {
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func (m *Metrics) GetListenAddrs(ctx context.Context) *network.ListAddrs {

@@ -16,6 +16,13 @@ func (n *Node) Peers(ctx context.Context, _ *node.Void) (*network.Peers, error) 
 	return n.networkMetrics.Peers(ctx), nil
 }
 
+func (n *Node) GetTagInfo(ctx context.Context, str *node.GetTagInfoReq) (*node.Bool, error) {
+	b, err := n.networkMetrics.GetTagInfo(ctx, str.Str)
+	return &node.Bool{
+		Ret: b,
+	}, err
+}
+
 func (n *Node) GetListenAddrs(ctx context.Context, _ *node.Void) (*network.ListAddrs, error) {
 	return n.networkMetrics.GetListenAddrs(ctx), nil
 }
