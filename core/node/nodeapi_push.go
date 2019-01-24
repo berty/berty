@@ -1,15 +1,16 @@
 package node
 
 import (
+	"context"
+	"crypto/x509"
+	"encoding/base64"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/push"
-	"context"
-	"crypto/x509"
-	"encoding/base64"
 	"github.com/google/uuid"
 )
 

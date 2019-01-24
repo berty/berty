@@ -1,30 +1,15 @@
 package chat.berty.core.notification;
 
 import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 
-import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.RemoteMessage;
-import com.google.firebase.messaging.FirebaseMessagingService;
-import com.google.gson.Gson;
 
-import java.util.Map;
-
-import chat.berty.core.Level;
 import chat.berty.core.Logger;
-import chat.berty.main.BuildConfig;
 import chat.berty.main.R;
 import core.Core;
 import core.MobileNotification;
@@ -45,31 +30,42 @@ public class NotificationNative implements NativeNotificationDriver {
     }
 
     public void refreshToken() throws Exception {
-            FirebaseInstanceId.getInstance().deleteToken(BuildConfig.APPLICATION_ID, "GCM");
+        ReactApplicationContext context = NotificationModule.getInstance().getReactApplicationContext();
+        String authorizedEntity = context.getApplicationContext().getResources().getString(R.string.gcm_defaultSenderId);
+
+            FirebaseInstanceId.getInstance().deleteToken(authorizedEntity, "FCM");
             FirebaseInstanceId.getInstance().deleteInstanceId();
             FirebaseInstanceId.getInstance().getInstanceId();
-            FirebaseInstanceId.getInstance().getToken(BuildConfig.APPLICATION_ID, "GCM");
+            FirebaseInstanceId.getInstance().getToken(authorizedEntity, "FCM");
     }
 
     public void askPermissions() {
         ReactApplicationContext context = NotificationModule.getInstance().getReactApplicationContext();
 
-        if (ContextCompat.checkSelfPermission(context.getCurrentActivity(), Manifest.permission.ACCESS_NOTIFICATION_POLICY) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    context.getCurrentActivity(),
-                    new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY},
-                    PERMISSION_CODE);
+        if (ContextCompat.checkSelfPermission(context.getCurrentActivity(), Manifest.permission.ACCESS_NOTIFICATION_POLICY) == PackageManager.PERMISSION_GRANTED) {
+            return;
         }
+        ActivityCompat.requestPermissions(
+                context.getCurrentActivity(),
+                new String[]{Manifest.permission.ACCESS_NOTIFICATION_POLICY},
+                PERMISSION_CODE);
     }
 
     public void register() throws Exception {
+        ReactApplicationContext context = NotificationModule.getInstance().getReactApplicationContext();
+        String authorizedEntity = context.getApplicationContext().getResources().getString(R.string.gcm_defaultSenderId);
+
         this.askPermissions();
         FirebaseInstanceId.getInstance().getInstanceId();
-        FirebaseInstanceId.getInstance().getToken(BuildConfig.APPLICATION_ID, "GCM");
+        String token = FirebaseInstanceId.getInstance().getToken(authorizedEntity, "FCM");
+        gomobile.receiveFCMToken(token.getBytes());
     }
 
     public void unregister() throws Exception {
-        FirebaseInstanceId.getInstance().deleteToken(BuildConfig.APPLICATION_ID, "GCM");
+        ReactApplicationContext context = NotificationModule.getInstance().getReactApplicationContext();
+        String authorizedEntity = context.getApplicationContext().getResources().getString(R.string.gcm_defaultSenderId);
+
+        FirebaseInstanceId.getInstance().deleteToken(authorizedEntity, "FCM");
         FirebaseInstanceId.getInstance().deleteInstanceId();
         gomobile.receiveFCMToken(null);
     }
