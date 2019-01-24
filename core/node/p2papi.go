@@ -17,6 +17,8 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
+	"berty.tech/core/sql"
+	bsql "berty.tech/core/sql"
 )
 
 // WithP2PGrpcServer registers the Node as a 'berty.p2p' protobuf server implementation
@@ -127,7 +129,7 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 	} else {
 		contact := &entity.Contact{}
 		if err := n.sql(ctx).First(contact, &entity.Contact{ID: device.ContactID}).Error; err != nil {
-			return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+			return nil, bsql.GenericError(err)
 		}
 
 		trusted = contact.IsTrusted()
@@ -214,7 +216,7 @@ func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event
 			Select("device_id").
 			Where("contact_id IN (?)", subqueryContactIDs).
 			SubQuery()).Error; err != nil {
-		return nil, errorcodes.ErrDb.Wrap(err)
+		return nil, sql.GenericError(err)
 	}
 
 	if len(pushIdentifiers) == 0 {

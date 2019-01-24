@@ -11,6 +11,7 @@ import (
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/push"
+	"berty.tech/core/sql"
 	"github.com/google/uuid"
 )
 
@@ -42,7 +43,7 @@ func (n *Node) DevicePushConfigCreate(ctx context.Context, input *node.DevicePus
 	if input.RelayPubkey == "" {
 		config, err := n.Config(ctx)
 		if err != nil {
-			return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+			return nil, sql.GenericError(err)
 		}
 
 		if input.PushType == push.DevicePushType_APNS {
@@ -89,7 +90,7 @@ func (n *Node) DevicePushConfigRemove(ctx context.Context, devicePushConfig *ent
 
 	// get devicePushConfig
 	if err = n.sql(ctx).First(devicePushConfig, &entity.DevicePushConfig{ID: devicePushConfig.ID}).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, sql.GenericError(err)
 	}
 
 	if devicePushConfig == nil {
@@ -118,7 +119,7 @@ func (n *Node) DevicePushConfigUpdate(ctx context.Context, input *entity.DeviceP
 
 	// get devicePushConfig
 	if err = n.sql(ctx).First(input, devicePushConfig).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, sql.GenericError(err)
 	}
 
 	if len(input.RelayPubkey) > 0 {

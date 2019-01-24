@@ -56,7 +56,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	})
 
 	if err := entity.SaveDevices(sql, attrs.Me.ID, devices); err != nil {
-		return errorcodes.ErrDb.Wrap(err)
+		return errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	// nothing more to do, now we wait for the UI to accept the request
@@ -68,7 +68,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 	sql := n.sql(ctx)
 	contact, err := bsql.ContactByID(sql, input.SenderID)
 	if err != nil {
-		return errorcodes.ErrDbNothingFound.Wrap(err)
+		return bsql.GenericError(err)
 	}
 
 	contact.Status = entity.Contact_IsFriend
@@ -112,7 +112,7 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	sql := n.sql(ctx)
 	contact, err := bsql.ContactByID(sql, input.SenderID)
 	if err != nil {
-		return errorcodes.ErrDbNothingFound.Wrap(err)
+		return bsql.GenericError(err)
 	}
 
 	// FIXME: UI: ask for confirmation before update
@@ -126,7 +126,7 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 	}
 
 	if err := entity.SaveDevices(sql, attrs.Me.ID, attrs.Me.Devices); err != nil {
-		return errorcodes.ErrDb.Wrap(err)
+		return errorcodes.ErrDbCreate.Wrap(err)
 	}
 
 	return nil

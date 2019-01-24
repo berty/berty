@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"errors"
 	"fmt"
 	"sort"
 	"strings"
@@ -10,9 +9,24 @@ import (
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 )
 
 const TimestampFormat = "2006-01-02 15:04:05.999999999-07:00"
+
+func GenericError(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	// FIXME: ignore 1 stack level in wrapped errors
+
+	if gorm.IsRecordNotFoundError(errors.Cause(err)) {
+		return errorcodes.ErrDbNothingFound.Wrap(err)
+	}
+
+	return errorcodes.ErrDbInternalError.Wrap(err)
+}
 
 func ContactByID(db *gorm.DB, id string) (*entity.Contact, error) {
 	var contact entity.Contact
@@ -66,7 +80,7 @@ func ConversationOneToOne(db *gorm.DB, myselfID, contactID string) (*entity.Conv
 		Where(&entity.Conversation{ID: myselfID + ":" + contactID}).
 		Or(&entity.Conversation{ID: contactID + ":" + myselfID}).
 		First(c).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, GenericError(err)
 	}
 
 	return c, nil
