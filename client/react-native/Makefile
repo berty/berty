@@ -136,6 +136,10 @@ adhoc.ios: deps.ios get_iphone_udid
 .PHONY: debug.web
 debug.web: deps.web
 	cd $(WEB) && yarn start
+
+.PHONY: debug.web.cleared
+debug.web.cleared: deps.web
+	cd $(WEB) && yarn clear-babel-cache && yarn start
 ##############################
 
 

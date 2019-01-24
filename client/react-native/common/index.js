@@ -9,8 +9,6 @@ import App from './components/App'
 import AppTest from './integration/AppWrapper'
 
 const isIntegrationMode = (process.env['ENVIRONMENT'] === 'integration_test')
-console.log('App started ' + (isIntegrationMode === true ? 'with' : 'without') + ' integration tests')
-console.log('ENVIRONMENT:', process.env['ENVIRONMENT'])
 
 if (Platform.OS === 'web') {
   import('./helpers/patch-web.js')
