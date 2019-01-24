@@ -14,6 +14,7 @@
   },
   "onboarding": {
     "welcome": {
+      "tab": "Bienvenue",
       "title": "Bienvenue à bord",
       "help-1": "Félicitations, votre compte Berty est désormais créé. C'était facile, non ? Vous pouvez maintenant contacter les autres personnes déjà sur Berty.",
       "help-2": "Pour que votre expérience soit la meilleure possible nous allons vous aider à paramétrer les notifications, trouver les personnes que vous connaissez et sauvegarder votre compte.",
@@ -21,6 +22,7 @@
       "skip-everything": "Tout passer"
     },
     "notifications": {
+      "tab": "Notifications",
       "title": "Livraison en express des messages",
       "help": "Vous pouvez recevoir une notification pour chaque message envoyé par vos contacts.",
       "disclaimer-apple": "Vos messages seront chiffrés et envoyés via les serveurs de Berty et d'Apple. Ni Berty ni Apple n'auront accès à vos messages.",
@@ -28,6 +30,7 @@
       "enable": "Activer les notifications"
     },
     "contacts": {
+      "tab": "Contacts",
       "title": "Discutez avec les personnes qui comptent pour vous",
       "link-help": "Vous pouvez inviter vos contacts à vous rejoindre en leur envoyant un lien ou le faire à n'importe quel moment en passant par les paramètres de l'application.",
       "link-disclaimer": "Ceci vous permet d'envoyer un lien vers votre compte par SMS, email ou l'app de votre choix.",
@@ -37,6 +40,7 @@
       "phone-link": "Lier votre numéro"
     },
     "backup": {
+      "tab": "Récupération",
       "title": "Ne perdez pas vos données",
       "help-backup": "Votre clé privée est votre identité sur Berty. Écrivez ces 10 mots pour récupérer l'accès à votre compte en cas de problème.",
       "disclaimer-backup": "Bien qu'il soit recommandé de sauvegarder votre clé privé maintenant, vous pourrez également le faire par la suite dans les réglages de l'application. Cependant gardez à l'esprit que vous ne pourrez effectuer cette action une seule fois. Conservez votre clé de façon sécurisée, n'importe qui ayant accès à celle-ci sera capable d'accèder à votre compte.",
@@ -46,6 +50,7 @@
       "action-device": "Lier un autre appareil"
     },
     "ready": {
+      "tab": "Configuration terminée",
       "title": "Vous êtes paré pour le départ",
       "help": "Nous espérons que vous apprécirez Berty ! N'hésitez pas à contacter l'équipe si vous avez le moindre souci ou une question à nous poser."
     }
