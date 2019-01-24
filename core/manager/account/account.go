@@ -98,7 +98,8 @@ type Account struct {
 	ring        *zapring.Ring
 	pushManager *push.Manager
 
-	shutdown chan struct{}
+	shutdown       chan struct{}
+	privateKeyPath string
 }
 
 var list []*Account
@@ -530,6 +531,11 @@ func (a *Account) initNode(ctx context.Context) error {
 
 	var err error
 
+	crypto := node.WithSoftwareCrypto()
+	if a.privateKeyPath != "" {
+		crypto = node.WithFixedSoftwareCrypto(a.privateKeyPath)
+	}
+
 	// initialize node
 	a.node, err = node.New(
 		a.rootContext,
@@ -540,7 +546,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithNetworkDriver(a.network),
 		node.WithNetworkMetrics(a.metrics),
 		node.WithInitConfig(),
-		node.WithSoftwareCrypto(), // FIXME: use hardware impl if available
+		crypto, // FIXME: use hardware impl if available
 		node.WithConfig(),
 		node.WithRing(a.ring),
 		node.WithNotificationDriver(a.notification),

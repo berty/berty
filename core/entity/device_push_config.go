@@ -1,7 +1,7 @@
 package entity
 
 import (
-	"berty.tech/core/crypto/public"
+	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/push"
 	"encoding/base64"
@@ -30,7 +30,7 @@ func (d *DevicePushConfig) CreateDevicePushIdentifier() (*DevicePushIdentifier, 
 		return nil, errorcodes.ErrCryptoKeyDecode.Wrap(err)
 	}
 
-	pushInfo, err := public.Encrypt(plainPushInfo, pubKeyBytes)
+	pushInfo, err := keypair.Encrypt(plainPushInfo, pubKeyBytes)
 	if err != nil {
 		return nil, errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 	}

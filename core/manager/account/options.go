@@ -300,3 +300,10 @@ func WithBot() NewOption {
 		return nil
 	}
 }
+
+func WithPrivateKeyFile(path string) NewOption {
+	return func(a *Account) error {
+		a.privateKeyPath = path
+		return nil
+	}
+}

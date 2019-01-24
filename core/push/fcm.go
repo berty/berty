@@ -38,7 +38,7 @@ func (d *FCMDispatcher) CanDispatch(pushAttrs *PushData, pushDestination *PushDe
 	}
 
 	fcmIdentifier := &PushNativeIdentifier{}
-	if err := fcmIdentifier.Unmarshal(pushAttrs.PushIdentifier); err != nil {
+	if err := fcmIdentifier.Unmarshal(pushDestination.PushId); err != nil {
 		return false
 	}
 
