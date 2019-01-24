@@ -22,6 +22,12 @@ class CoreModule: NSObject {
   override init() {
     super.init()
     Core.notificationDriver()?.native = Notification()
+    let storagePath = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.path
+    do {
+      try Core.deviceInfo().setStoragePath(storagePath)
+    } catch let error as NSError {
+      logger.format("unable to set storage path", level: .error, error.userInfo.description)
+    }
   }
 
   func getFilesDir() throws -> String {
@@ -40,7 +46,7 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      CoreInitialize(logger, try self.getFilesDir(), &err)
+      CoreInitialize(logger, Core.storagePath(), &err)
       if let error = err {
         throw error
       }

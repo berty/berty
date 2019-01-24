@@ -13,3 +13,4 @@ message Envelope {
   keypair.Signature   signature = 3;
   string              source = 4;
 }
+

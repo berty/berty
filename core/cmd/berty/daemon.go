@@ -11,6 +11,7 @@ import (
 	"berty.tech/core/manager/account"
 	"berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/banner"
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
@@ -101,13 +102,14 @@ func daemon(opts *daemonOptions) error {
 	defer func() {
 		_ = logmanager.G().LogRotate()
 	}()
+	deviceinfo.SetStoragePath("/tmp")
 	accountOptions := account.Options{
 		account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(opts.nickname),
 		account.WithPassphrase(opts.sql.key),
 		account.WithDatabase(&account.DatabaseOptions{
-			Path: "/tmp",
+			Path: ".",
 			Drop: opts.dropDatabase,
 		}),
 		account.WithBanner(banner.QOTD()),

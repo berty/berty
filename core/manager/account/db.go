@@ -2,9 +2,9 @@ package account
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/tracing"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -27,7 +27,7 @@ type StateDB struct {
 
 func OpenStateDB(path string, initialState StateDB) (*StateDB, error) {
 	// open db
-	db, err := gorm.Open("sqlite3", path)
+	db, err := gorm.Open("sqlite3", deviceinfo.GetStoragePath()+"/"+path)
 	if err != nil {
 		return nil, err
 	}
@@ -105,10 +105,7 @@ func WithDatabase(opts *DatabaseOptions) NewOption {
 			opts = &DatabaseOptions{}
 		}
 
-		a.dbDir = opts.Path
-		if a.dbDir == "" {
-			return errors.New("cannot have empty database path")
-		}
+		a.dbDir = deviceinfo.GetStoragePath() + "/" + opts.Path
 
 		a.dbDrop = opts.Drop
 		if err := a.openDatabase(ctx); err != nil {

@@ -17,8 +17,8 @@ type Driver interface {
 	Display(*Payload) error
 	Register() error
 	Unregister() error
-	Subscribe() chan *Payload
-	Unsubscribe(chan *Payload)
+	Subscribe() chan []byte
+	Unsubscribe(chan []byte)
 	SubscribeToken() chan *Token
 	UnsubscribeToken(chan *Token)
 	RefreshToken() error
@@ -86,12 +86,12 @@ func (n *NoopNotification) RefreshToken() error {
 	return nil
 }
 
-func (n *NoopNotification) Subscribe() chan *Payload {
+func (n *NoopNotification) Subscribe() chan []byte {
 	logger().Debug("noop notification handler not implemented")
 	return nil
 }
 
-func (n *NoopNotification) Unsubscribe(chan *Payload) {
+func (n *NoopNotification) Unsubscribe(chan []byte) {
 
 }
 
@@ -142,12 +142,12 @@ func (n *DesktopNotification) RefreshToken() error {
 	return nil
 }
 
-func (n *DesktopNotification) Subscribe() chan *Payload {
+func (n *DesktopNotification) Subscribe() chan []byte {
 	logger().Debug("noop notification handler not implemented")
 	return nil
 }
 
-func (n *DesktopNotification) Unsubscribe(chan *Payload) {
+func (n *DesktopNotification) Unsubscribe(chan []byte) {
 
 }
 

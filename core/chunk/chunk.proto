@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package berty.chunk;
+
+option go_package = "berty.tech/core/chunk";
+
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
+
+message Chunk {
+  string              id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
+
+  google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+
+  int32               index = 4; 
+  bytes               data = 5; 
+  string              slice_id = 6 [(gogoproto.customname) = "SliceID"];
+  int32               slice_length = 7;
+}

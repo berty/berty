@@ -3,8 +3,6 @@ package node
 import (
 	"bytes"
 	"context"
-	"encoding/base64"
-	"encoding/json"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
@@ -12,7 +10,6 @@ import (
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/push"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -94,36 +91,16 @@ func (n *Node) UsePushNotificationSubscriber(ctx context.Context) {
 
 		for {
 			select {
-			case notification := <-notificationSubscription:
+			case bytes := <-notificationSubscription:
 				{
-					logger().Debug("node receive push notification")
-
-					payload := push.Payload{}
-					if err := json.Unmarshal([]byte(notification.Body), &payload); err != nil {
-						logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
-						continue
-					}
-
-					b64Envelope := payload.BertyEnvelope
-					if b64Envelope == "" {
-						logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(errors.New("berty-envelope is missing")).Error())
-						continue
-					}
-
-					bytesEnvelope, err := base64.StdEncoding.DecodeString(string(b64Envelope))
-					if err != nil {
-						logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
-						continue
-					}
-
 					envelope := &p2p.Envelope{}
-					if err := envelope.Unmarshal(bytesEnvelope); err != nil {
-						logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
+					if err := envelope.Unmarshal(bytes); err != nil {
+						logger().Warn(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
 						continue
 					}
 
 					if err := n.handleEnvelope(ctx, envelope); err != nil {
-						logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
+						logger().Warn(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
 						continue
 					}
 				}

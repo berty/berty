@@ -1,11 +1,15 @@
 package core
 
 import (
-	"fmt"
+	"encoding/base64"
+	"encoding/json"
 	"sync"
 
+	"berty.tech/core/chunk"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -20,28 +24,48 @@ type NativeNotificationDriver interface {
 
 type MobileNotification struct {
 	Native                NativeNotificationDriver
-	subscribers           []chan *notification.Payload
+	subscribers           []chan []byte
 	subscribersMutex      sync.Mutex
 	tokenSubscribers      []chan *notification.Token
 	tokenSubscribersMutex sync.Mutex
 }
 
 func (n MobileNotification) New() *MobileNotification {
-	return &MobileNotification{
-		subscribers:      []chan *notification.Payload{},
+	m := &MobileNotification{
+		subscribers:      []chan []byte{},
 		tokenSubscribers: []chan *notification.Token{},
 	}
+	return m
 }
 
 func (n *MobileNotification) Receive(data string) {
-	logger().Debug(fmt.Sprintf("receive notification: %+v", data))
-	n.subscribersMutex.Lock()
-	for i := range n.subscribers {
-		n.subscribers[i] <- &notification.Payload{
-			Body: data,
-		}
+	payload := push.Payload{}
+	if err := json.Unmarshal([]byte(data), &payload); err != nil {
+		logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
+		return
 	}
-	n.subscribersMutex.Unlock()
+
+	b64Chunk := payload.Chunk
+	if b64Chunk == "" {
+		logger().Error(errorcodes.ErrNotificationReceive.Wrap(errors.New("chunk is missing")).Error())
+		return
+	}
+
+	bytesChunk, err := base64.StdEncoding.DecodeString(string(b64Chunk))
+	if err != nil {
+		logger().Error(errorcodes.ErrNotificationReceive.Wrap(err).Error())
+		return
+	}
+
+	c := &chunk.Chunk{}
+	if err := c.Unmarshal(bytesChunk); err != nil {
+		logger().Error(errorcodes.ErrNotificationReceive.Wrap(err).Error())
+		return
+	}
+
+	if err := chunk.Publish(c); err != nil {
+		logger().Error(errorcodes.ErrNotificationReceive.Wrap(err).Error())
+	}
 }
 
 func (n *MobileNotification) ReceiveAPNSToken(token []byte) {
@@ -66,18 +90,18 @@ func (n *MobileNotification) ReceiveToken(token *notification.Token) {
 		n.tokenSubscribers[i] <- token
 	}
 	n.tokenSubscribersMutex.Unlock()
-
 }
 
-func (n *MobileNotification) Subscribe() chan *notification.Payload {
-	sub := make(chan *notification.Payload, 1)
+func (n *MobileNotification) Subscribe() chan []byte {
+	// let chunk manager send reconstructed data
+	sub := chunk.Subscribe()
 	n.subscribersMutex.Lock()
 	n.subscribers = append(n.subscribers, sub)
 	n.subscribersMutex.Unlock()
 	return sub
 }
 
-func (n *MobileNotification) Unsubscribe(sub chan *notification.Payload) {
+func (n *MobileNotification) Unsubscribe(sub chan []byte) {
 	n.subscribersMutex.Lock()
 	for i := range n.subscribers {
 		if sub == n.subscribers[i] {

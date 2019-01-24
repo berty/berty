@@ -21,6 +21,7 @@ import (
 	"berty.tech/core/network"
 	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
@@ -147,14 +148,14 @@ func Get(ctx context.Context, name string) (*Account, error) {
 	return nil, errorcodes.ErrAccManagerNotOpened.NewArgs(map[string]string{"name": name})
 }
 
-func List(ctx context.Context, datastorePath string) ([]string, error) {
-	tracer := tracing.EnterFunc(ctx, datastorePath)
+func List(ctx context.Context) ([]string, error) {
+	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
 
 	var names []string
 
-	err := filepath.Walk(datastorePath, func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(deviceinfo.GetStoragePath(), func(path string, info os.FileInfo, err error) error {
 		logger().Debug("List", zap.String("path", path))
 		name := filepath.Base(path)
 		match, _ := filepath.Match("berty.*.db", name)

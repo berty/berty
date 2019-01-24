@@ -23,12 +23,20 @@ public class CoreModule extends ReactContextBaseJavaModule {
         super(reactContext);
         this.filesDir = reactContext.getFilesDir().getAbsolutePath();
 
+        String storagePath = reactContext.getFilesDir().getAbsolutePath();
+        try {
+            Core.getDeviceInfo().setStoragePath(storagePath);
+        } catch (Exception error) {
+            logger.format(Level.ERROR, this.getName(), error.getMessage());
+        }
+        this.notificationDriver.setNative(new NotificationNative());
+
         // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
         // See https://facebook.github.io/react-native/docs/native-modules-android
         Object activityAndContextGetter = actGetter(reactContext);
 
         BleManager.setReactGetter(activityAndContextGetter, reactContext);
-        this.notificationDriver.setNative(new NotificationNative());
+
     }
 
     private Object actGetter(final ReactApplicationContext reactContext) {
@@ -51,7 +59,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void listAccounts(Promise promise) {
         try {
-            String data = Core.listAccounts(this.filesDir);
+            String data = Core.listAccounts();
             promise.resolve(data);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to list accounts: %s", err);
@@ -62,7 +70,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void initialize(Promise promise) {
         try {
-            Core.initialize(this.logger, this.filesDir);
+            Core.initialize(this.logger, Core.getDeviceInfo().getStoragePath());
             promise.resolve(null);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to init core: %s", err);
@@ -76,7 +84,6 @@ public class CoreModule extends ReactContextBaseJavaModule {
         try {
             core.MobileOptions coreOptions = new core.MobileOptions()
                 .withNickname(nickname)
-                .withDatastorePath(this.filesDir)
                 .withLoggerDriver(this.logger);
 
             Core.start(coreOptions);
@@ -112,7 +119,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void dropDatabase(Promise promise) {
         try {
-            Core.dropDatabase(this.filesDir);
+            Core.dropDatabase();
             promise.resolve(null);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to drop database: %s", err);
