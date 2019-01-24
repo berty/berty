@@ -2,6 +2,7 @@ package push
 
 import (
 	"encoding/base64"
+	"github.com/pkg/errors"
 	"strings"
 
 	"berty.tech/core/pkg/errorcodes"
@@ -64,7 +65,7 @@ func (d *APNSDispatcher) CanDispatch(pushAttrs *PushData, pushDestination *PushD
 	}
 
 	apnsIdentifier := &PushNativeIdentifier{}
-	if err := apnsIdentifier.Unmarshal(pushAttrs.PushIdentifier); err != nil {
+	if err := apnsIdentifier.Unmarshal(pushDestination.PushId); err != nil {
 		return false
 	}
 
@@ -83,18 +84,20 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 
 	pushPayload := payload.NewPayload().Custom("berty-envelope", base64.StdEncoding.EncodeToString(pushAttrs.Envelope))
 	if pushAttrs.Priority == Priority_Normal {
-		pushPayload = pushPayload.Badge(1)
+		pushPayload = pushPayload.Alert("test berty notif")
 	}
 
 	notification := &apns2.Notification{}
 	notification.DeviceToken = apnsIdentifier.DeviceToken
-	notification.Topic = "chat.berty"
+	notification.Topic = d.bundleID
 	notification.Payload = pushPayload
 
-	_, err := d.client.Push(notification)
+	response, err := d.client.Push(notification)
 
 	if err != nil {
 		return errorcodes.ErrPushProvider.Wrap(err)
+	} else if response.StatusCode != 200 {
+		return errorcodes.ErrPushProvider.Wrap(errors.New(response.Reason))
 	}
 
 	return nil

@@ -403,7 +403,7 @@ func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
 
 	pushDestination := &push.PushDestination{}
 
-	if err := pushAttrs.Unmarshal(identifier); err != nil {
+	if err := pushDestination.Unmarshal(identifier); err != nil {
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 

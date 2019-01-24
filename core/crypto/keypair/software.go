@@ -112,13 +112,13 @@ func /*(c *InsecureCrypto)*/ Encrypt(message []byte, pubKeyBytes []byte) ([]byte
 }
 
 func (c *InsecureCrypto) Decrypt(message []byte) ([]byte, error) {
-	privateKey, ok := (c.privateKey).(rsa.PrivateKey)
+	privateKey, ok := (c.privateKey).(*rsa.PrivateKey)
 
 	if ok != true {
 		return nil, errors.New("unable to use RSA key")
 	}
 
-	return rsa.DecryptPKCS1v15(rand.Reader, &privateKey, message)
+	return rsa.DecryptPKCS1v15(rand.Reader, privateKey, message)
 }
 
 func (c *InsecureCrypto) GetPubKey() ([]byte, error) {
