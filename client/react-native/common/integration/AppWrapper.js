@@ -25,11 +25,25 @@ const redirectConsoleLogsToTerminal = () => {
   }
 }
 
+const getReportServerInfos = () => {
+  return {
+    host: process.env['REPORT_HOST'] || undefined,
+    port: parseInt(process.env['REPORT_PORT']) || undefined,
+  }
+}
+
 export default class AppWrapper extends Component {
   render () {
     redirectConsoleLogsToTerminal()
+    const reportServer = getReportServerInfos()
     return (
-      <Tester specs={[Onboarding, AppLoading, Contact, Chat, DevTools]} store={testHookStore} waitTime={4000} sendReport={Platform.OS === 'web'}>
+      <Tester specs={[Onboarding, AppLoading, Contact, Chat, DevTools]}
+        store={testHookStore}
+        waitTime={4000}
+        sendReport
+        reportServerHost={reportServer.host}
+        reportServerPort={reportServer.port}
+      >
         <App />
       </Tester>
     )

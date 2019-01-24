@@ -1647,9 +1647,9 @@ caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
 
-cavy@^0.6.1:
+"cavy@git+https://git@github.com/berty/cavy.git":
   version "0.6.1"
-  resolved "https://registry.yarnpkg.com/cavy/-/cavy-0.6.1.tgz#20e2126bb7f96baa88e7bd404661edd3f93ec97d"
+  resolved "git+https://git@github.com/berty/cavy.git#78ec66cc156efe464b00a1f39dcdd7aac14c5ec0"
   dependencies:
     create-react-class "^15.6.0"
     hoist-non-react-statics "^2.5.0"

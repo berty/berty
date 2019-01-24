@@ -15,7 +15,7 @@
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "case": "^1.6.0",
-    "cavy": "^0.6.1",
+    "cavy": "git+https://git@github.com/berty/cavy.git",
     "concurrently": "^4.0.1",
     "crypto-js": "^3.1.9-1",
     "deepmerge": "^2.2.1",
