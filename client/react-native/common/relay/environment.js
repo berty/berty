@@ -79,13 +79,7 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
   retryMiddleware({
     allowMutations: true,
     fetchTimeout: 5000,
-    retryDelays: (attempt) => {
-      console.log(attempt)
-      if (attempt === 5) {
-        return false
-      }
-      return 3000
-    },
+    retryDelays: attempt => Math.pow(2, attempt + 4) * 100,
     beforeRetry: async ({
       forceRetry,
       abort,
@@ -94,6 +88,9 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
       lastError,
       req,
     }) => {
+      if (attempt > 5) {
+        abort()
+      }
       req.fetchOpts.url = `http://${await getIp()}:${await getPort()}/query`
 
       // eslint-disable-next-line

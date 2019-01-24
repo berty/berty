@@ -1371,6 +1371,19 @@ models:
     fields:
       addrs:
 
+  BertyNetworkPingReq:
+    model: berty.tech/core/network.PingReq
+    fields:
+      str:
+  BertyNetworkPingReqInput:
+    model: berty.tech/core/network.PingReq
+    fields:
+      str:
+  BertyNetworkPingReqPayload:
+    model: berty.tech/core/network.PingReq
+    fields:
+      str:
+
 
   BertyNodeNodeStartedAttrs:
     model: berty.tech/core/api/node.NodeStartedAttrs
@@ -2056,19 +2069,6 @@ models:
     model: berty.tech/core/api/node.Bool
     fields:
       ret:
-
-  BertyNodeGetTagInfoReq:
-    model: berty.tech/core/api/node.GetTagInfoReq
-    fields:
-      str:
-  BertyNodeGetTagInfoReqInput:
-    model: berty.tech/core/api/node.GetTagInfoReq
-    fields:
-      str:
-  BertyNodeGetTagInfoReqPayload:
-    model: berty.tech/core/api/node.GetTagInfoReq
-    fields:
-      str:
 
   BertyNodeEventIDInput:
     model: berty.tech/core/api/node.EventIDInput

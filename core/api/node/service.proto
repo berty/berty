@@ -245,7 +245,7 @@ service Service {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc GetTagInfo (GetTagInfoReq) returns (Bool) {
+  rpc Libp2PPing (berty.network.PingReq) returns (Bool) {
     option (gql.graphql_type) = "Query";
   };
 }
@@ -429,10 +429,6 @@ message Void {
 
 message Bool {
   bool ret = 1;
-}
-
-message GetTagInfoReq {
-  string str = 1;
 }
 
 enum NullableTrueFalse {

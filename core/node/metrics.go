@@ -16,8 +16,8 @@ func (n *Node) Peers(ctx context.Context, _ *node.Void) (*network.Peers, error) 
 	return n.networkMetrics.Peers(ctx), nil
 }
 
-func (n *Node) GetTagInfo(ctx context.Context, str *node.GetTagInfoReq) (*node.Bool, error) {
-	b, err := n.networkMetrics.GetTagInfo(ctx, str.Str)
+func (n *Node) Libp2PPing(ctx context.Context, str *network.PingReq) (*node.Bool, error) {
+	b, err := n.networkMetrics.Libp2PPing(ctx, str.Str)
 	return &node.Bool{
 		Ret: b,
 	}, err

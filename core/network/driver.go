@@ -39,7 +39,7 @@ type Metrics interface {
 
 	GetListenInterfaceAddrs(ctx context.Context) (*ListAddrs, error)
 
-	GetTagInfo(ctx context.Context, str string) (bool, error)
+	Libp2PPing(ctx context.Context, str string) (bool, error)
 }
 
 type Driver interface {

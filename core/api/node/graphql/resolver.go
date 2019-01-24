@@ -735,8 +735,8 @@ func (r *queryResolver) Peers(ctx context.Context, _ bool) (*network.Peers, erro
 	return r.client.Peers(ctx, &node.Void{})
 }
 
-func (r *queryResolver) GetTagInfo(ctx context.Context, str string) (*node.Bool, error) {
-	return r.client.GetTagInfo(ctx, &node.GetTagInfoReq{Str: str})
+func (r *queryResolver) Libp2PPing(ctx context.Context, str string) (*node.Bool, error) {
+	return r.client.Libp2PPing(ctx, &network.PingReq{Str: str})
 }
 
 func (r *queryResolver) GetListenAddrs(ctx context.Context, _ bool) (*network.ListAddrs, error) {

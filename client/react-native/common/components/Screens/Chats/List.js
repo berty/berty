@@ -1,7 +1,4 @@
-import { withNamespaces } from 'react-i18next'
-import I18n from 'i18next'
 import React, { PureComponent } from 'react'
-
 import { Avatar, EmptyList, Flex, Header, Screen, Text, Icon } from '../../Library'
 import { BertyP2pKindInputKind } from '../../../graphql/enums.gen'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
@@ -12,7 +9,6 @@ import { parseEmbedded } from '../../../helpers/json'
 import { conversation as utils } from '../../../utils'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
-import RelayContext from '../../../relay/RelayContext'
 
 class StateBadge extends PureComponent {
   constructor (props) {
@@ -25,10 +21,14 @@ class StateBadge extends PureComponent {
     this.getPing()
   }
 
+  componentWillUnmount () {
+    clearInterval(this.state.setint)
+  }
+
   getPing = () => {
     const { other, context } = this.props
     other.contact.devices.forEach(element => {
-      context.queries.GetTagInfo.fetch({ str: element.contactId })
+      context.queries.Libp2PPing.fetch({ str: element.contactId })
         .then(
           (e) => {
             console.log('fetch ret', e)
@@ -39,7 +39,7 @@ class StateBadge extends PureComponent {
             }
           }
         ).catch(
-          (e) => console.error('err', e)
+          (e) => console.warn('err', e)
         )
     })
   }
@@ -48,7 +48,6 @@ class StateBadge extends PureComponent {
     return (<Icon style={{ color: this.state.color }} name={'material-checkbox-blank-circle'} />)
   }
 }
-
 
 const Message = withNamespaces()(({ data, t, ...props }) => {
   switch (data.kind) {

@@ -70,7 +70,7 @@ func init() {
 	registerServerStream("berty.node.MonitorPeers", NodeMonitorPeers)
 	registerUnary("berty.node.GetListenAddrs", NodeGetListenAddrs)
 	registerUnary("berty.node.GetListenInterfaceAddrs", NodeGetListenInterfaceAddrs)
-	registerUnary("berty.node.GetTagInfo", NodeGetTagInfo)
+	registerUnary("berty.node.Libp2PPing", NodeLibp2PPing)
 }
 func NodeID(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
@@ -1212,17 +1212,17 @@ func NodeGetListenInterfaceAddrs(client *client.Client, ctx context.Context, jso
 	tracer.SetAnyField("trailer", trailer)
 	return ret, header, trailer, err
 }
-func NodeGetTagInfo(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+func NodeLibp2PPing(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
 	tracer := tracing.EnterFunc(ctx, string(jsonInput))
 	defer tracer.Finish()
 	ctx = tracer.Context()
-	tracer.SetTag("full-method", "berty.node.GetTagInfo")
-	var typedInput node.GetTagInfoReq
+	tracer.SetTag("full-method", "berty.node.Libp2PPing")
+	var typedInput network.PingReq
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}
 	var header, trailer metadata.MD
-	ret, err := client.Node().GetTagInfo(
+	ret, err := client.Node().Libp2PPing(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),

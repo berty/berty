@@ -6,7 +6,6 @@ import { padding, borderBottom, paddingBottom } from '../../styles'
 import { isRTL } from '../../i18n'
 import RelayContext from '../../relay/RelayContext'
 import Icon from './Icon'
-// import multiaddr from 'multiaddr'
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
 
@@ -23,6 +22,7 @@ class StateBadge extends PureComponent {
       listenInterfaceAddrs: [],
       timeouted: false,
       requestTimeout: 1000,
+      color: colors.black,
     }
 
     this.fetchListenAddrs()
@@ -47,21 +47,25 @@ class StateBadge extends PureComponent {
         })
         .catch((err) => reject(err))
         .finally(() => clearTimeout(timer))
-    }).then((listenAddrs) => setTimeout(caller, watchTime))
+    })
       .catch((err) => console.log('GetListenAddrsFailed with', err))
+      .finally(() => setTimeout(caller, watchTime))
   }
 
   fetchListenAddrs = () => {
     const { context } = this.props
-    this.reqTimeoutOrRetry(this.fetchListenAddrs, context.queries.GetListenAddrs.fetch, (e) => this.setState({ listenAddrs: e.addrs }))
+    this.reqTimeoutOrRetry(this.fetchListenAddrs, context.queries.GetListenAddrs.fetch,
+      (e) => this.setState({ listenAddrs: e.addrs, timeouted: false }, this.setColor)
+    )
   }
 
   fetchListenInterfaceAddrs = () => {
     const { context } = this.props
-    this.reqTimeoutOrRetry(this.fetchListenInterfaceAddrs, context.queries.GetListenInterfaceAddrs.fetch, (e) => this.setState({ listenInterfaceAddrs: e.addrs }))
+    this.reqTimeoutOrRetry(this.fetchListenInterfaceAddrs, context.queries.GetListenInterfaceAddrs.fetch,
+      (e) => this.setState({ listenInterfaceAddrs: e.addrs, timeouted: false }, this.setColor))
   }
 
-  render () {
+  setColor = () => {
     const { listenAddrs, listenInterfaceAddrs, timeouted } = this.state
     let color = colors.black
 
@@ -72,8 +76,6 @@ class StateBadge extends PureComponent {
         try {
           const splited = v.split('/')
           if (splited[1] === 'ip4' && splited[2] !== '127.0.0.1') {
-          // const addr = multiaddr(v).nodeAddress()
-          // if (addr.address !== '127.0.0.1') {
             color = colors.green
           }
         } catch (e) {
@@ -86,6 +88,11 @@ class StateBadge extends PureComponent {
     if (timeouted) {
       color = colors.red
     }
+    this.setState({ color })
+  }
+
+  render () {
+    const { color } = this.state
 
     return (<Icon style={{ color }} name={'material-checkbox-blank-circle'} />)
   }
@@ -169,9 +176,12 @@ export default class Header extends PureComponent {
               middle
               size={5}
             >
-              <RelayContext.Consumer>
-                {context => <StateBadge context={context} />}
-              </RelayContext.Consumer>
+              {navigation.state.routeName === 'chats/list'
+                ? <RelayContext.Consumer>
+                  {context => <StateBadge context={context} />}
+                </RelayContext.Consumer>
+                : null
+              }
               {title}
             </Text>
             {rightBtn ? <View>{rightBtn}</View> : null}

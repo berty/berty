@@ -438,6 +438,9 @@ type BertyNetworkBandwidthStats  {
 type BertyNetworkListAddrs  {
     addrs: [String!]
 }
+type BertyNetworkPingReq  {
+    str: String!
+}
   
   
   
@@ -613,9 +616,6 @@ type BertyNodeVoid  {
 }
 type BertyNodeBool  {
     ret: Bool!
-}
-type BertyNodeGetTagInfoReq  {
-    str: String!
 }
 type BertyNodeLogEntry  {
     line: String!
@@ -820,7 +820,7 @@ type Query {
   GetListenInterfaceAddrs(
     T: Bool!
   ): BertyNetworkListAddrs
-  GetTagInfo(
+  Libp2PPing(
     str: String!
   ): BertyNodeBool
 }

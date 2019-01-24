@@ -177,6 +177,10 @@ type ComplexityRoot struct {
 		List func(childComplexity int) int
 	}
 
+	BertyNetworkPingReq struct {
+		Str func(childComplexity int) int
+	}
+
 	BertyNodeAppVersionOutput struct {
 		Version func(childComplexity int) int
 	}
@@ -250,10 +254,6 @@ type ComplexityRoot struct {
 	BertyNodeEventListConnection struct {
 		Edges    func(childComplexity int) int
 		PageInfo func(childComplexity int) int
-	}
-
-	BertyNodeGetTagInfoReq struct {
-		Str func(childComplexity int) int
 	}
 
 	BertyNodeIntegrationTestOutput struct {
@@ -711,7 +711,7 @@ type ComplexityRoot struct {
 		TestError               func(childComplexity int, kind string) int
 		GetListenAddrs          func(childComplexity int, T bool) int
 		GetListenInterfaceAddrs func(childComplexity int, T bool) int
-		GetTagInfo              func(childComplexity int, str string) int
+		Libp2Pping              func(childComplexity int, str string) int
 	}
 
 	Subscription struct {
@@ -821,7 +821,7 @@ type QueryResolver interface {
 	TestError(ctx context.Context, kind string) (*node.Void, error)
 	GetListenAddrs(ctx context.Context, T bool) (*network.ListAddrs, error)
 	GetListenInterfaceAddrs(ctx context.Context, T bool) (*network.ListAddrs, error)
-	GetTagInfo(ctx context.Context, str string) (*node.Bool, error)
+	Libp2PPing(ctx context.Context, str string) (*node.Bool, error)
 }
 type SubscriptionResolver interface {
 	CommitLogStream(ctx context.Context, T bool) (<-chan *node.CommitLog, error)
@@ -2696,7 +2696,7 @@ func field_Query_GetListenInterfaceAddrs_args(rawArgs map[string]interface{}) (m
 
 }
 
-func field_Query_GetTagInfo_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func field_Query_Libp2PPing_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["str"]; ok {
@@ -3498,6 +3498,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyNetworkPeers.List(childComplexity), true
 
+	case "BertyNetworkPingReq.str":
+		if e.complexity.BertyNetworkPingReq.Str == nil {
+			break
+		}
+
+		return e.complexity.BertyNetworkPingReq.Str(childComplexity), true
+
 	case "BertyNodeAppVersionOutput.version":
 		if e.complexity.BertyNodeAppVersionOutput.Version == nil {
 			break
@@ -3707,13 +3714,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeEventListConnection.PageInfo(childComplexity), true
-
-	case "BertyNodeGetTagInfoReq.str":
-		if e.complexity.BertyNodeGetTagInfoReq.Str == nil {
-			break
-		}
-
-		return e.complexity.BertyNodeGetTagInfoReq.Str(childComplexity), true
 
 	case "BertyNodeIntegrationTestOutput.name":
 		if e.complexity.BertyNodeIntegrationTestOutput.Name == nil {
@@ -5758,17 +5758,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetListenInterfaceAddrs(childComplexity, args["T"].(bool)), true
 
-	case "Query.GetTagInfo":
-		if e.complexity.Query.GetTagInfo == nil {
+	case "Query.Libp2PPing":
+		if e.complexity.Query.Libp2Pping == nil {
 			break
 		}
 
-		args, err := field_Query_GetTagInfo_args(rawArgs)
+		args, err := field_Query_Libp2PPing_args(rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetTagInfo(childComplexity, args["str"].(string)), true
+		return e.complexity.Query.Libp2Pping(childComplexity, args["str"].(string)), true
 
 	case "Subscription.CommitLogStream":
 		if e.complexity.Subscription.CommitLogStream == nil {
@@ -8373,6 +8373,59 @@ func (ec *executionContext) _BertyNetworkPeers_list(ctx context.Context, field g
 	return arr1
 }
 
+var bertyNetworkPingReqImplementors = []string{"BertyNetworkPingReq"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNetworkPingReq(ctx context.Context, sel ast.SelectionSet, obj *network.PingReq) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkPingReqImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNetworkPingReq")
+		case "str":
+			out.Values[i] = ec._BertyNetworkPingReq_str(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNetworkPingReq_str(ctx context.Context, field graphql.CollectedField, obj *network.PingReq) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNetworkPingReq",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Str, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
 var bertyNodeAppVersionOutputImplementors = []string{"BertyNodeAppVersionOutput"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -9715,59 +9768,6 @@ func (ec *executionContext) _BertyNodeEventListConnection_pageInfo(ctx context.C
 	}
 
 	return ec._BertyNodePageInfo(ctx, field.Selections, res)
-}
-
-var bertyNodeGetTagInfoReqImplementors = []string{"BertyNodeGetTagInfoReq"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNodeGetTagInfoReq(ctx context.Context, sel ast.SelectionSet, obj *node.GetTagInfoReq) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNodeGetTagInfoReqImplementors)
-
-	out := graphql.NewOrderedMap(len(fields))
-	invalid := false
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNodeGetTagInfoReq")
-		case "str":
-			out.Values[i] = ec._BertyNodeGetTagInfoReq_str(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	if invalid {
-		return graphql.Null
-	}
-	return out
-}
-
-// nolint: vetshadow
-func (ec *executionContext) _BertyNodeGetTagInfoReq_str(ctx context.Context, field graphql.CollectedField, obj *node.GetTagInfoReq) graphql.Marshaler {
-	rctx := &graphql.ResolverContext{
-		Object: "BertyNodeGetTagInfoReq",
-		Args:   nil,
-		Field:  field,
-	}
-	ctx = graphql.WithResolverContext(ctx, rctx)
-	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Str, nil
-	})
-	if resTmp == nil {
-		if !ec.HasError(rctx) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	rctx.Result = res
-	return models.MarshalString(res)
 }
 
 var bertyNodeIntegrationTestOutputImplementors = []string{"BertyNodeIntegrationTestOutput"}
@@ -19632,10 +19632,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_GetListenInterfaceAddrs(ctx, field)
 				wg.Done()
 			}(i, field)
-		case "GetTagInfo":
+		case "Libp2PPing":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._Query_GetTagInfo(ctx, field)
+				out.Values[i] = ec._Query_Libp2PPing(ctx, field)
 				wg.Done()
 			}(i, field)
 		case "__type":
@@ -20457,9 +20457,9 @@ func (ec *executionContext) _Query_GetListenInterfaceAddrs(ctx context.Context, 
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _Query_GetTagInfo(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Query_Libp2PPing(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	rawArgs := field.ArgumentMap(ec.Variables)
-	args, err := field_Query_GetTagInfo_args(rawArgs)
+	args, err := field_Query_Libp2PPing_args(rawArgs)
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
@@ -20472,7 +20472,7 @@ func (ec *executionContext) _Query_GetTagInfo(ctx context.Context, field graphql
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetTagInfo(rctx, args["str"].(string))
+		return ec.resolvers.Query().Libp2PPing(rctx, args["str"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -23214,6 +23214,9 @@ type BertyNetworkBandwidthStats  {
 type BertyNetworkListAddrs  {
     addrs: [String!]
 }
+type BertyNetworkPingReq  {
+    str: String!
+}
   
   
   
@@ -23389,9 +23392,6 @@ type BertyNodeVoid  {
 }
 type BertyNodeBool  {
     ret: Bool!
-}
-type BertyNodeGetTagInfoReq  {
-    str: String!
 }
 type BertyNodeLogEntry  {
     line: String!
@@ -23596,7 +23596,7 @@ type Query {
   GetListenInterfaceAddrs(
     T: Bool!
   ): BertyNetworkListAddrs
-  GetTagInfo(
+  Libp2PPing(
     str: String!
   ): BertyNodeBool
 }

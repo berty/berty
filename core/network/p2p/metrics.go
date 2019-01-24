@@ -35,7 +35,7 @@ type Metrics struct {
 	rootContext context.Context
 }
 
-func (m *Metrics) GetTagInfo(ctx context.Context, channelID string) (bool, error) {
+func (m *Metrics) Libp2PPing(ctx context.Context, channelID string) (bool, error) {
 	newCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	psID, err := m.driver.FindProvidersAndWait(ctx, channelID, false)
 	if err != nil {
@@ -54,12 +54,11 @@ func (m *Metrics) GetTagInfo(ctx context.Context, channelID string) (bool, error
 				ch, err := m.driver.PingSvc.Ping(newCtx, pID)
 
 				waiting := <-ch
-				if err == nil && waiting != 0 {
-					success[index] <- true
-				} else {
+				if err != nil || waiting == 0 {
 					success[index] <- false
 					return
 				}
+				success[index] <- true
 				cancel()
 			}(pID)
 		}(p, i)
@@ -73,14 +72,12 @@ func (m *Metrics) GetTagInfo(ctx context.Context, channelID string) (bool, error
 	remaining := len(psID)
 	for remaining > 0 {
 		chosen, value, ok := reflect.Select(cases)
-		remaining -= 1
+		remaining--
 		if !ok {
 			cases[chosen].Chan = reflect.ValueOf(nil)
 			continue
 		}
-		res := value.Bool()
-		fmt.Printf("Read from channel %#v and received %d\n", success[chosen], value.Bool())
-		if res == true {
+		if value.Bool() == true {
 			return true, nil
 		}
 	}
