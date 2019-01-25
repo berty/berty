@@ -57,6 +57,7 @@ enum Code {
   ErrDbUpdate = 7002;
   ErrDbDelete = 7003;
   ErrDbNothingFound = 7004;
+  ErrDbInternalError = 7005;
 
   ErrCrypto = 8000;
   ErrCryptoSig = 8100;

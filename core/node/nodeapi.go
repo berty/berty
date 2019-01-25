@@ -163,7 +163,7 @@ func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversatio
 
 	// get conversation
 	if err = n.sql(ctx).First(input).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, bsql.GenericError(err)
 	}
 
 	// remove conversation
@@ -185,7 +185,7 @@ func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, erro
 	sql := n.sql(ctx)
 	event := &p2p.Event{}
 	if err := sql.Where(input).First(event).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, bsql.GenericError(err)
 	}
 
 	return event, nil
@@ -612,7 +612,7 @@ func (n *Node) Conversation(ctx context.Context, input *entity.Conversation) (*e
 	sql := n.sql(ctx)
 	output := &entity.Conversation{}
 	if err := sql.Where(input).First(output).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, bsql.GenericError(err)
 	}
 
 	return output, nil
@@ -629,7 +629,7 @@ func (n *Node) ConversationMember(ctx context.Context, input *entity.Conversatio
 	sql := n.sql(ctx)
 	output := &entity.ConversationMember{}
 	if err := sql.Where(input).First(output).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, bsql.GenericError(err)
 	}
 
 	return output, nil

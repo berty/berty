@@ -34,7 +34,7 @@ import (
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/pkg/tracing"
-	"berty.tech/core/sql"
+	bsql "berty.tech/core/sql"
 	"berty.tech/core/testrunner"
 )
 
@@ -191,7 +191,7 @@ func (n *Node) NodeInfos(ctx context.Context) (*deviceinfo.DeviceInfos, error) {
 	sqlMetrics := map[string]int{}
 	// FIXME: add some info about last addition date, last modification date
 	db := n.sql(ctx)
-	for _, table := range sql.AllTables() {
+	for _, table := range bsql.AllTables() {
 		var count int
 		if err := db.Table(table).Count(&count).Error; err != nil {
 			sqlMetrics[table] = -1
@@ -384,7 +384,7 @@ func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) 
 	sql := n.sql(ctx)
 	var event p2p.Event
 	if err := sql.First(&event, "ID = ?", input.EventID).Error; err != nil {
-		return nil, errorcodes.ErrDbNothingFound.Wrap(err)
+		return nil, bsql.GenericError(err)
 	}
 
 	if err := n.EventRequeue(ctx, &event); err != nil {

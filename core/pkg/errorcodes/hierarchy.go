@@ -20,6 +20,7 @@ var errorHierarchy = map[Code][]Code{
 	ErrDbUpdate:                  {ErrDb},
 	ErrDbDelete:                  {ErrDb},
 	ErrDbNothingFound:            {ErrDb},
+	ErrDbInternalError:           {ErrDb},
 	ErrCryptoSig:                 {ErrCrypto},
 	ErrCryptoEncrypt:             {ErrCrypto},
 	ErrCryptoDecrypt:             {ErrCrypto},
