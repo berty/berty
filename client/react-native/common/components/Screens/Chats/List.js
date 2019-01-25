@@ -11,6 +11,8 @@ import { fragments } from '../../../graphql'
 import { parseEmbedded } from '../../../helpers/json'
 import { conversation as utils } from '../../../utils'
 
+import { hook } from 'cavy'
+
 const Message = withNamespaces()(({ data, t, ...props }) => {
   switch (data.kind) {
     case BertyP2pKindInputKind.ConversationNewMessage:
@@ -112,7 +114,7 @@ const ItemBase = fragments.Conversation(({ data, navigation, t }) => {
 
 const Item = withNamespaces()(ItemBase)
 
-export default class ListScreen extends PureComponent {
+class ListScreen extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -160,6 +162,7 @@ export default class ListScreen extends PureComponent {
               source={require('../../../static/img/empty-conversation.png')}
               text={I18n.t('chats.no-new-messages')}
               icon={'edit'}
+              btnRef={this.props.generateTestHook('ChatList.NewConvButton')}
               btnText={I18n.t('chats.new-conversation')}
               onPress={() => ListScreen.onPress(navigation)}
             />
@@ -169,3 +172,5 @@ export default class ListScreen extends PureComponent {
     )
   }
 }
+
+export default hook(ListScreen)

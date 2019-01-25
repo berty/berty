@@ -16,7 +16,7 @@ import { btoa } from 'b64-lite'
 export default class App extends PureComponent {
   state = {
     loading: true,
-    hide: true,
+    showAnim: (process.env['ENVIRONMENT'] !== 'integration_test'),
     duration: 4000,
     progress: new Animated.Value(0),
     deepLink: {
@@ -41,7 +41,7 @@ export default class App extends PureComponent {
     }
 
     Linking.addEventListener('url', this._handleOpenURL)
-    this.startAnimation()
+    if (this.state.showAnim === true) { this.startAnimation() }
     this.setState({ loading: false })
   }
 
@@ -100,7 +100,7 @@ export default class App extends PureComponent {
       easing: Easing.linear,
     }).start(({ finished }) => {
       if (finished) {
-        this.setState({ hide: false })
+        this.setState({ showAnim: false })
       }
     })
   }
@@ -114,11 +114,11 @@ export default class App extends PureComponent {
   }
 
   render () {
-    const { loading, deepLink, hide, progress } = this.state
+    const { loading, deepLink, showAnim, progress } = this.state
     return (
       <I18nextProvider i18n={i18n}>
         <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-          { hide && Platform.OS !== 'web'
+          { showAnim && Platform.OS !== 'web'
             ? <Flex.Rows
               align='center'
               justify='center'
