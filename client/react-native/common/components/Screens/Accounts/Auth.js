@@ -12,6 +12,8 @@ import { colors } from '../../../constants'
 import { defaultUsername } from '../../../helpers/contacts'
 import { withNamespaces } from 'react-i18next'
 
+import { hook } from 'cavy'
+
 const { CoreModule } = NativeModules
 
 class Auth extends PureComponent {
@@ -144,9 +146,9 @@ class Auth extends PureComponent {
                   padding: 10,
                 }}
                 placeholder={t('auth.nickname-placeholder')}
-                ref={nicknameInput => {
+                ref={this.props.generateTestHook('Auth.TextInput', nicknameInput => {
                   this.nicknameInput = nicknameInput
-                }}
+                })}
                 textContentType={'name'}
                 onChangeText={nickname => this.setState({ nickname })}
                 value={this.state.nickname}
@@ -154,6 +156,7 @@ class Auth extends PureComponent {
               <TouchableOpacity
                 onPress={() => this.open(this.state.nickname, { firstLaunch: true })}
                 disabled={this.state.nickname.length === 0}
+                ref={this.props.generateTestHook('Auth.Button')}
               >
                 <Text
                   style={{
@@ -178,4 +181,4 @@ class Auth extends PureComponent {
   }
 }
 
-export default withNamespaces()(Auth)
+export default withNamespaces()(hook(Auth))

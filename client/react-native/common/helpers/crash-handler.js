@@ -23,16 +23,19 @@ const exceptionHandler = (error, isFatal) => {
   )
 }
 
-// eslint-disable-next-line
-if (!__DEV__) {
-  console.error = error => exceptionHandler(error, false)
-}
+if (process.env['ENVIRONMENT'] !== 'integration_test') {
+  // eslint-disable-next-line
+  if (!__DEV__) {
+    console.error = error => exceptionHandler(error, false)
+  }
 
-if (Platform.OS === 'ios' || Platform.OS === 'android') {
-  const allowInDevMode = false
-  const forceAppQuit = false
-  const executeDefaultHandler = false
+  if (Platform.OS === 'ios' || Platform.OS === 'android') {
+  // if ((Platform.OS === 'ios' || Platform.OS === 'android') && process.env['ENVIRONMENT'] !== 'integration_test') {
+    const allowInDevMode = false
+    const forceAppQuit = false
+    const executeDefaultHandler = false
 
-  setJSExceptionHandler(exceptionHandler, allowInDevMode)
-  setNativeExceptionHandler(() => {}, forceAppQuit, executeDefaultHandler)
+    setJSExceptionHandler(exceptionHandler, allowInDevMode)
+    setNativeExceptionHandler(() => {}, forceAppQuit, executeDefaultHandler)
+  }
 }

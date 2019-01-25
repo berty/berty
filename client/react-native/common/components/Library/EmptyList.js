@@ -18,7 +18,7 @@ export default class EmptyList extends PureComponent {
   }
 
   render () {
-    const { source, text, onPress, icon, btnText } = this.props
+    const { source, text, onPress, icon, btnText, btnRef } = this.props
     const fontSize = this.state.fontWidth * 0.07
 
     return (
@@ -49,6 +49,7 @@ export default class EmptyList extends PureComponent {
           }}
         >
           <View
+            ref={btnRef}
             style={{
               flex: 1,
               flexDirection: 'row',

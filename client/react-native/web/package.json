@@ -8,7 +8,8 @@
     "start": "../node_modules/.bin/concurrently 'yarn relay --watch' 'node scripts/start.js'",
     "build": "yarn relay && node scripts/build.js",
     "relay": "../node_modules/.bin/relay-compiler --src ../common --schema ../common/schema.graphql",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "clear-babel-cache": "rm -rf ./node_modules/.cache/babel-loader/*"
   },
   "dependencies": {
     "@babel/core": "7.1.0",

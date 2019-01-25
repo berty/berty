@@ -6,11 +6,14 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import App from './components/App'
+import AppTest from './integration/AppWrapper'
+
+const isIntegrationMode = (process.env['ENVIRONMENT'] === 'integration_test')
 
 if (Platform.OS === 'web') {
   import('./helpers/patch-web.js')
-  ReactDOM.render(<App />, document.getElementById('root'))
+  ReactDOM.render(isIntegrationMode === true ? <AppTest /> : <App />, document.getElementById('root'))
   import('./registerServiceWorker').then()
 } else {
-  AppRegistry.registerComponent('root', () => App)
+  AppRegistry.registerComponent('root', () => isIntegrationMode === true ? AppTest : App)
 }

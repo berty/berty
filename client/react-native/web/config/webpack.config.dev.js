@@ -10,7 +10,6 @@ const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent')
 const getClientEnvironment = require('./env')
 const paths = require('./paths')
 const ManifestPlugin = require('webpack-manifest-plugin')
-const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier')
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
@@ -206,7 +205,7 @@ module.exports = {
           // The preset includes JSX, Flow, and some ESnext features.
           {
             test: /\.(js|mjs|jsx)$/,
-            include: [paths.appSrc],
+            include: paths.appSrc,
             loader: require.resolve('babel-loader'),
             options: {
               presets: [
@@ -215,6 +214,7 @@ module.exports = {
               ],
               plugins: [
                 'react-native-web',
+                require.resolve('babel-plugin-transform-inline-environment-variables'),
                 require.resolve('@babel/plugin-proposal-export-namespace-from'),
                 require.resolve('babel-plugin-relay'),
                 [
@@ -241,6 +241,7 @@ module.exports = {
             include: [
               /node_modules\/react-native.*/,
               /node_modules\/react-navigation/,
+              /node_modules\/cavy/,
             ],
             loader: require.resolve('babel-loader'),
             options: {

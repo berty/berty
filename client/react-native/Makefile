@@ -138,6 +138,10 @@ adhoc.ios: deps.ios get_iphone_udid
 .PHONY: debug.web
 debug.web: deps.web
 	cd $(WEB) && yarn start
+
+.PHONY: debug.web.cleared
+debug.web.cleared: deps.web
+	cd $(WEB) && yarn clear-babel-cache && yarn start
 ##############################
 
 
@@ -306,6 +310,8 @@ fastlane.match.adhoc:
 
 fastlane.match.enterprise:
 	time bundle exec fastlane run match type:enterprise app_identifier:$(IOS_BUNDLE_ID_HOUSE) team_id:$(MATCH_ENTERPRISE_TEAM_ID)
+
+fastlane.match.all: fastlane.match.development fastlane.match.appstore fastlane.match.adhoc fastlane.match.enterprise
 
 fastlane.pem.development:
 	time bundle exec fastlane pem --app_identifier $(IOS_BUNDLE_ID_DEBUG) --team_id $(PEM_COMPANY_TEAM_ID) --pem_name $(IOS_BUNDLE_ID_DEBUG)-dev.pem --development

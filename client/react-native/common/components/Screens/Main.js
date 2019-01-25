@@ -106,7 +106,9 @@ class Picker extends React.Component {
     super(props)
 
     this.props.navigation.navigate(
-      this.props.screenProps.firstLaunch
+      // TODO: when will find a way to use all our components in Library, implement skip of onboarding in test replace the next line by:
+      //     this.props.screenProps.firstLaunch || process.env['ENVIRONMENT'] === 'integration_test'
+      this.props.screenProps.firstLaunch && process.env['ENVIRONMENT'] !== 'integration_test'
         ? 'switch/onboarding'
         : 'switch/main'
     )
