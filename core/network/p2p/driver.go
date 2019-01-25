@@ -150,12 +150,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 
 	host.Network().Notify(Notify(ctx, driver))
 
-	if len(cfg.bootstrap) > 0 {
-		if err := driver.Bootstrap(ctx, cfg.bootstrapSync, cfg.bootstrap...); err != nil {
-			return nil, err
-		}
-	}
-
 	var (
 		serverStreamOpts = []grpc.StreamServerInterceptor{
 			grpc_ctxtags.StreamServerInterceptor(),
@@ -213,6 +207,11 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	}
 
 	driver.logHostInfos()
+	if len(cfg.bootstrap) > 0 {
+		if err := driver.Bootstrap(ctx, cfg.bootstrapSync, cfg.bootstrap...); err != nil {
+			return nil, err
+		}
+	}
 	return driver, nil
 }
 
@@ -369,6 +368,7 @@ func (d *Driver) BootstrapPeer(ctx context.Context, bootstrapAddr string) error 
 		return nil
 	}
 
+	logger().Debug("Bootstraping peer", zap.String("addr", bootstrapAddr))
 	pinfo, err := d.getPeerInfo(ctx, bootstrapAddr)
 	if err != nil {
 		return err
