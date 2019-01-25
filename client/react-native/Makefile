@@ -15,6 +15,7 @@ BUILD ?= .build
 IOS_UDID := ''
 IOS_VERSION ?= $(shell git describe --tags --always  | cut -d - -f 1,2 | tr - .| tail -c +2)
 IOS_BUILD := $(BUILD)/ios
+IOS_CUSTOM_NAME ?=
 
 # @TODO: find a better way to pass those arguments >
 
@@ -39,6 +40,7 @@ IOS_BUNDLE_ID_RELEASE ?= chat.berty.ios
 # android related env
 ANDROID_VERSION ?= $(shell git rev-list --all --count)
 ANDROID_BUILD ?= $(BUILD)/android
+ANDROID_CUSTOM_NAME ?=
 
 KEYCHAIN_NAME ?= berty_keychain
 KEYCHAIN_PASSWORD ?= berty_pass
@@ -273,6 +275,13 @@ webapp.rm: webapp.stop
 
 
 ### Fastlane build part ###
+
+.PHONY: appname.ios
+appname.ios:
+	@[[ ! -z "$(IOS_CUSTOM_NAME)" ]] \
+		&& plutil -replace CFBundleDisplayName -string "$(IOS_CUSTOM_NAME)" $(IOS)/Berty/Info.plist \
+		&& echo "Setting custom name: [$(IOS_CUSTOM_NAME)] for ios" || true
+
 .PHONY: version
 version:
 	mkdir -p $(BUILD)
@@ -426,6 +435,7 @@ fastlane.android.staff:
 
 	mkdir -p $(ANDROID_BUILD)
 
+	ORG_GRADLE_PROJECT_BERTY_CUSTOM_NAME="$(ANDROID_CUSTOM_NAME)" \
 	ORG_GRADLE_PROJECT_BERTY_APK_OUTPUT_DIR="$(shell realpath '$(ANDROID_BUILD)')" \
 	FL_GRADLE_PROJECT_DIR=android \
 	FL_GRADLE_BUILD_TYPE=Staff \

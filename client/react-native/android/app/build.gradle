@@ -155,14 +155,14 @@ android {
         }
     }
     buildTypes {
-        debug {
-            applicationIdSuffix ".debug"
-            debuggable true
-        }
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
             signingConfig signingConfigs.release
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
         }
         yolo {
             initWith(buildTypes.release)
@@ -171,6 +171,13 @@ android {
         }
         staff {
             initWith(buildTypes.release)
+
+            def appname = "Berty Staff"
+            if (project.hasProperty('BERTY_CUSTOM_NAME') && BERTY_CUSTOM_NAME?.trim()) {
+                appname = BERTY_CUSTOM_NAME
+            }
+            resValue "string", "app_name", appname
+
             applicationIdSuffix ".staff"
             matchingFallbacks = ['release']
         }

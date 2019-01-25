@@ -301,9 +301,14 @@ jobs:
           command: make version.android
 
       - run:
+          name: set name
+          command: |
+            [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && echo "export ANDROID_CUSTOM_NAME='Berty @${CIRCLE_PR_NUMBER}'" >> $BASH_ENV
+
+      - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make fastlane.android.staff
+          command: . $BASH_ENV; /tmp/retry -m 3 make fastlane.android.staff
 
       - store_artifacts:
           path: /tmp/fl
@@ -432,6 +437,7 @@ jobs:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
+            [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && IOS_CUSTOM_NAME="Berty @${CIRCLE_PR_NUMBER}" make appname.ios
             make fastlane.setup_circle
             /tmp/retry -m 3 make fastlane.ios.adhoc
 
