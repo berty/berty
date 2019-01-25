@@ -75,7 +75,9 @@ func TestP2PNetwork(t *testing.T) {
 		homer, lisa, bart *p2p.Driver
 		err               error
 	)
-	setupTestLogging()
+	// setupTestLogging()
+	// log.SetDebugLogging()
+
 	// logging.SetDebugLogging()
 
 	dht.PoolSize = 3
@@ -109,6 +111,33 @@ func TestP2PNetwork(t *testing.T) {
 
 			bart, err = setupDriver(b...)
 			So(err, ShouldBeNil)
+		})
+
+		Convey("Bart send an event to Homer", FailureHalts, func(c C) {
+			tctx, cancel := context.WithTimeout(ctx, time.Second*4)
+			defer cancel()
+
+			e := &api.Envelope{
+				ChannelID: "Homer",
+			}
+
+			homerQueue := make(chan *api.Envelope, 1)
+			homer.OnEnvelopeHandler(func(ctx context.Context, envelope *api.Envelope) (*api.Void, error) {
+				if envelope == nil {
+					homerQueue <- nil
+					return nil, fmt.Errorf("empty envelope")
+				}
+				homerQueue <- envelope
+				return &api.Void{}, nil
+			})
+
+			logger().Debug("Homer joing himself")
+			err = homer.Join(ctx, "Homer")
+
+			err := bart.Emit(tctx, e)
+			So(err, ShouldBeNil)
+			So(<-homerQueue, ShouldNotBeNil)
+			// So(len(homerQueue), ShouldEqual, 1)
 		})
 
 		Convey("Roger send an event to Lisa", FailureHalts, func(c C) {

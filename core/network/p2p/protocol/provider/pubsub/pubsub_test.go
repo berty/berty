@@ -11,6 +11,7 @@ import (
 	libp2p "github.com/libp2p/go-libp2p"
 	host "github.com/libp2p/go-libp2p-host"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
+	mh "github.com/multiformats/go-multihash"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -31,6 +32,15 @@ func getBoostrap(d *ProviderTest) []string {
 	}
 
 	return bootstrap
+}
+
+func createCid(id string) (cid.Cid, error) {
+	h, err := mh.Sum([]byte(id), mh.SHA2_256, -1)
+	if err != nil {
+		return cid.Cid{}, err
+	}
+
+	return cid.NewCidV0(h), nil
 }
 
 func (pt *ProviderTest) handler(id string, pi pstore.PeerInfo) {
@@ -111,14 +121,14 @@ func setupTestLogging() {
 
 func TestP2PNetwork(t *testing.T) {
 	var (
-		homer, lisa, roger, bart *ProviderTest
-		err                      error
+		homer, lisa, roger *ProviderTest
+		err                error
 	)
 
 	// setupTestLogging()
 	// log.SetDebugLogging()
 
-	hs := []*ProviderTest{homer, lisa, roger, bart}
+	hs := []*ProviderTest{homer, lisa, roger}
 	defer func() {
 		for _, h := range hs {
 			if h != nil {
@@ -144,11 +154,37 @@ func TestP2PNetwork(t *testing.T) {
 			roger, err = setupProviderTest("roger", b...)
 			So(err, ShouldBeNil)
 
-			bart, err = setupProviderTest("bart", b...)
-			So(err, ShouldBeNil)
-
 			peers := homer.host.Peerstore().Peers()
 			So(len(peers), ShouldEqual, len(hs))
+		})
+
+		Convey("Roger lookup for homer", FailureHalts, func(c C) {
+			ctx, cancel := context.WithTimeout(context.Background(), time.Second*4)
+			defer cancel()
+
+			topic, err := createCid("homer")
+			So(err, ShouldBeNil)
+
+			cps := make(chan []pstore.PeerInfo, 1)
+			roger.provider.RegisterHandler(func(id cid.Cid, ps ...pstore.PeerInfo) {
+				cps <- ps
+			})
+
+			err = homer.provider.Provide(ctx, topic)
+			So(err, ShouldBeNil)
+
+			err = roger.provider.FindProviders(ctx, topic)
+			So(err, ShouldBeNil)
+
+			var ps []pstore.PeerInfo
+			select {
+			case <-ctx.Done():
+				err = ctx.Err()
+			case ps = <-cps:
+			}
+
+			So(err, ShouldBeNil)
+			So(len(ps), ShouldEqual, 1)
 		})
 
 		Convey("Roger lookup for Lisa via homer", FailureHalts, func(c C) {
@@ -162,7 +198,7 @@ func TestP2PNetwork(t *testing.T) {
 				cps <- ps
 			})
 
-			err := lisa.provider.Subscribe(ctx, topic)
+			err = lisa.provider.Subscribe(ctx, topic)
 			So(err, ShouldBeNil)
 
 			err = roger.provider.Announce(topic)
