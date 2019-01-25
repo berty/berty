@@ -77,7 +77,7 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v2.0.6+incompatible
 	github.com/libp2p/go-libp2p-pnet v3.0.4+incompatible
 	github.com/libp2p/go-libp2p-protocol v1.0.0
-	github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20181227100204-0363ea8f53a9
+	github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20190121225156-d4589956d289
 	github.com/libp2p/go-libp2p-quic-transport v0.2.9
 	github.com/libp2p/go-libp2p-record v4.1.7+incompatible // indirect
 	github.com/libp2p/go-libp2p-routing v2.7.1+incompatible // indirect
