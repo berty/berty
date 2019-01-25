@@ -7,8 +7,11 @@ const query = graphql`
       id
       createdAt
       updatedAt
-      pushRelayPubkeyApns,
-      pushRelayPubkeyFcm,
+      pushRelayPubkeyApns
+      pushRelayPubkeyFcm
+      notificationsEnabled
+      notificationsPreviews
+      debugNotificationVerbosity
     }
   }
 `

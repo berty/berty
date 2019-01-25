@@ -5,6 +5,7 @@ import colors from '../../../../constants/colors'
 import { withNavigation } from 'react-navigation'
 import { showMessage } from 'react-native-flash-message'
 import { RelayContext } from '../../../../relay'
+import { enums } from '../../../../graphql'
 
 class NotificationsBase extends PureComponent {
   constructor (props) {
@@ -14,6 +15,7 @@ class NotificationsBase extends PureComponent {
       config: {
         pushRelayPubkeyApns: props.config.pushRelayPubkeyApns,
         pushRelayPubkeyFcm: props.config.pushRelayPubkeyFcm,
+        debugNotificationVerbosity: props.config.debugNotificationVerbosity,
       },
     }
   }
@@ -28,6 +30,16 @@ class NotificationsBase extends PureComponent {
         <Menu.Item title={'FCM relay id'} boldLeft />
         <Menu.Item value={this.state.config.pushRelayPubkeyFcm} onChangeText={pushRelayPubkeyFcm  => this.setState({ config: { ...this.state.config, pushRelayPubkeyFcm } })} input />
       </Menu.Section>
+      <Menu.Section title={'Debug'}>
+        <Menu.Item title={'Debug verbosity'} boldLeft />
+        {Object.entries(enums.BertyEntityDebugVerbosityInputDebugVerbosity).map(([k, v]) => <Menu.Item
+          icon={this.state.config.debugNotificationVerbosity === v ? 'check-circle' : 'circle'}
+          title={k}
+          key={k}
+          onPress={()  => this.setState({ config: { ...this.state.config, debugNotificationVerbosity: v } })}
+        />
+        )}
+      </Menu.Section>
       <Menu.Section>
         <Menu.Item title={'Save'} boldLeft color={colors.blue} onPress={() => this.updateConfig()} />
       </Menu.Section>
@@ -40,6 +52,7 @@ class NotificationsBase extends PureComponent {
         ...this.props.config,
         pushRelayPubkeyApns: this.state.config.pushRelayPubkeyApns,
         pushRelayPubkeyFcm: this.state.config.pushRelayPubkeyFcm,
+        debugNotificationVerbosity: this.state.config.debugNotificationVerbosity,
       }
 
       await this.props.relayContext.mutations.configUpdate(config)

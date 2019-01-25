@@ -13,6 +13,8 @@ import {
   disableMQTTNotifications,
 } from '../../../helpers/notifications'
 import { enums } from '../../../graphql'
+import { withConfig } from '../../../helpers/config'
+import { showMessage } from 'react-native-flash-message'
 
 const dummyPubKey =
   'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1wyoWXdQZeaQoOKvC2YRwR3+GTb8prpMFNdOmhikU8eionUBKgKnUyIbr/DTvCJQhTlHZfy1pUL6mmRIk9PDQDO1t4ATY9LXfo/O3KoKJ0GmxhGdjheOf1kiKcrem+MJjBVEriZ7tJvuhA/DztQ1zolvflPz9+aNL1qA6qzJD/m2fNYpfEehtZH37MoN/qcn3THnC8H/wwr6soU5GpdPBiXXKcg1IFiaZX9JAoUzKVyzY1xQ/DOzCYCboPSXh1qSsMFsg2LCAmC56s9czKk7foAOV/WZ3Zzbv6yd74K6TdV0xwMgCctZjNa7/Tbq4pCBK2vEMutSXAJlfo+6K9dLQQIDAQAB'
@@ -28,9 +30,37 @@ class NotificationsBase extends PureComponent {
         elt.pushType === enums.BertyPushDevicePushTypeInputDevicePushType.MQTT
     )
 
+  getCurrentConfig = () => this.props.config
+
   state = {
     pushConfigsSwitch: this.getCurrentPushConfigs().length > 0,
     mqttConfigsSwitch: this.getCurrentMQTTConfigs().length > 0,
+    notificationsEnabled: this.getCurrentConfig().notificationsEnabled,
+    notificationsPreviews: this.getCurrentConfig().notificationsPreviews,
+  }
+
+  async updateConfig () {
+    try {
+      const config = {
+        ...this.props.config,
+        notificationsEnabled: this.state.notificationsEnabled,
+        notificationsPreviews: this.state.notificationsPreviews,
+      }
+
+      await this.props.context.mutations.configUpdate(config)
+    } catch (e) {
+      showMessage({
+        message: String(e),
+        type: 'danger',
+        icon: 'danger',
+        position: 'top',
+      })
+
+      this.setState({
+        notificationsEnabled: this.getCurrentConfig().notificationsEnabled,
+        notificationsPreviews: this.getCurrentConfig().notificationsPreviews,
+      })
+    }
   }
 
   render () {
@@ -136,12 +166,18 @@ class NotificationsBase extends PureComponent {
           <Menu.Item
             title={t('chats.notifications-enabled')}
             left
-            customRight={<Switch justify='end' disabled={false} value />}
+            customRight={<Switch justify='end' onValueChange={async notificationsEnabled => {
+              this.setState({ notificationsEnabled }, () => this.updateConfig())
+            }} value={this.state.notificationsEnabled} />}
           />
           <Menu.Item
             title={t('chats.notifications-preview')}
             left
-            customRight={<Switch justify='end' disabled={false} value />}
+            customRight={<Switch justify='end'
+              onValueChange={async notificationsPreviews => {
+                this.setState({ notificationsPreviews }, () => this.updateConfig())
+              }}
+              value={this.state.notificationsPreviews} />}
           />
           <Menu.Item
             title={t('chats.notifications-sound')}
@@ -209,4 +245,4 @@ export default class NotificationWrapper extends React.PureComponent {
   }
 }
 
-const Notifications = withNamespaces()(NotificationsBase)
+const Notifications = withConfig(withNamespaces()(NotificationsBase), { showOnlyLoaded: true })

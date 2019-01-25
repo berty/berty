@@ -14,6 +14,9 @@ func (n *Node) ConfigPublic(ctx context.Context, void *node.Void) (*entity.Confi
 func (n *Node) ConfigUpdate(ctx context.Context, input *entity.Config) (*entity.Config, error) {
 	n.config.PushRelayPubkeyAPNS = input.PushRelayPubkeyAPNS
 	n.config.PushRelayPubkeyFCM = input.PushRelayPubkeyFCM
+	n.config.DebugNotificationVerbosity = input.DebugNotificationVerbosity
+	n.config.NotificationsPreviews = input.NotificationsPreviews
+	n.config.NotificationsEnabled = input.NotificationsEnabled
 
 	if err := n.sql(ctx).Save(n.config).Error; err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)

@@ -1529,6 +1529,9 @@ models:
       cryptoParams:
       pushRelayPubkeyApns:
       pushRelayPubkeyFcm:
+      notificationsEnabled:
+      notificationsPreviews:
+      debugNotificationVerbosity:
   BertyEntityConfigInput:
     model: berty.tech/core/entity.Config
     fields:
@@ -1542,6 +1545,9 @@ models:
       cryptoParams:
       pushRelayPubkeyApns:
       pushRelayPubkeyFcm:
+      notificationsEnabled:
+      notificationsPreviews:
+      debugNotificationVerbosity:
   BertyEntityConfigPayload:
     model: berty.tech/core/entity.Config
     fields:
@@ -1555,6 +1561,9 @@ models:
       cryptoParams:
       pushRelayPubkeyApns:
       pushRelayPubkeyFcm:
+      notificationsEnabled:
+      notificationsPreviews:
+      debugNotificationVerbosity:
 
 
   BertyEntityDevicePushConfig:

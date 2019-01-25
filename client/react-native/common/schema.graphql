@@ -486,6 +486,7 @@ type BertyNetworkPeers  {
   
   
 
+  
 type BertyEntityConfig  {
     id: String!
     createdAt: GoogleProtobufTimestamp
@@ -497,6 +498,9 @@ type BertyEntityConfig  {
     cryptoParams: [Byte!]
     pushRelayPubkeyApns: String!
     pushRelayPubkeyFcm: String!
+    notificationsEnabled: Bool!
+    notificationsPreviews: Bool!
+    debugNotificationVerbosity: Enum
 }
   
   
@@ -840,6 +844,9 @@ type Mutation {
     cryptoParams: [Byte!]
     pushRelayPubkeyApns: String!
     pushRelayPubkeyFcm: String!
+    notificationsEnabled: Bool!
+    notificationsPreviews: Bool!
+    debugNotificationVerbosity: Enum
   ): BertyEntityConfig
   ContactRequest(
     contact: BertyEntityContactInput

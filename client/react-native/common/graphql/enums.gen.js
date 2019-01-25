@@ -294,6 +294,22 @@ export const ValueBertyNetworkConnectionTypeInputConnectionType = {
   3: 'CANNOT_CONNECT',
 }
 
+export const BertyEntityDebugVerbosityInputDebugVerbosity = {
+  VERBOSITY_LEVEL_NONE: 0,
+  VERBOSITY_LEVEL_ERROR: 1,
+  VERBOSITY_LEVEL_WARN: 2,
+  VERBOSITY_LEVEL_INFO: 3,
+  VERBOSITY_LEVEL_DEBUG: 4,
+}
+
+export const ValueBertyEntityDebugVerbosityInputDebugVerbosity = {
+  0: 'VERBOSITY_LEVEL_NONE',
+  1: 'VERBOSITY_LEVEL_ERROR',
+  2: 'VERBOSITY_LEVEL_WARN',
+  3: 'VERBOSITY_LEVEL_INFO',
+  4: 'VERBOSITY_LEVEL_DEBUG',
+}
+
 export const BertyPkgDeviceinfoTypeInputType = { Unknown: 0, Raw: 1, Json: 2 }
 
 export const ValueBertyPkgDeviceinfoTypeInputType = {

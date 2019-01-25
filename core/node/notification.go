@@ -18,6 +18,11 @@ func (n *Node) DisplayNotification(payload *notification.Payload) {
 	if n.notificationDriver == nil {
 		return
 	}
+
+	if n.config.NotificationsEnabled == false {
+		return
+	}
+
 	if err := n.notificationDriver.Display(payload); err != nil {
 		logger().Error("Notification", zap.Error(err))
 	}

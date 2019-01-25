@@ -1,12 +1,12 @@
 package node
 
 import (
-	"context"
-
 	"berty.tech/core/api/node"
+	"berty.tech/core/entity"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
+	"context"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 )
@@ -29,13 +29,16 @@ func (n *Node) LogBackgroundError(ctx context.Context, err error) {
 	n.EnqueueNodeEvent(ctx, node.Kind_BackgroundError, &node.BackgroundErrorAttrs{
 		ErrMsg: err.Error(),
 	})
-	n.DisplayNotification(&notification.Payload{
-		Title: i18n.T("LogBackgroundError", nil),
-		Body:  err.Error(),
-		// Icon
-		// Sound
-		// Badge
-	})
+
+	if n.config.IsDebugNotificationAllowed(entity.DebugVerbosity_VERBOSITY_LEVEL_ERROR) {
+		n.DisplayNotification(&notification.Payload{
+			Title: i18n.T("LogBackgroundError", nil),
+			Body:  err.Error(),
+			// Icon
+			// Sound
+			// Badge
+		})
+	}
 }
 
 func (n *Node) LogBackgroundWarn(ctx context.Context, err error) {
@@ -43,13 +46,16 @@ func (n *Node) LogBackgroundWarn(ctx context.Context, err error) {
 	n.EnqueueNodeEvent(ctx, node.Kind_BackgroundWarn, &node.BackgroundWarnAttrs{
 		ErrMsg: err.Error(),
 	})
-	n.DisplayNotification(&notification.Payload{
-		Title: i18n.T("LogBackgroundWarn", nil),
-		Body:  err.Error(),
-		// Icon
-		// Sound
-		// Badge
-	})
+
+	if n.config.IsDebugNotificationAllowed(entity.DebugVerbosity_VERBOSITY_LEVEL_WARN) {
+		n.DisplayNotification(&notification.Payload{
+			Title: i18n.T("LogBackgroundWarn", nil),
+			Body:  err.Error(),
+			// Icon
+			// Sound
+			// Badge
+		})
+	}
 }
 
 func (n *Node) LogBackgroundDebug(ctx context.Context, msg string) {
@@ -57,11 +63,14 @@ func (n *Node) LogBackgroundDebug(ctx context.Context, msg string) {
 	n.EnqueueNodeEvent(ctx, node.Kind_Debug, &node.DebugAttrs{
 		Msg: msg,
 	})
-	n.DisplayNotification(&notification.Payload{
-		Title: i18n.T("LogBackgroundDebug", nil),
-		Body:  msg,
-		// Icon
-		// Sound
-		// Badge
-	})
+
+	if n.config.IsDebugNotificationAllowed(entity.DebugVerbosity_VERBOSITY_LEVEL_DEBUG) {
+		n.DisplayNotification(&notification.Payload{
+			Title: i18n.T("LogBackgroundDebug", nil),
+			Body:  msg,
+			// Icon
+			// Sound
+			// Badge
+		})
+	}
 }

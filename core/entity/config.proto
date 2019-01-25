@@ -9,6 +9,16 @@ import "google/protobuf/timestamp.proto";
 import "entity/contact.proto";
 import "entity/device.proto";
 
+
+enum DebugVerbosity {
+  VERBOSITY_LEVEL_NONE = 0;
+  VERBOSITY_LEVEL_ERROR = 1;
+  VERBOSITY_LEVEL_WARN = 2;
+  VERBOSITY_LEVEL_INFO = 3;
+  VERBOSITY_LEVEL_DEBUG = 4;
+}
+
+
 message Config {
   //
   // gorm required fields
@@ -32,4 +42,7 @@ message Config {
 
   string push_relay_pubkey_apns = 10 [(gogoproto.customname) = "PushRelayPubkeyAPNS"];
   string push_relay_pubkey_fcm = 11 [(gogoproto.customname) = "PushRelayPubkeyFCM"];
+  bool notifications_enabled = 12;
+  bool notifications_previews = 13;
+  DebugVerbosity debug_notification_verbosity = 14;
 }

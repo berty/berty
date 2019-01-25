@@ -201,10 +201,18 @@ func (r *googleProtobufMethodOptionsResolver) IdempotencyLevel(ctx context.Conte
 
 type mutationResolver struct{ *Resolver }
 
-func (r *mutationResolver) ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfID string, currentDevice *entity.Device, currentDeviceID string, cryptoParams []byte, pushRelayPubkeyAPNS string, pushRelayPubkeyFCM string) (*entity.Config, error) {
+func (r *mutationResolver) ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfID string, currentDevice *entity.Device, currentDeviceID string, cryptoParams []byte, pushRelayPubkeyAPNS string, pushRelayPubkeyFCM string, notificationsEnabled bool, notificationsPreviews bool, notificationsDebugLevel *int32) (*entity.Config, error) {
+	debugNotificationsVerbosity := entity.DebugVerbosity_VERBOSITY_LEVEL_NONE
+	if notificationsDebugLevel != nil {
+		debugNotificationsVerbosity = entity.DebugVerbosity(*notificationsDebugLevel)
+	}
+
 	return r.client.ConfigUpdate(ctx, &entity.Config{
-		PushRelayPubkeyAPNS: pushRelayPubkeyAPNS,
-		PushRelayPubkeyFCM:  pushRelayPubkeyFCM,
+		PushRelayPubkeyAPNS:        pushRelayPubkeyAPNS,
+		PushRelayPubkeyFCM:         pushRelayPubkeyFCM,
+		NotificationsEnabled:       notificationsEnabled,
+		NotificationsPreviews:      notificationsPreviews,
+		DebugNotificationVerbosity: debugNotificationsVerbosity,
 	})
 }
 

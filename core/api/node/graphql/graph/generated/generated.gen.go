@@ -63,16 +63,19 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	BertyEntityConfig struct {
-		Id                  func(childComplexity int) int
-		CreatedAt           func(childComplexity int) int
-		UpdatedAt           func(childComplexity int) int
-		Myself              func(childComplexity int) int
-		MyselfId            func(childComplexity int) int
-		CurrentDevice       func(childComplexity int) int
-		CurrentDeviceId     func(childComplexity int) int
-		CryptoParams        func(childComplexity int) int
-		PushRelayPubkeyApns func(childComplexity int) int
-		PushRelayPubkeyFcm  func(childComplexity int) int
+		Id                         func(childComplexity int) int
+		CreatedAt                  func(childComplexity int) int
+		UpdatedAt                  func(childComplexity int) int
+		Myself                     func(childComplexity int) int
+		MyselfId                   func(childComplexity int) int
+		CurrentDevice              func(childComplexity int) int
+		CurrentDeviceId            func(childComplexity int) int
+		CryptoParams               func(childComplexity int) int
+		PushRelayPubkeyApns        func(childComplexity int) int
+		PushRelayPubkeyFcm         func(childComplexity int) int
+		NotificationsEnabled       func(childComplexity int) int
+		NotificationsPreviews      func(childComplexity int) int
+		DebugNotificationVerbosity func(childComplexity int) int
 	}
 
 	BertyEntityContact struct {
@@ -663,7 +666,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		EventSeen                        func(childComplexity int, id string) int
-		ConfigUpdate                     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string) int
+		ConfigUpdate                     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string, notificationsEnabled bool, notificationsPreviews bool, debugNotificationVerbosity *int32) int
 		ContactRequest                   func(childComplexity int, contact *entity.Contact, introText string) int
 		ContactAcceptRequest             func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ContactRemove                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
@@ -774,7 +777,7 @@ type GqlNodeResolver interface {
 }
 type MutationResolver interface {
 	EventSeen(ctx context.Context, id string) (*p2p.Event, error)
-	ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string) (*entity.Config, error)
+	ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string, notificationsEnabled bool, notificationsPreviews bool, debugNotificationVerbosity *int32) (*entity.Config, error)
 	ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error)
 	ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
@@ -970,6 +973,38 @@ func field_Mutation_ConfigUpdate_args(rawArgs map[string]interface{}) (map[strin
 		}
 	}
 	args["pushRelayPubkeyFcm"] = arg9
+	var arg10 bool
+	if tmp, ok := rawArgs["notificationsEnabled"]; ok {
+		var err error
+		arg10, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["notificationsEnabled"] = arg10
+	var arg11 bool
+	if tmp, ok := rawArgs["notificationsPreviews"]; ok {
+		var err error
+		arg11, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["notificationsPreviews"] = arg11
+	var arg12 *int32
+	if tmp, ok := rawArgs["debugNotificationVerbosity"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg12 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["debugNotificationVerbosity"] = arg12
 	return args, nil
 
 }
@@ -3035,6 +3070,27 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityConfig.PushRelayPubkeyFcm(childComplexity), true
+
+	case "BertyEntityConfig.notificationsEnabled":
+		if e.complexity.BertyEntityConfig.NotificationsEnabled == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.NotificationsEnabled(childComplexity), true
+
+	case "BertyEntityConfig.notificationsPreviews":
+		if e.complexity.BertyEntityConfig.NotificationsPreviews == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.NotificationsPreviews(childComplexity), true
+
+	case "BertyEntityConfig.debugNotificationVerbosity":
+		if e.complexity.BertyEntityConfig.DebugNotificationVerbosity == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConfig.DebugNotificationVerbosity(childComplexity), true
 
 	case "BertyEntityContact.id":
 		if e.complexity.BertyEntityContact.Id == nil {
@@ -5228,7 +5284,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayPubkeyApns"].(string), args["pushRelayPubkeyFcm"].(string)), true
+		return e.complexity.Mutation.ConfigUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayPubkeyApns"].(string), args["pushRelayPubkeyFcm"].(string), args["notificationsEnabled"].(bool), args["notificationsPreviews"].(bool), args["debugNotificationVerbosity"].(*int32)), true
 
 	case "Mutation.ContactRequest":
 		if e.complexity.Mutation.ContactRequest == nil {
@@ -5966,6 +6022,18 @@ func (ec *executionContext) _BertyEntityConfig(ctx context.Context, sel ast.Sele
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "notificationsEnabled":
+			out.Values[i] = ec._BertyEntityConfig_notificationsEnabled(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "notificationsPreviews":
+			out.Values[i] = ec._BertyEntityConfig_notificationsPreviews(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "debugNotificationVerbosity":
+			out.Values[i] = ec._BertyEntityConfig_debugNotificationVerbosity(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -6209,6 +6277,72 @@ func (ec *executionContext) _BertyEntityConfig_pushRelayPubkeyFcm(ctx context.Co
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_notificationsEnabled(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NotificationsEnabled, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	return models.MarshalBool(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_notificationsPreviews(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NotificationsPreviews, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	rctx.Result = res
+	return models.MarshalBool(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConfig_debugNotificationVerbosity(ctx context.Context, field graphql.CollectedField, obj *entity.Config) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConfig",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DebugNotificationVerbosity, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(entity.DebugVerbosity)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
 }
 
 var bertyEntityContactImplementors = []string{"BertyEntityContact", "Node"}
@@ -18859,7 +18993,7 @@ func (ec *executionContext) _Mutation_ConfigUpdate(ctx context.Context, field gr
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayPubkeyApns"].(string), args["pushRelayPubkeyFcm"].(string))
+		return ec.resolvers.Mutation().ConfigUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["myself"].(*entity.Contact), args["myselfId"].(string), args["currentDevice"].(*entity.Device), args["currentDeviceId"].(string), args["cryptoParams"].([]byte), args["pushRelayPubkeyApns"].(string), args["pushRelayPubkeyFcm"].(string), args["notificationsEnabled"].(bool), args["notificationsPreviews"].(bool), args["debugNotificationVerbosity"].(*int32))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -23262,6 +23396,7 @@ type BertyNetworkPeers  {
   
   
 
+  
 type BertyEntityConfig  {
     id: String!
     createdAt: GoogleProtobufTimestamp
@@ -23273,6 +23408,9 @@ type BertyEntityConfig  {
     cryptoParams: [Byte!]
     pushRelayPubkeyApns: String!
     pushRelayPubkeyFcm: String!
+    notificationsEnabled: Bool!
+    notificationsPreviews: Bool!
+    debugNotificationVerbosity: Enum
 }
   
   
@@ -23616,6 +23754,9 @@ type Mutation {
     cryptoParams: [Byte!]
     pushRelayPubkeyApns: String!
     pushRelayPubkeyFcm: String!
+    notificationsEnabled: Bool!
+    notificationsPreviews: Bool!
+    debugNotificationVerbosity: Enum
   ): BertyEntityConfig
   ContactRequest(
     contact: BertyEntityContactInput

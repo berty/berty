@@ -175,16 +175,21 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 }
 
 func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Event) error {
-	_, err := input.GetConversationNewMessageAttrs()
+	attrs, err := input.GetConversationNewMessageAttrs()
 	if err != nil {
 		return err
+	}
+
+	body := attrs.Message.Text
+	if n.config.NotificationsPreviews == false {
+		body = i18n.T("NewMessageBody", nil)
 	}
 
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
 	n.DisplayNotification(&notification.Payload{
 		Title:    i18n.T("NewMessageTitle", nil),
-		Body:     i18n.T("NewMessageBody", nil),
+		Body:     body,
 		DeepLink: "berty://conversation#id=" + url.PathEscape(input.ConversationID),
 	})
 	return nil
