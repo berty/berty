@@ -37,8 +37,10 @@ type Metrics struct {
 
 func (m *Metrics) Libp2PPing(ctx context.Context, channelID string) (bool, error) {
 	newCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	psID, err := m.driver.FindProvidersAndWait(ctx, channelID, false)
+	defer cancel()
+	psID, err := m.driver.FindProvidersAndWait(newCtx, channelID, false)
 	if err != nil {
+		// only there to silence possible context leak
 		return false, nil
 	}
 	success := make([]chan bool, len(psID))
@@ -46,21 +48,22 @@ func (m *Metrics) Libp2PPing(ctx context.Context, channelID string) (bool, error
 		success[i] = make(chan bool, 1)
 		go func(pi pstore.PeerInfo, index int) {
 			pID := pi.ID
-			go func(pID peer.ID) {
-				if err := m.driver.Connect(newCtx, pi); err != nil {
-					success[index] <- false
-					return
-				}
-				ch, err := m.driver.PingSvc.Ping(newCtx, pID)
-
-				waiting := <-ch
-				if err != nil || waiting == 0 {
-					success[index] <- false
-					return
-				}
-				success[index] <- true
-				cancel()
-			}(pID)
+			if err := m.driver.Connect(newCtx, pi); err != nil {
+				success[index] <- false
+				return
+			}
+			ch, err := m.driver.PingSvc.Ping(newCtx, pID)
+			if err != nil {
+				success[index] <- false
+				return
+			}
+			waiting := <-ch
+			if waiting == 0 {
+				success[index] <- false
+				return
+			}
+			success[index] <- true
+			cancel()
 		}(p, i)
 	}
 

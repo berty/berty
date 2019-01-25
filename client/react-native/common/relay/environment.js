@@ -88,8 +88,8 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
       lastError,
       req,
     }) => {
-      if (attempt > 5) {
-        abort()
+      if (attempt > 5 || (attempt > 0 && (req.id === 'Libp2PPingQuery' || req.id === 'GetListenAddrsQuery' || req.id === 'GetListenInterfaceAddrsQuery'))) {
+        return abort()
       }
       req.fetchOpts.url = `http://${await getIp()}:${await getPort()}/query`
 

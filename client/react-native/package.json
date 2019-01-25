@@ -47,7 +47,7 @@
     "react-native-view-shot": "^2.5.0",
     "react-navigation": "^2.17.0",
     "react-relay": "^1.6.2",
-    "react-relay-network-modern": "^2.4.0",
+    "react-relay-network-modern": "^2.5.1",
     "relay-compiler": "^1.6.2",
     "relay-devtools": "^1.4.0",
     "rn-fetch-blob": "^0.10.14",

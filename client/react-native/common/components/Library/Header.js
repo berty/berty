@@ -6,6 +6,7 @@ import { padding, borderBottom, paddingBottom } from '../../styles'
 import { isRTL } from '../../i18n'
 import RelayContext from '../../relay/RelayContext'
 import Icon from './Icon'
+import { promiseWithTimeout } from 'react-relay-network-modern/es/middlewares/retry'
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
 
@@ -21,48 +22,63 @@ class StateBadge extends PureComponent {
       listenAddrs: [],
       listenInterfaceAddrs: [],
       timeouted: false,
-      requestTimeout: 1000,
+      requestTimeout: 3000,
       color: colors.black,
+      listenAddrTimer: null,
+      InterfaceAddrTimer: null,
     }
+  }
 
+  componentDidMount () {
     this.fetchListenAddrs()
     this.fetchListenInterfaceAddrs()
   }
 
-  reqTimeoutOrRetry = (caller, fetch, resolveF) => {
-    const { watchTime, requestTimeout } = this.state
-    new Promise((resolve, reject) => {
-      let timer = setTimeout(
-        () => {
-          this.setState({ timeouted: true })
-          reject(new Error('Request timed out'))
-        },
-        requestTimeout
-      )
+  componentWillUnmount () {
+    const { listenAddrTimer, InterfaceAddrTimer } = this.state
 
-      fetch()
-        .then((e) => {
-          resolveF(e)
-          resolve(e)
-        })
-        .catch((err) => reject(err))
-        .finally(() => clearTimeout(timer))
+    if (listenAddrTimer !== null) {
+      clearTimeout(listenAddrTimer)
+    }
+
+    if (InterfaceAddrTimer !== null) {
+      clearTimeout(InterfaceAddrTimer)
+    }
+  }
+
+  timeoutPromise = () => {
+    return new Promise((resolve, reject) => {
+      this.setState({ timeouted: true }, this.setColor)
+      reject(new Error('Request timed out'))
     })
-      .catch((err) => console.log('GetListenAddrsFailed with', err))
-      .finally(() => setTimeout(caller, watchTime))
   }
 
   fetchListenAddrs = () => {
     const { context } = this.props
-    this.reqTimeoutOrRetry(this.fetchListenAddrs, context.queries.GetListenAddrs.fetch,
-      (e) => this.setState({ listenAddrs: e.addrs, timeouted: false }, this.setColor)
-    )
+    const { watchTime, requestTimeout } = this.state
+
+    promiseWithTimeout(context.queries.GetListenAddrs.fetch(), requestTimeout, this.timeoutPromise).then(e => {
+      const timer = setTimeout(this.fetchListenAddrs, watchTime)
+      this.setState({ listenAddrs: e.addrs, timeouted: false, listenAddrTimer: timer }, this.setColor)
+    }).catch(err => {
+      const timer = setTimeout(this.fetchListenAddrs, watchTime)
+      this.setState({ listenAddrTimer: timer })
+      console.log('err Listen address', err)
+    })
   }
 
   fetchListenInterfaceAddrs = () => {
     const { context } = this.props
-    this.reqTimeoutOrRetry(this.fetchListenInterfaceAddrs, context.queries.GetListenInterfaceAddrs.fetch,
-      (e) => this.setState({ listenInterfaceAddrs: e.addrs, timeouted: false }, this.setColor))
+    const { watchTime, requestTimeout } = this.state
+
+    promiseWithTimeout(context.queries.GetListenInterfaceAddrs.fetch(), requestTimeout, this.timeoutPromise).then(e => {
+      const timer = setTimeout(this.fetchListenInterfaceAddrs, watchTime)
+      this.setState({ listenInterfaceAddrs: e.addrs, timeouted: false, InterfaceAddrTimer: timer }, this.setColor)
+    }).catch(err => {
+      const timer = setTimeout(this.fetchListenInterfaceAddrs, watchTime)
+      this.setState({ InterfaceAddrTimer: timer })
+      console.log('err Listen address', err)
+    })
   }
 
   setColor = () => {
@@ -72,7 +88,6 @@ class StateBadge extends PureComponent {
     if (listenAddrs.length > 0 && listenInterfaceAddrs.length > 0) {
       color = colors.yellow
       listenInterfaceAddrs.forEach((v, i, arr) => {
-        console.log(v)
         try {
           const splited = v.split('/')
           if (splited[1] === 'ip4' && splited[2] !== '127.0.0.1') {

@@ -211,4 +211,8 @@ class CoreModule: NSObject {
       resolve(nil)
     }
   }
+
+  @objc static func requiresMainQueueSetup() -> Bool {
+      return false
+  }
 }
