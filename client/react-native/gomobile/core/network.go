@@ -35,10 +35,11 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 		return nil, errors.Wrap(err, "JSONNetConf unmarshal failed")
 	}
 
-	if netConf.DefaultTransport {
-		transport = append(transport, "default")
-		bind = append(bind, defaultBind)
-	}
+	// if netConf.DefaultTransport {
+	// 	transport = append(transport, "default")
+	// 	bind = append(bind, defaultBind)
+	// }
+
 	if netConf.QuicTransport {
 		transport = append(transport, "quic")
 		bind = append(bind, quicBind)

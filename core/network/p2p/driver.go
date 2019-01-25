@@ -189,6 +189,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	driver.PingSvc = ping.NewPingService(host)
 
 	dialOpts := append([]grpc.DialOption{
+		grpc.WithBlock(),
 		grpc.WithInsecure(),
 		grpc.WithDialer(sgrpc.NewDialer(ctx, ID)),
 	}, p2pInterceptorsClient...)
@@ -443,7 +444,6 @@ func (d *Driver) Emit(ctx context.Context, e *p2p.Envelope) error {
 func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) error {
 	tracer := tracing.EnterFunc(ctx, channel, e)
 	defer tracer.Finish()
-	ctx = tracer.Context()
 
 	logger().Debug("looking for peers", zap.String("channel", channel))
 	ss, err := d.FindProvidersAndWait(ctx, channel, true)
@@ -458,7 +458,6 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 		go func(pi pstore.PeerInfo, index int, done chan bool) {
 			gotracer := tracing.EnterFunc(ctx, index)
 			defer gotracer.Finish()
-			goctx := tracer.Context()
 
 			peerID := pi.ID.Pretty()
 			if pi.ID == d.host.ID() {
@@ -468,13 +467,13 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 			}
 
 			logger().Debug("connecting", zap.String("channel", channel), zap.String("peerID", peerID))
-			if err := d.Connect(goctx, pi); err != nil {
+			if err := d.Connect(ctx, pi); err != nil {
 				logger().Warn("failed to connect", zap.String("id", peerID), zap.Error(err))
 				done <- false
 				return
 			}
 
-			c, err := d.ccmanager.GetConn(goctx, peerID)
+			c, err := d.ccmanager.GetConn(ctx, peerID)
 			if err != nil {
 				logger().Warn("failed to dial", zap.String("id", peerID), zap.Error(err))
 				done <- false
@@ -484,7 +483,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 			sc := p2p.NewServiceClient(c)
 
 			logger().Debug("sending envelope", zap.String("channel", channel), zap.String("peerID", peerID))
-			_, err = sc.HandleEnvelope(goctx, e)
+			_, err = sc.HandleEnvelope(ctx, e)
 			if err != nil {
 				logger().Error("failed to send envelope", zap.String("channel", channel), zap.String("peerID", peerID), zap.String("error", err.Error()))
 				done <- false
@@ -520,7 +519,7 @@ func (d *Driver) FindProvidersAndWait(ctx context.Context, id string, cache bool
 	}
 
 	if err := d.providers.FindProviders(ctx, c, cache); err != nil {
-		return nil, err
+		logger().Warn("find provider", zap.Error(err))
 	}
 
 	return d.providers.WaitForProviders(ctx, c)

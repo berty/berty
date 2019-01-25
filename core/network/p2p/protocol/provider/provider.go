@@ -149,17 +149,14 @@ func (m *Manager) GetLocalPeers(id cid.Cid) (Peers, error) {
 func (m *Manager) Provide(ctx context.Context, id cid.Cid) error {
 	logger().Debug("providing", zap.String("id", id.String()))
 
-	ok := false
+	if err := m.createSub(id); err != nil {
+		logger().Warn("provider subscription", zap.Error(err))
+	}
+
 	for _, p := range m.providers {
 		if err := p.Provide(ctx, id); err != nil {
 			logger().Warn("failed to provide", zap.String("id", id.String()), zap.Error(err))
-		} else {
-			ok = true
 		}
-	}
-
-	if !ok {
-		return fmt.Errorf("failed to provide with at last on provider")
 	}
 
 	return nil

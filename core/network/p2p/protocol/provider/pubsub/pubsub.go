@@ -186,6 +186,11 @@ func (p *Provider) handleStream(s inet.Stream) {
 		return
 	}
 
+	// if !p.isSubscribeTo(remoteProvider.GetId()) {
+	// 	logger().Debug("not subscribed", zap.String("ID", remoteProvider.GetId()))
+	// 	return
+	// }
+
 	pinfo, err := p.getPeerInfo(remoteProvider)
 	if err != nil {
 		logger().Error("malformed provider info", zap.Error(err))
