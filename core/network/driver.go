@@ -34,6 +34,12 @@ type Metrics interface {
 
 	// Monitor bandwidth of a specific peer with the given peer id and interval
 	MonitorBandwidthPeer(string, time.Duration, func(*BandwidthStats, error) error)
+
+	GetListenAddrs(ctx context.Context) *ListAddrs
+
+	GetListenInterfaceAddrs(ctx context.Context) (*ListAddrs, error)
+
+	Libp2PPing(ctx context.Context, str string) (bool, error)
 }
 
 type Driver interface {

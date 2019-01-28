@@ -79,7 +79,7 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
   retryMiddleware({
     allowMutations: true,
     fetchTimeout: 5000,
-    retryDelays: () => 2000,
+    retryDelays: attempt => Math.pow(2, attempt + 4) * 100,
     beforeRetry: async ({
       forceRetry,
       abort,
@@ -88,6 +88,9 @@ const setupMiddlewares = async ({ getIp, getPort }) => [
       lastError,
       req,
     }) => {
+      if (attempt > 5 || (attempt > 0 && (req.id === 'Libp2PPingQuery' || req.id === 'GetListenAddrsQuery' || req.id === 'GetListenInterfaceAddrsQuery'))) {
+        return abort()
+      }
       req.fetchOpts.url = `http://${await getIp()}:${await getPort()}/query`
 
       // eslint-disable-next-line

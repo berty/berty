@@ -26,3 +26,11 @@ message BandwidthStats {
   double rate_out  = 5 [(gql.graphql_nullable) = true];
   MetricsType type = 6;
 }
+
+message ListAddrs {
+  repeated string addrs = 1;
+}
+
+message PingReq {
+  string str = 1;
+}

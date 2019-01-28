@@ -1,3 +1,6 @@
+export Libp2PPing from './Libp2PPing'
+export GetListenAddrs from './GetListenAddrs'
+export GetListenInterfaceAddrs from './GetListenInterfaceAddrs'
 export ConversationList from './ConversationList'
 export Conversation from './Conversation'
 export ConversationLastEvent from './ConversationLastEvent'

@@ -1,15 +1,53 @@
-import { withNamespaces } from 'react-i18next'
-import I18n from 'i18next'
 import React, { PureComponent } from 'react'
-
-import { Avatar, EmptyList, Flex, Header, Screen, Text } from '../../Library'
+import { Avatar, EmptyList, Flex, Header, Screen, Text, Icon } from '../../Library'
 import { BertyP2pKindInputKind } from '../../../graphql/enums.gen'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
-import { fragments } from '../../../graphql'
+import { fragments, enums } from '../../../graphql'
 import { parseEmbedded } from '../../../helpers/json'
 import { conversation as utils } from '../../../utils'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
+
+class StateBadge extends PureComponent {
+  constructor (props) {
+    super(props)
+    this.state = {
+      color: colors.red,
+      setint: setInterval(this.getPing, 10000),
+    }
+
+    this.getPing()
+  }
+
+  componentWillUnmount () {
+    clearInterval(this.state.setint)
+  }
+
+  getPing = () => {
+    const { other, context } = this.props
+    other.contact.devices.forEach(element => {
+      context.queries.Libp2PPing.fetch({ str: element.contactId })
+        .then(
+          (e) => {
+            console.log('fetch ret', e)
+            if (e.ret === true) {
+              this.setState({
+                color: colors.green,
+              })
+            }
+          }
+        ).catch(
+          (e) => console.warn('err', e)
+        )
+    })
+  }
+
+  render () {
+    return (<Icon style={{ color: this.state.color }} name={'material-checkbox-blank-circle'} />)
+  }
+}
 
 import { hook } from 'cavy'
 
@@ -101,6 +139,15 @@ const ItemBase = fragments.Conversation(({ data, navigation, t }) => {
     >
       <Flex.Rows size={1} align='center'>
         <Avatar data={data} size={40} />
+        {data.members.length === 2
+          ? <RelayContext.Consumer>
+            {context => <StateBadge
+              other={data.members.find(element => element.contact.status !== enums.BertyEntityContactInputStatus.Myself)}
+              // other={data.members}
+              context={context} />}
+          </RelayContext.Consumer>
+          : null
+        }
       </Flex.Rows>
       <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
         <Text color={colors.black} left middle bold={!isRead}>

@@ -3,6 +3,7 @@ package p2p
 import (
 	"context"
 	"fmt"
+	"reflect"
 	"sync"
 	"time"
 
@@ -32,6 +33,86 @@ type Metrics struct {
 	driver *Driver
 
 	rootContext context.Context
+}
+
+func (m *Metrics) Libp2PPing(ctx context.Context, channelID string) (bool, error) {
+	newCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	psID, err := m.driver.FindProvidersAndWait(newCtx, channelID, false)
+	if err != nil {
+		// only there to silence possible context leak
+		return false, nil
+	}
+	success := make([]chan bool, len(psID))
+	for i, p := range psID {
+		success[i] = make(chan bool, 1)
+		go func(pi pstore.PeerInfo, index int) {
+			pID := pi.ID
+			if err := m.driver.Connect(newCtx, pi); err != nil {
+				success[index] <- false
+				return
+			}
+			ch, err := m.driver.PingSvc.Ping(newCtx, pID)
+			if err != nil {
+				success[index] <- false
+				return
+			}
+			waiting := <-ch
+			if waiting == 0 {
+				success[index] <- false
+				return
+			}
+			success[index] <- true
+			cancel()
+		}(p, i)
+	}
+
+	cases := make([]reflect.SelectCase, len(psID))
+	for i, ch := range success {
+		cases[i] = reflect.SelectCase{Dir: reflect.SelectRecv, Chan: reflect.ValueOf(ch)}
+	}
+
+	remaining := len(psID)
+	for remaining > 0 {
+		chosen, value, ok := reflect.Select(cases)
+		remaining--
+		if !ok {
+			cases[chosen].Chan = reflect.ValueOf(nil)
+			continue
+		}
+		if value.Bool() == true {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func (m *Metrics) GetListenAddrs(ctx context.Context) *network.ListAddrs {
+	lAddr := m.host.Network().ListenAddresses()
+	lSlice := []string{}
+	for _, l := range lAddr {
+		lSlice = append(lSlice, l.String())
+	}
+
+	return &network.ListAddrs{
+		Addrs: lSlice,
+	}
+}
+
+func (m *Metrics) GetListenInterfaceAddrs(ctx context.Context) (*network.ListAddrs, error) {
+	iAddr, err := m.host.Network().InterfaceListenAddresses()
+	if err != nil {
+		return nil, err
+	}
+
+	iSlice := []string{}
+	for _, i := range iAddr {
+		iSlice = append(iSlice, i.String())
+	}
+
+	return &network.ListAddrs{
+		Addrs: iSlice,
+	}, nil
 }
 
 func NewMetrics(ctx context.Context, d *Driver) network.Metrics {

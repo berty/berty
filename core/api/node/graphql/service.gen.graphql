@@ -435,6 +435,12 @@ type BertyNetworkBandwidthStats  {
     rateOut: Double
     type: Enum
 }
+type BertyNetworkListAddrs  {
+    addrs: [String!]
+}
+type BertyNetworkPingReq  {
+    str: String!
+}
   
   
   
@@ -808,6 +814,15 @@ type Query {
   TestError(
     kind: String!
   ): BertyNodeVoid
+  GetListenAddrs(
+    T: Bool!
+  ): BertyNetworkListAddrs
+  GetListenInterfaceAddrs(
+    T: Bool!
+  ): BertyNetworkListAddrs
+  Libp2PPing(
+    str: String!
+  ): BertyNodeBool
 }
   
 type Mutation {

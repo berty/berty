@@ -5400,9 +5400,9 @@ react-proxy@^1.1.7:
     lodash "^4.6.1"
     react-deep-force-update "^1.0.0"
 
-react-relay-network-modern@^2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/react-relay-network-modern/-/react-relay-network-modern-2.4.0.tgz#639ea0745545ab148d0c78714330e93dca7e031c"
+react-relay-network-modern@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/react-relay-network-modern/-/react-relay-network-modern-2.5.1.tgz#a081ae2691dbf2cfa53129cd6eb41a1e91a071aa"
 
 react-relay@^1.6.2:
   version "1.6.2"

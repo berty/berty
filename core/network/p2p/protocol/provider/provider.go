@@ -165,13 +165,15 @@ func (m *Manager) Provide(ctx context.Context, id cid.Cid) error {
 	return nil
 }
 
-func (m *Manager) FindProviders(ctx context.Context, id cid.Cid) error {
+func (m *Manager) FindProviders(ctx context.Context, id cid.Cid, cache bool) error {
 	logger().Debug("finding providers", zap.String("id", id.String()))
 
 	// create subscription
-	ps, err := m.getPeersForSub(id)
-	if err == nil && len(ps) > 0 {
-		return nil
+	if cache == true {
+		ps, err := m.getPeersForSub(id)
+		if err == nil && len(ps) > 0 {
+			return nil
+		}
 	}
 
 	if err := m.createSub(id); err != nil {

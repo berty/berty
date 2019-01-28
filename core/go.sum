@@ -369,6 +369,8 @@ github.com/libp2p/go-libp2p-protocol v1.0.0 h1:6AnF76m2VjjiaDisOahQnWSnX2WWaISOX
 github.com/libp2p/go-libp2p-protocol v1.0.0/go.mod h1:Af9n4PiruirSDjHycM1QuiMi/1VZNHYcK8cLgFJLZ4s=
 github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20181227100204-0363ea8f53a9 h1:HB1w0H1Lm4jpHQv6ZTEztNGJdYprWkovQa5/fiaT87U=
 github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20181227100204-0363ea8f53a9/go.mod h1:E2KoEMwM5nWtdGV+wWueN7g/j++VL9tmCfjzk1fLpWc=
+github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20190121225156-d4589956d289 h1:vOabGiZFvqct09RU948E9VHILBuLAPVmiPgTmae63CE=
+github.com/libp2p/go-libp2p-pubsub v0.10.3-0.20190121225156-d4589956d289/go.mod h1:E2KoEMwM5nWtdGV+wWueN7g/j++VL9tmCfjzk1fLpWc=
 github.com/libp2p/go-libp2p-quic-transport v0.2.9 h1:9YiNGAhsVTP3ysy/gNx7PRlYMLQxL64J9Q6AqpNNrA0=
 github.com/libp2p/go-libp2p-quic-transport v0.2.9/go.mod h1:K7NlcUvC/DQCjGX9nctnSCN0l/QXMTveKL48SVdvkGM=
 github.com/libp2p/go-libp2p-record v4.1.7+incompatible h1:SDxar7iuh4z03b85lr8tVMSKNWWK73RLkQKyPwcxIeo=
