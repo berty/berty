@@ -30,23 +30,11 @@ class CoreModule: NSObject {
     }
   }
 
-  func getFilesDir() throws -> String {
-    let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-    let filesPath = filesDir?.path
-    let fileExist = FileManager.default.fileExists(atPath: filesPath!)
-
-    // do this in gomobile and set storage as global in gomobile
-    if fileExist == false {
-      try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)
-    }
-    return filesPath!
-  }
-
   @objc func initialize(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     var err: NSError?
 
     do {
-      CoreInitialize(logger, Core.storagePath(), &err)
+      CoreInitialize(logger, Core.deviceInfo().getStoragePath(), &err)
       if let error = err {
         throw error
       }
@@ -61,7 +49,7 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      let list = CoreListAccounts(try self.getFilesDir(), &err)
+      let list = CoreListAccounts(&err)
       if let error = err {
         throw error
       }
@@ -76,10 +64,8 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      let datastore = try self.getFilesDir()
 
       guard let coreOptions = CoreMobileOptions()?
-        .withDatastorePath(datastore)?
         .withLoggerDriver(logger)?
         .withNickname(nickname as String)
         else {
@@ -122,7 +108,7 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      CoreDropDatabase(try self.getFilesDir(), &err)
+      CoreDropDatabase(&err)
       if let error = err {
         throw error
       }

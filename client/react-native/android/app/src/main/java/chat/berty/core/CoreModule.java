@@ -15,13 +15,12 @@ import chat.berty.ble.BleManager;
 
 public class CoreModule extends ReactContextBaseJavaModule {
     private Logger logger = new Logger("chat.berty.io");
-    private String filesDir = "";
+
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
 
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.filesDir = reactContext.getFilesDir().getAbsolutePath();
 
         String storagePath = reactContext.getFilesDir().getAbsolutePath();
         try {

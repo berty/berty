@@ -96,7 +96,7 @@ func cleanDatabase() error {
 	return nil
 }
 
-func save(chunk *Chunk) error {
+func wakeUpDatabase() {
 	for db == nil || db.DB().Ping() != nil {
 		if err := openDatabase(); err != nil {
 			logger().Error(err.Error())
@@ -105,6 +105,10 @@ func save(chunk *Chunk) error {
 			break
 		}
 	}
+}
+
+func save(chunk *Chunk) error {
+	wakeUpDatabase()
 	if err := db.Save(chunk).Error; err != nil {
 		return errorcodes.ErrChunkSave.Wrap(err)
 	}
@@ -112,6 +116,7 @@ func save(chunk *Chunk) error {
 }
 
 func findAllSlices() ([][]*Chunk, error) {
+	wakeUpDatabase()
 	firstChunks := []*Chunk{}
 	if err := db.Where(&Chunk{Index: 0}).Find(&firstChunks).Error; err != nil {
 		return nil, errorcodes.ErrChunkFindAllSlices.Wrap(err)
@@ -128,6 +133,7 @@ func findAllSlices() ([][]*Chunk, error) {
 }
 
 func findSliceByID(sliceID string) ([]*Chunk, error) {
+	wakeUpDatabase()
 	slice := []*Chunk{}
 	if err := db.Order("index").Where(&Chunk{SliceID: sliceID}).Find(&slice).Error; err != nil {
 		return nil, errorcodes.ErrChunkFindSliceByID.Wrap(err)
