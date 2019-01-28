@@ -45,10 +45,6 @@ func (m *Manager) addPeerToSub(id cid.Cid, pi pstore.PeerInfo) error {
 	defer m.muSubs.Unlock()
 
 	logger().Debug("registering", zap.String("id", id.String()))
-	for k, v := range m.subs {
-		logger().Debug("key, value", zap.String("k", k.String()), zap.Int("v", len(v)))
-	}
-
 	ps, ok := m.subs[id]
 	if !ok {
 		return fmt.Errorf("not subscribed to %s", id)
@@ -149,15 +145,30 @@ func (m *Manager) GetLocalPeers(id cid.Cid) (Peers, error) {
 func (m *Manager) Provide(ctx context.Context, id cid.Cid) error {
 	logger().Debug("providing", zap.String("id", id.String()))
 
+	mu := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	wg.Add(len(m.providers))
+
 	ok := false
 	for _, p := range m.providers {
-		if err := p.Provide(ctx, id); err != nil {
-			logger().Warn("failed to provide", zap.String("id", id.String()), zap.Error(err))
-		} else {
+		go func(_p Provider) {
+			defer wg.Done()
+
+			if err := _p.Provide(ctx, id); err != nil {
+				logger().Warn("failed to provide", zap.String("id", id.String()), zap.Error(err))
+				return
+			}
+
+			mu.Lock()
 			ok = true
-		}
+			mu.Unlock()
+
+			return
+		}(p)
 	}
 
+	// wait until all goroutines are done
+	wg.Wait()
 	if !ok {
 		return fmt.Errorf("failed to provide with at last on provider")
 	}
@@ -166,29 +177,46 @@ func (m *Manager) Provide(ctx context.Context, id cid.Cid) error {
 }
 
 func (m *Manager) FindProviders(ctx context.Context, id cid.Cid, cache bool) error {
-	logger().Debug("finding providers", zap.String("id", id.String()))
-
-	// create subscription
 	if cache == true {
 		ps, err := m.getPeersForSub(id)
 		if err == nil && len(ps) > 0 {
+			// We already got some peers,
+			logger().Debug("getting cached providers", zap.String("id", id.String()))
 			return nil
 		}
 	}
 
+	logger().Debug("finding providers", zap.String("id", id.String()))
+
+	// create subscription
 	if err := m.createSub(id); err != nil {
-		logger().Warn("provider subscription", zap.Error(err))
+		logger().Warn("finding providers", zap.Error(err))
 	}
+
+	mu := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	wg.Add(len(m.providers))
 
 	ok := false
 	for _, p := range m.providers {
-		if err := p.FindProviders(ctx, id); err != nil {
-			logger().Warn("finding providers", zap.String("id", id.String()), zap.Error(err))
-		} else {
+		go func(_p Provider) {
+			defer wg.Done()
+
+			if err := _p.FindProviders(ctx, id); err != nil {
+				logger().Warn("finding providers", zap.String("id", id.String()), zap.Error(err))
+				return
+			}
+
+			mu.Lock()
 			ok = true
-		}
+			mu.Unlock()
+
+			return
+		}(p)
 	}
 
+	// wait until all goroutines are done
+	wg.Wait()
 	if !ok {
 		return fmt.Errorf("failed to find providers with at last one provider")
 	}

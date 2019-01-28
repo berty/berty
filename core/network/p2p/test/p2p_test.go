@@ -47,11 +47,7 @@ func setupDriver(bootstrap ...string) (*p2p.Driver, error) {
 	if err != nil {
 		return nil, err
 	}
-	go func() {
-		if err = driver.Start(context.Background()); err != nil {
-			logger().Error("driver start error", zap.Error(err))
-		}
-	}()
+
 	return driver, err
 }
 
@@ -75,10 +71,9 @@ func TestP2PNetwork(t *testing.T) {
 		homer, lisa, bart *p2p.Driver
 		err               error
 	)
+
 	// setupTestLogging()
 	// log.SetDebugLogging()
-
-	// logging.SetDebugLogging()
 
 	dht.PoolSize = 3
 	ds := []*p2p.Driver{homer, lisa, bart}

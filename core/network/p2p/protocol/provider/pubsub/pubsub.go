@@ -75,7 +75,7 @@ func (p *Provider) RegisterHandler(h provider.Handler) {
 	p.handler = h
 }
 
-func (p *Provider) getSub() (*p2pps.Subscription, error) {
+func (p *Provider) getSub(ctx context.Context) (*p2pps.Subscription, error) {
 	p.subReady.Lock()
 	defer p.subReady.Unlock()
 
@@ -86,7 +86,12 @@ func (p *Provider) getSub() (*p2pps.Subscription, error) {
 		}
 
 		// wait for heartbeats to build mesh
-		<-time.After(time.Second * 2)
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-time.After(time.Second * 2):
+
+		}
 		p.sub = sub
 	}
 
@@ -103,8 +108,8 @@ func (p *Provider) cancelSub() {
 	}
 }
 
-func (p *Provider) isReady() error {
-	_, err := p.getSub()
+func (p *Provider) isReady(ctx context.Context) error {
+	_, err := p.getSub(ctx)
 	return err
 }
 
@@ -207,14 +212,7 @@ func (p *Provider) handleStream(s inet.Stream) {
 
 func (p *Provider) handleSubscription(ctx context.Context) error {
 	for {
-
-		select {
-		case <-ctx.Done():
-			return ctx.Err()
-		default:
-		}
-
-		sub, err := p.getSub()
+		sub, err := p.getSub(ctx)
 		if err != nil {
 			logger().Warn("sub error", zap.Error(err))
 			continue
@@ -238,11 +236,6 @@ func (p *Provider) handleSubscription(ctx context.Context) error {
 			logger().Warn("decode id error", zap.String("id", id.String()), zap.Error(err))
 		}
 
-		if !p.isSubscribeTo(remoteProvider.GetId()) {
-			logger().Debug("not subscribed", zap.String("ID", remoteProvider.GetId()))
-			continue
-		}
-
 		pinfo := pstore.PeerInfo{}
 		data := remoteProvider.GetPeerInfo()
 		if err := pinfo.UnmarshalJSON(data); err != nil {
@@ -251,6 +244,11 @@ func (p *Provider) handleSubscription(ctx context.Context) error {
 		}
 
 		if pinfo.ID == p.host.ID() {
+			continue
+		}
+
+		if !p.isSubscribeTo(remoteProvider.GetId()) {
+			logger().Debug("not subscribed", zap.String("ID", remoteProvider.GetId()))
 			continue
 		}
 
@@ -293,7 +291,7 @@ func (p *Provider) handleSubscription(ctx context.Context) error {
 	}
 }
 
-func (p *Provider) Announce(id string) error {
+func (p *Provider) Announce(ctx context.Context, id string) error {
 	pi, err := p.newProviderInfo(id)
 	if err != nil {
 		return err
@@ -304,7 +302,7 @@ func (p *Provider) Announce(id string) error {
 		return err
 	}
 
-	if err := p.isReady(); err != nil {
+	if err := p.isReady(ctx); err != nil {
 		return fmt.Errorf("announce failed %s", err)
 	}
 
@@ -313,7 +311,7 @@ func (p *Provider) Announce(id string) error {
 }
 
 func (p *Provider) Subscribe(ctx context.Context, id string) error {
-	if err := p.isReady(); err != nil {
+	if err := p.isReady(ctx); err != nil {
 		return fmt.Errorf("subscribe failed %s", err)
 	}
 
@@ -322,9 +320,15 @@ func (p *Provider) Subscribe(ctx context.Context, id string) error {
 }
 
 func (p *Provider) Provide(ctx context.Context, id cid.Cid) error {
-	return p.Subscribe(ctx, id.String())
+	// Do not return an error here, it's ok to provide the same id multiple
+	// time. But keep logging to track if this method become over called
+	if err := p.Subscribe(ctx, id.String()); err != nil {
+		logger().Warn("subscribing", zap.String("subID", id.String()), zap.Error(err))
+	}
+
+	return nil
 }
 
-func (p *Provider) FindProviders(_ context.Context, id cid.Cid) error {
-	return p.Announce(id.String())
+func (p *Provider) FindProviders(ctx context.Context, id cid.Cid) error {
+	return p.Announce(ctx, id.String())
 }
