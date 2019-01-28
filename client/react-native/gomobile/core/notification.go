@@ -106,10 +106,10 @@ func (n *MobileNotification) Unsubscribe(sub chan []byte) {
 	for i := range n.subscribers {
 		if sub == n.subscribers[i] {
 			n.subscribers = append(n.subscribers[:i], n.subscribers[i+1:]...)
+			chunk.Unsubscribe(sub)
 		}
 	}
 	n.subscribersMutex.Unlock()
-	close(sub)
 }
 
 func (n *MobileNotification) SubscribeToken() chan *notification.Token {
