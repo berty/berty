@@ -3,6 +3,7 @@ package pubsub
 import (
 	"context"
 	fmt "fmt"
+	io "io"
 	"sync"
 	"time"
 
@@ -181,24 +182,30 @@ func (p *Provider) getProvider(pid peer.ID) (string, error) {
 // @TODO: for the moment handleStream accept any id,
 // improve to match published message
 func (p *Provider) handleStream(s inet.Stream) {
-	defer inet.FullClose(s)
-
 	pbr := ggio.NewDelimitedReader(s, inet.MessageSizeMax)
 
 	remoteProvider := &ProviderInfo{}
-	if err := pbr.ReadMsg(remoteProvider); err != nil {
-		logger().Error("invalid provider info", zap.Error(err))
+	switch err := pbr.ReadMsg(remoteProvider); err {
+	case io.EOF:
+		s.Close()
+		return
+	case nil:
+	default:
+		s.Reset()
+		logger().Error("Error unmarshaling provider info", zap.Error(err))
 		return
 	}
 
 	pinfo, err := p.getPeerInfo(remoteProvider)
 	if err != nil {
+		s.Reset()
 		logger().Error("malformed provider info", zap.Error(err))
 		return
 	}
 
 	id, err := cid.Decode(remoteProvider.GetId())
 	if err != nil {
+		s.Reset()
 		logger().Error("invalid provider id", zap.String("id", id.String()), zap.Error(err))
 	}
 
@@ -282,11 +289,12 @@ func (p *Provider) handleSubscription(ctx context.Context) error {
 
 		pbw := ggio.NewDelimitedWriter(s)
 		if err := pbw.WriteMsg(self); err != nil {
+			s.Reset()
 			logger().Error("write stream", zap.Error(err))
-		} else {
-			p.handler(id, pinfo)
+			continue
 		}
 
+		p.handler(id, pinfo)
 		go inet.FullClose(s)
 	}
 }

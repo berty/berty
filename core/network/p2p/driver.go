@@ -452,19 +452,20 @@ func (d *Driver) SendTo(ctx context.Context, pi pstore.PeerInfo, e *p2p.Envelope
 		return fmt.Errorf("write stream: `%s`", err.Error())
 	}
 
+	go inet.FullClose(s)
 	return nil
 }
 
 func (d *Driver) handleEnvelope(s inet.Stream) {
 	logger().Debug("receiving envelope")
-
 	if d.handler == nil {
 		logger().Error("handler is not set")
 		return
 	}
 
-	e := &p2p.Envelope{}
 	pbr := ggio.NewDelimitedReader(s, inet.MessageSizeMax)
+
+	e := &p2p.Envelope{}
 	switch err := pbr.ReadMsg(e); err {
 	case io.EOF:
 		s.Close()

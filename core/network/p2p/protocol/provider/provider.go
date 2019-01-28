@@ -47,7 +47,8 @@ func (m *Manager) addPeerToSub(id cid.Cid, pi pstore.PeerInfo) error {
 	logger().Debug("registering", zap.String("id", id.String()))
 	ps, ok := m.subs[id]
 	if !ok {
-		return fmt.Errorf("not subscribed to %s", id)
+		// If no subscription(s), create one to cache peer
+		m.subs[id] = make(Peers, 0)
 	}
 
 	m.subs[id] = ps.add(pi)
