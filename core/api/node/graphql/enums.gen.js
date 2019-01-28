@@ -263,10 +263,12 @@ export const BertyNodeKindInputKind = {
   NodeStarted: 1,
   NodeStopped: 2,
   NodeIsAlive: 3,
-  BackgroundError: 4,
-  BackgroundWarn: 5,
-  Debug: 6,
-  Statistics: 7,
+  BackgroundCritical: 4,
+  BackgroundError: 5,
+  BackgroundWarn: 6,
+  BackgroundInfo: 7,
+  Debug: 8,
+  Statistics: 9,
 }
 
 export const ValueBertyNodeKindInputKind = {
@@ -274,10 +276,12 @@ export const ValueBertyNodeKindInputKind = {
   1: 'NodeStarted',
   2: 'NodeStopped',
   3: 'NodeIsAlive',
-  4: 'BackgroundError',
-  5: 'BackgroundWarn',
-  6: 'Debug',
-  7: 'Statistics',
+  4: 'BackgroundCritical',
+  5: 'BackgroundError',
+  6: 'BackgroundWarn',
+  7: 'BackgroundInfo',
+  8: 'Debug',
+  9: 'Statistics',
 }
 
 export const BertyNetworkConnectionTypeInputConnectionType = {
@@ -296,18 +300,20 @@ export const ValueBertyNetworkConnectionTypeInputConnectionType = {
 
 export const BertyEntityDebugVerbosityInputDebugVerbosity = {
   VERBOSITY_LEVEL_NONE: 0,
-  VERBOSITY_LEVEL_ERROR: 1,
-  VERBOSITY_LEVEL_WARN: 2,
-  VERBOSITY_LEVEL_INFO: 3,
-  VERBOSITY_LEVEL_DEBUG: 4,
+  VERBOSITY_LEVEL_CRITICAL: 1,
+  VERBOSITY_LEVEL_ERROR: 2,
+  VERBOSITY_LEVEL_WARN: 3,
+  VERBOSITY_LEVEL_INFO: 4,
+  VERBOSITY_LEVEL_DEBUG: 5,
 }
 
 export const ValueBertyEntityDebugVerbosityInputDebugVerbosity = {
   0: 'VERBOSITY_LEVEL_NONE',
-  1: 'VERBOSITY_LEVEL_ERROR',
-  2: 'VERBOSITY_LEVEL_WARN',
-  3: 'VERBOSITY_LEVEL_INFO',
-  4: 'VERBOSITY_LEVEL_DEBUG',
+  1: 'VERBOSITY_LEVEL_CRITICAL',
+  2: 'VERBOSITY_LEVEL_ERROR',
+  3: 'VERBOSITY_LEVEL_WARN',
+  4: 'VERBOSITY_LEVEL_INFO',
+  5: 'VERBOSITY_LEVEL_DEBUG',
 }
 
 export const BertyPkgDeviceinfoTypeInputType = { Unknown: 0, Raw: 1, Json: 2 }

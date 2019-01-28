@@ -14,16 +14,19 @@ enum Kind {
   NodeStarted = 1;
   NodeStopped = 2;
   NodeIsAlive = 3;
-  BackgroundError = 4;
-  BackgroundWarn = 5;
-  Debug = 6;
-  Statistics = 7;
+  BackgroundCritical = 4;
+  BackgroundError = 5;
+  BackgroundWarn = 6;
+  BackgroundInfo = 7;
+  Debug = 8;
+  Statistics = 9;
   // FIXME: add connection established
 }
 
 message NodeStartedAttrs { bool T = 1; }
 message NodeStoppedAttrs { string err_msg = 1; }
 message NodeIsAliveAttrs { bool T = 1; }
+message BackgroundCriticalAttrs { string err_msg = 1; }
 message BackgroundErrorAttrs { string err_msg = 1; }
 message BackgroundWarnAttrs { string err_msg = 1; }
 message DebugAttrs { string msg = 1; }

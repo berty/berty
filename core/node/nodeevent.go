@@ -24,6 +24,23 @@ func (n *Node) EnqueueNodeEvent(ctx context.Context, kind node.Kind, attributes 
 	}
 }
 
+func (n *Node) LogBackgroundCritical(ctx context.Context, err error) {
+	logger().Error("background error", zap.Error(err))
+	n.EnqueueNodeEvent(ctx, node.Kind_BackgroundCritical, &node.BackgroundCriticalAttrs{
+		ErrMsg: err.Error(),
+	})
+
+	if n.config.IsDebugNotificationAllowed(entity.DebugVerbosity_VERBOSITY_LEVEL_CRITICAL) {
+		n.DisplayNotification(&notification.Payload{
+			Title: i18n.T("LogBackgroundCritical", nil),
+			Body:  err.Error(),
+			// Icon
+			// Sound
+			// Badge
+		})
+	}
+}
+
 func (n *Node) LogBackgroundError(ctx context.Context, err error) {
 	logger().Error("background error", zap.Error(err))
 	n.EnqueueNodeEvent(ctx, node.Kind_BackgroundError, &node.BackgroundErrorAttrs{
@@ -58,15 +75,15 @@ func (n *Node) LogBackgroundWarn(ctx context.Context, err error) {
 	}
 }
 
-func (n *Node) LogBackgroundDebug(ctx context.Context, msg string) {
-	logger().Debug("background debug", zap.String("msg", msg))
-	n.EnqueueNodeEvent(ctx, node.Kind_Debug, &node.DebugAttrs{
+func (n *Node) LogBackgroundInfo(ctx context.Context, msg string) {
+	logger().Debug("background info", zap.String("msg", msg))
+	n.EnqueueNodeEvent(ctx, node.Kind_BackgroundInfo, &node.DebugAttrs{
 		Msg: msg,
 	})
 
-	if n.config.IsDebugNotificationAllowed(entity.DebugVerbosity_VERBOSITY_LEVEL_DEBUG) {
+	if n.config.IsDebugNotificationAllowed(entity.DebugVerbosity_VERBOSITY_LEVEL_INFO) {
 		n.DisplayNotification(&notification.Payload{
-			Title: i18n.T("LogBackgroundDebug", nil),
+			Title: i18n.T("LogBackgroundInfo", nil),
 			Body:  msg,
 			// Icon
 			// Sound

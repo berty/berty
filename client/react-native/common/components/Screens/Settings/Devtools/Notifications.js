@@ -25,34 +25,36 @@ class NotificationsBase extends PureComponent {
       <Menu.Section title={'APNS'}>
         <Menu.Item title={'APNS relay id'} boldLeft />
         <Menu.Item value={this.state.config.pushRelayPubkeyApns} onChangeText={pushRelayPubkeyApns => this.setState({ config: { ...this.state.config, pushRelayPubkeyApns } })} input />
+        <Menu.Item title={'Save'} boldLeft color={colors.blue} onPress={() => this.updateConfig('pushRelayPubkeyApns')} />
       </Menu.Section>
       <Menu.Section title={'FCM'}>
         <Menu.Item title={'FCM relay id'} boldLeft />
         <Menu.Item value={this.state.config.pushRelayPubkeyFcm} onChangeText={pushRelayPubkeyFcm  => this.setState({ config: { ...this.state.config, pushRelayPubkeyFcm } })} input />
+        <Menu.Item title={'Save'} boldLeft color={colors.blue} onPress={() => this.updateConfig('pushRelayPubkeyFcm')} />
       </Menu.Section>
+
       <Menu.Section title={'Debug'}>
         <Menu.Item title={'Debug verbosity'} boldLeft />
-        {Object.entries(enums.BertyEntityDebugVerbosityInputDebugVerbosity).map(([k, v]) => <Menu.Item
-          icon={this.state.config.debugNotificationVerbosity === v ? 'check-circle' : 'circle'}
-          title={k}
-          key={k}
-          onPress={()  => this.setState({ config: { ...this.state.config, debugNotificationVerbosity: v } })}
-        />
-        )}
-      </Menu.Section>
-      <Menu.Section>
-        <Menu.Item title={'Save'} boldLeft color={colors.blue} onPress={() => this.updateConfig()} />
+        {Object.entries(enums.BertyEntityDebugVerbosityInputDebugVerbosity)
+          .filter(([k, v]) => [enums.BertyEntityDebugVerbosityInputDebugVerbosity.VERBOSITY_LEVEL_ERROR, enums.BertyEntityDebugVerbosityInputDebugVerbosity.VERBOSITY_LEVEL_DEBUG].indexOf(v) > -1)
+          .map(([k, v]) => <Menu.Item
+            icon={this.state.config.debugNotificationVerbosity === v ? 'check-circle' : 'circle'}
+            title={k}
+            key={k}
+            onPress={async ()  => {
+              this.setState({ config: { ...this.state.config, debugNotificationVerbosity: v } }, () => this.updateConfig('debugNotificationVerbosity'))
+            }}
+          />
+          )}
       </Menu.Section>
     </Menu>
   }
 
-  async updateConfig () {
+  async updateConfig (field) {
     try {
       const config = {
         ...this.props.config,
-        pushRelayPubkeyApns: this.state.config.pushRelayPubkeyApns,
-        pushRelayPubkeyFcm: this.state.config.pushRelayPubkeyFcm,
-        debugNotificationVerbosity: this.state.config.debugNotificationVerbosity,
+        [field]: this.state.config[field],
       }
 
       await this.props.relayContext.mutations.configUpdate(config)
@@ -63,11 +65,7 @@ class NotificationsBase extends PureComponent {
         icon: 'danger',
         position: 'top',
       })
-
-      return
     }
-
-    this.props.navigation.goBack(null)
   }
 }
 

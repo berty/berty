@@ -455,6 +455,9 @@ type BertyNodeNodeStoppedAttrs  {
 type BertyNodeNodeIsAliveAttrs  {
     T: Bool!
 }
+type BertyNodeBackgroundCriticalAttrs  {
+    errMsg: String!
+}
 type BertyNodeBackgroundErrorAttrs  {
     errMsg: String!
 }

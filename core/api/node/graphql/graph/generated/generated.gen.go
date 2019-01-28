@@ -188,6 +188,10 @@ type ComplexityRoot struct {
 		Version func(childComplexity int) int
 	}
 
+	BertyNodeBackgroundCriticalAttrs struct {
+		ErrMsg func(childComplexity int) int
+	}
+
 	BertyNodeBackgroundErrorAttrs struct {
 		ErrMsg func(childComplexity int) int
 	}
@@ -3567,6 +3571,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeAppVersionOutput.Version(childComplexity), true
+
+	case "BertyNodeBackgroundCriticalAttrs.errMsg":
+		if e.complexity.BertyNodeBackgroundCriticalAttrs.ErrMsg == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeBackgroundCriticalAttrs.ErrMsg(childComplexity), true
 
 	case "BertyNodeBackgroundErrorAttrs.errMsg":
 		if e.complexity.BertyNodeBackgroundErrorAttrs.ErrMsg == nil {
@@ -8601,6 +8612,59 @@ func (ec *executionContext) _BertyNodeAppVersionOutput_version(ctx context.Conte
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.Version, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyNodeBackgroundCriticalAttrsImplementors = []string{"BertyNodeBackgroundCriticalAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyNodeBackgroundCriticalAttrs(ctx context.Context, sel ast.SelectionSet, obj *node.BackgroundCriticalAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNodeBackgroundCriticalAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyNodeBackgroundCriticalAttrs")
+		case "errMsg":
+			out.Values[i] = ec._BertyNodeBackgroundCriticalAttrs_errMsg(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeBackgroundCriticalAttrs_errMsg(ctx context.Context, field graphql.CollectedField, obj *node.BackgroundCriticalAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeBackgroundCriticalAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ErrMsg, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -23364,6 +23428,9 @@ type BertyNodeNodeStoppedAttrs  {
 }
 type BertyNodeNodeIsAliveAttrs  {
     T: Bool!
+}
+type BertyNodeBackgroundCriticalAttrs  {
+    errMsg: String!
 }
 type BertyNodeBackgroundErrorAttrs  {
     errMsg: String!

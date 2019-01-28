@@ -534,7 +534,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		return errorcodes.ErrAccManagerInitNode.Wrap(err)
 	}
 
-	a.node.LogBackgroundDebug(ctx, i18n.T("DaemonStartBody", nil))
+	a.node.LogBackgroundInfo(ctx, i18n.T("DaemonStartBody", nil))
 
 	return nil
 }

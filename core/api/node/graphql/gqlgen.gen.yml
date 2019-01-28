@@ -1424,6 +1424,19 @@ models:
     fields:
       t:
 
+  BertyNodeBackgroundCriticalAttrs:
+    model: berty.tech/core/api/node.BackgroundCriticalAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundCriticalAttrsInput:
+    model: berty.tech/core/api/node.BackgroundCriticalAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundCriticalAttrsPayload:
+    model: berty.tech/core/api/node.BackgroundCriticalAttrs
+    fields:
+      errMsg:
+
   BertyNodeBackgroundErrorAttrs:
     model: berty.tech/core/api/node.BackgroundErrorAttrs
     fields:
