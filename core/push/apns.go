@@ -2,6 +2,7 @@ package push
 
 import (
 	"encoding/base64"
+	fmt "fmt"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -88,11 +89,10 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 	if err != nil {
 		return err
 	}
-	for _, chunk := range chunks {
+	logger().Debug(fmt.Sprintf("chunks: %+v", len(chunks)))
+	for i, chunk := range chunks {
 		pushPayload := payload.NewPayload().Custom("chunk", base64.StdEncoding.EncodeToString(chunk))
-		if pushAttrs.Priority == Priority_Normal {
-			pushPayload = pushPayload.Alert("test berty notif")
-		}
+		pushPayload.Badge(len(chunks) - i)
 
 		notification := &apns2.Notification{}
 		notification.DeviceToken = apnsIdentifier.DeviceToken

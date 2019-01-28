@@ -23,6 +23,7 @@ type Payload struct {
 }
 
 func (m *Manager) Dispatch(push *PushData, pushDestination *PushDestination) error {
+	logger().Info("dispatch push")
 	for _, dispatcher := range m.dispatchers {
 		if !dispatcher.CanDispatch(push, pushDestination) {
 			continue
