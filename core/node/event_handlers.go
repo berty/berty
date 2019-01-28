@@ -180,15 +180,35 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 		return err
 	}
 
-	body := attrs.Message.Text
-	if n.config.NotificationsPreviews == false {
-		body = i18n.T("NewMessageBody", nil)
-	}
-
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
+
+	sender := &entity.Contact{}
+	if err := n.sql(ctx).First(&sender, &entity.Contact{ID: input.SenderID}).Error; err != nil {
+		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Contact not found"))
+		sender = &entity.Contact{}
+	}
+
+	conversation := &entity.Conversation{}
+	if err := n.sql(ctx).First(&conversation, &entity.Conversation{ID: input.ConversationID}).Error; err != nil {
+		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Conversation not found"))
+		conversation = &entity.Conversation{}
+	}
+
+	title := i18n.T("NewMessageTitle", nil)
+	body := i18n.T("NewMessageBody", nil)
+
+	if n.config.NotificationsPreviews && conversation.ID != "" {
+		title = conversation.GetConversationTitle()
+		body = attrs.Message.Text
+
+		if sender.DisplayName != "" && len(conversation.Members) > 2 {
+			title = fmt.Sprintf("%s @ %s", sender.DisplayName, title)
+		}
+	}
+
 	n.DisplayNotification(&notification.Payload{
-		Title:    i18n.T("NewMessageTitle", nil),
+		Title:    title,
 		Body:     body,
 		DeepLink: "berty://conversation#id=" + url.PathEscape(input.ConversationID),
 	})

@@ -1,6 +1,9 @@
 package entity
 
-import "berty.tech/core/pkg/errorcodes"
+import (
+	"berty.tech/core/pkg/errorcodes"
+	"strings"
+)
 
 func (c Conversation) Validate() error {
 	if c.ID == "" {
@@ -43,3 +46,21 @@ func (m ConversationMember) Filtered() *ConversationMember {
 func (c Conversation) IsNode() {} // required by gqlgen
 
 func (m ConversationMember) IsNode() {} // required by gqlgen
+
+func (c *Conversation) GetConversationTitle() string {
+	if c.Title != "" {
+		return c.Title
+	}
+
+	names := []string{}
+
+	for _, member := range c.Members {
+		if member.Contact.Status == Contact_Myself {
+			continue
+		}
+
+		names = append(names, member.Contact.DisplayName)
+	}
+
+	return strings.Join(names, ", ")
+}
