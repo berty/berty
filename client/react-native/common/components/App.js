@@ -7,7 +7,7 @@ import LottieView from 'lottie-react-native'
 import { Flex } from './Library'
 import FlashMessage from 'react-native-flash-message'
 import Accounts from './Screens/Accounts'
-import { colors } from './../constants'
+import { BASE_WEBSITE_URL, colors } from './../constants'
 import { I18nextProvider } from 'react-i18next'
 import ReactNativeLanguages from 'react-native-languages'
 import i18n from '../i18n'
@@ -58,7 +58,7 @@ export default class App extends PureComponent {
   }
 
   handleOpenURL (event) {
-    let url = parseUrl(event.url.replace('berty://', 'https://berty.tech/'))
+    let url = parseUrl(event.url.replace('berty://', `${BASE_WEBSITE_URL}/`))
 
     switch (url.pathname) {
       case '/conversation':

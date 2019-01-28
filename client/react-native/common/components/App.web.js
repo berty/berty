@@ -9,6 +9,7 @@ import { Loader } from './Library'
 import Accounts from './Screens/Accounts'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '../i18n'
+import { BASE_WEBSITE_URL } from '../constants'
 
 export default class App extends PureComponent {
   state = {
@@ -43,7 +44,7 @@ export default class App extends PureComponent {
   }
 
   handleOpenURL (event) {
-    let url = parseUrl(event.url.replace('berty://', 'https://berty.tech/'))
+    let url = parseUrl(event.url.replace('berty://', `${BASE_WEBSITE_URL}/`))
 
     switch (url.pathname) {
       case '/add-contact':
