@@ -68,12 +68,40 @@ func openDatabase() error {
 	}).Migrate(); err != nil {
 		return err
 	}
+
+	cleanDatabase()
+	// clean database each 10 minutes
+	go func() {
+		for db != nil || db.DB().Ping() == nil {
+			select {
+			case <-time.After(time.Minute * 10):
+				if err := cleanDatabase(); err != nil {
+					logger().Error("chunk cannot clean database", zap.Error(err))
+				}
+			}
+		}
+
+	}()
+
+	return nil
+}
+
+func cleanDatabase() error {
+	yesterday := time.Now().AddDate(0, 0, -1).UTC()
+	count := 0
+	err := db.Where("created_at <= ?", yesterday).Count(&count).Delete(&Chunk{}).Error
+	if count > 0 && err != nil {
+		return err
+	}
 	return nil
 }
 
 func save(chunk *Chunk) error {
 	for db == nil || db.DB().Ping() != nil {
-		if err := openDatabase(); err == nil {
+		if err := openDatabase(); err != nil {
+			logger().Error(err.Error())
+			time.Sleep(time.Second)
+		} else {
 			break
 		}
 	}
@@ -85,7 +113,7 @@ func save(chunk *Chunk) error {
 
 func findAllSlices() ([][]*Chunk, error) {
 	firstChunks := []*Chunk{}
-	if err := db.Where(&Chunk{Index: 0}).Find(firstChunks).Error; err != nil {
+	if err := db.Where(&Chunk{Index: 0}).Find(&firstChunks).Error; err != nil {
 		return nil, errorcodes.ErrChunkFindAllSlices.Wrap(err)
 	}
 	slices := [][]*Chunk{}
@@ -101,7 +129,7 @@ func findAllSlices() ([][]*Chunk, error) {
 
 func findSliceByID(sliceID string) ([]*Chunk, error) {
 	slice := []*Chunk{}
-	if err := db.Order("index").Where(&Chunk{SliceID: sliceID}).Find(slice).Error; err != nil {
+	if err := db.Order("index").Where(&Chunk{SliceID: sliceID}).Find(&slice).Error; err != nil {
 		return nil, errorcodes.ErrChunkFindSliceByID.Wrap(err)
 	}
 	return slice, nil

@@ -1,6 +1,8 @@
 package chunk
 
-import "berty.tech/core/pkg/errorcodes"
+import (
+	"berty.tech/core/pkg/errorcodes"
+)
 
 func send(data []byte) {
 	subscribersMutex.Lock()

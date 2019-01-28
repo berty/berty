@@ -1,6 +1,7 @@
 package chunk
 
 import (
+	"errors"
 	fmt "fmt"
 	"sync"
 
@@ -18,6 +19,9 @@ var (
 
 // Validate validate chunk slice
 func validate(slice []*Chunk) error {
+	if len(slice) == 0 {
+		return errorcodes.ErrChunk.New()
+	}
 	sliceID := slice[0].SliceID
 	n := slice[0].SliceLength
 
@@ -45,13 +49,6 @@ func validate(slice []*Chunk) error {
 
 func Reconstruct(slice []*Chunk) ([]byte, error) {
 	err := validate(slice)
-	if err != nil && err != errorcodes.ErrChunkSliceNotComplete.New() {
-		logger().Debug("bad chunk slice, delete all chunks")
-		for i := range slice {
-			db.Delete(slice[i])
-		}
-		return nil, errorcodes.ErrChunkBadSlice.Wrap(err)
-	}
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +61,7 @@ func Reconstruct(slice []*Chunk) ([]byte, error) {
 	return data, nil
 }
 
-func ReconstructMarshal(sliceMarshal [][]byte) ([]byte, error) {
+func ReconstructFromMarshal(sliceMarshal [][]byte) ([]byte, error) {
 	slice := []*Chunk{}
 	for _, bytes := range sliceMarshal {
 		chunk := &Chunk{}
@@ -76,50 +73,58 @@ func ReconstructMarshal(sliceMarshal [][]byte) ([]byte, error) {
 	return Reconstruct(slice)
 }
 
+func getDataLength(data []byte, offset, chunkSize int, sliceID string, id string) int {
+	dataLength := chunkSize - len(sliceID) - len(id) - 4 /*chunk.Index*/ - 4 /*chunk.SliceLength*/
+	if dataLength > len(data[offset:]) {
+		return len(data[offset:])
+	}
+	return dataLength
+}
+
 // Split split data in chunk slice
 func Split(data []byte, chunkSize int) ([]*Chunk, error) {
 	sliceID := uuid.Must(uuid.NewV4()).String()
 
-	// id len = slitID + ":" + index
-	idLen := len(sliceID) + 20
+	slice := []*Chunk{}
+	i := int32(0)
+	offset := 0
 
-	// update the chunkSize based on marshalled size
-	chunkSize = chunkSize - len(sliceID) - idLen
+	// generate all chunk
+	for {
+		if offset == len(data) {
+			break
+		}
 
-	// define number of chunk
-	length := int32(len(data) / chunkSize)
+		chunk := &Chunk{
+			SliceID: sliceID,
+			ID:      fmt.Sprintf("%+v:%+v", sliceID, i),
+			Index:   i,
+		}
 
-	// if there is a rest, increase n
-	rest := len(data) % chunkSize
-	if rest != 0 {
-		length++
+		dataLength := getDataLength(data, offset, chunkSize, chunk.SliceID, chunk.ID)
+		if dataLength <= 0 {
+			return nil, errors.New("cannot create chunk with len(data) <= 0")
+		}
+		chunk.Data = data[offset : offset+dataLength]
+
+		slice = append(slice, chunk)
+
+		offset = offset + dataLength
+		i++
 	}
 
-	slice := make([]*Chunk, length)
-	for i := range slice {
-		offset := i * chunkSize
-
-		// if it's the last chunk and there is a rest, rest will be its size
-		isLast := i == (len(slice) - 1)
-		if isLast && rest != 0 {
-			chunkSize = rest
-		}
-
-		slice[i] = &Chunk{
-			ID:          fmt.Sprintf("%+v:%+v", sliceID, i),
-			Index:       int32(i),
-			Data:        data[offset : offset+chunkSize],
-			SliceID:     sliceID,
-			SliceLength: int32(length),
-		}
+	for _, chunk := range slice {
+		chunk.SliceLength = int32(len(slice))
 	}
 
 	return slice, nil
 }
 
 func SplitMarshal(data []byte, chunkSize int) ([][]byte, error) {
+	fakeChunk := &Chunk{ID: "1", Index: 1, Data: []byte{1}, SliceID: "1", SliceLength: 1}
+	marshalSize := fakeChunk.Size() - len(fakeChunk.SliceID) - len(fakeChunk.ID) - len(fakeChunk.Data) - 4 - 4
 	// split with marshal size
-	slice, err := Split(data, chunkSize-(&Chunk{ID: "1", Index: 1, Data: []byte{1}, SliceID: "1", SliceLength: 1}).Size())
+	slice, err := Split(data, chunkSize-marshalSize)
 	if err != nil {
 		return nil, err
 	}
