@@ -183,38 +183,39 @@ func (p *Provider) getProvider(pid peer.ID) (string, error) {
 // improve to match published message
 func (p *Provider) handleStream(s inet.Stream) {
 	pbr := ggio.NewDelimitedReader(s, inet.MessageSizeMax)
+	for {
+		remoteProvider := &ProviderInfo{}
+		switch err := pbr.ReadMsg(remoteProvider); err {
+		case io.EOF:
+			s.Close()
+			return
+		case nil:
+		default:
+			s.Reset()
+			logger().Error("Error unmarshaling provider info", zap.Error(err))
+			return
+		}
 
-	remoteProvider := &ProviderInfo{}
-	switch err := pbr.ReadMsg(remoteProvider); err {
-	case io.EOF:
-		s.Close()
-		return
-	case nil:
-	default:
-		s.Reset()
-		logger().Error("Error unmarshaling provider info", zap.Error(err))
-		return
+		pinfo, err := p.getPeerInfo(remoteProvider)
+		if err != nil {
+			s.Reset()
+			logger().Error("malformed provider info", zap.Error(err))
+			return
+		}
+
+		id, err := cid.Decode(remoteProvider.GetId())
+		if err != nil {
+			s.Reset()
+			logger().Error("invalid provider id", zap.String("id", id.String()), zap.Error(err))
+		}
+
+		peerID := s.Conn().RemotePeer()
+		logger().Debug("receiving new connection",
+			zap.String("subID", id.String()),
+			zap.String("peerID", peerID.Pretty()))
+
+		p.handler(id, *pinfo)
 	}
-
-	pinfo, err := p.getPeerInfo(remoteProvider)
-	if err != nil {
-		s.Reset()
-		logger().Error("malformed provider info", zap.Error(err))
-		return
-	}
-
-	id, err := cid.Decode(remoteProvider.GetId())
-	if err != nil {
-		s.Reset()
-		logger().Error("invalid provider id", zap.String("id", id.String()), zap.Error(err))
-	}
-
-	peerID := s.Conn().RemotePeer()
-	logger().Debug("receiving new connection",
-		zap.String("subID", id.String()),
-		zap.String("peerID", peerID.Pretty()))
-
-	p.handler(id, *pinfo)
 }
 
 func (p *Provider) handleSubscription(ctx context.Context) error {

@@ -464,21 +464,23 @@ func (d *Driver) handleEnvelope(s inet.Stream) {
 	}
 
 	pbr := ggio.NewDelimitedReader(s, inet.MessageSizeMax)
+	for {
+		e := &p2p.Envelope{}
+		switch err := pbr.ReadMsg(e); err {
+		case io.EOF:
+			s.Close()
+			return
+		case nil: // do noting, everything fine
+		default:
+			s.Reset()
+			logger().Error("invalid envelope", zap.Error(err))
+			return
+		}
 
-	e := &p2p.Envelope{}
-	switch err := pbr.ReadMsg(e); err {
-	case io.EOF:
-		s.Close()
-		return
-	case nil: // do noting, everything fine
-	default:
-		s.Reset()
-		logger().Error("invalid envelope", zap.Error(err))
-		return
+		// @TODO: get opentracing context
+		d.handler(context.Background(), e)
 	}
 
-	// @TODO: get opentracing context
-	d.handler(context.Background(), e)
 }
 
 func (d *Driver) FindProvidersAndWait(ctx context.Context, id string, cache bool) ([]pstore.PeerInfo, error) {
