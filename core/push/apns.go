@@ -90,9 +90,9 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 		return err
 	}
 	logger().Debug(fmt.Sprintf("chunks: %+v", len(chunks)))
-	for i, chunk := range chunks {
+	for _, chunk := range chunks {
 		pushPayload := payload.NewPayload().Custom("chunk", base64.StdEncoding.EncodeToString(chunk))
-		pushPayload.Badge(len(chunks) - i)
+		pushPayload.ZeroBadge()
 
 		notification := &apns2.Notification{}
 		notification.DeviceToken = apnsIdentifier.DeviceToken

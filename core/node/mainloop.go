@@ -143,10 +143,8 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 
 		// FIXME: make something smarter, i.e., grouping events by contact or network driver
 		if err := n.networkDriver.Emit(tctx, &envelope); err != nil {
-			n.LogBackgroundError(ctx, errors.Wrap(err, "failed to emit envelope on network"))
+			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
 
-			// push the outgoing event on the client stream
-			n.queuePushEvent(ctx, event, &envelope)
 			span.Finish()
 			return
 		}
@@ -156,7 +154,7 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
 	}()
 	select {
 	case <-done:
-	case <-time.After(1 * time.Second):
+	case <-time.After(2 * time.Second):
 		// push the outgoing event on the client stream
 		n.queuePushEvent(ctx, event, &envelope)
 	}

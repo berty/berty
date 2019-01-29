@@ -155,7 +155,7 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.Envelope) error {
 	pushIdentifiers, err := n.getPushDestinationsForEvent(ctx, event)
 	if err != nil {
-		return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
+		return errorcodes.ErrPush.Wrap(err)
 	}
 
 	marshaledEnvelope, err := envelope.Marshal()
@@ -219,9 +219,9 @@ func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event
 		return nil, sql.GenericError(err)
 	}
 
-	if len(pushIdentifiers) == 0 {
-		return nil, errorcodes.ErrDbNothingFound.New()
-	}
+	// if len(pushIdentifiers) == 0 {
+	// 	return nil, errorcodes.ErrDbNothingFound.New()
+	// }
 
 	return pushIdentifiers, nil
 }
