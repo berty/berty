@@ -9,6 +9,7 @@ import { parseEmbedded } from '../../../helpers/json'
 import { conversation as utils } from '../../../utils'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import { hook } from 'cavy'
 
 class StateBadge extends PureComponent {
   constructor (props) {
@@ -48,8 +49,6 @@ class StateBadge extends PureComponent {
     return (<Icon style={{ color: this.state.color }} name={'material-checkbox-blank-circle'} />)
   }
 }
-
-import { hook } from 'cavy'
 
 const Message = withNamespaces()(({ data, t, ...props }) => {
   switch (data.kind) {
