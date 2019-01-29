@@ -181,9 +181,8 @@ class StateBadge extends PureComponent {
 
     return (
       <Flex.Cols
-        justify={'stretch'}
+        size={3}
         style={{
-          borderRadius: 4,
           shadowColor: 'black',
           shadowRadius: 2,
           shadowOffset: {
@@ -191,13 +190,12 @@ class StateBadge extends PureComponent {
             height: 1,
           },
           shadowOpacity: 0.10,
-          alignItems: 'flex-start',
           display: 'flex',
         }}
       >
-        <Text margin={5} icon={<Berty color={bertyColor} />} rounded tiny background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
-        <Text margin={5} icon='users' rounded tiny background={bgPeerColor} color={peerColor}>{peers.length.toString()}</Text>
-        <Text margin={5} icon='bluetooth' rounded tiny background={bgBleColor} color={bleColor}>{bleText.toLocaleUpperCase()}</Text>
+        <Text margin={5} size={2} icon={<Berty color={bertyColor} />} rounded center tiny background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
+        <Text margin={5} size={1} icon='users' rounded center tiny background={bgPeerColor} color={peerColor}>{peers.length.toString()}</Text>
+        <Text margin={5} size={1} icon='bluetooth' rounded center tiny background={bgBleColor} color={bleColor}>{bleText.toLocaleUpperCase()}</Text>
       </Flex.Cols>
     )
   }
