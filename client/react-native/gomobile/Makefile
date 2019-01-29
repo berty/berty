@@ -66,13 +66,13 @@ deps-osx:
 deps:
 	rm -rf $(GOPATH)/src/golang.org/x/mobile
 	GO111MODULE=off go get -u golang.org/x/mobile/cmd/gomobile
-	go get -u golang.org/x/mobile/cmd/gobind
-	patch -N $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff || true
-	go install golang.org/x/mobile/cmd/gomobile
+	GO111MODULE=off go get -u golang.org/x/mobile/cmd/gobind
+	patch -N $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff
+	GO111MODULE=off go install golang.org/x/mobile/cmd/gomobile
 
 .PHONY: init
 init: deps
-	gomobile init -v -ndk $(ANDROID_NDK_HOME)
+	GO111MODULE=off gomobile init -v -ndk $(ANDROID_NDK_HOME)
 
 .PHONY: test
 test:
@@ -114,8 +114,7 @@ build.ios: $(IOS_BUILD_PATH)/core.framework/Core
 $(IOS_BUILD_PATH)/core.framework/Core: $(CORE_SOURCES)
 	GO111MODULE=on go mod vendor
 	mkdir -p $(IOS_BUILD_PATH)
-	GO111MODULE=off CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" \
-		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/client/react-native/gomobile/core
+	GO111MODULE=off CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(IOS_LDFLAGS)" gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -target=ios -o $(IOS_BUILD_PATH)/core.framework berty.tech/client/react-native/gomobile/core
 
 .PHONY: build
 build: build.android build.ios

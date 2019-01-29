@@ -21,7 +21,7 @@ class CoreModule: NSObject {
 
   override init() {
     super.init()
-    self.notificationDriver.setNative(Notification())
+    Core.notificationDriver()?.native = Notification()
   }
 
   func getFilesDir() throws -> String {
