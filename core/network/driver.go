@@ -61,9 +61,6 @@ type Driver interface {
 	// PingOtherNode send a ping message to another node
 	PingOtherNode(ctx context.Context, destination string) error
 
-	// Start start service listener
-	Start(context.Context) error
-
 	// Return the supported protocols of the given peer
 	Protocols(context.Context, *Peer) ([]string, error)
 

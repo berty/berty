@@ -163,14 +163,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	return driver, nil
 }
 
-func (d *Driver) Start(ctx context.Context) error {
-	tracer := tracing.EnterFunc(ctx)
-	defer tracer.Finish()
-	// ctx = tracer.Context()
-
-	return nil
-}
-
 func (d *Driver) logHostInfos() {
 	var addrs []string
 
@@ -312,13 +304,13 @@ func (d *Driver) BootstrapPeer(ctx context.Context, bootstrapAddr string) error 
 	pinfo, err := d.getPeerInfo(ctx, bootstrapAddr)
 	if err != nil {
 		return err
-	} else if err = d.host.Connect(ctx, *pinfo); err != nil {
-		return err
 	}
 
-	// absorb addresses into peerstore
+	// Even if we can't connect, bootstrap peers are trusted peers, add it to
+	// the peerstore so we can connect later in case of failure
 	d.host.Peerstore().AddAddrs(pinfo.ID, pinfo.Addrs, pstore.PermanentAddrTTL)
-	return nil
+	d.host.ConnManager().TagPeer(pinfo.ID, "bootstrap", 2)
+	return d.host.Connect(ctx, *pinfo)
 }
 
 // Connect ensures there is a connection between this host and the peer with
