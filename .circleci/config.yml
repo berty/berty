@@ -394,8 +394,8 @@ jobs:
           command: echo "ruby-2.4" > ~/.ruby-version
 
       - *master_version
-      - restore_cache:
-          key: ios-{{checksum "/tmp/master_version"}}
+      # - restore_cache:
+      #     key: ios-{{checksum "/tmp/master_version"}}
 
       - checkout:
           path: ~/go/src/berty.tech/
@@ -410,18 +410,18 @@ jobs:
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.ios
 
-      - restore_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+      # - restore_cache:
+      #     key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
 
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
           command: bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
 
-      - save_cache:
-          key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
-          paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
+      # - save_cache:
+      #     key: rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}-3
+      #     paths:
+      #       - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: set version
