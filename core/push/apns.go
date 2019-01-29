@@ -91,8 +91,13 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 	}
 	logger().Debug(fmt.Sprintf("chunks: %+v", len(chunks)))
 	for _, chunk := range chunks {
-		pushPayload := payload.NewPayload().Custom("chunk", base64.StdEncoding.EncodeToString(chunk))
-		pushPayload.ZeroBadge()
+		pushPayload := payload.NewPayload()
+		pushPayload.AlertTitleLocKey("Chunk available")
+		// pushPayload.AlertBody("Encrypted content has been send to your device")
+		pushPayload.ThreadID("chunk")
+		pushPayload.Badge(1)
+		pushPayload.MutableContent()
+		pushPayload.Custom("chunk", base64.StdEncoding.EncodeToString(chunk))
 
 		notification := &apns2.Notification{}
 		notification.DeviceToken = apnsIdentifier.DeviceToken

@@ -151,6 +151,7 @@ require (
 	go.uber.org/zap v1.9.1
 	golang.org/x/net v0.0.0-20181207154023-610586996380
 	golang.org/x/text v0.3.0
+	golang.org/x/tools v0.0.0-20190130015043-a06a922acc1b // indirect
 	google.golang.org/appengine v1.2.0 // indirect
 	google.golang.org/genproto v0.0.0-20181004005441-af9cb2a35e7f
 	google.golang.org/grpc v1.15.0

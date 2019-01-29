@@ -2,8 +2,7 @@
 //  ViewController.swift
 //  NotificationExample
 //
-//  Created by Belal Khan on 13/01/18.
-//  Copyright © 2018 Belal Khan. All rights reserved.
+//  Copyright © 2018 Berty Technologies. All rights reserved.
 //
 
 import UIKit
@@ -14,13 +13,12 @@ enum NotificationError: Error {
   case invalidArgument
 }
 
-class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotificationDriverProtocol {
+class Notification: UNNotificationServiceExtension, UNUserNotificationCenterDelegate, CoreNativeNotificationDriverProtocol {
 
   override init () {
     super.init()
   }
 
-  @available(iOS 10.0, *)
   func userNotificationCenter(
     _ center: UNUserNotificationCenter,
     willPresent notification: UNNotification,
@@ -34,32 +32,19 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
       throw NotificationError.invalidArgument
     }
 
-    if #available(iOS 10.0, *) {
+    let center = UNUserNotificationCenter.current()
+    let content = UNMutableNotificationContent()
+    content.title = utitle
+    content.body = ubody
+    content.userInfo = ["url": url!]
+    content.categoryIdentifier = "berty.core.notification"
+    content.sound = UNNotificationSound.default()
 
-      let center = UNUserNotificationCenter.current()
-      let content = UNMutableNotificationContent()
-      content.title = utitle
-      content.body = ubody
-      content.userInfo = ["url": url]
-      content.categoryIdentifier = "berty.core.notification"
-      content.sound = UNNotificationSound.default()
+    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+    let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
 
-      let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-      let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
+    center.add(request)
 
-      center.add(request)
-
-    } else {
-
-      let notification = UILocalNotification()
-      notification.fireDate = Date()
-      notification.alertTitle = title
-      notification.alertBody = body
-
-      notification.soundName = UILocalNotificationDefaultSoundName
-      UIApplication.shared.scheduleLocalNotification(notification)
-
-    }
   }
 
   func register() throws {
@@ -67,21 +52,19 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     let group = DispatchGroup()
 
     group.enter()
-    if #available(iOS 10.0, *) {
-      UNUserNotificationCenter.current().delegate = self
-      UNUserNotificationCenter.current().requestAuthorization(
-        options: [.alert, .sound, .badge],
-        completionHandler: { granted, error in
-          guard granted else {
-            err = error
-            group.leave()
-
-            return
-          }
+    UNUserNotificationCenter.current().delegate = self
+    UNUserNotificationCenter.current().requestAuthorization(
+      options: [.alert, .sound, .badge],
+      completionHandler: { granted, error in
+        guard granted else {
+          err = error
           group.leave()
+
+          return
         }
-      )
-    }
+        group.leave()
+      }
+    )
     group.wait()
 
     if err != nil {
@@ -159,3 +142,4 @@ extension AppDelegate {
     // RCTPushNotificationManager.didReceive(notification)
   }
 }
+

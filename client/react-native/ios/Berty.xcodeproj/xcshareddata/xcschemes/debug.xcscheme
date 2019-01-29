@@ -31,7 +31,7 @@
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
                BuildableName = "Berty.app"
                BlueprintName = "Berty"
-               ReferencedContainer = "container:berty.xcodeproj">
+               ReferencedContainer = "container:Berty.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -42,6 +42,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "00E356ED1AD99517003FC87E"
+               BuildableName = "BertyTests.xctest"
+               BlueprintName = "BertyTests"
+               ReferencedContainer = "container:Berty.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
@@ -49,7 +59,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Berty.app"
             BlueprintName = "Berty"
-            ReferencedContainer = "container:berty.xcodeproj">
+            ReferencedContainer = "container:Berty.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -72,7 +82,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Berty.app"
             BlueprintName = "Berty"
-            ReferencedContainer = "container:berty.xcodeproj">
+            ReferencedContainer = "container:Berty.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -91,7 +101,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "Berty.app"
             BlueprintName = "Berty"
-            ReferencedContainer = "container:berty.xcodeproj">
+            ReferencedContainer = "container:Berty.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
