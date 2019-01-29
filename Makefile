@@ -18,7 +18,7 @@ lint-dockerfile:
 
 .PHONY: lint-go
 lint-go:
-	golangci-lint run --verbose  ./core/... ./client/react-native/gomobile/...
+	golangci-lint run --deadline=5m --verbose  ./core/... ./client/react-native/gomobile/...
 
 .PHONY: lint-editorconfig
 lint-editorconfig:

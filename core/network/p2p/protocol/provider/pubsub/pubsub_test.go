@@ -201,7 +201,7 @@ func TestP2PNetwork(t *testing.T) {
 			err = lisa.provider.Subscribe(ctx, topic)
 			So(err, ShouldBeNil)
 
-			err = roger.provider.Announce(topic)
+			err = roger.provider.Announce(ctx, topic)
 			So(err, ShouldBeNil)
 
 			var ps []pstore.PeerInfo

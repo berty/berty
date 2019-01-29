@@ -224,13 +224,6 @@ func (a *Account) Open(ctx context.Context) error {
 	if a.initOnly {
 		return nil
 	}
-
-	// start
-	if err := a.startNetwork(ctx); err != nil {
-		a.Close(ctx)
-		return err
-	}
-
 	if err := a.startGrpcServer(ctx); err != nil {
 		a.Close(ctx)
 		return err
@@ -347,25 +340,6 @@ func (a *Account) DropDatabase(ctx context.Context) error {
 		return errorcodes.ErrAccManagerDbDrop.Wrap(err)
 	}
 	return a.openDatabase(ctx)
-}
-
-func (a *Account) startNetwork(ctx context.Context) error {
-	tracer := tracing.EnterFunc(ctx)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	if a.network == nil {
-		return nil
-	}
-
-	// TODO: don't start network here
-	// network should be independent to the account and be used by multiple account
-	go func() {
-		defer a.PanicHandler()
-		a.errChan <- a.network.Start(ctx)
-		logger().Debug("network closed")
-	}()
-	return nil
 }
 
 func (a *Account) startGrpcServer(ctx context.Context) error {

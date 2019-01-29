@@ -4,6 +4,7 @@ import (
 	"io"
 
 	opentracing "github.com/opentracing/opentracing-go"
+	jaeger "github.com/uber/jaeger-client-go"
 	config "github.com/uber/jaeger-client-go/config"
 	"go.uber.org/zap"
 )
@@ -23,13 +24,16 @@ func InitTracer(address, name string) (opentracing.Tracer, io.Closer, error) {
 
 	logger := zap.L().Named("vendor.jaeger")
 	tracer, closer, err := cfg.NewTracer(
-		config.Logger(&jaegerLogger{logger: logger}),
+		// config.Logger(&jaegerLogger{logger: logger}),
+		config.Logger(jaeger.NullLogger),
 	)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	opentracing.SetGlobalTracer(tracer)
+	// @TODO: We should set this under a more verbose to be use
+	// opentracing.SetGlobalTracer(tracer)
+	opentracing.SetGlobalTracer(opentracing.NoopTracer{})
 
 	logger.Debug("jaeger tracer started",
 		zap.String("addr", address),
