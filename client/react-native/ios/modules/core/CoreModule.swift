@@ -28,12 +28,12 @@ class CoreModule: NSObject {
       logger.format("unable to set storage path", level: .error, error.userInfo.description)
     }
   }
-  
+
   func getFilesDir() throws -> String {
     let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
     let filesPath = filesDir?.path
     let fileExist = FileManager.default.fileExists(atPath: filesPath!)
-    
+
     // do this in gomobile and set storage as global in gomobile
     if fileExist == false {
       try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)

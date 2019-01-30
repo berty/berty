@@ -13,7 +13,7 @@ enum NotificationError: Error {
   case invalidArgument
 }
 
-class Notification: UNNotificationServiceExtension, UNUserNotificationCenterDelegate, CoreNativeNotificationDriverProtocol {
+class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotificationDriverProtocol {
 
   override init () {
     super.init()
@@ -142,4 +142,3 @@ extension AppDelegate {
     // RCTPushNotificationManager.didReceive(notification)
   }
 }
-

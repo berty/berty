@@ -2,7 +2,6 @@ package push
 
 import (
 	"encoding/base64"
-	fmt "fmt"
 	"strings"
 
 	"github.com/pkg/errors"
@@ -89,16 +88,10 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 	if err != nil {
 		return err
 	}
-	logger().Debug(fmt.Sprintf("chunks: %+v", len(chunks)))
 	for _, chunk := range chunks {
 		pushPayload := payload.NewPayload()
-		pushPayload.AlertTitleLocKey("Chunk available")
-		// pushPayload.AlertBody("Encrypted content has been send to your device")
-		pushPayload.ThreadID("chunk")
-		pushPayload.Badge(1)
-		pushPayload.MutableContent()
 		pushPayload.Custom("chunk", base64.StdEncoding.EncodeToString(chunk))
-
+		pushPayload.ContentAvailable()
 		notification := &apns2.Notification{}
 		notification.DeviceToken = apnsIdentifier.DeviceToken
 		notification.Topic = d.bundleID

@@ -63,15 +63,11 @@ class Logger: NSObject, CoreNativeLoggerProtocol {
       type = .debug
     case Level.info:
       type = .info
-    case Level.warn:
+    case Level.warn, Level.error:
       type = .error
-    case Level.error:
       type = .error
-    case Level.dPanic:
+    case Level.dPanic, Level.panic, Level.fatal:
       type = .fault
-    case Level.panic:
-      type = .fault
-    case Level.fatal:
       type = .fault
     default:
       type = OSLogType.default
