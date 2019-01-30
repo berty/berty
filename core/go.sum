@@ -337,6 +337,8 @@ github.com/libp2p/go-libp2p-blankhost v0.3.13 h1:dICAE2QvFDSp4ABVd2g1IrPqefQGGcP
 github.com/libp2p/go-libp2p-blankhost v0.3.13/go.mod h1:v1Lnlzn2DFfVeAk2O19BnVm/OaoRlFZwSyq015ZT11I=
 github.com/libp2p/go-libp2p-circuit v2.2.8+incompatible h1:H+RdUkSwIBuu4VLGApOBfejGEfmIIblsajR8Wnecb8Y=
 github.com/libp2p/go-libp2p-circuit v2.2.8+incompatible/go.mod h1:DH3RV0Tb4cHZAdSsdNOitADXTqRiFZxJmSk7mMcCFN4=
+github.com/libp2p/go-libp2p-connmgr v0.3.23 h1:ZB4yrSb4fmOWoNCTh5EO+sIjdWb17PvcxE/H8YMa8i8=
+github.com/libp2p/go-libp2p-connmgr v0.3.23/go.mod h1:xfO0AkLdM32twJ1G0f43h14KBzzpytUxQoYqTUPF5gI=
 github.com/libp2p/go-libp2p-crypto v2.0.1+incompatible h1:JAnZYupeAsZI5UqX50N9MWAVNO5HIfkow249YcmuvVs=
 github.com/libp2p/go-libp2p-crypto v2.0.1+incompatible/go.mod h1:WHpT3tvhh7GM2INNJhQBuI6J+5z/o3QI0lTF5UVjppk=
 github.com/libp2p/go-libp2p-host v3.0.13+incompatible h1:wWWH5jtgyR6vBABU7OMkL9F3eioqiUCyfgqa5KZl/V8=

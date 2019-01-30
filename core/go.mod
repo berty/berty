@@ -62,6 +62,7 @@ require (
 	github.com/libp2p/go-libp2p v6.0.19+incompatible
 	github.com/libp2p/go-libp2p-blankhost v0.3.13 // indirect
 	github.com/libp2p/go-libp2p-circuit v2.2.8+incompatible
+	github.com/libp2p/go-libp2p-connmgr v0.3.23
 	github.com/libp2p/go-libp2p-crypto v2.0.1+incompatible
 	github.com/libp2p/go-libp2p-host v3.0.13+incompatible
 	github.com/libp2p/go-libp2p-interface-connmgr v0.0.21

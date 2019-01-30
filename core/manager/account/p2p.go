@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"io"
 	"runtime"
+	"time"
 
 	"berty.tech/core/pkg/errorcodes"
 
@@ -89,6 +90,7 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 		p2p.WithNATPortMap(), // @TODO: Is this a pb on mobile?
 		p2p.WithListenAddrStrings(opts.Bind...),
 		p2p.WithBootstrap(opts.Bootstrap...),
+		p2p.WithConnManager(10, 20, time.Duration(60*1000)),
 		identity,
 	)
 

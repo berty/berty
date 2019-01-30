@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"strings"
+	"time"
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network/ble"
@@ -15,6 +16,7 @@ import (
 	"github.com/jinzhu/gorm"
 	libp2p "github.com/libp2p/go-libp2p"
 	circuit "github.com/libp2p/go-libp2p-circuit"
+	connmgr "github.com/libp2p/go-libp2p-connmgr"
 	crypto "github.com/libp2p/go-libp2p-crypto"
 	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
 	ipnet "github.com/libp2p/go-libp2p-interface-pnet"
@@ -140,6 +142,13 @@ func WithLibp2pOption(opts ...libp2p.Option) Option {
 	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, opts...)
 		return nil
+	}
+}
+
+func WithConnManager(low int, hi int, grace time.Duration) Option {
+	return func(dc *driverConfig) error {
+		dc.connManager = connmgr.NewConnManager(low, hi, grace)
+		return WithConnectionManager(dc.connManager)(dc)
 	}
 }
 

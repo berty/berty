@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 
 	"berty.tech/core/api/p2p"
@@ -47,6 +48,8 @@ type driverConfig struct {
 	libp2pOpt []libp2p.Option
 
 	jaeger []grpc_ot.Option
+
+	connManager ifconnmgr.ConnManager
 
 	bootstrap     []string
 	bootstrapSync bool
