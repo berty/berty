@@ -239,7 +239,7 @@ export default class Header extends PureComponent {
         style={[
           {
             backgroundColor: colorBack,
-            height: searchBar && true ? 140 : 100,
+            height: searchBar && true ? 110 : 70,
           },
           borderBottom,
           padding,
@@ -250,7 +250,7 @@ export default class Header extends PureComponent {
             size={1}
             justify='between'
             align='center'
-            style={[paddingBottom]}
+            style={[ searchBar ? paddingBottom : {} ]}
           >
             {backBtn && (
               <HeaderButton
@@ -278,6 +278,11 @@ export default class Header extends PureComponent {
             >
               {title}
             </Text>
+            <View>
+              <RelayContext.Consumer>
+                {context => <StateBadge context={context} />}
+              </RelayContext.Consumer>
+            </View>
             {rightBtn ? <View>{rightBtn}</View> : null}
             {!rightBtn &&
               rightBtnIcon !== null && (
@@ -289,18 +294,6 @@ export default class Header extends PureComponent {
                 middle
               />
             )}
-          </Flex.Cols>
-          <Flex.Cols
-            size={1}
-            justify='center'
-            align='center'
-            style={[paddingBottom]}
-          >
-            <View>
-              <RelayContext.Consumer>
-                {context => <StateBadge context={context} />}
-              </RelayContext.Consumer>
-            </View>
           </Flex.Cols>
           {searchBarComponent}
         </Flex.Rows>
