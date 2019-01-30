@@ -6,7 +6,6 @@ import { padding, borderBottom, paddingBottom } from '../../styles'
 import { isRTL } from '../../i18n'
 import RelayContext from '../../relay/RelayContext'
 import { promiseWithTimeout } from 'react-relay-network-modern/es/middlewares/retry'
-import Berty from './Berty'
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
 
@@ -181,7 +180,7 @@ class StateBadge extends PureComponent {
 
     return (
       <Flex.Cols
-        size={3}
+        size={1}
         style={{
           shadowColor: 'black',
           shadowRadius: 2,
@@ -191,11 +190,27 @@ class StateBadge extends PureComponent {
           },
           shadowOpacity: 0.10,
           display: 'flex',
+          flexShrink: 0,
+          // flexBasis: 0,
+          minHeight: 50,
+          flexGrow: 1,
         }}
       >
-        <Text margin={5} size={2} icon={<Berty color={bertyColor} />} rounded center tiny background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
-        <Text margin={5} size={1} icon='users' rounded center tiny background={bgPeerColor} color={peerColor}>{peers.length.toString()}</Text>
-        <Text margin={5} size={1} icon='bluetooth' rounded center tiny background={bgBleColor} color={bleColor}>{bleText.toLocaleUpperCase()}</Text>
+        <Text margin={5} style={{
+          flexShrink: 0,
+          flexBasis: 'content',
+          flexGrow: 1,
+        }} icon='berty-berty_picto' rounded center tiny background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
+        <Text margin={5} style={{
+          flexShrink: 0,
+          flexBasis: 'content',
+          flexGrow: 0,
+        }} icon='users' rounded center tiny background={bgPeerColor} color={peerColor}>{peers.length.toString()}</Text>
+        <Text margin={5} style={{
+          flexShrink: 0,
+          flexBasis: 'content',
+          flexGrow: 0,
+        }} icon='bluetooth' rounded center tiny background={bgBleColor} color={bleColor}>{bleText.toLocaleUpperCase()}</Text>
       </Flex.Cols>
     )
   }
@@ -250,10 +265,13 @@ export default class Header extends PureComponent {
       >
         <Flex.Rows>
           <Flex.Cols
-            size={1}
+            style={[{
+              flexShrink: 0,
+              // flexBasis: 0,
+              flexGrow: 1,
+            }, searchBar ? paddingBottom : {}]}
             justify='between'
             align='center'
-            style={[searchBar ? paddingBottom : {}]}
           >
             {backBtn && (
               <HeaderButton
@@ -272,6 +290,11 @@ export default class Header extends PureComponent {
             )}
             <Text
               icon={titleIcon}
+              style={{
+                flexShrink: 0,
+                // flexBasis: 0,
+                flexGrow: 0,
+              }}
               left
               large
               color={colorText}
