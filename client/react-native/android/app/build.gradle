@@ -204,10 +204,10 @@ android {
 }
 
 dependencies {
+    compile project(':lottie-react-native')
     compile project(':react-native-languages')
     compile project(':rn-fetch-blob')
     compile project(':react-native-device-info')
-    compile project(':lottie-react-native')
     compile project(':react-native-vector-icons')
     compile project(':react-native-view-shot')
     compile project(':react-native-svg')

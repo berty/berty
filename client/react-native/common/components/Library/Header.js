@@ -177,40 +177,19 @@ class StateBadge extends PureComponent {
   render () {
     const { bertyColor, bleColor, bleText, bertyText, peers, bgBertyColor, bgBleColor } = this.state
     const { bgPeerColor, peerColor } = this.getPeersColor(peers)
+    const count = peers.reduce((acc, cur) => cur.connection === 1 ? acc + 1 : acc, 0)
 
     return (
-      <Flex.Cols
-        size={1}
-        style={{
-          shadowColor: 'black',
-          shadowRadius: 2,
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.10,
-          display: 'flex',
-          flexShrink: 0,
-          // flexBasis: 0,
-          minHeight: 50,
-          flexGrow: 1,
-        }}
-      >
-        <Text margin={5} style={{
-          flexShrink: 0,
-          flexBasis: 'content',
-          flexGrow: 1,
-        }} icon='berty-berty_picto' rounded center tiny background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
-        <Text margin={5} style={{
-          flexShrink: 0,
-          flexBasis: 'content',
-          flexGrow: 0,
-        }} icon='users' rounded center tiny background={bgPeerColor} color={peerColor}>{peers.length.toString()}</Text>
-        <Text margin={5} style={{
-          flexShrink: 0,
-          flexBasis: 'content',
-          flexGrow: 0,
-        }} icon='bluetooth' rounded center tiny background={bgBleColor} color={bleColor}>{bleText.toLocaleUpperCase()}</Text>
+      <Flex.Cols size={1} style={{ display: 'flex', justifyContent: 'space-between' }} >
+        <View style={{ marginRight: 2 }} >
+          <Text icon='berty-berty_picto' size={5} padding={5} rounded small background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
+        </View>
+        <View style={{ marginRight: 2 }} >
+          <Text icon='users' size={5} padding={5} rounded small background={bgPeerColor} color={peerColor}>{count.toString()}</Text>
+        </View>
+        <View style={{ marginRight: 2 }} >
+          <Text icon='bluetooth' size={5} padding={5} rounded small background={bgBleColor} color={bleColor}>{bleText.toLocaleUpperCase()}</Text>
+        </View>
       </Flex.Cols>
     )
   }
@@ -252,12 +231,15 @@ export default class Header extends PureComponent {
       searchBarComponent = searchBar
     }
 
+    // todo calc height in function of dev status bar and search bar
+    // let height
+
     return (
       <View
         style={[
           {
             backgroundColor: colorBack,
-            height: searchBar ? 100 : 60,
+            height: searchBar && true ? 140 : 100,
           },
           borderBottom,
           padding,
@@ -265,13 +247,10 @@ export default class Header extends PureComponent {
       >
         <Flex.Rows>
           <Flex.Cols
-            style={[{
-              flexShrink: 0,
-              // flexBasis: 0,
-              flexGrow: 1,
-            }, searchBar ? paddingBottom : {}]}
+            size={1}
             justify='between'
             align='center'
+            style={[paddingBottom]}
           >
             {backBtn && (
               <HeaderButton
@@ -290,22 +269,15 @@ export default class Header extends PureComponent {
             )}
             <Text
               icon={titleIcon}
-              style={{
-                flexShrink: 0,
-                // flexBasis: 0,
-                flexGrow: 0,
-              }}
               left
               large
               color={colorText}
               justify={backBtn ? 'center' : 'start'}
               middle
+              size={5}
             >
               {title}
             </Text>
-            <RelayContext.Consumer>
-              {context => <StateBadge context={context} />}
-            </RelayContext.Consumer>
             {rightBtn ? <View>{rightBtn}</View> : null}
             {!rightBtn &&
               rightBtnIcon !== null && (
@@ -317,6 +289,18 @@ export default class Header extends PureComponent {
                 middle
               />
             )}
+          </Flex.Cols>
+          <Flex.Cols
+            size={1}
+            justify='center'
+            align='center'
+            style={[paddingBottom]}
+          >
+            <View>
+              <RelayContext.Consumer>
+                {context => <StateBadge context={context} />}
+              </RelayContext.Consumer>
+            </View>
           </Flex.Cols>
           {searchBarComponent}
         </Flex.Rows>
