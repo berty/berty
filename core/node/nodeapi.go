@@ -141,7 +141,7 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	if err = event.SetConversationReadAttrs(&p2p.ConversationReadAttrs{Conversation: conversation}); err != nil {
 		return nil, err
 	}
-	if err = n.EnqueueOutgoingEvent(ctx, event); err != nil {
+	if err = n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
 		return nil, err
 	}
 	return conversation, nil
@@ -221,7 +221,7 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) 
 
 	// send ContactRequestAccepted event
 	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequestAccepted)
-	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
+	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
 		return nil, err
 	}
 
@@ -282,7 +282,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	}); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
-	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
+	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
 		return nil, errorcodes.ErrNet.Wrap(err)
 	}
 
@@ -511,7 +511,7 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 		}); err != nil {
 			return nil, errorcodes.ErrUndefined.Wrap(err)
 		}
-		if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
 			return nil, err
 		}
 	}
@@ -595,7 +595,7 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 	}); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
-	if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
+	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
 		return nil, errorcodes.ErrNet.Wrap(err)
 	}
 	return event, nil
