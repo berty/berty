@@ -2,7 +2,6 @@ import { createMaterialTopTabNavigator } from 'react-navigation'
 import Welcome from './Welcome'
 import Notifications from './Notifications'
 import Contacts from './Contacts'
-import Backup from './Backup'
 import Ready from './Ready'
 import { tabIcon } from '../../../../helpers/views'
 import { tabNavigatorOptions } from '../../../../constants/styling'
@@ -29,13 +28,6 @@ export default createMaterialTopTabNavigator(
       navigationOptions: () => ({
         tabBarIcon: tabIcon('users'),
         title: I18n.t('onboarding.contacts.tab'),
-      }),
-    },
-    'onboarding/backup': {
-      screen: Backup,
-      navigationOptions: () => ({
-        tabBarIcon: tabIcon('archive'),
-        title: I18n.t('onboarding.backup.tab'),
       }),
     },
     'onboarding/ready': {

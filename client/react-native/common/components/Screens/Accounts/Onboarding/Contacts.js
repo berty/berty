@@ -17,17 +17,14 @@ const Contacts = ({ navigation, currentUser, t }) =>
         <Text style={onboardingStyle.help}>{t('onboarding.contacts.link-help')}</Text>
         <Text style={onboardingStyle.disclaimer}>{t('onboarding.contacts.link-disclaimer')}</Text>
         <View style={{ height: 60, flexDirection: 'row' }}>
-          <SkipButton>{' '}</SkipButton>
           <NextButton onPress={() => shareLinkSelf({
             id: extractPublicKeyFromId(currentUser.id),
             displayName: currentUser.displayName,
           })}>{t('onboarding.contacts.link-share')}</NextButton>
         </View>
-        <Text style={onboardingStyle.help}>{t('onboarding.contacts.phone-help')}</Text>
-        <Text style={onboardingStyle.disclaimer}>{t('onboarding.contacts.phone-disclaimer')}</Text>
         <View style={{ height: 60, flexDirection: 'row' }}>
-          <SkipButton onPress={() => navigation.navigate('onboarding/backup')}>{t('skip')}</SkipButton>
-          <NextButton>{t('onboarding.contacts.phone-link')}</NextButton>
+          <SkipButton />
+          <NextButton onPress={() => navigation.navigate('onboarding/ready')}>{t('next')}</NextButton>
         </View>
       </Flex.Rows>
     </ScrollView>
