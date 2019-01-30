@@ -7,6 +7,7 @@ import defaultValuesContact from '../utils/contact'
 import NavigationService from './NavigationService'
 import DeviceInfo from 'react-native-device-info'
 import I18n from 'i18next'
+import { BASE_WEBSITE_URL } from '../constants'
 
 export const requestContact = async (
   contactId,
@@ -42,7 +43,7 @@ export const extractPublicKeyFromId = contactId => {
 }
 
 export const makeShareableUrl = ({ id, displayName }) =>
-  `https://berty.tech/add-contact#public-key=${encodeURIComponent(
+  `${BASE_WEBSITE_URL}/add-contact#public-key=${encodeURIComponent(
     id
   )}&display-name=${encodeURIComponent(displayName)}`
 
