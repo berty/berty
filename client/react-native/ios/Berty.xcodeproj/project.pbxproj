@@ -55,13 +55,13 @@
 		8D1BA428216CF8F700FEF0AE /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA427216CF8F700FEF0AE /* libssl.a */; };
 		991A11A92201B169006F3200 /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 991A116D2201B169006F3200 /* fontello.ttf */; };
 		993E33F82200C2F100AD98F8 /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993E33EE2200C2E200AD98F8 /* Lottie.framework */; };
-		993E33F92200C2F100AD98F8 /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 993E33EE2200C2E200AD98F8 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		998B6ADC2179E1B90029B33C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */; };
+		99AF6B9322032C0B00A8499B /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993E33EE2200C2E200AD98F8 /* Lottie.framework */; };
+		99AF6B9422032C0B00A8499B /* Lottie.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 993E33EE2200C2E200AD98F8 /* Lottie.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		9B739150E7CB483DA4A73015 /* libRNLanguages-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A1AF2E7B686F48199DEE12B2 /* libRNLanguages-tvOS.a */; };
 		A01BCBB91C754A66BB19B7C5 /* libRCTRestart.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA451D571EE54153BD6C7A36 /* libRCTRestart.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		B40E0A9F7F7B4896A7D74589 /* libRNImagePicker.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 07047A03625844F59A6C0185 /* libRNImagePicker.a */; };
-		C0898231FD474F209F1AA51F /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EEB4890D6F84E88A621DD3E /* Lottie.framework */; };
 		C1553330747D43CDA733DAF9 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C535EC78581401BA4695219 /* libRNVectorIcons.a */; };
 		C7B3009610364EF4A0890A46 /* libLottieReactNative.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AC26D2C943F74C7CB0698DF6 /* libLottieReactNative.a */; };
 		C9A55929D6524E7C93CA1556 /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7C9AB76FDD904A32BC97B8C9 /* libRNCamera.a */; };
@@ -432,7 +432,7 @@
 			remoteGlobalIDString = 11FA5C511C4A1296003AC2EE;
 			remoteInfo = LottieReactNative;
 		};
-		993E33FA2200C2F100AD98F8 /* PBXContainerItemProxy */ = {
+		99AF6B9522032C0B00A8499B /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8E1D0314925B45DFBA2E4B6B /* Lottie.xcodeproj */;
 			proxyType = 1;
@@ -540,13 +540,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		993E330B2200C1A300AD98F8 /* Embed Frameworks */ = {
+		99AF6BCF22032C0C00A8499B /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				993E33F92200C2F100AD98F8 /* Lottie.framework in Embed Frameworks */,
+				99AF6B9422032C0B00A8499B /* Lottie.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -659,6 +659,7 @@
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				8D1BA428216CF8F700FEF0AE /* libssl.a in Frameworks */,
 				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
+				99AF6B9322032C0B00A8499B /* Lottie.framework in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
 				F8EF7F482136A10600FDCCB5 /* core.framework in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
@@ -687,7 +688,6 @@
 				7E5A2067F32748CCA009CD7B /* libRNFetchBlob.a in Frameworks */,
 				FAA74460343842B9897A0195 /* libRNLanguages.a in Frameworks */,
 				C7B3009610364EF4A0890A46 /* libLottieReactNative.a in Frameworks */,
-				C0898231FD474F209F1AA51F /* Lottie.framework in Frameworks */,
 				5416D0AE85EC4EDF9A7CBB34 /* libLottie.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -715,13 +715,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2DF0FFEE2056DD460020B375 /* libReact.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F833F0D52200EB5B000D7E52 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1172,15 +1165,13 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				998384B021C5339300739E0B /* Embed Frameworks */,
-				F833F1202200EB5C000D7E52 /* Embed App Extensions */,
+				99AF6BCF22032C0C00A8499B /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				4854D04E21C41C1000FB71B8 /* PBXTargetDependency */,
-				998384AF21C5339200739E0B /* PBXTargetDependency */,
-				F833F0DE2200EB5C000D7E52 /* PBXTargetDependency */,
+				99AF6B9622032C0B00A8499B /* PBXTargetDependency */,
 			);
 			name = Berty;
 			productName = "Hello World";
@@ -1261,11 +1252,6 @@
 						CreatedOnToolsVersion = 8.2.1;
 						ProvisioningStyle = Automatic;
 						TestTargetID = 2D02E47A1E0B4A5D006451C7;
-					};
-					F833F0D72200EB5B000D7E52 = {
-						CreatedOnToolsVersion = 10.1;
-						DevelopmentTeam = WMBQ84HN4T;
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -1881,13 +1867,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F833F0D62200EB5B000D7E52 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -1956,13 +1935,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F833F0D42200EB5B000D7E52 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1981,14 +1953,10 @@
 			name = React;
 			targetProxy = 4854D04D21C41C1000FB71B8 /* PBXContainerItemProxy */;
 		};
-		993E330A2200C1A300AD98F8 /* PBXTargetDependency */ = {
+		99AF6B9622032C0B00A8499B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Lottie_iOS;
-		};
-		993E33FB2200C2F100AD98F8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Lottie_iOS;
-			targetProxy = 993E33FA2200C2F100AD98F8 /* PBXContainerItemProxy */;
+			targetProxy = 99AF6B9522032C0B00A8499B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

@@ -11,7 +11,6 @@ const IconBerty = createIconSetFromFontello(fontelloConfig)
 
 const Icon = ({ name, color, rotate, src, style, flip, ...props }) => {
   if (name == null) return null
-  console.log(IconBerty)
   const [type, iconName] = [
     name.split('-', 1)[0],
     name
