@@ -29,6 +29,13 @@
       "disclaimer-google": "Your messages will be encrypted and sent through Berty and Google servers. Neither Berty nor Google will have access to your messages, but some metadata can be deduced.",
       "enable": "Enable notifications"
     },
+    "bluetooth": {
+      "tab": "Bluetooth",
+      "title": "Offline message delivery",
+      "help": "You can receive and send messages even without the internet.",
+      "disclaimer": "Your messages will be send through bluetooth.",
+      "enable": "Enable bluetooth"
+    },
     "contacts": {
       "tab": "Contacts",
       "title": "Talk securely with the people that matters to you",
