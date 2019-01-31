@@ -2,9 +2,11 @@ package push
 
 import (
 	"encoding/base64"
-	"github.com/pkg/errors"
 	"strings"
 
+	"github.com/pkg/errors"
+
+	"berty.tech/core/chunk"
 	"berty.tech/core/pkg/errorcodes"
 	"github.com/sideshow/apns2"
 	"github.com/sideshow/apns2/certificate"
@@ -82,22 +84,26 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
-	pushPayload := payload.NewPayload().Custom("berty-envelope", base64.StdEncoding.EncodeToString(pushAttrs.Envelope))
-	if pushAttrs.Priority == Priority_Normal {
-		pushPayload = pushPayload.Alert("test berty notif")
-	}
-
-	notification := &apns2.Notification{}
-	notification.DeviceToken = apnsIdentifier.DeviceToken
-	notification.Topic = d.bundleID
-	notification.Payload = pushPayload
-
-	response, err := d.client.Push(notification)
-
+	chunks, err := chunk.SplitMarshal(pushAttrs.Envelope, 2000)
 	if err != nil {
-		return errorcodes.ErrPushProvider.Wrap(err)
-	} else if response.StatusCode != 200 {
-		return errorcodes.ErrPushProvider.Wrap(errors.New(response.Reason))
+		return err
+	}
+	for _, chunk := range chunks {
+		pushPayload := payload.NewPayload()
+		pushPayload.Custom("chunk", base64.StdEncoding.EncodeToString(chunk))
+		pushPayload.ContentAvailable()
+		notification := &apns2.Notification{}
+		notification.DeviceToken = apnsIdentifier.DeviceToken
+		notification.Topic = d.bundleID
+		notification.Payload = pushPayload
+
+		response, err := d.client.Push(notification)
+
+		if err != nil {
+			return errorcodes.ErrPushProvider.Wrap(err)
+		} else if response.StatusCode != 200 {
+			return errorcodes.ErrPushProvider.Wrap(errors.New(response.Reason))
+		}
 	}
 
 	return nil

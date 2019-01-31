@@ -22,6 +22,11 @@ class CoreModule: NSObject {
   override init() {
     super.init()
     Core.notificationDriver()?.native = Notification()
+    do {
+      try Core.deviceInfo().setStoragePath(try self.getFilesDir())
+    } catch let error as NSError {
+      logger.format("unable to set storage path", level: .error, error.userInfo.description)
+    }
   }
 
   func getFilesDir() throws -> String {
@@ -40,7 +45,7 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      CoreInitialize(logger, try self.getFilesDir(), &err)
+      CoreInitialize(logger, Core.deviceInfo().getStoragePath(), &err)
       if let error = err {
         throw error
       }
@@ -55,7 +60,7 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      let list = CoreListAccounts(try self.getFilesDir(), &err)
+      let list = CoreListAccounts(&err)
       if let error = err {
         throw error
       }
@@ -70,10 +75,8 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      let datastore = try self.getFilesDir()
 
       guard let coreOptions = CoreMobileOptions()?
-        .withDatastorePath(datastore)?
         .withLoggerDriver(logger)?
         .withNickname(nickname as String)
         else {
@@ -116,7 +119,7 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      CoreDropDatabase(try self.getFilesDir(), &err)
+      CoreDropDatabase(&err)
       if let error = err {
         throw error
       }
@@ -213,6 +216,6 @@ class CoreModule: NSObject {
   }
 
   @objc static func requiresMainQueueSetup() -> Bool {
-      return false
+    return false
   }
 }

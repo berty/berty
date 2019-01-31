@@ -412,7 +412,7 @@ func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
 		Envelope:       pushAttrs.Envelope,
 		Priority:       pushAttrs.Priority,
 	}, pushDestination); err != nil {
-		return errorcodes.ErrPush.Wrap(err)
+		logger().Error(errorcodes.ErrPush.Wrap(err).Error())
 	}
 
 	return nil

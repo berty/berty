@@ -1,14 +1,8 @@
 package core
 
 type MobileOptions struct {
-	logger        NativeLogger
-	datastorePath string
-	nickname      string
-}
-
-func (cfg *MobileOptions) WithDatastorePath(path string) *MobileOptions {
-	cfg.datastorePath = path
-	return cfg
+	logger   NativeLogger
+	nickname string
 }
 
 func (cfg *MobileOptions) WithLoggerDriver(logger NativeLogger) *MobileOptions {

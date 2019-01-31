@@ -126,10 +126,25 @@ enum Code {
   ErrNotificationUnmarshalFCM = 15004;
   ErrNotificationUnmarshalAPNS = 15005;
   ErrNotificationUnmarshalMQTT = 15006;
+  ErrNotificationReceive = 15007;
 
   ErrNode = 16000;
   ErrNodePushNotifSub = 16001;
 
+  ErrChunk = 17000;
+  ErrChunkBadIndex = 17001;
+  ErrChunkBadData = 17002;
+  ErrChunkBadSliceID = 17003;
+  ErrChunkBadSliceLength = 17004;
+  ErrChunkSliceNotComplete = 17005;
+  ErrChunkBadSlice = 17006;
+  ErrChunkDaemonStoragePath = 17007;
+  ErrChunkDaemonOpenDatabase = 17008;
+  ErrChunkSlice = 17009;
+  ErrChunkPublish = 17010;
+  ErrChunkSave = 17011;
+  ErrChunkFindSliceByID = 17012;
+  ErrChunkFindAllSlices = 17013;
 }
 
 // Metadata is designed to be used as grpc status detail

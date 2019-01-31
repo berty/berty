@@ -3,7 +3,7 @@
 //  berty
 //
 //  Created by Godefroy Ponsinet on 29/08/2018.
-//  Copyright © 2018 Facebook. All rights reserved.
+//  Copyright © 2018 Berty Technologies. All rights reserved.
 //
 
 #import "React/RCTBridge.h"

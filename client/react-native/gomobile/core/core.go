@@ -22,6 +22,8 @@ var (
 	NotificationDriver = MobileNotification{}.New()
 )
 
+// Setup call it at first native start
+
 func logger() *zap.Logger {
 	return zap.L().Named(defaultLoggerName)
 }
@@ -81,10 +83,10 @@ func Initialize(loggerNative NativeLogger, datastorePath string) error {
 	return nil
 }
 
-func ListAccounts(datastorePath string) (string, error) {
+func ListAccounts() (string, error) {
 	defer panicHandler()
 
-	accounts, err := account.List(rootContext, datastorePath)
+	accounts, err := account.List(rootContext)
 	if err != nil {
 		return "", err
 	}
@@ -92,7 +94,7 @@ func ListAccounts(datastorePath string) (string, error) {
 	return strings.Join(accounts, ":"), nil
 }
 
-func initOrRestoreAppState(datastorePath string) error {
+func initOrRestoreAppState() error {
 	initialJSONNetConf, err := json.Marshal(initialNetConf)
 	if err != nil {
 		return err
@@ -105,7 +107,7 @@ func initOrRestoreAppState(datastorePath string) error {
 		LocalGRPC:   initiallocalGRPC,
 	}
 
-	appState, err := account.OpenStateDB(datastorePath+"/berty.state.db", initialState)
+	appState, err := account.OpenStateDB("./berty.state.db", initialState)
 	if err != nil {
 		return errors.Wrap(err, "state DB init failed")
 	}
@@ -133,7 +135,7 @@ func Start(cfg *MobileOptions) error {
 		return nil
 	}
 
-	if err := initOrRestoreAppState(cfg.datastorePath); err != nil {
+	if err := initOrRestoreAppState(); err != nil {
 		return errors.Wrap(err, "app init/restore state failed")
 	}
 
@@ -154,7 +156,7 @@ func Restart() error {
 	return nil
 }
 
-func DropDatabase(datastorePath string) error {
+func DropDatabase() error {
 	defer panicHandler()
 
 	currentAccount, err := account.Get(rootContext, accountName)
@@ -218,7 +220,7 @@ func daemon(cfg *MobileOptions) error {
 		account.WithPassphrase("secure"),
 		account.WithNotificationDriver(NotificationDriver),
 		account.WithDatabase(&account.DatabaseOptions{
-			Path: cfg.datastorePath,
+			Path: ".",
 			Drop: false,
 		}),
 		account.WithP2PNetwork(netConf),

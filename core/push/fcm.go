@@ -4,8 +4,9 @@ import (
 	"encoding/base64"
 	"strings"
 
+	"berty.tech/core/chunk"
 	"berty.tech/core/pkg/errorcodes"
-	"github.com/NaySoftware/go-fcm"
+	fcm "github.com/NaySoftware/go-fcm"
 )
 
 type FCMDispatcher struct {
@@ -51,16 +52,22 @@ func (d *FCMDispatcher) CanDispatch(pushAttrs *PushData, pushDestination *PushDe
 
 func (d *FCMDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDestination) error {
 	fcmIdentifier := &PushNativeIdentifier{}
-	if err := fcmIdentifier.Unmarshal(pushAttrs.PushIdentifier); err != nil {
+	if err := fcmIdentifier.Unmarshal(pushDestination.PushId); err != nil {
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
-	payload := Payload{BertyEnvelope: base64.StdEncoding.EncodeToString(pushAttrs.Envelope)}
+	chunks, err := chunk.SplitMarshal(pushAttrs.Envelope, 2000)
+	if err != nil {
+		return err
+	}
+	for _, chunk := range chunks {
+		payload := Payload{Chunk: base64.StdEncoding.EncodeToString(chunk)}
 
-	deviceToken := fcmIdentifier.DeviceToken
+		deviceToken := fcmIdentifier.DeviceToken
 
-	if _, err := d.client.NewFcmMsgTo(deviceToken, payload).Send(); err != nil {
-		return errorcodes.ErrPushProvider.Wrap(err)
+		if _, err := d.client.NewFcmMsgTo(deviceToken, payload).Send(); err != nil {
+			return errorcodes.ErrPushProvider.Wrap(err)
+		}
 	}
 
 	return nil
