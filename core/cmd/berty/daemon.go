@@ -22,16 +22,17 @@ import (
 type daemonOptions struct {
 	sql sqlOptions `mapstructure:"sql"`
 
-	grpcBind       string   `mapstructure:"grpc-bind"`
-	gqlBind        string   `mapstructure:"gql-bind"`
-	hideBanner     bool     `mapstructure:"hide-banner"`
-	dropDatabase   bool     `mapstructure:"drop-database"`
-	initOnly       bool     `mapstructure:"init-only"`
-	withBot        bool     `mapstructure:"with-bot"`
-	notification   bool     `mapstructure:"notification"`
-	apnsCerts      []string `mapstructure:"apns-certs"`
-	fcmAPIKeys     []string `mapstructure:"fcm-api-keys"`
-	privateKeyFile string   `mapstructure:"private-key-file"`
+	grpcBind         string   `mapstructure:"grpc-bind"`
+	gqlBind          string   `mapstructure:"gql-bind"`
+	hideBanner       bool     `mapstructure:"hide-banner"`
+	dropDatabase     bool     `mapstructure:"drop-database"`
+	initOnly         bool     `mapstructure:"init-only"`
+	withBot          bool     `mapstructure:"with-bot"`
+	notification     bool     `mapstructure:"notification"`
+	apnsCerts        []string `mapstructure:"apns-certs"`
+	apnsDevVoipCerts []string `mapstructure:"apns-dev-voip-certs"`
+	fcmAPIKeys       []string `mapstructure:"fcm-api-keys"`
+	privateKeyFile   string   `mapstructure:"private-key-file"`
 
 	// p2p
 	identity       string   `mapstructure:"identity"`
@@ -65,6 +66,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringSliceVar(&opts.bootstrap, "bootstrap", p2p.DefaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
 	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
+	flags.StringSliceVar(&opts.apnsDevVoipCerts, "apns-dev-voip-certs", []string{}, "Path of APNs VoIP development certificates, delimited by commas")
 	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
 	flags.StringVar(&opts.privateKeyFile, "private-key-file", "", "set private key file for node")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
@@ -162,23 +164,9 @@ func daemon(opts *daemonOptions) error {
 		accountOptions = append(accountOptions, account.WithNotificationDriver(notificationDriver))
 	}
 
-	var pushDispatchers []push.Dispatcher
-	for _, cert := range opts.apnsCerts {
-		dispatcher, err := push.NewAPNSDispatcher(cert)
-		if err != nil {
-			return err
-		}
-
-		pushDispatchers = append(pushDispatchers, dispatcher)
-	}
-
-	for _, apiKey := range opts.fcmAPIKeys {
-		dispatcher, err := push.NewFCMDispatcher(apiKey)
-		if err != nil {
-			return err
-		}
-
-		pushDispatchers = append(pushDispatchers, dispatcher)
+	pushDispatchers, err := listPushDispatchers(opts)
+	if err != nil {
+		return err
 	}
 
 	accountOptions = append(accountOptions, account.WithPushManager(push.New(pushDispatchers...)))
@@ -202,4 +190,35 @@ func daemon(opts *daemonOptions) error {
 	}
 
 	return <-a.ErrChan()
+}
+
+func listPushDispatchers(opts *daemonOptions) ([]push.Dispatcher, error) {
+	var pushDispatchers []push.Dispatcher
+	for _, certs := range []struct {
+		Certs    []string
+		ForceDev bool
+	}{
+		{Certs: opts.apnsCerts, ForceDev: false},
+		{Certs: opts.apnsDevVoipCerts, ForceDev: true},
+	} {
+		for _, cert := range certs.Certs {
+			dispatcher, err := push.NewAPNSDispatcher(cert, certs.ForceDev)
+			if err != nil {
+				return nil, err
+			}
+
+			pushDispatchers = append(pushDispatchers, dispatcher)
+		}
+	}
+
+	for _, apiKey := range opts.fcmAPIKeys {
+		dispatcher, err := push.NewFCMDispatcher(apiKey)
+		if err != nil {
+			return nil, err
+		}
+
+		pushDispatchers = append(pushDispatchers, dispatcher)
+	}
+
+	return pushDispatchers, nil
 }
