@@ -2,34 +2,18 @@ package p2p
 
 import (
 	"context"
+	"strconv"
+	"time"
 
 	host "github.com/libp2p/go-libp2p-host"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
 )
 
-func getRelaysFromPeerstore(host host.Host) peer.IDSlice {
-	var relays peer.IDSlice
-	peers := host.Peerstore().Peers()
-
-	for _, peer := range peers {
-		tags := host.ConnManager().GetTagInfo(peer)
-		if tags != nil {
-			val, exist := tags.Tags["relay-hop"]
-			if exist && val == 2 {
-				relays = append(relays, peer)
-			}
-		}
-	}
-
-	return relays
-}
-
-func CountConnectedRelays(host host.Host) int {
-	relays := getRelaysFromPeerstore(host)
+func CountConnectedRelays(relayMap map[peer.ID]bool, host host.Host) int {
 	connectedRelays := 0
 
-	for _, relay := range relays {
+	for relay := range relayMap {
 		if host.Network().Connectedness(relay) == inet.Connected {
 			connectedRelays++
 		}
@@ -38,11 +22,10 @@ func CountConnectedRelays(host host.Host) int {
 	return connectedRelays
 }
 
-func ReconnectToRelays(host host.Host, limit int) int {
+func ReconnectToRelays(relayMap map[peer.ID]bool, host host.Host, limit int) int {
 	connectedRelays := 0
-	relays := getRelaysFromPeerstore(host)
 
-	for _, relay := range relays {
+	for relay := range relayMap {
 		relayInfo := host.Peerstore().PeerInfo(relay)
 		if host.Connect(context.Background(), relayInfo) == nil {
 			connectedRelays++
@@ -53,4 +36,27 @@ func ReconnectToRelays(host host.Host, limit int) int {
 	}
 
 	return connectedRelays
+}
+
+func WatchRelayDisconnection(relayMap map[peer.ID]bool, host host.Host, shutdown chan struct{}) {
+	go func() {
+		for {
+			if CountConnectedRelays(relayMap, host) == 0 {
+				logger().Warn("watcher: no relay connected, try to reconnect")
+				reconnected := ReconnectToRelays(relayMap, host, 10)
+				if reconnected > 0 {
+					logger().Debug("watcher: reconnection succeeded with " + strconv.Itoa(reconnected) + " relays")
+				}
+			} else {
+				logger().Debug("watcher: relay connected, everything fine")
+			}
+			select {
+			case <-time.After(5 * time.Second):
+				continue
+			case <-shutdown:
+				logger().Debug("driver shutdown: relay connection watcher ended")
+				return
+			}
+		}
+	}()
 }

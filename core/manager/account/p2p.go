@@ -101,7 +101,10 @@ func createP2PNetwork(ctx context.Context, opts *P2PNetworkOptions, db *gorm.DB)
 	if opts.Relay {
 		p2pOptions = append(p2pOptions, p2p.WithRelayHOP())
 	} else {
-		p2pOptions = append(p2pOptions, p2p.WithRelayClient())
+		p2pOptions = append(p2pOptions,
+			p2p.WithRelayClient(),
+			p2p.WithRelayWatcher(),
+		)
 	}
 
 	if opts.SwarmKey != nil {
