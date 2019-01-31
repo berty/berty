@@ -21,7 +21,7 @@ type networkConfig struct {
 	Relay              bool
 }
 
-func createNetworkConfig() (*account.P2PNetworkOptions, error) {
+func createNetworkConfig(jsonConf string) (*account.P2PNetworkOptions, error) {
 	defer panicHandler()
 	var (
 		netConf   networkConfig
@@ -31,7 +31,7 @@ func createNetworkConfig() (*account.P2PNetworkOptions, error) {
 		swarmKey  io.Reader
 	)
 
-	if err := json.Unmarshal([]byte(appConfig.JSONNetConf), &netConf); err != nil {
+	if err := json.Unmarshal([]byte(jsonConf), &netConf); err != nil {
 		return nil, errors.Wrap(err, "JSONNetConf unmarshal failed")
 	}
 
@@ -90,7 +90,7 @@ func UpdateNetworkConfig(jsonConf string) error {
 	}
 
 	newState.JSONNetConf = jsonConf
-	netConf, err := createNetworkConfig()
+	netConf, err := createNetworkConfig(jsonConf)
 	if err != nil {
 		return err
 	}
