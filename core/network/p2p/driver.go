@@ -48,6 +48,8 @@ type driverConfig struct {
 
 	jaeger []grpc_ot.Option
 
+	connManager *ConnManager
+
 	bootstrap     []string
 	bootstrapSync bool
 
@@ -57,6 +59,9 @@ type driverConfig struct {
 
 	// MDNS
 	enableMDNS bool
+
+	// Auto reconnect to relay
+	relayWatcher bool
 }
 
 // Driver is a network.Driver
@@ -73,6 +78,8 @@ type Driver struct {
 
 	rootContext context.Context
 	PingSvc     *ping.PingService
+
+	shutdown chan struct{}
 }
 
 // Driver is a network.Driver
@@ -106,6 +113,11 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		host:        host,
 		rootContext: ctx,
 		providers:   provider.NewManager(),
+	}
+
+	if cfg.relayWatcher {
+		driver.shutdown = make(chan struct{}, 1)
+		WatchRelayDisconnection(cfg.connManager.relayMap, host, driver.shutdown)
 	}
 
 	ds := syncdatastore.MutexWrap(datastore.NewMapDatastore())
@@ -228,6 +240,8 @@ func (d *Driver) Close(ctx context.Context) error {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
+
+	close(d.shutdown)
 
 	// FIXME: save cache to speedup next connections
 	var err error

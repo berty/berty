@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"strings"
+	"time"
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network/ble"
@@ -21,6 +22,7 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	dhtopt "github.com/libp2p/go-libp2p-kad-dht/opts"
 	metrics "github.com/libp2p/go-libp2p-metrics"
+	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	pnet "github.com/libp2p/go-libp2p-pnet"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
@@ -131,6 +133,15 @@ func WithRelayClient() Option {
 	return WithRelay(circuit.OptActive)
 }
 
+// WithRelayWatcher will allow client to auto-reconnect to relay
+func WithRelayWatcher() Option {
+	return func(dc *driverConfig) error {
+		dc.relayWatcher = true
+		dc.connManager.relayMap = make(map[peer.ID]bool)
+		return nil
+	}
+}
+
 // WithRelayHOP will create a relay hop that can be use by client
 func WithRelayHOP() Option {
 	return WithRelay(circuit.OptActive, circuit.OptHop)
@@ -140,6 +151,13 @@ func WithLibp2pOption(opts ...libp2p.Option) Option {
 	return func(dc *driverConfig) error {
 		dc.libp2pOpt = append(dc.libp2pOpt, opts...)
 		return nil
+	}
+}
+
+func WithConnManager(low int, hi int, grace time.Duration) Option {
+	return func(dc *driverConfig) error {
+		dc.connManager = NewConnManager(low, hi, grace)
+		return WithConnectionManager(dc.connManager)(dc)
 	}
 }
 
