@@ -47,7 +47,7 @@ func (x DevicePushType) String() string {
 	return proto.EnumName(DevicePushType_name, int32(x))
 }
 func (DevicePushType) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_push_157d81f4d09adb0d, []int{0}
+	return fileDescriptor_push_326ac3d5a9b7a465, []int{0}
 }
 
 type Priority int32
@@ -73,7 +73,7 @@ func (x Priority) String() string {
 	return proto.EnumName(Priority_name, int32(x))
 }
 func (Priority) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_push_157d81f4d09adb0d, []int{1}
+	return fileDescriptor_push_326ac3d5a9b7a465, []int{1}
 }
 
 type PushDestination struct {
@@ -89,7 +89,7 @@ func (m *PushDestination) Reset()         { *m = PushDestination{} }
 func (m *PushDestination) String() string { return proto.CompactTextString(m) }
 func (*PushDestination) ProtoMessage()    {}
 func (*PushDestination) Descriptor() ([]byte, []int) {
-	return fileDescriptor_push_157d81f4d09adb0d, []int{0}
+	return fileDescriptor_push_326ac3d5a9b7a465, []int{0}
 }
 func (m *PushDestination) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -151,7 +151,7 @@ func (m *PushNativeIdentifier) Reset()         { *m = PushNativeIdentifier{} }
 func (m *PushNativeIdentifier) String() string { return proto.CompactTextString(m) }
 func (*PushNativeIdentifier) ProtoMessage()    {}
 func (*PushNativeIdentifier) Descriptor() ([]byte, []int) {
-	return fileDescriptor_push_157d81f4d09adb0d, []int{1}
+	return fileDescriptor_push_326ac3d5a9b7a465, []int{1}
 }
 func (m *PushNativeIdentifier) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -207,7 +207,7 @@ func (m *PushData) Reset()         { *m = PushData{} }
 func (m *PushData) String() string { return proto.CompactTextString(m) }
 func (*PushData) ProtoMessage()    {}
 func (*PushData) Descriptor() ([]byte, []int) {
-	return fileDescriptor_push_157d81f4d09adb0d, []int{2}
+	return fileDescriptor_push_326ac3d5a9b7a465, []int{2}
 }
 func (m *PushData) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -939,9 +939,9 @@ var (
 	ErrIntOverflowPush   = fmt.Errorf("proto: integer overflow")
 )
 
-func init() { proto.RegisterFile("push/push.proto", fileDescriptor_push_157d81f4d09adb0d) }
+func init() { proto.RegisterFile("push/push.proto", fileDescriptor_push_326ac3d5a9b7a465) }
 
-var fileDescriptor_push_157d81f4d09adb0d = []byte{
+var fileDescriptor_push_326ac3d5a9b7a465 = []byte{
 	// 407 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x52, 0xc1, 0x8e, 0xd3, 0x30,
 	0x10, 0xad, 0x5b, 0xe8, 0x26, 0x43, 0x49, 0x23, 0x13, 0x44, 0xe9, 0x21, 0x2c, 0x3d, 0xc0, 0x6a,

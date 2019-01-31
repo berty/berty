@@ -23,13 +23,19 @@ type Payload struct {
 }
 
 func (m *Manager) Dispatch(push *PushData, pushDestination *PushDestination) error {
+	var err error
 	logger().Info("dispatch push")
 	for _, dispatcher := range m.dispatchers {
 		if !dispatcher.CanDispatch(push, pushDestination) {
 			continue
 		}
+		if err = dispatcher.Dispatch(push, pushDestination); err == nil {
+			return nil
+		}
+	}
 
-		return dispatcher.Dispatch(push, pushDestination)
+	if err != nil {
+		return err
 	}
 
 	return errorcodes.ErrPushUnknownProvider.New()

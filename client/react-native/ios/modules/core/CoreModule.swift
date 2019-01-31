@@ -17,29 +17,6 @@ var logger = Logger("chat.berty.io", "CoreModule")
 
 @objc(CoreModule)
 class CoreModule: NSObject {
-  @objc var notificationDriver: CoreMobileNotification! = Core.notificationDriver()
-
-  override init() {
-    super.init()
-    Core.notificationDriver()?.native = Notification()
-    do {
-      try Core.deviceInfo().setStoragePath(try self.getFilesDir())
-    } catch let error as NSError {
-      logger.format("unable to set storage path", level: .error, error.userInfo.description)
-    }
-  }
-
-  func getFilesDir() throws -> String {
-    let filesDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-    let filesPath = filesDir?.path
-    let fileExist = FileManager.default.fileExists(atPath: filesPath!)
-
-    // do this in gomobile and set storage as global in gomobile
-    if fileExist == false {
-      try FileManager.default.createDirectory(at: filesDir!, withIntermediateDirectories: true, attributes: nil)
-    }
-    return filesPath!
-  }
 
   @objc func initialize(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     var err: NSError?

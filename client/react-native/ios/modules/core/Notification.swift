@@ -8,6 +8,7 @@
 import UIKit
 import UserNotifications
 import Core
+import PushKit
 
 enum NotificationError: Error {
   case invalidArgument
@@ -44,13 +45,13 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
 
     center.add(request)
-
   }
 
-  func register() throws {
+  func register () throws {
     var err: Error?
     let group = DispatchGroup()
 
+    // request to register for remote notifications
     group.enter()
     UNUserNotificationCenter.current().delegate = self
     UNUserNotificationCenter.current().requestAuthorization(
@@ -59,73 +60,88 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
         guard granted else {
           err = error
           group.leave()
-
           return
         }
         group.leave()
       }
     )
     group.wait()
-
     if err != nil {
-      try self.unregister()
-    } else {
-      DispatchQueue.main.async {
-        let application = UIApplication.shared
-        application.registerForRemoteNotifications()
-      }
+      throw err!
+    }
+
+    DispatchQueue.main.async {
+      // register for remote notifications
+      let application = UIApplication.shared
+      application.registerForRemoteNotifications()
+
+      // register for pushkit voip notifications
+      let voipRegistry = PKPushRegistry(queue: DispatchQueue.main)
+      voipRegistry.delegate = application.delegate as! AppDelegate
+      voipRegistry.desiredPushTypes = Set([PKPushType.voIP])
     }
   }
 
   func unregister() throws {
-    let application = UIApplication.shared
-    application.unregisterForRemoteNotifications()
-    Core.notificationDriver()?.receiveAPNSToken(nil)
+    let group = DispatchGroup()
+    group.enter()
+    DispatchQueue.main.async {
+      // unregister for remote notifications
+      let application = UIApplication.shared
+      application.unregisterForRemoteNotifications()
+
+      Core.notificationDriver()?.receiveAPNSToken(nil)
+      group.leave()
+    }
+    group.wait()
   }
 
   func refreshToken() throws {
-    let application = UIApplication.shared
-    application.unregisterForRemoteNotifications()
-    application.registerForRemoteNotifications()
+    try self.unregister()
+    try self.register()
   }
 
 }
 
-extension AppDelegate {
-  override func application(
-    _ application: UIApplication,
-    didRegister notificationSettings: UIUserNotificationSettings) {
-    // RCTPushNotificationManager.didRegister(notificationSettings)
+extension AppDelegate: PKPushRegistryDelegate {
+
+  // get token from pushkit
+  func pushRegistry(_ registry: PKPushRegistry,
+                    didUpdate pushCredentials: PKPushCredentials,
+                    forType type: PKPushType) {
+    Core.notificationDriver()?.receiveAPNSToken(pushCredentials.token)
   }
 
-  override func application(
-    _ application: UIApplication,
-    didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-    // RCTPushNotificationManager.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
-    Core.notificationDriver()?.receiveAPNSToken(deviceToken)
-  }
-
-  override func application(
-    _ application: UIApplication,
-    didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-    fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-    // RCTPushNotificationManager.didReceiveRemoteNotification(userInfo, fetchCompletionHandler: completionHandler)
-
+  // iOS >= 8 notifies the delegate that a remote push has been received 
+  func pushRegistry(
+    _ registry: PKPushRegistry,
+    didReceiveIncomingPushWith payload: PKPushPayload,
+    forType type: PKPushType) {
     do {
-      let json = try JSONSerialization.data(withJSONObject: userInfo, options: [])
+      let json = try JSONSerialization.data(withJSONObject: payload.dictionaryPayload, options: [])
       let data = String(decoding: json, as: UTF8.self)
-      Core.notificationDriver()?.receive(data)
+      Core.notificationDriver().receive(data)
+    } catch {
+      logger.format("failed to deserialize remote notification : %@", level: .error, error.localizedDescription)
+    }
+  }
+  // iOS >= 11 notifies the delegate that a remote push has been received
+  func pushRegistry(
+    _ registry: PKPushRegistry,
+    didReceiveIncomingPushWith payload: PKPushPayload,
+    for type: PKPushType, completion: @escaping () -> Void) {
+    do {
+      let json = try JSONSerialization.data(withJSONObject: payload.dictionaryPayload, options: [])
+      let data = String(decoding: json, as: UTF8.self)
+      Core.notificationDriver().receive(data)
     } catch {
       logger.format("failed to deserialize remote notification : %@", level: .error, error.localizedDescription)
     }
   }
 
-  override func application(
-    _ application: UIApplication,
-    didFailToRegisterForRemoteNotificationsWithError error: Error) {
-    logger.format("failed to register for remote notification : %@", level: .error, error.localizedDescription)
-    Core.notificationDriver()?.receiveAPNSToken(nil)
-    // RCTPushNotificationManager.didFailToRegisterForRemoteNotificationsWithError(error)
+  // notifies the delegate that a push token has been invalidated
+  func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenForType type: PKPushType) {
+    // nothing to do
   }
 
   override func application(_ application: UIApplication, didReceive notification: UILocalNotification) {
@@ -133,9 +149,9 @@ extension AppDelegate {
       if let url = data["url"] {
         if url.count > 0 {
           self.application(application, open: URL.init(string: url)!, options: [
-              UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
-              UIApplicationOpenURLOptionsKey.openInPlace: false
-            ])
+            UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
+            UIApplicationOpenURLOptionsKey.openInPlace: false
+          ])
         }
       }
     }

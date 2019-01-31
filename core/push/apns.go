@@ -71,7 +71,7 @@ func (d *APNSDispatcher) CanDispatch(pushAttrs *PushData, pushDestination *PushD
 		return false
 	}
 
-	if d.bundleID != apnsIdentifier.PackageID {
+	if d.bundleID != apnsIdentifier.PackageID && d.bundleID != apnsIdentifier.PackageID+".voip" {
 		return false
 	}
 
@@ -84,10 +84,11 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
-	chunks, err := chunk.SplitMarshal(pushAttrs.Envelope, 2000)
+	chunks, err := chunk.SplitMarshal(pushAttrs.Envelope, 3500)
 	if err != nil {
 		return err
 	}
+
 	for _, chunk := range chunks {
 		pushPayload := payload.NewPayload()
 		pushPayload.Custom("chunk", base64.StdEncoding.EncodeToString(chunk))
@@ -105,6 +106,7 @@ func (d *APNSDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDest
 			return errorcodes.ErrPushProvider.Wrap(errors.New(response.Reason))
 		}
 	}
+	logger().Info("push notifications with chunk send")
 
 	return nil
 }

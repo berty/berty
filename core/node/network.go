@@ -36,7 +36,6 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	// FIXME: use a locking system
 
 	n.networkDriver = driver
-
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
 	if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {

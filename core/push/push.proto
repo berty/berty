@@ -30,7 +30,6 @@ message PushNativeIdentifier {
   string device_token = 2;
 }
 
-
 message PushData {
   bytes push_identifier = 1;
   bytes envelope = 2;
