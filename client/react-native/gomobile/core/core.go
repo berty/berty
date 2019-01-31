@@ -208,7 +208,7 @@ func daemon(cfg *MobileOptions) error {
 
 	var a *account.Account
 
-	netConf, err := createNetworkConfig()
+	netConf, err := createNetworkConfig(appConfig.JSONNetConf)
 	if err != nil {
 		return err
 	}
