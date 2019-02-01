@@ -29,6 +29,13 @@
       "disclaimer-google": "Vos messages seront chiffrés et envoyés via les serveurs de Berty et de Google. Ni Berty ni Google n'auront accès à vos messages.",
       "enable": "Activer les notifications"
     },
+    "bluetooth": {
+      "tab": "Bluetooth",
+      "title": "Messagerie hors ligne",
+      "help": "Vous pourrez recevoir et envoyer des messages sans data ni Wi-Fi !",
+      "disclaimer": "Ces messages seront envoyés via le Bluetooth.",
+      "enable": "Activer le Bluetooth"
+    },
     "contacts": {
       "tab": "Contacts",
       "title": "Discutez avec les personnes qui comptent pour vous",

@@ -1,6 +1,7 @@
 import { createMaterialTopTabNavigator } from 'react-navigation'
 import Welcome from './Welcome'
 import Notifications from './Notifications'
+import Bluetooth from './Bluetooth'
 import Contacts from './Contacts'
 import Ready from './Ready'
 import { tabIcon } from '../../../../helpers/views'
@@ -21,6 +22,13 @@ export default createMaterialTopTabNavigator(
       navigationOptions: () => ({
         tabBarIcon: tabIcon('bell'),
         title: I18n.t('onboarding.notifications.tab'),
+      }),
+    },
+    'onboarding/bluetooth': {
+      screen: Bluetooth,
+      navigationOptions: () => ({
+        tabBarIcon: tabIcon('bluetooth'),
+        title: I18n.t('onboarding.bluetooth.tab'),
       }),
     },
     'onboarding/contacts': {
