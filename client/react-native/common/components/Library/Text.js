@@ -204,6 +204,8 @@ const getMargin = (
   }
 ) => {
   switch (typeof props.margin) {
+    case 'number':
+      return { margin: props.margin }
     case 'boolean':
       return margin
     case 'string':

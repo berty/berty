@@ -17,8 +17,6 @@ export default class App extends PureComponent {
   state = {
     loading: true,
     showAnim: (process.env['ENVIRONMENT'] !== 'integration_test'),
-    duration: 4000,
-    progress: new Animated.Value(0),
     deepLink: {
       routeName: 'main',
       params: {},
@@ -41,7 +39,6 @@ export default class App extends PureComponent {
     }
 
     Linking.addEventListener('url', this._handleOpenURL)
-    if (this.state.showAnim === true) { this.startAnimation() }
     this.setState({ loading: false })
   }
 
@@ -93,18 +90,6 @@ export default class App extends PureComponent {
     }
   }
 
-  startAnimation () {
-    Animated.timing(this.state.progress, {
-      toValue: 1,
-      duration: this.state.duration,
-      easing: Easing.linear,
-    }).start(({ finished }) => {
-      if (finished) {
-        this.setState({ showAnim: false })
-      }
-    })
-  }
-
   clearDeepLink () {
     this.setState({ deepLink: null })
   }
@@ -126,8 +111,9 @@ export default class App extends PureComponent {
             >
               <LottieView
                 source={require('./../static/animation/BertyAnimation.json')}
-                progress={progress}
+                autoPlay={true}
                 loop={false}
+                onAnimationFinish={() => this.setState({ showAnim: false })}
                 style={{ 'width': 320 }}
                 autoSize
               />

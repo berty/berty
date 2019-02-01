@@ -113,10 +113,10 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		host:        host,
 		rootContext: ctx,
 		providers:   provider.NewManager(),
+		shutdown:    make(chan struct{}, 1),
 	}
 
 	if cfg.relayWatcher {
-		driver.shutdown = make(chan struct{}, 1)
 		WatchRelayDisconnection(cfg.connManager.relayMap, host, driver.shutdown)
 	}
 

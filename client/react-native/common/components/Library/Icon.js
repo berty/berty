@@ -1,10 +1,13 @@
 import { View } from 'react-native'
+import { createIconSetFromFontello } from 'react-native-vector-icons'
 import IconAwesome from 'react-native-vector-icons/dist/FontAwesome'
 import IconFeather from 'react-native-vector-icons/dist/Feather'
 import IconMatCom from 'react-native-vector-icons/dist/MaterialCommunityIcons'
 import React from 'react'
 
 import { colors } from '../../constants'
+import fontelloConfig from '../../static/svg/config.json'
+const IconBerty = createIconSetFromFontello(fontelloConfig)
 
 const Icon = ({ name, color, rotate, src, style, flip, ...props }) => {
   if (name == null) return null
@@ -36,6 +39,8 @@ const Icon = ({ name, color, rotate, src, style, flip, ...props }) => {
       return <IconAwesome {...iconProps} />
     case 'material':
       return <IconMatCom {...iconProps} />
+    case 'berty':
+      return <IconBerty {...iconProps} />
     default:
       return <IconFeather {...iconProps} name={name} />
   }

@@ -156,5 +156,7 @@ func (a *Account) UpdateP2PNetwork(ctx context.Context, opts *P2PNetworkOptions)
 		return err
 	}
 
+	a.node.UseNetworkMetrics(ctx, a.metrics)
+
 	return a.node.UseNetworkDriver(ctx, a.network)
 }

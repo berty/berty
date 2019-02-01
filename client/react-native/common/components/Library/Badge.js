@@ -30,7 +30,7 @@ const getSize = (
   props,
   sizes = {
     tiny: props.icon ? 20 : 14,
-    small: props.icon ? 28 : 20,
+    small: props.icon ? 28 : 18,
     medium: props.icon ? 34 : 25,
     large: props.icon ? 38 : 30,
     big: props.icon ? 49 : 39,
@@ -40,8 +40,8 @@ const getSize = (
 const getPadding = (
   props,
   paddings = {
-    tiny: 2,
-    small: 3,
+    tiny: 1,
+    small: 2,
     medium: 4,
     large: 5,
     big: 6,
@@ -83,25 +83,23 @@ const Badge = props => {
   const [horizPos, vertiPos, size, padding, absolute] = [
     getHorizPos(props),
     getVertiPos(props),
-    getSize(props),
-    getPadding(props),
+    typeof props.getSize === 'function' ? props.getSize(props) : getSize(props),
+    typeof props.getPadding === 'function' ? props.getPadding(props) : getPadding(props),
     { ...getHorizAbsol(props), ...getVertiAbsol(props) },
   ]
-  if (value == null && !icon) {
-    return children
-  }
+
   return (
     <Flex.Rows justify={vertiPos} align={horizPos} style={{ padding }}>
       {children}
       <Text
         icon={value == null && icon}
         height={size}
-        padding
+        padding={padding}
         middle
         center
         rounded='circle'
         absolute={absolute}
-        background={background || colors.red}
+        background={background || colors.white}
         color={color || colors.white}
         {...otherProps}
       >
