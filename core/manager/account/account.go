@@ -155,7 +155,7 @@ func List(ctx context.Context) ([]string, error) {
 
 	var names []string
 
-	err := filepath.Walk(deviceinfo.GetStoragePath(), func(path string, info os.FileInfo, err error) error {
+	err := filepath.Walk(deviceinfo.GetStoragePath()+"/account", func(path string, info os.FileInfo, err error) error {
 		logger().Debug("List", zap.String("path", path))
 		name := filepath.Base(path)
 		match, _ := filepath.Match("berty.*.db", name)
@@ -302,7 +302,7 @@ func (a *Account) Close(ctx context.Context) {
 
 // Database
 func (a *Account) dbPath() string {
-	return a.dbDir + "/berty." + a.Name + ".db"
+	return a.dbDir + "/account/berty." + a.Name + ".db"
 }
 
 func (a *Account) openDatabase(ctx context.Context) error {
@@ -311,6 +311,9 @@ func (a *Account) openDatabase(ctx context.Context) error {
 	ctx = tracer.Context()
 
 	var err error
+	if err := os.MkdirAll(a.dbDir+"/account", 0700); err != nil {
+		return errorcodes.ErrAccManagerDb.Wrap(err)
+	}
 	a.db, err = sqlcipher.Open(a.dbPath(), []byte(a.Passphrase))
 	if err != nil {
 		return errorcodes.ErrAccManagerDb.Wrap(err)
@@ -535,6 +538,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		Title: i18n.T("DaemonStartTitle", nil),
 		Body:  i18n.T("DaemonStartBody", nil),
 	})
+
 	return nil
 }
 

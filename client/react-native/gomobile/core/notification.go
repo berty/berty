@@ -39,6 +39,7 @@ func (n MobileNotification) New() *MobileNotification {
 }
 
 func (n *MobileNotification) Receive(data string) {
+	logger().Debug("receive push notification", zap.String("data", data))
 	payload := push.Payload{}
 	if err := json.Unmarshal([]byte(data), &payload); err != nil {
 		logger().Error(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
