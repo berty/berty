@@ -28,6 +28,14 @@ const updateApiSources = {
     url: 'https://yolo.berty.io/release/android.json',
     channel: 'dev',
   },
+  'chat.berty.main.staff': {
+    url: 'https://yolo.berty.io/release/android.json',
+    channel: 'beta',
+  },
+  'chat.berty.main.yolo': {
+    url: 'https://yolo.berty.io/release/android.json',
+    channel: 'beta',
+  },
   'chat.berty.main': {
     url: 'https://yolo.berty.io/release/android.json',
     channel: 'beta',
