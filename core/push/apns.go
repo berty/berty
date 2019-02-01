@@ -23,7 +23,7 @@ type APNSDispatcher struct {
 
 var _ Dispatcher = &APNSDispatcher{}
 
-func NewAPNSDispatcher(path string) (Dispatcher, error) {
+func NewAPNSDispatcher(path string, forceDev bool) (Dispatcher, error) {
 	cert, err := certificate.FromP12File(path, "")
 
 	if err != nil {
@@ -47,7 +47,7 @@ func NewAPNSDispatcher(path string) (Dispatcher, error) {
 
 	client := apns2.NewClient(cert)
 
-	if production {
+	if !forceDev && production {
 		client = client.Production()
 	} else {
 		client = client.Development()
