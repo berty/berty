@@ -1,7 +1,5 @@
 package core
 
-import "runtime"
-
 // This file contain the configuration by default
 
 // Initial configs will be used to set default settings in state DB
@@ -9,7 +7,7 @@ import "runtime"
 var (
 	initialNetConf = networkConfig{
 		DefaultTransport:   true,
-		BluetoothTransport: true,
+		BluetoothTransport: false,
 		QuicTransport:      true,
 		DefaultBootstrap:   true,
 		CustomBootstrap:    []string{},
@@ -20,12 +18,6 @@ var (
 	initialBotMode   = false
 	initiallocalGRPC = false
 )
-
-func init() {	
-	if runtime.GOOS == "android" {	
-		initialNetConf.BluetoothTransport = false	
-	}	
-}
 
 // Default configs will be used to set default settings but not saved in state DB
 const (
