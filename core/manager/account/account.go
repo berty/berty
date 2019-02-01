@@ -327,7 +327,7 @@ func (a *Account) openDatabase(ctx context.Context) error {
 			return errorcodes.ErrAccManagerDbDrop.Wrap(err)
 		}
 	}
-	if err = sql.Migrate(a.db); err != nil {
+	if err = sql.Migrate(a.db, false); err != nil {
 		return errorcodes.ErrAccManagerDbMig.Wrap(err)
 	}
 	return nil

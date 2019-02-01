@@ -1,12 +1,10 @@
 package sql
 
 import (
+	"berty.tech/core/sql/migrations"
 	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
-
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/entity"
 )
 
 // Init configures an active gorm connection
@@ -21,18 +19,17 @@ func Init(db *gorm.DB) (*gorm.DB, error) {
 	return db, nil
 }
 
-func Migrate(db *gorm.DB) error {
-	m := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
-		{
-			ID: "1",
-			Migrate: func(tx *gorm.DB) error {
-				return tx.AutoMigrate(append(entity.AllEntities(), p2p.Event{})...).Error
-			},
-			Rollback: func(tx *gorm.DB) error {
-				return DropDatabase(tx)
-			},
-		},
-	})
+func Migrate(db *gorm.DB, forceViaMigrations bool) error {
+	m := gormigrate.New(db, gormigrate.DefaultOptions, migrations.GetMigrations())
+
+	if !forceViaMigrations {
+		m.InitSchema(func(tx *gorm.DB) error {
+			return tx.AutoMigrate(
+				AllModels()...,
+			).Error
+		})
+	}
+
 	if err := m.Migrate(); err != nil {
 		return err
 	}
