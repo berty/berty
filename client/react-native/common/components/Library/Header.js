@@ -180,7 +180,7 @@ class StateBadge extends PureComponent {
     const count = peers.reduce((acc, cur) => cur.connection === 1 ? acc + 1 : acc, 0)
 
     return (
-      <Flex.Cols size={1} style={{ display: 'flex', justifyContent: 'space-between' }} >
+      <Flex.Cols size={1} style={{ top: 0, right: 40 }} >
         <View style={{ marginRight: 2 }} >
           <Text icon='berty-berty_picto' size={5} padding={5} rounded small background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
         </View>
@@ -278,7 +278,7 @@ export default class Header extends PureComponent {
             >
               {title}
             </Text>
-            <View>
+            <View style={[ !searchBar ? paddingBottom : {} ]} >
               <RelayContext.Consumer>
                 {context => <StateBadge context={context} />}
               </RelayContext.Consumer>
