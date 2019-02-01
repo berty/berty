@@ -21,6 +21,11 @@ or alternatively using `brew cask install fastlane`
 fastlane ios build
 ```
 
+### ios voip_cert
+```
+fastlane ios voip_cert
+```
+
 
 ----
 
