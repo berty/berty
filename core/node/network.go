@@ -21,6 +21,14 @@ func WithNetworkMetrics(metrics network.Metrics) NewNodeOption {
 	}
 }
 
+func (n *Node) UseNetworkMetrics(ctx context.Context, metrics network.Metrics) {
+	tracer := tracing.EnterFunc(ctx, metrics)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	n.networkMetrics = metrics
+}
+
 func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) error {
 	tracer := tracing.EnterFunc(ctx, driver)
 	defer tracer.Finish()
