@@ -24,7 +24,6 @@ func WithNetworkMetrics(metrics network.Metrics) NewNodeOption {
 func (n *Node) UseNetworkMetrics(ctx context.Context, metrics network.Metrics) {
 	tracer := tracing.EnterFunc(ctx, metrics)
 	defer tracer.Finish()
-	ctx = tracer.Context()
 
 	n.networkMetrics = metrics
 }
