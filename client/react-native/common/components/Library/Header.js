@@ -185,7 +185,7 @@ class StateBadge extends PureComponent {
           <Text icon='berty-berty_picto' size={5} padding={5} rounded small background={bgBertyColor} color={bertyColor}>{bertyText.toLocaleUpperCase()}</Text>
         </View>
         <View style={{ marginRight: 2 }} >
-          <Text icon='users' size={5} padding={5} rounded small background={bgPeerColor} color={peerColor}>{count.toString()}</Text>
+          <Text icon='berty-chart-network-solid' size={5} padding={5} rounded small background={bgPeerColor} color={peerColor}>{count.toString()}</Text>
         </View>
         <View style={{ marginRight: 2 }} >
           <Text icon='bluetooth' size={5} padding={5} rounded small background={bgBleColor} color={bleColor}>{bleText.toLocaleUpperCase()}</Text>
