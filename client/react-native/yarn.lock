@@ -5167,6 +5167,10 @@ react-native-collapsible@^1.3.0:
   dependencies:
     prop-types "^15.6.2"
 
+react-native-config@^0.11.7:
+  version "0.11.7"
+  resolved "https://registry.yarnpkg.com/react-native-config/-/react-native-config-0.11.7.tgz#a2b323f2ecd76a4df88cbb6bc86eaa2ef9febee7"
+
 react-native-dev-menu@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-native-dev-menu/-/react-native-dev-menu-2.0.1.tgz#8a54ab04532af26e2cbbe86bd41d8ce390fe2a04"

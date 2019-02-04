@@ -13,6 +13,8 @@ import ReactNativeLanguages from 'react-native-languages'
 import i18n from '../i18n'
 import Instabug from 'instabug-reactnative';
 import { btoa } from 'b64-lite'
+import Config from 'react-native-config'
+
 
 export default class App extends PureComponent {
   state = {
@@ -31,7 +33,7 @@ export default class App extends PureComponent {
 
     if (Platform.OS === 'ios') {
       Instabug.startWithToken(
-        "IOS_TOKEN",
+        Config.INSTABUG_TOKEN,
         [__DEV__ ? Instabug.invocationEvent.none : Instabug.invocationEvent.shake],
       )
     }
