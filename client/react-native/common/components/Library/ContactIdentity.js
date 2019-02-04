@@ -88,7 +88,7 @@ const ContactIdentity = ({ data }) => <>
   </View>
   <Text large color={colors.fakeBlack} center padding>{data.displayName}</Text>
   <View
-    style={{ marginLeft: 15, marginRight: 15, marginBottom: 8, height: Platform.OS === 'android' ? 330 : undefined }}>
+    style={{ marginLeft: 15, marginRight: 15, marginBottom: 8, height: Platform.OS === 'android' ? 350 : undefined }}>
     {<ContactIdentityTabbedContent screenProps={{ data }} />}
   </View>
 </>
