@@ -1,5 +1,10 @@
 package sql
 
+import (
+	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
+)
+
 func AllTables() []string {
 	return []string{
 		// events
@@ -15,10 +20,14 @@ func AllTables() []string {
 		"conversation_member",
 		"config",
 
-		// association tables
-		// FIXME: add m2m
-
 		// internal
 		"migrations",
 	}
+}
+
+func AllModels() []interface{} {
+	return append(
+		entity.AllEntities(),
+		p2p.Event{},
+	)
 }

@@ -95,7 +95,7 @@ func (a *AppMock) Open() error {
 	if a.db, err = sql.Init(a.db); err != nil {
 		return errors.Wrap(err, "failed to initialize sql")
 	}
-	if err = sql.Migrate(a.db); err != nil {
+	if err = sql.Migrate(a.db, false); err != nil {
 		return errors.Wrap(err, "failed to apply sql migrations")
 	}
 

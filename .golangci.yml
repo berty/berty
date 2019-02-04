@@ -4,6 +4,7 @@ run:
   skip-files:
     - ".*\\.pb\\.go"
     - ".*\\.gen\\.go"
+    - "core/sql/migrations/.*"
     - "client/react-native/gomobile/other.go"
 
 linters-settings:
