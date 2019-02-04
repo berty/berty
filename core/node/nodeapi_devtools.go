@@ -372,7 +372,7 @@ func (n *Node) TestLogBackgroundDebug(ctx context.Context, input *node.Void) (*n
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.LogBackgroundDebug(ctx, "just a debug test")
+	n.LogBackgroundInfo(ctx, "just a debug test")
 	return &node.Void{}, nil
 }
 

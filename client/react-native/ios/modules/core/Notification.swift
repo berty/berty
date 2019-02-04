@@ -18,6 +18,10 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
 
   override init () {
     super.init()
+
+    if #available(iOS 10.0, *) {
+      UNUserNotificationCenter.current().delegate = self
+    }
   }
 
   func userNotificationCenter(

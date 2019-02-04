@@ -41,9 +41,12 @@ func WithInitConfig() NewNodeOption {
 			}
 
 			config = &entity.Config{
-				ID:                  ID.String(),
-				PushRelayPubkeyAPNS: push.DefaultPushRelayPubkeys[push.DevicePushType_APNS],
-				PushRelayPubkeyFCM:  push.DefaultPushRelayPubkeys[push.DevicePushType_FCM],
+				ID:                         ID.String(),
+				PushRelayPubkeyAPNS:        push.DefaultPushRelayPubkeys[push.DevicePushType_APNS],
+				PushRelayPubkeyFCM:         push.DefaultPushRelayPubkeys[push.DevicePushType_FCM],
+				NotificationsEnabled:       true,
+				NotificationsPreviews:      true,
+				DebugNotificationVerbosity: entity.DebugVerbosity_VERBOSITY_LEVEL_ERROR,
 			}
 
 			if err = n.sql(ctx).Create(config).Error; err != nil {

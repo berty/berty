@@ -158,6 +158,10 @@ func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.En
 		return errorcodes.ErrPush.Wrap(err)
 	}
 
+	if len(pushIdentifiers) == 0 {
+		return nil
+	}
+
 	marshaledEnvelope, err := envelope.Marshal()
 	if err != nil {
 		return errorcodes.ErrSerialization.Wrap(err)
@@ -218,10 +222,6 @@ func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event
 			SubQuery()).Error; err != nil {
 		return nil, sql.GenericError(err)
 	}
-
-	// if len(pushIdentifiers) == 0 {
-	// 	return nil, errorcodes.ErrDbNothingFound.New()
-	// }
 
 	return pushIdentifiers, nil
 }

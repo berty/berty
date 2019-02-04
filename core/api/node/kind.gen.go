@@ -64,6 +64,25 @@ func (e *NodeEvent) SetNodeIsAliveAttrs(attrs *NodeIsAliveAttrs) error {
 	return nil
 }
 
+// GetBackgroundCriticalAttrs is a typesafe version of GetAttrs
+func (e *NodeEvent) GetBackgroundCriticalAttrs() (*BackgroundCriticalAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &BackgroundCriticalAttrs{}, nil
+	}
+	var attrs BackgroundCriticalAttrs
+	return &attrs, json.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetBackgroundCriticalAttrs is a typesafe version of the generic SetAttrs method
+func (e *NodeEvent) SetBackgroundCriticalAttrs(attrs *BackgroundCriticalAttrs) error {
+	raw, err := json.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetBackgroundErrorAttrs is a typesafe version of GetAttrs
 func (e *NodeEvent) GetBackgroundErrorAttrs() (*BackgroundErrorAttrs, error) {
 	if e.Attributes == nil || len(e.Attributes) == 0 {
@@ -149,6 +168,8 @@ func (e *NodeEvent) GetAttrs() (interface{}, error) {
 		return e.GetNodeStoppedAttrs()
 	case Kind_NodeIsAlive:
 		return e.GetNodeIsAliveAttrs()
+	case Kind_BackgroundCritical:
+		return e.GetBackgroundCriticalAttrs()
 	case Kind_BackgroundError:
 		return e.GetBackgroundErrorAttrs()
 	case Kind_BackgroundWarn:
