@@ -3,6 +3,8 @@ package chat.berty.main;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.zoontek.rndevmenu.RNDevMenuPackage;
+import com.instabug.reactlibrary.RNInstabugReactnativePackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
@@ -47,7 +49,14 @@ public class MainApplication extends Application implements ReactApplication {
                 new CorePackage(),
                 new ImagePickerPackage(),
                 new MainReactPackage(),
-            new LottiePackage(),
+            new RNDevMenuPackage(),
+			new RNInstabugReactnativePackage.Builder("YOUR_ANDROID_APPLICATION_TOKEN",MainApplication.this)
+							.setInvocationEvent("shake")
+							.setPrimaryColor("#1D82DC")
+							.setFloatingEdge("left")
+							.setFloatingButtonOffsetFromTop(250)
+							.build(),
+                new LottiePackage(),
                 new RNLanguagesPackage(),
                 new RNFetchBlobPackage(),
                 new RNDeviceInfo(),

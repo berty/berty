@@ -204,6 +204,8 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-dev-menu')
+    compile project(':instabug-reactnative')
     compile project(':lottie-react-native')
     compile project(':react-native-languages')
     compile project(':rn-fetch-blob')
