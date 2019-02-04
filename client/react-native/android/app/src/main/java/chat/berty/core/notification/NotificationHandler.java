@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
+import chat.berty.core.Level;
 import chat.berty.core.Logger;
 import core.Core;
 import core.MobileNotification;
@@ -34,7 +35,12 @@ public class NotificationHandler extends FirebaseMessagingService implements Act
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Map<String, String> map = remoteMessage.getData();
         String data = new Gson().toJson(map);
-        this.notificationDriver.receive(data);
+        try {
+            Core.getDeviceInfo().setStoragePath(getApplicationContext().getFilesDir().getAbsolutePath());
+            this.notificationDriver.receive(data);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, TAG, "cannot get storage path: %s", err);
+        }
     }
 
     /**

@@ -64,12 +64,11 @@ func (d *FCMDispatcher) Dispatch(pushAttrs *PushData, pushDestination *PushDesti
 		payload := Payload{Chunk: base64.StdEncoding.EncodeToString(chunk)}
 
 		deviceToken := fcmIdentifier.DeviceToken
-
 		if _, err := d.client.NewFcmMsgTo(deviceToken, payload).Send(); err != nil {
 			return errorcodes.ErrPushProvider.Wrap(err)
 		}
 	}
-
+	logger().Info("push notifications with chunk send")
 	return nil
 }
 
