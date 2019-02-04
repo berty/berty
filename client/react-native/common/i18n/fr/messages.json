@@ -102,7 +102,10 @@
     "update-available": "Une mise à jour est disponible",
     "update-write-fail": "Erreur du téléchargement de l'app, impossible de sauvegarder la mise à jour",
     "update-write-perm": "Enregistrer des fichiers",
-    "update-write-perm-desc": "Cette permission est nécessaire au téléchargement de la mise à jour"
+    "update-write-perm-desc": "Cette permission est nécessaire au téléchargement de la mise à jour",
+    "save-picture-perm": "Enregistrer des images",
+    "save-picture-perm-desc": "Cette permission est nécessaire à l'enregistrement d'images dans votre galerie",
+    "save-picture-perm-denied": "Impossible d'enregister l'image"
   },
   "chats": {
     "title": "Conversations",

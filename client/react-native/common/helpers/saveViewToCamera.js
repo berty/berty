@@ -1,8 +1,10 @@
 import ViewShot from 'react-native-view-shot'
 import React, { Component } from 'react'
-import { View, CameraRoll, Platform } from 'react-native'
+import { View, CameraRoll, Platform, PermissionsAndroid } from 'react-native'
 import { StackActions } from 'react-navigation'
 import NavigationService from './NavigationService'
+import { requestAndroidPermission } from './permissions'
+import I18n from '../i18n'
 
 export class ViewExportComponent extends Component {
   async componentDidMount () {
@@ -36,7 +38,19 @@ export class ViewExportComponent extends Component {
 }
 
 export default async ({ view }) => {
-  if (Platform.os === 'web') {
+  if (Platform.OS === 'android') {
+    const allowed = await requestAndroidPermission({
+      permission: PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      title: I18n.t('settings.save-picture-perm'),
+      message: I18n.t('settings.save-picture-perm-desc'),
+    })
+
+    if (!allowed) {
+      throw new Error(I18n.t('settings.save-picture-perm-denied'))
+    }
+  }
+
+  if (Platform.OS === 'web') {
     throw new Error('unsupported on web')
   }
 
@@ -48,6 +62,7 @@ export default async ({ view }) => {
         view,
       })
     })
+
     await CameraRoll.saveToCameraRoll(uri, 'photo')
   } catch (e) {
     throw e

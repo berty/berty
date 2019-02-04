@@ -102,7 +102,10 @@
     "update-available": "An update is available",
     "update-write-fail": "Unable to download app, not allowed to write file",
     "update-write-perm": "Write to external storage",
-    "update-write-perm-desc": "This permission is required to download the application update"
+    "update-write-perm-desc": "This permission is required to download the application update",
+    "save-picture-perm": "Save picture",
+    "save-picture-perm-desc": "This permission is required to save the image to your Camera Roll",
+    "save-picture-perm-denied": "Unable to save the picture"
   },
   "chats": {
     "title": "Chats",
