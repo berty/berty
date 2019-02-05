@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View } from 'react-native'
+import { View, Platform } from 'react-native'
 import {
   Avatar,
   EmptyList,
@@ -19,6 +19,7 @@ import { conversation as utils } from '../../../utils'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
 import { hook } from 'cavy'
+/* global __DEV__ */
 
 const Message = withNamespaces()(({ data, t, ...props }) => {
   switch (data.kind) {
@@ -183,6 +184,15 @@ const ItemBase = fragments.Conversation(
 const Item = withNamespaces()(ItemBase)
 
 class ListScreen extends PureComponent {
+  constructor (props) {
+    super(props)
+
+    if (Platform.OS !== 'web' && __DEV__) {
+      const DevMenu = require('react-native-dev-menu')
+      DevMenu.addItem('Dev tools', () => this.props.navigation.navigate('settings/devtools'))
+    }
+  }
+
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
