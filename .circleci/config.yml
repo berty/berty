@@ -328,9 +328,9 @@ jobs:
             [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && echo "export ANDROID_CUSTOM_NAME='Berty @${CIRCLE_PR_NUMBER}'" >> $BASH_ENV || true
 
       - run:
-          name: build app
+          name: add environment
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: echo $envfile > .environement
+          command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
@@ -391,6 +391,11 @@ jobs:
           name: set version
           working_directory: ~/go/src/berty.tech/client/react-native
           command: make version.android
+
+      - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
@@ -461,9 +466,9 @@ jobs:
           command: /tmp/retry -m 3 yarn add fsevents
 
       - run:
-          name: build app
+          name: add environment
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: echo $envfile > .environement
+          command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
@@ -533,6 +538,11 @@ jobs:
           name: install fsevents
           working_directory: ~/go/src/berty.tech/client/react-native
           command: /tmp/retry -m 3 yarn add fsevents
+
+      - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app

@@ -7,13 +7,13 @@
       buildImplicitDependencies = "YES">
       <PreActions>
          <ExecutionAction
-            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
-            <ActionContent
-               title = "Run Script"
-               scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;echo &quot;.environement&quot; &gt; /tmp/envfile&#10;">
-            </ActionContent>
-         </ExecutionAction>
-      </PreActions>
+           ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+           <ActionContent
+              title = "Run Script"
+              scriptText = "# Type a script or drag a script file from your workspace to insert its path.&#10;echo &quot;.environment&quot; &gt; /tmp/envfile&#10;">
+           </ActionContent>
+        </ExecutionAction>
+     </PreActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
