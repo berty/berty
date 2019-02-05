@@ -123,7 +123,7 @@ jobs:
     steps:
       - run:
           name: install ca-certificates
-          command: apk --no-cache add openssl
+          command: apk --no-cache add openssl make
 
       - *install_retry
       - checkout
@@ -161,7 +161,7 @@ jobs:
             if [ "$CIRCLE_BRANCH" = "master" ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker push bertychat/berty:latest
-              cd service/push && make push; cd -
+              cd service/push && make push fcm-api-key=$FCM_API_KEY && cd -
               docker logout
             fi
 
