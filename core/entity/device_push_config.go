@@ -1,10 +1,11 @@
 package entity
 
 import (
+	"encoding/base64"
+
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/push"
-	"encoding/base64"
 	"github.com/google/uuid"
 )
 
