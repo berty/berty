@@ -90,11 +90,11 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 
-
 project.ext.envConfigFiles = [
-        debug: ".env",
-        release: ".env",
-        anothercustombuild: ".env",
+        debug: ".environement",
+        release: ".environement",
+        yolo: ".environement",
+        staff: ".environement",
 ]
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -138,6 +138,8 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+
+        multiDexEnabled true
     }
     signingConfigs {
         release {
@@ -239,6 +241,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':ble')
     implementation project(':core')
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 // Run this once to be able to run the application with BUCK

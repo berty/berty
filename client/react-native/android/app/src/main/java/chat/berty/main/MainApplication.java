@@ -50,14 +50,14 @@ public class MainApplication extends Application implements ReactApplication {
                 new CorePackage(),
                 new ImagePickerPackage(),
                 new MainReactPackage(),
-            new ReactNativeConfigPackage(),
-            new RNDevMenuPackage(),
-			new RNInstabugReactnativePackage.Builder(BuildConfig.INSTABUG_TOKEN,MainApplication.this)
-							.setInvocationEvent(BuildConfig.DEBUG ? "none" : "shake")
-							.setPrimaryColor("#1D82DC")
-							.setFloatingEdge("left")
-							.setFloatingButtonOffsetFromTop(250)
-							.build(),
+                new ReactNativeConfigPackage(),
+                new RNDevMenuPackage(),
+                new RNInstabugReactnativePackage.Builder(BuildConfig.INSTABUG_TOKEN,MainApplication.this)
+                    .setInvocationEvent(BuildConfig.DEBUG ? "none" : "shake")
+                    .setPrimaryColor("#1D82DC")
+                    .setFloatingEdge("left")
+                    .setFloatingButtonOffsetFromTop(250)
+                    .build(),
                 new LottiePackage(),
                 new RNLanguagesPackage(),
                 new RNFetchBlobPackage(),
