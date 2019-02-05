@@ -200,6 +200,7 @@ func (n *Node) queuePushEvent(ctx context.Context, event *p2p.Event, envelope *p
 func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event) ([]*entity.DevicePushIdentifier, error) {
 	db := n.sql(ctx)
 	var subqueryContactIDs interface{}
+	deviceIDs := []string{}
 	pushIdentifiers := []*entity.DevicePushIdentifier{}
 
 	if event.ConversationID != "" {
@@ -213,13 +214,17 @@ func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event
 	}
 
 	if err := db.
+		Model(&entity.Device{}).
+		Where("contact_id IN (?)", subqueryContactIDs).
+		Pluck("id", &deviceIDs).Error; err != nil {
+		return nil, sql.GenericError(err)
+	}
+
+	if err := db.
 		Model(&entity.DevicePushIdentifier{}).
+		Where("device_id IN (?)", deviceIDs).
 		Find(&pushIdentifiers).
-		Where("device_id IN (?)", db.
-			Model(&entity.Device{}).
-			Select("device_id").
-			Where("contact_id IN (?)", subqueryContactIDs).
-			SubQuery()).Error; err != nil {
+		Error; err != nil {
 		return nil, sql.GenericError(err)
 	}
 

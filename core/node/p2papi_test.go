@@ -2,7 +2,14 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"testing"
+
+	"github.com/pkg/errors"
+
+	"github.com/google/uuid"
+
+	"berty.tech/core/push"
 
 	"crypto/rand"
 	"crypto/rsa"
@@ -217,6 +224,123 @@ func TestOpenEnvelope(t *testing.T) {
 
 	if decodedEvent, err = alice.OpenEnvelope(context.Background(), envelope); err == nil {
 		t.Fatalf("alice should not be able to check this signature")
+	}
+
+}
+
+func TestGetPushDestinationsForEvent(t *testing.T) {
+	var err error
+	identifiers := []*entity.DevicePushIdentifier{}
+
+	pushRelayPrivateKey, _ := rsa.GenerateKey(rand.Reader, 2048)
+	pushRelayPublicKeyBytes, _ := x509.MarshalPKIXPublicKey(pushRelayPrivateKey.Public())
+
+	ctx := context.Background()
+	alice, _ := testNode(t)
+
+	alice.sql(ctx).Create(&entity.DevicePushConfig{
+		ID:          "AlicePushConfig",
+		DeviceID:    alice.config.CurrentDeviceID,
+		PushType:    push.DevicePushType_APNS,
+		PushID:      []byte("AlicePushToken"),
+		RelayPubkey: b64(pushRelayPublicKeyBytes),
+	})
+
+	alice.sql(ctx).Create(&entity.Contact{ID: "Bob"})
+	alice.sql(ctx).Create(&entity.Device{ID: "BobDevice", ContactID: "Bob"})
+	pushIdBob := createPushId("BobDevice", push.DevicePushType_APNS, pushRelayPublicKeyBytes)
+	alice.sql(ctx).Create(pushIdBob)
+
+	alice.sql(ctx).Create(&entity.Contact{ID: "Charlie"})
+	alice.sql(ctx).Create(&entity.Device{ID: "CharlieDevice", ContactID: "Charlie"})
+	pushIdCharlie := createPushId("CharlieDevice", push.DevicePushType_FCM, pushRelayPublicKeyBytes)
+	alice.sql(ctx).Create(pushIdCharlie)
+
+	alice.sql(ctx).Create(&entity.Contact{ID: "Daryl"})
+	alice.sql(ctx).Create(&entity.Device{ID: "DarylDevice", ContactID: "Daryl"})
+	pushIdDaryl := createPushId("DarylDevice", push.DevicePushType_APNS, pushRelayPublicKeyBytes)
+	alice.sql(ctx).Create(pushIdDaryl)
+
+	alice.sql(ctx).Create(&entity.Conversation{ID: "ConversationBobCharlie"})
+
+	alice.sql(ctx).Create(&entity.ConversationMember{
+		ID:             "ConversationMemberBob",
+		ConversationID: "ConversationBobCharlie",
+		ContactID:      "Bob",
+	})
+	alice.sql(ctx).Create(&entity.ConversationMember{
+		ID:             "ConversationMemberCharlie",
+		ConversationID: "ConversationBobCharlie",
+		ContactID:      "Charlie",
+	})
+
+	//
+	// One to one checks
+	//
+
+	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &p2p.Event{ReceiverID: "Bob"}); err != nil {
+		t.Error(err)
+	}
+
+	if len(identifiers) != 1 {
+		t.Error(errors.New(fmt.Sprintf("expected 1 push identifier for one-to-one event, got %d", len(identifiers))))
+	}
+
+	if identifiers[0].ID != "BobDevicePushIdentifier" {
+		t.Error(errors.New(fmt.Sprintf("invalid push identifier retrieved, expected BobDevicePushIdentifier, got %s", identifiers[0].ID)))
+	}
+
+	//
+	// Conversation checks
+	//
+
+	expectedIdentifiers := map[string]bool{
+		"BobDevicePushIdentifier":     false,
+		"CharlieDevicePushIdentifier": false,
+	}
+
+	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &p2p.Event{ConversationID: "ConversationBobCharlie"}); err != nil {
+		t.Error(err)
+	}
+
+	if len(identifiers) != 2 {
+		t.Error(errors.New(fmt.Sprintf("expected 2 push identifiers for conversation event, got %d", len(identifiers))))
+	}
+
+	for _, identifier := range identifiers {
+		_, ok := expectedIdentifiers[identifier.ID]
+		if !ok {
+			t.Error(errors.New(fmt.Sprintf("push identifier %s was not expected for conversation", identifier.ID)))
+		}
+
+		expectedIdentifiers[identifier.ID] = true
+	}
+
+	for identifier, found := range expectedIdentifiers {
+		if !found {
+			t.Error(errors.New(fmt.Sprintf("push identifier %s was expected for conversation", identifier)))
+		}
+	}
+}
+
+func createPushId(deviceId string, pushType push.DevicePushType, relayPubKeyBytes []byte) *entity.DevicePushIdentifier {
+	pushId := fmt.Sprintf("%sPushIdentifier", deviceId)
+	nonce, _ := uuid.New().MarshalBinary()
+
+	plainPushStruct := &push.PushDestination{
+		PushId:   []byte(pushId),
+		Nonce:    nonce,
+		PushType: pushType,
+	}
+
+	plainPushInfo, _ := plainPushStruct.Marshal()
+	pushInfo, _ := keypair.Encrypt(plainPushInfo, relayPubKeyBytes)
+
+	return &entity.DevicePushIdentifier{
+		ID:          pushId,
+		PushInfo:    pushInfo,
+		RelayPubkey: b64(relayPubKeyBytes),
+		DeviceID:    deviceId,
 	}
 
 }
