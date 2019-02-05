@@ -1,4 +1,5 @@
 rwildcard = $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
+NAME ?= berty
 GOPATH ?= $(HOME)/go
 BIN ?= $(GOPATH)/bin/berty
 BUILD_MODE ?= dev
@@ -10,15 +11,15 @@ OUR_PROTOS = $(filter-out $(call rwildcard,vendor//, *.proto),$(PROTOS))
 PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_FILES = \
-	$(call rwildcard $(CODE_PATHS), *.gen.go) \
-	$(call rwildcard $(CODE_PATHS), *.pb.go) \
-	$(call rwildcard $(CODE_PATHS), *.gen.js) \
-	$(call rwildcard $(CODE_PATHS), *.gen.graphql)
+									$(call rwildcard $(CODE_PATHS), *.gen.go) \
+									$(call rwildcard $(CODE_PATHS), *.pb.go) \
+									$(call rwildcard $(CODE_PATHS), *.gen.js) \
+									$(call rwildcard $(CODE_PATHS), *.gen.graphql)
 GENERATION_TARGETS = \
 	.kind.generated \
 	.client.generated \
 	.pb.generated \
-	.gql.generated \
+	.gql.generated
 
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
@@ -29,6 +30,7 @@ GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT_DATE ?= $(shell git show -s --format=%ct $(GIT_SHA))
 EXT_LDFLAGS ?= -ldflags "-X berty.tech/core.GitSha=$(GIT_SHA) -X berty.tech/core.GitTag=$(GIT_TAG) -X berty.tech/core.GitBranch=$(GIT_BRANCH) -X berty.tech/core.BuildMode=$(BUILD_MODE) -X berty.tech/core.commitDate=$(GIT_COMMIT_DATE)"
 RUN_DAEMON_OPTS ?= --log-level=debug --notification
+
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
 TEST_TIMEOUT ?= 3m
@@ -37,7 +39,6 @@ PROTOC ?= protoc
 GQLGEN ?= gqlgen
 GIN_OPTS ?= --immediate --port=2999 --appPort=1337 --build=./cmd/berty --excludeDir vendor
 IGNORE_GQLGEN ?= 0
-
 
 ##
 ## phonies
@@ -152,7 +153,6 @@ dev-deps:
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
 		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \
 	); done
-
 	@# FIXME: the following hack is due to goimports -w not deleting duplicated imports
 	goimports -w ./api/client/
 	sed -i'' '/^$$/d' api/client/*.gen.go api/client/jsonclient/*.gen.go
@@ -170,15 +170,12 @@ dev-deps:
 	mkdir -p ./api/node/graphql
 	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/service.proto
 	goimports -w ./api/node/*.gen.go ./api/node/graphql/*.gen.go
-
 	@# gqlgen
 	cd ./api/node/graphql; test "$(IGNORE_GQLGEN)" = "1" || $(GQLGEN) -c gqlgen.gen.yml -v gen
 	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/service.gen.graphql  ../client/react-native/common/schema.graphql
 	test "$(IGNORE_GQLGEN)" = "1" || prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
 	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/enums.gen.js ../client/react-native/common/graphql/enums.gen.js
 	test "$(IGNORE_GQLGEN)" = "0" || git checkout api/node/graphql/models/generated.gen.go api/node/graphql/graph/generated/generated.gen.go
-
-
 	@# everything worked as expected
 	touch $@
 
