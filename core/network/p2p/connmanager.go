@@ -18,6 +18,7 @@ type ConnManager struct {
 func NewConnManager(low, hi int, grace time.Duration) *ConnManager {
 	return &ConnManager{
 		connmanager: connmgr.NewConnManager(low, hi, grace),
+		relayMap:    make(map[peer.ID]bool),
 	}
 }
 
