@@ -308,6 +308,11 @@ jobs:
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $envfile > .environement
+
+      - run:
+          name: build app
+          working_directory: ~/go/src/berty.tech/client/react-native
           command: . $BASH_ENV; /tmp/retry -m 3 make fastlane.android.staff
 
       - store_artifacts:
@@ -432,6 +437,11 @@ jobs:
           name: install fsevents
           working_directory: ~/go/src/berty.tech/client/react-native
           command: /tmp/retry -m 3 yarn add fsevents
+
+      - run:
+          name: build app
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $envfile > .environement
 
       - run:
           name: build app

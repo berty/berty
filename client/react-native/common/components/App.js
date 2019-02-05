@@ -11,7 +11,10 @@ import { BASE_WEBSITE_URL, colors } from './../constants'
 import { I18nextProvider } from 'react-i18next'
 import ReactNativeLanguages from 'react-native-languages'
 import i18n from '../i18n'
+import Instabug from 'instabug-reactnative';
 import { btoa } from 'b64-lite'
+import Config from 'react-native-config'
+
 
 export default class App extends PureComponent {
   state = {
@@ -21,6 +24,24 @@ export default class App extends PureComponent {
       routeName: 'main',
       params: {},
     },
+  }
+
+  constructor (props) {
+    super(props)
+
+    Instabug.setIntroMessageEnabled(false)
+
+    if (Platform.OS === 'ios') {
+      Instabug.startWithToken(
+        Config.INSTABUG_TOKEN,
+        [__DEV__ ? Instabug.invocationEvent.none : Instabug.invocationEvent.shake],
+      )
+    }
+
+    if (__DEV__) {
+      const DevMenu = require('react-native-dev-menu')
+      DevMenu.addItem('Show Instabug', () => Instabug.invoke())
+    }
   }
 
   componentDidMount () {

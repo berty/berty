@@ -90,6 +90,16 @@ project.ext.react = [
 
 apply from: "../../node_modules/react-native/react.gradle"
 
+project.ext.envConfigFiles = [
+        debug: ".environement",
+        release: ".environement",
+        yolo: ".environement",
+        staff: ".environement",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
+
 /**
 * Set this to true to create two separate APKs instead of one:
 *   - An APK that only works on ARM devices
@@ -123,9 +133,13 @@ android {
         versionCode 1
         versionName "1.0"
 
+        resValue "string", "build_config_package", "chat.berty.main"
+
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+
+        multiDexEnabled true
     }
     signingConfigs {
         release {
@@ -204,6 +218,9 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-config')
+    compile project(':react-native-dev-menu')
+    compile project(':instabug-reactnative')
     compile project(':lottie-react-native')
     compile project(':react-native-languages')
     compile project(':rn-fetch-blob')
@@ -224,6 +241,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation project(':ble')
     implementation project(':core')
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 // Run this once to be able to run the application with BUCK
