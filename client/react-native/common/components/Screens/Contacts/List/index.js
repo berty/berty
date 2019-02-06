@@ -70,7 +70,7 @@ export default class ContactList extends PureComponent {
 
   render = () => {
     const { navigation } = this.props
-
+    console.log(this.props)
     return (
       <Screen style={{ backgroundColor: colors.white }}>
         <ContactsHome

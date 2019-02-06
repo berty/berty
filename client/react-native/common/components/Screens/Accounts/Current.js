@@ -16,7 +16,6 @@ import {
   updaters,
 } from '../../../graphql'
 import Main from '../Main'
-import NavigationService from '../../../helpers/NavigationService'
 
 const { CoreModule } = NativeModules
 
@@ -25,6 +24,8 @@ class Current extends PureComponent {
     loading: true,
     context: null,
   }
+
+  static router = Main.router
 
   getIp = async () => {
     if (Platform.OS === 'web') {
@@ -70,14 +71,18 @@ class Current extends PureComponent {
 
   openDeepLink = () => {
     const {
-      screenProps: { deepLink, clearDeepLink },
+      screenProps: {
+        deepLink,
+        clearDeepLink,
+      },
+      navigation,
     } = this.props
 
     if (!deepLink) {
       return
     }
 
-    this.mainNav.dispatch(NavigationActions.navigate(deepLink))
+    navigation.dispatch(NavigationActions.navigate(deepLink))
     clearDeepLink()
   }
 
@@ -126,7 +131,7 @@ class Current extends PureComponent {
   }
 
   render () {
-    const { t } = this.props
+    const { t, navigation } = this.props
     const { loading, context, availableUpdate } = this.state
     if (loading) {
       return <Loader message={t('setting-up')} />
@@ -134,15 +139,12 @@ class Current extends PureComponent {
     return (
       <RelayContext.Provider value={context}>
         <Main
-          ref={nav => {
-            this.mainNav = nav
-            NavigationService.setTopLevelNavigator(nav)
-          }}
+          navigation={navigation}
           screenProps={{
             ...this.props.screenProps,
             context,
             availableUpdate,
-            firstLaunch: this.props.navigation.getParam('firstLaunch', false),
+            firstLaunch: navigation.getParam('firstLaunch', false),
           }}
           onNavigationStateChange={(prevState, currentState) => {
             const currentRoute = this.getActiveRouteName(currentState)

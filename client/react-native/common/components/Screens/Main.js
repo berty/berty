@@ -3,6 +3,7 @@ import {
   createStackNavigator,
   createBottomTabNavigator,
   createSwitchNavigator,
+  withNavigation,
 } from 'react-navigation'
 import React from 'react'
 
@@ -59,7 +60,7 @@ export const tabs = createBottomTabNavigator(
     initialRouteName: 'chats',
     swipeEnabled: false,
     animationEnabled: true,
-    navigationOptions: ({ navigation, screenProps }) => {
+    defaultNavigationOptions: ({ navigation, screenProps }) => {
       let badge = null
 
       if (
@@ -168,8 +169,10 @@ const Main = createStackNavigator(
   }
 )
 
-export default createSwitchNavigator({
+const mainNavigator = createSwitchNavigator({
   'switch/picker': Picker,
   'switch/onboarding': Onboarding,
   'switch/main': Main,
 })
+
+export default withNavigation(mainNavigator)

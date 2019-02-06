@@ -14,6 +14,7 @@ import { Flex, Animation, MovableView, DebugStateBar } from './Library'
 import Accounts from './Screens/Accounts'
 import Instabug from '../helpers/Instabug'
 import i18n from '../i18n'
+import NavigationService from './../helpers/NavigationService'
 
 export default class App extends PureComponent {
   state = {
@@ -144,6 +145,8 @@ export default class App extends PureComponent {
             <Accounts
               ref={nav => {
                 this.navigation = nav
+                this.navigator = nav
+                NavigationService.setTopLevelNavigator(nav)
               }}
               screenProps={{
                 deepLink,

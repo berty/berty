@@ -1,5 +1,5 @@
 import React from 'react'
-import { createMaterialTopTabNavigator } from 'react-navigation'
+import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
 import ByQRCode from './ByQRCode'
 import ByPublicKey from './ByPublicKey'
 import Invite from './Invite'
@@ -45,8 +45,17 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
   },
 )
 
-const AddScreen = () => <View style={{ flex: 1 }}>
-  <AddContactTabbedContent />
-</View>
+class AddScreen extends React.Component {
+  static router = AddContactTabbedContent.router
 
-export default AddScreen
+  render () {
+    const { navigation } = this.props
+    return (
+      <View style={{ flex: 1 }}>
+        <AddContactTabbedContent navigation={navigation} />
+      </View>
+    )
+  }
+}
+
+export default withNavigation(AddScreen)
