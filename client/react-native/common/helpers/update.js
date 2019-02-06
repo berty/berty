@@ -46,7 +46,9 @@ export const getAvailableUpdate = async context => {
   const installedVersion = await getInstalledVersion(context)
   const latestVersion = await getLatestVersion()
 
-  return shouldUpdate(installedVersion, latestVersion) ? latestVersion.installUrl : null
+  return shouldUpdate(installedVersion, latestVersion)
+    ? latestVersion.installUrl
+    : null
 }
 
 export const getInstalledVersion = async context => {
@@ -58,14 +60,12 @@ export const getInstalledVersion = async context => {
 
   const { channel } = updateApiSources[bundleId]
   const deviceData = await DeviceInfos(context).fetch()
-  const [rawVersionInfo] = deviceData.infos.filter(d => d.key === 'versions').map(d => d.value)
+  const [rawVersionInfo] = deviceData.infos
+    .filter(d => d.key === 'versions')
+    .map(d => d.value)
 
   const {
-    Core: {
-      GitSha: hash,
-      GitBranch: branch,
-      CommitDate: rawCommitDate,
-    },
+    Core: { GitSha: hash, GitBranch: branch, CommitDate: rawCommitDate },
   } = JSON.parse(rawVersionInfo)
 
   return {
@@ -91,10 +91,12 @@ export const getLatestVersion = async () => {
       reject(new Error('timeouted'))
     }, 5000)
 
-    fetch(url).then(res => res.json()).then((r) => {
-      clearTimeout(timeoutId)
-      resolve(r)
-    })
+    fetch(url)
+      .then(res => res.json())
+      .then(r => {
+        clearTimeout(timeoutId)
+        resolve(r)
+      })
   })
 
   try {
@@ -125,24 +127,21 @@ export const installUpdate = async installUrl => {
       position: 'top',
     })
 
-    Linking.openURL(installUrl).catch(e =>
-      console.error(e),
-    )
+    Linking.openURL(installUrl).catch(e => console.error(e))
   } else if (Platform.OS === 'android') {
-    const allowed = await requestAndroidPermission({
+    const writeExternalStorageAllowed = await requestAndroidPermission({
       permission: PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       title: I18n.t('settings.update-write-perm'),
       message: I18n.t('settings.update-write-perm-desc'),
     })
 
-    if (!allowed) {
+    if (!writeExternalStorageAllowed) {
       showMessage({
         message: I18n.t('settings.update-write-fail'),
         type: 'danger',
         icon: 'danger',
         position: 'top',
       })
-
       return
     }
 
@@ -153,21 +152,25 @@ export const installUpdate = async installUrl => {
       position: 'top',
     })
 
-    RNFetchBlob
-      .config({
-        addAndroidDownloads: {
-          title: 'berty-update.apk',
-          useDownloadManager: true,
-          mediaScannable: true,
-          notification: true,
-          description: 'File downloaded by download manager.',
-          path: `${RNFetchBlob.fs.dirs.DownloadDir}/berty-update.apk`,
-        },
-      })
+    RNFetchBlob.config({
+      addAndroidDownloads: {
+        title: 'berty-update.apk',
+        useDownloadManager: true,
+        mediaScannable: true,
+        notification: true,
+        mime: 'application/vnd.android.package-archive',
+        description: 'File downloaded by download manager.',
+        path: `${RNFetchBlob.fs.dirs.DownloadDir}/berty-update.apk`,
+      },
+    })
       .fetch('GET', installUrl)
-      .then((res) => {
-        RNFetchBlob.android.actionViewIntent(res.path(), 'application/vnd.android.package-archive')
-      }).catch(e => {
+      .then(res => {
+        RNFetchBlob.android.actionViewIntent(
+          res.path(),
+          'application/vnd.android.package-archive'
+        )
+      })
+      .catch(e => {
         showMessage({
           message: String(e),
           type: 'danger',
@@ -179,10 +182,17 @@ export const installUpdate = async installUrl => {
 }
 
 export const shouldUpdate = (installedVersion, latestVersion) => {
-  if (!installedVersion || !latestVersion || installedVersion.hash === latestVersion.hash) {
+  if (
+    !installedVersion ||
+    !latestVersion ||
+    installedVersion.hash === latestVersion.hash
+  ) {
     return false
   }
 
-  return (installedVersion.branch === 'master') ||
-    (installedVersion.branch !== 'master' && installedVersion.buildDate.diff(latestVersion.buildDate) < 0)
+  return (
+    installedVersion.branch === 'master' ||
+    (installedVersion.branch !== 'master' &&
+      installedVersion.buildDate.diff(latestVersion.buildDate) < 0)
+  )
 }
