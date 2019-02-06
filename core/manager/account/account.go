@@ -562,23 +562,36 @@ func (a *Account) startNode(ctx context.Context) error {
 		syscall.SIGQUIT,
 	)
 	go func() {
+		var sig syscall.Signal
+		var ok bool
 		for {
-			s := <-signalChan
-			switch s {
-			case syscall.SIGHUP: // kill -SIGHUP XXXX
-				logger().Info("sighup received")
-				a.Close(ctx)
-			case syscall.SIGINT: // kill -SIGINT XXXX or Ctrl+c
-				logger().Info("sigint received")
-				a.Close(ctx)
-			case syscall.SIGTERM: // kill -SIGTERM XXXX (force stop)
-				logger().Info("sigterm received")
-				a.Close(ctx)
-			case syscall.SIGQUIT: // kill -SIGQUIT XXXX (stop and core dump)
-				logger().Info("sigquit received")
-				a.Close(ctx)
-			default:
-				a.errChan <- fmt.Errorf("unknown signal received")
+			select {
+			case s := <-signalChan:
+				sig, ok = s.(syscall.Signal)
+				if !ok {
+					continue
+				}
+				switch s {
+				case syscall.SIGHUP: // kill -SIGHUP XXXX
+					logger().Info("sighup received")
+					a.Close(ctx)
+				case syscall.SIGINT: // kill -SIGINT XXXX or Ctrl+c
+					logger().Info("sigint received")
+					a.Close(ctx)
+				case syscall.SIGTERM: // kill -SIGTERM XXXX (force stop)
+					logger().Info("sigterm received")
+					a.Close(ctx)
+				case syscall.SIGQUIT: // kill -SIGQUIT XXXX (stop and core dump)
+					logger().Info("sigquit received")
+					a.Close(ctx)
+				default:
+					a.errChan <- fmt.Errorf("unknown signal received")
+				}
+			case <-a.shutdown:
+				logger().Debug("account shutdown signal handler")
+				close(signalChan)
+				os.Exit(int(sig))
+				return
 			}
 		}
 	}()
