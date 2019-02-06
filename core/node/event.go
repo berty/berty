@@ -3,7 +3,6 @@ package node
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"berty.tech/core/api/node"
@@ -35,6 +34,9 @@ func (n *Node) HandleEvent(ctx context.Context, input *p2p.Event) (*node.Void, e
 }
 
 func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
+
+	logger().Debug("handle event", zap.Stringer("event", input))
+
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -56,7 +58,9 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		return err
 	}
 	if count > 0 {
-		return fmt.Errorf("event already handled")
+		err := errors.New("event already handled")
+		logger().Warn(err.Error())
+		return err
 	}
 
 	now := time.Now().UTC()
