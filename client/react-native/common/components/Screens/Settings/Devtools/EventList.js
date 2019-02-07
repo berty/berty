@@ -1,6 +1,5 @@
 import { Text, TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
-import moment from 'moment'
 
 import { FilterModal, PickerFilter } from '../../../Library/Filters'
 import {
@@ -16,6 +15,7 @@ import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { fragments, enums } from '../../../../graphql'
 import Button from '../../../Library/Button'
+import * as dateFns from '../../../../i18n/dateFns'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
@@ -72,7 +72,7 @@ const Item = fragments.Event(({ data, navigation }) => (
           style={{ color: colors.blackGrey, fontSize: 12 }}
         >
           <Text style={{ fontWeight: 'bold' }}>Created</Text>
-          {` ${moment(data.createdAt).fromNow()} ${data.createdAt}`}
+          {` ${dateFns.fuzzyTimeOrFull(data.createdAt)} • ${data.createdAt}`}
         </Text>
         <Text
           ellipsizeMode='tail'
@@ -82,7 +82,7 @@ const Item = fragments.Event(({ data, navigation }) => (
         >
           <Text style={{ fontWeight: 'bold' }}>Acked</Text>
           {data.ackedAt
-            ? ` ${moment(data.ackedAt).fromNow()} ${data.ackedAt}`
+            ? ` ${dateFns.fuzzyTimeOrFull(data.ackedAt)} • ${data.ackedAt}`
             : ' never'}
         </Text>
       </Flex.Rows>

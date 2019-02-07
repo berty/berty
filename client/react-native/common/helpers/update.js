@@ -1,4 +1,3 @@
-import moment from 'moment'
 import { DeviceInfos } from '../graphql/queries'
 import RNDeviceInfo from 'react-native-device-info'
 import { Linking, Platform, PermissionsAndroid } from 'react-native'
@@ -6,6 +5,7 @@ import RNFetchBlob from './rn-fetch-blob'
 import { showMessage } from 'react-native-flash-message'
 import { requestAndroidPermission } from './permissions'
 import I18n from 'i18next'
+import dateFns from 'date-fns'
 
 const updateApiSources = {
   'chat.berty.ios.staff': {
@@ -72,7 +72,7 @@ export const getInstalledVersion = async context => {
     channel,
     hash: hash,
     branch: branch,
-    buildDate: moment(rawCommitDate, 'YYYY-MM-DD HH:mm:ss ZZ'),
+    buildDate: dateFns.parse(rawCommitDate),
     installUrl: null,
   }
 }
@@ -110,7 +110,7 @@ export const getLatestVersion = async () => {
       channel,
       branch: 'master',
       hash: releases.master['git-sha'],
-      buildDate: moment(releases.master['stop-time']),
+      buildDate: dateFns.parse(releases.master['stop-time']),
       installUrl: releases.master['manifest-url'],
     }
   } catch (e) {
