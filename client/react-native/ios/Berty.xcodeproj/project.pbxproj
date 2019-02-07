@@ -2923,7 +2923,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = chat.berty.ios.staff;
 				PRODUCT_NAME = Berty;
-				PROVISIONING_PROFILE = "afb27267-0513-4c17-9d35-a62fedd441bf";
+				PROVISIONING_PROFILE = "a6ff975a-e522-4340-a954-fe68323f6396";
 				PROVISIONING_PROFILE_SPECIFIER = "match AdHoc chat.berty.ios.staff";
 				REACT_HEADERS_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)/include";
 				REACT_LIBRARY_PATH = "$(BUILD_DIR)/Release-$(PLATFORM_NAME)";
