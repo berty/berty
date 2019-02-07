@@ -14,6 +14,7 @@ import { Menu, Header, Text, Flex } from '../../../Library'
 import { borderBottom } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { createSubStackNavigator } from '../../../../helpers/react-navigation'
+import * as dateFns from '../../../../i18n/dateFns'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300
@@ -502,20 +503,8 @@ class LogStream extends PureComponent {
 
     function datePrettier (rawDate) {
       let date = new Date(rawDate)
-      return (
-        date.getMonth() +
-        1 +
-        '/' +
-        date.getDate() +
-        ' ' +
-        date.getHours() +
-        ':' +
-        date.getMinutes() +
-        ':' +
-        date.getSeconds() +
-        '.' +
-        date.getMilliseconds()
-      )
+
+      return ` ${dateFns.fuzzyTimeOrFull(date)} • ${date}`
     }
 
     let lineObject = JSON.parse(line)
