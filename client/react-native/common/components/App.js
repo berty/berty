@@ -145,7 +145,6 @@ export default class App extends PureComponent {
             <Accounts
               ref={nav => {
                 this.navigation = nav
-                this.navigator = nav
                 NavigationService.setTopLevelNavigator(nav)
               }}
               screenProps={{

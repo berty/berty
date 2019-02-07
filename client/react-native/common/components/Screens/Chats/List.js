@@ -149,7 +149,6 @@ class ListScreen extends PureComponent {
     super(props)
 
     if (Platform.OS !== 'web' && __DEV__) {
-      console.log('__DEV__', Platform.OS)
       const DevMenu = require('react-native-dev-menu')
       DevMenu.addItem('Dev tools', () =>
         this.props.navigation.navigate('settings/devtools')

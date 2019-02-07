@@ -5,7 +5,7 @@ import ByPublicKey from './ByPublicKey'
 import Invite from './Invite'
 import { tabIcon, withScreenProps } from '../../../../helpers/views'
 import { tabNavigatorOptions } from '../../../../constants/styling'
-import { View } from 'react-native'
+import { View, Keyboard } from 'react-native'
 import I18n from 'i18next'
 
 const AddContactTabbedContent = createMaterialTopTabNavigator(
@@ -42,6 +42,12 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
   {
     ...tabNavigatorOptions,
     animationEnabled: false,
+    defaultNavigationOptions: {
+      tabBarOnPress: ({ navigation, defaultHandler }) => {
+        defaultHandler()
+        Keyboard.dismiss()
+      },
+    },
   },
 )
 
