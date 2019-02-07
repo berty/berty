@@ -167,7 +167,14 @@ func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversatio
 	}
 
 	// remove conversation
-	if err = n.sql(ctx).Delete(input).Error; err != nil {
+	sql := n.sql(ctx)
+	if err = sql.
+		Where(&entity.ConversationMember{ConversationID: input.ID}).
+		Delete(&entity.ConversationMember{}).Error; err != nil {
+		return nil, errorcodes.ErrDbDelete.Wrap(err)
+	}
+
+	if err = sql.Delete(input).Error; err != nil {
 		return nil, errorcodes.ErrDbDelete.Wrap(err)
 	}
 
@@ -358,6 +365,10 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 
 	// remove from sql
 	sql := n.sql(ctx)
+	if err := sql.Where(&entity.Device{ContactID: contact.ID}).Delete(&entity.Device{}).Error; err != nil {
+		return nil, errorcodes.ErrDbDelete.Wrap(err)
+	}
+
 	err := sql.Delete(contact).Error
 	if err != nil {
 		return nil, errorcodes.ErrDbDelete.Wrap(err)

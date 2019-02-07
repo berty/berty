@@ -70,13 +70,7 @@ const LastMessageBase = ({ conversation, context }) => {
           case state.loading:
           case state.error:
             return (
-              <Text
-                color={colors.subtleGrey}
-                bold={!isRead}
-                tiny
-                middle
-                left
-              >
+              <Text color={colors.subtleGrey} bold={!isRead} tiny middle left>
                 ...
               </Text>
             )
@@ -94,8 +88,16 @@ const ItemBase = fragments.Conversation(
       const { data } = props
       this.state = {
         connected: false,
-        other: data.members.length === 2 ? data.members.find(element => element.contact.status !== enums.BertyEntityContactInputStatus.Myself) : null,
-        interval: data.members.length === 2 ? setInterval(this.getPing, 10000) : null,
+        other:
+          data.members.length === 2
+            ? data.members.find(
+              element =>
+                element.contact.status !==
+                  enums.BertyEntityContactInputStatus.Myself
+            )
+            : null,
+        interval:
+          data.members.length === 2 ? setInterval(this.getPing, 10000) : null,
       }
 
       if (data.members.length === 2) {
@@ -113,14 +115,17 @@ const ItemBase = fragments.Conversation(
       const { context } = this.props
       const { other } = this.state
 
-      other.contact.devices.forEach(element => {
-        context.queries.Libp2PPing.fetch({ str: element.contactId })
-          .then(e => {
-            console.log('fetch ret', e)
-            this.setState({ connected: e.ret })
-          })
-          .catch(e => console.warn('err', e))
-      })
+      other &&
+        other.contact &&
+        other.contact.devices &&
+        other.contact.devices.forEach(element => {
+          context.queries.Libp2PPing.fetch({ str: element.contactId })
+            .then(e => {
+              console.log('fetch ret', e)
+              this.setState({ connected: e.ret })
+            })
+            .catch(e => console.warn('err', e))
+        })
     }
 
     render () {
@@ -131,7 +136,9 @@ const ItemBase = fragments.Conversation(
       // fix when contact request is send after conversation invite
       if (
         data.members.length === 2 &&
-        data.members.some(m => m.contact == null || m.contact.displayName === '')
+        data.members.some(
+          m => m.contact == null || m.contact.displayName === ''
+        )
       ) {
         return null
       }
@@ -159,19 +166,34 @@ const ItemBase = fragments.Conversation(
                   <Avatar data={this.props.data} size={40} />
                 </Badge>
               </View>
-            ) : <Avatar data={data} size={40} />}
+            ) : (
+              <Avatar data={data} size={40} />
+            )}
           </Flex.Rows>
-          <Flex.Rows size={7} align='stretch' justify='center' style={[marginLeft]}>
+          <Flex.Rows
+            size={7}
+            align='stretch'
+            justify='center'
+            style={[marginLeft]}
+          >
             <Text color={colors.black} left middle bold={!isRead}>
               {utils.getTitle(data)}
             </Text>
-            <Flex.Cols size={1} justify='flex-start' >
+            <Flex.Cols size={1} justify='flex-start'>
               {data.members.length === 2 && connected ? (
                 <View>
-                  <Text margin={{ right: 4 }} bold color={colors.green} tiny middle left >{'online'}</Text>
+                  <Text
+                    margin={{ right: 4 }}
+                    bold
+                    color={colors.green}
+                    tiny
+                    middle
+                    left
+                  >
+                    {'online'}
+                  </Text>
                 </View>
-              ) : null
-              }
+              ) : null}
               <LastMessage context={context} conversation={data} size={2} />
             </Flex.Cols>
           </Flex.Rows>
@@ -236,7 +258,9 @@ class ListScreen extends PureComponent {
               fragment={fragments.ConversationList}
               alias='ConversationList'
               subscriptions={[subscriptions.conversation]}
-              renderItem={props => <Item {...props} context={context} navigation={navigation} />}
+              renderItem={props => (
+                <Item {...props} context={context} navigation={navigation} />
+              )}
               emptyItem={() => (
                 <EmptyList
                   source={require('../../../static/img/empty-conversation.png')}

@@ -8,6 +8,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"berty.tech/core/api/node"
@@ -89,6 +90,9 @@ func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
 }
 
 func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.Event, error) {
+
+	logger().Debug("open envelope", zap.Stringer("envelope", envelope))
+
 	tracer := tracing.EnterFunc(ctx, envelope)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -128,10 +132,11 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 		return nil, errors.Wrap(err, "unable to fetch candidate devices for envelope")
 	} else {
 		contact := &entity.Contact{}
-		if err := n.sql(ctx).First(contact, &entity.Contact{ID: device.ContactID}).Error; err != nil {
+		err := n.sql(ctx).First(contact, &entity.Contact{ID: device.ContactID}).Error
+		if err != nil {
+			logger().Error(err.Error())
 			return nil, bsql.GenericError(err)
 		}
-
 		trusted = contact.IsTrusted()
 	}
 
