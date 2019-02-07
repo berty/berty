@@ -5,7 +5,7 @@ import { merge } from '../../helpers'
 
 const query = graphql`
   query EventListQuery(
-    $filter: BertyP2pEventInput
+    $filter: BertyEntityEventInput
     $orderBy: String!
     $orderDesc: Bool!
     $count: Int32

@@ -1,9 +1,10 @@
 package entity
 
 import (
-	"berty.tech/core/pkg/errorcodes"
 	"crypto/x509"
 	"encoding/base64"
+
+	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )

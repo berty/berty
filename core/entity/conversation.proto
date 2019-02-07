@@ -8,6 +8,7 @@ import "api/protobuf/graphql/graphql.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 import "entity/contact.proto";
+import "entity/message.proto";
 
 message Conversation {
   //
@@ -25,6 +26,7 @@ message Conversation {
 
   string title = 20;
   string topic = 21;
+  string infos = 22;
 
   //
   // associations

@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+
 	"go.uber.org/zap"
 
 	"berty.tech/core/api/p2p"
@@ -14,7 +15,7 @@ type OutgoingEventOptions struct {
 	DisableEventLogging bool
 }
 
-func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact, kind p2p.Kind) *p2p.Event {
+func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact, kind entity.Kind) *entity.Event {
 	tracer := tracing.EnterFunc(ctx, destination, kind)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -24,7 +25,7 @@ func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact,
 	return event
 }
 
-func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Conversation, kind p2p.Kind) *p2p.Event {
+func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Conversation, kind entity.Kind) *entity.Event {
 	tracer := tracing.EnterFunc(ctx, destination, kind)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -36,7 +37,7 @@ func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Con
 	return event
 }
 
-func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *p2p.Event, options *OutgoingEventOptions) error {
+func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *entity.Event, options *OutgoingEventOptions) error {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -64,8 +65,8 @@ func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	event := n.NewContactEvent(ctx, to, p2p.Kind_ContactShareMe)
-	if err := event.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
+	event := n.NewContactEvent(ctx, to, entity.Kind_ContactShareMe)
+	if err := event.SetAttrs(&entity.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
 		return err
 	}
 	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
@@ -75,35 +76,35 @@ func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
 	return nil
 }
 
-func (n *Node) NewSenderAliasEvent(ctx context.Context, destination string, aliases []*entity.SenderAlias) (*p2p.Event, error) {
+func (n *Node) NewSenderAliasEvent(ctx context.Context, destination string, aliases []*entity.SenderAlias) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, destination, aliases)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, p2p.Kind_SenderAliasUpdate)
+	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, entity.Kind_SenderAliasUpdate)
 	event.ID = n.NewID()
-	if err := event.SetAttrs(&p2p.SenderAliasUpdateAttrs{Aliases: aliases}); err != nil {
+	if err := event.SetAttrs(&entity.SenderAliasUpdateAttrs{Aliases: aliases}); err != nil {
 		return nil, err
 	}
 
 	return event, nil
 }
 
-func (n *Node) NewSeenEvent(ctx context.Context, destination string, ids []string) (*p2p.Event, error) {
+func (n *Node) NewSeenEvent(ctx context.Context, destination string, ids []string) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, destination, ids)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, p2p.Kind_Seen)
+	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, entity.Kind_Seen)
 	event.ID = n.NewID()
-	event.Kind = p2p.Kind_Seen
-	if err := event.SetAttrs(&p2p.SeenAttrs{IDs: ids}); err != nil {
+	event.Kind = entity.Kind_Seen
+	if err := event.SetAttrs(&entity.SeenAttrs{IDs: ids}); err != nil {
 		return event, nil
 	}
 	return event, nil
 }
 
-func (n *Node) BroadcastEventToContacts(ctx context.Context, event *p2p.Event) error {
+func (n *Node) BroadcastEventToContacts(ctx context.Context, event *entity.Event) error {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()

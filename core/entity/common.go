@@ -10,5 +10,6 @@ func AllEntities() []interface{} {
 		Conversation{},
 		ConversationMember{},
 		Config{},
+		Event{},
 	}
 }

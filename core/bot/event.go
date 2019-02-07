@@ -3,11 +3,11 @@ package bot
 import (
 	"context"
 
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 type Event struct {
-	p2p.Event
+	entity.Event
 
 	ctx context.Context
 }

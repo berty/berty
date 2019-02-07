@@ -6,16 +6,14 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/smartystreets/goconvey/convey"
-
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network/mock"
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 type eventStreamEntry struct {
-	event *p2p.Event
+	event *entity.Event
 	err   error
 }
 
@@ -47,8 +45,8 @@ func TestNodeHelpers(t *testing.T) {
 			So(err, ShouldBeNil)
 			defer app.Close()
 
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
 
 			// streamA accepts everything
 			queueA := make(chan eventStreamEntry, 100)
@@ -59,8 +57,8 @@ func TestNodeHelpers(t *testing.T) {
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 0)
 
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
 
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 2)
@@ -71,8 +69,8 @@ func TestNodeHelpers(t *testing.T) {
 			So(err, ShouldBeNil)
 			go streamToQueue(queueB, streamB, c)
 
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
 
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 4)
@@ -81,8 +79,8 @@ func TestNodeHelpers(t *testing.T) {
 			// streamC filters on kind=ping
 			queueC := make(chan eventStreamEntry, 100)
 			streamC, err := app.client.Node().EventStream(app.ctx, &node.EventStreamInput{
-				Filter: &p2p.Event{
-					Kind: p2p.Kind_Ping,
+				Filter: &entity.Event{
+					Kind: entity.Kind_Ping,
 				},
 			})
 			So(err, ShouldBeNil)
@@ -91,15 +89,15 @@ func TestNodeHelpers(t *testing.T) {
 			// streamD filters on conversationn_id="abcde"
 			queueD := make(chan eventStreamEntry, 100)
 			streamD, err := app.client.Node().EventStream(app.ctx, &node.EventStreamInput{
-				Filter: &p2p.Event{
+				Filter: &entity.Event{
 					ConversationID: "abcde",
 				},
 			})
 			So(err, ShouldBeNil)
 			go streamToQueue(queueD, streamD, c)
 
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{
-				Kind:           p2p.Kind_Ack,
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{
+				Kind:           entity.Kind_Ack,
 				ConversationID: "bbbb",
 			}), ShouldBeNil)
 			time.Sleep(50 * time.Millisecond)
@@ -108,8 +106,8 @@ func TestNodeHelpers(t *testing.T) {
 			So(len(queueC), ShouldEqual, 0)
 			So(len(queueD), ShouldEqual, 0)
 
-			So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{
-				Kind:           p2p.Kind_Ping,
+			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{
+				Kind:           entity.Kind_Ping,
 				ConversationID: "abcde",
 			}), ShouldBeNil)
 			time.Sleep(50 * time.Millisecond)
@@ -128,8 +126,8 @@ func TestNodeHelpers(t *testing.T) {
 			}
 
 			for i := 0; i < 50; i++ {
-				So(app.node.EnqueueClientEvent(app.ctx, &p2p.Event{
-					Kind:           p2p.Kind_Ping,
+				So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{
+					Kind:           entity.Kind_Ping,
 					ConversationID: "bbbb",
 				}), ShouldBeNil)
 			}

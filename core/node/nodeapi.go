@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
@@ -39,7 +38,7 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	sql := n.sql(ctx)
 
 	// prepare query
-	query := sql.Model(p2p.Event{}).Where(input.Filter)
+	query := sql.Model(entity.Event{}).Where(input.Filter)
 
 	if input.OnlyWithoutAckedAt == node.NullableTrueFalse_True {
 		query = query.Where("acked_at IS NULL")
@@ -55,7 +54,7 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	}
 
 	// perform query
-	var events []*p2p.Event
+	var events []*entity.Event
 	if err := query.Find(&events).Error; err != nil {
 		return errorcodes.ErrDb.Wrap(err)
 	}
@@ -69,35 +68,35 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
-func (n *Node) EventSeen(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
+func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	n.handleMutex(ctx)()
 
-	event := &p2p.Event{}
+	event := &entity.Event{}
 
 	sql := n.sql(ctx)
 
 	// get event
 	if err := sql.
-		Model(&p2p.Event{}).
-		Where(&p2p.Event{ID: input.ID}).
+		Model(&entity.Event{}).
+		Where(&entity.Event{ID: input.ID}).
 		First(event).
 		Error; err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
 	// check if event is from another contact
-	if event.Direction != p2p.Event_Incoming {
+	if event.Direction != entity.Event_Incoming {
 		return event, nil
 	}
 
 	// then mark as seen
 	if err := sql.
 		Model(event).
-		Where(&p2p.Event{ID: event.ID}).
+		Where(&entity.Event{ID: event.ID}).
 		UpdateColumn("seen_at", time.Now().UTC()).
 		First(event).Error; err != nil {
 		return nil, errors.Wrap(err, "cannot set event as seen")
@@ -130,15 +129,15 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	}
 
 	// check if last message has been read
-	event := &p2p.Event{ConversationID: conversation.ID, Direction: p2p.Event_Incoming}
+	event := &entity.Event{ConversationID: conversation.ID, Direction: entity.Event_Incoming}
 	n.sql(ctx).Model(event).Where(event).Order("created_at").Last(event)
 	if event.SeenAt == nil {
 		return conversation, nil
 	}
 
 	// send conversation as read
-	event = n.NewConversationEvent(ctx, conversation, p2p.Kind_ConversationRead)
-	if err = event.SetConversationReadAttrs(&p2p.ConversationReadAttrs{Conversation: conversation}); err != nil {
+	event = n.NewConversationEvent(ctx, conversation, entity.Kind_ConversationRead)
+	if err = event.SetConversationReadAttrs(&entity.ConversationReadAttrs{Conversation: conversation}); err != nil {
 		return nil, err
 	}
 	if err = n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
@@ -147,8 +146,8 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	return conversation, nil
 }
 
-func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversation) (*p2p.Event, error) {
-	output := &p2p.Event{ConversationID: input.ID}
+func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversation) (*entity.Event, error) {
+	output := &entity.Event{ConversationID: input.ID}
 
 	// FIXME: add last_event_id in conversation new message handler to be sure to fetch the last event
 	time.Sleep(time.Second / 3)
@@ -182,7 +181,7 @@ func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversatio
 }
 
 // GetEvent implements berty.node.GetEvent
-func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, error) {
+func (n *Node) GetEvent(ctx context.Context, input *entity.Event) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -190,7 +189,7 @@ func (n *Node) GetEvent(ctx context.Context, input *p2p.Event) (*p2p.Event, erro
 	n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
-	event := &p2p.Event{}
+	event := &entity.Event{}
 	if err := sql.Where(input).First(event).Error; err != nil {
 		return nil, bsql.GenericError(err)
 	}
@@ -227,7 +226,7 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) 
 	}
 
 	// send ContactRequestAccepted event
-	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequestAccepted)
+	event := n.NewContactEvent(ctx, contact, entity.Kind_ContactRequestAccepted)
 	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
 		return nil, err
 	}
@@ -282,8 +281,8 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	}
 
 	// send request to peer
-	event := n.NewContactEvent(ctx, contact, p2p.Kind_ContactRequest)
-	if err := event.SetAttrs(&p2p.ContactRequestAttrs{
+	event := n.NewContactEvent(ctx, contact, entity.Kind_ContactRequest)
+	if err := event.SetAttrs(&entity.ContactRequestAttrs{
 		Me:        n.config.Myself.Filtered().WithPushInformation(n.sql(ctx)),
 		IntroText: req.IntroText,
 	}); err != nil {
@@ -329,8 +328,8 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 			return nil, errorcodes.ErrDb.Wrap(err)
 		}
 
-		evt := n.NewContactEvent(ctx, n.config.Myself, p2p.Kind_ContactShareMe)
-		if err := evt.SetAttrs(&p2p.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
+		evt := n.NewContactEvent(ctx, n.config.Myself, entity.Kind_ContactShareMe)
+		if err := evt.SetAttrs(&entity.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
 			return nil, err
 		}
 
@@ -515,9 +514,9 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 			// skipping myself
 			continue
 		}
-		event := n.NewContactEvent(ctx, member.Contact, p2p.Kind_ConversationInvite)
+		event := n.NewContactEvent(ctx, member.Contact, entity.Kind_ConversationInvite)
 		event.ConversationID = conversation.ID
-		if err := event.SetAttrs(&p2p.ConversationInviteAttrs{
+		if err := event.SetAttrs(&entity.ConversationInviteAttrs{
 			Conversation: filtered,
 		}); err != nil {
 			return nil, errorcodes.ErrUndefined.Wrap(err)
@@ -593,15 +592,15 @@ func (n *Node) ConversationList(input *node.ConversationListInput, stream node.S
 	return nil
 }
 
-func (n *Node) ConversationAddMessage(ctx context.Context, input *node.ConversationAddMessageInput) (*p2p.Event, error) {
+func (n *Node) ConversationAddMessage(ctx context.Context, input *node.ConversationAddMessageInput) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	n.handleMutex(ctx)()
 
-	event := n.NewConversationEvent(ctx, input.Conversation, p2p.Kind_ConversationNewMessage)
-	if err := event.SetAttrs(&p2p.ConversationNewMessageAttrs{
+	event := n.NewConversationEvent(ctx, input.Conversation, entity.Kind_ConversationNewMessage)
+	if err := event.SetAttrs(&entity.ConversationNewMessageAttrs{
 		Message: input.Message,
 	}); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)

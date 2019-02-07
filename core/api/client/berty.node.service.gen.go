@@ -6,7 +6,6 @@ import (
 	"io"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 )
@@ -33,12 +32,12 @@ func (c *Client) CommitLogStream(ctx context.Context, input *node.Void) ([]*node
 	}
 	return entries, nil
 }
-func (c *Client) EventStream(ctx context.Context, input *node.EventStreamInput) ([]*p2p.Event, error) {
+func (c *Client) EventStream(ctx context.Context, input *node.EventStreamInput) ([]*entity.Event, error) {
 	stream, err := c.Node().EventStream(ctx, input)
 	if err != nil {
 		return nil, err
 	}
-	var entries []*p2p.Event
+	var entries []*entity.Event
 	for {
 		entry, err := stream.Recv()
 		if err == io.EOF {
@@ -51,12 +50,12 @@ func (c *Client) EventStream(ctx context.Context, input *node.EventStreamInput) 
 	}
 	return entries, nil
 }
-func (c *Client) EventList(ctx context.Context, input *node.EventListInput) ([]*p2p.Event, error) {
+func (c *Client) EventList(ctx context.Context, input *node.EventListInput) ([]*entity.Event, error) {
 	stream, err := c.Node().EventList(ctx, input)
 	if err != nil {
 		return nil, err
 	}
-	var entries []*p2p.Event
+	var entries []*entity.Event
 	for {
 		entry, err := stream.Recv()
 		if err == io.EOF {

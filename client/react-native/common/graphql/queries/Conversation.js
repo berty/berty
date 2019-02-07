@@ -11,6 +11,7 @@ const query = graphql`
     $readAt: GoogleProtobufTimestampInput
     $title: String!
     $topic: String!
+    $infos: String!
     $members: [BertyEntityConversationMemberInput]
   ) {
     Conversation(
@@ -20,6 +21,7 @@ const query = graphql`
       readAt: $readAt
       title: $title
       topic: $topic
+      infos: $infos
       members: $members
     ) {
       ...Conversation
@@ -29,6 +31,7 @@ const query = graphql`
       readAt
       title
       topic
+      infos
       members {
         id
         createdAt

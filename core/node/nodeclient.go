@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-func (n *Node) EnqueueClientEvent(ctx context.Context, event *p2p.Event) error {
+func (n *Node) EnqueueClientEvent(ctx context.Context, event *entity.Event) error {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -27,8 +27,8 @@ func (n *Node) EnqueueClientEvent(ctx context.Context, event *p2p.Event) error {
 }
 
 type clientEventSubscriber struct {
-	filter func(*p2p.Event) bool
-	queue  chan *p2p.Event
+	filter func(*entity.Event) bool
+	queue  chan *entity.Event
 }
 
 // EventStream implements berty.node.EventStream
@@ -39,14 +39,14 @@ func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_Eve
 
 	logger().Debug("EventStream connected", zap.Stringer("input", input))
 	sub := clientEventSubscriber{
-		filter: func(e *p2p.Event) bool {
+		filter: func(e *entity.Event) bool {
 			if input.Filter == nil {
 				return true
 			}
-			if input.Filter.Direction != p2p.Event_UnknownDirection && e.Direction != input.Filter.Direction {
+			if input.Filter.Direction != entity.Event_UnknownDirection && e.Direction != input.Filter.Direction {
 				return false
 			}
-			if input.Filter.Kind != p2p.Kind_Unknown && e.Kind != input.Filter.Kind {
+			if input.Filter.Kind != entity.Kind_Unknown && e.Kind != input.Filter.Kind {
 				return false
 			}
 			if input.Filter.ConversationID != "" && e.ConversationID != input.Filter.ConversationID {
@@ -54,7 +54,7 @@ func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_Eve
 			}
 			return true
 		},
-		queue: make(chan *p2p.Event, 100),
+		queue: make(chan *entity.Event, 100),
 	}
 
 	n.clientEventsMutex.Lock()

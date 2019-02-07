@@ -4,15 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"berty.tech/core/entity"
+	"berty.tech/core/sql"
+	"berty.tech/core/sql/sqlcipher"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-
-	"berty.tech/core/api/p2p"
-	"berty.tech/core/entity"
-	"berty.tech/core/sql"
-	"berty.tech/core/sql/sqlcipher"
 )
 
 type sqlDumpOptions struct {
@@ -55,13 +53,13 @@ func sqlDump(opts *sqlDumpOptions) error {
 	dump := struct {
 		Config              entity.Config               `json:"config"`
 		Contacts            []entity.Contact            `json:"contacts"`
-		Events              []p2p.Event                 `json:"events"`
+		Events              []entity.Event              `json:"events"`
 		Conversations       []entity.Conversation       `json:"conversations"`
 		ConversationMembers []entity.ConversationMember `json:"conversation_members"`
 		Devices             []entity.Device             `json:"devices"`
 	}{
 		Contacts:            []entity.Contact{},
-		Events:              []p2p.Event{},
+		Events:              []entity.Event{},
 		Conversations:       []entity.Conversation{},
 		ConversationMembers: []entity.ConversationMember{},
 		Devices:             []entity.Device{},

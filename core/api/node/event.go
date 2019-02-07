@@ -4,16 +4,16 @@ import (
 	"encoding/json"
 	"time"
 
-	"berty.tech/core/api/p2p"
+	entity "berty.tech/core/entity"
 	"github.com/gogo/protobuf/proto"
 )
 
-func GetNodeEvent(event *p2p.Event) (*NodeEvent, error) {
+func GetNodeEvent(event *entity.Event) (*NodeEvent, error) {
 	var nodeEvent NodeEvent
 	return &nodeEvent, proto.Unmarshal(event.Attributes, &nodeEvent)
 }
 
-func NewEvent(kind Kind, attributes proto.Message) (*p2p.Event, error) {
+func NewEvent(kind Kind, attributes proto.Message) (*entity.Event, error) {
 	nodeEvent, err := NewNodeEvent(kind, attributes)
 	if err != nil {
 		return nil, err
@@ -24,10 +24,10 @@ func NewEvent(kind Kind, attributes proto.Message) (*p2p.Event, error) {
 		return nil, err
 	}
 
-	return &p2p.Event{
+	return &entity.Event{
 		CreatedAt:  time.Now().UTC(),
-		Direction:  p2p.Event_Node,
-		Kind:       p2p.Kind_Node,
+		Direction:  entity.Event_Node,
+		Kind:       entity.Kind_Node,
 		Attributes: attrs,
 	}, nil
 }

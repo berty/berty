@@ -192,7 +192,7 @@ export const ValueBertyPushPriorityInputPriority = {
   2: 'Normal',
 }
 
-export const BertyP2pKindInputKind = {
+export const BertyEntityKindInputKind = {
   Unknown: 0,
   Sent: 101,
   Ack: 102,
@@ -212,7 +212,7 @@ export const BertyP2pKindInputKind = {
   Node: 99,
 }
 
-export const ValueBertyP2pKindInputKind = {
+export const ValueBertyEntityKindInputKind = {
   0: 'Unknown',
   101: 'Sent',
   102: 'Ack',
@@ -232,14 +232,14 @@ export const ValueBertyP2pKindInputKind = {
   99: 'Node',
 }
 
-export const BertyP2pEventInputDirection = {
+export const BertyEntityEventInputDirection = {
   UnknownDirection: 0,
   Incoming: 1,
   Outgoing: 2,
   Node: 99,
 }
 
-export const ValueBertyP2pEventInputDirection = {
+export const ValueBertyEntityEventInputDirection = {
   0: 'UnknownDirection',
   1: 'Incoming',
   2: 'Outgoing',

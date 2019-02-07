@@ -162,8 +162,8 @@ dev-deps:
 	touch $@
 
 .kind.generated: $(PROTOS)
-	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./api/p2p:./api/p2p ./api/p2p/kind.proto
-	goimports -w ./api/p2p
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,single-package-mode=true,all=true,template_dir=./entity:./entity ./entity/kind.proto
+	goimports -w ./entity
 	touch $@
 
 .gql.generated: $(PROTOS) .pb.generated

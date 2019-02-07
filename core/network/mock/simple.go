@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"go.uber.org/zap"
-
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/errorcodes"
+	"go.uber.org/zap"
 )
 
 //
@@ -44,12 +43,12 @@ type SimpleDriver struct {
 	network.Driver
 	manager              *SimpleManager
 	channels             []string
-	handler              func(context.Context, *p2p.Envelope) (*p2p.Void, error)
-	lastSentEnvelope     *p2p.Envelope
-	lastReceivedEnvelope *p2p.Envelope
+	handler              func(context.Context, *entity.Envelope) (*entity.Void, error)
+	lastSentEnvelope     *entity.Envelope
+	lastReceivedEnvelope *entity.Envelope
 }
 
-func (d *SimpleDriver) Emit(ctx context.Context, envelope *p2p.Envelope) error {
+func (d *SimpleDriver) Emit(ctx context.Context, envelope *entity.Envelope) error {
 	found := false
 
 	d.lastSentEnvelope = envelope
@@ -87,8 +86,8 @@ func (d *SimpleDriver) PingOtherNode(ctx context.Context, destination string) er
 	return nil
 }
 
-func (d *SimpleDriver) OnEnvelopeHandler(handler func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
-	d.handler = func(ctx context.Context, envelope *p2p.Envelope) (*p2p.Void, error) {
+func (d *SimpleDriver) OnEnvelopeHandler(handler func(context.Context, *entity.Envelope) (*entity.Void, error)) {
+	d.handler = func(ctx context.Context, envelope *entity.Envelope) (*entity.Void, error) {
 		d.lastReceivedEnvelope = envelope
 
 		return handler(ctx, envelope)
@@ -100,10 +99,10 @@ func (d *SimpleDriver) Join(_ context.Context, channel string) error {
 	return nil
 }
 
-func (d *SimpleDriver) GetLastReceivedEnvelope() *p2p.Envelope {
+func (d *SimpleDriver) GetLastReceivedEnvelope() *entity.Envelope {
 	return d.lastReceivedEnvelope
 }
 
-func (d *SimpleDriver) GetLastSentEnvelope() *p2p.Envelope {
+func (d *SimpleDriver) GetLastSentEnvelope() *entity.Envelope {
 	return d.lastSentEnvelope
 }

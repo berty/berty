@@ -141,13 +141,13 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 
 	/*
 		// enqueue fake incoming event
-		in := n.NewContactEvent(ctx, &entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
+		in := n.NewContactEvent(ctx, &entity.Contact{ID: "abcde"}, entity.Kind_DevtoolsMapset)
 		if err := n.EnqueueClientEvent(ctx, in); err != nil {
 			return nil, err
 		}
 
 		// enqueue fake outgoing event
-		out := n.NewContactEvent(ctx, &entity.Contact{ID: "abcde"}, p2p.Kind_DevtoolsMapset)
+		out := n.NewContactEvent(ctx, &entity.Contact{ID: "abcde"}, entity.Kind_DevtoolsMapset)
 		if err := n.EnqueueOutgoingEvent(ctx, out); err != nil {
 			return nil, err
 		}
@@ -376,13 +376,13 @@ func (n *Node) TestLogBackgroundDebug(ctx context.Context, input *node.Void) (*n
 	return &node.Void{}, nil
 }
 
-func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) (*p2p.Event, error) {
+func (n *Node) DebugRequeueEvent(ctx context.Context, input *node.EventIDInput) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	sql := n.sql(ctx)
-	var event p2p.Event
+	var event entity.Event
 	if err := sql.First(&event, "ID = ?", input.EventID).Error; err != nil {
 		return nil, bsql.GenericError(err)
 	}

@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/network"
 )
 
@@ -13,7 +13,7 @@ type NetworkMock struct {
 	apps []*AppMock
 }
 
-func (n *NetworkMock) SendEventToContact(context.Context, string, *p2p.Event) error {
+func (n *NetworkMock) SendEventToContact(context.Context, string, *entity.Event) error {
 	return errors.New("not implemented")
 }
 

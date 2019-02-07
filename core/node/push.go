@@ -5,7 +5,6 @@ import (
 	"context"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
@@ -93,7 +92,7 @@ func (n *Node) UsePushNotificationSubscriber(ctx context.Context) {
 			select {
 			case bytes := <-notificationSubscription:
 				{
-					envelope := &p2p.Envelope{}
+					envelope := &entity.Envelope{}
 					if err := envelope.Unmarshal(bytes); err != nil {
 						logger().Warn(errorcodes.ErrNodePushNotifSub.Wrap(err).Error())
 						continue

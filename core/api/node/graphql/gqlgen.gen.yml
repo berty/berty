@@ -837,6 +837,20 @@ models:
       overrideDisplayStatus:
 
 
+  BertyEntityMessage:
+    model: berty.tech/core/entity.Message
+    fields:
+      text:
+  BertyEntityMessageInput:
+    model: berty.tech/core/entity.Message
+    fields:
+      text:
+  BertyEntityMessagePayload:
+    model: berty.tech/core/entity.Message
+    fields:
+      text:
+
+
   BertyEntityConversation:
     model: berty.tech/core/entity.Conversation
     fields:
@@ -847,6 +861,7 @@ models:
       readAt:
       title:
       topic:
+      infos:
       members:
   BertyEntityConversationInput:
     model: berty.tech/core/entity.Conversation
@@ -858,6 +873,7 @@ models:
       readAt:
       title:
       topic:
+      infos:
       members:
   BertyEntityConversationPayload:
     model: berty.tech/core/entity.Conversation
@@ -869,6 +885,7 @@ models:
       readAt:
       title:
       topic:
+      infos:
       members:
 
   BertyEntityConversationMember:
@@ -910,20 +927,6 @@ models:
         resolver: true
       contactId:
         resolver: true
-
-
-  BertyEntityMessage:
-    model: berty.tech/core/entity.Message
-    fields:
-      text:
-  BertyEntityMessageInput:
-    model: berty.tech/core/entity.Message
-    fields:
-      text:
-  BertyEntityMessagePayload:
-    model: berty.tech/core/entity.Message
-    fields:
-      text:
 
 
   BertyEntitySenderAlias:
@@ -1019,235 +1022,235 @@ models:
       priority:
 
 
-  BertyP2pSentAttrs:
-    model: berty.tech/core/api/p2p.SentAttrs
+  BertyEntitySentAttrs:
+    model: berty.tech/core/entity.SentAttrs
     fields:
       ids:
-  BertyP2pSentAttrsInput:
-    model: berty.tech/core/api/p2p.SentAttrs
+  BertyEntitySentAttrsInput:
+    model: berty.tech/core/entity.SentAttrs
     fields:
       ids:
-  BertyP2pSentAttrsPayload:
-    model: berty.tech/core/api/p2p.SentAttrs
+  BertyEntitySentAttrsPayload:
+    model: berty.tech/core/entity.SentAttrs
     fields:
       ids:
 
-  BertyP2pAckAttrs:
-    model: berty.tech/core/api/p2p.AckAttrs
-    fields:
-      ids:
-      errMsg:
-  BertyP2pAckAttrsInput:
-    model: berty.tech/core/api/p2p.AckAttrs
+  BertyEntityAckAttrs:
+    model: berty.tech/core/entity.AckAttrs
     fields:
       ids:
       errMsg:
-  BertyP2pAckAttrsPayload:
-    model: berty.tech/core/api/p2p.AckAttrs
+  BertyEntityAckAttrsInput:
+    model: berty.tech/core/entity.AckAttrs
+    fields:
+      ids:
+      errMsg:
+  BertyEntityAckAttrsPayload:
+    model: berty.tech/core/entity.AckAttrs
     fields:
       ids:
       errMsg:
 
-  BertyP2pPingAttrs:
-    model: berty.tech/core/api/p2p.PingAttrs
+  BertyEntityPingAttrs:
+    model: berty.tech/core/entity.PingAttrs
     fields:
       t:
-  BertyP2pPingAttrsInput:
-    model: berty.tech/core/api/p2p.PingAttrs
+  BertyEntityPingAttrsInput:
+    model: berty.tech/core/entity.PingAttrs
     fields:
       t:
-  BertyP2pPingAttrsPayload:
-    model: berty.tech/core/api/p2p.PingAttrs
+  BertyEntityPingAttrsPayload:
+    model: berty.tech/core/entity.PingAttrs
     fields:
       t:
 
-  BertyP2pSeenAttrs:
-    model: berty.tech/core/api/p2p.SeenAttrs
+  BertyEntitySeenAttrs:
+    model: berty.tech/core/entity.SeenAttrs
     fields:
       ids:
-  BertyP2pSeenAttrsInput:
-    model: berty.tech/core/api/p2p.SeenAttrs
+  BertyEntitySeenAttrsInput:
+    model: berty.tech/core/entity.SeenAttrs
     fields:
       ids:
-  BertyP2pSeenAttrsPayload:
-    model: berty.tech/core/api/p2p.SeenAttrs
+  BertyEntitySeenAttrsPayload:
+    model: berty.tech/core/entity.SeenAttrs
     fields:
       ids:
 
-  BertyP2pContactRequestAttrs:
-    model: berty.tech/core/api/p2p.ContactRequestAttrs
+  BertyEntityContactRequestAttrs:
+    model: berty.tech/core/entity.ContactRequestAttrs
     fields:
       me:
       introText:
-  BertyP2pContactRequestAttrsInput:
-    model: berty.tech/core/api/p2p.ContactRequestAttrs
+  BertyEntityContactRequestAttrsInput:
+    model: berty.tech/core/entity.ContactRequestAttrs
     fields:
       me:
       introText:
-  BertyP2pContactRequestAttrsPayload:
-    model: berty.tech/core/api/p2p.ContactRequestAttrs
+  BertyEntityContactRequestAttrsPayload:
+    model: berty.tech/core/entity.ContactRequestAttrs
     fields:
       me:
       introText:
 
-  BertyP2pContactRequestAcceptedAttrs:
-    model: berty.tech/core/api/p2p.ContactRequestAcceptedAttrs
+  BertyEntityContactRequestAcceptedAttrs:
+    model: berty.tech/core/entity.ContactRequestAcceptedAttrs
     fields:
       t:
-  BertyP2pContactRequestAcceptedAttrsInput:
-    model: berty.tech/core/api/p2p.ContactRequestAcceptedAttrs
+  BertyEntityContactRequestAcceptedAttrsInput:
+    model: berty.tech/core/entity.ContactRequestAcceptedAttrs
     fields:
       t:
-  BertyP2pContactRequestAcceptedAttrsPayload:
-    model: berty.tech/core/api/p2p.ContactRequestAcceptedAttrs
+  BertyEntityContactRequestAcceptedAttrsPayload:
+    model: berty.tech/core/entity.ContactRequestAcceptedAttrs
     fields:
       t:
 
-  BertyP2pContactShareMeAttrs:
-    model: berty.tech/core/api/p2p.ContactShareMeAttrs
+  BertyEntityContactShareMeAttrs:
+    model: berty.tech/core/entity.ContactShareMeAttrs
     fields:
       me:
-  BertyP2pContactShareMeAttrsInput:
-    model: berty.tech/core/api/p2p.ContactShareMeAttrs
+  BertyEntityContactShareMeAttrsInput:
+    model: berty.tech/core/entity.ContactShareMeAttrs
     fields:
       me:
-  BertyP2pContactShareMeAttrsPayload:
-    model: berty.tech/core/api/p2p.ContactShareMeAttrs
+  BertyEntityContactShareMeAttrsPayload:
+    model: berty.tech/core/entity.ContactShareMeAttrs
     fields:
       me:
 
-  BertyP2pContactShareAttrs:
-    model: berty.tech/core/api/p2p.ContactShareAttrs
+  BertyEntityContactShareAttrs:
+    model: berty.tech/core/entity.ContactShareAttrs
     fields:
       contact:
-  BertyP2pContactShareAttrsInput:
-    model: berty.tech/core/api/p2p.ContactShareAttrs
+  BertyEntityContactShareAttrsInput:
+    model: berty.tech/core/entity.ContactShareAttrs
     fields:
       contact:
-  BertyP2pContactShareAttrsPayload:
-    model: berty.tech/core/api/p2p.ContactShareAttrs
+  BertyEntityContactShareAttrsPayload:
+    model: berty.tech/core/entity.ContactShareAttrs
     fields:
       contact:
 
-  BertyP2pConversationInviteAttrs:
-    model: berty.tech/core/api/p2p.ConversationInviteAttrs
+  BertyEntityConversationInviteAttrs:
+    model: berty.tech/core/entity.ConversationInviteAttrs
     fields:
       conversation:
-  BertyP2pConversationInviteAttrsInput:
-    model: berty.tech/core/api/p2p.ConversationInviteAttrs
+  BertyEntityConversationInviteAttrsInput:
+    model: berty.tech/core/entity.ConversationInviteAttrs
     fields:
       conversation:
-  BertyP2pConversationInviteAttrsPayload:
-    model: berty.tech/core/api/p2p.ConversationInviteAttrs
-    fields:
-      conversation:
-
-  BertyP2pConversationNewMessageAttrs:
-    model: berty.tech/core/api/p2p.ConversationNewMessageAttrs
-    fields:
-      message:
-  BertyP2pConversationNewMessageAttrsInput:
-    model: berty.tech/core/api/p2p.ConversationNewMessageAttrs
-    fields:
-      message:
-  BertyP2pConversationNewMessageAttrsPayload:
-    model: berty.tech/core/api/p2p.ConversationNewMessageAttrs
-    fields:
-      message:
-
-  BertyP2pConversationReadAttrs:
-    model: berty.tech/core/api/p2p.ConversationReadAttrs
-    fields:
-      conversation:
-  BertyP2pConversationReadAttrsInput:
-    model: berty.tech/core/api/p2p.ConversationReadAttrs
-    fields:
-      conversation:
-  BertyP2pConversationReadAttrsPayload:
-    model: berty.tech/core/api/p2p.ConversationReadAttrs
+  BertyEntityConversationInviteAttrsPayload:
+    model: berty.tech/core/entity.ConversationInviteAttrs
     fields:
       conversation:
 
-  BertyP2pDevtoolsMapsetAttrs:
-    model: berty.tech/core/api/p2p.DevtoolsMapsetAttrs
+  BertyEntityConversationNewMessageAttrs:
+    model: berty.tech/core/entity.ConversationNewMessageAttrs
+    fields:
+      message:
+  BertyEntityConversationNewMessageAttrsInput:
+    model: berty.tech/core/entity.ConversationNewMessageAttrs
+    fields:
+      message:
+  BertyEntityConversationNewMessageAttrsPayload:
+    model: berty.tech/core/entity.ConversationNewMessageAttrs
+    fields:
+      message:
+
+  BertyEntityConversationReadAttrs:
+    model: berty.tech/core/entity.ConversationReadAttrs
+    fields:
+      conversation:
+  BertyEntityConversationReadAttrsInput:
+    model: berty.tech/core/entity.ConversationReadAttrs
+    fields:
+      conversation:
+  BertyEntityConversationReadAttrsPayload:
+    model: berty.tech/core/entity.ConversationReadAttrs
+    fields:
+      conversation:
+
+  BertyEntityDevtoolsMapsetAttrs:
+    model: berty.tech/core/entity.DevtoolsMapsetAttrs
     fields:
       key:
       val:
-  BertyP2pDevtoolsMapsetAttrsInput:
-    model: berty.tech/core/api/p2p.DevtoolsMapsetAttrs
+  BertyEntityDevtoolsMapsetAttrsInput:
+    model: berty.tech/core/entity.DevtoolsMapsetAttrs
     fields:
       key:
       val:
-  BertyP2pDevtoolsMapsetAttrsPayload:
-    model: berty.tech/core/api/p2p.DevtoolsMapsetAttrs
+  BertyEntityDevtoolsMapsetAttrsPayload:
+    model: berty.tech/core/entity.DevtoolsMapsetAttrs
     fields:
       key:
       val:
 
-  BertyP2pSenderAliasUpdateAttrs:
-    model: berty.tech/core/api/p2p.SenderAliasUpdateAttrs
+  BertyEntitySenderAliasUpdateAttrs:
+    model: berty.tech/core/entity.SenderAliasUpdateAttrs
     fields:
       aliases:
-  BertyP2pSenderAliasUpdateAttrsInput:
-    model: berty.tech/core/api/p2p.SenderAliasUpdateAttrs
+  BertyEntitySenderAliasUpdateAttrsInput:
+    model: berty.tech/core/entity.SenderAliasUpdateAttrs
     fields:
       aliases:
-  BertyP2pSenderAliasUpdateAttrsPayload:
-    model: berty.tech/core/api/p2p.SenderAliasUpdateAttrs
+  BertyEntitySenderAliasUpdateAttrsPayload:
+    model: berty.tech/core/entity.SenderAliasUpdateAttrs
     fields:
       aliases:
 
-  BertyP2pDeviceUpdatePushConfigAttrs:
-    model: berty.tech/core/api/p2p.DeviceUpdatePushConfigAttrs
+  BertyEntityDeviceUpdatePushConfigAttrs:
+    model: berty.tech/core/entity.DeviceUpdatePushConfigAttrs
     fields:
       device:
-  BertyP2pDeviceUpdatePushConfigAttrsInput:
-    model: berty.tech/core/api/p2p.DeviceUpdatePushConfigAttrs
+  BertyEntityDeviceUpdatePushConfigAttrsInput:
+    model: berty.tech/core/entity.DeviceUpdatePushConfigAttrs
     fields:
       device:
-  BertyP2pDeviceUpdatePushConfigAttrsPayload:
-    model: berty.tech/core/api/p2p.DeviceUpdatePushConfigAttrs
+  BertyEntityDeviceUpdatePushConfigAttrsPayload:
+    model: berty.tech/core/entity.DeviceUpdatePushConfigAttrs
     fields:
       device:
 
-  BertyP2pDevicePushToAttrs:
-    model: berty.tech/core/api/p2p.DevicePushToAttrs
+  BertyEntityDevicePushToAttrs:
+    model: berty.tech/core/entity.DevicePushToAttrs
     fields:
       pushIdentifier:
       envelope:
       priority:
-  BertyP2pDevicePushToAttrsInput:
-    model: berty.tech/core/api/p2p.DevicePushToAttrs
+  BertyEntityDevicePushToAttrsInput:
+    model: berty.tech/core/entity.DevicePushToAttrs
     fields:
       pushIdentifier:
       envelope:
       priority:
-  BertyP2pDevicePushToAttrsPayload:
-    model: berty.tech/core/api/p2p.DevicePushToAttrs
+  BertyEntityDevicePushToAttrsPayload:
+    model: berty.tech/core/entity.DevicePushToAttrs
     fields:
       pushIdentifier:
       envelope:
       priority:
 
-  BertyP2pNodeAttrs:
-    model: berty.tech/core/api/p2p.NodeAttrs
+  BertyEntityNodeAttrs:
+    model: berty.tech/core/entity.NodeAttrs
     fields:
       kind:
       attributes:
-  BertyP2pNodeAttrsInput:
-    model: berty.tech/core/api/p2p.NodeAttrs
+  BertyEntityNodeAttrsInput:
+    model: berty.tech/core/entity.NodeAttrs
     fields:
       kind:
       attributes:
-  BertyP2pNodeAttrsPayload:
-    model: berty.tech/core/api/p2p.NodeAttrs
+  BertyEntityNodeAttrsPayload:
+    model: berty.tech/core/entity.NodeAttrs
     fields:
       kind:
       attributes:
 
 
-  BertyP2pEvent:
-    model: berty.tech/core/api/p2p.Event
+  BertyEntityEvent:
+    model: berty.tech/core/entity.Event
     fields:
       id:
         resolver: true
@@ -1268,8 +1271,8 @@ models:
         resolver: true
       seenAt:
       metadata:
-  BertyP2pEventInput:
-    model: berty.tech/core/api/p2p.Event
+  BertyEntityEventInput:
+    model: berty.tech/core/entity.Event
     fields:
       id:
         resolver: true
@@ -1290,8 +1293,8 @@ models:
         resolver: true
       seenAt:
       metadata:
-  BertyP2pEventPayload:
-    model: berty.tech/core/api/p2p.Event
+  BertyEntityEventPayload:
+    model: berty.tech/core/entity.Event
     fields:
       id:
         resolver: true
@@ -1313,18 +1316,18 @@ models:
       seenAt:
       metadata:
 
-  BertyP2pMetadataKeyValue:
-    model: berty.tech/core/api/p2p.MetadataKeyValue
+  BertyEntityMetadataKeyValue:
+    model: berty.tech/core/entity.MetadataKeyValue
     fields:
       key:
       values:
-  BertyP2pMetadataKeyValueInput:
-    model: berty.tech/core/api/p2p.MetadataKeyValue
+  BertyEntityMetadataKeyValueInput:
+    model: berty.tech/core/entity.MetadataKeyValue
     fields:
       key:
       values:
-  BertyP2pMetadataKeyValuePayload:
-    model: berty.tech/core/api/p2p.MetadataKeyValue
+  BertyEntityMetadataKeyValuePayload:
+    model: berty.tech/core/entity.MetadataKeyValue
     fields:
       key:
       values:

@@ -3,7 +3,6 @@ package node
 import (
 	"context"
 
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -103,7 +102,7 @@ func (node *Node) senderAliasSave(ctx context.Context, senderAlias *entity.Sende
 	return nil
 }
 
-func (node *Node) aliasEnvelopeForContact(ctx context.Context, envelope *p2p.Envelope, event *p2p.Event) string {
+func (node *Node) aliasEnvelopeForContact(ctx context.Context, envelope *entity.Envelope, event *entity.Event) string {
 	sql := node.sql(ctx)
 	alias, err := entity.GetAliasForContact(sql, event.ReceiverID)
 
@@ -116,7 +115,7 @@ func (node *Node) aliasEnvelopeForContact(ctx context.Context, envelope *p2p.Env
 	return node.b64pubkey
 }
 
-func (node *Node) aliasEnvelopeForConversation(ctx context.Context, envelope *p2p.Envelope, event *p2p.Event) string {
+func (node *Node) aliasEnvelopeForConversation(ctx context.Context, envelope *entity.Envelope, event *entity.Event) string {
 	sql := node.sql(ctx)
 	alias, err := entity.GetAliasForConversation(sql, event.ConversationID)
 

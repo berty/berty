@@ -1,9 +1,8 @@
-package p2p
+package entity
 
 import (
 	"testing"
 
-	"berty.tech/core/entity"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -13,7 +12,7 @@ func TestEvent_GetAttrs(t *testing.T) {
 			Kind: Kind_ConversationNewMessage,
 		}
 		input := ConversationNewMessageAttrs{
-			Message: &entity.Message{
+			Message: &Message{
 				Text: "hello world!",
 			},
 		}

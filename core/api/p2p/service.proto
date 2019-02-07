@@ -4,13 +4,12 @@ package berty.p2p;
 
 option go_package = "berty.tech/core/api/p2p";
 
-import "api/p2p/envelope.proto";
+import "entity/envelope.proto";
+import "entity/void.proto";
 
 service Service {
   // HandleEnvelope is the default p2p handler, it receives an envelope containing an encrypted event
-  rpc HandleEnvelope(Envelope) returns (Void) {};
+  rpc HandleEnvelope(entity.Envelope) returns (entity.Void) {};
 
-  rpc Ping(Void) returns (Void) {};
+  rpc Ping(entity.Void) returns (entity.Void) {};
 }
-
-message Void {};

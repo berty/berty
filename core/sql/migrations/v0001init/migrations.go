@@ -3,7 +3,7 @@ package v0001init
 import (
 	"time"
 
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 )
@@ -129,7 +129,7 @@ type Event struct {
 	// AckedAt is set to current date just after receiving a `Ack` event.
 	AckedAt *time.Time `protobuf:"bytes,8,opt,name=acked_at,json=ackedAt,stdtime" json:"acked_at,omitempty"`
 	// Direction is sent to Outgoing by the sender and to Incoming by the receiver.
-	Direction Event_Direction `protobuf:"varint,9,opt,name=direction,proto3,enum=berty.p2p.Event_Direction" json:"direction,omitempty"`
+	Direction Event_Direction `protobuf:"varint,9,opt,name=direction,proto3,enum=berty.entity.Event_Direction" json:"direction,omitempty"`
 	// SenderAPIVersion is set by the sender when creating the message to be sent.
 	SenderAPIVersion uint32 `protobuf:"varint,10,opt,name=sender_api_version,json=senderApiVersion,proto3" json:"sender_api_version,omitempty"`
 	// ReceiverAPIVersion is set by the receiver when receiving a message.
@@ -138,7 +138,7 @@ type Event struct {
 	// Receiver is the ID of the receiver.
 	ReceiverID string `protobuf:"bytes,12,opt,name=receiver_id,json=receiverId,proto3" json:"receiver_id,omitempty"`
 	// Kind is an enum defining the event type.
-	Kind Kind `protobuf:"varint,13,opt,name=kind,proto3,enum=berty.p2p.Kind" json:"kind,omitempty"`
+	Kind Kind `protobuf:"varint,13,opt,name=kind,proto3,enum=berty.entity.Kind" json:"kind,omitempty"`
 	// Attributes is a nested protobuf message containing per-event-type additional attributes, stored in db.
 	Attributes []byte `protobuf:"bytes,14,opt,name=attributes,proto3" json:"attributes,omitempty"`
 	// ConversationID needs to be set if the event belongs to a conversation.
@@ -163,7 +163,7 @@ func GetMigration() *gormigrate.Migration {
 				Conversation{},
 				ConversationMember{},
 				Config{},
-				p2p.Event{},
+				entity.Event{},
 			).Error
 		},
 		Rollback: func(tx *gorm.DB) error {

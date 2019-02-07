@@ -5,7 +5,6 @@ import (
 	"sort"
 	"strings"
 
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
@@ -64,8 +63,8 @@ func MembersByConversationID(db *gorm.DB, conversationID string) ([]*entity.Conv
 		Error
 }
 
-func EventByID(db *gorm.DB, id string) (*p2p.Event, error) {
-	var contact p2p.Event
+func EventByID(db *gorm.DB, id string) (*entity.Event, error) {
+	var contact entity.Event
 	return &contact, db.First(&contact, "ID = ?", id).Error
 }
 

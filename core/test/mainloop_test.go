@@ -10,8 +10,6 @@ import (
 
 	networkmock "berty.tech/core/network/mock"
 	"github.com/pkg/errors"
-
-	"berty.tech/core/api/p2p"
 )
 
 func setupNonAcknowledgedEventDestinations() (*AppMock, time.Time, time.Time, time.Time) {
@@ -25,21 +23,21 @@ func setupNonAcknowledgedEventDestinations() (*AppMock, time.Time, time.Time, ti
 	past := now.Add(-time.Second)
 	future := now.Add(time.Second)
 
-	n.db.Save(&p2p.Event{ID: "Event1", Direction: p2p.Event_Outgoing, ReceiverID: "Receiver1", SentAt: &past})
-	n.db.Save(&p2p.Event{ID: "Event2", Direction: p2p.Event_Outgoing, ReceiverID: "Receiver1", SentAt: &future})
-	n.db.Save(&p2p.Event{ID: "Event3", Direction: p2p.Event_Outgoing, ReceiverID: "Receiver2", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event1", Direction: entity.Event_Outgoing, ReceiverID: "Receiver1", SentAt: &past})
+	n.db.Save(&entity.Event{ID: "Event2", Direction: entity.Event_Outgoing, ReceiverID: "Receiver1", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event3", Direction: entity.Event_Outgoing, ReceiverID: "Receiver2", SentAt: &future})
 
-	n.db.Save(&p2p.Event{ID: "Event4", Direction: p2p.Event_Incoming, ReceiverID: "Receiver1", SentAt: &past})
-	n.db.Save(&p2p.Event{ID: "Event5", Direction: p2p.Event_Incoming, ReceiverID: "Receiver1", SentAt: &future})
-	n.db.Save(&p2p.Event{ID: "Event6", Direction: p2p.Event_Incoming, ReceiverID: "Receiver2", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event4", Direction: entity.Event_Incoming, ReceiverID: "Receiver1", SentAt: &past})
+	n.db.Save(&entity.Event{ID: "Event5", Direction: entity.Event_Incoming, ReceiverID: "Receiver1", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event6", Direction: entity.Event_Incoming, ReceiverID: "Receiver2", SentAt: &future})
 
-	n.db.Save(&p2p.Event{ID: "Event7", Direction: p2p.Event_Outgoing, ConversationID: "Conversation1", SentAt: &past})
-	n.db.Save(&p2p.Event{ID: "Event8", Direction: p2p.Event_Outgoing, ConversationID: "Conversation1", SentAt: &future})
-	n.db.Save(&p2p.Event{ID: "Event9", Direction: p2p.Event_Outgoing, ConversationID: "Conversation2", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event7", Direction: entity.Event_Outgoing, ConversationID: "Conversation1", SentAt: &past})
+	n.db.Save(&entity.Event{ID: "Event8", Direction: entity.Event_Outgoing, ConversationID: "Conversation1", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event9", Direction: entity.Event_Outgoing, ConversationID: "Conversation2", SentAt: &future})
 
-	n.db.Save(&p2p.Event{ID: "Event10", Direction: p2p.Event_Incoming, ConversationID: "Conversation1", SentAt: &past})
-	n.db.Save(&p2p.Event{ID: "Event11", Direction: p2p.Event_Incoming, ConversationID: "Conversation1", SentAt: &future})
-	n.db.Save(&p2p.Event{ID: "Event12", Direction: p2p.Event_Incoming, ConversationID: "Conversation2", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event10", Direction: entity.Event_Incoming, ConversationID: "Conversation1", SentAt: &past})
+	n.db.Save(&entity.Event{ID: "Event11", Direction: entity.Event_Incoming, ConversationID: "Conversation1", SentAt: &future})
+	n.db.Save(&entity.Event{ID: "Event12", Direction: entity.Event_Incoming, ConversationID: "Conversation2", SentAt: &future})
 
 	return n, past, now, future
 }
