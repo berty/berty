@@ -35,6 +35,22 @@ const TabBarIcon = (tintColor, routeName, badgeValue) => {
   )
 }
 
+const handleBothNavigationsOptions = ({ navigation, screenProps }) => {
+  let badge = null
+
+  if (
+    navigation.state.routeName === 'settings' &&
+    screenProps.availableUpdate
+  ) {
+    badge = '!'
+  }
+
+  return {
+    tabBarIcon: ({ tintColor }) =>
+      TabBarIcon(tintColor, navigation.state.routeName, badge),
+  }
+}
+
 export const tabs = createBottomTabNavigator(
   {
     contacts: {
@@ -60,21 +76,8 @@ export const tabs = createBottomTabNavigator(
     initialRouteName: 'chats',
     swipeEnabled: false,
     animationEnabled: true,
-    defaultNavigationOptions: ({ navigation, screenProps }) => {
-      let badge = null
-
-      if (
-        navigation.state.routeName === 'settings' &&
-        screenProps.availableUpdate
-      ) {
-        badge = '!'
-      }
-
-      return {
-        tabBarIcon: ({ tintColor }) =>
-          TabBarIcon(tintColor, navigation.state.routeName, badge),
-      }
-    },
+    navigationOptions: handleBothNavigationsOptions,
+    defaultNavigationOptions: handleBothNavigationsOptions,
     tabBarOptions: {
       showIcon: true,
       showLabel: true,

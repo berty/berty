@@ -11,6 +11,13 @@ import Devtools from './Devtools'
 import Update from './Update'
 import I18n from 'i18next'
 
+const handleBothNavigationsOptions = ({ navigation }) => ({
+  header: (
+    <Header navigation={navigation} title={I18n.t('settings.title')} titleIcon='settings' />
+  ),
+  tabBarVisible: false,
+})
+
 export default createSubStackNavigator(
   {
     'settings/list': List,
@@ -24,11 +31,7 @@ export default createSubStackNavigator(
   },
   {
     initialRouteName: 'settings/list',
-    navigationOptions: ({ navigation }) => ({
-      header: (
-        <Header navigation={navigation} title={I18n.t('settings.title')} titleIcon='settings' />
-      ),
-      tabBarVisible: false,
-    }),
+    defaultNavigationOptions: handleBothNavigationsOptions,
+    navigationOptions: handleBothNavigationsOptions,
   }
 )

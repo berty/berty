@@ -64,7 +64,7 @@ class Current extends PureComponent {
   }
 
   async componentDidUpdate (nextProps) {
-    if (nextProps.screenProps.deepLink !== this.props.screenProps.deepLink) {
+    if (nextProps.screenProps !== 'undefined' && nextProps.screenProps.deepLink !== this.props.screenProps.deepLink) {
       this.openDeepLink()
     }
   }
@@ -78,7 +78,7 @@ class Current extends PureComponent {
       navigation,
     } = this.props
 
-    if (!deepLink) {
+    if (!deepLink || deepLink === 'undefined' || Platform.OS === 'web') {
       return
     }
 

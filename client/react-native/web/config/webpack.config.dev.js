@@ -132,6 +132,7 @@ module.exports = {
     // for React Native Web.
     extensions: ['.mjs', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
+      'react-native': 'react-native-web',
       'react-native-svg': 'react-native-svg-web',
       'react-dom/unstable-native-dependencies': path.resolve(
         paths.appPath,
@@ -241,6 +242,8 @@ module.exports = {
             include: [
               /node_modules\/react-native.*/,
               /node_modules\/react-navigation/,
+              /node_modules\/@react-navigation\/native/,
+              /node_modules\/@react-navigation\/core/,
               /node_modules\/cavy/,
             ],
             loader: require.resolve('babel-loader'),
@@ -381,9 +384,6 @@ module.exports = {
     // Makes some environment variables available to the JS code, for example:
     // if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
     new webpack.DefinePlugin(env.stringified),
-    new webpack.DefinePlugin({
-      __DEV__: true,
-    }),
     // This is necessary to emit hot updates (currently CSS only):
     new webpack.HotModuleReplacementPlugin(),
     // Watcher doesn't work well if you mistype casing in a path so we use
