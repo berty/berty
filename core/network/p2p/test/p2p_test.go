@@ -6,12 +6,13 @@ import (
 	"testing"
 	"time"
 
-	api "berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/network/p2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
-	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 var bootstrapConfig = &dht.BootstrapConfig{
@@ -112,18 +113,18 @@ func TestP2PNetwork(t *testing.T) {
 			tctx, cancel := context.WithTimeout(ctx, time.Second*4)
 			defer cancel()
 
-			e := &api.Envelope{
+			e := &entity.Envelope{
 				ChannelID: "Homer",
 			}
 
-			homerQueue := make(chan *api.Envelope, 1)
-			homer.OnEnvelopeHandler(func(ctx context.Context, envelope *api.Envelope) (*api.Void, error) {
+			homerQueue := make(chan *entity.Envelope, 1)
+			homer.OnEnvelopeHandler(func(ctx context.Context, envelope *entity.Envelope) (*entity.Void, error) {
 				if envelope == nil {
 					homerQueue <- nil
 					return nil, fmt.Errorf("empty envelope")
 				}
 				homerQueue <- envelope
-				return &api.Void{}, nil
+				return &entity.Void{}, nil
 			})
 
 			logger().Debug("Homer joing himself")
@@ -139,18 +140,18 @@ func TestP2PNetwork(t *testing.T) {
 			tctx, cancel := context.WithTimeout(ctx, time.Second*4)
 			defer cancel()
 
-			e := &api.Envelope{
+			e := &entity.Envelope{
 				ChannelID: "Lisa",
 			}
 
-			lisaQueue := make(chan *api.Envelope, 1)
-			lisa.OnEnvelopeHandler(func(ctx context.Context, envelope *api.Envelope) (*api.Void, error) {
+			lisaQueue := make(chan *entity.Envelope, 1)
+			lisa.OnEnvelopeHandler(func(ctx context.Context, envelope *entity.Envelope) (*entity.Void, error) {
 				if envelope == nil {
 					lisaQueue <- nil
 					return nil, fmt.Errorf("empty envelope")
 				}
 				lisaQueue <- envelope
-				return &api.Void{}, nil
+				return &entity.Void{}, nil
 			})
 
 			err = bart.Emit(tctx, e)

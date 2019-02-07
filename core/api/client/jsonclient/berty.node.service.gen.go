@@ -7,7 +7,6 @@ import (
 
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/tracing"
@@ -181,7 +180,7 @@ func NodeGetEvent(client *client.Client, ctx context.Context, jsonInput []byte) 
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.GetEvent")
-	var typedInput p2p.Event
+	var typedInput entity.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}
@@ -201,7 +200,7 @@ func NodeEventSeen(client *client.Client, ctx context.Context, jsonInput []byte)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.EventSeen")
-	var typedInput p2p.Event
+	var typedInput entity.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}
@@ -737,7 +736,7 @@ func NodeHandleEvent(client *client.Client, ctx context.Context, jsonInput []byt
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.HandleEvent")
-	var typedInput p2p.Event
+	var typedInput entity.Event
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}

@@ -10,7 +10,6 @@ import (
 
 	"berty.tech/core/api/client"
 	nodeapi "berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
@@ -38,7 +37,7 @@ type AppMock struct {
 	device        *entity.Device
 	networkDriver network.Driver
 	crypto        keypair.Interface
-	eventStream   chan *p2p.Event
+	eventStream   chan *entity.Event
 	cancel        func()
 	options       []AppMockOption
 }
@@ -50,7 +49,7 @@ func WithUnencryptedDb() AppMockOption {
 		}
 
 		entities := entity.AllEntities()
-		entities = append(entities, &p2p.Event{})
+		entities = append(entities, &entity.Event{})
 
 		path, db, err := mock.GetMockedDb(entities...)
 
@@ -153,7 +152,7 @@ func (a *AppMock) Open() error {
 }
 
 func (a *AppMock) InitEventStream() error {
-	a.eventStream = make(chan *p2p.Event, 100)
+	a.eventStream = make(chan *entity.Event, 100)
 	stream, err := a.client.Node().EventStream(a.ctx, &nodeapi.EventStreamInput{})
 	if err != nil {
 		return err

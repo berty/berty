@@ -1,8 +1,9 @@
 package entity
 
 import (
-	"berty.tech/core/pkg/errorcodes"
 	"strings"
+
+	"berty.tech/core/pkg/errorcodes"
 )
 
 func (c Conversation) Validate() error {

@@ -3,7 +3,7 @@ package mock
 import (
 	"context"
 
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/tracing"
 )
@@ -11,7 +11,7 @@ import (
 type Enqueuer struct {
 	network.Driver
 
-	queue     chan *p2p.Envelope
+	queue     chan *entity.Envelope
 	pingQueue chan string
 }
 
@@ -21,16 +21,16 @@ func NewEnqueuer(ctx context.Context) *Enqueuer {
 	// ctx = tracer.Context()
 
 	return &Enqueuer{
-		queue:     make(chan *p2p.Envelope, 100),
+		queue:     make(chan *entity.Envelope, 100),
 		pingQueue: make(chan string, 100),
 	}
 }
 
-func (e *Enqueuer) Queue() chan *p2p.Envelope {
+func (e *Enqueuer) Queue() chan *entity.Envelope {
 	return e.queue
 }
 
-func (e *Enqueuer) Emit(ctx context.Context, envelope *p2p.Envelope) error {
+func (e *Enqueuer) Emit(ctx context.Context, envelope *entity.Envelope) error {
 	tracer := tracing.EnterFunc(ctx, envelope)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
@@ -47,7 +47,7 @@ func (e *Enqueuer) Start(ctx context.Context) error {
 	select {} // wait forever
 }
 
-func (e *Enqueuer) OnEnvelopeHandler(_ func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
+func (e *Enqueuer) OnEnvelopeHandler(_ func(context.Context, *entity.Envelope) (*entity.Void, error)) {
 	// doing nothing, enqueuer does not support receiving events
 }
 

@@ -10,7 +10,7 @@ import (
 
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/network/p2p/p2putil"
 	"berty.tech/core/network/p2p/protocol/provider"
@@ -69,7 +69,7 @@ var _ network.Driver = (*Driver)(nil)
 
 type Driver struct {
 	host    host.Host
-	handler func(context.Context, *p2p.Envelope) (*p2p.Void, error)
+	handler func(context.Context, *entity.Envelope) (*entity.Void, error)
 
 	providers *provider.Manager
 
@@ -378,7 +378,7 @@ func (d *Driver) Find(ctx context.Context, pid peer.ID) (pstore.PeerInfo, error)
 	return d.dht.FindPeer(ctx, pid)
 }
 
-func (d *Driver) Emit(ctx context.Context, e *p2p.Envelope) error {
+func (d *Driver) Emit(ctx context.Context, e *entity.Envelope) error {
 	tracer := tracing.EnterFunc(ctx, e)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -386,7 +386,7 @@ func (d *Driver) Emit(ctx context.Context, e *p2p.Envelope) error {
 	return d.EmitTo(ctx, e.GetChannelID(), e)
 }
 
-func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) error {
+func (d *Driver) EmitTo(ctx context.Context, channel string, e *entity.Envelope) error {
 	tracer := tracing.EnterFunc(ctx, channel, e)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -436,7 +436,7 @@ func (d *Driver) EmitTo(ctx context.Context, channel string, e *p2p.Envelope) er
 	return nil
 }
 
-func (d *Driver) SendTo(ctx context.Context, pi pstore.PeerInfo, e *p2p.Envelope) error {
+func (d *Driver) SendTo(ctx context.Context, pi pstore.PeerInfo, e *entity.Envelope) error {
 	peerID := pi.ID.Pretty()
 	if pi.ID == d.host.ID() {
 		return fmt.Errorf("cannot dial to self")
@@ -471,7 +471,7 @@ func (d *Driver) handleEnvelope(s inet.Stream) {
 
 	pbr := ggio.NewDelimitedReader(s, inet.MessageSizeMax)
 	for {
-		e := &p2p.Envelope{}
+		e := &entity.Envelope{}
 		switch err := pbr.ReadMsg(e); err {
 		case io.EOF:
 			s.Close()
@@ -511,7 +511,7 @@ func (d *Driver) Join(ctx context.Context, id string) error {
 	return d.providers.Provide(ctx, c)
 }
 
-func (d *Driver) OnEnvelopeHandler(f func(context.Context, *p2p.Envelope) (*p2p.Void, error)) {
+func (d *Driver) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) (*entity.Void, error)) {
 	d.handler = f
 }
 

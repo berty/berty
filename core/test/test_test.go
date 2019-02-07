@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/network/mock"
 )
 
@@ -103,13 +103,13 @@ func everythingWentFine() {
 // get async events with timeout
 //
 
-func asyncEventsWithTimeout(eventStream chan *p2p.Event, n int) ([]*p2p.Event, []*p2p.Event, error) {
-	var incomings, outgoings []*p2p.Event
+func asyncEventsWithTimeout(eventStream chan *entity.Event, n int) ([]*entity.Event, []*entity.Event, error) {
+	var incomings, outgoings []*entity.Event
 
 	for i := 0; i < n; i++ {
 		select {
 		case event := <-eventStream:
-			if event.Direction == p2p.Event_Incoming {
+			if event.Direction == entity.Event_Incoming {
 				incomings = append(incomings, event)
 			} else {
 				outgoings = append(outgoings, event)

@@ -22,8 +22,8 @@ func (n *Node) AsyncWait(ctx context.Context) {
 	n.asyncWaitGroupInst.Wait()
 }
 
-// HandleEvent implements berty.p2p.HandleEvent (synchronous unary)
-func (n *Node) HandleEvent(ctx context.Context, input *p2p.Event) (*node.Void, error) {
+// HandleEvent implements berty.entity.HandleEvent (synchronous unary)
+func (n *Node) HandleEvent(ctx context.Context, input *entity.Event) (*node.Void, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -33,10 +33,7 @@ func (n *Node) HandleEvent(ctx context.Context, input *p2p.Event) (*node.Void, e
 	return &node.Void{}, n.handleEvent(ctx, input)
 }
 
-func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
-
-	logger().Debug("handle event", zap.Stringer("event", input))
-
+func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -54,7 +51,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 
 	var count int
 	sql := n.sql(ctx)
-	if err := sql.Model(&p2p.Event{}).Where(&p2p.Event{ID: input.ID, SenderID: input.SenderID}).Count(&count).Error; err != nil {
+	if err := sql.Model(&entity.Event{}).Where(&entity.Event{ID: input.ID, SenderID: input.SenderID}).Count(&count).Error; err != nil {
 		return err
 	}
 	if count > 0 {
@@ -64,9 +61,9 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 	}
 
 	now := time.Now().UTC()
-	input.Direction = p2p.Event_Incoming   // set direction to incoming
-	input.ReceivedAt = &now                // set current date
-	input.ReceiverAPIVersion = p2p.Version // it's important to keep our current version to be able to apply per-message migrations in the future
+	input.Direction = entity.Event_Incoming // set direction to incoming
+	input.ReceivedAt = &now                 // set current date
+	input.ReceiverAPIVersion = p2p.Version  // it's important to keep our current version to be able to apply per-message migrations in the future
 	// input.ReceiverID = ""               // we should be able to remove this information
 
 	// debug
@@ -82,19 +79,19 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		)
 	}
 
-	handler, found := map[p2p.Kind]EventHandler{
-		p2p.Kind_ContactRequest:         n.handleContactRequest,
-		p2p.Kind_ContactRequestAccepted: n.handleContactRequestAccepted,
-		p2p.Kind_ContactShareMe:         n.handleContactShareMe,
-		p2p.Kind_ConversationInvite:     n.handleConversationInvite,
-		p2p.Kind_ConversationNewMessage: n.handleConversationNewMessage,
-		p2p.Kind_ConversationRead:       n.handleConversationRead,
-		p2p.Kind_DevtoolsMapset:         n.handleDevtoolsMapset,
-		p2p.Kind_SenderAliasUpdate:      n.handleSenderAliasUpdate,
-		p2p.Kind_Ack:                    n.handleAck,
-		p2p.Kind_Seen:                   n.handleSeen,
-		p2p.Kind_DevicePushTo:           n.handleDevicePushTo,
-		p2p.Kind_DeviceUpdatePushConfig: n.handleDeviceUpdatePushConfig,
+	handler, found := map[entity.Kind]EventHandler{
+		entity.Kind_ContactRequest:         n.handleContactRequest,
+		entity.Kind_ContactRequestAccepted: n.handleContactRequestAccepted,
+		entity.Kind_ContactShareMe:         n.handleContactShareMe,
+		entity.Kind_ConversationInvite:     n.handleConversationInvite,
+		entity.Kind_ConversationNewMessage: n.handleConversationNewMessage,
+		entity.Kind_ConversationRead:       n.handleConversationRead,
+		entity.Kind_DevtoolsMapset:         n.handleDevtoolsMapset,
+		entity.Kind_SenderAliasUpdate:      n.handleSenderAliasUpdate,
+		entity.Kind_Ack:                    n.handleAck,
+		entity.Kind_Seen:                   n.handleSeen,
+		entity.Kind_DevicePushTo:           n.handleDevicePushTo,
+		entity.Kind_DeviceUpdatePushConfig: n.handleDeviceUpdatePushConfig,
 	}[input.Kind]
 	var handlingError error
 	if !found {
@@ -103,7 +100,7 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 		handlingError = handler(ctx, input)
 	}
 
-	if input.Kind == p2p.Kind_Ack {
+	if input.Kind == entity.Kind_Ack {
 		return handlingError
 	}
 
@@ -113,23 +110,23 @@ func (n *Node) handleEvent(ctx context.Context, input *p2p.Event) error {
 			return err
 		}
 	} else {
-		n.LogBackgroundError(ctx, errors.Wrap(handlingError, "p2p.Handle event"))
+		n.LogBackgroundError(ctx, errors.Wrap(handlingError, "entity.Handle event"))
 	}
 
-	if input.Kind != p2p.Kind_DevicePushTo {
+	if input.Kind != entity.Kind_DevicePushTo {
 		if err := sql.Save(input).Error; err != nil {
 			return errorcodes.ErrDbUpdate.Wrap(err)
 		}
 	}
 
 	// asynchronously ack, maybe we can ignore this one?
-	ack := n.NewContactEvent(ctx, &entity.Contact{ID: input.SenderID}, p2p.Kind_Ack)
+	ack := n.NewContactEvent(ctx, &entity.Contact{ID: input.SenderID}, entity.Kind_Ack)
 	ack.AckedAt = &now
-	if err := ack.SetAttrs(&p2p.AckAttrs{IDs: []string{input.ID}}); err != nil {
+	if err := ack.SetAttrs(&entity.AckAttrs{IDs: []string{input.ID}}); err != nil {
 		return err
 	}
 
-	if err := n.EnqueueOutgoingEvent(ctx, ack, &OutgoingEventOptions{DisableEventLogging: input.Kind == p2p.Kind_DevicePushTo}); err != nil {
+	if err := n.EnqueueOutgoingEvent(ctx, ack, &OutgoingEventOptions{DisableEventLogging: input.Kind == entity.Kind_DevicePushTo}); err != nil {
 		return err
 	}
 

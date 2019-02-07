@@ -11,6 +11,7 @@ export default component =>
         readAt
         title
         topic
+        infos
         members {
           id
           createdAt

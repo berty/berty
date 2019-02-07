@@ -1,7 +1,6 @@
 package sql
 
 import (
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 )
 
@@ -28,6 +27,5 @@ func AllTables() []string {
 func AllModels() []interface{} {
 	return append(
 		entity.AllEntities(),
-		p2p.Event{},
 	)
 }

@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.node;
 
 import "api/protobuf/graphql/graphql.proto";
-import "api/p2p/event.proto";
+import "entity/event.proto";
 import "api/node/kind.proto";
 import "network/metrics.proto";
 import "network/peer.proto";
@@ -41,19 +41,19 @@ service Service {
   //
 
   // yield new events in real-time
-  rpc EventStream (EventStreamInput) returns (stream berty.p2p.Event) {
+  rpc EventStream (EventStreamInput) returns (stream berty.entity.Event) {
     option (gql.graphql_type) = "Subscription";
   };
   // list old events
-  rpc EventList (EventListInput) returns (stream berty.p2p.Event) {
+  rpc EventList (EventListInput) returns (stream berty.entity.Event) {
     option (gql.graphql_output) = ".berty.node.EventListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc GetEvent (berty.p2p.Event) returns (berty.p2p.Event) {
+  rpc GetEvent (berty.entity.Event) returns (berty.entity.Event) {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Query";
   };
-  rpc EventSeen (berty.p2p.Event) returns (berty.p2p.Event) {
+  rpc EventSeen (berty.entity.Event) returns (berty.entity.Event) {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
@@ -113,7 +113,7 @@ service Service {
   rpc ConversationExclude (ConversationManageMembersInput) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ConversationAddMessage (ConversationAddMessageInput) returns (berty.p2p.Event) {
+  rpc ConversationAddMessage (ConversationAddMessageInput) returns (berty.entity.Event) {
     option (gql.graphql_type) = "Mutation";
   };
   rpc Conversation (berty.entity.Conversation) returns (berty.entity.Conversation) {
@@ -130,7 +130,7 @@ service Service {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
-  rpc ConversationLastEvent (berty.entity.Conversation) returns (berty.p2p.Event) {
+  rpc ConversationLastEvent (berty.entity.Conversation) returns (berty.entity.Event) {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Query";
   }
@@ -167,7 +167,7 @@ service Service {
 
   // HandleEvent is the unencrypted (and unsafe) version of HandleEnvelope.
   // it's only exposed over the node API, it should be completely deactivated in public releases
-  rpc HandleEvent (berty.p2p.Event) returns (Void) {
+  rpc HandleEvent (berty.entity.Event) returns (Void) {
   };
 
   rpc GenerateFakeData (Void) returns (Void) {
@@ -181,7 +181,7 @@ service Service {
   rpc DebugPing (PingDestination) returns (Void) {
   };
 
-  rpc DebugRequeueEvent (EventIDInput) returns (berty.p2p.Event) {
+  rpc DebugRequeueEvent (EventIDInput) returns (berty.entity.Event) {
     option (gql.graphql_type) = "Mutation";
   };
 
@@ -277,7 +277,7 @@ message ConversationAddMessageInput {
 }
 
 message EventStreamInput {
-  berty.p2p.Event filter = 1;
+  berty.entity.Event filter = 1;
 }
 
 
@@ -295,7 +295,7 @@ message CommitLog {
     berty.entity.Device device = 103;
     berty.entity.Conversation conversation = 104;
     berty.entity.ConversationMember conversation_member = 105;
-    berty.p2p.Event event = 106;
+    berty.entity.Event event = 106;
     berty.entity.DevicePushConfig device_push_config = 107;
     berty.entity.DevicePushIdentifier device_push_identifier = 108;
   }
@@ -308,12 +308,12 @@ message CommitLog {
 // EventList
 //
 message EventListInput {
-  berty.p2p.Event filter = 1;
+  berty.entity.Event filter = 1;
   NullableTrueFalse only_without_acked_at = 2;
   Pagination paginate = 99 [(gql.graphql_spread) = true];
 }
 message EventEdge {
-  berty.p2p.Event node = 1;
+  berty.entity.Event node = 1;
   string cursor = 2;
 }
 message EventListConnection {
@@ -475,9 +475,9 @@ message LogfileReadInput {
 // Node Event (see kind.proto)
 //
 
-// NodeEvent is embedded in a classical p2p.Event with p2p.Event.Kind = p2p.Kind_Node
+// NodeEvent is embedded in a classical entity.Event with entity.Event.Kind = entity.Kind_Node
 // we don't need to add base information as the created_at field, as we can already
-// read them from the parent p2p.Event.
+// read them from the parent entity.Event.
 message NodeEvent {
   // Kind is an enum defining the event type.
   Kind kind = 1;

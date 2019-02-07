@@ -1,11 +1,10 @@
-package p2p
+package entity
 
 import (
 	"crypto/x509"
 	"encoding/base64"
 
 	"berty.tech/core/crypto/keypair"
-	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"github.com/jinzhu/gorm"
 )
@@ -18,8 +17,8 @@ func (e *Envelope) GetSignedValue() keypair.SignableValue {
 	return e
 }
 
-func (e *Envelope) GetDeviceForEnvelope(db *gorm.DB) (*entity.Device, error) {
-	devices, err := entity.SenderAliasGetCandidates(db, e.Source)
+func (e *Envelope) GetDeviceForEnvelope(db *gorm.DB) (*Device, error) {
+	devices, err := SenderAliasGetCandidates(db, e.Source)
 
 	if err != nil {
 		return nil, errorcodes.ErrEnvelopeNoDeviceFound.Wrap(err)

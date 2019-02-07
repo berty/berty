@@ -69,8 +69,8 @@ func TestWithEnqueuer(t *testing.T) {
 
 			for i := 0; i < 100; i++ {
 				{
-					event := alice.node.NewContactEvent(alice.ctx, &entity.Contact{ID: bob.node.DeviceID()}, p2p.Kind_DevtoolsMapset)
-					So(event.SetAttrs(&p2p.DevtoolsMapsetAttrs{Key: "test", Val: fmt.Sprintf("%d", i)}), ShouldBeNil)
+					event := alice.node.NewContactEvent(alice.ctx, &entity.Contact{ID: bob.node.DeviceID()}, entity.Kind_DevtoolsMapset)
+					So(event.SetAttrs(&entity.DevtoolsMapsetAttrs{Key: "test", Val: fmt.Sprintf("%d", i)}), ShouldBeNil)
 					res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 					So(err, ShouldBeNil)
 					So(res, ShouldResemble, &node.Void{})
@@ -80,7 +80,7 @@ func TestWithEnqueuer(t *testing.T) {
 					envelope := <-bob.networkDriver.(*mock.Enqueuer).Queue()
 					event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 					So(true, ShouldBeIn, err == nil, errorcodes.ErrEnvelopeUntrusted.Is(err))
-					So(event.Kind, ShouldEqual, p2p.Kind_Ack)
+					So(event.Kind, ShouldEqual, entity.Kind_Ack)
 					//jsonPrintIndent(event)
 				}
 				{
@@ -88,8 +88,8 @@ func TestWithEnqueuer(t *testing.T) {
 					So(err, ShouldBeNil)
 					So(len(in), ShouldEqual, 1)
 					So(len(out), ShouldEqual, 1)
-					So(in[0].Kind, ShouldEqual, p2p.Kind_DevtoolsMapset)
-					So(out[0].Kind, ShouldEqual, p2p.Kind_Ack)
+					So(in[0].Kind, ShouldEqual, entity.Kind_DevtoolsMapset)
+					So(out[0].Kind, ShouldEqual, entity.Kind_Ack)
 				}
 			}
 			So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{0, 0, 0, 0, 0, 0})
@@ -182,8 +182,8 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(len(in), ShouldEqual, 0)
 				So(len(out), ShouldEqual, 2)
-				So(out[0].Kind, ShouldEqual, p2p.Kind_ContactRequest)
-				So(out[1].Kind, ShouldEqual, p2p.Kind_ConversationInvite)
+				So(out[0].Kind, ShouldEqual, entity.Kind_ContactRequest)
+				So(out[1].Kind, ShouldEqual, entity.Kind_ConversationInvite)
 
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{2, 0, 0, 0, 0, 0})
 
@@ -226,8 +226,8 @@ func TestWithEnqueuer(t *testing.T) {
 
 				So(event.Author(), ShouldEqual, alice.node.UserID())
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequest)
+				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactRequest)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
 				attrs, err := event.GetContactRequestAttrs()
 				So(err, ShouldBeNil)
@@ -258,8 +258,8 @@ func TestWithEnqueuer(t *testing.T) {
 				event := in[0]
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequest)
+				So(event.Direction, ShouldEqual, entity.Event_Incoming)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactRequest)
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
 				So(event.ReceiverAPIVersion, ShouldEqual, p2p.Version)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
@@ -283,10 +283,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
 				So(event.Author(), ShouldEqual, bob.node.UserID())
-				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
+				So(event.Kind, ShouldEqual, entity.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
+				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetAckAttrs()
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
@@ -368,7 +368,7 @@ func TestWithEnqueuer(t *testing.T) {
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactRequestAccepted)
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
@@ -395,9 +395,9 @@ func TestWithEnqueuer(t *testing.T) {
 				//jsonPrintIndent(event)
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactRequestAccepted)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactRequestAccepted)
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
+				So(event.Direction, ShouldEqual, entity.Event_Incoming)
 				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
 				So(nodeChansLens(alice, bob, eve), ShouldResemble, []int{3, 1, 1, 2, 0, 0})
@@ -411,7 +411,7 @@ func TestWithEnqueuer(t *testing.T) {
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
 				attrs, err := event.GetContactShareMeAttrs()
@@ -437,9 +437,9 @@ func TestWithEnqueuer(t *testing.T) {
 				event := in[0]
 
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
+				So(event.Direction, ShouldEqual, entity.Event_Incoming)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
 				So(attrs.Me.DisplayName, ShouldEqual, "Bob")
@@ -457,9 +457,9 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
+				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
 				So(attrs.Me.ID, ShouldEqual, alice.node.UserID())
@@ -482,9 +482,9 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
-				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
+				So(event.Kind, ShouldEqual, entity.Kind_Ack)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
+				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetAckAttrs()
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
@@ -505,9 +505,9 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
-				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
+				So(event.Kind, ShouldEqual, entity.Kind_Ack)
 				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Outgoing)
+				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetAckAttrs()
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
@@ -527,7 +527,7 @@ func TestWithEnqueuer(t *testing.T) {
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
-				So(event.Kind, ShouldEqual, p2p.Kind_Ack)
+				So(event.Kind, ShouldEqual, entity.Kind_Ack)
 				So(event.SenderID, ShouldEqual, bob.node.UserID())
 				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
 				attrs, err := event.GetAckAttrs()
@@ -552,8 +552,8 @@ func TestWithEnqueuer(t *testing.T) {
 				event := in[0]
 
 				So(event.SenderID, ShouldEqual, alice.node.UserID())
-				So(event.Direction, ShouldEqual, p2p.Event_Incoming)
-				So(event.Kind, ShouldEqual, p2p.Kind_ContactShareMe)
+				So(event.Direction, ShouldEqual, entity.Event_Incoming)
+				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
 				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
@@ -639,7 +639,7 @@ func TestAliasesFlow(t *testing.T) {
 		err         error
 		internalCtx = context.Background()
 		res         interface{}
-		envelope    *p2p.Envelope
+		envelope    *entity.Envelope
 	)
 
 	defer func() {

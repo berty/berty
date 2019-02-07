@@ -8,7 +8,6 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"berty.tech/core/api/node"
@@ -22,7 +21,7 @@ import (
 	bsql "berty.tech/core/sql"
 )
 
-// WithP2PGrpcServer registers the Node as a 'berty.p2p' protobuf server implementation
+// WithentityGrpcServer registers the Node as a 'berty.entity' protobuf server implementation
 func WithP2PGrpcServer(gs *grpc.Server) NewNodeOption {
 	return func(n *Node) {
 		p2p.RegisterServiceServer(gs, n)
@@ -54,25 +53,25 @@ func (n *Node) Protocols(ctx context.Context, p *network.Peer) (*node.ProtocolsO
 	}, nil
 }
 
-func (n *Node) HandleEnvelope(ctx context.Context, input *p2p.Envelope) (*p2p.Void, error) {
+func (n *Node) HandleEnvelope(ctx context.Context, input *entity.Envelope) (*entity.Void, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	defer n.asyncWaitGroup(ctx)()
 
-	return &p2p.Void{}, n.handleEnvelope(ctx, input)
+	return &entity.Void{}, n.handleEnvelope(ctx, input)
 }
 
-func (n *Node) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
+func (n *Node) Ping(ctx context.Context, _ *entity.Void) (*entity.Void, error) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
 
-	return &p2p.Void{}, nil
+	return &entity.Void{}, nil
 }
 
-func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
+func (n *Node) handleEnvelope(ctx context.Context, input *entity.Envelope) error {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -89,10 +88,7 @@ func (n *Node) handleEnvelope(ctx context.Context, input *p2p.Envelope) error {
 	return n.handleEvent(ctx, event)
 }
 
-func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.Event, error) {
-
-	logger().Debug("open envelope", zap.Stringer("envelope", envelope))
-
+func (n *Node) OpenEnvelope(ctx context.Context, envelope *entity.Envelope) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, envelope)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -141,7 +137,7 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 	}
 
 	// TODO: Decode event
-	event := p2p.Event{}
+	event := entity.Event{}
 	if err := proto.Unmarshal(envelope.EncryptedEvent, &event); err != nil {
 		return nil, err
 	}
@@ -157,7 +153,7 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *p2p.Envelope) (*p2p.E
 	return &event, err
 }
 
-func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.Envelope) error {
+func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *entity.Envelope) error {
 	pushIdentifiers, err := n.getPushDestinationsForEvent(ctx, event)
 	if err != nil {
 		return errorcodes.ErrPush.Wrap(err)
@@ -175,9 +171,9 @@ func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.En
 	for _, pushIdentifier := range pushIdentifiers {
 		wrappedEvent := n.NewContactEvent(ctx, &entity.Contact{
 			ID: pushIdentifier.RelayPubkey,
-		}, p2p.Kind_DevicePushTo)
+		}, entity.Kind_DevicePushTo)
 
-		if err := wrappedEvent.SetDevicePushToAttrs(&p2p.DevicePushToAttrs{
+		if err := wrappedEvent.SetDevicePushToAttrs(&entity.DevicePushToAttrs{
 			Priority:       event.PushPriority(),
 			PushIdentifier: pushIdentifier.PushInfo,
 			Envelope:       marshaledEnvelope,
@@ -191,7 +187,7 @@ func (n *Node) pushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.En
 	return nil
 }
 
-func (n *Node) queuePushEvent(ctx context.Context, event *p2p.Event, envelope *p2p.Envelope) {
+func (n *Node) queuePushEvent(ctx context.Context, event *entity.Event, envelope *entity.Envelope) {
 	go func() {
 		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
 		defer cancel()
@@ -202,7 +198,7 @@ func (n *Node) queuePushEvent(ctx context.Context, event *p2p.Event, envelope *p
 	}()
 }
 
-func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *p2p.Event) ([]*entity.DevicePushIdentifier, error) {
+func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *entity.Event) ([]*entity.DevicePushIdentifier, error) {
 	db := n.sql(ctx)
 	var subqueryContactIDs interface{}
 	deviceIDs := []string{}

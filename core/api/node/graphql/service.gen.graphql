@@ -274,6 +274,13 @@ type BertyEntityContact implements Node {
   
   
 
+type BertyEntityMessage  {
+    text: String!
+}
+  
+  
+  
+
 type BertyEntityConversation implements Node {
     id: ID!
     createdAt: GoogleProtobufTimestamp
@@ -281,6 +288,7 @@ type BertyEntityConversation implements Node {
     readAt: GoogleProtobufTimestamp
     title: String!
     topic: String!
+    infos: String!
     members: [BertyEntityConversationMember]
 }
       
@@ -292,13 +300,6 @@ type BertyEntityConversationMember implements Node {
     contact: BertyEntityContact
     conversationId: ID!
     contactId: ID!
-}
-  
-  
-  
-
-type BertyEntityMessage  {
-    text: String!
 }
   
   
@@ -341,57 +342,57 @@ type BertyPushPushData  {
   
 
   
-type BertyP2pSentAttrs  {
+type BertyEntitySentAttrs  {
     ids: [String!]
 }
-type BertyP2pAckAttrs  {
+type BertyEntityAckAttrs  {
     ids: [String!]
     errMsg: String!
 }
-type BertyP2pPingAttrs  {
+type BertyEntityPingAttrs  {
     T: Bool!
 }
-type BertyP2pSeenAttrs  {
+type BertyEntitySeenAttrs  {
     ids: [String!]
 }
-type BertyP2pContactRequestAttrs  {
+type BertyEntityContactRequestAttrs  {
     me: BertyEntityContact
     introText: String!
 }
-type BertyP2pContactRequestAcceptedAttrs  {
+type BertyEntityContactRequestAcceptedAttrs  {
     T: Bool!
 }
-type BertyP2pContactShareMeAttrs  {
+type BertyEntityContactShareMeAttrs  {
     me: BertyEntityContact
 }
-type BertyP2pContactShareAttrs  {
+type BertyEntityContactShareAttrs  {
     contact: BertyEntityContact
 }
-type BertyP2pConversationInviteAttrs  {
+type BertyEntityConversationInviteAttrs  {
     conversation: BertyEntityConversation
 }
-type BertyP2pConversationNewMessageAttrs  {
+type BertyEntityConversationNewMessageAttrs  {
     message: BertyEntityMessage
 }
-type BertyP2pConversationReadAttrs  {
+type BertyEntityConversationReadAttrs  {
     conversation: BertyEntityConversation
 }
-type BertyP2pDevtoolsMapsetAttrs  {
+type BertyEntityDevtoolsMapsetAttrs  {
     key: String!
     val: String!
 }
-type BertyP2pSenderAliasUpdateAttrs  {
+type BertyEntitySenderAliasUpdateAttrs  {
     aliases: [BertyEntitySenderAlias]
 }
-type BertyP2pDeviceUpdatePushConfigAttrs  {
+type BertyEntityDeviceUpdatePushConfigAttrs  {
     device: BertyEntityDevice
 }
-type BertyP2pDevicePushToAttrs  {
+type BertyEntityDevicePushToAttrs  {
     pushIdentifier: [Byte!]
     envelope: [Byte!]
     priority: Enum
 }
-type BertyP2pNodeAttrs  {
+type BertyEntityNodeAttrs  {
     kind: Int32!
     attributes: [Byte!]
 }
@@ -400,7 +401,7 @@ type BertyP2pNodeAttrs  {
   
 
       
-type BertyP2pEvent implements Node {
+type BertyEntityEvent implements Node {
     id: ID!
     senderId: String!
     createdAt: GoogleProtobufTimestamp
@@ -416,9 +417,9 @@ type BertyP2pEvent implements Node {
     attributes: [Byte!]
     conversationId: ID!
     seenAt: GoogleProtobufTimestamp
-    metadata: [BertyP2pMetadataKeyValue]
+    metadata: [BertyEntityMetadataKeyValue]
 }
-type BertyP2pMetadataKeyValue  {
+type BertyEntityMetadataKeyValue  {
     key: String!
     values: [String!]
 }
@@ -557,7 +558,7 @@ type BertyNodeCommitLogEntity  {
     device: BertyEntityDevice
     conversation: BertyEntityConversation
     conversationMember: BertyEntityConversationMember
-    event: BertyP2pEvent
+    event: BertyEntityEvent
     devicePushConfig: BertyEntityDevicePushConfig
     devicePushIdentifier: BertyEntityDevicePushIdentifier
 }
@@ -566,7 +567,7 @@ type BertyNodeCommitLog  {
     entity: BertyNodeCommitLogEntity
 }
 type BertyNodeEventEdge  {
-    node: BertyP2pEvent
+    node: BertyEntityEvent
     cursor: String!
 }
 type BertyNodeEventListConnection  {
@@ -637,11 +638,11 @@ type BertyNodeNodeEvent  {
     kind: Enum
     attributes: [Byte!]
 }
-input BertyP2pMetadataKeyValueInput {
+input BertyEntityMetadataKeyValueInput {
     key: String!
     values: [String!]
 }
-input BertyP2pEventInput {
+input BertyEntityEventInput {
     id: ID!
     senderId: String!
     createdAt: GoogleProtobufTimestampInput
@@ -657,7 +658,7 @@ input BertyP2pEventInput {
     attributes: [Byte!]
     conversationId: ID!
     seenAt: GoogleProtobufTimestampInput
-    metadata: [BertyP2pMetadataKeyValueInput]
+    metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {
     orderBy: String!
@@ -713,6 +714,7 @@ input BertyEntityConversationInput {
     readAt: GoogleProtobufTimestampInput
     title: String!
     topic: String!
+    infos: String!
     members: [BertyEntityConversationMemberInput]
 }
 input BertyEntityMessageInput {
@@ -725,7 +727,7 @@ type Query {
     T: Bool!
   ): BertyNetworkPeer
   EventList(
-    filter: BertyP2pEventInput
+    filter: BertyEntityEventInput
     onlyWithoutAckedAt: Enum
     orderBy: String!
     orderDesc: Bool!
@@ -736,7 +738,7 @@ type Query {
   ): BertyNodeEventListConnection
   GetEvent(
     id: ID!
-  ): BertyP2pEvent
+  ): BertyEntityEvent
   ConfigPublic(
     T: Bool!
   ): BertyEntityConfig
@@ -771,6 +773,7 @@ type Query {
     readAt: GoogleProtobufTimestampInput
     title: String!
     topic: String!
+    infos: String!
     members: [BertyEntityConversationMemberInput]
   ): BertyEntityConversation
   ConversationMember(
@@ -784,7 +787,7 @@ type Query {
   ): BertyEntityConversationMember
   ConversationLastEvent(
     id: ID!
-  ): BertyP2pEvent
+  ): BertyEntityEvent
   DevicePushConfigList(
     T: Bool!
   ): BertyNodeDevicePushConfigListOutput
@@ -835,7 +838,7 @@ type Query {
 type Mutation {
   EventSeen(
     id: ID!
-  ): BertyP2pEvent
+  ): BertyEntityEvent
   ConfigUpdate(
     id: String!
     createdAt: GoogleProtobufTimestampInput
@@ -907,7 +910,7 @@ type Mutation {
   ConversationAddMessage(
     conversation: BertyEntityConversationInput
     message: BertyEntityMessageInput
-  ): BertyP2pEvent
+  ): BertyEntityEvent
   ConversationRead(
     id: ID!
   ): BertyEntityConversation
@@ -945,7 +948,7 @@ type Mutation {
   ): BertyNodeIntegrationTestOutput
   DebugRequeueEvent(
     eventId: ID!
-  ): BertyP2pEvent
+  ): BertyEntityEvent
   DebugRequeueAll(
     T: Bool!
   ): BertyNodeVoid
@@ -956,8 +959,8 @@ type Subscription {
     T: Bool!
   ): BertyNodeCommitLog
   EventStream(
-    filter: BertyP2pEventInput
-  ): BertyP2pEvent
+    filter: BertyEntityEventInput
+  ): BertyEntityEvent
   LogStream(
     continues: Bool!
     logLevel: String!

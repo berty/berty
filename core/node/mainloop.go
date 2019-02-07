@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
+	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
@@ -15,7 +15,7 @@ import (
 )
 
 // EventsRetry updates SentAt and requeue an event
-func (n *Node) EventRequeue(ctx context.Context, event *p2p.Event) error {
+func (n *Node) EventRequeue(ctx context.Context, event *entity.Event) error {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -33,21 +33,21 @@ func (n *Node) EventRequeue(ctx context.Context, event *p2p.Event) error {
 }
 
 // EventsRetry sends events which lack an AckedAt value emitted before the supplied time value
-func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*p2p.Event, error) {
+func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, before)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	sql := n.sql(ctx)
-	var retriedEvents []*p2p.Event
-	destinations, err := p2p.FindNonAcknowledgedEventDestinations(sql, before)
+	var retriedEvents []*entity.Event
+	destinations, err := entity.FindNonAcknowledgedEventDestinations(sql, before)
 
 	if err != nil {
 		return nil, err
 	}
 
 	for _, destination := range destinations {
-		events, err := p2p.FindNonAcknowledgedEventsForDestination(sql, destination)
+		events, err := entity.FindNonAcknowledgedEventsForDestination(sql, destination)
 
 		if err != nil {
 			n.LogBackgroundError(ctx, errors.Wrap(err, "error while retrieving events for dst"))
@@ -81,7 +81,7 @@ func (n *Node) cron(ctx context.Context) {
 	}
 }
 
-func (n *Node) handleClientEvent(ctx context.Context, event *p2p.Event) {
+func (n *Node) handleClientEvent(ctx context.Context, event *entity.Event) {
 	logger().Debug("client event", zap.Stringer("event", event))
 
 	// @FIXME: Don't create a span here for now
@@ -97,12 +97,12 @@ func (n *Node) handleClientEvent(ctx context.Context, event *p2p.Event) {
 	n.clientEventsMutex.Unlock()
 }
 
-func (n *Node) handleOutgoingEvent(ctx context.Context, event *p2p.Event) {
+func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 	logger().Debug("outgoing event", zap.Stringer("event", event))
 
 	span, ctx := event.CreateSpan(ctx)
 
-	envelope := p2p.Envelope{}
+	envelope := entity.Envelope{}
 	eventBytes, err := proto.Marshal(event)
 	if err != nil {
 		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to marshal outgoing event"))

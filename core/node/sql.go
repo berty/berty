@@ -6,7 +6,6 @@ import (
 	"reflect"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
@@ -114,7 +113,7 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 		log.Entity = &node.CommitLog_Entity{ConversationMember: data}
 	case *entity.Config:
 		log.Entity = &node.CommitLog_Entity{Config: data}
-	case *p2p.Event:
+	case *entity.Event:
 		log.Entity = &node.CommitLog_Entity{Event: data}
 	case *entity.DevicePushConfig:
 		log.Entity = &node.CommitLog_Entity{DevicePushConfig: data}

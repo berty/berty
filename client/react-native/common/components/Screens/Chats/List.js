@@ -9,77 +9,15 @@ import {
   Text,
   Badge,
 } from '../../Library'
-import { BertyP2pKindInputKind } from '../../../graphql/enums.gen'
-import { Pagination, QueryReducer, RelayContext } from '../../../relay'
+import { Pagination, RelayContext } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments, enums } from '../../../graphql'
-import { parseEmbedded } from '../../../helpers/json'
 import { conversation as utils } from '../../../utils'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
 import { hook } from 'cavy'
 /* global __DEV__ */
-
-const Message = withNamespaces()(({ data, t, ...props }) => {
-  switch (data.kind) {
-    case BertyP2pKindInputKind.ConversationNewMessage:
-      return (
-        <Text color={colors.subtleGrey} {...props}>
-          {parseEmbedded(data.attributes).message.text || '...'}
-        </Text>
-      )
-    case BertyP2pKindInputKind.ContactRequest:
-    case BertyP2pKindInputKind.ContactRequestAccepted:
-    case BertyP2pKindInputKind.ConversationInvite:
-      return (
-        <Text color={colors.subtleGrey} {...props}>
-          {t('chats.new-conversation')}
-        </Text>
-      )
-    default:
-      return (
-        <Text color={colors.subtleGrey} {...props}>
-          {String('chats.new-message')}
-        </Text>
-      )
-  }
-})
-
-const LastMessageBase = ({ conversation, context }) => {
-  const { updatedAt: refetchWhenUpdate, readAt } = conversation
-  const isRead = new Date(readAt).getTime() > 0
-  return (
-    <QueryReducer
-      query={context.queries.ConversationLastEvent.graphql}
-      variables={{ id: conversation.id, refetchWhenUpdate }}
-    >
-      {state => {
-        switch (state.type) {
-          default:
-          case state.success:
-            return (
-              <Message
-                data={state.data.ConversationLastEvent}
-                bold={!isRead}
-                tiny
-                middle
-                left
-              />
-            )
-          case state.loading:
-          case state.error:
-            return (
-              <Text color={colors.subtleGrey} bold={!isRead} tiny middle left>
-                ...
-              </Text>
-            )
-        }
-      }}
-    </QueryReducer>
-  )
-}
-const LastMessage = withNamespaces()(LastMessageBase)
 
 const ItemBase = fragments.Conversation(
   class ItemBase extends React.PureComponent {
@@ -129,7 +67,7 @@ const ItemBase = fragments.Conversation(
     }
 
     render () {
-      const { data, navigation, context } = this.props
+      const { data, navigation, t } = this.props
       const { connected } = this.state
       const { readAt } = data
       const isRead = new Date(readAt).getTime() > 0
@@ -194,7 +132,9 @@ const ItemBase = fragments.Conversation(
                   </Text>
                 </View>
               ) : null}
-              <LastMessage context={context} conversation={data} size={2} />
+              <Text color={colors.subtleGrey} tiny bold={!isRead}>
+                {data.infos || t('chats.new-conversation')}
+              </Text>
             </Flex.Cols>
           </Flex.Rows>
         </Flex.Cols>
@@ -211,7 +151,9 @@ class ListScreen extends PureComponent {
 
     if (Platform.OS !== 'web' && __DEV__) {
       const DevMenu = require('react-native-dev-menu')
-      DevMenu.addItem('Dev tools', () => this.props.navigation.navigate('settings/devtools'))
+      DevMenu.addItem('Dev tools', () =>
+        this.props.navigation.navigate('settings/devtools')
+      )
     }
   }
 

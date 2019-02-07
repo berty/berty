@@ -43,6 +43,7 @@ export const CommitLogStream = graphql`
           readAt
           title
           topic
+          infos
           members {
             id
             createdAt

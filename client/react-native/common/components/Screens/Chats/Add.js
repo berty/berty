@@ -122,6 +122,7 @@ class ListScreen extends Component {
     } = await this.props.screenProps.context.mutations.conversationCreate({
       title: '',
       topic: '',
+      infos: '',
       contacts: contactsID.map(id => ({
         id,
         displayName: '',

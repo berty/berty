@@ -1,11 +1,12 @@
 package entity
 
 import (
+	"strings"
+
 	"berty.tech/core/pkg/errorcodes"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
-	"strings"
 )
 
 func (d *Device) Username() string {

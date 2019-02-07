@@ -8,6 +8,7 @@ const ConversationReadMutation = graphql`
       readAt
       title
       topic
+      infos
       members {
         id
         createdAt

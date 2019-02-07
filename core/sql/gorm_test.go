@@ -2,11 +2,12 @@ package sql
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
 	"testing"
+
+	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
 
 	. "github.com/smartystreets/goconvey/convey"
 

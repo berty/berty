@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"time"
 
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/i18n"
@@ -18,13 +17,13 @@ import (
 	"go.uber.org/zap"
 )
 
-type EventHandler func(context.Context, *p2p.Event) error
+type EventHandler func(context.Context, *entity.Event) error
 
 //
 // Contact handlers
 //
 
-func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) error {
 	attrs, err := input.GetContactRequestAttrs()
 	if err != nil {
 		return err
@@ -63,7 +62,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *p2p.Event) error
 	return nil
 }
 
-func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleContactRequestAccepted(ctx context.Context, input *entity.Event) error {
 	// fetching existing contact from db
 	sql := n.sql(ctx)
 	contact, err := bsql.ContactByID(sql, input.SenderID)
@@ -72,7 +71,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 	}
 
 	contact.Status = entity.Contact_IsFriend
-	//contact.Devices[0].Key = crypto.NewPublicKey(p2p.GetPubkey(ctx))
+	//contact.Devices[0].Key = crypto.NewPublicKey(entity.GetPubkey(ctx))
 	if err := sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 		return err
 	}
@@ -102,7 +101,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *p2p.Even
 	return nil
 }
 
-func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleContactShareMe(ctx context.Context, input *entity.Event) error {
 	attrs, err := input.GetContactShareMeAttrs()
 	if err != nil {
 		return err
@@ -136,7 +135,7 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *p2p.Event) error
 // Conversation handlers
 //
 
-func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event) error {
 	attrs, err := input.GetConversationInviteAttrs()
 	if err != nil {
 		return err
@@ -174,14 +173,18 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *p2p.Event) e
 	return nil
 }
 
-func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.Event) error {
 	attrs, err := input.GetConversationNewMessageAttrs()
 	if err != nil {
 		return err
 	}
 
 	// say that conversation has not been read
-	n.sql(ctx).Save(&entity.Conversation{ID: input.ConversationID, ReadAt: time.Time{}})
+	n.sql(ctx).Save(&entity.Conversation{
+		ID:     input.ConversationID,
+		ReadAt: time.Time{},
+		Infos:  attrs.Message.Text,
+	})
 
 	sender := &entity.Contact{}
 	if err := n.sql(ctx).First(&sender, &entity.Contact{ID: input.SenderID}).Error; err != nil {
@@ -215,7 +218,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *p2p.Even
 	return nil
 }
 
-func (n *Node) handleConversationRead(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleConversationRead(ctx context.Context, input *entity.Event) error {
 	_, err := input.GetConversationReadAttrs()
 	if err != nil {
 		return err
@@ -236,11 +239,11 @@ func (n *Node) handleConversationRead(ctx context.Context, input *p2p.Event) err
 	count := 0
 	// set all messagse as seen
 	if err := sql.
-		Model(&p2p.Event{}).
-		Where(&p2p.Event{
+		Model(&entity.Event{}).
+		Where(&entity.Event{
 			ConversationID: input.ConversationID,
-			Kind:           p2p.Kind_ConversationNewMessage,
-			Direction:      p2p.Event_Outgoing,
+			Kind:           entity.Kind_ConversationNewMessage,
+			Direction:      entity.Event_Outgoing,
 		}).
 		Count(&count).
 		Update("seen_at", attrs.Conversation.ReadAt).
@@ -255,7 +258,7 @@ func (n *Node) handleConversationRead(ctx context.Context, input *p2p.Event) err
 // Devtools handlers
 //
 
-func (n *Node) handleDevtoolsMapset(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleDevtoolsMapset(ctx context.Context, input *entity.Event) error {
 	if n.devtools.mapset == nil {
 		n.devtools.mapset = make(map[string]string)
 	}
@@ -271,7 +274,7 @@ func (n *Node) DevtoolsMapget(key string) string {
 	return n.devtools.mapset[key]
 }
 
-func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) error {
+func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *entity.Event) error {
 	aliasesList, err := input.GetSenderAliasUpdateAttrs()
 
 	if err != nil {
@@ -296,8 +299,8 @@ func (n *Node) handleSenderAliasUpdate(ctx context.Context, input *p2p.Event) er
 	return nil
 }
 
-func (n *Node) handleSeen(ctx context.Context, input *p2p.Event) error {
-	var seenEvents []*p2p.Event
+func (n *Node) handleSeen(ctx context.Context, input *entity.Event) error {
+	var seenEvents []*entity.Event
 	seenCount := 0
 	seenAttrs, err := input.GetSeenAttrs()
 
@@ -306,7 +309,7 @@ func (n *Node) handleSeen(ctx context.Context, input *p2p.Event) error {
 	}
 
 	baseQuery := n.sql(ctx).
-		Model(&p2p.Event{}).
+		Model(&entity.Event{}).
 		Where("id in (?)", seenAttrs.IDs)
 
 	if err = baseQuery.
@@ -323,8 +326,8 @@ func (n *Node) handleSeen(ctx context.Context, input *p2p.Event) error {
 	return nil
 }
 
-func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
-	var ackedEvents []*p2p.Event
+func (n *Node) handleAck(ctx context.Context, input *entity.Event) error {
+	var ackedEvents []*entity.Event
 	ackCount := 0
 	ackAttrs, err := input.GetAckAttrs()
 
@@ -333,7 +336,7 @@ func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
 	}
 
 	baseQuery := n.sql(ctx).
-		Model(&p2p.Event{}).
+		Model(&entity.Event{}).
 		Where("id in (?)", ackAttrs.IDs)
 
 	if err = baseQuery.
@@ -362,14 +365,14 @@ func (n *Node) handleAck(ctx context.Context, input *p2p.Event) error {
 	return nil
 }
 
-func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs) error {
-	var events []*p2p.Event
+func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *entity.AckAttrs) error {
+	var events []*entity.Event
 
 	sql := n.sql(ctx)
 	err := sql.
-		Model(&p2p.Event{}).
+		Model(&entity.Event{}).
 		Where("id in (?)", ackAttrs.IDs).
-		Where(p2p.Event{Kind: p2p.Kind_SenderAliasUpdate}).
+		Where(entity.Event{Kind: entity.Kind_SenderAliasUpdate}).
 		Find(&events).
 		Error
 
@@ -412,7 +415,7 @@ func (n *Node) handleAckSenderAlias(ctx context.Context, ackAttrs *p2p.AckAttrs)
 	return nil
 }
 
-func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
+func (n *Node) handleDevicePushTo(ctx context.Context, event *entity.Event) error {
 	logger().Info("Sending push to device")
 	pushAttrs, err := event.GetDevicePushToAttrs()
 
@@ -443,7 +446,7 @@ func (n *Node) handleDevicePushTo(ctx context.Context, event *p2p.Event) error {
 	return nil
 }
 
-func (n *Node) handleDeviceUpdatePushConfig(ctx context.Context, event *p2p.Event) error {
+func (n *Node) handleDeviceUpdatePushConfig(ctx context.Context, event *entity.Event) error {
 	attrs, err := event.GetDeviceUpdatePushConfigAttrs()
 
 	if err != nil {

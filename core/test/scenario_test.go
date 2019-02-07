@@ -4,10 +4,10 @@ import (
 	"context"
 	"os"
 	"testing"
+
 	"time"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -219,7 +219,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
-				Filter: &p2p.Event{
+				Filter: &entity.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},
 			})
@@ -234,7 +234,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
-				Filter: &p2p.Event{
+				Filter: &entity.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},
 			})
@@ -267,16 +267,16 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := bob.client.EventList(internalCtx, &node.EventListInput{
-				Filter: &p2p.Event{
+				Filter: &entity.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
 			So(len(events), ShouldEqual, 2)
 
-			So(events[0].Kind, ShouldEqual, p2p.Kind_ConversationInvite)
-			So(events[1].Kind, ShouldEqual, p2p.Kind_ConversationNewMessage)
-			So(events[1].Direction, ShouldEqual, p2p.Event_Outgoing)
+			So(events[0].Kind, ShouldEqual, entity.Kind_ConversationInvite)
+			So(events[1].Kind, ShouldEqual, entity.Kind_ConversationNewMessage)
+			So(events[1].Direction, ShouldEqual, entity.Event_Outgoing)
 			attrs, err := events[1].GetConversationNewMessageAttrs()
 			So(err, ShouldBeNil)
 			So(attrs.Message.Text, ShouldEqual, "hello world!")
@@ -289,15 +289,15 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := alice.client.EventList(internalCtx, &node.EventListInput{
-				Filter: &p2p.Event{
+				Filter: &entity.Event{
 					ConversationID: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
 			So(len(events), ShouldEqual, 2)
-			So(events[0].Kind, ShouldEqual, p2p.Kind_ConversationInvite)
-			So(events[1].Kind, ShouldEqual, p2p.Kind_ConversationNewMessage)
-			So(events[1].Direction, ShouldEqual, p2p.Event_Incoming)
+			So(events[0].Kind, ShouldEqual, entity.Kind_ConversationInvite)
+			So(events[1].Kind, ShouldEqual, entity.Kind_ConversationNewMessage)
+			So(events[1].Direction, ShouldEqual, entity.Event_Incoming)
 			attrs, err := events[1].GetConversationNewMessageAttrs()
 			So(err, ShouldBeNil)
 			So(attrs.Message.Text, ShouldEqual, "hello world!")

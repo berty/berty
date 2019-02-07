@@ -3,7 +3,7 @@ import { graphql } from 'react-relay'
 export default graphql`
   fragment EventList on Query
     @argumentDefinitions(
-      filter: { type: BertyP2pEventInput }
+      filter: { type: BertyEntityEventInput }
       orderBy: { type: "String!" }
       orderDesc: { type: "Bool!" }
       count: { type: "Int32" }

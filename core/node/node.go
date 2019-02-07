@@ -7,7 +7,6 @@ import (
 	"sync"
 	"time"
 
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
@@ -19,7 +18,7 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"
 	"github.com/jinzhu/gorm"
-	"github.com/opentracing/opentracing-go"
+	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 )
 
@@ -27,10 +26,10 @@ import (
 type Node struct {
 	clientCommitLogsSubscribers []clientCommitLogsSubscriber
 	clientCommitLogsMutex       sync.Mutex
-	clientEvents                chan *p2p.Event
+	clientEvents                chan *entity.Event
 	clientEventsSubscribers     []clientEventSubscriber
 	clientEventsMutex           sync.Mutex
-	outgoingEvents              chan *p2p.Event
+	outgoingEvents              chan *entity.Event
 	sqlDriver                   *gorm.DB
 	config                      *entity.Config
 	initDevice                  *entity.Device
@@ -65,8 +64,8 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 
 	n := &Node{
 		// FIXME: fetch myself from db
-		outgoingEvents: make(chan *p2p.Event, 100),
-		clientEvents:   make(chan *p2p.Event, 100),
+		outgoingEvents: make(chan *entity.Event, 100),
+		clientEvents:   make(chan *entity.Event, 100),
 		createdAt:      time.Now().UTC(),
 		rootSpan:       tracer.Span(),
 		rootContext:    ctx,

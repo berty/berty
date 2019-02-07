@@ -2,6 +2,7 @@ export default {
   id: '',
   title: '',
   topic: '',
+  infos: '',
 }
 
 export const getTitle = ({ title, members } = this.props) =>

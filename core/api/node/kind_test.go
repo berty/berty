@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"berty.tech/core/api/p2p"
+	entity "berty.tech/core/entity"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -14,8 +14,8 @@ func TestEvent_GetAttrs(t *testing.T) {
 			Msg: "hello world",
 		})
 		So(err, ShouldBeNil)
-		So(event.Kind, ShouldEqual, p2p.Kind_Node)
-		So(event.Direction, ShouldEqual, p2p.Event_Node)
+		So(event.Kind, ShouldEqual, entity.Kind_Node)
+		So(event.Direction, ShouldEqual, entity.Event_Node)
 		So(event.CreatedAt.IsZero(), ShouldBeFalse)
 		So(strings.Contains(string(event.Attributes), `{"msg":"hello world"}`), ShouldBeTrue)
 

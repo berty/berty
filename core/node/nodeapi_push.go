@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 
 	"berty.tech/core/api/node"
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
@@ -165,8 +164,8 @@ func (n *Node) broadcastDevicePushConfig(ctx context.Context) error {
 	for _, contact := range contacts {
 		device := n.config.CurrentDevice.Filtered().WithPushInformation(n.sql(ctx))
 
-		evt := n.NewContactEvent(ctx, contact, p2p.Kind_DeviceUpdatePushConfig)
-		if err := evt.SetDeviceUpdatePushConfigAttrs(&p2p.DeviceUpdatePushConfigAttrs{Device: device}); err != nil {
+		evt := n.NewContactEvent(ctx, contact, entity.Kind_DeviceUpdatePushConfig)
+		if err := evt.SetDeviceUpdatePushConfigAttrs(&entity.DeviceUpdatePushConfigAttrs{Device: device}); err != nil {
 			return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 		}
 

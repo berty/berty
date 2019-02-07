@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package berty.p2p;
+package berty.entity;
 
 import "entity/contact.proto";
 import "entity/conversation.proto";
@@ -10,10 +10,10 @@ import "entity/sender_alias.proto";
 import "push/push.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "berty.tech/core/api/p2p";
+option go_package = "berty.tech/core/entity";
 
 enum Kind {
-  // Unknown events should never happen
+// Unknown events should never happen
   Unknown = 0;
 
   //

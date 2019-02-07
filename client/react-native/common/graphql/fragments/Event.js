@@ -4,7 +4,7 @@ export default component =>
   createFragmentContainer(
     component,
     graphql`
-      fragment Event on BertyP2pEvent {
+      fragment Event on BertyEntityEvent {
         id
         senderId
         createdAt

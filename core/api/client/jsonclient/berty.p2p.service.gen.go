@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 
 	"berty.tech/core/api/client"
-	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -21,7 +21,7 @@ func P2pHandleEnvelope(client *client.Client, ctx context.Context, jsonInput []b
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.p2p.HandleEnvelope")
-	var typedInput p2p.Envelope
+	var typedInput entity.Envelope
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}
@@ -41,7 +41,7 @@ func P2pPing(client *client.Client, ctx context.Context, jsonInput []byte) (inte
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.p2p.Ping")
-	var typedInput p2p.Void
+	var typedInput entity.Void
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}

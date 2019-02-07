@@ -11,7 +11,6 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/api/node/graphql/models"
-	"berty.tech/core/api/p2p"
 	gql "berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
@@ -55,8 +54,8 @@ func (r *Resolver) BertyEntityDevicePushConfig() generated.BertyEntityDevicePush
 	return &bertyEntityDevicePushConfigResolver{r}
 }
 
-func (r *Resolver) BertyP2pEvent() generated.BertyP2pEventResolver {
-	return &bertyP2pEventResolver{r}
+func (r *Resolver) BertyEntityEvent() generated.BertyEntityEventResolver {
+	return &bertyEntityEventResolver{r}
 }
 
 // func (r *Resolver) BertyP2pPeer() generated.BertyP2pPeerResolver {
@@ -134,15 +133,17 @@ func (r *bertyEntityDeviceResolver) ID(ctx context.Context, obj *entity.Device) 
 	return "device:" + obj.ID, nil
 }
 
-type bertyP2pEventResolver struct{ *Resolver }
+type bertyEntityEventResolver struct{ *Resolver }
 
-func (r *bertyP2pEventResolver) ID(ctx context.Context, obj *p2p.Event) (string, error) {
+func (r *bertyEntityEventResolver) ID(ctx context.Context, obj *entity.Event) (string, error) {
 	return "event:" + obj.ID, nil
 }
-func (r *bertyP2pEventResolver) ConversationID(ctx context.Context, obj *p2p.Event) (string, error) {
+
+func (r *bertyEntityEventResolver) ConversationID(ctx context.Context, obj *entity.Event) (string, error) {
 	return "conversation:" + obj.ConversationID, nil
 }
-func (r *bertyP2pEventResolver) Attributes(ctx context.Context, obj *p2p.Event) ([]byte, error) {
+
+func (r *bertyEntityEventResolver) Attributes(ctx context.Context, obj *entity.Event) ([]byte, error) {
 	attrs, err := obj.GetAttrs()
 	if err != nil {
 		return nil, err
@@ -310,7 +311,7 @@ func (r *mutationResolver) ConversationInvite(ctx context.Context, conversation 
 func (r *mutationResolver) ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	return r.client.ConversationExclude(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Members: members})
 }
-func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*p2p.Event, error) {
+func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*entity.Event, error) {
 	if conversation != nil {
 		if conversation.ID != "" {
 			conversation.ID = strings.SplitN(conversation.ID, ":", 2)[1]
@@ -321,7 +322,7 @@ func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversat
 func (r *mutationResolver) GenerateFakeData(ctx context.Context, T bool) (*node.Void, error) {
 	return r.client.GenerateFakeData(ctx, &node.Void{T: true})
 }
-func (r *mutationResolver) DebugRequeueEvent(ctx context.Context, eventID string) (*p2p.Event, error) {
+func (r *mutationResolver) DebugRequeueEvent(ctx context.Context, eventID string) (*entity.Event, error) {
 	eventID = strings.SplitN(eventID, ":", 2)[1]
 
 	return r.client.DebugRequeueEvent(ctx, &node.EventIDInput{
@@ -383,7 +384,7 @@ func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ 
 	})
 }
 
-func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
+func (r *queryResolver) EventList(ctx context.Context, filter *entity.Event, rawOnlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
 	onlyWithoutAckedAt := node.NullableTrueFalse_Null
 	if rawOnlyWithoutAckedAt != nil {
 		onlyWithoutAckedAt = node.NullableTrueFalse(*rawOnlyWithoutAckedAt)
@@ -473,18 +474,18 @@ func (r *queryResolver) EventList(ctx context.Context, filter *p2p.Event, rawOnl
 	return output, nil
 }
 
-func (r *queryResolver) GetEvent(ctx context.Context, id string) (*p2p.Event, error) {
+func (r *queryResolver) GetEvent(ctx context.Context, id string) (*entity.Event, error) {
 	id = strings.SplitN(id, ":", 2)[1]
 
-	return r.client.GetEvent(ctx, &p2p.Event{
+	return r.client.GetEvent(ctx, &entity.Event{
 		ID: strings.SplitN(id, ":", 2)[1],
 	})
 }
 
-func (r *mutationResolver) EventSeen(ctx context.Context, id string) (*p2p.Event, error) {
+func (r *mutationResolver) EventSeen(ctx context.Context, id string) (*entity.Event, error) {
 	id = strings.SplitN(id, ":", 2)[1]
 
-	return r.client.EventSeen(ctx, &p2p.Event{
+	return r.client.EventSeen(ctx, &entity.Event{
 		ID: id,
 	})
 }
@@ -664,7 +665,7 @@ func (r *mutationResolver) ConversationRemove(ctx context.Context, id string) (*
 	})
 }
 
-func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, infos string, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	if id != "" {
 		id = strings.SplitN(id, ":", 2)[1]
 	}
@@ -703,7 +704,7 @@ func (r *queryResolver) ConversationMember(ctx context.Context, id string, creat
 		ID: id,
 	})
 }
-func (r *queryResolver) ConversationLastEvent(ctx context.Context, id string) (*p2p.Event, error) {
+func (r *queryResolver) ConversationLastEvent(ctx context.Context, id string) (*entity.Event, error) {
 	if id != "" {
 		id = strings.SplitN(id, ":", 2)[1]
 	}
@@ -780,9 +781,9 @@ func (r *subscriptionResolver) CommitLogStream(ctx context.Context, t bool) (<-c
 	return channel, nil
 }
 
-func (r *subscriptionResolver) EventStream(ctx context.Context, filter *p2p.Event) (<-chan *p2p.Event, error) {
+func (r *subscriptionResolver) EventStream(ctx context.Context, filter *entity.Event) (<-chan *entity.Event, error) {
 	stream, err := r.client.EventStream(ctx, &node.EventStreamInput{Filter: filter})
-	channel := make(chan *p2p.Event, 1)
+	channel := make(chan *entity.Event, 1)
 
 	if err != nil {
 		return nil, err

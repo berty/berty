@@ -20,7 +20,6 @@ import (
 
 	"encoding/base64"
 
-	"berty.tech/core/api/p2p"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	netmock "berty.tech/core/network/mock"
@@ -77,7 +76,7 @@ func testNode(t *testing.T, opts ...NewNodeOption) (*Node, error) {
 func TestOpenEnvelope(t *testing.T) {
 	var (
 		err          error
-		decodedEvent *p2p.Event
+		decodedEvent *entity.Event
 	)
 
 	alice, _ := testNode(t)
@@ -130,8 +129,8 @@ func TestOpenEnvelope(t *testing.T) {
 	//
 	//
 
-	event := &p2p.Event{}
-	event.Direction = p2p.Event_Outgoing
+	event := &entity.Event{}
+	event.Direction = entity.Event_Outgoing
 	event.SenderID = alice.b64pubkey
 	event.ReceiverID = bob.b64pubkey
 	event.Attributes = []byte("First Device")
@@ -139,7 +138,7 @@ func TestOpenEnvelope(t *testing.T) {
 
 	// TODO: Encrypt event, tests will fail when OpenEnvelope will decrypt events
 
-	envelope := &p2p.Envelope{
+	envelope := &entity.Envelope{
 		Source:         alice.DeviceID(),
 		EncryptedEvent: eventBytes,
 	}
@@ -164,14 +163,14 @@ func TestOpenEnvelope(t *testing.T) {
 	//
 	//
 
-	event = &p2p.Event{}
-	event.Direction = p2p.Event_Outgoing
+	event = &entity.Event{}
+	event.Direction = entity.Event_Outgoing
 	event.SenderID = bobDevice2.ID
 	event.ReceiverID = alice.b64pubkey
 	event.Attributes = []byte("Secondary Device")
 	eventBytes, _ = event.Marshal()
 
-	envelope = &p2p.Envelope{
+	envelope = &entity.Envelope{
 		Source:         bobDevice2.ID,
 		EncryptedEvent: eventBytes,
 	}
@@ -196,14 +195,14 @@ func TestOpenEnvelope(t *testing.T) {
 	//
 	//
 
-	event = &p2p.Event{}
-	event.Direction = p2p.Event_Outgoing
+	event = &entity.Event{}
+	event.Direction = entity.Event_Outgoing
 	event.SenderID = charlieDevice2.ID
 	event.ReceiverID = bob.b64pubkey
 	event.Attributes = []byte("Aliased Device")
 	eventBytes, _ = event.Marshal()
 
-	envelope = &p2p.Envelope{
+	envelope = &entity.Envelope{
 		Source:         charlieAlias,
 		EncryptedEvent: eventBytes,
 	}
@@ -278,7 +277,7 @@ func TestGetPushDestinationsForEvent(t *testing.T) {
 	// One to one checks
 	//
 
-	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &p2p.Event{ReceiverID: "Bob"}); err != nil {
+	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &entity.Event{ReceiverID: "Bob"}); err != nil {
 		t.Error(err)
 	}
 
@@ -299,7 +298,7 @@ func TestGetPushDestinationsForEvent(t *testing.T) {
 		"CharlieDevicePushIdentifier": false,
 	}
 
-	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &p2p.Event{ConversationID: "ConversationBobCharlie"}); err != nil {
+	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &entity.Event{ConversationID: "ConversationBobCharlie"}); err != nil {
 		t.Error(err)
 	}
 

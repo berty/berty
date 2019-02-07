@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"berty.tech/core/api/p2p"
+	"berty.tech/core/entity"
 )
 
 // driverService is a p2p.ServiceServer
@@ -16,7 +17,7 @@ func ServiceServer(d *Driver) p2p.ServiceServer {
 	return (*driverService)(d)
 }
 
-func (ds *driverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*p2p.Void, error) {
+func (ds *driverService) HandleEnvelope(ctx context.Context, e *entity.Envelope) (*entity.Void, error) {
 	if ds.handler != nil {
 		return ds.handler(ctx, e)
 	}
@@ -24,6 +25,6 @@ func (ds *driverService) HandleEnvelope(ctx context.Context, e *p2p.Envelope) (*
 	return nil, fmt.Errorf("no handler set")
 }
 
-func (ds *driverService) Ping(ctx context.Context, _ *p2p.Void) (*p2p.Void, error) {
-	return &p2p.Void{}, nil
+func (ds *driverService) Ping(ctx context.Context, _ *entity.Void) (*entity.Void, error) {
+	return &entity.Void{}, nil
 }
