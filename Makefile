@@ -62,3 +62,7 @@ _ci_prepare:
 .PHONY: docker.build
 docker.build:
 	docker build -t bertychat/berty .
+
+.PHONY: docker.push
+docker.push: docker.build
+	docker push bertychat/berty:latest

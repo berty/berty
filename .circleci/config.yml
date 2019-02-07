@@ -16,7 +16,6 @@ references:
     run:
       name: retrieve master version
       command: |
-        cd ~/go/src/berty.tech
         no_repo=false
         if [ ! -e .git ]; then
           no_repo=true
@@ -124,33 +123,57 @@ jobs:
     steps:
       - run:
           name: install ca-certificates
-          command: apk --no-cache add openssl
+          command: apk --no-cache add openssl make
+
       - *install_retry
       - checkout
       - setup_remote_docker
+
+      - *master_version
       - restore_cache:
-          keys:
-            - v1-docker-berty
+          key: docker-berty-master-{{checksum "/tmp/master_version"}}
           paths:
             - /caches/berty.tar
+
       - run:
           name: Load Docker image layer cache
           command: |
             set +o pipefail
             docker load -i /caches/berty.tar | true
+
       - run:
           name: Build application Docker image
-          command: /tmp/retry -m 3 docker build --cache-from=berty -t berty .
+          command: /tmp/retry -m 3 docker build --cache-from=bertychat/berty -t bertychat/berty .
+
       - run:
           name: Run application within Docker
-          command: /tmp/retry -m 3 docker run --rm berty daemon --init-only --no-p2p
+          command: /tmp/retry -m 3 docker run --rm bertychat/berty daemon --init-only --no-p2p
+
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/berty.tar berty
+            docker save -o /caches/berty.tar bertychat/berty
+
+      - run:
+          name: Push image to docker hub
+          command: |
+            if [ "$CIRCLE_BRANCH" = "master" ]; then
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker push bertychat/berty:latest
+              cd service/push && make push fcm-api-key=$FCM_API_KEY && cd -
+              docker logout
+            fi
+
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/berty.tar bertychat/berty
+
+      - *master_version
       - save_cache:
-          key: v1-docker-berty
+          key: docker-berty-{{.Branch}}-{{checksum "/tmp/master_version"}}
           paths:
             - /caches/berty.tar
 
@@ -306,6 +329,11 @@ jobs:
             [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && echo "export ANDROID_CUSTOM_NAME='Berty @${CIRCLE_PR_NUMBER}'" >> $BASH_ENV || true
 
       - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
+
+      - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: . $BASH_ENV; /tmp/retry -m 3 make fastlane.android.staff
@@ -364,6 +392,11 @@ jobs:
           name: set version
           working_directory: ~/go/src/berty.tech/client/react-native
           command: make version.android
+
+      - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
@@ -432,6 +465,11 @@ jobs:
           name: install fsevents
           working_directory: ~/go/src/berty.tech/client/react-native
           command: /tmp/retry -m 3 yarn add fsevents
+
+      - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
 
       - run:
           name: build app
@@ -503,6 +541,11 @@ jobs:
           command: /tmp/retry -m 3 yarn add fsevents
 
       - run:
+          name: add environment
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: echo $RN_ENVIRONMENT > .environment
+
+      - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
@@ -531,7 +574,6 @@ jobs:
 
       - attach_workspace:
           at: ~/go/src/berty.tech/
-
 
       - restore_cache:
           key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
@@ -588,4 +630,5 @@ workflows:
       - generate
       - core.go.test
       - docker.build
+
   # todo later: build-services
