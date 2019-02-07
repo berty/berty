@@ -203,5 +203,9 @@
   "my-account": {
     "title": "My account",
     "delete-my-account": "Delete my account (not implem.)"
+  },
+  "time": {
+    "time": "hh:mm A",
+    "datetime": "MMM Do YYYY hh:mm A"
   }
 }

@@ -15,6 +15,7 @@ import { merge } from '../../../helpers'
 import { parseEmbedded } from '../../../helpers/json'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
+import * as dateFns from '../../../i18n/dateFns'
 
 class Message extends React.PureComponent {
   static contextType = RelayContext
@@ -94,7 +95,7 @@ class Message extends React.PureComponent {
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
-          {new Date(data.createdAt).toTimeString()}{' '}
+          {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
           {isMyself ? (
             <Icon
               name={
