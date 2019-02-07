@@ -35,10 +35,8 @@ const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
 7beb018da4c79cb018e05305335d265046909f060c1b65e8eef94a107b9387cc`
 
 var DefaultBootstrap = []string{
-	"/ip4/104.248.78.238/udp/4004/quic/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/4004/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/443/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/80/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	"/dns4/bootstrap.berty.io/udp/4004/quic/ipfs/Qmaxpj27abGTPDbHDijdjGQoWqBYD3QF25v8rTFBxLWFqy",
+	"/dns4/bootstrap.berty.io/tcp/4004/ipfs/Qmaxpj27abGTPDbHDijdjGQoWqBYD3QF25v8rTFBxLWFqy",
 }
 
 var BootstrapIpfs = []string{
