@@ -14,12 +14,16 @@
 #define ble_h
 
 void init(void);
+void closeBle(void);
 int startAdvertising(void);
+int stopAdvertising(void);
 int startScanning(void);
+int stopScanning(void);
 int isDiscovering(void);
 int centralManagerGetState(void);
 int peripheralManagerGetState(void);
 void addService(void);
+void removeService(void);
 void setMa(char *ma);
 void setPeerID(char *peerID);
 void connDevice(CBPeripheral *peripheral);

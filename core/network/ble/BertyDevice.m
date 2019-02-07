@@ -152,7 +152,7 @@
         } while (offset < length);
     }
 
-    if (self.isWaiting  == NO) {
+    if (self.isWaiting == NO && self.writer != nil) {
         self.isWaiting = YES;
         [self.peripheral writeValue:self.toSend[0] forCharacteristic:self.writer type:CBCharacteristicWriteWithResponse];
         dispatch_semaphore_wait(self.writeWaiter, DISPATCH_TIME_FOREVER);

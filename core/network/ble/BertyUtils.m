@@ -66,6 +66,15 @@ NSString* const PEER_ID_UUID = @"0EF50D30-E208-4315-B323-D05E0A23E6B3";
     }
 }
 
++ (void)removeAllDevices {
+    BertyUtils *me = [BertyUtils sharedUtils];
+    @synchronized (me.bertyDevices) {
+        for (NSString *key in me.bertyDevices.allKeys) {
+            [me.bertyDevices removeObjectForKey:key];
+        }
+    }
+}
+
 + (Boolean)inDevices:(CBPeripheral *)peripheral {
     if ([self getDevice:peripheral]) {
         return YES;

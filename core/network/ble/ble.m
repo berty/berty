@@ -57,10 +57,28 @@ void init() {
     }
 }
 
+void closeBle() {
+    if (centralManager != nil) {
+      stopScanning();
+    }
+    if (peripheralManager != nil) {
+      removeService();
+      stopAdvertising();
+    }
+    [BertyUtils removeAllDevices];
+}
+
 void addService() {
   if ([BertyUtils sharedUtils].serviceAdded == NO) {
     [BertyUtils sharedUtils].serviceAdded = YES;
     [peripheralManager addService:[BertyUtils sharedUtils].bertyService];
+  }
+}
+
+void removeService() {
+  if ([BertyUtils sharedUtils].serviceAdded == YES) {
+    [BertyUtils sharedUtils].serviceAdded = NO;
+    [peripheralManager removeService:[BertyUtils sharedUtils].bertyService];
   }
 }
 
@@ -94,6 +112,15 @@ int startScanning() {
     return 0;
 }
 
+int stopScanning() {
+    NSLog(@"stopScanning()");
+    if ([centralManager isScanning]) {
+        [centralManager stopScan];
+        return 1;
+    }
+    return 0;
+}
+
 int isDiscovering() {
     return (int)[centralManager isScanning];
 }
@@ -106,6 +133,15 @@ int startAdvertising() {
     NSLog(@"startAdvertising()");
     if (![peripheralManager isAdvertising]) {
         [peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey:@[[BertyUtils sharedUtils].serviceUUID]}];
+        return 1;
+    }
+    return 0;
+}
+
+int stopAdvertising() {
+    NSLog(@"stopAdvertising()");
+    if ([peripheralManager isAdvertising]) {
+        [peripheralManager stopAdvertising];
         return 1;
     }
     return 0;

@@ -199,4 +199,7 @@ func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
 	AddToPeerStore(goPeerID, goRAddr)
 }
 
-func (b *Listener) closeNative() {}
+func (b *Listener) closeNative() {
+	C.closeBle()
+	logger().Debug("BLE transport closed")
+}

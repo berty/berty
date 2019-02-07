@@ -50,6 +50,7 @@ extern CBPeripheralManager *__nullable peripheralManager;
 + (void)setPeerID:(nonnull NSString *)peerID;
 + (void)addDevice:(nonnull BertyDevice *)device;
 + (void)removeDevice:(nonnull BertyDevice *)device;
++ (void)removeAllDevices;
 
 @end
 
