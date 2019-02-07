@@ -11,12 +11,16 @@ func SetStoragePath(path string) error {
 	stat, err := os.Stat(path)
 
 	if os.IsNotExist(err) {
-		if err := os.MkdirAll(path, 0700); err != nil {
+		if err := os.MkdirAll(path, 0777); err != nil {
 			return err
 		}
+		err = nil
+	}
+	if err != nil {
+		return err
 	}
 
-	if stat.IsDir() == false {
+	if stat != nil && stat.IsDir() == false {
 		return errors.New("storage path is not a directory: not a dir")
 	}
 

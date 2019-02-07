@@ -33,7 +33,7 @@ func Test(t *testing.T) {
 	Convey("set storage path and remove last db", t, FailureHalts, func() {
 		err = deviceinfo.SetStoragePath("/tmp/chunk_test")
 		So(err, ShouldBeNil)
-		os.Remove("/tmp/chunk_test/berty.core.db")
+		os.Remove("/tmp/chunk_test/berty.core.chunk.db")
 	})
 
 	Convey("split random data", t, FailureHalts, func() {
