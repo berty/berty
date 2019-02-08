@@ -8,7 +8,7 @@ import { isRTL } from '../../i18n'
 const [defaultTextColor, defaultBackColor] = [colors.fakeBlack, colors.white]
 
 const HeaderButton = ({ icon, color, style, ...otherProps }) => {
-  return <Button icon={icon} large color={color} {...otherProps} />
+  return <Button icon={icon} large color={color} {...otherProps} padding />
 }
 
 export default class Header extends PureComponent {
