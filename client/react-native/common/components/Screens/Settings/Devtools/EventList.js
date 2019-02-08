@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity } from 'react-native'
+import { Text, TouchableOpacity, View } from 'react-native'
 import React, { PureComponent } from 'react'
 import moment from 'moment'
 
@@ -52,7 +52,7 @@ const Item = fragments.Event(({ data, navigation }) => (
             }[data.direction]
           }{' '}
           <Text style={{ fontWeight: 'bold' }}>
-            {enums.ValueBertyP2pKindInputKind[data.kind]}
+            {enums.ValueBertyEntityKindInputKind[data.kind]}
           </Text>
           {' (' + data.kind + ')'}
         </Text>
@@ -126,24 +126,6 @@ export default class EventList extends PureComponent {
           navigation={navigation}
           title='List events'
           titleIcon='list'
-          searchBar={
-            <SearchBar onChangeText={navigation.getParam('searchHandler')}>
-              <LibText
-                size={0}
-                height={34}
-                icon='filter'
-                padding
-                middle
-                large
-                onPress={() =>
-                  navigation.navigate('modal/devtools/event/list/filters', {
-                    defaultData: navigation.getParam('filters'),
-                    onSave: filters => navigation.setParams({ filters }),
-                  })
-                }
-              />
-            </SearchBar>
-          }
           backBtn
         />
       ),
@@ -168,6 +150,26 @@ export default class EventList extends PureComponent {
           fragment={fragments.EventList}
           alias='EventList'
           renderItem={props => <Item {...props} navigation={navigation} />}
+          ListHeaderComponent={
+            <View style={padding}>
+              <SearchBar onChangeText={(search) => this.searchHandler(search)}>
+                <LibText
+                  size={0}
+                  height={34}
+                  icon='filter'
+                  padding
+                  middle
+                  large
+                  onPress={() =>
+                    navigation.navigate('modal/devtools/event/list/filters', {
+                      defaultData: navigation.getParam('filters'),
+                      onSave: filters => navigation.setParams({ filters }),
+                    })
+                  }
+                />
+              </SearchBar>
+            </View>
+          }
         />
       </Screen>
     )

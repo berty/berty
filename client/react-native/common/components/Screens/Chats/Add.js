@@ -4,8 +4,20 @@ import I18n from 'i18next'
 import React, { Component, PureComponent } from 'react'
 
 import { Pagination, RelayContext } from '../../../relay'
-import { Screen, Flex, Text, Header, Avatar } from '../../Library'
-import { border, borderBottom, marginHorizontal } from '../../../styles'
+import {
+  Screen,
+  Flex,
+  Text,
+  Header,
+  Avatar,
+  SearchBar,
+} from '../../Library'
+import {
+  border,
+  borderBottom,
+  marginHorizontal,
+  padding,
+} from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 
@@ -86,9 +98,7 @@ class ListScreen extends Component {
         titleIcon='users'
         rightBtn={navigation.getParam('rightBtn')}
         rightBtnIcon='check-circle'
-        searchBar
         backBtn
-        searchHandler={navigation.getParam('searchHandler')} // Placeholder
         onPressRightBtn={navigation.getParam('onSubmit')}
       />
     ),
@@ -162,6 +172,11 @@ class ListScreen extends Component {
           variables={queries.ContactList.defaultVariables}
           fragment={fragments.ContactList}
           alias='ContactList'
+          ListHeaderComponent={
+            <View style={padding}>
+              <SearchBar onChangeText={() => { console.warn('not implemented') }} />
+            </View>
+          }
           renderItem={props =>
             props.data.status !== 42 ? (
               <Item

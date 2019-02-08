@@ -3,11 +3,11 @@ import React from 'react'
 
 import { Flex } from '.'
 import { colors } from '../../constants'
-import { paddingBottom, paddingLeft, paddingRight } from '../../styles'
+import { paddingLeft, paddingRight } from '../../styles'
 import { withNamespaces } from 'react-i18next'
 
 const SearchBar = props => (
-  <Flex.Cols size={1} style={[paddingBottom]}>
+  <Flex.Cols size={1}>
     <TextInput
       underlineColorAndroid='transparent'
       autoCorrect={

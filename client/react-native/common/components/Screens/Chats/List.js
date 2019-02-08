@@ -8,6 +8,7 @@ import {
   Screen,
   Text,
   Badge,
+  SearchBar,
 } from '../../Library'
 import { Pagination, RelayContext } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
@@ -162,8 +163,6 @@ class ListScreen extends PureComponent {
         title={I18n.t('chats.title')}
         titleIcon='message-circle'
         rightBtnIcon='edit'
-        searchBar
-        searchHandler={navigation.getParam('searchHandler')} // Placeholder
         onPressRightBtn={() => ListScreen.onPress(navigation)}
       />
     ),
@@ -201,6 +200,11 @@ class ListScreen extends PureComponent {
               renderItem={props => (
                 <Item {...props} context={context} navigation={navigation} />
               )}
+              ListHeaderComponent={
+                <View style={padding}>
+                  <SearchBar onChangeText={() => { console.warn('not implemented') }} />
+                </View>
+              }
               emptyItem={() => (
                 <EmptyList
                   source={require('../../../static/img/empty-conversation.png')}

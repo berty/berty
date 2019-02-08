@@ -1,8 +1,8 @@
 import { View } from 'react-native'
 import React, { PureComponent } from 'react'
-import { Button, Flex, Text, SearchBar } from '.'
+import { Button, Flex, Text } from '.'
 import { colors } from '../../constants'
-import { padding, borderBottom, paddingBottom } from '../../styles'
+import { padding, borderBottom } from '../../styles'
 import { isRTL } from '../../i18n'
 
 const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
@@ -21,8 +21,6 @@ export default class Header extends PureComponent {
       rightBtn,
       rightBtnIcon,
       onPressRightBtn,
-      searchBar,
-      searchHandler,
     } = this.props
 
     const colorText =
@@ -38,24 +36,12 @@ export default class Header extends PureComponent {
         ? defaultTextColor
         : this.props.colorBtnRight
 
-    let searchBarComponent = null
-    if (searchBar === true) {
-      searchBarComponent = (
-        <SearchBar onChangeText={text => searchHandler(text)} />
-      )
-    } else if (searchBar !== undefined && searchBar !== false) {
-      searchBarComponent = searchBar
-    }
-
-    // todo calc height in function of dev status bar and search bar
-    // let height
-
     return (
       <View
         style={[
           {
             backgroundColor: colorBack,
-            height: searchBar && true ? 110 : 70,
+            height: 70,
           },
           borderBottom,
           padding,
@@ -66,7 +52,6 @@ export default class Header extends PureComponent {
             size={1}
             justify='between'
             align='center'
-            style={[searchBar ? paddingBottom : {}]}
           >
             {backBtn && (
               <HeaderButton
@@ -106,7 +91,6 @@ export default class Header extends PureComponent {
               />
             )}
           </Flex.Cols>
-          {searchBarComponent}
         </Flex.Rows>
       </View>
     )
