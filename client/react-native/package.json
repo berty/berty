@@ -37,7 +37,6 @@
     "react-native-config": "^0.11.7",
     "react-native-dev-menu": "^2.0.1",
     "react-native-device-info": "^0.24.3",
-    "react-native-elements": "^1.0.0-beta7",
     "react-native-exception-handler": "^2.10.2",
     "react-native-flash-message": "^0.1.10",
     "react-native-image-picker": "^0.27.1",
