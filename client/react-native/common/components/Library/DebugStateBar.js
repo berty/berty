@@ -35,6 +35,7 @@ class DebugStateBar extends PureComponent {
       daemonState: daemonStateValues.down,
       peers: [],
       compact: true,
+      collapsed: true,
     }
   }
 
@@ -216,11 +217,8 @@ class DebugStateBar extends PureComponent {
     const count = peers.reduce((acc, cur) => cur.connection === 1 ? acc + 1 : acc, 0)
 
     return (
-      <Flex.Cols size={1}>
-        <View style={{ marginRight: 2 }} {...this.props.panHandlers}>
-          <Text icon={'menu'} />
-        </View>
-        <View style={{ marginRight: 2 }}>
+      <Flex.Cols size={1} style={[{ backgroundColor: '#EAF0FCee', padding: 8, borderRadius: 8 }]}>
+        {!this.state.collapsed && <View style={{ marginRight: 2 }}>
           <Text icon='berty-berty_picto' size={5} padding={5} rounded small background={bgBertyColor} color={bertyColor}>{
             this.state.compact ? <Icon name={
               this.state.daemonState === daemonStateValues.connected
@@ -229,15 +227,21 @@ class DebugStateBar extends PureComponent {
                   ? 'x-circle' : 'more-horizontal'
             } color={bertyColor} /> : bertyText.toLocaleUpperCase()
           }</Text>
-        </View>
-        <View style={{ marginRight: 2 }}>
+        </View>}
+        {!this.state.collapsed && <View style={{ marginRight: 2 }}>
           <Text icon='berty-chart-network-solid' size={5} padding={5} rounded small background={bgPeerColor} color={peerColor} onPress={() => NavigationService.navigate('network/peers')}>{count.toString()}</Text>
-        </View>
-        <View style={{ marginRight: 2 }}>
+        </View>}
+        {!this.state.collapsed && <View style={{ marginRight: 2 }}>
           <Text icon='bluetooth' size={5} padding={5} rounded small background={bgBleColor} color={bleColor} onPress={() => NavigationService.navigate('network/config')}>{bleText.toLocaleUpperCase()}</Text>
-        </View>
-        <View style={{ marginRight: 2 }}>
+        </View>}
+        {!this.state.collapsed && <View style={{ marginRight: 2 }}>
           <Text icon='settings' size={5} padding={5} rounded small background={colors.darkGrey} color={colors.inputGrey} onPress={() => NavigationService.navigate('settings/devtools')} />
+        </View>}
+        <View style={{ marginRight: 2 }}>
+          <Text icon={this.state.collapsed ? 'chevrons-left' : 'chevrons-right'} size={5} padding={5} rounded small background={colors.inputGrey} color={colors.darkGrey} onPress={() => this.setState({ collapsed: !this.state.collapsed })} />
+        </View>
+        <View style={{ marginRight: 2 }} {...this.props.panHandlers}>
+          <Text icon={'menu'} large padding />
         </View>
       </Flex.Cols>
     )

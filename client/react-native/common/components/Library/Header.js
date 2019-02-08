@@ -5,7 +5,7 @@ import { colors } from '../../constants'
 import { padding, borderBottom } from '../../styles'
 import { isRTL } from '../../i18n'
 
-const [defaultTextColor, defaultBackColor] = [colors.black, colors.white]
+const [defaultTextColor, defaultBackColor] = [colors.fakeBlack, colors.white]
 
 const HeaderButton = ({ icon, color, style, ...otherProps }) => {
   return <Button icon={icon} large color={color} {...otherProps} />
