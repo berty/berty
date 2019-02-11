@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { colors } from '../../constants'
 import { promiseWithTimeout } from 'react-relay-network-modern/es/middlewares/retry'
 import { Flex, Text } from './index'
-import { View } from 'react-native'
+import { View, Platform } from 'react-native'
 import RelayContext from '../../relay/RelayContext'
 import Icon from './Icon'
 import NavigationService from '../../helpers/NavigationService'
@@ -238,11 +238,13 @@ class DebugStateBar extends PureComponent {
           <Text icon='settings' size={5} padding={5} rounded small background={colors.darkGrey} color={colors.inputGrey} onPress={() => NavigationService.navigate('settings/devtools')} />
         </View>}
         <View style={{ marginRight: 2 }}>
-          <Text icon={this.state.collapsed ? 'chevrons-left' : 'chevrons-right'} size={5} padding={5} rounded small background={colors.inputGrey} color={colors.darkGrey} onPress={() => this.setState({ collapsed: !this.state.collapsed })} />
+          <Text icon={this.state.collapsed ? 'chevrons-left' : 'chevrons-right'} size={5} padding={5} rounded small background={this.state.collapsed ? bgBertyColor : colors.inputGrey} color={this.state.collapsed ? bertyColor : colors.darkGrey} onPress={() => this.setState({ collapsed: !this.state.collapsed })} />
         </View>
+        {Platform.OS !== 'android' &&
         <View style={{ marginRight: 2 }} {...this.props.panHandlers}>
           <Text icon={'menu'} large padding />
         </View>
+        }
       </Flex.Cols>
     )
   }
