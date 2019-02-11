@@ -859,12 +859,12 @@ type Mutation {
     debugNotificationVerbosity: Enum
   ): BertyEntityConfig
   ContactRequest(
-    contactId: String!
+    contactId: ID!
     contactOverrideDisplayName: String!
     introText: String!
   ): BertyEntityContact
   ContactAcceptRequest(
-    contactId: String!
+    contactId: ID!
   ): BertyEntityContact
   ContactRemove(
     id: ID!

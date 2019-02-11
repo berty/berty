@@ -267,13 +267,13 @@ message PingDestination {
 }
 
 message ContactRequestInput {
-  string contact_id = 1 [(gogoproto.customname) = "ContactID", (validate.is_contact_key) = true];
+  string contact_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "ContactID", (validate.is_contact_key) = true];
   string contact_override_display_name = 2;
   string intro_text = 3 [(validate.max_len) = 256];
 }
 
 message ContactAcceptRequestInput {
-  string contact_id = 1 [(gogoproto.customname) = "ContactID", (validate.min_len) = 1, (validate.is_contact_key) = true];
+  string contact_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "ContactID", (validate.min_len) = 1, (validate.is_contact_key) = true];
 }
 
 message ConversationAddMessageInput {

@@ -1018,7 +1018,7 @@ func field_Mutation_ContactRequest_args(rawArgs map[string]interface{}) (map[str
 	var arg0 string
 	if tmp, ok := rawArgs["contactId"]; ok {
 		var err error
-		arg0, err = models.UnmarshalString(tmp)
+		arg0, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1051,7 +1051,7 @@ func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (m
 	var arg0 string
 	if tmp, ok := rawArgs["contactId"]; ok {
 		var err error
-		arg0, err = models.UnmarshalString(tmp)
+		arg0, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -23765,12 +23765,12 @@ type Mutation {
     debugNotificationVerbosity: Enum
   ): BertyEntityConfig
   ContactRequest(
-    contactId: String!
+    contactId: ID!
     contactOverrideDisplayName: String!
     introText: String!
   ): BertyEntityContact
   ContactAcceptRequest(
-    contactId: String!
+    contactId: ID!
   ): BertyEntityContact
   ContactRemove(
     id: ID!

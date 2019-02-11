@@ -52,7 +52,7 @@ func (m *ContactRequestInput) Validate() error {
 		return nil
 	}
 
-	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<[]:true []:"ContactID" >  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1 []:true []:"ContactID" >  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	if err := validator.IsContactKey(m.GetContactID()); err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (m *ContactAcceptRequestInput) Validate() error {
 		return nil
 	}
 
-	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:< (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	if err := validator.IsContactKey(m.GetContactID()); err != nil {
 		return err
 	}

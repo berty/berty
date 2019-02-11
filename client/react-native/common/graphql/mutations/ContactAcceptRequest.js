@@ -1,24 +1,11 @@
 import { graphql } from 'react-relay'
 
 import { commit } from '../../relay'
-import { contact } from '../../utils'
 import { merge } from '../../helpers'
 
 const ContactAcceptRequestMutation = graphql`
-  mutation ContactAcceptRequestMutation(
-    $id: ID!
-    $displayName: String!
-    $displayStatus: String!
-    $overrideDisplayName: String!
-    $overrideDisplayStatus: String!
-  ) {
-    ContactAcceptRequest(
-      id: $id
-      displayName: $displayName
-      displayStatus: $displayStatus
-      overrideDisplayName: $overrideDisplayName
-      overrideDisplayStatus: $overrideDisplayStatus
-    ) {
+  mutation ContactAcceptRequestMutation($contactId: ID!) {
+    ContactAcceptRequest(contactId: $contactId) {
       id
       createdAt
       updatedAt
@@ -46,6 +33,6 @@ export default context => (input, configs) =>
     context.environment,
     ContactAcceptRequestMutation,
     'ContactAcceptRequest',
-    merge([contact.default, input]),
-    configs,
+    merge([{ contactId: '' }, input]),
+    configs
   )

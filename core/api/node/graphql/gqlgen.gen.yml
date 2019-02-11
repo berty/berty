@@ -1715,12 +1715,14 @@ models:
     model: berty.tech/core/api/node.ContactRequestInput
     fields:
       contactId:
+        resolver: true
       contactOverrideDisplayName:
       introText:
   BertyNodeContactRequestInputPayload:
     model: berty.tech/core/api/node.ContactRequestInput
     fields:
       contactId:
+        resolver: true
       contactOverrideDisplayName:
       introText:
 
@@ -1728,10 +1730,12 @@ models:
     model: berty.tech/core/api/node.ContactAcceptRequestInput
     fields:
       contactId:
+        resolver: true
   BertyNodeContactAcceptRequestInputPayload:
     model: berty.tech/core/api/node.ContactAcceptRequestInput
     fields:
       contactId:
+        resolver: true
 
   BertyNodeConversationAddMessageInput:
     model: berty.tech/core/api/node.ConversationAddMessageInput
