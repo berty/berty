@@ -3,6 +3,9 @@
 # core
 core/.generated
 core/.*.generated
+core/google/
+core/gogoproto/
+core/github.com/
 android/core/core-sources.jar
 gin-bin
 

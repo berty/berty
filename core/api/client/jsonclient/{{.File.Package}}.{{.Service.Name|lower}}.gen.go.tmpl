@@ -9,7 +9,7 @@ import (
         "encoding/json"
         "berty.tech/core/{{.File.Name|dir}}"
         {{- range .File.Dependency -}}{{- $dependency := . | getProtoFile}}
-        "{{regexReplaceAll "\"([^;]*).*\"" ($dependency.GoPkg|string) "${1}" }}"
+        {{$dependency.GoPkg}}
         {{ end -}}
 	"berty.tech/core/api/client"
         "google.golang.org/grpc"

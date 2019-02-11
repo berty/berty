@@ -20,11 +20,6 @@ func (e Event) IsJustReceived() bool {
 	return e.Direction == Event_Incoming && (e.AckedAt == nil || e.AckedAt.IsZero())
 }
 
-func (e Event) Validate() error {
-	// FIXME: generate validation
-	return nil
-}
-
 func (e Event) Copy() *Event {
 	return &Event{
 		ID:                 e.ID,

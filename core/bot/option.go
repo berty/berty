@@ -7,6 +7,7 @@ import (
 	grpc "google.golang.org/grpc"
 
 	"berty.tech/core/api/client"
+	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
 )
 
@@ -46,8 +47,8 @@ func WithAutoAcceptInvites() Option {
 			if e.Kind != entity.Kind_ContactRequest || !e.IsJustReceived() {
 				return nil
 			}
-			_, err := b.client.Node().ContactAcceptRequest(e.ctx, &entity.Contact{
-				ID: e.SenderID,
+			_, err := b.client.Node().ContactAcceptRequest(e.ctx, &node.ContactAcceptRequestInput{
+				ContactID: e.SenderID,
 			})
 			return err
 		})

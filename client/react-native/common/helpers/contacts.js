@@ -11,19 +11,15 @@ import { BASE_WEBSITE_URL } from '../constants'
 
 export const requestContact = async (
   contactId,
+  overrideDisplayName,
   displayName,
   navigation,
   errorHandler
 ) => {
   try {
     await mutations.contactRequest.commit({
-      contact: {
-        id: btoa(`contact:${contactId}`),
-        displayName: displayName,
-        displayStatus: '',
-        overrideDisplayName: '',
-        overrideDisplayStatus: '',
-      },
+      contactId: btoa(`contact:${contactId}`),
+      contactOverrideDisplayName: overrideDisplayName || displayName || '',
       introText: '',
     })
     navigation.goBack(null)

@@ -16,7 +16,7 @@ import "entity/conversation.proto";
 import "entity/message.proto";
 import "push/push.proto";
 import "pkg/deviceinfo/deviceinfo.proto";
-
+import "pkg/validate/validate.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -76,7 +76,7 @@ service Service {
   rpc ContactRequest (ContactRequestInput) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Mutation";
   };
-  rpc ContactAcceptRequest (berty.entity.Contact) returns (berty.entity.Contact) {
+  rpc ContactAcceptRequest (ContactAcceptRequestInput) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Mutation";
   };
   rpc ContactRemove (berty.entity.Contact) returns (berty.entity.Contact) {
@@ -267,13 +267,18 @@ message PingDestination {
 }
 
 message ContactRequestInput {
-  berty.entity.Contact contact = 1;
-  string intro_text = 2;
+  string contact_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "ContactID", (validate.is_contact_key) = true];
+  string contact_override_display_name = 2;
+  string intro_text = 3 [(validate.max_len) = 256];
+}
+
+message ContactAcceptRequestInput {
+  string contact_id = 1 [(gql.graphql_id) = true, (gogoproto.customname) = "ContactID", (validate.min_len) = 1, (validate.is_contact_key) = true];
 }
 
 message ConversationAddMessageInput {
-  berty.entity.Conversation conversation = 1;
-  berty.entity.Message message = 2;
+  berty.entity.Conversation conversation = 1 [(validate.required) = true, (validate.skip) = false];
+  berty.entity.Message message = 2 [(validate.required) = true, (validate.skip) = false];
 }
 
 message EventStreamInput {
@@ -300,8 +305,8 @@ message CommitLog {
     berty.entity.DevicePushIdentifier device_push_identifier = 108;
   }
 
-  Operation operation = 1;
-  Entity entity = 2;
+  Operation operation = 1 [(validate.defined_only) = true];
+  Entity entity = 2 [(validate.required) = true, (validate.skip) = false];
 }
 
 //
@@ -361,14 +366,14 @@ message ConversationListConnection{
 }
 
 message ConversationCreateInput {
-  repeated berty.entity.Contact contacts = 1;
+  repeated berty.entity.Contact contacts = 1 [(validate.min_items) = 1];
   string title = 2;
   string topic = 3;
 }
 
 message ConversationManageMembersInput {
-  berty.entity.Conversation conversation = 1;
-  repeated berty.entity.ConversationMember members = 2;
+  berty.entity.Conversation conversation = 1 [(validate.required) = true, (validate.skip) = false];
+  repeated berty.entity.ConversationMember members = 2 [(validate.min_items) = 1];
 }
 
 message DevicePushConfigEdge {

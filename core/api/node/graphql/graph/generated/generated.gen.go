@@ -671,8 +671,8 @@ type ComplexityRoot struct {
 	Mutation struct {
 		EventSeen                        func(childComplexity int, id string) int
 		ConfigUpdate                     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string, notificationsEnabled bool, notificationsPreviews bool, debugNotificationVerbosity *int32) int
-		ContactRequest                   func(childComplexity int, contact *entity.Contact, introText string) int
-		ContactAcceptRequest             func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactRequest                   func(childComplexity int, contactId string, contactOverrideDisplayName string, introText string) int
+		ContactAcceptRequest             func(childComplexity int, contactId string) int
 		ContactRemove                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ContactUpdate                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ConversationCreate               func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
@@ -782,8 +782,8 @@ type GqlNodeResolver interface {
 type MutationResolver interface {
 	EventSeen(ctx context.Context, id string) (*entity.Event, error)
 	ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string, notificationsEnabled bool, notificationsPreviews bool, debugNotificationVerbosity *int32) (*entity.Config, error)
-	ContactRequest(ctx context.Context, contact *entity.Contact, introText string) (*entity.Contact, error)
-	ContactAcceptRequest(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
+	ContactRequest(ctx context.Context, contactId string, contactOverrideDisplayName string, introText string) (*entity.Contact, error)
+	ContactAcceptRequest(ctx context.Context, contactId string) (*entity.Contact, error)
 	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error)
@@ -1015,29 +1015,33 @@ func field_Mutation_ConfigUpdate_args(rawArgs map[string]interface{}) (map[strin
 
 func field_Mutation_ContactRequest_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
-	var arg0 *entity.Contact
-	if tmp, ok := rawArgs["contact"]; ok {
+	var arg0 string
+	if tmp, ok := rawArgs["contactId"]; ok {
 		var err error
-		var ptr1 entity.Contact
-		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg0 = &ptr1
-		}
-
+		arg0, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["contact"] = arg0
+	args["contactId"] = arg0
 	var arg1 string
-	if tmp, ok := rawArgs["introText"]; ok {
+	if tmp, ok := rawArgs["contactOverrideDisplayName"]; ok {
 		var err error
 		arg1, err = models.UnmarshalString(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["introText"] = arg1
+	args["contactOverrideDisplayName"] = arg1
+	var arg2 string
+	if tmp, ok := rawArgs["introText"]; ok {
+		var err error
+		arg2, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["introText"] = arg2
 	return args, nil
 
 }
@@ -1045,136 +1049,14 @@ func field_Mutation_ContactRequest_args(rawArgs map[string]interface{}) (map[str
 func field_Mutation_ContactAcceptRequest_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
+	if tmp, ok := rawArgs["contactId"]; ok {
 		var err error
 		arg0, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["id"] = arg0
-	var arg1 *time.Time
-	if tmp, ok := rawArgs["createdAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg1 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["createdAt"] = arg1
-	var arg2 *time.Time
-	if tmp, ok := rawArgs["updatedAt"]; ok {
-		var err error
-		var ptr1 time.Time
-		if tmp != nil {
-			ptr1, err = models.UnmarshalTime(tmp)
-			arg2 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["updatedAt"] = arg2
-	var arg3 []byte
-	if tmp, ok := rawArgs["sigchain"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg3 = make([]byte, len(rawIf1))
-		for idx1 := range rawIf1 {
-			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["sigchain"] = arg3
-	var arg4 *int32
-	if tmp, ok := rawArgs["status"]; ok {
-		var err error
-		var ptr1 int32
-		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
-			arg4 = &ptr1
-		}
-
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["status"] = arg4
-	var arg5 []*entity.Device
-	if tmp, ok := rawArgs["devices"]; ok {
-		var err error
-		var rawIf1 []interface{}
-		if tmp != nil {
-			if tmp1, ok := tmp.([]interface{}); ok {
-				rawIf1 = tmp1
-			} else {
-				rawIf1 = []interface{}{tmp}
-			}
-		}
-		arg5 = make([]*entity.Device, len(rawIf1))
-		for idx1 := range rawIf1 {
-			var ptr2 entity.Device
-			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
-				arg5[idx1] = &ptr2
-			}
-		}
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["devices"] = arg5
-	var arg6 string
-	if tmp, ok := rawArgs["displayName"]; ok {
-		var err error
-		arg6, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["displayName"] = arg6
-	var arg7 string
-	if tmp, ok := rawArgs["displayStatus"]; ok {
-		var err error
-		arg7, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["displayStatus"] = arg7
-	var arg8 string
-	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
-		var err error
-		arg8, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayName"] = arg8
-	var arg9 string
-	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
-		var err error
-		arg9, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["overrideDisplayStatus"] = arg9
+	args["contactId"] = arg0
 	return args, nil
 
 }
@@ -5323,7 +5205,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ContactRequest(childComplexity, args["contact"].(*entity.Contact), args["introText"].(string)), true
+		return e.complexity.Mutation.ContactRequest(childComplexity, args["contactId"].(string), args["contactOverrideDisplayName"].(string), args["introText"].(string)), true
 
 	case "Mutation.ContactAcceptRequest":
 		if e.complexity.Mutation.ContactAcceptRequest == nil {
@@ -5335,7 +5217,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ContactAcceptRequest(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
+		return e.complexity.Mutation.ContactAcceptRequest(childComplexity, args["contactId"].(string)), true
 
 	case "Mutation.ContactRemove":
 		if e.complexity.Mutation.ContactRemove == nil {
@@ -19132,7 +19014,7 @@ func (ec *executionContext) _Mutation_ContactRequest(ctx context.Context, field 
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ContactRequest(rctx, args["contact"].(*entity.Contact), args["introText"].(string))
+		return ec.resolvers.Mutation().ContactRequest(rctx, args["contactId"].(string), args["contactOverrideDisplayName"].(string), args["introText"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -19163,7 +19045,7 @@ func (ec *executionContext) _Mutation_ContactAcceptRequest(ctx context.Context, 
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ContactAcceptRequest(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
+		return ec.resolvers.Mutation().ContactAcceptRequest(rctx, args["contactId"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -23034,10 +22916,10 @@ scalar Fixed64
 scalar Fixed32
 scalar Bool
 scalar Uint32
-scalar SFixed64
-scalar SFixed32
-scalar SInt32
-scalar SInt64
+scalar Sfixed64
+scalar Sfixed32
+scalar Sint32
+scalar Sint64
 scalar GoogleProtobufTimestamp
 scalar GoogleProtobufTimestampInput
 scalar GoogleProtobufTimestampPayload
@@ -23246,6 +23128,10 @@ type GoogleProtobufGeneratedCodeInfo  {
 type GqlNode implements Node {
     id: ID!
 }
+  
+  
+  
+
   
   
   
@@ -23879,20 +23765,12 @@ type Mutation {
     debugNotificationVerbosity: Enum
   ): BertyEntityConfig
   ContactRequest(
-    contact: BertyEntityContactInput
+    contactId: ID!
+    contactOverrideDisplayName: String!
     introText: String!
   ): BertyEntityContact
   ContactAcceptRequest(
-    id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    sigchain: [Byte!]
-    status: Enum
-    devices: [BertyEntityDeviceInput]
-    displayName: String!
-    displayStatus: String!
-    overrideDisplayName: String!
-    overrideDisplayStatus: String!
+    contactId: ID!
   ): BertyEntityContact
   ContactRemove(
     id: ID!

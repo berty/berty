@@ -202,7 +202,7 @@ func (n *Node) GetEvent(ctx context.Context, input *entity.Event) (*entity.Event
 //
 
 // ContactAcceptRequest implements berty.node.ContactAcceptRequest
-func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) (*entity.Contact, error) {
+func (n *Node) ContactAcceptRequest(ctx context.Context, input *node.ContactAcceptRequestInput) (*entity.Contact, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -211,10 +211,10 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *entity.Contact) 
 
 	// input validation
 	if err := input.Validate(); err != nil {
-		return nil, errorcodes.ErrValidation.Wrap(err)
+		return nil, err
 	}
 	sql := n.sql(ctx)
-	contact, err := bsql.FindContact(sql, input)
+	contact, err := bsql.FindContact(sql, input.ToContact())
 	if err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
@@ -248,17 +248,17 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	n.handleMutex(ctx)()
 
 	// input validation
-	if err := req.Contact.Validate(); err != nil {
-		return nil, errorcodes.ErrValidation.Wrap(err)
+	if err := req.Validate(); err != nil {
+		return nil, err
 	}
 
 	// check for duplicate
 	sql := n.sql(ctx)
-	contact, err := bsql.FindContact(sql, req.Contact)
+	contact, err := bsql.FindContact(sql, req.ToContact())
 
 	if errors.Cause(err) == gorm.ErrRecordNotFound {
 		// save contact in database
-		contact = req.Contact
+		contact = req.ToContact()
 		contact.Status = entity.Contact_IsRequested
 		if err = sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
 			return nil, errorcodes.ErrDbCreate.Wrap(err)
@@ -268,7 +268,9 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 
 	} else if contact.Status == entity.Contact_RequestedMe {
 		logger().Info("this contact has already asked us, accepting the request")
-		return n.ContactAcceptRequest(ctx, contact)
+		return n.ContactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
+			ContactID: contact.ID,
+		})
 
 	} else if contact.Status == entity.Contact_IsRequested {
 		logger().Info("contact has already been requested, sending event again")

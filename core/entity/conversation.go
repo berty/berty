@@ -1,17 +1,6 @@
 package entity
 
-import (
-	"strings"
-
-	"berty.tech/core/pkg/errorcodes"
-)
-
-func (c Conversation) Validate() error {
-	if c.ID == "" {
-		return errorcodes.ErrEntityData.New()
-	}
-	return nil
-}
+import "strings"
 
 func (c Conversation) Filtered() *Conversation {
 	filteredMembers := []*ConversationMember{}
@@ -24,13 +13,6 @@ func (c Conversation) Filtered() *Conversation {
 		Topic:   c.Topic,
 		Members: filteredMembers,
 	}
-}
-
-func (m ConversationMember) Validate() error {
-	if m.ID == "" || m.Contact == nil {
-		return errorcodes.ErrEntityData.New()
-	}
-	return m.Contact.Validate()
 }
 
 func (m ConversationMember) Filtered() *ConversationMember {

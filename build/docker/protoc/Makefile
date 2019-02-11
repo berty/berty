@@ -1,4 +1,4 @@
-IMAGE ?= bertychat/protoc:v5
+IMAGE ?= bertychat/protoc:v8
 
 build:
 	docker build --pull -t $(IMAGE) .

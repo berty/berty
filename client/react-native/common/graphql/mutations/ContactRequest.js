@@ -1,15 +1,19 @@
 import { graphql } from 'react-relay'
 
 import { commit } from '../../relay'
-import { contact } from '../../utils'
 import { merge } from '../../helpers'
 
 const ContactRequestMutation = graphql`
   mutation ContactRequestMutation(
-    $contact: BertyEntityContactInput
+    $contactId: ID!
+    $contactOverrideDisplayName: String!
     $introText: String!
   ) {
-    ContactRequest(contact: $contact, introText: $introText) {
+    ContactRequest(
+      contactId: $contactId
+      contactOverrideDisplayName: $contactOverrideDisplayName
+      introText: $introText
+    ) {
       id
       createdAt
       updatedAt
@@ -37,6 +41,6 @@ export default context => (input, configs) =>
     context.environment,
     ContactRequestMutation,
     'ContactRequest',
-    merge([contact.default, input]),
-    configs,
+    merge([{ id: '', contactOverrideDisplayName: '', introText: '' }, input]),
+    configs
   )
