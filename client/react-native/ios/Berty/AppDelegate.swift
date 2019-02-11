@@ -5,6 +5,7 @@ import PushKit
 @UIApplicationMain
 class AppDelegate: AppDelegateObjC {
   var logger = Logger("chat.berty.io", "AppDelegate")
+  var launchOptions: [UIApplicationLaunchOptionsKey: Any]?
 
   override init() {
     super.init()
@@ -22,10 +23,7 @@ class AppDelegate: AppDelegateObjC {
     return filesPath!
   }
 
-  override func application(
-    _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil
-  ) -> Bool {
+  func startReact() {
     let jsCodeLocation: URL =
       (RCTBundleURLProvider.sharedSettings()?.jsBundleURL(forBundleRoot: "index", fallbackResource: nil))!
 
@@ -33,7 +31,7 @@ class AppDelegate: AppDelegateObjC {
       bundleURL: jsCodeLocation,
       moduleName: "root",
       initialProperties: nil,
-      launchOptions: launchOptions
+      launchOptions: self.launchOptions
     )
     rootView.backgroundColor = UIColor.init(red: 1.0, green: 1.0, blue: 1.0, alpha: 1)
 
@@ -42,6 +40,18 @@ class AppDelegate: AppDelegateObjC {
     rootViewController.view = rootView
     self.window.rootViewController = rootViewController
     self.window.makeKeyAndVisible()
+  }
+
+  override func application(
+    _ application: UIApplication,
+    didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil
+  ) -> Bool {
+    self.launchOptions = launchOptions
+
+    // TODO: Move this line to applicationDidBecomeActive when envelope db with network independant start will be implem
+    self.startReact()
+    // TODO: remote comment when independant start will be implem
+    // Core.startNetwork()
 
     // permit to show local notification in background mode
     application.beginBackgroundTask(withName: "showNotification", expirationHandler: nil)
@@ -66,9 +76,30 @@ class AppDelegate: AppDelegateObjC {
     do {
       try Core.deviceInfo().setStoragePath(try self.getFilesDir())
     } catch let error as NSError {
-      logger.format("unable to set storage path", level: .error, error.userInfo.description)
+      logger.format("unable to set storage path: %@", level: .error, error.userInfo.description)
       return false
     }
     return true
+  }
+
+  override func applicationDidBecomeActive(_ application: UIApplication) {
+    // start react if app was killed
+    if Core.deviceInfo()?.getAppState() == Core.deviceInfoAppStateKill() {
+      // self.startReact()
+    }
+
+    do {
+      try Core.deviceInfo().setAppState(Core.deviceInfoAppStateForeground())
+    } catch let err as NSError {
+      logger.format("application did become active: %@", level: .error, err.userInfo.description)
+    }
+  }
+
+  override func applicationDidEnterBackground(_ application: UIApplication) {
+    do {
+      try Core.deviceInfo().setAppState(Core.deviceInfoAppStateBackground())
+    } catch let err as NSError {
+      logger.format("application did enter background: %@", level: .error, err.userInfo.description)
+    }
   }
 }
