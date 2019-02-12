@@ -1,4 +1,4 @@
-package main
+package dht
 
 type DHT interface {
 	Run(port int) error
