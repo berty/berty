@@ -1,40 +1,25 @@
-package opendht
+package matrix
 
 import (
 	"errors"
 
 	"berty.tech/experiment/dht"
-	_ "berty.tech/experiment/dht/src/opendht/opendht"
 )
 
 var _ dht.DHT = (*DHT)(nil)
 
-type DHT struct {
-	node                   DhtRunner
-	default_bootstrap_host string
-	default_bootstrap_port string
-}
+type DHT struct{}
 
-func New() *DHT {
-	return &DHT{
-		node:                   NewDhtRunner(),
-		default_bootstrap_host: "bootstrap.ring.cx",
-		default_bootstrap_port: "4222",
-	}
-}
-
-func (d *DHT) Run(port int) error {
-	go d.node.Run(port)
-	return nil
+func (*DHT) Run(port int) error {
+	return errors.New("not implemented")
 }
 
 func (*DHT) RunSigned(port int, identity string) error {
 	return errors.New("not implemented")
 }
 
-func (d *DHT) Bootstrap(host string, port string) error {
-	d.node.Bootstrap(host, port)
-	return nil
+func (*DHT) Bootstrap(host string, port string) error {
+	return errors.New("not implemented")
 }
 
 func (*DHT) Put(key string, value interface{}) error {
