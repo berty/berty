@@ -1,12 +1,10 @@
 OPENDHT_PATH ?= $$PWD/src/opendht
 MATRIX_PATH ?= $$PWD/src/matrix
 
-CGO_LDFLAGS ?= -L/usr/local/lib -lopendht -lgnutls
-CGO_CPPFLAGS ?=  -I$$GOPATH/src/github.com/savoirfairelinux/opendht/include/opendht \
- -I$$GOPATH/src/github.com/savoirfairelinux/opendht/argon2/include
-SWIG_FLAGS ?= -I$$GOPATH/src/github.com/savoirfairelinux/opendht/include \
+CGO_LDFLAGS ?=
+CGO_CPPFLAGS ?=
 
-BUILD_ENV ?= GO111MODULE=on CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
+BUILD_ENV ?= GO111MODULE=auto CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
 TEST_TIMEOUT ?= 3m
@@ -30,24 +28,14 @@ deps.opendht:
 
 .PHONY: deps.matrix
 deps.matrix:
-	xcode-select --install
-	sudo easy_install pip
-	sudo pip install virtualenv
-	brew install pkg-config libffi
+	go get github.com/matrix-org/gomatrix
 
 .PHONY: deps.golang
 deps.golang:
 	[ -e $$GOPATH/src ]
 
 .PHONY: deps
-deps: deps.golang deps.opendht
-
-.PHONY: build.opendht
-build.opendht:
-	swig $(SWIG_FLAGS) -cpperraswarn -go -cgo -c++ -intgosize 64 src/opendht/opendht/opendht.i
-
-.PHONY: build
-build: build.opendht
+deps: deps.golang deps.matrix
 
 .PHONY: buildwatch
 buildwatch:
@@ -57,7 +45,7 @@ buildwatch:
 	while true; do watchman-wait . -p "**/*"; clear; make build; sleep .3; done
 
 .PHONY: testwatch
-testwatch: build
+testwatch:
 	@if ! command -v watchman &>/dev/null; then brew install watchman; fi
 	trap 'kill $$(jobs -p) 2>/dev/null; exit 0' INT; \
 	clear; $(BUILD_ENV) $(TEST_CMD); \
