@@ -2,11 +2,11 @@ package matrix
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os/exec"
-	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
 
 	"berty.tech/experiment/dht"
 	"github.com/matrix-org/gomatrix"
@@ -15,100 +15,83 @@ import (
 var _ dht.DHT = (*DHT)(nil)
 
 type DHT struct {
-	name      string
-	data_path string
-	host      string
-	port      int
+	server *gomatrix.Client
 
-	client *gomatrix.Client
-
-	username string
 	password string
 
-	roomID string
+	bootstraps []*gomatrix.Client
 }
 
-type Options struct {
-	Name     string
-	Username string
-	Password string
+func New(opts *dht.Options) (d *DHT, err error) {
+
+	// validate options
+	if opts.URL == "" {
+		opts.URL = "https://matrix.org"
+	}
+	if opts.User == "" {
+		return nil, errors.New("matrix: UserID not defined")
+	}
+	if opts.Password == "" {
+		return nil, errors.New("matrix: Password not defined")
+	}
+
+	d = &DHT{
+		password:   opts.Password,
+		bootstraps: []*gomatrix.Client{},
+	}
+	d.server, err = gomatrix.NewClient(
+		opts.URL,
+		opts.User,
+		"",
+	)
+	if err != nil {
+		return
+	}
+	return
 }
 
-func New(opts *Options) *DHT {
-	if opts.Name == "" {
-		opts.Name = "localhost"
-	}
-	if opts.Username == "" {
-		opts.Username = "berty"
-	}
-	return &DHT{
-		name:      opts.Name,
-		data_path: "/tmp/data",
-		host:      "localhost",
-		username:  opts.Username,
-		password:  opts.Password,
-	}
-}
-
-func (d *DHT) Run(port int) error {
-	if port == 0 {
-		port = 8008
-	}
+func (d *DHT) Run() error {
 	_ = d.Shutdown()
 
-	command := []string{"docker", "run",
-		"-d",
-		"--name", d.name,
-		"-v", d.data_path + ":/data",
-		"-e", "SYNAPSE_SERVER_NAME=" + d.name,
+	command := []string{
+		"docker", "run", "-d",
+		"--name", d.server.HomeserverURL.Scheme +
+			"_" + d.server.HomeserverURL.Hostname() +
+			"_" + d.server.HomeserverURL.Port(),
+		"-e", "SYNAPSE_SERVER_NAME=" + d.server.HomeserverURL.Hostname(),
 		"-e", "SYNAPSE_REPORT_STATS=yes",
-		"-e", "SYNAPSE_NO_TLS=1",
 		"-e", "SYNAPSE_ENABLE_REGISTRATION=yes",
-		"-e", "SYNAPSE_ALLOW_GUEST=yes",
-		"-p", fmt.Sprintf("%+v", port) + ":8008",
-		"matrixdotorg/synapse:latest",
 	}
-	fmt.Printf("\nrun matrix synapse: %+v\n", command)
+	if d.server.HomeserverURL.Scheme == "http" {
+		command = append(command, []string{
+			"-e", "SYNAPSE_NO_TLS=1",
+			"-p", d.server.HomeserverURL.Port() + ":8008",
+		}...)
+	} else {
+		command = append(command, []string{
+			"-p", d.server.HomeserverURL.Port() + ":8009",
+		}...)
+	}
+	command = append(command, "matrixdotorg/synapse:latest")
+
+	fmt.Printf("matrix run: %+v\n", command)
 
 	cmd := exec.Command(command[0], command[1:]...)
 
-	stdout, err := cmd.StdoutPipe()
+	out, err := cmd.CombinedOutput()
+	fmt.Printf("matrix run output: %+v\n", string(out))
 	if err != nil {
 		return err
 	}
 
-	go func() {
-		logs := make([]byte, 1024)
-		for {
-			if _, err = stdout.Read(logs); err == nil {
-				fmt.Print(string(logs))
-				continue
-			}
-		}
-	}()
-
-	if err := cmd.Start(); err != nil {
-		return err
-	}
-
-	if err := cmd.Wait(); err != nil {
-		return err
-	}
-
-	d.port = port
 	// waiting for http
-	client, err := gomatrix.NewClient(
-		fmt.Sprintf("http://%+v:%+v", d.host, d.port),
-		"",
-		"",
-	)
 	retry := 0
 	for {
 		var err error
 		if retry > 10 {
 			return err
 		}
-		_, err = client.Versions()
+		_, err = d.server.Versions()
 		if err != nil {
 			time.Sleep(time.Second)
 			fmt.Println(err.Error())
@@ -121,146 +104,65 @@ func (d *DHT) Run(port int) error {
 }
 
 func (d *DHT) Shutdown() error {
-	cmd := exec.Command("docker", "stop", d.name)
+	name := d.server.HomeserverURL.Scheme +
+		"_" + d.server.HomeserverURL.Hostname() +
+		"_" + d.server.HomeserverURL.Port()
+	cmd := exec.Command(
+		"docker", "stop", name)
 	if err := cmd.Run(); err != nil {
 		return err
 	}
-	cmd = exec.Command("docker", "rm", d.name)
+	cmd = exec.Command("docker", "rm", name)
 	if err := cmd.Run(); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *DHT) register() error {
-	register, err := d.client.RegisterDummy(&gomatrix.ReqRegister{
-		Username: d.username,
-		Password: d.password,
-	})
-	if err != nil {
-		fmt.Println(err.Error())
-		return err
-	}
-	d.client.SetCredentials(register.UserID, register.AccessToken)
-	return nil
-}
-
-func (d *DHT) login() error {
-	login, err := d.client.Login(&gomatrix.ReqLogin{
-		User:     d.username,
-		Password: d.password,
-		Type:     "m.login.password",
-	})
-	if err != nil {
-		return err
-	}
-	d.client.SetCredentials(login.UserID, login.AccessToken)
-	return nil
-}
-
-func (d *DHT) Bootstrap(host string, port string) (err error) {
-	if host == "" {
-		host = "localhost"
-	}
-	if port == "" {
-		port = "8008"
-	}
-
-	d.host = host
-	d.port, err = strconv.Atoi(port)
-	if err != nil {
-		return err
-	}
-
-	d.client, err = gomatrix.NewClient(
-		fmt.Sprintf("http://%+v:%+v", d.host, d.port),
-		"@"+d.username+":"+d.host,
+func (d *DHT) Bootstrap(url string) error {
+	bootstrap, err := gomatrix.NewClient(
+		url,
+		"@"+d.server.UserID+":"+d.server.HomeserverURL.Hostname(),
 		"",
 	)
 	if err != nil {
 		return err
 	}
 
-	if err := d.login(); err != nil {
-		return d.register()
-	}
-
-	return nil
-}
-
-func (d *DHT) createRoom(alias string) error {
-	resp, err := d.client.CreateRoom(&gomatrix.ReqCreateRoom{
-		Visibility:    "public", // see if it can be private
-		RoomAliasName: "#" + alias + ":" + d.host,
-		Name:          alias,
-	})
-	if err != nil {
-		fmt.Printf("err: matrix create room: %+v\n", err.Error())
-		return err
-	}
-	d.roomID = resp.RoomID
-	return nil
-}
-
-func (d *DHT) joinRoom(alias string) error {
-	resp, err := d.client.JoinRoom("#"+alias+":"+d.host, d.host, nil)
-	if err != nil {
-		fmt.Printf("err: matrix join room: %+v\n", err.Error())
-		return err
-	}
-	d.roomID = resp.RoomID
-	return nil
-}
-
-func (d *DHT) sendMessage(message string) error {
-	_, err := d.client.SendText(d.roomID, message)
-	if err != nil {
-		fmt.Printf("err: matrix send text: %+v\n", err.Error())
-		return err
+	d.bootstraps = append(d.bootstraps, bootstrap)
+	if err := d.login(bootstrap); err != nil {
+		if err := d.register(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 func (d *DHT) Put(key string, value interface{}) error {
-	if err := d.joinRoom(key); err != nil {
-		if d.createRoom(key); err != nil {
+	roomID, err := d.joinRoom(key)
+	if err != nil {
+		roomID, err = d.createRoom(key)
+		if err != nil {
 			return err
 		}
 	}
+
 	data, err := json.Marshal(value)
 	if err != nil {
 		return err
 	}
-	if err := d.sendMessage(string(data)); err != nil {
+	if err := d.sendMessage(roomID, string(data)); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *DHT) getMessage() (string, error) {
-	resp, err := d.client.Messages(d.roomID, "", "", 'b', 1)
-	if err != nil {
-		return "", err
-	}
-	if len(resp.Chunk) == 0 {
-		return "", errors.New("err: no messages")
-	}
-	// TODO: Improve finding message
-	// - Check user identity of message
-	// - ...
-	event := resp.Chunk[0]
-	message, ok := event.Content["body"].(string)
-	if !ok {
-		return "", errors.New("err: message not a string")
-	}
-	return message, nil
-}
-
 func (d *DHT) Get(key string) (value interface{}, err error) {
-	if err := d.joinRoom(key); err != nil {
+	roomID, err := d.joinRoom(key)
+	if err != nil {
 		return nil, err
 	}
-	data, err := d.getMessage()
+	data, err := d.getMessage(roomID)
 	if err != nil {
 		return nil, err
 	}

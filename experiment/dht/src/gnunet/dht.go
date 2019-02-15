@@ -10,7 +10,7 @@ var _ dht.DHT = (*DHT)(nil)
 
 type DHT struct{}
 
-func (*DHT) Run(port int) error {
+func (*DHT) Run() error {
 	return errors.New("not implemented")
 }
 
@@ -18,7 +18,7 @@ func (*DHT) Shutdown() error {
 	return errors.New("not implemented")
 }
 
-func (*DHT) Bootstrap(host string, port string) error {
+func (*DHT) Bootstrap(url string) error {
 	return errors.New("not implemented")
 }
 

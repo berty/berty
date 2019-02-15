@@ -15,7 +15,7 @@ func New() *DHT {
 	return &DHT{}
 }
 
-func (d *DHT) Run(port int) error {
+func (d *DHT) Run() error {
 	return nil
 }
 
@@ -23,7 +23,7 @@ func (*DHT) Shutdown() error {
 	return errors.New("not implemented")
 }
 
-func (d *DHT) Bootstrap(host string, port string) error {
+func (d *DHT) Bootstrap(url string) error {
 	return nil
 }
 

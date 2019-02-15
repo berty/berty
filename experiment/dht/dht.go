@@ -1,10 +1,16 @@
 package dht
 
 type DHT interface {
-	Run(port int) error
+	Run() error
 	Shutdown() error
-	Bootstrap(host string, port string) error
+	Bootstrap(url string) error
 	Put(key string, value interface{}) error
 	Get(key string) (interface{}, error)
 	Remove(key string) error
+}
+
+type Options struct {
+	URL      string
+	User     string
+	Password string
 }
