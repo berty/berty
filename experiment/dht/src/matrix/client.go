@@ -7,62 +7,61 @@ import (
 	"github.com/matrix-org/gomatrix"
 )
 
-func (d *DHT) register() (err error) {
+func (b *Bootstrap) register(username, password string) error {
 	var resp *gomatrix.RespRegister
+	var err error
 
-	fmt.Printf("\nmatrix register:\n username: %+v\n", d.server.UserID)
-	resp, err = d.server.RegisterDummy(&gomatrix.ReqRegister{
-		Username: d.server.UserID,
-		Password: d.password,
+	fmt.Printf(
+		"\nmatrix bootstrap %+v register:\n username: %+v\n password; %+v\n",
+		b.HomeserverURL.Hostname(),
+		username,
+		password,
+	)
+	resp, err = b.RegisterDummy(&gomatrix.ReqRegister{
+		Username: username,
+		Password: password,
 	})
 	if err != nil {
-		fmt.Printf(" err: %+v", err.Error())
+		fmt.Printf(" err: %+v\n", err.Error())
 		return err
 	}
-	fmt.Printf("\nmatrix set credential:\n userID: %+v\n accessToken: %+v\n", resp.UserID, resp.AccessToken)
-
-	// TODO: use random bootstrap as server used to register
-	// Will permit to use any host for any peer
-	// We SHOULD provide matrix user host to contacts
-
-	// use server as first bootstrap
-	bootstraps := append([]*gomatrix.Client{d.server}, d.bootstraps...)
-	for _, bootstrap := range bootstraps {
-		bootstrap.SetCredentials(resp.UserID, resp.AccessToken)
-	}
+	b.SetCredentials(resp.UserID, resp.AccessToken)
 	return nil
 }
 
-func (d *DHT) login(client *gomatrix.Client) error {
+func (b *Bootstrap) login(username, password string) error {
 	var resp *gomatrix.RespLogin
 	var err error
 
-	user := "@" + d.server.UserID + ":" + d.server.HomeserverURL.Hostname()
-	fmt.Printf("\nmatrix login:\n user: %+v\n", user)
-	resp, err = client.Login(&gomatrix.ReqLogin{
-		User:     user,
-		Password: d.password,
+	fmt.Printf(
+		"\nmatrix bootstrap %+v login:\n username: %+v\n password: %+v\n",
+		b.HomeserverURL.Hostname(),
+		username,
+		password,
+	)
+	resp, err = b.Login(&gomatrix.ReqLogin{
 		Type:     "m.login.password",
+		User:     username,
+		Password: password,
 	})
 	if err != nil {
-		fmt.Printf(" err: %+v", err.Error())
+		fmt.Printf(" err: %+v\n", err.Error())
 		return err
 	}
-
-	fmt.Printf("\nmatrix set credential:\n userID %+v\n accessToken %+v\n", resp.UserID, resp.AccessToken)
-
-	// use server as first bootstrap
-	bootstraps := append([]*gomatrix.Client{d.server}, d.bootstraps...)
-	for _, bootstrap := range bootstraps {
-		bootstrap.SetCredentials(resp.UserID, resp.AccessToken)
-	}
+	b.SetCredentials(resp.UserID, resp.AccessToken)
 	return nil
 }
 
-func (d *DHT) createRoom(alias string) (string, error) {
+func (b *Bootstrap) createRoom(alias string) (string, error) {
+	var resp *gomatrix.RespCreateRoom
+	var err error
 	// use server as first bootstrap
-	fmt.Printf("\nmatrix create room:\n server: %+v\n room: %+v\n", d.server.HomeserverURL.Hostname(), alias)
-	resp, err := d.server.CreateRoom(&gomatrix.ReqCreateRoom{
+	fmt.Printf(
+		"\nmatrix create room:\n bootstrap: %+v\n room: %+v\n",
+		b.HomeserverURL.Hostname(),
+		alias,
+	)
+	resp, err = b.CreateRoom(&gomatrix.ReqCreateRoom{
 		Preset:        "public_chat",
 		Visibility:    "private",
 		Name:          alias,
@@ -72,75 +71,84 @@ func (d *DHT) createRoom(alias string) (string, error) {
 		fmt.Printf(" err: %+v\n", err.Error())
 		return "", err
 	}
+	b.rooms[alias] = resp.RoomID
 	return resp.RoomID, nil
 }
 
-func (d *DHT) joinRoom(alias string) (string, error) {
+func (b *Bootstrap) joinRoom(alias string, serverName string) (string, error) {
 	var err error
-	// use server as first bootstrap
-	bootstraps := append([]*gomatrix.Client{d.server}, d.bootstraps...)
-	for _, bootstrap := range bootstraps {
-		var resp *gomatrix.RespJoinRoom
-		room := "#" + alias
-		room = room + ":" + d.server.HomeserverURL.Hostname()
-		fmt.Printf("\nmatrix join room:\n bootstrap: %+v\n room: %+v\n", bootstrap.HomeserverURL, room)
-		resp, err = bootstrap.JoinRoom(
-			room,
-			"",
-			nil,
-		)
-		if err != nil {
-			fmt.Printf(" err: %+v\n", err.Error())
-			continue
-		}
-		return resp.RoomID, err
+	var resp *gomatrix.RespJoinRoom
+
+	fmt.Printf(
+		"\nmatrix join room:\n bootstrap: %+v\n room: %+v\n",
+		b.HomeserverURL.Hostname(),
+		alias,
+	)
+
+	roomID, ok := b.rooms[alias]
+	if ok {
+		return roomID, nil
 	}
-	return "", err
+
+	resp, err = b.JoinRoom(
+		alias,
+		serverName,
+		nil,
+	)
+	if err != nil {
+		fmt.Printf(" err: %+v\n", err.Error())
+		return "", err
+	}
+
+	b.rooms[alias] = resp.RoomID
+	return resp.RoomID, nil
 }
 
-func (d *DHT) sendMessage(roomID, message string) (err error) {
-	// use server as first bootstrap
-	bootstraps := append([]*gomatrix.Client{d.server}, d.bootstraps...)
-	for _, bootstrap := range bootstraps {
-		fmt.Printf("\nmatrix send message:\n bootstrap: %+v\n roomID: %+v\n", bootstrap.HomeserverURL, roomID)
-
-		_, err = bootstrap.SendText(roomID, message)
-		if err != nil {
-			continue
-		}
-		return nil
+func (b *Bootstrap) sendMessage(roomID, message string) (err error) {
+	fmt.Printf(
+		"\nmatrix send message:\n bootstrap: %+v\n roomID: %+v\n",
+		b.HomeserverURL.Hostname(),
+		roomID,
+	)
+	_, err = b.SendText(roomID, message)
+	if err != nil {
+		fmt.Printf(" err: %+v\n", err)
+		return err
 	}
-	return err
+	return nil
 }
 
-func (d *DHT) getMessage(roomID string) (message string, err error) {
+func (b *Bootstrap) getMessage(roomID string) (message string, err error) {
 	var resp *gomatrix.RespMessages
 
-	// use server as first bootstrap
-	bootstraps := append([]*gomatrix.Client{d.server}, d.bootstraps...)
-	for _, bootstrap := range bootstraps {
-		fmt.Printf("\nmatrix get message:\n bootstrap: %+v\n roomID: %+v\n", bootstrap.HomeserverURL, roomID)
+	fmt.Printf(
+		"\nmatrix get message:\n bootstrap: %+v\n roomID: %+v\n",
+		b.HomeserverURL.Hostname(),
+		roomID,
+	)
 
-		resp, err = bootstrap.Messages(roomID, "", "", 'b', 1)
-		if err != nil {
-			continue
-		}
-
-		if len(resp.Chunk) == 0 {
-			return "", errors.New("err: no messages")
-		}
-
-		// TODO: Improve finding message
-		// - Check user identity of message
-		// - ...
-
-		event := resp.Chunk[0]
-		ok := true
-		message, ok = event.Content["body"].(string)
-		if !ok {
-			return "", errors.New("err: message not a string")
-		}
-		return message, err
+	resp, err = b.Messages(roomID, "", "", 'b', 1)
+	if err != nil {
+		fmt.Printf(" err: %+v\n", err.Error())
+		return "", err
 	}
-	return "", err
+
+	if len(resp.Chunk) == 0 {
+		fmt.Printf(" err: %+v\n", err.Error())
+		return "", err
+	}
+
+	// TODO: Improve finding message
+	// - Check user identity of message
+	// - ...
+
+	event := resp.Chunk[0]
+	ok := true
+	message, ok = event.Content["body"].(string)
+	if !ok {
+		err = errors.New("err: message not a string")
+		fmt.Printf(" err: %+v\n", err.Error())
+		return "", err
+	}
+	return message, nil
 }

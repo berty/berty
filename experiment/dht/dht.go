@@ -10,7 +10,6 @@ type DHT interface {
 }
 
 type Options struct {
-	URL      string
 	User     string
 	Password string
 }

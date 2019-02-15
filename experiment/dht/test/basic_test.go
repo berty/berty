@@ -24,7 +24,7 @@ func TestBasic(t *testing.T) {
 	}
 
 	Convey("Setup matrix dht", t, FailureHalts, func() {
-		dhts["matrix"], err = matrix.New(&dht.Options{
+		dhts["matrix"], err = matrix.New(&matrix.Options{
 			URL:      "http://localhost:8008", // the homeserver where the use is registered
 			User:     "hello",
 			Password: "world",
