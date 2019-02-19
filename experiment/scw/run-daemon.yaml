@@ -1,0 +1,20 @@
+- hosts: scw
+  vars:
+     local_home: "{{ lookup('env','GOPATH') }}"
+  tasks:
+  - name: build berty
+    local_action:
+      module: shell
+      _raw_params: "cd $GOPATH/src/berty.tech && docker build -f Dockerfile.scw -t berty/berty . && docker run --rm --entrypoint /bin/sh berty/berty:latest -c \"cat /go/bin/berty\" > berty"
+    # register: command_output
+#   - debug: msg="{{ command_output.stdout }}"
+  - name: copy binary
+    copy:
+      src: "{{ local_home }}/src/berty.tech/berty"
+      dest: "/usr/bin/berty"
+      mode: 0755
+  - name: kill old daemon
+    shell: killall -9 berty || true
+  - name: run daemon
+    shell: cd /root && nohup /usr/bin/berty daemon --log-level=debug --hop --bind-p2p /ip4/0.0.0.0/tcp/4004,/ip4/0.0.0.0/tcp/80,/ip4/0.0.0.0/tcp/443,/ip4/0.0.0.0/udp/4004/quic --mdns=false  --p2p-identity="$(cat /root/pk)"  </dev/null >/dev/null 2>&1 &
+
