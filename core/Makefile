@@ -53,6 +53,16 @@ help:
 	@echo "Core commands:"
 	@$(MAKE) -pRrq -f $(lastword $(MAKEFILE_LIST)) : 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | sort | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | grep -v / | sed 's/^/  $(HELP_MSG_PREFIX)make /'
 
+.PHONY: callvis
+callvis:
+	cd $$GOPATH/src/berty.tech/core/cmd/berty && $(BUILD_ENV) GO111MODULE=auto go-callvis \
+		-nostd \
+		-group=pkg,type \
+		-focus=berty.tech/core/cmd/berty \
+		-ignore=berty.tech/core/vendor/go.uber.org,berty.tech/core/pkg/tracing,berty.tech/core/vendor/github.com,berty.tech/core/vendor/golang.org,berty.tech/core/vendor/google.golang.org,berty.tech/core/vendor/gopkg.in \
+		.
+		# -include=berty.tech/core/vendor/github.com/libp2p \
+
 .PHONY: dev
 dev: install
 	@if ! command -v gin &>/dev/null; then go get github.com/codegangsta/gin; fi
