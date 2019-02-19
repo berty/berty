@@ -64,8 +64,8 @@ func (c Code) newError(placeholders map[string]string, stack *stack, cause error
 	e.metadata.Code = c
 	e.metadata.ExtendedCodes = c.Extends()
 	e.metadata.Placeholders = placeholders
-	e.setCause(cause)
-	e.WithDetails(
+	_ = e.setCause(cause)
+	_ = e.WithDetails(
 		&errdetails.LocalizedMessage{
 			Message: localized,
 			Locale:  "user", // FIXME: set user language
