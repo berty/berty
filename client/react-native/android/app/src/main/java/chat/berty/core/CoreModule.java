@@ -126,7 +126,6 @@ public class CoreModule extends ReactContextBaseJavaModule {
         }
     }
 
-
     @ReactMethod
     public void getPort(Promise promise) {
         try {

@@ -163,7 +163,7 @@ class Input extends PureComponent {
     const { input } = this.state
     this.setState({ input: '' }, async () => {
       try {
-        const conversation = this.props.navigation.getParam('conversation')
+        const conversation = this.props.navigation.state.params || {}
         input &&
           (await this.props.screenProps.context.mutations.conversationAddMessage(
             {
@@ -287,11 +287,11 @@ export default class Detail extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title={utils.getTitle(navigation.getParam('conversation'))}
+        title={utils.getTitle(navigation.state.params)}
         rightBtnIcon='settings'
         onPressRightBtn={() =>
           navigation.navigate('chats/settings', {
-            conversation: navigation.getParam('conversation'),
+            conversation: navigation.state.params,
           })
         }
         backBtn={() => {
@@ -310,18 +310,17 @@ export default class Detail extends PureComponent {
   }
 
   onConversationRead = async () => {
-    const conversation = this.props.navigation.getParam('conversation')
     const res = await this.props.screenProps.context.mutations.conversationRead(
       {
-        id: conversation.id,
+        id: this.props.navigation.getParam('id'),
       }
     )
 
-    this.props.navigation.setParams({ conversation: res.ConversationRead })
+    this.props.navigation.setParams(res.ConversationRead)
   }
 
   render () {
-    const conversation = this.props.navigation.getParam('conversation')
+    const id = this.props.navigation.getParam('id')
     const {
       navigation,
       screenProps: {
@@ -332,10 +331,7 @@ export default class Detail extends PureComponent {
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
         <QueryReducer
           query={queries.Conversation.graphql}
-          variables={merge([
-            queries.Conversation.defaultVariables,
-            { id: conversation.id },
-          ])}
+          variables={merge([queries.Conversation.defaultVariables, { id: id }])}
         >
           {(state, retry) => {
             switch (state.type) {

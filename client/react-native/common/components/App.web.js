@@ -47,7 +47,20 @@ export default class App extends PureComponent {
     let url = parseUrl(event.url.replace('berty://', `${BASE_WEBSITE_URL}/`))
 
     switch (url.pathname) {
-      case '/add-contact':
+      case '/chats/detail':
+        this.setState({
+          deepLink: {
+            routeName: 'chats/detail',
+            params: {
+              conversation: {
+                title: '',
+                id: btoa('conversation:' + url.hashParts['id']),
+              },
+            },
+          },
+        })
+        break
+      case '/modal/contacts/card':
         this.setState({
           deepLink: {
             routeName: 'modal/contacts/card',

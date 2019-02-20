@@ -195,7 +195,7 @@ class CoreModule: NSObject {
   @objc func setCurrentRoute(_ route: String!) {
     Core.deviceInfo()?.setAppRoute(route)
   }
-  
+
   @objc static func requiresMainQueueSetup() -> Bool {
     return false
   }

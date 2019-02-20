@@ -6,12 +6,12 @@ import Settings from './Settings'
 
 export default createSubStackNavigator(
   {
-    'chats/list': List,
+    chats: List,
     'chats/add': Add,
     'chats/detail': Detail,
     'chats/settings': Settings,
   },
   {
-    initialRouteName: 'chats/list',
+    initialRouteName: 'chats',
   }
 )

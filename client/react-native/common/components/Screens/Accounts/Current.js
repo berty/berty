@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react'
 import { getAvailableUpdate } from '../../../helpers/update'
 import { withNamespaces } from 'react-i18next'
 
+import { atob } from 'b64-lite'
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
 import {
@@ -100,7 +101,26 @@ class Current extends PureComponent {
     if (route.routes) {
       return this.getActiveRouteName(route)
     }
-    return route.routeName
+
+    console.log(route)
+    // get fragment from react-navigation params
+    const fragment = Object.keys(route.params || {}).reduce((fragment, key) => {
+      const paramType = typeof route.params[key]
+      if (
+        paramType === 'string' ||
+        paramType === 'number' ||
+        paramType === 'boolean'
+      ) {
+        let val = route.params[key]
+        if (key === 'id') {
+          val = atob(val).match(/:(.*)$/)[1]
+          console.log(val)
+        }
+        fragment += fragment.length > 0 ? `,${key}=${val}` : `#${key}=${val}`
+      }
+      return fragment
+    }, '')
+    return route.routeName + fragment
   }
 
   render () {
@@ -127,6 +147,7 @@ class Current extends PureComponent {
             const prevRoute = this.getActiveRouteName(prevState)
 
             if (prevRoute !== currentRoute) {
+              console.log(currentRoute)
               CoreModule.setCurrentRoute(currentRoute)
             }
           }}

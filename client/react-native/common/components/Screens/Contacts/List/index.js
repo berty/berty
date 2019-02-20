@@ -11,19 +11,19 @@ import I18n from 'i18next'
 
 const ContactsHome = createMaterialTopTabNavigator(
   {
-    'mutuals': {
+    mutuals: {
       screen: withScreenProps(Mutuals),
       navigationOptions: () => ({
         title: I18n.t('contacts.all'),
       }),
     },
-    'received': {
+    received: {
       screen: withScreenProps(Received),
       navigationOptions: () => ({
         title: I18n.t('contacts.received'),
       }),
     },
-    'sent': {
+    sent: {
       screen: withScreenProps(Sent),
       navigationOptions: () => ({
         title: I18n.t('contacts.sent'),
@@ -49,7 +49,7 @@ const ContactsHome = createMaterialTopTabNavigator(
         borderBottom,
       ],
     },
-  },
+  }
 )
 
 export default class ContactList extends PureComponent {
@@ -66,14 +66,19 @@ export default class ContactList extends PureComponent {
     tabBarVisible: true,
   })
 
-  static onPress = (navigation) => navigation.navigate('contacts/add')
+  static onPress = navigation => navigation.navigate('contacts/add')
 
   render = () => {
     const { navigation } = this.props
 
     return (
       <Screen style={{ backgroundColor: colors.white }}>
-        <ContactsHome screenProps={{ onPress: () => ContactList.onPress(navigation), topNavigator: navigation }} />
+        <ContactsHome
+          screenProps={{
+            onPress: () => ContactList.onPress(navigation),
+            topNavigator: navigation,
+          }}
+        />
       </Screen>
     )
   }
