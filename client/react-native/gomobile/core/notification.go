@@ -3,9 +3,11 @@ package core
 import (
 	"encoding/base64"
 	"encoding/json"
+	"strings"
 	"sync"
 
 	"berty.tech/core/chunk"
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
@@ -126,6 +128,7 @@ func (n *MobileNotification) UnsubscribeToken(sub chan *notification.Token) {
 	for i := range n.tokenSubscribers {
 		if sub == n.tokenSubscribers[i] {
 			n.tokenSubscribers = append(n.tokenSubscribers[:i], n.tokenSubscribers[i+1:]...)
+			break
 		}
 	}
 	n.tokenSubscribersMutex.Unlock()
@@ -136,6 +139,23 @@ func (n *MobileNotification) UnsubscribeToken(sub chan *notification.Token) {
 // Native
 //
 func (n *MobileNotification) Display(p *notification.Payload) error {
+	// don't display notification if user already on current route or parent
+	currentRoute := app.GetRoute()
+	// logger().Debug("display notification",
+	// 	zap.String("state", deviceinfo.Application_State_name[int32(app.GetState())]),
+	// 	zap.String("currentRoute", currentRoute),
+	// 	zap.String("deepLink", p.DeepLink),
+	// )
+	if app.GetState() == deviceinfo.Application_Foreground && currentRoute != "" && p.DeepLink != "" {
+		if currentRoute == p.DeepLink {
+			return nil
+		}
+		routeSplit := strings.Split(currentRoute, "/")
+		dplkSplit := strings.Split(p.DeepLink, "/")
+		if routeSplit[0] == dplkSplit[0] {
+			return nil
+		}
+	}
 	return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
 }
 

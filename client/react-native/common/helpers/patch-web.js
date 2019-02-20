@@ -21,6 +21,7 @@ if (Platform.OS === 'web') {
     stopBot: async () => console.warn('not implemented in web'),
     getNetworkConfig: async () => console.warn('not implemented in web'),
     updateNetworkConfig: async () => console.warn('not implemented in web'),
+    setCurrentRoute: route => console.log(route),
   }
   NativeModules.CoreModule = CoreModule
 }

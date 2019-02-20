@@ -18,8 +18,8 @@ func (*DeviceInfoPkg) SetStoragePath(path string) error {
 }
 
 var (
-	app = &Application{
-		State: Application_Kill,
+	app = &deviceinfo.Application{
+		State: deviceinfo.Application_Kill,
 		Route: "",
 	}
 	DeviceInfoAppStateKill       string = deviceinfo.Application_State_name[int32(deviceinfo.Application_Kill)]
@@ -28,7 +28,7 @@ var (
 )
 
 func (*DeviceInfoPkg) GetAppState() string {
-	return deviceinfo.Application_State_name[int32(deviceinfo.App.GetState())]
+	return deviceinfo.Application_State_name[int32(app.GetState())]
 }
 
 func (*DeviceInfoPkg) SetAppState(state string) error {

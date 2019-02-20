@@ -67,10 +67,7 @@ class Current extends PureComponent {
 
   openDeepLink = () => {
     const {
-      screenProps: {
-        deepLink,
-        clearDeepLink,
-      },
+      screenProps: { deepLink, clearDeepLink },
     } = this.props
 
     if (!deepLink) {
@@ -94,6 +91,18 @@ class Current extends PureComponent {
       updaters,
     })
 
+  getActiveRouteName = navigationState => {
+    if (!navigationState) {
+      return null
+    }
+    const route = navigationState.routes[navigationState.index]
+    // dive into nested navigators
+    if (route.routes) {
+      return this.getActiveRouteName(route)
+    }
+    return route.routeName
+  }
+
   render () {
     const { t } = this.props
     const { loading, context, availableUpdate } = this.state
@@ -112,6 +121,14 @@ class Current extends PureComponent {
             context,
             availableUpdate,
             firstLaunch: this.props.navigation.getParam('firstLaunch', false),
+          }}
+          onNavigationStateChange={(prevState, currentState) => {
+            const currentRoute = this.getActiveRouteName(currentState)
+            const prevRoute = this.getActiveRouteName(prevState)
+
+            if (prevRoute !== currentRoute) {
+              CoreModule.setCurrentRoute(currentRoute)
+            }
           }}
         />
       </RelayContext.Provider>
