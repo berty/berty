@@ -1,3 +1,5 @@
+import { btoa, atob } from 'b64-lite'
+
 export default {
   id: '',
   title: '',

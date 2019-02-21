@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react'
 import { ActionSheetIOS, Platform, Alert } from 'react-native'
-import { Menu, Header, Screen, Avatar } from '../../../Library'
-import { colors } from '../../../../constants'
-import { extractPublicKeyFromId } from '../../../../helpers/contacts'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import React, { PureComponent } from 'react'
+
+import { Menu, Header, Screen, Avatar } from '../../../Library'
+import { colors } from '../../../../constants'
 
 class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -84,9 +84,7 @@ class Detail extends PureComponent {
       <Screen>
         <Menu absolute>
           <Menu.Header
-            icon={
-              <Avatar data={contact} size={78} />
-            }
+            icon={<Avatar data={contact} size={78} />}
             title={contact.overrideDisplayName || contact.displayName}
           />
           <Menu.Section>
@@ -107,10 +105,7 @@ class Detail extends PureComponent {
               title={t('contacts.view-pub-key')}
               onPress={() =>
                 navigation.navigate('modal/contacts/card', {
-                  data: {
-                    ...contact,
-                    id: extractPublicKeyFromId(contact.id),
-                  },
+                  id: contact.id,
                 })
               }
             />

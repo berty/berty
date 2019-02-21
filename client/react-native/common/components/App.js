@@ -9,7 +9,7 @@ import ReactNativeLanguages from 'react-native-languages'
 
 import { BASE_WEBSITE_URL, colors } from './../constants'
 import { Flex, Animation } from './Library'
-import { conversation } from '../utils'
+import { contact, conversation } from '../utils'
 import { parse as parseUrl } from '../helpers/url'
 import Accounts from './Screens/Accounts'
 import Instabug from '../helpers/Instabug'
@@ -96,6 +96,9 @@ export default class App extends PureComponent {
         })
         break
       case '/modal/contacts/card':
+        if (url.hashParts['id']) {
+          url.hashParts['id'] = contact.getRelayID(url.hashParts['id'])
+        }
         this.setState({
           deepLink: {
             routeName: 'modal/contacts/card',

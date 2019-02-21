@@ -3,7 +3,7 @@ import { View } from 'react-native'
 import { QueryReducer } from '../relay'
 import { merge } from '../helpers'
 import RelayContext from '../relay/RelayContext'
-import { btoa } from 'b64-lite'
+import { btoa, atob } from 'b64-lite'
 
 const defaultValuesContact = {
   id: '',

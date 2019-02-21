@@ -1,39 +1,64 @@
-import React from 'react'
-import { withNavigation } from 'react-navigation'
 import { View } from 'react-native'
+import { withNavigation } from 'react-navigation'
+import React from 'react'
+
 import {
-  ContactIdentityActions,
   ContactIdentity,
+  ContactIdentityActions,
+  Loader,
   ModalScreen,
 } from '../../Library'
+import { QueryReducer, RelayContext } from '../../../relay'
+import { merge } from '../../../helpers'
 
 const modalWidth = 320
 
 const ContactCardModal = ({ navigation }) => {
   const id = navigation.getParam('id')
-  const displayName = navigation.getParam('displayName')
-
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <ModalScreen
-        showDismiss
-        width={modalWidth}
-        footer={
-          <ContactIdentityActions
-            data={{ id, displayName }}
-            modalWidth={modalWidth}
-          />
-        }
-      >
-        <ContactIdentity data={{ id, displayName }} />
-      </ModalScreen>
-    </View>
+    <RelayContext.Consumer>
+      {context => (
+        <QueryReducer
+          query={context.queries.Contact.graphql}
+          variables={merge([
+            context.queries.Contact.defaultVariables,
+            { filter: { id } },
+          ])}
+        >
+          {state => {
+            switch (state.type) {
+              case state.loading:
+                return <Loader />
+              case state.success:
+                return (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <ModalScreen
+                      showDismiss
+                      width={modalWidth}
+                      footer={
+                        <ContactIdentityActions
+                          data={state.data.Contact}
+                          modalWidth={modalWidth}
+                        />
+                      }
+                    >
+                      <ContactIdentity data={state.data.Contact} />
+                    </ModalScreen>
+                  </View>
+                )
+              case state.error:
+                return <Loader />
+            }
+          }}
+        </QueryReducer>
+      )}
+    </RelayContext.Consumer>
   )
 }
 

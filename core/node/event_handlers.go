@@ -51,7 +51,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
 			"Name": attrs.Me.DisplayName,
 		}),
-		DeepLink: "berty://berty.chat/modal/contacts/card#public-key=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
+		DeepLink: "berty://berty.chat/modal/contacts/card#id=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
 	})
 
 	if err := entity.SaveDevices(sql, attrs.Me.ID, devices); err != nil {

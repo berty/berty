@@ -112,7 +112,9 @@ class Current extends PureComponent {
       ) {
         let val = route.params[key]
         if (key === 'id') {
-          val = atob(val).match(/:(.*)$/)[1]
+          val = atob(val)
+          val = val.match(/:(.*)$/)
+          val = val[1]
         }
         fragment += fragment.length > 0 ? `,${key}=${val}` : `#${key}=${val}`
       }
