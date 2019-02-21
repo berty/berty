@@ -137,7 +137,7 @@ export default class App extends PureComponent {
                 backgroundColor: colors.white,
               }}
             >
-              <Animation />
+              <Animation onFinish={() => this.setState({ showAnim: false })} />
             </Flex.Rows>
           ) : null}
           {!loading ? (
