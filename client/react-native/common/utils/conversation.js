@@ -20,3 +20,6 @@ export const getTitle = ({ title, members } = this.props) =>
       })
       .join('')) ||
   'No name'
+
+export const getRelayID = id => btoa(`conversation:${id}`)
+export const getCoreID = id => atob(id).match(/:(.*)$/)[1]
