@@ -11,7 +11,6 @@ import (
 	libp2p_host "github.com/libp2p/go-libp2p-host"
 	routing "github.com/libp2p/go-libp2p-routing"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
-	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 )
 
 const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
@@ -99,9 +98,9 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 
 	// configure ping service
-	var pingOpt *ping.PingService
+	var pingOpt *host.PingService
 	if cfg.Ping {
-		pingOpt = ping.NewPingService(h)
+		pingOpt = host.NewPingService(h)
 	}
 
 	// configure metric service

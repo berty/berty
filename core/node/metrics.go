@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"berty.tech/core/api/node"
@@ -16,11 +17,12 @@ func (n *Node) Peers(ctx context.Context, _ *node.Void) (*network_metric.Peers, 
 	return n.networkMetric.Peers(ctx), nil
 }
 
+// @FIXME: do we need to remove/change this
 func (n *Node) Libp2PPing(ctx context.Context, str *network_metric.PingReq) (*node.Bool, error) {
-	b, err := n.networkMetric.Libp2PPing(ctx, str.Str)
+	// b, err := n.networkMetric.Ping(ctx, str.Str)
 	return &node.Bool{
-		Ret: b,
-	}, err
+		Ret: false,
+	}, fmt.Errorf("not implemented yet")
 }
 
 func (n *Node) GetListenAddrs(ctx context.Context, _ *node.Void) (*network_metric.ListAddrs, error) {

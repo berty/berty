@@ -2,13 +2,12 @@ package host
 
 import (
 	"context"
-	"io"
+	"fmt"
 
 	"berty.tech/core/network/metric"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	host "github.com/libp2p/go-libp2p-host"
 	routing "github.com/libp2p/go-libp2p-routing"
-	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 
 	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
 	inet "github.com/libp2p/go-libp2p-net"
@@ -16,29 +15,31 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	ma "github.com/multiformats/go-multiaddr"
-	ms "github.com/multiformats/go-multistream"
+	msmux "github.com/multiformats/go-multistream"
 )
 
+var _ (host.Host) = (*BertyHost)(nil)
+
+// BertyHost is an host.Host but with capability to choose a specific conn when
+// calling NewStream
 type BertyHost struct {
-	host.Host
+	host      host.Host
 	Discovery discovery.Discovery
 	Routing   routing.IpfsRouting
 	Metric    metric.Metric
-	Ping      *ping.PingService
+	Ping      *PingService
 }
 
 type BertyHostOptions struct {
 	Discovery discovery.Discovery
 	Routing   routing.IpfsRouting
 	Metric    metric.Metric
-	Ping      *ping.PingService
+	Ping      *PingService
 }
-
-var _ (host.Host) = (*BertyHost)(nil)
 
 func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (*BertyHost, error) {
 	h := &BertyHost{
-		Host:      host,
+		host:      host,
 		Discovery: opts.Discovery,
 		Routing:   opts.Routing,
 		Metric:    opts.Metric,
@@ -54,67 +55,80 @@ func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (
 // BertyHost's Connect differs in that if the host has no addresses for a
 // given peer, it will use its routing system to try to find some.
 func (bh *BertyHost) Connect(ctx context.Context, pi pstore.PeerInfo) error {
-	return bh.Host.Connect(ctx, pi)
+	return bh.host.Connect(ctx, pi)
 }
 
 func (bh *BertyHost) ID() peer.ID {
-	return bh.Host.ID()
+	return bh.host.ID()
 }
 
 func (bh *BertyHost) Peerstore() pstore.Peerstore {
-	return bh.Host.Peerstore()
+	return bh.host.Peerstore()
 }
 
 func (bh *BertyHost) Addrs() []ma.Multiaddr {
-	return bh.Host.Addrs()
+	return bh.host.Addrs()
 }
 
 func (bh *BertyHost) Network() inet.Network {
-	return bh.Host.Network()
+	return bh.host.Network()
+}
+
+func (bh *BertyHost) Mux() *msmux.MultistreamMuxer {
+	return bh.host.Mux()
 }
 
 func (bh *BertyHost) SetStreamHandler(pid protocol.ID, handler inet.StreamHandler) {
-	bh.Host.SetStreamHandler(pid, handler)
+	bh.host.SetStreamHandler(pid, handler)
 }
 
 func (bh *BertyHost) SetStreamHandlerMatch(pid protocol.ID, m func(string) bool, handler inet.StreamHandler) {
-	bh.Host.SetStreamHandlerMatch(pid, m, handler)
+	bh.host.SetStreamHandlerMatch(pid, m, handler)
 }
 
 func (bh *BertyHost) RemoveStreamHandler(pid protocol.ID) {
-	bh.Host.RemoveStreamHandler(pid)
+	bh.host.RemoveStreamHandler(pid)
+}
+
+func (bh *BertyHost) bestLatency(cs ...inet.Conn) inet.Conn {
+	if len(cs) == 0 {
+		return nil
+	}
+
+	c1 := cs[0]
+	if len(cs) == 1 {
+		return c1
+	}
+
+	c2 := bh.bestLatency(cs[1:]...)
+	if float64(bh.Metric.LatencyConnEWMA(c1)) > float64(bh.Metric.LatencyConnEWMA(c2)) {
+		return c2
+	}
+
+	return c1
 }
 
 func (bh *BertyHost) bestConnToUse(ctx context.Context, p peer.ID) (inet.Conn, error) {
 	conns := bh.Network().ConnsToPeer(p)
+
 	if len(conns) == 0 {
-		return bh.Host.Network().DialPeer(ctx, p)
+		return bh.Network().DialPeer(ctx, p)
 	}
 
-	// @TODO: choose the best conn here
+	if c := bh.bestLatency(conns...); c != nil {
+		return c, nil
+	}
 
-	// crate := make(map[inet.Conn]int)
-	// for _, c := range conns {
-	//      rate := rateConn(ctx, p, c)
-	//      crate[c] = rate
-	// }
-
-	// dummy selection
-	return conns[0], nil
+	return nil, fmt.Errorf("no conns found")
 }
 
 func (bh *BertyHost) newBestStream(ctx context.Context, p peer.ID) (inet.Stream, error) {
 	c, err := bh.bestConnToUse(ctx, p)
-	if c == nil {
-		return nil, err
-	}
-
-	s, err := c.NewStream()
 	if err != nil {
 		return nil, err
 	}
 
-	return s, nil
+	return c.NewStream()
 }
 
 func (bh *BertyHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (inet.Stream, error) {
@@ -137,7 +151,7 @@ func (bh *BertyHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.
 		return nil, err
 	}
 
-	selected, err := ms.SelectOneOf(protoStrs, s)
+	selected, err := msmux.SelectOneOf(protoStrs, s)
 	if err != nil {
 		s.Reset()
 		return nil, err
@@ -150,6 +164,21 @@ func (bh *BertyHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.
 	return s, nil
 }
 
+func (bh *BertyHost) newStream(ctx context.Context, p peer.ID, pid protocol.ID) (inet.Stream, error) {
+	s, err := bh.newBestStream(ctx, p)
+	if err != nil {
+		return nil, err
+	}
+
+	s.SetProtocol(pid)
+
+	lzcon := msmux.NewMSSelect(s, string(pid))
+	return &streamWrapper{
+		Stream: s,
+		rw:     lzcon,
+	}, nil
+}
+
 func pidsToStrings(pids []protocol.ID) []string {
 	out := make([]string, len(pids))
 	for i, p := range pids {
@@ -158,9 +187,9 @@ func pidsToStrings(pids []protocol.ID) []string {
 	return out
 }
 
-func (bh *BertyHost) preferredProtocol(p peer.ID, pids []protocol.ID) (protocol.ID, error) {
+func (h *BertyHost) preferredProtocol(p peer.ID, pids []protocol.ID) (protocol.ID, error) {
 	pidstrs := pidsToStrings(pids)
-	supported, err := bh.Peerstore().SupportsProtocols(p, pidstrs...)
+	supported, err := h.Peerstore().SupportsProtocols(p, pidstrs...)
 	if err != nil {
 		return "", err
 	}
@@ -172,44 +201,10 @@ func (bh *BertyHost) preferredProtocol(p peer.ID, pids []protocol.ID) (protocol.
 	return out, nil
 }
 
-func (bh *BertyHost) newStream(ctx context.Context, p peer.ID, pid protocol.ID) (inet.Stream, error) {
-	s, err := bh.newBestStream(ctx, p)
-	if err != nil {
-		return nil, err
-	}
-
-	s.SetProtocol(pid)
-
-	lzcon := ms.NewMSSelect(s, string(pid))
-	return &streamWrapper{
-		Stream: s,
-		rw:     lzcon,
-	}, nil
-}
-
 func (bh *BertyHost) Close() error {
-	if err := bh.Host.Close(); err != nil {
-		return err
-	}
-	return nil
+	return bh.host.Close()
 }
+
 func (bh *BertyHost) ConnManager() ifconnmgr.ConnManager {
-	return bh.Host.ConnManager()
-}
-
-func (bh *BertyHost) Mux() *ms.MultistreamMuxer {
-	return bh.Host.Mux()
-}
-
-type streamWrapper struct {
-	inet.Stream
-	rw io.ReadWriter
-}
-
-func (s *streamWrapper) Read(b []byte) (int, error) {
-	return s.rw.Read(b)
-}
-
-func (s *streamWrapper) Write(b []byte) (int, error) {
-	return s.rw.Write(b)
+	return bh.host.ConnManager()
 }

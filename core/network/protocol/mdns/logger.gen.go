@@ -5,5 +5,5 @@ package mdns
 import "go.uber.org/zap"
 
 func logger() *zap.Logger {
-	return zap.L().Named("core.network.service.mdns")
+	return zap.L().Named("core.network.protocol.mdns")
 }

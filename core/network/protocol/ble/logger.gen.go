@@ -5,5 +5,5 @@ package ble
 import "go.uber.org/zap"
 
 func logger() *zap.Logger {
-	return zap.L().Named("core.network.service.ble")
+	return zap.L().Named("core.network.protocol.ble")
 }

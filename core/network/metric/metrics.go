@@ -13,29 +13,43 @@ import (
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
-	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	ma "github.com/multiformats/go-multiaddr"
+	mh "github.com/multiformats/go-multihash"
 	"go.uber.org/zap"
 )
 
-// BertyMetric is a BertyMetric
+const LatencyEWMASmoothing = 0.1
+
+type connKey string
+
+// BertyMetric is a pstore.Metrics
+var _ pstore.Metrics = (*BertyMetric)(nil)
+
+// BertyMetric is a Metrics
 var _ Metric = (*BertyMetric)(nil)
+
+// BertyMetric is a inet.Notifiee
 var _ inet.Notifiee = (*BertyMetric)(nil)
 
 // TODO: Use only chan to subscribe to Notifee interface
 type BertyMetric struct {
 	host host.Host
-	ping *ping.PingService
+	ping PingService
 
 	peersHandlers []func(*Peer, error) error
 	muHPeers      sync.Mutex
 
 	bw *bw.BandwidthCounter
 
+	latconn map[connKey]time.Duration
+	latpeer map[peer.ID]time.Duration
+	latcmu  sync.RWMutex
+	latpmu  sync.RWMutex
+
 	rootContext context.Context
 }
 
-func NewBertyMetric(ctx context.Context, h host.Host, ping *ping.PingService) *BertyMetric {
+func NewBertyMetric(ctx context.Context, h host.Host, ping PingService) *BertyMetric {
 	tracer := tracing.EnterFunc(ctx, h, ping)
 	defer tracer.Finish()
 
@@ -44,6 +58,8 @@ func NewBertyMetric(ctx context.Context, h host.Host, ping *ping.PingService) *B
 		ping:          ping,
 		peersHandlers: make([]func(*Peer, error) error, 0),
 		bw:            bw.NewBandwidthCounter(),
+		latconn:       make(map[connKey]time.Duration),
+		latpeer:       make(map[peer.ID]time.Duration),
 		rootContext:   ctx,
 	}
 
@@ -52,18 +68,113 @@ func NewBertyMetric(ctx context.Context, h host.Host, ping *ping.PingService) *B
 	return m
 }
 
-// TODO: remove this and use Notifiee to know peer connection and disconnections
-// TODO: PR have already update this func
-func (m *BertyMetric) Libp2PPing(ctx context.Context, contactID string) (bool, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancel()
-
-	// WARN: should not work, contactID is not peerID
-	_, err := m.ping.Ping(ctx, peer.ID(contactID))
+// RecordLatency records a new latency measurement
+func (m *BertyMetric) getKeyForConn(c inet.Conn) (connKey, error) {
+	k := fmt.Sprintf("%s:%s", c.RemoteMultiaddr().String(), c.RemotePeer().Pretty())
+	kh, err := mh.Sum([]byte(k), mh.MURMUR3, -1)
 	if err != nil {
-		return false, err
+		return "", err
 	}
-	return true, nil
+	return connKey(kh.String()), nil
+}
+
+// RecordConnLatency records a new latency measurement for a conn,
+// Also add a records for a peer
+func (m *BertyMetric) RecordConnLatency(c inet.Conn, next time.Duration) {
+	key, err := m.getKeyForConn(c)
+	if err != nil {
+		logger().Warn("cannot get key from conn", zap.Error(err))
+		return
+	}
+	m.latcmu.Lock()
+	prev, found := m.latconn[key]
+	if !found {
+		m.latconn[key] = next // when no data, just take it as the mean.
+	} else {
+		m.latconn[key] = ewma(prev, next)
+	}
+	m.latcmu.Unlock()
+}
+
+// RecordLatency records a new latency measurement
+func (m *BertyMetric) RecordLatency(p peer.ID, next time.Duration) {
+	m.latpmu.Lock()
+	prev, found := m.latpeer[p]
+	if !found {
+		m.latpeer[p] = next // when no data, just take it as the mean.
+	} else {
+		m.latpeer[p] = ewma(prev, next)
+	}
+	m.latpmu.Unlock()
+}
+
+// LatencyConnEWMA returns an exponentially-weighted moving avg.
+// of all measurements of a conn latency.
+// @FIXME: This method should not return a fixed time if no latency are set yet
+func (m *BertyMetric) LatencyConnEWMA(c inet.Conn) time.Duration {
+	key, err := m.getKeyForConn(c)
+	if err != nil {
+		logger().Warn("cannot get key from conn", zap.Error(err))
+		return time.Minute
+	}
+
+	m.latcmu.RLock()
+	defer m.latcmu.RUnlock()
+
+	if lat, ok := m.latconn[key]; ok {
+		return lat
+	}
+
+	return time.Minute
+}
+
+// LatencyEWMA returns an exponentially-weighted moving avg.
+// of all measurements of a peer's latency.
+// @FIXME: This method should not return a fixed time if no latency are set yet
+func (m *BertyMetric) LatencyEWMA(p peer.ID) time.Duration {
+	m.latpmu.RLock()
+	defer m.latpmu.RUnlock()
+
+	if lat, ok := m.latpeer[p]; ok {
+		return lat
+
+	}
+
+	return time.Minute
+}
+
+func (m *BertyMetric) PingConn(ctx context.Context, c inet.Conn) (t time.Duration, err error) {
+	var cp <-chan time.Duration
+
+	cp, err = m.ping.PingConn(ctx, c)
+	if err != nil {
+		return
+	}
+	select {
+	case <-ctx.Done():
+		err = ctx.Err()
+	case t = <-cp:
+		m.RecordConnLatency(c, t)
+	}
+
+	return
+}
+
+func (m *BertyMetric) Ping(ctx context.Context, p peer.ID) (t time.Duration, err error) {
+	var cp <-chan time.Duration
+
+	cp, err = m.ping.Ping(ctx, p)
+	if err != nil {
+		return
+	}
+	select {
+	case <-ctx.Done():
+		err = ctx.Err()
+	case t = <-cp:
+		m.RecordLatency(p, t)
+	}
+
+	return
 }
 
 func (m *BertyMetric) GetListenAddrs(ctx context.Context) *ListAddrs {
@@ -252,9 +363,34 @@ func (m *BertyMetric) OpenedStream(net inet.Network, s inet.Stream) {}
 func (m *BertyMetric) ClosedStream(net inet.Network, s inet.Stream) {}
 
 func (m *BertyMetric) Connected(s inet.Network, c inet.Conn) {
+	// ping conn to score latency
+
+	go func() {
+		t, err := m.PingConn(context.TODO(), c)
+		if err != nil {
+			logger().Warn("ping error",
+				zap.String("addr", c.RemoteMultiaddr().String()),
+				zap.Error(err),
+			)
+		} else {
+			logger().Info("conn latency",
+				zap.String("addr", c.RemoteMultiaddr().String()),
+				zap.Duration("latency", t),
+			)
+		}
+	}()
+
 	go m.handlePeer(m.rootContext, c.RemotePeer())
 }
 
 func (m *BertyMetric) Disconnected(s inet.Network, c inet.Conn) {
 	go m.handlePeer(m.rootContext, c.RemotePeer())
+}
+
+func ewma(prev, next time.Duration) time.Duration {
+	prevf := float64(prev)
+	nextf := float64(next)
+
+	return time.Duration(((1.0 - LatencyEWMASmoothing) * prevf) + (LatencyEWMASmoothing * nextf))
+
 }

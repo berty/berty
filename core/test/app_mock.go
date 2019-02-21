@@ -13,7 +13,6 @@ import (
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
-	"berty.tech/core/network/netutil"
 	"berty.tech/core/node"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
@@ -85,6 +84,14 @@ func NewAppMock(device *entity.Device, networkDriver network.Driver, options ...
 	return &a, nil
 }
 
+func GetFreeTCPPort() (int, error) {
+	l, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return 0, err
+	}
+	return l.Addr().(*net.TCPAddr).Port, l.Close()
+}
+
 func (a *AppMock) Open() error {
 	var err error
 
@@ -99,7 +106,7 @@ func (a *AppMock) Open() error {
 	}
 
 	gs := grpc.NewServer()
-	port, err := netutil.GetFreeTCPPort()
+	port, err := GetFreeTCPPort()
 	if err != nil {
 		return err
 	}
