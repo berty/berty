@@ -23,15 +23,14 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
+	helper "berty.tech/core/api/helper"
 	nodeapi "berty.tech/core/api/node"
 	gql "berty.tech/core/api/node/graphql"
 	graph "berty.tech/core/api/node/graphql/graph/generated"
-	"berty.tech/core/network/mock"
-	"berty.tech/core/network/netutil"
+	"berty.tech/core/network"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/jaeger"
 	"berty.tech/core/pkg/notification"
-	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
 )
 
@@ -70,17 +69,6 @@ type DatabaseOptions struct {
 func WithBanner(banner string) NewOption {
 	return func(a *Account) error {
 		a.banner = banner
-		return nil
-	}
-}
-
-func WithEnqueurNetwork() NewOption {
-	return func(a *Account) error {
-		tracer := tracing.EnterFunc(a.rootContext)
-		defer tracer.Finish()
-		ctx := tracer.Context()
-
-		a.network = mock.NewEnqueuer(ctx)
 		return nil
 	}
 }
@@ -208,7 +196,7 @@ func WithGQL(opts *GQLOptions) NewOption {
 			}
 		}
 
-		a.ioGrpc = netutil.NewIOGrpc()
+		a.ioGrpc = helper.NewIOGrpc()
 		icdialer := a.ioGrpc.NewDialer()
 
 		dialOpts := append([]grpc.DialOption{
@@ -305,6 +293,17 @@ func WithBot() NewOption {
 func WithPrivateKeyFile(path string) NewOption {
 	return func(a *Account) error {
 		a.privateKeyPath = path
+		return nil
+	}
+}
+
+func WithNetwork(net network.Driver, err error) NewOption {
+	return func(a *Account) error {
+		if err != nil {
+			return errors.Wrap(err, "account with network error")
+		}
+		a.network = net
+		a.metric = net.Metric()
 		return nil
 	}
 }

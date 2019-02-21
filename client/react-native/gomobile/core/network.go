@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	account "berty.tech/core/manager/account"
+	"berty.tech/core/network"
 	"berty.tech/core/network/p2p"
 	"github.com/pkg/errors"
 )
@@ -94,7 +95,7 @@ func UpdateNetworkConfig(jsonConf string) error {
 	if err != nil {
 		return err
 	}
-	if err := currentAccount.UpdateP2PNetwork(rootContext, netConf); err != nil {
+	if err := currentAccount.UpdateNetwork(rootContext, network.WithDefaultMobileOptions()); err != nil {
 		return err
 	}
 

@@ -1,15 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
-	"strings"
 
 	"berty.tech/core/manager/account"
-	"berty.tech/core/network/p2p"
+	"berty.tech/core/network"
+	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/logmanager"
@@ -64,7 +63,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
-	flags.StringSliceVar(&opts.bootstrap, "bootstrap", p2p.DefaultBootstrap, "boostrap peers")
+	flags.StringSliceVar(&opts.bootstrap, "bootstrap", network_config.DefaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
 	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
 	flags.StringSliceVar(&opts.apnsDevVoipCerts, "apns-dev-voip-certs", []string{}, "Path of APNs VoIP development certificates, delimited by commas")
@@ -106,6 +105,7 @@ func daemon(opts *daemonOptions) error {
 	}()
 	deviceinfo.SetStoragePath("/tmp")
 	accountOptions := account.Options{
+
 		account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(opts.nickname),
@@ -126,10 +126,10 @@ func daemon(opts *daemonOptions) error {
 		account.WithPrivateKeyFile(opts.privateKeyFile),
 	}
 	if !opts.noP2P {
-		var swarmKey io.Reader
+		var swarmKey string
 
 		if opts.PrivateNetwork {
-			swarmKey = strings.NewReader(p2p.DefaultSwarmKey)
+			swarmKey = network_config.DefaultSwarmKey
 		}
 
 		if opts.SwarmKeyPath != "" {
@@ -137,24 +137,31 @@ func daemon(opts *daemonOptions) error {
 			if err != nil {
 				return fmt.Errorf("swarm key error: %s", err)
 			}
-
-			swarmKey = bufio.NewReader(file)
+			swarmKeyBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				return fmt.Errorf("swarm key error: %s", err)
+			}
+			swarmKey = string(swarmKeyBytes)
 		}
 
-		accountOptions = append(accountOptions, account.WithP2PNetwork(
-			&account.P2PNetworkOptions{
-				Bind:      opts.bindP2P,
-				Transport: opts.transportP2P,
-				Bootstrap: opts.bootstrap,
-				MDNS:      opts.mdns,
-				Relay:     opts.hop,
-				Metrics:   true,
-				Identity:  opts.identity,
-				SwarmKey:  swarmKey,
-			},
+		// accountOptions = append(accountOptions, account.WithP2PNetwork(
+		// 	&account.P2PNetworkOptions{
+		// 		Bind:      opts.bindP2P,
+		// 		Transport: opts.transportP2P,
+		// 		Bootstrap: opts.bootstrap,
+		// 		MDNS:      opts.mdns,
+		// 		Relay:     opts.hop,
+		// 		Metrics:   true,
+		// 		Identity:  opts.identity,
+		// 		SwarmKey:  swarmKey,
+		// 	},
+		// ))
+		accountOptions = append(accountOptions, account.WithNetwork(
+			network.New(ctx,
+				network.WithDefaultOptions(),
+				network.PrivateNetwork(swarmKey),
+			),
 		))
-	} else {
-		accountOptions = append(accountOptions, account.WithEnqueurNetwork())
 	}
 
 	if opts.withBot {

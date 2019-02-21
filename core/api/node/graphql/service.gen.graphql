@@ -432,7 +432,7 @@ type BertyEntityMetadataKeyValue  {
   
 
   
-type BertyNetworkBandwidthStats  {
+type BertyNetworkMetricBandwidthStats  {
     id: String
     totalIn: Int64
     totalOut: Int64
@@ -440,10 +440,10 @@ type BertyNetworkBandwidthStats  {
     rateOut: Double
     type: Enum
 }
-type BertyNetworkListAddrs  {
+type BertyNetworkMetricListAddrs  {
     addrs: [String!]
 }
-type BertyNetworkPingReq  {
+type BertyNetworkMetricPingReq  {
     str: String!
 }
   
@@ -474,7 +474,7 @@ type BertyNodeDebugAttrs  {
 }
 type BertyNodeStatisticsAttrs  {
     errMsg: String!
-    totalNetworkBandwidth: BertyNetworkBandwidthStats
+    totalNetworkBandwidth: BertyNetworkMetricBandwidthStats
     peersCount: Int32!
 }
   
@@ -482,13 +482,13 @@ type BertyNodeStatisticsAttrs  {
   
 
   
-type BertyNetworkPeer  {
+type BertyNetworkMetricPeer  {
     id: String!
     addrs: [String!]
     connection: Enum
 }
-type BertyNetworkPeers  {
-    list: [BertyNetworkPeer]
+type BertyNetworkMetricPeers  {
+    list: [BertyNetworkMetricPeer]
 }
   
   
@@ -729,7 +729,7 @@ type Query {
   node(id: ID!): Node
   ID(
     T: Bool!
-  ): BertyNetworkPeer
+  ): BertyNetworkMetricPeer
   EventList(
     filter: BertyEntityEventInput
     onlyWithoutAckedAt: Enum
@@ -803,7 +803,7 @@ type Query {
   ): BertyNodeAppVersionOutput
   Peers(
     T: Bool!
-  ): BertyNetworkPeers
+  ): BertyNetworkMetricPeers
   Protocols(
     id: String!
     addrs: [String!]
@@ -830,10 +830,10 @@ type Query {
   ): BertyNodeVoid
   GetListenAddrs(
     T: Bool!
-  ): BertyNetworkListAddrs
+  ): BertyNetworkMetricListAddrs
   GetListenInterfaceAddrs(
     T: Bool!
-  ): BertyNetworkListAddrs
+  ): BertyNetworkMetricListAddrs
   Libp2PPing(
     str: String!
   ): BertyNodeBool
@@ -973,8 +973,8 @@ type Subscription {
     rateIn: Double
     rateOut: Double
     type: Enum
-  ): BertyNetworkBandwidthStats
+  ): BertyNetworkMetricBandwidthStats
   MonitorPeers(
     T: Bool!
-  ): BertyNetworkPeer
+  ): BertyNetworkMetricPeer
 }

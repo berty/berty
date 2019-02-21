@@ -1334,8 +1334,8 @@ models:
       values:
 
 
-  BertyNetworkBandwidthStats:
-    model: berty.tech/core/network.BandwidthStats
+  BertyNetworkMetricBandwidthStats:
+    model: berty.tech/core/network/metric.BandwidthStats
     fields:
       id:
       totalIn:
@@ -1343,8 +1343,8 @@ models:
       rateIn:
       rateOut:
       type:
-  BertyNetworkBandwidthStatsInput:
-    model: berty.tech/core/network.BandwidthStats
+  BertyNetworkMetricBandwidthStatsInput:
+    model: berty.tech/core/network/metric.BandwidthStats
     fields:
       id:
       totalIn:
@@ -1352,8 +1352,8 @@ models:
       rateIn:
       rateOut:
       type:
-  BertyNetworkBandwidthStatsPayload:
-    model: berty.tech/core/network.BandwidthStats
+  BertyNetworkMetricBandwidthStatsPayload:
+    model: berty.tech/core/network/metric.BandwidthStats
     fields:
       id:
       totalIn:
@@ -1362,29 +1362,29 @@ models:
       rateOut:
       type:
 
-  BertyNetworkListAddrs:
-    model: berty.tech/core/network.ListAddrs
+  BertyNetworkMetricListAddrs:
+    model: berty.tech/core/network/metric.ListAddrs
     fields:
       addrs:
-  BertyNetworkListAddrsInput:
-    model: berty.tech/core/network.ListAddrs
+  BertyNetworkMetricListAddrsInput:
+    model: berty.tech/core/network/metric.ListAddrs
     fields:
       addrs:
-  BertyNetworkListAddrsPayload:
-    model: berty.tech/core/network.ListAddrs
+  BertyNetworkMetricListAddrsPayload:
+    model: berty.tech/core/network/metric.ListAddrs
     fields:
       addrs:
 
-  BertyNetworkPingReq:
-    model: berty.tech/core/network.PingReq
+  BertyNetworkMetricPingReq:
+    model: berty.tech/core/network/metric.PingReq
     fields:
       str:
-  BertyNetworkPingReqInput:
-    model: berty.tech/core/network.PingReq
+  BertyNetworkMetricPingReqInput:
+    model: berty.tech/core/network/metric.PingReq
     fields:
       str:
-  BertyNetworkPingReqPayload:
-    model: berty.tech/core/network.PingReq
+  BertyNetworkMetricPingReqPayload:
+    model: berty.tech/core/network/metric.PingReq
     fields:
       str:
 
@@ -1500,35 +1500,35 @@ models:
       peersCount:
 
 
-  BertyNetworkPeer:
-    model: berty.tech/core/network.Peer
+  BertyNetworkMetricPeer:
+    model: berty.tech/core/network/metric.Peer
     fields:
       id:
       addrs:
       connection:
-  BertyNetworkPeerInput:
-    model: berty.tech/core/network.Peer
+  BertyNetworkMetricPeerInput:
+    model: berty.tech/core/network/metric.Peer
     fields:
       id:
       addrs:
       connection:
-  BertyNetworkPeerPayload:
-    model: berty.tech/core/network.Peer
+  BertyNetworkMetricPeerPayload:
+    model: berty.tech/core/network/metric.Peer
     fields:
       id:
       addrs:
       connection:
 
-  BertyNetworkPeers:
-    model: berty.tech/core/network.Peers
+  BertyNetworkMetricPeers:
+    model: berty.tech/core/network/metric.Peers
     fields:
       list:
-  BertyNetworkPeersInput:
-    model: berty.tech/core/network.Peers
+  BertyNetworkMetricPeersInput:
+    model: berty.tech/core/network/metric.Peers
     fields:
       list:
-  BertyNetworkPeersPayload:
-    model: berty.tech/core/network.Peers
+  BertyNetworkMetricPeersPayload:
+    model: berty.tech/core/network/metric.Peers
     fields:
       list:
 

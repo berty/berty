@@ -5,6 +5,7 @@ import (
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/tracing"
 	"go.uber.org/zap"
 )
@@ -15,17 +16,17 @@ func WithNetworkDriver(driver network.Driver) NewNodeOption {
 	}
 }
 
-func WithNetworkMetrics(metrics network.Metrics) NewNodeOption {
+func WithNetworkMetric(metrics network_metric.Metric) NewNodeOption {
 	return func(n *Node) {
-		n.networkMetrics = metrics
+		n.networkMetric = metrics
 	}
 }
 
-func (n *Node) UseNetworkMetrics(ctx context.Context, metrics network.Metrics) {
+func (n *Node) UseNetworkMetric(ctx context.Context, metrics network_metric.Metric) {
 	tracer := tracing.EnterFunc(ctx, metrics)
 	defer tracer.Finish()
 
-	n.networkMetrics = metrics
+	n.networkMetric = metrics
 }
 
 func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) error {
