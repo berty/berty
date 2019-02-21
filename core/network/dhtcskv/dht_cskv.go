@@ -9,6 +9,7 @@ import (
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	opts "github.com/libp2p/go-libp2p-kad-dht/opts"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 )
 
 var defaultClientConfig = dht.BootstrapConfig{
@@ -51,4 +52,34 @@ func New(ctx context.Context, host host.Host, server bool, config dht.BootstrapC
 	}
 
 	return dhtkv, nil
+}
+
+func PutValue(ctx context.Context, dhtCskv *dht.IpfsDHT, key string, value []byte) error {
+	// Get time duration for putting a record
+	start := time.Now()
+
+	err := dhtCskv.PutValue(ctx, key, value)
+	if err != nil {
+		return errors.Wrap(err, "put value on DHT-CSKV failed")
+	}
+
+	elapsed := time.Now().Sub(start).Round(time.Millisecond)
+	logger().Debug("put value on dht-cskv", zap.Duration("time elapsed", elapsed), zap.String("key", key))
+
+	return nil
+}
+
+func GetValue(ctx context.Context, dhtCskv *dht.IpfsDHT, key string) ([]byte, error) {
+	// Get time duration for getting a record
+	start := time.Now()
+
+	value, err := dhtCskv.GetValue(ctx, key)
+	if err != nil {
+		return []byte{}, errors.Wrap(err, "get value on DHT-CSKV failed")
+	}
+
+	elapsed := time.Now().Sub(start).Round(time.Millisecond)
+	logger().Debug("get value on dht-cskv", zap.Duration("time elapsed", elapsed), zap.String("key", key))
+
+	return value, nil
 }

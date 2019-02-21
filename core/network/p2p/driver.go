@@ -5,19 +5,16 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"sync"
 	"time"
 
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
+	"github.com/pkg/errors"
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	"berty.tech/core/network/dhtcskv"
 	"berty.tech/core/network/p2p/p2putil"
-	"berty.tech/core/network/p2p/protocol/provider"
 	"berty.tech/core/pkg/tracing"
-
-	provider_pubsub "berty.tech/core/network/p2p/protocol/provider/pubsub"
 
 	ggio "github.com/gogo/protobuf/io"
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
@@ -76,8 +73,6 @@ type Driver struct {
 	host    host.Host
 	handler func(context.Context, *entity.Envelope) (*entity.Void, error)
 
-	providers *provider.Manager
-
 	// services
 	dht     *dht.IpfsDHT
 	dhtCskv *dht.IpfsDHT
@@ -118,7 +113,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	driver := &Driver{
 		host:        host,
 		rootContext: ctx,
-		providers:   provider.NewManager(),
 		shutdown:    make(chan struct{}, 1),
 	}
 
@@ -171,14 +165,6 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 	driver.PingSvc = ping.NewPingService(host)
 
 	host.SetStreamHandler(ProtocolID, driver.handleEnvelope)
-
-	// driver.providers.Register(provider_dht.New(driver.host, driver.dht))
-	pubsubProvider, err := provider_pubsub.New(ctx, host)
-	if err != nil {
-		logger().Warn("pubsub provider", zap.Error(err))
-	} else {
-		driver.providers.Register(pubsubProvider)
-	}
 
 	driver.logHostInfos()
 	if len(cfg.bootstrap) > 0 {
@@ -246,9 +232,9 @@ func (d *Driver) ID(ctx context.Context) *network.Peer {
 	}
 }
 
-func (d *Driver) handleNewPovider(providerID string, pi pstore.PeerInfo) {
-	logger().Debug("new providers", zap.String("providers ID", providerID), zap.String("peer ID", pi.ID.Pretty()))
-}
+// func (d *Driver) handleNewPovider(providerID string, pi pstore.PeerInfo) {
+// 	logger().Debug("new providers", zap.String("providers ID", providerID), zap.String("peer ID", pi.ID.Pretty()))
+// }
 
 func (d *Driver) Close(ctx context.Context) error {
 	tracer := tracing.EnterFunc(ctx)
@@ -400,51 +386,21 @@ func (d *Driver) Emit(ctx context.Context, e *entity.Envelope) error {
 	return d.EmitTo(ctx, e.GetChannelID(), e)
 }
 
-func (d *Driver) EmitTo(ctx context.Context, channel string, e *entity.Envelope) error {
-	tracer := tracing.EnterFunc(ctx, channel, e)
+func (d *Driver) EmitTo(ctx context.Context, contactID string, e *entity.Envelope) error {
+	tracer := tracing.EnterFunc(ctx, contactID, e)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	logger().Debug("looking for peers", zap.String("channel", channel))
-	ss, err := d.FindProvidersAndWait(ctx, channel, true)
+	peerInfo, err := dhtcskv.ContactIDToPeerInfo(ctx, d.dhtCskv, contactID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "EmitTo failed during contactID translation")
 	}
-
 	// @TODO: we need to split this, and let the node do the logic to try
 	// back if the send fail with the given peer
 
-	logger().Debug("found peers", zap.String("channel", channel), zap.Int("number", len(ss)))
-
-	mu := sync.Mutex{}
-	wg := sync.WaitGroup{}
-	wg.Add(len(ss))
-
-	ok := false
-	for i, s := range ss {
-		go func(pi pstore.PeerInfo, index int) {
-			gotracer := tracing.EnterFunc(ctx, index)
-			goctx := tracer.Context()
-
-			defer gotracer.Finish()
-			defer wg.Done()
-
-			if err := d.SendTo(goctx, pi, e); err != nil {
-				logger().Warn("sendTo", zap.Error(err))
-				return
-			}
-
-			mu.Lock()
-			ok = true
-			mu.Unlock()
-			return
-		}(s, i)
-	}
-
-	// wait until all goroutines are done
-	wg.Wait()
-	if !ok {
-		return fmt.Errorf("unable to send evenlope to at last one peer")
+	if err = d.SendTo(ctx, peerInfo, e); err != nil {
+		logger().Warn("sendTo", zap.Error(err))
+		return err
 	}
 
 	return nil
@@ -500,29 +456,17 @@ func (d *Driver) handleEnvelope(s inet.Stream) {
 		// @TODO: get opentracing context
 		d.handler(context.Background(), e)
 	}
-
 }
 
-func (d *Driver) FindProvidersAndWait(ctx context.Context, id string, cache bool) ([]pstore.PeerInfo, error) {
-	c, err := d.createCid(id)
+func (d *Driver) Join(ctx context.Context, contactID string) error {
+	peerInfo := d.host.Peerstore().PeerInfo(d.host.ID())
+
+	err := dhtcskv.PutTranslateRecord(ctx, d.dhtCskv, contactID, peerInfo)
 	if err != nil {
-		return nil, err
+		return errors.Wrap(err, "join failed")
 	}
 
-	if err := d.providers.FindProviders(ctx, c, cache); err != nil {
-		return nil, err
-	}
-
-	return d.providers.WaitForProviders(ctx, c)
-}
-
-func (d *Driver) Join(ctx context.Context, id string) error {
-	c, err := d.createCid(id)
-	if err != nil {
-		return err
-	}
-
-	return d.providers.Provide(ctx, c)
+	return nil
 }
 
 func (d *Driver) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) (*entity.Void, error)) {

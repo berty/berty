@@ -35,10 +35,18 @@ const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
 7beb018da4c79cb018e05305335d265046909f060c1b65e8eef94a107b9387cc`
 
 var DefaultBootstrap = []string{
-	"/ip4/104.248.78.238/udp/4004/quic/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/4004/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/443/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
-	"/ip4/104.248.78.238/tcp/80/ipfs/QmSMTqF5zUYQH8dmBrvbvVq2gqdnSnYdN6RN7unhfYndnU",
+	"/ip4/51.158.71.240/udp/4004/quic/ipfs/QmeYFvq4VV5RU1k1wBw3J5ZZLYxTE6H3AAKMzCAavuBjTp",
+	"/ip4/51.158.71.240/tcp/4004/ipfs/QmeYFvq4VV5RU1k1wBw3J5ZZLYxTE6H3AAKMzCAavuBjTp",
+	"/ip4/51.158.71.240/tcp/443/ipfs/QmeYFvq4VV5RU1k1wBw3J5ZZLYxTE6H3AAKMzCAavuBjTp",
+	"/ip4/51.158.71.240/tcp/80/ipfs/QmeYFvq4VV5RU1k1wBw3J5ZZLYxTE6H3AAKMzCAavuBjTp",
+	"/ip4/51.158.67.118/udp/4004/quic/ipfs/QmS88MDaMZUQeEvVdRAFmMfMz96b19Y79VJ6wQJnf4dwoo",
+	"/ip4/51.158.67.118/tcp/4004/ipfs/QmS88MDaMZUQeEvVdRAFmMfMz96b19Y79VJ6wQJnf4dwoo",
+	"/ip4/51.158.67.118/tcp/443/ipfs/QmS88MDaMZUQeEvVdRAFmMfMz96b19Y79VJ6wQJnf4dwoo",
+	"/ip4/51.158.67.118/tcp/80/ipfs/QmS88MDaMZUQeEvVdRAFmMfMz96b19Y79VJ6wQJnf4dwoo",
+	"/ip4/51.15.221.60/udp/4004/quic/ipfs/QmZP7oAGikmrMLAmf7ooNtnarYdDWki4Wru2sJ5H5kgCw3",
+	"/ip4/51.15.221.60/tcp/4004/ipfs/QmZP7oAGikmrMLAmf7ooNtnarYdDWki4Wru2sJ5H5kgCw3",
+	"/ip4/51.15.221.60/tcp/443/ipfs/QmZP7oAGikmrMLAmf7ooNtnarYdDWki4Wru2sJ5H5kgCw3",
+	"/ip4/51.15.221.60/tcp/80/ipfs/QmZP7oAGikmrMLAmf7ooNtnarYdDWki4Wru2sJ5H5kgCw3",
 }
 
 var BootstrapIpfs = []string{
