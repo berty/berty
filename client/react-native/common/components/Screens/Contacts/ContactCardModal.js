@@ -27,6 +27,7 @@ const ContactCardModal = ({ navigation }) => {
         >
           {state => {
             switch (state.type) {
+              default:
               case state.loading:
                 return <Loader />
               case state.success:

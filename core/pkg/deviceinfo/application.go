@@ -2,27 +2,27 @@ package deviceinfo
 
 import "sync"
 
-var application_state_subs []chan Application_State
-var application_state_mutex sync.Mutex
+var applicationStateSubs []chan Application_State
+var appplicationStateMutex sync.Mutex
 
 func (*Application_State) Subscribe() <-chan Application_State {
 	sub := make(chan Application_State)
-	application_state_mutex.Lock()
-	application_state_subs = append(application_state_subs, sub)
-	application_state_mutex.Unlock()
+	appplicationStateMutex.Lock()
+	applicationStateSubs = append(applicationStateSubs, sub)
+	appplicationStateMutex.Unlock()
 	return sub
 }
 
 func (*Application_State) Unsubscribe(sub <-chan Application_State) {
-	application_state_mutex.Lock()
-	for i := range application_state_subs {
-		if application_state_subs[i] == sub {
-			application_state_subs = append(application_state_subs[:i], application_state_subs[i+1:]...)
-			close(application_state_subs[i])
+	appplicationStateMutex.Lock()
+	for i := range applicationStateSubs {
+		if applicationStateSubs[i] == sub {
+			applicationStateSubs = append(applicationStateSubs[:i], applicationStateSubs[i+1:]...)
+			close(applicationStateSubs[i])
 			break
 		}
 	}
-	application_state_mutex.Unlock()
+	appplicationStateMutex.Unlock()
 }
 
 func (app *Application) SetState(state Application_State) {
@@ -34,11 +34,11 @@ func (app *Application) SetState(state Application_State) {
 	)
 
 	app.State = state
-	application_state_mutex.Lock()
-	for i := range application_state_subs {
-		application_state_subs[i] <- app.State
+	appplicationStateMutex.Lock()
+	for i := range applicationStateSubs {
+		applicationStateSubs[i] <- app.State
 	}
-	application_state_mutex.Unlock()
+	appplicationStateMutex.Unlock()
 }
 
 func (app *Application) SetRoute(route string) {

@@ -3,7 +3,7 @@ import LottieView from 'lottie-react-native'
 
 export default () => (
   <LottieView
-    source={require('./../static/animation/BertyAnimation.json')}
+    source={require('../../static/animation/BertyAnimation.json')}
     autoPlay
     loop={false}
     onAnimationFinish={() => this.setState({ showAnim: false })}
