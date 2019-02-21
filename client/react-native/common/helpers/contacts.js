@@ -39,7 +39,7 @@ export const extractPublicKeyFromId = contactId => {
 }
 
 export const makeShareableUrl = ({ id, displayName }) =>
-  `${BASE_WEBSITE_URL}/add-contact#public-key=${encodeURIComponent(
+  `${BASE_WEBSITE_URL}/contacts/add#id=${encodeURIComponent(
     id
   )}&display-name=${encodeURIComponent(displayName)}`
 

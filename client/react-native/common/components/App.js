@@ -95,7 +95,7 @@ export default class App extends PureComponent {
           },
         })
         break
-      case '/modal/contacts/card':
+      case '/contacts/add':
         if (url.hashParts['id']) {
           url.hashParts['id'] = contact.getRelayID(url.hashParts['id'])
         }

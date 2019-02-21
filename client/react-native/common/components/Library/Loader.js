@@ -8,7 +8,7 @@ const Loader = ({ message, color, background, size }) => (
   <Flex.Rows
     align='center'
     justify='center'
-    style={{ backgroundColor: background || colors.white }}
+    style={{ backgroundColor: background || colors.transparent }}
   >
     <ActivityIndicator size={size || 'large'} color={color} />
     {message && (

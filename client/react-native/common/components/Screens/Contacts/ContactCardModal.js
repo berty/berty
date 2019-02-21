@@ -5,7 +5,6 @@ import React from 'react'
 import {
   ContactIdentity,
   ContactIdentityActions,
-  Loader,
   ModalScreen,
 } from '../../Library'
 import { QueryReducer, RelayContext } from '../../../relay'
@@ -25,38 +24,33 @@ const ContactCardModal = ({ navigation }) => {
             { filter: { id } },
           ])}
         >
-          {state => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return <Loader />
-              case state.success:
-                return (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <ModalScreen
-                      showDismiss
-                      width={modalWidth}
-                      footer={
-                        <ContactIdentityActions
-                          data={state.data.Contact}
-                          modalWidth={modalWidth}
-                        />
-                      }
-                    >
-                      <ContactIdentity data={state.data.Contact} />
-                    </ModalScreen>
-                  </View>
-                )
-              case state.error:
-                return <Loader />
-            }
-          }}
+          {state => (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <ModalScreen
+                showDismiss
+                width={modalWidth}
+                loading={state.type !== state.success}
+                footer={
+                  <ContactIdentityActions
+                    data={state && state.data && state.data.Contact}
+                    modalWidth={modalWidth}
+                  />
+                }
+              >
+                <ContactIdentity
+                  data={
+                    (state && state.data && state.data.Contact) || undefined
+                  }
+                />
+              </ModalScreen>
+            </View>
+          )}
         </QueryReducer>
       )}
     </RelayContext.Consumer>

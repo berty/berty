@@ -19,50 +19,60 @@ class ByQRCode extends PureComponent {
 
     const size = Math.min(
       Dimensions.get('window').width,
-      Dimensions.get('window').height,
+      Dimensions.get('window').height
     )
 
-    return <RelayContext.Consumer>{relayContext => <View style={{
-      backgroundColor: colors.constantBlack,
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    }}>
-      <QRReader
-        style={{
-          height: size,
-          width: size,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        ref={(scanner) => { this.scanner = scanner }}
-        cameraStyle={{ height: size, width: size }}
-        onFound={async data => {
-          const url = parseUrl(data)
+    return (
+      <RelayContext.Consumer>
+        {relayContext => (
+          <View
+            style={{
+              backgroundColor: colors.constantBlack,
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <QRReader
+              style={{
+                height: size,
+                width: size,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              ref={scanner => {
+                this.scanner = scanner
+              }}
+              cameraStyle={{ height: size, width: size }}
+              onFound={async data => {
+                const url = parseUrl(data)
 
-          if (!url || url.pathname !== '/add-contact') {
-            showMessage({
-              message: t('contacts.add.qrcode-not-from-berty'),
-              type: 'danger',
-              position: 'top',
-              icon: 'danger',
-            })
-            setTimeout(() => this.reactivate(), 2000)
+                if (!url || url.pathname !== '/contacts/add') {
+                  showMessage({
+                    message: t('contacts.add.qrcode-not-from-berty'),
+                    type: 'danger',
+                    position: 'top',
+                    icon: 'danger',
+                  })
+                  setTimeout(() => this.reactivate(), 2000)
 
-            return
-          }
+                  return
+                }
 
-          await showContactModal({
-            relayContext,
-            beforeDismiss: () => this.reactivate(),
-            data: {
-              id: url.hashParts['public-key'],
-              displayName: url.hashParts['display-name'] || '',
-            },
-          })
-        }}
-      />
-    </View>}</RelayContext.Consumer>
+                await showContactModal({
+                  relayContext,
+                  beforeDismiss: () => this.reactivate(),
+                  data: {
+                    id: url.hashParts['public-key'],
+                    displayName: url.hashParts['display-name'] || '',
+                  },
+                })
+              }}
+            />
+          </View>
+        )}
+      </RelayContext.Consumer>
+    )
   }
 }
 

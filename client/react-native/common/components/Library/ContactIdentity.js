@@ -36,7 +36,7 @@ const PublicKey = ({ data: { id } }) => (
 const QrCode = ({ data: { id, displayName } }) => (
   <View style={[{ flexDirection: 'row', justifyContent: 'center' }]}>
     <QRGenerator
-      value={makeShareableUrl({ id, displayName })}
+      value={makeShareableUrl({ id: contact.getCoreID(id), displayName })}
       size={248}
       style={[{ marginTop: 16, marginBottom: 16 }]}
     />
@@ -93,7 +93,7 @@ const ContactIdentityTabbedContent = createMaterialTopTabNavigator(
   }
 )
 
-const ContactIdentity = ({ data }) => (
+const ContactIdentity = ({ data = contact.default }) => (
   <>
     <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
       <Avatar data={data} size={78} style={{ marginTop: 0 }} />
