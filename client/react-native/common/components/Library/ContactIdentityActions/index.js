@@ -8,10 +8,11 @@ import ReceivedActions from './ActionsReceived'
 import ActionsSent from './ActionsSent'
 
 const Actions = ({ data, navigation }) => {
-  if (data == null) {
-    return <ActionsAdd data={data} navigation={navigation} inModal />
-  }
   switch (data.status) {
+    case null:
+    case undefined:
+      return <ActionsAdd data={data} navigation={navigation} inModal />
+
     case enums.BertyEntityContactInputStatus.Myself:
       return <ActionsShare data={data} self navigation={navigation} inModal />
 

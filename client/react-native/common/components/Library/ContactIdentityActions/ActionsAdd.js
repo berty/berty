@@ -1,9 +1,9 @@
-import React from 'react'
-import { withNavigation } from 'react-navigation'
-import RelayContext from '../../../relay/RelayContext'
-import { btoa } from 'b64-lite'
-import ActionList from './ActionList'
 import { withNamespaces } from 'react-i18next'
+import { withNavigation } from 'react-navigation'
+import React from 'react'
+
+import ActionList from './ActionList'
+import RelayContext from '../../../relay/RelayContext'
 
 const ActionsAdd = ({ data, self, navigation, inModal, t }) => (
   <RelayContext.Consumer>
@@ -15,7 +15,7 @@ const ActionsAdd = ({ data, self, navigation, inModal, t }) => (
           dismissOnSuccess
           action={async () => {
             await mutations.contactRequest({
-              contactId: btoa(`contact:${data.id}`),
+              contactId: data.id,
               contactOverrideDisplayName:
                 data.overrideDisplayName || data.displayName || '',
               introText: '',

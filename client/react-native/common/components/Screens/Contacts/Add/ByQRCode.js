@@ -1,13 +1,15 @@
-import React, { PureComponent } from 'react'
 import { View, Dimensions } from 'react-native'
-import { withOrientation } from 'react-navigation'
-import QRReader from '../../../Library/QRReader'
-import { parse as parseUrl } from '../../../../helpers/url'
-import colors from '../../../../constants/colors'
 import { showMessage } from 'react-native-flash-message'
-import { showContactModal } from '../../../../helpers/contacts'
-import RelayContext from '../../../../relay/RelayContext'
 import { withNamespaces } from 'react-i18next'
+import { withOrientation } from 'react-navigation'
+import React, { PureComponent } from 'react'
+
+import { contact } from '../../../../utils'
+import { parse as parseUrl } from '../../../../helpers/url'
+import { showContactModal } from '../../../../helpers/contacts'
+import QRReader from '../../../Library/QRReader'
+import RelayContext from '../../../../relay/RelayContext'
+import colors from '../../../../constants/colors'
 
 class ByQRCode extends PureComponent {
   reactivate () {
@@ -63,7 +65,7 @@ class ByQRCode extends PureComponent {
                   relayContext,
                   beforeDismiss: () => this.reactivate(),
                   data: {
-                    id: url.hashParts['public-key'],
+                    id: contact.getRelayID(url.hashParts['id']),
                     displayName: url.hashParts['display-name'] || '',
                   },
                 })

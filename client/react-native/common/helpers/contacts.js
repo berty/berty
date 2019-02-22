@@ -1,13 +1,14 @@
-import { Share, Platform } from 'react-native'
-import { mutations } from '../graphql'
-import { atob, btoa } from 'b64-lite'
 import { NavigationActions } from 'react-navigation'
+import { Share, Platform } from 'react-native'
+import { atob, btoa } from 'b64-lite'
 import { showMessage } from 'react-native-flash-message'
-import defaultValuesContact from '../utils/contact'
-import NavigationService from './NavigationService'
 import DeviceInfo from 'react-native-device-info'
 import I18n from 'i18next'
+
 import { BASE_WEBSITE_URL } from '../constants'
+import { contact } from '../utils'
+import { mutations } from '../graphql'
+import NavigationService from './NavigationService'
 
 export const requestContact = async (
   contactId,
@@ -67,8 +68,8 @@ export const isPubKeyValid = async ({ queries, data: { id } }) => {
   try {
     const res = await queries.ContactCheckPublicKey.fetch({
       filter: {
-        ...defaultValuesContact,
-        id: btoa(`contact:${id}`),
+        ...contact.default,
+        id,
       },
     })
 
@@ -84,15 +85,6 @@ export const showContactModal = async ({
   beforeDismiss,
   data,
 }) => {
-  const extractedPublicKey = extractPublicKeyFromId(data.id)
-
-  if (extractedPublicKey && extractedPublicKey !== '') {
-    data = {
-      ...data,
-      id: extractedPublicKey,
-    }
-  }
-
   if (!(await isPubKeyValid({ queries, data }))) {
     showMessage({
       message: I18n.t('contacts.add.invalid-public-key'),
@@ -108,10 +100,8 @@ export const showContactModal = async ({
     NavigationActions.navigate({
       routeName: 'modal/contacts/card',
       params: {
-        data: {
-          ...data,
-          displayName: data.displayName || '',
-        },
+        id: data.id,
+        displayName: data.displayName,
         beforeDismiss: beforeDismiss,
       },
     })

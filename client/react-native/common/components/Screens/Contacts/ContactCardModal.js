@@ -13,7 +13,10 @@ import { merge } from '../../../helpers'
 const modalWidth = 320
 
 const ContactCardModal = ({ navigation }) => {
-  const id = navigation.getParam('id')
+  const data = {
+    id: navigation.getParam('id'),
+    displayName: navigation.getParam('displayName'),
+  }
   return (
     <RelayContext.Consumer>
       {context => (
@@ -21,36 +24,36 @@ const ContactCardModal = ({ navigation }) => {
           query={context.queries.Contact.graphql}
           variables={merge([
             context.queries.Contact.defaultVariables,
-            { filter: { id } },
+            { filter: { id: data.id } },
           ])}
         >
-          {state => (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-            >
-              <ModalScreen
-                showDismiss
-                width={modalWidth}
-                loading={state.type !== state.success}
-                footer={
-                  <ContactIdentityActions
-                    data={state && state.data && state.data.Contact}
-                    modalWidth={modalWidth}
-                  />
-                }
+          {state =>
+            console.log(state) || (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
               >
-                <ContactIdentity
-                  data={
-                    (state && state.data && state.data.Contact) || undefined
+                <ModalScreen
+                  showDismiss
+                  width={modalWidth}
+                  loading={state.type === state.loading}
+                  footer={
+                    <ContactIdentityActions
+                      data={(state && state.data && state.data.Contact) || data}
+                      modalWidth={modalWidth}
+                    />
                   }
-                />
-              </ModalScreen>
-            </View>
-          )}
+                >
+                  <ContactIdentity
+                    data={(state && state.data && state.data.Contact) || data}
+                  />
+                </ModalScreen>
+              </View>
+            )
+          }
         </QueryReducer>
       )}
     </RelayContext.Consumer>
