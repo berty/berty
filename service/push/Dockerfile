@@ -13,6 +13,8 @@ ENV OPTIONS=$OPTIONS
 COPY ios-push-certs/certs/ .
 COPY id_rsa_push .
 
+RUN echo $OPTIONS
+
 ENTRYPOINT ["sh", "-c"]
 CMD ["berty daemon \
         --bind-p2p /ip4/0.0.0.0/tcp/4004,/ip4/0.0.0.0/tcp/80,/ip4/0.0.0.0/tcp/443,/ip4/0.0.0.0/udp/4004/quic \
