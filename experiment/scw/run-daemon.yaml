@@ -13,8 +13,6 @@
       src: "{{ local_home }}/src/berty.tech/berty"
       dest: "/usr/bin/berty"
       mode: 0755
-  - name: kill old daemon
-    shell: killall -9 berty || true
   - name: run daemon
-    shell: cd /root && nohup /usr/bin/berty daemon --dhtkv-server --log-level=debug --hop --bind-p2p /ip4/0.0.0.0/tcp/4004,/ip4/0.0.0.0/tcp/80,/ip4/0.0.0.0/tcp/443,/ip4/0.0.0.0/udp/4004/quic --mdns=false  --p2p-identity="$(cat /root/pk)"  </dev/null >/dev/null 2>&1 &
+    shell: systemctl restart berty
 
