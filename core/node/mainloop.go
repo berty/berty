@@ -3,12 +3,14 @@ package node
 import (
 	"context"
 	"fmt"
+	"sync"
 	"time"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
+	"berty.tech/core/sql"
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -127,41 +129,93 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 		n.LogBackgroundError(ctx, fmt.Errorf("unhandled event type"))
 	}
 
-	if envelope.Signature, err = keypair.Sign(n.crypto, &envelope); err != nil {
-		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
+	contactsForEvent, err := n.getContactsForEvent(ctx, event)
+	if err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "failed get contacts for event"))
 		span.Finish()
 		return
 	}
 
-	// Async subscribe to conversation
-	// wait for 1s to simulate a sync subscription,
-	// if too long, the task will be done in background
-	done := make(chan bool, 1)
-	go func() {
-		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
-		defer cancel()
+	wg := sync.WaitGroup{}
+	wg.Add(len(contactsForEvent))
 
-		// FIXME: make something smarter, i.e., grouping events by contact or network driver
-		if err := n.networkDriver.Emit(tctx, &envelope); err != nil {
-			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
-
-			// push the outgoing event on the client stream
-			n.queuePushEvent(ctx, event, &envelope)
-
-			span.Finish()
-			return
+	for _, contact := range contactsForEvent {
+		// Ignore myself
+		if contact.ID == n.UserID() {
+			wg.Done()
+			continue
 		}
+		go func(contact *entity.Contact) {
+			// Async subscribe to conversation
+			// wait for 1s to simulate a sync subscription,
+			// if too long, the task will be done in background
+			done := make(chan bool, 1)
+			go func() {
+				tctx, cancel := context.WithTimeout(ctx, time.Second*10)
+				defer cancel()
 
-		done <- true
-		span.Finish()
-	}()
-	select {
-	case <-done:
-	case <-time.After(1 * time.Second):
-		// push the outgoing event on the client stream
-		n.queuePushEvent(ctx, event, &envelope)
+				envCopy := envelope
+				envCopy.ChannelID = contact.ID
+
+				if envCopy.Signature, err = keypair.Sign(n.crypto, &envCopy); err != nil {
+					n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
+					span.Finish()
+					return
+				}
+				// FIXME: make something smarter, i.e., grouping events by contact or network driver
+				if err := n.networkDriver.Emit(tctx, &envCopy); err != nil {
+					n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
+
+					// push the outgoing event on the client stream
+					go n.queuePushEvent(ctx, event, &envelope)
+
+					span.Finish()
+					return
+				}
+
+				done <- true
+				span.Finish()
+			}()
+			select {
+			case <-done:
+			case <-time.After(1 * time.Second):
+				// push the outgoing event on the client stream
+				go n.queuePushEvent(ctx, event, &envelope)
+			}
+
+			wg.Done()
+		}(contact)
 	}
+
+	wg.Wait()
+
 	n.clientEvents <- event
+}
+
+func (n *Node) getContactsForEvent(ctx context.Context, event *entity.Event) ([]*entity.Contact, error) {
+	db := n.sql(ctx)
+	var subqueryContactIDs interface{}
+	contacts := []*entity.Contact{}
+
+	if event.ConversationID != "" {
+		subqueryContactIDs = db.
+			Model(&entity.ConversationMember{}).
+			Select("contact_id").
+			Where(&entity.ConversationMember{ConversationID: event.ConversationID}).
+			QueryExpr()
+	} else if event.ReceiverID != "" {
+		subqueryContactIDs = []string{event.ReceiverID}
+	}
+
+	if err := db.
+		Model(&entity.Contact{}).
+		Where("id IN (?)", subqueryContactIDs).
+		Find(&contacts).
+		Error; err != nil {
+		return nil, sql.GenericError(err)
+	}
+
+	return contacts, nil
 }
 
 func (n *Node) UseNodeEvent(ctx context.Context) {

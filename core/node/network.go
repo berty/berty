@@ -2,12 +2,9 @@ package node
 
 import (
 	"context"
-	"time"
 
 	"berty.tech/core/network"
-	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/tracing"
-	"go.uber.org/zap"
 )
 
 func WithNetworkDriver(driver network.Driver) NewNodeOption {
@@ -16,17 +13,17 @@ func WithNetworkDriver(driver network.Driver) NewNodeOption {
 	}
 }
 
-func WithNetworkMetric(metrics network_metric.Metric) NewNodeOption {
+func WithNetworkMetrics(metrics network.Metrics) NewNodeOption {
 	return func(n *Node) {
-		n.networkMetric = metrics
+		n.networkMetrics = metrics
 	}
 }
 
-func (n *Node) UseNetworkMetric(ctx context.Context, metrics network_metric.Metric) {
+func (n *Node) UseNetworkMetrics(ctx context.Context, metrics network.Metrics) {
 	tracer := tracing.EnterFunc(ctx, metrics)
 	defer tracer.Finish()
 
-	n.networkMetric = metrics
+	n.networkMetrics = metrics
 }
 
 func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) error {
@@ -37,19 +34,14 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	// FIXME: use a locking system
 
 	n.networkDriver = driver
+
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
 
-	// @FIXME: dont do that in a goroutine, remove the sleep
-
-	if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {
-		logger().Error("failed to join user channel",
-			zap.String("id", n.UserID()),
-			zap.Error(err),
-		)
-	}
-
-	time.Sleep(time.Second)
+	// FIXME: We need to refactor the way we update translate record
+	// For now, Join() is a goroutine that check every minute if peerInfo needs to be updated
+	// We'll need to call Join() only when peerInfo change or when time-based translate record rotation will be implemented
+	n.networkDriver.Join(ctx, n.UserID())
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device

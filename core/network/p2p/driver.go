@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"reflect"
 	"time"
 
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
@@ -232,10 +233,6 @@ func (d *Driver) ID(ctx context.Context) *network.Peer {
 	}
 }
 
-// func (d *Driver) handleNewPovider(providerID string, pi pstore.PeerInfo) {
-// 	logger().Debug("new providers", zap.String("providers ID", providerID), zap.String("peer ID", pi.ID.Pretty()))
-// }
-
 func (d *Driver) Close(ctx context.Context) error {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
@@ -393,7 +390,7 @@ func (d *Driver) EmitTo(ctx context.Context, contactID string, e *entity.Envelop
 
 	peerInfo, err := dhtcskv.ContactIDToPeerInfo(ctx, d.dhtCskv, contactID)
 	if err != nil {
-		return errors.Wrap(err, "EmitTo failed during contactID translation")
+		return errors.Wrap(err, fmt.Sprintf("EmitTo failed during contactID translation (%s)", contactID))
 	}
 	// @TODO: we need to split this, and let the node do the logic to try
 	// back if the send fail with the given peer
@@ -459,12 +456,30 @@ func (d *Driver) handleEnvelope(s inet.Stream) {
 }
 
 func (d *Driver) Join(ctx context.Context, contactID string) error {
-	peerInfo := d.host.Peerstore().PeerInfo(d.host.ID())
-
-	err := dhtcskv.PutTranslateRecord(ctx, d.dhtCskv, contactID, peerInfo)
-	if err != nil {
-		return errors.Wrap(err, "join failed")
-	}
+	go func() {
+		prevPeerInfo := pstore.PeerInfo{}
+		for {
+			duration := 1 * time.Minute
+			currPeerInfo := d.host.Peerstore().PeerInfo(d.host.ID())
+			if !reflect.DeepEqual(prevPeerInfo, currPeerInfo) {
+				err := dhtcskv.PutTranslateRecord(ctx, d.dhtCskv, contactID, currPeerInfo)
+				if err != nil {
+					logger().Warn(errors.Wrap(err, "join failed").Error())
+					duration = 5 * time.Second
+				} else {
+					logger().Debug("translate record updated successfully")
+					prevPeerInfo = currPeerInfo
+				}
+			}
+			select {
+			case <-time.After(duration):
+				continue
+			case <-d.shutdown:
+				logger().Debug("driver shutdown: translation record updater ended")
+				return
+			}
+		}
+	}()
 
 	return nil
 }

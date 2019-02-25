@@ -1,12 +1,13 @@
 package node
 
 import (
+	"context"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
-	"context"
 	"github.com/gogo/protobuf/proto"
 	"go.uber.org/zap"
 )

@@ -8,7 +8,6 @@ import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"io"
 
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -52,7 +51,7 @@ func (translateValidator) Select(key string, vals [][]byte) (int, error) {
 func getValueFromPeerInfo(contactID string, peerInfo pstore.PeerInfo) ([]byte, error) {
 	key := md5.Sum([]byte(contactID))
 
-	plainText, err := json.Marshal(peerInfo)
+	plainText, err := peerInfo.MarshalJSON()
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "peerInfo marshaling failed")
 	}
@@ -80,7 +79,7 @@ func getPeerInfoFromValue(contactID string, value []byte) (pstore.PeerInfo, erro
 
 	blockCipher, err := aes.NewCipher(key[:])
 	if err != nil {
-		return pstore.PeerInfo{}, errors.Wrap(err, "AES decryption failed during base64 decoding")
+		return pstore.PeerInfo{}, errors.Wrap(err, "AES decryption failed during cipher creation")
 	}
 
 	if len(value) < aes.BlockSize {
@@ -94,7 +93,7 @@ func getPeerInfoFromValue(contactID string, value []byte) (pstore.PeerInfo, erro
 	stream := cipher.NewCFBDecrypter(blockCipher, iv)
 	stream.XORKeyStream(plainText, cipherText)
 
-	err = json.Unmarshal(plainText, &peerInfo)
+	err = peerInfo.UnmarshalJSON(plainText)
 	if err != nil {
 		return peerInfo, errors.Wrap(err, "peerInfo unmarshaling failed")
 	}

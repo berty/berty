@@ -15,4 +15,3 @@
       mode: 0755
   - name: run daemon
     shell: systemctl restart berty
-

@@ -8,4 +8,3 @@
       dest: "/etc/systemd/system/multi-user.target.wants/berty.service"
   - name: reaload systemd
     shell: systemctl daemon-reload
-

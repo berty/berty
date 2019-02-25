@@ -2,6 +2,7 @@ package dhtcskv
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	ds "github.com/ipfs/go-datastore"
@@ -25,12 +26,16 @@ var defaultServerConfig = dht.BootstrapConfig{
 }
 
 func New(ctx context.Context, host host.Host, server bool, config dht.BootstrapConfig) (*dht.IpfsDHT, error) {
-	datastore := ds.NewMapDatastore()
+	var datastore ds.Batching
 
-	if config.Queries == 0 {
-		if server {
+	if server {
+		datastore = ds.NewLogDatastore(ds.NewMapDatastore(), "DHT_datastore")
+		if config.Queries == 0 {
 			config = defaultServerConfig
-		} else {
+		}
+	} else {
+		datastore = ds.NewMapDatastore()
+		if config.Queries == 0 {
 			config = defaultClientConfig
 		}
 	}
@@ -57,14 +62,14 @@ func New(ctx context.Context, host host.Host, server bool, config dht.BootstrapC
 func PutValue(ctx context.Context, dhtCskv *dht.IpfsDHT, key string, value []byte) error {
 	// Get time duration for putting a record
 	start := time.Now()
-
 	err := dhtCskv.PutValue(ctx, key, value)
+	elapsed := time.Now().Sub(start).Round(time.Millisecond)
+
 	if err != nil {
-		return errors.Wrap(err, "put value on DHT-CSKV failed")
+		return errors.Wrap(err, fmt.Sprintf("put value on DHT-CSKV failed (%dms)", elapsed))
 	}
 
-	elapsed := time.Now().Sub(start).Round(time.Millisecond)
-	logger().Debug("put value on dht-cskv", zap.Duration("time elapsed", elapsed), zap.String("key", key))
+	logger().Debug("put value on dht-cskv", zap.Duration("put duration", elapsed), zap.String("key", key))
 
 	return nil
 }
@@ -72,14 +77,14 @@ func PutValue(ctx context.Context, dhtCskv *dht.IpfsDHT, key string, value []byt
 func GetValue(ctx context.Context, dhtCskv *dht.IpfsDHT, key string) ([]byte, error) {
 	// Get time duration for getting a record
 	start := time.Now()
-
 	value, err := dhtCskv.GetValue(ctx, key)
+	elapsed := time.Now().Sub(start).Round(time.Millisecond)
+
 	if err != nil {
-		return []byte{}, errors.Wrap(err, "get value on DHT-CSKV failed")
+		return []byte{}, errors.Wrap(err, fmt.Sprintf("get value on DHT-CSKV failed (%dms)", elapsed))
 	}
 
-	elapsed := time.Now().Sub(start).Round(time.Millisecond)
-	logger().Debug("get value on dht-cskv", zap.Duration("time elapsed", elapsed), zap.String("key", key))
+	logger().Debug("get value on dht-cskv", zap.Duration("get duration", elapsed), zap.String("key", key))
 
 	return value, nil
 }

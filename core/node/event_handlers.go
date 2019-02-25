@@ -81,10 +81,6 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *entity.E
 		return err
 	}
 
-	if err := n.networkDriver.Join(ctx, input.SenderID); err != nil {
-		return err
-	}
-
 	var deepLink string
 	conv, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
 	if err == nil {
@@ -157,10 +153,6 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event
 	}
 
 	if _, err := bsql.CreateConversation(n.sql(ctx), conversation); err != nil {
-		return err
-	}
-
-	if err := n.networkDriver.Join(ctx, attrs.Conversation.ID); err != nil {
 		return err
 	}
 
