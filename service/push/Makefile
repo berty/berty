@@ -71,12 +71,12 @@ deps: fcm-opts apns-opts
 .PHONY: build
 build: deps
 	docker build --no-cache --rm \
-			--build-arg options='$(fcm-opts) $(apns-opts)' \
+			--build-arg OPTIONS='$(fcm-opts) $(apns-opts) $(options)' \
 			-t bertychat/push . \
 
 .PHONY: run
 run: build deps
-	docker rm $(name) || true
+	docker rm -f $(name) || true
 	docker run --name $(name) bertychat/push
 
 .PHONY: push
