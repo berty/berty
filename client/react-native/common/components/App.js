@@ -1,25 +1,26 @@
-import { Linking, Platform, Animated, Easing } from 'react-native'
+import { I18nextProvider } from 'react-i18next'
+import { Linking, Platform } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
+import Config from 'react-native-config'
+import FlashMessage from 'react-native-flash-message'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
-import { parse as parseUrl } from '../helpers/url'
-import LottieView from 'lottie-react-native'
-import { Flex } from './Library'
-import FlashMessage from 'react-native-flash-message'
-import Accounts from './Screens/Accounts'
-import { BASE_WEBSITE_URL, colors } from './../constants'
-import { I18nextProvider } from 'react-i18next'
 import ReactNativeLanguages from 'react-native-languages'
-import i18n from '../i18n'
-import Instabug from 'instabug-reactnative';
-import { btoa } from 'b64-lite'
-import Config from 'react-native-config'
 
+import { BASE_WEBSITE_URL, colors } from './../constants'
+import { Flex, Animation } from './Library'
+import { contact, conversation } from '../utils'
+import { parse as parseUrl } from '../helpers/url'
+import Accounts from './Screens/Accounts'
+import Instabug from '../helpers/Instabug'
+import i18n from '../i18n'
 
 export default class App extends PureComponent {
   state = {
     loading: true,
-    showAnim: (process.env['ENVIRONMENT'] !== 'integration_test'),
+    showAnim:
+      process.env['ENVIRONMENT'] !== 'integration_test' &&
+      Platform.OS !== 'web',
     deepLink: {
       routeName: 'main',
       params: {},
@@ -29,18 +30,21 @@ export default class App extends PureComponent {
   constructor (props) {
     super(props)
 
-    Instabug.setIntroMessageEnabled(false)
-
-    if (Platform.OS === 'ios') {
-      Instabug.startWithToken(
-        Config.INSTABUG_TOKEN,
-        [__DEV__ ? Instabug.invocationEvent.none : Instabug.invocationEvent.shake],
-      )
-    }
-
-    if (__DEV__) {
-      const DevMenu = require('react-native-dev-menu')
-      DevMenu.addItem('Show Instabug', () => Instabug.invoke())
+    if (Platform.OS !== 'web') {
+      Instabug.setIntroMessageEnabled(false)
+      if (Platform.OS === 'ios') {
+        Instabug.startWithToken(Config.INSTABUG_TOKEN, [
+          // eslint-disable-next-line
+          __DEV__
+            ? Instabug.invocationEvent.none
+            : Instabug.invocationEvent.shake,
+        ])
+      }
+      // eslint-disable-next-line
+      if (__DEV__) {
+        const DevMenu = require('react-native-dev-menu')
+        DevMenu.addItem('Show Instabug', () => Instabug.invoke())
+      }
     }
   }
 
@@ -71,37 +75,34 @@ export default class App extends PureComponent {
     }
   }
 
-  _onLanguageChange = ({ language, languages }) => {
-    i18n.changeLanguage(language)
+  _onLanguageChange = ({ language } = {}) => {
+    language != null && i18n.changeLanguage(language)
   }
 
   handleOpenURL (event) {
-    let url = parseUrl(event.url.replace('berty://', `${BASE_WEBSITE_URL}/`))
-
+    let url = parseUrl(
+      event.url.replace('berty://berty.chat/', `${BASE_WEBSITE_URL}/`)
+    )
     switch (url.pathname) {
-      case '/conversation':
+      case '/chats/detail':
+        if (url.hashParts['id']) {
+          url.hashParts['id'] = conversation.getRelayID(url.hashParts['id'])
+        }
         this.setState({
           deepLink: {
             routeName: 'chats/detail',
-            params: {
-              conversation: {
-                title: '',
-                id: btoa('conversation:' + url.hashParts['id']),
-              },
-            },
+            params: url.hashParts,
           },
         })
         break
-      case '/add-contact':
+      case '/contacts/add':
+        if (url.hashParts['id']) {
+          url.hashParts['id'] = contact.getRelayID(url.hashParts['id'])
+        }
         this.setState({
           deepLink: {
             routeName: 'modal/contacts/card',
-            params: {
-              data: {
-                id: url.hashParts['public-key'] || '',
-                displayName: url.hashParts['display-name'] || '',
-              },
-            },
+            params: url.hashParts,
           },
         })
         break
@@ -120,37 +121,37 @@ export default class App extends PureComponent {
   }
 
   render () {
-    const { loading, deepLink, showAnim, progress } = this.state
+    const { loading, deepLink, showAnim } = this.state
     return (
       <I18nextProvider i18n={i18n}>
         <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-          { showAnim && Platform.OS !== 'web'
-            ? <Flex.Rows
+          {showAnim ? (
+            <Flex.Rows
               align='center'
               justify='center'
-              style={{ 'width': '100%',  height: '100%', zIndex: 1000, position: 'absolute', backgroundColor: colors.white }}
+              style={{
+                width: '100%',
+                height: '100%',
+                zIndex: 1000,
+                position: 'absolute',
+                backgroundColor: colors.white,
+              }}
             >
-              <LottieView
-                source={require('./../static/animation/BertyAnimation.json')}
-                autoPlay={true}
-                loop={false}
-                onAnimationFinish={() => this.setState({ showAnim: false })}
-                style={{ 'width': 320 }}
-                autoSize
-              />
+              <Animation onFinish={() => this.setState({ showAnim: false })} />
             </Flex.Rows>
-            : null }
-          { !loading
-            ? <Accounts
+          ) : null}
+          {!loading ? (
+            <Accounts
               ref={nav => {
                 this.navigation = nav
               }}
               screenProps={{
                 deepLink,
-                setDeepLink: (deepLink) => this.setDeepLink(deepLink),
+                setDeepLink: deepLink => this.setDeepLink(deepLink),
                 clearDeepLink: () => this.clearDeepLink(),
               }}
-            /> : null }
+            />
+          ) : null}
           <FlashMessage position='top' />
           {Platform.OS === 'ios' && <KeyboardSpacer />}
         </SafeAreaView>

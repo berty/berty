@@ -51,7 +51,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 		Body: i18n.T("ContactRequestBody", map[string]interface{}{
 			"Name": attrs.Me.DisplayName,
 		}),
-		DeepLink: "berty://add-contact#public-key=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
+		DeepLink: "berty://berty.chat/contacts/add#id=" + url.PathEscape(attrs.Me.ID) + "&display-name=" + url.PathEscape(attrs.Me.DisplayName),
 	})
 
 	if err := entity.SaveDevices(sql, attrs.Me.ID, devices); err != nil {
@@ -88,7 +88,7 @@ func (n *Node) handleContactRequestAccepted(ctx context.Context, input *entity.E
 	var deepLink string
 	conv, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
 	if err == nil {
-		deepLink = "berty://conversation#id=" + url.PathEscape(conv.ID)
+		deepLink = "berty://berty.chat/chats/detail#id=" + url.PathEscape(conv.ID)
 	}
 
 	n.DisplayNotification(&notification.Payload{
@@ -167,7 +167,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event
 	n.DisplayNotification(&notification.Payload{
 		Title:    i18n.T("ConversationInviteTitle", nil),
 		Body:     i18n.T("ConversationInviteBody", nil),
-		DeepLink: "berty://conversation#id=" + url.PathEscape(attrs.Conversation.ID),
+		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(attrs.Conversation.ID),
 	})
 
 	return nil
@@ -213,7 +213,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 	n.DisplayNotification(&notification.Payload{
 		Title:    title,
 		Body:     body,
-		DeepLink: "berty://conversation#id=" + url.PathEscape(input.ConversationID),
+		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(input.ConversationID),
 	})
 	return nil
 }

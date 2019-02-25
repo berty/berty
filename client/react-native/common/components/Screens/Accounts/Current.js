@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react'
 import { getAvailableUpdate } from '../../../helpers/update'
 import { withNamespaces } from 'react-i18next'
 
+import { atob } from 'b64-lite'
 import { Loader } from '../../Library'
 import { environment, RelayContext, contextValue } from '../../../relay'
 import {
@@ -67,10 +68,7 @@ class Current extends PureComponent {
 
   openDeepLink = () => {
     const {
-      screenProps: {
-        deepLink,
-        clearDeepLink,
-      },
+      screenProps: { deepLink, clearDeepLink },
     } = this.props
 
     if (!deepLink) {
@@ -94,6 +92,37 @@ class Current extends PureComponent {
       updaters,
     })
 
+  getActiveRouteName = navigationState => {
+    if (!navigationState) {
+      return null
+    }
+    const route = navigationState.routes[navigationState.index]
+    // dive into nested navigators
+    if (route.routes) {
+      return this.getActiveRouteName(route)
+    }
+
+    // get fragment from react-navigation params
+    const fragment = Object.keys(route.params || {}).reduce((fragment, key) => {
+      const paramType = typeof route.params[key]
+      if (
+        paramType === 'string' ||
+        paramType === 'number' ||
+        paramType === 'boolean'
+      ) {
+        let val = route.params[key]
+        if (key === 'id') {
+          val = atob(val)
+          val = val.match(/:(.*)$/)
+          val = val[1]
+        }
+        fragment += fragment.length > 0 ? `,${key}=${val}` : `#${key}=${val}`
+      }
+      return fragment
+    }, '')
+    return route.routeName + fragment
+  }
+
   render () {
     const { t } = this.props
     const { loading, context, availableUpdate } = this.state
@@ -112,6 +141,14 @@ class Current extends PureComponent {
             context,
             availableUpdate,
             firstLaunch: this.props.navigation.getParam('firstLaunch', false),
+          }}
+          onNavigationStateChange={(prevState, currentState) => {
+            const currentRoute = this.getActiveRouteName(currentState)
+            const prevRoute = this.getActiveRouteName(prevState)
+
+            if (prevRoute !== currentRoute) {
+              CoreModule.setCurrentRoute(currentRoute)
+            }
           }}
         />
       </RelayContext.Provider>

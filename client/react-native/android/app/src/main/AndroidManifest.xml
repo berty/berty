@@ -2,7 +2,7 @@
     package="chat.berty.main">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -39,8 +39,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="berty" />
-                <data android:scheme="https" android:host="berty.tech" android:pathPrefix="/add-contact" />
-                <data android:scheme="https" android:host="berty.chat" android:pathPrefix="/add-contact" />
+                <data android:scheme="https" android:host="berty.tech" />
+                <data android:scheme="https" android:host="berty.chat" />
             </intent-filter>
         </activity>
         <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />

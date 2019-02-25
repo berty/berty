@@ -83,9 +83,7 @@ const ItemBase = fragments.Conversation(
       return (
         <Flex.Cols
           align='center'
-          onPress={() =>
-            navigation.navigate('chats/detail', { conversation: data })
-          }
+          onPress={() => navigation.navigate('chats/detail', { id: data.id })}
           style={[{ height: 72 }, padding, borderBottom]}
         >
           <Flex.Rows size={1} align='center'>

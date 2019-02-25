@@ -82,8 +82,8 @@ public class CoreModule extends ReactContextBaseJavaModule {
     public void start(String nickname, Promise promise) {
         try {
             core.MobileOptions coreOptions = new core.MobileOptions()
-                .withNickname(nickname)
-                .withLoggerDriver(this.logger);
+                    .withNickname(nickname)
+                    .withLoggerDriver(this.logger);
 
             Core.start(coreOptions);
             promise.resolve(null);
@@ -125,7 +125,6 @@ public class CoreModule extends ReactContextBaseJavaModule {
             promise.reject(err);
         }
     }
-
 
     @ReactMethod
     public void getPort(Promise promise) {
@@ -206,5 +205,10 @@ public class CoreModule extends ReactContextBaseJavaModule {
             this.logger.format(Level.ERROR, this.getName(), "Unable to update stop local gRPC: %s", err);
             promise.reject(err);
         }
+    }
+
+    @ReactMethod
+    public void setCurrentRoute(String route) {
+        Core.getDeviceInfo().setAppRoute(route);
     }
 }
