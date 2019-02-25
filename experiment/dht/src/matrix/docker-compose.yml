@@ -1,0 +1,71 @@
+version: '3'
+
+services:
+  homeserver-0:
+    image: matrixdotorg/synapse:latest
+    hostname: homeserver-0
+    environment:
+      - SYNAPSE_SERVER_NAME=homeserver-0
+      - SYNAPSE_ENABLE_REGISTRATION=yes
+      - SYNAPSE_REPORT_STATS=no
+      - SYNAPSE_NO_TLS=1
+
+  homeserver-1:
+    image: matrixdotorg/synapse:latest
+    hostname: homeserver-1
+    environment:
+      - SYNAPSE_SERVER_NAME=homeserver-1
+      - SYNAPSE_ENABLE_REGISTRATION=yes
+      - SYNAPSE_REPORT_STATS=no
+      - SYNAPSE_NO_TLS=1
+
+  homeserver-2:
+    image: matrixdotorg/synapse:latest
+    hostname: homeserver-2
+    environment:
+      - SYNAPSE_SERVER_NAME=homeserver-2
+      - SYNAPSE_ENABLE_REGISTRATION=yes
+      - SYNAPSE_REPORT_STATS=no
+      - SYNAPSE_NO_TLS=1
+
+  client-0:
+    build: .
+    depends_on:
+      - homeserver-0
+      - homeserver-1
+      - homeserver-2
+    environment:
+      - USER=client-0
+      - PASSWORD=secure-0
+      - BOOTSTRAPS=http://homeserver-1:8008,http://homeserver-2:8008
+    volumes:
+      - $GOPATH/src:/go/src
+
+  client-1:
+    build: .
+    depends_on:
+      - homeserver-0
+      - homeserver-1
+      - homeserver-2
+    environment:
+      - USER=client-1
+      - PASSWORD=secure-1
+      - BOOTSTRAPS=http://homeserver-2:8008,http://homeserver-0:8008
+    volumes:
+      - $GOPATH/src:/go/src
+
+  client-2:
+    build: .
+    depends_on:
+      - homeserver-0
+      - homeserver-1
+      - homeserver-2
+    environment:
+      - USER=client-1
+      - PASSWORD=secure-1
+      - BOOTSTRAPS=http://homeserver-0:8008,http://homeserver-1:8008
+    volumes:
+      - $GOPATH/src:/go/src
+
+
+
