@@ -5,7 +5,7 @@ import (
 	"berty.tech/core/sql/migrations/v0002pushtokens"
 	"berty.tech/core/sql/migrations/v0003notificationssettings"
 	"berty.tech/core/sql/migrations/v0004conversationinfos"
-	"github.com/go-gormigrate/gormigrate"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 func GetMigrations() []*gormigrate.Migration {
