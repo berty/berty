@@ -25,7 +25,7 @@ WORKDIR /usr/src/app/web
 # CMD yarn start
 
 # Core
-FROM golang:1.11-stretch as core
+FROM golang:1.12-stretch as core
 
 RUN apt-get update \
     && apt-get install -y  --no-install-recommends \
