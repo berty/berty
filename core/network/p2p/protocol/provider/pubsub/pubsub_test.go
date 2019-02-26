@@ -28,7 +28,9 @@ func getBoostrap(d *ProviderTest) []string {
 	bootstrap := make([]string, len(addrs))
 
 	for i, a := range addrs {
-		bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.host.ID().Pretty())
+		if a.String() != "/p2p-circuit" {
+			bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.host.ID().Pretty())
+		}
 	}
 
 	return bootstrap

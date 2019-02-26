@@ -135,7 +135,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		cfg.dhtBoostrapConfig = dht.DefaultBootstrapConfig
 	}
 
-	_, err = driver.dht.BootstrapWithConfig(cfg.dhtBoostrapConfig)
+	err = driver.dht.BootstrapWithConfig(ctx, cfg.dhtBoostrapConfig)
 	if err != nil {
 		if closeErr := host.Close(); closeErr != nil {
 			logger().Error("failed to close host", zap.Error(closeErr))
