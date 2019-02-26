@@ -1,7 +1,7 @@
+import React from 'react'
 import { View, Platform, Text as RNText } from 'react-native'
 import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
 import I18n from 'i18next'
-import React from 'react'
 
 import Text from './Text'
 import Avatar from './Avatar'

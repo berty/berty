@@ -4,7 +4,8 @@ import { Avatar, Flex, Text } from '../../../Library'
 import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { showContactModal } from '../../../../helpers/contacts'
-import NavigationService from '../../../../helpers/NavigationService'
+// import NavigationService from '../../../../helpers/NavigationService'
+import { withNavigation } from 'react-navigation'
 import ActionsReceived from '../../../Library/ContactIdentityActions/ActionsReceived'
 import ActionsSent from '../../../Library/ContactIdentityActions/ActionsSent'
 import { withNamespaces } from 'react-i18next'
@@ -15,6 +16,7 @@ const Item = fragments.Contact(
       const {
         data: { id, displayName, status, overrideDisplayName },
         context,
+        navigation,
       } = this.props
 
       if (
@@ -33,8 +35,8 @@ const Item = fragments.Contact(
 
         return
       }
-
-      NavigationService.navigate('contacts/detail', {
+      console.log('123', navigation)
+      navigation.navigate('detail/list', {
         contact: {
           id,
           overrideDisplayName,
@@ -90,4 +92,4 @@ const Item = fragments.Contact(
   }
 )
 
-export default withNamespaces()(Item)
+export default withNavigation(withNamespaces()(Item))

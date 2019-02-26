@@ -1,20 +1,28 @@
 import { I18nextProvider } from 'react-i18next'
 import { Linking, Platform, View } from 'react-native'
-import { SafeAreaView } from 'react-navigation'
-import Config from 'react-native-config'
+import { SafeAreaView, createAppContainer } from 'react-navigation'
 import FlashMessage from 'react-native-flash-message'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
-import React, { PureComponent } from 'react'
 import ReactNativeLanguages from 'react-native-languages'
+import React, { PureComponent } from 'react'
+import Config from 'react-native-config'
 
-import { BASE_WEBSITE_URL, colors } from './../constants'
 import { contact, conversation } from '../utils'
 import { parse as parseUrl } from '../helpers/url'
 import { Flex, Animation, MovableView, DebugStateBar } from './Library'
-import Accounts from './Screens/Accounts'
 import Instabug from '../helpers/Instabug'
+import { BASE_WEBSITE_URL, colors } from './../constants'
 import i18n from '../i18n'
 import NavigationService from './../helpers/NavigationService'
+import { AppNavigator } from './Navigator/AppNavigator'
+import { RelayContext } from '../relay'
+
+let AppContainer = {}
+if (Platform.OS !== 'web') {
+  AppContainer = createAppContainer(AppNavigator)
+} else {
+  AppContainer = AppNavigator
+}
 
 export default class App extends PureComponent {
   state = {
@@ -22,6 +30,7 @@ export default class App extends PureComponent {
     showAnim:
       process.env['ENVIRONMENT'] !== 'integration_test' &&
       Platform.OS !== 'web',
+    relayContext: null,
     deepLink: {
       routeName: 'main',
       params: {},
@@ -121,8 +130,14 @@ export default class App extends PureComponent {
     this.setState({ deepLink })
   }
 
+  setStateBis = (i, f) => {
+    console.log('asdasdasd', i, f)
+    this.setState(i, f)
+  }
+
   render () {
-    const { loading, deepLink, showAnim } = this.state
+    const { loading, deepLink, showAnim, relayContext } = this.state
+    console.log('rerendering all')
     return (
       <I18nextProvider i18n={i18n}>
         <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
@@ -140,23 +155,25 @@ export default class App extends PureComponent {
             >
               <Animation onFinish={() => this.setState({ showAnim: false })} />
             </Flex.Rows>
-          ) : null}
-          {!loading ? (
-            <Accounts
-              ref={nav => {
-                this.navigation = nav
-                NavigationService.setTopLevelNavigator(nav)
-              }}
-              screenProps={{
-                deepLink,
-                setDeepLink: deepLink => this.setDeepLink(deepLink),
-                clearDeepLink: () => this.clearDeepLink(),
-                onRelayContextCreated: context => this.setState({
-                  debugBar: <DebugStateBar context={context} />,
-                }),
-              }}
-            />
-          ) : null}
+          ) : null }
+          { !loading
+            ? <RelayContext.Provider value={{ ...relayContext, setStateBis: this.setStateBis }}>
+              <AppContainer
+                ref={nav => {
+                  this.navigation = nav
+                  NavigationService.setTopLevelNavigator(nav)
+                }}
+                screenProps={{
+                  deepLink,
+                  setDeepLink: (deepLink) => this.setDeepLink(deepLink),
+                  clearDeepLink: () => this.clearDeepLink(),
+                  onRelayContextCreated: context => this.setState({
+                    debugBar: <DebugStateBar context={context} />,
+                  }),
+                }}
+              />
+            </RelayContext.Provider>
+            : null }
           <FlashMessage position='top' />
           <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
             <MovableView>

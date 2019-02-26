@@ -8,13 +8,13 @@ import {
   Screen,
   Text,
   Badge,
-  SearchBar,
 } from '../../Library'
-import { Pagination, RelayContext } from '../../../relay'
+import { Pagination } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments, enums } from '../../../graphql'
 import { conversation as utils } from '../../../utils'
+import withRelayContext from '../../../helpers/withRelayContext'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
 import { hook } from 'cavy'
@@ -180,47 +180,39 @@ class ListScreen extends PureComponent {
   }
 
   render () {
+    console.log('this.props', this.props)
+
     const {
       navigation,
-      screenProps: {
-        context: { queries, fragments, subscriptions },
-      },
+      context,
+      context: { queries, fragments, subscriptions },
     } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <RelayContext.Consumer>
-          {context => (
-            <Pagination
-              direction='forward'
-              query={queries.ConversationList.graphql}
-              variables={queries.ConversationList.defaultVariables}
-              fragment={fragments.ConversationList}
-              alias='ConversationList'
-              subscriptions={[subscriptions.conversation]}
-              renderItem={props => (
-                <Item {...props} context={context} navigation={navigation} />
-              )}
-              ListHeaderComponent={
-                <View style={padding}>
-                  <SearchBar onChangeText={() => { console.warn('not implemented') }} />
-                </View>
-              }
-              emptyItem={() => (
-                <EmptyList
-                  source={require('../../../static/img/empty-conversation.png')}
-                  text={I18n.t('chats.no-new-messages')}
-                  icon={'edit'}
-                  btnRef={this.props.generateTestHook('ChatList.NewConvButton')}
-                  btnText={I18n.t('chats.new-conversation')}
-                  onPress={() => ListScreen.onPress(navigation)}
-                />
-              )}
+        <Pagination
+          direction='forward'
+          query={queries.ConversationList.graphql}
+          variables={queries.ConversationList.defaultVariables}
+          fragment={fragments.ConversationList}
+          alias='ConversationList'
+          subscriptions={[subscriptions.conversation]}
+          renderItem={props => (
+            <Item {...props} context={context} navigation={navigation} />
+          )}
+          emptyItem={() => (
+            <EmptyList
+              source={require('../../../static/img/empty-conversation.png')}
+              text={I18n.t('chats.no-new-messages')}
+              icon={'edit'}
+              btnRef={this.props.generateTestHook('ChatList.NewConvButton')}
+              btnText={I18n.t('chats.new-conversation')}
+              onPress={() => ListScreen.onPress(navigation)}
             />
           )}
-        </RelayContext.Consumer>
+        />
       </Screen>
     )
   }
 }
 
-export default hook(ListScreen)
+export default hook(withRelayContext(ListScreen))

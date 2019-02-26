@@ -8,12 +8,11 @@ import {
   ActivityIndicator,
   Linking,
 } from 'react-native'
-import React, { PureComponent } from 'react'
+import React, { PureComponent, Component } from 'react'
 
 import { Menu, Header, Text, Flex } from '../../../Library'
 import { borderBottom } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { createSubStackNavigator } from '../../../../helpers/react-navigation'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300
@@ -22,7 +21,7 @@ var maxBufferSize = 10000
 var antispamModalOpen = false
 var antispamModalSave = false
 
-class FilterModal extends PureComponent {
+export class FilterModal extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -338,7 +337,7 @@ class Line extends PureComponent {
   }
 }
 
-class LogStream extends PureComponent {
+export class LogStream extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -565,14 +564,3 @@ class LogStream extends PureComponent {
     )
   }
 }
-
-export default createSubStackNavigator(
-  {
-    'devtools/logs/list': LogStream,
-    'devtools/logs/filter': FilterModal,
-  },
-  {
-    mode: 'modal',
-    initialRouteName: 'devtools/logs/list',
-  }
-)

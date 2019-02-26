@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, InteractionManager } from 'react-native'
 import { Screen, Icon, EmptyList } from '../../../Library'
 import { colors } from '../../../../constants'
 import { Pagination } from '../../../../relay'
@@ -65,39 +65,81 @@ class CondComponent extends PureComponent {
   }
 }
 
-const GenericList = ({ filter, ignoreMyself, onPress }) => (
-  <RelayContext.Consumer>
-    {context => {
-      const { queries, subscriptions } = context
+class GenericList extends React.Component {
+  state = {
+    didFinishInitialAnimation: false,
+  }
 
-      return (
-        <Screen style={[{ backgroundColor: colors.white }]}>
-          <Pagination
-            direction='forward'
-            query={queries.ContactList.graphql}
-            variables={merge([queries.ContactList.defaultVariables, filter])}
-            fragment={fragments.ContactList}
-            alias='ContactList'
-            subscriptions={[subscriptions.contact]}
-            renderItem={props => (
-              <Item {...props} context={context} ignoreMyself={ignoreMyself} />
-            )}
-            cond={cond}
-            condComponent={() => <CondComponent onPress={() => onPress()} />}
-            emptyItem={() => (
-              <EmptyList
-                source={require('../../../../static/img/empty-contact.png')}
-                text={I18n.t('contacts.empty')}
-                icon={'user-plus'}
-                btnText={I18n.t('contacts.add.title')}
-                onPress={() => onPress()}
+  componentDidMount () {
+    console.log('start')
+    this.handler = InteractionManager.runAfterInteractions(() => {
+      // 4: set didFinishInitialAnimation to false
+      // This will render the navigation bar and a list of players
+      console.log('finished')
+      this.setState({
+        didFinishInitialAnimation: true,
+      })
+    })
+  }
+
+  // shouldComponentUpdate (nextProps, nextState) {
+  //   console.log('nextProps', nextProps)
+  //   // if (nextProps.navigation.isFocused() === true) {
+  //   //   return true
+  //   // }
+  //   return true
+  // }
+
+  componentWillUnmount () {
+    InteractionManager.clearInteractionHandle(this.handler)
+    this.setState({
+      didFinishInitialAnimation: false,
+    })
+  }
+
+  render () {
+    const { didFinishInitialAnimation } = this.state
+    console.log('didFinishInitialAnimation', didFinishInitialAnimation)
+    if (!didFinishInitialAnimation) {
+      return null
+    }
+
+    const { filter, ignoreMyself, onPress } = this.props
+    return (
+      <RelayContext.Consumer>
+        {context => {
+          const { queries, subscriptions } = context
+          console.log('generic LIST', context)
+          return (
+            <Screen style={[{ backgroundColor: colors.white }]}>
+              <Pagination
+                direction='forward'
+                query={queries.ContactList.graphql}
+                variables={merge([queries.ContactList.defaultVariables, filter])}
+                fragment={fragments.ContactList}
+                alias='ContactList'
+                subscriptions={[subscriptions.contact]}
+                renderItem={props => (
+                  <Item {...props} context={context} ignoreMyself={ignoreMyself} />
+                )}
+                cond={cond}
+                condComponent={() => <CondComponent onPress={() => onPress()} />}
+                emptyItem={() => (
+                  <EmptyList
+                    source={require('../../../../static/img/empty-contact.png')}
+                    text={I18n.t('contacts.empty')}
+                    icon={'user-plus'}
+                    btnText={I18n.t('contacts.add.title')}
+                    onPress={() => onPress()}
+                  />
+                )}
               />
-            )}
-          />
-        </Screen>
-      )
-    }}
-  </RelayContext.Consumer>
-)
+            </Screen>
+          )
+        }}
+      </RelayContext.Consumer>
+    )
+  }
+}
 
 export default GenericList

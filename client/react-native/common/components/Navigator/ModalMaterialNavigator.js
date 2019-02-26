@@ -1,4 +1,5 @@
 import { createMaterialTopTabNavigator } from 'react-navigation'
+import { Keyboard } from 'react-native'
 import ByQRCode from '../Screens/Contacts/Add/ByQRCode'
 import ByPublicKey from '../Screens/Contacts/Add/ByPublicKey'
 import Invite from '../Screens/Contacts/Add/Invite'
@@ -40,9 +41,11 @@ export default createMaterialTopTabNavigator(
   {
     ...tabNavigatorOptions,
     animationEnabled: false,
+    defaultNavigationOptions: {
+      tabBarOnPress: ({ navigation, defaultHandler }) => {
+        defaultHandler()
+        Keyboard.dismiss()
+      },
+    },
   },
 )
-
-// const AddScreen = () => <View style={{ flex: 1 }}>
-//   <AddContactTabbedContent />
-// </View>
