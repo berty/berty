@@ -10,8 +10,9 @@ import React, { PureComponent } from 'react'
 import { Header } from '../../../Library'
 import { colors } from '../../../../constants'
 import { padding } from '../../../../styles'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
-export default class DeviceInfos extends PureComponent {
+class DeviceInfos extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -30,9 +31,7 @@ export default class DeviceInfos extends PureComponent {
 
   fetch = () => {
     const {
-      screenProps: {
-        context: { queries },
-      },
+      context: { queries },
     } = this.props
     this.setState({ refreshing: true }, async () => {
       const data = await queries.DeviceInfos.fetch()
@@ -91,3 +90,5 @@ export default class DeviceInfos extends PureComponent {
     )
   }
 }
+
+export default withRelayContext(DeviceInfos)

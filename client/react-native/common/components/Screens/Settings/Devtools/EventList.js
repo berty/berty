@@ -16,6 +16,7 @@ import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { fragments, enums } from '../../../../graphql'
 import Button from '../../../Library/Button'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity
@@ -176,7 +177,7 @@ export default class EventList extends PureComponent {
   }
 }
 
-export class EventListFilterModal extends PureComponent {
+class EventListFilterModalWithContext extends PureComponent {
   static contextType = RelayContext
   render () {
     const { navigation } = this.props
@@ -196,7 +197,7 @@ export class EventListFilterModal extends PureComponent {
         />
         <Button
           onPress={() =>
-            this.props.screenProps.context.mutations.debugRequeueAll({
+            this.props.context.mutations.debugRequeueAll({
               t: true,
             })
           }
@@ -209,3 +210,5 @@ export class EventListFilterModal extends PureComponent {
     )
   }
 }
+
+export const EventListFilterModal = withRelayContext(EventListFilterModalWithContext)

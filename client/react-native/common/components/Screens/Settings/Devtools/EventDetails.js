@@ -4,8 +4,9 @@ import { RelayContext } from '../../../../relay'
 import { Header } from '../../../Library'
 import { colors } from '../../../../constants'
 import { padding } from '../../../../styles'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
-export default class EventDetails extends PureComponent {
+class EventDetails extends PureComponent {
   static contextType = RelayContext
 
   static navigationOptions = ({ navigation }) => ({
@@ -35,7 +36,7 @@ export default class EventDetails extends PureComponent {
         ]}
         onPress={async () => {
           try {
-            await this.props.screenProps.context.mutations.debugRequeueEvent({ eventId: data.id })
+            await this.props.context.mutations.debugRequeueEvent({ eventId: data.id })
           } catch (err) {
             this.setState({ err })
             console.error(err)
@@ -90,3 +91,5 @@ export default class EventDetails extends PureComponent {
     )
   }
 }
+
+export default withRelayContext(EventDetails)

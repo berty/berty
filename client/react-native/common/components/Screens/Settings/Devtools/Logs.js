@@ -13,6 +13,7 @@ import React, { PureComponent, Component } from 'react'
 import { Menu, Header, Text, Flex } from '../../../Library'
 import { borderBottom } from '../../../../styles'
 import { colors } from '../../../../constants'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300
@@ -337,7 +338,7 @@ class Line extends PureComponent {
   }
 }
 
-export class LogStream extends Component {
+class LogStreamWithContext extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -360,7 +361,7 @@ export class LogStream extends Component {
   })
 
   componentWillMount () {
-    this.logStream = this.props.screenProps.context.subscriptions.logStream({
+    this.logStream = this.props.context.subscriptions.logStream({
       continues: true,
       logLevel: '',
       namespaces: '',
@@ -564,3 +565,5 @@ export class LogStream extends Component {
     )
   }
 }
+
+export const LogStream = withRelayContext(LogStreamWithContext)

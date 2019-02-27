@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Menu, Header } from '../../../Library'
 import { RelayContext } from '../../../../relay'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
 const testScenarios = [
   {
@@ -62,7 +63,7 @@ class Observable {
   }
 }
 
-export default class Tests extends PureComponent {
+class Tests extends PureComponent {
   static contextType = RelayContext
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -86,7 +87,7 @@ export default class Tests extends PureComponent {
                 icon={icon}
                 title={title}
                 onPress={async () => {
-                  const promise = this.props.screenProps.context.mutations.runIntegrationTests({ name: key })
+                  const promise = this.props.context.mutations.runIntegrationTests({ name: key })
                   const obs = new Observable()
 
                   try {
@@ -115,3 +116,5 @@ export default class Tests extends PureComponent {
     )
   }
 }
+
+export default withRelayContext(Tests)

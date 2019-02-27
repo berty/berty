@@ -1,6 +1,6 @@
 import { I18nextProvider } from 'react-i18next'
-import { Linking, Platform, View } from 'react-native'
-import { SafeAreaView, createAppContainer } from 'react-navigation'
+import { Linking, Platform, View, NativeModules } from 'react-native'
+import { SafeAreaView, createAppContainer, NavigationActions } from 'react-navigation'
 import FlashMessage from 'react-native-flash-message'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import ReactNativeLanguages from 'react-native-languages'

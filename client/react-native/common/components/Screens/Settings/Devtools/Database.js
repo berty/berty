@@ -3,11 +3,12 @@ import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
 import { colors } from '../../../../constants'
+import withRelayContext from '../../../../helpers/withRelayContext'
 import { RelayContext } from '../../../../relay'
 
 const { CoreModule } = NativeModules
 
-export default class Database extends PureComponent {
+class Database extends PureComponent {
   static contextType = RelayContext
   static navigationOptions = ({ navigation }) => ({
     header: () =>
@@ -23,7 +24,7 @@ export default class Database extends PureComponent {
 
   generateFakeData = async () => {
     try {
-      await this.props.screenProps.context.mutations.generateFakeData({
+      await this.props.context.mutations.generateFakeData({
         t: true,
       })
     } catch (err) {
@@ -79,3 +80,5 @@ export default class Database extends PureComponent {
     )
   }
 }
+
+export default withRelayContext(Database)
