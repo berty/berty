@@ -6,11 +6,10 @@ references:
     environment:
       GOPATH: /go
       GOTEST_TIMEOUT: 5m
-      GOPROXY: http://goproxy.berty.io:3000/
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
-      - image: circleci/golang:1.11.4
+      - image: circleci/golang:1.12
 
   master_version: &master_version
     run:
@@ -41,7 +40,7 @@ references:
       command: |
         if [ ! -f ~/go-install/go/bin/go ]; then
           cd ~ && git clone https://github.com/udhos/update-golang
-          cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install RELEASE=1.11 ./update-golang.sh
+          cd ~/update-golang && mkdir ~/go-install && sudo DESTINATION=~/go-install RELEASE=1.12 ./update-golang.sh
         fi
         echo "export PATH=~/go-install/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
@@ -69,7 +68,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-go-cache
+            - v2-go-cache
       - run:
           name: fetch deps
           command: |
@@ -82,7 +81,7 @@ jobs:
           name: lint
           command: /tmp/retry -m 3 make lint
       - save_cache:
-          key: v1-go-cache
+          key: v2-go-cache
           paths:
             - "/go/pkg"
 

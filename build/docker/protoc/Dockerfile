@@ -1,6 +1,6 @@
 FROM moul/protoc-gen-gotemplate:latest as pgg
 
-FROM    golang:1.11.4-alpine as builder
+FROM    golang:1.12-alpine as builder
 
 # install deps
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker
@@ -22,7 +22,7 @@ RUN     go get -u moul.io/protoc-gen-gotemplate
 RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.6.0 && go install github.com/99designs/gqlgen
 RUN     rm -f /go/bin/web-editor
 
-FROM    golang:1.11-alpine
+FROM    golang:1.12-alpine
 RUN     apk --no-cache add git make protobuf gcc libc-dev nodejs-npm && mkdir -p /.cache/go-build && chmod -R 777 /.cache
 RUN     mkdir -p /node/ && cd /node && npm install -g protobufjs prettier prettier-eslint prettier-eslint-cli
 COPY    --from=pgg /go/bin/* /go/bin/

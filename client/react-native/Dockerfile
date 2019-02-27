@@ -25,7 +25,7 @@ WORKDIR /usr/src/app/web
 # CMD yarn start
 
 # Core
-FROM golang:1.11-stretch as core
+FROM golang:1.12-stretch as core
 
 RUN apt-get update \
     && apt-get install -y  --no-install-recommends \
@@ -33,7 +33,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV GO111MODULE=on GOPROXY=http://goproxy.berty.io:3000
+ENV GO111MODULE=on
 
 WORKDIR /go/src/berty.tech/core
 

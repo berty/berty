@@ -1,7 +1,7 @@
 # build core
-FROM            golang:1.11.4-alpine as core-builder
+FROM            golang:1.12-alpine as core-builder
 RUN             apk --no-cache --update add nodejs-npm make gcc g++ musl-dev openssl-dev git
-ENV             GO111MODULE=on GOPROXY=http://goproxy.berty.io:3000
+ENV             GO111MODULE=on
 COPY            core/go.* /go/src/berty.tech/core/
 WORKDIR         /go/src/berty.tech
 RUN             cd core && go get .
@@ -10,7 +10,7 @@ RUN             cd core && make _ci_prepare # touching generated files
 RUN             cd core && make install
 
 # minimal runtime
-FROM            alpine:3.8
+FROM            alpine:3.9
 RUN             apk --no-cache --update add openssl
 COPY            --from=core-builder /go/bin/berty /bin/berty
 ENTRYPOINT      ["/bin/berty"]
