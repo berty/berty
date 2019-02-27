@@ -6,7 +6,6 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import ReactNativeLanguages from 'react-native-languages'
 import React, { PureComponent } from 'react'
 import Config from 'react-native-config'
-
 import { contact, conversation } from '../utils'
 import { parse as parseUrl } from '../helpers/url'
 import { Flex, Animation, MovableView, DebugStateBar } from './Library'
@@ -131,8 +130,14 @@ export default class App extends PureComponent {
   }
 
   setStateBis = (i, f) => {
-    console.log('asdasdasd', i, f)
-    this.setState(i, f)
+    this.setState(i, () => {
+      if (i.relayContext !== null && i.loading === false) {
+        this.setState({
+          debugBar: <DebugStateBar />,
+        })
+      }
+      f()
+    })
   }
 
   render () {
@@ -167,19 +172,16 @@ export default class App extends PureComponent {
                   deepLink,
                   setDeepLink: (deepLink) => this.setDeepLink(deepLink),
                   clearDeepLink: () => this.clearDeepLink(),
-                  onRelayContextCreated: context => this.setState({
-                    debugBar: <DebugStateBar context={context} />,
-                  }),
                 }}
               />
+              <FlashMessage position='top' />
+              <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
+                <MovableView>
+                  {this.state.debugBar}
+                </MovableView>
+              </View>
             </RelayContext.Provider>
             : null }
-          <FlashMessage position='top' />
-          <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
-            <MovableView>
-              {this.state.debugBar}
-            </MovableView>
-          </View>
           {Platform.OS === 'ios' && <KeyboardSpacer />}
         </SafeAreaView>
       </I18nextProvider>

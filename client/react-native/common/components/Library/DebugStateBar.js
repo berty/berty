@@ -4,9 +4,9 @@ import { promiseWithTimeout } from 'react-relay-network-modern/es/middlewares/re
 import Flex from './Flex'
 import Text from './Text'
 import { View, Platform } from 'react-native'
-import RelayContext from '../../relay/RelayContext'
 import Icon from './Icon'
 import NavigationService from '../../helpers/NavigationService'
+import withRelayContext from '../../helpers/withRelayContext'
 
 const daemonStateValues = {
   'down': 0,
@@ -45,6 +45,7 @@ class DebugStateBar extends PureComponent {
     this.fetchListenInterfaceAddrs()
 
     this.fetchPeers()
+    console.log('123', this.props)
     this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe(
       {
         iterator: undefined,
@@ -84,6 +85,7 @@ class DebugStateBar extends PureComponent {
   }
 
   fetchPeers = () => {
+    console.log('1234', this.props)
     this.props.context.queries.Peers.fetch().then(data =>
       this.setState({ peers: data.list })
     )
@@ -92,7 +94,7 @@ class DebugStateBar extends PureComponent {
   fetchListenAddrs = () => {
     const { context } = this.props
     const { watchTime, requestTimeout, timeouted } = this.state
-
+    console.log('12345', this.props)
     promiseWithTimeout(context.queries.GetListenAddrs.fetch(), requestTimeout, this.timeoutPromise).then(e => {
       const timer = setTimeout(this.fetchListenAddrs, watchTime)
 
@@ -121,7 +123,7 @@ class DebugStateBar extends PureComponent {
   fetchListenInterfaceAddrs = () => {
     const { context } = this.props
     const { watchTime, requestTimeout, timeouted } = this.state
-
+    console.log('321', this.props)
     promiseWithTimeout(context.queries.GetListenInterfaceAddrs.fetch(), requestTimeout, this.timeoutPromise).then(e => {
       const timer = setTimeout(this.fetchListenInterfaceAddrs, watchTime)
 
@@ -251,14 +253,4 @@ class DebugStateBar extends PureComponent {
   }
 }
 
-const WrappedDebugStateBar = ({ context, ...props }) => {
-  if (context !== null) {
-    return <DebugStateBar context={context} {...props} />
-  }
-
-  return <RelayContext.Consumer>
-    {context => <DebugStateBar context={context} {...props} />}
-  </RelayContext.Consumer>
-}
-
-export default WrappedDebugStateBar
+export default withRelayContext(DebugStateBar)

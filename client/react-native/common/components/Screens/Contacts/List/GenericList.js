@@ -103,8 +103,8 @@ class GenericList extends React.Component {
     if (!didFinishInitialAnimation) {
       return null
     }
-
     const { filter, ignoreMyself, onPress } = this.props
+
     return (
       <RelayContext.Consumer>
         {context => {
