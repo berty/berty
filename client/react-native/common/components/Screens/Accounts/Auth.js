@@ -56,24 +56,20 @@ class Auth extends PureComponent {
   }
 
   openDeepLink = () => {
-    if (this.props.screenProps === 'undefined') {
-      // return
+    const {
+      screenProps: {
+        deepLink,
+        clearDeepLink,
+      },
+      navigation,
+    } = this.props
+
+    if (!deepLink || deepLink === 'undefined' || Platform.OS === 'web') {
+      return
     }
 
-    // const {
-    //   screenProps: {
-    //     deepLink,
-    //     clearDeepLink,
-    //   },
-    //   navigation,
-    // } = this.props
-
-    // if (!deepLink || deepLink === 'undefined' || Platform.OS === 'web') {
-    //   return
-    // }
-
-    // navigation.dispatch(NavigationActions.navigate(deepLink))
-    // clearDeepLink()
+    navigation.navigate(deepLink)
+    clearDeepLink()
   }
 
   getRelayContext = async () => {
@@ -163,7 +159,9 @@ class Auth extends PureComponent {
       }
     )
 
-    this.props.navigation.navigate('switch/picker', { firstLaunch })
+    if (this.props.screenProps !== 'undefined' && !this.props.screenProps.deepLink || this.props.screenProps.deepLink === 'undefined' || Platform.OS === 'web') {
+      this.props.navigation.navigate('switch/picker', { firstLaunch })
+    }
   }
 
   async componentDidMount () {

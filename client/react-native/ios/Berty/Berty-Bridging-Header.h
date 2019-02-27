@@ -9,3 +9,5 @@
 #import "React/RCTRootView.h"
 #import "React/RCTLinkingManager.h"
 #import "React/RCTPushNotificationManager.h"
+#import "React/RCTLog.h"
+#import "RCTSwiftLog.h"

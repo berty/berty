@@ -14,7 +14,7 @@ const TabBarIcon = (tintColor, routeName, badgeValue) => {
     chats: 'message-circle',
     settings: 'settings',
   }[routeName]
-  console.log('routeName', routeName)
+
   return (
     <Icon.Badge
       name={iconName}

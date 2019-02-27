@@ -55,6 +55,8 @@
 		8D1BA426216CF8EA00FEF0AE /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA425216CF8EA00FEF0AE /* libcrypto.a */; };
 		8D1BA428216CF8F700FEF0AE /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA427216CF8F700FEF0AE /* libssl.a */; };
 		90E88BBFF04C4F05A6D26075 /* libRNDevMenu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D4617AEDB145E1B15B2216 /* libRNDevMenu.a */; };
+		990E84192226DCB100751E73 /* RCTLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E84182226DCB100751E73 /* RCTLog.swift */; };
+		990E845C2226DCCB00751E73 /* RCTSwiftLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 990E845B2226DCCB00751E73 /* RCTSwiftLog.m */; };
 		991A11A92201B169006F3200 /* fontello.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 991A116D2201B169006F3200 /* fontello.ttf */; };
 		993E33F82200C2F100AD98F8 /* Lottie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 993E33EE2200C2E200AD98F8 /* Lottie.framework */; };
 		998B6ADC2179E1B90029B33C /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */; };
@@ -670,6 +672,9 @@
 		8D1BA425216CF8EA00FEF0AE /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../common/openssl/built/ios/libcrypto.a; sourceTree = "<group>"; };
 		8D1BA427216CF8F700FEF0AE /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../common/openssl/built/ios/libssl.a; sourceTree = "<group>"; };
 		8E1D0314925B45DFBA2E4B6B /* Lottie.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Lottie.xcodeproj; path = "../node_modules/lottie-ios/Lottie.xcodeproj"; sourceTree = "<group>"; };
+		990E84182226DCB100751E73 /* RCTLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTLog.swift; sourceTree = "<group>"; };
+		990E845A2226DCCB00751E73 /* RCTSwiftLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTSwiftLog.h; sourceTree = "<group>"; };
+		990E845B2226DCCB00751E73 /* RCTSwiftLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTSwiftLog.m; sourceTree = "<group>"; };
 		991A116D2201B169006F3200 /* fontello.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = fontello.ttf; path = ../common/static/svg/fontello.ttf; sourceTree = "<group>"; };
 		9977408CAA8E4D17AF46013D /* RNInstabug.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNInstabug.xcodeproj; path = "../node_modules/instabug-reactnative/ios/RNInstabug.xcodeproj"; sourceTree = "<group>"; };
 		998B6ADB2179E1B90029B33C /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
@@ -863,6 +868,9 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
+				990E84182226DCB100751E73 /* RCTLog.swift */,
+				990E845A2226DCCB00751E73 /* RCTSwiftLog.h */,
+				990E845B2226DCCB00751E73 /* RCTSwiftLog.m */,
 			);
 			name = Berty;
 			sourceTree = "<group>";
@@ -2094,6 +2102,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				990E845C2226DCCB00751E73 /* RCTSwiftLog.m in Sources */,
+				990E84192226DCB100751E73 /* RCTLog.swift in Sources */,
 				F844DEC121E8C5FD00A810A1 /* AppDelegate.swift in Sources */,
 				F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */,
 				F8799D7A2136F44B003B9FD7 /* CoreModule.m in Sources */,

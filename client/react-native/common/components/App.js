@@ -16,11 +16,87 @@ import NavigationService from './../helpers/NavigationService'
 import { AppNavigator } from './Navigator/AppNavigator'
 import { RelayContext } from '../relay'
 
+const { CoreModule } = NativeModules
+
+class HandleDeepLink extends PureComponent {
+  static router = AppNavigator.router
+
+  async componentDidUpdate (nextProps) {
+    if (nextProps.screenProps.deepLink !== this.props.screenProps.deepLink) {
+      this.openDeepLink()
+    }
+  }
+
+  getActiveRouteName = navigationState => {
+    if (!navigationState) {
+      return null
+    }
+    const route = navigationState.routes[navigationState.index]
+    // dive into nested navigators
+    if (route.routes) {
+      return this.getActiveRouteName(route)
+    }
+
+    // get fragment from react-navigation params
+    const fragment = Object.keys(route.params || {}).reduce((fragment, key) => {
+      const paramType = typeof route.params[key]
+      if (
+        paramType === 'string' ||
+        paramType === 'number' ||
+        paramType === 'boolean'
+      ) {
+        let val = route.params[key]
+        if (key === 'id') {
+          val = atob(val)
+          val = val.match(/:(.*)$/)
+          val = val[1]
+        }
+        fragment += fragment.length > 0 ? `,${key}=${val}` : `#${key}=${val}`
+      }
+      return fragment
+    }, '')
+    return route.routeName + fragment
+  }
+
+  openDeepLink = () => {
+    const {
+      screenProps: { deepLink, clearDeepLink },
+    } = this.props
+
+    if (!deepLink) {
+      return
+    }
+    console.log('dispatch deepLink ', deepLink)
+    this.props.navigation.dispatch(NavigationActions.navigate(deepLink))
+    clearDeepLink()
+  }
+
+  render () {
+    return (
+      <AppNavigator
+        {...this.props}
+        ref={nav => {
+          this.navigation = nav
+          NavigationService.setTopLevelNavigator(nav)
+        }}
+        onNavigationStateChange={(prevState, currentState) => {
+          const currentRoute = this.getActiveRouteName(currentState)
+          const prevRoute = this.getActiveRouteName(prevState)
+
+          if (prevRoute !== currentRoute) {
+            CoreModule.setCurrentRoute(currentRoute)
+          }
+        }}
+      />
+    )
+  }
+}
+
 let AppContainer = {}
 if (Platform.OS !== 'web') {
-  AppContainer = createAppContainer(AppNavigator)
+  AppContainer = createAppContainer(HandleDeepLink)
 } else {
-  AppContainer = AppNavigator
+  AppContainer = HandleDeepLink
 }
 
 export default class App extends PureComponent {
@@ -60,6 +136,12 @@ export default class App extends PureComponent {
   componentDidMount () {
     ReactNativeLanguages.addEventListener('change', this._onLanguageChange)
 
+    if (this._handleOpenURL === undefined) {
+      this._handleOpenURL = this.handleOpenURL.bind(this)
+    }
+
+    Linking.addEventListener('url', this._handleOpenURL)
+
     Linking.getInitialURL()
       .then(url => {
         if (url !== null) {
@@ -68,11 +150,6 @@ export default class App extends PureComponent {
       })
       .catch(() => {})
 
-    if (this._handleOpenURL === undefined) {
-      this._handleOpenURL = this.handleOpenURL.bind(this)
-    }
-
-    Linking.addEventListener('url', this._handleOpenURL)
     this.setState({ loading: false })
   }
 
@@ -164,10 +241,6 @@ export default class App extends PureComponent {
           { !loading
             ? <RelayContext.Provider value={{ ...relayContext, setStateBis: this.setStateBis }}>
               <AppContainer
-                ref={nav => {
-                  this.navigation = nav
-                  NavigationService.setTopLevelNavigator(nav)
-                }}
                 screenProps={{
                   deepLink,
                   setDeepLink: (deepLink) => this.setDeepLink(deepLink),

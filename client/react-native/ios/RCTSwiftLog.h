@@ -1,17 +1,19 @@
 //
 //  RCTSwiftLog.h
-//  Berty
 //
-//  Created by sacha on 27/02/2019.
-//  Copyright © 2019 Berty Technologies. All rights reserved.
+//
+//  Created by Jimmy Dee on 4/5/17.
+//
 //
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface RCTSwiftLog : NSObject
 
-@end
++ (void)error:(NSString * _Nonnull)message file:(NSString * _Nonnull)file line:(NSUInteger)line;
++ (void)warn:(NSString * _Nonnull)message file:(NSString * _Nonnull)file line:(NSUInteger)line;
++ (void)info:(NSString * _Nonnull)message file:(NSString * _Nonnull)file line:(NSUInteger)line;
++ (void)log:(NSString * _Nonnull)message file:(NSString * _Nonnull)file line:(NSUInteger)line;
++ (void)trace:(NSString * _Nonnull)message file:(NSString * _Nonnull)file line:(NSUInteger)line;
 
-NS_ASSUME_NONNULL_END
+@end
