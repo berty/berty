@@ -79,6 +79,24 @@ class AppDelegate: AppDelegateObjC {
       logger.format("unable to set storage path: %@", level: .error, error.userInfo.description)
       return false
     }
+
+    let deadlineTime = DispatchTime.now() + .seconds(10)
+
+    DispatchQueue.global(qos: .background).asyncAfter(deadline: deadlineTime) {
+      if let remoteNotifPayload = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? UILocalNotification {
+        if let data = remoteNotifPayload.userInfo as? [String: String] {
+          if let url = data["url"] {
+            if url.count > 0 {
+              super.application(application, open: URL.init(string: url)!, options: [
+                                 UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
+                                UIApplicationOpenURLOptionsKey.openInPlace: false
+                ])
+            }
+          }
+        }
+      }
+    }
+
     return true
   }
 
