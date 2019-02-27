@@ -73,7 +73,6 @@ class Auth extends PureComponent {
   }
 
   getRelayContext = async () => {
-    console.log('11235')
     const test = await contextValue({
       environment: await environment.setup({
         getIp: this.getIp,
@@ -159,7 +158,8 @@ class Auth extends PureComponent {
       }
     )
 
-    if (this.props.screenProps !== 'undefined' && !this.props.screenProps.deepLink || this.props.screenProps.deepLink === 'undefined' || Platform.OS === 'web') {
+    if (this.props.screenProps !== 'undefined' &&
+        (!this.props.screenProps.deepLink || this.props.screenProps.deepLink === 'undefined' || Platform.OS === 'web')) {
       this.props.navigation.navigate('switch/picker', { firstLaunch })
     }
   }

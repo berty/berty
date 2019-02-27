@@ -20,7 +20,7 @@ const handleNavigationsOptions = ({ navigation, screenProps }) => {
       navigation.state.routes[navigation.state.index].routeName === 'settings/list')) {
     tabBarVisible = true
   }
-  console.log(tabBarVisible)
+
   return {
     header: (
       <Header navigation={navigation} title={I18n.t('settings.title')} titleIcon='settings' />

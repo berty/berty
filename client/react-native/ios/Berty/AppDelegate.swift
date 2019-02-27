@@ -83,7 +83,8 @@ class AppDelegate: AppDelegateObjC {
     let deadlineTime = DispatchTime.now() + .seconds(10)
 
     DispatchQueue.global(qos: .background).asyncAfter(deadline: deadlineTime) {
-      if let remoteNotifPayload = launchOptions?[UIApplicationLaunchOptionsKey.localNotification] as? UILocalNotification {
+      if let remoteNotifPayload = launchOptions?[UIApplicationLaunchOptionsKey.localNotification]
+        as? UILocalNotification {
         if let data = remoteNotifPayload.userInfo as? [String: String] {
           if let url = data["url"] {
             if url.count > 0 {

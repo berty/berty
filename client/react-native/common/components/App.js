@@ -66,7 +66,7 @@ class HandleDeepLink extends PureComponent {
     if (!deepLink) {
       return
     }
-    console.log('dispatch deepLink ', deepLink)
+
     this.props.navigation.dispatch(NavigationActions.navigate(deepLink))
     clearDeepLink()
   }
@@ -219,7 +219,7 @@ export default class App extends PureComponent {
 
   render () {
     const { loading, deepLink, showAnim, relayContext } = this.state
-    console.log('rerendering all')
+
     return (
       <I18nextProvider i18n={i18n}>
         <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>

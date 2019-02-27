@@ -35,7 +35,7 @@ const Item = fragments.Contact(
 
         return
       }
-      console.log('123', navigation)
+
       navigation.navigate('detail/list', {
         contact: {
           id,

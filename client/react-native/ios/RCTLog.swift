@@ -1,5 +1,4 @@
-
-
+// from https://gist.github.com/aleclarson/4a0bd67f8aad2af0669638374a91d9c5/revisions
 
 func RCTLogError(_ message: String, _ file: String=#file, _ line: UInt=#line) {
   RCTSwiftLog.error(message, file: file, line: line)

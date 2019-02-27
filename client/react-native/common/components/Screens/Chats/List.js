@@ -72,11 +72,12 @@ const ItemBase = fragments.Conversation(
       const { connected } = this.state
       const { readAt } = data
       const isRead = new Date(readAt).getTime() > 0
+
       // fix when contact request is send after conversation invite
       if (
         data.members.length === 2 &&
         data.members.some(
-          m => m.contact == null || m.contact.displayName === ''
+          m => m.contact == null || (m.contact.displayName === '' && m.contact.overrideDisplayName === '')
         )
       ) {
         return null
@@ -180,8 +181,6 @@ class ListScreen extends PureComponent {
   }
 
   render () {
-    console.log('this.props', this.props)
-
     const {
       navigation,
       context,

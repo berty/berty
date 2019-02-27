@@ -28,7 +28,7 @@ class List extends PureComponent {
       t,
     }) => {
       const { id, displayName, overrideDisplayName } = data
-      console.log('navigationin settings list,', navigation)
+
       return <Menu absolute>
         <Menu.Header
           icon={
