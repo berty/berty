@@ -48,11 +48,6 @@ export default class Peers extends Component {
         navigation={navigation}
         title='Peers List'
         titleIcon='list'
-        searchBar={
-          <SearchBar onChangeText={navigation.getParam('peerFilter')}>
-            <LibText size={0} height={34} padding middle large />
-          </SearchBar>
-        }
         backBtn
       />
     ),
@@ -80,10 +75,6 @@ export default class Peers extends Component {
   }
 
   componentDidMount () {
-    this.props.navigation.setParams({
-      peerFilter: this.peerFilter,
-    })
-
     this.fetchPeers()
   }
 
@@ -189,6 +180,9 @@ export default class Peers extends Component {
               }`}
           </Text>
         </View>
+        <SearchBar onChangeText={filter => this.peerFilter(filter)}>
+          <LibText size={0} height={34} padding middle large />
+        </SearchBar>
         <Accordion
           sections={filteredPeers.slice(0, 100)}
           activeSections={this.state.opened}

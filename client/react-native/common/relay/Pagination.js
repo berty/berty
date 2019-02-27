@@ -2,7 +2,7 @@ import { ActivityIndicator, FlatList } from 'react-native'
 import React, { Component, PureComponent } from 'react'
 import Relay from 'react-relay'
 
-import { Flex } from '../components/Library'
+import Flex from '../components/Library/Flex'
 import { QueryReducer } from '.'
 import genericUpdater from './genericUpdater'
 
@@ -68,6 +68,7 @@ class PaginationContainer extends Component {
       return (
         <>
           <FlatList
+            ListHeaderComponent={this.props.ListHeaderComponent}
             data={data[alias].edges}
             inverted={inverted}
             refreshing={this.state.refetching}

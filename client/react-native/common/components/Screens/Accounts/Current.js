@@ -58,6 +58,8 @@ class Current extends PureComponent {
         this.openDeepLink()
       }
     )
+
+    this.props.screenProps.onRelayContextCreated(context)
   }
 
   async componentDidUpdate (nextProps) {

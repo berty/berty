@@ -1,5 +1,5 @@
 import { I18nextProvider } from 'react-i18next'
-import { Linking, Platform } from 'react-native'
+import { Linking, Platform, View } from 'react-native'
 import { SafeAreaView } from 'react-navigation'
 import Config from 'react-native-config'
 import FlashMessage from 'react-native-flash-message'
@@ -8,9 +8,9 @@ import React, { PureComponent } from 'react'
 import ReactNativeLanguages from 'react-native-languages'
 
 import { BASE_WEBSITE_URL, colors } from './../constants'
-import { Flex, Animation } from './Library'
 import { contact, conversation } from '../utils'
 import { parse as parseUrl } from '../helpers/url'
+import { Flex, Animation, MovableView, DebugStateBar } from './Library'
 import Accounts from './Screens/Accounts'
 import Instabug from '../helpers/Instabug'
 import i18n from '../i18n'
@@ -149,10 +149,18 @@ export default class App extends PureComponent {
                 deepLink,
                 setDeepLink: deepLink => this.setDeepLink(deepLink),
                 clearDeepLink: () => this.clearDeepLink(),
+                onRelayContextCreated: context => this.setState({
+                  debugBar: <DebugStateBar context={context} />,
+                }),
               }}
             />
           ) : null}
           <FlashMessage position='top' />
+          <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
+            <MovableView>
+              {this.state.debugBar}
+            </MovableView>
+          </View>
           {Platform.OS === 'ios' && <KeyboardSpacer />}
         </SafeAreaView>
       </I18nextProvider>
