@@ -1,6 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import { ActivityIndicator, StyleSheet, ScrollView, View } from 'react-native'
-import { Flex, Separator, Text } from '.'
+import Flex from './Flex'
+import Separator from './Separator'
+import Text from './Text'
+
 import {
   marginTopLeft,
   paddingLeft,

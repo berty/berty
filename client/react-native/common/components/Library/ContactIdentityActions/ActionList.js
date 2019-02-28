@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { withNavigation } from 'react-navigation'
 import ActionButton from './ActionButton'
 import colors from '../../../constants/colors'
-import { Flex } from '../index'
+import Flex from '../Flex'
 import { showMessage } from 'react-native-flash-message'
 
 class ActionList extends PureComponent {

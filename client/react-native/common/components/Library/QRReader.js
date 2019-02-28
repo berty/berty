@@ -2,10 +2,6 @@ import React, { PureComponent } from 'react'
 import QRCodeScanner from 'react-native-qrcode-scanner'
 
 class QRReader extends PureComponent {
-  constructor (props) {
-    super(props)
-  }
-
   reactivate () {
     this.scanner.reactivate()
   }

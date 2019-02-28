@@ -1,7 +1,8 @@
 import { ActivityIndicator } from 'react-native'
 import React from 'react'
 
-import { Flex, Text } from './'
+import Flex from './Flex'
+import Text from './Text'
 import { colors } from '../../constants'
 
 const Loader = ({ message, color, background, size }) => (

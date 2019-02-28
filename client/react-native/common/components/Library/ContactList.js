@@ -1,6 +1,7 @@
 import { FlatList } from 'react-native'
 import React, { PureComponent } from 'react'
-import { Separator, ListItem } from '.'
+import Separator from './Separator'
+import ListItem from './ListItem'
 
 export default class ContactList extends PureComponent {
   sortContacts = (contactList, sortKey) => {

@@ -1,7 +1,8 @@
 import { TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Avatar, Header } from '.'
+import Avatar from './Avatar'
+import Header from './Header'
 import { colors } from '../../constants'
 import { contact } from '../../utils'
 import { withCurrentUser } from '../../utils/contact'
