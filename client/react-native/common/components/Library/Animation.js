@@ -1,7 +1,7 @@
 import React from 'react'
 import LottieView from 'lottie-react-native'
 
-export default ({ onFinish }) => (
+const Animation = ({ onFinish }) => (
   <LottieView
     source={require('../../static/animation/BertyAnimation.json')}
     autoPlay
@@ -11,3 +11,5 @@ export default ({ onFinish }) => (
     autoSize
   />
 )
+
+export default Animation

@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { colors } from '../../constants'
-import { Flex, Text, Avatar } from '.'
+import Flex from './Flex'
+import Text from './Text'
+import Avatar from './Avatar'
 import { marginLeft, padding, borderBottom } from '../../styles'
 
 export default class ListItem extends PureComponent {

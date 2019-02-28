@@ -1,5 +1,6 @@
 import React from 'react'
-import { Flex, Text } from '.'
+import Flex from './Flex'
+import Text from './Text'
 import { colors } from '../../constants'
 
 const find = ({ inside, from, or }) => {

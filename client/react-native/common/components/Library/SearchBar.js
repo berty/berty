@@ -1,7 +1,7 @@
 import { TextInput, Platform } from 'react-native'
 import React from 'react'
 
-import { Flex } from '.'
+import Flex from './Flex'
 import { colors } from '../../constants'
 import { paddingLeft, paddingRight } from '../../styles'
 import { withNamespaces } from 'react-i18next'

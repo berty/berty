@@ -3,7 +3,7 @@ import React, { Component, PureComponent } from 'react'
 import Relay from 'react-relay'
 
 import Flex from '../components/Library/Flex'
-import { QueryReducer } from '.'
+import QueryReducer from './QueryReducer'
 import genericUpdater from './genericUpdater'
 
 class PaginationContainer extends Component {

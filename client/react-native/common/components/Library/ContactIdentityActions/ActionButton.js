@@ -1,6 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, View } from 'react-native'
-import { Text } from '..'
+import Text from '../Text'
 import colors from '../../../constants/colors'
 
 const ActionButton = ({ onPress, color, title, icon }) => <View style={{ flex: 1 }}>

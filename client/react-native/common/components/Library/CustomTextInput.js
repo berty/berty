@@ -8,11 +8,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-import { Icon } from '.'
+import Icon from './Icon'
 import { colors, fonts } from '../../constants'
 import { margin, largeText } from '../../styles'
-
-import type { ViewStyle } from 'StyleSheetTypes'
 
 type Props = {
   value?: string,
@@ -21,9 +19,9 @@ type Props = {
   renderLeft?: () => React.Node,
   renderRight?: () => React.Node,
   error?: string,
-  containerStyle?: ViewStyle,
-  inputStyle?: ViewStyle,
-  style?: ViewStyle,
+  containerStyle?: any,
+  inputStyle?: any,
+  style?: any,
   borderBottom?: number,
   borderRight?: number,
   borderTop?: number,

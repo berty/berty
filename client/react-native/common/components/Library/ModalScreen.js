@@ -2,7 +2,7 @@ import { StackActions, withNavigation } from 'react-navigation'
 import { View } from 'react-native'
 import React from 'react'
 
-import { Loader } from './'
+import Loader  from './Loader'
 import Button from './Button'
 import colors from '../../constants/colors'
 

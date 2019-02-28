@@ -2,7 +2,8 @@ import { Text as TextNative, TextInput, StyleSheet } from 'react-native'
 import React, { Fragment, PureComponent } from 'react'
 import hash from 'object-hash'
 
-import { Icon, Flex } from '.'
+import Icon from './Icon'
+import Flex from './Flex'
 import { colors } from '../../constants'
 import {
   tinyText,
