@@ -5,7 +5,7 @@ import (
 
 	"os"
 
-	gormigrate "gopkg.in/gormigrate.v1"
+	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 

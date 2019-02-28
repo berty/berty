@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"berty.tech/core/push"
-	gormigrate "gopkg.in/gormigrate.v1"
+	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 )
 

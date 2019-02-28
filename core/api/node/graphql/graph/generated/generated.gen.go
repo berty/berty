@@ -769,9 +769,6 @@ type GoogleProtobufFieldOptionsResolver interface {
 }
 type GoogleProtobufFileOptionsResolver interface {
 	OptimizeFor(ctx context.Context, obj *descriptor.FileOptions) (*int32, error)
-
-	PhpMetadataNamespace(ctx context.Context, obj *descriptor.FileOptions) (string, error)
-	RubyPackage(ctx context.Context, obj *descriptor.FileOptions) (string, error)
 }
 type GoogleProtobufMethodOptionsResolver interface {
 	IdempotencyLevel(ctx context.Context, obj *descriptor.MethodOptions) (*int32, error)
@@ -16201,23 +16198,15 @@ func (ec *executionContext) _GoogleProtobufFileOptions(ctx context.Context, sel 
 				invalid = true
 			}
 		case "phpMetadataNamespace":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._GoogleProtobufFileOptions_phpMetadataNamespace(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._GoogleProtobufFileOptions_phpMetadataNamespace(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "rubyPackage":
-			wg.Add(1)
-			go func(i int, field graphql.CollectedField) {
-				out.Values[i] = ec._GoogleProtobufFileOptions_rubyPackage(ctx, field, obj)
-				if out.Values[i] == graphql.Null {
-					invalid = true
-				}
-				wg.Done()
-			}(i, field)
+			out.Values[i] = ec._GoogleProtobufFileOptions_rubyPackage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		case "uninterpretedOption":
 			out.Values[i] = ec._GoogleProtobufFileOptions_uninterpretedOption(ctx, field, obj)
 		default:
@@ -16775,7 +16764,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpMetadataNamespace(ctx 
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.GoogleProtobufFileOptions().PhpMetadataNamespace(rctx, obj)
+		return obj.PhpMetadataNamespace, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -16783,9 +16772,16 @@ func (ec *executionContext) _GoogleProtobufFileOptions_phpMetadataNamespace(ctx 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	rctx.Result = res
-	return models.MarshalString(res)
+
+	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
@@ -16798,7 +16794,7 @@ func (ec *executionContext) _GoogleProtobufFileOptions_rubyPackage(ctx context.C
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.GoogleProtobufFileOptions().RubyPackage(rctx, obj)
+		return obj.RubyPackage, nil
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -16806,9 +16802,16 @@ func (ec *executionContext) _GoogleProtobufFileOptions_rubyPackage(ctx context.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*string)
 	rctx.Result = res
-	return models.MarshalString(res)
+
+	if res == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return models.MarshalString(*res)
 }
 
 // nolint: vetshadow
