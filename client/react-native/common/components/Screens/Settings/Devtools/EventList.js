@@ -91,7 +91,7 @@ const Item = fragments.Event(({ data, navigation }) => (
   </TouchableOpacity>
 ))
 
-export default class EventList extends PureComponent {
+class EventList extends PureComponent {
   state = {
     search: '',
   }
@@ -136,9 +136,7 @@ export default class EventList extends PureComponent {
   render () {
     const {
       navigation,
-      screenProps: {
-        context: { queries },
-      },
+      context: { queries },
     } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white }}>
@@ -212,3 +210,4 @@ class EventListFilterModalWithContext extends PureComponent {
 }
 
 export const EventListFilterModal = withRelayContext(EventListFilterModalWithContext)
+export default withRelayContext(EventList)

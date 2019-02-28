@@ -147,7 +147,7 @@ class Auth extends PureComponent {
     await this.start(nickname)
     const context = await this.getRelayContext()
     const availableUpdate = await getAvailableUpdate(context)
-    this.props.context.setStateBis(
+    this.props.context.setState(
       {
         relayContext: context,
         availableUpdate: availableUpdate,

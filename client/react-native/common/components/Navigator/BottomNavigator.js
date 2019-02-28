@@ -25,12 +25,18 @@ const TabBarIcon = (tintColor, routeName, badgeValue) => {
   )
 }
 
-const handleBothNavigationsOptions = ({ navigation, screenProps }) => {
+const handleBothNavigationsOptions = (
+  {
+    navigation,
+    screenProps: {
+      availableUpdate,
+    },
+  }) => {
   let badge = null
 
   if (
     navigation.state.routeName === 'settings' &&
-    screenProps.availableUpdate
+    availableUpdate
   ) {
     badge = '!'
   }

@@ -15,12 +15,22 @@ export default createStackNavigator(
   {
     'devtools/list': List,
     'devtools/database': Database,
-    'devtools/network': DevtoolsNetworkNavigator,
+    'devtools/network': {
+      screen: DevtoolsNetworkNavigator,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
     'devtools/eventlist': EventList,
     'devtools/eventlistfilter': EventListFilterModal,
     'devtools/eventdetails': EventDetails,
     'devtools/deviceinfos': DeviceInfos,
-    'devtools/logs': DevtoolsLogNavigator,
+    'devtools/logs': {
+      screen: DevtoolsLogNavigator,
+      navigationOptions: () => ({
+        header: null,
+      }),
+    },
     'devtools/tests': Tests,
     'devtools/testresult': TestResult,
     'devtools/language': Language,

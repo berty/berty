@@ -106,6 +106,7 @@ export default class App extends PureComponent {
       process.env['ENVIRONMENT'] !== 'integration_test' &&
       Platform.OS !== 'web',
     relayContext: null,
+    availableUpdate: false,
     deepLink: {
       routeName: 'main',
       params: {},
@@ -206,7 +207,7 @@ export default class App extends PureComponent {
     this.setState({ deepLink })
   }
 
-  setStateBis = (i, f) => {
+  setStateContext = (i, f) => {
     this.setState(i, () => {
       if (i.relayContext !== null && i.loading === false) {
         this.setState({
@@ -218,7 +219,7 @@ export default class App extends PureComponent {
   }
 
   render () {
-    const { loading, deepLink, showAnim, relayContext } = this.state
+    const { loading, deepLink, showAnim, relayContext, availableUpdate } = this.state
 
     return (
       <I18nextProvider i18n={i18n}>
@@ -239,9 +240,10 @@ export default class App extends PureComponent {
             </Flex.Rows>
           ) : null }
           { !loading
-            ? <RelayContext.Provider value={{ ...relayContext, setStateBis: this.setStateBis }}>
+            ? <RelayContext.Provider value={{ ...relayContext, setState: this.setStateContext }}>
               <AppContainer
                 screenProps={{
+                  availableUpdate,
                   deepLink,
                   setDeepLink: (deepLink) => this.setDeepLink(deepLink),
                   clearDeepLink: () => this.clearDeepLink(),

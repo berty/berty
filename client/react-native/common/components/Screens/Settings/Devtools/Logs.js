@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   Linking,
 } from 'react-native'
-import React, { PureComponent, Component } from 'react'
+import React, { PureComponent } from 'react'
 
 import { Menu, Header, Text, Flex } from '../../../Library'
 import { borderBottom } from '../../../../styles'
@@ -22,7 +22,7 @@ var maxBufferSize = 10000
 var antispamModalOpen = false
 var antispamModalSave = false
 
-export class FilterModal extends Component {
+export class FilterModal extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -338,7 +338,7 @@ class Line extends PureComponent {
   }
 }
 
-class LogStreamWithContext extends Component {
+class LogStreamWithContext extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
