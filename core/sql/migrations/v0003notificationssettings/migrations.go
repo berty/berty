@@ -3,7 +3,7 @@ package v0003notificationssettings
 import (
 	"time"
 
-	gormigrate "gopkg.in/gormigrate.v1"
+	"github.com/go-gormigrate/gormigrate"
 	"github.com/jinzhu/gorm"
 )
 
