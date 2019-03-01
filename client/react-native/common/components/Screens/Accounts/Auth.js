@@ -168,15 +168,6 @@ class Auth extends PureComponent {
     this.open()
   }
 
-  async componentDidUpdate (nextProps) {
-    if (nextProps.screenProps.deepLink !== this.props.screenProps.deepLink) {
-      this.open(this.state.list[0])
-    }
-    // if ((nextProps.screenProps !== 'undefined' && this.props.screenProps === 'undefined') || (nextProps.screenProps !== 'undefined' && this.props.screenProps !== 'undefined' && nextProps.screenProps.deepLink !== this.props.screenProps.deepLink)) {
-    //   this.openDeepLink()
-    // }
-  }
-
   render () {
     const { t } = this.props
     const { loading, message, current } = this.state
