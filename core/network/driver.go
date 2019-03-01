@@ -16,6 +16,7 @@ import (
 	ggio "github.com/gogo/protobuf/io"
 	cid "github.com/ipfs/go-cid"
 	ipfsaddr "github.com/ipfs/go-ipfs-addr"
+	libp2p_discovery "github.com/libp2p/go-libp2p-discovery"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
@@ -152,6 +153,22 @@ func (net *Network) BootstrapPeer(ctx context.Context, bootstrapAddr string) err
 	return net.host.Connect(ctx, *pinfo)
 }
 
+func (net *Network) Discover(ctx context.Context) {
+	libp2p_discovery.Advertise(ctx, net.host.Discovery, "berty")
+	go func() {
+		for {
+			peers, err := libp2p_discovery.FindPeers(ctx, net.host.Discovery, "berty", 0)
+			if err != nil {
+				logger().Error("network discover error", zap.String("err", err.Error()))
+				continue
+			}
+			for _, pi := range peers {
+				net.Connect(ctx, pi)
+			}
+		}
+	}()
+}
+
 // Connect ensures there is a connection between this host and the peer with
 // given peer.ID.
 func (net *Network) Connect(ctx context.Context, pi pstore.PeerInfo) error {
@@ -173,7 +190,6 @@ func (net *Network) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 		if err != nil {
 			return err
 		}
-
 		return net.host.Connect(ctx, pi)
 	}
 

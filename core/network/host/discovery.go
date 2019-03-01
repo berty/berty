@@ -7,6 +7,7 @@ import (
 	"berty.tech/core/pkg/tracing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
+	"go.uber.org/zap"
 )
 
 var _ discovery.Discovery = (*BertyDiscovery)(nil)
@@ -29,11 +30,9 @@ func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...disco
 	t := time.Now()
 
 	waitChans := []chan struct{}{}
-	for i := range waitChans {
-		waitChans[i] = make(chan struct{}, 1)
-	}
-
 	for i := range d.discoveries {
+		waitChans = append(waitChans, make(chan struct{}, 1))
+
 		d := d.discoveries[i]
 		waitChan := waitChans[i]
 
@@ -41,7 +40,7 @@ func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...disco
 			_, err := d.Advertise(ctx, ns, opts...)
 			waitChan <- struct{}{}
 			if err != nil {
-				logger().Error(err.Error())
+				logger().Error("berty discovery advertise error", zap.String("err", err.Error()))
 				return
 			}
 		}()
@@ -66,13 +65,15 @@ func (d *BertyDiscovery) FindPeers(ctx context.Context, ns string, opts ...disco
 		go func() {
 			piChan, err := d.FindPeers(ctx, ns, opts...)
 			if err != nil {
-				logger().Error(err.Error())
+				logger().Error("berty discovery find peers error", zap.String("err", err.Error()))
 				return
 			}
 			for {
 				select {
 				case pi := <-piChan:
-					globPiChan <- pi
+					if pi.ID != "" {
+						globPiChan <- pi
+					}
 				case <-ctx.Done():
 					return
 				}

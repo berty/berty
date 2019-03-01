@@ -14,16 +14,16 @@ import (
 var _ discovery.Discovery = (*Discovery)(nil)
 
 type Discovery struct {
-	host    host.Host
-	service service.Service
-	notifee *notifee
+	host     host.Host
+	services map[string]service.Service
+	notifees map[string]*notifee
 }
 
 func NewDiscovery(ctx context.Context, host host.Host) (discovery.Discovery, error) {
 	return &Discovery{
-		host:    host,
-		service: nil,
-		notifee: nil,
+		host:     host,
+		services: map[string]service.Service{},
+		notifees: map[string]*notifee{},
 	}, nil
 }
 
@@ -31,9 +31,10 @@ func (d *Discovery) Advertise(ctx context.Context, ns string, opts ...discovery.
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 
-	if err := d.wakeService(ctx); err != nil {
+	if err := d.wakeService(ctx, ns); err != nil {
 		return 0, err
 	}
+	time.Sleep(10 * time.Second)
 	return 10 * time.Second, nil
 }
 
@@ -41,26 +42,28 @@ func (d *Discovery) FindPeers(ctx context.Context, ns string, opts ...discovery.
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 
-	if err := d.wakeService(ctx); err != nil {
+	if err := d.wakeService(ctx, ns); err != nil {
 		return nil, err
 	}
-	if d.notifee == nil {
-		d.notifee = &notifee{
+	_, ok := d.notifees[ns]
+	if !ok {
+		d.notifees[ns] = &notifee{
 			piChan: make(chan pstore.PeerInfo, 1),
 		}
-		d.service.RegisterNotifee(d.notifee)
+		d.services[ns].RegisterNotifee(d.notifees[ns])
 	}
-	return d.notifee.piChan, nil
+	return d.notifees[ns].piChan, nil
 }
 
-func (d *Discovery) wakeService(ctx context.Context) error {
+func (d *Discovery) wakeService(ctx context.Context, ns string) error {
 	var err error
 
-	if d.service != nil {
+	_, ok := d.services[ns]
+	if ok {
 		return nil
 	}
 
-	d.service, err = service.NewMdnsService(ctx, d.host, 10*time.Second, "berty")
+	d.services[ns], err = service.NewMdnsService(ctx, d.host, 10*time.Second, ns)
 	if err != nil {
 		return err
 	}

@@ -39,13 +39,13 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	var err error
 	var cfg config.Config
 
+	net := &Network{
+		shutdown: cancel,
+	}
+
 	if err := cfg.Apply(opts...); err != nil {
 		cancel()
 		return nil, err
-	}
-
-	net := &Network{
-		shutdown: cancel,
 	}
 
 	net.host, err = cfg.NewNode(ctx)
@@ -57,9 +57,14 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	net.host.SetStreamHandler(ProtocolID, net.handleEnvelope)
 	net.logHostInfos()
 
-	if net.Bootstrap(ctx, false, cfg.Bootstrap...); err != nil {
+	// bootstrap default peers
+	if err := net.Bootstrap(ctx, false, cfg.Bootstrap...); err != nil {
+		cancel()
 		return nil, err
 	}
+
+	// advertise and find peers on berty discovery service
+	net.Discover(ctx)
 
 	return net, nil
 }
