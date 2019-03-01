@@ -237,7 +237,7 @@ class DebugStateBar extends PureComponent {
           <Text icon='bluetooth' size={5} padding={5} rounded small background={bgBleColor} color={bleColor} onPress={() => NavigationService.navigate('network/config')}>{bleText.toLocaleUpperCase()}</Text>
         </View>}
         {!this.state.collapsed && <View style={{ marginRight: 2 }}>
-          <Text icon='settings' size={5} padding={5} rounded small background={colors.darkGrey} color={colors.inputGrey} onPress={() => NavigationService.navigate('settings/devtools')} />
+          <Text icon='settings' size={5} padding={5} rounded small background={colors.darkGrey} color={colors.inputGrey} onPress={() => NavigationService.navigate('devtools/list')} />
         </View>}
         <View style={{ marginRight: 2 }}>
           <Text icon={this.state.collapsed ? 'chevrons-left' : 'chevrons-right'} size={5} padding={5} rounded small background={this.state.collapsed ? bgBertyColor : colors.inputGrey} color={this.state.collapsed ? bertyColor : colors.darkGrey} onPress={() => this.setState({ collapsed: !this.state.collapsed })} />

@@ -1,6 +1,6 @@
 import { I18nextProvider } from 'react-i18next'
 import { Linking, Platform, View, NativeModules } from 'react-native'
-import { SafeAreaView, createAppContainer, NavigationActions } from 'react-navigation'
+import { SafeAreaView, createAppContainer } from 'react-navigation'
 import FlashMessage from 'react-native-flash-message'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
 import ReactNativeLanguages from 'react-native-languages'
@@ -67,17 +67,18 @@ class HandleDeepLink extends PureComponent {
       return
     }
 
-    this.props.navigation.dispatch(NavigationActions.navigate(deepLink))
+    this.props.navigation.navigate(deepLink)
     clearDeepLink()
   }
 
   render () {
+    const { navigation } = this.props
     return (
       <AppNavigator
         {...this.props}
-        ref={nav => {
-          this.navigation = nav
-          NavigationService.setTopLevelNavigator(nav)
+        ref={() => {
+          this.navigation = navigation
+          NavigationService.setTopLevelNavigator(navigation)
         }}
         onNavigationStateChange={(prevState, currentState) => {
           const currentRoute = this.getActiveRouteName(currentState)
