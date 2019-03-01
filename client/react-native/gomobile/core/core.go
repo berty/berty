@@ -210,7 +210,7 @@ func daemon(cfg *MobileOptions) error {
 	var a *account.Account
 
 	accountOptions := account.Options{
-		account.WithNetwork(network.New(ctx, network.WithDefaultMobileOptions())),
+		account.WithNetwork(network.New(rootContext, network.WithDefaultMobileOptions())),
 		account.WithJaegerAddrName("jaeger.berty.io:6831", cfg.nickname+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(cfg.nickname),

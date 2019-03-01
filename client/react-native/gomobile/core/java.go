@@ -6,7 +6,7 @@ import (
 	"Java/chat/berty/ble/BleManager"
 	"Java/chat/berty/ble/DeviceManager"
 
-	"berty.tech/core/network/ble"
+	"berty.tech/core/network/protocol/ble"
 	"go.uber.org/zap"
 )
 

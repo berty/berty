@@ -70,10 +70,6 @@ deps:
 	patch -N $(GOPATH)/src/golang.org/x/mobile/cmd/gomobile/env.go $(BUILD_PATCH_PATH)/gomobile-env-flag.diff
 	GO111MODULE=off go install golang.org/x/mobile/cmd/gomobile
 
-.PHONY: init
-init: deps
-	GO111MODULE=off gomobile init -v -ndk $(ANDROID_NDK_HOME)
-
 .PHONY: test
 test:
 	cd $(CORE_MOBILE) && CGO_LDFLAGS="$(CGO_OS_LDFLAGS)" CGO_CPPFLAGS="$(CGO_OS_CPPFLAGS)" go test -test.timeout $(GOTEST_TIMEOUT) -v ./...
