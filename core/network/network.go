@@ -57,6 +57,10 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	net.host.SetStreamHandler(ProtocolID, net.handleEnvelope)
 	net.logHostInfos()
 
+	if net.Bootstrap(ctx, false, cfg.Bootstrap...); err != nil {
+		return nil, err
+	}
+
 	return net, nil
 }
 

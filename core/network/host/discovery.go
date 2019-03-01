@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"berty.tech/core/pkg/tracing"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 )
@@ -22,6 +23,9 @@ func NewBertyDiscovery(ctx context.Context, discoveries []discovery.Discovery) d
 }
 
 func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...discovery.Option) (time.Duration, error) {
+	tracer := tracing.EnterFunc(ctx, ns, opts)
+	defer tracer.Finish()
+
 	t := time.Now()
 
 	waitChans := []chan struct{}{}
@@ -51,6 +55,9 @@ func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...disco
 }
 
 func (d *BertyDiscovery) FindPeers(ctx context.Context, ns string, opts ...discovery.Option) (<-chan pstore.PeerInfo, error) {
+	tracer := tracing.EnterFunc(ctx, ns, opts)
+	defer tracer.Finish()
+
 	globPiChan := make(chan pstore.PeerInfo, 1)
 
 	for i := range d.discoveries {
