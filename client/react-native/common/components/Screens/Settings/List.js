@@ -1,16 +1,25 @@
 import { ActivityIndicator } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Menu, Text, Screen, Avatar } from '../../Library'
+import { Menu, Text, Screen, Avatar, Header } from '../../Library'
 import { QueryReducer } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { extractPublicKeyFromId } from '../../../helpers/contacts'
 import { installUpdate } from '../../../helpers/update'
+import withRelayContext from '../../../helpers/withRelayContext'
 import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
 class List extends PureComponent {
+  static navigationOptions = ({ navigation }) => ({
+    header: (
+      <Header navigation={navigation} title={I18n.t('settings.title')} titleIcon='settings' />
+    ),
+    tabBarVisible: true,
+  })
+
   static Menu = fragments.Contact(
     ({
       navigation,
@@ -39,10 +48,8 @@ class List extends PureComponent {
             title={t('settings.my-account-share')}
             onPress={() =>
               navigation.navigate('modal/contacts/card', {
-                data: {
-                  ...data,
-                  id: extractPublicKeyFromId(id),
-                },
+                ...data,
+                id: extractPublicKeyFromId(id),
                 self: true,
               })
             }
@@ -116,9 +123,7 @@ class List extends PureComponent {
   render () {
     const {
       navigation,
-      screenProps: {
-        context: { queries },
-      },
+      context: { queries },
       t,
     } = this.props
 
@@ -170,4 +175,4 @@ class List extends PureComponent {
   }
 }
 
-export default withNamespaces()(List)
+export default withRelayContext(withNamespaces()(List))

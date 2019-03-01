@@ -3,6 +3,7 @@ package chat.berty.main;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.zoontek.rndevmenu.RNDevMenuPackage;
 import com.instabug.reactlibrary.RNInstabugReactnativePackage;
@@ -50,6 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new CorePackage(),
                 new ImagePickerPackage(),
                 new MainReactPackage(),
+            new RNGestureHandlerPackage(),
                 new ReactNativeConfigPackage(),
                 new RNDevMenuPackage(),
                 new RNInstabugReactnativePackage.Builder(BuildConfig.INSTABUG_TOKEN,MainApplication.this)

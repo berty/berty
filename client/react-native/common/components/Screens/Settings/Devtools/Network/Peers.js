@@ -18,6 +18,7 @@ import {
   smallText,
 } from '../../../../../styles'
 import Accordion from 'react-native-collapsible/Accordion'
+import withRelayContext from '../../../../../helpers/withRelayContext'
 
 const Connection = {
   NOT_CONNECTED: 0,
@@ -41,7 +42,7 @@ const ConnectionType = c => {
   }
 }
 
-export default class Peers extends Component {
+class Peers extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -63,7 +64,7 @@ export default class Peers extends Component {
   }
 
   componentWillMount () {
-    this.subscriber = this.props.screenProps.context.subscriptions.monitorPeers.subscribe(
+    this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe(
       {
         iterator: undefined,
         updater: (store, data) => {
@@ -83,7 +84,7 @@ export default class Peers extends Component {
   }
 
   fetchPeers = () => {
-    this.props.screenProps.context.queries.Peers.fetch().then(data =>
+    this.props.context.queries.Peers.fetch().then(data =>
       this.updatePeers(data.list)
     )
   }
@@ -238,3 +239,5 @@ const styles = StyleSheet.create({
     color: colors.red,
   },
 })
+
+export default withRelayContext(Peers)

@@ -1,11 +1,11 @@
 import React from 'react'
-import { createMaterialTopTabNavigator } from 'react-navigation'
+import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
 import ByQRCode from './ByQRCode'
 import ByPublicKey from './ByPublicKey'
 import Invite from './Invite'
 import { tabIcon, withScreenProps } from '../../../../helpers/views'
 import { tabNavigatorOptions } from '../../../../constants/styling'
-import { View } from 'react-native'
+import { View, Keyboard } from 'react-native'
 import I18n from 'i18next'
 
 const AddContactTabbedContent = createMaterialTopTabNavigator(
@@ -42,11 +42,26 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
   {
     ...tabNavigatorOptions,
     animationEnabled: false,
+    defaultNavigationOptions: {
+      tabBarOnPress: ({ navigation, defaultHandler }) => {
+        defaultHandler()
+        Keyboard.dismiss()
+      },
+    },
   },
 )
 
-const AddScreen = () => <View style={{ flex: 1 }}>
-  <AddContactTabbedContent />
-</View>
+class AddScreen extends React.Component {
+  static router = AddContactTabbedContent.router
 
-export default AddScreen
+  render () {
+    const { navigation } = this.props
+    return (
+      <View style={{ flex: 1 }}>
+        <AddContactTabbedContent navigation={navigation} />
+      </View>
+    )
+  }
+}
+
+export default withNavigation(AddScreen)

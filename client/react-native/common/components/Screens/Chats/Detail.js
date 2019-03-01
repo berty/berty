@@ -16,12 +16,13 @@ import { parseEmbedded } from '../../../helpers/json'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
 import * as dateFns from '../../../i18n/dateFns'
+import withRelayContext from '../../../helpers/withRelayContext'
 
 class Message extends React.PureComponent {
   static contextType = RelayContext
 
   messageSeen = async () => {
-    await this.props.screenProps.context.mutations.eventSeen({
+    await this.props.context.mutations.eventSeen({
       id: this.props.data.id,
     })
   }
@@ -165,7 +166,7 @@ class Input extends PureComponent {
       try {
         const conversation = this.props.navigation.state.params || {}
         input &&
-          (await this.props.screenProps.context.mutations.conversationAddMessage(
+          (await this.props.context.mutations.conversationAddMessage(
             {
               conversation: {
                 id: conversation.id,
@@ -237,9 +238,8 @@ const Chat = fragments.Conversation(
       const {
         data,
         navigation,
-        screenProps: {
-          context: { queries, subscriptions, fragments },
-        },
+        context: { queries, subscriptions, fragments },
+        context,
       } = this.props
       return (
         <Flex.Rows>
@@ -266,7 +266,7 @@ const Chat = fragments.Conversation(
               <MessageContainer
                 {...props}
                 navigation={navigation}
-                screenProps={this.props.screenProps}
+                context={context}
                 conversation={data}
               />
             )}
@@ -274,15 +274,14 @@ const Chat = fragments.Conversation(
           />
           <Input
             navigation={this.props.navigation}
-            screenProps={this.props.screenProps}
+            context={this.props.context}
           />
         </Flex.Rows>
       )
     }
   }
 )
-
-export default class Detail extends PureComponent {
+class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -310,7 +309,7 @@ export default class Detail extends PureComponent {
   }
 
   onConversationRead = async () => {
-    const res = await this.props.screenProps.context.mutations.conversationRead(
+    const res = await this.props.context.mutations.conversationRead(
       {
         id: this.props.navigation.getParam('id'),
       }
@@ -323,9 +322,8 @@ export default class Detail extends PureComponent {
     const id = this.props.navigation.getParam('id')
     const {
       navigation,
-      screenProps: {
-        context: { queries },
-      },
+      context,
+      context: { queries },
     } = this.props
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
@@ -348,7 +346,7 @@ export default class Detail extends PureComponent {
                 return (
                   <Chat
                     navigation={navigation}
-                    screenProps={this.props.screenProps}
+                    context={context}
                     data={state.data.Conversation}
                   />
                 )
@@ -362,3 +360,5 @@ export default class Detail extends PureComponent {
     )
   }
 }
+
+export default withRelayContext(Detail)

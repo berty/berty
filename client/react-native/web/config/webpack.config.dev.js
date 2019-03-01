@@ -132,6 +132,7 @@ module.exports = {
     // for React Native Web.
     extensions: ['.mjs', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
+      'react-native': 'react-native-web',
       'react-native-svg': 'react-native-svg-web',
       'react-dom/unstable-native-dependencies': path.resolve(
         paths.appPath,
@@ -241,6 +242,8 @@ module.exports = {
             include: [
               /node_modules\/react-native.*/,
               /node_modules\/react-navigation/,
+              /node_modules\/@react-navigation\/native/,
+              /node_modules\/@react-navigation\/core/,
               /node_modules\/cavy/,
             ],
             loader: require.resolve('babel-loader'),

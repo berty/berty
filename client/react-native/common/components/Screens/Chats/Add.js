@@ -20,6 +20,7 @@ import {
 } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
+import withRelayContext from '../../../helpers/withRelayContext'
 
 const Item = fragments.Contact(
   class Item extends PureComponent {
@@ -129,7 +130,7 @@ class ListScreen extends Component {
   onDefaultSubmit = async ({ contactsID }) => {
     const {
       ConversationCreate: conversation,
-    } = await this.props.screenProps.context.mutations.conversationCreate({
+    } = await this.props.context.mutations.conversationCreate({
       title: '',
       topic: '',
       infos: '',
@@ -160,16 +161,14 @@ class ListScreen extends Component {
   render () {
     const { contactsID } = this.state
     const {
-      screenProps: {
-        context: { queries },
-      },
+      context,
     } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
-          context={this.props.screenProps.context}
-          query={queries.ContactList.graphql}
-          variables={queries.ContactList.defaultVariables}
+          context={context}
+          query={context.queries.ContactList.graphql}
+          variables={context.queries.ContactList.defaultVariables}
           fragment={fragments.ContactList}
           alias='ContactList'
           ListHeaderComponent={
@@ -197,4 +196,4 @@ class ListScreen extends Component {
   }
 }
 
-export default withNamespaces()(ListScreen)
+export default withNamespaces()(withRelayContext(ListScreen))

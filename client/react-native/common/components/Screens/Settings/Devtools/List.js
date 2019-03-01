@@ -9,10 +9,11 @@ import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
 import { colors } from '../../../../constants'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
 const { CoreModule } = NativeModules
 
-export default class List extends PureComponent {
+class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header:
       navigation.getParam('restartDaemon') ||
@@ -55,7 +56,7 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ testPanic: true })
     this.setState({ testPanic: true }, async () => {
       if (Platform.OS === 'web') {
-        await this.props.screenProps.context.queries.TestPanic.fetch()
+        await this.props.context.queries.TestPanic.fetch()
       } else {
         CoreModule.panic()
       }
@@ -70,7 +71,7 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ testError: true })
     this.setState({ testError: true }, async () => {
       if (Platform.OS === 'web') {
-        await this.props.screenProps.context.queries.TestError.fetch() // FIXME: the 'kind' should be selectable
+        await this.props.context.queries.TestError.fetch() // FIXME: the 'kind' should be selectable
       } else {
         CoreModule.error()
       }
@@ -85,7 +86,7 @@ export default class List extends PureComponent {
     this.props.navigation.setParams({ testLogBackgroundError: true })
     this.setState({ testLogBackgroundError: true }, async () => {
       console.log(this.props)
-      await this.props.screenProps.context.queries.TestLogBackgroundError.fetch()
+      await this.props.context.queries.TestLogBackgroundError.fetch()
       this.props.navigation.setParams({
         testLogBackgroundError: false,
       })
@@ -96,7 +97,7 @@ export default class List extends PureComponent {
   testLogBackgroundWarn = async () => {
     this.props.navigation.setParams({ testLogBackgroundWarn: true })
     this.setState({ testLogBackgroundWarn: true }, async () => {
-      await this.props.screenProps.context.queries.TestLogBackgroundWarn.fetch()
+      await this.props.context.queries.TestLogBackgroundWarn.fetch()
       this.props.navigation.setParams({
         testLogBackgroundWarn: false,
       })
@@ -107,7 +108,7 @@ export default class List extends PureComponent {
   testLogBackgroundDebug = async () => {
     this.props.navigation.setParams({ testLogBackgroundDebug: true })
     this.setState({ testLogBackgroundDebug: true }, async () => {
-      await this.props.screenProps.context.queries.TestLogBackgroundDebug.fetch()
+      await this.props.context.queries.TestLogBackgroundDebug.fetch()
       this.props.navigation.setParams({
         testLogBackgroundDebug: false,
       })
@@ -337,3 +338,5 @@ export default class List extends PureComponent {
     )
   }
 }
+
+export default withRelayContext(List)

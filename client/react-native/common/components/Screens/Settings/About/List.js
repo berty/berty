@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
 import { Header, Menu } from '../../../Library'
 import { withNamespaces } from 'react-i18next'
+import withRelayContext from '../../../../helpers/withRelayContext'
 import I18n from 'i18next'
 
 class List extends PureComponent {
@@ -15,7 +16,7 @@ class List extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.screenProps.context.queries.AppVersion.fetch().then(data => {
+    this.props.context.queries.AppVersion.fetch().then(data => {
       this.setState({ version: data.version })
     })
   }
@@ -56,4 +57,4 @@ class List extends PureComponent {
   }
 }
 
-export default withNamespaces()(List)
+export default withRelayContext(withNamespaces()(List))

@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react'
 
 import { Menu, Header, Screen, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
 class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -69,7 +70,7 @@ class Detail extends PureComponent {
 
   deleteContact = async () => {
     try {
-      await this.props.screenProps.context.mutations.contactRemove({
+      await this.props.context.mutations.contactRemove({
         id: this.props.navigation.getParam('contact').id,
       })
       this.props.navigation.goBack(null)
@@ -132,4 +133,4 @@ class Detail extends PureComponent {
   }
 }
 
-export default withNamespaces()(Detail)
+export default withRelayContext(withNamespaces()(Detail))

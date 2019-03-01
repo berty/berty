@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
 
 import chat.berty.core.Level;
 import chat.berty.core.Logger;
@@ -33,7 +36,6 @@ public class MainActivity extends ReactActivity {
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,5 +75,15 @@ public class MainActivity extends ReactActivity {
         } catch (Exception err) {
             this.logger.format(Level.ERROR, TAG, "on destroy: %s", err);
         }
+    }
+
+    @Override
+    protected ReactActivityDelegate createReactActivityDelegate() {
+        return new ReactActivityDelegate(this, getMainComponentName()) {
+            @Override
+            protected ReactRootView createRootView() {
+                return new RNGestureHandlerEnabledRootView(MainActivity.this);
+            }
+        };
     }
 }

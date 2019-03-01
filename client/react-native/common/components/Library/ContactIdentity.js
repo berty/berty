@@ -1,16 +1,16 @@
-import { View, Platform, Text as RNText } from 'react-native'
-import { createMaterialTopTabNavigator } from 'react-navigation'
-import I18n from 'i18next'
 import React from 'react'
+import { View, Platform, Text as RNText } from 'react-native'
+import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
+import I18n from 'i18next'
 
 import Text from './Text'
 import Avatar from './Avatar'
 import { contact } from '../../utils'
 import { formattedFingerprint } from '../../helpers/fingerprint'
-import { makeShareableUrl } from '../../helpers/contacts'
 import { monospaceFont, tabNavigatorOptions } from '../../constants/styling'
 import { padding } from '../../styles'
 import { tabIcon, withScreenProps } from '../../helpers/views'
+import { makeShareableUrl } from '../../helpers/contacts'
 import QRGenerator from './QRGenerator'
 import colors from '../../constants/colors'
 
@@ -94,26 +94,26 @@ const ContactIdentityTabbedContent = createMaterialTopTabNavigator(
   }
 )
 
-const ContactIdentity = ({ data = contact.default }) => (
-  <>
-    <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-      <Avatar data={data} size={78} style={{ marginTop: 0 }} />
-    </View>
-    <Text large color={colors.fakeBlack} center padding>
-      {data.displayName}
-    </Text>
-    <View
-      style={{
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 8,
-        height: Platform.OS === 'android' ? 350 : undefined,
-      }}
-    >
-      {<ContactIdentityTabbedContent screenProps={{ data }} />}
-    </View>
-  </>
-)
+class ContactIdentity extends React.Component {
+  static router = ContactIdentityTabbedContent.router
 
-export default ContactIdentity
+  render () {
+    const { data = contact.default, navigation } = this.props
+
+    return (
+      <>
+      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+        <Avatar data={data} size={78} style={{ marginTop: 0 }} />
+      </View>
+      <Text large color={colors.fakeBlack} center padding>{data.displayName}</Text>
+      <View
+        style={{ marginLeft: 15, marginRight: 15, marginBottom: 8, height: Platform.OS === 'android' ? 350 : undefined }}>
+        <ContactIdentityTabbedContent navigation={navigation} screenProps={{ data }} />
+      </View>
+      </>
+    )
+  }
+}
+
+export default withNavigation(ContactIdentity)
 ContactIdentity.QrCode = QrCode

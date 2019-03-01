@@ -1,19 +1,104 @@
 import { I18nextProvider } from 'react-i18next'
-import { Linking, Platform, View } from 'react-native'
-import { SafeAreaView } from 'react-navigation'
-import Config from 'react-native-config'
+import { Linking, Platform, View, NativeModules } from 'react-native'
+import { SafeAreaView, createAppContainer } from 'react-navigation'
 import FlashMessage from 'react-native-flash-message'
 import KeyboardSpacer from 'react-native-keyboard-spacer'
-import React, { PureComponent } from 'react'
 import ReactNativeLanguages from 'react-native-languages'
-
-import { BASE_WEBSITE_URL, colors } from './../constants'
+import React, { PureComponent } from 'react'
+import Config from 'react-native-config'
 import { contact, conversation } from '../utils'
 import { parse as parseUrl } from '../helpers/url'
 import { Flex, Animation, MovableView, DebugStateBar } from './Library'
-import Accounts from './Screens/Accounts'
 import Instabug from '../helpers/Instabug'
+import { BASE_WEBSITE_URL, colors } from './../constants'
 import i18n from '../i18n'
+import NavigationService from './../helpers/NavigationService'
+import { AppNavigator } from './Navigator/AppNavigator'
+import { RelayContext } from '../relay'
+
+const { CoreModule } = NativeModules
+
+class HandleDeepLink extends PureComponent {
+  static router = AppNavigator.router
+
+  async componentDidUpdate (nextProps) {
+    if (nextProps.screenProps.deepLink !== this.props.screenProps.deepLink) {
+      this.openDeepLink()
+    }
+  }
+
+  getActiveRouteName = navigationState => {
+    if (!navigationState) {
+      return null
+    }
+    const route = navigationState.routes[navigationState.index]
+    // dive into nested navigators
+    if (route.routes) {
+      return this.getActiveRouteName(route)
+    }
+
+    // get fragment from react-navigation params
+    const fragment = Object.keys(route.params || {}).reduce((fragment, key) => {
+      const paramType = typeof route.params[key]
+      if (
+        paramType === 'string' ||
+        paramType === 'number' ||
+        paramType === 'boolean'
+      ) {
+        let val = route.params[key]
+        if (key === 'id') {
+          val = atob(val)
+          val = val.match(/:(.*)$/)
+          val = val[1]
+        }
+        fragment += fragment.length > 0 ? `,${key}=${val}` : `#${key}=${val}`
+      }
+      return fragment
+    }, '')
+    return route.routeName + fragment
+  }
+
+  openDeepLink = () => {
+    const {
+      screenProps: { deepLink, clearDeepLink },
+    } = this.props
+
+    if (!deepLink) {
+      return
+    }
+
+    this.props.navigation.navigate(deepLink)
+    clearDeepLink()
+  }
+
+  render () {
+    const { navigation } = this.props
+    return (
+      <AppNavigator
+        {...this.props}
+        ref={() => {
+          this.navigation = navigation
+          NavigationService.setTopLevelNavigator(navigation)
+        }}
+        onNavigationStateChange={(prevState, currentState) => {
+          const currentRoute = this.getActiveRouteName(currentState)
+          const prevRoute = this.getActiveRouteName(prevState)
+
+          if (prevRoute !== currentRoute) {
+            CoreModule.setCurrentRoute(currentRoute)
+          }
+        }}
+      />
+    )
+  }
+}
+
+let AppContainer = {}
+if (Platform.OS !== 'web') {
+  AppContainer = createAppContainer(HandleDeepLink)
+} else {
+  AppContainer = HandleDeepLink
+}
 
 export default class App extends PureComponent {
   state = {
@@ -21,6 +106,8 @@ export default class App extends PureComponent {
     showAnim:
       process.env['ENVIRONMENT'] !== 'integration_test' &&
       Platform.OS !== 'web',
+    relayContext: null,
+    availableUpdate: false,
     deepLink: {
       routeName: 'main',
       params: {},
@@ -51,6 +138,12 @@ export default class App extends PureComponent {
   componentDidMount () {
     ReactNativeLanguages.addEventListener('change', this._onLanguageChange)
 
+    if (this._handleOpenURL === undefined) {
+      this._handleOpenURL = this.handleOpenURL.bind(this)
+    }
+
+    Linking.addEventListener('url', this._handleOpenURL)
+
     Linking.getInitialURL()
       .then(url => {
         if (url !== null) {
@@ -59,11 +152,6 @@ export default class App extends PureComponent {
       })
       .catch(() => {})
 
-    if (this._handleOpenURL === undefined) {
-      this._handleOpenURL = this.handleOpenURL.bind(this)
-    }
-
-    Linking.addEventListener('url', this._handleOpenURL)
     this.setState({ loading: false })
   }
 
@@ -120,8 +208,20 @@ export default class App extends PureComponent {
     this.setState({ deepLink })
   }
 
+  setStateContext = (i, f) => {
+    this.setState(i, () => {
+      if (i.relayContext !== null && i.loading === false) {
+        this.setState({
+          debugBar: <DebugStateBar />,
+        })
+      }
+      f()
+    })
+  }
+
   render () {
-    const { loading, deepLink, showAnim } = this.state
+    const { loading, deepLink, showAnim, relayContext, availableUpdate } = this.state
+
     return (
       <I18nextProvider i18n={i18n}>
         <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
@@ -139,28 +239,25 @@ export default class App extends PureComponent {
             >
               <Animation onFinish={() => this.setState({ showAnim: false })} />
             </Flex.Rows>
-          ) : null}
-          {!loading ? (
-            <Accounts
-              ref={nav => {
-                this.navigation = nav
-              }}
-              screenProps={{
-                deepLink,
-                setDeepLink: deepLink => this.setDeepLink(deepLink),
-                clearDeepLink: () => this.clearDeepLink(),
-                onRelayContextCreated: context => this.setState({
-                  debugBar: <DebugStateBar context={context} />,
-                }),
-              }}
-            />
-          ) : null}
-          <FlashMessage position='top' />
-          <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
-            <MovableView>
-              {this.state.debugBar}
-            </MovableView>
-          </View>
+          ) : null }
+          { !loading
+            ? <RelayContext.Provider value={{ ...relayContext, setState: this.setStateContext }}>
+              <AppContainer
+                screenProps={{
+                  availableUpdate,
+                  deepLink,
+                  setDeepLink: (deepLink) => this.setDeepLink(deepLink),
+                  clearDeepLink: () => this.clearDeepLink(),
+                }}
+              />
+              <FlashMessage position='top' />
+              <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
+                <MovableView>
+                  {this.state.debugBar}
+                </MovableView>
+              </View>
+            </RelayContext.Provider>
+            : null }
           {Platform.OS === 'ios' && <KeyboardSpacer />}
         </SafeAreaView>
       </I18nextProvider>

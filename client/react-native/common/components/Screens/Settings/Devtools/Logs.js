@@ -13,7 +13,7 @@ import React, { PureComponent } from 'react'
 import { Menu, Header, Text, Flex } from '../../../Library'
 import { borderBottom } from '../../../../styles'
 import { colors } from '../../../../constants'
-import { createSubStackNavigator } from '../../../../helpers/react-navigation'
+import withRelayContext from '../../../../helpers/withRelayContext'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300
@@ -22,7 +22,7 @@ var maxBufferSize = 10000
 var antispamModalOpen = false
 var antispamModalSave = false
 
-class FilterModal extends PureComponent {
+export class FilterModal extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -338,7 +338,7 @@ class Line extends PureComponent {
   }
 }
 
-class LogStream extends PureComponent {
+class LogStreamWithContext extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -361,7 +361,7 @@ class LogStream extends PureComponent {
   })
 
   componentWillMount () {
-    this.logStream = this.props.screenProps.context.subscriptions.logStream({
+    this.logStream = this.props.context.subscriptions.logStream({
       continues: true,
       logLevel: '',
       namespaces: '',
@@ -566,13 +566,4 @@ class LogStream extends PureComponent {
   }
 }
 
-export default createSubStackNavigator(
-  {
-    'devtools/logs/list': LogStream,
-    'devtools/logs/filter': FilterModal,
-  },
-  {
-    mode: 'modal',
-    initialRouteName: 'devtools/logs/list',
-  }
-)
+export const LogStream = withRelayContext(LogStreamWithContext)

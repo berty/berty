@@ -1,12 +1,12 @@
 import { createMaterialTopTabNavigator } from 'react-navigation'
-import Welcome from './Welcome'
-import Notifications from './Notifications'
-import Bluetooth from './Bluetooth'
-import Contacts from './Contacts'
-import Ready from './Ready'
-import { tabIcon } from '../../../../helpers/views'
-import { tabNavigatorOptions } from '../../../../constants/styling'
-import I18n from '../../../../i18n'
+import Welcome from '../Screens/Accounts/Onboarding/Welcome'
+import Notifications from '../Screens/Accounts/Onboarding/Notifications'
+import Bluetooth from '../Screens/Accounts/Onboarding/Bluetooth'
+import Contacts from '../Screens/Accounts/Onboarding/Contacts'
+import Ready from '../Screens/Accounts/Onboarding/Ready'
+import { tabIcon } from '../../helpers/views'
+import { tabNavigatorOptions } from '../../constants/styling'
+import I18n from '../../i18n'
 
 export default createMaterialTopTabNavigator(
   {

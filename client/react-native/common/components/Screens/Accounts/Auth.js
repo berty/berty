@@ -4,14 +4,25 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Platform,
 } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import { Flex, Loader, Screen } from '../../Library'
 import { colors } from '../../../constants'
 import { defaultUsername } from '../../../helpers/contacts'
+import withRelayContext from '../../../helpers/withRelayContext'
+import sleep from '../../../helpers/sleep'
+import { environment, contextValue } from '../../../relay'
+import { getAvailableUpdate } from '../../../helpers/update'
 import { withNamespaces } from 'react-i18next'
-
+import {
+  queries,
+  mutations,
+  subscriptions,
+  fragments,
+  updaters,
+} from '../../../graphql'
 import { hook } from 'cavy'
 
 const { CoreModule } = NativeModules
@@ -22,7 +33,59 @@ class Auth extends PureComponent {
     current: null,
     loading: true,
     message: null,
-    nickname: null,
+    nickname: '',
+  }
+
+  getIp = async () => {
+    if (Platform.OS === 'web') {
+      return window.location.hostname
+    }
+    return '127.0.0.1'
+  }
+
+  getPort = async () => {
+    try {
+      const port = await CoreModule.getPort()
+      console.log('get port', port)
+      return port
+    } catch (error) {
+      console.warn(error, 'retrying to get port')
+      await sleep(1000)
+      return this.getPort()
+    }
+  }
+
+  openDeepLink = () => {
+    const {
+      screenProps: {
+        deepLink,
+        clearDeepLink,
+      },
+      navigation,
+    } = this.props
+
+    if (!deepLink || deepLink === 'undefined' || Platform.OS === 'web') {
+      return
+    }
+
+    navigation.navigate(deepLink)
+    clearDeepLink()
+  }
+
+  getRelayContext = async () => {
+    const test = await contextValue({
+      environment: await environment.setup({
+        getIp: this.getIp,
+        getPort: this.getPort,
+      }),
+      mutations,
+      subscriptions,
+      queries,
+      fragments,
+      updaters,
+    })
+
+    return test
   }
 
   init = async () => {
@@ -82,20 +145,27 @@ class Auth extends PureComponent {
       nickname = list[0]
     }
     await this.start(nickname)
+    const context = await this.getRelayContext()
+    const availableUpdate = await getAvailableUpdate(context)
+    this.props.context.setState(
+      {
+        relayContext: context,
+        availableUpdate: availableUpdate,
+        loading: false,
+      },
+      () => {
+        this.openDeepLink()
+      }
+    )
 
-    this.props.navigation.navigate('accounts/current', {
-      firstLaunch,
-    })
+    if (this.props.screenProps !== 'undefined' &&
+        (!this.props.screenProps.deepLink || this.props.screenProps.deepLink === 'undefined' || Platform.OS === 'web')) {
+      this.props.navigation.navigate('switch/picker', { firstLaunch })
+    }
   }
 
   async componentDidMount () {
     this.open()
-  }
-
-  async componentDidUpdate (nextProps) {
-    if (nextProps.screenProps.deepLink !== this.props.screenProps.deepLink) {
-      this.open(this.state.list[0])
-    }
   }
 
   render () {
@@ -181,4 +251,4 @@ class Auth extends PureComponent {
   }
 }
 
-export default withNamespaces()(hook(Auth))
+export default withRelayContext(withNamespaces()(hook(Auth)))
