@@ -48,10 +48,8 @@ class List extends PureComponent {
             title={t('settings.my-account-share')}
             onPress={() =>
               navigation.navigate('modal/contacts/card', {
-                data: {
-                  ...data,
-                  id: extractPublicKeyFromId(id),
-                },
+                ...data,
+                id: extractPublicKeyFromId(id),
                 self: true,
               })
             }
