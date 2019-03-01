@@ -9,11 +9,10 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	p2pnet "berty.tech/core/network"
 	"berty.tech/core/network/mock"
-	p2pnet "berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/testrunner"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -826,43 +825,17 @@ func TestAliasesFlow(t *testing.T) {
 	})
 }
 
-func setupP2PNetwork(bootstrap ...string) (*p2pnet.Driver, error) {
-	var (
-		driver *p2pnet.Driver
-		err    error
-	)
-
-	var bootstrapConfig = &dht.BootstrapConfig{
-		Queries: 5,
-		Period:  time.Duration(time.Second),
-		Timeout: time.Duration(10 * time.Second),
-	}
-
-	driver, err = p2pnet.NewDriver(
-		context.Background(),
-		p2pnet.WithRandomIdentity(),
-		p2pnet.WithDefaultMuxers(),
-		p2pnet.WithDefaultPeerstore(),
-		p2pnet.WithDefaultSecurity(),
-		p2pnet.WithDefaultTransports(),
-		p2pnet.WithDHTBoostrapConfig(bootstrapConfig),
-		p2pnet.WithListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
-		p2pnet.WithBootstrapSync(bootstrap...),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return driver, nil
+func setupP2PNetwork(ctx context.Context) (*p2pnet.Network, error) {
+	return p2pnet.New(ctx, p2pnet.WithDefaultOptions())
 }
 
-func getBoostrap(d *p2pnet.Driver) []string {
-	addrs := d.Addrs()
+func getBoostrap(n *p2pnet.Network) []string {
+	addrs := n.Addrs()
 	bootstrap := make([]string, len(addrs))
 
 	for i, a := range addrs {
 		if a.String() != "/p2p-circuit" {
-			bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.ID(context.Background()).ID)
+			bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), n.ID(context.Background()).ID)
 		}
 	}
 
@@ -921,25 +894,31 @@ func TestWithSimpleNetwork(t *testing.T) {
 
 func TestNodesWithP2PNetwork(t *testing.T) {
 	var (
-		aliceNetwork, bobNetwork, eveNetwork *p2pnet.Driver
+		aliceNetwork, bobNetwork, eveNetwork *p2pnet.Network
 		alice, bob, eve                      *AppMock
 		err                                  error
 	)
 
 	everythingWentFine()
 
+	ctx := context.WithTimeout(context.Background(), time.Second*10)
 	Convey("End-to-end test (with p2p network)", t, FailureHalts, func() {
 		Convey("Initialize nodes", FailureHalts, func() {
 			shouldIContinue(t)
 
-			aliceNetwork, err = setupP2PNetwork()
+			aliceNetwork, err = setupP2PNetwork(ctx)
 			So(err, ShouldBeNil)
 
 			bootstrap := getBoostrap(aliceNetwork)
 
-			bobNetwork, err = setupP2PNetwork(bootstrap...)
+			bobNetwork, err = setupP2PNetwork(ctx)
 			So(err, ShouldBeNil)
-			eveNetwork, err = setupP2PNetwork(bootstrap...)
+			eveNetwork, err = setupP2PNetwork(ctx)
+			So(err, ShouldBeNil)
+
+			err = bobNetwork.Bootstrap(ctx, true, bootstrap...)
+			So(err, ShouldBeNil)
+			err = eveNetwork.Bootstrap(ctx, true, bootstrap...)
 			So(err, ShouldBeNil)
 
 			bob, err = NewAppMock(&entity.Device{Name: "Bob"}, bobNetwork)
