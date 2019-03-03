@@ -2,7 +2,7 @@ package sql
 
 import (
 	"berty.tech/core/sql/migrations"
-	"github.com/go-gormigrate/gormigrate"
+	gormigrate "gopkg.in/gormigrate.v1"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
 )
