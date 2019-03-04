@@ -25,19 +25,19 @@ var defaultServerConfig = dht.BootstrapConfig{
 	Timeout: 40 * time.Second,
 }
 
-func New(ctx context.Context, host host.Host, server bool, config dht.BootstrapConfig) (*dht.IpfsDHT, error) {
+func New(ctx context.Context, host host.Host, server bool, logDatastore bool, config dht.BootstrapConfig) (*dht.IpfsDHT, error) {
 	var datastore ds.Batching
 
-	if server {
+	if server && config.Queries == 0 {
+		config = defaultServerConfig
+	} else if config.Queries == 0 {
+		config = defaultClientConfig
+	}
+
+	if logDatastore {
 		datastore = ds.NewLogDatastore(ds.NewMapDatastore(), "DHT_datastore")
-		if config.Queries == 0 {
-			config = defaultServerConfig
-		}
 	} else {
 		datastore = ds.NewMapDatastore()
-		if config.Queries == 0 {
-			config = defaultClientConfig
-		}
 	}
 
 	dhtkv, err := dht.New(

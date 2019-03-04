@@ -108,6 +108,14 @@ func WithDHTCSKVBoostrapConfig(bc *dht.BootstrapConfig) Option {
 	}
 }
 
+// WithDHTCSKVBoostrapConfig specifies parameters used bootstrapping the DHT Client-Server Key-Value.
+func WithDHTCSKVLogDatastore() Option {
+	return func(dc *driverConfig) error {
+		dc.dhtkvLogDatastore = true
+		return nil
+	}
+}
+
 // WithClientDHTCSKV enable server mode for the DHT Client-Server Key-Value
 func WithServerDHTCSKV() Option {
 	return func(dc *driverConfig) error {

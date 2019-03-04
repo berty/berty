@@ -58,6 +58,7 @@ type driverConfig struct {
 
 	// DHT Client-Server Key-Value
 	dhtkvBoostrapConfig dht.BootstrapConfig
+	dhtkvLogDatastore   bool
 	dhtkvServer         bool
 
 	// MDNS
@@ -144,7 +145,7 @@ func newDriver(ctx context.Context, cfg driverConfig) (*Driver, error) {
 		return nil, err
 	}
 
-	driver.dhtCskv, err = dhtcskv.New(ctx, host, cfg.dhtkvServer, cfg.dhtkvBoostrapConfig)
+	driver.dhtCskv, err = dhtcskv.New(ctx, host, cfg.dhtkvServer, cfg.dhtkvLogDatastore, cfg.dhtkvBoostrapConfig)
 	if err != nil {
 		if closeErr := host.Close(); closeErr != nil {
 			logger().Error("failed to close host", zap.Error(closeErr))

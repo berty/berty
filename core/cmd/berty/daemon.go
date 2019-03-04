@@ -35,19 +35,20 @@ type daemonOptions struct {
 	privateKeyFile   string   `mapstructure:"private-key-file"`
 
 	// p2p
-	identity       string   `mapstructure:"identity"`
-	bootstrap      []string `mapstructure:"bootstrap"`
-	noP2P          bool     `mapstructure:"no-p2p"`
-	bindP2P        []string `mapstructure:"bind-p2p"`
-	transportP2P   []string `mapstructure:"transport-p2p"`
-	hop            bool     `mapstructure:"hop"` // relay hop
-	ble            bool     `mapstructure:"ble"`
-	mdns           bool     `mapstructure:"mdns"`
-	dhtServer      bool     `mapstructure:"dht"`
-	PrivateNetwork bool     `mapstructure:"private-network"`
-	SwarmKeyPath   string   `mapstructure:"swarm-key"`
 
-	nickname string `mapstructure:"nickname"`
+	identity          string   `mapstructure:"identity"`
+	bootstrap         []string `mapstructure:"bootstrap"`
+	noP2P             bool     `mapstructure:"no-p2p"`
+	bindP2P           []string `mapstructure:"bind-p2p"`
+	transportP2P      []string `mapstructure:"transport-p2p"`
+	hop               bool     `mapstructure:"hop"` // relay hop
+	ble               bool     `mapstructure:"ble"`
+	mdns              bool     `mapstructure:"mdns"`
+	dhtServer         bool     `mapstructure:"dht"`
+	PrivateNetwork    bool     `mapstructure:"private-network"`
+	SwarmKeyPath      string   `mapstructure:"swarm-key"`
+	dhtkvLogDatastore bool     `mapstructure:"dhtkv-log-ds"`
+	nickname          string   `mapstructure:"nickname"`
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
@@ -60,7 +61,8 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.privateKeyFile, "private-key-file", "", "set private key file for node")
 	flags.BoolVar(&opts.withBot, "bot", false, "enable bot")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
-	flags.BoolVar(&opts.dhtServer, "dhtkv-server", false, "enable server mode for DHT-CSKV (client mode by default)")
+	flags.BoolVar(&opts.dhtServer, "dhtkv-server", false, "enable server mode for DHT (Client mode by default)")
+	flags.BoolVar(&opts.dhtkvLogDatastore, "dhtkv-log-ds", false, "enable logs for DHT-CSKV datastore")
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
 	flags.StringVar(&opts.SwarmKeyPath, "swarm-key", "", "path to a custom swarm key, only peers that use the same swarm key will be able to talk with you")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
@@ -170,6 +172,8 @@ func daemon(opts *daemonOptions) error {
 					Identity:         opts.identity,
 					Persist:          false,
 					OverridePersist:  false,
+
+					DHTKVLogDatastore: opts.dhtkvLogDatastore,
 				}),
 			),
 		))
