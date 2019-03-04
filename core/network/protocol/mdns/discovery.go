@@ -2,6 +2,7 @@ package mdns
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"berty.tech/core/pkg/tracing"
@@ -17,6 +18,7 @@ type Discovery struct {
 	host     host.Host
 	services map[string]service.Service
 	notifees map[string]*notifee
+	mutex    sync.Mutex
 }
 
 func NewDiscovery(ctx context.Context, host host.Host) (discovery.Discovery, error) {
@@ -31,7 +33,7 @@ func (d *Discovery) Advertise(ctx context.Context, ns string, opts ...discovery.
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 
-	if err := d.wakeService(ctx, ns); err != nil {
+	if err := d.wakeService(ctx, ns, false); err != nil {
 		return 0, err
 	}
 	time.Sleep(10 * time.Second)
@@ -42,22 +44,17 @@ func (d *Discovery) FindPeers(ctx context.Context, ns string, opts ...discovery.
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 
-	if err := d.wakeService(ctx, ns); err != nil {
+	if err := d.wakeService(ctx, ns, true); err != nil {
 		return nil, err
 	}
-	_, ok := d.notifees[ns]
-	if !ok {
-		d.notifees[ns] = &notifee{
-			piChan: make(chan pstore.PeerInfo, 1),
-		}
-		d.services[ns].RegisterNotifee(d.notifees[ns])
-	}
+
 	return d.notifees[ns].piChan, nil
 }
 
-func (d *Discovery) wakeService(ctx context.Context, ns string) error {
+func (d *Discovery) wakeService(ctx context.Context, ns string, regiterNotifee bool) error {
 	var err error
 
+	d.mutex.Lock()
 	_, ok := d.services[ns]
 	if ok {
 		return nil
@@ -68,15 +65,31 @@ func (d *Discovery) wakeService(ctx context.Context, ns string) error {
 		return err
 	}
 
+	_, ok = d.notifees[ns]
+	if !ok {
+		d.notifees[ns] = &notifee{
+			piChan: make(chan pstore.PeerInfo, 1),
+		}
+	}
+
+	if regiterNotifee && d.notifees[ns].registered == false {
+		d.services[ns].RegisterNotifee(d.notifees[ns])
+		d.notifees[ns].registered = true
+	}
+	d.mutex.Unlock()
+
 	return nil
 }
 
 var _ service.Notifee = (*notifee)(nil)
 
 type notifee struct {
-	piChan chan pstore.PeerInfo
+	piChan     chan pstore.PeerInfo
+	registered bool
 }
 
 func (n *notifee) HandlePeerFound(pi pstore.PeerInfo) {
-	n.piChan <- pi
+	if pi.ID != "" {
+		n.piChan <- pi
+	}
 }

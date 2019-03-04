@@ -40,10 +40,11 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
 	if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {
-		logger().Warn("failed to join user channel",
+		logger().Error("failed to join user channel",
 			zap.String("id", n.UserID()),
 			zap.Error(err),
 		)
+		return err
 	}
 
 	// FIXME: subscribe to every owned device IDs

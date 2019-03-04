@@ -74,9 +74,9 @@ func (net *Network) ID(ctx context.Context) *metric.Peer {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
-	addrs := make([]string, len(net.host.Addrs()))
-	for i, addr := range net.host.Addrs() {
-		addrs[i] = addr.String()
+	addrs := []string{}
+	for _, addr := range net.host.Addrs() {
+		addrs = append(addrs, addr.String())
 	}
 
 	return &metric.Peer{
@@ -336,9 +336,9 @@ func (net *Network) FindProvidersAndWait(ctx context.Context, id string, cache b
 		return nil, err
 	}
 
-	ctx, cancel := context.WithCancel(ctx)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
+	defer cancel()
 
-	t := time.Now()
 	piChan := net.host.Routing.FindProvidersAsync(ctx, c, 10)
 
 	piSlice := []pstore.PeerInfo{}
@@ -348,11 +348,7 @@ func (net *Network) FindProvidersAndWait(ctx context.Context, id string, cache b
 			if pi.ID != "" {
 				piSlice = append(piSlice, pi)
 			}
-			if time.Now().Sub(t) >= time.Second*3 && len(piSlice) >= 1 {
-				cancel()
-			}
 		case <-ctx.Done():
-			cancel()
 			if len(piSlice) == 0 {
 				return nil, errors.New("no providers found")
 			}

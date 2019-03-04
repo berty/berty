@@ -63,7 +63,7 @@ func WithUnencryptedDb() AppMockOption {
 	}
 }
 
-func NewAppMock(device *entity.Device, networkDriver network.Driver, options ...AppMockOption) (*AppMock, error) {
+func NewAppMock(ctx context.Context, device *entity.Device, networkDriver network.Driver, options ...AppMockOption) (*AppMock, error) {
 	tmpFile, err := ioutil.TempFile("", "sqlite")
 	if err != nil {
 		return nil, err
@@ -76,8 +76,10 @@ func NewAppMock(device *entity.Device, networkDriver network.Driver, options ...
 		crypto:        &keypair.InsecureCrypto{},
 		options:       options,
 	}
+	a.ctx, a.cancel = context.WithCancel(ctx)
 
 	if err := a.Open(); err != nil {
+		a.cancel()
 		return nil, err
 	}
 
@@ -121,8 +123,6 @@ func (a *AppMock) Open() error {
 		}
 	}
 
-	a.ctx, a.cancel = context.WithCancel(context.Background())
-
 	if a.node, err = node.New(
 		a.ctx,
 		node.WithSQL(a.db),
@@ -158,7 +158,7 @@ func (a *AppMock) Open() error {
 	return nil
 }
 
-func (a *AppMock) InitEventStream() error {
+func (a *AppMock) InitEventStream(ctx context.Context) error {
 	a.eventStream = make(chan *entity.Event, 100)
 	stream, err := a.client.Node().EventStream(a.ctx, &nodeapi.EventStreamInput{})
 	if err != nil {
@@ -172,10 +172,16 @@ func (a *AppMock) InitEventStream() error {
 				return
 			}
 			if err != nil {
-				logger().Warn("failed to receive stream data", zap.Error(err))
+				logger().Warn("failed to receive stream data", zap.String("app", fmt.Sprintf("%+v", a)), zap.Error(err))
 				return
 			}
-			a.eventStream <- data
+			select {
+			default:
+				a.eventStream <- data
+			case <-ctx.Done():
+				logger().Debug("event stream context done")
+				return
+			}
 		}
 	}()
 	return nil

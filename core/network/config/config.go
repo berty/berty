@@ -83,6 +83,9 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	// override conn manager
 	cfg.Config.ConnManager = host.NewBertyConnMgr(ctx, 10, 20, time.Duration(60*1000))
 
+	// override ping service
+	cfg.Config.DisablePing = true
+
 	h, err := cfg.Config.NewNode(ctx)
 	if err != nil {
 		return nil, err

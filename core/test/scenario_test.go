@@ -28,6 +28,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 	})
 
 	Convey("Nodes should be empty when just initialized", FailureHalts, func() {
+
 		shouldIContinue(t)
 
 		contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})

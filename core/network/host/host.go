@@ -173,7 +173,7 @@ func (bh *BertyHost) newStream(ctx context.Context, p peer.ID, pid protocol.ID) 
 	s.SetProtocol(pid)
 
 	lzcon := msmux.NewMSSelect(s, string(pid))
-	return &streamWrapper{
+	return &StreamWrapper{
 		Stream: s,
 		rw:     lzcon,
 	}, nil

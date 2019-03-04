@@ -41,10 +41,8 @@ func TestNodeHelpers(t *testing.T) {
 	Convey("Testing Node", t, func() {
 		Convey("Testing Node.EventStream", FailureContinues, func(c C) {
 			t.Skip("see https://github.com/berty/berty/issues/252")
-			app, err := NewAppMock(&entity.Device{Name: "test phone"}, mock.NewEnqueuer(context.Background()))
+			app, err := NewAppMock(context.Background(), &entity.Device{Name: "test phone"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
-			defer app.Close()
-
 			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
 			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{}), ShouldBeNil)
 
@@ -140,6 +138,7 @@ func TestNodeHelpers(t *testing.T) {
 				So(len(queue), ShouldEqual, 50)
 			}
 
+			app.Close()
 			// FIXME: send more messages than chan capacity
 			// FIXME: remove subs (unsubscribe)
 		})

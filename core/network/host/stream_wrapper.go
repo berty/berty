@@ -8,25 +8,25 @@ import (
 	msmux "github.com/multiformats/go-multistream"
 )
 
-type streamWrapper struct {
+type StreamWrapper struct {
 	inet.Stream
 	rw io.ReadWriter
 }
 
-func NewStreamWrapper(s inet.Stream, pid protocol.ID) inet.Stream {
+func NewStreamWrapper(s inet.Stream, pid protocol.ID) *StreamWrapper {
 	s.SetProtocol(pid)
 
 	lzcon := msmux.NewMSSelect(s, string(pid))
-	return &streamWrapper{
+	return &StreamWrapper{
 		Stream: s,
 		rw:     lzcon,
 	}
 }
 
-func (s *streamWrapper) Read(b []byte) (int, error) {
+func (s *StreamWrapper) Read(b []byte) (int, error) {
 	return s.rw.Read(b)
 }
 
-func (s *streamWrapper) Write(b []byte) (int, error) {
+func (s *StreamWrapper) Write(b []byte) (int, error) {
 	return s.rw.Write(b)
 }

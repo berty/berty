@@ -38,6 +38,7 @@ func WithDefaultOptions() config.Option {
 			libp2p.EnableAutoRelay(),
 		),
 		EnableDefaultBootstrap(),
+		EnablePing(),
 		EnableMDNS(),
 		PrivateNetwork(config.DefaultSwarmKey),
 		EnableDHT(),

@@ -64,6 +64,7 @@ func AddToPeerStore(peerID string, rAddr string) {
 // created. It represents an entire tcp stack (though it might not necessarily be)
 func NewTransport(h host.Host) (*Transport, error) {
 	// use deterministic id based on host peerID
+	logger().Debug("BLE: " + h.ID().String())
 	id := uuid.NewV5(uuid.UUID{}, h.ID().String())
 	srcMA, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", id.String()))
 	ret := &Transport{
