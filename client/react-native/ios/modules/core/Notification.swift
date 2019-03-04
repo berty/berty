@@ -12,6 +12,18 @@ import PushKit
 
 enum NotificationError: Error {
   case invalidArgument
+  case notGranted
+}
+
+extension NotificationError: LocalizedError {
+  public var errorDescription: String? {
+    switch self {
+    case .notGranted:
+      return NSLocalizedString("not granted", comment: "not granted")
+    default:
+      return NSLocalizedString("invalid args", comment: "invalid args")
+    }
+  }
 }
 
 class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotificationDriverProtocol {
@@ -52,7 +64,8 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
   }
 
   func register () throws {
-    var err: Error?
+    var err: Error!
+    var grant: Bool?
     let group = DispatchGroup()
 
     // request to register for remote notifications
@@ -60,18 +73,17 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     UNUserNotificationCenter.current().delegate = self
     UNUserNotificationCenter.current().requestAuthorization(
       options: [.alert, .sound, .badge],
-      completionHandler: { granted, error in
-        guard granted else {
-          err = error
-          group.leave()
-          return
-        }
+      completionHandler: { (granted, error) in
+        grant = granted
+        err = error
         group.leave()
       }
     )
     group.wait()
     if err != nil {
       throw err!
+    } else if grant == false {
+      throw NotificationError.notGranted
     }
 
     DispatchQueue.main.async {

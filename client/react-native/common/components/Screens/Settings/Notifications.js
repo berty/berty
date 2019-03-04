@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { ActivityIndicator, Switch, Platform } from 'react-native'
+import { ActivityIndicator, Switch, Platform, NativeModules } from 'react-native'
 import { Flex, Header, Menu } from '../../Library'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
@@ -15,6 +15,8 @@ import {
 import { enums } from '../../../graphql'
 import { withConfig } from '../../../helpers/config'
 import { showMessage } from 'react-native-flash-message'
+
+const { CoreModule } = NativeModules
 
 const dummyPubKey =
   'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1wyoWXdQZeaQoOKvC2YRwR3+GTb8prpMFNdOmhikU8eionUBKgKnUyIbr/DTvCJQhTlHZfy1pUL6mmRIk9PDQDO1t4ATY9LXfo/O3KoKJ0GmxhGdjheOf1kiKcrem+MJjBVEriZ7tJvuhA/DztQ1zolvflPz9+aNL1qA6qzJD/m2fNYpfEehtZH37MoN/qcn3THnC8H/wwr6soU5GpdPBiXXKcg1IFiaZX9JAoUzKVyzY1xQ/DOzCYCboPSXh1qSsMFsg2LCAmC56s9czKk7foAOV/WZ3Zzbv6yd74K6TdV0xwMgCctZjNa7/Tbq4pCBK2vEMutSXAJlfo+6K9dLQQIDAQAB'
@@ -167,6 +169,11 @@ class NotificationsBase extends PureComponent {
             title={t('chats.notifications-enabled')}
             left
             customRight={<Switch justify='end' onValueChange={async notificationsEnabled => {
+              if (Platform.OS === 'ios' && notificationsEnabled === true) {
+                if (await CoreModule.getNotificationStatus() === false) {
+                  await enableNativeNotifications({ context })
+                }
+              }
               this.setState({ notificationsEnabled }, () => this.updateConfig())
             }} value={this.state.notificationsEnabled} />}
           />
