@@ -15,9 +15,6 @@ require (
 	github.com/davidlazar/go-crypto v0.0.0-20170701192655-dcfb0a7ac018 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20190204142019-df6d76eb9289 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
-	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
-	github.com/go-gormigrate/gormigrate v1.2.1
-	github.com/go-sql-driver/mysql v1.4.1 // indirect
 	github.com/gobuffalo/envy v1.6.15 // indirect
 	github.com/gobuffalo/flect v0.1.0 // indirect
 	github.com/gobuffalo/logger v0.0.0-20190224201004-be78ebfea0fa // indirect
@@ -27,7 +24,6 @@ require (
 	github.com/gogo/protobuf v1.2.1
 	github.com/golang/mock v1.2.0 // indirect
 	github.com/golang/protobuf v1.3.0
-	github.com/google/go-cmp v0.2.0 // indirect
 	github.com/google/uuid v1.1.1
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
 	github.com/gorilla/websocket v1.4.0
@@ -37,12 +33,10 @@ require (
 	github.com/ipfs/go-datastore v3.2.0+incompatible
 	github.com/ipfs/go-ipfs-addr v0.0.0-20190226231046-b43fab3140b1
 	github.com/ipfs/go-log v1.5.7
-	github.com/jinzhu/gorm v1.9.1
-	github.com/jinzhu/inflection v0.0.0-20180308033659-04140366298a // indirect
+	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/now v1.0.0 // indirect
 	github.com/jtolds/gls v4.2.2-0.20181110203027-b4936e06046b+incompatible // indirect
 	github.com/karrick/godirwalk v1.8.0 // indirect
-	github.com/lib/pq v1.0.0 // indirect
 	github.com/libp2p/go-libp2p v6.0.29+incompatible
 	github.com/libp2p/go-libp2p-autonat v0.0.0-20190227195159-ca1e8793f443 // indirect
 	github.com/libp2p/go-libp2p-circuit v0.0.0-20190227195141-ae9b94afecf5
@@ -71,7 +65,6 @@ require (
 	github.com/lucas-clemente/quic-go-certificates v0.0.0-20160823095156-d2f86524cced // indirect
 	github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43
 	github.com/maruel/ut v1.0.0 // indirect
-	github.com/mattn/go-sqlite3 v1.10.0 // indirect
 	github.com/miekg/dns v1.1.4 // indirect
 	github.com/minio/sha256-simd v0.0.0-20190131020904-2d45a736cd16 // indirect
 	github.com/multiformats/go-multiaddr v1.4.0
@@ -112,6 +105,7 @@ require (
 	golang.org/x/tools v0.0.0-20190227232517-f0a709d59f0f // indirect
 	google.golang.org/genproto v0.0.0-20190227213309-4f5b463f9597
 	google.golang.org/grpc v1.19.0
+	gopkg.in/gormigrate.v1 v1.4.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.2.2
 )
