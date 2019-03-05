@@ -44,7 +44,7 @@ func WithInitConfig() NewNodeOption {
 				ID:                         ID.String(),
 				PushRelayPubkeyAPNS:        push.DefaultPushRelayPubkeys[push.DevicePushType_APNS],
 				PushRelayPubkeyFCM:         push.DefaultPushRelayPubkeys[push.DevicePushType_FCM],
-				NotificationsEnabled:       true,
+				NotificationsEnabled:       false,
 				NotificationsPreviews:      true,
 				DebugNotificationVerbosity: entity.DebugVerbosity_VERBOSITY_LEVEL_ERROR,
 			}

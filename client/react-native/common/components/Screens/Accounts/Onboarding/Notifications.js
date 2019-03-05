@@ -6,10 +6,11 @@ import * as onboardingStyle from './style'
 import { NextButton, SkipButton } from './Button'
 import { enableNativeNotifications } from '../../../../helpers/notifications'
 import { withNamespaces } from 'react-i18next'
+import { withConfig } from '../../../../helpers/config'
 import { RelayContext } from '../../../../relay'
 import colors from '../../../../constants/colors'
 
-const Notifications = ({ navigation, t }) =>
+const Notifications = ({ navigation, t, config }) =>
   <View style={{ backgroundColor: colors.white, flex: 1 }}>
     <RelayContext.Consumer>{context =>
       <ScrollView alwaysBounceVertical={false}>
@@ -25,6 +26,10 @@ const Notifications = ({ navigation, t }) =>
               onPress={() => navigation.navigate('onboarding/contacts')}>{t('skip')}</SkipButton>
             <NextButton onPress={async () => {
               await enableNativeNotifications({ context })
+              await context.mutations.configUpdate({
+                ...config,
+                notificationsEnabled: true,
+              })
               navigation.navigate('onboarding/bluetooth')
             }}>{t('onboarding.notifications.enable')}</NextButton>
           </View>
@@ -33,4 +38,4 @@ const Notifications = ({ navigation, t }) =>
     }</RelayContext.Consumer>
   </View>
 
-export default withNamespaces()(withNavigation(Notifications))
+export default withNamespaces()(withNavigation(withConfig(Notifications)))

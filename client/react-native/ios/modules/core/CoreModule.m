@@ -64,4 +64,7 @@ RCT_EXTERN_METHOD(stopLocalGRPC:(RCTPromiseResolveBlock)resolve
 
 RCT_EXTERN_METHOD(setCurrentRoute:(NSString)route);
 
+RCT_EXTERN_METHOD(getNotificationStatus:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 @end

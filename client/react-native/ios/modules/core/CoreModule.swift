@@ -8,6 +8,7 @@
 import Foundation
 import os
 import Core
+import UserNotifications
 
 enum CoreError: Error {
   case invalidOptions
@@ -198,5 +199,17 @@ class CoreModule: NSObject {
 
   @objc static func requiresMainQueueSetup() -> Bool {
     return false
+  }
+
+  @objc func getNotificationStatus(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+    let current = UNUserNotificationCenter.current()
+
+    current.getNotificationSettings(completionHandler: {(settings) in
+      if settings.authorizationStatus == .authorized {
+        resolve(true)
+        return
+      }
+      resolve(false)
+    })
   }
 }
