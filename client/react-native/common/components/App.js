@@ -77,8 +77,10 @@ class HandleDeepLink extends PureComponent {
       <AppNavigator
         {...this.props}
         ref={() => {
-          this.navigation = navigation
-          NavigationService.setTopLevelNavigator(navigation)
+          if (Platform.OS !== 'web') {
+            this.navigation = navigation
+            NavigationService.setTopLevelNavigator(navigation)
+          }
         }}
         onNavigationStateChange={(prevState, currentState) => {
           const currentRoute = this.getActiveRouteName(currentState)
