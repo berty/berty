@@ -35,6 +35,10 @@ func NewBertyRouting(ctx context.Context, h host.Host, dhtSvc bool) (*BertyRouti
 		dht = kaddht.NewDHTClient(ctx, h, ds)
 	}
 
+	if err := dht.Bootstrap(ctx); err != nil {
+		return nil, err
+	}
+
 	return &BertyRouting{IpfsRouting: dht}, nil
 }
 

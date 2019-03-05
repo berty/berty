@@ -154,19 +154,21 @@ func (net *Network) BootstrapPeer(ctx context.Context, bootstrapAddr string) err
 }
 
 func (net *Network) Discover(ctx context.Context) {
-	libp2p_discovery.Advertise(ctx, net.host.Discovery, "berty")
-	go func() {
-		for {
-			peers, err := libp2p_discovery.FindPeers(ctx, net.host.Discovery, "berty", 0)
-			if err != nil {
-				logger().Error("network discover error", zap.String("err", err.Error()))
-				continue
+	if net.host.Discovery != nil {
+		libp2p_discovery.Advertise(ctx, net.host.Discovery, "berty")
+		go func() {
+			for {
+				peers, err := libp2p_discovery.FindPeers(ctx, net.host.Discovery, "berty", 0)
+				if err != nil {
+					logger().Error("network discover error", zap.String("err", err.Error()))
+					continue
+				}
+				for _, pi := range peers {
+					net.Connect(ctx, pi)
+				}
 			}
-			for _, pi := range peers {
-				net.Connect(ctx, pi)
-			}
-		}
-	}()
+		}()
+	}
 }
 
 // Connect ensures there is a connection between this host and the peer with

@@ -160,6 +160,7 @@ func daemon(opts *daemonOptions) error {
 			network.New(ctx,
 				network.WithDefaultOptions(),
 				network.PrivateNetwork(swarmKey),
+				network.DisableMDNS(),
 			),
 		))
 	}

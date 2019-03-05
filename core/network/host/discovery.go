@@ -2,6 +2,7 @@ package host
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"berty.tech/core/pkg/tracing"
@@ -17,6 +18,9 @@ type BertyDiscovery struct {
 }
 
 func NewBertyDiscovery(ctx context.Context, discoveries []discovery.Discovery) discovery.Discovery {
+	if len(discoveries) == 0 {
+		return nil
+	}
 	d := &BertyDiscovery{
 		discoveries: discoveries,
 	}
@@ -24,8 +28,13 @@ func NewBertyDiscovery(ctx context.Context, discoveries []discovery.Discovery) d
 }
 
 func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...discovery.Option) (time.Duration, error) {
+
 	tracer := tracing.EnterFunc(ctx, ns, opts)
 	defer tracer.Finish()
+
+	if len(d.discoveries) == 0 {
+		return 0, errors.New("berty discovery: no discoveries for advertising")
+	}
 
 	t := time.Now()
 
@@ -56,6 +65,10 @@ func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...disco
 func (d *BertyDiscovery) FindPeers(ctx context.Context, ns string, opts ...discovery.Option) (<-chan pstore.PeerInfo, error) {
 	tracer := tracing.EnterFunc(ctx, ns, opts)
 	defer tracer.Finish()
+
+	if len(d.discoveries) == 0 {
+		return nil, errors.New("berty discovery: no discoveries to find peers")
+	}
 
 	globPiChan := make(chan pstore.PeerInfo, 1)
 
