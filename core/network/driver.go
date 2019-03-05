@@ -345,9 +345,11 @@ func (net *Network) FindProvidersAndWait(ctx context.Context, id string, cache b
 	for {
 		select {
 		case pi := <-piChan:
-			if pi.ID != "" {
-				piSlice = append(piSlice, pi)
+			if pi.ID == "" {
+				return piSlice, nil
 			}
+
+			piSlice = append(piSlice, pi)
 		case <-ctx.Done():
 			if len(piSlice) == 0 {
 				return nil, errors.New("no providers found")

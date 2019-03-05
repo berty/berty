@@ -890,6 +890,7 @@ func TestWithSimpleNetwork(t *testing.T) {
 
 			everythingWentFine()
 		})
+
 		scenario(t, alice, bob, eve)
 	})
 }
@@ -940,6 +941,7 @@ func TestNodesWithP2PNetwork(t *testing.T) {
 
 			everythingWentFine()
 		})
+
 		scenario(t, alice, bob, eve)
 	})
 }
