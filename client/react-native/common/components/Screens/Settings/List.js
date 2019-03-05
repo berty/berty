@@ -6,7 +6,6 @@ import { QueryReducer } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
-import { extractPublicKeyFromId } from '../../../helpers/contacts'
 import { installUpdate } from '../../../helpers/update'
 import withRelayContext from '../../../helpers/withRelayContext'
 import { withNamespaces } from 'react-i18next'
@@ -49,7 +48,7 @@ class List extends PureComponent {
             onPress={() =>
               navigation.navigate('modal/contacts/card', {
                 ...data,
-                id: extractPublicKeyFromId(id),
+                id: id,
                 self: true,
               })
             }

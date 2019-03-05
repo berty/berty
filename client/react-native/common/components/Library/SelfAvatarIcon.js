@@ -1,16 +1,16 @@
 import { TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
+import { withNavigation } from 'react-navigation'
 
 import Avatar from './Avatar'
 import Header from './Header'
 import { colors } from '../../constants'
 import { contact } from '../../utils'
 import { withCurrentUser } from '../../utils/contact'
-import NavigationService from '../../helpers/NavigationService'
 
 class SelfAvatarLink extends PureComponent {
   onPress = data => {
-    NavigationService.navigate('modal/contacts/card', data)
+    this.props.navigation.navigate('modal/contacts/card', data)
   }
 
   render = () => {
@@ -31,4 +31,4 @@ class SelfAvatarLink extends PureComponent {
   }
 }
 
-export default withCurrentUser(SelfAvatarLink)
+export default withNavigation(withCurrentUser(SelfAvatarLink))
