@@ -10,7 +10,10 @@ import { withCurrentUser } from '../../utils/contact'
 
 class SelfAvatarLink extends PureComponent {
   onPress = data => {
-    this.props.navigation.navigate('modal/contacts/card', data)
+    this.props.navigation.navigate('modal/contacts/card', {
+      ...data,
+      id: contact.getCoreID(data.id),
+    })
   }
 
   render = () => {

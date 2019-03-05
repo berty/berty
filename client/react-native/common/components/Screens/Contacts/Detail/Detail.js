@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react'
 
 import { Menu, Header, Screen, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
+import { contact as contactHelper } from '../../../../utils'
 import withRelayContext from '../../../../helpers/withRelayContext'
 
 class Detail extends PureComponent {
@@ -106,7 +107,8 @@ class Detail extends PureComponent {
               title={t('contacts.view-pub-key')}
               onPress={() =>
                 navigation.navigate('modal/contacts/card', {
-                  id: contact.id,
+                  ...contact,
+                  id: contactHelper.getCoreID(contact.id),
                 })
               }
             />

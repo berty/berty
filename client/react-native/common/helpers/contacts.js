@@ -85,7 +85,13 @@ export const showContactModal = async ({
   beforeDismiss,
   data,
 }) => {
-  if (!(await isPubKeyValid({ queries, data }))) {
+  if (!(await isPubKeyValid({
+    queries,
+    data: {
+      ...data,
+      id: contact.getRelayID(data.id),
+    },
+  }))) {
     showMessage({
       message: I18n.t('contacts.add.invalid-public-key'),
       type: 'danger',

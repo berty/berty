@@ -4,7 +4,6 @@ import { withNamespaces } from 'react-i18next'
 import { withOrientation } from 'react-navigation'
 import React, { PureComponent } from 'react'
 
-import { contact } from '../../../../utils'
 import { parse as parseUrl } from '../../../../helpers/url'
 import { showContactModal } from '../../../../helpers/contacts'
 import QRReader from '../../../Library/QRReader'
@@ -65,7 +64,7 @@ class ByQRCode extends PureComponent {
                   relayContext,
                   beforeDismiss: () => this.reactivate(),
                   data: {
-                    id: contact.getRelayID(url.hashParts['id']),
+                    id: url.hashParts['id'],
                     displayName: url.hashParts['display-name'] || '',
                   },
                 })
