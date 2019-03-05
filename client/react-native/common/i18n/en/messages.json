@@ -74,6 +74,7 @@
     "notifications-not-supported": "Notifications are not currently supported on this platform",
     "notifications-transport": "Notifications delivery",
     "notifications-alerts": "Alerts",
+    "notifications-open-settings": "You need to activate notifications on your device settings, then come back to this page to enable notifications",
     "push-berty-apple-servers": "Via Berty and Apple servers",
     "push-berty-google-firebase-servers": "Via Berty and Google's Firebase servers",
     "push-mqtt-berty-servers": "Via Berty's MQTT servers",

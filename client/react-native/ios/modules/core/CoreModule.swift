@@ -205,11 +205,13 @@ class CoreModule: NSObject {
     let current = UNUserNotificationCenter.current()
 
     current.getNotificationSettings(completionHandler: {(settings) in
-      if settings.authorizationStatus == .authorized {
-        resolve(true)
-        return
-      }
-      resolve(false)
+      resolve(settings.authorizationStatus.rawValue)
     })
+  }
+
+  @objc func openSettings(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
+    DispatchQueue.main.async {
+      UIApplication.shared.open(URL(string: UIApplicationOpenSettingsURLString)!, options: [:], completionHandler: nil)
+    }
   }
 }
