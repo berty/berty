@@ -49,6 +49,7 @@ func WithDefaultOptions() config.Option {
 func WithDefaultMobileOptions() config.Option {
 	return ChainOptions(
 		WithDefaultOptions(),
+		DisableDHT(),
 		// ...
 	)
 }
