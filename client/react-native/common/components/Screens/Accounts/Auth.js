@@ -24,6 +24,7 @@ import {
   updaters,
 } from '../../../graphql'
 import { hook } from 'cavy'
+import NavigationService from '../../../helpers/NavigationService'
 
 const { CoreModule } = NativeModules
 
@@ -165,6 +166,10 @@ class Auth extends PureComponent {
   }
 
   async componentDidMount () {
+    if (Platform.OS === 'web') {
+      NavigationService.setTopLevelNavigator(this.props.navigation)
+    }
+
     this.open()
   }
 
