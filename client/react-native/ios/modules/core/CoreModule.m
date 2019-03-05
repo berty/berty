@@ -67,4 +67,7 @@ RCT_EXTERN_METHOD(setCurrentRoute:(NSString)route);
 RCT_EXTERN_METHOD(getNotificationStatus:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(openSettings:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject);
+
 @end

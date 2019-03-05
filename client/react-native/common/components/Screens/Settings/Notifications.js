@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { ActivityIndicator, Switch, Platform, NativeModules } from 'react-native'
+import { ActivityIndicator, Switch, Platform, NativeModules, Alert } from 'react-native'
 import { Flex, Header, Menu } from '../../Library'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
@@ -21,6 +21,14 @@ const { CoreModule } = NativeModules
 const dummyPubKey =
   'MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1wyoWXdQZeaQoOKvC2YRwR3+GTb8prpMFNdOmhikU8eionUBKgKnUyIbr/DTvCJQhTlHZfy1pUL6mmRIk9PDQDO1t4ATY9LXfo/O3KoKJ0GmxhGdjheOf1kiKcrem+MJjBVEriZ7tJvuhA/DztQ1zolvflPz9+aNL1qA6qzJD/m2fNYpfEehtZH37MoN/qcn3THnC8H/wwr6soU5GpdPBiXXKcg1IFiaZX9JAoUzKVyzY1xQ/DOzCYCboPSXh1qSsMFsg2LCAmC56s9czKk7foAOV/WZ3Zzbv6yd74K6TdV0xwMgCctZjNa7/Tbq4pCBK2vEMutSXAJlfo+6K9dLQQIDAQAB'
 const dummyPushId = 'dummy-push-id'
+
+// according to https://developer.apple.com/documentation/usernotifications/unauthorizationstatus
+export const notificationStatus = {
+  notDetermined: 0,
+  denied: 1,
+  authorized: 2,
+  provisional: 3,
+}
 
 class NotificationsBase extends PureComponent {
   getCurrentPushConfigs = () =>
@@ -170,7 +178,17 @@ class NotificationsBase extends PureComponent {
             left
             customRight={<Switch justify='end' onValueChange={async notificationsEnabled => {
               if (Platform.OS === 'ios' && notificationsEnabled === true) {
-                if (await CoreModule.getNotificationStatus() === false) {
+                if (await CoreModule.getNotificationStatus() === notificationStatus.denied) {
+                  Alert.alert(
+                    t('onboarding.notifications.enable'),
+                    t('settings.notifications-open-settings'),
+                    [
+                      { text: t('cancel') },
+                      { text: 'OK', onPress: () => CoreModule.openSettings() },
+                    ],
+                  )
+                  return
+                } else {
                   await enableNativeNotifications({ context })
                 }
               }
