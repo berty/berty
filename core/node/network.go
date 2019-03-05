@@ -44,7 +44,6 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 			zap.String("id", n.UserID()),
 			zap.Error(err),
 		)
-		return err
 	}
 
 	// FIXME: subscribe to every owned device IDs
