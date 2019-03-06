@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { ScrollView } from 'react-native'
 import RelayContext from '../../../relay/RelayContext'
-import { getInstalledVersion, getLatestVersion, installUpdate, shouldUpdate } from '../../../helpers/update'
+import { getInstalledVersion, getLatestVersion, installUpdate, shouldUpdate } from '../../../update'
 import { Screen, Flex, Text, Button, Header } from '../../Library'
 import colors from '../../../constants/colors'
 import { borderBottom, padding } from '../../../styles'

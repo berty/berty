@@ -12,9 +12,10 @@ import { Flex, Loader, Screen } from '../../Library'
 import { colors } from '../../../constants'
 import { defaultUsername } from '../../../helpers/contacts'
 import withRelayContext from '../../../helpers/withRelayContext'
+import withUpdateContext from '../../../helpers/withUpdateContext'
 import sleep from '../../../helpers/sleep'
 import { environment, contextValue } from '../../../relay'
-import { getAvailableUpdate } from '../../../helpers/update'
+import { getAvailableUpdate } from '../../../update'
 import { withNamespaces } from 'react-i18next'
 import {
   queries,
@@ -147,11 +148,12 @@ class Auth extends PureComponent {
     }
     await this.start(nickname)
     const context = await this.getRelayContext()
-    const availableUpdate = await getAvailableUpdate(context)
+    getAvailableUpdate(context).then(update => {
+      this.props.updateContext.setState(update)
+    })
     this.props.context.setState(
       {
         relayContext: context,
-        availableUpdate: availableUpdate,
         loading: false,
       },
       () => {
@@ -256,4 +258,4 @@ class Auth extends PureComponent {
   }
 }
 
-export default withRelayContext(withNamespaces()(hook(Auth)))
+export default withRelayContext(withUpdateContext(withNamespaces()(hook(Auth))))

@@ -6,7 +6,7 @@ import { QueryReducer } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
-import { installUpdate } from '../../../helpers/update'
+import { UpdateContext, installUpdate } from '../../../update'
 import withRelayContext from '../../../helpers/withRelayContext'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
@@ -146,12 +146,16 @@ class List extends PureComponent {
                 return <ActivityIndicator />
               case state.success:
                 return (
-                  <List.Menu
-                    navigation={navigation}
-                    data={state.data.Contact}
-                    availableUpdate={this.props.screenProps.availableUpdate}
-                    t={t}
-                  />
+                  <UpdateContext.Consumer>
+                    {({ availableUpdate }) => (
+                      <List.Menu
+                        navigation={navigation}
+                        data={state.data.Contact}
+                        availableUpdate={availableUpdate}
+                        t={t}
+                      />
+                    )}
+                  </UpdateContext.Consumer>
                 )
               case state.error:
                 return (

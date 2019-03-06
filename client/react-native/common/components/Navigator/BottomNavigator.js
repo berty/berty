@@ -7,8 +7,9 @@ import { Platform } from 'react-native'
 import I18n from 'i18next'
 import React from 'react'
 import { Icon } from '../Library'
+import { UpdateContext } from '../../update'
 
-const TabBarIcon = (tintColor, routeName, badgeValue) => {
+const TabBarIcon = (tintColor, routeName) => {
   let iconName = {
     contacts: 'users',
     chats: 'message-circle',
@@ -16,34 +17,23 @@ const TabBarIcon = (tintColor, routeName, badgeValue) => {
   }[routeName]
 
   return (
-    <Icon.Badge
-      name={iconName}
-      size={24}
-      color={tintColor}
-      badge={badgeValue}
-    />
+    <UpdateContext.Consumer>
+      {({ availableUpdate }) => (
+        <Icon.Badge
+          name={iconName}
+          size={24}
+          color={tintColor}
+          badge={routeName === 'settings' && availableUpdate ? '!' : ''}
+        />
+      )}
+    </UpdateContext.Consumer>
   )
 }
 
-const handleBothNavigationsOptions = (
-  {
-    navigation,
-    screenProps: {
-      availableUpdate,
-    },
-  }) => {
-  let badge = null
-
-  if (
-    navigation.state.routeName === 'settings' &&
-    availableUpdate
-  ) {
-    badge = '!'
-  }
-
+const handleBothNavigationsOptions = ({ navigation }) => {
   return {
     tabBarIcon: ({ tintColor }) =>
-      TabBarIcon(tintColor, navigation.state.routeName, badge),
+      TabBarIcon(tintColor, navigation.state.routeName),
   }
 }
 
