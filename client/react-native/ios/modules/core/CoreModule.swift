@@ -23,7 +23,7 @@ class CoreModule: NSObject {
     var err: NSError?
 
     do {
-      CoreInitialize(logger, Core.deviceInfo().getStoragePath(), &err)
+      CoreInitialize(logger, Core.deviceInfo()?.getStoragePath(), &err)
       if let error = err {
         throw error
       }
@@ -54,7 +54,7 @@ class CoreModule: NSObject {
 
     do {
 
-      guard let coreOptions = CoreMobileOptions()?
+      guard let coreOptions = CoreMobileOptions()
         .withLoggerDriver(logger)?
         .withNickname(nickname as String)
         else {

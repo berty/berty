@@ -136,7 +136,7 @@ extension AppDelegate: PKPushRegistryDelegate {
     do {
       let json = try JSONSerialization.data(withJSONObject: payload.dictionaryPayload, options: [])
       let data = String(decoding: json, as: UTF8.self)
-      Core.notificationDriver().receive(data)
+      Core.notificationDriver()?.receive(data)
     } catch {
       logger.format("failed to deserialize remote notification : %@", level: .error, error.localizedDescription)
     }
@@ -149,7 +149,7 @@ extension AppDelegate: PKPushRegistryDelegate {
     do {
       let json = try JSONSerialization.data(withJSONObject: payload.dictionaryPayload, options: [])
       let data = String(decoding: json, as: UTF8.self)
-      Core.notificationDriver().receive(data)
+      Core.notificationDriver()?.receive(data)
     } catch {
       logger.format("failed to deserialize remote notification : %@", level: .error, error.localizedDescription)
     }
