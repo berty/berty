@@ -62,7 +62,7 @@ class AppDelegate: AppDelegateObjC {
     // activate pushkit if notification activated
     if application.isRegisteredForRemoteNotifications {
       do {
-        try Core.notificationDriver().native.register()
+        try Core.notificationDriver()?.native?.register()
       } catch let err as NSError {
         logger.format(
           "cannot register for remote notification: %@",
@@ -74,7 +74,7 @@ class AppDelegate: AppDelegateObjC {
 
     // set storage path
     do {
-      try Core.deviceInfo().setStoragePath(try self.getFilesDir())
+      try Core.deviceInfo()?.setStoragePath(try self.getFilesDir())
     } catch let error as NSError {
       logger.format("unable to set storage path: %@", level: .error, error.userInfo.description)
       return false
@@ -108,7 +108,7 @@ class AppDelegate: AppDelegateObjC {
     }
 
     do {
-      try Core.deviceInfo().setAppState(Core.deviceInfoAppStateForeground())
+      try Core.deviceInfo()?.setAppState(Core.deviceInfoAppStateForeground())
     } catch let err as NSError {
       logger.format("application did become active: %@", level: .error, err.userInfo.description)
     }
@@ -116,7 +116,7 @@ class AppDelegate: AppDelegateObjC {
 
   override func applicationDidEnterBackground(_ application: UIApplication) {
     do {
-      try Core.deviceInfo().setAppState(Core.deviceInfoAppStateBackground())
+      try Core.deviceInfo()?.setAppState(Core.deviceInfoAppStateBackground())
     } catch let err as NSError {
       logger.format("application did enter background: %@", level: .error, err.userInfo.description)
     }
