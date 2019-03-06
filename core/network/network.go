@@ -43,7 +43,7 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 		shutdown: cancel,
 	}
 
-	if err := cfg.Apply(opts...); err != nil {
+	if err := cfg.Apply(ctx, opts...); err != nil {
 		cancel()
 		return nil, err
 	}

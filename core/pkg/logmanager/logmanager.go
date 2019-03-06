@@ -7,7 +7,6 @@ import (
 	"path"
 
 	"berty.tech/core/pkg/filteredzap"
-	"berty.tech/core/pkg/p2pzap"
 	"berty.tech/core/pkg/zapring"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -126,9 +125,9 @@ func (m *Manager) open() error {
 	)
 
 	// configure p2p log
-	if err := p2pzap.Configure(m.Zap(), m.LogLevel()); err != nil {
-		return err
-	}
+	// if err := p2pzap.Configure(m.Zap(), m.LogLevel()); err != nil {
+	// 	return err
+	// }
 
 	zap.ReplaceGlobals(m.logger) // try to remove this and use our own logger global everywhere
 	return nil

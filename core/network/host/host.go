@@ -23,30 +23,11 @@ var _ (host.Host) = (*BertyHost)(nil)
 // BertyHost is an host.Host but with capability to choose a specific conn when
 // calling NewStream
 type BertyHost struct {
-	host      host.Host
+	host.Host
 	Discovery discovery.Discovery
 	Routing   routing.IpfsRouting
 	Metric    metric.Metric
 	Ping      *PingService
-}
-
-type BertyHostOptions struct {
-	Discovery discovery.Discovery
-	Routing   routing.IpfsRouting
-	Metric    metric.Metric
-	Ping      *PingService
-}
-
-func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (*BertyHost, error) {
-	h := &BertyHost{
-		host:      host,
-		Discovery: opts.Discovery,
-		Routing:   opts.Routing,
-		Metric:    opts.Metric,
-		Ping:      opts.Ping,
-	}
-
-	return h, nil
 }
 
 // Connect ensures there is a connection between this host and the peer with
@@ -55,39 +36,39 @@ func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (
 // BertyHost's Connect differs in that if the host has no addresses for a
 // given peer, it will use its routing system to try to find some.
 func (bh *BertyHost) Connect(ctx context.Context, pi pstore.PeerInfo) error {
-	return bh.host.Connect(ctx, pi)
+	return bh.Host.Connect(ctx, pi)
 }
 
 func (bh *BertyHost) ID() peer.ID {
-	return bh.host.ID()
+	return bh.Host.ID()
 }
 
 func (bh *BertyHost) Peerstore() pstore.Peerstore {
-	return bh.host.Peerstore()
+	return bh.Host.Peerstore()
 }
 
 func (bh *BertyHost) Addrs() []ma.Multiaddr {
-	return bh.host.Addrs()
+	return bh.Host.Addrs()
 }
 
 func (bh *BertyHost) Network() inet.Network {
-	return bh.host.Network()
+	return bh.Host.Network()
 }
 
 func (bh *BertyHost) Mux() *msmux.MultistreamMuxer {
-	return bh.host.Mux()
+	return bh.Host.Mux()
 }
 
 func (bh *BertyHost) SetStreamHandler(pid protocol.ID, handler inet.StreamHandler) {
-	bh.host.SetStreamHandler(pid, handler)
+	bh.Host.SetStreamHandler(pid, handler)
 }
 
 func (bh *BertyHost) SetStreamHandlerMatch(pid protocol.ID, m func(string) bool, handler inet.StreamHandler) {
-	bh.host.SetStreamHandlerMatch(pid, m, handler)
+	bh.Host.SetStreamHandlerMatch(pid, m, handler)
 }
 
 func (bh *BertyHost) RemoveStreamHandler(pid protocol.ID) {
-	bh.host.RemoveStreamHandler(pid)
+	bh.Host.RemoveStreamHandler(pid)
 }
 
 func (bh *BertyHost) bestLatency(cs ...inet.Conn) inet.Conn {
@@ -132,6 +113,7 @@ func (bh *BertyHost) newBestStream(ctx context.Context, p peer.ID) (inet.Stream,
 }
 
 func (bh *BertyHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (inet.Stream, error) {
+	logger().Debug("NEW_STREAM")
 	pref, err := bh.preferredProtocol(p, pids)
 	if err != nil {
 		return nil, err
@@ -202,9 +184,9 @@ func (h *BertyHost) preferredProtocol(p peer.ID, pids []protocol.ID) (protocol.I
 }
 
 func (bh *BertyHost) Close() error {
-	return bh.host.Close()
+	return bh.Host.Close()
 }
 
 func (bh *BertyHost) ConnManager() ifconnmgr.ConnManager {
-	return bh.host.ConnManager()
+	return bh.Host.ConnManager()
 }

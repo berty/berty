@@ -1,48 +1,40 @@
 package network
 
 import (
-	"strings"
-
-	pnet "github.com/libp2p/go-libp2p-pnet"
+	"runtime"
 
 	"berty.tech/core/network/config"
-	"berty.tech/core/network/protocol/ble"
-	libp2p "github.com/libp2p/go-libp2p"
-	circuit "github.com/libp2p/go-libp2p-circuit"
-	quic "github.com/libp2p/go-libp2p-quic-transport"
 )
-
-// WithLibp2pconfig.Options
-// Permit to override network default configuration for libp2p
-func WithLibp2pOptions(opts ...libp2p.Option) config.Option {
-	return func(cfg *config.Config) error {
-		return libp2p.ChainOptions(opts...)(&cfg.Config)
-	}
-}
 
 // Default options
 
+// WithConfig
+func WithConfig(override *config.Config) config.Option {
+	return func(cfg *config.Config) error {
+		cfg.MDNS = override.MDNS
+		cfg.DHT = override.DHT
+		cfg.BLE = override.BLE
+		cfg.QUIC = override.QUIC
+		cfg.Bootstrap = override.Bootstrap
+		cfg.Ping = override.Ping
+		cfg.HOP = override.HOP
+		cfg.Identity = override.Identity
+		cfg.SwarmKey = cfg.SwarmKey
+		return nil
+	}
+}
+
 func WithDefaultOptions() config.Option {
 	return ChainOptions(
-		WithLibp2pOptions(
-			libp2p.DefaultListenAddrs,
-			libp2p.DefaultMuxers,
-			libp2p.DefaultPeerstore,
-			libp2p.DefaultSecurity,
-			libp2p.NATPortMap(),
-			libp2p.DefaultTransports,
-			libp2p.Transport(quic.NewTransport),
-			libp2p.Transport(ble.NewTransport),
-			libp2p.RandomIdentity,
-			libp2p.EnableRelay(circuit.OptActive),
-			libp2p.EnableAutoRelay(),
-		),
 		EnableDefaultBootstrap(),
 		EnablePing(),
 		EnableMDNS(),
-		PrivateNetwork(config.DefaultSwarmKey),
+		EnableBLE(),
+		EnableQUIC(),
+		EnablePrivateNetwork(config.DefaultSwarmKey),
 		EnableDHT(),
 		EnableMetric(),
+		DisableHOP(),
 	)
 }
 
@@ -50,6 +42,7 @@ func WithDefaultMobileOptions() config.Option {
 	return ChainOptions(
 		WithDefaultOptions(),
 		DisableDHT(),
+		DisableHOP(),
 		// ...
 	)
 }
@@ -57,15 +50,48 @@ func WithDefaultMobileOptions() config.Option {
 func WithDefaultRelayOptions() config.Option {
 	return ChainOptions(
 		WithDefaultOptions(),
-		WithLibp2pOptions(
-			libp2p.EnableRelay(circuit.OptActive, circuit.OptHop),
-		),
+		EnableHOP(),
 		EnableDHT(),
 		DisableMDNS(),
 	)
 }
 
 // Custom options
+
+func WithIdentity(identity string) config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Identity = identity
+		return nil
+	}
+}
+
+func EnablePrivateNetwork(swarmKey string) config.Option {
+	return func(cfg *config.Config) error {
+		cfg.SwarmKey = swarmKey
+		return nil
+	}
+}
+
+func DisablePrivateNetwork(swarmKey string) config.Option {
+	return func(cfg *config.Config) error {
+		cfg.SwarmKey = ""
+		return nil
+	}
+}
+
+func EnableHOP() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.HOP = true
+		return nil
+	}
+}
+
+func DisableHOP() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.HOP = false
+		return nil
+	}
+}
 
 func EnableMDNS() config.Option {
 	return func(cfg *config.Config) error {
@@ -78,19 +104,6 @@ func DisableMDNS() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.MDNS = false
 		return nil
-	}
-}
-
-func PrivateNetwork(swarmKey string) config.Option {
-	return func(cfg *config.Config) error {
-		if cfg.Config.Protector != nil {
-			cfg.Config.Protector = nil
-		}
-		prot, err := pnet.NewProtector(strings.NewReader(swarmKey))
-		if err != nil {
-			return err
-		}
-		return WithLibp2pOptions(libp2p.PrivateNetwork(prot))(cfg)
 	}
 }
 
@@ -153,6 +166,39 @@ func EnableMetric() config.Option {
 func DisableMetric() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.Metric = false
+		return nil
+	}
+}
+
+func EnableBLE() config.Option {
+	return func(cfg *config.Config) error {
+		if runtime.GOOS != "android" && runtime.GOOS != "darwin" {
+			logger().Warn("ble not available on your platform: disabled")
+			cfg.BLE = false
+			return nil
+		}
+		cfg.BLE = true
+		return nil
+	}
+}
+
+func DisableBLE() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.BLE = false
+		return nil
+	}
+}
+
+func EnableQUIC() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.QUIC = true
+		return nil
+	}
+}
+
+func DisableQUIC() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.QUIC = false
 		return nil
 	}
 }
