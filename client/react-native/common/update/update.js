@@ -2,9 +2,9 @@ import moment from 'moment'
 import { DeviceInfos } from '../graphql/queries'
 import RNDeviceInfo from 'react-native-device-info'
 import { Linking, Platform, PermissionsAndroid } from 'react-native'
-import RNFetchBlob from './rn-fetch-blob'
+import RNFetchBlob from '../helpers/rn-fetch-blob'
 import { showMessage } from 'react-native-flash-message'
-import { requestAndroidPermission } from './permissions'
+import { requestAndroidPermission } from '../helpers/permissions'
 import I18n from 'i18next'
 
 const updateApiSources = {

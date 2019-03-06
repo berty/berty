@@ -15,6 +15,7 @@ import i18n from '../i18n'
 import NavigationService from './../helpers/NavigationService'
 import { AppNavigator } from './Navigator/AppNavigator'
 import { RelayContext } from '../relay'
+import { UpdateContext } from '../update'
 
 const { CoreModule } = NativeModules
 
@@ -109,7 +110,7 @@ export default class App extends PureComponent {
       process.env['ENVIRONMENT'] !== 'integration_test' &&
       Platform.OS !== 'web',
     relayContext: null,
-    availableUpdate: false,
+    availableUpdate: null,
     deepLink: {
       routeName: 'main',
       params: {},
@@ -221,6 +222,10 @@ export default class App extends PureComponent {
     })
   }
 
+  setStateUpdate = update => {
+    this.setState({ availableUpdate: update })
+  }
+
   render () {
     const { loading, deepLink, showAnim, relayContext, availableUpdate } = this.state
 
@@ -244,20 +249,21 @@ export default class App extends PureComponent {
           ) : null }
           { !loading
             ? <RelayContext.Provider value={{ ...relayContext, setState: this.setStateContext }}>
-              <AppContainer
-                screenProps={{
-                  availableUpdate,
-                  deepLink,
-                  setDeepLink: (deepLink) => this.setDeepLink(deepLink),
-                  clearDeepLink: () => this.clearDeepLink(),
-                }}
-              />
-              <FlashMessage position='top' />
-              <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
-                <MovableView>
-                  {this.state.debugBar}
-                </MovableView>
-              </View>
+              <UpdateContext.Provider value={{ availableUpdate, setState: this.setStateUpdate }}>
+                <AppContainer
+                  screenProps={{
+                    deepLink,
+                    setDeepLink: (deepLink) => this.setDeepLink(deepLink),
+                    clearDeepLink: () => this.clearDeepLink(),
+                  }}
+                />
+                <FlashMessage position='top' />
+                <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
+                  <MovableView>
+                    {this.state.debugBar}
+                  </MovableView>
+                </View>
+              </UpdateContext.Provider>
             </RelayContext.Provider>
             : null }
           {Platform.OS === 'ios' && <KeyboardSpacer />}
