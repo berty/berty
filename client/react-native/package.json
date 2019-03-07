@@ -46,6 +46,7 @@
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-languages": "^3.0.1",
     "react-native-network-info": "^4.0.0",
+    "react-native-permissions": "1.1.1",
     "react-native-qrcode-scanner": "^1.1.0",
     "react-native-qrcode-svg": "^5.1.1",
     "react-native-restart": "^0.0.7",
