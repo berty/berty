@@ -47,7 +47,10 @@ class ContactCardModal extends React.Component {
                 loading={state.type === state.loading}
                 footer={
                   <ContactIdentityActions
-                    data={(state && state.data && state.data.Contact) || data}
+                    data={(state && state.data && state.data.Contact) || {
+                      ...data,
+                      id: contact.getRelayID(data.id),
+                    }}
                     modalWidth={modalWidth}
                   />
                 }
