@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"time"
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network/config"
@@ -57,14 +58,19 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	net.host.SetStreamHandler(ProtocolID, net.handleEnvelope)
 	net.logHostInfos()
 
-	// bootstrap default peers
-	if err := net.Bootstrap(ctx, false, cfg.Bootstrap...); err != nil {
-		logger().Error(err.Error())
-		return nil, err
-	}
-
 	// advertise and find peers on berty discovery service
 	net.Discover(ctx)
+
+	// bootstrap default peers
+	// TOOD: infinite bootstrap + don't permit routing to provide when no peers are discovered
+	for {
+		if err := net.Bootstrap(ctx, true, cfg.Bootstrap...); err != nil {
+			logger().Error(err.Error())
+			time.Sleep(time.Second)
+			continue
+		}
+		break
+	}
 
 	return net, nil
 }

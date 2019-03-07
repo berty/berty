@@ -108,10 +108,17 @@ func (net *Network) Bootstrap(ctx context.Context, sync bool, addrs ...string) e
 		bf = net.BootstrapPeer
 	}
 
+	var err error
 	for _, addr := range addrs {
-		if err := bf(ctx, addr); err != nil {
-			return err
+		err = nil
+		if err = bf(ctx, addr); err != nil {
+			logger().Error(err.Error())
+			continue
 		}
+		break
+	}
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -147,12 +154,16 @@ func (net *Network) BootstrapPeer(ctx context.Context, bootstrapAddr string) err
 		return err
 	}
 
-	logger().Debug("Bootrstraping peer", zap.String("peer info", fmt.Sprintf("%+v", pinfo)))
+	logger().Debug("Bootstraping peer", zap.String("peer info", fmt.Sprintf("%+v", pinfo)))
 	// Even if we can't connect, bootstrap peers are trusted peers, add it to
 	// the peerstore so we can connect later in case of failure
 	net.host.Peerstore().AddAddrs(pinfo.ID, pinfo.Addrs, pstore.PermanentAddrTTL)
+	if err := net.host.Connect(ctx, *pinfo); err != nil {
+		return err
+	}
+
 	net.host.ConnManager().TagPeer(pinfo.ID, "bootstrap", 2)
-	return net.host.Connect(ctx, *pinfo)
+	return nil
 }
 
 func (net *Network) Discover(ctx context.Context) {
@@ -370,8 +381,7 @@ func (net *Network) Join(ctx context.Context, id string) error {
 		return err
 	}
 
-	go net.host.Routing.Provide(ctx, c, true)
-	return nil
+	return net.host.Routing.Provide(ctx, c, true)
 }
 
 func (net *Network) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) (*entity.Void, error)) {

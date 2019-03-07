@@ -9,7 +9,6 @@ import (
 
 	peer "github.com/libp2p/go-libp2p-peer"
 	pnet "github.com/libp2p/go-libp2p-pnet"
-	routing "github.com/libp2p/go-libp2p-routing"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 
@@ -22,7 +21,6 @@ import (
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_crypto "github.com/libp2p/go-libp2p-crypto"
 	discovery "github.com/libp2p/go-libp2p-discovery"
-	libp2p_host "github.com/libp2p/go-libp2p-host"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
@@ -93,12 +91,7 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		}
 	}
 
-	libp2pOpts := []libp2p_config.Option{
-		libp2p.DefaultMuxers,
-		libp2p.DefaultPeerstore,
-		libp2p.NATPortMap(),
-		libp2p.DefaultTransports,
-	}
+	libp2pOpts := []libp2p_config.Option{}
 
 	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
 	if cfg.DefaultBootstrap {
@@ -106,12 +99,10 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
 
+	libp2pOpts = append(libp2pOpts, libp2p.DefaultListenAddrs)
 	if len(cfg.Bind) > 0 {
 		libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(cfg.Bind...))
-	} else {
-		libp2pOpts = append(libp2pOpts, libp2p.DefaultListenAddrs)
 	}
-
 	// add ble transport
 	if cfg.BLE {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ble.NewTransport))
@@ -123,12 +114,12 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	// relay
-	libp2pOpts = append(libp2pOpts, libp2p.EnableAutoRelay())
-	if cfg.HOP {
-		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive, circuit.OptHop))
-	} else {
-		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive))
-	}
+	// libp2pOpts = append(libp2pOpts, libp2p.EnableAutoRelay())
+	// if cfg.HOP {
+	// 	libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive, circuit.OptHop))
+	// } else {
+	// 	libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive))
+	// }
 
 	// private network
 	if cfg.SwarmKey != "" {
@@ -155,6 +146,10 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		libp2pOpts = append(libp2pOpts, libp2p.RandomIdentity)
 	}
 
+	libp2pOpts = append(libp2pOpts,
+		libp2p.ConnectionManager(host.NewBertyConnMgr(ctx, 10, 20, time.Duration(60*time.Minute))))
+
+	libp2pOpts = append(libp2pOpts, libp2p.NATPortMap())
 	// override libp2p configuration
 	err := cfg.Config.Apply(append(libp2pOpts, libp2p.FallbackDefaults)...)
 	if err != nil {
@@ -162,20 +157,9 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	// override conn manager
-	cfg.Config.ConnManager = host.NewBertyConnMgr(ctx, 10, 20, time.Duration(60*time.Minute))
 
 	// override ping service
 	cfg.Config.DisablePing = true
-
-	// setup dht for libp2p routing host
-
-	cfg.Config.Routing = func(h libp2p_host.Host) (routing.PeerRouting, error) {
-		var err error
-		if cfg.routing, err = host.NewBertyRouting(ctx, h, cfg.DHT); err != nil {
-			return nil, err
-		}
-		return cfg.routing, nil
-	}
 	return nil
 }
 
@@ -277,21 +261,15 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 	h.Network().Notify(h.Routing.(*host.BertyRouting))
 
-	// Configure relay
-	if !cfg.Config.Relay {
-		h.Close()
-		return nil, fmt.Errorf("cannot enable autorelay; relay is not enabled")
-	}
+	// crouter, ok := h.Routing.(routing.ContentRouting)
+	// if !ok {
+	// 	h.Close()
+	// 	return nil, fmt.Errorf("cannot enable autorelay; no suitable routing for discovery")
+	// }
 
-	crouter, ok := h.Routing.(routing.ContentRouting)
-	if !ok {
-		h.Close()
-		return nil, fmt.Errorf("cannot enable autorelay; no suitable routing for discovery")
-	}
+	// routerDiscovery := discovery.NewRoutingDiscovery(h.Routing)
 
-	routerDiscovery := discovery.NewRoutingDiscovery(crouter)
-
-	discoveries = append(discoveries, routerDiscovery)
+	// discoveries = append(discoveries, routerDiscovery)
 
 	// configure mdns service
 	if cfg.MDNS {

@@ -119,20 +119,13 @@ func (br *BertyRouting) FindPeer(ctx context.Context, pid peer.ID) (pstore.PeerI
 // passed, it also announces it, otherwise it is just kept in the local
 // accounting of which objects are being provided.
 func (br *BertyRouting) Provide(ctx context.Context, id cid.Cid, brd bool) error {
-	if err := br.isReady(ctx); err != nil {
-		logger().Error("routing isn't ready", zap.Error(err))
-		return nil
-	}
-
+	br.waitIsReady(ctx)
 	return br.dht.Provide(ctx, id, brd)
 }
 
 // Search for peers who are able to provide a given key
 func (br *BertyRouting) FindProvidersAsync(ctx context.Context, id cid.Cid, n int) <-chan pstore.PeerInfo {
-	if err := br.isReady(ctx); err != nil {
-		logger().Error("routing isn't ready", zap.Error(err))
-	}
-
+	br.waitIsReady(ctx)
 	return br.dht.FindProvidersAsync(ctx, id, n)
 }
 
@@ -142,6 +135,17 @@ func (br *BertyRouting) isReady(ctx context.Context) error {
 		return ctx.Err()
 	case <-br.cready:
 		return nil
+	}
+}
+
+func (br *BertyRouting) waitIsReady(ctx context.Context) {
+	for {
+		if err := br.isReady(ctx); err != nil {
+			logger().Error("routing isn't ready", zap.Error(err))
+			time.Sleep(time.Second)
+			continue
+		}
+		break
 	}
 }
 
