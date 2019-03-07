@@ -99,5 +99,8 @@
       "relay",
       "transform-inline-environment-variables"
     ]
+  },
+  "jest": {
+    "modulePathIgnorePatterns": "<rootDir>/gomobile/vendor"
   }
 }
