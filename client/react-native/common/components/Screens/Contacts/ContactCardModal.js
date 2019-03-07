@@ -9,6 +9,7 @@ import {
 } from '../../Library'
 import { QueryReducer } from '../../../relay'
 import { merge } from '../../../helpers'
+import { contact } from '../../../utils'
 import withRelayContext from '../../../helpers/withRelayContext'
 
 const modalWidth = 320
@@ -28,7 +29,7 @@ class ContactCardModal extends React.Component {
         query={context.queries.Contact.graphql}
         variables={merge([
           context.queries.Contact.defaultVariables,
-          { filter: { id: data.id } },
+          { filter: { id: contact.getRelayID(data.id) } },
         ])}
       >
         {state =>
@@ -52,7 +53,10 @@ class ContactCardModal extends React.Component {
                 }
               >
                 <ContactIdentity
-                  data={(state && state.data && state.data.Contact) || data}
+                  data={(state && state.data && state.data.Contact && {
+                    ...state.data.Contact,
+                    id: contact.getCoreID(state.data.Contact.id),
+                  }) || data}
                 />
               </ModalScreen>
             </View>

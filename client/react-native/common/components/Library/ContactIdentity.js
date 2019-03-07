@@ -29,15 +29,15 @@ const PublicKey = ({ data: { id } }) => (
         padding: 8,
       }}
     >
-      {contact.getCoreID(id)}
+      {id}
     </RNText>
   </View>
 )
 
-const QrCode = ({ data: { id, displayName } }) => (
+export const QrCode = ({ data: { id, displayName } }) => (
   <View style={[{ flexDirection: 'row', justifyContent: 'center' }]}>
     <QRGenerator
-      value={makeShareableUrl({ id: contact.getCoreID(id), displayName })}
+      value={makeShareableUrl({ id, displayName })}
       size={248}
       style={[{ marginTop: 16, marginBottom: 16 }]}
     />
@@ -94,7 +94,7 @@ const ContactIdentityTabbedContent = createMaterialTopTabNavigator(
   }
 )
 
-class ContactIdentity extends React.Component {
+class ContactIdentityBase extends React.Component {
   static router = ContactIdentityTabbedContent.router
 
   render () {
@@ -105,7 +105,7 @@ class ContactIdentity extends React.Component {
       <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
         <Avatar data={data} size={78} style={{ marginTop: 0 }} />
       </View>
-      <Text large color={colors.fakeBlack} center padding>{data.displayName}</Text>
+      <Text large color={colors.fakeBlack} center padding>{data.overrideDisplayName || data.displayName}</Text>
       <View
         style={{ marginLeft: 15, marginRight: 15, marginBottom: 8, height: Platform.OS === 'android' ? 350 : undefined }}>
         <ContactIdentityTabbedContent navigation={navigation} screenProps={{ data }} />
@@ -115,5 +115,4 @@ class ContactIdentity extends React.Component {
   }
 }
 
-export default withNavigation(ContactIdentity)
-ContactIdentity.QrCode = QrCode
+export default withNavigation(ContactIdentityBase)

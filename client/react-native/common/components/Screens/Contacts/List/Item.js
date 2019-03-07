@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
 import { fragments, enums } from '../../../../graphql'
+import { contact } from '../../../../utils'
 import { Avatar, Flex, Text } from '../../../Library'
 import { borderBottom, marginLeft, padding } from '../../../../styles'
 import { colors } from '../../../../constants'
 import { showContactModal } from '../../../../helpers/contacts'
-// import NavigationService from '../../../../helpers/NavigationService'
 import { withNavigation } from 'react-navigation'
 import ActionsReceived from '../../../Library/ContactIdentityActions/ActionsReceived'
 import ActionsSent from '../../../Library/ContactIdentityActions/ActionsSent'
@@ -28,7 +28,7 @@ const Item = fragments.Contact(
         await showContactModal({
           relayContext: context,
           data: {
-            id,
+            id: contact.getCoreID(id),
             displayName,
           },
         })

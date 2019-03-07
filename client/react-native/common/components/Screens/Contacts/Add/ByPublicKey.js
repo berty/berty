@@ -4,7 +4,6 @@ import React, { PureComponent } from 'react'
 
 import { TextInputMultilineFix, Button, Flex } from '../../../Library'
 import { colors } from '../../../../constants'
-import { contact } from '../../../../utils'
 import { marginTop, padding, rounded, textTiny } from '../../../../styles'
 import { monospaceFont } from '../../../../constants/styling'
 import { showContactModal } from '../../../../helpers/contacts'
@@ -76,7 +75,7 @@ class ByPublicKey extends PureComponent {
                         await showContactModal({
                           relayContext,
                           data: {
-                            id: contact.getRelayID(this.state.id),
+                            id: this.state.id,
                           },
                         })
                       }}
@@ -104,7 +103,7 @@ class ByPublicKey extends PureComponent {
                       await showContactModal({
                         relayContext,
                         data: {
-                          id: contact.getRelayID(this.state.id),
+                          id: this.state.id,
                         },
                       })
                     }}

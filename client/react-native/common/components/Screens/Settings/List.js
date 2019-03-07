@@ -9,6 +9,7 @@ import { merge } from '../../../helpers'
 import { UpdateContext, installUpdate } from '../../../update'
 import withRelayContext from '../../../helpers/withRelayContext'
 import { withNamespaces } from 'react-i18next'
+import { contact } from '../../../utils'
 import I18n from 'i18next'
 
 class List extends PureComponent {
@@ -48,7 +49,7 @@ class List extends PureComponent {
             onPress={() =>
               navigation.navigate('modal/contacts/card', {
                 ...data,
-                id: id,
+                id: contact.getCoreID(id),
                 self: true,
               })
             }
