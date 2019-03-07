@@ -31,9 +31,9 @@ func WithDefaultOptions() config.Option {
 		EnablePing(),
 		// EnableMDNS(),
 		// EnableBLE(),
-		// EnableQUIC(),
+		EnableQUIC(),
 		EnablePrivateNetwork(config.DefaultSwarmKey),
-		EnableDHT(),
+		DisableDHT(),
 		EnableMetric(),
 		DisableHOP(),
 	)

@@ -103,6 +103,10 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	if len(cfg.Bind) > 0 {
 		libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(cfg.Bind...))
 	}
+
+	// transport
+	libp2pOpts = append(libp2pOpts, libp2p.DefaultTransports)
+
 	// add ble transport
 	if cfg.BLE {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ble.NewTransport))
@@ -114,12 +118,12 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	// relay
-	// libp2pOpts = append(libp2pOpts, libp2p.EnableAutoRelay())
-	// if cfg.HOP {
-	// 	libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive, circuit.OptHop))
-	// } else {
-	// 	libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive))
-	// }
+	libp2pOpts = append(libp2pOpts, libp2p.EnableAutoRelay())
+	if cfg.HOP {
+		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive, circuit.OptHop))
+	} else {
+		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive))
+	}
 
 	// private network
 	if cfg.SwarmKey != "" {

@@ -113,10 +113,7 @@ func (br *BertyRouting) SearchValue(ctx context.Context, ns string, opts ...ropt
 }
 
 func (br *BertyRouting) FindPeer(ctx context.Context, pid peer.ID) (pstore.PeerInfo, error) {
-	if err := br.isReady(ctx); err != nil {
-		return pstore.PeerInfo{}, nil
-	}
-
+	br.waitIsReady(ctx)
 	return br.dht.FindPeer(ctx, pid)
 
 }

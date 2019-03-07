@@ -59,7 +59,7 @@ func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...disco
 	for i := range d.discoveries {
 		<-waitChans[i]
 	}
-
+	time.Sleep(time.Second)
 	return time.Now().Sub(t), nil
 }
 

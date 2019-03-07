@@ -22,7 +22,6 @@ func Test(t *testing.T) {
 		net, err := network.New(ctx)
 		So(err, ShouldBeNil)
 		So(net, ShouldNotBeNil)
-
 	})
 
 	Convey("network with libp2p", t, FailureHalts, func() {

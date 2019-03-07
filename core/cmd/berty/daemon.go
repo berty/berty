@@ -150,7 +150,7 @@ func daemon(opts *daemonOptions) error {
 					MDNS:             false,
 					DHT:              opts.dhtServer,
 					BLE:              opts.ble,
-					QUIC:             false,
+					QUIC:             true,
 					Metric:           true,
 					Ping:             true,
 					DefaultBootstrap: false,

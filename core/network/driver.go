@@ -176,29 +176,6 @@ func (net *Network) Discover(ctx context.Context) {
 // Connect ensures there is a connection between this host and the peer with
 // given peer.ID.
 func (net *Network) Connect(ctx context.Context, pi pstore.PeerInfo) error {
-	// first, check if we're already connectenet.
-	if net.host.Network().Connectedness(pi.ID) == inet.Connected {
-		return nil
-	}
-	// if we were given some addresses, keep + use them.
-	if len(pi.Addrs) > 0 {
-		net.host.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
-	}
-
-	// Check if we have some addresses in our recent memory.
-	addrs := net.host.Peerstore().Addrs(pi.ID)
-	if len(addrs) < 1 {
-		// no addrs? find some with the routing system.
-		var err error
-		pi, err = net.host.Routing.FindPeer(ctx, pi.ID)
-		if err != nil {
-			return err
-		}
-		return net.host.Connect(ctx, pi)
-	}
-
-	// if we're here, we got some addrs. let's use our wrapped host to connect.
-	pi.Addrs = addrs
 	return net.host.Connect(ctx, pi)
 }
 
