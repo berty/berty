@@ -64,20 +64,24 @@ func (m *Manager) open() error {
 
 	cores := []zapcore.Core{}
 
-	// console core creation with namespace filtering
+	// console core creation
+	consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
+	consoleEncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
+	consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
+	consoleLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= logLevel
+	})
+	consoleCore := zapcore.NewCore(consoleEncoder, consoleOutput, consoleLevel)
+
+	// Add namespace filtering to consoleCore
 	if m.opts.LogNamespaces != "*" {
-		consoleEncoderConfig := zap.NewDevelopmentEncoderConfig()
-		consoleEncoderConfig.EncodeLevel = zapcore.CapitalColorLevelEncoder
-		consoleEncoder := zapcore.NewConsoleEncoder(consoleEncoderConfig)
-		consoleLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-			return lvl >= logLevel
-		})
-		consoleCore := filteredzap.FilterByNamespace(
-			zapcore.NewCore(consoleEncoder, consoleOutput, consoleLevel),
+		consoleCore = filteredzap.FilterByNamespace(
+			consoleCore,
 			m.opts.LogNamespaces,
 		)
-		cores = append(cores, consoleCore)
 	}
+
+	cores = append(cores, consoleCore)
 
 	// ring core creation
 	if m.opts.RingSize > 0 {
