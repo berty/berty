@@ -28,7 +28,7 @@ class QRReader extends PureComponent {
   }
 
   setStatus = (permStatus) => {
-    const onPress = Platform.OS === 'ios' && permStatus === permissionsStatus.denied
+    const onPress = (Platform.OS === 'ios' && permStatus === permissionsStatus.denied) || (Platform.OS === 'android' && permStatus === permissionsStatus.restricted)
       ? () => CoreModule.openSettings()
       : () => Permissions.request('camera').then(this.setStatus)
 

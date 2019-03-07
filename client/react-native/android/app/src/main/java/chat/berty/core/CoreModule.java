@@ -2,6 +2,9 @@ package chat.berty.core;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -22,6 +25,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
+        this.reactContext = reactContext;
         String storagePath = reactContext.getFilesDir().getAbsolutePath();
         try {
             Core.getDeviceInfo().setStoragePath(storagePath);
@@ -210,5 +214,14 @@ public class CoreModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void setCurrentRoute(String route) {
         Core.getDeviceInfo().setAppRoute(route);
+    }
+
+    @ReactMethod
+    public void openSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", reactContext.getPackageName(), null);
+        intent.setData(uri);
+        reactContext.startActivity(intent);
     }
 }
