@@ -55,7 +55,7 @@ class List extends PureComponent {
   testPanic = async () => {
     this.props.navigation.setParams({ testPanic: true })
     this.setState({ testPanic: true }, async () => {
-      if (Platform.OS === 'web') {
+      if (Platform.OS === 'web' && !Platform.Desktop) {
         await this.props.context.queries.TestPanic.fetch()
       } else {
         CoreModule.panic()
@@ -70,7 +70,7 @@ class List extends PureComponent {
   testError = async () => {
     this.props.navigation.setParams({ testError: true })
     this.setState({ testError: true }, async () => {
-      if (Platform.OS === 'web') {
+      if (Platform.OS === 'web' && !Platform.Desktop) {
         await this.props.context.queries.TestError.fetch() // FIXME: the 'kind' should be selectable
       } else {
         CoreModule.error()
@@ -178,7 +178,7 @@ class List extends PureComponent {
   }
 
   componentDidMount () {
-    if (Platform.OS !== 'web') {
+    if (Platform.OS !== 'web' || Platform.Desktop) {
       this.getBotState()
       this.getLocalGRPCState()
     }
@@ -217,7 +217,7 @@ class List extends PureComponent {
     return (
       <Menu>
         <Menu.Section>
-          {Platform.OS !== 'web' && (
+          {(Platform.OS !== 'web' || Platform.Desktop) && (
             <Menu.Item
               icon='cpu'
               title='Bot mode'
@@ -236,7 +236,7 @@ class List extends PureComponent {
             title='Restart daemon'
             onPress={this.restartDaemon}
           />
-          {Platform.OS !== 'web' && (
+          {(Platform.OS !== 'web' || Platform.Desktop) && (
             <Menu.Item
               icon='server'
               title={

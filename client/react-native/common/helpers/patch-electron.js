@@ -1,0 +1,64 @@
+import { NativeModules, Platform } from 'react-native'
+
+if (Platform.OS === 'web' &&
+  window.navigator && window.navigator.userAgent && window.navigator.userAgent.toLowerCase().indexOf('electron') !== -1
+) {
+  Platform.Desktop = true
+  const CoreModule = {}
+
+  let asyncActionQueue = []
+
+  let bridgedOpAction = (name, args) => new Promise(resolve => asyncActionQueue.push([name, args, resolve]))
+
+  let bridgedOp = (name) => (args) => bridgedOpAction(name, args)
+
+  document.addEventListener('astilectron-ready',  () => {
+    bridgedOpAction = (name, args) => new Promise(resolve => {
+      console.log(`Electron Bridge >>> ${name}(${args ? JSON.stringify(args) : ''})`)
+      window.astilectron.sendMessage({
+        name: name,
+        payload: args,
+      }, (response) => {
+        console.log(`Electron Bridge <<< ${name}: ${response && response.payload ? JSON.stringify(response.payload) : ''}`)
+        resolve(response && response.payload)
+      })
+    })
+
+    for (let [name, args, resolve] of asyncActionQueue) {
+      bridgedOpAction(name, args).then(resolve)
+    }
+
+    asyncActionQueue = []
+  })
+
+  const ops = [
+    'initialize',
+    'listAccounts',
+    'start',
+    'restart',
+    'dropDatabase',
+    'panic',
+    'throwException',
+    'getPort',
+    'isBotRunning',
+    'startBot',
+    'stopBot',
+    'getNetworkConfig',
+    'updateNetworkConfig',
+    'setCurrentRoute',
+    'getLocalGRPCInfos',
+  ]
+
+  for (let op of ops) {
+    CoreModule[op] = bridgedOp(op)
+  }
+
+  CoreModule.throwException = () => {
+    throw new Error('thrown exception')
+  }
+  window.CoreModule = CoreModule
+
+  NativeModules.CoreModule = CoreModule
+
+  NativeModules.RNLanguages = {}
+}

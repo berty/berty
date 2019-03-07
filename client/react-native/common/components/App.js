@@ -48,9 +48,13 @@ class HandleDeepLink extends PureComponent {
       ) {
         let val = route.params[key]
         if (key === 'id') {
-          val = atob(val)
-          val = val.match(/:(.*)$/)
-          val = val[1]
+          try {
+            val = atob(val)
+            val = val.match(/:(.*)$/)
+            val = val[1]
+          } catch {
+            val = route.params[key]
+          }
         }
         fragment += fragment.length > 0 ? `,${key}=${val}` : `#${key}=${val}`
       }

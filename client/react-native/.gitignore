@@ -125,3 +125,7 @@ package-lock.json
 
 # Fix code factor __generated__ exclude patterns
 __generated__/
+/desktop/output/
+/desktop/resources/app/
+/desktop/bind_*.go
+/desktop/bundler.json
