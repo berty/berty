@@ -121,7 +121,7 @@ export default class App extends PureComponent {
     super(props)
 
     if (Platform.OS !== 'web') {
-      Instabug.setIntroMessageEnabled(false)
+      Instabug.setWelcomeMessageMode(Instabug.welcomeMessageMode.disabled)
       if (Platform.OS === 'ios') {
         Instabug.startWithToken(Config.INSTABUG_TOKEN, [
           // eslint-disable-next-line
@@ -133,7 +133,7 @@ export default class App extends PureComponent {
       // eslint-disable-next-line
       if (__DEV__) {
         const DevMenu = require('react-native-dev-menu')
-        DevMenu.addItem('Show Instabug', () => Instabug.invoke())
+        DevMenu.addItem('Show Instabug', () => Instabug.BugReporting.invoke())
       }
     }
   }

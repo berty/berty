@@ -3,10 +3,10 @@ package chat.berty.main;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.instabug.reactlibrary.RNInstabugReactnativePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.zoontek.rndevmenu.RNDevMenuPackage;
-import com.instabug.reactlibrary.RNInstabugReactnativePackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.reactcommunity.rnlanguages.RNLanguagesPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
