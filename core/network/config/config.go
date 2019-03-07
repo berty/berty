@@ -7,8 +7,11 @@ import (
 	"strings"
 	"time"
 
+	peer "github.com/libp2p/go-libp2p-peer"
 	pnet "github.com/libp2p/go-libp2p-pnet"
 	routing "github.com/libp2p/go-libp2p-routing"
+	swarm "github.com/libp2p/go-libp2p-swarm"
+	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 
 	"berty.tech/core/network/host"
 	"berty.tech/core/network/metric"
@@ -22,6 +25,7 @@ import (
 	libp2p_host "github.com/libp2p/go-libp2p-host"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
+	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
 )
 
 const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
@@ -92,11 +96,11 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	libp2pOpts := []libp2p_config.Option{
 		libp2p.DefaultMuxers,
 		libp2p.DefaultPeerstore,
-		libp2p.DefaultSecurity,
 		libp2p.NATPortMap(),
 		libp2p.DefaultTransports,
 	}
 
+	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
 	if cfg.DefaultBootstrap {
 		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
 	}
@@ -152,10 +156,9 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	// override libp2p configuration
-	for _, opt := range libp2pOpts {
-		if err := opt(&cfg.Config); err != nil {
-			return err
-		}
+	err := cfg.Config.Apply(append(libp2pOpts, libp2p.FallbackDefaults)...)
+	if err != nil {
+		return err
 	}
 
 	// override conn manager
@@ -166,32 +169,133 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 
 	// setup dht for libp2p routing host
 
+	cfg.Config.Routing = func(h libp2p_host.Host) (routing.PeerRouting, error) {
+		var err error
+		if cfg.routing, err = host.NewBertyRouting(ctx, h, cfg.DHT); err != nil {
+			return nil, err
+		}
+		return cfg.routing, nil
+	}
 	return nil
 }
 
 func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	var err error
-
 	discoveries := []discovery.Discovery{}
 
-	bertyHost := &host.BertyHost{}
-	cfg.Config.Routing = func(h libp2p_host.Host) (routing.PeerRouting, error) {
-		var err error
-		bertyHost.Host = h
-		if cfg.routing, err = host.NewBertyRouting(ctx, bertyHost, cfg.DHT); err != nil {
-			return nil, err
-		}
-		return cfg.routing, nil
+	if cfg.Config.PeerKey == nil {
+		return nil, fmt.Errorf("no peer key specified")
 	}
 
-	_, err = cfg.Config.NewNode(ctx)
+	// Obtain Peer ID from public key
+	pid, err := peer.IDFromPublicKey(cfg.Config.PeerKey.GetPublic())
 	if err != nil {
 		return nil, err
 	}
 
+	if cfg.Config.Peerstore == nil {
+		return nil, fmt.Errorf("no peerstore specified")
+	}
+
+	if !cfg.Config.Insecure {
+		cfg.Config.Peerstore.AddPrivKey(pid, cfg.Config.PeerKey)
+		cfg.Config.Peerstore.AddPubKey(pid, cfg.Config.PeerKey.GetPublic())
+	}
+
+	// TODO: Make the swarm implementation configurable.
+	swrm := swarm.NewSwarm(ctx, pid, cfg.Config.Peerstore, cfg.Config.Reporter)
+	if cfg.Config.Filters != nil {
+		swrm.Filters = cfg.Config.Filters
+	}
+
+	// use basic host
+	h := &host.BertyHost{}
+	h.Host, err = bhost.NewHost(ctx, swrm, &bhost.HostOpts{
+		ConnManager:  cfg.Config.ConnManager,
+		AddrsFactory: cfg.Config.AddrsFactory,
+		NATManager:   cfg.Config.NATManager,
+		EnablePing:   !cfg.Config.DisablePing,
+	})
+	if err != nil {
+		swrm.Close()
+		return nil, err
+	}
+
+	// upgrader
+	upgrader := new(tptu.Upgrader)
+	upgrader.Protector = cfg.Config.Protector
+	upgrader.Filters = swrm.Filters
+	if cfg.Config.Insecure {
+		upgrader.Secure = makeInsecureTransport(pid)
+	} else {
+		upgrader.Secure, err = makeSecurityTransport(h, cfg.Config.SecurityTransports)
+		if err != nil {
+			h.Close()
+			return nil, err
+		}
+	}
+
+	upgrader.Muxer, err = makeMuxer(h, cfg.Config.Muxers)
+	if err != nil {
+		h.Close()
+		return nil, err
+	}
+
+	tpts, err := makeTransports(h, upgrader, cfg.Config.Transports)
+	if err != nil {
+		h.Close()
+		return nil, err
+	}
+	for _, t := range tpts {
+		err = swrm.AddTransport(t)
+		if err != nil {
+			h.Close()
+			return nil, err
+		}
+	}
+
+	if cfg.Config.Relay {
+		err := circuit.AddRelayTransport(swrm.Context(), h, upgrader, cfg.Config.RelayOpts...)
+		if err != nil {
+			h.Close()
+			return nil, err
+		}
+	}
+
+	// TODO: This method succeeds if listening on one address succeeds. We
+	// should probably fail if listening on *any* addr fails.
+	if err := h.Network().Listen(cfg.Config.ListenAddrs...); err != nil {
+		h.Close()
+		return nil, err
+	}
+
+	// Configure routing
+	h.Routing, err = host.NewBertyRouting(ctx, h, cfg.DHT)
+	if err != nil {
+		h.Close()
+		return nil, err
+	}
+	h.Network().Notify(h.Routing.(*host.BertyRouting))
+
+	// Configure relay
+	if !cfg.Config.Relay {
+		h.Close()
+		return nil, fmt.Errorf("cannot enable autorelay; relay is not enabled")
+	}
+
+	crouter, ok := h.Routing.(routing.ContentRouting)
+	if !ok {
+		h.Close()
+		return nil, fmt.Errorf("cannot enable autorelay; no suitable routing for discovery")
+	}
+
+	routerDiscovery := discovery.NewRoutingDiscovery(crouter)
+
+	discoveries = append(discoveries, routerDiscovery)
+
 	// configure mdns service
 	if cfg.MDNS {
-		if mdns, err := mdns.NewDiscovery(ctx, bertyHost); err != nil {
+		if mdns, err := mdns.NewDiscovery(ctx, h); err != nil {
 			return nil, err
 		} else {
 			discoveries = append(discoveries, mdns)
@@ -199,23 +303,20 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 
 	// configure ping service
-	var pingOpt *host.PingService
 	if cfg.Ping {
-		pingOpt = host.NewPingService(bertyHost)
+		h.Ping = host.NewPingService(h)
 	}
 
 	// configure metric service
-	var metricOpt metric.Metric
 	if cfg.Metric {
-		metricOpt = metric.NewBertyMetric(ctx, bertyHost, pingOpt)
-		bertyHost.Network().Notify(metricOpt)
+		if !cfg.Ping {
+			return nil, fmt.Errorf("cannot enable metric; ping is not enabled")
+		}
+		h.Metric = metric.NewBertyMetric(ctx, h, h.Ping)
+		h.Network().Notify(h.Metric)
 	}
 
-	bertyHost.Discovery = host.NewBertyDiscovery(ctx, discoveries)
-	bertyHost.Routing = cfg.routing
-	bertyHost.Metric = metricOpt
-	bertyHost.Ping = pingOpt
+	h.Discovery = host.NewBertyDiscovery(ctx, discoveries)
 
-	bertyHost.Network().Notify(cfg.routing)
-	return bertyHost, nil
+	return h, nil
 }

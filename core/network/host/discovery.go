@@ -33,6 +33,7 @@ func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...disco
 	defer tracer.Finish()
 
 	if len(d.discoveries) == 0 {
+		time.Sleep(1)
 		return 0, errors.New("berty discovery: no discoveries for advertising")
 	}
 
@@ -67,6 +68,7 @@ func (d *BertyDiscovery) FindPeers(ctx context.Context, ns string, opts ...disco
 	defer tracer.Finish()
 
 	if len(d.discoveries) == 0 {
+		time.Sleep(1)
 		return nil, errors.New("berty discovery: no discoveries to find peers")
 	}
 

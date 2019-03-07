@@ -143,9 +143,11 @@ func (net *Network) BootstrapPeer(ctx context.Context, bootstrapAddr string) err
 	logger().Debug("Bootstraping peer", zap.String("addr", bootstrapAddr))
 	pinfo, err := net.getPeerInfo(ctx, bootstrapAddr)
 	if err != nil {
+		logger().Error("Bootstraping peer", zap.String("error", err.Error()))
 		return err
 	}
 
+	logger().Debug("Bootrstraping peer", zap.String("peer info", fmt.Sprintf("%+v", pinfo)))
 	// Even if we can't connect, bootstrap peers are trusted peers, add it to
 	// the peerstore so we can connect later in case of failure
 	net.host.Peerstore().AddAddrs(pinfo.ID, pinfo.Addrs, pstore.PermanentAddrTTL)
@@ -368,7 +370,8 @@ func (net *Network) Join(ctx context.Context, id string) error {
 		return err
 	}
 
-	return net.host.Routing.Provide(ctx, c, true)
+	go net.host.Routing.Provide(ctx, c, true)
+	return nil
 }
 
 func (net *Network) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) (*entity.Void, error)) {

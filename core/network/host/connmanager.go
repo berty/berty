@@ -14,8 +14,8 @@ import (
 var _ ifconnmgr.ConnManager = (*BertyConnMgr)(nil)
 
 type BertyConnMgr struct {
-	ctx context.Context
 	*connmgr.BasicConnMgr
+	ctx context.Context
 }
 
 func NewBertyConnMgr(ctx context.Context, low, hi int, grace time.Duration) *BertyConnMgr {
@@ -48,6 +48,11 @@ func (cm *BertyConnMgr) GetInfo() connmgr.CMInfo {
 
 func (cm *BertyConnMgr) Notifee() inet.Notifiee {
 	return cm.BasicConnMgr.Notifee()
+}
+
+func (cm *BertyConnMgr) Connected(net inet.Network, c inet.Conn) {
+	logger().Debug("Connected")
+	cm.BasicConnMgr.Notifee().Connected(net, c)
 }
 
 func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {

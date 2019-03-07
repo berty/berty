@@ -59,7 +59,7 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 
 	// bootstrap default peers
 	if err := net.Bootstrap(ctx, false, cfg.Bootstrap...); err != nil {
-		cancel()
+		logger().Error(err.Error())
 		return nil, err
 	}
 

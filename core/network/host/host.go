@@ -30,6 +30,25 @@ type BertyHost struct {
 	Ping      *PingService
 }
 
+type BertyHostOptions struct {
+	Discovery discovery.Discovery
+	Routing   routing.IpfsRouting
+	Metric    metric.Metric
+	Ping      *PingService
+}
+
+func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (*BertyHost, error) {
+	h := &BertyHost{
+		Host:      host,
+		Discovery: opts.Discovery,
+		Routing:   opts.Routing,
+		Metric:    opts.Metric,
+		Ping:      opts.Ping,
+	}
+
+	return h, nil
+}
+
 // Connect ensures there is a connection between this host and the peer with
 // given peer.ID. See (host.Host).Connect for more information.
 //

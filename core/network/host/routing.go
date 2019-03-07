@@ -22,6 +22,7 @@ import (
 )
 
 var _ routing.IpfsRouting = (*BertyRouting)(nil)
+var _ inet.Notifiee = (*BertyRouting)(nil)
 
 type BertyRouting struct {
 	dht     *kaddht.IpfsDHT

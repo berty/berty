@@ -15,11 +15,12 @@ func WithConfig(override *config.Config) config.Option {
 		cfg.DHT = override.DHT
 		cfg.BLE = override.BLE
 		cfg.QUIC = override.QUIC
+		cfg.DefaultBootstrap = override.DefaultBootstrap
 		cfg.Bootstrap = override.Bootstrap
 		cfg.Ping = override.Ping
 		cfg.HOP = override.HOP
 		cfg.Identity = override.Identity
-		cfg.SwarmKey = cfg.SwarmKey
+		cfg.SwarmKey = override.SwarmKey
 		return nil
 	}
 }
