@@ -98,42 +98,31 @@ func (net *Network) Peerstore(ctx context.Context) pstore.Peerstore {
 	return net.host.Peerstore()
 }
 
-func (net *Network) Bootstrap(ctx context.Context, sync bool, addrs ...string) error {
-	tracer := tracing.EnterFunc(ctx, sync, addrs)
+func (net *Network) Bootstrap(ctx context.Context, bsync bool, addrs ...string) error {
+	tracer := tracing.EnterFunc(ctx, bsync, addrs)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	bf := net.BootstrapPeerAsync
-	if sync {
-		bf = net.BootstrapPeer
-	}
+	wg := sync.WaitGroup{}
 
 	var err error
 	for _, addr := range addrs {
 		err = nil
-		if err = bf(ctx, addr); err != nil {
-			logger().Error(err.Error())
-			continue
-		}
-		break
+		go func() {
+			wg.Add(1)
+			if err = net.BootstrapPeer(ctx, addr); err != nil {
+				logger().Error("bootstrap", zap.Error(err))
+			}
+			wg.Done()
+		}()
 	}
-	if err != nil {
-		return err
-	}
 
-	return nil
-}
-
-func (net *Network) BootstrapPeerAsync(ctx context.Context, addr string) error {
-	tracer := tracing.EnterFunc(ctx, addr)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	go func() {
-		if err := net.BootstrapPeer(ctx, addr); err != nil {
-			logger().Warn("Bootstrap error", zap.String("addr", addr), zap.Error(err))
+	if bsync {
+		wg.Wait()
+		if len(net.host.Peerstore().Peers()) == 0 {
+			return fmt.Errorf("bootstrap failed")
 		}
-	}()
+	}
 
 	return nil
 }
