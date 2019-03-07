@@ -14,6 +14,7 @@ class QRReader extends PureComponent {
       onError={error => {
         console.error(error)
       }}
+      cameraProps={{ captureAudio: false }}
       ref={(scanner) => { this.scanner = scanner }}
       containerStyle={style}
       topViewStyle={{
