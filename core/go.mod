@@ -27,15 +27,20 @@ require (
 	github.com/ipfs/go-cid v0.0.1
 	github.com/ipfs/go-datastore v0.0.1
 	github.com/ipfs/go-ipfs-addr v0.0.1
+	github.com/ipfs/go-ipfs-routing v0.0.1
+	github.com/ipfs/go-ipfs-util v0.0.1
 	github.com/ipfs/go-log v0.0.1
 	github.com/jinzhu/gorm v1.9.2
 	github.com/jinzhu/now v1.0.0 // indirect
 	github.com/jtolds/gls v4.2.2-0.20181110203027-b4936e06046b+incompatible // indirect
 	github.com/karrick/godirwalk v1.8.0 // indirect
+	github.com/libp2p/go-conn-security v0.0.1
+	github.com/libp2p/go-conn-security-multistream v0.0.1
 	github.com/libp2p/go-libp2p v0.0.2
 	github.com/libp2p/go-libp2p-circuit v0.0.1
 	github.com/libp2p/go-libp2p-connmgr v0.0.1
 	github.com/libp2p/go-libp2p-crypto v0.0.1
+	github.com/libp2p/go-libp2p-discovery v0.0.1
 	github.com/libp2p/go-libp2p-host v0.0.1
 	github.com/libp2p/go-libp2p-interface-connmgr v0.0.1
 	github.com/libp2p/go-libp2p-interface-pnet v0.0.1
@@ -47,9 +52,13 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v0.0.1
 	github.com/libp2p/go-libp2p-pnet v0.0.1
 	github.com/libp2p/go-libp2p-protocol v0.0.1
-	github.com/libp2p/go-libp2p-pubsub v0.0.1
+	github.com/libp2p/go-libp2p-pubsub v0.0.1 // indirect
 	github.com/libp2p/go-libp2p-quic-transport v0.0.1
+	github.com/libp2p/go-libp2p-routing v0.0.1
+	github.com/libp2p/go-libp2p-swarm v0.0.1
 	github.com/libp2p/go-libp2p-transport v0.0.4
+	github.com/libp2p/go-libp2p-transport-upgrader v0.0.1
+	github.com/libp2p/go-maddr-filter v0.0.1
 	github.com/libp2p/go-reuseport v0.0.1
 	github.com/libp2p/go-reuseport-transport v0.0.1
 	github.com/libp2p/go-stream-muxer v0.0.1
@@ -58,6 +67,7 @@ require (
 	github.com/multiformats/go-multiaddr v0.0.1
 	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/multiformats/go-multihash v0.0.1
+	github.com/multiformats/go-multistream v0.0.1
 	github.com/nicksnyder/go-i18n/v2 v2.0.0-beta.6
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/pkg/errors v0.8.1
@@ -76,6 +86,7 @@ require (
 	github.com/uber/jaeger-lib v1.5.0 // indirect
 	github.com/vektah/gqlparser v1.1.1
 	github.com/whyrusleeping/go-logging v0.0.0-20170515211332-0457bb6b88fc
+	github.com/whyrusleeping/go-smux-multistream v2.0.2+incompatible
 	github.com/whyrusleeping/mafmt v1.2.8
 	github.com/whyrusleeping/yamux v1.1.5
 	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f

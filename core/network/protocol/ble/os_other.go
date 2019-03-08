@@ -27,7 +27,7 @@ type Transport struct {
 	reuse          rtpt.Transport
 }
 
-func NewBLETransport(ID string, lAddr ma.Multiaddr) (func(me host.Host) *Transport, error) {
+func NewTransport(me host.Host) (*Transport, error) {
 	return nil, errorcodes.ErrUnimplemented.New()
 }
 
