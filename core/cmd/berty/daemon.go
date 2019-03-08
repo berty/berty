@@ -2,6 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"io/ioutil"
+	"os"
 
 	"berty.tech/core/manager/account"
 	"berty.tech/core/network"
@@ -38,7 +41,7 @@ type daemonOptions struct {
 	bindP2P        []string `mapstructure:"bind-p2p"`
 	transportP2P   []string `mapstructure:"transport-p2p"`
 	hop            bool     `mapstructure:"hop"` // relay hop
-	ble            bool     `mapstructure:"hop"`
+	ble            bool     `mapstructure:"ble"`
 	mdns           bool     `mapstructure:"mdns"`
 	dhtServer      bool     `mapstructure:"dht"`
 	PrivateNetwork bool     `mapstructure:"private-network"`
@@ -130,24 +133,24 @@ func daemon(opts *daemonOptions) error {
 	if !opts.noP2P {
 		swarmKey := network_config.DefaultSwarmKey
 
-		// if opts.SwarmKeyPath != "" {
-		// 	file, err := os.Open(opts.SwarmKeyPath)
-		// 	if err != nil {
-		// 		return fmt.Errorf("swarm key error: %s", err)
-		// 	}
-		// 	swarmKeyBytes, err := ioutil.ReadAll(file)
-		// 	if err != nil {
-		// 		return fmt.Errorf("swarm key error: %s", err)
-		// 	}
-		// 	swarmKey = string(swarmKeyBytes)
-		// }
+		if opts.SwarmKeyPath != "" {
+			file, err := os.Open(opts.SwarmKeyPath)
+			if err != nil {
+				return fmt.Errorf("swarm key error: %s", err)
+			}
+			swarmKeyBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				return fmt.Errorf("swarm key error: %s", err)
+			}
+			swarmKey = string(swarmKeyBytes)
+		}
 
 		accountOptions = append(accountOptions, account.WithNetwork(
 			network.New(ctx,
 				network.WithDefaultOptions(),
 				network.WithConfig(&network_config.Config{
 					Bind:             opts.bindP2P,
-					MDNS:             false,
+					MDNS:             opts.mdns,
 					DHT:              opts.dhtServer,
 					BLE:              opts.ble,
 					QUIC:             true,

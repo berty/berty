@@ -29,8 +29,8 @@ func WithDefaultOptions() config.Option {
 	return ChainOptions(
 		EnableDefaultBootstrap(),
 		EnablePing(),
-		// EnableMDNS(),
-		// EnableBLE(),
+		EnableMDNS(),
+		EnableBLE(),
 		EnableQUIC(),
 		EnablePrivateNetwork(config.DefaultSwarmKey),
 		DisableDHT(),
