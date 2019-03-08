@@ -107,13 +107,17 @@ func (br *BertyRouting) GetValue(ctx context.Context, ns string, opts ...ropts.O
 func (br *BertyRouting) SearchValue(ctx context.Context, ns string, opts ...ropts.Option) (<-chan []byte, error) {
 	if err := br.isReady(ctx); err != nil {
 		logger().Error("routing isn't ready", zap.Error(err))
+		return nil, err
 	}
 
 	return br.dht.SearchValue(ctx, ns, opts...)
 }
 
 func (br *BertyRouting) FindPeer(ctx context.Context, pid peer.ID) (pstore.PeerInfo, error) {
-	br.waitIsReady(ctx)
+	if err := br.isReady(ctx); err != nil {
+		logger().Error("routing isn't ready", zap.Error(err))
+		return pstore.PeerInfo{}, err
+	}
 	return br.dht.FindPeer(ctx, pid)
 
 }
@@ -122,13 +126,18 @@ func (br *BertyRouting) FindPeer(ctx context.Context, pid peer.ID) (pstore.PeerI
 // passed, it also announces it, otherwise it is just kept in the local
 // accounting of which objects are being provided.
 func (br *BertyRouting) Provide(ctx context.Context, id cid.Cid, brd bool) error {
-	br.waitIsReady(ctx)
+	if err := br.isReady(ctx); err != nil {
+		logger().Error("routing isn't ready", zap.Error(err))
+		return err
+	}
 	return br.dht.Provide(ctx, id, brd)
 }
 
 // Search for peers who are able to provide a given key
 func (br *BertyRouting) FindProvidersAsync(ctx context.Context, id cid.Cid, n int) <-chan pstore.PeerInfo {
-	br.waitIsReady(ctx)
+	if err := br.isReady(ctx); err != nil {
+		logger().Error("routing isn't ready", zap.Error(err))
+	}
 	return br.dht.FindProvidersAsync(ctx, id, n)
 }
 
@@ -138,17 +147,6 @@ func (br *BertyRouting) isReady(ctx context.Context) error {
 		return ctx.Err()
 	case <-br.cready:
 		return nil
-	}
-}
-
-func (br *BertyRouting) waitIsReady(ctx context.Context) {
-	for {
-		if err := br.isReady(ctx); err != nil {
-			logger().Error("routing isn't ready", zap.Error(err))
-			time.Sleep(time.Second)
-			continue
-		}
-		break
 	}
 }
 

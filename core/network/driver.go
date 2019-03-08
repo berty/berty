@@ -214,43 +214,34 @@ func (net *Network) EmitTo(ctx context.Context, channel string, e *entity.Envelo
 	ctx = tracer.Context()
 
 	logger().Debug("looking for peers", zap.String("channel", channel))
-	ss, err := net.FindProvidersAndWait(ctx, channel, true)
+	c, err := net.createCid(channel)
 	if err != nil {
 		return err
 	}
+
+	ss := net.host.Routing.FindProvidersAsync(ctx, c, 100)
 
 	// @TODO: we need to split this, and let the node do the logic to try
 	// back if the send fail with the given peer
 
 	logger().Debug("found peers", zap.String("channel", channel), zap.Int("number", len(ss)))
-
-	mu := sync.Mutex{}
-	wg := sync.WaitGroup{}
-	wg.Add(len(ss))
-
 	ok := false
-	for i, s := range ss {
-		go func(pi pstore.PeerInfo, index int) {
-			gotracer := tracing.EnterFunc(ctx, index)
-			goctx := tracer.Context()
+	for pi := range ss {
+		if pi.ID == "" {
+			break
+		}
+		logger().Debug(fmt.Sprintf("send to peer: %+v", pi))
 
-			defer gotracer.Finish()
-			defer wg.Done()
+		if err := net.SendTo(ctx, pi, e); err != nil {
+			logger().Warn("sendTo", zap.Error(err))
+			continue
+		}
 
-			if err := net.SendTo(goctx, pi, e); err != nil {
-				logger().Warn("sendTo", zap.Error(err))
-				return
-			}
-
-			mu.Lock()
-			ok = true
-			mu.Unlock()
-			return
-		}(s, i)
+		ok = true
+		break
 	}
 
 	// wait until all goroutines are done
-	wg.Wait()
 	if !ok {
 		return fmt.Errorf("unable to send evenlope to at last one peer")
 	}
@@ -262,11 +253,6 @@ func (net *Network) SendTo(ctx context.Context, pi pstore.PeerInfo, e *entity.En
 	peerID := pi.ID.Pretty()
 	if pi.ID == net.host.ID() {
 		return fmt.Errorf("cannot dial to self")
-	}
-
-	logger().Debug("connecting", zap.String("peerID", peerID))
-	if err := net.Connect(ctx, pi); err != nil {
-		return fmt.Errorf("failed to connect: `%s`", err.Error())
 	}
 
 	s, err := net.host.NewStream(ctx, pi.ID, ProtocolID)

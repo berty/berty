@@ -71,6 +71,7 @@ func (bh *BertyHost) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 		var err error
 		addrs, err = bh.findPeerAddrs(ctx, pi.ID)
 		if err != nil {
+			logger().Error(fmt.Sprintf("failed to find peer addrs: peer: %+v, error: %+v", pi, err.Error()))
 			return err
 		}
 	}
@@ -113,6 +114,7 @@ func (bh *BertyHost) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 
 	// if we're here, we got some addrs. let's use our wrapped host to connect.
 	pi.Addrs = addrs
+	logger().Debug("BertyHost::Connect: try to connect with addrs :" + fmt.Sprintf("%+v", pi.Addrs))
 	return bh.Host.Connect(ctx, pi)
 }
 

@@ -9,6 +9,7 @@ import (
 	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
+	pstore "github.com/libp2p/go-libp2p-peerstore"
 	ma "github.com/multiformats/go-multiaddr"
 	"go.uber.org/zap"
 )
@@ -104,7 +105,7 @@ func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {
 						zap.String("err", err.Error()),
 					)
 					select {
-					case <-time.After(time.Second * 10):
+					case <-time.After(time.Second * 1):
 						continue
 					case <-cm.ctx.Done():
 						cm.BasicConnMgr.Notifee().Disconnected(net, c)
@@ -143,6 +144,20 @@ func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {
 	} else {
 		cm.BasicConnMgr.Notifee().Disconnected(net, c)
 	}
+}
+
+// TODO
+func (cm *BertyConnMgr) getRelayPeers() []pstore.PeerInfo {
+	fmt.Printf("not implemented")
+	return nil
+}
+func (cm *BertyConnMgr) getBootstrapPeers() []pstore.PeerInfo {
+	fmt.Printf("not implemented")
+	return nil
+}
+func (cm *BertyConnMgr) getKbucketPeers() []pstore.PeerInfo {
+	fmt.Printf("not implemented")
+	return nil
 }
 
 // Listen is no-op in this implementation.
