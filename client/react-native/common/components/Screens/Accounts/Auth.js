@@ -39,8 +39,8 @@ class Auth extends PureComponent {
   }
 
   getIp = async () => {
-    if (Platform.OS === 'web') {
-      return window.location.hostname
+    if (Platform.OS === 'web' && !Platform.Desktop) {
+      return window.location.hostname || '127.0.0.1'
     }
     return '127.0.0.1'
   }
@@ -66,7 +66,7 @@ class Auth extends PureComponent {
       navigation,
     } = this.props
 
-    if (!deepLink || deepLink === 'undefined' || Platform.OS === 'web') {
+    if (!deepLink || deepLink === 'undefined' || (Platform.OS === 'web' && !Platform.Desktop)) {
       return
     }
 
@@ -146,6 +146,7 @@ class Auth extends PureComponent {
       }
       nickname = list[0]
     }
+
     await this.start(nickname)
     const context = await this.getRelayContext()
     getAvailableUpdate(context).then(update => {
@@ -162,7 +163,7 @@ class Auth extends PureComponent {
     )
 
     if (this.props.screenProps !== 'undefined' &&
-        (!this.props.screenProps.deepLink || this.props.screenProps.deepLink === 'undefined' || Platform.OS === 'web')) {
+        (!this.props.screenProps.deepLink || this.props.screenProps.deepLink === 'undefined' || (Platform.OS === 'web' && !Platform.Desktop))) {
       this.props.navigation.navigate('switch/picker', { firstLaunch })
     }
   }

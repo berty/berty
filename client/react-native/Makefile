@@ -4,6 +4,7 @@ WEB := $(ROOT)/web
 GOMOB := $(ROOT)/gomobile
 IOS := $(ROOT)/ios
 ANDROID := $(ROOT)/android
+DESKTOP := $(ROOT)/desktop
 
 # Fastlane build related
 
@@ -122,6 +123,19 @@ debug.android: deps.android patch.android
 .PHONY: release.android
 release.android: deps.android
 	cd $(ROOT) && react-native run-android --variant=release --no-packager
+
+.PHONY: deps.desktop
+deps.desktop: deps.web
+	$(MAKE) -C $(DESKTOP) deps
+
+.PHONY: release.desktop
+release.desktop: deps.desktop
+	cd $(WEB) && yarn build
+	cd $(ROOT) && $(MAKE) -C $(DESKTOP) build
+
+.PHONY: clean.desktop
+clean.desktop: clean.web
+	$(MAKE) -C $(DESKTOP) clean
 
 .PHONY: debug.ios
 debug.ios: deps.ios get_iphone_udid

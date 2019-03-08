@@ -1,5 +1,6 @@
 import './helpers/crash-handler.js'
 import './helpers/patch-web.js'
+import './helpers/patch-electron.js'
 
 import { Platform, AppRegistry } from 'react-native'
 import React from 'react'
@@ -10,8 +11,16 @@ import AppTest from './integration/AppWrapper'
 
 const isIntegrationMode = process.env['ENVIRONMENT'] === 'integration_test'
 
+if (Platform.Desktop === undefined) {
+  Platform.Desktop = false
+}
+
 if (Platform.OS === 'web') {
-  import('./helpers/patch-web.js')
+  if (process !== undefined && process.versions !== undefined && process.versions['electron'] !== undefined) {
+    import('./helpers/patch-electron.js')
+  } else {
+    import('./helpers/patch-web.js')
+  }
   ReactDOM.render(
     isIntegrationMode === true ? <AppTest /> : <App />,
     document.getElementById('root')

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Berty's react native web",
   "license": "Apache-2.0",
+  "homepage": "./",
   "private": true,
   "scripts": {
     "start": "../node_modules/.bin/concurrently 'yarn relay --watch' 'node scripts/start.js'",

@@ -4,7 +4,7 @@ if (Platform.OS === 'web') {
   const CoreModule = {
     initialize: async () => {},
     listAccounts: async () => 'berty-daemon',
-    start: async () => {},
+    start: async (nickname) => {},
     restart: async () => console.warn('not implemented in web'),
     dropDatabase: async () => console.warn('not implemented in web'),
     // TODO: remove circle dependencies with containers to implem directly panic here

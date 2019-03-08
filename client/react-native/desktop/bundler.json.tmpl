@@ -1,0 +1,33 @@
+{
+  "app_name": "Berty",
+  "icon_path_darwin": "resources/icon.icns",
+  "icon_path_linux": "resources/icon.png",
+  "icon_path_windows": "resources/icon.ico",
+  "info_plist": {
+    "CFBundlePackageType": "APPL",
+    "CFBundleInfoDictionaryVersion": "1.0",
+    "CFBundleIconFile": "icon.icns",
+    "CFBundleDisplayName": "Berty",
+    "CFBundleExecutable": "berty",
+    "CFBundleIdentifier": "chat.berty.desktop.Berty",
+    "LSUIElement": "NO",
+    "LSApplicationCategoryType": "public.app-category.social-networking",
+    "LSMinimumSystemVersion": "10.11",
+    "NSHighResolutionCapable": true,
+    "NSCameraUsageDescription": "Berty would like to use your camera",
+    "NSMicrophoneUsageDescription": "Berty would like to use your microphone (for videos)"
+  },
+  "environments": [
+    {
+      "arch": "amd64",
+      "os": "darwin",
+      "env": {
+        "CGO_ENABLED": "1",
+        "CGO_CPPFLAGS": "-Wno-error=unused-command-line-argument -ITMPL_MAKEFILE_PATH/../../common/openssl/built/include",
+        "CGO_LDFLAGS": "-L/usr/local/opt/openssl/lib",
+        "CGO_OS_LDFLAGS": "-L/usr/local/opt/openssl/lib",
+        "CGO_OS_CPPFLAGS": "-I/usr/local/opt/openssl/include"
+      }
+    }
+  ]
+}

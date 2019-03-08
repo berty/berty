@@ -26,7 +26,7 @@ export default class Network extends PureComponent {
             }}
           />
         </Menu.Section>
-        {Platform.OS !== 'web' && (
+        {(Platform.OS !== 'web' || Platform.Desktop) && (
           <Menu.Section>
             <Menu.Item
               icon='sliders'

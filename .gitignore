@@ -34,3 +34,4 @@ core-sources.jar
 
 # go
 vendor/
+/client/react-native/desktop/output/
