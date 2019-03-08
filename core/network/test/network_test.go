@@ -3,7 +3,6 @@ package test
 import (
 	"context"
 	"testing"
-	"time"
 
 	"berty.tech/core/network"
 	"berty.tech/core/testrunner"
@@ -15,9 +14,7 @@ func init() {
 }
 
 func Test(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
-
+	ctx := context.Background()
 	Convey("network without options", t, FailureHalts, func() {
 		net, err := network.New(ctx)
 		So(err, ShouldBeNil)

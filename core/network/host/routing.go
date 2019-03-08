@@ -37,10 +37,6 @@ type BertyRouting struct {
 	tstart  time.Time
 }
 
-func init() {
-	// log.SetDebugLogging()
-}
-
 func NewBertyRouting(ctx context.Context, h host.Host, dhtSvc bool) (*BertyRouting, error) {
 	tracer := tracing.EnterFunc(ctx, h, dhtSvc)
 	defer tracer.Finish()

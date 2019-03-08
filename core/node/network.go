@@ -39,12 +39,16 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	n.networkDriver = driver
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
-	if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {
-		logger().Error("failed to join user channel",
-			zap.String("id", n.UserID()),
-			zap.Error(err),
-		)
-	}
+
+	// @FIXME: dont do that in a goroutine
+	go func() {
+		if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {
+			logger().Error("failed to join user channel",
+				zap.String("id", n.UserID()),
+				zap.Error(err),
+			)
+		}
+	}()
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device
