@@ -79,7 +79,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		})
 		Convey("Alice has Bob as friend", FailureHalts, func() {
 			shouldIContinue(t)
-			time.Sleep(200 * time.Millisecond)
+			time.Sleep(500 * time.Millisecond)
 
 			contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{
 				Filter: &entity.Contact{Status: entity.Contact_IsFriend},
@@ -264,6 +264,7 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 		Convey("Bob has one message in conversation history", FailureHalts, func() {
 			shouldIContinue(t)
 
+			time.Sleep(4 * time.Second)
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := bob.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{

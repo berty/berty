@@ -9,7 +9,6 @@ import (
 	cid "github.com/ipfs/go-cid"
 	datastore "github.com/ipfs/go-datastore"
 	syncdatastore "github.com/ipfs/go-datastore/sync"
-	log "github.com/ipfs/go-log"
 	host "github.com/libp2p/go-libp2p-host"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	inet "github.com/libp2p/go-libp2p-net"
@@ -39,7 +38,7 @@ type BertyRouting struct {
 }
 
 func init() {
-	log.SetDebugLogging()
+	// log.SetDebugLogging()
 }
 
 func NewBertyRouting(ctx context.Context, h host.Host, dhtSvc bool) (*BertyRouting, error) {
