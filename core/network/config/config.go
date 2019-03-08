@@ -118,11 +118,10 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	// relay
-	libp2pOpts = append(libp2pOpts, libp2p.EnableAutoRelay())
 	if cfg.HOP {
 		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive, circuit.OptHop))
 	} else {
-		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive))
+		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive, circuit.OptDiscovery))
 	}
 
 	// private network
