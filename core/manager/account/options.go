@@ -28,6 +28,7 @@ import (
 	gql "berty.tech/core/api/node/graphql"
 	graph "berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/network"
+	"berty.tech/core/network/mock"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/jaeger"
 	"berty.tech/core/pkg/notification"
@@ -69,6 +70,13 @@ type DatabaseOptions struct {
 func WithBanner(banner string) NewOption {
 	return func(a *Account) error {
 		a.banner = banner
+		return nil
+	}
+}
+
+func WithEnqueurNetwork() NewOption {
+	return func(a *Account) error {
+		a.network = mock.NewEnqueuer(a.rootContext)
 		return nil
 	}
 }

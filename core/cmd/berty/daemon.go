@@ -164,6 +164,8 @@ func daemon(opts *daemonOptions) error {
 				}),
 			),
 		))
+	} else {
+		accountOptions = append(accountOptions, account.WithEnqueurNetwork())
 	}
 
 	if opts.withBot {
