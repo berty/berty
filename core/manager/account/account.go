@@ -14,12 +14,13 @@ import (
 	"time"
 
 	"berty.tech/core"
+	helper "berty.tech/core/api/helper"
 	nodeapi "berty.tech/core/api/node"
 	p2papi "berty.tech/core/api/p2p"
 	"berty.tech/core/bot"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
-	"berty.tech/core/network/netutil"
+	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/node"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
@@ -70,7 +71,7 @@ type Account struct {
 
 	gqlHandler     http.Handler
 	GQLBind        string
-	ioGrpc         *netutil.IOGrpc
+	ioGrpc         *helper.IOGrpc
 	ioGrpcListener net.Listener
 	gqlServer      *http.Server
 
@@ -79,7 +80,7 @@ type Account struct {
 	grpcListener net.Listener
 
 	network network.Driver
-	metrics network.Metrics
+	metric  network_metric.Metric
 
 	notification notification.Driver
 
@@ -522,7 +523,7 @@ func (a *Account) initNode(ctx context.Context) error {
 		node.WithSQL(a.db),
 		node.WithDevice(&entity.Device{Name: a.Name}),
 		node.WithNetworkDriver(a.network),
-		node.WithNetworkMetrics(a.metrics),
+		node.WithNetworkMetric(a.metric),
 		node.WithInitConfig(),
 		crypto, // FIXME: use hardware impl if available
 		node.WithConfig(),

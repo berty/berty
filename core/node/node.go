@@ -11,6 +11,7 @@ import (
 	"berty.tech/core/crypto/sigchain"
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
+	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/pkg/zapring"
@@ -36,7 +37,7 @@ type Node struct {
 	handleMutexInst             sync.Mutex
 	notificationDriver          notification.Driver
 	networkDriver               network.Driver
-	networkMetrics              network.Metrics
+	networkMetric               network_metric.Metric
 	asyncWaitGroupInst          sync.WaitGroup
 	pubkey                      []byte // FIXME: use a crypto instance, i.e., enclave
 	b64pubkey                   string // FIXME: same as above

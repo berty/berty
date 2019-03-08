@@ -8,7 +8,7 @@ import (
 	"berty.tech/core/api/client"
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
-	"berty.tech/core/network"
+	"berty.tech/core/network/metric"
 	"berty.tech/core/pkg/tracing"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -916,7 +916,7 @@ func NodeProtocols(client *client.Client, ctx context.Context, jsonInput []byte)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.Protocols")
-	var typedInput network.Peer
+	var typedInput metric.Peer
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}
@@ -1121,7 +1121,7 @@ func NodeMonitorBandwidth(client *client.Client, ctx context.Context, jsonInput 
 		zap.String("method", "MonitorBandwidth"),
 		zap.String("input", string(jsonInput)),
 	)
-	var typedInput network.BandwidthStats
+	var typedInput metric.BandwidthStats
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, err
 	}
@@ -1216,7 +1216,7 @@ func NodeLibp2PPing(client *client.Client, ctx context.Context, jsonInput []byte
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.Libp2PPing")
-	var typedInput network.PingReq
+	var typedInput metric.PingReq
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}

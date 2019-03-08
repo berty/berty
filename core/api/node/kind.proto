@@ -3,7 +3,7 @@ syntax = "proto3";
 package berty.node;
 
 import "gogoproto/gogo.proto";
-import "network/metrics.proto";
+import "network/metric/metric.proto";
 
 option go_package = "berty.tech/core/api/node";
 
@@ -33,7 +33,7 @@ message DebugAttrs { string msg = 1; }
 
 message StatisticsAttrs {
   string err_msg = 1;
-  berty.network.BandwidthStats total_network_bandwidth = 2;
+  berty.network.metric.BandwidthStats total_network_bandwidth = 2;
   int32 peers_count = 3;
   // FIXME: other interesting info (CPU?)
 }

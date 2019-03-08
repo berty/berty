@@ -2,11 +2,9 @@ package core
 
 import (
 	"encoding/json"
-	"io"
-	"strings"
 
 	account "berty.tech/core/manager/account"
-	"berty.tech/core/network/p2p"
+	"berty.tech/core/network"
 	"github.com/pkg/errors"
 )
 
@@ -21,57 +19,57 @@ type networkConfig struct {
 	Relay              bool
 }
 
-func createNetworkConfig(jsonConf string) (*account.P2PNetworkOptions, error) {
-	defer panicHandler()
-	var (
-		netConf   networkConfig
-		bind      []string
-		transport []string
-		bootstrap []string
-		swarmKey  io.Reader
-	)
-
-	if err := json.Unmarshal([]byte(jsonConf), &netConf); err != nil {
-		return nil, errors.Wrap(err, "JSONNetConf unmarshal failed")
-	}
-
-	if netConf.DefaultTransport {
-		transport = append(transport, "default")
-		bind = append(bind, defaultBind)
-	}
-	if netConf.QuicTransport {
-		transport = append(transport, "quic")
-		bind = append(bind, quicBind)
-	}
-	if netConf.BluetoothTransport {
-		transport = append(transport, "ble")
-		bind = append(bind, defaultBLEBind)
-	}
-	if netConf.DefaultBootstrap {
-		bootstrap = append(bootstrap, p2p.DefaultBootstrap...)
-	}
-
-	// If ipfs is disable protect swarm with a default key, this will avoid to
-	// spread ipfs nodes over our network
-	if netConf.IPFSBootstrap {
-		bootstrap = append(bootstrap, p2p.BootstrapIpfs...)
-	} else {
-		swarmKey = strings.NewReader(p2p.DefaultSwarmKey)
-	}
-
-	bootstrap = append(bootstrap, netConf.CustomBootstrap...)
-
-	return &account.P2PNetworkOptions{
-		Bind:      bind,
-		Transport: transport,
-		Bootstrap: bootstrap,
-		MDNS:      netConf.MDNS,
-		Relay:     netConf.Relay,
-		Metrics:   defaultMetrics,
-		Identity:  defaultIdentity,
-		SwarmKey:  swarmKey,
-	}, nil
-}
+// func createNetworkConfig(jsonConf string) (*account.P2PNetworkOptions, error) {
+// 	defer panicHandler()
+// 	var (
+// 		netConf   networkConfig
+// 		bind      []string
+// 		transport []string
+// 		bootstrap []string
+// 		swarmKey  io.Reader
+// 	)
+//
+// 	if err := json.Unmarshal([]byte(jsonConf), &netConf); err != nil {
+// 		return nil, errors.Wrap(err, "JSONNetConf unmarshal failed")
+// 	}
+//
+// 	if netConf.DefaultTransport {
+// 		transport = append(transport, "default")
+// 		bind = append(bind, defaultBind)
+// 	}
+// 	if netConf.QuicTransport {
+// 		transport = append(transport, "quic")
+// 		bind = append(bind, quicBind)
+// 	}
+// 	if netConf.BluetoothTransport {
+// 		transport = append(transport, "ble")
+// 		bind = append(bind, defaultBLEBind)
+// 	}
+// 	if netConf.DefaultBootstrap {
+// 		bootstrap = append(bootstrap, p2p.DefaultBootstrap...)
+// 	}
+//
+// 	// If ipfs is disable protect swarm with a default key, this will avoid to
+// 	// spread ipfs nodes over our network
+// 	if netConf.IPFSBootstrap {
+// 		bootstrap = append(bootstrap, p2p.BootstrapIpfs...)
+// 	} else {
+// 		swarmKey = strings.NewReader(p2p.DefaultSwarmKey)
+// 	}
+//
+// 	bootstrap = append(bootstrap, netConf.CustomBootstrap...)
+//
+// 	return &account.P2PNetworkOptions{
+// 		Bind:      bind,
+// 		Transport: transport,
+// 		Bootstrap: bootstrap,
+// 		MDNS:      netConf.MDNS,
+// 		Relay:     netConf.Relay,
+// 		Metrics:   defaultMetrics,
+// 		Identity:  defaultIdentity,
+// 		SwarmKey:  swarmKey,
+// 	}, nil
+// }
 
 func GetNetworkConfig() string {
 	defer panicHandler()
@@ -89,12 +87,12 @@ func UpdateNetworkConfig(jsonConf string) error {
 		return err
 	}
 
-	newState.JSONNetConf = jsonConf
-	netConf, err := createNetworkConfig(jsonConf)
-	if err != nil {
-		return err
-	}
-	if err := currentAccount.UpdateP2PNetwork(rootContext, netConf); err != nil {
+	// newState.JSONNetConf = jsonConf
+	// netConf, err := createNetworkConfig(jsonConf)
+	// if err != nil {
+	// 	return err
+	// }
+	if err := currentAccount.UpdateNetwork(rootContext, network.WithDefaultMobileOptions()); err != nil {
 		return err
 	}
 

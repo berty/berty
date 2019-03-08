@@ -14,7 +14,7 @@ import (
 	models "berty.tech/core/api/node/graphql/models"
 	graphql1 "berty.tech/core/api/protobuf/graphql"
 	entity "berty.tech/core/entity"
-	network "berty.tech/core/network"
+	metric "berty.tech/core/network/metric"
 	deviceinfo "berty.tech/core/pkg/deviceinfo"
 	push "berty.tech/core/push"
 	graphql "github.com/99designs/gqlgen/graphql"
@@ -251,7 +251,7 @@ type ComplexityRoot struct {
 		Ids func(childComplexity int) int
 	}
 
-	BertyNetworkBandwidthStats struct {
+	BertyNetworkMetricBandwidthStats struct {
 		Id       func(childComplexity int) int
 		TotalIn  func(childComplexity int) int
 		TotalOut func(childComplexity int) int
@@ -260,21 +260,21 @@ type ComplexityRoot struct {
 		Type     func(childComplexity int) int
 	}
 
-	BertyNetworkListAddrs struct {
+	BertyNetworkMetricListAddrs struct {
 		Addrs func(childComplexity int) int
 	}
 
-	BertyNetworkPeer struct {
+	BertyNetworkMetricPeer struct {
 		Id         func(childComplexity int) int
 		Addrs      func(childComplexity int) int
 		Connection func(childComplexity int) int
 	}
 
-	BertyNetworkPeers struct {
+	BertyNetworkMetricPeers struct {
 		List func(childComplexity int) int
 	}
 
-	BertyNetworkPingReq struct {
+	BertyNetworkMetricPingReq struct {
 		Str func(childComplexity int) int
 	}
 
@@ -801,7 +801,7 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
-	ID(ctx context.Context, T bool) (*network.Peer, error)
+	ID(ctx context.Context, T bool) (*metric.Peer, error)
 	EventList(ctx context.Context, filter *entity.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
 	GetEvent(ctx context.Context, id string) (*entity.Event, error)
 	ConfigPublic(ctx context.Context, T bool) (*entity.Config, error)
@@ -815,7 +815,7 @@ type QueryResolver interface {
 	DevicePushConfigList(ctx context.Context, T bool) (*node.DevicePushConfigListOutput, error)
 	DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error)
 	AppVersion(ctx context.Context, T bool) (*node.AppVersionOutput, error)
-	Peers(ctx context.Context, T bool) (*network.Peers, error)
+	Peers(ctx context.Context, T bool) (*metric.Peers, error)
 	Protocols(ctx context.Context, id string, addrs []string, connection *int32) (*node.ProtocolsOutput, error)
 	LogfileList(ctx context.Context, T bool) ([]*node.LogfileEntry, error)
 	TestLogBackgroundError(ctx context.Context, T bool) (*node.Void, error)
@@ -823,8 +823,8 @@ type QueryResolver interface {
 	TestLogBackgroundDebug(ctx context.Context, T bool) (*node.Void, error)
 	TestPanic(ctx context.Context, T bool) (*node.Void, error)
 	TestError(ctx context.Context, kind string) (*node.Void, error)
-	GetListenAddrs(ctx context.Context, T bool) (*network.ListAddrs, error)
-	GetListenInterfaceAddrs(ctx context.Context, T bool) (*network.ListAddrs, error)
+	GetListenAddrs(ctx context.Context, T bool) (*metric.ListAddrs, error)
+	GetListenInterfaceAddrs(ctx context.Context, T bool) (*metric.ListAddrs, error)
 	Libp2PPing(ctx context.Context, str string) (*node.Bool, error)
 }
 type SubscriptionResolver interface {
@@ -832,8 +832,8 @@ type SubscriptionResolver interface {
 	EventStream(ctx context.Context, filter *entity.Event) (<-chan *entity.Event, error)
 	LogStream(ctx context.Context, continues bool, logLevel string, namespaces string, last int32) (<-chan *node.LogEntry, error)
 	LogfileRead(ctx context.Context, path string) (<-chan *node.LogEntry, error)
-	MonitorBandwidth(ctx context.Context, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) (<-chan *network.BandwidthStats, error)
-	MonitorPeers(ctx context.Context, T bool) (<-chan *network.Peer, error)
+	MonitorBandwidth(ctx context.Context, id *string, totalIn *int64, totalOut *int64, rateIn *float64, rateOut *float64, typeArg *int32) (<-chan *metric.BandwidthStats, error)
+	MonitorPeers(ctx context.Context, T bool) (<-chan *metric.Peer, error)
 }
 
 func field_Mutation_EventSeen_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
@@ -3656,89 +3656,89 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntitySentAttrs.Ids(childComplexity), true
 
-	case "BertyNetworkBandwidthStats.id":
-		if e.complexity.BertyNetworkBandwidthStats.Id == nil {
+	case "BertyNetworkMetricBandwidthStats.id":
+		if e.complexity.BertyNetworkMetricBandwidthStats.Id == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkBandwidthStats.Id(childComplexity), true
+		return e.complexity.BertyNetworkMetricBandwidthStats.Id(childComplexity), true
 
-	case "BertyNetworkBandwidthStats.totalIn":
-		if e.complexity.BertyNetworkBandwidthStats.TotalIn == nil {
+	case "BertyNetworkMetricBandwidthStats.totalIn":
+		if e.complexity.BertyNetworkMetricBandwidthStats.TotalIn == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkBandwidthStats.TotalIn(childComplexity), true
+		return e.complexity.BertyNetworkMetricBandwidthStats.TotalIn(childComplexity), true
 
-	case "BertyNetworkBandwidthStats.totalOut":
-		if e.complexity.BertyNetworkBandwidthStats.TotalOut == nil {
+	case "BertyNetworkMetricBandwidthStats.totalOut":
+		if e.complexity.BertyNetworkMetricBandwidthStats.TotalOut == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkBandwidthStats.TotalOut(childComplexity), true
+		return e.complexity.BertyNetworkMetricBandwidthStats.TotalOut(childComplexity), true
 
-	case "BertyNetworkBandwidthStats.rateIn":
-		if e.complexity.BertyNetworkBandwidthStats.RateIn == nil {
+	case "BertyNetworkMetricBandwidthStats.rateIn":
+		if e.complexity.BertyNetworkMetricBandwidthStats.RateIn == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkBandwidthStats.RateIn(childComplexity), true
+		return e.complexity.BertyNetworkMetricBandwidthStats.RateIn(childComplexity), true
 
-	case "BertyNetworkBandwidthStats.rateOut":
-		if e.complexity.BertyNetworkBandwidthStats.RateOut == nil {
+	case "BertyNetworkMetricBandwidthStats.rateOut":
+		if e.complexity.BertyNetworkMetricBandwidthStats.RateOut == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkBandwidthStats.RateOut(childComplexity), true
+		return e.complexity.BertyNetworkMetricBandwidthStats.RateOut(childComplexity), true
 
-	case "BertyNetworkBandwidthStats.type":
-		if e.complexity.BertyNetworkBandwidthStats.Type == nil {
+	case "BertyNetworkMetricBandwidthStats.type":
+		if e.complexity.BertyNetworkMetricBandwidthStats.Type == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkBandwidthStats.Type(childComplexity), true
+		return e.complexity.BertyNetworkMetricBandwidthStats.Type(childComplexity), true
 
-	case "BertyNetworkListAddrs.addrs":
-		if e.complexity.BertyNetworkListAddrs.Addrs == nil {
+	case "BertyNetworkMetricListAddrs.addrs":
+		if e.complexity.BertyNetworkMetricListAddrs.Addrs == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkListAddrs.Addrs(childComplexity), true
+		return e.complexity.BertyNetworkMetricListAddrs.Addrs(childComplexity), true
 
-	case "BertyNetworkPeer.id":
-		if e.complexity.BertyNetworkPeer.Id == nil {
+	case "BertyNetworkMetricPeer.id":
+		if e.complexity.BertyNetworkMetricPeer.Id == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkPeer.Id(childComplexity), true
+		return e.complexity.BertyNetworkMetricPeer.Id(childComplexity), true
 
-	case "BertyNetworkPeer.addrs":
-		if e.complexity.BertyNetworkPeer.Addrs == nil {
+	case "BertyNetworkMetricPeer.addrs":
+		if e.complexity.BertyNetworkMetricPeer.Addrs == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkPeer.Addrs(childComplexity), true
+		return e.complexity.BertyNetworkMetricPeer.Addrs(childComplexity), true
 
-	case "BertyNetworkPeer.connection":
-		if e.complexity.BertyNetworkPeer.Connection == nil {
+	case "BertyNetworkMetricPeer.connection":
+		if e.complexity.BertyNetworkMetricPeer.Connection == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkPeer.Connection(childComplexity), true
+		return e.complexity.BertyNetworkMetricPeer.Connection(childComplexity), true
 
-	case "BertyNetworkPeers.list":
-		if e.complexity.BertyNetworkPeers.List == nil {
+	case "BertyNetworkMetricPeers.list":
+		if e.complexity.BertyNetworkMetricPeers.List == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkPeers.List(childComplexity), true
+		return e.complexity.BertyNetworkMetricPeers.List(childComplexity), true
 
-	case "BertyNetworkPingReq.str":
-		if e.complexity.BertyNetworkPingReq.Str == nil {
+	case "BertyNetworkMetricPingReq.str":
+		if e.complexity.BertyNetworkMetricPingReq.Str == nil {
 			break
 		}
 
-		return e.complexity.BertyNetworkPingReq.Str(childComplexity), true
+		return e.complexity.BertyNetworkMetricPingReq.Str(childComplexity), true
 
 	case "BertyNodeAppVersionOutput.version":
 		if e.complexity.BertyNodeAppVersionOutput.Version == nil {
@@ -9662,11 +9662,11 @@ func (ec *executionContext) _BertyEntitySentAttrs_ids(ctx context.Context, field
 	return arr1
 }
 
-var bertyNetworkBandwidthStatsImplementors = []string{"BertyNetworkBandwidthStats"}
+var bertyNetworkMetricBandwidthStatsImplementors = []string{"BertyNetworkMetricBandwidthStats"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkBandwidthStats(ctx context.Context, sel ast.SelectionSet, obj *network.BandwidthStats) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkBandwidthStatsImplementors)
+func (ec *executionContext) _BertyNetworkMetricBandwidthStats(ctx context.Context, sel ast.SelectionSet, obj *metric.BandwidthStats) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkMetricBandwidthStatsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
@@ -9675,19 +9675,19 @@ func (ec *executionContext) _BertyNetworkBandwidthStats(ctx context.Context, sel
 
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkBandwidthStats")
+			out.Values[i] = graphql.MarshalString("BertyNetworkMetricBandwidthStats")
 		case "id":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_id(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricBandwidthStats_id(ctx, field, obj)
 		case "totalIn":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_totalIn(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricBandwidthStats_totalIn(ctx, field, obj)
 		case "totalOut":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_totalOut(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricBandwidthStats_totalOut(ctx, field, obj)
 		case "rateIn":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_rateIn(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricBandwidthStats_rateIn(ctx, field, obj)
 		case "rateOut":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_rateOut(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricBandwidthStats_rateOut(ctx, field, obj)
 		case "type":
-			out.Values[i] = ec._BertyNetworkBandwidthStats_type(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricBandwidthStats_type(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -9700,9 +9700,9 @@ func (ec *executionContext) _BertyNetworkBandwidthStats(ctx context.Context, sel
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_id(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricBandwidthStats_id(ctx context.Context, field graphql.CollectedField, obj *metric.BandwidthStats) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
+		Object: "BertyNetworkMetricBandwidthStats",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9720,9 +9720,9 @@ func (ec *executionContext) _BertyNetworkBandwidthStats_id(ctx context.Context, 
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_totalIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricBandwidthStats_totalIn(ctx context.Context, field graphql.CollectedField, obj *metric.BandwidthStats) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
+		Object: "BertyNetworkMetricBandwidthStats",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9740,9 +9740,9 @@ func (ec *executionContext) _BertyNetworkBandwidthStats_totalIn(ctx context.Cont
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_totalOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricBandwidthStats_totalOut(ctx context.Context, field graphql.CollectedField, obj *metric.BandwidthStats) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
+		Object: "BertyNetworkMetricBandwidthStats",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9760,9 +9760,9 @@ func (ec *executionContext) _BertyNetworkBandwidthStats_totalOut(ctx context.Con
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_rateIn(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricBandwidthStats_rateIn(ctx context.Context, field graphql.CollectedField, obj *metric.BandwidthStats) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
+		Object: "BertyNetworkMetricBandwidthStats",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9780,9 +9780,9 @@ func (ec *executionContext) _BertyNetworkBandwidthStats_rateIn(ctx context.Conte
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_rateOut(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricBandwidthStats_rateOut(ctx context.Context, field graphql.CollectedField, obj *metric.BandwidthStats) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
+		Object: "BertyNetworkMetricBandwidthStats",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9800,9 +9800,9 @@ func (ec *executionContext) _BertyNetworkBandwidthStats_rateOut(ctx context.Cont
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkBandwidthStats_type(ctx context.Context, field graphql.CollectedField, obj *network.BandwidthStats) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricBandwidthStats_type(ctx context.Context, field graphql.CollectedField, obj *metric.BandwidthStats) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkBandwidthStats",
+		Object: "BertyNetworkMetricBandwidthStats",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9814,16 +9814,16 @@ func (ec *executionContext) _BertyNetworkBandwidthStats_type(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(network.MetricsType)
+	res := resTmp.(metric.MetricsType)
 	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
-var bertyNetworkListAddrsImplementors = []string{"BertyNetworkListAddrs"}
+var bertyNetworkMetricListAddrsImplementors = []string{"BertyNetworkMetricListAddrs"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkListAddrs(ctx context.Context, sel ast.SelectionSet, obj *network.ListAddrs) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkListAddrsImplementors)
+func (ec *executionContext) _BertyNetworkMetricListAddrs(ctx context.Context, sel ast.SelectionSet, obj *metric.ListAddrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkMetricListAddrsImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
@@ -9832,9 +9832,9 @@ func (ec *executionContext) _BertyNetworkListAddrs(ctx context.Context, sel ast.
 
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkListAddrs")
+			out.Values[i] = graphql.MarshalString("BertyNetworkMetricListAddrs")
 		case "addrs":
-			out.Values[i] = ec._BertyNetworkListAddrs_addrs(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricListAddrs_addrs(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -9847,9 +9847,9 @@ func (ec *executionContext) _BertyNetworkListAddrs(ctx context.Context, sel ast.
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkListAddrs_addrs(ctx context.Context, field graphql.CollectedField, obj *network.ListAddrs) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricListAddrs_addrs(ctx context.Context, field graphql.CollectedField, obj *metric.ListAddrs) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkListAddrs",
+		Object: "BertyNetworkMetricListAddrs",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9875,11 +9875,11 @@ func (ec *executionContext) _BertyNetworkListAddrs_addrs(ctx context.Context, fi
 	return arr1
 }
 
-var bertyNetworkPeerImplementors = []string{"BertyNetworkPeer"}
+var bertyNetworkMetricPeerImplementors = []string{"BertyNetworkMetricPeer"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkPeer(ctx context.Context, sel ast.SelectionSet, obj *network.Peer) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeerImplementors)
+func (ec *executionContext) _BertyNetworkMetricPeer(ctx context.Context, sel ast.SelectionSet, obj *metric.Peer) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkMetricPeerImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
@@ -9888,16 +9888,16 @@ func (ec *executionContext) _BertyNetworkPeer(ctx context.Context, sel ast.Selec
 
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkPeer")
+			out.Values[i] = graphql.MarshalString("BertyNetworkMetricPeer")
 		case "id":
-			out.Values[i] = ec._BertyNetworkPeer_id(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricPeer_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
 		case "addrs":
-			out.Values[i] = ec._BertyNetworkPeer_addrs(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricPeer_addrs(ctx, field, obj)
 		case "connection":
-			out.Values[i] = ec._BertyNetworkPeer_connection(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricPeer_connection(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -9910,9 +9910,9 @@ func (ec *executionContext) _BertyNetworkPeer(ctx context.Context, sel ast.Selec
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeer_id(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricPeer_id(ctx context.Context, field graphql.CollectedField, obj *metric.Peer) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeer",
+		Object: "BertyNetworkMetricPeer",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9933,9 +9933,9 @@ func (ec *executionContext) _BertyNetworkPeer_id(ctx context.Context, field grap
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeer_addrs(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricPeer_addrs(ctx context.Context, field graphql.CollectedField, obj *metric.Peer) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeer",
+		Object: "BertyNetworkMetricPeer",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9962,9 +9962,9 @@ func (ec *executionContext) _BertyNetworkPeer_addrs(ctx context.Context, field g
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeer_connection(ctx context.Context, field graphql.CollectedField, obj *network.Peer) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricPeer_connection(ctx context.Context, field graphql.CollectedField, obj *metric.Peer) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeer",
+		Object: "BertyNetworkMetricPeer",
 		Args:   nil,
 		Field:  field,
 	}
@@ -9976,16 +9976,16 @@ func (ec *executionContext) _BertyNetworkPeer_connection(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(network.ConnectionType)
+	res := resTmp.(metric.ConnectionType)
 	rctx.Result = res
 	return models.MarshalEnum(int32(res))
 }
 
-var bertyNetworkPeersImplementors = []string{"BertyNetworkPeers"}
+var bertyNetworkMetricPeersImplementors = []string{"BertyNetworkMetricPeers"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkPeers(ctx context.Context, sel ast.SelectionSet, obj *network.Peers) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkPeersImplementors)
+func (ec *executionContext) _BertyNetworkMetricPeers(ctx context.Context, sel ast.SelectionSet, obj *metric.Peers) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkMetricPeersImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
@@ -9994,9 +9994,9 @@ func (ec *executionContext) _BertyNetworkPeers(ctx context.Context, sel ast.Sele
 
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkPeers")
+			out.Values[i] = graphql.MarshalString("BertyNetworkMetricPeers")
 		case "list":
-			out.Values[i] = ec._BertyNetworkPeers_list(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricPeers_list(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10009,9 +10009,9 @@ func (ec *executionContext) _BertyNetworkPeers(ctx context.Context, sel ast.Sele
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPeers_list(ctx context.Context, field graphql.CollectedField, obj *network.Peers) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricPeers_list(ctx context.Context, field graphql.CollectedField, obj *metric.Peers) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPeers",
+		Object: "BertyNetworkMetricPeers",
 		Args:   nil,
 		Field:  field,
 	}
@@ -10023,7 +10023,7 @@ func (ec *executionContext) _BertyNetworkPeers_list(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*network.Peer)
+	res := resTmp.([]*metric.Peer)
 	rctx.Result = res
 
 	arr1 := make(graphql.Array, len(res))
@@ -10051,7 +10051,7 @@ func (ec *executionContext) _BertyNetworkPeers_list(ctx context.Context, field g
 					return graphql.Null
 				}
 
-				return ec._BertyNetworkPeer(ctx, field.Selections, res[idx1])
+				return ec._BertyNetworkMetricPeer(ctx, field.Selections, res[idx1])
 			}()
 		}
 		if isLen1 {
@@ -10065,11 +10065,11 @@ func (ec *executionContext) _BertyNetworkPeers_list(ctx context.Context, field g
 	return arr1
 }
 
-var bertyNetworkPingReqImplementors = []string{"BertyNetworkPingReq"}
+var bertyNetworkMetricPingReqImplementors = []string{"BertyNetworkMetricPingReq"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _BertyNetworkPingReq(ctx context.Context, sel ast.SelectionSet, obj *network.PingReq) graphql.Marshaler {
-	fields := graphql.CollectFields(ctx, sel, bertyNetworkPingReqImplementors)
+func (ec *executionContext) _BertyNetworkMetricPingReq(ctx context.Context, sel ast.SelectionSet, obj *metric.PingReq) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyNetworkMetricPingReqImplementors)
 
 	out := graphql.NewOrderedMap(len(fields))
 	invalid := false
@@ -10078,9 +10078,9 @@ func (ec *executionContext) _BertyNetworkPingReq(ctx context.Context, sel ast.Se
 
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BertyNetworkPingReq")
+			out.Values[i] = graphql.MarshalString("BertyNetworkMetricPingReq")
 		case "str":
-			out.Values[i] = ec._BertyNetworkPingReq_str(ctx, field, obj)
+			out.Values[i] = ec._BertyNetworkMetricPingReq_str(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
@@ -10096,9 +10096,9 @@ func (ec *executionContext) _BertyNetworkPingReq(ctx context.Context, sel ast.Se
 }
 
 // nolint: vetshadow
-func (ec *executionContext) _BertyNetworkPingReq_str(ctx context.Context, field graphql.CollectedField, obj *network.PingReq) graphql.Marshaler {
+func (ec *executionContext) _BertyNetworkMetricPingReq_str(ctx context.Context, field graphql.CollectedField, obj *metric.PingReq) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
-		Object: "BertyNetworkPingReq",
+		Object: "BertyNetworkMetricPingReq",
 		Args:   nil,
 		Field:  field,
 	}
@@ -12609,14 +12609,14 @@ func (ec *executionContext) _BertyNodeStatisticsAttrs_totalNetworkBandwidth(ctx 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*network.BandwidthStats)
+	res := resTmp.(*metric.BandwidthStats)
 	rctx.Result = res
 
 	if res == nil {
 		return graphql.Null
 	}
 
-	return ec._BertyNetworkBandwidthStats(ctx, field.Selections, res)
+	return ec._BertyNetworkMetricBandwidthStats(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -19828,14 +19828,14 @@ func (ec *executionContext) _Query_ID(ctx context.Context, field graphql.Collect
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*network.Peer)
+	res := resTmp.(*metric.Peer)
 	rctx.Result = res
 
 	if res == nil {
 		return graphql.Null
 	}
 
-	return ec._BertyNetworkPeer(ctx, field.Selections, res)
+	return ec._BertyNetworkMetricPeer(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -20262,14 +20262,14 @@ func (ec *executionContext) _Query_Peers(ctx context.Context, field graphql.Coll
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*network.Peers)
+	res := resTmp.(*metric.Peers)
 	rctx.Result = res
 
 	if res == nil {
 		return graphql.Null
 	}
 
-	return ec._BertyNetworkPeers(ctx, field.Selections, res)
+	return ec._BertyNetworkMetricPeers(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -20542,14 +20542,14 @@ func (ec *executionContext) _Query_GetListenAddrs(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*network.ListAddrs)
+	res := resTmp.(*metric.ListAddrs)
 	rctx.Result = res
 
 	if res == nil {
 		return graphql.Null
 	}
 
-	return ec._BertyNetworkListAddrs(ctx, field.Selections, res)
+	return ec._BertyNetworkMetricListAddrs(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -20573,14 +20573,14 @@ func (ec *executionContext) _Query_GetListenInterfaceAddrs(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*network.ListAddrs)
+	res := resTmp.(*metric.ListAddrs)
 	rctx.Result = res
 
 	if res == nil {
 		return graphql.Null
 	}
 
-	return ec._BertyNetworkListAddrs(ctx, field.Selections, res)
+	return ec._BertyNetworkMetricListAddrs(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -20860,7 +20860,7 @@ func (ec *executionContext) _Subscription_MonitorBandwidth(ctx context.Context, 
 				return graphql.Null
 			}
 
-			return ec._BertyNetworkBandwidthStats(ctx, field.Selections, res)
+			return ec._BertyNetworkMetricBandwidthStats(ctx, field.Selections, res)
 		}())
 		return &out
 	}
@@ -20893,7 +20893,7 @@ func (ec *executionContext) _Subscription_MonitorPeers(ctx context.Context, fiel
 				return graphql.Null
 			}
 
-			return ec._BertyNetworkPeer(ctx, field.Selections, res)
+			return ec._BertyNetworkMetricPeer(ctx, field.Selections, res)
 		}())
 		return &out
 	}
@@ -23349,7 +23349,7 @@ type BertyEntityMetadataKeyValue  {
   
 
   
-type BertyNetworkBandwidthStats  {
+type BertyNetworkMetricBandwidthStats  {
     id: String
     totalIn: Int64
     totalOut: Int64
@@ -23357,10 +23357,10 @@ type BertyNetworkBandwidthStats  {
     rateOut: Double
     type: Enum
 }
-type BertyNetworkListAddrs  {
+type BertyNetworkMetricListAddrs  {
     addrs: [String!]
 }
-type BertyNetworkPingReq  {
+type BertyNetworkMetricPingReq  {
     str: String!
 }
   
@@ -23391,7 +23391,7 @@ type BertyNodeDebugAttrs  {
 }
 type BertyNodeStatisticsAttrs  {
     errMsg: String!
-    totalNetworkBandwidth: BertyNetworkBandwidthStats
+    totalNetworkBandwidth: BertyNetworkMetricBandwidthStats
     peersCount: Int32!
 }
   
@@ -23399,13 +23399,13 @@ type BertyNodeStatisticsAttrs  {
   
 
   
-type BertyNetworkPeer  {
+type BertyNetworkMetricPeer  {
     id: String!
     addrs: [String!]
     connection: Enum
 }
-type BertyNetworkPeers  {
-    list: [BertyNetworkPeer]
+type BertyNetworkMetricPeers  {
+    list: [BertyNetworkMetricPeer]
 }
   
   
@@ -23646,7 +23646,7 @@ type Query {
   node(id: ID!): Node
   ID(
     T: Bool!
-  ): BertyNetworkPeer
+  ): BertyNetworkMetricPeer
   EventList(
     filter: BertyEntityEventInput
     onlyWithoutAckedAt: Enum
@@ -23720,7 +23720,7 @@ type Query {
   ): BertyNodeAppVersionOutput
   Peers(
     T: Bool!
-  ): BertyNetworkPeers
+  ): BertyNetworkMetricPeers
   Protocols(
     id: String!
     addrs: [String!]
@@ -23747,10 +23747,10 @@ type Query {
   ): BertyNodeVoid
   GetListenAddrs(
     T: Bool!
-  ): BertyNetworkListAddrs
+  ): BertyNetworkMetricListAddrs
   GetListenInterfaceAddrs(
     T: Bool!
-  ): BertyNetworkListAddrs
+  ): BertyNetworkMetricListAddrs
   Libp2PPing(
     str: String!
   ): BertyNodeBool
@@ -23890,10 +23890,10 @@ type Subscription {
     rateIn: Double
     rateOut: Double
     type: Enum
-  ): BertyNetworkBandwidthStats
+  ): BertyNetworkMetricBandwidthStats
   MonitorPeers(
     T: Bool!
-  ): BertyNetworkPeer
+  ): BertyNetworkMetricPeer
 }
 `},
 )

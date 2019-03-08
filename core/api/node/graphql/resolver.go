@@ -13,7 +13,7 @@ import (
 	"berty.tech/core/api/node/graphql/models"
 	gql "berty.tech/core/api/protobuf/graphql"
 	"berty.tech/core/entity"
-	"berty.tech/core/network"
+	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/push"
 	"berty.tech/core/sql"
@@ -153,7 +153,7 @@ func (r *bertyEntityEventResolver) Attributes(ctx context.Context, obj *entity.E
 
 // type bertyP2pPeerResolver struct{ *Resolver }
 
-// func (r *bertyP2pPeerResolver) Addrs(ctx context.Context, obj *network.Peer) ([]byte, error) {
+// func (r *bertyP2pPeerResolver) Addrs(ctx context.Context, obj *network_metric.Peer) ([]byte, error) {
 // 	return json.Marshal(obj.GetAddrs())
 // }
 
@@ -375,12 +375,12 @@ func (r *queryResolver) LogfileList(ctx context.Context, T bool) ([]*node.Logfil
 	return entries, nil
 }
 
-func (r *queryResolver) ID(ctx context.Context, T bool) (*network.Peer, error) {
+func (r *queryResolver) ID(ctx context.Context, T bool) (*network_metric.Peer, error) {
 	return r.client.ID(ctx, &node.Void{T: T})
 }
 
 func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ *int32) (*node.ProtocolsOutput, error) {
-	return r.client.Protocols(ctx, &network.Peer{
+	return r.client.Protocols(ctx, &network_metric.Peer{
 		ID: id,
 	})
 }
@@ -741,19 +741,19 @@ func (r *queryResolver) TestLogBackgroundDebug(ctx context.Context, T bool) (*no
 	return r.client.TestLogBackgroundDebug(ctx, &node.Void{})
 }
 
-func (r *queryResolver) Peers(ctx context.Context, _ bool) (*network.Peers, error) {
+func (r *queryResolver) Peers(ctx context.Context, _ bool) (*network_metric.Peers, error) {
 	return r.client.Peers(ctx, &node.Void{})
 }
 
 func (r *queryResolver) Libp2PPing(ctx context.Context, str string) (*node.Bool, error) {
-	return r.client.Libp2PPing(ctx, &network.PingReq{Str: str})
+	return r.client.Libp2PPing(ctx, &network_metric.PingReq{Str: str})
 }
 
-func (r *queryResolver) GetListenAddrs(ctx context.Context, _ bool) (*network.ListAddrs, error) {
+func (r *queryResolver) GetListenAddrs(ctx context.Context, _ bool) (*network_metric.ListAddrs, error) {
 	return r.client.GetListenAddrs(ctx, &node.Void{})
 }
 
-func (r *queryResolver) GetListenInterfaceAddrs(ctx context.Context, T bool) (*network.ListAddrs, error) {
+func (r *queryResolver) GetListenInterfaceAddrs(ctx context.Context, T bool) (*network_metric.ListAddrs, error) {
 	return r.client.GetListenInterfaceAddrs(ctx, &node.Void{})
 }
 
@@ -857,13 +857,13 @@ func (r *subscriptionResolver) LogStream(ctx context.Context, continues bool, lo
 	return channel, nil
 }
 
-func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *network.Peer, error) {
+func (r *subscriptionResolver) MonitorPeers(ctx context.Context, _ bool) (<-chan *network_metric.Peer, error) {
 	stream, err := r.client.MonitorPeers(ctx, &node.Void{})
 	if err != nil {
 		return nil, err
 	}
 
-	channel := make(chan *network.Peer, 10)
+	channel := make(chan *network_metric.Peer, 10)
 	go func() {
 		for {
 			elem, err := stream.Recv()
@@ -884,9 +884,9 @@ func (r *queryResolver) DevicePushConfigList(ctx context.Context, void bool) (*n
 	return r.client.DevicePushConfigList(ctx, &node.Void{})
 }
 
-func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string, _ *int64, _ *int64, _ *float64, _ *float64, mtype *int32) (<-chan *network.BandwidthStats, error) {
+func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string, _ *int64, _ *int64, _ *float64, _ *float64, mtype *int32) (<-chan *network_metric.BandwidthStats, error) {
 	if mtype == nil {
-		_mtype := int32(network.MetricsType_GLOBAL)
+		_mtype := int32(network_metric.MetricsType_GLOBAL)
 		mtype = &_mtype
 	}
 
@@ -895,9 +895,9 @@ func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string,
 		id = &_id
 	}
 
-	stream, err := r.client.MonitorBandwidth(ctx, &network.BandwidthStats{
+	stream, err := r.client.MonitorBandwidth(ctx, &network_metric.BandwidthStats{
 		ID:   *id,
-		Type: network.MetricsType(*mtype),
+		Type: network_metric.MetricsType(*mtype),
 	})
 
 	if err != nil {
@@ -905,7 +905,7 @@ func (r *subscriptionResolver) MonitorBandwidth(ctx context.Context, id *string,
 		return nil, err
 	}
 
-	channel := make(chan *network.BandwidthStats, 10)
+	channel := make(chan *network_metric.BandwidthStats, 10)
 	go func() {
 		for {
 			elem, err := stream.Recv()

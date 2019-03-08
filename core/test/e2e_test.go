@@ -9,11 +9,10 @@ import (
 	"berty.tech/core/api/node"
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
+	p2pnet "berty.tech/core/network"
 	"berty.tech/core/network/mock"
-	p2pnet "berty.tech/core/network/p2p"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/testrunner"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -25,7 +24,7 @@ func TestWithEnqueuer(t *testing.T) {
 	var (
 		alice, bob, eve *AppMock
 		err             error
-		internalCtx     = context.Background()
+		ctx             = context.Background()
 	)
 
 	defer func() {
@@ -49,17 +48,17 @@ func TestWithEnqueuer(t *testing.T) {
 		Convey("Initialize nodes", FailureHalts, func() {
 			shouldIContinue(t)
 
-			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, mock.NewEnqueuer(context.Background()))
+			alice, err = NewAppMock(ctx, &entity.Device{Name: "Alice's iPhone"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
-			So(alice.InitEventStream(), ShouldBeNil)
+			So(alice.InitEventStream(ctx), ShouldBeNil)
 
-			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, mock.NewEnqueuer(context.Background()))
+			bob, err = NewAppMock(ctx, &entity.Device{Name: "iPhone de Bob"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
-			So(bob.InitEventStream(), ShouldBeNil)
+			So(bob.InitEventStream(ctx), ShouldBeNil)
 
-			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, mock.NewEnqueuer(context.Background()))
+			eve, err = NewAppMock(ctx, &entity.Device{Name: "Eve"}, mock.NewEnqueuer(context.Background()))
 			So(err, ShouldBeNil)
-			So(eve.InitEventStream(), ShouldBeNil)
+			So(eve.InitEventStream(ctx), ShouldBeNil)
 
 			everythingWentFine()
 		})
@@ -101,7 +100,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice should only know itself", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := alice.client.ContactList(ctx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
@@ -121,7 +120,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob should only know itself", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := bob.client.ContactList(ctx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
@@ -141,7 +140,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Eve should only know itself", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := eve.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := eve.client.ContactList(ctx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
@@ -164,7 +163,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice calls node.ContactRequest", FailureHalts, func() {
 				shouldIContinue(t)
 
-				res, err := alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
+				res, err := alice.client.Node().ContactRequest(ctx, &node.ContactRequestInput{
 					ContactID:                  bob.node.UserID(),
 					ContactOverrideDisplayName: "Bob from school",
 					IntroText:                  "hello, I want to chat!",
@@ -190,7 +189,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice has en entry in sql for Bob", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{
+				contacts, err := alice.client.ContactList(ctx, &node.ContactListInput{
 					Filter: &entity.Contact{Status: entity.Contact_IsRequested},
 				})
 				So(err, ShouldBeNil)
@@ -208,7 +207,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice has a conversation with Bob", FailureHalts, func() {
 				shouldIContinue(t)
 
-				conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+				conversations, err := alice.client.ConversationList(ctx, &node.ConversationListInput{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 1)
 				So(len(conversations[0].Members), ShouldEqual, 2)
@@ -301,7 +300,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob has en entry in sql for Alice", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{
+				contacts, err := bob.client.ContactList(ctx, &node.ContactListInput{
 					Filter: &entity.Contact{DisplayName: "Alice"},
 				})
 				So(err, ShouldBeNil)
@@ -319,7 +318,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob has a conversation with Alice", FailureHalts, func() {
 				shouldIContinue(t)
 
-				conversations, err := alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+				conversations, err := alice.client.ConversationList(ctx, &node.ConversationListInput{})
 				So(err, ShouldBeNil)
 				So(len(conversations), ShouldEqual, 1)
 				So(len(conversations[0].Members), ShouldEqual, 2)
@@ -330,7 +329,7 @@ func TestWithEnqueuer(t *testing.T) {
 			// Convey("Bob has a conversation with Alice", FailureHalts, func() {
 			// 	shouldIContinue(T)
 
-			// 	_, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			// 	_, err := bob.client.ConversationList(ctx, &node.ConversationListInput{})
 			// 	So(err, ShouldBeNil)
 			// 	// So(len(conversations), ShouldEqual, 1)
 			// 	// So(len(conversations[0].Members), ShouldEqual, 2)
@@ -342,7 +341,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob calls node.ContactAcceptRequest", FailureHalts, func() {
 				shouldIContinue(t)
 
-				res, err := bob.client.Node().ContactAcceptRequest(internalCtx, &node.ContactAcceptRequestInput{
+				res, err := bob.client.Node().ContactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
 					ContactID: alice.node.UserID(),
 				})
 				So(err, ShouldBeNil)
@@ -567,7 +566,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Alice has Bob as friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{
+				contacts, err := alice.client.ContactList(ctx, &node.ContactListInput{
 					Filter: &entity.Contact{Status: entity.Contact_IsFriend},
 				})
 				So(err, ShouldBeNil)
@@ -587,7 +586,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Bob has Alice as friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := bob.client.ContactList(internalCtx, &node.ContactListInput{
+				contacts, err := bob.client.ContactList(ctx, &node.ContactListInput{
 					Filter: &entity.Contact{Status: entity.Contact_IsFriend},
 				})
 				So(err, ShouldBeNil)
@@ -607,7 +606,7 @@ func TestWithEnqueuer(t *testing.T) {
 			Convey("Eve has no friend", FailureHalts, func() {
 				shouldIContinue(t)
 
-				contacts, err := eve.client.ContactList(internalCtx, &node.ContactListInput{})
+				contacts, err := eve.client.ContactList(ctx, &node.ContactListInput{})
 				So(err, ShouldBeNil)
 				So(len(contacts), ShouldEqual, 1)
 			})
@@ -633,11 +632,11 @@ func TestWithEnqueuer(t *testing.T) {
 
 func TestAliasesFlow(t *testing.T) {
 	var (
-		alice, bob  *AppMock
-		err         error
-		internalCtx = context.Background()
-		res         interface{}
-		envelope    *entity.Envelope
+		alice, bob *AppMock
+		err        error
+		ctx        = context.Background()
+		res        interface{}
+		envelope   *entity.Envelope
 	)
 
 	defer func() {
@@ -657,14 +656,14 @@ func TestAliasesFlow(t *testing.T) {
 
 			network := mock.NewSimple()
 			aliceNetwork := network.Driver()
-			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, aliceNetwork, WithUnencryptedDb())
+			alice, err = NewAppMock(ctx, &entity.Device{Name: "Alice's iPhone"}, aliceNetwork, WithUnencryptedDb())
 			So(err, ShouldBeNil)
-			So(alice.InitEventStream(), ShouldBeNil)
+			So(alice.InitEventStream(ctx), ShouldBeNil)
 
 			bobNetwork := network.Driver()
-			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, bobNetwork, WithUnencryptedDb())
+			bob, err = NewAppMock(ctx, &entity.Device{Name: "iPhone de Bob"}, bobNetwork, WithUnencryptedDb())
 			So(err, ShouldBeNil)
-			So(bob.InitEventStream(), ShouldBeNil)
+			So(bob.InitEventStream(ctx), ShouldBeNil)
 
 			network.AddPeer(aliceNetwork)
 			network.AddPeer(bobNetwork)
@@ -674,16 +673,16 @@ func TestAliasesFlow(t *testing.T) {
 
 		Convey("Alice adds Bob as a friend and init a conversation", FailureHalts, func() {
 
-			contacts, err := alice.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err := alice.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
-			contacts, err = bob.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err = bob.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 1) // 'myself' is the only known contact
 
 			shouldIContinue(t)
-			res, err = alice.client.Node().ContactRequest(internalCtx, &node.ContactRequestInput{
+			res, err = alice.client.Node().ContactRequest(ctx, &node.ContactRequestInput{
 				ContactID:                  bob.node.UserID(),
 				ContactOverrideDisplayName: "Bob from school",
 				IntroText:                  "hello, I want to chat!",
@@ -692,11 +691,11 @@ func TestAliasesFlow(t *testing.T) {
 			So(err, ShouldBeNil)
 			time.Sleep(timeBetweenSteps)
 
-			contacts, err = alice.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err = alice.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2) // 'myself' is the only known contact
 
-			contacts, err = bob.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err = bob.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2) // 'myself' is the only known contact
 
@@ -704,7 +703,7 @@ func TestAliasesFlow(t *testing.T) {
 			So(res, ShouldNotBeNil)
 			time.Sleep(timeBetweenSteps)
 
-			res, err = bob.client.Node().ContactAcceptRequest(internalCtx, &node.ContactAcceptRequestInput{
+			res, err = bob.client.Node().ContactAcceptRequest(ctx, &node.ContactAcceptRequestInput{
 				ContactID: alice.node.UserID(),
 			})
 
@@ -712,15 +711,15 @@ func TestAliasesFlow(t *testing.T) {
 			So(res, ShouldNotBeNil)
 			time.Sleep(timeBetweenSteps)
 
-			contacts, err = alice.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err = alice.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2)
 
-			contacts, err = bob.client.ContactList(internalCtx, &node.ContactListInput{})
+			contacts, err = bob.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
 			So(len(contacts), ShouldEqual, 2)
 
-			_, err = bob.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
+			_, err = bob.client.Node().ConversationCreate(ctx, &node.ConversationCreateInput{
 				Title: "Alice & Bob",
 				Topic: "hey!",
 				Contacts: []*entity.Contact{
@@ -732,11 +731,11 @@ func TestAliasesFlow(t *testing.T) {
 
 			time.Sleep(200 * time.Millisecond)
 
-			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			conversations, err := bob.client.ConversationList(ctx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
-			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			conversations, err = alice.client.ConversationList(ctx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
@@ -763,7 +762,7 @@ func TestAliasesFlow(t *testing.T) {
 
 			time.Sleep(timeBetweenSteps)
 
-			_, err = alice.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
+			_, err = alice.client.Node().ConversationCreate(ctx, &node.ConversationCreateInput{
 				Title: "Alice & Bob 2",
 				Topic: "hey! oh!",
 				Contacts: []*entity.Contact{
@@ -774,11 +773,11 @@ func TestAliasesFlow(t *testing.T) {
 			So(err, ShouldBeNil)
 			time.Sleep(timeBetweenSteps)
 
-			conversations, err := bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			conversations, err := bob.client.ConversationList(ctx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
-			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			conversations, err = alice.client.ConversationList(ctx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
@@ -794,7 +793,7 @@ func TestAliasesFlow(t *testing.T) {
 
 			time.Sleep(timeBetweenSteps)
 
-			_, err = alice.client.Node().ConversationCreate(internalCtx, &node.ConversationCreateInput{
+			_, err = alice.client.Node().ConversationCreate(ctx, &node.ConversationCreateInput{
 				Title: "Alice & Bob 3",
 				Topic: "hey! oh! let's go",
 				Contacts: []*entity.Contact{
@@ -805,11 +804,11 @@ func TestAliasesFlow(t *testing.T) {
 			So(err, ShouldBeNil)
 			time.Sleep(timeBetweenSteps)
 
-			conversations, err = bob.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			conversations, err = bob.client.ConversationList(ctx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
-			conversations, err = alice.client.ConversationList(internalCtx, &node.ConversationListInput{})
+			conversations, err = alice.client.ConversationList(ctx, &node.ConversationListInput{})
 			So(err, ShouldBeNil)
 			So(len(conversations), ShouldEqual, 1)
 
@@ -826,43 +825,21 @@ func TestAliasesFlow(t *testing.T) {
 	})
 }
 
-func setupP2PNetwork(bootstrap ...string) (*p2pnet.Driver, error) {
-	var (
-		driver *p2pnet.Driver
-		err    error
+func setupP2PNetwork(ctx context.Context) (*p2pnet.Network, error) {
+	return p2pnet.New(ctx,
+		p2pnet.WithDefaultOptions(),
+		p2pnet.DisableDHT(),
+		p2pnet.DisableHOP(),
 	)
-
-	var bootstrapConfig = &dht.BootstrapConfig{
-		Queries: 5,
-		Period:  time.Duration(time.Second),
-		Timeout: time.Duration(10 * time.Second),
-	}
-
-	driver, err = p2pnet.NewDriver(
-		context.Background(),
-		p2pnet.WithRandomIdentity(),
-		p2pnet.WithDefaultMuxers(),
-		p2pnet.WithDefaultPeerstore(),
-		p2pnet.WithDefaultSecurity(),
-		p2pnet.WithDefaultTransports(),
-		p2pnet.WithDHTBoostrapConfig(bootstrapConfig),
-		p2pnet.WithListenAddrStrings("/ip4/127.0.0.1/tcp/0"),
-		p2pnet.WithBootstrapSync(bootstrap...),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return driver, nil
 }
 
-func getBoostrap(d *p2pnet.Driver) []string {
-	addrs := d.Addrs()
+func getBootstrap(ctx context.Context, n *p2pnet.Network) []string {
+	addrs := n.Addrs()
 	bootstrap := make([]string, len(addrs))
 
 	for i, a := range addrs {
 		if a.String() != "/p2p-circuit" {
-			bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), d.ID(context.Background()).ID)
+			bootstrap[i] = fmt.Sprintf("%s/ipfs/%s", a.String(), n.ID(ctx).ID)
 		}
 	}
 
@@ -874,6 +851,8 @@ func TestWithSimpleNetwork(t *testing.T) {
 		alice, bob, eve *AppMock
 		err             error
 	)
+
+	ctx := context.Background()
 	defer func() {
 		if alice != nil {
 			alice.Close()
@@ -894,67 +873,79 @@ func TestWithSimpleNetwork(t *testing.T) {
 
 			network := mock.NewSimple()
 			aliceNetwork := network.Driver()
-			alice, err = NewAppMock(&entity.Device{Name: "Alice's iPhone"}, aliceNetwork)
+			alice, err = NewAppMock(ctx, &entity.Device{Name: "Alice's iPhone"}, aliceNetwork)
 			So(err, ShouldBeNil)
 
 			bobNetwork := network.Driver()
-			bob, err = NewAppMock(&entity.Device{Name: "iPhone de Bob"}, bobNetwork)
+			bob, err = NewAppMock(ctx, &entity.Device{Name: "iPhone de Bob"}, bobNetwork)
 			So(err, ShouldBeNil)
 
 			eveNetwork := network.Driver()
-			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, eveNetwork)
+			eve, err = NewAppMock(ctx, &entity.Device{Name: "Eve"}, eveNetwork)
 			So(err, ShouldBeNil)
 
 			network.AddPeer(aliceNetwork)
 			network.AddPeer(bobNetwork)
 			network.AddPeer(eveNetwork)
 
-			So(alice.InitEventStream(), ShouldBeNil)
-			So(bob.InitEventStream(), ShouldBeNil)
-			So(eve.InitEventStream(), ShouldBeNil)
+			So(alice.InitEventStream(ctx), ShouldBeNil)
+			So(bob.InitEventStream(ctx), ShouldBeNil)
+			So(eve.InitEventStream(ctx), ShouldBeNil)
 
 			everythingWentFine()
 		})
+
 		scenario(t, alice, bob, eve)
 	})
 }
 
 func TestNodesWithP2PNetwork(t *testing.T) {
 	var (
-		aliceNetwork, bobNetwork, eveNetwork *p2pnet.Driver
+		aliceNetwork, bobNetwork, eveNetwork *p2pnet.Network
 		alice, bob, eve                      *AppMock
 		err                                  error
 	)
 
 	everythingWentFine()
 
+	ctx := context.Background()
+	ctx, _ = context.WithTimeout(ctx, time.Minute)
 	Convey("End-to-end test (with p2p network)", t, FailureHalts, func() {
-		Convey("Initialize nodes", FailureHalts, func() {
+		Convey("setup networks", FailureHalts, func() {
 			shouldIContinue(t)
 
-			aliceNetwork, err = setupP2PNetwork()
+			aliceNetwork, err = setupP2PNetwork(ctx)
+			So(err, ShouldBeNil)
+			bobNetwork, err = setupP2PNetwork(ctx)
+			So(err, ShouldBeNil)
+			eveNetwork, err = setupP2PNetwork(ctx)
 			So(err, ShouldBeNil)
 
-			bootstrap := getBoostrap(aliceNetwork)
+			aliceBootstrap := getBootstrap(ctx, aliceNetwork)
+			bobBootstrap := getBootstrap(ctx, bobNetwork)
+			eveBootstrap := getBootstrap(ctx, eveNetwork)
 
-			bobNetwork, err = setupP2PNetwork(bootstrap...)
+			err = aliceNetwork.Bootstrap(ctx, true, append(bobBootstrap, eveBootstrap...)...)
 			So(err, ShouldBeNil)
-			eveNetwork, err = setupP2PNetwork(bootstrap...)
+			err = bobNetwork.Bootstrap(ctx, true, append(aliceBootstrap, eveBootstrap...)...)
 			So(err, ShouldBeNil)
-
-			bob, err = NewAppMock(&entity.Device{Name: "Bob"}, bobNetwork)
-			So(err, ShouldBeNil)
-			alice, err = NewAppMock(&entity.Device{Name: "Alice"}, aliceNetwork)
-			So(err, ShouldBeNil)
-			eve, err = NewAppMock(&entity.Device{Name: "Eve"}, eveNetwork)
+			err = eveNetwork.Bootstrap(ctx, true, append(aliceBootstrap, bobBootstrap...)...)
 			So(err, ShouldBeNil)
 
-			So(bob.InitEventStream(), ShouldBeNil)
-			So(alice.InitEventStream(), ShouldBeNil)
-			So(eve.InitEventStream(), ShouldBeNil)
+			bob, err = NewAppMock(ctx, &entity.Device{Name: "Bob"}, bobNetwork)
+			So(err, ShouldBeNil)
+			alice, err = NewAppMock(ctx, &entity.Device{Name: "Alice"}, aliceNetwork)
+			So(err, ShouldBeNil)
+			eve, err = NewAppMock(ctx, &entity.Device{Name: "Eve"}, eveNetwork)
+			So(err, ShouldBeNil)
+
+			So(bob.InitEventStream(ctx), ShouldBeNil)
+			So(alice.InitEventStream(ctx), ShouldBeNil)
+			So(eve.InitEventStream(ctx), ShouldBeNil)
 
 			everythingWentFine()
 		})
+
 		scenario(t, alice, bob, eve)
 	})
 }

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	account "berty.tech/core/manager/account"
+	"berty.tech/core/network"
 	"berty.tech/core/pkg/logmanager"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -208,12 +209,8 @@ func daemon(cfg *MobileOptions) error {
 
 	var a *account.Account
 
-	netConf, err := createNetworkConfig(appConfig.JSONNetConf)
-	if err != nil {
-		return err
-	}
-
 	accountOptions := account.Options{
+		account.WithNetwork(network.New(rootContext, network.WithDefaultMobileOptions())),
 		account.WithJaegerAddrName("jaeger.berty.io:6831", cfg.nickname+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(cfg.nickname),
@@ -223,7 +220,6 @@ func daemon(cfg *MobileOptions) error {
 			Path: ".",
 			Drop: false,
 		}),
-		account.WithP2PNetwork(netConf),
 		account.WithGrpcServer(&account.GrpcServerOptions{
 			Bind:         fmt.Sprintf(":%d", grpcPort),
 			Interceptors: false,

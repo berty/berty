@@ -47,14 +47,14 @@ class HandleDeepLink extends PureComponent {
         paramType === 'boolean'
       ) {
         let val = route.params[key]
-        if (key === 'id') {
-          try {
+        try {
+          if (key === 'id') {
             val = atob(val)
             val = val.match(/:(.*)$/)
             val = val[1]
-          } catch {
-            val = route.params[key]
           }
+        } catch (err) {
+          val = route.params[key]
         }
         fragment += fragment.length > 0 ? `,${key}=${val}` : `#${key}=${val}`
       }
@@ -231,7 +231,13 @@ export default class App extends PureComponent {
   }
 
   render () {
-    const { loading, deepLink, showAnim, relayContext, availableUpdate } = this.state
+    const {
+      loading,
+      deepLink,
+      showAnim,
+      relayContext,
+      availableUpdate,
+    } = this.state
 
     return (
       <I18nextProvider i18n={i18n}>
@@ -250,26 +256,36 @@ export default class App extends PureComponent {
             >
               <Animation onFinish={() => this.setState({ showAnim: false })} />
             </Flex.Rows>
-          ) : null }
-          { !loading
-            ? <RelayContext.Provider value={{ ...relayContext, setState: this.setStateContext }}>
-              <UpdateContext.Provider value={{ availableUpdate, setState: this.setStateUpdate }}>
+          ) : null}
+          {!loading ? (
+            <RelayContext.Provider
+              value={{ ...relayContext, setState: this.setStateContext }}
+            >
+              <UpdateContext.Provider
+                value={{ availableUpdate, setState: this.setStateUpdate }}
+              >
                 <AppContainer
                   screenProps={{
                     deepLink,
-                    setDeepLink: (deepLink) => this.setDeepLink(deepLink),
+                    setDeepLink: deepLink => this.setDeepLink(deepLink),
                     clearDeepLink: () => this.clearDeepLink(),
                   }}
                 />
                 <FlashMessage position='top' />
-                <View style={{ zIndex: 1, position: 'absolute', top: 30, right: 48, padding: 5 }}>
-                  <MovableView>
-                    {this.state.debugBar}
-                  </MovableView>
+                <View
+                  style={{
+                    zIndex: 1,
+                    position: 'absolute',
+                    top: 30,
+                    right: 48,
+                    padding: 5,
+                  }}
+                >
+                  <MovableView>{this.state.debugBar}</MovableView>
                 </View>
               </UpdateContext.Provider>
             </RelayContext.Provider>
-            : null }
+          ) : null}
           {Platform.OS === 'ios' && <KeyboardSpacer />}
         </SafeAreaView>
       </I18nextProvider>

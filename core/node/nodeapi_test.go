@@ -10,7 +10,7 @@ import (
 	"berty.tech/core/api/node/graphql"
 	gqlgen "berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/entity"
-	"berty.tech/core/network/netutil"
+	netutil "berty.tech/core/network/helper"
 	. "github.com/smartystreets/goconvey/convey"
 	"google.golang.org/grpc"
 )

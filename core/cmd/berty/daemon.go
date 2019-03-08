@@ -1,15 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
-	"strings"
 
 	"berty.tech/core/manager/account"
-	"berty.tech/core/network/p2p"
+	"berty.tech/core/network"
+	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/banner"
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/logmanager"
@@ -42,7 +41,9 @@ type daemonOptions struct {
 	bindP2P        []string `mapstructure:"bind-p2p"`
 	transportP2P   []string `mapstructure:"transport-p2p"`
 	hop            bool     `mapstructure:"hop"` // relay hop
+	ble            bool     `mapstructure:"ble"`
 	mdns           bool     `mapstructure:"mdns"`
+	dhtServer      bool     `mapstructure:"dht"`
 	PrivateNetwork bool     `mapstructure:"private-network"`
 	SwarmKeyPath   string   `mapstructure:"swarm-key"`
 
@@ -50,28 +51,31 @@ type daemonOptions struct {
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
+	// account / node
 	flags.StringVar(&opts.nickname, "nickname", "berty-daemon", "set account nickname")
 	flags.BoolVar(&opts.dropDatabase, "drop-database", false, "drop database to force a reinitialization")
 	flags.BoolVar(&opts.notification, "notification", false, "enable local notification")
 	flags.BoolVar(&opts.hideBanner, "hide-banner", false, "hide banner")
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
-	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
-	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
+	flags.StringVar(&opts.privateKeyFile, "private-key-file", "", "set private key file for node")
 	flags.BoolVar(&opts.withBot, "bot", false, "enable bot")
-	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
-	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
-	flags.StringVar(&opts.SwarmKeyPath, "swarm-key", "", "path to a custom swarm key, only peers that use the same swarm key will be able to talk with you")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
-	flags.StringSliceVar(&opts.bootstrap, "bootstrap", p2p.DefaultBootstrap, "boostrap peers")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	flags.StringSliceVar(&opts.bootstrap, "bootstrap", network_config.DefaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
 	flags.StringSliceVar(&opts.apnsDevVoipCerts, "apns-dev-voip-certs", []string{}, "Path of APNs VoIP development certificates, delimited by commas")
 	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
-	flags.StringVar(&opts.privateKeyFile, "private-key-file", "", "set private key file for node")
+	// network
+	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
+	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
+	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
+	flags.BoolVar(&opts.dhtServer, "dht-server", false, "enable dht server")
+	flags.BoolVar(&opts.ble, "ble", false, "enable ble transport")
+	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	flags.StringVar(&opts.SwarmKeyPath, "swarm-key", "", "path to a custom swarm key, only peers that use the same swarm key will be able to talk with you")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
-	flags.StringSliceVar(&opts.transportP2P, "transport-p2p", []string{"default", "quic" /*, "ble"*/}, "p2p transport to enable")
 	_ = viper.BindPFlags(flags)
 }
 
@@ -106,6 +110,7 @@ func daemon(opts *daemonOptions) error {
 	}()
 	deviceinfo.SetStoragePath("/tmp")
 	accountOptions := account.Options{
+
 		account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(opts.nickname),
@@ -126,32 +131,38 @@ func daemon(opts *daemonOptions) error {
 		account.WithPrivateKeyFile(opts.privateKeyFile),
 	}
 	if !opts.noP2P {
-		var swarmKey io.Reader
-
-		if opts.PrivateNetwork {
-			swarmKey = strings.NewReader(p2p.DefaultSwarmKey)
-		}
+		swarmKey := network_config.DefaultSwarmKey
 
 		if opts.SwarmKeyPath != "" {
 			file, err := os.Open(opts.SwarmKeyPath)
 			if err != nil {
 				return fmt.Errorf("swarm key error: %s", err)
 			}
-
-			swarmKey = bufio.NewReader(file)
+			swarmKeyBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				return fmt.Errorf("swarm key error: %s", err)
+			}
+			swarmKey = string(swarmKeyBytes)
 		}
 
-		accountOptions = append(accountOptions, account.WithP2PNetwork(
-			&account.P2PNetworkOptions{
-				Bind:      opts.bindP2P,
-				Transport: opts.transportP2P,
-				Bootstrap: opts.bootstrap,
-				MDNS:      opts.mdns,
-				Relay:     opts.hop,
-				Metrics:   true,
-				Identity:  opts.identity,
-				SwarmKey:  swarmKey,
-			},
+		accountOptions = append(accountOptions, account.WithNetwork(
+			network.New(ctx,
+				network.WithDefaultOptions(),
+				network.WithConfig(&network_config.Config{
+					Bind:             opts.bindP2P,
+					MDNS:             opts.mdns,
+					DHT:              opts.dhtServer,
+					BLE:              opts.ble,
+					QUIC:             true,
+					Metric:           true,
+					Ping:             true,
+					DefaultBootstrap: false,
+					Bootstrap:        opts.bootstrap,
+					HOP:              opts.hop,
+					SwarmKey:         swarmKey,
+					Identity:         opts.identity,
+				}),
+			),
 		))
 	} else {
 		accountOptions = append(accountOptions, account.WithEnqueurNetwork())
@@ -165,7 +176,6 @@ func daemon(opts *daemonOptions) error {
 		notificationDriver := notification.NewDesktopNotification()
 		accountOptions = append(accountOptions, account.WithNotificationDriver(notificationDriver))
 	}
-
 	pushDispatchers, err := listPushDispatchers(opts)
 	if err != nil {
 		return err

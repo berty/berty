@@ -13,7 +13,7 @@ import (
 )
 
 func setupNonAcknowledgedEventDestinations() (*AppMock, time.Time, time.Time, time.Time) {
-	n, err := NewAppMock(&entity.Device{Name: "Alice's iPhone"}, networkmock.NewEnqueuer(context.Background()), WithUnencryptedDb())
+	n, err := NewAppMock(context.Background(), &entity.Device{Name: "Alice's iPhone"}, networkmock.NewEnqueuer(context.Background()), WithUnencryptedDb())
 
 	if err != nil {
 		panic(err)

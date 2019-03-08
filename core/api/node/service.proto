@@ -5,8 +5,8 @@ package berty.node;
 import "api/protobuf/graphql/graphql.proto";
 import "entity/event.proto";
 import "api/node/kind.proto";
-import "network/metrics.proto";
-import "network/peer.proto";
+import "network/metric/metric.proto";
+import "network/metric/peer.proto";
 import "entity/config.proto";
 import "entity/contact.proto";
 import "entity/device.proto";
@@ -25,7 +25,7 @@ option go_package = "berty.tech/core/api/node";
 
 service Service {
   // return node current ID
-  rpc ID (Void) returns (berty.network.Peer) {
+  rpc ID (Void) returns (berty.network.metric.Peer) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -197,11 +197,11 @@ service Service {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc Peers (Void) returns (berty.network.Peers) {
+  rpc Peers (Void) returns (berty.network.metric.Peers) {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc Protocols (berty.network.Peer) returns (ProtocolsOutput) {
+  rpc Protocols (berty.network.metric.Peer) returns (ProtocolsOutput) {
     option (gql.graphql_type) = "Query";
   };
 
@@ -228,24 +228,24 @@ service Service {
   //
 
   // Yield bandwidth in real-time
-  rpc MonitorBandwidth (berty.network.BandwidthStats) returns (stream berty.network.BandwidthStats) {
+  rpc MonitorBandwidth (berty.network.metric.BandwidthStats) returns (stream berty.network.metric.BandwidthStats) {
     option (gql.graphql_type) = "Subscription";
   };
 
   // Yield new peers in real-time
-  rpc MonitorPeers (Void) returns (stream berty.network.Peer) {
+  rpc MonitorPeers (Void) returns (stream berty.network.metric.Peer) {
     option (gql.graphql_type) = "Subscription";
   };
 
-  rpc GetListenAddrs (Void) returns (berty.network.ListAddrs) {
+  rpc GetListenAddrs (Void) returns (berty.network.metric.ListAddrs) {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc GetListenInterfaceAddrs (Void) returns (berty.network.ListAddrs) {
+  rpc GetListenInterfaceAddrs (Void) returns (berty.network.metric.ListAddrs) {
     option (gql.graphql_type) = "Query";
   };
 
-  rpc Libp2PPing (berty.network.PingReq) returns (Bool) {
+  rpc Libp2PPing (berty.network.metric.PingReq) returns (Bool) {
     option (gql.graphql_type) = "Query";
   };
 }
