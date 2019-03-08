@@ -16,6 +16,7 @@ import NavigationService from './../helpers/NavigationService'
 import { AppNavigator } from './Navigator/AppNavigator'
 import { RelayContext } from '../relay'
 import { UpdateContext } from '../update'
+import * as KeyboardContext from '../helpers/KeyboardContext'
 
 const { CoreModule } = NativeModules
 
@@ -240,55 +241,57 @@ export default class App extends PureComponent {
     } = this.state
 
     return (
-      <I18nextProvider i18n={i18n}>
-        <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-          {showAnim ? (
-            <Flex.Rows
-              align='center'
-              justify='center'
-              style={{
-                width: '100%',
-                height: '100%',
-                zIndex: 1000,
-                position: 'absolute',
-                backgroundColor: colors.white,
-              }}
-            >
-              <Animation onFinish={() => this.setState({ showAnim: false })} />
-            </Flex.Rows>
-          ) : null}
-          {!loading ? (
-            <RelayContext.Provider
-              value={{ ...relayContext, setState: this.setStateContext }}
-            >
-              <UpdateContext.Provider
-                value={{ availableUpdate, setState: this.setStateUpdate }}
+      <KeyboardContext.Provider>
+        <I18nextProvider i18n={i18n}>
+          <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
+            {showAnim ? (
+              <Flex.Rows
+                align='center'
+                justify='center'
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  zIndex: 1000,
+                  position: 'absolute',
+                  backgroundColor: colors.white,
+                }}
               >
-                <AppContainer
-                  screenProps={{
-                    deepLink,
-                    setDeepLink: deepLink => this.setDeepLink(deepLink),
-                    clearDeepLink: () => this.clearDeepLink(),
-                  }}
-                />
-                <FlashMessage position='top' />
-                <View
-                  style={{
-                    zIndex: 1,
-                    position: 'absolute',
-                    top: 30,
-                    right: 48,
-                    padding: 5,
-                  }}
+                <Animation onFinish={() => this.setState({ showAnim: false })} />
+              </Flex.Rows>
+            ) : null}
+            {!loading ? (
+              <RelayContext.Provider
+                value={{ ...relayContext, setState: this.setStateContext }}
+              >
+                <UpdateContext.Provider
+                  value={{ availableUpdate, setState: this.setStateUpdate }}
                 >
-                  <MovableView>{this.state.debugBar}</MovableView>
-                </View>
-              </UpdateContext.Provider>
-            </RelayContext.Provider>
-          ) : null}
-          {Platform.OS === 'ios' && <KeyboardSpacer />}
-        </SafeAreaView>
-      </I18nextProvider>
+                  <AppContainer
+                    screenProps={{
+                      deepLink,
+                      setDeepLink: deepLink => this.setDeepLink(deepLink),
+                      clearDeepLink: () => this.clearDeepLink(),
+                    }}
+                  />
+                  <FlashMessage position='top' />
+                  <View
+                    style={{
+                      zIndex: 1,
+                      position: 'absolute',
+                      top: 30,
+                      right: 48,
+                      padding: 5,
+                    }}
+                  >
+                    <MovableView>{this.state.debugBar}</MovableView>
+                  </View>
+                </UpdateContext.Provider>
+              </RelayContext.Provider>
+            ) : null}
+            {Platform.OS === 'ios' && <KeyboardSpacer />}
+          </SafeAreaView>
+        </I18nextProvider>
+      </KeyboardContext.Provider>
     )
   }
 }
