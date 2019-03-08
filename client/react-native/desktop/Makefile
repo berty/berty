@@ -1,7 +1,7 @@
 MAKEFILE_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 deps:
-	GOPROXY=https://goproxy.io GO111MODULE=on go mod vendor
+	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	GO111MODULE=off go get -u github.com/asticode/go-astilectron-bundler/...
 
 build:

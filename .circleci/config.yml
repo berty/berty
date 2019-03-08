@@ -6,7 +6,7 @@ references:
     environment:
       GOPATH: /go
       GOTEST_TIMEOUT: 5m
-      GOPROXY: https://goproxy.io
+      GOPROXY: https://goproxy.berty.io
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
