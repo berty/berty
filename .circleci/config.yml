@@ -6,7 +6,7 @@ references:
     environment:
       GOPATH: /go
       GOTEST_TIMEOUT: 5m
-      GOPROXY: https://goproxy.io
+      GOPROXY: https://goproxy.berty.io
       GO111MODULE: "on"
       TEST_OPTS: "-coverprofile=profile.out -covermode=count"
     docker:
@@ -337,7 +337,7 @@ jobs:
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: . $BASH_ENV; /tmp/retry -m 3 make fastlane.android.staff
+          command: . $BASH_ENV; find gomobile/vendor -name package.json -delete; /tmp/retry -m 3 make fastlane.android.staff
 
       - store_artifacts:
           path: /tmp/fl
@@ -402,7 +402,7 @@ jobs:
       - run:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 make fastlane.android.yolo
+          command: find gomobile/vendor -name package.json -delete; /tmp/retry -m 3 make fastlane.android.yolo
 
       - store_artifacts:
           path: /tmp/fl
@@ -478,6 +478,7 @@ jobs:
           command: |
             [[ ! -z "${CIRCLE_PR_NUMBER}" ]] && IOS_CUSTOM_NAME="Berty @${CIRCLE_PR_NUMBER}" make appname.ios || true
             make fastlane.setup_circle
+            find gomobile/vendor -name package.json -delete;
             /tmp/retry -m 3 make fastlane.ios.adhoc
 
       - store_artifacts:
@@ -551,6 +552,7 @@ jobs:
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             make fastlane.setup_circle
+            find gomobile/vendor -name package.json -delete;
             /tmp/retry -m 3 make fastlane.ios.house
 
       - *master_version

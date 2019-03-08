@@ -33,7 +33,7 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV GO111MODULE=on GOPROXY=https://goproxy.io
+ENV GO111MODULE=on GOPROXY=https://goproxy.berty.io
 
 WORKDIR /go/src/berty.tech/core
 

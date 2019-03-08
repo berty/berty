@@ -19,6 +19,7 @@ files:
     - 'experiment/*'
     - 'vendor/*'
     - '*.gen.*'
+    - 'core/.scripts/upgrade-libp2p.sh'
     - 'client/react-native/android/ble/logger.sh'
 fixers:
   enable: true
