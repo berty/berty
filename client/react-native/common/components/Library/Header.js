@@ -6,17 +6,18 @@ import Text from './Text'
 import { colors } from '../../constants'
 import { padding, borderBottom } from '../../styles'
 import { isRTL } from '../../i18n'
+import { withGoBack } from './BackActionProvider'
 
 const [defaultTextColor, defaultBackColor] = [colors.fakeBlack, colors.white]
 
-const HeaderButton = ({ icon, color, style, ...otherProps }) => {
+export const HeaderButton = ({ icon, color, style, ...otherProps }) => {
   return <Button icon={icon} large color={color} {...otherProps} padding />
 }
 
-export default class Header extends PureComponent {
+class Header extends PureComponent {
   render () {
     const {
-      navigation,
+      goBack,
       title,
       titleIcon,
       backBtn,
@@ -63,7 +64,7 @@ export default class Header extends PureComponent {
                   if (typeof backBtn === 'function') {
                     backBtn()
                   }
-                  navigation.goBack(null)
+                  goBack(null)
                 }}
                 flip={isRTL()}
                 justify='start'
@@ -99,4 +100,4 @@ export default class Header extends PureComponent {
   }
 }
 
-Header.HeaderButton = HeaderButton
+export default withGoBack(Header)

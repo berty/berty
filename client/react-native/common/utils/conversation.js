@@ -7,7 +7,7 @@ export default {
   infos: '',
 }
 
-export const getTitle = ({ title, members } = this.props) =>
+export const getTitle = ({ title, members }) =>
   (title && title !== '' && title) ||
   (members &&
     members

@@ -85,7 +85,7 @@ const ItemBase = fragments.Conversation(
       return (
         <Flex.Cols
           align='center'
-          onPress={() => navigation.navigate('chats/detail', { id: data.id })}
+          onPress={() => navigation.navigate({ routeName: 'chats/detail', params: data })}
           style={[{ height: 72 }, padding, borderBottom]}
         >
           <Flex.Rows size={1} align='center'>
@@ -171,13 +171,7 @@ class ListScreen extends PureComponent {
   })
 
   static onPress = navigation => {
-    navigation.navigate('chats/add', {
-      goBack: () => {
-        navigation.goBack(null)
-        const retry = navigation.getParam('retry')
-        retry && retry()
-      },
-    })
+    navigation.navigate('chats/add')
   }
 
   render () {

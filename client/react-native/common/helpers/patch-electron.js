@@ -14,12 +14,10 @@ if (Platform.OS === 'web' &&
 
   document.addEventListener('astilectron-ready',  () => {
     bridgedOpAction = (name, args) => new Promise(resolve => {
-      console.log(`Electron Bridge >>> ${name}(${args ? JSON.stringify(args) : ''})`)
       window.astilectron.sendMessage({
         name: name,
         payload: args,
       }, (response) => {
-        console.log(`Electron Bridge <<< ${name}: ${response && response.payload ? JSON.stringify(response.payload) : ''}`)
         resolve(response && response.payload)
       })
     })

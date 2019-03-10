@@ -14,6 +14,7 @@ import { Menu, Header, Text, Flex } from '../../../Library'
 import { borderBottom } from '../../../../styles'
 import { colors } from '../../../../constants'
 import withRelayContext from '../../../../helpers/withRelayContext'
+import { withGoBack } from '../../../Library/BackActionProvider'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300
@@ -22,7 +23,7 @@ var maxBufferSize = 10000
 var antispamModalOpen = false
 var antispamModalSave = false
 
-export class FilterModal extends PureComponent {
+class FilterModalBase extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -69,7 +70,7 @@ export class FilterModal extends PureComponent {
   updateCallback = () => {
     if (!antispamModalSave) {
       antispamModalSave = true
-      this.props.navigation.goBack(null)
+      this.props.goBack(null)
       maxDisplaySize = parseInt(this.newMaxDisplaySize, 10)
       maxBufferSize = parseInt(this.newMaxBufferSize, 10)
       this.props.navigation.state.params.updateConfig(this.newConfig)
@@ -337,6 +338,8 @@ class Line extends PureComponent {
     )
   }
 }
+
+export const FilterModal = withGoBack(FilterModalBase)
 
 class LogStreamWithContext extends PureComponent {
   static navigationOptions = ({ navigation }) => ({

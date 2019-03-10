@@ -142,7 +142,7 @@ class ListScreen extends Component {
         overrideDisplayStatus: '',
       })),
     })
-    this.props.navigation.replace('chats/detail', { conversation })
+    this.props.navigation.navigate('chats/detail', { conversation })
   }
 
   onSubmit = onSubmit => async () => {

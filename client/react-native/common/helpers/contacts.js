@@ -1,33 +1,13 @@
 import { NavigationActions } from 'react-navigation'
 import { Share, Platform } from 'react-native'
-import { atob, btoa } from 'b64-lite'
+import { atob } from 'b64-lite'
 import { showMessage } from 'react-native-flash-message'
 import DeviceInfo from 'react-native-device-info'
 import I18n from 'i18next'
 
 import { BASE_WEBSITE_URL } from '../constants'
 import { contact } from '../utils'
-import { mutations } from '../graphql'
 import NavigationService from './NavigationService'
-
-export const requestContact = async (
-  contactId,
-  overrideDisplayName,
-  displayName,
-  navigation,
-  errorHandler
-) => {
-  try {
-    await mutations.contactRequest.commit({
-      contactId: btoa(`contact:${contactId}`),
-      contactOverrideDisplayName: overrideDisplayName || displayName || '',
-      introText: '',
-    })
-    navigation.goBack(null)
-  } catch (err) {
-    errorHandler(err)
-  }
-}
 
 export const extractPublicKeyFromId = contactId => {
   try {

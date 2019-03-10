@@ -18,7 +18,7 @@ const SearchBar = props => (
         {
           height: 36,
           flex: 1,
-          backgroundColor: colors.grey7,
+          backgroundColor: colors.inputGrey,
           borderWidth: 0,
           borderRadius: 18,
           ...(Platform.OS === 'web' ? { outline: 'none' } : {}),

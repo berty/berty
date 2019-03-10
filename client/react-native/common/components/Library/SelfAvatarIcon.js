@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import { withNavigation } from 'react-navigation'
 
 import Avatar from './Avatar'
-import Header from './Header'
+import { HeaderButton } from './Header'
 import { colors } from '../../constants'
 import { contact } from '../../utils'
 import { withCurrentUser } from '../../utils/contact'
@@ -24,7 +24,7 @@ class SelfAvatarLink extends PureComponent {
         <Avatar data={{ ...user, id: contact.getCoreID(user.id) }} size={24} />
       </TouchableOpacity>
     ) : (
-      <Header.HeaderButton
+      <HeaderButton
         icon={'share'}
         color={colors.black}
         justify='end'
