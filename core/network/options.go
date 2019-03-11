@@ -17,10 +17,11 @@ func WithConfig(override *config.Config) config.Option {
 
 func WithDefaultOptions() config.Option {
 	return ChainOptions(
+		EnableDefaultBind(),
 		EnableDefaultBootstrap(),
 		EnablePing(),
 		EnableMDNS(),
-		EnableWS(),
+		DisableWS(),
 		EnableTCP(),
 		EnableBLE(),
 		EnableQUIC(),
@@ -140,6 +141,27 @@ func DisableDefaultBootstrap() config.Option {
 func Bootstrap(addr ...string) config.Option {
 	return func(cfg *config.Config) error {
 		cfg.Bootstrap = append(cfg.Bootstrap, addr...)
+		return nil
+	}
+}
+
+func EnableDefaultBind() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.DefaultBind = true
+		return nil
+	}
+}
+
+func DisableDefaultBind() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.DefaultBind = false
+		return nil
+	}
+}
+
+func Bind(maddr ...string) config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Bind = append(cfg.Bind, maddr...)
 		return nil
 	}
 }

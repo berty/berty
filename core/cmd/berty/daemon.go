@@ -73,7 +73,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.dhtServer, "dht-server", false, "enable dht server")
 	flags.BoolVar(&opts.ble, "ble", false, "enable ble transport")
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
-	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0", "/ip4/0.0.0.0/udp/0/quic", "/ble/00000000-0000-0000-0000-000000000000"}, "p2p listening address")
+	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{}, "p2p listening address")
 	flags.StringVar(&opts.SwarmKeyPath, "swarm-key", "", "path to a custom swarm key, only peers that use the same swarm key will be able to talk with you")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	_ = viper.BindPFlags(flags)
@@ -149,6 +149,7 @@ func daemon(opts *daemonOptions) error {
 			network.New(ctx,
 				network.WithDefaultOptions(),
 				network.WithConfig(&network_config.Config{
+					DefaultBind:      len(opts.bindP2P) == 0,
 					Bind:             opts.bindP2P,
 					MDNS:             opts.mdns,
 					DHT:              opts.dhtServer,

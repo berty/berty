@@ -58,7 +58,8 @@ var BootstrapIpfs = []string{
 type Config struct {
 	libp2p_config.Config `json:"-"`
 
-	Bind []string
+	DefaultBind bool
+	Bind        []string
 
 	MDNS bool
 	DHT  bool
@@ -90,6 +91,8 @@ type Option func(cfg *Config) error
 
 // Override override safely the current config
 func (cfg *Config) Override(override *Config) error {
+	cfg.DefaultBind = override.DefaultBind
+	cfg.Bind = override.Bind
 	cfg.MDNS = override.MDNS
 	cfg.WS = override.WS
 	cfg.TCP = override.TCP
@@ -132,11 +135,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
 	}
 
-	libp2pOpts = append(libp2pOpts, libp2p.DefaultListenAddrs)
-	if len(cfg.Bind) > 0 {
-		libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(cfg.Bind...))
-	}
-
 	// add ws transport
 	if cfg.WS {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ws.New))
@@ -145,16 +143,30 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	// add tcp transport
 	if cfg.TCP {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(tcp.NewTCPTransport))
+		if cfg.DefaultBind {
+			cfg.Bind = append(cfg.Bind, "/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0")
+		}
 	}
 
 	// add ble transport
 	if cfg.BLE {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ble.NewTransport))
+		if cfg.DefaultBind {
+			cfg.Bind = append(cfg.Bind, "/ble/00000000-0000-0000-0000-000000000000")
+		}
 	}
 
 	// add quic transport
 	if cfg.QUIC {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(quic.NewTransport))
+		if cfg.DefaultBind {
+			cfg.Bind = append(cfg.Bind, "/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic")
+		}
+	}
+
+	// add listening adresses after setup transport
+	if len(cfg.Bind) > 0 {
+		libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(cfg.Bind...))
 	}
 
 	// relay
