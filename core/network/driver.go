@@ -2,10 +2,10 @@ package network
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"io"
 	"net"
+	"reflect"
 	"sync"
 	"time"
 
@@ -13,6 +13,7 @@ import (
 	"berty.tech/core/network/config"
 	"berty.tech/core/network/helper"
 	"berty.tech/core/network/metric"
+	routing_validator "berty.tech/core/network/protocol/dht/validator"
 	"berty.tech/core/pkg/tracing"
 	ggio "github.com/gogo/protobuf/io"
 	cid "github.com/ipfs/go-cid"
@@ -24,6 +25,7 @@ import (
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	ma "github.com/multiformats/go-multiaddr"
 	mh "github.com/multiformats/go-multihash"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -208,42 +210,21 @@ func (net *Network) Emit(ctx context.Context, e *entity.Envelope) error {
 	return net.EmitTo(ctx, e.GetChannelID(), e)
 }
 
-func (net *Network) EmitTo(ctx context.Context, channel string, e *entity.Envelope) error {
-	tracer := tracing.EnterFunc(ctx, channel, e)
+func (net *Network) EmitTo(ctx context.Context, contactID string, e *entity.Envelope) error {
+	tracer := tracing.EnterFunc(ctx, contactID, e)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	logger().Debug("looking for peers", zap.String("channel", channel))
-	c, err := net.createCid(channel)
+	peerInfo, err := routing_validator.ContactIDToPeerInfo(ctx, net.host.Routing, contactID)
 	if err != nil {
-		return err
+		return errors.Wrap(err, fmt.Sprintf("EmitTo failed during contactID translation (%s)", contactID))
 	}
-
-	ss := net.host.Routing.FindProvidersAsync(ctx, c, 100)
-
 	// @TODO: we need to split this, and let the node do the logic to try
 	// back if the send fail with the given peer
 
-	logger().Debug("found peers", zap.String("channel", channel), zap.Int("number", len(ss)))
-	ok := false
-	for pi := range ss {
-		if pi.ID == "" {
-			break
-		}
-		logger().Debug(fmt.Sprintf("send to peer: %+v", pi))
-
-		if err := net.SendTo(ctx, pi, e); err != nil {
-			logger().Warn("sendTo", zap.Error(err))
-			continue
-		}
-
-		ok = true
-		break
-	}
-
-	// wait until all goroutines are done
-	if !ok {
-		return fmt.Errorf("unable to send evenlope to at last one peer")
+	if err = net.SendTo(ctx, peerInfo, e); err != nil {
+		logger().Warn("sendTo", zap.Error(err))
+		return err
 	}
 
 	return nil
@@ -297,43 +278,33 @@ func (net *Network) handleEnvelope(s inet.Stream) {
 
 }
 
-func (net *Network) FindProvidersAndWait(ctx context.Context, id string, cache bool) ([]pstore.PeerInfo, error) {
-	c, err := net.createCid(id)
-	if err != nil {
-		return nil, err
-	}
-
-	ctx, cancel := context.WithTimeout(ctx, time.Second*3)
-	defer cancel()
-
-	piChan := net.host.Routing.FindProvidersAsync(ctx, c, 10)
-
-	piSlice := []pstore.PeerInfo{}
-	for {
-		select {
-		case pi := <-piChan:
-			if pi.ID == "" {
-				return piSlice, nil
+func (net *Network) Join(ctx context.Context, contactID string) error {
+	go func() {
+		prevPeerInfo := pstore.PeerInfo{}
+		for {
+			duration := 1 * time.Minute
+			currPeerInfo := net.host.Peerstore().PeerInfo(net.host.ID())
+			if !reflect.DeepEqual(prevPeerInfo, currPeerInfo) {
+				err := routing_validator.PutTranslateRecord(ctx, net.host.Routing, contactID, currPeerInfo)
+				if err != nil {
+					logger().Warn(errors.Wrap(err, "join failed").Error())
+					duration = 5 * time.Second
+				} else {
+					logger().Debug("translate record updated successfully")
+					prevPeerInfo = currPeerInfo
+				}
 			}
-
-			piSlice = append(piSlice, pi)
-		case <-ctx.Done():
-			if len(piSlice) == 0 {
-				return nil, errors.New("no providers found")
+			select {
+			case <-time.After(duration):
+				continue
+			case <-ctx.Done():
+				logger().Debug("driver shutdown: translation record updater ended", zap.Error(ctx.Err()))
+				return
 			}
-			return piSlice, nil
 		}
-	}
+	}()
 
-}
-
-func (net *Network) Join(ctx context.Context, id string) error {
-	c, err := net.createCid(id)
-	if err != nil {
-		return err
-	}
-
-	return net.host.Routing.Provide(ctx, c, true)
+	return nil
 }
 
 func (net *Network) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) (*entity.Void, error)) {

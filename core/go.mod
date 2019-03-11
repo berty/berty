@@ -54,6 +54,7 @@ require (
 	github.com/libp2p/go-libp2p-protocol v0.0.1
 	github.com/libp2p/go-libp2p-pubsub v0.0.1 // indirect
 	github.com/libp2p/go-libp2p-quic-transport v0.0.1
+	github.com/libp2p/go-libp2p-record v0.0.1
 	github.com/libp2p/go-libp2p-routing v0.0.1
 	github.com/libp2p/go-libp2p-swarm v0.0.1
 	github.com/libp2p/go-libp2p-transport v0.0.4

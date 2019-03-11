@@ -1,4 +1,4 @@
-package dhtcskv
+package validator
 
 import (
 	"context"
@@ -10,16 +10,16 @@ import (
 	"encoding/hex"
 	"io"
 
-	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	record "github.com/libp2p/go-libp2p-record"
+	routing "github.com/libp2p/go-libp2p-routing"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
-type translateValidator struct{}
+type TranslateValidator struct{}
 
-func (translateValidator) Validate(key string, value []byte) error {
+func (TranslateValidator) Validate(key string, value []byte) error {
 	namespace, key, err := record.SplitKey(key)
 	if err != nil {
 		return err
@@ -44,7 +44,7 @@ func (translateValidator) Validate(key string, value []byte) error {
 	return nil
 }
 
-func (translateValidator) Select(key string, vals [][]byte) (int, error) {
+func (TranslateValidator) Select(key string, vals [][]byte) (int, error) {
 	return 0, nil
 }
 
@@ -122,10 +122,10 @@ func convertFromTranslateRecord(contactID string, value []byte) (peerInfo pstore
 	return peerInfo, nil
 }
 
-func ContactIDToPeerInfo(ctx context.Context, dhtCskv *dht.IpfsDHT, contactID string) (pstore.PeerInfo, error) {
+func ContactIDToPeerInfo(ctx context.Context, r routing.IpfsRouting, contactID string) (pstore.PeerInfo, error) {
 	logger().Debug("looking for peerInfo", zap.String("contactID", contactID))
 
-	value, err := GetTranslateRecord(ctx, dhtCskv, contactID)
+	value, err := GetTranslateRecord(ctx, r, contactID)
 	if err != nil {
 		return pstore.PeerInfo{}, err
 	}
@@ -139,11 +139,11 @@ func ContactIDToPeerInfo(ctx context.Context, dhtCskv *dht.IpfsDHT, contactID st
 	return peerInfo, nil
 }
 
-func GetTranslateRecord(ctx context.Context, dhtCskv *dht.IpfsDHT, contactID string) (value []byte, err error) {
+func GetTranslateRecord(ctx context.Context, r routing.IpfsRouting, contactID string) (value []byte, err error) {
 	hash := sha256.Sum256([]byte(contactID))
 	key := "/bertyTranslate/" + hex.EncodeToString(hash[:])
 
-	value, err = GetValue(ctx, dhtCskv, key)
+	value, err = r.GetValue(ctx, key)
 	if err != nil {
 		return []byte{}, err
 	}
@@ -151,11 +151,11 @@ func GetTranslateRecord(ctx context.Context, dhtCskv *dht.IpfsDHT, contactID str
 	return value, nil
 }
 
-func PutTranslateRecord(ctx context.Context, dhtCskv *dht.IpfsDHT, contactID string, peerInfo pstore.PeerInfo) error {
+func PutTranslateRecord(ctx context.Context, r routing.IpfsRouting, contactID string, peerInfo pstore.PeerInfo) error {
 	key, value, err := convertToTranslateRecord(contactID, peerInfo)
 	if err != nil {
 		return err
 	}
 
-	return PutValue(ctx, dhtCskv, key, value)
+	return r.PutValue(ctx, key, value)
 }

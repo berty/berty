@@ -826,9 +826,7 @@ func TestAliasesFlow(t *testing.T) {
 }
 
 func setupP2PNetwork(ctx context.Context) (*p2pnet.Network, error) {
-	return p2pnet.New(ctx,
-		p2pnet.WithDefaultTestOptions(),
-	)
+	return p2pnet.New(ctx, p2pnet.WithDefaultTestOptions())
 }
 
 func getBootstrap(ctx context.Context, n *p2pnet.Network) []string {

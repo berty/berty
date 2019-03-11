@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"berty.tech/core/network"
+	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/tracing"
 )
 
@@ -13,17 +14,17 @@ func WithNetworkDriver(driver network.Driver) NewNodeOption {
 	}
 }
 
-func WithNetworkMetrics(metrics network.Metrics) NewNodeOption {
+func WithNetworkMetric(metrics network_metric.Metric) NewNodeOption {
 	return func(n *Node) {
-		n.networkMetrics = metrics
+		n.networkMetric = metrics
 	}
 }
 
-func (n *Node) UseNetworkMetrics(ctx context.Context, metrics network.Metrics) {
+func (n *Node) UseNetworkMetric(ctx context.Context, metrics network_metric.Metric) {
 	tracer := tracing.EnterFunc(ctx, metrics)
 	defer tracer.Finish()
 
-	n.networkMetrics = metrics
+	n.networkMetric = metrics
 }
 
 func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) error {
@@ -32,16 +33,12 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	ctx = tracer.Context()
 
 	// FIXME: use a locking system
-
 	n.networkDriver = driver
 
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
 
-	// FIXME: We need to refactor the way we update translate record
-	// For now, Join() is a goroutine that check every minute if peerInfo needs to be updated
-	// We'll need to call Join() only when peerInfo change or when time-based translate record rotation will be implemented
-	n.networkDriver.Join(ctx, n.UserID())
+	_ = n.networkDriver.Join(ctx, n.UserID())
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device
