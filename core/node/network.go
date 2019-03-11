@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"time"
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network"
@@ -40,15 +41,16 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
 
-	// @FIXME: dont do that in a goroutine
-	go func() {
-		if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {
-			logger().Error("failed to join user channel",
-				zap.String("id", n.UserID()),
-				zap.Error(err),
-			)
-		}
-	}()
+	// @FIXME: dont do that in a goroutine, remove the sleep
+
+	if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {
+		logger().Error("failed to join user channel",
+			zap.String("id", n.UserID()),
+			zap.Error(err),
+		)
+	}
+
+	time.Sleep(time.Second)
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device

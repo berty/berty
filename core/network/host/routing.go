@@ -35,6 +35,7 @@ type BertyRouting struct {
 	cready  chan struct{}
 	ready   bool
 	tstart  time.Time
+	server  bool
 }
 
 func NewBertyRouting(ctx context.Context, h host.Host, dhtSvc bool) (*BertyRouting, error) {
@@ -51,6 +52,7 @@ func NewBertyRouting(ctx context.Context, h host.Host, dhtSvc bool) (*BertyRouti
 	}
 
 	br := &BertyRouting{
+		server: dhtSvc,
 		dht:    dht,
 		cready: make(chan struct{}, 1),
 		tstart: time.Now(),
@@ -125,6 +127,7 @@ func (br *BertyRouting) Provide(ctx context.Context, id cid.Cid, brd bool) error
 		logger().Error("routing isn't ready", zap.Error(err))
 		return err
 	}
+
 	return br.dht.Provide(ctx, id, brd)
 }
 

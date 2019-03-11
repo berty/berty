@@ -152,7 +152,7 @@ func daemon(opts *daemonOptions) error {
 					DefaultBind:      len(opts.bindP2P) == 0,
 					Bind:             opts.bindP2P,
 					MDNS:             opts.mdns,
-					DHT:              opts.dhtServer,
+					DHTServer:        opts.dhtServer,
 					WS:               true,
 					TCP:              true,
 					BLE:              opts.ble,

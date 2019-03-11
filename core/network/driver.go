@@ -109,13 +109,13 @@ func (net *Network) Bootstrap(ctx context.Context, bsync bool, addrs ...string) 
 	var err error
 	for _, addr := range addrs {
 		err = nil
-		go func() {
+		go func(addr string) {
 			wg.Add(1)
 			if err = net.BootstrapPeer(ctx, addr); err != nil {
 				logger().Error("bootstrap", zap.Error(err))
 			}
 			wg.Done()
-		}()
+		}(addr)
 	}
 
 	if bsync {
@@ -140,11 +140,9 @@ func (net *Network) BootstrapPeer(ctx context.Context, bootstrapAddr string) err
 	logger().Debug("Bootstraping peer", zap.String("addr", bootstrapAddr))
 	pinfo, err := net.getPeerInfo(ctx, bootstrapAddr)
 	if err != nil {
-		logger().Error("Bootstraping peer", zap.String("error", err.Error()))
 		return err
 	}
 
-	logger().Debug("Bootstraping peer", zap.String("peer info", fmt.Sprintf("%+v", pinfo)))
 	// Even if we can't connect, bootstrap peers are trusted peers, add it to
 	// the peerstore so we can connect later in case of failure
 	net.host.Peerstore().AddAddrs(pinfo.ID, pinfo.Addrs, pstore.PermanentAddrTTL)
@@ -152,6 +150,7 @@ func (net *Network) BootstrapPeer(ctx context.Context, bootstrapAddr string) err
 		return err
 	}
 
+	logger().Debug("Bootstrap success", zap.String("peer info", fmt.Sprintf("%+v", pinfo)))
 	net.host.ConnManager().TagPeer(pinfo.ID, "bootstrap", 2)
 	return nil
 }

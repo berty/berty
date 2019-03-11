@@ -67,8 +67,8 @@ type Config struct {
 	DefaultBind bool
 	Bind        []string
 
-	MDNS bool
-	DHT  bool
+	MDNS      bool
+	DHTServer bool
 
 	// transport
 	WS   bool
@@ -102,7 +102,7 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.MDNS = override.MDNS
 	cfg.WS = override.WS
 	cfg.TCP = override.TCP
-	cfg.DHT = override.DHT
+	cfg.DHTServer = override.DHTServer
 	cfg.BLE = override.BLE
 	cfg.QUIC = override.QUIC
 	cfg.DefaultBootstrap = override.DefaultBootstrap
@@ -311,7 +311,7 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 
 	// Configure routing
-	h.Routing, err = host.NewBertyRouting(ctx, h, cfg.DHT)
+	h.Routing, err = host.NewBertyRouting(ctx, h, cfg.DHTServer)
 	if err != nil {
 		h.Close()
 		return nil, err
