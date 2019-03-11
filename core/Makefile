@@ -5,25 +5,14 @@ GOPATH ?= $(HOME)/go
 BIN ?= $(GOPATH)/bin/berty
 BUILD_MODE ?= dev
 SOURCES = $(call rwildcard, ./, *.go)
-OUR_SOURCES = $(filter-out $(call rwildcard,vendor//, *.go),$(SOURCES))
-PROTOS = $(call rwildcard, ./, *.proto)
-OUR_PROTOS = $(filter-out $(call rwildcard,vendor//, *.proto),$(PROTOS))
+OUR_SOURCES = $(filter-out $(call rwildcard,./vendor/, *.go),$(SOURCES))
+PROTOS = $(strip $(call rwildcard, ./, *.proto))
+OUR_PROTOS = $(filter-out $(call rwildcard,./vendor/, *.proto),$(PROTOS))
 PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
-GENERATED_FILES = \
-	$(call rwildcard, $(CODE_PATHS), *.validate.gen.go) \
-	$(call rwildcard, $(CODE_PATHS), *.service.gen.go) \
-	$(call rwildcard, $(CODE_PATHS), *generated.gen.go) \
-	$(call rwildcard, $(CODE_PATHS), *kind.gen.go) \
-	$(call rwildcard, $(CODE_PATHS), *.pb.go) \
-	$(call rwildcard, $(CODE_PATHS), *.gen.js) \
-	$(call rwildcard, $(CODE_PATHS), *.gen.graphql)
-GENERATION_TARGETS = \
-	.kind.generated \
-	.client.generated \
-	.pb.generated \
-	.gql.generated
-
+GENERATED_PATTERNS = %.validate.gen.go %.service.gen.go %generated.gen.go %kind.gen.go %.pb.go %.gen.js %.gen.graphql
+GENERATED_FILES = $(filter $(GENERATED_PATTERNS),$(filter-out $(call rwildcard ./vendor/,*),$(call rwildcard,./,*)))
+GENERATION_TARGETS = .kind.generated .client.generated .pb.generated .gql.generated
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= GO111MODULE=on GOPROXY=https://goproxy.berty.io CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
@@ -34,7 +23,6 @@ GIT_COMMIT_DATE ?= $(shell git show -s --format=%ct $(GIT_SHA))
 GO_ROOT_PKG ?= berty.tech/core
 EXT_LDFLAGS ?= -ldflags "-X $(GO_ROOT_PKG).GitSha=$(GIT_SHA) -X $(GO_ROOT_PKG).GitTag=$(GIT_TAG) -X $(GO_ROOT_PKG).GitBranch=$(GIT_BRANCH) -X $(GO_ROOT_PKG).BuildMode=$(BUILD_MODE) -X $(GO_ROOT_PKG).commitDate=$(GIT_COMMIT_DATE)"
 RUN_DAEMON_OPTS ?= --log-level=debug --notification
-
 TEST_PATHS ?= ./...
 TEST_OPTS ?= -v
 TEST_TIMEOUT ?= 3m
@@ -142,19 +130,6 @@ _ci_prepare:
 	touch $(PROTOS) $(SOURCES)
 	sleep 1
 	touch .generated $(GENERATION_TARGETS)
-
-.PHONY: dev-deps
-dev-deps:
-	go get -u -v \
-		github.com/gogo/protobuf/proto \
-		github.com/gogo/protobuf/protoc-gen-gogo \
-		github.com/gogo/protobuf/gogoproto \
-		github.com/gogo/protobuf/protoc-gen-gofast \
-		github.com/gogo/protobuf/jsonpb \
-		moul/protoc-gen-gotemplate \
-		golang.org/x/tools/cmd/goimports \
-		github.com/99designs/gqlgen \
-		github.com/99designs/gorunpkg
 
 ##
 ## file-based rules
