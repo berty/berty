@@ -5,16 +5,6 @@ package core
 // Initial configs will be used to set default settings in state DB
 // (when the app has never been launched before)
 var (
-	initialNetConf = networkConfig{
-		DefaultTransport:   true,
-		BluetoothTransport: false,
-		QuicTransport:      true,
-		DefaultBootstrap:   true,
-		CustomBootstrap:    []string{},
-		MDNS:               false,
-		Relay:              false,
-	}
-
 	initialBotMode   = false
 	initiallocalGRPC = false
 )

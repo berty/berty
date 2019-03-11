@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"berty.tech/core/entity"
+	"berty.tech/core/network/config"
 	"berty.tech/core/network/metric"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 )
@@ -33,6 +34,12 @@ type Driver interface {
 
 	// Return metric interface
 	Metric() metric.Metric
+
+	// Return current config
+	Config() *config.Config
+
+	// Update update current network with config
+	Update(context.Context, ...config.Option) error
 
 	// Close cleanups things
 	Close(context.Context) error

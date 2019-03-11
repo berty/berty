@@ -55,6 +55,12 @@ var BootstrapIpfs = []string{
 	"/ip4/178.62.158.247/tcp/4001/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd",
 }
 
+var DefaultBind = map[string][]string{
+	"tcp":  []string{"/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0"},
+	"ble":  []string{"/ble/00000000-0000-0000-0000-000000000000"},
+	"quic": []string{"/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic"},
+}
+
 type Config struct {
 	libp2p_config.Config `json:"-"`
 
@@ -131,10 +137,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		}
 	}
 
-	if cfg.DefaultBootstrap {
-		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
-	}
-
 	// add ws transport
 	if cfg.WS {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ws.New))
@@ -144,7 +146,7 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	if cfg.TCP {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(tcp.NewTCPTransport))
 		if cfg.DefaultBind {
-			cfg.Bind = append(cfg.Bind, "/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0")
+			libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(DefaultBind["tcp"]...))
 		}
 	}
 
@@ -152,7 +154,7 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	if cfg.BLE {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ble.NewTransport))
 		if cfg.DefaultBind {
-			cfg.Bind = append(cfg.Bind, "/ble/00000000-0000-0000-0000-000000000000")
+			libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(DefaultBind["ble"]...))
 		}
 	}
 
@@ -160,7 +162,7 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	if cfg.QUIC {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(quic.NewTransport))
 		if cfg.DefaultBind {
-			cfg.Bind = append(cfg.Bind, "/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic")
+			libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(DefaultBind["quic"]...))
 		}
 	}
 

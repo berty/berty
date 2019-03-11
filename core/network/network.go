@@ -67,7 +67,11 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	// bootstrap default peers
 	// TOOD: infinite bootstrap + don't permit routing to provide when no peers are discovered
 	for {
-		if err := net.Bootstrap(ctx, true, net.config.Bootstrap...); err != nil {
+		bootstrap := net.config.Bootstrap
+		if net.config.DefaultBootstrap {
+			bootstrap = append(config.DefaultBootstrap, bootstrap...)
+		}
+		if err := net.Bootstrap(ctx, true, bootstrap...); err != nil {
 			logger().Error(err.Error())
 			time.Sleep(time.Second)
 			continue

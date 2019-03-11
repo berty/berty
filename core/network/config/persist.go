@@ -15,13 +15,14 @@ func getPersistFilePath() string {
 func (cfg *Config) ApplyPersistConfig() error {
 	data, err := ioutil.ReadFile(getPersistFilePath())
 	if err != nil {
-		return err
+		data = []byte{}
 	}
 	if len(data) == 0 {
 		return nil
 	}
 	override := &Config{}
 	if err := json.Unmarshal(data, override); err != nil {
+		logger().Error("network-config.json is corrupted")
 		return err
 	}
 	return cfg.Override(override)
