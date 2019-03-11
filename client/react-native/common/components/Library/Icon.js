@@ -1,4 +1,4 @@
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import { createIconSetFromFontello } from 'react-native-vector-icons'
 import IconAwesome from 'react-native-vector-icons/dist/FontAwesome'
 import IconFeather from 'react-native-vector-icons/dist/Feather'
@@ -67,7 +67,12 @@ const IconBadge = props => (
             justifyContent: 'center',
             alignItems: 'center',
           }}
-        />
+        >
+          {props.value !== null
+            ? (<Text>{props.value}</Text>)
+            : null
+          }
+        </View>
       ) : null}
   </View>
 )
