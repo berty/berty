@@ -62,6 +62,8 @@ require (
 	github.com/libp2p/go-reuseport v0.0.1
 	github.com/libp2p/go-reuseport-transport v0.0.1
 	github.com/libp2p/go-stream-muxer v0.0.1
+	github.com/libp2p/go-tcp-transport v0.0.1
+	github.com/libp2p/go-ws-transport v0.0.1
 	github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43
 	github.com/maruel/ut v1.0.0 // indirect
 	github.com/multiformats/go-multiaddr v0.0.1

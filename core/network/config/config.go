@@ -56,7 +56,7 @@ var BootstrapIpfs = []string{
 }
 
 type Config struct {
-	libp2p_config.Config
+	libp2p_config.Config `json:"-"`
 
 	Bind []string
 
@@ -82,35 +82,60 @@ type Config struct {
 
 	Identity string
 
-	routing *host.BertyRouting // needed to get it from berty host
+	Persist         bool `json:"-"`
+	OverridePersist bool `json:"-"` // override persist config when apply
 }
 
 type Option func(cfg *Config) error
 
+// Override override safely the current config
+func (cfg *Config) Override(override *Config) error {
+	cfg.MDNS = override.MDNS
+	cfg.WS = override.WS
+	cfg.TCP = override.TCP
+	cfg.DHT = override.DHT
+	cfg.BLE = override.BLE
+	cfg.QUIC = override.QUIC
+	cfg.DefaultBootstrap = override.DefaultBootstrap
+	cfg.Bootstrap = override.Bootstrap
+	cfg.Ping = override.Ping
+	cfg.HOP = override.HOP
+	cfg.Identity = override.Identity
+	cfg.SwarmKey = override.SwarmKey
+	return nil
+}
+
 // Apply applies the given options to the config, returning the first error
 // encountered (if any).
 func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
+	libp2pOpts := []libp2p_config.Option{}
+
 	for _, opt := range opts {
 		if err := opt(cfg); err != nil {
 			return err
 		}
 	}
 
-	libp2pOpts := []libp2p_config.Option{}
+	if cfg.OverridePersist {
+		if err := cfg.OverridePersistConfig(); err != nil {
+			return err
+		}
+	}
 
-	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
+	if cfg.Persist {
+		if err := cfg.ApplyPersistConfig(); err != nil {
+			return err
+		}
+	}
+
 	if cfg.DefaultBootstrap {
 		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
 	}
-	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
 
 	libp2pOpts = append(libp2pOpts, libp2p.DefaultListenAddrs)
 	if len(cfg.Bind) > 0 {
 		libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(cfg.Bind...))
 	}
-
-	// transport
-	libp2pOpts = append(libp2pOpts, libp2p.DefaultTransports)
 
 	// add ws transport
 	if cfg.WS {

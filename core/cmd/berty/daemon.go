@@ -152,6 +152,7 @@ func daemon(opts *daemonOptions) error {
 					Bind:             opts.bindP2P,
 					MDNS:             opts.mdns,
 					DHT:              opts.dhtServer,
+					WS:               true,
 					TCP:              true,
 					BLE:              opts.ble,
 					QUIC:             true,
@@ -162,6 +163,8 @@ func daemon(opts *daemonOptions) error {
 					HOP:              opts.hop,
 					SwarmKey:         swarmKey,
 					Identity:         opts.identity,
+					Persist:          false,
+					OverridePersist:  false,
 				}),
 			),
 		))

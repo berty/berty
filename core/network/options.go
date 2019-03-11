@@ -11,19 +11,7 @@ import (
 // WithConfig
 func WithConfig(override *config.Config) config.Option {
 	return func(cfg *config.Config) error {
-		cfg.MDNS = override.MDNS
-		cfg.WS = override.WS
-		cfg.TCP = override.TCP
-		cfg.DHT = override.DHT
-		cfg.BLE = override.BLE
-		cfg.QUIC = override.QUIC
-		cfg.DefaultBootstrap = override.DefaultBootstrap
-		cfg.Bootstrap = override.Bootstrap
-		cfg.Ping = override.Ping
-		cfg.HOP = override.HOP
-		cfg.Identity = override.Identity
-		cfg.SwarmKey = override.SwarmKey
-		return nil
+		return cfg.Override(override)
 	}
 }
 
@@ -40,6 +28,7 @@ func WithDefaultOptions() config.Option {
 		DisableDHT(),
 		EnableMetric(),
 		DisableHOP(),
+		DisablePersistConfig(),
 	)
 }
 
@@ -48,7 +37,7 @@ func WithDefaultMobileOptions() config.Option {
 		WithDefaultOptions(),
 		DisableDHT(),
 		DisableHOP(),
-		// ...
+		EnablePersistConfig(),
 	)
 }
 
@@ -62,6 +51,28 @@ func WithDefaultRelayOptions() config.Option {
 }
 
 // Custom options
+
+func EnablePersistConfig() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Persist = true
+		return nil
+	}
+}
+
+func OverridePersistConfig() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.OverridePersist = true
+		return nil
+	}
+}
+
+func DisablePersistConfig() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Persist = false
+		cfg.OverridePersist = false
+		return nil
+	}
+}
 
 func WithIdentity(identity string) config.Option {
 	return func(cfg *config.Config) error {
