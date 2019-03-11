@@ -24,6 +24,8 @@ import (
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
+	tcp "github.com/libp2p/go-tcp-transport"
+	ws "github.com/libp2p/go-ws-transport"
 )
 
 const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
@@ -61,6 +63,9 @@ type Config struct {
 	MDNS bool
 	DHT  bool
 
+	// transport
+	WS   bool
+	TCP  bool
 	BLE  bool
 	QUIC bool
 
@@ -106,6 +111,16 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 
 	// transport
 	libp2pOpts = append(libp2pOpts, libp2p.DefaultTransports)
+
+	// add ws transport
+	if cfg.WS {
+		libp2pOpts = append(libp2pOpts, libp2p.Transport(ws.New))
+	}
+
+	// add tcp transport
+	if cfg.TCP {
+		libp2pOpts = append(libp2pOpts, libp2p.Transport(tcp.NewTCPTransport))
+	}
 
 	// add ble transport
 	if cfg.BLE {

@@ -152,6 +152,7 @@ func daemon(opts *daemonOptions) error {
 					Bind:             opts.bindP2P,
 					MDNS:             opts.mdns,
 					DHT:              opts.dhtServer,
+					TCP:              true,
 					BLE:              opts.ble,
 					QUIC:             true,
 					Metric:           true,

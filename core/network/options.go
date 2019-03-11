@@ -12,6 +12,8 @@ import (
 func WithConfig(override *config.Config) config.Option {
 	return func(cfg *config.Config) error {
 		cfg.MDNS = override.MDNS
+		cfg.WS = override.WS
+		cfg.TCP = override.TCP
 		cfg.DHT = override.DHT
 		cfg.BLE = override.BLE
 		cfg.QUIC = override.QUIC
@@ -30,6 +32,8 @@ func WithDefaultOptions() config.Option {
 		EnableDefaultBootstrap(),
 		EnablePing(),
 		EnableMDNS(),
+		EnableWS(),
+		EnableTCP(),
 		EnableBLE(),
 		EnableQUIC(),
 		EnablePrivateNetwork(config.DefaultSwarmKey),
@@ -167,6 +171,34 @@ func EnableMetric() config.Option {
 func DisableMetric() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.Metric = false
+		return nil
+	}
+}
+
+func EnableWS() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.WS = true
+		return nil
+	}
+}
+
+func DisableWS() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.WS = false
+		return nil
+	}
+}
+
+func EnableTCP() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.TCP = true
+		return nil
+	}
+}
+
+func DisableTCP() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.TCP = false
 		return nil
 	}
 }
