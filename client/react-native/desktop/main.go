@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"berty.tech/client/react-native/desktop/coreinterface"
 	"berty.tech/core/pkg/logmanager"
 	"go.uber.org/zap"
 
@@ -75,6 +76,7 @@ func main() {
 					{Role: astilectron.MenuItemRoleSelectAll},
 				},
 			}},
+		OnWait: coreinterface.SetNotificationDriver,
 		Windows: []*bootstrap.Window{{
 			Homepage:       homepageUrl,
 			MessageHandler: handleMessages,

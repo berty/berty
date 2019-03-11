@@ -4,20 +4,12 @@ import (
 	"errors"
 	"fmt"
 
+	"berty.tech/client/react-native/gomobile/core"
 	"go.uber.org/zap"
 
-	"berty.tech/core/pkg/notification"
-
-	"berty.tech/client/react-native/gomobile/core"
-
 	"berty.tech/core/pkg/deviceinfo"
-	"github.com/pkg/browser"
 	"github.com/shibukawa/configdir"
 )
-
-type DesktopOptions struct {
-	nickname string
-}
 
 func getStorageDir() (string, error) {
 	storagePath := configdir.New("Berty Technologies", "Berty")
@@ -43,7 +35,6 @@ func Initialize() (interface{}, error) {
 		return nil, err
 	}
 
-	core.NotificationDriver.Native = NewDesktopNotifications()
 	return nil, nil
 }
 
@@ -121,41 +112,6 @@ func SetCurrentRoute(route string) {
 	core.DeviceInfo.SetAppRoute(route)
 }
 
-type DesktopNotifications struct {
-	instance notification.Driver
-}
-
-func NewDesktopNotifications() *DesktopNotifications {
-	return &DesktopNotifications{
-		instance: notification.NewDesktopNotification(),
-	}
-}
-
-func (d *DesktopNotifications) Display(title, body, icon, sound, url string) error {
-	return d.instance.Display(&notification.Payload{
-		Title:    title,
-		Body:     body,
-		Icon:     icon,
-		Sound:    sound,
-		DeepLink: url,
-	})
-}
-
-func (d *DesktopNotifications) Register() error {
-	// TODO:
-	return nil
-}
-
-func (d *DesktopNotifications) Unregister() error {
-	// TODO:
-	return nil
-}
-
-func (d *DesktopNotifications) RefreshToken() error {
-	// TODO:
-	return nil
-}
-
 type CliLogger struct {
 }
 
@@ -168,5 +124,4 @@ func (*CliLogger) Log(level, namespace, message string) error {
 	return nil
 }
 
-var _ core.NativeNotificationDriver = &DesktopNotifications{}
 var _ core.NativeLogger = &CliLogger{}
