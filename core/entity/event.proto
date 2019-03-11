@@ -15,9 +15,9 @@ message Event {
   // This field is required by gorm.
   string id = 1 [(gql.graphql_id) = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID"];
 
-  // Sender is the ID of the sender.
+  // SourceDeviceID is the ID of the source's device.
   // this field is a member of the composite primary key to avoid id collisions.
-  string sender_id = 2 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "SenderID"];
+  string source_device_id = 2 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "SourceDeviceID"];
 
   // CreatedAt is set to current date when initializing a new Event object.
   // This field is required by gorm.
@@ -33,21 +33,25 @@ message Event {
   // ReceivedAt is set to current date just after receiving the event.
   google.protobuf.Timestamp received_at = 7 [(gogoproto.stdtime) = true];
 
-  // AckedAt is set to current date just after receiving a `Ack` event.
+  // AckedAt is set to current date just after receiving an `Ack` event.
   google.protobuf.Timestamp acked_at = 8 [(gogoproto.stdtime) = true];
 
-  // Direction is sent to Outgoing by the sender and to Incoming by the receiver.
+  // Direction is set to Outgoing by the source and to Incoming by the destination.
   Direction direction = 9 [(validate.int_gt) = 0];
 
-  // SenderAPIVersion is set by the sender when creating the message to be sent.
-  uint32 sender_api_version = 10 [(gogoproto.customname) = "SenderAPIVersion"];
+  // SourceAPIVersion is set by the source when creating the message to be sent.
+  // this field can be used;
+  //   - by the destination to check for compatibility issues
+  //   - by everyone when fetching an old event in database to apply local migrations
+  uint32 api_version = 10 [(gogoproto.customname) = "APIVersion"];
 
-  // ReceiverAPIVersion is set by the receiver when receiving a message.
-  // this field may be useful to apply local migrations when processing old events stored in db.
-  uint32 receiver_api_version = 11 [(gogoproto.customname) = "ReceiverAPIVersion"];
+  // // DestinationAPIVersion is set by the destination when receiving a message.
+  // // this field may be useful to apply local migrations when processing old events stored in db.
+  // uint32 destination_api_version = 11 [(gogoproto.customname) = "DestinationAPIVersion"];
+  reserved 11; // FIXME: remove completely this paragraph soon
 
-  // Receiver is the ID of the receiver.
-  string receiver_id = 12 [(gogoproto.customname) = "ReceiverID"];
+  // DestinationDeviceID is the ID of the destination.
+  string destination_device_id = 12 [(gogoproto.customname) = "DestinationDeviceID"];
 
   // Kind is an enum defining the event type.
   entity.Kind kind = 13 [(validate.int_gt) = 0];
@@ -58,26 +62,101 @@ message Event {
   // ConversationID needs to be set if the event belongs to a conversation.
   string conversation_id = 15 [(gql.graphql_id) = true, (gogoproto.customname) = "ConversationID"];
 
-  // SeenAt is set to the date when the event has been displayed on the user's screen
+  // SeenAt is set to the date when the event has been displayed on the user's screen.
   google.protobuf.Timestamp seen_at = 16 [(gogoproto.stdtime) = true];
 
-  // Additional metadata
+  // AckStatus is aggregated from the different Dispatch events.
+  AckStatus ack_status = 17 [(validate.int_gt) = 0];
+
+  // Dispatches represent each target's dispatch/sending state.
+  // this field should only be set for outgoing events.
+  repeated EventDispatch dispatches = 18;
+
+  // SourceContactID is the ID of the source.
+  string source_contact_id = 19 [(gogoproto.customname) = "SourceContactID"];
+
+  // Metadata represents additional metadata and is not stored in database
   repeated MetadataKeyValue metadata = 99 [(gogoproto.moretags) = "gorm:\"-\""];
 
   //
   // enums
   //
+  enum AckStatus {
+    UnknownAckStatus = 0;
+
+    // NotAcked is set default status that should be set directly at event creation.
+    NotAcked = 1;
+
+    // AckedAtLeastOnce is set on first received Ack event.
+    AckedAtLeastOnce = 2;
+
+    // AckedByAllContact is set when at least one device of each contact sent an Ack event.
+    AckedByAllContacts = 3;
+
+    // AckedByAllDevices is set when every device of every contact sent an Ack event.
+    AckedByAllDevices = 4;
+  }
+
+  enum SeenStatus {
+    UnknownSeenStatus = 0;
+
+    // NotSeen is set at event creation.
+    NotSeen = 1;
+
+    // SeenAtLeastOnce is set on first received Seen event.
+    SeenAtLeastOnce = 2;
+
+    // SeenByAllContact is set when at least one device of each contact sent a Seen event.
+    SeenByAllContacts = 3;
+  }
+
   enum Direction {
     UnknownDirection = 0;
 
-    // Incoming is the value for events created by peers, should be set by the receiver when receiving an event.
+    // Incoming is the value for events created by peers, should be set by the destination when receiving an event.
     Incoming = 1;
 
-    // Outgoing is the value for locally-created events, should be set by the sender when creating an event.
+    // Outgoing is the value for locally-created events, should be set by the source when creating an event.
     Outgoing = 2;
 
-    // Node is the value for local events, see ./core/api/node/kind.proto
+    // Node is the value for local events, see ./core/api/node/kind.proto.
     Node = 99;
+  }
+}
+
+// EventDispatch represents one sending of an Event to a specific Device
+// The primary key is a composite key of EventID+DeviceID
+message EventDispatch {
+  // EventID is the ID of the event
+  string event_id = 1 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "EventID"];
+
+  // DeviceID is the ID of the destination device
+  string device_id = 2 [(gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "DeviceID"];
+
+  // ContactID is the ID of the destination contact
+  string contact_id = 3 [(gogoproto.customname) = "ContactID"];
+
+  // SentAt is set to current date when sending the Dispatch.
+  google.protobuf.Timestamp sent_at = 4 [(gogoproto.stdtime) = true];
+
+  // AckedAt is set to current date just after receiving a `Ack` event.
+  google.protobuf.Timestamp acked_at = 5 [(gogoproto.stdtime) = true];
+
+  // SeenAt is set to the date when the event has been displayed on the user's screen
+  google.protobuf.Timestamp seen_at = 6 [(gogoproto.stdtime) = true];
+
+  // AckMedium is the communication medium used when receiving an Ack event
+  Medium ack_medium = 7;
+
+  // SeenMedium is the communication medium used when receiving a Seen event
+  Medium seen_medium = 8;
+
+  enum Medium {
+    UnknownMedium = 0;
+    LocalNetwork = 1;
+    BLE = 2;
+    Relay = 3;
+    // to be completed
   }
 }
 
