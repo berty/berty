@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"berty.tech/core/entity"
@@ -18,6 +19,8 @@ type Network struct {
 	host *host.BertyHost
 
 	handler func(context.Context, *entity.Envelope) (*entity.Void, error)
+
+	updating *sync.Mutex
 
 	shutdown context.CancelFunc
 }
@@ -44,6 +47,7 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 
 	net := &Network{
 		config:   &config.Config{},
+		updating: &sync.Mutex{},
 		shutdown: cancel,
 	}
 
@@ -82,6 +86,27 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	return net, nil
 }
 
+// Update create new network and permit to override previous config
+func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
+	net.updating.Lock()
+	defer net.updating.Unlock()
+
+	updated, err := New(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...)
+	if err != nil {
+		return errors.Wrap(err, "cannot update network: abort")
+	}
+
+	swap := *net
+
+	*net = *updated
+
+	net.updating = swap.updating
+
+	(&swap).Close(ctx)
+
+	return nil
+}
+
 func (net *Network) Close(ctx context.Context) error {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
@@ -99,17 +124,5 @@ func (net *Network) Close(ctx context.Context) error {
 		}
 	}
 
-	return nil
-}
-
-// Update create new network and permit to override previous config
-func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
-	updated, err := New(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...)
-	if err != nil {
-		return errors.Wrap(err, "cannot update network: abort")
-	}
-	swap := *net
-	*net = *updated
-	(&swap).Close(ctx)
 	return nil
 }
