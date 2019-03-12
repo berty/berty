@@ -38,6 +38,7 @@ func WithDefaultMobileOptions() config.Option {
 		WithDefaultOptions(),
 		DisableDHT(),
 		DisableHOP(),
+		DisableBLE(),
 		EnablePersistConfig(),
 	)
 }

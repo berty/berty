@@ -147,6 +147,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
             promise.resolve(Core.getNetworkConfig());
         } catch (Exception err) {
             this.logger.format(Level.ERROR, this.getName(), "Unable to get network config: %s", err);
+            promise.reject(err);
         }
     }
 
