@@ -17,6 +17,7 @@ import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
 import * as dateFns from '../../../i18n/dateFns'
 import withRelayContext from '../../../helpers/withRelayContext'
+import * as KeyboardContext from '../../../helpers/KeyboardContext'
 
 class Message extends React.PureComponent {
   static contextType = RelayContext
@@ -117,6 +118,7 @@ class TextInputBase extends PureComponent {
   state = {
     height: 16,
     value: '',
+    submitting: false,
   }
 
   onContentSizeChange = ({
@@ -129,24 +131,31 @@ class TextInputBase extends PureComponent {
     const { height } = this.state
     const { value, t } = this.props
     return (
-      <RNTextInput
-        style={[
-          {
-            flex: 1,
-            padding: 0,
-            marginVertical: 8,
-            marginHorizontal: 0,
-            height: height,
-          },
-          Platform.OS === 'web' ? { paddingLeft: 16 } : {},
-        ]}
-        onContentSizeChange={this.onContentSizeChange}
-        autoFocus
-        placeholder={t('chats.write-message')}
-        onChangeText={this.props.onChangeText}
-        value={value}
-        multiline
-      />
+      <KeyboardContext.Consumer>{({ keyboardVisible }) =>
+        <RNTextInput
+          style={[
+            {
+              flex: 1,
+              padding: 0,
+              marginVertical: 8,
+              marginHorizontal: 0,
+              height: height,
+            },
+            Platform.OS === 'web' ? { paddingLeft: 16 } : {},
+          ]}
+          onKeyPress={(e) => {
+            if (!keyboardVisible && !e.shiftKey && e.nativeEvent.key === 'Enter') {
+              this.props.onSubmit()
+            }
+          }}
+          onContentSizeChange={this.onContentSizeChange}
+          autoFocus
+          placeholder={t('chats.write-message')}
+          onChangeText={this.props.onChangeText}
+          value={value}
+          multiline
+        />
+      }</KeyboardContext.Consumer>
     )
   }
 }
@@ -162,6 +171,7 @@ class Input extends PureComponent {
 
   onSubmit = () => {
     const { input } = this.state
+    this.setState({ submitting: true })
     this.setState({ input: '' }, async () => {
       try {
         const conversation = this.props.navigation.state.params || {}
@@ -179,10 +189,17 @@ class Input extends PureComponent {
       } catch (err) {
         console.error(err)
       }
+      this.setState({ submitting: false })
     })
   }
-  onChangeText = value => this.setState({ input: value })
 
+  onChangeText = value => {
+    if (this.state.submitting || value === '\n') {
+      return
+    }
+
+    this.setState({ input: value })
+  }
   render () {
     return (
       <Flex.Cols
@@ -213,6 +230,7 @@ class Input extends PureComponent {
           />
           <TextInput
             onChangeText={this.onChangeText}
+            onSubmit={this.onSubmit}
             value={this.state.input}
           />
         </Flex.Cols>

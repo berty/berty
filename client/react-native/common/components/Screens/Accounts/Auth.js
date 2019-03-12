@@ -229,10 +229,16 @@ class Auth extends PureComponent {
                 })}
                 textContentType={'name'}
                 onChangeText={nickname => this.setState({ nickname })}
+                onKeyPress={(e) => {
+                  if (Platform.Desktop && e.key === 'Enter') {
+                    this.authNewUser()
+                  }
+                  e.preventDefault()
+                }}
                 value={this.state.nickname}
               />
               <TouchableOpacity
-                onPress={() => this.open(this.state.nickname, { firstLaunch: true })}
+                onPress={() => this.authNewUser()}
                 disabled={this.state.nickname.length === 0}
                 ref={this.props.generateTestHook('Auth.Button')}
               >
@@ -256,6 +262,12 @@ class Auth extends PureComponent {
       )
     }
     return null
+  }
+
+  authNewUser () {
+    this.open(
+      this.state.nickname, { firstLaunch: true }
+    ).then(() => {})
   }
 }
 
