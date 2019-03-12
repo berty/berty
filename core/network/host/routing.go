@@ -33,25 +33,13 @@ type BertyRouting struct {
 	cready  chan struct{}
 	ready   bool
 	tstart  time.Time
-	server  bool
 }
 
 func NewBertyRouting(ctx context.Context, h host.Host, r protocol.Routing) (*BertyRouting, error) {
 	br := &BertyRouting{
-<<<<<<< HEAD
-		server: dhtSvc,
-		dht:    dht,
-		cready: make(chan struct{}, 1),
-		tstart: time.Now(),
-||||||| merged common ancestors
-		dht:    dht,
-		cready: make(chan struct{}, 1),
-		tstart: time.Now(),
-=======
 		routing: r,
 		cready:  make(chan struct{}, 1),
 		tstart:  time.Now(),
->>>>>>> fix(network): fix rebase on master
 	}
 
 	// Bootstrap DHT
