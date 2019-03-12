@@ -52,7 +52,6 @@ require (
 	github.com/libp2p/go-libp2p-peerstore v0.0.1
 	github.com/libp2p/go-libp2p-pnet v0.0.1
 	github.com/libp2p/go-libp2p-protocol v0.0.1
-	github.com/libp2p/go-libp2p-pubsub v0.0.1 // indirect
 	github.com/libp2p/go-libp2p-quic-transport v0.0.1
 	github.com/libp2p/go-libp2p-record v0.0.1
 	github.com/libp2p/go-libp2p-routing v0.0.1
@@ -67,7 +66,7 @@ require (
 	github.com/libp2p/go-ws-transport v0.0.1
 	github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43
 	github.com/maruel/ut v1.0.0 // indirect
-	github.com/multiformats/go-multiaddr v0.0.1
+	github.com/multiformats/go-multiaddr v0.0.2
 	github.com/multiformats/go-multiaddr-net v0.0.1
 	github.com/multiformats/go-multihash v0.0.1
 	github.com/multiformats/go-multistream v0.0.1
