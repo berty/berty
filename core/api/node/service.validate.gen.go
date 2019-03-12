@@ -153,6 +153,8 @@ func (m *EventListInput) Validate() error {
 
 	// handling field: OnlyWithoutAckedAt - name:"only_without_acked_at" number:2 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.node.NullableTrueFalse" json_name:"onlyWithoutAckedAt"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
+	// handling field: OnlyWithoutSeenAt - name:"only_without_seen_at" number:3 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.node.NullableTrueFalse" json_name:"onlyWithoutSeenAt"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
 	// handling field: Paginate - name:"paginate" number:99 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.node.Pagination" json_name:"paginate" options:<53006:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	if v, ok := interface{}(m.GetPaginate()).(interface{ Validate() error }); ok {

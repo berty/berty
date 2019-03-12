@@ -11,6 +11,7 @@ const query = graphql`
     $count: Int32
     $cursor: String
     $onlyWithoutAckedAt: Enum
+    $onlyWithoutSeenAt: Enum
   ) {
     ...EventList
       @arguments(
@@ -20,6 +21,7 @@ const query = graphql`
         count: $count
         cursor: $cursor
         onlyWithoutAckedAt: $onlyWithoutAckedAt
+        onlyWithoutSeenAt: $onlyWithoutSeenAt
       )
   }
 `
@@ -31,6 +33,7 @@ export const defaultVariables = {
   count: 5,
   cursor: '',
   onlyWithoutAckedAt: 0,
+  onlyWithoutSeenAt: 0,
 }
 
 export default context => ({

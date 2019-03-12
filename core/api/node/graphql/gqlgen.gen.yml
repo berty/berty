@@ -1812,12 +1812,14 @@ models:
     fields:
       filter:
       onlyWithoutAckedAt:
+      onlyWithoutSeenAt:
       paginate:
   BertyNodeEventListInputPayload:
     model: berty.tech/core/api/node.EventListInput
     fields:
       filter:
       onlyWithoutAckedAt:
+      onlyWithoutSeenAt:
       paginate:
 
   BertyNodeEventEdge:

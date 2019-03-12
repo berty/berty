@@ -2,22 +2,39 @@ import ContactNavigator from './ContactNavigator'
 import ChatNavigator from './ChatNavigator'
 import SettingsNavigator from './SettingsNavigator'
 import { createBottomTabNavigator } from 'react-navigation'
-import { colors } from '../../constants'
 import { Platform } from 'react-native'
 import I18n from 'i18next'
 import React, { Component } from 'react'
+import { colors } from '../../constants'
 import { Icon } from '../Library'
 import { UpdateContext } from '../../update'
-import { RelayContext } from '../../relay'
+import withRelayContext from '../../helpers/withRelayContext'
+import { fragments } from '../../graphql'
+import { Pagination } from '../../relay'
+import { merge } from '../../helpers'
 
-class TabBarIcon extends Component {
+class TabBarIconBase extends Component {
   constructor (props) {
     super(props)
+
+    const {
+      context: {
+        queries,
+        subscriptions,
+      },
+    } = props
+
     this.state = {
+      shouldRefresh: false,
       stored: [],
-      entityKind: props.routeName === 'chats' ? 302 : 201,
+      queryList: queries.EventList.graphql,
+      queryVariables: props.routeName === 'contacts'
+        ? merge([queries.EventList.defaultVariables, { filter: { kind: 201 }, onlyWithoutSeenAt: 1 }])
+        : merge([queries.EventList.defaultVariables, { filter: { kind: 302 } }]),
+      subscription: props.routeName === 'contacts'
+        ? [subscriptions.contactRequest]
+        : [subscriptions.message],
     }
-    this.subscriber = null
   }
 
   componentWillUnmount () {
@@ -26,42 +43,73 @@ class TabBarIcon extends Component {
     }
   }
 
-  componentDidUpdate = (prevProps) => {
-    if (this.props.focused !== prevProps.focused && this.props.focused === true) {
+  item = (props) => {
+    const {
+      data: { id, seenAt },
+    } = props
+    const { routeName } = this.props
+    let { stored } = this.state
+
+    if (stored.indexOf(id) === -1) {
+      if (routeName === 'chats' && new Date(seenAt).getTime() > 0) {
+        return null
+      }
+      this.setState({
+        stored: [
+          ...stored,
+          id,
+        ],
+      })
+    } else if (routeName === 'chats' && new Date(seenAt).getTime() > 0) {
+      stored.splice(stored.indexOf(id), 1)
+      this.setState({
+        stored,
+      })
+    }
+
+    return null
+  }
+
+  contactSeen = () => {
+    if (this.state.stored.length > 0) {
+      this.state.stored.forEach((val) => {
+        this.props.context.mutations.eventSeen({
+          id: val,
+        })
+      })
+
       this.setState({
         stored: [],
       })
     }
   }
 
-  updateBadge = (store, data) => {
-    const { entityKind, stored } = this.state
-    const { focused } = this.props
-    const [operation, entity] = [
-      data.CommitLogStream.operation,
-      data.CommitLogStream.entity.event,
-    ]
-
-    if (focused !== true && operation === 0 && entity &&
-      entity.kind === entityKind && stored.indexOf(entity.id) === -1) {
-      this.setState({
-        stored: [
-          ...stored,
-          entity.id,
-        ],
-      })
-    }
-  }
+  fragment = fragments.Event(this.item)
 
   render () {
-    const { tintColor, routeName } = this.props
-    const { stored } = this.state
+    const {
+      tintColor,
+      routeName,
+      navigation,
+      context,
+    } = this.props
+    const {
+      stored,
+      queryList,
+      queryVariables,
+      subscription,
+    } = this.state
 
+    context.relay = context.environment
     let iconName = {
       contacts: 'users',
       chats: 'message-circle',
       settings: 'settings',
     }[routeName]
+
+    if (routeName === 'contacts' && navigation.isFocused() === true) {
+      this.contactSeen()
+    }
 
     return routeName === 'settings'
       ? (
@@ -77,29 +125,37 @@ class TabBarIcon extends Component {
         </UpdateContext.Consumer>
       ) : (
         <>
-          <RelayContext.Consumer>
-            {({ subscriptions }) => {
-              this.subscriber = subscriptions.commitLogStream.subscribe({
-                updater: this.updateBadge,
-              })
-            }}
-          </RelayContext.Consumer>
-              <Icon.Badge
-                name={iconName}
-                size={24}
-                color={tintColor}
-                badge={stored.length > 0 ? '!' : ''}
-                value={stored.length}
-              />
+          <Icon.Badge
+            name={iconName}
+            size={24}
+            color={tintColor}
+            badge={stored.length > 0 ? '!' : ''}
+            value={stored.length}
+          />
+          <Pagination
+            direction='forward'
+            noLoader
+            query={queryList}
+            variables={queryVariables}
+            fragment={fragments.EventList}
+            alias={'EventList'}
+            subscriptions={subscription}
+            renderItem={props => (
+              <this.fragment {...props} context={context} />
+            )}
+            emptyItem={() => null}
+          />
         </>
       )
   }
 }
 
+const TabBarIcon = withRelayContext(TabBarIconBase)
+
 const handleBothNavigationsOptions = ({ navigation }) => {
   return {
     tabBarIcon: function withTabBarIcon ({ tintColor, focused }) {
-      return (<TabBarIcon tintColor={tintColor} focused={focused} routeName={navigation.state.routeName} />)
+      return (<TabBarIcon tintColor={tintColor} focused={focused} navigation={navigation} routeName={navigation.state.routeName} />)
     },
   }
 }

@@ -315,6 +315,7 @@ message CommitLog {
 message EventListInput {
   berty.entity.Event filter = 1;
   NullableTrueFalse only_without_acked_at = 2;
+  NullableTrueFalse only_without_seen_at = 3;
   Pagination paginate = 99 [(gql.graphql_spread) = true];
 }
 message EventEdge {

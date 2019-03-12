@@ -695,7 +695,7 @@ type ComplexityRoot struct {
 	Query struct {
 		Node                    func(childComplexity int, id string) int
 		Id                      func(childComplexity int, T bool) int
-		EventList               func(childComplexity int, filter *entity.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
+		EventList               func(childComplexity int, filter *entity.Event, onlyWithoutAckedAt *int32, onlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetEvent                func(childComplexity int, id string) int
 		ConfigPublic            func(childComplexity int, T bool) int
 		ContactList             func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
@@ -802,7 +802,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
 	ID(ctx context.Context, T bool) (*metric.Peer, error)
-	EventList(ctx context.Context, filter *entity.Event, onlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
+	EventList(ctx context.Context, filter *entity.Event, onlyWithoutAckedAt *int32, onlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
 	GetEvent(ctx context.Context, id string) (*entity.Event, error)
 	ConfigPublic(ctx context.Context, T bool) (*entity.Config, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
@@ -1846,44 +1846,44 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 		}
 	}
 	args["onlyWithoutAckedAt"] = arg1
-	var arg2 string
-	if tmp, ok := rawArgs["orderBy"]; ok {
-		var err error
-		arg2, err = models.UnmarshalString(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderBy"] = arg2
-	var arg3 bool
-	if tmp, ok := rawArgs["orderDesc"]; ok {
-		var err error
-		arg3, err = models.UnmarshalBool(tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["orderDesc"] = arg3
-	var arg4 *int32
-	if tmp, ok := rawArgs["first"]; ok {
+	var arg2 *int32
+	if tmp, ok := rawArgs["onlyWithoutSeenAt"]; ok {
 		var err error
 		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalInt32(tmp)
-			arg4 = &ptr1
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg2 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["first"] = arg4
-	var arg5 *string
-	if tmp, ok := rawArgs["after"]; ok {
+	args["onlyWithoutSeenAt"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
 		var err error
-		var ptr1 string
+		arg3, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg3
+	var arg4 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg4, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderDesc"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalString(tmp)
+			ptr1, err = models.UnmarshalInt32(tmp)
 			arg5 = &ptr1
 		}
 
@@ -1891,13 +1891,13 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 			return nil, err
 		}
 	}
-	args["after"] = arg5
-	var arg6 *int32
-	if tmp, ok := rawArgs["last"]; ok {
+	args["first"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["after"]; ok {
 		var err error
-		var ptr1 int32
+		var ptr1 string
 		if tmp != nil {
-			ptr1, err = models.UnmarshalInt32(tmp)
+			ptr1, err = models.UnmarshalString(tmp)
 			arg6 = &ptr1
 		}
 
@@ -1905,13 +1905,13 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 			return nil, err
 		}
 	}
-	args["last"] = arg6
-	var arg7 *string
-	if tmp, ok := rawArgs["before"]; ok {
+	args["after"] = arg6
+	var arg7 *int32
+	if tmp, ok := rawArgs["last"]; ok {
 		var err error
-		var ptr1 string
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = models.UnmarshalString(tmp)
+			ptr1, err = models.UnmarshalInt32(tmp)
 			arg7 = &ptr1
 		}
 
@@ -1919,7 +1919,21 @@ func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]inte
 			return nil, err
 		}
 	}
-	args["before"] = arg7
+	args["last"] = arg7
+	var arg8 *string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg8 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg8
 	return args, nil
 
 }
@@ -5454,7 +5468,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.EventList(childComplexity, args["filter"].(*entity.Event), args["onlyWithoutAckedAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
+		return e.complexity.Query.EventList(childComplexity, args["filter"].(*entity.Event), args["onlyWithoutAckedAt"].(*int32), args["onlyWithoutSeenAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
 
 	case "Query.GetEvent":
 		if e.complexity.Query.GetEvent == nil {
@@ -19854,7 +19868,7 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().EventList(rctx, args["filter"].(*entity.Event), args["onlyWithoutAckedAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
+		return ec.resolvers.Query().EventList(rctx, args["filter"].(*entity.Event), args["onlyWithoutAckedAt"].(*int32), args["onlyWithoutSeenAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -23650,6 +23664,7 @@ type Query {
   EventList(
     filter: BertyEntityEventInput
     onlyWithoutAckedAt: Enum
+    onlyWithoutSeenAt: Enum
     orderBy: String!
     orderDesc: Bool!
     first: Int32

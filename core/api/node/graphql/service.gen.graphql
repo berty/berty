@@ -733,6 +733,7 @@ type Query {
   EventList(
     filter: BertyEntityEventInput
     onlyWithoutAckedAt: Enum
+    onlyWithoutSeenAt: Enum
     orderBy: String!
     orderDesc: Bool!
     first: Int32

@@ -132,7 +132,7 @@ export default class Pagination extends PureComponent {
   }
 
   render () {
-    const { query, variables } = this.props
+    const { query, variables, noLoader } = this.props
 
     const Container = createPagination(this.props)
 
@@ -142,7 +142,7 @@ export default class Pagination extends PureComponent {
           switch (state.type) {
             default:
             case state.loading:
-              return (
+              return noLoader === true ? null : (
                 <Flex.Rows align='center'>
                   <Flex.Cols align='center'>
                     <ActivityIndicator size='large' />

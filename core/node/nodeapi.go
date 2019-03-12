@@ -46,6 +46,12 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 		query = query.Where("acked_at IS NOT NULL")
 	}
 
+	if input.OnlyWithoutSeenAt == node.NullableTrueFalse_True {
+		query = query.Where("seen_at IS NULL")
+	} else if input.OnlyWithoutSeenAt == node.NullableTrueFalse_False {
+		query = query.Where("seen_at IS NOT NULL")
+	}
+
 	// pagination
 	var err error
 	query, err = paginate(query, input.Paginate)
