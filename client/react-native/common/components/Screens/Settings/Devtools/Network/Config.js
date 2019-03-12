@@ -46,12 +46,17 @@ export default class Network extends PureComponent {
 
   render () {
     if (this.state == null) {
-      return <Loader message='loading network config ...' />
+      return <Loader message='Loading network configuration ...' />
     }
     return (
       <Menu>
-        <Menu.Section title='Privacy'>
-          <Menu.Input title='Swarm key' disaBLEd value={this.state.swarmKey} />
+        <Menu.Section title='Swarm key'>
+          <Menu.Input
+            title='Swarm key'
+            value={this.state.SwarmKey}
+            multiline={3}
+            onChangeText={SwarmKey => this.updateConfig({ SwarmKey })}
+          />
         </Menu.Section>
         <Menu.Section title='Discovery'>
           <Menu.Item
