@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net"
 	"strconv"
@@ -21,6 +20,7 @@ var (
 	appConfig          *account.StateDB
 	rootContext        = context.Background()
 	NotificationDriver = MobileNotification{}.New()
+	networkDriver      *network.Network
 )
 
 // Setup call it at first native start
@@ -96,16 +96,11 @@ func ListAccounts() (string, error) {
 }
 
 func initOrRestoreAppState() error {
-	initialJSONNetConf, err := json.Marshal(initialNetConf)
-	if err != nil {
-		return err
-	}
 
 	// Needed by OpenStateDB to init DB if no previous config is found (first launch)
 	initialState := account.StateDB{
-		JSONNetConf: string(initialJSONNetConf),
-		BotMode:     initialBotMode,
-		LocalGRPC:   initiallocalGRPC,
+		BotMode:   initialBotMode,
+		LocalGRPC: initiallocalGRPC,
 	}
 
 	appState, err := account.OpenStateDB("./berty.state.db", initialState)
@@ -195,6 +190,7 @@ func waitDaemon(nickname string) {
 }
 
 func daemon(cfg *MobileOptions) error {
+	var err error
 	defer panicHandler()
 	_ = logmanager.G().LogRotate()
 
@@ -209,8 +205,13 @@ func daemon(cfg *MobileOptions) error {
 
 	var a *account.Account
 
+	networkDriver, err = network.New(rootContext, network.WithDefaultMobileOptions())
+	if err != nil {
+		return err
+	}
+
 	accountOptions := account.Options{
-		account.WithNetwork(network.New(rootContext, network.WithDefaultMobileOptions())),
+		account.WithNetwork(networkDriver, nil),
 		account.WithJaegerAddrName("jaeger.berty.io:6831", cfg.nickname+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(cfg.nickname),

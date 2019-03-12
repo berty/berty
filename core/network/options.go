@@ -11,31 +11,25 @@ import (
 // WithConfig
 func WithConfig(override *config.Config) config.Option {
 	return func(cfg *config.Config) error {
-		cfg.MDNS = override.MDNS
-		cfg.DHT = override.DHT
-		cfg.BLE = override.BLE
-		cfg.QUIC = override.QUIC
-		cfg.DefaultBootstrap = override.DefaultBootstrap
-		cfg.Bootstrap = override.Bootstrap
-		cfg.Ping = override.Ping
-		cfg.HOP = override.HOP
-		cfg.Identity = override.Identity
-		cfg.SwarmKey = override.SwarmKey
-		return nil
+		return cfg.Override(override)
 	}
 }
 
 func WithDefaultOptions() config.Option {
 	return ChainOptions(
+		EnableDefaultBind(),
 		EnableDefaultBootstrap(),
 		EnablePing(),
 		EnableMDNS(),
+		DisableWS(),
+		EnableTCP(),
 		EnableBLE(),
 		EnableQUIC(),
 		EnablePrivateNetwork(config.DefaultSwarmKey),
 		DisableDHT(),
 		EnableMetric(),
 		DisableHOP(),
+		DisablePersistConfig(),
 	)
 }
 
@@ -44,7 +38,8 @@ func WithDefaultMobileOptions() config.Option {
 		WithDefaultOptions(),
 		DisableDHT(),
 		DisableHOP(),
-		// ...
+		DisableBLE(),
+		EnablePersistConfig(),
 	)
 }
 
@@ -58,6 +53,28 @@ func WithDefaultRelayOptions() config.Option {
 }
 
 // Custom options
+
+func EnablePersistConfig() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Persist = true
+		return nil
+	}
+}
+
+func OverridePersistConfig() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.OverridePersist = true
+		return nil
+	}
+}
+
+func DisablePersistConfig() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Persist = false
+		cfg.OverridePersist = false
+		return nil
+	}
+}
 
 func WithIdentity(identity string) config.Option {
 	return func(cfg *config.Config) error {
@@ -129,6 +146,27 @@ func Bootstrap(addr ...string) config.Option {
 	}
 }
 
+func EnableDefaultBind() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.DefaultBind = true
+		return nil
+	}
+}
+
+func DisableDefaultBind() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.DefaultBind = false
+		return nil
+	}
+}
+
+func Bind(maddr ...string) config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Bind = append(cfg.Bind, maddr...)
+		return nil
+	}
+}
+
 func EnableDHT() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.DHT = true
@@ -167,6 +205,34 @@ func EnableMetric() config.Option {
 func DisableMetric() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.Metric = false
+		return nil
+	}
+}
+
+func EnableWS() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.WS = true
+		return nil
+	}
+}
+
+func DisableWS() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.WS = false
+		return nil
+	}
+}
+
+func EnableTCP() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.TCP = true
+		return nil
+	}
+}
+
+func DisableTCP() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.TCP = false
 		return nil
 	}
 }

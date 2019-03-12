@@ -122,7 +122,16 @@ class CoreModule: NSObject {
   }
 
   @objc func getNetworkConfig(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
-    resolve(CoreGetNetworkConfig())
+    var err: NSError?
+    var config: String!
+
+    config = CoreGetNetworkConfig(&err)
+    if let error = err {
+      logger.format("get network config error: ", level: .error, error.userInfo.description)
+      reject("\(String(describing: error.code))", error.localizedDescription, error)
+    } else {
+      resolve(config)
+    }
   }
 
   @objc func updateNetworkConfig(_ config: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
@@ -204,7 +213,7 @@ class CoreModule: NSObject {
   @objc func getNotificationStatus(_ resolve: @escaping RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) {
     let current = UNUserNotificationCenter.current()
 
-    current.getNotificationSettings(completionHandler: {(settings) in
+    current.getNotificationSettings(completionHandler: { (settings) in
       resolve(settings.authorizationStatus.rawValue)
     })
   }

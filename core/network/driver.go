@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"berty.tech/core/entity"
+	"berty.tech/core/network/config"
 	"berty.tech/core/network/helper"
 	"berty.tech/core/network/metric"
 	"berty.tech/core/pkg/tracing"
@@ -357,4 +358,8 @@ func (net *Network) PingOtherNode(ctx context.Context, destination string) (err 
 
 func (net *Network) Metric() metric.Metric {
 	return net.host.Metric
+}
+
+func (net *Network) Config() *config.Config {
+	return net.config
 }

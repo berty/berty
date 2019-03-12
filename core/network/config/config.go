@@ -24,6 +24,8 @@ import (
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
+	tcp "github.com/libp2p/go-tcp-transport"
+	ws "github.com/libp2p/go-ws-transport"
 )
 
 const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
@@ -53,14 +55,24 @@ var BootstrapIpfs = []string{
 	"/ip4/178.62.158.247/tcp/4001/ipfs/QmSoLer265NRgSp2LA3dPaeykiS1J6DifTC88f5uVQKNAd",
 }
 
-type Config struct {
-	libp2p_config.Config
+var DefaultBind = map[string][]string{
+	"tcp":  []string{"/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0"},
+	"ble":  []string{"/ble/00000000-0000-0000-0000-000000000000"},
+	"quic": []string{"/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic"},
+}
 
-	Bind []string
+type Config struct {
+	libp2p_config.Config `json:"-"`
+
+	DefaultBind bool
+	Bind        []string
 
 	MDNS bool
 	DHT  bool
 
+	// transport
+	WS   bool
+	TCP  bool
 	BLE  bool
 	QUIC bool
 
@@ -77,44 +89,86 @@ type Config struct {
 
 	Identity string
 
-	routing *host.BertyRouting // needed to get it from berty host
+	Persist         bool `json:"-"`
+	OverridePersist bool `json:"-"` // override persist config when apply
 }
 
 type Option func(cfg *Config) error
 
+// Override override safely the current config
+func (cfg *Config) Override(override *Config) error {
+	cfg.DefaultBind = override.DefaultBind
+	cfg.Bind = override.Bind
+	cfg.MDNS = override.MDNS
+	cfg.WS = override.WS
+	cfg.TCP = override.TCP
+	cfg.DHT = override.DHT
+	cfg.BLE = override.BLE
+	cfg.QUIC = override.QUIC
+	cfg.DefaultBootstrap = override.DefaultBootstrap
+	cfg.Bootstrap = override.Bootstrap
+	cfg.Ping = override.Ping
+	cfg.HOP = override.HOP
+	cfg.Identity = override.Identity
+	cfg.SwarmKey = override.SwarmKey
+	return nil
+}
+
 // Apply applies the given options to the config, returning the first error
 // encountered (if any).
 func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
+	libp2pOpts := []libp2p_config.Option{}
+
 	for _, opt := range opts {
 		if err := opt(cfg); err != nil {
 			return err
 		}
 	}
 
-	libp2pOpts := []libp2p_config.Option{}
-
-	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
-	if cfg.DefaultBootstrap {
-		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
-	}
-	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
-
-	libp2pOpts = append(libp2pOpts, libp2p.DefaultListenAddrs)
-	if len(cfg.Bind) > 0 {
-		libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(cfg.Bind...))
+	if cfg.OverridePersist {
+		if err := cfg.OverridePersistConfig(); err != nil {
+			return err
+		}
 	}
 
-	// transport
-	libp2pOpts = append(libp2pOpts, libp2p.DefaultTransports)
+	if cfg.Persist {
+		if err := cfg.ApplyPersistConfig(); err != nil {
+			return err
+		}
+	}
+
+	// add ws transport
+	if cfg.WS {
+		libp2pOpts = append(libp2pOpts, libp2p.Transport(ws.New))
+	}
+
+	// add tcp transport
+	if cfg.TCP {
+		libp2pOpts = append(libp2pOpts, libp2p.Transport(tcp.NewTCPTransport))
+		if cfg.DefaultBind {
+			libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(DefaultBind["tcp"]...))
+		}
+	}
 
 	// add ble transport
 	if cfg.BLE {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ble.NewTransport))
+		if cfg.DefaultBind {
+			libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(DefaultBind["ble"]...))
+		}
 	}
 
 	// add quic transport
 	if cfg.QUIC {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(quic.NewTransport))
+		if cfg.DefaultBind {
+			libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(DefaultBind["quic"]...))
+		}
+	}
+
+	// add listening adresses after setup transport
+	if len(cfg.Bind) > 0 {
+		libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(cfg.Bind...))
 	}
 
 	// relay

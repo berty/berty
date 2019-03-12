@@ -1,134 +1,113 @@
-import React, { PureComponent } from 'react'
 import { Switch, NativeModules } from 'react-native'
-import { Menu, Header } from '../../../../Library'
+import React, { PureComponent } from 'react'
+
+import { Header, Loader, Menu } from '../../../../Library'
 
 export default class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => {
+    const updating =
+      (navigation.state.params && navigation.state.params.updating) || false
     return {
       header: (
         <Header
           navigation={navigation}
           title='Network configuration'
           titleIcon='sliders'
-          rightBtnIcon={'save'}
-          onPressRightBtn={
-            navigation.state.params && navigation.state.params.updateConfig
-          }
-          backBtn
+          rightBtn={updating ? <Loader size='small' /> : undefined}
+          backBtn={!updating}
         />
       ),
     }
   }
 
-  state = {
-    loaded: false,
-    default_trans: false,
-    bluetooth_trans: false,
-    default_bootstrap: false,
-    ipfs_bootstrap: false,
-    custom_bootstrap: [],
-    mdns: false,
-    relay: false,
+  state = null
+
+  async componentDidMount () {
+    const config = await NativeModules.CoreModule.getNetworkConfig()
+    console.warn(config)
+    this.setState(JSON.parse(config))
   }
 
-  currentConfig = undefined
-
-  hasConfigChanged = () => {
-    if (
-      this.currentConfig !== undefined &&
-      (this.state.default_trans !== this.currentConfig.DefaultTransport ||
-        this.state.bluetooth_trans !== this.currentConfig.BluetoothTransport ||
-        this.state.default_bootstrap !== this.currentConfig.DefaultBootstrap ||
-        this.state.ipfs_bootstrap !== this.currentConfig.IPFSBootstrap ||
-        this.state.custom_bootstrap !== this.currentConfig.CustomBootstrap ||
-        this.state.mdns !== this.currentConfig.MDNS ||
-        this.state.relay !== this.currentConfig.Relay)
-    ) {
-      this.props.navigation.setParams({
-        updateConfig: this.updateConfig,
-      })
-    } else {
-      this.props.navigation.setParams({
-        updateConfig: undefined,
-      })
-    }
-  }
-
-  updateConfig = async () => {
-    try {
-      let config = {
-        DefaultTransport: this.state.default_trans,
-        BluetoothTransport: this.state.bluetooth_trans,
-        DefaultBootstrap: this.state.default_bootstrap,
-        IPFSBootstrap: this.state.ipfs_bootstrap,
-        CustomBootstrap: this.state.custom_bootstrap,
-        MDNS: this.state.mdns,
-        Relay: this.state.relay,
+  updateConfig = async config => {
+    const lastConfig = this.state
+    this.props.navigation.setParams({ updating: true })
+    this.setState(config, async () => {
+      try {
+        await NativeModules.CoreModule.updateNetworkConfig(
+          JSON.stringify(this.state)
+        )
+      } catch (err) {
+        console.error(err)
+        this.setState(lastConfig)
       }
-      let json = JSON.stringify(config)
-
-      await NativeModules.CoreModule.updateNetworkConfig(json)
-
-      this.currentConfig = config
-      this.props.navigation.setParams({
-        updateConfig: undefined,
-      })
-    } catch (err) {
-      console.error(err)
-    }
-  }
-
-  getCurrentConfig = async () => {
-    let json = await NativeModules.CoreModule.getNetworkConfig()
-    this.currentConfig = JSON.parse(json)
-
-    this.setState({
-      loaded: true,
-      default_trans: this.currentConfig.DefaultTransport,
-      bluetooth_trans: this.currentConfig.BluetoothTransport,
-      default_bootstrap: this.currentConfig.DefaultBootstrap,
-      ipfs_bootstrap: this.currentConfig.IPFSBootstrap,
-      custom_bootstrap: this.currentConfig.CustomBootstrap,
-      mdns: this.currentConfig.MDNS,
-      relay: this.currentConfig.Relay,
+      this.props.navigation.setParams({ updating: false })
     })
   }
 
-  componentDidMount () {
-    this.getCurrentConfig()
-  }
-
   render () {
+    if (this.state == null) {
+      return <Loader message='Loading network configuration ...' />
+    }
     return (
       <Menu>
-        <Menu.Section title='Transports' customMarginTop={24}>
+        <Menu.Section title='Swarm key'>
+          <Menu.Input
+            title='Swarm key'
+            value={this.state.SwarmKey}
+            multiline={3}
+            onChangeText={SwarmKey => this.updateConfig({ SwarmKey })}
+          />
+        </Menu.Section>
+        <Menu.Section title='Discovery'>
           <Menu.Item
-            title='Default (TCP and Websocket)'
+            title='Multicast DNS'
             customRight={
               <Switch
                 justify='end'
-                disabled={!this.state.loaded}
-                value={this.state.default_trans}
-                onValueChange={value => {
-                  this.setState({ default_trans: value }, () => {
-                    this.hasConfigChanged()
-                  })
-                }}
+                value={this.state.MDNS}
+                onValueChange={MDNS => this.updateConfig({ MDNS })}
+              />
+            }
+          />
+        </Menu.Section>
+        <Menu.Section title='Transports' customMarginTop={24}>
+          <Menu.Item
+            title='TCP'
+            customRight={
+              <Switch
+                justify='end'
+                value={this.state.TCP}
+                onValueChange={TCP => this.updateConfig({ TCP })}
               />
             }
           />
           <Menu.Item
-            title='Bluetooth (unstable if on/off multiple time #629/630)'
+            title='QUIC'
             customRight={
               <Switch
                 justify='end'
-                disabled={!this.state.loaded}
-                value={this.state.bluetooth_trans}
-                onValueChange={value => {
-                  this.setState({ bluetooth_trans: value }, () => {
-                    this.hasConfigChanged()
-                  })
-                }}
+                value={this.state.QUIC}
+                onValueChange={QUIC => this.updateConfig({ QUIC })}
+              />
+            }
+          />
+          <Menu.Item
+            title='Bluetooth'
+            customRight={
+              <Switch
+                justify='end'
+                value={this.state.BLE}
+                onValueChange={BLE => this.updateConfig({ BLE })}
+              />
+            }
+          />
+          <Menu.Item
+            title='Websocket'
+            customRight={
+              <Switch
+                justify='end'
+                value={this.state.WS}
+                onValueChange={WS => this.updateConfig({ WS })}
               />
             }
           />
@@ -139,64 +118,35 @@ export default class Network extends PureComponent {
             customRight={
               <Switch
                 justify='end'
-                disabled={!this.state.loaded}
-                value={this.state.default_bootstrap}
-                onValueChange={value => {
-                  this.setState({ default_bootstrap: value }, () => {
-                    this.hasConfigChanged()
-                  })
-                }}
+                disaBLEd={!this.state.loaded}
+                value={this.state.DefaultBootstrap}
+                onValueChange={DefaultBootstrap =>
+                  this.updateConfig({ DefaultBootstrap })
+                }
               />
             }
           />
           <Menu.Item
-            title='IPFS bootstrap'
-            customRight={
-              <Switch
-                justify='end'
-                disabled={!this.state.loaded}
-                value={this.state.ipfs_bootstrap}
-                onValueChange={value => {
-                  this.setState({ ipfs_bootstrap: value }, () => {
-                    this.hasConfigChanged()
-                  })
-                }}
-              />
-            }
+            title='IPFS bootstrap (not implem.)'
+            customRight={<Switch justify='end' disaBLEd value={false} />}
           />
           <Menu.Item
             title='Custom bootstrap (not implem.)'
-            onPress={() => this.hasConfigChanged()}
+            onPress={() => {}}
           />
         </Menu.Section>
-        <Menu.Section title='Miscellaneous'>
+        <Menu.Section title='Relay'>
           <Menu.Item
-            title='Multicast DNS'
-            customRight={
-              <Switch
-                justify='end'
-                disabled={!this.state.loaded}
-                value={this.state.mdns}
-                onValueChange={value => {
-                  this.setState({ mdns: value }, () => {
-                    this.hasConfigChanged()
-                  })
-                }}
-              />
-            }
+            title='Relay HOP'
+            customRight={<Switch justify='end' value={this.state.HOP} />}
           />
           <Menu.Item
-            title='Berty relay'
+            title='DHT Bucket'
             customRight={
               <Switch
                 justify='end'
-                disabled={!this.state.loaded}
-                value={this.state.relay}
-                onValueChange={value => {
-                  this.setState({ relay: value }, () => {
-                    this.hasConfigChanged()
-                  })
-                }}
+                value={this.state.DHT}
+                onValueChange={DHT => this.updateConfig({ DHT })}
               />
             }
           />

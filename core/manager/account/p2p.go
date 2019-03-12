@@ -3,7 +3,6 @@ package account
 import (
 	"context"
 
-	"berty.tech/core/network"
 	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/tracing"
 	"github.com/pkg/errors"
@@ -19,9 +18,10 @@ func (a *Account) UpdateNetwork(ctx context.Context, opts ...network_config.Opti
 		return err
 	}
 
-	if err := WithNetwork(network.New(ctx, opts...))(a); err != nil {
+	if err := a.network.Update(ctx, opts...); err != nil {
 		return errors.New("account failed to update network")
 	}
-
+	a.metric = a.network.Metric()
+	a.node.UseNetworkMetric(ctx, a.metric)
 	return a.node.UseNetworkDriver(ctx, a.network)
 }

@@ -96,6 +96,7 @@ export default class Menu extends Component {
         boldRight,
         textRight,
         customRight,
+        ...otherProps
       } = this.props
     ) {
       return (
@@ -116,6 +117,7 @@ export default class Menu extends Component {
                   align='center'
                   onChangeText={onChangeText}
                   bold={boldLeft ? true : null}
+                  {...otherProps}
                 >
                   {title}
                 </Text>

@@ -2,19 +2,25 @@ package network
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network/config"
 	host "berty.tech/core/network/host"
 	"berty.tech/core/pkg/tracing"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
 type Network struct {
+	config *config.Config
+
 	host *host.BertyHost
 
 	handler func(context.Context, *entity.Envelope) (*entity.Void, error)
+
+	updating *sync.Mutex
 
 	shutdown context.CancelFunc
 }
@@ -38,18 +44,19 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	ctx, cancel := context.WithCancel(ctx)
 
 	var err error
-	var cfg config.Config
 
 	net := &Network{
+		config:   &config.Config{},
+		updating: &sync.Mutex{},
 		shutdown: cancel,
 	}
 
-	if err := cfg.Apply(ctx, opts...); err != nil {
+	if err := net.config.Apply(ctx, opts...); err != nil {
 		cancel()
 		return nil, err
 	}
 
-	net.host, err = cfg.NewNode(ctx)
+	net.host, err = net.config.NewNode(ctx)
 	if err != nil {
 		cancel()
 		return nil, err
@@ -64,7 +71,11 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	// bootstrap default peers
 	// TOOD: infinite bootstrap + don't permit routing to provide when no peers are discovered
 	for {
-		if err := net.Bootstrap(ctx, true, cfg.Bootstrap...); err != nil {
+		bootstrap := net.config.Bootstrap
+		if net.config.DefaultBootstrap {
+			bootstrap = append(config.DefaultBootstrap, bootstrap...)
+		}
+		if err := net.Bootstrap(ctx, true, bootstrap...); err != nil {
 			logger().Error(err.Error())
 			time.Sleep(time.Second)
 			continue
@@ -73,6 +84,27 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	}
 
 	return net, nil
+}
+
+// Update create new network and permit to override previous config
+func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
+	net.updating.Lock()
+	defer net.updating.Unlock()
+
+	updated, err := New(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...)
+	if err != nil {
+		return errors.Wrap(err, "cannot update network: abort")
+	}
+
+	swap := *net
+
+	*net = *updated
+
+	net.updating = swap.updating
+
+	(&swap).Close(ctx)
+
+	return nil
 }
 
 func (net *Network) Close(ctx context.Context) error {
