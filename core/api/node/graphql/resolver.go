@@ -385,11 +385,17 @@ func (r *queryResolver) Protocols(ctx context.Context, id string, _ []string, _ 
 	})
 }
 
-func (r *queryResolver) EventList(ctx context.Context, filter *entity.Event, rawOnlyWithoutAckedAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
+func (r *queryResolver) EventList(ctx context.Context, filter *entity.Event, rawOnlyWithoutAckedAt *int32, rawOnlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error) {
 	onlyWithoutAckedAt := node.NullableTrueFalse_Null
 	if rawOnlyWithoutAckedAt != nil {
 		onlyWithoutAckedAt = node.NullableTrueFalse(*rawOnlyWithoutAckedAt)
 		logger().Info(fmt.Sprintf("raw value %+v parsed value %+v", rawOnlyWithoutAckedAt, onlyWithoutAckedAt))
+	}
+
+	onlyWithoutSeenAt := node.NullableTrueFalse_Null
+	if rawOnlyWithoutSeenAt != nil {
+		onlyWithoutSeenAt = node.NullableTrueFalse(*rawOnlyWithoutSeenAt)
+		logger().Info(fmt.Sprintf("raw value %+v parsed value %+v", rawOnlyWithoutSeenAt, onlyWithoutSeenAt))
 	}
 
 	if filter != nil {
@@ -405,6 +411,7 @@ func (r *queryResolver) EventList(ctx context.Context, filter *entity.Event, raw
 		Filter:             filter,
 		Paginate:           getPagination(first, after, last, before),
 		OnlyWithoutAckedAt: onlyWithoutAckedAt,
+		OnlyWithoutSeenAt:  onlyWithoutSeenAt,
 	}
 
 	input.Paginate.OrderBy = orderBy

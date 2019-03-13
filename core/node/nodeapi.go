@@ -46,6 +46,12 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 		query = query.Where("acked_at IS NOT NULL")
 	}
 
+	if input.OnlyWithoutSeenAt == node.NullableTrueFalse_True {
+		query = query.Where("seen_at IS NULL")
+	} else if input.OnlyWithoutSeenAt == node.NullableTrueFalse_False {
+		query = query.Where("seen_at IS NOT NULL")
+	}
+
 	// pagination
 	var err error
 	query, err = paginate(query, input.Paginate)
@@ -93,12 +99,11 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return event, nil
 	}
 
+	seenAt := time.Now().UTC()
+	event.SeenAt = &seenAt
+
 	// then mark as seen
-	if err := sql.
-		Model(event).
-		Where(&entity.Event{ID: event.ID}).
-		UpdateColumn("seen_at", time.Now().UTC()).
-		First(event).Error; err != nil {
+	if err := sql.Save(event).Error; err != nil {
 		return nil, errors.Wrap(err, "cannot set event as seen")
 	}
 

@@ -9,6 +9,7 @@ export default graphql`
       count: { type: "Int32" }
       cursor: { type: "String" }
       onlyWithoutAckedAt: { type: "Enum" }
+      onlyWithoutSeenAt: { type: "Enum" }
     ) {
     EventList(
       filter: $filter
@@ -17,6 +18,7 @@ export default graphql`
       first: $count
       after: $cursor
       onlyWithoutAckedAt: $onlyWithoutAckedAt
+      onlyWithoutSeenAt: $onlyWithoutSeenAt
     ) @connection(key: "EventList_EventList") {
       edges {
         cursor

@@ -8,6 +8,7 @@ class QRReader extends PureComponent {
     this.state = {
       enabled: true,
     }
+    props.setScanner(this)
   }
 
   render () {

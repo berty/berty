@@ -139,7 +139,7 @@
       "qrcode-not-from-berty": "This is not a Berty QR Code",
       "qrcode-camera-ask-title": "Scan QR Code",
       "qrcode-camera-ask-button": "Allow camera access",
-      "qrcode-camera-ask-text": "Allow Berty acces to your camera to scan the QR Code of your contacts",
+      "qrcode-camera-ask-text": "Allow Berty access to your camera to scan the QR Code of your contacts",
       "nearby": "Nearby",
       "invite": "Invite",
       "invalid-public-key": "This public key is invalid",

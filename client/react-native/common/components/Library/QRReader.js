@@ -40,7 +40,7 @@ class QRReader extends PureComponent {
   }
 
   render () {
-    const { t, onFound, style, cameraStyle } = this.props
+    const { t, onFound, style, cameraStyle, setScanner } = this.props
     const { permStatus, onPress } = this.state
 
     return permStatus === permissionsStatus.authorized ? (
@@ -50,7 +50,10 @@ class QRReader extends PureComponent {
           console.error(error)
         }}
         cameraProps={{ captureAudio: false }}
-        ref={(scanner) => { this.scanner = scanner }}
+        ref={(scanner) => {
+          this.scanner = scanner
+          setScanner(scanner)
+        }}
         containerStyle={style}
         topViewStyle={{
           width: 0,

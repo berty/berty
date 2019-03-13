@@ -42,9 +42,9 @@ class Message extends React.PureComponent {
     const isOneToOne = conversation.members.length <= 2
 
     // TODO: implement message seen
-    // if (new Date(this.props.data.seenAt).getTime() <= 0) {
-    //   this.messageSeen()
-    // }
+    if (new Date(this.props.data.seenAt).getTime() <= 0) {
+      this.messageSeen()
+    }
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
