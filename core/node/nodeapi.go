@@ -99,12 +99,11 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return event, nil
 	}
 
+	seenAt := time.Now().UTC()
+	event.SeenAt = &seenAt
+
 	// then mark as seen
-	if err := sql.
-		Model(event).
-		Where(&entity.Event{ID: event.ID}).
-		UpdateColumn("seen_at", time.Now().UTC()).
-		First(event).Error; err != nil {
+	if err := sql.Save(event).Error; err != nil {
 		return nil, errors.Wrap(err, "cannot set event as seen")
 	}
 

@@ -29,8 +29,8 @@ class TabBarIconBase extends Component {
       stored: [],
       queryList: queries.EventList.graphql,
       queryVariables: props.routeName === 'contacts'
-        ? merge([queries.EventList.defaultVariables, { filter: { kind: 201 }, onlyWithoutSeenAt: 1 }])
-        : merge([queries.EventList.defaultVariables, { filter: { kind: 302 } }]),
+        ? merge([queries.EventList.defaultVariables, { filter: { kind: 201, direction: 1 }, onlyWithoutSeenAt: 1 }])
+        : merge([queries.EventList.defaultVariables, { filter: { kind: 302, direction: 1 } }]),
       subscription: props.routeName === 'contacts'
         ? [subscriptions.contactRequest]
         : [subscriptions.message],
@@ -49,18 +49,17 @@ class TabBarIconBase extends Component {
     } = props
     const { routeName } = this.props
     let { stored } = this.state
+    const idx = stored.indexOf(id)
 
-    if (stored.indexOf(id) === -1) {
-      if (routeName === 'chats' && new Date(seenAt).getTime() > 0) {
-        return null
-      }
+    if (idx === -1 && seenAt === null) {
+      console.log('props.data', props.data)
       this.setState({
         stored: [
           ...stored,
           id,
         ],
       })
-    } else if (routeName === 'chats' && new Date(seenAt).getTime() > 0) {
+    } else if (idx !== -1 && routeName === 'chats' && new Date(seenAt).getTime() > 0) {
       stored.splice(stored.indexOf(id), 1)
       this.setState({
         stored,
@@ -70,13 +69,13 @@ class TabBarIconBase extends Component {
     return null
   }
 
-  contactSeen = () => {
+  contactSeen = async () => {
     if (this.state.stored.length > 0) {
-      this.state.stored.forEach((val) => {
-        this.props.context.mutations.eventSeen({
+      await Promise.all(this.state.stored.map((val) => {
+        return this.props.context.mutations.eventSeen({
           id: val,
         })
-      })
+      }))
 
       this.setState({
         stored: [],
