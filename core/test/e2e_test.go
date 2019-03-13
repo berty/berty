@@ -827,9 +827,7 @@ func TestAliasesFlow(t *testing.T) {
 
 func setupP2PNetwork(ctx context.Context) (*p2pnet.Network, error) {
 	return p2pnet.New(ctx,
-		p2pnet.WithDefaultOptions(),
-		p2pnet.DisableDHT(),
-		p2pnet.DisableHOP(),
+		p2pnet.WithDefaultTestOptions(),
 	)
 }
 
@@ -909,7 +907,6 @@ func TestNodesWithP2PNetwork(t *testing.T) {
 	everythingWentFine()
 
 	ctx := context.Background()
-	ctx, _ = context.WithTimeout(ctx, time.Minute)
 	Convey("End-to-end test (with p2p network)", t, FailureHalts, func() {
 		Convey("setup networks", FailureHalts, func() {
 			shouldIContinue(t)
@@ -925,9 +922,7 @@ func TestNodesWithP2PNetwork(t *testing.T) {
 			bobBootstrap := getBootstrap(ctx, bobNetwork)
 			eveBootstrap := getBootstrap(ctx, eveNetwork)
 
-			err = aliceNetwork.Bootstrap(ctx, true, append(bobBootstrap, eveBootstrap...)...)
-			So(err, ShouldBeNil)
-			err = bobNetwork.Bootstrap(ctx, true, append(aliceBootstrap, eveBootstrap...)...)
+			err = bobNetwork.Bootstrap(ctx, true, append(eveBootstrap, aliceBootstrap...)...)
 			So(err, ShouldBeNil)
 			err = eveNetwork.Bootstrap(ctx, true, append(aliceBootstrap, bobBootstrap...)...)
 			So(err, ShouldBeNil)

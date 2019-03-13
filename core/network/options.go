@@ -15,6 +15,21 @@ func WithConfig(override *config.Config) config.Option {
 	}
 }
 
+func WithDefaultTestOptions() config.Option {
+	return ChainOptions(
+		EnableDHTServer(),
+		EnableDefaultBind(),
+		EnablePing(),
+		EnableMDNS(),
+		EnableTCP(),
+		EnableTCP(),
+		DisableHOP(),
+		EnablePrivateNetwork(config.DefaultSwarmKey),
+		EnableMetric(),
+		DisablePersistConfig(),
+	)
+}
+
 func WithDefaultOptions() config.Option {
 	return ChainOptions(
 		EnableDefaultBind(),
@@ -26,7 +41,7 @@ func WithDefaultOptions() config.Option {
 		EnableBLE(),
 		EnableQUIC(),
 		EnablePrivateNetwork(config.DefaultSwarmKey),
-		DisableDHT(),
+		DisableDHTServer(),
 		EnableMetric(),
 		DisableHOP(),
 		DisablePersistConfig(),
@@ -36,7 +51,7 @@ func WithDefaultOptions() config.Option {
 func WithDefaultMobileOptions() config.Option {
 	return ChainOptions(
 		WithDefaultOptions(),
-		DisableDHT(),
+		DisableDHTServer(),
 		DisableHOP(),
 		DisableBLE(),
 		EnablePersistConfig(),
@@ -47,7 +62,7 @@ func WithDefaultRelayOptions() config.Option {
 	return ChainOptions(
 		WithDefaultOptions(),
 		EnableHOP(),
-		EnableDHT(),
+		EnableDHTServer(),
 		DisableMDNS(),
 	)
 }
@@ -167,16 +182,16 @@ func Bind(maddr ...string) config.Option {
 	}
 }
 
-func EnableDHT() config.Option {
+func EnableDHTServer() config.Option {
 	return func(cfg *config.Config) error {
-		cfg.DHT = true
+		cfg.DHTServer = true
 		return nil
 	}
 }
 
-func DisableDHT() config.Option {
+func DisableDHTServer() config.Option {
 	return func(cfg *config.Config) error {
-		cfg.DHT = false
+		cfg.DHTServer = false
 		return nil
 	}
 }
