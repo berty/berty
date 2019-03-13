@@ -11,8 +11,22 @@ import RelayContext from '../../../../relay/RelayContext'
 import colors from '../../../../constants/colors'
 
 class ByQRCode extends PureComponent {
+  constructor (props) {
+    super(props)
+    this.state = {
+      scanner: null,
+    }
+  }
+
+  setScanner = (scanner) => {
+    this.setState({ scanner })
+  }
+
   reactivate () {
-    this.scanner.reactivate()
+    const { scanner } = this.state
+    if (scanner !== null) {
+      scanner.reactivate()
+    }
   }
 
   render () {
@@ -44,6 +58,7 @@ class ByQRCode extends PureComponent {
               ref={scanner => {
                 this.scanner = scanner
               }}
+              setScanner={this.setScanner}
               cameraStyle={{ height: size, width: size }}
               onFound={async data => {
                 const url = parseUrl(data)
