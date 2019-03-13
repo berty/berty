@@ -142,6 +142,7 @@ class TabBarIconBase extends Component {
             renderItem={props => (
               <this.fragment {...props} context={context} />
             )}
+            style={{ display: 'none' }}
             emptyItem={() => null}
           />
         </>

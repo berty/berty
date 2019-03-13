@@ -69,7 +69,7 @@ const IconBadge = props => (
           }}
         >
           {props.value !== null
-            ? (<Text>{props.value}</Text>)
+            ? (<Text style={{ color: props.valueCorlor || colors.borderGrey }}>{props.value}</Text>)
             : null
           }
         </View>
