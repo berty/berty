@@ -148,9 +148,6 @@ func (br *BertyRouting) ClosedStream(net inet.Network, s inet.Stream) {}
 
 // Connected block connection until dht is ready
 func (br *BertyRouting) Connected(net inet.Network, c inet.Conn) {
-	br.muReady.Lock()
-	defer br.muReady.Unlock()
-
 	if br.ready {
 		return
 	}

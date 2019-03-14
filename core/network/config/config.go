@@ -329,7 +329,6 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 		h.Close()
 		return nil, err
 	}
-	h.Network().Notify(h.Routing.(*host.BertyRouting))
 
 	// crouter, ok := h.Routing.(routing.ContentRouting)
 	// if !ok {
@@ -365,6 +364,5 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 
 	h.Discovery = host.NewBertyDiscovery(ctx, discoveries)
-
 	return h, nil
 }

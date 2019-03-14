@@ -373,18 +373,18 @@ func (m *BertyMetric) Connected(s inet.Network, c inet.Conn) {
 				zap.Error(err),
 			)
 		} else {
-			logger().Info("conn latency",
+			logger().Debug("conn latency",
 				zap.String("addr", c.RemoteMultiaddr().String()),
 				zap.Duration("latency", t),
 			)
 		}
 	}()
 
-	go m.handlePeer(m.rootContext, c.RemotePeer())
+	go m.handlePeer(context.Background(), c.RemotePeer())
 }
 
 func (m *BertyMetric) Disconnected(s inet.Network, c inet.Conn) {
-	go m.handlePeer(m.rootContext, c.RemotePeer())
+	go m.handlePeer(context.Background(), c.RemotePeer())
 }
 
 func ewma(prev, next time.Duration) time.Duration {

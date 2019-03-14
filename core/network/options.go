@@ -15,54 +15,83 @@ func WithConfig(override *config.Config) config.Option {
 	}
 }
 
-func WithDefaultTestOptions() config.Option {
+func WithClientOptions() config.Option {
 	return ChainOptions(
+		DisableDHTServer(),
+		DisableHOP(),
+		DisablePersistConfig(),
+		EnableDefaultBind(),
+		EnableMetric(),
+		EnablePing(),
+		EnableTCP(),
+	)
+}
+
+func WithServerOptions() config.Option {
+	return ChainOptions(
+		DisablePersistConfig(),
 		EnableDHTServer(),
 		EnableDefaultBind(),
-		EnablePing(),
-		EnableMDNS(),
-		EnableTCP(),
-		EnableTCP(),
-		DisableHOP(),
-		EnablePrivateNetwork(config.DefaultSwarmKey),
+		EnableHOP(),
 		EnableMetric(),
-		DisablePersistConfig(),
+		EnablePing(),
+		EnableTCP(),
 	)
 }
 
 func WithDefaultOptions() config.Option {
 	return ChainOptions(
-		EnableDefaultBind(),
-		EnableDefaultBootstrap(),
-		EnablePing(),
-		EnableMDNS(),
-		DisableWS(),
-		EnableTCP(),
+		WithServerOptions(),
+
 		EnableBLE(),
+		EnableMDNS(),
+		EnableDefaultBootstrap(),
 		EnableQUIC(),
-		EnablePrivateNetwork(config.DefaultSwarmKey),
-		DisableDHTServer(),
-		EnableMetric(),
-		DisableHOP(),
+		EnableTCP(),
+	)
+}
+
+func WithServerTestOptions() config.Option {
+	return ChainOptions(
+		WithServerOptions(),
+
+		DisableDefaultBind(),
+		Bind("/ip4/127.0.0.1/tcp/0"),
 		DisablePersistConfig(),
+		DisableHOP(),
+	)
+}
+
+func WithClientTestOptions() config.Option {
+	return ChainOptions(
+		WithClientOptions(),
+
+		DisableDefaultBind(),
+		Bind("/ip4/127.0.0.1/tcp/0"),
+		DisablePersistConfig(),
+		DisableHOP(),
 	)
 }
 
 func WithDefaultMobileOptions() config.Option {
 	return ChainOptions(
-		WithDefaultOptions(),
-		DisableDHTServer(),
-		DisableHOP(),
-		DisableBLE(),
+		WithClientOptions(),
+
+		EnableDefaultBootstrap(),
+		EnableMDNS(),
+		EnableBLE(),
+		EnableQUIC(),
 		EnablePersistConfig(),
 	)
 }
 
 func WithDefaultRelayOptions() config.Option {
 	return ChainOptions(
-		WithDefaultOptions(),
+		WithServerOptions(),
+
 		EnableHOP(),
-		EnableDHTServer(),
+		EnableDefaultBootstrap(),
+		EnableQUIC(),
 		DisableMDNS(),
 	)
 }
