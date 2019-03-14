@@ -4,6 +4,7 @@ import { Easing, Animated, Platform } from 'react-native'
 import { EventListFilterModal } from '../Screens/Settings/Devtools/EventList'
 import ContactCardModal from '../Screens/Contacts/ContactCardModal'
 import { ViewExportComponent } from '../../helpers/saveViewToCamera'
+import ChatsSwitcherModal from '../Screens/Contacts/ChatsSwitcherModal'
 
 export default createStackNavigator(
   {
@@ -13,6 +14,9 @@ export default createStackNavigator(
     },
     'modal/contacts/card': {
       screen: ContactCardModal,
+    },
+    'modal/chats/switcher': {
+      screen: ChatsSwitcherModal,
     },
     'virtual/view-export': {
       screen: ViewExportComponent,

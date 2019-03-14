@@ -354,6 +354,14 @@ export class ForegroundText extends PureComponent {
     return ForegroundText.styles[propsHash]
   }
 
+  focus () {
+    this._input.focus()
+  }
+
+  blur () {
+    this._input.blur()
+  }
+
   render () {
     const { icon, input, children, multiline, onSubmit, onChangeText, value, flip } = this.props
     const numberOfLines = typeof multiline === 'number' ? multiline : undefined
@@ -371,12 +379,14 @@ export class ForegroundText extends PureComponent {
             {...(typeof input === 'object' ? input : {})}
             style={styles.input}
             placeholder={children || input.placeholder}
+            autoFocus={!!input.autoFocus}
             placeholderTextColor={colors.subtleGrey}
             onSubmitEditing={onSubmit}
             onChangeText={onChangeText || (() => {})}
             multiline={!!multiline}
             numberOfLines={numberOfLines}
             value={value}
+            ref={c => (this._input = c)}
           />
         ) : (
           <TextNative
@@ -393,13 +403,24 @@ export class ForegroundText extends PureComponent {
   }
 }
 
-export const Text = props => {
-  props = reverse(props)
-  return (
-    <BackgroundText {...props}>
-      <ForegroundText {...props} />
-    </BackgroundText>
-  )
+export class Text extends React.PureComponent {
+  focus () {
+    this._text.focus()
+  }
+
+  blur () {
+    this._text.blur()
+  }
+
+  render () {
+    const props = reverse(this.props)
+
+    return (
+      <BackgroundText {...props}>
+        <ForegroundText {...props} ref={c => (this._text = c)} />
+      </BackgroundText>
+    )
+  }
 }
 
 export default Text

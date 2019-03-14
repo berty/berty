@@ -189,7 +189,8 @@
     "received": "Received",
     "sent": "Sent",
     "unknown": "Unknown",
-    "info-updated": "Contact information has been updated"
+    "info-updated": "Contact information has been updated",
+    "quick-switch-placeholder": "Access..."
   },
   "setting-up": "Setting up Berty :)",
   "qrcode": "QR Code",

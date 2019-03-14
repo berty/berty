@@ -70,5 +70,5 @@ export default {
 
   background: '#FAFAFE',
 
-  transparentGrey: 'rgba(36, 49, 50, 0.8)', // based on grey 1
+  transparentGrey: 'rgba(161, 161, 178, 0.9)', // based on darkGrey
 }

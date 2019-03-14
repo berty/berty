@@ -240,7 +240,7 @@ export default createBottomTabNavigator(
 export const SplitNavigator = createSplitNavigator({
   'placeholder': Placeholder,
   'contacts': SubviewsContactNavigator,
-  'chats': SubviewsChatNavigator,
+  'chats/subviews': SubviewsChatNavigator,
 }, {
   'side/contacts': {
     screen: SplitSideContactNavigator,
