@@ -1172,6 +1172,19 @@ models:
     fields:
       conversation:
 
+  BertyEntityConversationUpdateAttrs:
+    model: berty.tech/core/entity.ConversationUpdateAttrs
+    fields:
+      conversation:
+  BertyEntityConversationUpdateAttrsInput:
+    model: berty.tech/core/entity.ConversationUpdateAttrs
+    fields:
+      conversation:
+  BertyEntityConversationUpdateAttrsPayload:
+    model: berty.tech/core/entity.ConversationUpdateAttrs
+    fields:
+      conversation:
+
   BertyEntityDevtoolsMapsetAttrs:
     model: berty.tech/core/entity.DevtoolsMapsetAttrs
     fields:

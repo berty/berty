@@ -381,6 +381,9 @@ type BertyEntityConversationNewMessageAttrs  {
 type BertyEntityConversationReadAttrs  {
     conversation: BertyEntityConversation
 }
+type BertyEntityConversationUpdateAttrs  {
+    conversation: BertyEntityConversation
+}
 type BertyEntityDevtoolsMapsetAttrs  {
     key: String!
     val: String!
@@ -895,6 +898,16 @@ type Mutation {
     contacts: [BertyEntityContactInput]
     title: String!
     topic: String!
+  ): BertyEntityConversation
+  ConversationUpdate(
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    readAt: GoogleProtobufTimestampInput
+    title: String!
+    topic: String!
+    infos: String!
+    members: [BertyEntityConversationMemberInput]
   ): BertyEntityConversation
   ConversationInvite(
     conversation: BertyEntityConversationInput

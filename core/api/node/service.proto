@@ -103,6 +103,9 @@ service Service {
   rpc ConversationCreate (ConversationCreateInput) returns (berty.entity.Conversation) {
     option (gql.graphql_type) = "Mutation";
   };
+  rpc ConversationUpdate (berty.entity.Conversation) returns (berty.entity.Conversation) {
+    option (gql.graphql_type) = "Mutation";
+  };
   rpc ConversationList (ConversationListInput) returns (stream berty.entity.Conversation) {
     option (gql.graphql_output) = ".berty.node.ConversationListConnection";
     option (gql.graphql_type) = "Query";

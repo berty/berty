@@ -131,6 +131,19 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *entity.Event) er
 // Conversation handlers
 //
 
+func (n *Node) handleConversationUpdate(ctx context.Context, input *entity.Event) error {
+	attrs, err := input.GetConversationUpdateAttrs()
+	if err != nil {
+		return err
+	}
+
+	if err := n.sql(ctx).Save(attrs.Conversation).Error; err != nil {
+		return errors.Wrap(err, "cannot update conversation")
+	}
+
+	return nil
+}
+
 func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event) error {
 	attrs, err := input.GetConversationInviteAttrs()
 	if err != nil {

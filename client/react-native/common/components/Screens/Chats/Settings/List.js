@@ -11,8 +11,17 @@ import withRelayContext from '../../../../helpers/withRelayContext'
 import { withGoBack } from '../../../Library/BackActionProvider'
 
 class ListBase extends PureComponent {
-  state = {
-    edit: false,
+  constructor (props) {
+    super(props)
+    const conversation = props.navigation.getParam('conversation')
+    const title = utils.getTitle(conversation)
+
+    this.state = {
+      edit: false,
+      topic: conversation.topic,
+      title,
+      conversation,
+    }
   }
 
   componentDidMount () {
@@ -29,6 +38,15 @@ class ListBase extends PureComponent {
   }
 
   onSave = () => {
+    const { title, topic, conversation } = this.state
+    const { context: { mutations } } = this.props
+
+    mutations.conversationUpdate({
+      ...conversation,
+      title,
+      topic,
+    })
+
     this.setState({ edit: false }, () =>
       this.props.navigation.setParams({ state: this.state })
     )
@@ -63,9 +81,8 @@ class ListBase extends PureComponent {
 
   render () {
     const { navigation, t, context } = this.props
-    const { edit } = this.state
-    const conversation = this.props.navigation.getParam('conversation')
-    const title = utils.getTitle(conversation)
+    const { edit, conversation, title, topic } = this.state
+
     this.context = context
     return (
       <Screen>
@@ -92,7 +109,18 @@ class ListBase extends PureComponent {
           />
           {edit && (
             <Menu.Section title={t('chats.name')}>
-              <Menu.Input value={title} />
+              <Menu.Input
+                value={title}
+                onChangeText={title => this.setState({ title })}
+              />
+            </Menu.Section>
+          )}
+          {edit && (
+            <Menu.Section title={t('chats.topic')}>
+              <Menu.Input
+                value={topic}
+                onChangeText={topic => this.setState({ topic })}
+              />
             </Menu.Section>
           )}
           {!edit && (

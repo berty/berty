@@ -118,6 +118,32 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 	return event, nil
 }
 
+func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	n.handleMutex(ctx)()
+
+	sql := n.sql(ctx)
+
+	if err := sql.Save(input).Error; err != nil {
+		return nil, errors.Wrap(err, "cannot update conversation")
+	}
+
+	// event
+	event := n.NewConversationEvent(ctx, input, entity.Kind_ConversationUpdate)
+	if err := event.SetAttrs(&entity.ConversationUpdateAttrs{
+		Conversation: input,
+	}); err != nil {
+		return nil, errorcodes.ErrUndefined.Wrap(err)
+	}
+	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
+		return nil, errorcodes.ErrNet.Wrap(err)
+	}
+	return input, nil
+}
+
 func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	var err error
 

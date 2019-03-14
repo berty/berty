@@ -48,6 +48,7 @@ enum Kind {
   ConversationInvite = 301;
   ConversationNewMessage = 302;
   ConversationRead = 303;
+  ConversationUpdate = 304;
 
   // Devtool events
   DevtoolsMapset = 401;
@@ -99,6 +100,7 @@ message ContactShareAttrs { berty.entity.Contact contact = 1; }
 message ConversationInviteAttrs { berty.entity.Conversation conversation = 1; }
 message ConversationNewMessageAttrs { berty.entity.Message message = 1; }
 message ConversationReadAttrs { berty.entity.Conversation conversation = 1; }
+message ConversationUpdateAttrs { berty.entity.Conversation conversation = 1; }
 
 //
 // Devtools events
