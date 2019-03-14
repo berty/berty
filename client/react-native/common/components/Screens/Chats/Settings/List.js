@@ -18,7 +18,7 @@ class ListBase extends PureComponent {
 
     this.state = {
       edit: false,
-      oldTitle: title,
+      topic: conversation.topic,
       title,
       conversation,
     }
@@ -38,15 +38,14 @@ class ListBase extends PureComponent {
   }
 
   onSave = () => {
-    const { title, oldTitle, conversation } = this.state
+    const { title, topic, conversation } = this.state
     const { context: { mutations } } = this.props
 
-    if (title !== oldTitle) {
-      mutations.conversationUpdate({
-        ...conversation,
-        title,
-      })
-    }
+    mutations.conversationUpdate({
+      ...conversation,
+      title,
+      topic,
+    })
 
     this.setState({ edit: false }, () =>
       this.props.navigation.setParams({ state: this.state })
@@ -82,7 +81,7 @@ class ListBase extends PureComponent {
 
   render () {
     const { navigation, t, context } = this.props
-    const { edit, conversation, title } = this.state
+    const { edit, conversation, title, topic } = this.state
 
     this.context = context
     return (
@@ -113,6 +112,14 @@ class ListBase extends PureComponent {
               <Menu.Input
                 value={title}
                 onChangeText={title => this.setState({ title })}
+              />
+            </Menu.Section>
+          )}
+          {edit && (
+            <Menu.Section title={t('chats.topic')}>
+              <Menu.Input
+                value={topic}
+                onChangeText={topic => this.setState({ topic })}
               />
             </Menu.Section>
           )}

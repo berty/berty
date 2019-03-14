@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Platform,
   TextInput as RNTextInput,
+  View,
 } from 'react-native'
 import { btoa } from 'b64-lite'
 import { withNamespaces } from 'react-i18next'
@@ -304,7 +305,29 @@ class Detail extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title={utils.getTitle(navigation.state.params || {})}
+        title={(
+          <View style={{ flexDirection: 'column' }}>
+            <Text
+              large
+              color={colors.fakeBlack}
+              justify={navigation.getParam('backBtn') ? 'center' : 'start'}
+              middle
+              size={5}
+            >
+              {utils.getTitle(navigation.state.params) || {}}
+            </Text>
+            {navigation.state.params.topic
+              ? (
+                <Text
+                  justify={navigation.getParam('backBtn') ? 'center' : 'start'}
+                  middle
+                >
+                  {navigation.state.params.topic}
+                </Text>
+              ) : null
+            }
+          </View>
+        )}
         rightBtnIcon='settings'
         onPressRightBtn={() =>
           navigation.navigate('chats/settings', {

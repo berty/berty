@@ -19,6 +19,7 @@ const Avatar = ({ data, size = 40, margin = 4, uri = null, style = [] }) => {
 
   if (!data || !data.id) {
     console.error(['No id provided', data])
+    return null
   }
 
   const extractedPublicKey = extractPublicKeyFromId(data.id)

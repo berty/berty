@@ -110,6 +110,7 @@
   },
   "chats": {
     "title": "Chats",
+    "topic": "Topic",
     "no-new-messages": "No new messages",
     "new-conversation": "New conversation",
     "new-message": "New message",
