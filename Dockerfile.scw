@@ -1,0 +1,10 @@
+# build core
+FROM            golang:1.11.4 as core-builder
+RUN             apt-get update && apt-get install nodejs make gcc g++ musl-dev libssl-dev git -y
+ENV             GO111MODULE=on GOPROXY=http://goproxy.berty.io:3000
+COPY            core/go.* /go/src/berty.tech/core/
+WORKDIR         /go/src/berty.tech
+RUN             cd core && go get .
+COPY            core /go/src/berty.tech/core
+RUN             cd core && make _ci_prepare # touching generated files
+RUN             cd core && make install

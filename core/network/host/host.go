@@ -56,7 +56,6 @@ func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (
 // BertyHost's Connect differs in that if the host has no addresses for a
 // given peer, it will use its routing system to try to find some.
 func (bh *BertyHost) Connect(ctx context.Context, pi pstore.PeerInfo) error {
-
 	if bh.Network().Connectedness(pi.ID) == inet.Connected {
 		return nil
 	}
@@ -165,6 +164,10 @@ func (bh *BertyHost) RemoveStreamHandler(pid protocol.ID) {
 }
 
 func (bh *BertyHost) bestLatency(cs ...inet.Conn) inet.Conn {
+	if bh.Metric == nil {
+		return cs[0]
+	}
+
 	if len(cs) == 0 {
 		return nil
 	}
@@ -206,8 +209,6 @@ func (bh *BertyHost) newBestStream(ctx context.Context, p peer.ID) (inet.Stream,
 }
 
 func (bh *BertyHost) NewStream(ctx context.Context, p peer.ID, pids ...protocol.ID) (inet.Stream, error) {
-	logger().Debug("NEW_STREAM")
-
 	// Ensure we have a connection, with peer addresses resolved by the routing system (#207)
 	// It is not sufficient to let the underlying host connect, it will most likely not have
 	// any addresses for the peer without any prior connections.

@@ -15,6 +15,7 @@ import (
 	"berty.tech/core/network/host"
 	"berty.tech/core/network/metric"
 	"berty.tech/core/network/protocol/ble"
+	"berty.tech/core/network/protocol/dht"
 	"berty.tech/core/network/protocol/mdns"
 	"berty.tech/core/pkg/errorcodes"
 	libp2p "github.com/libp2p/go-libp2p"
@@ -136,6 +137,12 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 			return err
 		}
 	}
+
+	if cfg.DefaultBootstrap {
+		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
+	}
+
+	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
 
 	// add ws transport
 	if cfg.WS {
@@ -310,13 +317,18 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 		return nil, err
 	}
 
-	// Configure routing
-	h.Routing, err = host.NewBertyRouting(ctx, h, cfg.DHTServer)
+	dht, err := dht.New(ctx, h, cfg.DHTServer, false)
 	if err != nil {
 		h.Close()
 		return nil, err
 	}
-	h.Network().Notify(h.Routing.(*host.BertyRouting))
+
+	// Configure routing
+	h.Routing, err = host.NewBertyRouting(ctx, h, dht)
+	if err != nil {
+		h.Close()
+		return nil, err
+	}
 
 	// crouter, ok := h.Routing.(routing.ContentRouting)
 	// if !ok {
@@ -352,6 +364,5 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 
 	h.Discovery = host.NewBertyDiscovery(ctx, discoveries)
-
 	return h, nil
 }

@@ -35,6 +35,7 @@ type daemonOptions struct {
 	privateKeyFile   string   `mapstructure:"private-key-file"`
 
 	// p2p
+
 	identity       string   `mapstructure:"identity"`
 	bootstrap      []string `mapstructure:"bootstrap"`
 	noP2P          bool     `mapstructure:"no-p2p"`
@@ -46,8 +47,7 @@ type daemonOptions struct {
 	dhtServer      bool     `mapstructure:"dht"`
 	PrivateNetwork bool     `mapstructure:"private-network"`
 	SwarmKeyPath   string   `mapstructure:"swarm-key"`
-
-	nickname string `mapstructure:"nickname"`
+	nickname       string   `mapstructure:"nickname"`
 }
 
 func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
@@ -61,12 +61,13 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.withBot, "bot", false, "enable bot")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
+
+	// network
 	flags.StringVarP(&opts.identity, "p2p-identity", "i", "", "set p2p identity")
-	flags.StringSliceVar(&opts.bootstrap, "bootstrap", network_config.DefaultBootstrap, "boostrap peers")
 	flags.StringSliceVar(&opts.apnsCerts, "apns-certs", []string{}, "Path of APNs certificates, delimited by commas")
 	flags.StringSliceVar(&opts.apnsDevVoipCerts, "apns-dev-voip-certs", []string{}, "Path of APNs VoIP development certificates, delimited by commas")
 	flags.StringSliceVar(&opts.fcmAPIKeys, "fcm-api-keys", []string{}, "API keys for Firebase Cloud Messaging, in the form packageid:token, delimited by commas")
-	// network
+	flags.StringSliceVar(&opts.bootstrap, "bootstrap", network_config.DefaultBootstrap, "boostrap peers")
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
@@ -166,6 +167,8 @@ func daemon(opts *daemonOptions) error {
 					Identity:         opts.identity,
 					Persist:          false,
 					OverridePersist:  false,
+
+					//					DHTKVLogDatastore: opts.dhtkvLogDatastore,
 				}),
 			),
 		))

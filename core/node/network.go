@@ -2,13 +2,10 @@ package node
 
 import (
 	"context"
-	"time"
 
-	"berty.tech/core/entity"
 	"berty.tech/core/network"
 	network_metric "berty.tech/core/network/metric"
 	"berty.tech/core/pkg/tracing"
-	"go.uber.org/zap"
 )
 
 func WithNetworkDriver(driver network.Driver) NewNodeOption {
@@ -36,21 +33,12 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	ctx = tracer.Context()
 
 	// FIXME: use a locking system
-
 	n.networkDriver = driver
+
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
 
-	// @FIXME: dont do that in a goroutine, remove the sleep
-
-	if err := n.networkDriver.Join(ctx, n.UserID()); err != nil {
-		logger().Error("failed to join user channel",
-			zap.String("id", n.UserID()),
-			zap.Error(err),
-		)
-	}
-
-	time.Sleep(time.Second)
+	_ = n.networkDriver.Join(ctx, n.UserID())
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device
@@ -61,13 +49,14 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	// 	}
 	// }
 
-	var conversations []entity.Conversation
-	sql := n.sql(ctx)
-	sql.Table("conversation").Select("id").Find(&conversations)
-	for _, conversation := range conversations {
-		if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
-			logger().Warn(err.Error())
-		}
-	}
+	// var conversations []entity.Conversation
+	// sql := n.sql(ctx)
+	// sql.Table("conversation").Select("id").Find(&conversations)
+	// for _, conversation := range conversations {
+	// 	if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
+	// 		logger().Warn(err.Error())
+	// 	}
+	// }
+
 	return nil
 }

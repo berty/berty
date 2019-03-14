@@ -615,4 +615,6 @@ func (a *Account) PanicHandler() {
 		logger().Error("panic handler: panic received, send error to errChan", zap.Error(err))
 		a.errChan <- err
 	}
+
+	logger().Error("PANIC, but cant recover that... :(")
 }

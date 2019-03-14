@@ -499,21 +499,6 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 		return nil, err
 	}
 
-	// Async subscribe to conversation
-	// wait for 1s to simulate a sync subscription,
-	// if too long, the task will be done in background
-	done := make(chan bool, 1)
-	go func() {
-		if err := n.networkDriver.Join(ctx, conversation.ID); err != nil {
-			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to join conversation"))
-		}
-		done <- true
-	}()
-	select {
-	case <-done:
-	case <-time.After(1 * time.Second):
-	}
-
 	// send invite to peers
 	filtered := conversation.Filtered()
 	for _, member := range conversation.Members {
