@@ -304,7 +304,7 @@ class Detail extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title={utils.getTitle(navigation.state.params)}
+        title={utils.getTitle(navigation.state.params || {})}
         rightBtnIcon='settings'
         onPressRightBtn={() =>
           navigation.navigate('chats/settings', {

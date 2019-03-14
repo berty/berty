@@ -7,24 +7,9 @@ import { Menu, Header, Screen, Avatar } from '../../../Library'
 import { colors } from '../../../../constants'
 import { contact as contactHelper } from '../../../../utils'
 import withRelayContext from '../../../../helpers/withRelayContext'
+import { withGoBack } from '../../../Library/BackActionProvider'
 
-class Detail extends PureComponent {
-  static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Header
-        navigation={navigation}
-        title={I18n.t('contacts.details')}
-        rightBtnIcon={'edit-2'}
-        onPressRightBtn={() =>
-          navigation.navigate('detail/edit', {
-            contact: navigation.getParam('contact'),
-          })
-        }
-        backBtn
-      />
-    ),
-  })
-
+class DetailsBase extends PureComponent {
   blockContact = () => {
     console.log('Block')
   }
@@ -74,7 +59,7 @@ class Detail extends PureComponent {
       await this.props.context.mutations.contactRemove({
         id: this.props.navigation.getParam('contact').id,
       })
-      this.props.navigation.goBack(null)
+      this.props.goBack(null)
     } catch (err) {
       console.error(err)
     }
@@ -135,4 +120,22 @@ class Detail extends PureComponent {
   }
 }
 
-export default withRelayContext(withNamespaces()(Detail))
+const Details = withGoBack(withRelayContext(withNamespaces()(DetailsBase)))
+
+Details.navigationOptions = ({ navigation }) => ({
+  header: (
+    <Header
+      navigation={navigation}
+      title={I18n.t('contacts.details')}
+      rightBtnIcon={'edit-2'}
+      onPressRightBtn={() =>
+        navigation.navigate('detail/edit', {
+          contact: navigation.getParam('contact'),
+        })
+      }
+      backBtn
+    />
+  ),
+})
+
+export default Details

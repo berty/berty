@@ -1,5 +1,10 @@
-import ContactNavigator from './ContactNavigator'
-import ChatNavigator from './ChatNavigator'
+import ContactNavigator, {
+  SplitSideContactNavigator, SubviewsContactNavigator,
+} from './ContactNavigator'
+import ChatNavigator, {
+  SubviewsChatNavigator,
+  SplitSideChatNavigator,
+} from './ChatNavigator'
 import SettingsNavigator from './SettingsNavigator'
 import { createBottomTabNavigator } from 'react-navigation'
 import { Platform } from 'react-native'
@@ -8,6 +13,8 @@ import React, { Component } from 'react'
 import { colors } from '../../constants'
 import { Icon } from '../Library'
 import { UpdateContext } from '../../update'
+import { createSplitNavigator } from './SplitNavigator'
+import Placeholder from '../Screens/Placeholder'
 import withRelayContext from '../../helpers/withRelayContext'
 import { fragments } from '../../graphql'
 import { Pagination } from '../../relay'
@@ -29,8 +36,19 @@ class TabBarIconBase extends Component {
       stored: [],
       queryList: queries.EventList.graphql,
       queryVariables: props.routeName === 'contacts'
-        ? merge([queries.EventList.defaultVariables, { filter: { kind: 201, direction: 1 }, onlyWithoutSeenAt: 1 }])
-        : merge([queries.EventList.defaultVariables, { filter: { kind: 302, direction: 1 } }]),
+        ? merge([queries.EventList.defaultVariables, {
+          filter: {
+            kind: 201,
+            direction: 1,
+          },
+          onlyWithoutSeenAt: 1,
+        }])
+        : merge([queries.EventList.defaultVariables, {
+          filter: {
+            kind: 302,
+            direction: 1,
+          },
+        }]),
       subscription: props.routeName === 'contacts'
         ? [subscriptions.contactRequest]
         : [subscriptions.message],
@@ -104,6 +122,9 @@ class TabBarIconBase extends Component {
       contacts: 'users',
       chats: 'message-circle',
       settings: 'settings',
+      'side/contacts': 'users',
+      'side/chats': 'message-circle',
+      'side/settings': 'settings',
     }[routeName]
 
     if (routeName === 'contacts' && navigation.isFocused() === true) {
@@ -160,6 +181,38 @@ const handleBothNavigationsOptions = ({ navigation }) => {
   }
 }
 
+const options = {
+  initialRouteName: 'chats',
+  swipeEnabled: false,
+  // animationEnabled: true,
+  navigationOptions: handleBothNavigationsOptions,
+  defaultNavigationOptions: handleBothNavigationsOptions,
+  tabBarOptions: {
+    showIcon: true,
+    showLabel: true,
+    upperCaseLabel: false,
+    activeTintColor: colors.fakeBlack,
+    inactiveTintColor: colors.lightGrey,
+    indicatorStyle: {
+      backgroundColor: colors.fakeBlack,
+    },
+    style: [
+      {
+        backgroundColor: colors.white,
+        borderTopWidth: 0.5,
+        borderTopColor: colors.borderGrey,
+        shadowColor: colors.shadowGrey,
+        shadowOffset: { height: -5, width: 0 },
+        shadowOpacity: 0.2,
+        shadowRadius: 5,
+        ...(Platform.OS === 'android'
+          ? { height: 68, paddingTop: 3 }
+          : { height: 64, paddingTop: 5, paddingBottom: 6 }),
+      },
+    ],
+  },
+}
+
 export default createBottomTabNavigator(
   {
     contacts: {
@@ -181,35 +234,34 @@ export default createBottomTabNavigator(
       }),
     },
   },
-  {
-    initialRouteName: 'chats',
-    swipeEnabled: false,
-    // animationEnabled: true,
-    navigationOptions: handleBothNavigationsOptions,
-    defaultNavigationOptions: handleBothNavigationsOptions,
-    tabBarOptions: {
-      showIcon: true,
-      showLabel: true,
-      upperCaseLabel: false,
-      activeTintColor: colors.fakeBlack,
-      inactiveTintColor: colors.lightGrey,
-      indicatorStyle: {
-        backgroundColor: colors.fakeBlack,
-      },
-      style: [
-        {
-          backgroundColor: colors.white,
-          borderTopWidth: 0.5,
-          borderTopColor: colors.borderGrey,
-          shadowColor: colors.shadowGrey,
-          shadowOffset: { height: -5, width: 0 },
-          shadowOpacity: 0.2,
-          shadowRadius: 5,
-          ...(Platform.OS === 'android'
-            ? { height: 68, paddingTop: 3 }
-            : { height: 64, paddingTop: 5, paddingBottom: 6 }),
-        },
-      ],
-    },
-  }
+  options,
 )
+
+export const SplitNavigator = createSplitNavigator({
+  'placeholder': Placeholder,
+  'contacts': SubviewsContactNavigator,
+  'chats': SubviewsChatNavigator,
+}, {
+  'side/contacts': {
+    screen: SplitSideContactNavigator,
+    navigationOptions: () => ({
+      title: I18n.t('contacts.title'),
+    }),
+  },
+  'side/chats': {
+    screen: SplitSideChatNavigator,
+    navigationOptions: () => ({
+      title: I18n.t('chats.title'),
+    }),
+  },
+  'side/settings': {
+    screen: SettingsNavigator,
+    navigationOptions: () => ({
+      title: I18n.t('settings.title'),
+    }),
+  },
+}, {}, {
+  ...options,
+  backBehavior: 'none',
+  initialRouteName: 'side/chats',
+})

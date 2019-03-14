@@ -7,6 +7,7 @@ import { withNamespaces } from 'react-i18next'
 import { withCurrentUser } from '../../../../utils/contact'
 import RelayContext from '../../../../relay/RelayContext'
 import { showMessage } from 'react-native-flash-message'
+import { withGoBack } from '../../../Library/BackActionProvider'
 
 class MyAccountBase extends React.PureComponent {
   constructor (props) {
@@ -37,7 +38,7 @@ class MyAccountBase extends React.PureComponent {
       icon: 'info',
     })
 
-    this.props.navigation.goBack(null)
+    this.props.goBack(null)
   }
 
   onChoosePicture = async event => this.setState(await choosePicture(event))
@@ -77,7 +78,7 @@ class MyAccountBase extends React.PureComponent {
   }
 }
 
-const MyAccountContent = withNamespaces()(withCurrentUser(MyAccountBase, { showOnlyLoaded: true }))
+const MyAccountContent = withGoBack(withNamespaces()(withCurrentUser(MyAccountBase, { showOnlyLoaded: true })))
 
 export default class MyAccount extends  React.Component {
   static navigationOptions = ({ navigation }) => {

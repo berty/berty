@@ -4,6 +4,7 @@ import ActionButton from './ActionButton'
 import colors from '../../../constants/colors'
 import Flex from '../Flex'
 import { showMessage } from 'react-native-flash-message'
+import { withGoBack } from '../BackActionProvider'
 
 class ActionList extends PureComponent {
   render = () => {
@@ -45,7 +46,7 @@ class Action extends PureComponent {
   }
 
   render = () => {
-    const { large, icon, title, color = colors.blue, action, dismissOnSuccess, navigation, successMessage, successType } = this.props
+    const { large, icon, title, color = colors.blue, action, dismissOnSuccess, goBack, successMessage, successType } = this.props
     const ButtonClass = large ? ActionButton.Large : ActionButton
 
     return <ButtonClass icon={icon} title={title} color={color}
@@ -65,7 +66,7 @@ class Action extends PureComponent {
           }
 
           if (dismissOnSuccess) {
-            navigation.goBack(null)
+            goBack(null)
           }
 
           if (this._mounted) {
@@ -86,4 +87,4 @@ class Action extends PureComponent {
 }
 
 export default ActionList
-ActionList.Action = withNavigation(Action)
+ActionList.Action = withGoBack(withNavigation(Action))

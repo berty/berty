@@ -73,7 +73,7 @@ func GetPort() (interface{}, error) {
 }
 
 func GetNetworkConfig() (interface{}, error) {
-	return core.GetNetworkConfig(), nil
+	return core.GetNetworkConfig()
 }
 
 func UpdateNetworkConfig(config string) (interface{}, error) {

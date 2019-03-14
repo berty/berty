@@ -1,5 +1,5 @@
 import React from 'react'
-import { createStackNavigator } from 'react-navigation'
+import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 import { Header, SelfAvatarIcon } from '../Library'
 import ContactTopNavigator from './ContactTopNavigator'
 import AddContactMaterialNavigator from './ModalMaterialNavigator'
@@ -7,9 +7,9 @@ import List from '../Screens/Contacts/Detail/Detail'
 import Edit from '../Screens/Contacts/Detail/Edit'
 import I18n from 'i18next'
 
-export default createStackNavigator(
+export const SplitSideContactNavigator = createStackNavigator(
   {
-    'contacts/home': {
+    'contacts/list': {
       screen: ContactTopNavigator,
       navigationOptions: ({ navigation }) => ({
         header: (
@@ -24,6 +24,28 @@ export default createStackNavigator(
         tabBarVisible: true,
       }),
     },
+  },
+  {
+    initialRouteName: 'contacts/list',
+    tabBarVisible: false,
+    header: null,
+  },
+)
+
+export const SubviewsContactDetailsNavigator = createStackNavigator(
+  {
+    'detail/list': List,
+    'detail/edit': Edit,
+  },
+  {
+    initialRouteName: 'detail/list',
+    tabBarVisible: false,
+    header: null,
+  },
+)
+
+export const SubviewsContactAddNavigator = createStackNavigator(
+  {
     'contacts/add': {
       screen: AddContactMaterialNavigator,
       navigationOptions: ({ navigation }) => ({
@@ -32,20 +54,34 @@ export default createStackNavigator(
             navigation={navigation}
             title={I18n.t('contacts.add.title')}
             rightBtn={<SelfAvatarIcon />}
-            rightBtnIcon={'save'}
-            onPressRightBtn={() => {}}
             backBtn
           />
         ),
         tabBarVisible: true,
       }),
     },
-    'detail/list': List,
-    'detail/edit': Edit,
+  },
+  {
+    initialRouteName: 'contacts/add',
+    tabBarVisible: false,
+    header: null,
+  },
+)
+
+export const SubviewsContactNavigator = createSwitchNavigator({
+  SubviewsContactDetailsNavigator,
+  SubviewsContactAddNavigator,
+})
+
+export default createStackNavigator(
+  {
+    'contacts/home': SplitSideContactNavigator,
+    'contacts/subviews': SubviewsContactNavigator,
   },
   {
     initialRouteName: 'contacts/home',
     tabBarVisible: false,
     header: null,
+    headerMode: 'none',
   },
 )

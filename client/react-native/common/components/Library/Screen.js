@@ -38,7 +38,7 @@ export default class Screen extends Component {
 
   render () {
     const { absolute, style, onResize, ...props } = this.props
-    const { dimensions } = this.state
+    // const { dimensions } = this.state
     return (
       <SafeAreaView
         style={[
@@ -46,7 +46,7 @@ export default class Screen extends Component {
             flex: 1,
             backgroundColor: colors.background,
           },
-          dimensions,
+          // dimensions,
           style,
         ]}
         onLayout={this._onLayout}

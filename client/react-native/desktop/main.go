@@ -79,8 +79,8 @@ func main() {
 			MessageHandler: handleMessages,
 			Options: &astilectron.WindowOptions{
 				BackgroundColor: astilectron.PtrStr("#333"),
-				Height:          astilectron.PtrInt(700),
-				Width:           astilectron.PtrInt(700),
+				Width:           astilectron.PtrInt(1060),
+				Height:          astilectron.PtrInt(640),
 				WebPreferences: &astilectron.WebPreferences{
 					DevTools: &t,
 				},

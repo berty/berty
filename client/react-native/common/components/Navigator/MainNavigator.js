@@ -1,13 +1,13 @@
-import BottomNavigator from './BottomNavigator'
+import BottomNavigator, { SplitNavigator } from './BottomNavigator'
 import { createStackNavigator } from 'react-navigation'
-import { Easing, Animated } from 'react-native'
+import { Easing, Animated, Platform } from 'react-native'
 import { EventListFilterModal } from '../Screens/Settings/Devtools/EventList'
 import ContactCardModal from '../Screens/Contacts/ContactCardModal'
 import { ViewExportComponent } from '../../helpers/saveViewToCamera'
 
 export default createStackNavigator(
   {
-    tabs: BottomNavigator,
+    tabs: Platform.OS === 'web' ? SplitNavigator : BottomNavigator,
     'modal/devtools/event/list/filters': {
       screen: EventListFilterModal,
     },

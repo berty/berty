@@ -8,33 +8,9 @@ import { choosePicture } from '../../../../helpers/react-native-image-picker'
 import { colors } from '../../../../constants'
 import { conversation as utils } from '../../../../utils'
 import withRelayContext from '../../../../helpers/withRelayContext'
+import { withGoBack } from '../../../Library/BackActionProvider'
 
-class List extends PureComponent {
-  static contextType = RelayContext
-
-  static navigationOptions = ({ navigation }) => {
-    const [conversation, { edit }, onEdit, onSave] = [
-      navigation.getParam('conversation') || { members: [] },
-      navigation.getParam('state') || {},
-      navigation.getParam('onEdit'),
-      navigation.getParam('onSave'),
-    ]
-    const rightIcon = edit ? 'save' : 'edit-2'
-    const onPressRight = edit ? onSave : onEdit
-    return {
-      tabBarVisible: false,
-      header: (
-        <Header
-          navigation={navigation}
-          title={I18n.t('chats.details')}
-          rightBtnIcon={conversation.members.length > 2 && rightIcon}
-          backBtn
-          onPressRightBtn={conversation.members.length > 2 && onPressRight}
-        />
-      ),
-    }
-  }
-
+class ListBase extends PureComponent {
   state = {
     edit: false,
   }
@@ -71,7 +47,7 @@ class List extends PureComponent {
     } catch (err) {
       console.error(err)
     }
-    this.props.navigation.goBack(null)
+    this.props.goBack(null)
   }
 
   onDeleteConversation = async () => {
@@ -192,4 +168,31 @@ class List extends PureComponent {
   }
 }
 
-export default withRelayContext(withNamespaces()(List))
+const List = withGoBack(withRelayContext(withNamespaces()(ListBase)))
+
+List.contextType = RelayContext
+
+List.navigationOptions = ({ navigation }) => {
+  const [conversation, { edit }, onEdit, onSave] = [
+    navigation.getParam('conversation') || { members: [] },
+    navigation.getParam('state') || {},
+    navigation.getParam('onEdit'),
+    navigation.getParam('onSave'),
+  ]
+  const rightIcon = edit ? 'save' : 'edit-2'
+  const onPressRight = edit ? onSave : onEdit
+  return {
+    tabBarVisible: false,
+    header: (
+      <Header
+        navigation={navigation}
+        title={I18n.t('chats.details')}
+        rightBtnIcon={conversation.members.length > 2 && rightIcon}
+        backBtn
+        onPressRightBtn={conversation.members.length > 2 && onPressRight}
+      />
+    ),
+  }
+}
+
+export default List

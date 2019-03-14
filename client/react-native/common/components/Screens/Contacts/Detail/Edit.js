@@ -24,7 +24,8 @@ export default class Edit extends PureComponent {
   onChoosePicture = async event => this.setState(await choosePicture(event))
 
   render () {
-    const contact = this.props.navigation.getParam('contact')
+    const contact = this.props.navigation.getParam('contact') || {}
+
     return (
       <Menu>
         <Menu.Header
@@ -42,7 +43,7 @@ export default class Edit extends PureComponent {
         <Menu.Section title='Firstname'>
           <Menu.Input
             value={
-              (contact.overrideDisplayName || contact.displayName).split(
+              (contact.overrideDisplayName || contact.displayName || '').split(
                 ' '
               )[0] || ''
             }
@@ -51,7 +52,7 @@ export default class Edit extends PureComponent {
         <Menu.Section title='Lastname'>
           <Menu.Input
             value={
-              (contact.overrideDisplayName || contact.displayName).split(
+              (contact.overrideDisplayName || contact.displayName || '').split(
                 ' '
               )[1] || ''
             }
