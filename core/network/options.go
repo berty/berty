@@ -43,6 +43,7 @@ func WithDefaultOptions() config.Option {
 	return ChainOptions(
 		WithServerOptions(),
 
+		EnablePrivateNetwork(config.DefaultSwarmKey),
 		EnableBLE(),
 		EnableMDNS(),
 		EnableDefaultBootstrap(),
@@ -77,9 +78,10 @@ func WithDefaultMobileOptions() config.Option {
 	return ChainOptions(
 		WithClientOptions(),
 
+		EnablePrivateNetwork(config.DefaultSwarmKey),
 		EnableDefaultBootstrap(),
 		EnableMDNS(),
-		EnableBLE(),
+		DisableBLE(),
 		EnableQUIC(),
 		EnablePersistConfig(),
 	)
