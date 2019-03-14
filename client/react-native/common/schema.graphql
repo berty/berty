@@ -896,6 +896,16 @@ type Mutation {
     title: String!
     topic: String!
   ): BertyEntityConversation
+  ConversationUpdate(
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    readAt: GoogleProtobufTimestampInput
+    title: String!
+    topic: String!
+    infos: String!
+    members: [BertyEntityConversationMemberInput]
+  ): BertyEntityConversation
   ConversationInvite(
     conversation: BertyEntityConversationInput
     members: [BertyEntityConversationMemberInput]

@@ -32,6 +32,7 @@ func init() {
 	registerUnary("berty.node.Contact", NodeContact)
 	registerUnary("berty.node.ContactCheckPublicKey", NodeContactCheckPublicKey)
 	registerUnary("berty.node.ConversationCreate", NodeConversationCreate)
+	registerUnary("berty.node.ConversationUpdate", NodeConversationUpdate)
 	registerServerStream("berty.node.ConversationList", NodeConversationList)
 	registerUnary("berty.node.ConversationInvite", NodeConversationInvite)
 	registerUnary("berty.node.ConversationExclude", NodeConversationExclude)
@@ -414,6 +415,26 @@ func NodeConversationCreate(client *client.Client, ctx context.Context, jsonInpu
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().ConversationCreate(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeConversationUpdate(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.ConversationUpdate")
+	var typedInput entity.Conversation
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().ConversationUpdate(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),

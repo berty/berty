@@ -3,6 +3,7 @@ package graphql
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"strings"
@@ -654,6 +655,32 @@ func (r *queryResolver) ContactCheckPublicKey(ctx context.Context, contact *enti
 
 	return r.client.ContactCheckPublicKey(ctx, &node.ContactInput{
 		Filter: contact,
+	})
+}
+
+func (r *mutationResolver) ConversationUpdate(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, infos string, members []*entity.ConversationMember) (*entity.Conversation, error) {
+	if id == "" {
+		return nil, errors.New("no id supplied")
+	}
+	id = strings.SplitN(id, ":", 2)[1]
+	if members != nil && len(members) > 0 {
+		for i := range members {
+			if members[i] == nil || members[i].ID == "" {
+				continue
+			}
+			members[i].ID = strings.SplitN(members[i].ID, ":", 2)[1]
+		}
+	}
+
+	return r.client.ConversationUpdate(ctx, &entity.Conversation{
+		ID:        id,
+		CreatedAt: *createdAt,
+		UpdatedAt: *updatedAt,
+		ReadAt:    *readAt,
+		Title:     title,
+		Topic:     topic,
+		Infos:     infos,
+		Members:   members,
 	})
 }
 

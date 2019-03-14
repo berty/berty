@@ -676,6 +676,7 @@ type ComplexityRoot struct {
 		ContactRemove                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ContactUpdate                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ConversationCreate               func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
+		ConversationUpdate               func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) int
 		ConversationInvite               func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
 		ConversationExclude              func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
 		ConversationAddMessage           func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
@@ -784,6 +785,7 @@ type MutationResolver interface {
 	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error)
+	ConversationUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationInvite(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*entity.Event, error)
@@ -1376,6 +1378,114 @@ func field_Mutation_ConversationCreate_args(rawArgs map[string]interface{}) (map
 		}
 	}
 	args["topic"] = arg2
+	return args, nil
+
+}
+
+func field_Mutation_ConversationUpdate_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["readAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["readAt"] = arg3
+	var arg4 string
+	if tmp, ok := rawArgs["title"]; ok {
+		var err error
+		arg4, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["title"] = arg4
+	var arg5 string
+	if tmp, ok := rawArgs["topic"]; ok {
+		var err error
+		arg5, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["topic"] = arg5
+	var arg6 string
+	if tmp, ok := rawArgs["infos"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["infos"] = arg6
+	var arg7 []*entity.ConversationMember
+	if tmp, ok := rawArgs["members"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg7 = make([]*entity.ConversationMember, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.ConversationMember
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
+				arg7[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["members"] = arg7
 	return args, nil
 
 }
@@ -5265,6 +5375,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.ConversationCreate(childComplexity, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string)), true
+
+	case "Mutation.ConversationUpdate":
+		if e.complexity.Mutation.ConversationUpdate == nil {
+			break
+		}
+
+		args, err := field_Mutation_ConversationUpdate_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ConversationUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["members"].([]*entity.ConversationMember)), true
 
 	case "Mutation.ConversationInvite":
 		if e.complexity.Mutation.ConversationInvite == nil {
@@ -18914,6 +19036,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec._Mutation_ContactUpdate(ctx, field)
 		case "ConversationCreate":
 			out.Values[i] = ec._Mutation_ConversationCreate(ctx, field)
+		case "ConversationUpdate":
+			out.Values[i] = ec._Mutation_ConversationUpdate(ctx, field)
 		case "ConversationInvite":
 			out.Values[i] = ec._Mutation_ConversationInvite(ctx, field)
 		case "ConversationExclude":
@@ -19156,6 +19280,37 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().ConversationCreate(rctx, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_ConversationUpdate(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_ConversationUpdate_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ConversationUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["members"].([]*entity.ConversationMember))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -23826,6 +23981,16 @@ type Mutation {
     contacts: [BertyEntityContactInput]
     title: String!
     topic: String!
+  ): BertyEntityConversation
+  ConversationUpdate(
+    id: ID!
+    createdAt: GoogleProtobufTimestampInput
+    updatedAt: GoogleProtobufTimestampInput
+    readAt: GoogleProtobufTimestampInput
+    title: String!
+    topic: String!
+    infos: String!
+    members: [BertyEntityConversationMemberInput]
   ): BertyEntityConversation
   ConversationInvite(
     conversation: BertyEntityConversationInput
