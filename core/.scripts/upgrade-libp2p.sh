@@ -2,7 +2,7 @@
 
 GO111MODULE=on
 
-repos=$(cat go.mod | grep -E 'multiformats|libp2p|ipfs' | awk -F' ' '{if ($1) print $1}')
+repos=$(grep -E 'multiformats|libp2p|ipfs' go.mod | awk -F' ' '{if ($1) print $1}')
 
 # clean up
 [ "clean" = "$1" ] && echo "cleaning..." && (rm -rf vendor || true) && go clean -modcache > /dev/null 2>&1
