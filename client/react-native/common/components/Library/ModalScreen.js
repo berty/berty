@@ -21,7 +21,9 @@ class ModalScreen extends React.PureComponent {
   }
 
   componentWillUnmount () {
-    window.removeEventListener('keyup', this._keyboardListener)
+    if (Platform.OS === 'web') {
+      window.removeEventListener('keyup', this._keyboardListener)
+    }
   }
 
   keyboardListener (event) {

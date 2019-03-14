@@ -71,17 +71,19 @@ class Header extends PureComponent {
                 middle
               />
             )}
-            <Text
-              icon={titleIcon}
-              left
-              large
-              color={colorText}
-              justify={backBtn ? 'center' : 'start'}
-              middle
-              size={5}
-            >
-              {title}
-            </Text>
+            {typeof title !== 'string'
+              ? title
+              : <Text
+                icon={titleIcon}
+                left
+                large
+                color={colorText}
+                justify={backBtn ? 'center' : 'start'}
+                middle
+                size={5}
+              >
+                {title}
+              </Text>}
             {rightBtn ? <View>{rightBtn}</View> : null}
             {!rightBtn &&
             rightBtnIcon !== null && (

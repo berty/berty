@@ -10,7 +10,7 @@ import { Pagination } from '../../../relay'
 import { fragments } from '../../../graphql'
 import { borderTop, marginLeft, padding } from '../../../styles'
 import { conversation as utils } from '../../../utils'
-import Mousetrap from 'mousetrap'
+import Mousetrap from '../../../helpers/Mousetrap'
 import { withGoBack } from '../../Library/BackActionProvider'
 import { withNavigation, withNavigationFocus, StackActions, NavigationActions } from 'react-navigation'
 
