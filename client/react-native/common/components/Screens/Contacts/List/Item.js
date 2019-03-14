@@ -67,7 +67,7 @@ const Item = fragments.Contact(
               <Avatar data={data} size={40} />
             </Flex.Rows>
             <Flex.Rows size={3} justify='start' style={[marginLeft]}>
-              <Text color={colors.black} left>
+              <Text color={colors.fakeBlack} left>
                 {overrideDisplayName || displayName}
               </Text>
               <Text color={colors.subtleGrey} left>

@@ -27,6 +27,7 @@ var ptrErrFunc = map[string]func() (interface{}, error){
 var ptrStrErrFunc = map[string]func(string) (interface{}, error){
 	"start":               coreinterface.Start,
 	"updateNetworkConfig": coreinterface.UpdateNetworkConfig,
+	"openURL":             coreinterface.OpenURL,
 }
 
 func stringPayload(message json.RawMessage) (string, error) {

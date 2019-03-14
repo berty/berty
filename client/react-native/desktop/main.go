@@ -64,7 +64,7 @@ func main() {
 			},
 		},
 			{
-				Label: astilectron.PtrStr("Edit"),
+				Role: astilectron.MenuItemRoleEditMenu,
 				SubMenu: []*astilectron.MenuItemOptions{
 					{Role: astilectron.MenuItemRoleUndo},
 					{Role: astilectron.MenuItemRoleRedo},
@@ -72,6 +72,7 @@ func main() {
 					{Role: astilectron.MenuItemRoleCopy},
 					{Role: astilectron.MenuItemRolePaste},
 					{Role: astilectron.MenuItemRoleDelete},
+					{Role: astilectron.MenuItemRoleSelectAll},
 				},
 			}},
 		Windows: []*bootstrap.Window{{

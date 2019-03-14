@@ -4,11 +4,14 @@ import (
 	"errors"
 	"fmt"
 
+	"go.uber.org/zap"
+
 	"berty.tech/core/pkg/notification"
 
 	"berty.tech/client/react-native/gomobile/core"
 
 	"berty.tech/core/pkg/deviceinfo"
+	"github.com/pkg/browser"
 	"github.com/shibukawa/configdir"
 )
 
@@ -78,6 +81,16 @@ func GetNetworkConfig() (interface{}, error) {
 
 func UpdateNetworkConfig(config string) (interface{}, error) {
 	return nil, core.UpdateNetworkConfig(config)
+}
+
+func OpenURL(url string) (interface{}, error) {
+	logger().Info(fmt.Sprintf("opening URL %s", url))
+	err := browser.OpenURL(url)
+	if err != nil {
+		logger().Error(fmt.Sprintf("unable to open URL %s", url), zap.Error(err))
+	}
+
+	return nil, err
 }
 
 func IsBotRunning() (interface{}, error) {

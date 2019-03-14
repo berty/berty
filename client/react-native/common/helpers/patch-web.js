@@ -22,6 +22,9 @@ if (Platform.OS === 'web') {
     getNetworkConfig: async () => console.warn('not implemented in web'),
     updateNetworkConfig: async () => console.warn('not implemented in web'),
     setCurrentRoute: () => {},
+    openURL: (url) => {
+      window.open(url, '_blank')
+    },
   }
   NativeModules.CoreModule = CoreModule
 

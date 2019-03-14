@@ -15,7 +15,7 @@ export const ActionButtonLarge = ({ onPress, color, title, icon }) => <Text
   icon={icon}
   background={color}
   color={color === colors.white ? colors.subtleGrey : colors.white}
-  margin={{ left: 8 }}
+  margin={{ left: 4, right: 4 }}
   padding={{
     vertical: 6,
     horizontal: 4,

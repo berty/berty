@@ -114,7 +114,7 @@ const ItemBase = fragments.Conversation(
             justify='center'
             style={[marginLeft]}
           >
-            <Text color={colors.black} left middle bold={!isRead}>
+            <Text color={colors.fakeBlack} left middle bold={!isRead}>
               {utils.getTitle(data)}
             </Text>
             <Flex.Cols size={1} justify='flex-start'>
