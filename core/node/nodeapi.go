@@ -131,6 +131,16 @@ func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversatio
 		return nil, errors.Wrap(err, "cannot update conversation")
 	}
 
+	// event
+	event := n.NewConversationEvent(ctx, input, entity.Kind_ConversationUpdate)
+	if err := event.SetAttrs(&entity.ConversationUpdateAttrs{
+		Conversation: input,
+	}); err != nil {
+		return nil, errorcodes.ErrUndefined.Wrap(err)
+	}
+	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
+		return nil, errorcodes.ErrNet.Wrap(err)
+	}
 	return input, nil
 }
 

@@ -84,6 +84,7 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 		entity.Kind_ContactRequestAccepted: n.handleContactRequestAccepted,
 		entity.Kind_ContactShareMe:         n.handleContactShareMe,
 		entity.Kind_ConversationInvite:     n.handleConversationInvite,
+		entity.Kind_ConversationUpdate:     n.handleConversationUpdate,
 		entity.Kind_ConversationNewMessage: n.handleConversationNewMessage,
 		entity.Kind_ConversationRead:       n.handleConversationRead,
 		entity.Kind_DevtoolsMapset:         n.handleDevtoolsMapset,

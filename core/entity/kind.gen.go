@@ -217,6 +217,25 @@ func (e *Event) SetConversationReadAttrs(attrs *ConversationReadAttrs) error {
 	return nil
 }
 
+// GetConversationUpdateAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationUpdateAttrs() (*ConversationUpdateAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationUpdateAttrs{}, nil
+	}
+	var attrs ConversationUpdateAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationUpdateAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationUpdateAttrs(attrs *ConversationUpdateAttrs) error {
+	raw, err := proto.Marshal(attrs)
+	if err != nil {
+		return err
+	}
+	e.Attributes = raw
+	return nil
+}
+
 // GetDevtoolsMapsetAttrs is a typesafe version of GetAttrs
 func (e *Event) GetDevtoolsMapsetAttrs() (*DevtoolsMapsetAttrs, error) {
 	if e.Attributes == nil || len(e.Attributes) == 0 {
@@ -337,6 +356,8 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetConversationNewMessageAttrs()
 	case Kind_ConversationRead:
 		return e.GetConversationReadAttrs()
+	case Kind_ConversationUpdate:
+		return e.GetConversationUpdateAttrs()
 	case Kind_DevtoolsMapset:
 		return e.GetDevtoolsMapsetAttrs()
 	case Kind_SenderAliasUpdate:

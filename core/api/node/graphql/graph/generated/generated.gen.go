@@ -145,6 +145,10 @@ type ComplexityRoot struct {
 		Conversation func(childComplexity int) int
 	}
 
+	BertyEntityConversationUpdateAttrs struct {
+		Conversation func(childComplexity int) int
+	}
+
 	BertyEntityDevice struct {
 		Id              func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
@@ -3352,6 +3356,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityConversationReadAttrs.Conversation(childComplexity), true
+
+	case "BertyEntityConversationUpdateAttrs.conversation":
+		if e.complexity.BertyEntityConversationUpdateAttrs.Conversation == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationUpdateAttrs.Conversation(childComplexity), true
 
 	case "BertyEntityDevice.id":
 		if e.complexity.BertyEntityDevice.Id == nil {
@@ -7651,6 +7662,58 @@ func (ec *executionContext) _BertyEntityConversationReadAttrs(ctx context.Contex
 func (ec *executionContext) _BertyEntityConversationReadAttrs_conversation(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationReadAttrs) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConversationReadAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Conversation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+var bertyEntityConversationUpdateAttrsImplementors = []string{"BertyEntityConversationUpdateAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationUpdateAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationUpdateAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationUpdateAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationUpdateAttrs")
+		case "conversation":
+			out.Values[i] = ec._BertyEntityConversationUpdateAttrs_conversation(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationUpdateAttrs_conversation(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationUpdateAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationUpdateAttrs",
 		Args:   nil,
 		Field:  field,
 	}
@@ -23465,6 +23528,9 @@ type BertyEntityConversationNewMessageAttrs  {
     message: BertyEntityMessage
 }
 type BertyEntityConversationReadAttrs  {
+    conversation: BertyEntityConversation
+}
+type BertyEntityConversationUpdateAttrs  {
     conversation: BertyEntityConversation
 }
 type BertyEntityDevtoolsMapsetAttrs  {
