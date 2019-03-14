@@ -50,7 +50,11 @@ class PaginationContainer extends Component {
 
   keyExtractor = item => item.node.cursor + ':' + item.node.id
 
-  renderItem = ({ item: { node } }) => this.props.renderItem({ data: node })
+  renderItem = ({ item: { node }, index, ...props }) => this.props.renderItem({ data: node, index, ...props })
+
+  scrollToIndex = (index) => {
+    index && this._list && this._list.scrollToIndex({ index })
+  }
 
   render () {
     const {
@@ -62,21 +66,24 @@ class PaginationContainer extends Component {
       emptyItem,
       cond,
       condComponent,
+      ListComponent = FlatList,
     } = this.props
 
     if (!emptyItem || (data[alias] && data[alias].edges.length > 0)) {
       return (
         <>
-          <FlatList
+          <ListComponent
             ListHeaderComponent={this.props.ListHeaderComponent}
             data={data[alias].edges}
             inverted={inverted}
             refreshing={this.state.refetching}
             onRefresh={this.refetch}
             onEndReached={this.onEndReached}
+            getItemLayout={this.props.getItemLayout}
             keyExtractor={this.keyExtractor}
             renderItem={renderItem && this.renderItem}
             style={style}
+            ref={list => (this._list = list)}
           />
           {cond != null && cond(data[alias]) && condComponent != null
             ? condComponent()
@@ -131,6 +138,10 @@ export default class Pagination extends PureComponent {
     this.subscribers.forEach(s => s.unsubscribe())
   }
 
+  scrollToIndex = (index) => {
+    this._container && this._container.scrollToIndex(index)
+  }
+
   render () {
     const { query, variables, noLoader } = this.props
 
@@ -150,7 +161,7 @@ export default class Pagination extends PureComponent {
                 </Flex.Rows>
               )
             case state.success:
-              return <Container {...state} retry={retry} {...this.props} />
+              return <Container {...state} retry={retry} {...this.props} ref={container => (this._container = container)} />
             case state.error:
               return null
           }

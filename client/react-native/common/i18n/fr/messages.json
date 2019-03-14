@@ -188,7 +188,8 @@
     "received": "Invit. reçues",
     "sent": "Invit. envoyées",
     "unknown": "Inconnu",
-    "info-updated": "Les informations de contact ont été mises à jour"
+    "info-updated": "Les informations de contact ont été mises à jour",
+    "quick-switch-placeholder": "Accéder à..."
   },
   "setting-up": "Démarrage de Berty :)",
   "qrcode": "QR Code",

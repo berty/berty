@@ -17,6 +17,7 @@ import { AppNavigator } from './Navigator/AppNavigator'
 import { RelayContext } from '../relay'
 import { UpdateContext } from '../update'
 import * as KeyboardContext from '../helpers/KeyboardContext'
+import Mousetrap from 'mousetrap'
 
 const { CoreModule } = NativeModules
 
@@ -160,6 +161,15 @@ export default class App extends PureComponent {
       })
       .catch(() => {})
 
+    if (Platform.OS === 'web') {
+      if (this._showQuickSwitch === undefined) {
+        this._showQuickSwitch = () => this.showQuickSwitch()
+      }
+
+      Mousetrap.prototype.stopCallback = () => {}
+      Mousetrap.bind(['command+k', 'ctrl+k', 'command+t', 'ctrl+t'], this._showQuickSwitch)
+    }
+
     this.setState({ loading: false })
   }
 
@@ -169,6 +179,15 @@ export default class App extends PureComponent {
     if (this._handleOpenURL !== undefined) {
       Linking.removeEventListener('url', this._handleOpenURL)
     }
+
+    if (Platform.OS === 'web') {
+      Mousetrap.unbind(['command+k', 'ctrl+k'], this._showQuickSwitch)
+    }
+  }
+
+  showQuickSwitch () {
+    NavigationService.navigate('modal/chats/switcher')
+    return false
   }
 
   _onLanguageChange = ({ language } = {}) => {
