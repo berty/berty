@@ -24,9 +24,11 @@ class Message extends React.PureComponent {
   static contextType = RelayContext
 
   messageSeen = async () => {
-    await this.props.context.mutations.eventSeen({
-      id: this.props.data.id,
-    })
+    if (this.props.data.seenAt === null) {
+      await this.props.context.mutations.eventSeen({
+        id: this.props.data.id,
+      })
+    }
   }
 
   render () {

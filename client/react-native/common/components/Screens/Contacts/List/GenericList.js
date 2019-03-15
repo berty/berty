@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { View, Text, InteractionManager } from 'react-native'
+import { View, Text, InteractionManager, TouchableOpacity } from 'react-native'
 import { Screen, Icon, EmptyList } from '../../../Library'
 import { colors } from '../../../../constants'
 import { Pagination } from '../../../../relay'
@@ -33,7 +33,8 @@ class CondComponent extends PureComponent {
           minHeight: '7%',
         }}
       >
-        <View
+        <TouchableOpacity
+          onPress={() => onPress()}
           style={{
             flex: 1,
             flexDirection: 'row',
@@ -55,11 +56,10 @@ class CondComponent extends PureComponent {
               flexDirection: 'column',
               justifyContent: 'center',
             }}
-            onPress={() => onPress()}
           >
             {I18n.t('contacts.add.title').toUpperCase()}
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
     )
   }

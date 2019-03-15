@@ -1,4 +1,4 @@
-import { Image, View, Text } from 'react-native'
+import { Image, View, Text, TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import colors from '../../constants/colors'
@@ -36,7 +36,8 @@ export default class EmptyList extends PureComponent {
         <Text style={{ alignSelf: 'center', color: colors.lightGrey, flex: 1 }}>
           {text}
         </Text>
-        <View
+        <TouchableOpacity
+          onPress={onPress}
           style={{
             backgroundColor: colors.blue,
             borderRadius: 25,
@@ -62,7 +63,6 @@ export default class EmptyList extends PureComponent {
           >
             <Icon style={{ color: colors.white, fontSize }} name={icon} />
             <Text
-              onPress={onPress}
               style={{
                 fontSize: fontSize,
                 color: colors.white,
@@ -76,7 +76,7 @@ export default class EmptyList extends PureComponent {
               {btnText.toUpperCase()}
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
     )
   }

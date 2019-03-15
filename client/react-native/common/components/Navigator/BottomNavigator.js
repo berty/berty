@@ -35,7 +35,7 @@ class TabBarIconBase extends Component {
       shouldRefresh: false,
       stored: [],
       queryList: queries.EventList.graphql,
-      queryVariables: props.routeName === 'contacts'
+      queryVariables: props.routeName === 'contacts' || props.routeName === 'side/contacts'
         ? merge([queries.EventList.defaultVariables, {
           filter: {
             kind: 201,
@@ -49,7 +49,7 @@ class TabBarIconBase extends Component {
             direction: 1,
           },
         }]),
-      subscription: props.routeName === 'contacts'
+      subscription: props.routeName === 'contacts' || props.routeName === 'side/contacts'
         ? [subscriptions.contactRequest]
         : [subscriptions.message],
     }
@@ -70,14 +70,13 @@ class TabBarIconBase extends Component {
     const idx = stored.indexOf(id)
 
     if (idx === -1 && seenAt === null) {
-      console.log('props.data', props.data)
       this.setState({
         stored: [
           ...stored,
           id,
         ],
       })
-    } else if (idx !== -1 && routeName === 'chats' && new Date(seenAt).getTime() > 0) {
+    } else if (idx !== -1 && (routeName === 'chats' || routeName === 'side/chats') && new Date(seenAt).getTime() > 0) {
       stored.splice(stored.indexOf(id), 1)
       this.setState({
         stored,
@@ -127,11 +126,11 @@ class TabBarIconBase extends Component {
       'side/settings': 'settings',
     }[routeName]
 
-    if (routeName === 'contacts' && navigation.isFocused() === true) {
+    if ((routeName === 'contacts' || routeName === 'side/contacts') && navigation.isFocused() === true) {
       this.contactSeen()
     }
 
-    return routeName === 'settings'
+    return routeName === 'settings' || routeName === 'side/settings'
       ? (
         <UpdateContext.Consumer>
           {({ availableUpdate }) => (
