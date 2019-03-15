@@ -17,7 +17,7 @@ import { AppNavigator } from './Navigator/AppNavigator'
 import { RelayContext } from '../relay'
 import { UpdateContext } from '../update'
 import * as KeyboardContext from '../helpers/KeyboardContext'
-import Mousetrap from 'mousetrap'
+import Mousetrap from '../helpers/Mousetrap'
 
 const { CoreModule } = NativeModules
 
