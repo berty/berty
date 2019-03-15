@@ -14,7 +14,7 @@ import { colors } from '../../constants'
 import { isRTL } from '../../i18n'
 
 export default class Menu extends Component {
-  static Header = ({ icon, title, description }) => (
+  static Header = ({ icon, color, descriptionColor, title, description }) => (
     <Flex.Cols style={[{ marginTop: 33 }, paddingHorizontal]} align='center'>
       {icon && (
         <Flex.Rows size={1} align={title ? 'end' : 'center'}>
@@ -27,11 +27,11 @@ export default class Menu extends Component {
           justify='between'
           style={[paddingLeft, { height: 42 }]}
         >
-          <Text medium color={colors.black}>
+          <Text medium color={color || colors.fakeBlack}>
             {title}
           </Text>
           {description && (
-            <Text tiny color={colors.subtleGrey}>
+            <Text tiny color={descriptionColor || colors.subtleGrey}>
               {description}
             </Text>
           )}

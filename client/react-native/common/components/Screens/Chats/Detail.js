@@ -1,6 +1,6 @@
 import {
   ActivityIndicator,
-  Platform,
+  Platform, StyleSheet,
   TextInput as RNTextInput,
   View,
 } from 'react-native'
@@ -8,7 +8,7 @@ import { btoa } from 'b64-lite'
 import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Icon, Screen, Text, Avatar } from '../../Library'
+import { Flex, Header, Icon, Screen, Text, Avatar, Markdown } from '../../Library'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
@@ -19,6 +19,24 @@ import { conversation as utils } from '../../../utils'
 import * as dateFns from '../../../i18n/dateFns'
 import withRelayContext from '../../../helpers/withRelayContext'
 import * as KeyboardContext from '../../../helpers/KeyboardContext'
+
+const textStyles = StyleSheet.flatten([Markdown.styles, {
+  text: {
+    color: colors.white,
+  },
+  listUnorderedItemIcon: {
+    color: colors.white,
+  },
+  listOrderedItemIcon: {
+    color: colors.white,
+  },
+  blocklink: {
+    borderColor: colors.white,
+  },
+  u: {
+    borderColor: colors.white,
+  },
+}])
 
 class Message extends React.PureComponent {
   static contextType = RelayContext
@@ -51,7 +69,7 @@ class Message extends React.PureComponent {
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
-        style={{ marginHorizontal: 10, marginVertical: 10 }}
+        style={{ marginHorizontal: 10, marginVertical: 2 }}
       >
         {!isMyself && !isOneToOne ? (
           <Flex.Cols
@@ -71,24 +89,21 @@ class Message extends React.PureComponent {
           </Flex.Cols>
         ) : null}
 
-        <Text
-          padding={{
-            vertical: 6,
-            horizontal: 10,
-          }}
-          multiline
-          left={!isMyself}
-          right={isMyself}
-          background={colors.blue}
-          color={colors.white}
-          rounded={14.5}
-          margin={{
-            bottom: 4,
-            [isMyself ? 'left' : 'right']: 42,
+        <View
+          style={{
+            [isMyself ? 'marginLeft' : 'marginRight']: 42,
+            marginTop: 2,
+            marginBottom: 2,
+            backgroundColor: colors.blue,
+            padding: 10,
+            borderTopLeftRadius: isMyself ? 14.5 : 3,
+            borderTopRightRadius: 14.5,
+            borderBottomLeftRadius: 14.5,
+            borderBottomRightRadius: isMyself ? 3 : 14.5,
           }}
         >
-          {parseEmbedded(data.attributes).message.text}
-        </Text>
+          <Markdown style={textStyles}>{parseEmbedded(data.attributes).message.text}</Markdown>
+        </View>
         <Text
           left={!isMyself}
           right={isMyself}
@@ -143,6 +158,8 @@ class TextInputBase extends PureComponent {
               marginVertical: 8,
               marginHorizontal: 0,
               height: height,
+              color: colors.fakeBlack,
+              backgroundColor: colors.inputGrey,
             },
             Platform.OS === 'web' ? { paddingLeft: 16 } : {},
           ]}
@@ -154,6 +171,7 @@ class TextInputBase extends PureComponent {
           onContentSizeChange={this.onContentSizeChange}
           autoFocus
           placeholder={t('chats.write-message')}
+          placeholderTextColor={colors.lightGrey}
           onChangeText={this.props.onChangeText}
           value={value}
           multiline

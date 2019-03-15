@@ -34,7 +34,7 @@ export default createMaterialTopTabNavigator(
     animationEnabled: true,
     tabBarOptions: {
       labelStyle: {
-        color: colors.black,
+        color: colors.fakeBlack,
       },
       indicatorStyle: {
         backgroundColor: colors.blue,

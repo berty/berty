@@ -45,6 +45,7 @@ if (Platform.OS === 'web' &&
     'updateNetworkConfig',
     'setCurrentRoute',
     'getLocalGRPCInfos',
+    'openURL',
   ]
 
   for (let op of ops) {
