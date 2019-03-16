@@ -17,6 +17,7 @@ import { conversation as utils } from '../../../utils'
 import withRelayContext from '../../../helpers/withRelayContext'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import { withViewsContext } from '../../../helpers/ViewsContext'
 import { hook } from 'cavy'
 /* global __DEV__ */
 
@@ -68,10 +69,12 @@ const ItemBase = fragments.Conversation(
     }
 
     render () {
-      const { data, navigation, t } = this.props
+      const { data, navigation, t, viewsContext } = this.props
       const { connected } = this.state
       const { readAt } = data
       const isRead = new Date(readAt).getTime() > 0
+      const isFocused = viewsContext['chats/detail'] && viewsContext['chats/detail'].id === data.id
+      console.log(this.props)
 
       // fix when contact request is send after conversation invite
       if (
@@ -85,8 +88,14 @@ const ItemBase = fragments.Conversation(
       return (
         <Flex.Cols
           align='center'
-          onPress={() => navigation.navigate({ routeName: 'chats/detail', params: data })}
-          style={[{ height: 72 }, padding, borderBottom]}
+          onPress={() => navigation.navigate({
+            routeName: 'chats/detail',
+            params: data,
+          })}
+          style={[{
+            height: 72,
+            backgroundColor: isFocused ? colors.blue10 : colors.white,
+          }, padding, borderBottom]}
         >
           <Flex.Rows size={1} align='center'>
             {data.members.length === 2 && connected ? (
@@ -143,7 +152,7 @@ const ItemBase = fragments.Conversation(
   }
 )
 
-const Item = withNamespaces()(ItemBase)
+const Item = withNamespaces()(withViewsContext(ItemBase))
 
 class ListScreen extends PureComponent {
   constructor (props) {

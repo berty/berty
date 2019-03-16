@@ -17,6 +17,7 @@ import { AppNavigator } from './Navigator/AppNavigator'
 import { RelayContext } from '../relay'
 import { UpdateContext } from '../update'
 import * as KeyboardContext from '../helpers/KeyboardContext'
+import ViewsContext from '../helpers/ViewsContext'
 import Mousetrap from '../helpers/Mousetrap'
 
 const { CoreModule } = NativeModules
@@ -24,10 +25,30 @@ const { CoreModule } = NativeModules
 class HandleDeepLink extends PureComponent {
   static router = AppNavigator.router
 
+  constructor (props) {
+    super(props)
+    this.state = {
+      viewState: {},
+    }
+  }
+
   async componentDidUpdate (nextProps) {
     if (nextProps.screenProps.deepLink !== this.props.screenProps.deepLink) {
       this.openDeepLink()
     }
+  }
+
+  getActiveRoute = navigationState => {
+    if (!navigationState) {
+      return null
+    }
+    const route = navigationState.routes[navigationState.index]
+    // dive into nested navigators
+    if (route.routes) {
+      return this.getActiveRoute(route)
+    }
+
+    return route
   }
 
   getActiveRouteName = navigationState => {
@@ -81,23 +102,37 @@ class HandleDeepLink extends PureComponent {
   render () {
     const { navigation } = this.props
     return (
-      <AppNavigator
-        {...this.props}
-        ref={() => {
-          if (Platform.OS !== 'web') {
-            this.navigation = navigation
-            NavigationService.setTopLevelNavigator(navigation)
-          }
-        }}
-        onNavigationStateChange={(prevState, currentState) => {
-          const currentRoute = this.getActiveRouteName(currentState)
-          const prevRoute = this.getActiveRouteName(prevState)
+      <ViewsContext.Provider value={this.state.viewState}>
+        <AppNavigator
+          {...this.props}
+          ref={() => {
+            if (Platform.OS !== 'web') {
+              this.navigation = navigation
+              NavigationService.setTopLevelNavigator(navigation)
+            }
+          }}
+          onNavigationStateChange={(prevState, currentState) => {
+            const currentRoute = this.getActiveRouteName(currentState)
+            const prevRoute = this.getActiveRouteName(prevState)
 
-          if (prevRoute !== currentRoute) {
-            CoreModule.setCurrentRoute(currentRoute)
-          }
-        }}
-      />
+            if (prevRoute !== currentRoute) {
+              CoreModule.setCurrentRoute(currentRoute)
+            }
+
+            const route = this.getActiveRoute(currentState)
+
+            if (route) {
+              this.setState({
+                viewState: {
+                  ...this.state.viewState,
+                  [route.routeName]: route.params && { ...route.params } || route.params,
+                  time: Date.now(),
+                },
+              })
+            }
+          }}
+        />
+      </ViewsContext.Provider>
     )
   }
 }
