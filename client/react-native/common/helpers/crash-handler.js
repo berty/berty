@@ -30,7 +30,6 @@ if (process.env['ENVIRONMENT'] !== 'integration_test') {
   }
 
   if (Platform.OS === 'ios' || Platform.OS === 'android') {
-    // if ((Platform.OS === 'ios' || Platform.OS === 'android') && process.env['ENVIRONMENT'] !== 'integration_test') {
     const allowInDevMode = false
     const forceAppQuit = false
     const executeDefaultHandler = false

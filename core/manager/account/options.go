@@ -97,6 +97,8 @@ func WithJaegerAddrName(addr string, name string) NewOption {
 				logger().Warn("fallback on nooptracer: jaeger init failed", zap.String("error", err.Error()))
 				a.tracer = opentracing.NoopTracer{}
 				opentracing.SetGlobalTracer(a.tracer)
+			} else {
+				logger().Info("jaeger client init succeeded")
 			}
 		}()
 		return nil

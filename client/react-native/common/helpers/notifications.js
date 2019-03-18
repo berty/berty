@@ -16,6 +16,10 @@ export const getNativePushType = () => {
 export const enableNativeNotifications = async ({ context }) => {
   const { mutations } = context
 
+  if (Platform.Desktop) {
+    return true
+  }
+
   if (Platform.OS === 'web') {
     showMessage({
       message: I18n.t('settings.notifications-not-supported'),

@@ -11,16 +11,18 @@ import (
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/network"
 	"berty.tech/core/pkg/logmanager"
+	"berty.tech/core/pkg/notification"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
 var (
-	accountName        = ""
-	appConfig          *account.StateDB
-	rootContext        = context.Background()
-	NotificationDriver = MobileNotification{}.New()
-	networkDriver      *network.Network
+	accountName                = ""
+	appConfig                  *account.StateDB
+	rootContext                = context.Background()
+	NotificationDriver         = MobileNotification{}.New() // Android / iOS
+	ElectronNotificationDriver *notification.Driver         // Electron Desktop client
+	networkDriver              *network.Network
 )
 
 // Setup call it at first native start
@@ -216,7 +218,6 @@ func daemon(cfg *MobileOptions) error {
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(cfg.nickname),
 		account.WithPassphrase("secure"),
-		account.WithNotificationDriver(NotificationDriver),
 		account.WithDatabase(&account.DatabaseOptions{
 			Path: ".",
 			Drop: false,
@@ -229,6 +230,12 @@ func daemon(cfg *MobileOptions) error {
 			Bind:         fmt.Sprintf(":%d", gqlPort),
 			Interceptors: false,
 		}),
+	}
+
+	if ElectronNotificationDriver != nil {
+		accountOptions = append(accountOptions, account.WithNotificationDriver(*ElectronNotificationDriver))
+	} else {
+		accountOptions = append(accountOptions, account.WithNotificationDriver(NotificationDriver))
 	}
 
 	if appConfig.BotMode {
