@@ -28,6 +28,16 @@
         "CGO_OS_LDFLAGS": "-L/usr/local/opt/openssl/lib",
         "CGO_OS_CPPFLAGS": "-I/usr/local/opt/openssl/include"
       }
+    }, {
+      "arch": "amd64",
+      "os": "linux",
+      "env": {
+        "CGO_ENABLED": "1",
+        "CGO_CPPFLAGS": "-Wno-error=unused-command-line-argument -ITMPL_MAKEFILE_PATH/../../common/openssl/built/include",
+        "CGO_LDFLAGS": "-L/usr/local/opt/openssl/lib",
+        "CGO_OS_LDFLAGS": "-L/usr/local/opt/openssl/lib",
+        "CGO_OS_CPPFLAGS": "-I/usr/local/opt/openssl/include"
+      }
     }
   ]
 }
