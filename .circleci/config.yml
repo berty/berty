@@ -59,9 +59,9 @@ references:
           gomobile init
         fi
 
-  install_desktop_darwin: &install_desktop_darwin
+  install_mac: &install_mac
     run:
-      name: install desktop darwin
+      name: install mac
       command: |
         if [ ! -f ~/go/bin/astilectron-bundler ]; then
           cd ~/go/src/berty.tech/client/react-native/desktop
@@ -617,7 +617,7 @@ jobs:
             - client/react-native/web
 
 
-  client.rn.desktop:
+  client.rn.mac:
     working_directory: ~/go/src/berty.tech
     macos:
       xcode: "9.4.1"
@@ -638,7 +638,7 @@ jobs:
       - restore_cache:
           key: desktop-darwin-v2-{{ arch }}
 
-      - *install_desktop_darwin
+      - *install_mac
 
       - save_cache:
           key: desktop-darwin-v2-{{ arch }}
@@ -648,7 +648,7 @@ jobs:
             - ~/go/bin
 
       - run:
-          name: install desktop
+          name: install mac
           working_directory: ~/go/src/berty.tech/client/react-native/desktop
           command: |
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
@@ -685,7 +685,7 @@ workflows:
       - client.rn.web:
           requires:
             - client.rn.node
-      - client.rn.desktop:
+      - client.rn.mac:
           requires:
             - client.rn.web
   check-quality:
