@@ -138,12 +138,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		}
 	}
 
-	if cfg.DefaultBootstrap {
-		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
-	}
-
-	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
-
 	// add ws transport
 	if cfg.WS {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ws.New))

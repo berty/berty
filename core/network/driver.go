@@ -106,6 +106,10 @@ func (net *Network) Bootstrap(ctx context.Context, bsync bool, addrs ...string) 
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
+	if net.config.DefaultBootstrap {
+		addrs = append(addrs, config.DefaultBootstrap...)
+	}
+
 	wg := sync.WaitGroup{}
 	wg.Add(len(addrs))
 	for _, addr := range addrs {
