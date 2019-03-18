@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 
 	"berty.tech/core/pkg/deviceinfo"
+	"github.com/pkg/browser"
 	"github.com/shibukawa/configdir"
 )
 

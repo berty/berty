@@ -325,6 +325,7 @@ github.com/ipfs/go-ipfs-addr v0.0.1/go.mod h1:uKTDljHT3Q3SUWzDLp3aYUi8MrY32fgNgo
 github.com/ipfs/go-ipfs-delay v0.0.0-20181109222059-70721b86a9a8/go.mod h1:8SP1YXK1M1kXuc4KJZINY3TQQ03J2rwBG9QfXmbRPrw=
 github.com/ipfs/go-ipfs-delay v0.0.1/go.mod h1:8SP1YXK1M1kXuc4KJZINY3TQQ03J2rwBG9QfXmbRPrw=
 github.com/ipfs/go-ipfs-ds-help v0.0.1/go.mod h1:gtP9xRaZXqIQRh1HRpp595KbBEdgqWFxefeVKOV8sxo=
+github.com/ipfs/go-ipfs-routing v0.0.1 h1:394mZeTLcbM/LDO12PneBYvkZAUA+nRnmC0lAzDXKOY=
 github.com/ipfs/go-ipfs-routing v0.0.1/go.mod h1:k76lf20iKFxQTjcJokbPM9iBXVXVZhcOwc360N4nuKs=
 github.com/ipfs/go-ipfs-util v0.0.1 h1:Wz9bL2wB2YBJqggkA4dD7oSmqB4cAnpNbGrlHJulv50=
 github.com/ipfs/go-ipfs-util v0.0.1/go.mod h1:spsl5z8KUnrve+73pOhSVZND1SIxPW5RyBCNzQxlJBc=
@@ -436,8 +437,6 @@ github.com/libp2p/go-libp2p-pnet v0.0.1 h1:2e5d15M8XplUKsU4Fqrll5eDfqGg/7mHUufLk
 github.com/libp2p/go-libp2p-pnet v0.0.1/go.mod h1:bWN8HqdpgCdKnXSCsJhbWjiU3UZFa/tIe4no5jCmHVw=
 github.com/libp2p/go-libp2p-protocol v0.0.1 h1:+zkEmZ2yFDi5adpVE3t9dqh/N9TbpFWywowzeEzBbLM=
 github.com/libp2p/go-libp2p-protocol v0.0.1/go.mod h1:Af9n4PiruirSDjHycM1QuiMi/1VZNHYcK8cLgFJLZ4s=
-github.com/libp2p/go-libp2p-pubsub v0.0.1 h1:iJWpvBDZiZOoRBGqEifu9yUHti9ptnSODHt6tgrBC6c=
-github.com/libp2p/go-libp2p-pubsub v0.0.1/go.mod h1:fYKlZBOF2yrJzYlgeEVFSbYWfbS+E8Zix6gMZ0A6WgE=
 github.com/libp2p/go-libp2p-quic-transport v0.0.1 h1:j+0WO2EIBBC/ZUuWXvcZt8DGxIgSojZcyRw4Igcr+ts=
 github.com/libp2p/go-libp2p-quic-transport v0.0.1/go.mod h1:cvXrDn4PqAGKwQoxy7Xx2aVcO9TB1/thWZpz+eD5vAQ=
 github.com/libp2p/go-libp2p-record v0.0.1 h1:zN7AS3X46qmwsw5JLxdDuI43cH5UYwovKxHPjKBYQxw=
@@ -651,8 +650,6 @@ github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30 h1:nMCC9Pwz1pxf
 github.com/whyrusleeping/mdns v0.0.0-20180901202407-ef14215e6b30/go.mod h1:j4l84WPFclQPj320J9gp0XwNKBb3U0zt5CBqjPp22G4=
 github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7 h1:E9S12nwJwEOXe2d6gT6qxdvqMnNq+VnSsKPgm2ZZNds=
 github.com/whyrusleeping/multiaddr-filter v0.0.0-20160516205228-e903e4adabd7/go.mod h1:X2c0RVCI1eSUFI8eLcY3c0423ykwiUdxLJtkDvruhjI=
-github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee h1:lYbXeSvJi5zk5GLKVuid9TVjS9a0OmLIDKTfoZBL6Ow=
-github.com/whyrusleeping/timecache v0.0.0-20160911033111-cfcb2f1abfee/go.mod h1:m2aV4LZI4Aez7dP5PMyVKEHhUyEJ/RjmPEDOpDvudHg=
 github.com/whyrusleeping/yamux v1.1.5 h1:4CK3aUUJQu0qpKZv5gEWJjNOQtdbdDhVVS6PJ+HimdE=
 github.com/whyrusleeping/yamux v1.1.5/go.mod h1:E8LnQQ8HKx5KD29HZFUwM1PxCOdPRzGwur1mcYhXcD8=
 github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f h1:+G16VLt+1NlrpOg/1ECvQybMsI0mnYz4OOQwXit5QzI=

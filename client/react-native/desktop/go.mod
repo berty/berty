@@ -15,6 +15,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/sam-kamerer/go-plister v0.0.0-20190202124357-57f251aa88ff // indirect
 	github.com/shibukawa/configdir v0.0.0-20170330084843-e180dbdc8da0
+	github.com/spf13/afero v1.2.0 // indirect
 	go.uber.org/zap v1.9.1
 )
 
