@@ -8,6 +8,7 @@ import { marginTop, padding, rounded, textTiny } from '../../../../styles'
 import { monospaceFont } from '../../../../constants/styling'
 import { showContactModal } from '../../../../helpers/contacts'
 import RelayContext from '../../../../relay/RelayContext'
+import { parse as parseUrl } from '../../../../helpers/url'
 
 class ByPublicKey extends PureComponent {
   constructor (props) {
@@ -16,6 +17,29 @@ class ByPublicKey extends PureComponent {
     this.state = {
       id: '',
     }
+  }
+
+  async onAdd (relayContext) {
+    const url = parseUrl(this.state.id)
+
+    if (!url || url.pathname !== '/contacts/add') {
+      console.warn('Not a valid URL')
+      return showContactModal({
+        relayContext,
+        data: {
+          id: this.state.id,
+          displayName: '',
+        },
+      })
+    }
+
+    return showContactModal({
+      relayContext,
+      data: {
+        id: url.hashParts['id'],
+        displayName: url.hashParts['display-name'] || '',
+      },
+    })
   }
 
   render () {
@@ -72,12 +96,8 @@ class ByPublicKey extends PureComponent {
                         await new Promise(resolve =>
                           this.setState({ id: clipboardContent }, resolve)
                         )
-                        await showContactModal({
-                          relayContext,
-                          data: {
-                            id: this.state.id,
-                          },
-                        })
+
+                        return this.onAdd(relayContext)
                       }}
                     >
                       {t('contacts.add.pub-key-paste')}
@@ -100,12 +120,7 @@ class ByPublicKey extends PureComponent {
                     center
                     self='stretch'
                     onPress={async () => {
-                      await showContactModal({
-                        relayContext,
-                        data: {
-                          id: this.state.id,
-                        },
-                      })
+                      return this.onAdd(relayContext)
                     }}
                     icon={'plus'}
                   >
