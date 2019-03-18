@@ -11,12 +11,18 @@ import (
 	"go.uber.org/zap"
 )
 
+const (
+	MaxStreamUse = 20
+)
+
 type Network struct {
 	config *config.Config
 
 	host *host.BertyHost
 
 	handler func(context.Context, *entity.Envelope) (*entity.Void, error)
+
+	streamManager *StreamManager
 
 	updating *sync.Mutex
 
@@ -68,9 +74,6 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 func (net *Network) init(ctx context.Context) {
 	net.host.SetStreamHandler(ProtocolID, net.handleEnvelope)
 	net.logHostInfos()
-
-	// advertise and find peers on berty discovery service
-	net.Discover(ctx)
 
 	// bootstrap default peers
 	// TOOD: infinite bootstrap + don't permit routing to provide when no peers are discovered

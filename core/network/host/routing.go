@@ -18,12 +18,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	maxDelay  = 5.0 * time.Second
-	baseDelay = 500.0 * time.Millisecond
-	factor    = 1.2
-)
-
 var _ routing.IpfsRouting = (*BertyRouting)(nil)
 var _ inet.Notifiee = (*BertyRouting)(nil)
 
@@ -132,13 +126,12 @@ func (br *BertyRouting) isReady(ctx context.Context) error {
 	}
 }
 
-func (br *BertyRouting) getBackoffDelay(currentDelay time.Duration) time.Duration {
-	delay := float64(currentDelay) * factor
-	if delay > float64(maxDelay) {
-		return maxDelay
+func (br *BertyRouting) IsReady(ctx context.Context) bool {
+	if err := br.isReady(ctx); err != nil {
+		return false
 	}
 
-	return time.Duration(delay)
+	return true
 }
 
 func (br *BertyRouting) Listen(net inet.Network, a ma.Multiaddr)      {}
@@ -158,13 +151,13 @@ func (br *BertyRouting) Connected(net inet.Network, c inet.Conn) {
 
 		ctx := context.Background()
 		if !br.ready {
-			delay := baseDelay
+			delay := NewBackoffDelay(500*time.Millisecond, 5*time.Second)
+			retries := 0
 			for !br.routing.IsReady(ctx) {
-				delay = br.getBackoffDelay(delay)
-
+				time.Sleep(delay.Backoff(retries))
 				// try again until bucket is fill with at last
 				// one peer
-				<-time.After(delay)
+				retries++
 			}
 
 			t := time.Since(br.tstart)

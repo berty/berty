@@ -254,7 +254,6 @@ func (net *Network) SendTo(ctx context.Context, pi pstore.PeerInfo, e *entity.En
 }
 
 func (net *Network) handleEnvelope(s inet.Stream) {
-	logger().Debug("receiving envelope")
 	if net.handler == nil {
 		logger().Error("handler is not set")
 		return
@@ -274,6 +273,7 @@ func (net *Network) handleEnvelope(s inet.Stream) {
 			return
 		}
 
+		logger().Debug("receiving envelope")
 		// @TODO: get opentracing context
 		net.handler(context.Background(), e)
 	}

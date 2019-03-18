@@ -30,6 +30,33 @@ func NewBertyConnMgr(ctx context.Context, low, hi int, grace time.Duration) *Ber
 	return cm
 }
 
+func (cm *BertyConnMgr) reconnect(net inet.Network, pid peer.ID, delay *BackoffDelay) {
+	retries := 0
+	for {
+		select {
+		case <-time.After(delay.Backoff(retries)):
+		case <-cm.ctx.Done():
+			logger().Error("connmanager", zap.Error(cm.ctx.Err()))
+			return
+		}
+
+		if net.Connectedness(pid) == inet.Connected {
+			return
+		}
+
+		logger().Debug("connmanager: try to reconnect", zap.String("id", pid.Pretty()), zap.Int("retries", retries))
+		_, err := net.DialPeer(cm.ctx, pid)
+		if err == nil {
+			return
+		}
+
+		logger().Debug("connmanager: cannot reconnect", zap.String("id", pid.Pretty()), zap.Error(err))
+
+		// update retries
+		retries++
+	}
+}
+
 func (cm *BertyConnMgr) TrimOpenConns(ctx context.Context) {
 	cm.BasicConnMgr.TrimOpenConns(ctx)
 }
@@ -50,103 +77,6 @@ func (cm *BertyConnMgr) GetInfo() connmgr.CMInfo {
 	return cm.BasicConnMgr.GetInfo()
 }
 
-func (cm *BertyConnMgr) Notifee() inet.Notifiee {
-	return cm
-}
-
-func (cm *BertyConnMgr) Connected(net inet.Network, c inet.Conn) {
-	logger().Debug("Connected")
-	cm.BasicConnMgr.Notifee().Connected(net, c)
-}
-
-func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {
-	// check if it a relay conn and try to reconnect
-	tagInfo := cm.GetTagInfo(c.RemotePeer())
-	peerID := c.RemotePeer()
-
-	// TODO: reconnect to kbucket && bootstrap && relay if list of each are < 1
-	logger().Debug("Disconnected", zap.String("tagInfo", fmt.Sprintf("%+v", tagInfo.Tags)))
-	if v, ok := tagInfo.Tags["kbucket"]; ok && v == 5 {
-		go func() {
-			for {
-				logger().Debug(
-					"connmanager: try to reconnect to kbucket",
-					zap.String("id", peerID.Pretty()),
-				)
-				if _, err := net.DialPeer(cm.ctx, peerID); err != nil {
-					logger().Debug(
-						"connmanager: cannot reconnect to kbucket",
-						zap.String("id", peerID.Pretty()),
-						zap.String("err", err.Error()),
-					)
-					select {
-					case <-time.After(time.Second * 10):
-						continue
-					case <-cm.ctx.Done():
-						cm.BasicConnMgr.Notifee().Disconnected(net, c)
-						return
-					}
-				}
-				break
-			}
-		}()
-		return
-	} else if v, ok := tagInfo.Tags["bootstrap"]; ok && v == 2 {
-		go func() {
-			for {
-				logger().Debug(
-					"connmanager: try to reconnect to bootstrap",
-					zap.String("id", peerID.Pretty()),
-				)
-				if _, err := net.DialPeer(cm.ctx, peerID); err != nil {
-					logger().Debug(
-						"connmanager: cannot reconnect to bootstrap",
-						zap.String("id", peerID.Pretty()),
-						zap.String("err", err.Error()),
-					)
-					select {
-					case <-time.After(time.Second * 1):
-						continue
-					case <-cm.ctx.Done():
-						cm.BasicConnMgr.Notifee().Disconnected(net, c)
-						return
-					}
-				}
-				break
-			}
-		}()
-		return
-	} else if v, ok := tagInfo.Tags["relay-hop"]; ok && v == 2 {
-		go func() {
-			for {
-				logger().Debug(
-					"connmanager: try to reconnect to relay",
-					zap.String("id", peerID.Pretty()),
-				)
-				if _, err := net.DialPeer(cm.ctx, peerID); err != nil {
-					logger().Debug(
-						"connmanager: cannot reconnect to relay",
-						zap.String("id", peerID.Pretty()),
-						zap.String("err", err.Error()),
-					)
-					select {
-					case <-time.After(time.Second * 10):
-						continue
-					case <-cm.ctx.Done():
-						cm.BasicConnMgr.Notifee().Disconnected(net, c)
-						return
-					}
-				}
-				break
-			}
-		}()
-		return
-	} else {
-		cm.BasicConnMgr.Notifee().Disconnected(net, c)
-	}
-}
-
-// TODO
 func (cm *BertyConnMgr) getRelayPeers() []pstore.PeerInfo {
 	fmt.Printf("not implemented")
 	return nil
@@ -158,6 +88,35 @@ func (cm *BertyConnMgr) getBootstrapPeers() []pstore.PeerInfo {
 func (cm *BertyConnMgr) getKbucketPeers() []pstore.PeerInfo {
 	fmt.Printf("not implemented")
 	return nil
+}
+
+func (cm *BertyConnMgr) Notifee() inet.Notifiee {
+	return cm
+}
+
+func (cm *BertyConnMgr) Connected(net inet.Network, c inet.Conn) {
+	logger().Debug("Connected")
+	cm.BasicConnMgr.Notifee().Connected(net, c)
+}
+
+func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {
+	if net.Connectedness(c.RemotePeer()) != inet.Connected {
+		// check if it a relay conn and try to reconnect
+		peerID := c.RemotePeer()
+		tagInfo := cm.GetTagInfo(peerID)
+
+		var delay *BackoffDelay
+
+		if v, ok := tagInfo.Tags["bootstrap"]; ok && v == 2 {
+			delay = NewBackoffDelay(time.Second, time.Second*10)
+			go cm.reconnect(net, peerID, delay)
+		} else if v, ok := tagInfo.Tags["relay-hop"]; ok && v == 2 {
+			delay = NewBackoffDelay(time.Second, time.Minute)
+			go cm.reconnect(net, peerID, delay)
+		}
+	}
+
+	cm.BasicConnMgr.Notifee().Disconnected(net, c)
 }
 
 // Listen is no-op in this implementation.

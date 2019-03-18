@@ -56,7 +56,7 @@ func newRootCommand() *cobra.Command {
 	defaultJaegerName := os.Getenv("USER") + "@" + os.Getenv("HOST")
 	cmd.PersistentFlags().BoolP("help", "h", false, "Print usage")
 	cmd.PersistentFlags().StringP("log-level", "", "info", "log level (debug, info, warn, error)")
-	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*,vendor.gorm*", "logger namespaces to enable (supports wildcard)")
+	cmd.PersistentFlags().StringP("log-namespaces", "", "core.*", "logger namespaces to enable (supports wildcard)")
 	cmd.PersistentFlags().StringP("log-dir", "", "/tmp/berty-logs", "local log files directory")
 	cmd.PersistentFlags().StringP("jaeger-address", "", "127.0.0.1:6831", "ip address / hostname and port of jaeger-agent: <hostname>:<port>")
 	cmd.PersistentFlags().StringP("jaeger-name", "", defaultJaegerName, "tracer name")
