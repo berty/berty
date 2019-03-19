@@ -38,25 +38,40 @@ func (n *Node) MonitorPeers(_ *node.Void, stream node.Service_MonitorPeersServer
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	cerr := make(chan error, 1)
-	n.networkMetric.MonitorPeers(func(p *network_metric.Peer, err error) error {
-		tracer := tracing.EnterFunc(ctx, p, err)
-		defer tracer.Finish()
+	lastMap := map[string]*network_metric.Peer{}
+	for {
+		currentMap := map[string]*network_metric.Peer{}
 
-		if err != nil {
-			cerr <- err
-			return err
+		// add peers to map
+		for _, peer := range n.networkMetric.Peers(ctx).List {
+			currentMap[peer.ID] = peer
 		}
 
-		if err = stream.Send(p); err != nil {
-			cerr <- err
-			return err
+		// check last peer removed
+		for _, last := range lastMap {
+			_, ok := currentMap[last.ID]
+			if !ok {
+				last.Connection = network_metric.ConnectionType_NOT_CONNECTED
+				if err := stream.Send(last); err != nil {
+					return err
+				}
+			}
 		}
 
-		return nil
-	})
+		// send current updates
+		for _, current := range currentMap {
+			last, ok := lastMap[current.ID]
+			if !ok || last.Connection != current.Connection {
+				if err := stream.Send(current); err != nil {
+					return err
+				}
+			}
+		}
 
-	return <-cerr
+		<-time.After(time.Second * 1)
+		lastMap = currentMap
+	}
+
 }
 
 // Monitor bandwidth globally with the given interval

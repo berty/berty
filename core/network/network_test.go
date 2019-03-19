@@ -66,7 +66,8 @@ func TestDriver(t *testing.T) {
 		}
 	}()
 
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
 	Convey("net test", t, FailureHalts, func() {
 		Convey("setup DHT servers", FailureHalts, func() {
 			serv1, err = setupServer(ctx)
@@ -90,22 +91,28 @@ func TestDriver(t *testing.T) {
 			So(err, ShouldBeNil)
 		})
 
+		Convey("update clients", FailureHalts, func() {
+			So(homer.Update(ctx, WithClientTestOptions()), ShouldBeNil)
+
+			So(lisa.Update(ctx, WithClientTestOptions()), ShouldBeNil)
+
+			So(bart.Update(ctx, WithClientTestOptions()), ShouldBeNil)
+		})
+
 		Convey("bootstrap clients", FailureHalts, func() {
-			tctx, cancel := context.WithTimeout(ctx, time.Second*10)
-			defer cancel()
 
 			bootstrap := []string{}
 			bootstrap = append(bootstrap, getBoostrap(serv1)...)
 			bootstrap = append(bootstrap, getBoostrap(serv2)...)
 			bootstrap = append(bootstrap, getBoostrap(serv3)...)
 
-			err = homer.Bootstrap(tctx, true, bootstrap...)
+			err = homer.Bootstrap(ctx, true, bootstrap...)
 			So(err, ShouldBeNil)
 
-			err = lisa.Bootstrap(tctx, true, bootstrap...)
+			err = lisa.Bootstrap(ctx, true, bootstrap...)
 			So(err, ShouldBeNil)
 
-			err = bart.Bootstrap(tctx, true, bootstrap...)
+			err = bart.Bootstrap(ctx, true, bootstrap...)
 			So(err, ShouldBeNil)
 		})
 
@@ -122,8 +129,6 @@ func TestDriver(t *testing.T) {
 		})
 
 		Convey("Bart send an event to Homer", FailureHalts, func(c C) {
-			tctx, cancel := context.WithTimeout(ctx, time.Second*10)
-			defer cancel()
 
 			e := &entity.Envelope{
 				ChannelID: "Homer",
@@ -139,9 +144,9 @@ func TestDriver(t *testing.T) {
 				return &entity.Void{}, nil
 			})
 
-			err = homer.Join(tctx, "Homer")
+			err = homer.Join(ctx, "Homer")
 
-			err := bart.Emit(tctx, e)
+			err := bart.Emit(ctx, e)
 			So(err, ShouldBeNil)
 			So(<-homerQueue, ShouldNotBeNil)
 			// So(len(homerQueue), ShouldEqual, 1)

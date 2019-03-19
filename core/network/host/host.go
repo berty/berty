@@ -47,6 +47,9 @@ func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (
 		Ping:      opts.Ping,
 	}
 
+	if h.Metric != nil {
+		h.Host.Network().Notify(h.Metric)
+	}
 	return h, nil
 }
 
@@ -287,7 +290,8 @@ func (h *BertyHost) preferredProtocol(p peer.ID, pids []protocol.ID) (protocol.I
 }
 
 func (bh *BertyHost) Close() error {
-	return bh.Host.Close()
+	bh.Host.Network().StopNotify(bh.Metric)
+	return nil
 }
 
 func (bh *BertyHost) ConnManager() ifconnmgr.ConnManager {
