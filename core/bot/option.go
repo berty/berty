@@ -48,7 +48,7 @@ func WithAutoAcceptInvites() Option {
 				return nil
 			}
 			_, err := b.client.Node().ContactAcceptRequest(e.ctx, &node.ContactAcceptRequestInput{
-				ContactID: e.SenderID,
+				ContactID: e.SourceDeviceID,
 			})
 			return err
 		})

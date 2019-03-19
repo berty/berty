@@ -112,12 +112,12 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 		return
 	}
 
-	event.SenderID = n.b64pubkey
+	event.SourceDeviceID = n.b64pubkey
 
 	switch {
-	case event.ReceiverID != "": // ContactEvent
+	case event.DestinationDeviceID != "": // ContactEvent
 		envelope.Source = n.aliasEnvelopeForContact(ctx, &envelope, event)
-		envelope.ChannelID = event.ReceiverID
+		envelope.ChannelID = event.DestinationDeviceID
 		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
 
 	case event.ConversationID != "": //ConversationEvent
@@ -203,8 +203,8 @@ func (n *Node) getContactsForEvent(ctx context.Context, event *entity.Event) ([]
 			Select("contact_id").
 			Where(&entity.ConversationMember{ConversationID: event.ConversationID}).
 			QueryExpr()
-	} else if event.ReceiverID != "" {
-		subqueryContactIDs = []string{event.ReceiverID}
+	} else if event.DestinationDeviceID != "" {
+		subqueryContactIDs = []string{event.DestinationDeviceID}
 	}
 
 	if err := db.

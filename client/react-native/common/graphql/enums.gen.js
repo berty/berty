@@ -234,6 +234,36 @@ export const ValueBertyEntityKindInputKind = {
   99: 'Node',
 }
 
+export const BertyEntityEventInputAckStatus = {
+  UnknownAckStatus: 0,
+  NotAcked: 1,
+  AckedAtLeastOnce: 2,
+  AckedByAllContacts: 3,
+  AckedByAllDevices: 4,
+}
+
+export const ValueBertyEntityEventInputAckStatus = {
+  0: 'UnknownAckStatus',
+  1: 'NotAcked',
+  2: 'AckedAtLeastOnce',
+  3: 'AckedByAllContacts',
+  4: 'AckedByAllDevices',
+}
+
+export const BertyEntityEventInputSeenStatus = {
+  UnknownSeenStatus: 0,
+  NotSeen: 1,
+  SeenAtLeastOnce: 2,
+  SeenByAllContacts: 3,
+}
+
+export const ValueBertyEntityEventInputSeenStatus = {
+  0: 'UnknownSeenStatus',
+  1: 'NotSeen',
+  2: 'SeenAtLeastOnce',
+  3: 'SeenByAllContacts',
+}
+
 export const BertyEntityEventInputDirection = {
   UnknownDirection: 0,
   Incoming: 1,
@@ -246,6 +276,20 @@ export const ValueBertyEntityEventInputDirection = {
   1: 'Incoming',
   2: 'Outgoing',
   99: 'Node',
+}
+
+export const BertyEntityEventDispatchInputMedium = {
+  UnknownMedium: 0,
+  LocalNetwork: 1,
+  BLE: 2,
+  Relay: 3,
+}
+
+export const ValueBertyEntityEventDispatchInputMedium = {
+  0: 'UnknownMedium',
+  1: 'LocalNetwork',
+  2: 'BLE',
+  3: 'Relay',
 }
 
 export const BertyNetworkMetricMetricsTypeInputMetricsType = {

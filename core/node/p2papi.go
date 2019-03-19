@@ -142,7 +142,7 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *entity.Envelope) (*en
 		return nil, err
 	}
 
-	if event.SenderID != device.ID {
+	if event.SourceDeviceID != device.ID {
 		return nil, errors.New("event is signed by a known device but has not been sent by it")
 	}
 
@@ -210,8 +210,8 @@ func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *entity.Ev
 			Select("contact_id").
 			Where(&entity.ConversationMember{ConversationID: event.ConversationID}).
 			QueryExpr()
-	} else if event.ReceiverID != "" {
-		subqueryContactIDs = []string{event.ReceiverID}
+	} else if event.DestinationDeviceID != "" {
+		subqueryContactIDs = []string{event.DestinationDeviceID}
 	}
 
 	if err := db.

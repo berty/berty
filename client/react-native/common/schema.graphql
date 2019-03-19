@@ -408,23 +408,38 @@ type BertyEntityNodeAttrs  {
   
 
       
+      
+      
 type BertyEntityEvent implements Node {
     id: ID!
-    senderId: String!
+    sourceDeviceId: String!
     createdAt: GoogleProtobufTimestamp
     updatedAt: GoogleProtobufTimestamp
     sentAt: GoogleProtobufTimestamp
     receivedAt: GoogleProtobufTimestamp
     ackedAt: GoogleProtobufTimestamp
     direction: Enum
-    senderApiVersion: Uint32!
-    receiverApiVersion: Uint32!
-    receiverId: String!
+    apiVersion: Uint32!
+    destinationDeviceId: String!
     kind: Enum
     attributes: [Byte!]
     conversationId: ID!
     seenAt: GoogleProtobufTimestamp
+    ackStatus: Enum
+    dispatches: [BertyEntityEventDispatch]
+    sourceContactId: String!
     metadata: [BertyEntityMetadataKeyValue]
+}
+      
+type BertyEntityEventDispatch  {
+    eventId: String!
+    deviceId: String!
+    contactId: String!
+    sentAt: GoogleProtobufTimestamp
+    ackedAt: GoogleProtobufTimestamp
+    seenAt: GoogleProtobufTimestamp
+    ackMedium: Enum
+    seenMedium: Enum
 }
 type BertyEntityMetadataKeyValue  {
     key: String!
@@ -645,26 +660,38 @@ type BertyNodeNodeEvent  {
     kind: Enum
     attributes: [Byte!]
 }
+input BertyEntityEventDispatchInput {
+    eventId: String!
+    deviceId: String!
+    contactId: String!
+    sentAt: GoogleProtobufTimestampInput
+    ackedAt: GoogleProtobufTimestampInput
+    seenAt: GoogleProtobufTimestampInput
+    ackMedium: Enum
+    seenMedium: Enum
+}
 input BertyEntityMetadataKeyValueInput {
     key: String!
     values: [String!]
 }
 input BertyEntityEventInput {
     id: ID!
-    senderId: String!
+    sourceDeviceId: String!
     createdAt: GoogleProtobufTimestampInput
     updatedAt: GoogleProtobufTimestampInput
     sentAt: GoogleProtobufTimestampInput
     receivedAt: GoogleProtobufTimestampInput
     ackedAt: GoogleProtobufTimestampInput
     direction: Enum
-    senderApiVersion: Uint32!
-    receiverApiVersion: Uint32!
-    receiverId: String!
+    apiVersion: Uint32!
+    destinationDeviceId: String!
     kind: Enum
     attributes: [Byte!]
     conversationId: ID!
     seenAt: GoogleProtobufTimestampInput
+    ackStatus: Enum
+    dispatches: [BertyEntityEventDispatchInput]
+    sourceContactId: String!
     metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {

@@ -41,9 +41,9 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 	defer n.asyncWaitGroup(ctx)()
 	n.handleMutex(ctx)()
 
-	if input.SenderID == n.UserID() {
+	if input.SourceDeviceID == n.UserID() {
 		logger().Debug("skipping event created by myself",
-			zap.String("sender", input.SenderID),
+			zap.String("sender", input.SourceDeviceID),
 			zap.String("id", input.ID),
 		)
 		return nil
@@ -51,7 +51,7 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 
 	var count int
 	sql := n.sql(ctx)
-	if err := sql.Model(&entity.Event{}).Where(&entity.Event{ID: input.ID, SenderID: input.SenderID}).Count(&count).Error; err != nil {
+	if err := sql.Model(&entity.Event{}).Where(&entity.Event{ID: input.ID, SourceDeviceID: input.SourceDeviceID}).Count(&count).Error; err != nil {
 		return err
 	}
 	if count > 0 {
@@ -63,7 +63,7 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 	now := time.Now().UTC()
 	input.Direction = entity.Event_Incoming // set direction to incoming
 	input.ReceivedAt = &now                 // set current date
-	input.ReceiverAPIVersion = p2p.Version  // it's important to keep our current version to be able to apply per-message migrations in the future
+	input.APIVersion = p2p.Version          // it's important to keep our current version to be able to apply per-message migrations in the future
 	// input.ReceiverID = ""               // we should be able to remove this information
 
 	// debug
@@ -73,7 +73,7 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 			event = string(out)
 		}
 		ce.Write(
-			zap.String("sender", input.SenderID),
+			zap.String("sender", input.SourceDeviceID),
 			zap.String("id", input.ID),
 			zap.String("event", event),
 		)
@@ -121,7 +121,7 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 	}
 
 	// asynchronously ack, maybe we can ignore this one?
-	ack := n.NewContactEvent(ctx, &entity.Contact{ID: input.SenderID}, entity.Kind_Ack)
+	ack := n.NewContactEvent(ctx, &entity.Contact{ID: input.SourceDeviceID}, entity.Kind_Ack)
 	ack.AckedAt = &now
 	if err := ack.SetAttrs(&entity.AckAttrs{IDs: []string{input.ID}}); err != nil {
 		return err

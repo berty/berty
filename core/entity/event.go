@@ -22,20 +22,24 @@ func (e Event) IsJustReceived() bool {
 
 func (e Event) Copy() *Event {
 	return &Event{
-		ID:                 e.ID,
-		CreatedAt:          e.CreatedAt,
-		UpdatedAt:          e.UpdatedAt,
-		SenderID:           e.SenderID,
-		Direction:          e.Direction,
-		SenderAPIVersion:   e.SenderAPIVersion,
-		ReceiverAPIVersion: e.ReceiverAPIVersion,
-		ReceiverID:         e.ReceiverID,
-		Kind:               e.Kind,
-		SentAt:             e.SentAt,
-		ReceivedAt:         e.ReceivedAt,
-		AckedAt:            e.AckedAt,
-		ConversationID:     e.ConversationID,
-		Attributes:         e.Attributes,
+		ID:                  e.ID,
+		SourceDeviceID:      e.SourceDeviceID,
+		CreatedAt:           e.CreatedAt,
+		UpdatedAt:           e.UpdatedAt,
+		SentAt:              e.SentAt,
+		ReceivedAt:          e.ReceivedAt,
+		AckedAt:             e.AckedAt,
+		Direction:           e.Direction,
+		APIVersion:          e.APIVersion,
+		DestinationDeviceID: e.DestinationDeviceID,
+		Kind:                e.Kind,
+		Attributes:          e.Attributes,
+		ConversationID:      e.ConversationID,
+		SeenAt:              e.SeenAt,
+		AckStatus:           e.AckStatus,
+		Dispatches:          e.Dispatches,
+		SourceContactID:     e.SourceContactID,
+		Metadata:            e.Metadata,
 	}
 }
 
@@ -70,8 +74,8 @@ func (e Event) CreateSpan(ctx context.Context) (opentracing.Span, context.Contex
 
 	span.SetTag("caller", caller)
 	span.SetTag("event.kind", e.Kind.String())
-	span.SetTag("event.SenderID", e.SenderID)
-	span.SetTag("event.DestinationID", e.ReceiverID)
+	span.SetTag("event.SourceDeviceID", e.SourceDeviceID)
+	span.SetTag("event.DestinationID", e.DestinationDeviceID)
 	span.SetTag("event.Direction", e.Direction.String())
 
 	if err := tracer.Inject(span.Context(), opentracing.TextMap, e.TextMapWriter()); err != nil {
@@ -154,9 +158,9 @@ func FindNonAcknowledgedEventsForDestination(db *gorm.DB, destination *Event) ([
 	var events []*Event
 
 	err := db.Find(&events, &Event{
-		ConversationID: destination.ConversationID,
-		ReceiverID:     destination.ReceiverID,
-		Direction:      Event_Outgoing,
+		ConversationID:      destination.ConversationID,
+		DestinationDeviceID: destination.DestinationDeviceID,
+		Direction:           Event_Outgoing,
 	}).Where("acked_at IS NULL").Error
 
 	if err != nil {

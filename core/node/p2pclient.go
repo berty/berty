@@ -117,7 +117,7 @@ func (n *Node) BroadcastEventToContacts(ctx context.Context, event *entity.Event
 
 	for _, contact := range contacts {
 		contactEvent := event.Copy()
-		contactEvent.ReceiverID = contact.ID
+		contactEvent.DestinationDeviceID = contact.ID
 
 		if err := n.EnqueueOutgoingEvent(ctx, contactEvent, &OutgoingEventOptions{}); err != nil {
 			logger().Error("node.BroadcastEventToContacts", zap.Error(err))

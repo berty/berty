@@ -104,7 +104,7 @@ func (node *Node) senderAliasSave(ctx context.Context, senderAlias *entity.Sende
 
 func (node *Node) aliasEnvelopeForContact(ctx context.Context, envelope *entity.Envelope, event *entity.Event) string {
 	sql := node.sql(ctx)
-	alias, err := entity.GetAliasForContact(sql, event.ReceiverID)
+	alias, err := entity.GetAliasForContact(sql, event.DestinationDeviceID)
 
 	if err == nil && alias != "" {
 		return alias

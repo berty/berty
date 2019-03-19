@@ -65,7 +65,7 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 func (n *Node) handleContactRequestAccepted(ctx context.Context, input *entity.Event) error {
 	// fetching existing contact from db
 	sql := n.sql(ctx)
-	contact, err := bsql.ContactByID(sql, input.SenderID)
+	contact, err := bsql.ContactByID(sql, input.SourceDeviceID)
 	if err != nil {
 		return bsql.GenericError(err)
 	}
@@ -105,7 +105,7 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *entity.Event) er
 
 	// fetching existing contact from db
 	sql := n.sql(ctx)
-	contact, err := bsql.ContactByID(sql, input.SenderID)
+	contact, err := bsql.ContactByID(sql, input.SourceDeviceID)
 	if err != nil {
 		return bsql.GenericError(err)
 	}
@@ -192,7 +192,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 	})
 
 	sender := &entity.Contact{}
-	if err := n.sql(ctx).First(&sender, &entity.Contact{ID: input.SenderID}).Error; err != nil {
+	if err := n.sql(ctx).First(&sender, &entity.Contact{ID: input.SourceDeviceID}).Error; err != nil {
 		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Contact not found"))
 		sender = &entity.Contact{}
 	}

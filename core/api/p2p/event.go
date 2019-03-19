@@ -14,11 +14,11 @@ func NewOutgoingEvent(ctx context.Context, sender, receiver string, kind entity.
 	// ctx = tracer.Context()
 
 	return &entity.Event{
-		SenderAPIVersion: Version,
-		CreatedAt:        time.Now().UTC(),
-		Kind:             kind,
-		SenderID:         sender,
-		ReceiverID:       receiver,
-		Direction:        entity.Event_Outgoing,
+		APIVersion:          Version,
+		CreatedAt:           time.Now().UTC(),
+		Kind:                kind,
+		SourceDeviceID:      sender,
+		DestinationDeviceID: receiver,
+		Direction:           entity.Event_Outgoing,
 	}
 }
