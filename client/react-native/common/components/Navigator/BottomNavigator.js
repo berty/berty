@@ -16,8 +16,6 @@ import { UpdateContext } from '../../update'
 import { createSplitNavigator } from './SplitNavigator'
 import Placeholder from '../Screens/Placeholder'
 import withRelayContext from '../../helpers/withRelayContext'
-import { fragments } from '../../graphql'
-import { Pagination } from '../../relay'
 import { merge } from '../../helpers'
 
 class TabBarIconBase extends Component {
@@ -32,7 +30,6 @@ class TabBarIconBase extends Component {
     } = props
 
     this.state = {
-      shouldRefresh: false,
       stored: [],
       queryList: queries.EventList.graphql,
       queryVariables: props.routeName === 'contacts' || props.routeName === 'side/contacts'
@@ -48,11 +45,35 @@ class TabBarIconBase extends Component {
             kind: 302,
             direction: 1,
           },
+          onlyWithoutSeenAt: 1,
         }]),
       subscription: props.routeName === 'contacts' || props.routeName === 'side/contacts'
         ? [subscriptions.contactRequest]
         : [subscriptions.message],
     }
+
+    this.subscriber = null
+  }
+
+  componentDidMount () {
+    const { context: { queries, subscriptions } } = this.props
+    const { queryVariables } = this.state
+
+    queries.EventUnseen.fetch(queryVariables).then((e) => {
+      console.log('e', e)
+      this.setState({
+        stored: e.reduce((acc, val) => {
+          if (acc.indexOf(val.conversationId) === -1) {
+            acc.push(val.conversationId)
+          }
+          return acc
+        }, []),
+      })
+    })
+    console.log(queryVariables)
+    this.subscriber = subscriptions.commitLogStream.subscribe({
+      updater: this.updateBadge,
+    })
   }
 
   componentWillUnmount () {
@@ -61,29 +82,34 @@ class TabBarIconBase extends Component {
     }
   }
 
-  item = (props) => {
+  updateBadge = (store, data) => {
+    const [operation, entity] = [data.CommitLogStream.operation, data.CommitLogStream.entity.event]
     const {
-      data: { id, seenAt },
-    } = props
-    const { routeName } = this.props
-    let { stored } = this.state
-    const idx = stored.indexOf(id)
+      stored,
+      queryVariables: {
+        filter: {
+          kind,
+        },
+      },
+    } = this.state
 
-    if (idx === -1 && seenAt === null) {
-      this.setState({
-        stored: [
-          ...stored,
-          id,
-        ],
-      })
-    } else if (idx !== -1 && (routeName === 'chats' || routeName === 'side/chats') && new Date(seenAt).getTime() > 0) {
-      stored.splice(stored.indexOf(id), 1)
-      this.setState({
-        stored,
-      })
+    if (entity && entity.kind === kind) {
+      console.log('operation', kind, operation, entity.seenAt === null, stored.indexOf(entity.conversationId))
+      if (entity.seenAt === null && stored.indexOf(entity.conversationId) === -1) {
+        console.log('la', entity)
+        this.setState({
+          stored: [
+            ...stored,
+            entity.conversationId,
+          ],
+        })
+      } else if (entity.seenAt !== null && stored.indexOf(entity.conversationId) !== -1) {
+        stored.splice(stored.indexOf(entity.conversationId), 1)
+        this.setState({
+          stored: stored,
+        })
+      }
     }
-
-    return null
   }
 
   contactSeen = async () => {
@@ -100,8 +126,6 @@ class TabBarIconBase extends Component {
     }
   }
 
-  fragment = fragments.Event(this.item)
-
   render () {
     const {
       tintColor,
@@ -111,11 +135,8 @@ class TabBarIconBase extends Component {
     } = this.props
     const {
       stored,
-      queryList,
-      queryVariables,
-      subscription,
     } = this.state
-
+    console.log('stored', stored)
     context.relay = context.environment
     let iconName = {
       contacts: 'users',
@@ -150,20 +171,6 @@ class TabBarIconBase extends Component {
             color={tintColor}
             badge={stored.length > 0 ? '!' : ''}
             value={stored.length}
-          />
-          <Pagination
-            direction='forward'
-            noLoader
-            query={queryList}
-            variables={queryVariables}
-            fragment={fragments.EventList}
-            alias={'EventList'}
-            subscriptions={subscription}
-            renderItem={props => (
-              <this.fragment {...props} context={context} />
-            )}
-            style={{ display: 'none' }}
-            emptyItem={() => null}
           />
         </>
       )

@@ -85,20 +85,18 @@ const ItemBase = fragments.Conversation(
     }
 
     updateBadge = (store, data) => {
-      const [operation, entity] = [data.CommitLogStream.operation, data.CommitLogStream.entity.event]
-      const { unread } = this.state
+      const [entity] = [data.CommitLogStream.entity.event]
+      const { data: { id } } = this.props
+      let { unread } = this.state
 
-      if (entity && entity.kind === 302) {
-        console.log('operation', operation, entity.seenAt === null, unread.indexOf(entity.id))
+      if (entity && id === entity.conversationId && entity.kind === 302) {
+        // console.log('operation', operation, entity.seenAt === null, unread.indexOf(entity.id))
         if (entity.seenAt === null && unread.indexOf(entity.id) === -1) {
-          console.log('la')
+          unread.push(entity.id)
           this.setState({
-            unread: [
-              ...unread,
-              entity.id,
-            ],
+            unread: unread,
           })
-        } else if (unread.indexOf(entity.id) !== -1) {
+        } else if (entity.seenAt !== null && unread.indexOf(entity.id) !== -1) {
           unread.splice(unread.indexOf(entity.id), 1)
           this.setState({
             unread: unread,
