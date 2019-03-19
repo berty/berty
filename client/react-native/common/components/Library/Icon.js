@@ -48,33 +48,35 @@ const Icon = ({ name, color, rotate, src, style, flip, ...props }) => {
 
 export default Icon
 
-const IconBadge = props => (
-  <View>
-    <Icon {...props} />
-    {props.badge !== undefined &&
-    props.badge !== null &&
-    props.badge !== '' &&
-    props.badge !== 0 ? (
-        <View
-          style={{
-            position: 'absolute',
-            right: -8,
-            top: -5,
-            backgroundColor: colors.red,
-            borderRadius: 9,
-            width: 18,
-            height: 18,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          {props.value !== null
-            ? (<Text style={{ color: props.valueCorlor || colors.borderGrey }}>{props.value}</Text>)
-            : null
-          }
-        </View>
-      ) : null}
-  </View>
-)
+const IconBadge = props => {
+  return (
+    <View>
+      <Icon {...props} />
+      {props.badge !== undefined &&
+      props.badge !== null &&
+      props.badge !== '' &&
+      props.badge !== 0 ? (
+          <View
+            style={{
+              position: props.position ? props.position : 'absolute',
+              right: props.right !== null ? props.right : -8,
+              top: props.top !== null ? props.top : -5,
+              backgroundColor: colors.red,
+              borderRadius: 9,
+              width: 18,
+              height: 18,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            {props.value !== null
+              ? (<Text style={{ color: props.valueCorlor || colors.borderGrey }}>{props.value}</Text>)
+              : null
+            }
+          </View>
+        ) : null}
+    </View>
+  )
+}
 
 Icon.Badge = IconBadge

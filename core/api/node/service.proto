@@ -49,6 +49,10 @@ service Service {
     option (gql.graphql_output) = ".berty.node.EventListConnection";
     option (gql.graphql_type) = "Query";
   };
+
+  rpc EventUnseen (EventListInput) returns (stream berty.entity.Event) {
+    option (gql.graphql_type) = "Query";
+  };
   rpc GetEvent (berty.entity.Event) returns (berty.entity.Event) {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Query";

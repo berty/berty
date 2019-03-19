@@ -701,6 +701,7 @@ type ComplexityRoot struct {
 		Node                    func(childComplexity int, id string) int
 		Id                      func(childComplexity int, T bool) int
 		EventList               func(childComplexity int, filter *entity.Event, onlyWithoutAckedAt *int32, onlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
+		EventUnseen             func(childComplexity int, filter *entity.Event, onlyWithoutAckedAt *int32, onlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		GetEvent                func(childComplexity int, id string) int
 		ConfigPublic            func(childComplexity int, T bool) int
 		ContactList             func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
@@ -809,6 +810,7 @@ type QueryResolver interface {
 	Node(ctx context.Context, id string) (models.Node, error)
 	ID(ctx context.Context, T bool) (*metric.Peer, error)
 	EventList(ctx context.Context, filter *entity.Event, onlyWithoutAckedAt *int32, onlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.EventListConnection, error)
+	EventUnseen(ctx context.Context, filter *entity.Event, onlyWithoutAckedAt *int32, onlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) ([]*entity.Event, error)
 	GetEvent(ctx context.Context, id string) (*entity.Event, error)
 	ConfigPublic(ctx context.Context, T bool) (*entity.Config, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
@@ -1931,6 +1933,128 @@ func field_Query_ID_args(rawArgs map[string]interface{}) (map[string]interface{}
 }
 
 func field_Query_EventList_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 *entity.Event
+	if tmp, ok := rawArgs["filter"]; ok {
+		var err error
+		var ptr1 entity.Event
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityEventInput(tmp)
+			arg0 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["filter"] = arg0
+	var arg1 *int32
+	if tmp, ok := rawArgs["onlyWithoutAckedAt"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg1 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["onlyWithoutAckedAt"] = arg1
+	var arg2 *int32
+	if tmp, ok := rawArgs["onlyWithoutSeenAt"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["onlyWithoutSeenAt"] = arg2
+	var arg3 string
+	if tmp, ok := rawArgs["orderBy"]; ok {
+		var err error
+		arg3, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderBy"] = arg3
+	var arg4 bool
+	if tmp, ok := rawArgs["orderDesc"]; ok {
+		var err error
+		arg4, err = models.UnmarshalBool(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["orderDesc"] = arg4
+	var arg5 *int32
+	if tmp, ok := rawArgs["first"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg5 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["first"] = arg5
+	var arg6 *string
+	if tmp, ok := rawArgs["after"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg6 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["after"] = arg6
+	var arg7 *int32
+	if tmp, ok := rawArgs["last"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalInt32(tmp)
+			arg7 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["last"] = arg7
+	var arg8 *string
+	if tmp, ok := rawArgs["before"]; ok {
+		var err error
+		var ptr1 string
+		if tmp != nil {
+			ptr1, err = models.UnmarshalString(tmp)
+			arg8 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["before"] = arg8
+	return args, nil
+
+}
+
+func field_Query_EventUnseen_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 *entity.Event
 	if tmp, ok := rawArgs["filter"]; ok {
@@ -5602,6 +5726,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.EventList(childComplexity, args["filter"].(*entity.Event), args["onlyWithoutAckedAt"].(*int32), args["onlyWithoutSeenAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
+
+	case "Query.EventUnseen":
+		if e.complexity.Query.EventUnseen == nil {
+			break
+		}
+
+		args, err := field_Query_EventUnseen_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.EventUnseen(childComplexity, args["filter"].(*entity.Event), args["onlyWithoutAckedAt"].(*int32), args["onlyWithoutSeenAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string)), true
 
 	case "Query.GetEvent":
 		if e.complexity.Query.GetEvent == nil {
@@ -19859,6 +19995,12 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				out.Values[i] = ec._Query_EventList(ctx, field)
 				wg.Done()
 			}(i, field)
+		case "EventUnseen":
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._Query_EventUnseen(ctx, field)
+				wg.Done()
+			}(i, field)
 		case "GetEvent":
 			wg.Add(1)
 			go func(i int, field graphql.CollectedField) {
@@ -20099,6 +20241,69 @@ func (ec *executionContext) _Query_EventList(ctx context.Context, field graphql.
 	}
 
 	return ec._BertyNodeEventListConnection(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Query_EventUnseen(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Query_EventUnseen_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Query",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().EventUnseen(rctx, args["filter"].(*entity.Event), args["onlyWithoutAckedAt"].(*int32), args["onlyWithoutSeenAt"].(*int32), args["orderBy"].(string), args["orderDesc"].(bool), args["first"].(*int32), args["after"].(*string), args["last"].(*int32), args["before"].(*string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*entity.Event)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+	var wg sync.WaitGroup
+
+	isLen1 := len(res) == 1
+	if !isLen1 {
+		wg.Add(len(res))
+	}
+
+	for idx1 := range res {
+		idx1 := idx1
+		rctx := &graphql.ResolverContext{
+			Index:  &idx1,
+			Result: res[idx1],
+		}
+		ctx := graphql.WithResolverContext(ctx, rctx)
+		f := func(idx1 int) {
+			if !isLen1 {
+				defer wg.Done()
+			}
+			arr1[idx1] = func() graphql.Marshaler {
+
+				if res[idx1] == nil {
+					return graphql.Null
+				}
+
+				return ec._BertyEntityEvent(ctx, field.Selections, res[idx1])
+			}()
+		}
+		if isLen1 {
+			f(idx1)
+		} else {
+			go f(idx1)
+		}
+
+	}
+	wg.Wait()
+	return arr1
 }
 
 // nolint: vetshadow
@@ -23893,6 +24098,18 @@ type Query {
     last: Int32
     before: String
   ): BertyNodeEventListConnection
+  EventUnseen(
+    filter: BertyEntityEventInput
+    onlyWithoutAckedAt: Enum
+    onlyWithoutSeenAt: Enum
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
+  )
+      : [BertyEntityEvent]
   GetEvent(
     id: ID!
   ): BertyEntityEvent

@@ -68,6 +68,24 @@ func (c *Client) EventList(ctx context.Context, input *node.EventListInput) ([]*
 	}
 	return entries, nil
 }
+func (c *Client) EventUnseen(ctx context.Context, input *node.EventListInput) ([]*entity.Event, error) {
+	stream, err := c.Node().EventUnseen(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+	var entries []*entity.Event
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
 func (c *Client) ContactList(ctx context.Context, input *node.ContactListInput) ([]*entity.Contact, error) {
 	stream, err := c.Node().ContactList(ctx, input)
 	if err != nil {
