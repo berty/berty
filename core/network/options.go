@@ -24,12 +24,14 @@ func WithClientOptions() config.Option {
 		EnableMetric(),
 		EnablePing(),
 		EnableTCP(),
+		EnablePeerCache(),
 	)
 }
 
 func WithServerOptions() config.Option {
 	return ChainOptions(
 		DisablePersistConfig(),
+		DisablePeerCache(),
 		EnableDHTServer(),
 		EnableDefaultBind(),
 		EnableHOP(),
@@ -312,6 +314,20 @@ func EnableQUIC() config.Option {
 func DisableQUIC() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.QUIC = false
+		return nil
+	}
+}
+
+func EnablePeerCache() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.PeerCache = true
+		return nil
+	}
+}
+
+func DisablePeerCache() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.PeerCache = false
 		return nil
 	}
 }

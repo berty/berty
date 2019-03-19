@@ -40,10 +40,6 @@ func (cm *BertyConnMgr) reconnect(net inet.Network, pid peer.ID, delay *BackoffD
 			return
 		}
 
-		if net.Connectedness(pid) == inet.Connected {
-			return
-		}
-
 		logger().Debug("connmanager: try to reconnect", zap.String("id", pid.Pretty()), zap.Int("retries", retries))
 		_, err := net.DialPeer(cm.ctx, pid)
 		if err == nil {

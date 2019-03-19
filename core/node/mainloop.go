@@ -151,7 +151,7 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 			// if too long, the task will be done in background
 			done := make(chan bool, 1)
 			go func() {
-				tctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+				tctx, cancel := context.WithTimeout(ctx, time.Second*10)
 				defer cancel()
 
 				envCopy := envelope

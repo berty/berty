@@ -36,6 +36,7 @@ type daemonOptions struct {
 
 	// p2p
 
+	peerCache      bool     `mapstructure:"cache-peer"`
 	identity       string   `mapstructure:"identity"`
 	bootstrap      []string `mapstructure:"bootstrap"`
 	noP2P          bool     `mapstructure:"no-p2p"`
@@ -74,6 +75,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.dhtServer, "dht-server", false, "enable dht server")
 	flags.BoolVar(&opts.ble, "ble", false, "enable ble transport")
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
+	flags.BoolVar(&opts.peerCache, "cache-peer", true, "if false, network will ask the dht every time he need to send an envelope (emit)")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{}, "p2p listening address")
 	flags.StringVar(&opts.SwarmKeyPath, "swarm-key", "", "path to a custom swarm key, only peers that use the same swarm key will be able to talk with you")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
@@ -167,6 +169,7 @@ func daemon(opts *daemonOptions) error {
 					Identity:         opts.identity,
 					Persist:          false,
 					OverridePersist:  false,
+					PeerCache:        opts.peerCache,
 
 					//					DHTKVLogDatastore: opts.dhtkvLogDatastore,
 				}),

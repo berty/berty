@@ -11,10 +11,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	MaxStreamUse = 20
-)
-
 type Network struct {
 	config *config.Config
 
@@ -22,11 +18,11 @@ type Network struct {
 
 	handler func(context.Context, *entity.Envelope) (*entity.Void, error)
 
-	streamManager *StreamManager
-
 	updating *sync.Mutex
 
 	shutdown context.CancelFunc
+
+	cache PeerCache
 }
 
 // Chainconfig.Options chains multiple options into a single option.
@@ -53,6 +49,7 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 		config:   &config.Config{},
 		updating: &sync.Mutex{},
 		shutdown: cancel,
+		cache:    NewNoopCache(),
 	}
 
 	if err := net.config.Apply(ctx, opts...); err != nil {
@@ -64,6 +61,10 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	if err != nil {
 		cancel()
 		return nil, err
+	}
+
+	if net.Config().PeerCache {
+		net.cache = NewPeerCache(net.host)
 	}
 
 	net.init(ctx)
@@ -96,6 +97,7 @@ func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
 		updating: net.updating,
 		handler:  net.handler,
 		shutdown: cancel,
+		cache:    NewNoopCache(),
 	}
 
 	if err := update.config.Apply(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...); err != nil {
@@ -107,6 +109,10 @@ func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
 	if err != nil {
 		cancel()
 		return err
+	}
+
+	if update.Config().PeerCache {
+		net.cache = NewPeerCache(update.host)
 	}
 
 	net.Close(ctx)
