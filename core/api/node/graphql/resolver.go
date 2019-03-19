@@ -333,12 +333,19 @@ func (r *mutationResolver) ConversationCreate(ctx context.Context, contacts []*e
 		Topic:    topic,
 	})
 }
-func (r *mutationResolver) ConversationInvite(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *mutationResolver) ConversationInvite(ctx context.Context, conversation *entity.Conversation, contacts []*entity.Contact) (*entity.Conversation, error) {
+	if conversation.ID != "" {
+		conversation.ID = strings.SplitN(conversation.ID, ":", 2)[1]
+	}
 
-	return r.client.ConversationInvite(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Members: members})
+	for i, contact := range contacts {
+		contacts[i].ID = strings.SplitN(contact.ID, ":", 2)[1]
+	}
+
+	return r.client.ConversationInvite(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Contacts: contacts})
 }
-func (r *mutationResolver) ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error) {
-	return r.client.ConversationExclude(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Members: members})
+func (r *mutationResolver) ConversationExclude(ctx context.Context, conversation *entity.Conversation, contacts []*entity.Contact) (*entity.Conversation, error) {
+	return r.client.ConversationExclude(ctx, &node.ConversationManageMembersInput{Conversation: conversation, Contacts: contacts})
 }
 func (r *mutationResolver) ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*entity.Event, error) {
 	if conversation != nil {

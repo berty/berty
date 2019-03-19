@@ -138,8 +138,19 @@ func (n *Node) handleConversationUpdate(ctx context.Context, input *entity.Event
 		return err
 	}
 
-	if err := n.sql(ctx).Save(attrs.Conversation).Error; err != nil {
-		return errors.Wrap(err, "cannot update conversation")
+	members := []*entity.ConversationMember{}
+	for _, member := range attrs.Conversation.Members {
+		members = append(members, &entity.ConversationMember{
+			ID:        member.ID,
+			ContactID: member.Contact.ID,
+			Status:    member.Status,
+		})
+	}
+
+	attrs.Conversation.Members = members
+
+	if _, err := bsql.SaveConversation(n.sql(ctx), attrs.Conversation, attrs.Conversation.ID); err != nil {
+		return errorcodes.ErrConversationUpdate.Wrap(err)
 	}
 
 	return nil
@@ -166,7 +177,7 @@ func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event
 		Topic:   attrs.Conversation.Topic,
 	}
 
-	if _, err := bsql.CreateConversation(n.sql(ctx), conversation); err != nil {
+	if _, err := bsql.SaveConversation(n.sql(ctx), conversation, conversation.ID); err != nil {
 		return err
 	}
 

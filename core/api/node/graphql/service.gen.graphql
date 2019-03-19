@@ -973,11 +973,11 @@ type Mutation {
   ): BertyEntityConversation
   ConversationInvite(
     conversation: BertyEntityConversationInput
-    members: [BertyEntityConversationMemberInput]
+    contacts: [BertyEntityContactInput]
   ): BertyEntityConversation
   ConversationExclude(
     conversation: BertyEntityConversationInput
-    members: [BertyEntityConversationMemberInput]
+    contacts: [BertyEntityContactInput]
   ): BertyEntityConversation
   ConversationAddMessage(
     conversation: BertyEntityConversationInput

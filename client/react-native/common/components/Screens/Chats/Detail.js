@@ -1,8 +1,8 @@
 import {
   ActivityIndicator,
   Platform,
-  StyleSheet,
   TextInput as RNTextInput,
+  StyleSheet,
   View,
 } from 'react-native'
 import { btoa } from 'b64-lite'
@@ -10,13 +10,13 @@ import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
 import {
+  Avatar,
   Flex,
   Header,
   Icon,
+  Markdown,
   Screen,
   Text,
-  Avatar,
-  Markdown,
 } from '../../Library'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { colors } from '../../../constants'
@@ -32,26 +32,26 @@ import * as KeyboardContext from '../../../helpers/KeyboardContext'
 const textStyles = StyleSheet.flatten([
   Markdown.styles,
   {
-    text: {
-      color: colors.white,
+    'text': {
+      'color': colors.white,
       ...(Platform.OS === 'web'
         ? {
-          wordBreak: 'break-all',
-          overflowWrap: 'break-word',
+          'wordBreak': 'break-all',
+          'overflowWrap': 'break-word',
         }
         : {}),
     },
-    listUnorderedItemIcon: {
-      color: colors.white,
+    'listUnorderedItemIcon': {
+      'color': colors.white,
     },
-    listOrderedItemIcon: {
-      color: colors.white,
+    'listOrderedItemIcon': {
+      'color': colors.white,
     },
-    blocklink: {
-      borderColor: colors.white,
+    'blocklink': {
+      'borderColor': colors.white,
     },
-    u: {
-      borderColor: colors.white,
+    'u': {
+      'borderColor': colors.white,
     },
   },
 ])
@@ -61,13 +61,13 @@ class Message extends React.Component {
 
   messageSeen = () => {
     this.props.context.mutations.eventSeen({
-      id: this.props.data.id,
+      'id': this.props.data.id,
     })
   }
 
   shouldComponentUpdate (nextProps, nextState) {
     const {
-      data: { seenAt },
+      'data': { seenAt },
     } = this.props
     if (seenAt !== nextProps.data.seenAt) {
       return false
@@ -79,10 +79,9 @@ class Message extends React.Component {
     const { conversation, data, t } = this.props
 
     const contactId = btoa(`contact:${data.sourceDeviceId}`)
-    const contact = (
-      conversation.members.find(m => m.contact && m.contact.id === contactId) ||
+    const { contact } =
+      conversation.members.find((m) => m.contact && m.contact.id === contactId) ||
       {}
-    ).contact
 
     const contactName = contact ? contact.displayName : t('contacts.unknown')
     const isMyself = contact && contact.status === 42
@@ -95,21 +94,21 @@ class Message extends React.Component {
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
-        style={{ marginHorizontal: 10, marginVertical: 2 }}
+        style={{ 'marginHorizontal': 10, 'marginVertical': 2 }}
       >
         {!isMyself && !isOneToOne ? (
           <Flex.Cols
             style={{
-              marginRight: 42,
-              zIndex: 2,
+              'marginRight': 42,
+              'zIndex': 2,
             }}
           >
             <Avatar
               size={22}
               data={contact}
-              style={{ margin: 0, marginBottom: -4, marginRight: 4 }}
+              style={{ 'margin': 0, 'marginBottom': -4, 'marginRight': 4 }}
             />
-            <Text tiny color={colors.fakeBlack} padding={{ top: 6 }}>
+            <Text tiny color={colors.fakeBlack} padding={{ 'top': 6 }}>
               {contactName}
             </Text>
           </Flex.Cols>
@@ -119,14 +118,14 @@ class Message extends React.Component {
           style={{
             [isMyself ? 'marginLeft' : 'marginRight']: 42,
             [!isMyself ? 'marginLeft' : 'marginRight']: 12,
-            marginTop: 2,
-            marginBottom: 2,
-            backgroundColor: colors.blue,
-            padding: 10,
-            borderTopLeftRadius: isMyself ? 14.5 : 3,
-            borderTopRightRadius: 14.5,
-            borderBottomLeftRadius: 14.5,
-            borderBottomRightRadius: isMyself ? 3 : 14.5,
+            'marginTop': 2,
+            'marginBottom': 2,
+            'backgroundColor': colors.blue,
+            'padding': 10,
+            'borderTopLeftRadius': isMyself ? 14.5 : 3,
+            'borderTopRightRadius': 14.5,
+            'borderBottomLeftRadius': 14.5,
+            'borderBottomRightRadius': isMyself ? 3 : 14.5,
           }}
         >
           <Markdown style={textStyles}>
@@ -139,8 +138,8 @@ class Message extends React.Component {
           tiny
           color={colors.subtleGrey}
           margin={{
-            top: 0,
-            bottom: 6,
+            'top': 0,
+            'bottom': 6,
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
@@ -163,16 +162,16 @@ const MessageContainer = fragments.Event(withNamespaces()(Message))
 
 class TextInputBase extends PureComponent {
   state = {
-    height: 16,
-    value: '',
-    submitting: false,
+    'height': 16,
+    'value': '',
+    'submitting': false,
   }
 
   onContentSizeChange = ({
-    nativeEvent: {
-      contentSize: { height },
+    'nativeEvent': {
+      'contentSize': { height },
     },
-  }) => this.setState({ height: height > 80 ? 80 : height })
+  }) => this.setState({ 'height': height > 80 ? 80 : height })
 
   render () {
     const { height } = this.state
@@ -183,17 +182,17 @@ class TextInputBase extends PureComponent {
           <RNTextInput
             style={[
               {
-                flex: 1,
-                padding: 0,
-                marginVertical: 8,
-                marginHorizontal: 0,
-                height: height,
-                color: colors.fakeBlack,
-                backgroundColor: colors.inputGrey,
+                'flex': 1,
+                'padding': 0,
+                'marginVertical': 8,
+                'marginHorizontal': 0,
+                height,
+                'color': colors.fakeBlack,
+                'backgroundColor': colors.inputGrey,
               },
-              Platform.OS === 'web' ? { paddingLeft: 16 } : {},
+              Platform.OS === 'web' ? { 'paddingLeft': 16 } : {},
             ]}
-            onKeyPress={e => {
+            onKeyPress={(e) => {
               if (
                 !keyboardVisible &&
                 !e.shiftKey &&
@@ -222,38 +221,39 @@ class Input extends PureComponent {
   static contextType = RelayContext
 
   state = {
-    input: '',
+    'input': '',
   }
 
   onSubmit = () => {
     const { input } = this.state
-    this.setState({ submitting: true })
-    this.setState({ input: '' }, async () => {
+    this.setState({ 'submitting': true })
+    this.setState({ 'input': '' }, async () => {
       try {
         const conversation = this.props.navigation.state.params || {}
         input &&
           (await this.props.context.mutations.conversationAddMessage({
-            conversation: {
-              id: conversation.id,
+            'conversation': {
+              'id': conversation.id,
             },
-            message: {
-              text: input,
+            'message': {
+              'text': input,
             },
           }))
       } catch (err) {
         console.error(err)
       }
-      this.setState({ submitting: false })
+      this.setState({ 'submitting': false })
     })
   }
 
-  onChangeText = value => {
+  onChangeText = (value) => {
     if (this.state.submitting || value === '\n') {
       return
     }
 
-    this.setState({ input: value })
+    this.setState({ 'input': value })
   }
+
   render () {
     return (
       <Flex.Cols
@@ -264,12 +264,12 @@ class Input extends PureComponent {
           Platform.OS === 'web'
             ? [
               {
-                borderTopWidth: 0.5,
-                borderTopColor: colors.borderGrey,
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
+                'borderTopWidth': 0.5,
+                'borderTopColor': colors.borderGrey,
+                'position': 'absolute',
+                'bottom': 0,
+                'left': 0,
+                'right': 0,
               },
               shadow,
             ]
@@ -278,11 +278,11 @@ class Input extends PureComponent {
       >
         <Flex.Cols
           style={{
-            backgroundColor: colors.grey8,
-            marginLeft: 8,
-            marginRight: 3,
-            borderRadius: 16,
-            marginVertical: 8,
+            'backgroundColor': colors.grey8,
+            'marginLeft': 8,
+            'marginRight': 3,
+            'borderRadius': 16,
+            'marginVertical': 8,
           }}
         >
           <Text
@@ -290,7 +290,7 @@ class Input extends PureComponent {
             top
             size={0}
             icon='edit-2'
-            padding={{ right: 5, left: 8, vertical: 7 }}
+            padding={{ 'right': 5, 'left': 8, 'vertical': 7 }}
           />
           <TextInput
             onChangeText={this.onChangeText}
@@ -302,7 +302,7 @@ class Input extends PureComponent {
           right
           size={0}
           middle
-          margin={{ right: 8, ...(Platform.OS === 'web' ? { left: 12 } : {}) }}
+          margin={{ 'right': 8, ...(Platform.OS === 'web' ? { 'left': 12 } : {}) }}
           padding
           large
           icon='send'
@@ -314,62 +314,60 @@ class Input extends PureComponent {
   }
 }
 
-const Chat = fragments.Conversation(
-  class Chat extends PureComponent {
-    render () {
-      const {
-        data,
-        navigation,
-        context: { queries, subscriptions, fragments },
-        context,
-      } = this.props
-      return (
-        <Flex.Rows>
-          <Pagination
-            style={[
-              { flex: 1 },
-              Platform.OS === 'web' ? { paddingTop: 48 } : {},
-            ]}
-            direction='forward'
-            query={queries.EventList.graphql}
-            variables={merge([
-              queries.EventList.defaultVariables,
-              {
-                filter: {
-                  kind: 302,
-                  targetAddr: data.id,
-                },
+const Chat = fragments.Conversation(class Chat extends PureComponent {
+  render () {
+    const {
+      data,
+      navigation,
+      'context': { queries, subscriptions, fragments },
+      context,
+    } = this.props
+    return (
+      <Flex.Rows>
+        <Pagination
+          style={[
+            { 'flex': 1 },
+            Platform.OS === 'web' ? { 'paddingTop': 48 } : {},
+          ]}
+          direction='forward'
+          query={queries.EventList.graphql}
+          variables={merge([
+            queries.EventList.defaultVariables,
+            {
+              'filter': {
+                'kind': 302,
+                'targetAddr': data.id,
               },
-            ])}
-            subscriptions={[subscriptions.message]}
-            fragment={fragments.EventList}
-            alias='EventList'
-            renderItem={props => (
-              <MessageContainer
-                {...props}
-                navigation={navigation}
-                context={context}
-                conversation={data}
-              />
-            )}
-            inverted
-          />
-          <Input
-            navigation={this.props.navigation}
-            context={this.props.context}
-          />
-        </Flex.Rows>
-      )
-    }
+            },
+          ])}
+          subscriptions={[subscriptions.message]}
+          fragment={fragments.EventList}
+          alias='EventList'
+          renderItem={(props) => (
+            <MessageContainer
+              {...props}
+              navigation={navigation}
+              context={context}
+              conversation={data}
+            />
+          )}
+          inverted
+        />
+        <Input
+          navigation={this.props.navigation}
+          context={this.props.context}
+        />
+      </Flex.Rows>
+    )
   }
-)
+})
 class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
-    header: (
+    'header': (
       <Header
         navigation={navigation}
         title={
-          <View style={{ flexDirection: 'column' }}>
+          <View style={{ 'flexDirection': 'column' }}>
             <Text
               large
               color={colors.fakeBlack}
@@ -390,10 +388,9 @@ class Detail extends PureComponent {
           </View>
         }
         rightBtnIcon='more-vertical'
-        onPressRightBtn={() =>
-          navigation.navigate('chats/settings', {
-            conversation: navigation.state.params,
-          })
+        onPressRightBtn={() => navigation.navigate('chats/settings', {
+          'conversation': navigation.state.params,
+        })
         }
         backBtn={() => {
           const backBtn = navigation.getParam('backBtn')
@@ -406,13 +403,17 @@ class Detail extends PureComponent {
   })
 
   async componentDidMount () {
-    this.props.navigation.setParams({ backBtn: this.onConversationRead })
+    this.props.navigation.setParams({ 'backBtn': this.onConversationRead })
     this.onConversationRead()
   }
 
   onConversationRead = async () => {
+    const id = this.props.navigation.getParam('id')
+    if (!id) {
+      return
+    }
     const res = await this.props.context.mutations.conversationRead({
-      id: this.props.navigation.getParam('id'),
+      id,
     })
 
     this.props.navigation.setParams(res.ConversationRead)
@@ -423,13 +424,17 @@ class Detail extends PureComponent {
     const {
       navigation,
       context,
-      context: { queries },
+      'context': { queries },
     } = this.props
+
     return (
-      <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
+      <Screen style={{ 'backgroundColor': colors.white, 'paddingTop': 0 }}>
         <QueryReducer
           query={queries.Conversation.graphql}
-          variables={merge([queries.Conversation.defaultVariables, { id: id }])}
+          variables={merge([
+            queries.Conversation.defaultVariables,
+            { id },
+          ])}
         >
           {(state, retry) => {
             switch (state.type) {

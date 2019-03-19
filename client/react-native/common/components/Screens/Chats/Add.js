@@ -4,24 +4,22 @@ import I18n from 'i18next'
 import React, { Component, PureComponent } from 'react'
 
 import { Pagination, RelayContext } from '../../../relay'
-import { Screen, Flex, Text, Header, Avatar, SearchBar } from '../../Library'
+import { Avatar, Flex, Header, Screen, SearchBar, Text } from '../../Library'
 import { border, borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
 import { enums, fragments } from '../../../graphql'
 import withRelayContext from '../../../helpers/withRelayContext'
 
-const Item = withNamespaces()(
-  fragments.Contact(
-    class Item extends PureComponent {
-      state = { selected: false }
+const Item = withNamespaces()(fragments.Contact(class Item extends PureComponent {
+      state = { 'selected': false }
 
       onPress = () => {
-        this.setState({ selected: !this.state.selected }, this.props.onPress)
+        this.setState({ 'selected': !this.state.selected }, this.props.onPress)
       }
 
       render () {
         const {
-          data: { status, displayName, overrideDisplayName },
+          'data': { status, displayName, overrideDisplayName },
           t,
         } = this.props
         const { selected } = this.state
@@ -36,7 +34,7 @@ const Item = withNamespaces()(
             onPress={this.onPress}
             style={[
               {
-                height: 72,
+                'height': 72,
               },
               padding,
               borderBottom,
@@ -49,10 +47,9 @@ const Item = withNamespaces()(
                   {overrideDisplayName || displayName}
                 </Text>
                 <Text color={colors.subtleGrey} left ellisped tiny>
-                  {t(
-                    'contacts.statuses.' +
-                      enums.ValueBertyEntityContactInputStatus[status]
-                  )}
+                  {t(`contacts.statuses.${
+                    enums.ValueBertyEntityContactInputStatus[status]
+                  }`)}
                 </Text>
               </Flex.Rows>
             </Flex.Cols>
@@ -61,10 +58,10 @@ const Item = withNamespaces()(
                 style={[
                   selected ? null : border,
                   {
-                    height: 18,
-                    width: 18,
-                    backgroundColor: selected ? colors.blue : colors.background,
-                    borderRadius: 9,
+                    'height': 18,
+                    'width': 18,
+                    'backgroundColor': selected ? colors.blue : colors.background,
+                    'borderRadius': 9,
                   },
                 ]}
               >
@@ -79,15 +76,13 @@ const Item = withNamespaces()(
           </Flex.Cols>
         )
       }
-    }
-  )
-)
+}))
 
 class ListScreen extends Component {
   static contextType = RelayContext
 
   static navigationOptions = ({ navigation }) => ({
-    header: (
+    'header': (
       <Header
         navigation={navigation}
         title={I18n.t('chats.add-members')}
@@ -98,20 +93,16 @@ class ListScreen extends Component {
         onPressRightBtn={navigation.getParam('onSubmit')}
       />
     ),
-    tabBarVisible: true,
+    'tabBarVisible': true,
   })
 
-  setNavigationParams = (
-    params = {
-      onSubmit: this.onSubmit(
-        this.props.navigation.getParam('onSubmit') || this.onDefaultSubmit
-      ),
-      rightBtn: null,
-    }
-  ) => this.props.navigation.setParams(params)
+  setNavigationParams = (params = {
+    'onSubmit': this.onSubmit(this.props.navigation.getParam('onSubmit') || this.onDefaultSubmit),
+    'rightBtn': null,
+  }) => this.props.navigation.setParams(params)
 
   state = {
-    contactsID: [],
+    'contactsID': [],
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -124,27 +115,28 @@ class ListScreen extends Component {
 
   onDefaultSubmit = async ({ contactsID }) => {
     const {
-      ConversationCreate: conversation,
+      'ConversationCreate': conversation,
     } = await this.props.context.mutations.conversationCreate({
-      title: '',
-      topic: '',
-      infos: '',
-      contacts: contactsID.map(id => ({
+      'title': '',
+      'topic': '',
+      'infos': '',
+      'contacts': contactsID.map((id) => ({
         id,
-        displayName: '',
-        displayStatus: '',
-        overrideDisplayName: '',
-        overrideDisplayStatus: '',
+        'displayName': '',
+        'displayStatus': '',
+        'overrideDisplayName': '',
+        'overrideDisplayStatus': '',
       })),
     })
-    this.props.navigation.navigate('chats/detail', { conversation })
+
+    this.props.navigation.navigate('chats/detail', conversation)
   }
 
-  onSubmit = onSubmit => async () => {
+  onSubmit = (onSubmit) => async () => {
     try {
       this.setNavigationParams({
-        onSubmit: null,
-        rightBtn: <ActivityIndicator size='small' />,
+        'onSubmit': null,
+        'rightBtn': <ActivityIndicator size='small' />,
       })
       await onSubmit(this.state)
     } catch (err) {
@@ -155,9 +147,12 @@ class ListScreen extends Component {
 
   render () {
     const { contactsID } = this.state
-    const { context } = this.props
+    const { context, navigation } = this.props
+
+    const currentContactIds = navigation.getParam('currentContactIds', [])
+
     return (
-      <Screen style={[{ backgroundColor: colors.white }]}>
+      <Screen style={[{ 'backgroundColor': colors.white }]}>
         <Pagination
           context={context}
           query={context.queries.ContactList.graphql}
@@ -173,8 +168,19 @@ class ListScreen extends Component {
               />
             </View>
           }
-          renderItem={props =>
-            props.data.status !== 42 ? (
+          ListEmptyComponent={
+            <View style={padding}>
+              {currentContactIds.length > 0 ? (
+                <Text>You can't add anyone to this conversation</Text>
+              ) : (
+                <Text>
+                  You need to have contacts before you can create a conversation
+                </Text>
+              )}
+            </View>
+          }
+          renderItem={(props) => props.data.status !== 42 &&
+            currentContactIds.indexOf(props.data.id) === -1 ? (
               <Item
                 {...props}
                 onPress={() => {

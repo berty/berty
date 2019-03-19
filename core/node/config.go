@@ -3,6 +3,7 @@ package node
 import (
 	"context"
 	"encoding/base64"
+	"fmt"
 
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/push"
@@ -40,6 +41,8 @@ func WithInitConfig() NewNodeOption {
 				logger().Error("node.WithInitConfig", zap.Error(errors.Wrap(err, "failed to save empty config")))
 				return
 			}
+
+			fmt.Printf("\n\nCreating new config\n\n\n")
 
 			config = &entity.Config{
 				ID:                         ID.String(),

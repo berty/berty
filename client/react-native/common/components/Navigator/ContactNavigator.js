@@ -10,9 +10,9 @@ import I18n from 'i18next'
 export const SplitSideContactNavigator = createStackNavigator(
   {
     'contacts/list': {
-      screen: ContactTopNavigator,
-      navigationOptions: ({ navigation }) => ({
-        header: (
+      'screen': ContactTopNavigator,
+      'navigationOptions': ({ navigation }) => ({
+        'header': (
           <Header
             navigation={navigation}
             title={I18n.t('contacts.title')}
@@ -21,35 +21,35 @@ export const SplitSideContactNavigator = createStackNavigator(
             onPressRightBtn={() => navigation.navigate('contacts/add')}
           />
         ),
-        tabBarVisible: true,
+        'tabBarVisible': true,
       }),
     },
   },
   {
-    initialRouteName: 'contacts/list',
-    tabBarVisible: false,
-    header: null,
+    'initialRouteName': 'contacts/list',
+    'tabBarVisible': false,
+    'header': null,
   }
 )
 
 export const SubviewsContactDetailsNavigator = createStackNavigator(
   {
-    'contacts/detail/list': List,
-    'contacts/detail/edit': Edit,
+    'contact/detail/list': List,
+    'contact/detail/edit': Edit,
   },
   {
-    initialRouteName: 'contacts/detail/list',
-    tabBarVisible: false,
-    header: null,
+    'initialRouteName': 'contact/detail/list',
+    'tabBarVisible': false,
+    'header': null,
   }
 )
 
 export const SubviewsContactAddNavigator = createStackNavigator(
   {
     'contacts/add': {
-      screen: AddContactMaterialNavigator,
-      navigationOptions: ({ navigation }) => ({
-        header: (
+      'screen': AddContactMaterialNavigator,
+      'navigationOptions': ({ navigation }) => ({
+        'header': (
           <Header
             navigation={navigation}
             title={I18n.t('contacts.add.title')}
@@ -57,14 +57,14 @@ export const SubviewsContactAddNavigator = createStackNavigator(
             backBtn
           />
         ),
-        tabBarVisible: true,
+        'tabBarVisible': true,
       }),
     },
   },
   {
-    initialRouteName: 'contacts/add',
-    tabBarVisible: false,
-    header: null,
+    'initialRouteName': 'contacts/add',
+    'tabBarVisible': false,
+    'header': null,
   }
 )
 
@@ -79,9 +79,9 @@ export default createStackNavigator(
     'contacts/subviews': SubviewsContactNavigator,
   },
   {
-    initialRouteName: 'contacts/home',
-    tabBarVisible: false,
-    header: null,
-    headerMode: 'none',
+    'initialRouteName': 'contacts/home',
+    'tabBarVisible': false,
+    'header': null,
+    'headerMode': 'none',
   }
 )

@@ -28,8 +28,14 @@ func GenericError(err error) error {
 }
 
 func ContactByID(db *gorm.DB, id string) (*entity.Contact, error) {
-	var contact entity.Contact
-	return &contact, db.First(&contact, "ID = ?", id).Error
+	contact := entity.Contact{}
+	err := db.First(&contact, "ID = ?", id).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &contact, nil
 }
 
 func FindContact(db *gorm.DB, input *entity.Contact) (*entity.Contact, error) {
@@ -85,8 +91,7 @@ func ConversationOneToOne(db *gorm.DB, myselfID, contactID string) (*entity.Conv
 	return c, nil
 }
 
-func CreateConversation(db *gorm.DB, conversation *entity.Conversation) (*entity.Conversation, error) {
-
+func sortCleanDedupConversationContacts(conversation *entity.Conversation) {
 	// remove members duplicates and sort them by contact id
 	members := map[string]*entity.ConversationMember{}
 	for _, member := range conversation.Members {
@@ -109,44 +114,122 @@ func CreateConversation(db *gorm.DB, conversation *entity.Conversation) (*entity
 		return true
 	})
 
-	// don't create 0-0 or 1-0 conversation
-	if len(conversation.Members) <= 1 {
-		return nil, errorcodes.ErrConversationNotEnoughMembers.New()
-	}
-
-	// generate id for conversation 1-1
-	if len(conversation.Members) == 2 {
-		conversation.ID = fmt.Sprintf("%s:%s",
-			conversation.Members[0].ContactID,
-			conversation.Members[1].ContactID,
-		)
-
-		// check if conversation already exists
-		tmp := &entity.Conversation{}
-		db.Where(&entity.Conversation{ID: conversation.ID}).First(&tmp)
-		if tmp.ID != "" {
-			return tmp, nil
-		}
-
-		// make the two members as owners
-		conversation.Members[0].Status = entity.ConversationMember_Owner
-		conversation.Members[1].Status = entity.ConversationMember_Owner
-	}
-
-	// prevent duplicates for conversation members
 	for _, member := range conversation.Members {
 		member.ID = conversation.ID + ":" + member.ContactID
 	}
+}
 
-	// save conversation
-	if err := db.Set("gorm:association_autoupdate", true).Create(conversation).Error; err != nil {
-		return nil, errorcodes.ErrDbCreate.Wrap(err)
+func conversationSetOneToOneMembers(conversation *entity.Conversation) {
+	if len(conversation.Members) > 2 {
+		return
+	}
+
+	conversation.ID = fmt.Sprintf("%s:%s",
+		conversation.Members[0].ContactID,
+		conversation.Members[1].ContactID,
+	)
+
+	// make the two members as owners
+	conversation.Members[0].Status = entity.ConversationMember_Owner
+	conversation.Members[1].Status = entity.ConversationMember_Owner
+}
+
+func conversationSetMetadata(conversation *entity.Conversation, input *entity.Conversation) {
+	if len(input.Members) > 2 {
+		if input.Title != "" {
+			conversation.Title = input.Title
+		}
+
+		if input.Topic != "" {
+			conversation.Topic = input.Topic
+		}
+
+		if input.Infos != "" {
+			conversation.Infos = input.Infos
+		}
+	}
+}
+
+func SaveConversation(db *gorm.DB, input *entity.Conversation, createID string) (*entity.Conversation, error) {
+	conversation, err := ConversationByID(db, input.ID)
+
+	if err != nil {
+		err = GenericError(err)
+		if !errorcodes.ErrDbNothingFound.Is(err) {
+			return nil, GenericError(err)
+		} else {
+			conversation = input
+		}
+	}
+
+	for _, member := range input.Members {
+		conversation.Members = append(conversation.Members, member)
+	}
+
+	sortCleanDedupConversationContacts(conversation)
+
+	if len(conversation.Members) < 2 {
+		return nil, errorcodes.ErrConversationNotEnoughMembers.New()
+	} else if len(conversation.Members) == 2 && conversation.ID != "" {
+		return conversation, nil
+	}
+
+	conversationSetOneToOneMembers(conversation)
+	conversationSetMetadata(conversation, input)
+
+	if conversation.ID == "" {
+		conversation.ID = createID
+		if err := db.Create(conversation).Error; err != nil {
+			return nil, GenericError(err)
+		}
+	} else {
+		if err := db.Save(conversation).Error; err != nil {
+			return nil, GenericError(err)
+		}
+	}
+
+	for _, member := range conversation.Members {
+		existingMember := &entity.ConversationMember{}
+		err = db.Find(&existingMember, &entity.ConversationMember{ID: member.ID}).Error
+		if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
+			continue
+		} else if err != nil {
+			if err := db.Create(&member).Error; err != nil {
+				return nil, GenericError(err)
+			}
+		}
+
+		contact := &entity.Contact{}
+		err := db.Find(&contact, &entity.Contact{ID: member.ContactID}).Error
+		if errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
+			contact = member.Contact
+			contact.ID = member.ContactID
+
+			if err := db.Create(&contact).Error; err != nil {
+				return nil, GenericError(err)
+			}
+
+			for _, device := range member.Contact.Devices {
+				existingDevice := &entity.Device{}
+				err := db.Find(&existingDevice, &entity.Device{ID: device.ID}).Error
+				if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
+					continue
+				} else if err != nil {
+					return nil, GenericError(err)
+				}
+
+				if err := db.Create(&device).Error; err != nil {
+					return nil, GenericError(err)
+				}
+			}
+		} else if err != nil {
+			return nil, GenericError(err)
+		}
 	}
 
 	// load new conversation again, to preload associations
-	conversation, err := ConversationByID(db, conversation.ID)
-	if err != nil {
-		return nil, errorcodes.ErrDb.Wrap(err)
+	if conversation, err = ConversationByID(db, conversation.ID); err != nil {
+		return nil, GenericError(err)
 	}
 
 	return conversation, nil

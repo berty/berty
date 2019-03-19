@@ -2044,12 +2044,12 @@ models:
     model: berty.tech/core/api/node.ConversationManageMembersInput
     fields:
       conversation:
-      members:
+      contacts:
   BertyNodeConversationManageMembersInputPayload:
     model: berty.tech/core/api/node.ConversationManageMembersInput
     fields:
       conversation:
-      members:
+      contacts:
 
   BertyNodeDevicePushConfigEdge:
     model: berty.tech/core/api/node.DevicePushConfigEdge

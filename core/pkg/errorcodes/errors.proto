@@ -107,6 +107,7 @@ enum Code {
   ErrConversation = 13000;
   ErrConversationMembers = 13001;
   ErrConversationNotEnoughMembers = 13002;
+  ErrConversationUpdate = 13003;
 
   ErrPush = 14000;
   ErrPushUnknownProvider = 14001;

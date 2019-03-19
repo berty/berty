@@ -1,9 +1,9 @@
-import { ActionSheetIOS, Platform, Alert } from 'react-native'
+import { ActionSheetIOS, Alert, Platform } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Menu, Header, Screen, Avatar } from '../../../Library'
+import { Avatar, Header, Menu, Screen } from '../../../Library'
 import { colors } from '../../../../constants'
 import { contact as contactHelper } from '../../../../utils'
 import withRelayContext from '../../../../helpers/withRelayContext'
@@ -20,11 +20,14 @@ class DetailsBase extends PureComponent {
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         {
-          options: [t('contact.block-confirm-action'), t('cancel')],
-          destructiveButtonIndex: 0,
-          cancelButtonIndex: 1,
+          'options': [
+            t('contact.block-confirm-action'),
+            t('cancel'),
+          ],
+          'destructiveButtonIndex': 0,
+          'cancelButtonIndex': 1,
         },
-        buttonIndex => {
+        (buttonIndex) => {
           if (buttonIndex === 1) {
             this.blockContact()
           }
@@ -36,17 +39,17 @@ class DetailsBase extends PureComponent {
         t('contact.block-confirm-question'),
         [
           {
-            text: t('contact.block-confirm-action'),
-            onPress: () => this.blockContact(),
-            style: 'destructive',
+            'text': t('contact.block-confirm-action'),
+            'onPress': () => this.blockContact(),
+            'style': 'destructive',
           },
           {
-            text: t('cancel'),
-            onPress: () => {},
-            style: 'cancel',
+            'text': t('cancel'),
+            'onPress': () => {},
+            'style': 'cancel',
           },
         ],
-        { cancelable: false }
+        { 'cancelable': false }
       )
     } else {
       console.warn('TODO: implement alert')
@@ -57,13 +60,14 @@ class DetailsBase extends PureComponent {
   deleteContact = async () => {
     try {
       await this.props.context.mutations.contactRemove({
-        id: this.props.navigation.getParam('contact').id,
+        'id': this.props.navigation.getParam('contact').id,
       })
       this.props.goBack(null)
     } catch (err) {
       console.error(err)
     }
   }
+
   render () {
     const { navigation, t } = this.props
     const contact = navigation.getParam('contact')
@@ -93,11 +97,10 @@ class DetailsBase extends PureComponent {
             <Menu.Item
               icon='eye'
               title={t('contacts.view-pub-key')}
-              onPress={() =>
-                navigation.navigate('modal/contacts/card', {
-                  ...contact,
-                  id: contactHelper.getCoreID(contact.id),
-                })
+              onPress={() => navigation.navigate('modal/contacts/card', {
+                ...contact,
+                'id': contactHelper.getCoreID(contact.id),
+              })
               }
             />
           </Menu.Section>
@@ -126,15 +129,17 @@ class DetailsBase extends PureComponent {
 const Details = withGoBack(withRelayContext(withNamespaces()(DetailsBase)))
 
 Details.navigationOptions = ({ navigation }) => ({
-  header: (
+  'header': (
     <Header
       navigation={navigation}
       title={I18n.t('contacts.details')}
       rightBtnIcon={'edit-2'}
-      onPressRightBtn={() =>
-        navigation.navigate('contacts/detail/edit', {
-          contact: navigation.getParam('contact'),
-        })
+      onPressRightBtn={() => navigation.navigate(
+        navigation.getParam('editRoute', 'chats/contact/detail/list'),
+        {
+          'contact': navigation.getParam('contact'),
+        }
+      )
       }
       backBtn
     />

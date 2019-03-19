@@ -384,7 +384,7 @@ message ConversationCreateInput {
 
 message ConversationManageMembersInput {
   berty.entity.Conversation conversation = 1 [(validate.required) = true, (validate.skip) = false];
-  repeated berty.entity.ConversationMember members = 2 [(validate.min_items) = 1];
+  repeated berty.entity.Contact contacts = 2 [(validate.min_items) = 1];
 }
 
 message DevicePushConfigEdge {

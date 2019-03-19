@@ -1,4 +1,4 @@
-import { Share, Platform } from 'react-native'
+import { Platform, Share } from 'react-native'
 import { atob } from 'b64-lite'
 import { showMessage } from 'react-native-flash-message'
 import DeviceInfo from 'react-native-device-info'
@@ -6,8 +6,45 @@ import I18n from 'i18next'
 
 import { BASE_WEBSITE_URL } from '../constants'
 import { contact } from '../utils'
+import { enums } from '../graphql'
 
-export const extractPublicKeyFromId = contactId => {
+export const showContact = async ({
+  data,
+  context,
+  navigation,
+  detailRoute = 'contact/detail/list',
+  editRoute = 'contact/detail/edit',
+}) => {
+  const { id, displayName, status, overrideDisplayName } = data
+
+  if (
+    [
+      enums.BertyEntityContactInputStatus.IsRequested,
+      enums.BertyEntityContactInputStatus.RequestedMe,
+    ].indexOf(status) !== -1
+  ) {
+    await showContactModal({
+      'relayContext': context,
+      'data': {
+        'id': contact.getCoreID(id),
+        displayName,
+      },
+    })
+
+    return
+  }
+
+  navigation.navigate(detailRoute, {
+    'contact': {
+      id,
+      overrideDisplayName,
+      displayName,
+    },
+    editRoute,
+  })
+}
+
+export const extractPublicKeyFromId = (contactId) => {
   try {
     return atob(contactId).split('contact:')[1]
   } catch (e) {
@@ -17,18 +54,15 @@ export const extractPublicKeyFromId = contactId => {
   return ''
 }
 
-export const makeShareableUrl = ({ id, displayName }) =>
-  `${BASE_WEBSITE_URL}/contacts/add#id=${encodeURIComponent(
-    id
-  )}&display-name=${encodeURIComponent(displayName)}`
+export const makeShareableUrl = ({ id, displayName }) => `${BASE_WEBSITE_URL}/contacts/add#id=${encodeURIComponent(id)}&display-name=${encodeURIComponent(displayName)}`
 
 export const shareLinkSelf = ({ id, displayName }) => {
   const url = makeShareableUrl({ id, displayName })
 
   Share.share({
-    title: I18n.t('contacts.add.invite-text-self'),
-    message: I18n.t('contacts.add.invite-text-link-self', { url }),
-    url: url,
+    'title': I18n.t('contacts.add.invite-text-self'),
+    'message': I18n.t('contacts.add.invite-text-link-self', { url }),
+    url,
   }).catch(() => null)
 }
 
@@ -36,16 +70,16 @@ export const shareLinkOther = ({ id, displayName }) => {
   const url = makeShareableUrl({ id, displayName })
 
   Share.share({
-    title: I18n.t('contacts.add.invite-text', { displayName }),
-    message: I18n.t('contacts.add.invite-text-link', { displayName, url }),
-    url: url,
+    'title': I18n.t('contacts.add.invite-text', { displayName }),
+    'message': I18n.t('contacts.add.invite-text-link', { displayName, url }),
+    url,
   }).catch(() => null)
 }
 
-export const isPubKeyValid = async ({ queries, data: { id } }) => {
+export const isPubKeyValid = async ({ queries, 'data': { id } }) => {
   try {
     const res = await queries.ContactCheckPublicKey.fetch({
-      filter: {
+      'filter': {
         ...contact.default,
         id,
       },
@@ -58,7 +92,7 @@ export const isPubKeyValid = async ({ queries, data: { id } }) => {
 }
 
 export const showContactModal = async ({
-  relayContext: { queries },
+  'relayContext': { queries },
   navigation,
   beforeDismiss,
   data,
@@ -66,26 +100,26 @@ export const showContactModal = async ({
   if (
     !(await isPubKeyValid({
       queries,
-      data: {
+      'data': {
         ...data,
-        id: contact.getRelayID(data.id),
+        'id': contact.getRelayID(data.id),
       },
     }))
   ) {
     showMessage({
-      message: I18n.t('contacts.add.invalid-public-key'),
-      type: 'danger',
-      position: 'top',
-      icon: 'danger',
+      'message': I18n.t('contacts.add.invalid-public-key'),
+      'type': 'danger',
+      'position': 'top',
+      'icon': 'danger',
     })
 
     return false
   }
 
   navigation.navigate('modal/contacts/card', {
-    id: data.id,
-    displayName: data.displayName,
-    beforeDismiss: beforeDismiss,
+    'id': data.id,
+    'displayName': data.displayName,
+    beforeDismiss,
   })
 }
 
@@ -95,7 +129,11 @@ export const defaultUsername = () => {
   }
 
   let deviceName = DeviceInfo.getDeviceName()
-  const defaultNamesParts = ['iPhone', 'iPad', 'iPod']
+  const defaultNamesParts = [
+    'iPhone',
+    'iPad',
+    'iPod',
+  ]
 
   if (!deviceName) {
     return ''
@@ -103,9 +141,7 @@ export const defaultUsername = () => {
 
   deviceName = deviceName.replace("'s ", ' ')
 
-  const hasDefaultName = defaultNamesParts.some(
-    defaultPart => deviceName.indexOf(defaultPart) !== -1
-  )
+  const hasDefaultName = defaultNamesParts.some((defaultPart) => deviceName.indexOf(defaultPart) !== -1)
 
   if (hasDefaultName) {
     return (
@@ -113,12 +149,7 @@ export const defaultUsername = () => {
         // Split device name
         .split(' ')
         // Remove product name
-        .filter(
-          part =>
-            !defaultNamesParts.some(
-              defaultPart => part.indexOf(defaultPart) !== -1
-            )
-        )
+        .filter((part) => !defaultNamesParts.some((defaultPart) => part.indexOf(defaultPart) !== -1))
         // Keep the longest word
         .sort((a, b) => b.length - a.length)[0]
     )

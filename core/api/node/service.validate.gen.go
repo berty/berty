@@ -377,11 +377,11 @@ func (m *ConversationManageMembersInput) Validate() error {
 		}
 	}
 
-	// handling field: Members - name:"members" number:2 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.ConversationMember" json_name:"members" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Contacts - name:"contacts" number:2 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"contacts" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	if v, ok := interface{}(m.GetMembers()).(interface{ Validate() error }); ok {
+	if v, ok := interface{}(m.GetContacts()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Members")
+			return errors.Wrap(err, "embedded message verification failed: Contacts")
 		}
 	}
 

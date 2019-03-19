@@ -707,8 +707,8 @@ type ComplexityRoot struct {
 		ContactUpdate                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ConversationCreate               func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
 		ConversationUpdate               func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) int
-		ConversationInvite               func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
-		ConversationExclude              func(childComplexity int, conversation *entity.Conversation, members []*entity.ConversationMember) int
+		ConversationInvite               func(childComplexity int, conversation *entity.Conversation, contacts []*entity.Contact) int
+		ConversationExclude              func(childComplexity int, conversation *entity.Conversation, contacts []*entity.Contact) int
 		ConversationAddMessage           func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
 		ConversationRead                 func(childComplexity int, id string) int
 		ConversationRemove               func(childComplexity int, id string) int
@@ -818,8 +818,8 @@ type MutationResolver interface {
 	ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error)
 	ConversationUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) (*entity.Conversation, error)
-	ConversationInvite(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
-	ConversationExclude(ctx context.Context, conversation *entity.Conversation, members []*entity.ConversationMember) (*entity.Conversation, error)
+	ConversationInvite(ctx context.Context, conversation *entity.Conversation, contacts []*entity.Contact) (*entity.Conversation, error)
+	ConversationExclude(ctx context.Context, conversation *entity.Conversation, contacts []*entity.Contact) (*entity.Conversation, error)
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*entity.Event, error)
 	ConversationRead(ctx context.Context, id string) (*entity.Conversation, error)
 	ConversationRemove(ctx context.Context, id string) (*entity.Conversation, error)
@@ -1539,8 +1539,8 @@ func field_Mutation_ConversationInvite_args(rawArgs map[string]interface{}) (map
 		}
 	}
 	args["conversation"] = arg0
-	var arg1 []*entity.ConversationMember
-	if tmp, ok := rawArgs["members"]; ok {
+	var arg1 []*entity.Contact
+	if tmp, ok := rawArgs["contacts"]; ok {
 		var err error
 		var rawIf1 []interface{}
 		if tmp != nil {
@@ -1550,11 +1550,11 @@ func field_Mutation_ConversationInvite_args(rawArgs map[string]interface{}) (map
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg1 = make([]*entity.ConversationMember, len(rawIf1))
+		arg1 = make([]*entity.Contact, len(rawIf1))
 		for idx1 := range rawIf1 {
-			var ptr2 entity.ConversationMember
+			var ptr2 entity.Contact
 			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
+				ptr2, err = UnmarshalBertyEntityContactInput(rawIf1[idx1])
 				arg1[idx1] = &ptr2
 			}
 		}
@@ -1562,7 +1562,7 @@ func field_Mutation_ConversationInvite_args(rawArgs map[string]interface{}) (map
 			return nil, err
 		}
 	}
-	args["members"] = arg1
+	args["contacts"] = arg1
 	return args, nil
 
 }
@@ -1583,8 +1583,8 @@ func field_Mutation_ConversationExclude_args(rawArgs map[string]interface{}) (ma
 		}
 	}
 	args["conversation"] = arg0
-	var arg1 []*entity.ConversationMember
-	if tmp, ok := rawArgs["members"]; ok {
+	var arg1 []*entity.Contact
+	if tmp, ok := rawArgs["contacts"]; ok {
 		var err error
 		var rawIf1 []interface{}
 		if tmp != nil {
@@ -1594,11 +1594,11 @@ func field_Mutation_ConversationExclude_args(rawArgs map[string]interface{}) (ma
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg1 = make([]*entity.ConversationMember, len(rawIf1))
+		arg1 = make([]*entity.Contact, len(rawIf1))
 		for idx1 := range rawIf1 {
-			var ptr2 entity.ConversationMember
+			var ptr2 entity.Contact
 			if rawIf1[idx1] != nil {
-				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
+				ptr2, err = UnmarshalBertyEntityContactInput(rawIf1[idx1])
 				arg1[idx1] = &ptr2
 			}
 		}
@@ -1606,7 +1606,7 @@ func field_Mutation_ConversationExclude_args(rawArgs map[string]interface{}) (ma
 			return nil, err
 		}
 	}
-	args["members"] = arg1
+	args["contacts"] = arg1
 	return args, nil
 
 }
@@ -5672,7 +5672,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ConversationInvite(childComplexity, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember)), true
+		return e.complexity.Mutation.ConversationInvite(childComplexity, args["conversation"].(*entity.Conversation), args["contacts"].([]*entity.Contact)), true
 
 	case "Mutation.ConversationExclude":
 		if e.complexity.Mutation.ConversationExclude == nil {
@@ -5684,7 +5684,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ConversationExclude(childComplexity, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember)), true
+		return e.complexity.Mutation.ConversationExclude(childComplexity, args["conversation"].(*entity.Conversation), args["contacts"].([]*entity.Contact)), true
 
 	case "Mutation.ConversationAddMessage":
 		if e.complexity.Mutation.ConversationAddMessage == nil {
@@ -20203,7 +20203,7 @@ func (ec *executionContext) _Mutation_ConversationInvite(ctx context.Context, fi
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ConversationInvite(rctx, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember))
+		return ec.resolvers.Mutation().ConversationInvite(rctx, args["conversation"].(*entity.Conversation), args["contacts"].([]*entity.Contact))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -20234,7 +20234,7 @@ func (ec *executionContext) _Mutation_ConversationExclude(ctx context.Context, f
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ConversationExclude(rctx, args["conversation"].(*entity.Conversation), args["members"].([]*entity.ConversationMember))
+		return ec.resolvers.Mutation().ConversationExclude(rctx, args["conversation"].(*entity.Conversation), args["contacts"].([]*entity.Contact))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -25133,11 +25133,11 @@ type Mutation {
   ): BertyEntityConversation
   ConversationInvite(
     conversation: BertyEntityConversationInput
-    members: [BertyEntityConversationMemberInput]
+    contacts: [BertyEntityContactInput]
   ): BertyEntityConversation
   ConversationExclude(
     conversation: BertyEntityConversationInput
-    members: [BertyEntityConversationMemberInput]
+    contacts: [BertyEntityContactInput]
   ): BertyEntityConversation
   ConversationAddMessage(
     conversation: BertyEntityConversationInput
