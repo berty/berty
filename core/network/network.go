@@ -8,7 +8,6 @@ import (
 	"berty.tech/core/network/config"
 	host "berty.tech/core/network/host"
 	"berty.tech/core/pkg/tracing"
-	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
 
@@ -61,6 +60,12 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 		return nil, err
 	}
 
+	net.init(ctx)
+
+	return net, nil
+}
+
+func (net *Network) init(ctx context.Context) {
 	net.host.SetStreamHandler(ProtocolID, net.handleEnvelope)
 	net.logHostInfos()
 
@@ -72,8 +77,6 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	if err := net.Bootstrap(ctx, false, net.config.Bootstrap...); err != nil {
 		logger().Error(err.Error())
 	}
-
-	return net, nil
 }
 
 // Update create new network and permit to override previous config
@@ -81,18 +84,33 @@ func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
 	net.updating.Lock()
 	defer net.updating.Unlock()
 
-	updated, err := New(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...)
-	if err != nil {
-		return errors.Wrap(err, "cannot update network: abort")
+	ctx, cancel := context.WithCancel(ctx)
+
+	var err error
+
+	update := &Network{
+		config:   &config.Config{},
+		updating: net.updating,
+		handler:  net.handler,
+		shutdown: cancel,
 	}
 
-	swap := *net
+	if err := update.config.Apply(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...); err != nil {
+		cancel()
+		return err
+	}
 
-	*net = *updated
+	update.host, err = update.config.NewNode(ctx)
+	if err != nil {
+		cancel()
+		return err
+	}
 
-	net.updating = swap.updating
+	net.Close(ctx)
 
-	(&swap).Close(ctx)
+	*net = *update
+
+	net.init(ctx)
 
 	return nil
 }

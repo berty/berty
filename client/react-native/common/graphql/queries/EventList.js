@@ -40,9 +40,9 @@ export default context => ({
   graphql: query,
   defaultVariables,
   fetch: async variables =>
-    (await fetchQuery(
+    fetchQuery(
       context.environment,
       query,
       merge([defaultVariables, variables])
-    )).EventList,
+    ),
 })

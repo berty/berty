@@ -84,7 +84,7 @@ func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {
 						continue
 					case <-cm.ctx.Done():
 						cm.BasicConnMgr.Notifee().Disconnected(net, c)
-						break
+						return
 					}
 				}
 				break
@@ -109,7 +109,7 @@ func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {
 						continue
 					case <-cm.ctx.Done():
 						cm.BasicConnMgr.Notifee().Disconnected(net, c)
-						break
+						return
 					}
 				}
 				break
@@ -134,7 +134,7 @@ func (cm *BertyConnMgr) Disconnected(net inet.Network, c inet.Conn) {
 						continue
 					case <-cm.ctx.Done():
 						cm.BasicConnMgr.Notifee().Disconnected(net, c)
-						break
+						return
 					}
 				}
 				break

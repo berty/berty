@@ -138,12 +138,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		}
 	}
 
-	if cfg.DefaultBootstrap {
-		cfg.Bootstrap = append(cfg.Bootstrap, DefaultBootstrap...)
-	}
-
-	logger().Debug(fmt.Sprintf("bootstrap: %+v", cfg.Bootstrap))
-
 	// add ws transport
 	if cfg.WS {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ws.New))
@@ -214,6 +208,7 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		libp2p.ConnectionManager(host.NewBertyConnMgr(ctx, 10, 20, time.Duration(60*time.Minute))))
 
 	libp2pOpts = append(libp2pOpts, libp2p.NATPortMap())
+
 	// override libp2p configuration
 	err := cfg.Config.Apply(append(libp2pOpts, libp2p.FallbackDefaults)...)
 	if err != nil {
@@ -360,7 +355,6 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 			return nil, fmt.Errorf("cannot enable metric; ping is not enabled")
 		}
 		h.Metric = metric.NewBertyMetric(ctx, h, h.Ping)
-		h.Network().Notify(h.Metric)
 	}
 
 	h.Discovery = host.NewBertyDiscovery(ctx, discoveries)

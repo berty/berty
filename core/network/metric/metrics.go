@@ -2,6 +2,7 @@ package metric
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -36,6 +37,7 @@ type BertyMetric struct {
 	host host.Host
 	ping PingService
 
+	handlePeer    chan peer.ID
 	peersHandlers []func(*Peer, error) error
 	muHPeers      sync.Mutex
 
@@ -56,6 +58,7 @@ func NewBertyMetric(ctx context.Context, h host.Host, ping PingService) *BertyMe
 	m := &BertyMetric{
 		host:          h,
 		ping:          ping,
+		handlePeer:    make(chan peer.ID, 1),
 		peersHandlers: make([]func(*Peer, error) error, 0),
 		bw:            bw.NewBandwidthCounter(),
 		latconn:       make(map[connKey]time.Duration),
@@ -63,7 +66,7 @@ func NewBertyMetric(ctx context.Context, h host.Host, ping PingService) *BertyMe
 		rootContext:   ctx,
 	}
 
-	m.host.Network().Notify(m)
+	m.handlePeers(ctx)
 
 	return m
 }
@@ -206,10 +209,6 @@ func (m *BertyMetric) GetListenInterfaceAddrs(ctx context.Context) (*ListAddrs, 
 }
 
 func (m *BertyMetric) Peers(ctx context.Context) *Peers {
-	tracer := tracing.EnterFunc(ctx)
-	defer tracer.Finish()
-	// ctx = tracer.Context()
-
 	peers := m.peers()
 	pis := &Peers{
 		List: make([]*Peer, len(peers)),
@@ -235,13 +234,22 @@ func (m *BertyMetric) MonitorPeers(handler func(*Peer, error) error) {
 	m.muHPeers.Lock()
 	defer m.muHPeers.Unlock()
 	m.peersHandlers = append(m.peersHandlers, handler)
+	for _, peer := range m.Peers(context.Background()).List {
+		handler(peer, nil)
+	}
 }
 
 func (m *BertyMetric) MonitorBandwidth(interval time.Duration, handler func(*BandwidthStats, error) error) {
 	ticker := time.NewTicker(interval)
 	go func() {
 		for {
-			<-ticker.C
+			select {
+			case <-ticker.C:
+				//
+			case <-m.rootContext.Done():
+				handler(nil, errors.New("metrics shutdown"))
+				return
+			}
 			out := m.bw.GetBandwidthTotals()
 
 			logger().Debug("monitoring bandwidth", zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
@@ -260,7 +268,13 @@ func (m *BertyMetric) MonitorBandwidthProtocol(id string, interval time.Duration
 	ticker := time.NewTicker(interval)
 	go func() {
 		for {
-			<-ticker.C
+			select {
+			case <-ticker.C:
+				//
+			case <-m.rootContext.Done():
+				handler(nil, errors.New("metrics shutdown"))
+				return
+			}
 			out := m.bw.GetBandwidthForProtocol(pid)
 
 			logger().Debug("monitoring bandwidth protocol", zap.String("protocol", id), zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
@@ -287,7 +301,14 @@ func (m *BertyMetric) MonitorBandwidthPeer(id string, interval time.Duration, ha
 	ticker := time.NewTicker(interval)
 	go func() {
 		for {
-			<-ticker.C
+			select {
+			case <-ticker.C:
+				//
+			case <-m.rootContext.Done():
+				handler(nil, errors.New("metrics shutdown"))
+				return
+			}
+
 			out := m.bw.GetBandwidthForPeer(peerid)
 
 			logger().Debug("monitor bandwidth peer", zap.String("peer id", id), zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
@@ -302,23 +323,36 @@ func (m *BertyMetric) MonitorBandwidthPeer(id string, interval time.Duration, ha
 	}()
 }
 
-func (m *BertyMetric) handlePeer(ctx context.Context, id peer.ID) {
-	tracer := tracing.EnterFunc(ctx, id.Pretty())
+func (m *BertyMetric) handlePeers(ctx context.Context) {
+	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
-	// ctx = tracer.Context()
 
-	pi := m.host.Peerstore().PeerInfo(id)
-	peer := m.peerInfoToPeer(pi)
-
-	m.muHPeers.Lock()
-	var newPeersHandlers = make([]func(*Peer, error) error, 0)
-	for _, h := range m.peersHandlers {
-		if err := h(peer, nil); err == nil {
-			newPeersHandlers = append(newPeersHandlers, h)
+	go func() {
+		for {
+			select {
+			case id := <-m.handlePeer:
+				pi := m.host.Peerstore().PeerInfo(id)
+				peer := m.peerInfoToPeer(pi)
+				m.muHPeers.Lock()
+				var newPeersHandlers = make([]func(*Peer, error) error, 0)
+				for _, h := range m.peersHandlers {
+					if err := h(peer, nil); err == nil {
+						newPeersHandlers = append(newPeersHandlers, h)
+					}
+				}
+				m.peersHandlers = newPeersHandlers
+				m.muHPeers.Unlock()
+			case <-ctx.Done():
+				logger().Debug("network metric shutdown handle peers")
+				m.muHPeers.Lock()
+				for _, h := range m.peersHandlers {
+					h(nil, errors.New("metrics shutdown"))
+				}
+				m.muHPeers.Unlock()
+				return
+			}
 		}
-	}
-	m.peersHandlers = newPeersHandlers
-	m.muHPeers.Unlock()
+	}()
 }
 
 func (m *BertyMetric) peers() []pstore.PeerInfo {
@@ -380,11 +414,11 @@ func (m *BertyMetric) Connected(s inet.Network, c inet.Conn) {
 		}
 	}()
 
-	go m.handlePeer(context.Background(), c.RemotePeer())
+	m.handlePeer <- c.RemotePeer()
 }
 
 func (m *BertyMetric) Disconnected(s inet.Network, c inet.Conn) {
-	go m.handlePeer(context.Background(), c.RemotePeer())
+	m.handlePeer <- c.RemotePeer()
 }
 
 func ewma(prev, next time.Duration) time.Duration {
