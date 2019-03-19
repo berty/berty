@@ -10,16 +10,16 @@ export default context => ({
         (async (store, data) => {
           if (data.EventStream.kind === 202) {
             const [
-              senderId,
+              sourceDeviceId,
               // receiverId,
             ] = [
-              btoa('contact:' + data.EventStream.senderId),
+              btoa('contact:' + data.EventStream.sourceDeviceId),
               // btoa('contact:', data.EventStream.receiverId),
             ]
-            updater(store, { id: senderId }, true)
+            updater(store, { id: sourceDeviceId }, true)
             // updater(store, { id: receiverId }, true)
             await context.queries.Contact.fetch({
-              filter: { id: senderId },
+              filter: { id: sourceDeviceId },
             })
           }
         }),

@@ -101,7 +101,7 @@ export const CommitLogStream = graphql`
         }
         event {
           id
-          senderId
+          sourceDeviceId
           createdAt
           updatedAt
           sentAt
@@ -109,9 +109,8 @@ export const CommitLogStream = graphql`
           receivedAt
           ackedAt
           direction
-          senderApiVersion
-          receiverApiVersion
-          receiverId
+          apiVersion
+          destinationDeviceId
           kind
           attributes
           conversationId

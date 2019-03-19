@@ -1,8 +1,8 @@
 export default {
   id: '',
-  senderId: '',
-  senderApiVersion: 0,
-  receiverApiVersion: 0,
-  receiverId: '',
+  sourceDeviceId: '',
+  sourceContactId: '',
+  apiVersion: 0,
+  destinationDeviceId: '',
   conversationId: '',
 }

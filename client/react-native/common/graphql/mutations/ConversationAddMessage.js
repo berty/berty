@@ -12,7 +12,7 @@ const ConversationAddMessageMutation = graphql`
   ) {
     ConversationAddMessage(conversation: $conversation, message: $message) {
       id
-      senderId
+      sourceDeviceId
       createdAt
       updatedAt
       sentAt
@@ -20,9 +20,8 @@ const ConversationAddMessageMutation = graphql`
       receivedAt
       ackedAt
       direction
-      senderApiVersion
-      receiverApiVersion
-      receiverId
+      apiVersion
+      destinationDeviceId
       kind
       attributes
       conversationId

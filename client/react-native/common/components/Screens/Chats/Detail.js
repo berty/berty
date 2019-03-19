@@ -62,7 +62,7 @@ class Message extends React.Component {
   render () {
     const { conversation, data, t } = this.props
 
-    const contactId = btoa(`contact:${data.senderId}`)
+    const contactId = btoa(`contact:${data.sourceDeviceId}`)
     const contact = (
       conversation.members.find(m => m.contact && m.contact.id === contactId) ||
       {}

@@ -5,7 +5,7 @@ const EventSeenMutation = graphql`
   mutation EventSeenMutation($id: ID!) {
     EventSeen(id: $id) {
       id
-      senderId
+      sourceDeviceId
       createdAt
       updatedAt
       sentAt
@@ -13,9 +13,8 @@ const EventSeenMutation = graphql`
       receivedAt
       ackedAt
       direction
-      senderApiVersion
-      receiverApiVersion
-      receiverId
+      apiVersion
+      destinationDeviceId
       kind
       attributes
       conversationId

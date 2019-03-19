@@ -6,7 +6,7 @@ export default component =>
     graphql`
       fragment Event on BertyEntityEvent {
         id
-        senderId
+        sourceDeviceId
         createdAt
         updatedAt
         sentAt
@@ -14,9 +14,8 @@ export default component =>
         receivedAt
         ackedAt
         direction
-        senderApiVersion
-        receiverApiVersion
-        receiverId
+        apiVersion
+        destinationDeviceId
         kind
         attributes
         conversationId

@@ -6,7 +6,7 @@ const EventStream = graphql`
   subscription EventStreamSubscription {
     EventStream {
       id
-      senderId
+      sourceDeviceId
       createdAt
       updatedAt
       sentAt
@@ -14,9 +14,8 @@ const EventStream = graphql`
       receivedAt
       ackedAt
       direction
-      senderApiVersion
-      receiverApiVersion
-      receiverId
+      apiVersion
+      destinationDeviceId
       kind
       attributes
       conversationId

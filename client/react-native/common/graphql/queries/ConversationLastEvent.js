@@ -7,7 +7,7 @@ const query = graphql`
     ConversationLastEvent(id: $id) {
       ...Event
       id
-      senderId
+      sourceDeviceId
       createdAt
       updatedAt
       sentAt
@@ -15,9 +15,8 @@ const query = graphql`
       receivedAt
       ackedAt
       direction
-      senderApiVersion
-      receiverApiVersion
-      receiverId
+      apiVersion
+      destinationDeviceId
       kind
       attributes
       conversationId

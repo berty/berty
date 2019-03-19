@@ -6,7 +6,7 @@ const DebugRequeueEventMutation = graphql`
   mutation DebugRequeueEventMutation($eventId: ID!) {
     DebugRequeueEvent(eventId: $eventId) {
       id
-      senderId
+      sourceDeviceId
       createdAt
       updatedAt
       sentAt
@@ -14,9 +14,8 @@ const DebugRequeueEventMutation = graphql`
       receivedAt
       ackedAt
       direction
-      senderApiVersion
-      receiverApiVersion
-      receiverId
+      apiVersion
+      destinationDeviceId
       kind
       attributes
       conversationId
