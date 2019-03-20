@@ -235,7 +235,7 @@ class Input extends PureComponent {
         align='center'
         style={
           Platform.OS === 'web'
-            ? [{ position: 'absolute', bottom: 0, left: 0, right: 0 }, shadow]
+            ? [{ borderTopWidth: 0.5, borderTopColor: colors.borderGrey, position: 'absolute', bottom: 0, left: 0, right: 0 }, shadow]
             : [shadow]
         }
       >
@@ -354,7 +354,7 @@ class Detail extends PureComponent {
             }
           </View>
         )}
-        rightBtnIcon='settings'
+        rightBtnIcon='more-vertical'
         onPressRightBtn={() =>
           navigation.navigate('chats/settings', {
             conversation: navigation.state.params,

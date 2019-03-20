@@ -191,8 +191,7 @@ const options = {
   defaultNavigationOptions: handleBothNavigationsOptions,
   tabBarOptions: {
     showIcon: true,
-    showLabel: true,
-    upperCaseLabel: false,
+    showLabel: false,
     activeTintColor: colors.fakeBlack,
     inactiveTintColor: colors.lightGrey,
     indicatorStyle: {
@@ -204,12 +203,12 @@ const options = {
         borderTopWidth: 0.5,
         borderTopColor: colors.borderGrey,
         shadowColor: colors.shadowGrey,
-        shadowOffset: { height: -5, width: 0 },
+        shadowOffset: { height: Platform.OS === 'web' ? 0 : -5, width: 0 },
         shadowOpacity: 0.2,
-        shadowRadius: 5,
+        shadowRadius: Platform.OS === 'web' ? 5 : 3,
         ...(Platform.OS === 'android'
-          ? { height: 68, paddingTop: 3 }
-          : { height: 64, paddingTop: 5, paddingBottom: 6 }),
+          ? { height: 54, paddingTop: 3 }
+          : { height: 50.500, paddingTop: 5, paddingBottom: 6 }),
       },
     ],
   },
