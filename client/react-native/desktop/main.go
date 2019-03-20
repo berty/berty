@@ -9,7 +9,7 @@ import (
 	"berty.tech/core/pkg/logmanager"
 	"go.uber.org/zap"
 
-	"github.com/asticode/go-astilectron"
+	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 )
 

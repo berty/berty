@@ -21,6 +21,8 @@ type Network struct {
 	updating *sync.Mutex
 
 	shutdown context.CancelFunc
+
+	cache PeerCache
 }
 
 // Chainconfig.Options chains multiple options into a single option.
@@ -47,6 +49,7 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 		config:   &config.Config{},
 		updating: &sync.Mutex{},
 		shutdown: cancel,
+		cache:    NewNoopCache(),
 	}
 
 	if err := net.config.Apply(ctx, opts...); err != nil {
@@ -60,6 +63,10 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 		return nil, err
 	}
 
+	if net.Config().PeerCache {
+		net.cache = NewPeerCache(net.host)
+	}
+
 	net.init(ctx)
 
 	return net, nil
@@ -68,9 +75,6 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 func (net *Network) init(ctx context.Context) {
 	net.host.SetStreamHandler(ProtocolID, net.handleEnvelope)
 	net.logHostInfos()
-
-	// advertise and find peers on berty discovery service
-	net.Discover(ctx)
 
 	// bootstrap default peers
 	// TOOD: infinite bootstrap + don't permit routing to provide when no peers are discovered
@@ -93,6 +97,7 @@ func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
 		updating: net.updating,
 		handler:  net.handler,
 		shutdown: cancel,
+		cache:    NewNoopCache(),
 	}
 
 	if err := update.config.Apply(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...); err != nil {
@@ -104,6 +109,10 @@ func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
 	if err != nil {
 		cancel()
 		return err
+	}
+
+	if update.Config().PeerCache {
+		net.cache = NewPeerCache(update.host)
 	}
 
 	net.Close(ctx)

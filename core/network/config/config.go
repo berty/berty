@@ -80,6 +80,8 @@ type Config struct {
 	DefaultBootstrap bool
 	Bootstrap        []string
 
+	PeerCache bool
+
 	Ping bool
 
 	Metric bool
@@ -112,6 +114,7 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.HOP = override.HOP
 	cfg.Identity = override.Identity
 	cfg.SwarmKey = override.SwarmKey
+	cfg.PeerCache = override.PeerCache
 	return nil
 }
 

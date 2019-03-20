@@ -212,24 +212,31 @@ func (net *Network) Emit(ctx context.Context, e *entity.Envelope) error {
 	return net.EmitTo(ctx, e.GetChannelID(), e)
 }
 
-func (net *Network) EmitTo(ctx context.Context, contactID string, e *entity.Envelope) error {
+func (net *Network) EmitTo(ctx context.Context, contactID string, e *entity.Envelope) (err error) {
 	tracer := tracing.EnterFunc(ctx, contactID, e)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	peerInfo, err := routing_validator.ContactIDToPeerInfo(ctx, net.host.Routing, contactID)
-	if err != nil {
-		return errors.Wrap(err, fmt.Sprintf("EmitTo failed during contactID translation (%s)", contactID))
-	}
-	// @TODO: we need to split this, and let the node do the logic to try
-	// back if the send fail with the given peer
+	pinfo, ok := net.cache.GetPeerForKey(contactID)
+	if !ok {
+		pinfo, err = routing_validator.ContactIDToPeerInfo(ctx, net.host.Routing, contactID)
+		if err != nil {
+			err = errors.Wrap(err, fmt.Sprintf("EmitTo failed during contactID translation (%s)", contactID))
+			return
+		}
 
-	if err = net.SendTo(ctx, peerInfo, e); err != nil {
+		net.cache.UpdateCache(contactID, pinfo)
+		// @TODO: we need to split this, and let the node do the logic to try
+		// back if the send fail with the given peer
+
+	}
+
+	if err = net.SendTo(ctx, pinfo, e); err != nil {
 		logger().Warn("sendTo", zap.Error(err))
-		return err
+		return
 	}
 
-	return nil
+	return
 }
 
 func (net *Network) SendTo(ctx context.Context, pi pstore.PeerInfo, e *entity.Envelope) error {
@@ -254,7 +261,6 @@ func (net *Network) SendTo(ctx context.Context, pi pstore.PeerInfo, e *entity.En
 }
 
 func (net *Network) handleEnvelope(s inet.Stream) {
-	logger().Debug("receiving envelope")
 	if net.handler == nil {
 		logger().Error("handler is not set")
 		return
@@ -274,6 +280,7 @@ func (net *Network) handleEnvelope(s inet.Stream) {
 			return
 		}
 
+		logger().Debug("receiving envelope")
 		// @TODO: get opentracing context
 		net.handler(context.Background(), e)
 	}
