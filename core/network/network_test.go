@@ -91,14 +91,6 @@ func TestDriver(t *testing.T) {
 			So(err, ShouldBeNil)
 		})
 
-		Convey("update clients", FailureHalts, func() {
-			So(homer.Update(ctx, WithClientTestOptions()), ShouldBeNil)
-
-			So(lisa.Update(ctx, WithClientTestOptions()), ShouldBeNil)
-
-			So(bart.Update(ctx, WithClientTestOptions()), ShouldBeNil)
-		})
-
 		Convey("bootstrap clients", FailureHalts, func() {
 
 			bootstrap := []string{}

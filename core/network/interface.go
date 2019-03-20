@@ -38,9 +38,6 @@ type Driver interface {
 	// Return current config
 	Config() *config.Config
 
-	// Update update current network with config
-	Update(context.Context, ...config.Option) error
-
 	// Close cleanups things
 	Close(context.Context) error
 }
