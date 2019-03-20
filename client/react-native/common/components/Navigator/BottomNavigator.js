@@ -60,7 +60,6 @@ class TabBarIconBase extends Component {
     const { queryVariables } = this.state
 
     queries.EventUnseen.fetch(queryVariables).then((e) => {
-      console.log('e', e)
       this.setState({
         stored: e.reduce((acc, val) => {
           if (acc.indexOf(val.conversationId) === -1) {
@@ -70,7 +69,6 @@ class TabBarIconBase extends Component {
         }, []),
       })
     })
-    console.log(queryVariables)
     this.subscriber = subscriptions.commitLogStream.subscribe({
       updater: this.updateBadge,
     })
@@ -83,7 +81,7 @@ class TabBarIconBase extends Component {
   }
 
   updateBadge = (store, data) => {
-    const [operation, entity] = [data.CommitLogStream.operation, data.CommitLogStream.entity.event]
+    const [entity] = [data.CommitLogStream.entity.event]
     const {
       stored,
       queryVariables: {
@@ -93,10 +91,8 @@ class TabBarIconBase extends Component {
       },
     } = this.state
 
-    if (entity && entity.kind === kind) {
-      console.log('operation', kind, operation, entity.seenAt === null, stored.indexOf(entity.conversationId))
+    if (entity && entity.kind === kind && entity.direction === 1) {
       if (entity.seenAt === null && stored.indexOf(entity.conversationId) === -1) {
-        console.log('la', entity)
         this.setState({
           stored: [
             ...stored,
@@ -136,7 +132,7 @@ class TabBarIconBase extends Component {
     const {
       stored,
     } = this.state
-    console.log('stored', stored)
+
     context.relay = context.environment
     let iconName = {
       contacts: 'users',

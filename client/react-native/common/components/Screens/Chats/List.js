@@ -71,7 +71,6 @@ const ItemBase = fragments.Conversation(
           onlyWithoutSeenAt: 1,
         },
       ])).then((e) => {
-        console.log(e)
         this.setState({
           unread: e.map((val) => {
             return val.id
@@ -89,12 +88,13 @@ const ItemBase = fragments.Conversation(
       const { data: { id } } = this.props
       let { unread } = this.state
 
-      if (entity && id === entity.conversationId && entity.kind === 302) {
-        // console.log('operation', operation, entity.seenAt === null, unread.indexOf(entity.id))
+      if (entity && entity.direction === 1 && id === entity.conversationId && entity.kind === 302) {
         if (entity.seenAt === null && unread.indexOf(entity.id) === -1) {
-          unread.push(entity.id)
           this.setState({
-            unread: unread,
+            unread: [
+              ...unread,
+              entity.id,
+            ],
           })
         } else if (entity.seenAt !== null && unread.indexOf(entity.id) !== -1) {
           unread.splice(unread.indexOf(entity.id), 1)
