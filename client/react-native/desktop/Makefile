@@ -4,7 +4,7 @@ deps:
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	GO111MODULE=off go get -u github.com/asticode/go-astilectron-bundler/...
 
-build:
+build: clean
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	sed s%TMPL_MAKEFILE_PATH%$(MAKEFILE_DIR)%g bundler.json.tmpl > bundler.json
 	cp -rf $(MAKEFILE_DIR)/../web/build $(MAKEFILE_DIR)/../desktop/resources/app
