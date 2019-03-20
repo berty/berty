@@ -136,10 +136,10 @@ class TabBarIconBase extends Component {
     context.relay = context.environment
     let iconName = {
       contacts: 'users',
-      chats: 'message-circle',
+      chats: 'berty-berty_conversation',
       settings: 'settings',
       'side/contacts': 'users',
-      'side/chats': 'message-circle',
+      'side/chats': 'berty-berty_conversation',
       'side/settings': 'settings',
     }[routeName]
 
