@@ -4,25 +4,25 @@ import { event } from '../../utils'
 import { merge } from '../../helpers'
 
 const query = graphql`
- query EventUnseenQuery(
-   $filter: BertyEntityEventInput
-   $orderBy: String!
-   $orderDesc: Bool!
-   $count: Int32
-   $cursor: String
-   $onlyWithoutAckedAt: Enum
-   $onlyWithoutSeenAt: Enum
- ) {
+  query EventUnseenQuery(
+    $filter: BertyEntityEventInput
+    $orderBy: String!
+    $orderDesc: Bool!
+    $count: Int32
+    $cursor: String
+    $onlyWithoutAckedAt: Enum
+    $onlyWithoutSeenAt: Enum
+  ) {
     EventUnseen(
-       filter: $filter
-       orderBy: $orderBy
-       orderDesc: $orderDesc
-       first: $count
-       after: $cursor
-       onlyWithoutAckedAt: $onlyWithoutAckedAt
-       onlyWithoutSeenAt: $onlyWithoutSeenAt
+      filter: $filter
+      orderBy: $orderBy
+      orderDesc: $orderDesc
+      first: $count
+      after: $cursor
+      onlyWithoutAckedAt: $onlyWithoutAckedAt
+      onlyWithoutSeenAt: $onlyWithoutSeenAt
     ) {
-      id
+        id
         senderId
         createdAt
         updatedAt
