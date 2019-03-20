@@ -36,7 +36,10 @@ const BackActionProvider = ({ navigation, children }) => {
       splitNavigator.dispatch(NavigationActions.navigate({ routeName: shownPaneRouteName }))
     }
 
-    navigation.goBack(...args)
+    if (navigation.goBack(...args) === false) {
+      navigation.navigate('placeholder')
+      splitNavigator.dispatch(NavigationActions.navigate({ routeName: 'placeholder' }))
+    }
   }
 
   return children({ goBack })
