@@ -3,6 +3,8 @@ import { Dimensions, View } from 'react-native'
 import createTabNavigator from 'react-navigation-tabs/src/utils/createTabNavigator'
 import { createSwitchNavigator, createBottomTabNavigator } from 'react-navigation'
 
+import colors from '../../constants/colors'
+
 class SplitterView extends React.PureComponent {
   constructor (props) {
     super(props)
@@ -38,7 +40,13 @@ class SplitterView extends React.PureComponent {
     const isPlaceholder = state.routes[1].routes[state.routes[1].index].routeName === 'placeholder'
 
     return <View style={{ flex: 1, flexDirection: 'row' }}>
-      <View style={{ width: narrow ? '100%' : 350, display: narrow && !isPlaceholder ? 'none' : 'flex' }}>
+      <View style={{
+        borderRightColor: colors.borderGrey,
+        borderStyle: 'solid',
+        borderRightWidth: narrow ? 0 : 1,
+        width: narrow ? '100%' : 350,
+        display: narrow && !isPlaceholder ? 'none' : 'flex',
+      }}>
         {renderScene({ route: state.routes[0] })}
       </View>
       <View style={{ flex: 1, display: narrow && isPlaceholder ? 'none' : 'flex' }}>
