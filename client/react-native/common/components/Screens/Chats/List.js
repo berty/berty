@@ -8,7 +8,9 @@ import {
   Screen,
   Text,
   Badge,
+  Icon,
 } from '../../Library'
+import { merge } from '../../../helpers'
 import { Pagination } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
@@ -26,6 +28,7 @@ const ItemBase = fragments.Conversation(
       super(props)
       const { data } = props
       this.state = {
+        unread: [],
         connected: false,
         other:
           data.members.length === 2
@@ -42,11 +45,63 @@ const ItemBase = fragments.Conversation(
       if (data.members.length === 2) {
         this.getPing()
       }
+      this.subscriber = null
     }
 
     componentWillUnmount () {
       if (this.state.interval !== null) {
         clearInterval(this.state.interval)
+      }
+      if (this.subscriber !== null) {
+        this.subscriber.unsubscribe()
+      }
+    }
+
+    componentDidMount () {
+      const { context: { queries, subscriptions } } = this.props
+
+      queries.EventUnseen.fetch(merge([
+        queries.EventUnseen.defaultVariables,
+        {
+          filter: {
+            kind: 302,
+            conversationId: this.props.data.id,
+            direction: 1,
+          },
+          onlyWithoutSeenAt: 1,
+        },
+      ])).then((e) => {
+        this.setState({
+          unread: e.map((val) => {
+            return val.id
+          }),
+        })
+      })
+
+      this.subscriber = subscriptions.commitLogStream.subscribe({
+        updater: this.updateBadge,
+      })
+    }
+
+    updateBadge = (store, data) => {
+      const [entity] = [data.CommitLogStream.entity.event]
+      const { data: { id } } = this.props
+      let { unread } = this.state
+
+      if (entity && entity.direction === 1 && id === entity.conversationId && entity.kind === 302) {
+        if (entity.seenAt === null && unread.indexOf(entity.id) === -1) {
+          this.setState({
+            unread: [
+              ...unread,
+              entity.id,
+            ],
+          })
+        } else if (entity.seenAt !== null && unread.indexOf(entity.id) !== -1) {
+          unread.splice(unread.indexOf(entity.id), 1)
+          this.setState({
+            unread: unread,
+          })
+        }
       }
     }
 
@@ -69,7 +124,7 @@ const ItemBase = fragments.Conversation(
 
     render () {
       const { data, navigation, t } = this.props
-      const { connected } = this.state
+      const { connected, unread } = this.state
       const { readAt } = data
       const isRead = new Date(readAt).getTime() > 0
 
@@ -136,6 +191,16 @@ const ItemBase = fragments.Conversation(
                 {data.infos || t('chats.new-conversation')}
               </Text>
             </Flex.Cols>
+          </Flex.Rows>
+          <Flex.Rows size={1} justify='flex-end' align='center'>
+            <Icon.Badge
+              position={'relative'}
+              right={0}
+              top={0}
+              size={24}
+              badge={unread.length > 0 ? '!' : ''}
+              value={unread.length}
+            />
           </Flex.Rows>
         </Flex.Cols>
       )

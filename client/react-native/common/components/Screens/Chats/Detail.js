@@ -38,15 +38,21 @@ const textStyles = StyleSheet.flatten([Markdown.styles, {
   },
 }])
 
-class Message extends React.PureComponent {
+class Message extends React.Component {
   static contextType = RelayContext
 
-  messageSeen = async () => {
-    if (this.props.data.seenAt === null) {
-      await this.props.context.mutations.eventSeen({
-        id: this.props.data.id,
-      })
+  messageSeen = () => {
+    this.props.context.mutations.eventSeen({
+      id: this.props.data.id,
+    })
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    const { data: { seenAt } } = this.props
+    if (seenAt !== nextProps.data.seenAt) {
+      return false
     }
+    return true
   }
 
   render () {
@@ -63,7 +69,7 @@ class Message extends React.PureComponent {
     const isOneToOne = conversation.members.length <= 2
 
     // TODO: implement message seen
-    if (new Date(this.props.data.seenAt).getTime() <= 0) {
+    if (this.props.data.seenAt === null) {
       this.messageSeen()
     }
     return (

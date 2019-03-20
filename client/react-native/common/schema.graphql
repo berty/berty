@@ -744,6 +744,18 @@ type Query {
     last: Int32
     before: String
   ): BertyNodeEventListConnection
+  EventUnseen(
+    filter: BertyEntityEventInput
+    onlyWithoutAckedAt: Enum
+    onlyWithoutSeenAt: Enum
+    orderBy: String!
+    orderDesc: Bool!
+    first: Int32
+    after: String
+    last: Int32
+    before: String
+  )
+      : [BertyEntityEvent]
   GetEvent(
     id: ID!
   ): BertyEntityEvent

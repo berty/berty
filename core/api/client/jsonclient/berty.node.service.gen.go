@@ -20,6 +20,7 @@ func init() {
 	registerServerStream("berty.node.CommitLogStream", NodeCommitLogStream)
 	registerServerStream("berty.node.EventStream", NodeEventStream)
 	registerServerStream("berty.node.EventList", NodeEventList)
+	registerServerStream("berty.node.EventUnseen", NodeEventUnseen)
 	registerUnary("berty.node.GetEvent", NodeGetEvent)
 	registerUnary("berty.node.EventSeen", NodeEventSeen)
 	registerUnary("berty.node.ConfigPublic", NodeConfigPublic)
@@ -159,6 +160,34 @@ func NodeEventList(client *client.Client, ctx context.Context, jsonInput []byte)
 		return nil, err
 	}
 	stream, err := client.Node().EventList(ctx, &typedInput)
+	if err != nil {
+		return nil, err
+	}
+	// start a stream proxy
+	streamProxy := newGenericServerStreamProxy()
+	go func() {
+		for {
+			data, err := stream.Recv()
+			streamProxy.queue <- genericStreamEntry{data: data, err: err}
+			if err != nil {
+				break
+			}
+		}
+		// FIXME: wait for queue to be empty, then close chan
+	}()
+	return streamProxy, nil
+}
+func NodeEventUnseen(client *client.Client, ctx context.Context, jsonInput []byte) (GenericServerStreamClient, error) {
+	logger().Debug("client call",
+		zap.String("service", "Service"),
+		zap.String("method", "EventUnseen"),
+		zap.String("input", string(jsonInput)),
+	)
+	var typedInput node.EventListInput
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, err
+	}
+	stream, err := client.Node().EventUnseen(ctx, &typedInput)
 	if err != nil {
 		return nil, err
 	}

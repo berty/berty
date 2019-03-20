@@ -483,6 +483,53 @@ func (r *queryResolver) EventList(ctx context.Context, filter *entity.Event, raw
 	return output, nil
 }
 
+func (r *queryResolver) EventUnseen(ctx context.Context, filter *entity.Event, rawOnlyWithoutAckedAt *int32, rawOnlyWithoutSeenAt *int32, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) ([]*entity.Event, error) {
+	onlyWithoutAckedAt := node.NullableTrueFalse_Null
+	if rawOnlyWithoutAckedAt != nil {
+		onlyWithoutAckedAt = node.NullableTrueFalse(*rawOnlyWithoutAckedAt)
+		logger().Info(fmt.Sprintf("raw value %+v parsed value %+v", rawOnlyWithoutAckedAt, onlyWithoutAckedAt))
+	}
+
+	onlyWithoutSeenAt := node.NullableTrueFalse_Null
+	if rawOnlyWithoutSeenAt != nil {
+		onlyWithoutSeenAt = node.NullableTrueFalse(*rawOnlyWithoutSeenAt)
+		logger().Info(fmt.Sprintf("raw value %+v parsed value %+v", rawOnlyWithoutSeenAt, onlyWithoutSeenAt))
+	}
+
+	if filter != nil {
+		if filter.ID != "" {
+			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+		}
+		if filter.ConversationID != "" {
+			filter.ConversationID = strings.SplitN(filter.ConversationID, ":", 2)[1]
+		}
+	}
+
+	input := &node.EventListInput{
+		Filter:             filter,
+		OnlyWithoutAckedAt: onlyWithoutAckedAt,
+		OnlyWithoutSeenAt:  onlyWithoutSeenAt,
+	}
+
+	stream, err := r.client.EventUnseen(ctx, input)
+	if err != nil {
+		return nil, err
+	}
+
+	entries := []*entity.Event{}
+	for {
+		entry, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		entries = append(entries, entry)
+	}
+	return entries, nil
+}
+
 func (r *queryResolver) GetEvent(ctx context.Context, id string) (*entity.Event, error) {
 	id = strings.SplitN(id, ":", 2)[1]
 

@@ -74,6 +74,45 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	return nil
 }
 
+func (n *Node) EventUnseen(input *node.EventListInput, stream node.Service_EventUnseenServer) error {
+	tracer := tracing.EnterFunc(stream.Context(), input)
+	defer tracer.Finish()
+	ctx := tracer.Context()
+
+	n.handleMutex(ctx)()
+	sql := n.sql(ctx)
+
+	// prepare query
+	query := sql.Model(entity.Event{}).Where(input.Filter)
+
+	if input.OnlyWithoutAckedAt == node.NullableTrueFalse_True {
+		query = query.Where("acked_at IS NULL")
+	} else if input.OnlyWithoutAckedAt == node.NullableTrueFalse_False {
+		query = query.Where("acked_at IS NOT NULL")
+	}
+
+	if input.OnlyWithoutSeenAt == node.NullableTrueFalse_True {
+		query = query.Where("seen_at IS NULL")
+	} else if input.OnlyWithoutSeenAt == node.NullableTrueFalse_False {
+		query = query.Where("seen_at IS NOT NULL")
+	}
+
+	// perform query
+	var events []*entity.Event
+	if err := query.Find(&events).Error; err != nil {
+		return errorcodes.ErrDb.Wrap(err)
+	}
+
+	// stream results
+	for _, event := range events {
+		if err := stream.Send(event); err != nil {
+			return errorcodes.ErrNetStream.Wrap(err)
+		}
+	}
+
+	return nil
+}
+
 func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
