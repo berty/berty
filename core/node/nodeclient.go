@@ -49,7 +49,7 @@ func (n *Node) EventStream(input *node.EventStreamInput, stream node.Service_Eve
 			if input.Filter.Kind != entity.Kind_Unknown && e.Kind != input.Filter.Kind {
 				return false
 			}
-			if input.Filter.ConversationID != "" && e.ConversationID != input.Filter.ConversationID {
+			if input.Filter.TargetAddr != "" && e.TargetAddr != input.Filter.TargetAddr {
 				return false
 			}
 			return true

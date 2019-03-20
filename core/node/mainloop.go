@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"fmt"
 	"sync"
 	"time"
 
@@ -114,19 +113,26 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 
 	event.SourceDeviceID = n.b64pubkey
 
-	switch {
-	case event.DestinationDeviceID != "": // ContactEvent
+	switch event.TargetType {
+	case entity.Event_ToSpecificContact:
 		envelope.Source = n.aliasEnvelopeForContact(ctx, &envelope, event)
-		envelope.ChannelID = event.DestinationDeviceID
 		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
-
-	case event.ConversationID != "": //ConversationEvent
+		envelope.ChannelID = event.ToContactID()
+	case entity.Event_ToSpecificDevice:
+		// FIXME: investigate if we need to handle differently a Contact and a Device
+		envelope.Source = n.aliasEnvelopeForContact(ctx, &envelope, event)
+		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for receiver
+		envelope.ChannelID = event.ToDeviceID()
+	case entity.Event_ToSpecificConversation:
 		envelope.Source = n.aliasEnvelopeForConversation(ctx, &envelope, event)
-		envelope.ChannelID = event.ConversationID
-		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for conversation
-
+		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for the conversation
+		envelope.ChannelID = event.ToConversationID()
+	case entity.Event_ToAllContacts, entity.Event_ToSelf:
+		n.LogBackgroundError(ctx, errors.New("handleOutgoingEvent: target type not implemented"))
+		return
 	default:
-		n.LogBackgroundError(ctx, fmt.Errorf("unhandled event type"))
+		n.LogBackgroundError(ctx, errors.New("handleOutgoingEvent: invalid target type"))
+		return
 	}
 
 	contactsForEvent, err := n.getContactsForEvent(ctx, event)
@@ -193,18 +199,26 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 }
 
 func (n *Node) getContactsForEvent(ctx context.Context, event *entity.Event) ([]*entity.Contact, error) {
+	// FIXME: this function should return Device instead of Contact
+	// FIXME: refactor this function for a better handling of Contact VS Device
+
 	db := n.sql(ctx)
 	var subqueryContactIDs interface{}
 	contacts := []*entity.Contact{}
 
-	if event.ConversationID != "" {
+	switch event.TargetType {
+	case entity.Event_ToSpecificConversation:
 		subqueryContactIDs = db.
 			Model(&entity.ConversationMember{}).
 			Select("contact_id").
-			Where(&entity.ConversationMember{ConversationID: event.ConversationID}).
+			Where(&entity.ConversationMember{ConversationID: event.ToConversationID()}).
 			QueryExpr()
-	} else if event.DestinationDeviceID != "" {
-		subqueryContactIDs = []string{event.DestinationDeviceID}
+	case entity.Event_ToSpecificContact:
+		subqueryContactIDs = []string{event.ToContactID()}
+	case entity.Event_ToSpecificDevice:
+		subqueryContactIDs = []string{event.ToDeviceID()}
+	default:
+		return nil, errors.New("getContactsForEvent: unhandled target type")
 	}
 
 	if err := db.

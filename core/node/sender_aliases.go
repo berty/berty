@@ -8,39 +8,40 @@ import (
 	"go.uber.org/zap"
 )
 
-func (node *Node) SenderAliasesRenew(ctx context.Context) error {
+func (n *Node) SenderAliasesRenew(ctx context.Context) error {
 	var aliases []*entity.SenderAlias
 
-	sql := node.sql(ctx)
+	sql := n.sql(ctx)
 	if err := sql.Where("used = 1 AND status = ?", entity.SenderAlias_SENT_AND_ACKED).Find(&aliases).Error; err != nil {
 		return errors.Wrap(err, "unable to fetch used aliases")
 	}
 
 	for _, alias := range aliases {
-		replacement, err := entity.SenderAliasGenerateRandom(node.b64pubkey, alias.ContactID, alias.ConversationID)
+		replacement, err := entity.SenderAliasGenerateRandom(n.b64pubkey, alias.ContactID, alias.ConversationID)
 
 		if err != nil {
 			logger().Error("node.SenderAliasesRenew", zap.Error(errors.Wrap(err, "unable to generate a replacement for sender alias")))
 			continue
 		}
 
-		if err := node.senderAliasSave(ctx, replacement, alias); err != nil {
+		if err := n.senderAliasSave(ctx, replacement, alias); err != nil {
 			logger().Error("node.SenderAliasesRenew", zap.Error(err))
 			continue
 		}
 
-		destination := alias.ContactID
-		if destination == "" {
-			destination = alias.ConversationID
+		event := n.NewEvent(ctx).
+			SetSenderAliasUpdateAttrs(&entity.SenderAliasUpdateAttrs{Aliases: []*entity.SenderAlias{replacement}})
+
+		switch {
+		case alias.ConversationID != "" && alias.ContactID == "":
+			event.SetToConversationID(alias.ConversationID)
+		case alias.ConversationID == "" && alias.ContactID != "":
+			event.SetToContactID(alias.ContactID)
+		default:
+			return errors.New("unhandled alias type")
 		}
 
-		evt, err := node.NewSenderAliasEvent(ctx, destination, []*entity.SenderAlias{replacement})
-
-		if err != nil {
-			return errors.Wrap(err, "unable to create event")
-		}
-
-		if err := node.EnqueueOutgoingEvent(ctx, evt, &OutgoingEventOptions{}); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx, event); err != nil {
 			logger().Error("node.SenderAliasesRenew", zap.Error(err))
 			return errors.Wrap(err, "unable to emit event")
 		}
@@ -49,34 +50,27 @@ func (node *Node) SenderAliasesRenew(ctx context.Context) error {
 	return nil
 }
 
-func (node *Node) GenerateAliasForContact(ctx context.Context, contactID string) (*entity.SenderAlias, error) {
-	alias, err := entity.SenderAliasGenerateRandom(node.b64pubkey, contactID, "")
+func (n *Node) GenerateAliasForContact(ctx context.Context, contactID string) (*entity.SenderAlias, error) {
+	alias, err := entity.SenderAliasGenerateRandom(n.b64pubkey, contactID, "")
 
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to generate sender alias for contact")
 	}
 
-	err = node.senderAliasSave(ctx, alias, nil)
+	err = n.senderAliasSave(ctx, alias, nil)
 
 	if err != nil {
 		return nil, errors.Wrap(err, "unable to generate sender alias for contact")
 	}
 
-	evt, err := node.NewSenderAliasEvent(ctx, contactID, []*entity.SenderAlias{alias})
-
-	if err != nil {
-		return nil, errors.Wrap(err, "unable to generate sender alias for contact")
-	}
-
-	if err := node.EnqueueOutgoingEvent(ctx, evt, &OutgoingEventOptions{}); err != nil {
-		return nil, errors.Wrap(err, "unable to generate sender alias for contact")
-	}
-
-	return alias, nil
+	return alias, n.EnqueueOutgoingEvent(ctx,
+		n.NewEvent(ctx).
+			SetToContactID(contactID).
+			SetSenderAliasUpdateAttrs(&entity.SenderAliasUpdateAttrs{Aliases: []*entity.SenderAlias{alias}}))
 }
 
-func (node *Node) senderAliasSave(ctx context.Context, senderAlias *entity.SenderAlias, previous *entity.SenderAlias) error {
-	sql := node.sql(ctx)
+func (n *Node) senderAliasSave(ctx context.Context, senderAlias *entity.SenderAlias, previous *entity.SenderAlias) error {
+	sql := n.sql(ctx)
 	tx := sql.Begin()
 
 	if err := tx.Save(senderAlias).Error; err != nil {
@@ -102,9 +96,9 @@ func (node *Node) senderAliasSave(ctx context.Context, senderAlias *entity.Sende
 	return nil
 }
 
-func (node *Node) aliasEnvelopeForContact(ctx context.Context, envelope *entity.Envelope, event *entity.Event) string {
-	sql := node.sql(ctx)
-	alias, err := entity.GetAliasForContact(sql, event.DestinationDeviceID)
+func (n *Node) aliasEnvelopeForContact(ctx context.Context, envelope *entity.Envelope, event *entity.Event) string {
+	sql := n.sql(ctx)
+	alias, err := entity.GetAliasForContact(sql, event.ToContactID())
 
 	if err == nil && alias != "" {
 		return alias
@@ -112,12 +106,12 @@ func (node *Node) aliasEnvelopeForContact(ctx context.Context, envelope *entity.
 		zap.Error(errors.Wrap(err, "unable to use alias"))
 	}
 
-	return node.b64pubkey
+	return n.b64pubkey
 }
 
-func (node *Node) aliasEnvelopeForConversation(ctx context.Context, envelope *entity.Envelope, event *entity.Event) string {
-	sql := node.sql(ctx)
-	alias, err := entity.GetAliasForConversation(sql, event.ConversationID)
+func (n *Node) aliasEnvelopeForConversation(ctx context.Context, envelope *entity.Envelope, event *entity.Event) string {
+	sql := n.sql(ctx)
+	alias, err := entity.GetAliasForConversation(sql, event.ToConversationID())
 
 	if err == nil && alias != "" {
 		return alias
@@ -125,5 +119,5 @@ func (node *Node) aliasEnvelopeForConversation(ctx context.Context, envelope *en
 		zap.Error(errors.Wrap(err, "unable to use alias"))
 	}
 
-	return node.b64pubkey
+	return n.b64pubkey
 }

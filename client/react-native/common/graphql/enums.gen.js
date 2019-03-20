@@ -264,6 +264,24 @@ export const ValueBertyEntityEventInputSeenStatus = {
   3: 'SeenByAllContacts',
 }
 
+export const BertyEntityEventInputTargetType = {
+  UnknownTargetType: 0,
+  ToSpecificDevice: 1,
+  ToSpecificContact: 2,
+  ToAllContacts: 3,
+  ToSpecificConversation: 4,
+  ToSelf: 5,
+}
+
+export const ValueBertyEntityEventInputTargetType = {
+  0: 'UnknownTargetType',
+  1: 'ToSpecificDevice',
+  2: 'ToSpecificContact',
+  3: 'ToAllContacts',
+  4: 'ToSpecificConversation',
+  5: 'ToSelf',
+}
+
 export const BertyEntityEventInputDirection = {
   UnknownDirection: 0,
   Incoming: 1,

@@ -410,6 +410,7 @@ type BertyEntityNodeAttrs  {
       
       
       
+      
 type BertyEntityEvent implements Node {
     id: ID!
     sourceDeviceId: String!
@@ -420,14 +421,14 @@ type BertyEntityEvent implements Node {
     ackedAt: GoogleProtobufTimestamp
     direction: Enum
     apiVersion: Uint32!
-    destinationDeviceId: String!
     kind: Enum
     attributes: [Byte!]
-    conversationId: ID!
     seenAt: GoogleProtobufTimestamp
     ackStatus: Enum
     dispatches: [BertyEntityEventDispatch]
     sourceContactId: String!
+    targetType: Enum
+    targetAddr: String!
     metadata: [BertyEntityMetadataKeyValue]
 }
       
@@ -684,14 +685,14 @@ input BertyEntityEventInput {
     ackedAt: GoogleProtobufTimestampInput
     direction: Enum
     apiVersion: Uint32!
-    destinationDeviceId: String!
     kind: Enum
     attributes: [Byte!]
-    conversationId: ID!
     seenAt: GoogleProtobufTimestampInput
     ackStatus: Enum
     dispatches: [BertyEntityEventDispatchInput]
     sourceContactId: String!
+    targetType: Enum
+    targetAddr: String!
     metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {

@@ -50,8 +50,9 @@ message Event {
   // uint32 destination_api_version = 11 [(gogoproto.customname) = "DestinationAPIVersion"];
   reserved 11; // FIXME: remove completely this paragraph soon
 
-  // DestinationDeviceID is the ID of the destination.
-  string destination_device_id = 12 [(gogoproto.customname) = "DestinationDeviceID"];
+  // // DestinationDeviceID is the ID of the destination.
+  //string destination_device_id = 12 [(gogoproto.customname) = "DestinationDeviceID"];
+  reserved 12; // FIXME: remove completely this paragraph soon
 
   // Kind is an enum defining the event type.
   entity.Kind kind = 13 [(validate.int_gt) = 0];
@@ -59,8 +60,9 @@ message Event {
   // Attributes is a nested protobuf message containing per-event-type additional attributes, stored in db.
   bytes attributes = 14 [(gql.graphql_resolver) = true];
 
-  // ConversationID needs to be set if the event belongs to a conversation.
-  string conversation_id = 15 [(gql.graphql_id) = true, (gogoproto.customname) = "ConversationID"];
+  // // ConversationID needs to be set if the event belongs to a conversation.
+  // string conversation_id = 15 [(gql.graphql_id) = true, (gogoproto.customname) = "ConversationID"];
+  reserved 15; // FIXME: remove completely this paragraph soon
 
   // SeenAt is set to the date when the event has been displayed on the user's screen.
   google.protobuf.Timestamp seen_at = 16 [(gogoproto.stdtime) = true];
@@ -74,6 +76,12 @@ message Event {
 
   // SourceContactID is the ID of the source.
   string source_contact_id = 19 [(gogoproto.customname) = "SourceContactID"];
+
+  // TargetType defines the scope of the destination
+  TargetType target_type = 20;
+
+  // TragetAddr can be a contact ID, a conversation ID, a device ID
+  string target_addr = 21;
 
   // Metadata represents additional metadata and is not stored in database
   repeated MetadataKeyValue metadata = 99 [(gogoproto.moretags) = "gorm:\"-\""];
@@ -108,6 +116,21 @@ message Event {
 
     // SeenByAllContact is set when at least one device of each contact sent a Seen event.
     SeenByAllContacts = 3;
+  }
+
+  enum TargetType {
+    UnknownTargetType = 0;
+
+    ToSpecificDevice = 1;
+
+    ToSpecificContact = 2;
+
+    ToAllContacts = 3;
+
+    ToSpecificConversation = 4;
+
+    // ToSelf is for another of our devices
+    ToSelf = 5;
   }
 
   enum Direction {

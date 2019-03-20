@@ -219,7 +219,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
@@ -234,7 +235,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
@@ -268,7 +270,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := bob.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
@@ -290,7 +293,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := alice.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)

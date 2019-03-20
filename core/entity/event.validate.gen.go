@@ -68,13 +68,9 @@ func (m *Event) Validate() error {
 
 	// handling field: APIVersion - name:"api_version" number:10 label:LABEL_OPTIONAL type:TYPE_UINT32 json_name:"apiVersion" options:<[]:"APIVersion" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: DestinationDeviceID - name:"destination_device_id" number:12 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"destinationDeviceId" options:<[]:"DestinationDeviceID" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
 	// handling field: Kind - name:"kind" number:13 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Kind" json_name:"kind" options:<[]:"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Attributes - name:"attributes" number:14 label:LABEL_OPTIONAL type:TYPE_BYTES json_name:"attributes" options:<53005:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	// handling field: ConversationID - name:"conversation_id" number:15 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"conversationId" options:<53004:1 []:"ConversationID" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: SeenAt - name:"seen_at" number:16 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"seenAt" options:<65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
@@ -95,6 +91,10 @@ func (m *Event) Validate() error {
 	}
 
 	// handling field: SourceContactID - name:"source_contact_id" number:19 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"sourceContactId" options:<[]:"SourceContactID" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: TargetType - name:"target_type" number:20 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Event.TargetType" json_name:"targetType"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: TargetAddr - name:"target_addr" number:21 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"targetAddr"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Metadata - name:"metadata" number:99 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.MetadataKeyValue" json_name:"metadata" options:<65006:"gorm:\"-\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 

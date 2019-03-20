@@ -10,27 +10,27 @@ import (
 )
 
 func setupNonAcknowledgedEventDestinations() (string, *gorm.DB, time.Time, time.Time, time.Time) {
-	filename, db, _ := mock.GetMockedDb(Event{})
+	filename, db, _ := mock.GetMockedDb(Event{}, EventDispatch{})
 
 	now := time.Now()
 	past := now.Add(-time.Second)
 	future := now.Add(time.Second)
 
-	db.Save(&Event{ID: "Event1", Direction: Event_Outgoing, ReceiverID: "Receiver1", SentAt: &past})
-	db.Save(&Event{ID: "Event2", Direction: Event_Outgoing, ReceiverID: "Receiver1", SentAt: &future})
-	db.Save(&Event{ID: "Event3", Direction: Event_Outgoing, ReceiverID: "Receiver2", SentAt: &future})
+	db.Save(&Event{ID: "Event1", Direction: Event_Outgoing, TargetType: Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &past})
+	db.Save(&Event{ID: "Event2", Direction: Event_Outgoing, TargetType: Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &future})
+	db.Save(&Event{ID: "Event3", Direction: Event_Outgoing, TargetType: Event_ToSpecificContact, TargetAddr: "Receiver2", SentAt: &future})
 
-	db.Save(&Event{ID: "Event4", Direction: Event_Incoming, ReceiverID: "Receiver1", SentAt: &past})
-	db.Save(&Event{ID: "Event5", Direction: Event_Incoming, ReceiverID: "Receiver1", SentAt: &future})
-	db.Save(&Event{ID: "Event6", Direction: Event_Incoming, ReceiverID: "Receiver2", SentAt: &future})
+	db.Save(&Event{ID: "Event4", Direction: Event_Incoming, TargetType: Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &past})
+	db.Save(&Event{ID: "Event5", Direction: Event_Incoming, TargetType: Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &future})
+	db.Save(&Event{ID: "Event6", Direction: Event_Incoming, TargetType: Event_ToSpecificContact, TargetAddr: "Receiver2", SentAt: &future})
 
-	db.Save(&Event{ID: "Event7", Direction: Event_Outgoing, ConversationID: "Conversation1", SentAt: &past})
-	db.Save(&Event{ID: "Event8", Direction: Event_Outgoing, ConversationID: "Conversation1", SentAt: &future})
-	db.Save(&Event{ID: "Event9", Direction: Event_Outgoing, ConversationID: "Conversation2", SentAt: &future})
+	db.Save(&Event{ID: "Event7", Direction: Event_Outgoing, TargetType: Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &past})
+	db.Save(&Event{ID: "Event8", Direction: Event_Outgoing, TargetType: Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &future})
+	db.Save(&Event{ID: "Event9", Direction: Event_Outgoing, TargetType: Event_ToSpecificConversation, TargetAddr: "Conversation2", SentAt: &future})
 
-	db.Save(&Event{ID: "Event10", Direction: Event_Incoming, ConversationID: "Conversation1", SentAt: &past})
-	db.Save(&Event{ID: "Event11", Direction: Event_Incoming, ConversationID: "Conversation1", SentAt: &future})
-	db.Save(&Event{ID: "Event12", Direction: Event_Incoming, ConversationID: "Conversation2", SentAt: &future})
+	db.Save(&Event{ID: "Event10", Direction: Event_Incoming, TargetType: Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &past})
+	db.Save(&Event{ID: "Event11", Direction: Event_Incoming, TargetType: Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &future})
+	db.Save(&Event{ID: "Event12", Direction: Event_Incoming, TargetType: Event_ToSpecificConversation, TargetAddr: "Conversation2", SentAt: &future})
 
 	return filename, db, past, now, future
 }
@@ -40,8 +40,8 @@ func TestFindNonAcknowledgedEventDestinations(t *testing.T) {
 	defer mock.RemoveDb(filename, db)
 
 	expected := map[string]bool{
-		"Receiver1:":     false,
-		":Conversation1": false,
+		"ToSpecificContact:Receiver1":          false,
+		"ToSpecificConversation:Conversation1": false,
 	}
 
 	destinations, err := FindNonAcknowledgedEventDestinations(db, now)
@@ -51,11 +51,11 @@ func TestFindNonAcknowledgedEventDestinations(t *testing.T) {
 	}
 
 	for _, destination := range destinations {
-		identifier := fmt.Sprintf("%s:%s", destination.ReceiverID, destination.ConversationID)
+		identifier := fmt.Sprintf("%s:%s", destination.TargetType.String(), destination.TargetAddr)
 
 		value, ok := expected[identifier]
 		if ok == false {
-			t.Error(fmt.Errorf("%s was not suppoesed to be found", identifier))
+			t.Error(fmt.Errorf("%s was not supposed to be found", identifier))
 		}
 
 		if value == true {
@@ -81,7 +81,7 @@ func TestFindNonAcknowledgedEventsForDestination(t *testing.T) {
 		"Event2": false,
 	}
 
-	events, err := FindNonAcknowledgedEventsForDestination(db, &Event{ReceiverID: "Receiver1"})
+	events, err := FindNonAcknowledgedEventsForDestination(db, &Event{TargetType: Event_ToSpecificContact, TargetAddr: "Receiver1"})
 
 	if err != nil {
 		t.Error(err)

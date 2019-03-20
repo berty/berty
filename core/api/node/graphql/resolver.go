@@ -140,8 +140,8 @@ func (r *bertyEntityEventResolver) ID(ctx context.Context, obj *entity.Event) (s
 	return "event:" + obj.ID, nil
 }
 
-func (r *bertyEntityEventResolver) ConversationID(ctx context.Context, obj *entity.Event) (string, error) {
-	return "conversation:" + obj.ConversationID, nil
+func (r *bertyEntityEventResolver) TargetAddr(ctx context.Context, obj *entity.Event) (string, error) {
+	return "conversation:" + obj.TargetAddr, nil
 }
 
 func (r *bertyEntityEventResolver) Attributes(ctx context.Context, obj *entity.Event) ([]byte, error) {
@@ -403,8 +403,8 @@ func (r *queryResolver) EventList(ctx context.Context, filter *entity.Event, raw
 		if filter.ID != "" {
 			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 		}
-		if filter.ConversationID != "" {
-			filter.ConversationID = strings.SplitN(filter.ConversationID, ":", 2)[1]
+		if filter.TargetAddr != "" {
+			filter.TargetAddr = strings.SplitN(filter.TargetAddr, ":", 2)[1]
 		}
 	}
 
@@ -500,8 +500,8 @@ func (r *queryResolver) EventUnseen(ctx context.Context, filter *entity.Event, r
 		if filter.ID != "" {
 			filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
 		}
-		if filter.ConversationID != "" {
-			filter.ConversationID = strings.SplitN(filter.ConversationID, ":", 2)[1]
+		if filter.TargetAddr != "" {
+			filter.TargetAddr = strings.SplitN(filter.TargetAddr, ":", 2)[1]
 		}
 	}
 

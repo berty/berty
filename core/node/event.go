@@ -3,6 +3,7 @@ package node
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"berty.tech/core/api/node"
@@ -51,7 +52,11 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 
 	var count int
 	sql := n.sql(ctx)
-	if err := sql.Model(&entity.Event{}).Where(&entity.Event{ID: input.ID, SourceDeviceID: input.SourceDeviceID}).Count(&count).Error; err != nil {
+	if err := sql.
+		Model(&entity.Event{}).
+		Where(&entity.Event{ID: input.ID, SourceDeviceID: input.SourceDeviceID}).
+		Count(&count).
+		Error; err != nil {
 		return err
 	}
 	if count > 0 {
@@ -60,10 +65,13 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 		return err
 	}
 
+	if input.APIVersion != p2p.Version {
+		return fmt.Errorf("API versions differ, need to develop a migration tool")
+	}
+
 	now := time.Now().UTC()
 	input.Direction = entity.Event_Incoming // set direction to incoming
 	input.ReceivedAt = &now                 // set current date
-	input.APIVersion = p2p.Version          // it's important to keep our current version to be able to apply per-message migrations in the future
 	// input.ReceiverID = ""               // we should be able to remove this information
 
 	// debug
@@ -78,6 +86,12 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 			zap.String("event", event),
 		)
 	}
+
+	// FIXME: validate that event.Kind type matches with event.TargetType.
+	//
+	//        i.e., ConversationNewMessage should have event.TargetType == ToSpecificConversation
+
+	// FIXME: validate that event is valid (seenAt etc should be nil)
 
 	handler, found := map[entity.Kind]EventHandler{
 		entity.Kind_ContactRequest:         n.handleContactRequest,
@@ -101,6 +115,7 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 		handlingError = handler(ctx, input)
 	}
 
+	// no more action for ack events, stop here.
 	if input.Kind == entity.Kind_Ack {
 		return handlingError
 	}
@@ -121,18 +136,19 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 	}
 
 	// asynchronously ack, maybe we can ignore this one?
-	ack := n.NewContactEvent(ctx, &entity.Contact{ID: input.SourceDeviceID}, entity.Kind_Ack)
-	ack.AckedAt = &now
-	if err := ack.SetAttrs(&entity.AckAttrs{IDs: []string{input.ID}}); err != nil {
+	if err := n.EnqueueOutgoingEventWithOptions(ctx,
+		n.NewEvent(ctx).
+			SetToContactID(input.SourceDeviceID).
+			SetAckAttrs(&entity.AckAttrs{IDs: []string{input.ID}}),
+		&OutgoingEventOptions{
+			DisableEventLogging: input.Kind == entity.Kind_DevicePushTo,
+		},
+	); err != nil {
 		return err
 	}
 
-	if err := n.EnqueueOutgoingEvent(ctx, ack, &OutgoingEventOptions{DisableEventLogging: input.Kind == entity.Kind_DevicePushTo}); err != nil {
-		return err
-	}
-
-	input.AckedAt = &now
-
+	// update local event in db
+	input.SetAckedAt(now)
 	if err := sql.Save(input).Error; err != nil {
 		return errorcodes.ErrDbCreate.Wrap(err)
 	}

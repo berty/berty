@@ -7,7 +7,7 @@ import (
 
 func (b *Bot) Reply(e *Event, m *entity.Message) error {
 	_, err := b.client.Node().ConversationAddMessage(e.ctx, &node.ConversationAddMessageInput{
-		Conversation: &entity.Conversation{ID: e.ConversationID},
+		Conversation: &entity.Conversation{ID: e.TargetAddr},
 		Message:      m,
 	})
 	return err

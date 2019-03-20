@@ -150,7 +150,6 @@ func (n *Node) broadcastDevicePushConfig(ctx context.Context) error {
 	ctx = tracer.Context()
 
 	contacts, err := n.allTrustedContacts(ctx)
-
 	if err != nil {
 		return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 	}
@@ -164,12 +163,11 @@ func (n *Node) broadcastDevicePushConfig(ctx context.Context) error {
 	for _, contact := range contacts {
 		device := n.config.CurrentDevice.Filtered().WithPushInformation(n.sql(ctx))
 
-		evt := n.NewContactEvent(ctx, contact, entity.Kind_DeviceUpdatePushConfig)
-		if err := evt.SetDeviceUpdatePushConfigAttrs(&entity.DeviceUpdatePushConfigAttrs{Device: device}); err != nil {
-			return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
-		}
-
-		if err := n.EnqueueOutgoingEvent(ctx, evt, &OutgoingEventOptions{}); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx,
+			n.NewEvent(ctx).
+				SetToContact(contact).
+				SetDeviceUpdatePushConfigAttrs(&entity.DeviceUpdatePushConfigAttrs{Device: device}),
+		); err != nil {
 			return errorcodes.ErrPushBroadcastIdentifier.Wrap(err)
 		}
 	}

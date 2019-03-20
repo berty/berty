@@ -186,7 +186,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 
 	// say that conversation has not been read
 	n.sql(ctx).Save(&entity.Conversation{
-		ID:     input.ConversationID,
+		ID:     input.TargetAddr,
 		ReadAt: time.Time{},
 		Infos:  attrs.Message.Text,
 	})
@@ -198,7 +198,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 	}
 
 	conversation := &entity.Conversation{}
-	if err := n.sql(ctx).First(&conversation, &entity.Conversation{ID: input.ConversationID}).Error; err != nil {
+	if err := n.sql(ctx).First(&conversation, &entity.Conversation{ID: input.TargetAddr}).Error; err != nil {
 		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Conversation not found"))
 		conversation = &entity.Conversation{}
 	}
@@ -218,7 +218,7 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 	n.DisplayNotification(&notification.Payload{
 		Title:    title,
 		Body:     body,
-		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(input.ConversationID),
+		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(input.TargetAddr),
 	})
 	return nil
 }
@@ -231,7 +231,7 @@ func (n *Node) handleConversationRead(ctx context.Context, input *entity.Event) 
 
 	sql := n.sql(ctx)
 
-	conversation := &entity.Conversation{ID: input.ConversationID}
+	conversation := &entity.Conversation{ID: input.TargetAddr}
 	if err := sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
 		return err
 	}
@@ -246,9 +246,10 @@ func (n *Node) handleConversationRead(ctx context.Context, input *entity.Event) 
 	if err := sql.
 		Model(&entity.Event{}).
 		Where(&entity.Event{
-			ConversationID: input.ConversationID,
-			Kind:           entity.Kind_ConversationNewMessage,
-			Direction:      entity.Event_Outgoing,
+			TargetAddr: input.TargetAddr,
+			TargetType: input.TargetType,
+			Kind:       entity.Kind_ConversationNewMessage,
+			Direction:  entity.Event_Outgoing,
 		}).
 		Count(&count).
 		Update("seen_at", attrs.Conversation.ReadAt).
@@ -334,8 +335,8 @@ func (n *Node) handleSeen(ctx context.Context, input *entity.Event) error {
 func (n *Node) handleAck(ctx context.Context, input *entity.Event) error {
 	var ackedEvents []*entity.Event
 	ackCount := 0
-	ackAttrs, err := input.GetAckAttrs()
 
+	ackAttrs, err := input.GetAckAttrs()
 	if err != nil {
 		return errors.Wrap(err, "unable to unmarshal ack attrs")
 	}

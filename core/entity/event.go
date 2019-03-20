@@ -6,15 +6,21 @@ import (
 	"strings"
 	"time"
 
-	"berty.tech/core/push"
-
-	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/pkg/tracing"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	context "golang.org/x/net/context"
+
+	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/pkg/tracing"
+	"berty.tech/core/push"
 )
+
+func NewEvent() *Event {
+	return &Event{
+		Dispatches: make([]*EventDispatch, 0),
+	}
+}
 
 func (e Event) IsJustReceived() bool {
 	return e.Direction == Event_Incoming && (e.AckedAt == nil || e.AckedAt.IsZero())
@@ -22,24 +28,24 @@ func (e Event) IsJustReceived() bool {
 
 func (e Event) Copy() *Event {
 	return &Event{
-		ID:                  e.ID,
-		SourceDeviceID:      e.SourceDeviceID,
-		CreatedAt:           e.CreatedAt,
-		UpdatedAt:           e.UpdatedAt,
-		SentAt:              e.SentAt,
-		ReceivedAt:          e.ReceivedAt,
-		AckedAt:             e.AckedAt,
-		Direction:           e.Direction,
-		APIVersion:          e.APIVersion,
-		DestinationDeviceID: e.DestinationDeviceID,
-		Kind:                e.Kind,
-		Attributes:          e.Attributes,
-		ConversationID:      e.ConversationID,
-		SeenAt:              e.SeenAt,
-		AckStatus:           e.AckStatus,
-		Dispatches:          e.Dispatches,
-		SourceContactID:     e.SourceContactID,
-		Metadata:            e.Metadata,
+		ID:              e.ID,
+		SourceDeviceID:  e.SourceDeviceID,
+		CreatedAt:       e.CreatedAt,
+		UpdatedAt:       e.UpdatedAt,
+		SentAt:          e.SentAt,
+		ReceivedAt:      e.ReceivedAt,
+		AckedAt:         e.AckedAt,
+		Direction:       e.Direction,
+		APIVersion:      e.APIVersion,
+		Kind:            e.Kind,
+		Attributes:      e.Attributes,
+		SeenAt:          e.SeenAt,
+		AckStatus:       e.AckStatus,
+		Dispatches:      e.Dispatches,
+		SourceContactID: e.SourceContactID,
+		TargetType:      e.TargetType,
+		TargetAddr:      e.TargetAddr,
+		Metadata:        e.Metadata,
 	}
 }
 
@@ -75,8 +81,10 @@ func (e Event) CreateSpan(ctx context.Context) (opentracing.Span, context.Contex
 	span.SetTag("caller", caller)
 	span.SetTag("event.kind", e.Kind.String())
 	span.SetTag("event.SourceDeviceID", e.SourceDeviceID)
-	span.SetTag("event.DestinationID", e.DestinationDeviceID)
+	span.SetTag("event.TargetType", e.TargetType)
+	span.SetTag("event.TargetAddr", e.TargetAddr)
 	span.SetTag("event.Direction", e.Direction.String())
+	span.SetTag("len(event.Dispatches)", len(e.Dispatches))
 
 	if err := tracer.Inject(span.Context(), opentracing.TextMap, e.TextMapWriter()); err != nil {
 		logger().Error("failed to inject span context", zap.Error(err))
@@ -136,13 +144,13 @@ func FindNonAcknowledgedEventDestinations(db *gorm.DB, before time.Time) ([]*Eve
 
 	err := db.
 		Table("event").
-		Select("conversation_id, receiver_id").
+		Select("target_type, target_addr").
 		Where("sent_at < :time", before).
 		Where("acked_at IS NULL").
 		Where(&Event{
 			Direction: Event_Outgoing,
 		}).
-		Group("conversation_id, receiver_id").
+		Group("target_type, target_addr").
 		Scan(&events).
 		Error
 
@@ -158,9 +166,9 @@ func FindNonAcknowledgedEventsForDestination(db *gorm.DB, destination *Event) ([
 	var events []*Event
 
 	err := db.Find(&events, &Event{
-		ConversationID:      destination.ConversationID,
-		DestinationDeviceID: destination.DestinationDeviceID,
-		Direction:           Event_Outgoing,
+		TargetType: destination.TargetType,
+		TargetAddr: destination.TargetAddr,
+		Direction:  Event_Outgoing,
 	}).Where("acked_at IS NULL").Error
 
 	if err != nil {
@@ -179,4 +187,79 @@ func (e Event) PushPriority() push.Priority {
 	}
 
 	return push.Priority_Low
+}
+
+func (e Event) ToConversationID() string {
+	if e.TargetType == Event_ToSpecificConversation {
+		return e.TargetAddr
+	}
+	return ""
+}
+
+func (e Event) ToContactID() string {
+	// FIXME: query contact based on device
+	//        -> if e.TargetType == Event_ToSpecificDevice {
+
+	if e.TargetType == Event_ToSpecificContact {
+		return e.TargetAddr
+	}
+	return ""
+}
+
+func (e Event) ToDeviceID() string {
+	if e.TargetType == Event_ToSpecificDevice {
+		return e.TargetAddr
+	}
+	return ""
+}
+
+func (e *Event) SetAckedAt(t time.Time) *Event {
+	e.AckedAt = &t
+	return e
+}
+
+func (e *Event) SetToContactID(id string) *Event {
+	e.TargetType = Event_ToSpecificContact
+	e.TargetAddr = id
+	return e
+}
+
+func (e *Event) SetToContact(conv *Contact) *Event {
+	return e.SetToContactID(conv.ID)
+}
+
+func (e *Event) SetToConversationID(id string) *Event {
+	e.TargetType = Event_ToSpecificConversation
+	e.TargetAddr = id
+	return e
+}
+
+func (e *Event) SetToConversation(conv *Conversation) *Event {
+	return e.SetToConversationID(conv.ID)
+}
+
+func (e *Event) SetToAllContacts() *Event {
+	e.TargetType = Event_ToAllContacts
+	return e
+}
+
+func (e *Event) SetToDeviceID(id string) *Event {
+	e.TargetType = Event_ToSpecificDevice
+	e.TargetAddr = id
+	return e
+}
+
+func (e *Event) SetToDevice(conv *Device) *Event {
+	return e.SetToDeviceID(conv.ID)
+}
+
+func (e *Event) SetErr(err error) *Event {
+	// FIXME: not implemented
+	panic("Event.SetErr not implemented")
+	return e
+}
+
+func (e *Event) Err() error {
+	// FIXME: not implemented
+	return nil
 }

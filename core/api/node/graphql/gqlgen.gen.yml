@@ -1276,16 +1276,15 @@ models:
       ackedAt:
       direction:
       apiVersion:
-      destinationDeviceId:
       kind:
       attributes:
-        resolver: true
-      conversationId:
         resolver: true
       seenAt:
       ackStatus:
       dispatches:
       sourceContactId:
+      targetType:
+      targetAddr:
       metadata:
   BertyEntityEventInput:
     model: berty.tech/core/entity.Event
@@ -1300,16 +1299,15 @@ models:
       ackedAt:
       direction:
       apiVersion:
-      destinationDeviceId:
       kind:
       attributes:
-        resolver: true
-      conversationId:
         resolver: true
       seenAt:
       ackStatus:
       dispatches:
       sourceContactId:
+      targetType:
+      targetAddr:
       metadata:
   BertyEntityEventPayload:
     model: berty.tech/core/entity.Event
@@ -1324,16 +1322,15 @@ models:
       ackedAt:
       direction:
       apiVersion:
-      destinationDeviceId:
       kind:
       attributes:
-        resolver: true
-      conversationId:
         resolver: true
       seenAt:
       ackStatus:
       dispatches:
       sourceContactId:
+      targetType:
+      targetAddr:
       metadata:
 
   BertyEntityEventDispatch:

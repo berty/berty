@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/x509"
 	"encoding/base64"
+	"fmt"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -169,19 +170,17 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 	}
 
 	for _, pushIdentifier := range pushIdentifiers {
-		wrappedEvent := n.NewContactEvent(ctx, &entity.Contact{
-			ID: pushIdentifier.RelayPubkey,
-		}, entity.Kind_DevicePushTo)
-
-		if err := wrappedEvent.SetDevicePushToAttrs(&entity.DevicePushToAttrs{
-			Priority:       event.PushPriority(),
-			PushIdentifier: pushIdentifier.PushInfo,
-			Envelope:       marshaledEnvelope,
-		}); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx,
+			n.NewEvent(ctx).
+				SetToContactID(pushIdentifier.RelayPubkey).
+				SetDevicePushToAttrs(&entity.DevicePushToAttrs{
+					Priority:       event.PushPriority(),
+					PushIdentifier: pushIdentifier.PushInfo,
+					Envelope:       marshaledEnvelope,
+				}),
+		); err != nil {
 			return errorcodes.ErrPushBroadcast.Wrap(err)
 		}
-
-		n.outgoingEvents <- wrappedEvent
 	}
 
 	return nil
@@ -204,14 +203,19 @@ func (n *Node) getPushDestinationsForEvent(ctx context.Context, event *entity.Ev
 	deviceIDs := []string{}
 	pushIdentifiers := []*entity.DevicePushIdentifier{}
 
-	if event.ConversationID != "" {
+	switch event.TargetType {
+	case entity.Event_ToSpecificConversation:
 		subqueryContactIDs = db.
 			Model(&entity.ConversationMember{}).
 			Select("contact_id").
-			Where(&entity.ConversationMember{ConversationID: event.ConversationID}).
+			Where(&entity.ConversationMember{ConversationID: event.ToConversationID()}).
 			QueryExpr()
-	} else if event.DestinationDeviceID != "" {
-		subqueryContactIDs = []string{event.DestinationDeviceID}
+	case entity.Event_ToSpecificContact:
+		subqueryContactIDs = []string{event.ToContactID()}
+	case entity.Event_ToSpecificDevice:
+		return nil, fmt.Errorf("getPushDestinationsForEvent: specific device not implemented")
+	default:
+		return nil, fmt.Errorf("getPushDestinationsForEvent: unhandled target type")
 	}
 
 	if err := db.
