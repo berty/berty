@@ -62,15 +62,13 @@ const Item = fragments.Contact(
           style={[{ height: 72 }, padding, borderBottom]}
           onPress={() => this.showDetails()}
         >
-          <Flex.Cols size={1}>
-            <Flex.Rows size={1} align='center'>
-              <Avatar data={data} size={40} />
-            </Flex.Rows>
+          <Flex.Cols size={1} align='center'>
+            <Avatar data={data} size={40} />
             <Flex.Rows size={3} justify='start' style={[marginLeft]}>
-              <Text color={colors.fakeBlack} left>
+              <Text color={colors.fakeBlack} left ellipsed>
                 {overrideDisplayName || displayName}
               </Text>
-              <Text color={colors.subtleGrey} left>
+              <Text color={colors.subtleGrey} left ellipsed tiny>
                 {t(
                   'contacts.statuses.' +
                     enums.ValueBertyEntityContactInputStatus[status]
@@ -78,14 +76,12 @@ const Item = fragments.Contact(
               </Text>
             </Flex.Rows>
           </Flex.Cols>
-          <Flex.Rows size={1} align='end'>
-            {status === enums.BertyEntityContactInputStatus.RequestedMe && (
-              <ActionsReceived data={data} />
-            )}
-            {status === enums.BertyEntityContactInputStatus.IsRequested && (
-              <ActionsSent data={data} />
-            )}
-          </Flex.Rows>
+          {status === enums.BertyEntityContactInputStatus.RequestedMe && (
+            <ActionsReceived data={data} />
+          )}
+          {status === enums.BertyEntityContactInputStatus.IsRequested && (
+            <ActionsSent data={data} />
+          )}
         </Flex.Cols>
       )
     }
