@@ -9,7 +9,7 @@
   "auth": {
     "nickname-placeholder": "הכנס שם תצוגה",
     "welcome-to-berty": "ברוך הבא לברטי",
-    "get-started": "כדי להתחיל, רק צריך שם",
+    "get-started-ago": "כדי להתחיל, רק צריך שם",
     "lets-chat": "בוא נתכתב!"
   },
   "settings": {
@@ -135,5 +135,10 @@
   "my-account": {
     "title": "החשבון שלי",
     "delete-my-account": "מחק את החשבון שלי -לא מיושם"
+  },
+  "time": {
+    "time": "HH:mm",
+    "datetime": "HH:mm DD/MM/YYYY",
+    "started-ago": "started-ago {{date}} ago"
   }
 }

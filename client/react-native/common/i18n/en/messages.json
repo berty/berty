@@ -212,6 +212,7 @@
   },
   "time": {
     "time": "hh:mm A",
-    "datetime": "MMM Do YYYY hh:mm A"
+    "datetime": "MMM Do YYYY hh:mm A",
+    "started-ago": "Started {{date}} ago"
   }
 }

@@ -135,5 +135,10 @@
   "my-account": {
     "title": "Мій аккаунт",
     "delete-my-account": "Видалити мій аккаунт (не реаліз.)"
+  },
+  "time": {
+    "time": "HH:mm",
+    "datetime": "HH:mm DD/MM/YYYY",
+    "started-ago": "Створено {{date}} тому"
   }
 }

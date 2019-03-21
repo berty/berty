@@ -135,5 +135,10 @@
   "my-account": {
     "title": "Hesabım",
     "delete-my-account": "Hesabımı sil (gerçekleştirilmemiş)"
+  },
+  "time": {
+    "time": "HH:mm",
+    "datetime": "HH:mm DD/MM/YYYY",
+    "started-ago": "{{date}} önce düzenlendi"
   }
 }

@@ -9,7 +9,7 @@
   "auth": {
     "nickname-placeholder": "Entrez un nom",
     "welcome-to-berty": "Bienvenue sur Berty",
-    "get-started": "Pour démarrer seul votre nom est nécessaire",
+    "get-started-ago": "Pour démarrer seul votre nom est nécessaire",
     "lets-chat": "C'est parti !"
   },
   "onboarding": {
@@ -212,6 +212,7 @@
   },
   "time": {
     "time": "HH:mm",
-    "datetime": "HH:mm DD/MM/YYYY"
+    "datetime": "HH:mm DD/MM/YYYY",
+    "started-ago": "Commencée il y a {{date}}"
   }
 }

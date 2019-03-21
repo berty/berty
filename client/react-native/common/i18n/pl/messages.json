@@ -135,5 +135,10 @@
   "my-account": {
     "title": "Moje konto",
     "delete-my-account": "Usuń moje konto (nie realizowany)"
+  },
+  "time": {
+    "time": "HH:mm",
+    "datetime": "HH:mm DD/MM/YYYY",
+    "started-ago": "Utworzono {{date}} temu"
   }
 }
