@@ -9,6 +9,7 @@ import { colors } from '../../../../constants'
 import { conversation as utils } from '../../../../utils'
 import withRelayContext from '../../../../helpers/withRelayContext'
 import { withGoBack } from '../../../Library/BackActionProvider'
+import * as dateFns from '../../../../i18n/dateFns'
 
 class ListBase extends PureComponent {
   constructor (props) {
@@ -39,7 +40,9 @@ class ListBase extends PureComponent {
 
   onSave = () => {
     const { title, topic, conversation } = this.state
-    const { context: { mutations } } = this.props
+    const {
+      context: { mutations },
+    } = this.props
 
     mutations.conversationUpdate({
       ...conversation,
@@ -89,22 +92,20 @@ class ListBase extends PureComponent {
         <Menu absolute>
           <Menu.Header
             icon={
-              <Badge
-                background={colors.blue}
-                icon={edit && 'camera'}
-                medium
-                onPress={this.onChoosePicture}
-              >
-                <Avatar
-                  data={conversation}
-                  uri={this.state.uri}
-                  size={78}
+              edit ? (
+                <Badge
+                  background={colors.blue}
+                  icon={'camera'}
+                  medium
+                  onPress={this.onChoosePicture}
                 />
-              </Badge>
+              ) : (
+                <Avatar data={conversation} uri={this.state.uri} size={78} />
+              )
             }
             title={!edit && title}
             description={
-              !edit && 'NOT TRANSLATED Conversation started 2 days ago'
+              !edit && dateFns.startedAgo(new Date(conversation.createdAt))
             }
           />
           {edit && (
@@ -148,9 +149,7 @@ class ListBase extends PureComponent {
               />
             </Menu.Section>
           ) : (
-            <Menu.Section
-              title={`${conversation.members.length} members`}
-            >
+            <Menu.Section title={`${conversation.members.length} members`}>
               <Menu.Item
                 icon='user-plus'
                 title={t('chats.add-members')}

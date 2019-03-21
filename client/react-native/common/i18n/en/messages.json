@@ -151,8 +151,8 @@
     },
     "statuses": {
       "Unknown": "Unknown",
-      "IsFriend": "Contact",
-      "IsTrustedFriend": "Trusted contact",
+      "IsFriend": "Friend",
+      "IsTrustedFriend": "Trusted friend",
       "IsRequested": "Request sent",
       "RequestedMe": "Request received",
       "IsBlocked": "Blocked",
@@ -212,6 +212,7 @@
   },
   "time": {
     "time": "hh:mm A",
-    "datetime": "MMM Do YYYY hh:mm A"
+    "datetime": "MMM Do YYYY hh:mm A",
+    "started-ago": "Started {{date}} ago"
   }
 }

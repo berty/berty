@@ -40,22 +40,9 @@ export default class Edit extends PureComponent {
             </Badge>
           }
         />
-        <Menu.Section title='Firstname'>
+        <Menu.Section title='Nickname'>
           <Menu.Input
-            value={
-              (contact.overrideDisplayName || contact.displayName || '').split(
-                ' '
-              )[0] || ''
-            }
-          />
-        </Menu.Section>
-        <Menu.Section title='Lastname'>
-          <Menu.Input
-            value={
-              (contact.overrideDisplayName || contact.displayName || '').split(
-                ' '
-              )[1] || ''
-            }
+            value={contact.overrideDisplayName || contact.displayName || ''}
           />
         </Menu.Section>
       </Menu>

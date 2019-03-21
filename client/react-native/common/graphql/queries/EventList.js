@@ -30,7 +30,7 @@ export const defaultVariables = {
   filter: event.default,
   orderBy: 'created_at',
   orderDesc: true,
-  count: 5,
+  count: 20,
   cursor: '',
   onlyWithoutAckedAt: 0,
   onlyWithoutSeenAt: 0,

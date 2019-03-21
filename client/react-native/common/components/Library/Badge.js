@@ -43,27 +43,27 @@ const getPadding = (
   paddings = {
     tiny: 1,
     small: 2,
-    medium: 4,
-    large: 5,
-    big: 6,
+    medium: 7,
+    large: 9,
+    big: 12,
   }
 ) => find({ inside: props, from: paddings, or: 'small' })
 
 const getHorizAbsol = (
   props,
-  padding = getPadding(props),
+  size = getSize(props),
   positions = {
-    top: { top: -padding },
-    bottom: { bottom: -padding },
+    top: { top: 0 },
+    bottom: { bottom: 0 },
   }
 ) => find({ inside: props, from: positions, or: 'top' })
 
 const getVertiAbsol = (
   props,
-  padding = getPadding(props),
+  size = getSize(props),
   positions = {
-    left: { left: -padding },
-    right: { right: -padding },
+    left: { left: 0 },
+    right: { right: 0 },
   }
 ) => find({ inside: props, from: positions, or: 'right' })
 
@@ -85,7 +85,9 @@ const Badge = props => {
     getHorizPos(props),
     getVertiPos(props),
     typeof props.getSize === 'function' ? props.getSize(props) : getSize(props),
-    typeof props.getPadding === 'function' ? props.getPadding(props) : getPadding(props),
+    typeof props.getPadding === 'function'
+      ? props.getPadding(props)
+      : getPadding(props),
     { ...getHorizAbsol(props), ...getVertiAbsol(props) },
   ]
 
