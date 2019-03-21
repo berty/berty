@@ -23,6 +23,10 @@ import * as KeyboardContext from '../../../helpers/KeyboardContext'
 const textStyles = StyleSheet.flatten([Markdown.styles, {
   text: {
     color: colors.white,
+    ...(Platform.OS === 'web' ? {
+      wordBreak: 'break-all',
+      overflowWrap: 'break-word',
+    } : {}),
   },
   listUnorderedItemIcon: {
     color: colors.white,
@@ -98,6 +102,7 @@ class Message extends React.Component {
         <View
           style={{
             [isMyself ? 'marginLeft' : 'marginRight']: 42,
+            [!isMyself ? 'marginLeft' : 'marginRight']: 12,
             marginTop: 2,
             marginBottom: 2,
             backgroundColor: colors.blue,
