@@ -92,14 +92,16 @@ class ListBase extends PureComponent {
         <Menu absolute>
           <Menu.Header
             icon={
-              <Badge
-                background={colors.blue}
-                icon={edit && 'camera'}
-                medium
-                onPress={this.onChoosePicture}
-              >
-                <Avatar data={conversation} uri={this.state.uri} size={78} />
-              </Badge>
+              edit && (
+                <Badge
+                  background={colors.blue}
+                  icon={'camera'}
+                  medium
+                  onPress={this.onChoosePicture}
+                >
+                  <Avatar data={conversation} uri={this.state.uri} size={78} />
+                </Badge>
+              )
             }
             title={!edit && title}
             description={
