@@ -261,7 +261,6 @@ func (net *Network) SendTo(ctx context.Context, pi pstore.PeerInfo, e *entity.En
 }
 
 func (net *Network) handleEnvelope(s inet.Stream) {
-	logger().Debug(fmt.Sprintf("NETWORK ADDR HANDLE %p %+v", net, net))
 	logger().Debug("receiving envelope")
 	if net.handler == nil {
 		logger().Error("handler is not set")
@@ -319,7 +318,6 @@ func (net *Network) Join(ctx context.Context, contactID string) error {
 }
 
 func (net *Network) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) (*entity.Void, error)) {
-	logger().Debug(fmt.Sprintf("ON_ENVELOPE_HANDLER %p", f))
 	net.handler = f
 }
 

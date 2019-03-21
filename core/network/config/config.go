@@ -126,28 +126,24 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 
 	libp2pOpts := []libp2p_config.Option{}
 
-	logger().Debug("apply 0")
 	for _, opt := range opts {
 		if err := opt(cfg); err != nil {
 			return err
 		}
 	}
 
-	logger().Debug("apply 1")
 	if cfg.OverridePersist {
 		if err := cfg.OverridePersistConfig(); err != nil {
 			return err
 		}
 	}
 
-	logger().Debug("apply 2")
 	if cfg.Persist {
 		if err := cfg.ApplyPersistConfig(); err != nil {
 			return err
 		}
 	}
 
-	logger().Debug("apply 21")
 	// add ws transport
 	if cfg.WS {
 		libp2pOpts = append(libp2pOpts, libp2p.Transport(ws.New))
@@ -189,7 +185,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		libp2pOpts = append(libp2pOpts, libp2p.EnableRelay(circuit.OptActive, circuit.OptDiscovery))
 	}
 
-	logger().Debug("apply 22")
 	// private network
 	if cfg.SwarmKey != "" {
 		prot, err := pnet.NewProtector(strings.NewReader(cfg.SwarmKey))
@@ -199,7 +194,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		libp2pOpts = append(libp2pOpts, libp2p.PrivateNetwork(prot))
 	}
 
-	logger().Debug("apply 3")
 	// identity
 	if cfg.Identity != "" {
 		bytes, err := base64.StdEncoding.DecodeString(cfg.Identity)
@@ -221,7 +215,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 
 	libp2pOpts = append(libp2pOpts, libp2p.NATPortMap())
 
-	logger().Debug("apply 4")
 	// override libp2p configuration
 	err := cfg.Config.Apply(append(libp2pOpts, libp2p.FallbackDefaults)...)
 	if err != nil {
@@ -230,7 +223,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 
 	// override conn manager
 
-	logger().Debug("apply 5")
 	// override ping service
 	cfg.Config.DisablePing = true
 	return nil
