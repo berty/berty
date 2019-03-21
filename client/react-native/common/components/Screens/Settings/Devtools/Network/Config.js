@@ -112,13 +112,24 @@ export default class Network extends PureComponent {
             }
           />
         </Menu.Section>
+        <Menu.Section title='Connections'>
+          <Menu.Item
+            title='Peer cache'
+            customRight={
+              <Switch
+                justify='end'
+                value={this.state.PeerCache}
+                onValueChange={PeerCache => this.updateConfig({ PeerCache })}
+              />
+            }
+          />
+        </Menu.Section>
         <Menu.Section title='Bootstrap'>
           <Menu.Item
             title='Default bootstrap'
             customRight={
               <Switch
                 justify='end'
-                disaBLEd={!this.state.loaded}
                 value={this.state.DefaultBootstrap}
                 onValueChange={DefaultBootstrap =>
                   this.updateConfig({ DefaultBootstrap })

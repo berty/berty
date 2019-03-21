@@ -3,6 +3,7 @@ package host
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"berty.tech/core/pkg/tracing"
@@ -47,7 +48,7 @@ func (d *BertyDiscovery) Advertise(ctx context.Context, ns string, opts ...disco
 		waitChan := waitChans[i]
 
 		go func() {
-			_, err := d.Advertise(ctx, ns, opts...)
+			_, err := d.Advertise(ctx, ns)
 			waitChan <- struct{}{}
 			if err != nil {
 				logger().Error("berty discovery advertise error", zap.String("err", err.Error()))
@@ -79,7 +80,7 @@ func (d *BertyDiscovery) FindPeers(ctx context.Context, ns string, opts ...disco
 		d := d.discoveries[i]
 
 		go func() {
-			piChan, err := d.FindPeers(ctx, ns, opts...)
+			piChan, err := d.FindPeers(ctx, ns)
 			if err != nil {
 				logger().Error("berty discovery find peers error", zap.String("err", err.Error()))
 				return
@@ -87,6 +88,7 @@ func (d *BertyDiscovery) FindPeers(ctx context.Context, ns string, opts ...disco
 			for {
 				select {
 				case pi := <-piChan:
+					logger().Debug("berty discovery peer found " + fmt.Sprintf("%+v", pi))
 					if pi.ID != "" {
 						globPiChan <- pi
 					}

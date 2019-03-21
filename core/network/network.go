@@ -80,6 +80,8 @@ func (net *Network) init(ctx context.Context) {
 	if err := net.Bootstrap(ctx, false, net.config.Bootstrap...); err != nil {
 		logger().Error(err.Error())
 	}
+
+	net.Discover(ctx)
 }
 
 func (net *Network) Close(ctx context.Context) error {

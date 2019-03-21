@@ -163,14 +163,20 @@ func (net *Network) Discover(ctx context.Context) {
 	if net.host.Discovery != nil {
 		libp2p_discovery.Advertise(ctx, net.host.Discovery, "berty")
 		go func() {
+			peers, err := net.host.Discovery.FindPeers(ctx, "berty")
+			if err != nil {
+				logger().Debug("network discover: cannot find peers: " + err.Error())
+				return
+			}
 			for {
-				peers, err := libp2p_discovery.FindPeers(ctx, net.host.Discovery, "berty", 0)
-				if err != nil {
-					logger().Error("network discover error", zap.String("err", err.Error()))
-					continue
-				}
-				for _, pi := range peers {
-					net.Connect(ctx, pi)
+				select {
+				case pi := <-peers:
+					if err := net.Connect(ctx, pi); err != nil {
+						logger().Error("network discover: failed to connect: " + err.Error())
+					}
+				case <-ctx.Done():
+					logger().Debug("network discover shutdown")
+					return
 				}
 			}
 		}()
@@ -261,7 +267,6 @@ func (net *Network) SendTo(ctx context.Context, pi pstore.PeerInfo, e *entity.En
 }
 
 func (net *Network) handleEnvelope(s inet.Stream) {
-	logger().Debug(fmt.Sprintf("NETWORK ADDR HANDLE %p %+v", net, net))
 	logger().Debug("receiving envelope")
 	if net.handler == nil {
 		logger().Error("handler is not set")
@@ -319,7 +324,6 @@ func (net *Network) Join(ctx context.Context, contactID string) error {
 }
 
 func (net *Network) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) (*entity.Void, error)) {
-	logger().Debug(fmt.Sprintf("ON_ENVELOPE_HANDLER %p", f))
 	net.handler = f
 }
 
