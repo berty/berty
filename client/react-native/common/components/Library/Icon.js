@@ -58,9 +58,9 @@ const IconBadge = props => {
       props.badge !== 0 ? (
           <View
             style={{
-              position: props.position ? props.position : 'absolute',
-              right: props.right !== null ? props.right : -8,
-              top: props.top !== null ? props.top : -5,
+              position: props.position !== undefined ? props.position : 'absolute',
+              right: props.right !== undefined ? props.right : -8,
+              top: props.top !== undefined ? props.top : -5,
               backgroundColor: colors.red,
               borderRadius: 9,
               width: 18,
