@@ -151,8 +151,8 @@
     },
     "statuses": {
       "Unknown": "Inconnu",
-      "IsFriend": "Contact",
-      "IsTrustedFriend": "Contact de confiance",
+      "IsFriend": "Ami",
+      "IsTrustedFriend": "Ami de confiance",
       "IsRequested": "Demande envoyée",
       "RequestedMe": "Demande reçue",
       "IsBlocked": "Bloqué",
