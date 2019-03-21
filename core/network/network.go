@@ -41,9 +41,9 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 
-	ctx, cancel := context.WithCancel(ctx)
-
 	var err error
+
+	ctx, cancel := context.WithCancel(ctx)
 
 	net := &Network{
 		config:   &config.Config{},
@@ -63,12 +63,11 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 		return nil, err
 	}
 
+	net.init(ctx)
+
 	if net.Config().PeerCache {
 		net.cache = NewPeerCache(net.host)
 	}
-
-	net.init(ctx)
-
 	return net, nil
 }
 
@@ -83,51 +82,9 @@ func (net *Network) init(ctx context.Context) {
 	}
 }
 
-// Update create new network and permit to override previous config
-func (net *Network) Update(ctx context.Context, opts ...config.Option) error {
-	net.updating.Lock()
-	defer net.updating.Unlock()
-
-	ctx, cancel := context.WithCancel(ctx)
-
-	var err error
-
-	update := &Network{
-		config:   &config.Config{},
-		updating: net.updating,
-		handler:  net.handler,
-		shutdown: cancel,
-		cache:    NewNoopCache(),
-	}
-
-	if err := update.config.Apply(ctx, append([]config.Option{WithConfig(net.config)}, opts...)...); err != nil {
-		cancel()
-		return err
-	}
-
-	update.host, err = update.config.NewNode(ctx)
-	if err != nil {
-		cancel()
-		return err
-	}
-
-	if update.Config().PeerCache {
-		net.cache = NewPeerCache(update.host)
-	}
-
-	net.Close(ctx)
-
-	*net = *update
-
-	net.init(ctx)
-
-	return nil
-}
-
 func (net *Network) Close(ctx context.Context) error {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
-
 	net.shutdown()
 
 	// FIXME: save cache to speedup next connections
@@ -140,6 +97,5 @@ func (net *Network) Close(ctx context.Context) error {
 			logger().Error("p2p close error", zap.Error(err))
 		}
 	}
-
 	return nil
 }

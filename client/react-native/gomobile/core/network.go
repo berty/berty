@@ -12,7 +12,9 @@ func GetNetworkConfig() (string, error) {
 	defer panicHandler()
 	waitDaemon(accountName)
 
-	cfg := networkDriver.Config()
+	a, _ := account.Get(rootContext, accountName)
+
+	cfg := a.Network().Config()
 	data, err := json.Marshal(cfg)
 	if err != nil {
 		return "", err

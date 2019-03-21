@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"fmt"
 
 	"berty.tech/core/network"
 	network_metric "berty.tech/core/network/metric"
@@ -37,6 +38,8 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
+
+	logger().Debug(fmt.Sprintf("NETWORK ADDR NODE %p %+v", n.networkDriver, n.networkDriver))
 
 	_ = n.networkDriver.Join(ctx, n.UserID())
 

@@ -22,7 +22,6 @@ var (
 	rootContext                = context.Background()
 	NotificationDriver         = MobileNotification{}.New() // Android / iOS
 	ElectronNotificationDriver *notification.Driver         // Electron Desktop client
-	networkDriver              *network.Network
 )
 
 // Setup call it at first native start
@@ -207,7 +206,7 @@ func daemon(cfg *MobileOptions) error {
 
 	var a *account.Account
 
-	networkDriver, err = network.New(rootContext, network.WithDefaultMobileOptions())
+	networkDriver, err := network.New(rootContext, network.WithDefaultMobileOptions())
 	if err != nil {
 		return err
 	}
