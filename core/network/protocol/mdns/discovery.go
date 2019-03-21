@@ -33,7 +33,7 @@ func (d *Discovery) Advertise(ctx context.Context, ns string, opts ...discovery.
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 
-	if err := d.wakeService(ctx, ns, false); err != nil {
+	if err := d.wakeService(ctx, ns); err != nil {
 		return 0, err
 	}
 	time.Sleep(10 * time.Second)
@@ -44,14 +44,14 @@ func (d *Discovery) FindPeers(ctx context.Context, ns string, opts ...discovery.
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 
-	if err := d.wakeService(ctx, ns, true); err != nil {
+	if err := d.wakeService(ctx, ns); err != nil {
 		return nil, err
 	}
 
 	return d.notifees[ns].piChan, nil
 }
 
-func (d *Discovery) wakeService(ctx context.Context, ns string, regiterNotifee bool) error {
+func (d *Discovery) wakeService(ctx context.Context, ns string) error {
 	var err error
 
 	d.mutex.Lock()
@@ -70,11 +70,7 @@ func (d *Discovery) wakeService(ctx context.Context, ns string, regiterNotifee b
 		d.notifees[ns] = &notifee{
 			piChan: make(chan pstore.PeerInfo, 1),
 		}
-	}
-
-	if regiterNotifee && d.notifees[ns].registered == false {
 		d.services[ns].RegisterNotifee(d.notifees[ns])
-		d.notifees[ns].registered = true
 	}
 	d.mutex.Unlock()
 
@@ -84,8 +80,7 @@ func (d *Discovery) wakeService(ctx context.Context, ns string, regiterNotifee b
 var _ service.Notifee = (*notifee)(nil)
 
 type notifee struct {
-	piChan     chan pstore.PeerInfo
-	registered bool
+	piChan chan pstore.PeerInfo
 }
 
 func (n *notifee) HandlePeerFound(pi pstore.PeerInfo) {

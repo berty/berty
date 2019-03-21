@@ -163,14 +163,20 @@ func (net *Network) Discover(ctx context.Context) {
 	if net.host.Discovery != nil {
 		libp2p_discovery.Advertise(ctx, net.host.Discovery, "berty")
 		go func() {
+			peers, err := net.host.Discovery.FindPeers(ctx, "berty")
+			if err != nil {
+				logger().Debug("network discover: cannot find peers: " + err.Error())
+				return
+			}
 			for {
-				peers, err := libp2p_discovery.FindPeers(ctx, net.host.Discovery, "berty", 0)
-				if err != nil {
-					logger().Error("network discover error", zap.String("err", err.Error()))
-					continue
-				}
-				for _, pi := range peers {
-					net.Connect(ctx, pi)
+				select {
+				case pi := <-peers:
+					if err := net.Connect(ctx, pi); err != nil {
+						logger().Error("network discover: failed to connect: " + err.Error())
+					}
+				case <-ctx.Done():
+					logger().Debug("network discover shutdown")
+					return
 				}
 			}
 		}()
