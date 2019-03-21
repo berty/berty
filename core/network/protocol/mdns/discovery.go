@@ -55,6 +55,8 @@ func (d *Discovery) wakeService(ctx context.Context, ns string) error {
 	var err error
 
 	d.mutex.Lock()
+	defer d.mutex.Unlock()
+
 	_, ok := d.services[ns]
 	if ok {
 		return nil
@@ -72,7 +74,6 @@ func (d *Discovery) wakeService(ctx context.Context, ns string) error {
 		}
 		d.services[ns].RegisterNotifee(d.notifees[ns])
 	}
-	d.mutex.Unlock()
 
 	return nil
 }
