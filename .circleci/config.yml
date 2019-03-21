@@ -68,6 +68,7 @@ references:
           make deps
         fi
         brew install dylibbundler
+        yarn global add appdmg
 
 jobs:
   lint:
@@ -653,11 +654,11 @@ jobs:
           command: |
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
             dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
-            mv ./output/darwin-amd64/Berty.app Berty.app
-            zip -r /tmp/berty.zip ./Berty.app
+            mv output/darwin-amd64/Berty.app appdmg
+            appdmg appdmg/config.json /tmp/Berty.dmg
 
       - store_artifacts:
-          path: /tmp/berty.zip
+          path: /tmp/Berty.dmg
 
 workflows:
   version: 2
