@@ -24,13 +24,13 @@ export default context => ({
 
             // update all conversations
             events.reduce((conversations, event) => {
-              if (conversations[event.conversationId]) {
+              if (conversations[event.targetAddr]) {
                 return conversations
               }
               const promise = context.queries.Conversation.fetch({
-                id: data.EventStream.conversationId,
+                id: data.EventStream.targetAddr,
               })
-              conversations[event.conversationId] = promise
+              conversations[event.targetAddr] = promise
               return conversations
             }, {})
           }

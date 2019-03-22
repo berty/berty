@@ -9,11 +9,11 @@ export default context => ({
         (async (store, data) => {
           if (data.EventStream.kind === 303) {
             await context.queries.Conversation.fetch({
-              id: data.EventStream.conversationId,
+              id: data.EventStream.targetAddr,
             })
             await context.queries.EventList.fetch({
               filter: {
-                conversationId: data.EventStream.conversationId,
+                conversationId: data.EventStream.targetAddr,
                 kind: 302,
               },
             })

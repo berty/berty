@@ -1,5 +1,6 @@
 import ContactNavigator, {
-  SplitSideContactNavigator, SubviewsContactNavigator,
+  SplitSideContactNavigator,
+  SubviewsContactNavigator,
 } from './ContactNavigator'
 import ChatNavigator, {
   SubviewsChatNavigator,
@@ -23,47 +24,54 @@ class TabBarIconBase extends Component {
     super(props)
 
     const {
-      context: {
-        queries,
-        subscriptions,
-      },
+      context: { queries, subscriptions },
     } = props
 
     this.state = {
       stored: [],
       queryList: queries.EventList.graphql,
-      queryVariables: props.routeName === 'contacts' || props.routeName === 'side/contacts'
-        ? merge([queries.EventList.defaultVariables, {
-          filter: {
-            kind: 201,
-            direction: 1,
-          },
-          onlyWithoutSeenAt: 1,
-        }])
-        : merge([queries.EventList.defaultVariables, {
-          filter: {
-            kind: 302,
-            direction: 1,
-          },
-          onlyWithoutSeenAt: 1,
-        }]),
-      subscription: props.routeName === 'contacts' || props.routeName === 'side/contacts'
-        ? [subscriptions.contactRequest]
-        : [subscriptions.message],
+      queryVariables:
+        props.routeName === 'contacts' || props.routeName === 'side/contacts'
+          ? merge([
+            queries.EventList.defaultVariables,
+            {
+              filter: {
+                kind: 201,
+                direction: 1,
+              },
+              onlyWithoutSeenAt: 1,
+            },
+          ])
+          : merge([
+            queries.EventList.defaultVariables,
+            {
+              filter: {
+                kind: 302,
+                direction: 1,
+              },
+              onlyWithoutSeenAt: 1,
+            },
+          ]),
+      subscription:
+        props.routeName === 'contacts' || props.routeName === 'side/contacts'
+          ? [subscriptions.contactRequest]
+          : [subscriptions.message],
     }
 
     this.subscriber = null
   }
 
   componentDidMount () {
-    const { context: { queries, subscriptions } } = this.props
+    const {
+      context: { queries, subscriptions },
+    } = this.props
     const { queryVariables } = this.state
 
-    queries.EventUnseen.fetch(queryVariables).then((e) => {
+    queries.EventUnseen.fetch(queryVariables).then(e => {
       this.setState({
         stored: e.reduce((acc, val) => {
-          if (acc.indexOf(val.conversationId) === -1) {
-            acc.push(val.conversationId)
+          if (acc.indexOf(val.targetAddr) === -1) {
+            acc.push(val.targetAddr)
           }
           return acc
         }, []),
@@ -85,22 +93,20 @@ class TabBarIconBase extends Component {
     const {
       stored,
       queryVariables: {
-        filter: {
-          kind,
-        },
+        filter: { kind },
       },
     } = this.state
 
     if (entity && entity.kind === kind && entity.direction === 1) {
-      if (entity.seenAt === null && stored.indexOf(entity.conversationId) === -1) {
+      if (entity.seenAt === null && stored.indexOf(entity.targetAddr) === -1) {
         this.setState({
-          stored: [
-            ...stored,
-            entity.conversationId,
-          ],
+          stored: [...stored, entity.targetAddr],
         })
-      } else if (entity.seenAt !== null && stored.indexOf(entity.conversationId) !== -1) {
-        stored.splice(stored.indexOf(entity.conversationId), 1)
+      } else if (
+        entity.seenAt !== null &&
+        stored.indexOf(entity.targetAddr) !== -1
+      ) {
+        stored.splice(stored.indexOf(entity.targetAddr), 1)
         this.setState({
           stored: stored,
         })
@@ -110,11 +116,13 @@ class TabBarIconBase extends Component {
 
   contactSeen = async () => {
     if (this.state.stored.length > 0) {
-      await Promise.all(this.state.stored.map((val) => {
-        return this.props.context.mutations.eventSeen({
-          id: val,
+      await Promise.all(
+        this.state.stored.map(val => {
+          return this.props.context.mutations.eventSeen({
+            id: val,
+          })
         })
-      }))
+      )
 
       this.setState({
         stored: [],
@@ -123,15 +131,8 @@ class TabBarIconBase extends Component {
   }
 
   render () {
-    const {
-      tintColor,
-      routeName,
-      navigation,
-      context,
-    } = this.props
-    const {
-      stored,
-    } = this.state
+    const { tintColor, routeName, navigation, context } = this.props
+    const { stored } = this.state
 
     context.relay = context.environment
     let iconName = {
@@ -143,33 +144,35 @@ class TabBarIconBase extends Component {
       'side/settings': 'settings',
     }[routeName]
 
-    if ((routeName === 'contacts' || routeName === 'side/contacts') && navigation.isFocused() === true) {
+    if (
+      (routeName === 'contacts' || routeName === 'side/contacts') &&
+      navigation.isFocused() === true
+    ) {
       this.contactSeen()
     }
 
-    return routeName === 'settings' || routeName === 'side/settings'
-      ? (
-        <UpdateContext.Consumer>
-          {({ availableUpdate }) => (
-            <Icon.Badge
-              name={iconName}
-              size={24}
-              color={tintColor}
-              badge={availableUpdate ? '!' : ''}
-            />
-          )}
-        </UpdateContext.Consumer>
-      ) : (
-        <>
+    return routeName === 'settings' || routeName === 'side/settings' ? (
+      <UpdateContext.Consumer>
+        {({ availableUpdate }) => (
           <Icon.Badge
             name={iconName}
             size={24}
             color={tintColor}
-            badge={stored.length > 0 ? '!' : ''}
-            value={stored.length}
+            badge={availableUpdate ? '!' : ''}
           />
-        </>
-      )
+        )}
+      </UpdateContext.Consumer>
+    ) : (
+      <>
+        <Icon.Badge
+          name={iconName}
+          size={24}
+          color={tintColor}
+          badge={stored.length > 0 ? '!' : ''}
+          value={stored.length}
+        />
+      </>
+    )
   }
 }
 
@@ -178,7 +181,14 @@ const TabBarIcon = withRelayContext(TabBarIconBase)
 const handleBothNavigationsOptions = ({ navigation }) => {
   return {
     tabBarIcon: function withTabBarIcon ({ tintColor, focused }) {
-      return (<TabBarIcon tintColor={tintColor} focused={focused} navigation={navigation} routeName={navigation.state.routeName} />)
+      return (
+        <TabBarIcon
+          tintColor={tintColor}
+          focused={focused}
+          navigation={navigation}
+          routeName={navigation.state.routeName}
+        />
+      )
     },
   }
 }
@@ -208,7 +218,7 @@ const options = {
         shadowRadius: Platform.OS === 'web' ? 5 : 3,
         ...(Platform.OS === 'android'
           ? { height: 54, paddingTop: 3 }
-          : { height: 50.500, paddingTop: 5, paddingBottom: 6 }),
+          : { height: 50.5, paddingTop: 5, paddingBottom: 6 }),
       },
     ],
   },
@@ -235,34 +245,39 @@ export default createBottomTabNavigator(
       }),
     },
   },
-  options,
+  options
 )
 
-export const SplitNavigator = createSplitNavigator({
-  'placeholder': Placeholder,
-  'contacts': SubviewsContactNavigator,
-  'chats/subviews': SubviewsChatNavigator,
-}, {
-  'side/contacts': {
-    screen: SplitSideContactNavigator,
-    navigationOptions: () => ({
-      title: I18n.t('contacts.title'),
-    }),
+export const SplitNavigator = createSplitNavigator(
+  {
+    placeholder: Placeholder,
+    contacts: SubviewsContactNavigator,
+    'chats/subviews': SubviewsChatNavigator,
   },
-  'side/chats': {
-    screen: SplitSideChatNavigator,
-    navigationOptions: () => ({
-      title: I18n.t('chats.title'),
-    }),
+  {
+    'side/contacts': {
+      screen: SplitSideContactNavigator,
+      navigationOptions: () => ({
+        title: I18n.t('contacts.title'),
+      }),
+    },
+    'side/chats': {
+      screen: SplitSideChatNavigator,
+      navigationOptions: () => ({
+        title: I18n.t('chats.title'),
+      }),
+    },
+    'side/settings': {
+      screen: SettingsNavigator,
+      navigationOptions: () => ({
+        title: I18n.t('settings.title'),
+      }),
+    },
   },
-  'side/settings': {
-    screen: SettingsNavigator,
-    navigationOptions: () => ({
-      title: I18n.t('settings.title'),
-    }),
-  },
-}, {}, {
-  ...options,
-  backBehavior: 'none',
-  initialRouteName: 'side/chats',
-})
+  {},
+  {
+    ...options,
+    backBehavior: 'none',
+    initialRouteName: 'side/chats',
+  }
+)

@@ -65,7 +65,7 @@ const ItemBase = fragments.Conversation(
         {
           filter: {
             kind: 302,
-            conversationId: this.props.data.id,
+            targetAddr: this.props.data.id,
             direction: 1,
           },
           onlyWithoutSeenAt: 1,

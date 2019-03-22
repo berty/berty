@@ -3,6 +3,5 @@ export default {
   sourceDeviceId: '',
   sourceContactId: '',
   apiVersion: 0,
-  destinationDeviceId: '',
-  conversationId: '',
+  targetAddr: '',
 }
