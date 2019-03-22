@@ -80,6 +80,7 @@ func TestDropDatabase(t *testing.T) {
 
 		tables, err := getDbTablesSchemas(db)
 		So(err, ShouldBeNil)
+		logger().Info(fmt.Sprintf("%+v", tables))
 		So(len(tables), ShouldEqual, 0)
 	})
 }

@@ -18,7 +18,7 @@ type OutgoingEventOptions struct {
 func (n *Node) NewEvent(ctx context.Context) *entity.Event {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
-	ctx = tracer.Context()
+	// ctx = tracer.Context()
 
 	return &entity.Event{
 		ID:             n.NewID(),

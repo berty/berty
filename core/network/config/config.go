@@ -7,10 +7,19 @@ import (
 	"strings"
 	"time"
 
+	libp2p "github.com/libp2p/go-libp2p"
+	circuit "github.com/libp2p/go-libp2p-circuit"
+	libp2p_crypto "github.com/libp2p/go-libp2p-crypto"
+	discovery "github.com/libp2p/go-libp2p-discovery"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pnet "github.com/libp2p/go-libp2p-pnet"
+	quic "github.com/libp2p/go-libp2p-quic-transport"
 	swarm "github.com/libp2p/go-libp2p-swarm"
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
+	libp2p_config "github.com/libp2p/go-libp2p/config"
+	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
+	tcp "github.com/libp2p/go-tcp-transport"
+	ws "github.com/libp2p/go-ws-transport"
 
 	"berty.tech/core/network/host"
 	"berty.tech/core/network/metric"
@@ -18,15 +27,6 @@ import (
 	"berty.tech/core/network/protocol/dht"
 	"berty.tech/core/network/protocol/mdns"
 	"berty.tech/core/pkg/errorcodes"
-	libp2p "github.com/libp2p/go-libp2p"
-	circuit "github.com/libp2p/go-libp2p-circuit"
-	libp2p_crypto "github.com/libp2p/go-libp2p-crypto"
-	discovery "github.com/libp2p/go-libp2p-discovery"
-	quic "github.com/libp2p/go-libp2p-quic-transport"
-	libp2p_config "github.com/libp2p/go-libp2p/config"
-	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
-	tcp "github.com/libp2p/go-tcp-transport"
-	ws "github.com/libp2p/go-ws-transport"
 )
 
 const DefaultSwarmKey = `/key/swarm/psk/1.0.0/
@@ -343,11 +343,11 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 
 	// configure mdns service
 	if cfg.MDNS {
-		if mdns, err := mdns.NewDiscovery(ctx, h); err != nil {
+		mdnsRes, err := mdns.NewDiscovery(ctx, h)
+		if err != nil {
 			return nil, err
-		} else {
-			discoveries = append(discoveries, mdns)
 		}
+		discoveries = append(discoveries, mdnsRes)
 	}
 
 	// configure ping service

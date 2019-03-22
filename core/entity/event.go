@@ -256,7 +256,6 @@ func (e *Event) SetToDevice(conv *Device) *Event {
 func (e *Event) SetErr(err error) *Event {
 	// FIXME: not implemented
 	panic("Event.SetErr not implemented")
-	return e
 }
 
 func (e *Event) Err() error {

@@ -275,9 +275,9 @@ func pidsToStrings(pids []protocol.ID) []string {
 	return out
 }
 
-func (h *BertyHost) preferredProtocol(p peer.ID, pids []protocol.ID) (protocol.ID, error) {
+func (bh *BertyHost) preferredProtocol(p peer.ID, pids []protocol.ID) (protocol.ID, error) {
 	pidstrs := pidsToStrings(pids)
-	supported, err := h.Peerstore().SupportsProtocols(p, pidstrs...)
+	supported, err := bh.Peerstore().SupportsProtocols(p, pidstrs...)
 	if err != nil {
 		return "", err
 	}

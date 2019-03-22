@@ -8,6 +8,7 @@ func AllTables() []string {
 	return []string{
 		// events
 		"event",
+		"event_dispatch",
 
 		// entities
 		"sender_alias",

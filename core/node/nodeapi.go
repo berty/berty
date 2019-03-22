@@ -4,14 +4,15 @@ import (
 	"context"
 	"time"
 
+	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
-	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
 )
 
 // Node implements ServiceServer

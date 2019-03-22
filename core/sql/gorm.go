@@ -2,9 +2,9 @@ package sql
 
 import (
 	"berty.tech/core/sql/migrations"
-	gormigrate "gopkg.in/gormigrate.v1"
 	"github.com/jinzhu/gorm"
 	"go.uber.org/zap"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 // Init configures an active gorm connection
