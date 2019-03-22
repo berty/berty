@@ -47,10 +47,7 @@ func WithUnencryptedDb() AppMockOption {
 			return err
 		}
 
-		entities := entity.AllEntities()
-		entities = append(entities, &entity.Event{})
-
-		path, db, err := mock.GetMockedDb(entities...)
+		path, db, err := mock.GetMockedDb(entity.AllEntities()...)
 
 		if err != nil {
 			return err

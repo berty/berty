@@ -131,8 +131,8 @@ func TestOpenEnvelope(t *testing.T) {
 
 	event := &entity.Event{}
 	event.Direction = entity.Event_Outgoing
-	event.SenderID = alice.b64pubkey
-	event.ReceiverID = bob.b64pubkey
+	event.SourceDeviceID = alice.b64pubkey
+	event.TargetAddr = bob.b64pubkey
 	event.Attributes = []byte("First Device")
 	eventBytes, _ := event.Marshal()
 
@@ -151,8 +151,8 @@ func TestOpenEnvelope(t *testing.T) {
 		t.Error(err)
 	}
 
-	if decodedEvent.SenderID != alice.b64pubkey ||
-		decodedEvent.ReceiverID != bob.b64pubkey ||
+	if decodedEvent.SourceDeviceID != alice.b64pubkey ||
+		decodedEvent.TargetAddr != bob.b64pubkey ||
 		bytes.Compare(decodedEvent.Attributes, []byte("First Device")) != 0 {
 		t.Fatalf("wrong event data")
 	}
@@ -165,8 +165,8 @@ func TestOpenEnvelope(t *testing.T) {
 
 	event = &entity.Event{}
 	event.Direction = entity.Event_Outgoing
-	event.SenderID = bobDevice2.ID
-	event.ReceiverID = alice.b64pubkey
+	event.SourceDeviceID = bobDevice2.ID
+	event.TargetAddr = alice.b64pubkey
 	event.Attributes = []byte("Secondary Device")
 	eventBytes, _ = event.Marshal()
 
@@ -183,8 +183,8 @@ func TestOpenEnvelope(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if decodedEvent.SenderID != bobDevice2.ID ||
-		decodedEvent.ReceiverID != alice.b64pubkey ||
+	if decodedEvent.SourceDeviceID != bobDevice2.ID ||
+		decodedEvent.TargetAddr != alice.b64pubkey ||
 		bytes.Compare(decodedEvent.Attributes, []byte("Secondary Device")) != 0 {
 		t.Fatalf("wrong event data")
 	}
@@ -197,8 +197,8 @@ func TestOpenEnvelope(t *testing.T) {
 
 	event = &entity.Event{}
 	event.Direction = entity.Event_Outgoing
-	event.SenderID = charlieDevice2.ID
-	event.ReceiverID = bob.b64pubkey
+	event.SourceDeviceID = charlieDevice2.ID
+	event.TargetAddr = bob.b64pubkey
 	event.Attributes = []byte("Aliased Device")
 	eventBytes, _ = event.Marshal()
 
@@ -215,8 +215,8 @@ func TestOpenEnvelope(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if decodedEvent.SenderID != charlieDevice2.ID ||
-		decodedEvent.ReceiverID != bob.b64pubkey ||
+	if decodedEvent.SourceDeviceID != charlieDevice2.ID ||
+		decodedEvent.TargetAddr != bob.b64pubkey ||
 		bytes.Compare(decodedEvent.Attributes, []byte("Aliased Device")) != 0 {
 		t.Fatalf("wrong event data")
 	}
@@ -277,7 +277,7 @@ func TestGetPushDestinationsForEvent(t *testing.T) {
 	// One to one checks
 	//
 
-	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &entity.Event{ReceiverID: "Bob"}); err != nil {
+	if identifiers, err = alice.getPushDestinationsForEvent(ctx, entity.NewEvent().SetToContactID("Bob")); err != nil {
 		t.Error(err)
 	}
 
@@ -298,7 +298,7 @@ func TestGetPushDestinationsForEvent(t *testing.T) {
 		"CharlieDevicePushIdentifier": false,
 	}
 
-	if identifiers, err = alice.getPushDestinationsForEvent(ctx, &entity.Event{ConversationID: "ConversationBobCharlie"}); err != nil {
+	if identifiers, err = alice.getPushDestinationsForEvent(ctx, entity.NewEvent().SetToConversationID("ConversationBobCharlie")); err != nil {
 		t.Error(err)
 	}
 

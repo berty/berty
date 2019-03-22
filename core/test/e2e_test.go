@@ -70,8 +70,10 @@ func TestWithEnqueuer(t *testing.T) {
 
 			for i := 0; i < 100; i++ {
 				{
-					event := alice.node.NewContactEvent(alice.ctx, &entity.Contact{ID: bob.node.DeviceID()}, entity.Kind_DevtoolsMapset)
-					So(event.SetAttrs(&entity.DevtoolsMapsetAttrs{Key: "test", Val: fmt.Sprintf("%d", i)}), ShouldBeNil)
+					event := alice.node.NewEvent(alice.ctx).
+						SetToContact(&entity.Contact{ID: bob.node.DeviceID()}).
+						SetDevtoolsMapsetAttrs(&entity.DevtoolsMapsetAttrs{Key: "test", Val: fmt.Sprintf("%d", i)})
+					So(event.Err(), ShouldBeNil)
 					res, err := bob.node.HandleEvent(alice.ctx, event.Copy())
 					So(err, ShouldBeNil)
 					So(res, ShouldResemble, &node.Void{})
@@ -224,10 +226,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 
 				So(event.Author(), ShouldEqual, alice.node.UserID())
-				So(event.SenderID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				So(event.Kind, ShouldEqual, entity.Kind_ContactRequest)
-				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, bob.node.UserID())
 				attrs, err := event.GetContactRequestAttrs()
 				So(err, ShouldBeNil)
 				So(attrs.Me.DisplayName, ShouldEqual, "Alice")
@@ -256,12 +258,11 @@ func TestWithEnqueuer(t *testing.T) {
 				So(len(out), ShouldEqual, 1)
 				event := in[0]
 
-				So(event.SenderID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Incoming)
 				So(event.Kind, ShouldEqual, entity.Kind_ContactRequest)
-				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
-				So(event.ReceiverAPIVersion, ShouldEqual, p2p.Version)
-				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
+				So(event.APIVersion, ShouldEqual, p2p.Version)
+				So(event.ToContactID(), ShouldEqual, bob.node.UserID())
 				attrs, err := event.GetContactRequestAttrs()
 				So(err, ShouldBeNil)
 				So(attrs.Me.ID, ShouldEqual, alice.node.UserID())
@@ -283,8 +284,8 @@ func TestWithEnqueuer(t *testing.T) {
 
 				So(event.Author(), ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, entity.Kind_Ack)
-				So(event.SenderID, ShouldEqual, bob.node.UserID())
-				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetAckAttrs()
 				So(err, ShouldBeNil)
@@ -368,9 +369,9 @@ func TestWithEnqueuer(t *testing.T) {
 				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
 				So(event.Kind, ShouldEqual, entity.Kind_ContactRequestAccepted)
-				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
-				So(event.SenderID, ShouldEqual, bob.node.UserID())
-				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
+				So(event.APIVersion, ShouldEqual, p2p.Version)
+				So(event.SourceDeviceID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, alice.node.UserID())
 				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
 
@@ -393,9 +394,9 @@ func TestWithEnqueuer(t *testing.T) {
 
 				//jsonPrintIndent(event)
 
-				So(event.SenderID, ShouldEqual, bob.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, entity.Kind_ContactRequestAccepted)
-				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
+				So(event.ToContactID(), ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Incoming)
 				_, err = event.GetContactRequestAcceptedAttrs()
 				So(err, ShouldBeNil)
@@ -411,8 +412,8 @@ func TestWithEnqueuer(t *testing.T) {
 				So(errorcodes.ErrEnvelopeUntrusted.Is(err), ShouldBeTrue)
 
 				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
-				So(event.SenderID, ShouldEqual, bob.node.UserID())
-				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, alice.node.UserID())
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
 				So(attrs.Me.DisplayName, ShouldEqual, "Bob")
@@ -435,9 +436,9 @@ func TestWithEnqueuer(t *testing.T) {
 				So(len(out), ShouldEqual, 1)
 				event := in[0]
 
-				So(event.SenderID, ShouldEqual, bob.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, bob.node.UserID())
 				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
-				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
+				So(event.ToContactID(), ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Incoming)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
@@ -455,9 +456,9 @@ func TestWithEnqueuer(t *testing.T) {
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
-				So(event.SenderID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
-				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, bob.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
@@ -480,9 +481,9 @@ func TestWithEnqueuer(t *testing.T) {
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
-				So(event.SenderID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, entity.Kind_Ack)
-				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, bob.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetAckAttrs()
 				So(err, ShouldBeNil)
@@ -503,9 +504,9 @@ func TestWithEnqueuer(t *testing.T) {
 				event, err := alice.node.OpenEnvelope(alice.ctx, envelope)
 				So(err, ShouldBeNil)
 
-				So(event.SenderID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, alice.node.UserID())
 				So(event.Kind, ShouldEqual, entity.Kind_Ack)
-				So(event.ReceiverID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, bob.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Outgoing)
 				attrs, err := event.GetAckAttrs()
 				So(err, ShouldBeNil)
@@ -527,8 +528,8 @@ func TestWithEnqueuer(t *testing.T) {
 				So(err, ShouldBeNil)
 
 				So(event.Kind, ShouldEqual, entity.Kind_Ack)
-				So(event.SenderID, ShouldEqual, bob.node.UserID())
-				So(event.ReceiverID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, bob.node.UserID())
+				So(event.ToContactID(), ShouldEqual, alice.node.UserID())
 				attrs, err := event.GetAckAttrs()
 				So(err, ShouldBeNil)
 				So(len(attrs.IDs), ShouldEqual, 1)
@@ -550,10 +551,10 @@ func TestWithEnqueuer(t *testing.T) {
 				So(len(out), ShouldEqual, 3)
 				event := in[0]
 
-				So(event.SenderID, ShouldEqual, alice.node.UserID())
+				So(event.SourceDeviceID, ShouldEqual, alice.node.UserID())
 				So(event.Direction, ShouldEqual, entity.Event_Incoming)
 				So(event.Kind, ShouldEqual, entity.Kind_ContactShareMe)
-				So(event.SenderAPIVersion, ShouldEqual, p2p.Version)
+				So(event.APIVersion, ShouldEqual, p2p.Version)
 				attrs, err := event.GetContactShareMeAttrs()
 				So(err, ShouldBeNil)
 				So(attrs.Me.ID, ShouldEqual, alice.node.UserID())

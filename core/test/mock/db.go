@@ -2,15 +2,12 @@ package mock
 
 import (
 	"io/ioutil"
-
 	"os"
 
-	gormigrate "gopkg.in/gormigrate.v1"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
-
-	// sqlcipher blank import
-	_ "github.com/xeodou/go-sqlcipher"
+	_ "github.com/xeodou/go-sqlcipher" // sqlcipher blank import
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 // Init configures an active gorm connection

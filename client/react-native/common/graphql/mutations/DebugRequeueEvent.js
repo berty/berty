@@ -6,20 +6,35 @@ const DebugRequeueEventMutation = graphql`
   mutation DebugRequeueEventMutation($eventId: ID!) {
     DebugRequeueEvent(eventId: $eventId) {
       id
-      senderId
+      sourceDeviceId
       createdAt
       updatedAt
       sentAt
-      seenAt
       receivedAt
       ackedAt
       direction
-      senderApiVersion
-      receiverApiVersion
-      receiverId
+      apiVersion
       kind
       attributes
-      conversationId
+      seenAt
+      ackStatus
+      dispatches {
+        eventId
+        deviceId
+        contactId
+        sentAt
+        ackedAt
+        seenAt
+        ackMedium
+        seenMedium
+      }
+      sourceContactId
+      targetType
+      targetAddr
+      metadata {
+        key
+        values
+      }
     }
   }
 `

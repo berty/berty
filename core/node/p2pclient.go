@@ -2,45 +2,46 @@ package node
 
 import (
 	"context"
-
-	"go.uber.org/zap"
+	"time"
 
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
+	"go.uber.org/zap"
 )
 
 type OutgoingEventOptions struct {
 	DisableEventLogging bool
 }
 
-func (n *Node) NewContactEvent(ctx context.Context, destination *entity.Contact, kind entity.Kind) *entity.Event {
-	tracer := tracing.EnterFunc(ctx, destination, kind)
+func (n *Node) NewEvent(ctx context.Context) *entity.Event {
+	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
-	ctx = tracer.Context()
+	// ctx = tracer.Context()
 
-	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination.ID, kind)
-	event.ID = n.NewID()
-	return event
+	return &entity.Event{
+		ID:             n.NewID(),
+		APIVersion:     p2p.Version,
+		CreatedAt:      time.Now().UTC(),
+		Direction:      entity.Event_Outgoing,
+		Dispatches:     make([]*entity.EventDispatch, 0),
+		SourceDeviceID: n.b64pubkey,
+	}
 }
 
-func (n *Node) NewConversationEvent(ctx context.Context, destination *entity.Conversation, kind entity.Kind) *entity.Event {
-	tracer := tracing.EnterFunc(ctx, destination, kind)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, "", kind)
-	event.ConversationID = destination.ID
-	event.ID = n.NewID()
-
-	return event
+func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *entity.Event) error {
+	return n.EnqueueOutgoingEventWithOptions(ctx, event, &OutgoingEventOptions{})
 }
 
-func (n *Node) EnqueueOutgoingEvent(ctx context.Context, event *entity.Event, options *OutgoingEventOptions) error {
+func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entity.Event, options *OutgoingEventOptions) error {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()
+
+	if err := event.Err(); err != nil {
+		return errorcodes.ErrEventData.Wrap(err)
+	}
 
 	if err := event.Validate(); err != nil {
 		return errorcodes.ErrEventData.Wrap(err)
@@ -65,43 +66,12 @@ func (n *Node) contactShareMe(ctx context.Context, to *entity.Contact) error {
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	event := n.NewContactEvent(ctx, to, entity.Kind_ContactShareMe)
-	if err := event.SetAttrs(&entity.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
-		return err
-	}
-	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (n *Node) NewSenderAliasEvent(ctx context.Context, destination string, aliases []*entity.SenderAlias) (*entity.Event, error) {
-	tracer := tracing.EnterFunc(ctx, destination, aliases)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, entity.Kind_SenderAliasUpdate)
-	event.ID = n.NewID()
-	if err := event.SetAttrs(&entity.SenderAliasUpdateAttrs{Aliases: aliases}); err != nil {
-		return nil, err
-	}
-
-	return event, nil
-}
-
-func (n *Node) NewSeenEvent(ctx context.Context, destination string, ids []string) (*entity.Event, error) {
-	tracer := tracing.EnterFunc(ctx, destination, ids)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	event := p2p.NewOutgoingEvent(ctx, n.b64pubkey, destination, entity.Kind_Seen)
-	event.ID = n.NewID()
-	event.Kind = entity.Kind_Seen
-	if err := event.SetAttrs(&entity.SeenAttrs{IDs: ids}); err != nil {
-		return event, nil
-	}
-	return event, nil
+	return n.EnqueueOutgoingEvent(ctx,
+		n.NewEvent(ctx).
+			SetToContact(to).
+			SetContactShareMeAttrs(&entity.ContactShareMeAttrs{
+				Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx)),
+			}))
 }
 
 func (n *Node) BroadcastEventToContacts(ctx context.Context, event *entity.Event) error {
@@ -114,12 +84,11 @@ func (n *Node) BroadcastEventToContacts(ctx context.Context, event *entity.Event
 	if err != nil {
 		return errorcodes.ErrDb.Wrap(err)
 	}
-
 	for _, contact := range contacts {
 		contactEvent := event.Copy()
-		contactEvent.ReceiverID = contact.ID
+		contactEvent.TargetAddr = contact.ID
 
-		if err := n.EnqueueOutgoingEvent(ctx, contactEvent, &OutgoingEventOptions{}); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx, contactEvent); err != nil {
 			logger().Error("node.BroadcastEventToContacts", zap.Error(err))
 			return errorcodes.ErrEvent.New()
 		}

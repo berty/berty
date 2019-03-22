@@ -1268,67 +1268,107 @@ models:
     fields:
       id:
         resolver: true
-      senderId:
+      sourceDeviceId:
       createdAt:
       updatedAt:
       sentAt:
       receivedAt:
       ackedAt:
       direction:
-      senderApiVersion:
-      receiverApiVersion:
-      receiverId:
+      apiVersion:
       kind:
       attributes:
         resolver: true
-      conversationId:
-        resolver: true
       seenAt:
+      ackStatus:
+      dispatches:
+      sourceContactId:
+      targetType:
+      targetAddr:
+        resolver: true
       metadata:
   BertyEntityEventInput:
     model: berty.tech/core/entity.Event
     fields:
       id:
         resolver: true
-      senderId:
+      sourceDeviceId:
       createdAt:
       updatedAt:
       sentAt:
       receivedAt:
       ackedAt:
       direction:
-      senderApiVersion:
-      receiverApiVersion:
-      receiverId:
+      apiVersion:
       kind:
       attributes:
         resolver: true
-      conversationId:
-        resolver: true
       seenAt:
+      ackStatus:
+      dispatches:
+      sourceContactId:
+      targetType:
+      targetAddr:
+        resolver: true
       metadata:
   BertyEntityEventPayload:
     model: berty.tech/core/entity.Event
     fields:
       id:
         resolver: true
-      senderId:
+      sourceDeviceId:
       createdAt:
       updatedAt:
       sentAt:
       receivedAt:
       ackedAt:
       direction:
-      senderApiVersion:
-      receiverApiVersion:
-      receiverId:
+      apiVersion:
       kind:
       attributes:
         resolver: true
-      conversationId:
-        resolver: true
       seenAt:
+      ackStatus:
+      dispatches:
+      sourceContactId:
+      targetType:
+      targetAddr:
+        resolver: true
       metadata:
+
+  BertyEntityEventDispatch:
+    model: berty.tech/core/entity.EventDispatch
+    fields:
+      eventId:
+      deviceId:
+      contactId:
+      sentAt:
+      ackedAt:
+      seenAt:
+      ackMedium:
+      seenMedium:
+  BertyEntityEventDispatchInput:
+    model: berty.tech/core/entity.EventDispatch
+    fields:
+      eventId:
+      deviceId:
+      contactId:
+      sentAt:
+      ackedAt:
+      seenAt:
+      ackMedium:
+      seenMedium:
+  BertyEntityEventDispatchPayload:
+    model: berty.tech/core/entity.EventDispatch
+    fields:
+      eventId:
+      deviceId:
+      contactId:
+      sentAt:
+      ackedAt:
+      seenAt:
+      ackMedium:
+      seenMedium:
 
   BertyEntityMetadataKeyValue:
     model: berty.tech/core/entity.MetadataKeyValue

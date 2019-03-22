@@ -3,12 +3,13 @@ package chunk
 import (
 	time "time"
 
+	"github.com/jinzhu/gorm"
+	"go.uber.org/zap"
+	gormigrate "gopkg.in/gormigrate.v1"
+
 	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/sql/sqlcipher"
-	gormigrate "gopkg.in/gormigrate.v1"
-	"github.com/jinzhu/gorm"
-	"go.uber.org/zap"
 )
 
 type zapLogger struct {

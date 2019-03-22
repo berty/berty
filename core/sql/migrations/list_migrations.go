@@ -5,6 +5,7 @@ import (
 	"berty.tech/core/sql/migrations/v0002pushtokens"
 	"berty.tech/core/sql/migrations/v0003notificationssettings"
 	"berty.tech/core/sql/migrations/v0004conversationinfos"
+	"berty.tech/core/sql/migrations/v0005eventdispatch"
 	gormigrate "gopkg.in/gormigrate.v1"
 )
 
@@ -15,6 +16,7 @@ func GetMigrations() []*gormigrate.Migration {
 	migrations = append(migrations, v0002pushtokens.GetMigration())
 	migrations = append(migrations, v0003notificationssettings.GetMigration())
 	migrations = append(migrations, v0004conversationinfos.GetMigration())
+	migrations = append(migrations, v0005eventdispatch.GetMigration())
 
 	return migrations
 }

@@ -11,7 +11,6 @@ import (
 	host "github.com/libp2p/go-libp2p-host"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
-
 	p2pp "github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	"go.uber.org/zap"
 )
@@ -25,7 +24,7 @@ type PingService struct {
 // Keep the same ID as ipfs ping service, so we can ping them as well.
 const ID = p2pp.ID
 
-// Keep the same PingSize as ipfs ping service, so we can ping them as well.
+// PingSize is the same PingSize as ipfs ping service, so we can ping them as well.
 var PingSize = p2pp.PingSize
 
 func NewPingService(h host.Host) *PingService {
@@ -89,7 +88,7 @@ func ping(s inet.Stream) (time.Duration, error) {
 	}
 
 	if !bytes.Equal(buf, rbuf) {
-		return 0, errors.New("ping packet was incorrect!")
+		return 0, errors.New("ping packet was incorrect")
 	}
 
 	return time.Since(before), nil

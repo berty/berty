@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
-  Platform, StyleSheet,
+  Platform,
+  StyleSheet,
   TextInput as RNTextInput,
   View,
 } from 'react-native'
@@ -8,7 +9,15 @@ import { btoa } from 'b64-lite'
 import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Icon, Screen, Text, Avatar, Markdown } from '../../Library'
+import {
+  Flex,
+  Header,
+  Icon,
+  Screen,
+  Text,
+  Avatar,
+  Markdown,
+} from '../../Library'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { colors } from '../../../constants'
 import { fragments } from '../../../graphql'
@@ -20,27 +29,32 @@ import * as dateFns from '../../../i18n/dateFns'
 import withRelayContext from '../../../helpers/withRelayContext'
 import * as KeyboardContext from '../../../helpers/KeyboardContext'
 
-const textStyles = StyleSheet.flatten([Markdown.styles, {
-  text: {
-    color: colors.white,
-    ...(Platform.OS === 'web' ? {
-      wordBreak: 'break-all',
-      overflowWrap: 'break-word',
-    } : {}),
+const textStyles = StyleSheet.flatten([
+  Markdown.styles,
+  {
+    text: {
+      color: colors.white,
+      ...(Platform.OS === 'web'
+        ? {
+          wordBreak: 'break-all',
+          overflowWrap: 'break-word',
+        }
+        : {}),
+    },
+    listUnorderedItemIcon: {
+      color: colors.white,
+    },
+    listOrderedItemIcon: {
+      color: colors.white,
+    },
+    blocklink: {
+      borderColor: colors.white,
+    },
+    u: {
+      borderColor: colors.white,
+    },
   },
-  listUnorderedItemIcon: {
-    color: colors.white,
-  },
-  listOrderedItemIcon: {
-    color: colors.white,
-  },
-  blocklink: {
-    borderColor: colors.white,
-  },
-  u: {
-    borderColor: colors.white,
-  },
-}])
+])
 
 class Message extends React.Component {
   static contextType = RelayContext
@@ -52,7 +66,9 @@ class Message extends React.Component {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    const { data: { seenAt } } = this.props
+    const {
+      data: { seenAt },
+    } = this.props
     if (seenAt !== nextProps.data.seenAt) {
       return false
     }
@@ -62,7 +78,7 @@ class Message extends React.Component {
   render () {
     const { conversation, data, t } = this.props
 
-    const contactId = btoa(`contact:${data.senderId}`)
+    const contactId = btoa(`contact:${data.sourceDeviceId}`)
     const contact = (
       conversation.members.find(m => m.contact && m.contact.id === contactId) ||
       {}
@@ -113,7 +129,9 @@ class Message extends React.Component {
             borderBottomRightRadius: isMyself ? 3 : 14.5,
           }}
         >
-          <Markdown style={textStyles}>{parseEmbedded(data.attributes).message.text}</Markdown>
+          <Markdown style={textStyles}>
+            {parseEmbedded(data.attributes).message.text}
+          </Markdown>
         </View>
         <Text
           left={!isMyself}
@@ -160,34 +178,40 @@ class TextInputBase extends PureComponent {
     const { height } = this.state
     const { value, t } = this.props
     return (
-      <KeyboardContext.Consumer>{({ keyboardVisible }) =>
-        <RNTextInput
-          style={[
-            {
-              flex: 1,
-              padding: 0,
-              marginVertical: 8,
-              marginHorizontal: 0,
-              height: height,
-              color: colors.fakeBlack,
-              backgroundColor: colors.inputGrey,
-            },
-            Platform.OS === 'web' ? { paddingLeft: 16 } : {},
-          ]}
-          onKeyPress={(e) => {
-            if (!keyboardVisible && !e.shiftKey && e.nativeEvent.key === 'Enter') {
-              this.props.onSubmit()
-            }
-          }}
-          onContentSizeChange={this.onContentSizeChange}
-          autoFocus
-          placeholder={t('chats.write-message')}
-          placeholderTextColor={colors.lightGrey}
-          onChangeText={this.props.onChangeText}
-          value={value}
-          multiline
-        />
-      }</KeyboardContext.Consumer>
+      <KeyboardContext.Consumer>
+        {({ keyboardVisible }) => (
+          <RNTextInput
+            style={[
+              {
+                flex: 1,
+                padding: 0,
+                marginVertical: 8,
+                marginHorizontal: 0,
+                height: height,
+                color: colors.fakeBlack,
+                backgroundColor: colors.inputGrey,
+              },
+              Platform.OS === 'web' ? { paddingLeft: 16 } : {},
+            ]}
+            onKeyPress={e => {
+              if (
+                !keyboardVisible &&
+                !e.shiftKey &&
+                e.nativeEvent.key === 'Enter'
+              ) {
+                this.props.onSubmit()
+              }
+            }}
+            onContentSizeChange={this.onContentSizeChange}
+            autoFocus
+            placeholder={t('chats.write-message')}
+            placeholderTextColor={colors.lightGrey}
+            onChangeText={this.props.onChangeText}
+            value={value}
+            multiline
+          />
+        )}
+      </KeyboardContext.Consumer>
     )
   }
 }
@@ -208,16 +232,14 @@ class Input extends PureComponent {
       try {
         const conversation = this.props.navigation.state.params || {}
         input &&
-          (await this.props.context.mutations.conversationAddMessage(
-            {
-              conversation: {
-                id: conversation.id,
-              },
-              message: {
-                text: input,
-              },
-            }
-          ))
+          (await this.props.context.mutations.conversationAddMessage({
+            conversation: {
+              id: conversation.id,
+            },
+            message: {
+              text: input,
+            },
+          }))
       } catch (err) {
         console.error(err)
       }
@@ -240,7 +262,17 @@ class Input extends PureComponent {
         align='center'
         style={
           Platform.OS === 'web'
-            ? [{ borderTopWidth: 0.5, borderTopColor: colors.borderGrey, position: 'absolute', bottom: 0, left: 0, right: 0 }, shadow]
+            ? [
+              {
+                borderTopWidth: 0.5,
+                borderTopColor: colors.borderGrey,
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+              },
+              shadow,
+            ]
             : [shadow]
         }
       >
@@ -305,7 +337,7 @@ const Chat = fragments.Conversation(
               {
                 filter: {
                   kind: 302,
-                  conversationId: data.id,
+                  targetAddr: data.id,
                 },
               },
             ])}
@@ -336,7 +368,7 @@ class Detail extends PureComponent {
     header: (
       <Header
         navigation={navigation}
-        title={(
+        title={
           <View style={{ flexDirection: 'column' }}>
             <Text
               large
@@ -347,18 +379,16 @@ class Detail extends PureComponent {
             >
               {utils.getTitle(navigation.state.params) || {}}
             </Text>
-            {navigation.state.params.topic
-              ? (
-                <Text
-                  justify={navigation.getParam('backBtn') ? 'center' : 'start'}
-                  middle
-                >
-                  {navigation.state.params.topic}
-                </Text>
-              ) : null
-            }
+            {navigation.state.params.topic ? (
+              <Text
+                justify={navigation.getParam('backBtn') ? 'center' : 'start'}
+                middle
+              >
+                {navigation.state.params.topic}
+              </Text>
+            ) : null}
           </View>
-        )}
+        }
         rightBtnIcon='more-vertical'
         onPressRightBtn={() =>
           navigation.navigate('chats/settings', {
@@ -381,11 +411,9 @@ class Detail extends PureComponent {
   }
 
   onConversationRead = async () => {
-    const res = await this.props.context.mutations.conversationRead(
-      {
-        id: this.props.navigation.getParam('id'),
-      }
-    )
+    const res = await this.props.context.mutations.conversationRead({
+      id: this.props.navigation.getParam('id'),
+    })
 
     this.props.navigation.setParams(res.ConversationRead)
   }

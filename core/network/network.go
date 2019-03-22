@@ -76,7 +76,7 @@ func (net *Network) init(ctx context.Context) {
 	net.logHostInfos()
 
 	// bootstrap default peers
-	// TOOD: infinite bootstrap + don't permit routing to provide when no peers are discovered
+	// TODO: infinite bootstrap + don't permit routing to provide when no peers are discovered
 	if err := net.Bootstrap(ctx, false, net.config.Bootstrap...); err != nil {
 		logger().Error(err.Error())
 	}

@@ -18,13 +18,16 @@ func (e *Event) GetSentAttrs() (*SentAttrs, error) {
 }
 
 // SetSentAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetSentAttrs(attrs *SentAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetSentAttrs(attrs *SentAttrs) *Event {
+	e.Kind = Kind_Sent
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetAckAttrs is a typesafe version of GetAttrs
@@ -37,13 +40,16 @@ func (e *Event) GetAckAttrs() (*AckAttrs, error) {
 }
 
 // SetAckAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetAckAttrs(attrs *AckAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetAckAttrs(attrs *AckAttrs) *Event {
+	e.Kind = Kind_Ack
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetPingAttrs is a typesafe version of GetAttrs
@@ -56,13 +62,16 @@ func (e *Event) GetPingAttrs() (*PingAttrs, error) {
 }
 
 // SetPingAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetPingAttrs(attrs *PingAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetPingAttrs(attrs *PingAttrs) *Event {
+	e.Kind = Kind_Ping
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetSeenAttrs is a typesafe version of GetAttrs
@@ -75,13 +84,16 @@ func (e *Event) GetSeenAttrs() (*SeenAttrs, error) {
 }
 
 // SetSeenAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetSeenAttrs(attrs *SeenAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetSeenAttrs(attrs *SeenAttrs) *Event {
+	e.Kind = Kind_Seen
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetContactRequestAttrs is a typesafe version of GetAttrs
@@ -94,13 +106,16 @@ func (e *Event) GetContactRequestAttrs() (*ContactRequestAttrs, error) {
 }
 
 // SetContactRequestAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetContactRequestAttrs(attrs *ContactRequestAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetContactRequestAttrs(attrs *ContactRequestAttrs) *Event {
+	e.Kind = Kind_ContactRequest
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetContactRequestAcceptedAttrs is a typesafe version of GetAttrs
@@ -113,13 +128,16 @@ func (e *Event) GetContactRequestAcceptedAttrs() (*ContactRequestAcceptedAttrs, 
 }
 
 // SetContactRequestAcceptedAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetContactRequestAcceptedAttrs(attrs *ContactRequestAcceptedAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetContactRequestAcceptedAttrs(attrs *ContactRequestAcceptedAttrs) *Event {
+	e.Kind = Kind_ContactRequestAccepted
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetContactShareMeAttrs is a typesafe version of GetAttrs
@@ -132,13 +150,16 @@ func (e *Event) GetContactShareMeAttrs() (*ContactShareMeAttrs, error) {
 }
 
 // SetContactShareMeAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetContactShareMeAttrs(attrs *ContactShareMeAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetContactShareMeAttrs(attrs *ContactShareMeAttrs) *Event {
+	e.Kind = Kind_ContactShareMe
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetContactShareAttrs is a typesafe version of GetAttrs
@@ -151,13 +172,16 @@ func (e *Event) GetContactShareAttrs() (*ContactShareAttrs, error) {
 }
 
 // SetContactShareAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetContactShareAttrs(attrs *ContactShareAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetContactShareAttrs(attrs *ContactShareAttrs) *Event {
+	e.Kind = Kind_ContactShare
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetConversationInviteAttrs is a typesafe version of GetAttrs
@@ -170,13 +194,16 @@ func (e *Event) GetConversationInviteAttrs() (*ConversationInviteAttrs, error) {
 }
 
 // SetConversationInviteAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetConversationInviteAttrs(attrs *ConversationInviteAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetConversationInviteAttrs(attrs *ConversationInviteAttrs) *Event {
+	e.Kind = Kind_ConversationInvite
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetConversationNewMessageAttrs is a typesafe version of GetAttrs
@@ -189,13 +216,16 @@ func (e *Event) GetConversationNewMessageAttrs() (*ConversationNewMessageAttrs, 
 }
 
 // SetConversationNewMessageAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetConversationNewMessageAttrs(attrs *ConversationNewMessageAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetConversationNewMessageAttrs(attrs *ConversationNewMessageAttrs) *Event {
+	e.Kind = Kind_ConversationNewMessage
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetConversationReadAttrs is a typesafe version of GetAttrs
@@ -208,13 +238,16 @@ func (e *Event) GetConversationReadAttrs() (*ConversationReadAttrs, error) {
 }
 
 // SetConversationReadAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetConversationReadAttrs(attrs *ConversationReadAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetConversationReadAttrs(attrs *ConversationReadAttrs) *Event {
+	e.Kind = Kind_ConversationRead
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetConversationUpdateAttrs is a typesafe version of GetAttrs
@@ -227,13 +260,16 @@ func (e *Event) GetConversationUpdateAttrs() (*ConversationUpdateAttrs, error) {
 }
 
 // SetConversationUpdateAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetConversationUpdateAttrs(attrs *ConversationUpdateAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetConversationUpdateAttrs(attrs *ConversationUpdateAttrs) *Event {
+	e.Kind = Kind_ConversationUpdate
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetDevtoolsMapsetAttrs is a typesafe version of GetAttrs
@@ -246,13 +282,16 @@ func (e *Event) GetDevtoolsMapsetAttrs() (*DevtoolsMapsetAttrs, error) {
 }
 
 // SetDevtoolsMapsetAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetDevtoolsMapsetAttrs(attrs *DevtoolsMapsetAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetDevtoolsMapsetAttrs(attrs *DevtoolsMapsetAttrs) *Event {
+	e.Kind = Kind_DevtoolsMapset
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetSenderAliasUpdateAttrs is a typesafe version of GetAttrs
@@ -265,13 +304,16 @@ func (e *Event) GetSenderAliasUpdateAttrs() (*SenderAliasUpdateAttrs, error) {
 }
 
 // SetSenderAliasUpdateAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetSenderAliasUpdateAttrs(attrs *SenderAliasUpdateAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetSenderAliasUpdateAttrs(attrs *SenderAliasUpdateAttrs) *Event {
+	e.Kind = Kind_SenderAliasUpdate
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetDeviceUpdatePushConfigAttrs is a typesafe version of GetAttrs
@@ -284,13 +326,16 @@ func (e *Event) GetDeviceUpdatePushConfigAttrs() (*DeviceUpdatePushConfigAttrs, 
 }
 
 // SetDeviceUpdatePushConfigAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetDeviceUpdatePushConfigAttrs(attrs *DeviceUpdatePushConfigAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetDeviceUpdatePushConfigAttrs(attrs *DeviceUpdatePushConfigAttrs) *Event {
+	e.Kind = Kind_DeviceUpdatePushConfig
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetDevicePushToAttrs is a typesafe version of GetAttrs
@@ -303,13 +348,16 @@ func (e *Event) GetDevicePushToAttrs() (*DevicePushToAttrs, error) {
 }
 
 // SetDevicePushToAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetDevicePushToAttrs(attrs *DevicePushToAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetDevicePushToAttrs(attrs *DevicePushToAttrs) *Event {
+	e.Kind = Kind_DevicePushTo
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetNodeAttrs is a typesafe version of GetAttrs
@@ -322,13 +370,16 @@ func (e *Event) GetNodeAttrs() (*NodeAttrs, error) {
 }
 
 // SetNodeAttrs is a typesafe version of the generic SetAttrs method
-func (e *Event) SetNodeAttrs(attrs *NodeAttrs) error {
-	raw, err := proto.Marshal(attrs)
-	if err != nil {
-		return err
+func (e *Event) SetNodeAttrs(attrs *NodeAttrs) *Event {
+	e.Kind = Kind_Node
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
 	}
-	e.Attributes = raw
-	return nil
+	return e
 }
 
 // GetAttrs parses the embedded attributes

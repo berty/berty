@@ -88,15 +88,17 @@ func TestNodeHelpers(t *testing.T) {
 			queueD := make(chan eventStreamEntry, 100)
 			streamD, err := app.client.Node().EventStream(app.ctx, &node.EventStreamInput{
 				Filter: &entity.Event{
-					ConversationID: "abcde",
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: "abcde",
 				},
 			})
 			So(err, ShouldBeNil)
 			go streamToQueue(queueD, streamD, c)
 
 			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{
-				Kind:           entity.Kind_Ack,
-				ConversationID: "bbbb",
+				Kind:       entity.Kind_Ack,
+				TargetType: entity.Event_ToSpecificConversation,
+				TargetAddr: "bbbb",
 			}), ShouldBeNil)
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 5)
@@ -105,8 +107,9 @@ func TestNodeHelpers(t *testing.T) {
 			So(len(queueD), ShouldEqual, 0)
 
 			So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{
-				Kind:           entity.Kind_Ping,
-				ConversationID: "abcde",
+				Kind:       entity.Kind_Ping,
+				TargetType: entity.Event_ToSpecificConversation,
+				TargetAddr: "abcde",
 			}), ShouldBeNil)
 			time.Sleep(50 * time.Millisecond)
 			So(len(queueA), ShouldEqual, 6)
@@ -125,8 +128,9 @@ func TestNodeHelpers(t *testing.T) {
 
 			for i := 0; i < 50; i++ {
 				So(app.node.EnqueueClientEvent(app.ctx, &entity.Event{
-					Kind:           entity.Kind_Ping,
-					ConversationID: "bbbb",
+					Kind:       entity.Kind_Ping,
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: "bbbb",
 				}), ShouldBeNil)
 			}
 			time.Sleep(50 * time.Millisecond)

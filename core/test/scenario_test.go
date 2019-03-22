@@ -219,7 +219,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
@@ -234,7 +235,8 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := eve.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
@@ -268,16 +270,16 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := bob.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
-			So(len(events), ShouldEqual, 2)
+			So(len(events), ShouldEqual, 1)
 
-			So(events[0].Kind, ShouldEqual, entity.Kind_ConversationInvite)
-			So(events[1].Kind, ShouldEqual, entity.Kind_ConversationNewMessage)
-			So(events[1].Direction, ShouldEqual, entity.Event_Outgoing)
-			attrs, err := events[1].GetConversationNewMessageAttrs()
+			So(events[0].Kind, ShouldEqual, entity.Kind_ConversationNewMessage)
+			So(events[0].Direction, ShouldEqual, entity.Event_Outgoing)
+			attrs, err := events[0].GetConversationNewMessageAttrs()
 			So(err, ShouldBeNil)
 			So(attrs.Message.Text, ShouldEqual, "hello world!")
 			time.Sleep(sleepBetweenSteps)
@@ -290,15 +292,15 @@ func scenario(t *testing.T, alice, bob, eve *AppMock) {
 			So(cache["conversation_id"], ShouldNotBeNil)
 			events, err := alice.client.EventList(internalCtx, &node.EventListInput{
 				Filter: &entity.Event{
-					ConversationID: cache["conversation_id"].(string),
+					TargetType: entity.Event_ToSpecificConversation,
+					TargetAddr: cache["conversation_id"].(string),
 				},
 			})
 			So(err, ShouldBeNil)
-			So(len(events), ShouldEqual, 2)
-			So(events[0].Kind, ShouldEqual, entity.Kind_ConversationInvite)
-			So(events[1].Kind, ShouldEqual, entity.Kind_ConversationNewMessage)
-			So(events[1].Direction, ShouldEqual, entity.Event_Incoming)
-			attrs, err := events[1].GetConversationNewMessageAttrs()
+			So(len(events), ShouldEqual, 1)
+			So(events[0].Kind, ShouldEqual, entity.Kind_ConversationNewMessage)
+			So(events[0].Direction, ShouldEqual, entity.Event_Incoming)
+			attrs, err := events[0].GetConversationNewMessageAttrs()
 			So(err, ShouldBeNil)
 			So(attrs.Message.Text, ShouldEqual, "hello world!")
 			time.Sleep(sleepBetweenSteps)

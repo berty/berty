@@ -4,8 +4,8 @@ import (
 	"time"
 
 	"berty.tech/core/entity"
-	gormigrate "gopkg.in/gormigrate.v1"
 	"github.com/jinzhu/gorm"
+	gormigrate "gopkg.in/gormigrate.v1"
 )
 
 type Event_Direction int32

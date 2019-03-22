@@ -9,7 +9,7 @@ export default context => ({
         (async (store, data) => {
           if (data.EventStream.kind === 302) {
             await context.queries.Conversation.fetch({
-              id: data.EventStream.conversationId,
+              id: data.EventStream.targetAddr,
             })
           }
         }),

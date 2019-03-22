@@ -68,5 +68,5 @@ export default context => (input, configs) =>
     ConversationUpdateMutation,
     'ConversationUpdate',
     input,
-    configs,
+    configs
   )

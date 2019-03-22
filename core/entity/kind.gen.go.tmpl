@@ -21,13 +21,16 @@ import (
     }
 
     // Set{{$oo}}Attrs is a typesafe version of the generic SetAttrs method
-    func (e *Event) Set{{$oo}}Attrs(attrs *{{$oo}}Attrs) error {
+func (e *Event) Set{{$oo}}Attrs(attrs *{{$oo}}Attrs) *Event {
+	e.Kind = Kind_{{$oo}}
+        if attrs != nil {
       raw, err := proto.Marshal(attrs)
       if err != nil {
-        return err
+	      e.SetErr(err)
       }
       e.Attributes = raw
-      return nil
+      }
+      return e
     }
   {{- end}}
 

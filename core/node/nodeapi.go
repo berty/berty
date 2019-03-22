@@ -4,14 +4,15 @@ import (
 	"context"
 	"time"
 
+	"github.com/jinzhu/gorm"
+	"github.com/pkg/errors"
+	"google.golang.org/grpc"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/tracing"
 	bsql "berty.tech/core/sql"
-	"github.com/jinzhu/gorm"
-	"github.com/pkg/errors"
-	"google.golang.org/grpc"
 )
 
 // Node implements ServiceServer
@@ -147,8 +148,8 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 	}
 
 	// mark conversation as read
-	if event.ConversationID != "" {
-		_, err := n.ConversationRead(ctx, &entity.Conversation{ID: event.ConversationID})
+	if event.TargetType == entity.Event_ToSpecificConversation {
+		_, err := n.ConversationRead(ctx, &entity.Conversation{ID: event.ToConversationID()})
 		if err != nil {
 			return nil, err
 		}
@@ -170,17 +171,10 @@ func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversatio
 		return nil, errors.Wrap(err, "cannot update conversation")
 	}
 
-	// event
-	event := n.NewConversationEvent(ctx, input, entity.Kind_ConversationUpdate)
-	if err := event.SetAttrs(&entity.ConversationUpdateAttrs{
-		Conversation: input,
-	}); err != nil {
-		return nil, errorcodes.ErrUndefined.Wrap(err)
-	}
-	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
-		return nil, errorcodes.ErrNet.Wrap(err)
-	}
-	return input, nil
+	return input, n.EnqueueOutgoingEvent(ctx,
+		n.NewEvent(ctx).
+			SetConversationUpdateAttrs(&entity.ConversationUpdateAttrs{Conversation: input}).
+			SetToConversation(input))
 }
 
 func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
@@ -199,32 +193,37 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	}
 
 	// check if last message has been read
-	event := &entity.Event{ConversationID: conversation.ID, Direction: entity.Event_Incoming}
-	n.sql(ctx).Model(event).Where(event).Order("created_at").Last(event)
+	event := &entity.Event{}
+	filter := &entity.Event{
+		TargetType: entity.Event_ToSpecificConversation,
+		TargetAddr: conversation.ID,
+		Direction:  entity.Event_Incoming,
+	}
+	n.sql(ctx).Model(event).Where(filter).Order("created_at").Last(event)
 	if event.SeenAt == nil {
 		return conversation, nil
 	}
 
 	// send conversation as read
-	event = n.NewConversationEvent(ctx, conversation, entity.Kind_ConversationRead)
-	if err = event.SetConversationReadAttrs(&entity.ConversationReadAttrs{Conversation: conversation}); err != nil {
-		return nil, err
-	}
-	if err = n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
-		return nil, err
-	}
-	return conversation, nil
+	return conversation, n.EnqueueOutgoingEvent(ctx,
+		n.NewEvent(ctx).
+			SetToConversation(conversation).
+			SetConversationReadAttrs(&entity.ConversationReadAttrs{Conversation: conversation}))
 }
 
 func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversation) (*entity.Event, error) {
-	output := &entity.Event{ConversationID: input.ID}
+	filter := &entity.Event{
+		TargetAddr: input.ID,
+		TargetType: entity.Event_ToSpecificConversation,
+	}
+	event := &entity.Event{}
 
 	// FIXME: add last_event_id in conversation new message handler to be sure to fetch the last event
 	time.Sleep(time.Second / 3)
-	if err := n.sql(ctx).Order("created_at desc").Where(output).Last(output).Error; err != nil {
+	if err := n.sql(ctx).Order("created_at desc").Where(filter).Last(event).Error; err != nil {
 		return nil, err
 	}
-	return output, nil
+	return event, nil
 }
 
 func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
@@ -296,8 +295,10 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *node.ContactAcce
 	}
 
 	// send ContactRequestAccepted event
-	event := n.NewContactEvent(ctx, contact, entity.Kind_ContactRequestAccepted)
-	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
+
+	if err := n.EnqueueOutgoingEvent(ctx,
+		n.NewEvent(ctx).SetToContact(contact).SetContactRequestAcceptedAttrs(nil),
+	); err != nil {
 		return nil, err
 	}
 
@@ -353,19 +354,23 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	}
 
 	// send request to peer
-	event := n.NewContactEvent(ctx, contact, entity.Kind_ContactRequest)
-	if err := event.SetAttrs(&entity.ContactRequestAttrs{
-		Me:        n.config.Myself.Filtered().WithPushInformation(n.sql(ctx)),
-		IntroText: req.IntroText,
-	}); err != nil {
-		return nil, errorcodes.ErrUndefined.Wrap(err)
-	}
-	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
-		return nil, errorcodes.ErrNet.Wrap(err)
+	if err := n.EnqueueOutgoingEvent(ctx,
+		n.NewEvent(ctx).
+			SetToContact(contact).
+			SetContactRequestAttrs(&entity.ContactRequestAttrs{
+				Me:        n.config.Myself.Filtered().WithPushInformation(n.sql(ctx)),
+				IntroText: req.IntroText,
+			}),
+	); err != nil {
+		return nil, err
 	}
 
 	// create conversation if doesn't exist
-	if _, err := n.ConversationCreate(ctx, &node.ConversationCreateInput{Contacts: []*entity.Contact{contact}}); err != nil {
+	if _, err := n.ConversationCreate(ctx,
+		&node.ConversationCreateInput{
+			Contacts: []*entity.Contact{contact},
+		},
+	); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)
 	}
 	return contact, nil
@@ -396,12 +401,17 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 	}
 
 	if contact.ID == n.config.Myself.ID {
+		// FIXME: replace with a unique Broadcast/ToAllContact event
 		if err := n.sql(ctx).Where(&entity.Contact{ID: contact.ID}).First(&n.config.Myself).Error; err != nil {
 			return nil, errorcodes.ErrDb.Wrap(err)
 		}
 
-		evt := n.NewContactEvent(ctx, n.config.Myself, entity.Kind_ContactShareMe)
-		if err := evt.SetAttrs(&entity.ContactShareMeAttrs{Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx))}); err != nil {
+		evt := n.NewEvent(ctx).
+			SetToAllContacts().
+			SetContactShareMeAttrs(&entity.ContactShareMeAttrs{
+				Me: n.config.Myself.Filtered().WithPushInformation(n.sql(ctx)),
+			})
+		if err := evt.Err(); err != nil {
 			return nil, err
 		}
 
@@ -571,14 +581,13 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 			// skipping myself
 			continue
 		}
-		event := n.NewContactEvent(ctx, member.Contact, entity.Kind_ConversationInvite)
-		event.ConversationID = conversation.ID
-		if err := event.SetAttrs(&entity.ConversationInviteAttrs{
-			Conversation: filtered,
-		}); err != nil {
-			return nil, errorcodes.ErrUndefined.Wrap(err)
-		}
-		if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
+		if err := n.EnqueueOutgoingEvent(ctx,
+			n.NewEvent(ctx).
+				SetToContact(member.Contact).
+				SetConversationInviteAttrs(&entity.ConversationInviteAttrs{
+					Conversation: filtered,
+				}),
+		); err != nil {
 			return nil, err
 		}
 	}
@@ -656,16 +665,10 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 
 	n.handleMutex(ctx)()
 
-	event := n.NewConversationEvent(ctx, input.Conversation, entity.Kind_ConversationNewMessage)
-	if err := event.SetAttrs(&entity.ConversationNewMessageAttrs{
-		Message: input.Message,
-	}); err != nil {
-		return nil, errorcodes.ErrUndefined.Wrap(err)
-	}
-	if err := n.EnqueueOutgoingEvent(ctx, event, &OutgoingEventOptions{}); err != nil {
-		return nil, errorcodes.ErrNet.Wrap(err)
-	}
-	return event, nil
+	event := n.NewEvent(ctx)
+	return event, n.EnqueueOutgoingEvent(ctx, event.
+		SetToConversation(input.Conversation).
+		SetConversationNewMessageAttrs(&entity.ConversationNewMessageAttrs{Message: input.Message}))
 }
 
 // GetConversation implements berty.node.GetConversation
