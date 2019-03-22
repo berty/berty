@@ -6,30 +6,30 @@ const ConversationInviteMutation = graphql`
   mutation ConversationInviteMutation(
     $conversation: BertyEntityConversationInput
     $members: [BertyEntityConversationMemberInput]
- ) {
-   ConversationInvite(conversation: $conversation, members: $members) {
-     id
-     createdAt
-     updatedAt
-     title
-     topic
-     members {
-       id
-       createdAt
-       updatedAt
-       status
-       contact {
-         id
-         createdAt
-         updatedAt
-         sigchain
-         status
-         devices {
-           id
-           createdAt
-           updatedAt
-           name
-           status
+  ) {
+    ConversationInvite(conversation: $conversation, members: $members) {
+      id
+      createdAt
+      updatedAt
+      title
+      topic
+      members {
+        id
+        createdAt
+        updatedAt
+        status
+        contact {
+          id
+          createdAt
+          updatedAt
+          sigchain
+          status
+          devices {
+            id
+            createdAt
+            updatedAt
+            name
+            status
             apiVersion
             contactId
           }

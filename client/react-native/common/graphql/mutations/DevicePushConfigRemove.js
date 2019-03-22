@@ -6,13 +6,13 @@ const DevicePushConfigRemove = graphql`
     $id: ID!
   ) {
     DevicePushConfigRemove(
-     id: $id
-   ) {
-     id
-     createdAt
-     updatedAt
-     deviceId
-     pushType
+      id: $id
+    ) {
+      id
+      createdAt
+      updatedAt
+      deviceId
+      pushType
       pushId
       relayPubkey
     }

@@ -4,19 +4,19 @@ import { commit } from '../../relay'
 import { merge } from '../../helpers'
 
 const ContactAcceptRequestMutation = graphql`
- mutation ContactAcceptRequestMutation($contactId: ID!) {
-   ContactAcceptRequest(contactId: $contactId) {
-     id
-     createdAt
-     updatedAt
-     sigchain
-     status
-     devices {
-       id
-       createdAt
-       updatedAt
-       name
-       status
+mutation ContactAcceptRequestMutation($contactId: ID!) {
+  ContactAcceptRequest(contactId: $contactId) {
+    id
+    createdAt
+    updatedAt
+    sigchain
+    status
+    devices {
+      id
+      createdAt
+      updatedAt
+      name
+      status
         apiVersion
         contactId
       }
