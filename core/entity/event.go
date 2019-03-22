@@ -254,11 +254,18 @@ func (e *Event) SetToDevice(conv *Device) *Event {
 }
 
 func (e *Event) SetErr(err error) *Event {
-	// FIXME: not implemented
-	panic("Event.SetErr not implemented")
+	if err != nil {
+		// FIXME: enrich error -> consider extract the pkg/errorcodes logic somewhere
+		e.ErrProxy = &Err{
+			ErrMsg: err.Error(),
+		}
+	}
+	return e
 }
 
 func (e *Event) Err() error {
-	// FIXME: not implemented
+	if e.ErrProxy != nil {
+		return e.ErrProxy
+	}
 	return nil
 }

@@ -1263,6 +1263,37 @@ models:
       attributes:
 
 
+  BertyEntityErr:
+    model: berty.tech/core/entity.Err
+    fields:
+      errMsg:
+  BertyEntityErrInput:
+    model: berty.tech/core/entity.Err
+    fields:
+      errMsg:
+  BertyEntityErrPayload:
+    model: berty.tech/core/entity.Err
+    fields:
+      errMsg:
+
+
+  GoogleProtobufAny:
+    model: github.com/golang/protobuf/ptypes/any.Any
+    fields:
+      typeUrl:
+      value:
+  GoogleProtobufAnyInput:
+    model: github.com/golang/protobuf/ptypes/any.Any
+    fields:
+      typeUrl:
+      value:
+  GoogleProtobufAnyPayload:
+    model: github.com/golang/protobuf/ptypes/any.Any
+    fields:
+      typeUrl:
+      value:
+
+
   BertyEntityEvent:
     model: berty.tech/core/entity.Event
     fields:
@@ -1286,6 +1317,7 @@ models:
       targetType:
       targetAddr:
         resolver: true
+      errProxy:
       metadata:
   BertyEntityEventInput:
     model: berty.tech/core/entity.Event
@@ -1310,6 +1342,7 @@ models:
       targetType:
       targetAddr:
         resolver: true
+      errProxy:
       metadata:
   BertyEntityEventPayload:
     model: berty.tech/core/entity.Event
@@ -1334,6 +1367,7 @@ models:
       targetType:
       targetAddr:
         resolver: true
+      errProxy:
       metadata:
 
   BertyEntityEventDispatch:
