@@ -81,7 +81,7 @@ message Event {
   TargetType target_type = 20;
 
   // TragetAddr can be a contact ID, a conversation ID, a device ID
-  string target_addr = 21;
+  string target_addr = 21 [(gql.graphql_id) = true];
 
   // Metadata represents additional metadata and is not stored in database
   repeated MetadataKeyValue metadata = 99 [(gogoproto.moretags) = "gorm:\"-\""];

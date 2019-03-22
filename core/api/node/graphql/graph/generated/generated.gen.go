@@ -775,6 +775,8 @@ type BertyEntityEventResolver interface {
 	ID(ctx context.Context, obj *entity.Event) (string, error)
 
 	Attributes(ctx context.Context, obj *entity.Event) ([]byte, error)
+
+	TargetAddr(ctx context.Context, obj *entity.Event) (string, error)
 }
 type GoogleProtobufFieldDescriptorProtoResolver interface {
 	Label(ctx context.Context, obj *descriptor.FieldDescriptorProto) (*int32, error)
@@ -8930,10 +8932,14 @@ func (ec *executionContext) _BertyEntityEvent(ctx context.Context, sel ast.Selec
 		case "targetType":
 			out.Values[i] = ec._BertyEntityEvent_targetType(ctx, field, obj)
 		case "targetAddr":
-			out.Values[i] = ec._BertyEntityEvent_targetAddr(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalid = true
-			}
+			wg.Add(1)
+			go func(i int, field graphql.CollectedField) {
+				out.Values[i] = ec._BertyEntityEvent_targetAddr(ctx, field, obj)
+				if out.Values[i] == graphql.Null {
+					invalid = true
+				}
+				wg.Done()
+			}(i, field)
 		case "metadata":
 			out.Values[i] = ec._BertyEntityEvent_metadata(ctx, field, obj)
 		default:
@@ -9351,7 +9357,7 @@ func (ec *executionContext) _BertyEntityEvent_targetAddr(ctx context.Context, fi
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TargetAddr, nil
+		return ec.resolvers.BertyEntityEvent().TargetAddr(rctx, obj)
 	})
 	if resTmp == nil {
 		if !ec.HasError(rctx) {
@@ -9361,7 +9367,7 @@ func (ec *executionContext) _BertyEntityEvent_targetAddr(ctx context.Context, fi
 	}
 	res := resTmp.(string)
 	rctx.Result = res
-	return models.MarshalString(res)
+	return models.MarshalID(res)
 }
 
 // nolint: vetshadow
@@ -23694,7 +23700,7 @@ func UnmarshalBertyEntityEventInput(v interface{}) (entity.Event, error) {
 			}
 		case "targetAddr":
 			var err error
-			it.TargetAddr, err = models.UnmarshalString(v)
+			it.TargetAddr, err = models.UnmarshalID(v)
 			if err != nil {
 				return it, err
 			}
@@ -24280,7 +24286,7 @@ type BertyEntityEvent implements Node {
     dispatches: [BertyEntityEventDispatch]
     sourceContactId: String!
     targetType: Enum
-    targetAddr: String!
+    targetAddr: ID!
     metadata: [BertyEntityMetadataKeyValue]
 }
       
@@ -24544,7 +24550,7 @@ input BertyEntityEventInput {
     dispatches: [BertyEntityEventDispatchInput]
     sourceContactId: String!
     targetType: Enum
-    targetAddr: String!
+    targetAddr: ID!
     metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {

@@ -94,7 +94,7 @@ func (m *Event) Validate() error {
 
 	// handling field: TargetType - name:"target_type" number:20 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Event.TargetType" json_name:"targetType"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: TargetAddr - name:"target_addr" number:21 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"targetAddr"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: TargetAddr - name:"target_addr" number:21 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"targetAddr" options:<53004:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Metadata - name:"metadata" number:99 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.MetadataKeyValue" json_name:"metadata" options:<65006:"gorm:\"-\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 

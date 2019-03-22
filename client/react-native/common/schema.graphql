@@ -428,7 +428,7 @@ type BertyEntityEvent implements Node {
     dispatches: [BertyEntityEventDispatch]
     sourceContactId: String!
     targetType: Enum
-    targetAddr: String!
+    targetAddr: ID!
     metadata: [BertyEntityMetadataKeyValue]
 }
       
@@ -692,7 +692,7 @@ input BertyEntityEventInput {
     dispatches: [BertyEntityEventDispatchInput]
     sourceContactId: String!
     targetType: Enum
-    targetAddr: String!
+    targetAddr: ID!
     metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {

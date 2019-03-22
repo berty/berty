@@ -1285,6 +1285,7 @@ models:
       sourceContactId:
       targetType:
       targetAddr:
+        resolver: true
       metadata:
   BertyEntityEventInput:
     model: berty.tech/core/entity.Event
@@ -1308,6 +1309,7 @@ models:
       sourceContactId:
       targetType:
       targetAddr:
+        resolver: true
       metadata:
   BertyEntityEventPayload:
     model: berty.tech/core/entity.Event
@@ -1331,6 +1333,7 @@ models:
       sourceContactId:
       targetType:
       targetAddr:
+        resolver: true
       metadata:
 
   BertyEntityEventDispatch:
