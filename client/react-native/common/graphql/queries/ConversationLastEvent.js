@@ -11,15 +11,31 @@ const query = graphql`
       createdAt
       updatedAt
       sentAt
-      seenAt
       receivedAt
       ackedAt
       direction
       apiVersion
-      destinationDeviceId
       kind
       attributes
-      conversationId
+      seenAt
+      ackStatus
+      dispatches {
+        eventId
+        deviceId
+        contactId
+        sentAt
+        ackedAt
+        seenAt
+        ackMedium
+        seenMedium
+      }
+      sourceContactId
+      targetType
+      targetAddr
+      metadata {
+        key
+        values
+      }
     }
   }
 `

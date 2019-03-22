@@ -7,24 +7,24 @@ const ConversationRemoveMutation = graphql`
       id
       readAt
       title
-      topic
-      members {
-        id
-        createdAt
-        updatedAt
-        status
-        contact {
-          id
-          createdAt
-          updatedAt
-          sigchain
-          status
-          devices {
-            id
-            createdAt
-            updatedAt
-            name
-            status
+     topic
+     members {
+       id
+       createdAt
+       updatedAt
+       status
+       contact {
+         id
+         createdAt
+         updatedAt
+         sigchain
+         status
+         devices {
+           id
+           createdAt
+           updatedAt
+           name
+           status
             apiVersion
             contactId
           }

@@ -12,19 +12,19 @@ const ContactRequestMutation = graphql`
     ContactRequest(
       contactId: $contactId
       contactOverrideDisplayName: $contactOverrideDisplayName
-      introText: $introText
-    ) {
-      id
-      createdAt
-      updatedAt
-      sigchain
-      status
-      devices {
-        id
-        createdAt
-        updatedAt
-        name
-        status
+     introText: $introText
+   ) {
+     id
+     createdAt
+     updatedAt
+     sigchain
+     status
+     devices {
+       id
+       createdAt
+       updatedAt
+       name
+       status
         apiVersion
         contactId
       }

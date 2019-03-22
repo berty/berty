@@ -22,23 +22,38 @@ const query = graphql`
       onlyWithoutAckedAt: $onlyWithoutAckedAt
       onlyWithoutSeenAt: $onlyWithoutSeenAt
     ) {
-        id
-        senderId
-        createdAt
-        updatedAt
+      id
+      sourceDeviceId
+      createdAt
+      updatedAt
+      sentAt
+      receivedAt
+      ackedAt
+      direction
+      apiVersion
+      kind
+      attributes
+      seenAt
+      ackStatus
+      dispatches {
+        eventId
+        deviceId
+        contactId
         sentAt
-        seenAt
-        receivedAt
         ackedAt
-        direction
-        senderApiVersion
-        receiverApiVersion
-        receiverId
-        kind
-        attributes
-        conversationId
+        seenAt
+        ackMedium
+        seenMedium
+      }
+      sourceContactId
+      targetType
+      targetAddr
+      metadata {
+        key
+        values
+      }
     }
-}
+  }
 `
 
 export const defaultVariables = {

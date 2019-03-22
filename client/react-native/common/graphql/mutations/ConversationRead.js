@@ -8,24 +8,24 @@ const ConversationReadMutation = graphql`
       readAt
       title
       topic
-      infos
-      members {
-        id
-        createdAt
-        updatedAt
-        status
-        contact {
-          id
-          createdAt
-          updatedAt
-          sigchain
-          status
-          devices {
-            id
-            createdAt
-            updatedAt
-            name
-            status
+     infos
+     members {
+       id
+       createdAt
+       updatedAt
+       status
+       contact {
+         id
+         createdAt
+         updatedAt
+         sigchain
+         status
+         devices {
+           id
+           createdAt
+           updatedAt
+           name
+           status
             apiVersion
             contactId
           }

@@ -105,24 +105,31 @@ export const CommitLogStream = graphql`
           createdAt
           updatedAt
           sentAt
-          seenAt
           receivedAt
           ackedAt
           direction
           apiVersion
-          destinationDeviceId
           kind
           attributes
-          conversationId
-        }
-        devicePushConfig {
-          id
-          createdAt
-          updatedAt
-          deviceId
-          pushType
-          pushId
-          relayPubkey
+          seenAt
+          ackStatus
+          dispatches {
+            eventId
+            deviceId
+            contactId
+            sentAt
+            ackedAt
+            seenAt
+            ackMedium
+            seenMedium
+          }
+          sourceContactId
+          targetType
+          targetAddr
+          metadata {
+            key
+            values
+          }
         }
       }
     }

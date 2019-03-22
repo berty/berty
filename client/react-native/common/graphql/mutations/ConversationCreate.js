@@ -8,30 +8,30 @@ const ConversationCreateMutation = graphql`
     $title: String!
     $topic: String!
     $contacts: [BertyEntityContactInput]
-  ) {
-    ConversationCreate(title: $title, topic: $topic, contacts: $contacts) {
-      id
-      createdAt
-      updatedAt
-      title
-      topic
-      members {
-        id
-        createdAt
-        updatedAt
-        status
-        contact {
-          id
-          createdAt
-          updatedAt
-          sigchain
-          status
-          devices {
-            id
-            createdAt
-            updatedAt
-            name
-            status
+ ) {
+   ConversationCreate(title: $title, topic: $topic, contacts: $contacts) {
+     id
+     createdAt
+     updatedAt
+     title
+     topic
+     members {
+       id
+       createdAt
+       updatedAt
+       status
+       contact {
+         id
+         createdAt
+         updatedAt
+         sigchain
+         status
+         devices {
+           id
+           createdAt
+           updatedAt
+           name
+           status
             apiVersion
             contactId
           }
