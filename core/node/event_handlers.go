@@ -6,15 +6,16 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/gofrs/uuid"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
 	bsql "berty.tech/core/sql"
-	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 type EventHandler func(context.Context, *entity.Event) error

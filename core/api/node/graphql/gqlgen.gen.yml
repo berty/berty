@@ -1871,6 +1871,8 @@ models:
       event:
       devicePushConfig:
       devicePushIdentifier:
+      eventDispatch:
+      senderAlias:
   BertyNodeEntityInput:
     model: berty.tech/core/api/node.CommitLog_Entity
     fields:
@@ -1882,6 +1884,8 @@ models:
       event:
       devicePushConfig:
       devicePushIdentifier:
+      eventDispatch:
+      senderAlias:
   BertyNodeEntityPayload:
     model: berty.tech/core/api/node.CommitLog_Entity
     fields:
@@ -1893,6 +1897,8 @@ models:
       event:
       devicePushConfig:
       devicePushIdentifier:
+      eventDispatch:
+      senderAlias:
 
   BertyNodeEventListInput:
     model: berty.tech/core/api/node.EventListInput

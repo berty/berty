@@ -119,8 +119,12 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 		log.Entity = &node.CommitLog_Entity{DevicePushConfig: data}
 	case *entity.DevicePushIdentifier:
 		log.Entity = &node.CommitLog_Entity{DevicePushIdentifier: data}
+	case *entity.EventDispatch:
+		log.Entity = &node.CommitLog_Entity{EventDispatch: data}
+	case *entity.SenderAlias:
+		log.Entity = &node.CommitLog_Entity{SenderAlias: data}
 	default:
-		logger().Warn(fmt.Sprintf("unhandled entity %+v", data))
+		logger().Warn(fmt.Sprintf("unhandled entity %q (%+v)", data))
 		return nil
 	}
 	return log

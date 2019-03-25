@@ -335,6 +335,8 @@ type ComplexityRoot struct {
 		Event                func(childComplexity int) int
 		DevicePushConfig     func(childComplexity int) int
 		DevicePushIdentifier func(childComplexity int) int
+		EventDispatch        func(childComplexity int) int
+		SenderAlias          func(childComplexity int) int
 	}
 
 	BertyNodeContactEdge struct {
@@ -4212,6 +4214,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyNodeCommitLogEntity.DevicePushIdentifier(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.eventDispatch":
+		if e.complexity.BertyNodeCommitLogEntity.EventDispatch == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.EventDispatch(childComplexity), true
+
+	case "BertyNodeCommitLogEntity.senderAlias":
+		if e.complexity.BertyNodeCommitLogEntity.SenderAlias == nil {
+			break
+		}
+
+		return e.complexity.BertyNodeCommitLogEntity.SenderAlias(childComplexity), true
 
 	case "BertyNodeContactEdge.node":
 		if e.complexity.BertyNodeContactEdge.Node == nil {
@@ -11331,6 +11347,10 @@ func (ec *executionContext) _BertyNodeCommitLogEntity(ctx context.Context, sel a
 			out.Values[i] = ec._BertyNodeCommitLogEntity_devicePushConfig(ctx, field, obj)
 		case "devicePushIdentifier":
 			out.Values[i] = ec._BertyNodeCommitLogEntity_devicePushIdentifier(ctx, field, obj)
+		case "eventDispatch":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_eventDispatch(ctx, field, obj)
+		case "senderAlias":
+			out.Values[i] = ec._BertyNodeCommitLogEntity_senderAlias(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -11540,6 +11560,56 @@ func (ec *executionContext) _BertyNodeCommitLogEntity_devicePushIdentifier(ctx c
 	}
 
 	return ec._BertyEntityDevicePushIdentifier(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_eventDispatch(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EventDispatch, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.EventDispatch)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityEventDispatch(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyNodeCommitLogEntity_senderAlias(ctx context.Context, field graphql.CollectedField, obj *node.CommitLog_Entity) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyNodeCommitLogEntity",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SenderAlias, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.SenderAlias)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntitySenderAlias(ctx, field.Selections, res)
 }
 
 var bertyNodeContactEdgeImplementors = []string{"BertyNodeContactEdge"}
@@ -24690,6 +24760,8 @@ type BertyNodeCommitLogEntity  {
     event: BertyEntityEvent
     devicePushConfig: BertyEntityDevicePushConfig
     devicePushIdentifier: BertyEntityDevicePushIdentifier
+    eventDispatch: BertyEntityEventDispatch
+    senderAlias: BertyEntitySenderAlias
 }
 type BertyNodeCommitLog  {
     operation: Enum

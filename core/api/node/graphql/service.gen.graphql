@@ -600,6 +600,8 @@ type BertyNodeCommitLogEntity  {
     event: BertyEntityEvent
     devicePushConfig: BertyEntityDevicePushConfig
     devicePushIdentifier: BertyEntityDevicePushIdentifier
+    eventDispatch: BertyEntityEventDispatch
+    senderAlias: BertyEntitySenderAlias
 }
 type BertyNodeCommitLog  {
     operation: Enum
