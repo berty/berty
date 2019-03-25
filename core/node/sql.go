@@ -124,7 +124,7 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 	case *entity.SenderAlias:
 		log.Entity = &node.CommitLog_Entity{SenderAlias: data}
 	default:
-		logger().Warn(fmt.Sprintf("unhandled entity %q (%+v)", data))
+		logger().Warn(fmt.Sprintf("unhandled entity (%+v)", data))
 		return nil
 	}
 	return log
