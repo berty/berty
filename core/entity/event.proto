@@ -6,8 +6,10 @@ option go_package = "berty.tech/core/entity";
 
 import "api/protobuf/graphql/graphql.proto";
 import "entity/kind.proto";
+import "entity/err.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
 import "pkg/validate/validate.proto";
 
 message Event {
@@ -82,6 +84,9 @@ message Event {
 
   // TragetAddr can be a contact ID, a conversation ID, a device ID
   string target_addr = 21 [(gql.graphql_id) = true];
+
+  // ErrProxy is used by Err() and SetErr()
+  Err err_proxy = 98 [(gogoproto.moretags) = "gorm:\"-\""];
 
   // Metadata represents additional metadata and is not stored in database
   repeated MetadataKeyValue metadata = 99 [(gogoproto.moretags) = "gorm:\"-\""];

@@ -35,6 +35,20 @@ func setupNonAcknowledgedEventDestinations() (string, *gorm.DB, time.Time, time.
 	return filename, db, past, now, future
 }
 
+func TestEventErr(t *testing.T) {
+	event := NewEvent()
+
+	if event.Err() != nil {
+		t.Error(fmt.Errorf("event.Err() should be nil"))
+	}
+
+	event.SetErr(fmt.Errorf("beep boop"))
+
+	if event.Err() == nil || event.Err().Error() != "beep boop" {
+		t.Error(fmt.Errorf("event.Err() should be 'beep boop'"))
+	}
+}
+
 func TestFindNonAcknowledgedEventDestinations(t *testing.T) {
 	filename, db, _, now, _ := setupNonAcknowledgedEventDestinations()
 	defer mock.RemoveDb(filename, db)

@@ -20,6 +20,7 @@ import (
 	graphql "github.com/99designs/gqlgen/graphql"
 	introspection "github.com/99designs/gqlgen/graphql/introspection"
 	descriptor "github.com/golang/protobuf/protoc-gen-go/descriptor"
+	any "github.com/golang/protobuf/ptypes/any"
 	gqlparser "github.com/vektah/gqlparser"
 	ast "github.com/vektah/gqlparser/ast"
 )
@@ -194,6 +195,10 @@ type ComplexityRoot struct {
 		Val func(childComplexity int) int
 	}
 
+	BertyEntityErr struct {
+		ErrMsg func(childComplexity int) int
+	}
+
 	BertyEntityEvent struct {
 		Id              func(childComplexity int) int
 		SourceDeviceId  func(childComplexity int) int
@@ -212,6 +217,7 @@ type ComplexityRoot struct {
 		SourceContactId func(childComplexity int) int
 		TargetType      func(childComplexity int) int
 		TargetAddr      func(childComplexity int) int
+		ErrProxy        func(childComplexity int) int
 		Metadata        func(childComplexity int) int
 	}
 
@@ -474,6 +480,11 @@ type ComplexityRoot struct {
 	BertyPushPushNativeIdentifier struct {
 		PackageId   func(childComplexity int) int
 		DeviceToken func(childComplexity int) int
+	}
+
+	GoogleProtobufAny struct {
+		TypeUrl func(childComplexity int) int
+		Value   func(childComplexity int) int
 	}
 
 	GoogleProtobufDescriptorProto struct {
@@ -3691,6 +3702,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityDevtoolsMapsetAttrs.Val(childComplexity), true
 
+	case "BertyEntityErr.errMsg":
+		if e.complexity.BertyEntityErr.ErrMsg == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityErr.ErrMsg(childComplexity), true
+
 	case "BertyEntityEvent.id":
 		if e.complexity.BertyEntityEvent.Id == nil {
 			break
@@ -3809,6 +3827,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityEvent.TargetAddr(childComplexity), true
+
+	case "BertyEntityEvent.errProxy":
+		if e.complexity.BertyEntityEvent.ErrProxy == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityEvent.ErrProxy(childComplexity), true
 
 	case "BertyEntityEvent.metadata":
 		if e.complexity.BertyEntityEvent.Metadata == nil {
@@ -4635,6 +4660,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyPushPushNativeIdentifier.DeviceToken(childComplexity), true
+
+	case "GoogleProtobufAny.typeUrl":
+		if e.complexity.GoogleProtobufAny.TypeUrl == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufAny.TypeUrl(childComplexity), true
+
+	case "GoogleProtobufAny.value":
+		if e.complexity.GoogleProtobufAny.Value == nil {
+			break
+		}
+
+		return e.complexity.GoogleProtobufAny.Value(childComplexity), true
 
 	case "GoogleProtobufDescriptorProto.name":
 		if e.complexity.GoogleProtobufDescriptorProto.Name == nil {
@@ -8864,6 +8903,59 @@ func (ec *executionContext) _BertyEntityDevtoolsMapsetAttrs_val(ctx context.Cont
 	return models.MarshalString(res)
 }
 
+var bertyEntityErrImplementors = []string{"BertyEntityErr"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityErr(ctx context.Context, sel ast.SelectionSet, obj *entity.Err) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityErrImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityErr")
+		case "errMsg":
+			out.Values[i] = ec._BertyEntityErr_errMsg(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityErr_errMsg(ctx context.Context, field graphql.CollectedField, obj *entity.Err) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityErr",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ErrMsg, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
 var bertyEntityEventImplementors = []string{"BertyEntityEvent", "Node"}
 
 // nolint: gocyclo, errcheck, gas, goconst
@@ -8940,6 +9032,8 @@ func (ec *executionContext) _BertyEntityEvent(ctx context.Context, sel ast.Selec
 				}
 				wg.Done()
 			}(i, field)
+		case "errProxy":
+			out.Values[i] = ec._BertyEntityEvent_errProxy(ctx, field, obj)
 		case "metadata":
 			out.Values[i] = ec._BertyEntityEvent_metadata(ctx, field, obj)
 		default:
@@ -9368,6 +9462,31 @@ func (ec *executionContext) _BertyEntityEvent_targetAddr(ctx context.Context, fi
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalID(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityEvent_errProxy(ctx context.Context, field graphql.CollectedField, obj *entity.Event) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityEvent",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ErrProxy, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Err)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityErr(ctx, field.Selections, res)
 }
 
 // nolint: vetshadow
@@ -14016,6 +14135,90 @@ func (ec *executionContext) _BertyPushPushNativeIdentifier_deviceToken(ctx conte
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalString(res)
+}
+
+var googleProtobufAnyImplementors = []string{"GoogleProtobufAny"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _GoogleProtobufAny(ctx context.Context, sel ast.SelectionSet, obj *any.Any) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, googleProtobufAnyImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("GoogleProtobufAny")
+		case "typeUrl":
+			out.Values[i] = ec._GoogleProtobufAny_typeUrl(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "value":
+			out.Values[i] = ec._GoogleProtobufAny_value(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _GoogleProtobufAny_typeUrl(ctx context.Context, field graphql.CollectedField, obj *any.Any) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufAny",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TypeUrl, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _GoogleProtobufAny_value(ctx context.Context, field graphql.CollectedField, obj *any.Any) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "GoogleProtobufAny",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Value, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]byte)
+	rctx.Result = res
+
+	arr1 := make(graphql.Array, len(res))
+
+	for idx1 := range res {
+		arr1[idx1] = func() graphql.Marshaler {
+			return models.MarshalByte(res[idx1])
+		}()
+	}
+
+	return arr1
 }
 
 var googleProtobufDescriptorProtoImplementors = []string{"GoogleProtobufDescriptorProto"}
@@ -23457,6 +23660,24 @@ func UnmarshalBertyEntityDevicePushIdentifierInput(v interface{}) (entity.Device
 	return it, nil
 }
 
+func UnmarshalBertyEntityErrInput(v interface{}) (entity.Err, error) {
+	var it entity.Err
+	var asMap = v.(map[string]interface{})
+
+	for k, v := range asMap {
+		switch k {
+		case "errMsg":
+			var err error
+			it.ErrMsg, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 func UnmarshalBertyEntityEventDispatchInput(v interface{}) (entity.EventDispatch, error) {
 	var it entity.EventDispatch
 	var asMap = v.(map[string]interface{})
@@ -23701,6 +23922,17 @@ func UnmarshalBertyEntityEventInput(v interface{}) (entity.Event, error) {
 		case "targetAddr":
 			var err error
 			it.TargetAddr, err = models.UnmarshalID(v)
+			if err != nil {
+				return it, err
+			}
+		case "errProxy":
+			var err error
+			var ptr1 entity.Err
+			if v != nil {
+				ptr1, err = UnmarshalBertyEntityErrInput(v)
+				it.ErrProxy = &ptr1
+			}
+
 			if err != nil {
 				return it, err
 			}
@@ -24265,6 +24497,21 @@ type BertyEntityNodeAttrs  {
   
   
 
+type BertyEntityErr  {
+    errMsg: String!
+}
+  
+  
+  
+
+type GoogleProtobufAny  {
+    typeUrl: String!
+    value: [Byte!]
+}
+  
+  
+  
+
       
       
       
@@ -24287,6 +24534,7 @@ type BertyEntityEvent implements Node {
     sourceContactId: String!
     targetType: Enum
     targetAddr: ID!
+    errProxy: BertyEntityErr
     metadata: [BertyEntityMetadataKeyValue]
 }
       
@@ -24529,6 +24777,9 @@ input BertyEntityEventDispatchInput {
     ackMedium: Enum
     seenMedium: Enum
 }
+input BertyEntityErrInput {
+    errMsg: String!
+}
 input BertyEntityMetadataKeyValueInput {
     key: String!
     values: [String!]
@@ -24551,6 +24802,7 @@ input BertyEntityEventInput {
     sourceContactId: String!
     targetType: Enum
     targetAddr: ID!
+    errProxy: BertyEntityErrInput
     metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {

@@ -96,6 +96,14 @@ func (m *Event) Validate() error {
 
 	// handling field: TargetAddr - name:"target_addr" number:21 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"targetAddr" options:<53004:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
+	// handling field: ErrProxy - name:"err_proxy" number:98 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Err" json_name:"errProxy" options:<65006:"gorm:\"-\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	if v, ok := interface{}(m.GetErrProxy()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return errors.Wrap(err, "embedded message verification failed: ErrProxy")
+		}
+	}
+
 	// handling field: Metadata - name:"metadata" number:99 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.MetadataKeyValue" json_name:"metadata" options:<65006:"gorm:\"-\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	if v, ok := interface{}(m.GetMetadata()).(interface{ Validate() error }); ok {

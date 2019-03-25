@@ -407,6 +407,21 @@ type BertyEntityNodeAttrs  {
   
   
 
+type BertyEntityErr  {
+    errMsg: String!
+}
+  
+  
+  
+
+type GoogleProtobufAny  {
+    typeUrl: String!
+    value: [Byte!]
+}
+  
+  
+  
+
       
       
       
@@ -429,6 +444,7 @@ type BertyEntityEvent implements Node {
     sourceContactId: String!
     targetType: Enum
     targetAddr: ID!
+    errProxy: BertyEntityErr
     metadata: [BertyEntityMetadataKeyValue]
 }
       
@@ -671,6 +687,9 @@ input BertyEntityEventDispatchInput {
     ackMedium: Enum
     seenMedium: Enum
 }
+input BertyEntityErrInput {
+    errMsg: String!
+}
 input BertyEntityMetadataKeyValueInput {
     key: String!
     values: [String!]
@@ -693,6 +712,7 @@ input BertyEntityEventInput {
     sourceContactId: String!
     targetType: Enum
     targetAddr: ID!
+    errProxy: BertyEntityErrInput
     metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {

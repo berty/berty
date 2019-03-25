@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package berty.entity;
+
+option go_package = "berty.tech/core/entity";
+
+message Err {
+  string err_msg = 1;
+}
