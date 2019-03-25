@@ -1,10 +1,12 @@
-import { createSwitchNavigator } from 'react-navigation'
-import Auth from '../Screens/Accounts/Auth'
-import { Picker } from '../Screens/Picker'
-import OnboardingNavigator from './OnboardingNavigator'
-import MainNavigator from './MainNavigator'
+import { Platform } from 'react-native'
+import { createAppContainer, createSwitchNavigator } from 'react-navigation'
 
-export const AppNavigator = createSwitchNavigator(
+import { Picker } from '../Screens/Picker'
+import Auth from '../Screens/Accounts/Auth'
+import MainNavigator from './MainNavigator'
+import OnboardingNavigator from './OnboardingNavigator'
+
+const AppNavigator = createSwitchNavigator(
   {
     'accounts/auth': Auth,
     'switch/picker': Picker,
@@ -16,3 +18,7 @@ export const AppNavigator = createSwitchNavigator(
     headerMode: 'none',
   }
 )
+
+export default (Platform.OS !== 'web'
+  ? createAppContainer(AppNavigator)
+  : AppNavigator)

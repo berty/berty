@@ -49,7 +49,6 @@ class DebugStateBar extends PureComponent {
     this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe({
       iterator: undefined,
       updater: (store, data) => {
-        console.log('peer', data)
         const peer = data.MonitorPeers
         this.addPeer(peer)
       },

@@ -1,6 +1,6 @@
 import React from 'react'
 import hoistStatics from 'hoist-non-react-statics'
-import { RelayContext } from '../relay'
+import RelayContext from '../relay/RelayContext'
 
 export default function withRelayContext (Component) {
   class ComponentWithRelayContext extends React.Component {
@@ -11,12 +11,7 @@ export default function withRelayContext (Component) {
       return (
         <RelayContext.Consumer>
           {context => {
-            return (
-              <Component
-                {...this.props}
-                context={context}
-              />
-            )
+            return <Component {...this.props} context={context} />
           }}
         </RelayContext.Consumer>
       )

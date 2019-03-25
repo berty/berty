@@ -2,7 +2,7 @@ import { NavigationActions } from '@react-navigation/core'
 import React from 'react'
 import { withNavigation } from 'react-navigation'
 
-const getSplitNavigator = (navigation) => {
+const getSplitNavigator = navigation => {
   if (!navigation) {
     return null
   }
@@ -33,12 +33,16 @@ const BackActionProvider = ({ navigation, children }) => {
     const splitNavigator = getSplitNavigator(navigation)
 
     if (splitNavigator) {
-      splitNavigator.dispatch(NavigationActions.navigate({ routeName: shownPaneRouteName }))
+      splitNavigator.dispatch(
+        NavigationActions.navigate({ routeName: shownPaneRouteName })
+      )
     }
 
     if (navigation.goBack(...args) === false) {
       navigation.navigate('placeholder')
-      splitNavigator.dispatch(NavigationActions.navigate({ routeName: 'placeholder' }))
+      splitNavigator.dispatch(
+        NavigationActions.navigate({ routeName: 'placeholder' })
+      )
     }
   }
 
@@ -48,9 +52,11 @@ const BackActionProvider = ({ navigation, children }) => {
 const withGoBackBase = WrappedComponent => {
   class WrappedGoBack extends React.Component {
     render () {
-      return <BackActionProvider navigation={this.props.navigation}>{({ goBack }) =>
-        <WrappedComponent {...this.props} goBack={goBack} />
-      }</BackActionProvider>
+      return (
+        <BackActionProvider navigation={this.props.navigation}>
+          {({ goBack }) => <WrappedComponent {...this.props} goBack={goBack} />}
+        </BackActionProvider>
+      )
     }
   }
   WrappedGoBack.displayName = `WithGoBack(${getDisplayName(WrappedComponent)})`
@@ -58,7 +64,7 @@ const withGoBackBase = WrappedComponent => {
   return WrappedGoBack
 }
 
-export const withGoBack = (props) => withNavigation(withGoBackBase(props))
+export const withGoBack = props => withNavigation(withGoBackBase(props))
 
 const getDisplayName = WrappedComponent =>
   WrappedComponent.displayName || WrappedComponent.name || 'Component'

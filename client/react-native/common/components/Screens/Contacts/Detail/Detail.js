@@ -67,6 +67,9 @@ class DetailsBase extends PureComponent {
   render () {
     const { navigation, t } = this.props
     const contact = navigation.getParam('contact')
+    if (contact == null) {
+      return null
+    }
     return (
       <Screen>
         <Menu absolute>
@@ -129,7 +132,7 @@ Details.navigationOptions = ({ navigation }) => ({
       title={I18n.t('contacts.details')}
       rightBtnIcon={'edit-2'}
       onPressRightBtn={() =>
-        navigation.navigate('detail/edit', {
+        navigation.navigate('contacts/detail/edit', {
           contact: navigation.getParam('contact'),
         })
       }

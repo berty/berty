@@ -30,7 +30,7 @@ class ByQRCode extends PureComponent {
   }
 
   render () {
-    const { t } = this.props
+    const { t, navigation } = this.props
 
     const size = Math.min(
       Dimensions.get('window').width,
@@ -77,6 +77,7 @@ class ByQRCode extends PureComponent {
 
                 await showContactModal({
                   relayContext,
+                  navigation,
                   beforeDismiss: () => this.reactivate(),
                   data: {
                     id: url.hashParts['id'],

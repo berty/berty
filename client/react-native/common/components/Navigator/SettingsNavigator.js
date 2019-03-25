@@ -1,33 +1,16 @@
-import React from 'react'
-import { Platform } from 'react-native'
-import { Header } from '../Library'
 import { createStackNavigator } from 'react-navigation'
-import Notifications from '../Screens/Settings/Notifications'
-import List from '../Screens/Settings/List'
-import MyAccount from '../Screens/Settings/MyAccount/MyAccount'
-import Update from '../Screens/Settings/Update'
 import I18n from 'i18next'
+import React from 'react'
+
+import { Header } from '../Library'
 import AboutNavigator from './AboutNavigator'
+import DevtoolsNavigator from './DevtoolsNavigator'
 import HelpNavigator from './HelpNavigator'
 import LegalNavigator from './LegalNavigator'
-import DevtoolsNavigator from './DevtoolsNavigator'
-
-const handleNavigationsOptions = ({ navigation, screenProps }) => {
-  let tabBarVisible = false
-
-  if ((Platform.OS === 'web' && navigation.state.routeName === 'settings/list') ||
-    (Platform.OS !== 'web' &&
-      navigation.state.routes[navigation.state.index].routeName === 'settings/list')) {
-    tabBarVisible = true
-  }
-
-  return {
-    header: (
-      <Header navigation={navigation} title={I18n.t('settings.title')} titleIcon='settings' />
-    ),
-    tabBarVisible,
-  }
-}
+import List from '../Screens/Settings/List'
+import MyAccount from '../Screens/Settings/MyAccount/MyAccount'
+import Notifications from '../Screens/Settings/Notifications'
+import Update from '../Screens/Settings/Update'
 
 export default createStackNavigator(
   {
@@ -62,6 +45,15 @@ export default createStackNavigator(
   },
   {
     initialRouteName: 'settings/list',
-    navigationOptions: handleNavigationsOptions,
+    navigationOptions: ({ navigation, screenProps }) => ({
+      header: (
+        <Header
+          navigation={navigation}
+          title={I18n.t('settings.title')}
+          titleIcon='settings'
+        />
+      ),
+      tabBarVisible: true,
+    }),
   }
 )

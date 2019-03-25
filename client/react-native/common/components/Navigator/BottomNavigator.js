@@ -1,28 +1,28 @@
-import ContactNavigator, {
-  SplitSideContactNavigator,
-  SubviewsContactNavigator,
-} from './ContactNavigator'
+import { Platform } from 'react-native'
+import { createBottomTabNavigator } from 'react-navigation'
+import I18n from 'i18next'
+import React, { Component } from 'react'
+
+import { Icon } from '../Library'
+import { UpdateContext } from '../../update'
+import { colors } from '../../constants'
+import { createSplitNavigator } from './SplitNavigator'
+import { merge } from '../../helpers'
 import ChatNavigator, {
   SubviewsChatNavigator,
   SplitSideChatNavigator,
 } from './ChatNavigator'
-import SettingsNavigator from './SettingsNavigator'
-import { createBottomTabNavigator } from 'react-navigation'
-import { Platform } from 'react-native'
-import I18n from 'i18next'
-import React, { Component } from 'react'
-import { colors } from '../../constants'
-import { Icon } from '../Library'
-import { UpdateContext } from '../../update'
-import { createSplitNavigator } from './SplitNavigator'
+import ContactNavigator, {
+  SplitSideContactNavigator,
+  SubviewsContactNavigator,
+} from './ContactNavigator'
 import Placeholder from '../Screens/Placeholder'
+import SettingsNavigator from './SettingsNavigator'
 import withRelayContext from '../../helpers/withRelayContext'
-import { merge } from '../../helpers'
 
 class TabBarIconBase extends Component {
   constructor (props) {
     super(props)
-
     const {
       context: { queries, subscriptions },
     } = props
@@ -31,7 +31,7 @@ class TabBarIconBase extends Component {
       stored: [],
       queryList: queries.EventList.graphql,
       queryVariables:
-        props.routeName === 'contacts' || props.routeName === 'side/contacts'
+        props.routeName === 'contacts'
           ? merge([
             queries.EventList.defaultVariables,
             {
@@ -53,7 +53,7 @@ class TabBarIconBase extends Component {
             },
           ]),
       subscription:
-        props.routeName === 'contacts' || props.routeName === 'side/contacts'
+        props.routeName === 'contacts'
           ? [subscriptions.contactRequest]
           : [subscriptions.message],
     }
@@ -139,19 +139,13 @@ class TabBarIconBase extends Component {
       contacts: 'users',
       chats: 'berty-berty_conversation',
       settings: 'settings',
-      'side/contacts': 'users',
-      'side/chats': 'berty-berty_conversation',
-      'side/settings': 'settings',
     }[routeName]
 
-    if (
-      (routeName === 'contacts' || routeName === 'side/contacts') &&
-      navigation.isFocused() === true
-    ) {
+    if (routeName === 'contacts' && navigation.isFocused() === true) {
       this.contactSeen()
     }
 
-    return routeName === 'settings' || routeName === 'side/settings' ? (
+    return routeName === 'settings' ? (
       <UpdateContext.Consumer>
         {({ availableUpdate }) => (
           <Icon.Badge
@@ -251,23 +245,23 @@ export default createBottomTabNavigator(
 export const SplitNavigator = createSplitNavigator(
   {
     placeholder: Placeholder,
-    contacts: SubviewsContactNavigator,
+    'contacts/subviews': SubviewsContactNavigator,
     'chats/subviews': SubviewsChatNavigator,
   },
   {
-    'side/contacts': {
+    contacts: {
       screen: SplitSideContactNavigator,
       navigationOptions: () => ({
         title: I18n.t('contacts.title'),
       }),
     },
-    'side/chats': {
+    chats: {
       screen: SplitSideChatNavigator,
       navigationOptions: () => ({
         title: I18n.t('chats.title'),
       }),
     },
-    'side/settings': {
+    settings: {
       screen: SettingsNavigator,
       navigationOptions: () => ({
         title: I18n.t('settings.title'),
@@ -278,6 +272,6 @@ export const SplitNavigator = createSplitNavigator(
   {
     ...options,
     backBehavior: 'none',
-    initialRouteName: 'side/chats',
+    initialRouteName: 'chats',
   }
 )

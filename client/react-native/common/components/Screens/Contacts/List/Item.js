@@ -27,6 +27,7 @@ const Item = fragments.Contact(
       ) {
         await showContactModal({
           relayContext: context,
+          navigation,
           data: {
             id: contact.getCoreID(id),
             displayName,
@@ -36,7 +37,7 @@ const Item = fragments.Contact(
         return
       }
 
-      navigation.navigate('detail/list', {
+      navigation.navigate('contacts/detail/list', {
         contact: {
           id,
           overrideDisplayName,
