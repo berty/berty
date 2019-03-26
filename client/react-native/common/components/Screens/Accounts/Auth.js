@@ -10,7 +10,7 @@ import { hook } from 'cavy'
 import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
-import { Flex, Loader, Screen } from '../../Library'
+import { Animation, Flex, Loader, Screen } from '../../Library'
 import { colors } from '../../../constants'
 import { defaultUsername } from '../../../helpers/contacts'
 import { environment, contextValue } from '../../../relay'
@@ -22,9 +22,9 @@ import {
   fragments,
   updaters,
 } from '../../../graphql'
-import withDeepLinkHandler from '../../../helpers/withDeepLinkHandler'
 import NavigationService from '../../../helpers/NavigationService'
 import sleep from '../../../helpers/sleep'
+import withDeepLinkHandler from '../../../helpers/withDeepLinkHandler'
 import withRelayContext from '../../../helpers/withRelayContext'
 import withUpdateContext from '../../../helpers/withUpdateContext'
 
@@ -177,7 +177,28 @@ class Auth extends PureComponent {
     const { loading, message, current } = this.state
 
     if (loading === true) {
-      return <Loader message={message} />
+      return ['ios', 'android'].some(_ => _ === Platform.OS) ? (
+        <Flex.Rows
+          align='center'
+          justify='center'
+          style={{
+            width: '100%',
+            height: '100%',
+            zIndex: 1000,
+            position: 'absolute',
+            backgroundColor: colors.white,
+          }}
+        >
+          <>
+            <Animation />
+            <Text bottom tiny>
+              {message}
+            </Text>
+          </>
+        </Flex.Rows>
+      ) : (
+        <Loader message={message} />
+      )
     }
     if (current === null) {
       return (

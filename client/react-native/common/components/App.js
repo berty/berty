@@ -7,15 +7,14 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 import ReactNativeLanguages from 'react-native-languages'
 
-import { Flex, Animation, MovableView, DebugStateBar } from './Library'
+import { MovableView, DebugStateBar } from './Library'
 import { RelayContext } from '../relay'
 import { UpdateContext } from '../update'
-import { colors } from './../constants'
-import Navigator from './Navigator'
 import Instabug from '../helpers/Instabug'
 import * as KeyboardContext from '../helpers/KeyboardContext'
 import Mousetrap from '../helpers/Mousetrap'
 import NavigationService from './../helpers/NavigationService'
+import Navigator from './Navigator'
 import i18n from '../i18n'
 
 export default class App extends PureComponent {
@@ -100,51 +99,32 @@ export default class App extends PureComponent {
   }
 
   render () {
-    const { loading, showAnim, relayContext, availableUpdate } = this.state
+    const { relayContext, availableUpdate } = this.state
     return (
       <KeyboardContext.Provider>
         <I18nextProvider i18n={i18n}>
           <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-            {showAnim ? (
-              <Flex.Rows
-                align='center'
-                justify='center'
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  zIndex: 1000,
-                  position: 'absolute',
-                  backgroundColor: colors.white,
-                }}
+            <RelayContext.Provider
+              value={{ ...relayContext, setState: this.setStateContext }}
+            >
+              <UpdateContext.Provider
+                value={{ availableUpdate, setState: this.setStateUpdate }}
               >
-                <Animation
-                  onFinish={() => this.setState({ showAnim: false })}
-                />
-              </Flex.Rows>
-            ) : null}
-            {!loading ? (
-              <RelayContext.Provider
-                value={{ ...relayContext, setState: this.setStateContext }}
-              >
-                <UpdateContext.Provider
-                  value={{ availableUpdate, setState: this.setStateUpdate }}
+                <Navigator />
+                <FlashMessage position='top' />
+                <View
+                  style={{
+                    zIndex: 1,
+                    position: 'absolute',
+                    top: 30,
+                    right: 48,
+                    padding: 5,
+                  }}
                 >
-                  <Navigator />
-                  <FlashMessage position='top' />
-                  <View
-                    style={{
-                      zIndex: 1,
-                      position: 'absolute',
-                      top: 30,
-                      right: 48,
-                      padding: 5,
-                    }}
-                  >
-                    <MovableView>{this.state.debugBar}</MovableView>
-                  </View>
-                </UpdateContext.Provider>
-              </RelayContext.Provider>
-            ) : null}
+                  <MovableView>{this.state.debugBar}</MovableView>
+                </View>
+              </UpdateContext.Provider>
+            </RelayContext.Provider>
             {Platform.OS === 'ios' && <KeyboardSpacer />}
           </SafeAreaView>
         </I18nextProvider>
