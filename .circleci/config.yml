@@ -302,8 +302,8 @@ jobs:
 
       - *install_retry
       - run:
-          name: setup golang environment
-          command: echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+          name: setup environment
+          command: echo "export PATH=~/go/src/berty.tech/client/react-native/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build
@@ -372,8 +372,8 @@ jobs:
 
       - *install_retry
       - run:
-          name: setup golang environment
-          command: echo "export PATH=/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
+          name: setup environment
+          command: echo "export PATH=~/go/src/berty.tech/client/react-native/node_modules/.bin/:/usr/local/go/bin/:~/go/bin:$PATH" >> $BASH_ENV
 
       - run:
           name: gomobile android build

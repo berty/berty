@@ -117,8 +117,8 @@ def enableProguardInReleaseBuilds = false
 
 android {
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -136,10 +136,12 @@ android {
         resValue "string", "build_config_package", "chat.berty.main"
 
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
 
         multiDexEnabled true
+
+        missingDimensionStrategy 'react-native-camera', 'general'
     }
     signingConfigs {
         release {
@@ -170,7 +172,7 @@ android {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
             universalApk false  // If true, also generate a universal APK
-            include "armeabi-v7a", "x86"
+            include "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
     buildTypes {
@@ -207,7 +209,7 @@ android {
         variant.outputs.each { output ->
             // For each separate APK per architecture, set a unique version code as described here:
             // http://tools.android.com/tech-docs/new-build-system/user-guide/apk-splits
-            def versionCodes = ["armeabi-v7a":1, "x86":2]
+            def versionCodes = ["armeabi-v7a":1, "x86":2, "arm64-v8a": 3, "x86_64": 4]
             def abi = output.getFilter(OutputFile.ABI)
             if (abi != null) {  // null for the universal-debug, universal-release variants
                 output.versionCodeOverride =
@@ -218,24 +220,24 @@ android {
 }
 
 dependencies {
-    compile project(':instabug-reactnative')
-    compile project(':react-native-gesture-handler')
-    compile project(':react-native-config')
-    compile project(':react-native-dev-menu')
-    compile project(':lottie-react-native')
-    compile project(':react-native-languages')
-    compile project(':rn-fetch-blob')
-    compile project(':react-native-device-info')
-    compile project(':react-native-vector-icons')
-    compile project(':react-native-view-shot')
-    compile project(':react-native-svg')
-    compile project(':react-native-restart')
-    compile project(':react-native-network-info')
-    compile project(':react-native-image-picker')
-    compile project(':react-native-exception-handler')
-    compile project(':react-native-camera')
-    implementation "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
+    implementation project(':instabug-reactnative')
+    implementation project(':react-native-gesture-handler')
+    implementation project(':react-native-config')
+    implementation project(':react-native-dev-menu')
+    implementation project(':lottie-react-native')
+    implementation project(':react-native-languages')
+    implementation project(':rn-fetch-blob')
+    implementation project(':react-native-device-info')
+    implementation project(':react-native-vector-icons')
+    implementation project(':react-native-view-shot')
+    implementation project(':react-native-svg')
+    implementation project(':react-native-restart')
+    implementation project(':react-native-network-info')
+    implementation project(':react-native-image-picker')
+    implementation project(':react-native-exception-handler')
+    implementation project(':react-native-camera')
+    api "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
+    api "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
     implementation 'com.facebook.react:react-native:+' // From node_modules
     implementation 'com.google.firebase:firebase-messaging:17.3.4'
     implementation 'com.google.code.gson:gson:2.8.2'
