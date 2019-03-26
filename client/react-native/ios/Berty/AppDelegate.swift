@@ -5,7 +5,7 @@ import PushKit
 @UIApplicationMain
 class AppDelegate: AppDelegateObjC {
   var logger = Logger("chat.berty.io", "AppDelegate")
-  var launchOptions: [UIApplicationLaunchOptionsKey: Any]?
+  var launchOptions: [UIApplication.LaunchOptionsKey: Any]?
 
   override init() {
     super.init()
@@ -44,7 +44,7 @@ class AppDelegate: AppDelegateObjC {
 
   override func application(
     _ application: UIApplication,
-    didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil
+    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
     self.launchOptions = launchOptions
 
@@ -83,14 +83,14 @@ class AppDelegate: AppDelegateObjC {
     let deadlineTime = DispatchTime.now() + .seconds(10)
 
     DispatchQueue.global(qos: .background).asyncAfter(deadline: deadlineTime) {
-      if let remoteNotifPayload = launchOptions?[UIApplicationLaunchOptionsKey.localNotification]
+      if let remoteNotifPayload = launchOptions?[UIApplication.LaunchOptionsKey.localNotification]
         as? UILocalNotification {
         if let data = remoteNotifPayload.userInfo as? [String: String] {
           if let url = data["url"] {
             if url.count > 0 {
               super.application(application, open: URL.init(string: url)!, options: [
-                                 UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
-                                UIApplicationOpenURLOptionsKey.openInPlace: false
+                UIApplication.OpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
+                UIApplication.OpenURLOptionsKey.openInPlace: false
                 ])
             }
           }

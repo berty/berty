@@ -50,9 +50,10 @@ class PaginationContainer extends Component {
 
   keyExtractor = item => item.node.cursor + ':' + item.node.id
 
-  renderItem = ({ item: { node }, index, ...props }) => this.props.renderItem({ data: node, index, ...props })
+  renderItem = ({ item: { node }, index, ...props }) =>
+    this.props.renderItem({ data: node, index, ...props })
 
-  scrollToIndex = (index) => {
+  scrollToIndex = index => {
     index && this._list && this._list.scrollToIndex({ index })
   }
 
@@ -138,7 +139,7 @@ export default class Pagination extends PureComponent {
     this.subscribers.forEach(s => s.unsubscribe())
   }
 
-  scrollToIndex = (index) => {
+  scrollToIndex = index => {
     this._container && this._container.scrollToIndex(index)
   }
 
@@ -161,7 +162,14 @@ export default class Pagination extends PureComponent {
                 </Flex.Rows>
               )
             case state.success:
-              return <Container {...state} retry={retry} {...this.props} ref={container => (this._container = container)} />
+              return (
+                <Container
+                  {...state}
+                  retry={retry}
+                  {...this.props}
+                  ref={container => (this._container = container)}
+                />
+              )
             case state.error:
               return null
           }

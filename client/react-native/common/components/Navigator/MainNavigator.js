@@ -1,10 +1,11 @@
-import BottomNavigator, { SplitNavigator } from './BottomNavigator'
-import { createStackNavigator } from 'react-navigation'
 import { Easing, Animated, Platform } from 'react-native'
+import { createStackNavigator } from 'react-navigation'
+
 import { EventListFilterModal } from '../Screens/Settings/Devtools/EventList'
-import ContactCardModal from '../Screens/Contacts/ContactCardModal'
 import { ViewExportComponent } from '../../helpers/saveViewToCamera'
+import BottomNavigator, { SplitNavigator } from './BottomNavigator'
 import ChatsSwitcherModal from '../Screens/Contacts/ChatsSwitcherModal'
+import ContactCardModal from '../Screens/Contacts/ContactCardModal'
 
 export default createStackNavigator(
   {

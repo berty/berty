@@ -29,19 +29,19 @@ export const SplitSideContactNavigator = createStackNavigator(
     initialRouteName: 'contacts/list',
     tabBarVisible: false,
     header: null,
-  },
+  }
 )
 
 export const SubviewsContactDetailsNavigator = createStackNavigator(
   {
-    'detail/list': List,
-    'detail/edit': Edit,
+    'contacts/detail/list': List,
+    'contacts/detail/edit': Edit,
   },
   {
-    initialRouteName: 'detail/list',
+    initialRouteName: 'contacts/detail/list',
     tabBarVisible: false,
     header: null,
-  },
+  }
 )
 
 export const SubviewsContactAddNavigator = createStackNavigator(
@@ -65,7 +65,7 @@ export const SubviewsContactAddNavigator = createStackNavigator(
     initialRouteName: 'contacts/add',
     tabBarVisible: false,
     header: null,
-  },
+  }
 )
 
 export const SubviewsContactNavigator = createSwitchNavigator({
@@ -83,5 +83,5 @@ export default createStackNavigator(
     tabBarVisible: false,
     header: null,
     headerMode: 'none',
-  },
+  }
 )

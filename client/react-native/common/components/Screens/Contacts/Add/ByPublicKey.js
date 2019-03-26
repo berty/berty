@@ -19,13 +19,14 @@ class ByPublicKey extends PureComponent {
     }
   }
 
-  async onAdd (relayContext) {
+  onAdd = (relayContext) => {
     const url = parseUrl(this.state.id)
 
     if (!url || url.pathname !== '/contacts/add') {
       console.warn('Not a valid URL')
       return showContactModal({
         relayContext,
+        navigation: this.props.navigation,
         data: {
           id: this.state.id,
           displayName: '',
@@ -35,6 +36,7 @@ class ByPublicKey extends PureComponent {
 
     return showContactModal({
       relayContext,
+      navigation: this.props.navigation,
       data: {
         id: url.hashParts['id'],
         displayName: url.hashParts['display-name'] || '',

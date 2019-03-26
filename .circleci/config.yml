@@ -421,7 +421,7 @@ jobs:
   client.rn.ios:
     working_directory: ~/go/src/berty.tech
     macos:
-      xcode: "9.4.1"
+      xcode: "10.2.0"
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
@@ -499,7 +499,7 @@ jobs:
   client.rn.ios-beta:
     working_directory: ~/go/src/berty.tech
     macos:
-      xcode: "9.4.1"
+      xcode: "10.2.0"
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
@@ -621,7 +621,7 @@ jobs:
   client.rn.mac:
     working_directory: ~/go/src/berty.tech
     macos:
-      xcode: "9.4.1"
+      xcode: "10.2.0"
 
     shell: /bin/bash --login -o pipefail
     steps:

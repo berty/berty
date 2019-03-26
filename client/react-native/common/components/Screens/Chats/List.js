@@ -1,5 +1,10 @@
-import React, { PureComponent } from 'react'
 import { View, Platform } from 'react-native'
+import { hook } from 'cavy'
+import { withNamespaces } from 'react-i18next'
+import { withNavigation } from 'react-navigation'
+import I18n from 'i18next'
+import React, { PureComponent } from 'react'
+
 import {
   Avatar,
   EmptyList,
@@ -10,16 +15,14 @@ import {
   Badge,
   Icon,
 } from '../../Library'
-import { merge } from '../../../helpers'
 import { Pagination } from '../../../relay'
 import { borderBottom, marginLeft, padding } from '../../../styles'
 import { colors } from '../../../constants'
 import { fragments, enums } from '../../../graphql'
+import { merge } from '../../../helpers'
 import { conversation as utils } from '../../../utils'
 import withRelayContext from '../../../helpers/withRelayContext'
-import { withNamespaces } from 'react-i18next'
-import I18n from 'i18next'
-import { hook } from 'cavy'
+
 /* global __DEV__ */
 
 const ItemBase = fragments.Conversation(
@@ -58,21 +61,25 @@ const ItemBase = fragments.Conversation(
     }
 
     componentDidMount () {
-      const { context: { queries, subscriptions } } = this.props
+      const {
+        context: { queries, subscriptions },
+      } = this.props
 
-      queries.EventUnseen.fetch(merge([
-        queries.EventUnseen.defaultVariables,
-        {
-          filter: {
-            kind: 302,
-            targetAddr: this.props.data.id,
-            direction: 1,
+      queries.EventUnseen.fetch(
+        merge([
+          queries.EventUnseen.defaultVariables,
+          {
+            filter: {
+              kind: 302,
+              targetAddr: this.props.data.id,
+              direction: 1,
+            },
+            onlyWithoutSeenAt: 1,
           },
-          onlyWithoutSeenAt: 1,
-        },
-      ])).then((e) => {
+        ])
+      ).then(e => {
         this.setState({
-          unread: e.map((val) => {
+          unread: e.map(val => {
             return val.id
           }),
         })
@@ -85,16 +92,20 @@ const ItemBase = fragments.Conversation(
 
     updateBadge = (store, data) => {
       const [entity] = [data.CommitLogStream.entity.event]
-      const { data: { id } } = this.props
+      const {
+        data: { id },
+      } = this.props
       let { unread } = this.state
 
-      if (entity && entity.direction === 1 && id === entity.conversationId && entity.kind === 302) {
+      if (
+        entity &&
+        entity.direction === 1 &&
+        id === entity.conversationId &&
+        entity.kind === 302
+      ) {
         if (entity.seenAt === null && unread.indexOf(entity.id) === -1) {
           this.setState({
-            unread: [
-              ...unread,
-              entity.id,
-            ],
+            unread: [...unread, entity.id],
           })
         } else if (entity.seenAt !== null && unread.indexOf(entity.id) !== -1) {
           unread.splice(unread.indexOf(entity.id), 1)
@@ -132,7 +143,10 @@ const ItemBase = fragments.Conversation(
       if (
         data.members.length === 2 &&
         data.members.some(
-          m => m.contact == null || (m.contact.displayName === '' && m.contact.overrideDisplayName === '')
+          m =>
+            m.contact == null ||
+            (m.contact.displayName === '' &&
+              m.contact.overrideDisplayName === '')
         )
       ) {
         return null
@@ -140,8 +154,16 @@ const ItemBase = fragments.Conversation(
       return (
         <Flex.Cols
           align='center'
-          onPress={() => navigation.navigate({ routeName: 'chats/detail', params: data })}
-          style={[{ height: 72 }, padding, borderBottom]}
+          onPress={() =>
+            navigation.navigate({ routeName: 'chats/detail', params: data })
+          }
+          style={[
+            {
+              height: 72,
+            },
+            padding,
+            borderBottom,
+          ]}
         >
           <Flex.Rows size={1} align='center'>
             {data.members.length === 2 && connected ? (
@@ -208,7 +230,7 @@ const ItemBase = fragments.Conversation(
   }
 )
 
-const Item = withNamespaces()(ItemBase)
+const Item = withNamespaces()(withNavigation(ItemBase))
 
 class ListScreen extends PureComponent {
   constructor (props) {
@@ -242,6 +264,7 @@ class ListScreen extends PureComponent {
   render () {
     const {
       navigation,
+      navigatorContext,
       context,
       context: { queries, fragments, subscriptions },
     } = this.props
@@ -255,7 +278,12 @@ class ListScreen extends PureComponent {
           alias='ConversationList'
           subscriptions={[subscriptions.conversation]}
           renderItem={props => (
-            <Item {...props} context={context} navigation={navigation} />
+            <Item
+              {...props}
+              context={context}
+              navigation={navigation}
+              navigatorContext={navigatorContext}
+            />
           )}
           emptyItem={() => (
             <EmptyList

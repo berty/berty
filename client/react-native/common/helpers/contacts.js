@@ -1,4 +1,3 @@
-import { NavigationActions } from 'react-navigation'
 import { Share, Platform } from 'react-native'
 import { atob } from 'b64-lite'
 import { showMessage } from 'react-native-flash-message'
@@ -7,7 +6,6 @@ import I18n from 'i18next'
 
 import { BASE_WEBSITE_URL } from '../constants'
 import { contact } from '../utils'
-import NavigationService from './NavigationService'
 
 export const extractPublicKeyFromId = contactId => {
   try {
@@ -65,13 +63,15 @@ export const showContactModal = async ({
   beforeDismiss,
   data,
 }) => {
-  if (!(await isPubKeyValid({
-    queries,
-    data: {
-      ...data,
-      id: contact.getRelayID(data.id),
-    },
-  }))) {
+  if (
+    !(await isPubKeyValid({
+      queries,
+      data: {
+        ...data,
+        id: contact.getRelayID(data.id),
+      },
+    }))
+  ) {
     showMessage({
       message: I18n.t('contacts.add.invalid-public-key'),
       type: 'danger',
@@ -82,16 +82,11 @@ export const showContactModal = async ({
     return false
   }
 
-  NavigationService.action(
-    NavigationActions.navigate({
-      routeName: 'modal/contacts/card',
-      params: {
-        id: data.id,
-        displayName: data.displayName,
-        beforeDismiss: beforeDismiss,
-      },
-    })
-  )
+  navigation.navigate('modal/contacts/card', {
+    id: data.id,
+    displayName: data.displayName,
+    beforeDismiss: beforeDismiss,
+  })
 }
 
 export const defaultUsername = () => {

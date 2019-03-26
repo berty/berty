@@ -58,7 +58,7 @@
     "react-native-svg": "^8.0.8",
     "react-native-vector-icons": "^6.0.1",
     "react-native-view-shot": "^2.5.0",
-    "react-navigation": "^3.1.5",
+    "react-navigation": "^3.5.1",
     "react-relay": "^1.6.2",
     "react-relay-network-modern": "^2.5.1",
     "relay-compiler": "^1.6.2",

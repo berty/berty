@@ -6,22 +6,20 @@ import Text from './Text'
 import { colors } from '../../constants'
 
 const Loader = ({ message, color, background, size }) => (
-  <Flex.Rows
-    align='center'
-    justify='center'
-    style={{ backgroundColor: background || colors.transparent }}
-  >
-    <ActivityIndicator size={size || 'large'} color={color} />
-    {message && (
-      <Text
-        size={0}
-        {...(size ? { [size]: true } : { large: true })}
-        color={color}
-      >
-        {message}
-      </Text>
-    )}
-  </Flex.Rows>
+  <Flex.Cols align='center' justify='center'>
+    <Flex.Rows
+      align='center'
+      justify='center'
+      style={{ backgroundColor: background || colors.transparent }}
+    >
+      <ActivityIndicator size={size || 'large'} color={color} />
+      {message && (
+        <Text {...(size ? { [size]: true } : { large: true })} color={color}>
+          {message}
+        </Text>
+      )}
+    </Flex.Rows>
+  </Flex.Cols>
 )
 
 export default Loader
