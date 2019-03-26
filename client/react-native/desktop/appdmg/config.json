@@ -1,9 +1,0 @@
-{
-  "title": "Berty",
-  "icon": "icon.icns",
-  "background": "background.png",
-  "contents": [
-    { "x": 468, "y": 230, "type": "link", "path": "/Applications" },
-    { "x": 122, "y": 230, "type": "file", "path": "Berty.app" }
-  ]
-}
