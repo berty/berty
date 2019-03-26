@@ -25,7 +25,7 @@ require (
 	github.com/gosimple/slug v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190222133341-cfaf5686ec79
 	github.com/ipfs/go-cid v0.0.1
-	github.com/ipfs/go-datastore v0.0.1
+	github.com/ipfs/go-datastore v0.0.2
 	github.com/ipfs/go-ipfs-addr v0.0.1
 	github.com/ipfs/go-ipfs-routing v0.0.1
 	github.com/ipfs/go-ipfs-util v0.0.1
@@ -36,19 +36,19 @@ require (
 	github.com/karrick/godirwalk v1.8.0 // indirect
 	github.com/libp2p/go-conn-security v0.0.1
 	github.com/libp2p/go-conn-security-multistream v0.0.1
-	github.com/libp2p/go-libp2p v0.0.2
+	github.com/libp2p/go-libp2p v0.0.3
 	github.com/libp2p/go-libp2p-circuit v0.0.1
 	github.com/libp2p/go-libp2p-connmgr v0.0.1
 	github.com/libp2p/go-libp2p-crypto v0.0.1
 	github.com/libp2p/go-libp2p-discovery v0.0.1
-	github.com/libp2p/go-libp2p-host v0.0.1
+	github.com/libp2p/go-libp2p-host v0.0.2
 	github.com/libp2p/go-libp2p-interface-connmgr v0.0.1
 	github.com/libp2p/go-libp2p-interface-pnet v0.0.1
-	github.com/libp2p/go-libp2p-kad-dht v0.0.4
+	github.com/libp2p/go-libp2p-kad-dht v0.0.6
 	github.com/libp2p/go-libp2p-kbucket v0.1.0 // indirect
 	github.com/libp2p/go-libp2p-metrics v0.0.1
 	github.com/libp2p/go-libp2p-net v0.0.1
-	github.com/libp2p/go-libp2p-peer v0.0.1
+	github.com/libp2p/go-libp2p-peer v0.1.0
 	github.com/libp2p/go-libp2p-peerstore v0.0.1
 	github.com/libp2p/go-libp2p-pnet v0.0.1
 	github.com/libp2p/go-libp2p-protocol v0.0.1
