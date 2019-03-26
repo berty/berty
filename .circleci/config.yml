@@ -68,7 +68,7 @@ references:
           make deps
         fi
         brew install dylibbundler
-        yarn global add appdmg
+        yarn global add electron-builder
 
 jobs:
   lint:
@@ -655,7 +655,9 @@ jobs:
             BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
             dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
             mv output/darwin-amd64/Berty.app appdmg
-            appdmg appdmg/config.json /tmp/Berty.dmg
+            cd appdmg
+            electron-builder build --publish never --prepackaged Berty.app
+            mv dist/Berty*.dmg /tmp/Berty.dmg
 
       - store_artifacts:
           path: /tmp/Berty.dmg
