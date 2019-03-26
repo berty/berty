@@ -47,10 +47,10 @@ func (n *Node) handleCommitLog(operation string, scope *gorm.Scope) {
 
 	if indirectScopeValue := scope.IndirectValue(); indirectScopeValue.Kind() == reflect.Slice {
 		for i := 0; i < indirectScopeValue.Len(); i++ {
-			n.sendCommitLog(n.createCommitLog(operation, indirectScopeValue.Index(i)))
+			n.sendCommitLog(n.createCommitLog(scope, operation, indirectScopeValue.Index(i)))
 		}
 	} else {
-		n.sendCommitLog(n.createCommitLog(operation, indirectScopeValue))
+		n.sendCommitLog(n.createCommitLog(scope, operation, indirectScopeValue))
 	}
 }
 
@@ -68,7 +68,7 @@ func (n *Node) sendCommitLog(commitLog *node.CommitLog) {
 	}
 }
 
-func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *node.CommitLog {
+func (n *Node) createCommitLog(scope *gorm.Scope, operation string, reflectValue reflect.Value) *node.CommitLog {
 	var err error
 
 	// Only get address from non-pointer
@@ -93,27 +93,41 @@ func (n *Node) createCommitLog(operation string, reflectValue reflect.Value) *no
 	switch data := reflectValue.Interface().(type) {
 	case *entity.Contact:
 		if operation != "delete" {
-			data, err = sql.ContactByID(n.sqlDriver, data.ID)
+			data, err = sql.ContactByID(scope.DB(), data.ID)
 			if err != nil {
 				return nil
 			}
 		}
 		log.Entity = &node.CommitLog_Entity{Contact: data}
 	case *entity.Device:
+		if operation != "delete" {
+			data, err = sql.DeviceByID(scope.DB(), data.ID)
+			if err != nil {
+				return nil
+			}
+		}
 		log.Entity = &node.CommitLog_Entity{Device: data}
 	case *entity.Conversation:
 		if operation != "delete" {
-			data, err = sql.ConversationByID(n.sqlDriver, data.ID)
+			data, err = sql.ConversationByID(scope.DB(), data.ID)
 			if err != nil {
 				return nil
 			}
 		}
 		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
+		data, err = sql.ConversationMemberByID(scope.DB(), data.ID)
+		if err != nil {
+			return nil
+		}
 		log.Entity = &node.CommitLog_Entity{ConversationMember: data}
 	case *entity.Config:
 		log.Entity = &node.CommitLog_Entity{Config: data}
 	case *entity.Event:
+		data, err = sql.EventByID(scope.DB(), data.ID)
+		if err != nil {
+			return nil
+		}
 		log.Entity = &node.CommitLog_Entity{Event: data}
 	case *entity.DevicePushConfig:
 		log.Entity = &node.CommitLog_Entity{DevicePushConfig: data}

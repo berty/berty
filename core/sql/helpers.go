@@ -41,8 +41,8 @@ func FindContact(db *gorm.DB, input *entity.Contact) (*entity.Contact, error) {
 }
 
 func ConversationMemberByID(db *gorm.DB, id string) (*entity.ConversationMember, error) {
-	var contact entity.ConversationMember
-	return &contact, db.First(&contact, "ID = ?", id).Error
+	var conversationMember entity.ConversationMember
+	return &conversationMember, db.First(&conversationMember, "ID = ?", id).Error
 }
 
 func DeviceByID(db *gorm.DB, id string) (*entity.Device, error) {
@@ -64,8 +64,8 @@ func MembersByConversationID(db *gorm.DB, conversationID string) ([]*entity.Conv
 }
 
 func EventByID(db *gorm.DB, id string) (*entity.Event, error) {
-	var contact entity.Event
-	return &contact, db.First(&contact, "ID = ?", id).Error
+	var event entity.Event
+	return &event, db.First(&event, "ID = ?", id).Error
 }
 
 func ConversationOneToOne(db *gorm.DB, myselfID, contactID string) (*entity.Conversation, error) {
