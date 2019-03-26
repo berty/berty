@@ -55,7 +55,7 @@ class Notification: NSObject, UNUserNotificationCenterDelegate, CoreNativeNotifi
     content.body = ubody
     content.userInfo = ["url": url!]
     content.categoryIdentifier = "berty.core.notification"
-    content.sound = UNNotificationSound.default()
+    content.sound = UNNotificationSound.default
 
     let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
     let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
@@ -124,7 +124,7 @@ extension AppDelegate: PKPushRegistryDelegate {
   // get token from pushkit
   func pushRegistry(_ registry: PKPushRegistry,
                     didUpdate pushCredentials: PKPushCredentials,
-                    forType type: PKPushType) {
+                    for type: PKPushType) {
     Core.notificationDriver()?.receiveAPNSToken(pushCredentials.token)
   }
 
@@ -132,7 +132,7 @@ extension AppDelegate: PKPushRegistryDelegate {
   func pushRegistry(
     _ registry: PKPushRegistry,
     didReceiveIncomingPushWith payload: PKPushPayload,
-    forType type: PKPushType) {
+    for type: PKPushType) {
     do {
       let json = try JSONSerialization.data(withJSONObject: payload.dictionaryPayload, options: [])
       let data = String(decoding: json, as: UTF8.self)
@@ -156,7 +156,7 @@ extension AppDelegate: PKPushRegistryDelegate {
   }
 
   // notifies the delegate that a push token has been invalidated
-  func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenForType type: PKPushType) {
+  func pushRegistry(_ registry: PKPushRegistry, didInvalidatePushTokenFor type: PKPushType) {
     // nothing to do
   }
 
@@ -165,8 +165,8 @@ extension AppDelegate: PKPushRegistryDelegate {
       if let url = data["url"] {
         if url.count > 0 {
           self.application(application, open: URL.init(string: url)!, options: [
-            UIApplicationOpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
-            UIApplicationOpenURLOptionsKey.openInPlace: false
+            UIApplication.OpenURLOptionsKey.sourceApplication: Bundle.main.bundleIdentifier!,
+            UIApplication.OpenURLOptionsKey.openInPlace: false
           ])
         }
       }
