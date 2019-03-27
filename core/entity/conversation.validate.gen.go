@@ -52,7 +52,9 @@ func (m *Conversation) Validate() error {
 
 	// handling field: Infos - name:"infos" number:22 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"infos"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: Members - name:"members" number:100 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.ConversationMember" json_name:"members"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Kind - name:"kind" number:23 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Conversation.Kind" json_name:"kind"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: Members - name:"members" number:100 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.ConversationMember" json_name:"members" options:<65006:"gorm:\"foreignkey:ConversationID;association_foreignkey:ID\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	if v, ok := interface{}(m.GetMembers()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
@@ -85,6 +87,14 @@ func (m *ConversationMember) Validate() error {
 		}
 	}
 
+	// handling field: ReadAt - name:"read_at" number:4 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"readAt" options:<65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	if v, ok := interface{}(m.GetReadAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return errors.Wrap(err, "embedded message verification failed: ReadAt")
+		}
+	}
+
 	// handling field: Status - name:"status" number:10 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.ConversationMember.Status" json_name:"status"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Contact - name:"contact" number:100 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"contact" options:<[]:true []:false >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=true, min_items=0, max_items=0)
@@ -101,5 +111,14 @@ func (m *ConversationMember) Validate() error {
 	// handling field: ConversationID - name:"conversation_id" number:101 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"conversationId" options:<53004:1  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: ContactID - name:"contact_id" number:102 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: Conversation - name:"conversation" number:103 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Conversation" json_name:"conversation" options:<53011:1 65006:"gorm:\"PRELOAD:false;foreignkey:ID;association_foreignkey:ConversationID\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	if v, ok := interface{}(m.GetConversation()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return errors.Wrap(err, "embedded message verification failed: Conversation")
+		}
+	}
+
 	return nil
 }

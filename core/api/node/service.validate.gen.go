@@ -359,6 +359,8 @@ func (m *ConversationCreateInput) Validate() error {
 	// handling field: Title - name:"title" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"title"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Topic - name:"topic" number:3 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"topic"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: Kind - name:"kind" number:4 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Conversation.Kind" json_name:"kind"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *ConversationManageMembersInput) Validate() error {

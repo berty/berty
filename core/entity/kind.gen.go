@@ -272,6 +272,204 @@ func (e *Event) SetConversationUpdateAttrs(attrs *ConversationUpdateAttrs) *Even
 	return e
 }
 
+// GetConversationMemberInviteAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberInviteAttrs() (*ConversationMemberInviteAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberInviteAttrs{}, nil
+	}
+	var attrs ConversationMemberInviteAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberInviteAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberInviteAttrs(attrs *ConversationMemberInviteAttrs) *Event {
+	e.Kind = Kind_ConversationMemberInvite
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberLeaveAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberLeaveAttrs() (*ConversationMemberLeaveAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberLeaveAttrs{}, nil
+	}
+	var attrs ConversationMemberLeaveAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberLeaveAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberLeaveAttrs(attrs *ConversationMemberLeaveAttrs) *Event {
+	e.Kind = Kind_ConversationMemberLeave
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberSetTitleAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberSetTitleAttrs() (*ConversationMemberSetTitleAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberSetTitleAttrs{}, nil
+	}
+	var attrs ConversationMemberSetTitleAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberSetTitleAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberSetTitleAttrs(attrs *ConversationMemberSetTitleAttrs) *Event {
+	e.Kind = Kind_ConversationMemberSetTitle
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberSetTopicAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberSetTopicAttrs() (*ConversationMemberSetTopicAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberSetTopicAttrs{}, nil
+	}
+	var attrs ConversationMemberSetTopicAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberSetTopicAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberSetTopicAttrs(attrs *ConversationMemberSetTopicAttrs) *Event {
+	e.Kind = Kind_ConversationMemberSetTopic
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberSetOwnerAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberSetOwnerAttrs() (*ConversationMemberSetOwnerAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberSetOwnerAttrs{}, nil
+	}
+	var attrs ConversationMemberSetOwnerAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberSetOwnerAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberSetOwnerAttrs(attrs *ConversationMemberSetOwnerAttrs) *Event {
+	e.Kind = Kind_ConversationMemberSetOwner
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberBlockAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberBlockAttrs() (*ConversationMemberBlockAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberBlockAttrs{}, nil
+	}
+	var attrs ConversationMemberBlockAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberBlockAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberBlockAttrs(attrs *ConversationMemberBlockAttrs) *Event {
+	e.Kind = Kind_ConversationMemberBlock
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberUnblockAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberUnblockAttrs() (*ConversationMemberUnblockAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberUnblockAttrs{}, nil
+	}
+	var attrs ConversationMemberUnblockAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberUnblockAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberUnblockAttrs(attrs *ConversationMemberUnblockAttrs) *Event {
+	e.Kind = Kind_ConversationMemberUnblock
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberReadAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberReadAttrs() (*ConversationMemberReadAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberReadAttrs{}, nil
+	}
+	var attrs ConversationMemberReadAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberReadAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberReadAttrs(attrs *ConversationMemberReadAttrs) *Event {
+	e.Kind = Kind_ConversationMemberRead
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
+// GetConversationMemberWriteAttrs is a typesafe version of GetAttrs
+func (e *Event) GetConversationMemberWriteAttrs() (*ConversationMemberWriteAttrs, error) {
+	if e.Attributes == nil || len(e.Attributes) == 0 {
+		return &ConversationMemberWriteAttrs{}, nil
+	}
+	var attrs ConversationMemberWriteAttrs
+	return &attrs, proto.Unmarshal(e.Attributes, &attrs)
+}
+
+// SetConversationMemberWriteAttrs is a typesafe version of the generic SetAttrs method
+func (e *Event) SetConversationMemberWriteAttrs(attrs *ConversationMemberWriteAttrs) *Event {
+	e.Kind = Kind_ConversationMemberWrite
+	if attrs != nil {
+		raw, err := proto.Marshal(attrs)
+		if err != nil {
+			e.SetErr(err)
+		}
+		e.Attributes = raw
+	}
+	return e
+}
+
 // GetDevtoolsMapsetAttrs is a typesafe version of GetAttrs
 func (e *Event) GetDevtoolsMapsetAttrs() (*DevtoolsMapsetAttrs, error) {
 	if e.Attributes == nil || len(e.Attributes) == 0 {
@@ -409,6 +607,24 @@ func (e *Event) GetAttrs() (proto.Message, error) {
 		return e.GetConversationReadAttrs()
 	case Kind_ConversationUpdate:
 		return e.GetConversationUpdateAttrs()
+	case Kind_ConversationMemberInvite:
+		return e.GetConversationMemberInviteAttrs()
+	case Kind_ConversationMemberLeave:
+		return e.GetConversationMemberLeaveAttrs()
+	case Kind_ConversationMemberSetTitle:
+		return e.GetConversationMemberSetTitleAttrs()
+	case Kind_ConversationMemberSetTopic:
+		return e.GetConversationMemberSetTopicAttrs()
+	case Kind_ConversationMemberSetOwner:
+		return e.GetConversationMemberSetOwnerAttrs()
+	case Kind_ConversationMemberBlock:
+		return e.GetConversationMemberBlockAttrs()
+	case Kind_ConversationMemberUnblock:
+		return e.GetConversationMemberUnblockAttrs()
+	case Kind_ConversationMemberRead:
+		return e.GetConversationMemberReadAttrs()
+	case Kind_ConversationMemberWrite:
+		return e.GetConversationMemberWriteAttrs()
 	case Kind_DevtoolsMapset:
 		return e.GetDevtoolsMapsetAttrs()
 	case Kind_SenderAliasUpdate:

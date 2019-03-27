@@ -10,79 +10,82 @@ import { colors } from '../../../constants'
 import { enums, fragments } from '../../../graphql'
 import withRelayContext from '../../../helpers/withRelayContext'
 
-const Item = withNamespaces()(fragments.Contact(class Item extends PureComponent {
-      state = { 'selected': false }
+class ItemBase extends PureComponent {
+  state = { selected: false }
 
-      onPress = () => {
-        this.setState({ 'selected': !this.state.selected }, this.props.onPress)
-      }
+  onPress = () => {
+    this.setState({ selected: !this.state.selected }, this.props.onPress)
+  }
 
-      render () {
-        const {
-          'data': { status, displayName, overrideDisplayName },
-          t,
-        } = this.props
-        const { selected } = this.state
+  render () {
+    const {
+      data: { status, displayName, overrideDisplayName },
+      t,
+    } = this.props
+    const { selected } = this.state
 
-        if (status === 42) {
-          return null
-        }
+    if (status === 42) {
+      return null
+    }
 
-        return (
-          <Flex.Cols
-            align='center'
-            onPress={this.onPress}
+    return (
+      <Flex.Cols
+        align='center'
+        onPress={this.onPress}
+        style={[
+          {
+            height: 72,
+          },
+          padding,
+          borderBottom,
+        ]}
+      >
+        <Flex.Cols size={1} align='center'>
+          <Avatar data={this.props.data} size={40} />
+          <Flex.Rows size={3} justify='start' style={[marginLeft]}>
+            <Text color={colors.fakeBlack} left ellipsed>
+              {overrideDisplayName || displayName}
+            </Text>
+            <Text color={colors.subtleGrey} left ellisped tiny>
+              {t(
+                `contacts.statuses.${
+                  enums.ValueBertyEntityContactInputStatus[status]
+                }`
+              )}
+            </Text>
+          </Flex.Rows>
+        </Flex.Cols>
+        <Flex.Rows align='end' self='center'>
+          <View
             style={[
+              selected ? null : border,
               {
-                'height': 72,
+                height: 18,
+                width: 18,
+                backgroundColor: selected ? colors.blue : colors.background,
+                borderRadius: 9,
               },
-              padding,
-              borderBottom,
             ]}
           >
-            <Flex.Cols size={1} align='center'>
-              <Avatar data={this.props.data} size={40} />
-              <Flex.Rows size={3} justify='start' style={[marginLeft]}>
-                <Text color={colors.fakeBlack} left ellipsed>
-                  {overrideDisplayName || displayName}
-                </Text>
-                <Text color={colors.subtleGrey} left ellisped tiny>
-                  {t(`contacts.statuses.${
-                    enums.ValueBertyEntityContactInputStatus[status]
-                  }`)}
-                </Text>
-              </Flex.Rows>
-            </Flex.Cols>
-            <Flex.Rows align='end' self='center'>
-              <View
-                style={[
-                  selected ? null : border,
-                  {
-                    'height': 18,
-                    'width': 18,
-                    'backgroundColor': selected ? colors.blue : colors.background,
-                    'borderRadius': 9,
-                  },
-                ]}
-              >
-                <Text
-                  icon='check'
-                  middle
-                  center
-                  color={selected ? colors.white : colors.background}
-                />
-              </View>
-            </Flex.Rows>
-          </Flex.Cols>
-        )
-      }
-}))
+            <Text
+              icon='check'
+              middle
+              center
+              color={selected ? colors.white : colors.background}
+            />
+          </View>
+        </Flex.Rows>
+      </Flex.Cols>
+    )
+  }
+}
 
+const Item = withNamespaces()(fragments.Contact(ItemBase))
 class ListScreen extends Component {
   static contextType = RelayContext
 
   static navigationOptions = ({ navigation }) => ({
-    'header': (
+    header: (
       <Header
         navigation={navigation}
         title={I18n.t('chats.add-members')}
@@ -93,16 +96,20 @@ class ListScreen extends Component {
         onPressRightBtn={navigation.getParam('onSubmit')}
       />
     ),
-    'tabBarVisible': true,
+    tabBarVisible: true,
   })
 
-  setNavigationParams = (params = {
-    'onSubmit': this.onSubmit(this.props.navigation.getParam('onSubmit') || this.onDefaultSubmit),
-    'rightBtn': null,
-  }) => this.props.navigation.setParams(params)
+  setNavigationParams = (
+    params = {
+      onSubmit: this.onSubmit(
+        this.props.navigation.getParam('onSubmit') || this.onDefaultSubmit
+      ),
+      rightBtn: null,
+    }
+  ) => this.props.navigation.setParams(params)
 
   state = {
-    'contactsID': [],
+    contactsID: [],
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -115,28 +122,29 @@ class ListScreen extends Component {
 
   onDefaultSubmit = async ({ contactsID }) => {
     const {
-      'ConversationCreate': conversation,
+      ConversationCreate: conversation,
     } = await this.props.context.mutations.conversationCreate({
-      'title': '',
-      'topic': '',
-      'infos': '',
-      'contacts': contactsID.map((id) => ({
+      title: '',
+      topic: '',
+      infos: '',
+      kind: enums.BertyEntityConversationInputKind.Group,
+      contacts: contactsID.map(id => ({
         id,
-        'displayName': '',
-        'displayStatus': '',
-        'overrideDisplayName': '',
-        'overrideDisplayStatus': '',
+        displayName: '',
+        displayStatus: '',
+        overrideDisplayName: '',
+        overrideDisplayStatus: '',
       })),
     })
 
     this.props.navigation.navigate('chats/detail', conversation)
   }
 
-  onSubmit = (onSubmit) => async () => {
+  onSubmit = onSubmit => async () => {
     try {
       this.setNavigationParams({
-        'onSubmit': null,
-        'rightBtn': <ActivityIndicator size='small' />,
+        onSubmit: null,
+        rightBtn: <ActivityIndicator size='small' />,
       })
       await onSubmit(this.state)
     } catch (err) {
@@ -152,7 +160,7 @@ class ListScreen extends Component {
     const currentContactIds = navigation.getParam('currentContactIds', [])
 
     return (
-      <Screen style={[{ 'backgroundColor': colors.white }]}>
+      <Screen style={[{ backgroundColor: colors.white }]}>
         <Pagination
           context={context}
           query={context.queries.ContactList.graphql}
@@ -179,19 +187,20 @@ class ListScreen extends Component {
               )}
             </View>
           }
-          renderItem={(props) => props.data.status !== 42 &&
+          renderItem={props =>
+            props.data.status !== 42 &&
             currentContactIds.indexOf(props.data.id) === -1 ? (
-              <Item
-                {...props}
-                onPress={() => {
-                  const index = contactsID.lastIndexOf(props.data.id)
-                  index < 0
-                    ? contactsID.push(props.data.id)
-                    : contactsID.splice(index, 1)
-                  this.setState({ contactsID })
-                }}
-              />
-            ) : null
+                <Item
+                  {...props}
+                  onPress={() => {
+                    const index = contactsID.lastIndexOf(props.data.id)
+                    index < 0
+                      ? contactsID.push(props.data.id)
+                      : contactsID.splice(index, 1)
+                    this.setState({ contactsID })
+                  }}
+                />
+              ) : null
           }
         />
       </Screen>

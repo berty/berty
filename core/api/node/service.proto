@@ -380,6 +380,7 @@ message ConversationCreateInput {
   repeated berty.entity.Contact contacts = 1 [(validate.min_items) = 1];
   string title = 2;
   string topic = 3;
+  berty.entity.Conversation.Kind kind = 4;
 }
 
 message ConversationManageMembersInput {

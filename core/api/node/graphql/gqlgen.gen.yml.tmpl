@@ -140,9 +140,12 @@ models:
     model: {{$GoPackage}}.{{$name}}
     fields:
             {{- range .Field}}
+              {{- if eq (boolFieldExtension 53011 .) true}}
+              {{- else}}
       {{.Name | lowerCamelCase}}:
-              {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
         resolver: true
+                {{- end}}
               {{- end}}
             {{- end}}
             {{- if eq ($modelName | regexMatch ".*Input$") false}}
@@ -150,9 +153,12 @@ models:
     model: {{$GoPackage}}.{{$name}}
     fields:
               {{- range .Field}}
+                {{- if eq (boolFieldExtension 53011 .) true}}
+                {{- else}}
       {{.Name | lowerCamelCase}}:
-                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+                  {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
         resolver: true
+                  {{- end}}
                 {{- end}}
               {{- end}}
             {{- end}}
@@ -161,9 +167,12 @@ models:
     model: {{$GoPackage}}.{{$name}}
     fields:
               {{- range .Field}}
+                {{- if eq (boolFieldExtension 53011 .) true}}
+                {{- else}}
       {{.Name | lowerCamelCase}}:
-                {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
+                  {{- if (or (boolFieldExtension 53004 .) (boolFieldExtension 53005 .))}}
         resolver: true
+                  {{- end}}
                 {{- end}}
               {{- end}}
             {{- end}}

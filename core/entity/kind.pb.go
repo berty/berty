@@ -7,16 +7,20 @@ import (
 	fmt "fmt"
 	io "io"
 	math "math"
+	time "time"
 
 	push "berty.tech/core/push"
 	_ "github.com/gogo/protobuf/gogoproto"
+	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	proto "github.com/golang/protobuf/proto"
+	_ "github.com/golang/protobuf/ptypes/timestamp"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
 var _ = proto.Marshal
 var _ = fmt.Errorf
 var _ = math.Inf
+var _ = time.Kitchen
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -45,6 +49,18 @@ const (
 	Kind_ConversationNewMessage Kind = 302
 	Kind_ConversationRead       Kind = 303
 	Kind_ConversationUpdate     Kind = 304
+	//
+	// ConversationMember events
+	//
+	Kind_ConversationMemberInvite   Kind = 701
+	Kind_ConversationMemberLeave    Kind = 702
+	Kind_ConversationMemberSetTitle Kind = 703
+	Kind_ConversationMemberSetTopic Kind = 704
+	Kind_ConversationMemberSetOwner Kind = 705
+	Kind_ConversationMemberBlock    Kind = 706
+	Kind_ConversationMemberUnblock  Kind = 707
+	Kind_ConversationMemberRead     Kind = 708
+	Kind_ConversationMemberWrite    Kind = 709
 	// Devtool events
 	Kind_DevtoolsMapset         Kind = 401
 	Kind_SenderAliasUpdate      Kind = 501
@@ -69,6 +85,15 @@ var Kind_name = map[int32]string{
 	302: "ConversationNewMessage",
 	303: "ConversationRead",
 	304: "ConversationUpdate",
+	701: "ConversationMemberInvite",
+	702: "ConversationMemberLeave",
+	703: "ConversationMemberSetTitle",
+	704: "ConversationMemberSetTopic",
+	705: "ConversationMemberSetOwner",
+	706: "ConversationMemberBlock",
+	707: "ConversationMemberUnblock",
+	708: "ConversationMemberRead",
+	709: "ConversationMemberWrite",
 	401: "DevtoolsMapset",
 	501: "SenderAliasUpdate",
 	601: "DeviceUpdatePushConfig",
@@ -77,24 +102,33 @@ var Kind_name = map[int32]string{
 }
 
 var Kind_value = map[string]int32{
-	"Unknown":                0,
-	"Sent":                   101,
-	"Ack":                    102,
-	"Ping":                   103,
-	"Seen":                   104,
-	"ContactRequest":         201,
-	"ContactRequestAccepted": 202,
-	"ContactShareMe":         203,
-	"ContactShare":           204,
-	"ConversationInvite":     301,
-	"ConversationNewMessage": 302,
-	"ConversationRead":       303,
-	"ConversationUpdate":     304,
-	"DevtoolsMapset":         401,
-	"SenderAliasUpdate":      501,
-	"DeviceUpdatePushConfig": 601,
-	"DevicePushTo":           602,
-	"Node":                   99,
+	"Unknown":                    0,
+	"Sent":                       101,
+	"Ack":                        102,
+	"Ping":                       103,
+	"Seen":                       104,
+	"ContactRequest":             201,
+	"ContactRequestAccepted":     202,
+	"ContactShareMe":             203,
+	"ContactShare":               204,
+	"ConversationInvite":         301,
+	"ConversationNewMessage":     302,
+	"ConversationRead":           303,
+	"ConversationUpdate":         304,
+	"ConversationMemberInvite":   701,
+	"ConversationMemberLeave":    702,
+	"ConversationMemberSetTitle": 703,
+	"ConversationMemberSetTopic": 704,
+	"ConversationMemberSetOwner": 705,
+	"ConversationMemberBlock":    706,
+	"ConversationMemberUnblock":  707,
+	"ConversationMemberRead":     708,
+	"ConversationMemberWrite":    709,
+	"DevtoolsMapset":             401,
+	"SenderAliasUpdate":          501,
+	"DeviceUpdatePushConfig":     601,
+	"DevicePushTo":               602,
+	"Node":                       99,
 }
 
 func (x Kind) String() string {
@@ -685,6 +719,506 @@ func (m *ConversationUpdateAttrs) GetConversation() *Conversation {
 	return nil
 }
 
+type ConversationMemberInviteAttrs struct {
+	// id of ConversationMember{Action} is always the id of member that takes actions on conversation
+	// it permit to identify the conversation
+	// it permit to check if the contact match with the source of event
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// needed for members that doesn't know this contact
+	Contact *Contact `protobuf:"bytes,2,opt,name=contact,proto3" json:"contact,omitempty"`
+	// needed for the new member
+	Conversation         *Conversation `protobuf:"bytes,3,opt,name=conversation,proto3" json:"conversation,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}      `json:"-"`
+	XXX_unrecognized     []byte        `json:"-"`
+	XXX_sizecache        int32         `json:"-"`
+}
+
+func (m *ConversationMemberInviteAttrs) Reset()         { *m = ConversationMemberInviteAttrs{} }
+func (m *ConversationMemberInviteAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberInviteAttrs) ProtoMessage()    {}
+func (*ConversationMemberInviteAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{12}
+}
+func (m *ConversationMemberInviteAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberInviteAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberInviteAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberInviteAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberInviteAttrs.Merge(m, src)
+}
+func (m *ConversationMemberInviteAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberInviteAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberInviteAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberInviteAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberInviteAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberInviteAttrs) GetContact() *Contact {
+	if m != nil {
+		return m.Contact
+	}
+	return nil
+}
+
+func (m *ConversationMemberInviteAttrs) GetConversation() *Conversation {
+	if m != nil {
+		return m.Conversation
+	}
+	return nil
+}
+
+type ConversationMemberLeaveAttrs struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMemberLeaveAttrs) Reset()         { *m = ConversationMemberLeaveAttrs{} }
+func (m *ConversationMemberLeaveAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberLeaveAttrs) ProtoMessage()    {}
+func (*ConversationMemberLeaveAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{13}
+}
+func (m *ConversationMemberLeaveAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberLeaveAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberLeaveAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberLeaveAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberLeaveAttrs.Merge(m, src)
+}
+func (m *ConversationMemberLeaveAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberLeaveAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberLeaveAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberLeaveAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberLeaveAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+type ConversationMemberSetTitleAttrs struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title                string   `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMemberSetTitleAttrs) Reset()         { *m = ConversationMemberSetTitleAttrs{} }
+func (m *ConversationMemberSetTitleAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberSetTitleAttrs) ProtoMessage()    {}
+func (*ConversationMemberSetTitleAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{14}
+}
+func (m *ConversationMemberSetTitleAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberSetTitleAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberSetTitleAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberSetTitleAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberSetTitleAttrs.Merge(m, src)
+}
+func (m *ConversationMemberSetTitleAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberSetTitleAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberSetTitleAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberSetTitleAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberSetTitleAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberSetTitleAttrs) GetTitle() string {
+	if m != nil {
+		return m.Title
+	}
+	return ""
+}
+
+type ConversationMemberSetTopicAttrs struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Topic                string   `protobuf:"bytes,2,opt,name=topic,proto3" json:"topic,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMemberSetTopicAttrs) Reset()         { *m = ConversationMemberSetTopicAttrs{} }
+func (m *ConversationMemberSetTopicAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberSetTopicAttrs) ProtoMessage()    {}
+func (*ConversationMemberSetTopicAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{15}
+}
+func (m *ConversationMemberSetTopicAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberSetTopicAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberSetTopicAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberSetTopicAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberSetTopicAttrs.Merge(m, src)
+}
+func (m *ConversationMemberSetTopicAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberSetTopicAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberSetTopicAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberSetTopicAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberSetTopicAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberSetTopicAttrs) GetTopic() string {
+	if m != nil {
+		return m.Topic
+	}
+	return ""
+}
+
+type ConversationMemberSetOwnerAttrs struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContactId            string   `protobuf:"bytes,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMemberSetOwnerAttrs) Reset()         { *m = ConversationMemberSetOwnerAttrs{} }
+func (m *ConversationMemberSetOwnerAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberSetOwnerAttrs) ProtoMessage()    {}
+func (*ConversationMemberSetOwnerAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{16}
+}
+func (m *ConversationMemberSetOwnerAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberSetOwnerAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberSetOwnerAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberSetOwnerAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberSetOwnerAttrs.Merge(m, src)
+}
+func (m *ConversationMemberSetOwnerAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberSetOwnerAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberSetOwnerAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberSetOwnerAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberSetOwnerAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberSetOwnerAttrs) GetContactId() string {
+	if m != nil {
+		return m.ContactId
+	}
+	return ""
+}
+
+type ConversationMemberBlockAttrs struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContactId            string   `protobuf:"bytes,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMemberBlockAttrs) Reset()         { *m = ConversationMemberBlockAttrs{} }
+func (m *ConversationMemberBlockAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberBlockAttrs) ProtoMessage()    {}
+func (*ConversationMemberBlockAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{17}
+}
+func (m *ConversationMemberBlockAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberBlockAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberBlockAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberBlockAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberBlockAttrs.Merge(m, src)
+}
+func (m *ConversationMemberBlockAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberBlockAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberBlockAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberBlockAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberBlockAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberBlockAttrs) GetContactId() string {
+	if m != nil {
+		return m.ContactId
+	}
+	return ""
+}
+
+type ConversationMemberUnblockAttrs struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	ContactId            string   `protobuf:"bytes,2,opt,name=contact_id,json=contactId,proto3" json:"contact_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMemberUnblockAttrs) Reset()         { *m = ConversationMemberUnblockAttrs{} }
+func (m *ConversationMemberUnblockAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberUnblockAttrs) ProtoMessage()    {}
+func (*ConversationMemberUnblockAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{18}
+}
+func (m *ConversationMemberUnblockAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberUnblockAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberUnblockAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberUnblockAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberUnblockAttrs.Merge(m, src)
+}
+func (m *ConversationMemberUnblockAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberUnblockAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberUnblockAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberUnblockAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberUnblockAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberUnblockAttrs) GetContactId() string {
+	if m != nil {
+		return m.ContactId
+	}
+	return ""
+}
+
+type ConversationMemberReadAttrs struct {
+	Id                   string    `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	At                   time.Time `protobuf:"bytes,2,opt,name=at,proto3,stdtime" json:"at"`
+	XXX_NoUnkeyedLiteral struct{}  `json:"-"`
+	XXX_unrecognized     []byte    `json:"-"`
+	XXX_sizecache        int32     `json:"-"`
+}
+
+func (m *ConversationMemberReadAttrs) Reset()         { *m = ConversationMemberReadAttrs{} }
+func (m *ConversationMemberReadAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberReadAttrs) ProtoMessage()    {}
+func (*ConversationMemberReadAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{19}
+}
+func (m *ConversationMemberReadAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberReadAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberReadAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberReadAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberReadAttrs.Merge(m, src)
+}
+func (m *ConversationMemberReadAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberReadAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberReadAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberReadAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberReadAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberReadAttrs) GetAt() time.Time {
+	if m != nil {
+		return m.At
+	}
+	return time.Time{}
+}
+
+type ConversationMemberWriteAttrs struct {
+	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Message              *Message `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ConversationMemberWriteAttrs) Reset()         { *m = ConversationMemberWriteAttrs{} }
+func (m *ConversationMemberWriteAttrs) String() string { return proto.CompactTextString(m) }
+func (*ConversationMemberWriteAttrs) ProtoMessage()    {}
+func (*ConversationMemberWriteAttrs) Descriptor() ([]byte, []int) {
+	return fileDescriptor_8119a288b3154fed, []int{20}
+}
+func (m *ConversationMemberWriteAttrs) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ConversationMemberWriteAttrs) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ConversationMemberWriteAttrs.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalTo(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ConversationMemberWriteAttrs) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ConversationMemberWriteAttrs.Merge(m, src)
+}
+func (m *ConversationMemberWriteAttrs) XXX_Size() int {
+	return m.Size()
+}
+func (m *ConversationMemberWriteAttrs) XXX_DiscardUnknown() {
+	xxx_messageInfo_ConversationMemberWriteAttrs.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ConversationMemberWriteAttrs proto.InternalMessageInfo
+
+func (m *ConversationMemberWriteAttrs) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *ConversationMemberWriteAttrs) GetMessage() *Message {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
 type DevtoolsMapsetAttrs struct {
 	Key                  string   `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	Val                  string   `protobuf:"bytes,2,opt,name=val,proto3" json:"val,omitempty"`
@@ -697,7 +1231,7 @@ func (m *DevtoolsMapsetAttrs) Reset()         { *m = DevtoolsMapsetAttrs{} }
 func (m *DevtoolsMapsetAttrs) String() string { return proto.CompactTextString(m) }
 func (*DevtoolsMapsetAttrs) ProtoMessage()    {}
 func (*DevtoolsMapsetAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8119a288b3154fed, []int{12}
+	return fileDescriptor_8119a288b3154fed, []int{21}
 }
 func (m *DevtoolsMapsetAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -751,7 +1285,7 @@ func (m *SenderAliasUpdateAttrs) Reset()         { *m = SenderAliasUpdateAttrs{}
 func (m *SenderAliasUpdateAttrs) String() string { return proto.CompactTextString(m) }
 func (*SenderAliasUpdateAttrs) ProtoMessage()    {}
 func (*SenderAliasUpdateAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8119a288b3154fed, []int{13}
+	return fileDescriptor_8119a288b3154fed, []int{22}
 }
 func (m *SenderAliasUpdateAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -798,7 +1332,7 @@ func (m *DeviceUpdatePushConfigAttrs) Reset()         { *m = DeviceUpdatePushCon
 func (m *DeviceUpdatePushConfigAttrs) String() string { return proto.CompactTextString(m) }
 func (*DeviceUpdatePushConfigAttrs) ProtoMessage()    {}
 func (*DeviceUpdatePushConfigAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8119a288b3154fed, []int{14}
+	return fileDescriptor_8119a288b3154fed, []int{23}
 }
 func (m *DeviceUpdatePushConfigAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -847,7 +1381,7 @@ func (m *DevicePushToAttrs) Reset()         { *m = DevicePushToAttrs{} }
 func (m *DevicePushToAttrs) String() string { return proto.CompactTextString(m) }
 func (*DevicePushToAttrs) ProtoMessage()    {}
 func (*DevicePushToAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8119a288b3154fed, []int{15}
+	return fileDescriptor_8119a288b3154fed, []int{24}
 }
 func (m *DevicePushToAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -911,7 +1445,7 @@ func (m *NodeAttrs) Reset()         { *m = NodeAttrs{} }
 func (m *NodeAttrs) String() string { return proto.CompactTextString(m) }
 func (*NodeAttrs) ProtoMessage()    {}
 func (*NodeAttrs) Descriptor() ([]byte, []int) {
-	return fileDescriptor_8119a288b3154fed, []int{16}
+	return fileDescriptor_8119a288b3154fed, []int{25}
 }
 func (m *NodeAttrs) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -968,6 +1502,15 @@ func init() {
 	proto.RegisterType((*ConversationNewMessageAttrs)(nil), "berty.entity.ConversationNewMessageAttrs")
 	proto.RegisterType((*ConversationReadAttrs)(nil), "berty.entity.ConversationReadAttrs")
 	proto.RegisterType((*ConversationUpdateAttrs)(nil), "berty.entity.ConversationUpdateAttrs")
+	proto.RegisterType((*ConversationMemberInviteAttrs)(nil), "berty.entity.ConversationMemberInviteAttrs")
+	proto.RegisterType((*ConversationMemberLeaveAttrs)(nil), "berty.entity.ConversationMemberLeaveAttrs")
+	proto.RegisterType((*ConversationMemberSetTitleAttrs)(nil), "berty.entity.ConversationMemberSetTitleAttrs")
+	proto.RegisterType((*ConversationMemberSetTopicAttrs)(nil), "berty.entity.ConversationMemberSetTopicAttrs")
+	proto.RegisterType((*ConversationMemberSetOwnerAttrs)(nil), "berty.entity.ConversationMemberSetOwnerAttrs")
+	proto.RegisterType((*ConversationMemberBlockAttrs)(nil), "berty.entity.ConversationMemberBlockAttrs")
+	proto.RegisterType((*ConversationMemberUnblockAttrs)(nil), "berty.entity.ConversationMemberUnblockAttrs")
+	proto.RegisterType((*ConversationMemberReadAttrs)(nil), "berty.entity.ConversationMemberReadAttrs")
+	proto.RegisterType((*ConversationMemberWriteAttrs)(nil), "berty.entity.ConversationMemberWriteAttrs")
 	proto.RegisterType((*DevtoolsMapsetAttrs)(nil), "berty.entity.DevtoolsMapsetAttrs")
 	proto.RegisterType((*SenderAliasUpdateAttrs)(nil), "berty.entity.SenderAliasUpdateAttrs")
 	proto.RegisterType((*DeviceUpdatePushConfigAttrs)(nil), "berty.entity.DeviceUpdatePushConfigAttrs")
@@ -978,57 +1521,74 @@ func init() {
 func init() { proto.RegisterFile("entity/kind.proto", fileDescriptor_8119a288b3154fed) }
 
 var fileDescriptor_8119a288b3154fed = []byte{
-	// 790 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x55, 0x4d, 0x8f, 0x22, 0x45,
-	0x18, 0xde, 0xee, 0xc6, 0x01, 0xde, 0x21, 0x63, 0x51, 0xb3, 0xf3, 0x1d, 0x91, 0x74, 0xa2, 0x12,
-	0x35, 0x60, 0x76, 0x4f, 0x26, 0x66, 0x0d, 0x3b, 0x5c, 0x26, 0x1b, 0x26, 0x93, 0x1e, 0x36, 0x46,
-	0x3d, 0x90, 0x9e, 0xee, 0x77, 0xa0, 0x03, 0x54, 0x61, 0x55, 0xc1, 0x2e, 0x7f, 0xc1, 0x9b, 0x37,
-	0xff, 0x84, 0x1f, 0x3f, 0xc3, 0xaf, 0x83, 0x57, 0x3d, 0x18, 0xc5, 0xdf, 0xe0, 0xdd, 0x54, 0x57,
-	0xd1, 0x36, 0x0c, 0x71, 0xb3, 0xc9, 0x5e, 0x48, 0xf5, 0x53, 0x4f, 0x3d, 0xf5, 0xf4, 0xdb, 0xcf,
-	0xfb, 0x02, 0x55, 0x64, 0x2a, 0x51, 0x8b, 0xd6, 0x28, 0x61, 0x71, 0x73, 0x2a, 0xb8, 0xe2, 0xb4,
-	0x72, 0x83, 0x42, 0x2d, 0x9a, 0x66, 0xe3, 0xf4, 0xbe, 0x25, 0x44, 0x9c, 0xa9, 0x30, 0x52, 0x86,
-	0x73, 0x7a, 0xf2, 0x1f, 0x3a, 0x47, 0x21, 0x43, 0x95, 0x70, 0x66, 0xb7, 0x56, 0x07, 0x26, 0x28,
-	0x65, 0x38, 0x40, 0x8b, 0xee, 0x5b, 0x34, 0xc6, 0x79, 0x12, 0xe1, 0x86, 0x8a, 0x44, 0x16, 0xa3,
-	0xe8, 0x87, 0xe3, 0x24, 0x94, 0x76, 0xeb, 0xf5, 0xe9, 0x4c, 0x0e, 0x5b, 0xfa, 0x67, 0x25, 0x3b,
-	0xe0, 0x03, 0x9e, 0x2e, 0x5b, 0x7a, 0x65, 0x50, 0xff, 0x6d, 0x28, 0x5f, 0x23, 0x53, 0x6d, 0xa5,
-	0x84, 0xa4, 0x27, 0xe0, 0x25, 0xb1, 0x3c, 0x76, 0xea, 0x5e, 0xa3, 0xfc, 0xb8, 0xb8, 0xfc, 0xe3,
-	0x4d, 0xef, 0xa2, 0x23, 0x03, 0x8d, 0xf9, 0x8f, 0xa0, 0xd4, 0x8e, 0x46, 0x2f, 0xa2, 0xd1, 0x23,
-	0x28, 0xa2, 0x10, 0xfd, 0x89, 0x1c, 0x1c, 0xbb, 0x75, 0xa7, 0x51, 0x0e, 0x76, 0x50, 0x88, 0xae,
-	0x1c, 0xf8, 0x27, 0x50, 0xbe, 0x4a, 0xd8, 0xc0, 0x08, 0x54, 0xc0, 0xe9, 0x1d, 0x3b, 0x75, 0xa7,
-	0x51, 0x0a, 0x9c, 0x9e, 0xb1, 0x80, 0xec, 0x85, 0x16, 0x3e, 0x87, 0xfd, 0x73, 0x53, 0xc3, 0x00,
-	0xbf, 0x98, 0xa1, 0xb4, 0xa6, 0xdf, 0x02, 0x77, 0x82, 0xa9, 0xda, 0xee, 0x83, 0x83, 0x66, 0xbe,
-	0xf4, 0xcd, 0x15, 0xdd, 0x9d, 0x20, 0x7d, 0x03, 0x20, 0x61, 0x4a, 0xf0, 0xbe, 0xc2, 0xe7, 0xca,
-	0x9a, 0x2b, 0xa7, 0x48, 0x0f, 0x9f, 0x2b, 0xff, 0x3d, 0x38, 0xdb, 0x10, 0x8f, 0x22, 0x9c, 0x2a,
-	0x8c, 0xb7, 0x39, 0xfe, 0x28, 0x73, 0x72, 0x3d, 0x0c, 0x05, 0x76, 0xf1, 0x65, 0x9c, 0xf8, 0x1d,
-	0xa8, 0xe6, 0x4f, 0x9b, 0xb3, 0x2d, 0x28, 0xda, 0x80, 0xfc, 0xbf, 0xc0, 0x8a, 0xe5, 0x7f, 0x0a,
-	0x47, 0xe7, 0xb9, 0xec, 0x5c, 0xb0, 0x79, 0xa2, 0xac, 0xd6, 0x23, 0xa8, 0xe4, 0x63, 0x65, 0x05,
-	0x4f, 0xef, 0x08, 0x66, 0x8c, 0x60, 0x8d, 0xef, 0x5f, 0xa6, 0xb5, 0xc8, 0x9e, 0x2f, 0xf1, 0x59,
-	0xd7, 0x44, 0x31, 0xb3, 0x6a, 0xa3, 0xb9, 0xdd, 0xaa, 0x25, 0x07, 0x2b, 0x96, 0xff, 0x09, 0x1c,
-	0xac, 0xdd, 0x86, 0x61, 0xfc, 0x6a, 0x8c, 0x6e, 0xd4, 0xe0, 0xe9, 0x34, 0x0e, 0x5f, 0x55, 0x0d,
-	0x3e, 0x84, 0xfd, 0x0e, 0xce, 0x15, 0xe7, 0x63, 0xd9, 0x0d, 0xa7, 0x12, 0x6d, 0xd8, 0x08, 0x78,
-	0x23, 0x5c, 0xa4, 0x6a, 0xe5, 0x40, 0x2f, 0x35, 0x32, 0x0f, 0xc7, 0x36, 0x50, 0x7a, 0xe9, 0x77,
-	0xe1, 0xf0, 0x3a, 0xed, 0xc7, 0xb6, 0x6e, 0xc7, 0xbc, 0xa9, 0x87, 0x50, 0x4c, 0x5b, 0x14, 0x4d,
-	0xc0, 0x77, 0x1f, 0x9c, 0xac, 0xfb, 0xc9, 0x1d, 0x0b, 0x56, 0x4c, 0xff, 0x09, 0x9c, 0x75, 0xd2,
-	0x9e, 0x37, 0x4a, 0x57, 0x33, 0x39, 0x3c, 0xe7, 0xec, 0x36, 0xb1, 0xbd, 0xf4, 0x3e, 0xec, 0x98,
-	0x91, 0x60, 0x5f, 0xf1, 0xfe, 0xba, 0xa4, 0x39, 0x1a, 0x58, 0x8e, 0xff, 0xa5, 0x03, 0x55, 0x03,
-	0x69, 0x9d, 0x1e, 0x37, 0x1a, 0xef, 0x40, 0x3a, 0x2d, 0xfa, 0x49, 0xac, 0x4f, 0xdd, 0x26, 0x28,
-	0x52, 0xb1, 0x4a, 0xb0, 0xa7, 0xe1, 0x8b, 0x0c, 0xa5, 0xa7, 0x50, 0x42, 0x36, 0xc7, 0x31, 0x9f,
-	0x62, 0xfa, 0xc6, 0x95, 0x20, 0x7b, 0xa6, 0x1f, 0x40, 0x69, 0x2a, 0x12, 0x2e, 0x12, 0xb5, 0x38,
-	0xf6, 0xea, 0x4e, 0x63, 0x2f, 0xb3, 0x92, 0x0e, 0xa1, 0x2b, 0xbb, 0x17, 0x64, 0x2c, 0xff, 0x63,
-	0x28, 0x5f, 0xf2, 0xd8, 0xd6, 0x86, 0x42, 0x41, 0x8f, 0xd0, 0xf4, 0xe2, 0xd7, 0x82, 0x74, 0x4d,
-	0x6b, 0x00, 0xa1, 0x52, 0x22, 0xb9, 0x99, 0x29, 0x94, 0xf6, 0xc2, 0x1c, 0xf2, 0xee, 0x5f, 0x2e,
-	0x14, 0x9e, 0x68, 0xe2, 0x2e, 0x14, 0x9f, 0xb2, 0x11, 0xe3, 0xcf, 0x18, 0xb9, 0x47, 0x4b, 0x50,
-	0xd0, 0x23, 0x8d, 0x20, 0x2d, 0x82, 0xd7, 0x8e, 0x46, 0xe4, 0x56, 0x43, 0x7a, 0xfa, 0x90, 0x81,
-	0xd9, 0x44, 0x46, 0x86, 0x74, 0x1f, 0xf6, 0xd6, 0x3b, 0x9e, 0xfc, 0xe8, 0xd0, 0x33, 0x38, 0xdc,
-	0x3e, 0x06, 0xc8, 0x4f, 0x4e, 0xee, 0x84, 0x6d, 0x7b, 0xf2, 0xb3, 0x43, 0xab, 0x50, 0xc9, 0x83,
-	0xe4, 0x17, 0x87, 0x1e, 0x01, 0xbd, 0xdb, 0x9a, 0xe4, 0x1b, 0xd7, 0xaa, 0x6f, 0x69, 0x2c, 0xf2,
-	0xad, 0x4b, 0x0f, 0x80, 0x6c, 0x76, 0x09, 0xf9, 0xce, 0xdd, 0x14, 0x33, 0x21, 0x20, 0xdf, 0xbb,
-	0xda, 0xcd, 0x7a, 0x42, 0xc9, 0x57, 0x1e, 0x3d, 0x84, 0xea, 0x9d, 0xec, 0x91, 0x7f, 0x3c, 0x7d,
-	0xf3, 0xf6, 0x10, 0x91, 0xdf, 0x0a, 0xfa, 0x15, 0xf2, 0x99, 0x20, 0xbf, 0x17, 0x74, 0x99, 0xf4,
-	0xa7, 0x21, 0xd1, 0xe3, 0xc6, 0x0f, 0xcb, 0x9a, 0xf3, 0xeb, 0xb2, 0xe6, 0xfc, 0xb9, 0xac, 0x39,
-	0x5f, 0xff, 0x5d, 0xbb, 0xf7, 0xd9, 0xa1, 0xf9, 0xaa, 0x0a, 0xa3, 0x61, 0x2b, 0xe2, 0x02, 0x5b,
-	0x26, 0x6a, 0x37, 0x3b, 0xe9, 0x3f, 0xca, 0xc3, 0x7f, 0x03, 0x00, 0x00, 0xff, 0xff, 0xbf, 0x7a,
-	0xda, 0x8e, 0x12, 0x07, 0x00, 0x00,
+	// 1062 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xcb, 0x6e, 0x23, 0x45,
+	0x14, 0x4d, 0xb7, 0xed, 0xd8, 0xbe, 0xb1, 0x42, 0xa5, 0xf2, 0x76, 0x26, 0x76, 0xd4, 0x12, 0x10,
+	0x01, 0xb2, 0xd1, 0x0c, 0x1b, 0x24, 0x34, 0x28, 0x0f, 0x09, 0x45, 0x83, 0x33, 0x51, 0xc7, 0xd1,
+	0x08, 0x58, 0x58, 0xed, 0xee, 0x1b, 0xa7, 0x14, 0xbb, 0xcb, 0x74, 0x57, 0x9c, 0xc9, 0x2f, 0xb0,
+	0x82, 0x1d, 0x4b, 0x7e, 0x80, 0xc7, 0x0f, 0xf0, 0x06, 0x69, 0x78, 0x2c, 0xd8, 0xc2, 0x62, 0x40,
+	0xe1, 0x1b, 0xd8, 0xb0, 0x42, 0xd5, 0x55, 0xed, 0xb4, 0x5f, 0x99, 0x09, 0x9a, 0x4d, 0x54, 0x7d,
+	0xeb, 0xd6, 0xa9, 0x93, 0x5b, 0xf7, 0xdc, 0x63, 0x98, 0x43, 0x5f, 0x30, 0x71, 0x51, 0x3d, 0x65,
+	0xbe, 0x57, 0xe9, 0x06, 0x5c, 0x70, 0x5a, 0x68, 0x62, 0x20, 0x2e, 0x2a, 0x6a, 0xa3, 0x58, 0x6e,
+	0x71, 0xde, 0x6a, 0x63, 0x35, 0xda, 0x6b, 0x9e, 0x1d, 0x57, 0x05, 0xeb, 0x60, 0x28, 0x9c, 0x4e,
+	0x57, 0xa5, 0x17, 0x17, 0x34, 0x82, 0xcb, 0x7d, 0xe1, 0xb8, 0x42, 0x47, 0x57, 0xaf, 0xa2, 0x3d,
+	0x0c, 0x42, 0x47, 0x30, 0xee, 0x0f, 0x1d, 0xe8, 0x60, 0x18, 0x3a, 0x2d, 0xd4, 0xd1, 0x79, 0x1d,
+	0xf5, 0xb0, 0xc7, 0x5c, 0x1c, 0x42, 0x09, 0xd1, 0xf7, 0x30, 0x68, 0x38, 0x6d, 0xe6, 0x84, 0x7a,
+	0xeb, 0xb9, 0xee, 0x59, 0x78, 0x52, 0x95, 0x7f, 0x62, 0xd8, 0x16, 0x6f, 0xf1, 0x68, 0x59, 0x95,
+	0x2b, 0x15, 0xb5, 0x5e, 0x80, 0xfc, 0x21, 0xfa, 0x62, 0x4b, 0x88, 0x20, 0xa4, 0xab, 0x90, 0x62,
+	0x5e, 0xb8, 0x62, 0x6c, 0xa4, 0x36, 0xf3, 0xdb, 0xd9, 0xcb, 0xc7, 0xe5, 0xd4, 0xde, 0x6e, 0x68,
+	0xcb, 0x98, 0x75, 0x17, 0x72, 0x5b, 0xee, 0xe9, 0x93, 0xd2, 0xe8, 0x32, 0x64, 0x31, 0x08, 0x1a,
+	0x9d, 0xb0, 0xb5, 0x62, 0x6e, 0x18, 0x9b, 0x79, 0x7b, 0x1a, 0x83, 0xa0, 0x16, 0xb6, 0xac, 0x55,
+	0xc8, 0x1f, 0x30, 0xbf, 0xa5, 0x00, 0x0a, 0x60, 0xd4, 0x57, 0x8c, 0x0d, 0x63, 0x33, 0x67, 0x1b,
+	0x75, 0x45, 0x01, 0xfd, 0x27, 0x52, 0x78, 0x0f, 0xe6, 0x77, 0x54, 0x0d, 0x6d, 0x7c, 0xff, 0x0c,
+	0x43, 0x4d, 0xfa, 0x79, 0x30, 0x3b, 0x18, 0xa1, 0xcd, 0xdc, 0x5e, 0xac, 0x24, 0xdf, 0xa6, 0x12,
+	0xa7, 0x9b, 0x1d, 0xa4, 0xeb, 0x00, 0xcc, 0x17, 0x01, 0x6f, 0x08, 0x7c, 0x28, 0x34, 0xb9, 0x7c,
+	0x14, 0xa9, 0xe3, 0x43, 0x61, 0xbd, 0x0c, 0x6b, 0x43, 0xe0, 0xae, 0x8b, 0x5d, 0x81, 0xde, 0x38,
+	0xc6, 0x6f, 0xf4, 0x99, 0x1c, 0x9e, 0x38, 0x01, 0xd6, 0xf0, 0x26, 0x4c, 0xac, 0x5d, 0x98, 0x4b,
+	0x9e, 0x56, 0x67, 0xab, 0x90, 0xd5, 0x0d, 0x72, 0x3d, 0x40, 0x9c, 0x65, 0xbd, 0x03, 0xcb, 0x3b,
+	0x89, 0xde, 0xd9, 0xf3, 0x7b, 0x4c, 0x68, 0xac, 0xbb, 0x50, 0x48, 0xb6, 0x95, 0x06, 0x2c, 0x8e,
+	0x00, 0xf6, 0x33, 0xec, 0x81, 0x7c, 0x6b, 0x3f, 0xaa, 0x45, 0xff, 0x7b, 0x1f, 0xcf, 0x6b, 0xaa,
+	0x15, 0xfb, 0x54, 0x75, 0x6b, 0x8e, 0xa7, 0xaa, 0x93, 0xed, 0x38, 0xcb, 0x7a, 0x00, 0x8b, 0x03,
+	0xb7, 0xa1, 0xe3, 0x3d, 0x1b, 0xa2, 0x43, 0x35, 0x38, 0xea, 0x7a, 0xce, 0xb3, 0xaa, 0xc1, 0x27,
+	0x06, 0xac, 0x27, 0xb7, 0x6b, 0xd8, 0x69, 0x62, 0x90, 0xac, 0xf2, 0x2c, 0x98, 0xcc, 0x8b, 0x70,
+	0xf3, 0xb6, 0xc9, 0xbc, 0xe4, 0x0b, 0x9a, 0x4f, 0xf3, 0x82, 0x23, 0x14, 0x53, 0x37, 0xa4, 0x58,
+	0x81, 0x5b, 0xa3, 0x0c, 0xdf, 0x46, 0xa7, 0x37, 0x9e, 0xa0, 0xf5, 0x16, 0x94, 0x47, 0xf3, 0x0f,
+	0x51, 0xd4, 0x99, 0x68, 0x4f, 0xf8, 0x9f, 0x16, 0x20, 0x23, 0xe4, 0xae, 0xd6, 0x8b, 0xfa, 0x98,
+	0x0c, 0xc4, 0xbb, 0xcc, 0x9d, 0x0c, 0x24, 0x77, 0xfb, 0x40, 0xf2, 0xc3, 0x3a, 0x98, 0x00, 0x74,
+	0xff, 0xdc, 0xc7, 0x60, 0x3c, 0xd0, 0x3a, 0x80, 0xae, 0x5f, 0x83, 0x79, 0xb1, 0x8c, 0x75, 0x64,
+	0xcf, 0xb3, 0x6a, 0xe3, 0x6a, 0xb2, 0xdd, 0xe6, 0xf1, 0xe8, 0xba, 0x21, 0xdc, 0x7d, 0x28, 0x8d,
+	0xc2, 0x1d, 0xf9, 0xcd, 0xff, 0x0d, 0xe8, 0x0e, 0x4a, 0x4b, 0x01, 0x5e, 0x09, 0x62, 0x18, 0xed,
+	0x35, 0x30, 0x9d, 0xb8, 0x9d, 0x8a, 0x15, 0xe5, 0x34, 0x95, 0xd8, 0x69, 0x2a, 0xf5, 0xd8, 0x69,
+	0xb6, 0x73, 0x8f, 0x1e, 0x97, 0xa7, 0x3e, 0xfc, 0xb3, 0x6c, 0xd8, 0xa6, 0x23, 0xac, 0xc6, 0xb8,
+	0x22, 0x3c, 0x08, 0xae, 0xeb, 0xdc, 0x58, 0xd0, 0xe6, 0x53, 0x09, 0xfa, 0x75, 0x98, 0xdf, 0xc5,
+	0x9e, 0xe0, 0xbc, 0x1d, 0xd6, 0x9c, 0x6e, 0x88, 0x7a, 0x12, 0x13, 0x48, 0x9d, 0xe2, 0x85, 0x06,
+	0x96, 0x4b, 0x19, 0xe9, 0x39, 0x6d, 0x5d, 0x06, 0xb9, 0xb4, 0x6a, 0xb0, 0x74, 0x18, 0x99, 0xd5,
+	0x96, 0xf4, 0xaa, 0xa4, 0x62, 0xef, 0x40, 0x36, 0xf2, 0x2f, 0x54, 0xd3, 0x7f, 0xe6, 0xf6, 0xea,
+	0x20, 0x8b, 0xc4, 0x31, 0x3b, 0xce, 0xb4, 0xee, 0xc1, 0xda, 0x6e, 0x64, 0x88, 0x0a, 0xe9, 0xe0,
+	0x2c, 0x3c, 0xd9, 0xe1, 0xfe, 0x31, 0xd3, 0x46, 0xf3, 0x0a, 0x4c, 0x2b, 0xbf, 0xd4, 0xfa, 0x5f,
+	0x18, 0x84, 0x54, 0x47, 0x6d, 0x9d, 0x63, 0x7d, 0x60, 0xc0, 0x9c, 0x0a, 0x49, 0x9c, 0x3a, 0x57,
+	0x18, 0x2f, 0x42, 0x64, 0xa5, 0x0d, 0xe6, 0xc9, 0x53, 0xc7, 0x0c, 0x83, 0x08, 0xac, 0x60, 0xcf,
+	0xca, 0xf0, 0x5e, 0x3f, 0x4a, 0x8b, 0x90, 0x43, 0xbf, 0x87, 0x6d, 0xde, 0x55, 0x75, 0x2c, 0xd8,
+	0xfd, 0x6f, 0xfa, 0x2a, 0xe4, 0xba, 0x01, 0xe3, 0x01, 0x13, 0x17, 0x91, 0xce, 0x67, 0xfb, 0x54,
+	0x22, 0x87, 0x3e, 0xd0, 0x7b, 0x76, 0x3f, 0xcb, 0x7a, 0x13, 0xf2, 0xfb, 0xdc, 0xd3, 0xb5, 0xa1,
+	0x90, 0x96, 0x3f, 0x40, 0xa2, 0x8b, 0x33, 0x76, 0xb4, 0xa6, 0x25, 0x00, 0x47, 0x88, 0x80, 0x35,
+	0xcf, 0x04, 0x86, 0xfa, 0xc2, 0x44, 0xe4, 0xa5, 0x7f, 0xd3, 0x90, 0xbe, 0x27, 0x13, 0x67, 0x20,
+	0x7b, 0xe4, 0x9f, 0xfa, 0xfc, 0xdc, 0x27, 0x53, 0x34, 0x07, 0x69, 0xe9, 0xf7, 0x04, 0x69, 0x16,
+	0x52, 0x5b, 0xee, 0x29, 0x39, 0x96, 0x21, 0x69, 0xcd, 0xa4, 0xa5, 0x36, 0xd1, 0x27, 0x27, 0x74,
+	0x1e, 0x66, 0x07, 0xed, 0x90, 0xfc, 0x64, 0xd0, 0x35, 0x58, 0x1a, 0xef, 0x91, 0xe4, 0x67, 0x23,
+	0x71, 0x42, 0x7b, 0x22, 0xf9, 0xc5, 0xa0, 0x73, 0x50, 0x48, 0x06, 0xc9, 0xaf, 0x06, 0x5d, 0x06,
+	0x3a, 0xea, 0x5b, 0xe4, 0x53, 0x53, 0xa3, 0x8f, 0x71, 0x1d, 0xf2, 0x99, 0x49, 0x17, 0x81, 0x0c,
+	0x5b, 0x08, 0xf9, 0xdc, 0x1c, 0x06, 0x53, 0x4d, 0x40, 0xbe, 0x30, 0xe9, 0x3a, 0xac, 0x4c, 0x9a,
+	0xde, 0xe4, 0xcb, 0x0c, 0xbd, 0x35, 0x68, 0x1c, 0x89, 0xd1, 0x49, 0xbe, 0xca, 0xd0, 0x32, 0x14,
+	0x27, 0x0f, 0x4a, 0xf2, 0xf5, 0x35, 0x09, 0x72, 0xaa, 0x91, 0x6f, 0x26, 0x27, 0x44, 0x83, 0x8d,
+	0x7c, 0x3b, 0x81, 0x40, 0x34, 0xa7, 0xc8, 0x77, 0x19, 0x5a, 0x82, 0xd5, 0x89, 0x63, 0x87, 0x7c,
+	0x9f, 0x19, 0x2e, 0xd5, 0xd5, 0x14, 0x21, 0x3f, 0x4c, 0x80, 0x8e, 0xd4, 0x4f, 0x7e, 0xcc, 0xc8,
+	0x67, 0x1a, 0x94, 0x2e, 0xf9, 0x28, 0x45, 0x97, 0x60, 0x6e, 0x44, 0x94, 0xe4, 0x9f, 0x94, 0xbc,
+	0x67, 0xbc, 0xba, 0xc8, 0xef, 0x69, 0xf9, 0xb6, 0x49, 0xb1, 0x90, 0x3f, 0xd2, 0xb2, 0x7f, 0x64,
+	0xcf, 0x12, 0x77, 0x7b, 0xf3, 0xd1, 0x65, 0xc9, 0xf8, 0xed, 0xb2, 0x64, 0xfc, 0x75, 0x59, 0x32,
+	0x3e, 0xfe, 0xbb, 0x34, 0xf5, 0xee, 0x92, 0x6a, 0x77, 0x81, 0xee, 0x49, 0xd5, 0xe5, 0x01, 0x56,
+	0x95, 0x06, 0x9b, 0xd3, 0xd1, 0x38, 0xbb, 0xf3, 0x5f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x64, 0xb3,
+	0x63, 0x28, 0x69, 0x0b, 0x00, 0x00,
 }
 
 func (m *SentAttrs) Marshal() (dAtA []byte, err error) {
@@ -1430,6 +1990,317 @@ func (m *ConversationUpdateAttrs) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *ConversationMemberInviteAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberInviteAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if m.Contact != nil {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(m.Contact.Size()))
+		n8, err := m.Contact.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n8
+	}
+	if m.Conversation != nil {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(m.Conversation.Size()))
+		n9, err := m.Conversation.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n9
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberLeaveAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberLeaveAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberSetTitleAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberSetTitleAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if len(m.Title) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Title)))
+		i += copy(dAtA[i:], m.Title)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberSetTopicAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberSetTopicAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if len(m.Topic) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Topic)))
+		i += copy(dAtA[i:], m.Topic)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberSetOwnerAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberSetOwnerAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if len(m.ContactId) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ContactId)))
+		i += copy(dAtA[i:], m.ContactId)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberBlockAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberBlockAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if len(m.ContactId) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ContactId)))
+		i += copy(dAtA[i:], m.ContactId)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberUnblockAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberUnblockAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if len(m.ContactId) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.ContactId)))
+		i += copy(dAtA[i:], m.ContactId)
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberReadAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberReadAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	dAtA[i] = 0x12
+	i++
+	i = encodeVarintKind(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.At)))
+	n10, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.At, dAtA[i:])
+	if err != nil {
+		return 0, err
+	}
+	i += n10
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
+func (m *ConversationMemberWriteAttrs) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ConversationMemberWriteAttrs) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Id) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(len(m.Id)))
+		i += copy(dAtA[i:], m.Id)
+	}
+	if m.Message != nil {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintKind(dAtA, i, uint64(m.Message.Size()))
+		n11, err := m.Message.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n11
+	}
+	if m.XXX_unrecognized != nil {
+		i += copy(dAtA[i:], m.XXX_unrecognized)
+	}
+	return i, nil
+}
+
 func (m *DevtoolsMapsetAttrs) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1515,11 +2386,11 @@ func (m *DeviceUpdatePushConfigAttrs) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintKind(dAtA, i, uint64(m.Device.Size()))
-		n8, err := m.Device.MarshalTo(dAtA[i:])
+		n12, err := m.Device.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n8
+		i += n12
 	}
 	if m.XXX_unrecognized != nil {
 		i += copy(dAtA[i:], m.XXX_unrecognized)
@@ -1802,6 +2673,184 @@ func (m *ConversationUpdateAttrs) Size() (n int) {
 	_ = l
 	if m.Conversation != nil {
 		l = m.Conversation.Size()
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberInviteAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.Contact != nil {
+		l = m.Contact.Size()
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.Conversation != nil {
+		l = m.Conversation.Size()
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberLeaveAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberSetTitleAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	l = len(m.Title)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberSetTopicAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	l = len(m.Topic)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberSetOwnerAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	l = len(m.ContactId)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberBlockAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	l = len(m.ContactId)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberUnblockAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	l = len(m.ContactId)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberReadAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	l = github_com_gogo_protobuf_types.SizeOfStdTime(m.At)
+	n += 1 + l + sovKind(uint64(l))
+	if m.XXX_unrecognized != nil {
+		n += len(m.XXX_unrecognized)
+	}
+	return n
+}
+
+func (m *ConversationMemberWriteAttrs) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovKind(uint64(l))
+	}
+	if m.Message != nil {
+		l = m.Message.Size()
 		n += 1 + l + sovKind(uint64(l))
 	}
 	if m.XXX_unrecognized != nil {
@@ -2922,6 +3971,1000 @@ func (m *ConversationUpdateAttrs) Unmarshal(dAtA []byte) error {
 				m.Conversation = &Conversation{}
 			}
 			if err := m.Conversation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberInviteAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberInviteAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberInviteAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Contact", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Contact == nil {
+				m.Contact = &Contact{}
+			}
+			if err := m.Contact.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Conversation", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Conversation == nil {
+				m.Conversation = &Conversation{}
+			}
+			if err := m.Conversation.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberLeaveAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberLeaveAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberLeaveAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberSetTitleAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberSetTitleAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberSetTitleAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberSetTopicAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberSetTopicAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberSetTopicAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Topic", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Topic = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberSetOwnerAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberSetOwnerAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberSetOwnerAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberBlockAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberBlockAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberBlockAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberUnblockAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberUnblockAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberUnblockAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ContactId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ContactId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberReadAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberReadAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberReadAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field At", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := github_com_gogo_protobuf_types.StdTimeUnmarshal(&m.At, dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipKind(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthKind
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.XXX_unrecognized = append(m.XXX_unrecognized, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ConversationMemberWriteAttrs) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowKind
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ConversationMemberWriteAttrs: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ConversationMemberWriteAttrs: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowKind
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthKind
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Message == nil {
+				m.Message = &Message{}
+			}
+			if err := m.Message.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

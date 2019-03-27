@@ -28,31 +28,46 @@ func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationC
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	members := []*entity.ConversationMember{
-		{
-			ID:        n.NewID(),
-			ContactID: n.UserID(),
-			Status:    entity.ConversationMember_Owner,
-		},
+	var err error
+	query := n.sql(ctx)
+	contacts := []*entity.Contact{}
+	for i, contact := range input.Contacts {
+		if contact.ID == "" {
+			return nil, errors.New("contact must have an ID")
+		}
+		if i == 0 {
+			query = query.Where(&entity.Contact{ID: contact.ID})
+			continue
+		}
+		query = query.Or(&entity.Contact{ID: contact.ID})
 	}
-	for _, contact := range input.Contacts {
-		members = append(members, &entity.ConversationMember{
-			ID:        n.NewID(),
-			ContactID: contact.ID,
-			Status:    entity.ConversationMember_Active,
-		})
-	}
-
-	// save new conversation
-	createConversation := &entity.Conversation{
-		ID:      n.NewID(),
-		Members: members,
-		Title:   input.Title,
-		Topic:   input.Topic,
+	query = query.Or(&entity.Contact{ID: n.UserID()})
+	if err := query.Find(&contacts).Error; err != nil {
+		return nil, err
 	}
 
-	conversation, err := bsql.SaveConversation(n.sql(ctx), createConversation, createConversation.ID)
-	if err != nil {
+	var conversation *entity.Conversation
+	switch input.Kind {
+	case entity.Conversation_OneToOne:
+		if len(contacts) != 2 {
+			return nil, errors.New("one to one conversation need only two contacts")
+		}
+		conversation, err = entity.NewOneToOneConversation(contacts[0], contacts[1])
+		if err != nil {
+			return nil, err
+		}
+
+	case entity.Conversation_Group:
+		conversation, err = entity.NewGroupConversation(contacts)
+		if err != nil {
+			return nil, err
+		}
+
+	default:
+		return nil, errors.New("conversation kind is not defined")
+	}
+
+	if err := bsql.ConversationSave(n.sql(ctx), conversation); err != nil {
 		return nil, err
 	}
 
@@ -93,65 +108,50 @@ func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationM
 	ctx = tracer.Context()
 
 	n.handleMutex(ctx)()
+	var err error
 
-	conversation := &entity.Conversation{ID: input.Conversation.ID}
-	if err := n.sql(ctx).First(&conversation, &entity.Conversation{ID: input.Conversation.ID}).Error; err != nil {
+	// find conversation
+	c := &entity.Conversation{ID: input.Conversation.ID}
+	if err := n.sql(ctx).First(c).Error; err != nil {
 		return nil, bsql.GenericError(err)
 	}
 
-	addedMembers := []*entity.ConversationMember{}
+	// find interactive member (current node user)
+	cm, err := c.GetInteractiveMember(n.UserID())
+	if err != nil {
+		return nil, err
+	}
 
+	// find contacts
+	contacts := []*entity.Contact{}
 	for _, contact := range input.Contacts {
-		if err := n.sql(ctx).First(&contact, &entity.Contact{ID: contact.ID}).Error; err != nil {
+		if err := n.sql(ctx).First(contact, &entity.Contact{ID: contact.ID}).Error; err != nil {
 			return nil, bsql.GenericError(err)
 		}
+		contacts = append(contacts, contact)
+	}
+	if len(contacts) == 0 {
+		return nil, errors.New("contacts not found")
+	}
 
-		member := &entity.ConversationMember{}
-		if err := n.sql(ctx).First(&member, &entity.ConversationMember{ContactID: contact.ID, ConversationID: conversation.ID}).Error; err != nil {
-			if errorcodes.ErrDbNothingFound.Is(bsql.GenericError(err)) || member.ID == "" {
-				member = &entity.ConversationMember{
-					ID:             n.NewID(),
-					ContactID:      contact.ID,
-					ConversationID: conversation.ID,
-					Status:         entity.ConversationMember_Active,
-				}
-
-				addedMembers = append(addedMembers, member)
-			}
-
-			if member.Status != entity.ConversationMember_Active {
-				// TODO: remove existing member from convo
-				member.Status = entity.ConversationMember_Active
-				addedMembers = append(addedMembers, member)
-			}
+	// invite contacts
+	for _, contact := range contacts {
+		if err := cm.Invite(contact); err != nil {
+			return nil, err
 		}
+	}
+
+	// save conversation
+	err = bsql.ConversationSave(n.sql(ctx), c)
+	if err != nil {
+		return nil, err
 	}
 
 	events := []*entity.Event{}
-
-	for _, member := range addedMembers {
-		if err := n.sql(ctx).Save(member).Error; err != nil {
-			return nil, bsql.GenericError(err)
-		}
-
-		input.Conversation.Members = append(input.Conversation.Members, member)
-	}
-
-	for _, member := range addedMembers {
-		event := n.NewEvent(ctx).
-			SetToContact(member.Contact).
-			SetConversationInviteAttrs(&entity.ConversationInviteAttrs{Conversation: conversation.Filtered()})
-		if event.Err() != nil {
-			return nil, errorcodes.ErrUndefined.Wrap(event.Err())
-		}
-
-		events = append(events, event)
-	}
-
 	event := n.NewEvent(ctx).
-		SetToConversation(conversation).
-		SetConversationUpdateAttrs(&entity.ConversationUpdateAttrs{
-			Conversation: conversation,
+		SetToConversation(c).
+		SetConversationInviteAttrs(&entity.ConversationInviteAttrs{
+			Conversation: c,
 		})
 	if event.Err() != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(event.Err())
@@ -164,7 +164,7 @@ func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationM
 		}
 	}
 
-	return conversation, nil
+	return c, nil
 }
 
 func (n *Node) ConversationExclude(ctx context.Context, input *node.ConversationManageMembersInput) (*entity.Conversation, error) {

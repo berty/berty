@@ -75,41 +75,35 @@ func TestConversationCreate(t *testing.T) {
 
 		So(getConversationsCount(n), ShouldEqual, 0)
 
-		conv, err := testConversationCreate(ctx, n, []string{PubKeyA})
-		So(err, ShouldNotBeNil)
-		So(conv, ShouldBeNil)
-
-		So(getConversationsCount(n), ShouldEqual, 0)
-
-		conv, err = testConversationCreate(ctx, n, []string{PubKeyB})
+		conv, err := testConversationCreate(ctx, n, []string{PubKeyA}, entity.Conversation_Group)
 		So(err, ShouldBeNil)
 		So(conv, ShouldNotBeNil)
 
 		So(getConversationsCount(n), ShouldEqual, 1)
 
-		conv, err = testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB})
-		So(err, ShouldBeNil)
-		So(conv, ShouldNotBeNil)
-
-		So(getConversationsCount(n), ShouldEqual, 1)
-
-		conv, err = testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB})
-		So(err, ShouldBeNil)
-		So(conv, ShouldNotBeNil)
-
-		So(getConversationsCount(n), ShouldEqual, 1)
-
-		conv, err = testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC})
+		conv, err = testConversationCreate(ctx, n, []string{PubKeyB}, entity.Conversation_OneToOne)
 		So(err, ShouldBeNil)
 		So(conv, ShouldNotBeNil)
 
 		So(getConversationsCount(n), ShouldEqual, 2)
 
-		conv, err = testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC})
+		conv, err = testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB}, entity.Conversation_Group)
 		So(err, ShouldBeNil)
 		So(conv, ShouldNotBeNil)
 
 		So(getConversationsCount(n), ShouldEqual, 3)
+
+		conv, err = testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC}, entity.Conversation_Group)
+		So(err, ShouldBeNil)
+		So(conv, ShouldNotBeNil)
+
+		So(getConversationsCount(n), ShouldEqual, 4)
+
+		conv, err = testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC}, entity.Conversation_Group)
+		So(err, ShouldBeNil)
+		So(conv, ShouldNotBeNil)
+
+		So(getConversationsCount(n), ShouldEqual, 5)
 	})
 }
 
@@ -122,13 +116,13 @@ func TestConversationInvite(t *testing.T) {
 
 		defer mock.RemoveDb(path, n.sqlDriver)
 
-		mucConversation, err := testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC})
+		mucConversation, err := testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC}, entity.Conversation_Group)
 		So(mucConversation, ShouldNotBeNil)
 		So(err, ShouldBeNil)
 
 		So(getConversationsCount(n), ShouldEqual, 1)
 
-		updatedConversation, err := testConversationInvite(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC, PubKeyD}, mucConversation.ID)
+		updatedConversation, err := testConversationInvite(ctx, n, mucConversation, []string{PubKeyA, PubKeyB, PubKeyC, PubKeyD})
 		So(updatedConversation, ShouldNotBeNil)
 		So(err, ShouldBeNil)
 
@@ -141,13 +135,13 @@ func TestConversationInvite(t *testing.T) {
 
 		defer mock.RemoveDb(path, n.sqlDriver)
 
-		mucConversation, err := testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC})
+		mucConversation, err := testConversationCreate(ctx, n, []string{PubKeyA, PubKeyB, PubKeyC}, entity.Conversation_Group)
 		So(mucConversation, ShouldNotBeNil)
 		So(err, ShouldBeNil)
 
 		So(getConversationsCount(n), ShouldEqual, 1)
 
-		updatedConversation, err := testConversationInvite(ctx, n, []string{PubKeyD}, mucConversation.ID)
+		updatedConversation, err := testConversationInvite(ctx, n, mucConversation, []string{PubKeyD})
 		So(updatedConversation, ShouldNotBeNil)
 		So(err, ShouldBeNil)
 
@@ -155,13 +149,23 @@ func TestConversationInvite(t *testing.T) {
 	})
 }
 
-func testConversationInvite(ctx context.Context, n *Node, strings []string, s string) (*entity.Conversation, error) {
+func testConversationInvite(
+	ctx context.Context,
+	n *Node,
+	conversation *entity.Conversation,
+	ids []string,
+) (*entity.Conversation, error) {
+	contacts := []*entity.Contact{}
+	for _, id := range ids {
+		contacts = append(contacts, &entity.Contact{ID: id, Status: entity.Contact_IsFriend})
+	}
 	return n.ConversationInvite(ctx, &node.ConversationManageMembersInput{
-		//Conversation: ""
+		Conversation: conversation,
+		Contacts:     contacts,
 	})
 }
 
-func testConversationCreate(ctx context.Context, n *Node, contactIDs []string) (*entity.Conversation, error) {
+func testConversationCreate(ctx context.Context, n *Node, contactIDs []string, kind entity.Conversation_Kind) (*entity.Conversation, error) {
 	contacts := []*entity.Contact{}
 
 	for _, contactID := range contactIDs {
@@ -170,12 +174,12 @@ func testConversationCreate(ctx context.Context, n *Node, contactIDs []string) (
 
 	return n.ConversationCreate(ctx, &node.ConversationCreateInput{
 		Contacts: contacts,
+		Kind:     kind,
 	})
 }
 
 func getConversationsCount(n *Node) int {
 	count := 0
-
 	So(n.sqlDriver.Model(&entity.Conversation{}).Count(&count).Error, ShouldBeNil)
 
 	return count
@@ -187,8 +191,12 @@ func testConversationInitDB(ctx context.Context) (string, *Node, error) {
 	So(err, ShouldBeNil)
 	So(n, ShouldNotBeNil)
 
-	for _, letter := range []string{PubKeyB, PubKeyC, PubKeyD} {
-		err := n.sqlDriver.Save(&entity.Contact{ID: letter}).Error
+	for i, letter := range []string{PubKeyA, PubKeyB, PubKeyC, PubKeyD} {
+		contact := &entity.Contact{ID: letter}
+		if i == 0 {
+			contact.Status = entity.Contact_Myself
+		}
+		err := n.sqlDriver.Save(contact).Error
 		So(err, ShouldBeNil)
 
 		err = n.sqlDriver.Save(&entity.Device{ID: letter, ContactID: letter}).Error

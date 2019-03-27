@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package berty.entity;
 
+import "google/protobuf/timestamp.proto";
 import "entity/contact.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
@@ -45,10 +46,23 @@ enum Kind {
   // Conversation events
   //
 
-  ConversationInvite = 301;
-  ConversationNewMessage = 302;
-  ConversationRead = 303;
-  ConversationUpdate = 304;
+  ConversationInvite = 301; // deprecated
+  ConversationNewMessage = 302; // deprecated
+  ConversationRead = 303; // deprecated
+  ConversationUpdate = 304; // deprecated
+
+  //
+  // ConversationMember events
+  //
+  ConversationMemberInvite = 701;
+	ConversationMemberLeave = 702;
+  ConversationMemberSetTitle = 703;
+  ConversationMemberSetTopic = 704;
+  ConversationMemberSetOwner = 705;
+  ConversationMemberBlock = 706;
+	ConversationMemberUnblock = 707;
+  ConversationMemberRead = 708;
+  ConversationMemberWrite = 709;
 
   // Devtool events
   DevtoolsMapset = 401;
@@ -85,7 +99,7 @@ message PingAttrs { bool T = 1; }
 message SeenAttrs { repeated string ids = 1 [(gogoproto.customname) = "IDs"]; }
 
 //
-// Contact events
+// Contact event
 //
 
 message ContactRequestAttrs { berty.entity.Contact me = 1; string intro_text = 2; }
@@ -101,6 +115,48 @@ message ConversationInviteAttrs { berty.entity.Conversation conversation = 1; }
 message ConversationNewMessageAttrs { berty.entity.Message message = 1; }
 message ConversationReadAttrs { berty.entity.Conversation conversation = 1; }
 message ConversationUpdateAttrs { berty.entity.Conversation conversation = 1; }
+
+message ConversationMemberInviteAttrs {
+  // id of ConversationMember{Action} is always the id of member that takes actions on conversation
+  // it permit to identify the conversation
+  // it permit to check if the contact match with the source of event
+  string id = 1;
+  // needed for members that doesn't know this contact
+  Contact contact = 2;
+  // needed for the new member
+  Conversation conversation = 3;
+}
+message ConversationMemberLeaveAttrs {
+	string id = 1;
+}
+message ConversationMemberSetTitleAttrs {
+  string id = 1;
+  string title = 2;
+}
+message ConversationMemberSetTopicAttrs {
+  string id = 1;
+  string topic = 2;
+}
+message ConversationMemberSetOwnerAttrs {
+  string id = 1;
+  string contact_id = 2;
+}
+message ConversationMemberBlockAttrs {
+  string id = 1;
+  string contact_id = 2;
+}
+message ConversationMemberUnblockAttrs {
+	string id = 1;
+	string contact_id = 2;
+}
+message ConversationMemberReadAttrs {
+  string id = 1;
+  google.protobuf.Timestamp at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+}
+message ConversationMemberWriteAttrs {
+  string id = 1;
+  Message message = 2;
+}
 
 //
 // Devtools events

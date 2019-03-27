@@ -725,6 +725,7 @@ func TestAliasesFlow(t *testing.T) {
 			_, err = bob.client.Node().ConversationCreate(ctx, &node.ConversationCreateInput{
 				Title: "Alice & Bob",
 				Topic: "hey!",
+				Kind:  entity.Conversation_OneToOne,
 				Contacts: []*entity.Contact{
 					{ID: alice.node.UserID()},
 				},
@@ -768,6 +769,7 @@ func TestAliasesFlow(t *testing.T) {
 			_, err = alice.client.Node().ConversationCreate(ctx, &node.ConversationCreateInput{
 				Title: "Alice & Bob 2",
 				Topic: "hey! oh!",
+				Kind:  entity.Conversation_OneToOne,
 				Contacts: []*entity.Contact{
 					{ID: bob.node.UserID()},
 				},
@@ -799,6 +801,7 @@ func TestAliasesFlow(t *testing.T) {
 			_, err = alice.client.Node().ConversationCreate(ctx, &node.ConversationCreateInput{
 				Title: "Alice & Bob 3",
 				Topic: "hey! oh! let's go",
+				Kind:  entity.Conversation_OneToOne,
 				Contacts: []*entity.Contact{
 					{ID: bob.node.UserID()},
 				},

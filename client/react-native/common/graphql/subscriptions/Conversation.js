@@ -22,6 +22,8 @@ export default context => ({
               })
             }
             updater(store, conversation, operation === 2)
+            operation !== 2 &&
+              context.queries.Conversation.fetch({ id: conversation.id })
           }
         }),
     }),

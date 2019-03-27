@@ -852,6 +852,20 @@ models:
       text:
 
 
+  BertyEntityErr:
+    model: berty.tech/core/entity.Err
+    fields:
+      errMsg:
+  BertyEntityErrInput:
+    model: berty.tech/core/entity.Err
+    fields:
+      errMsg:
+  BertyEntityErrPayload:
+    model: berty.tech/core/entity.Err
+    fields:
+      errMsg:
+
+
   BertyEntityConversation:
     model: berty.tech/core/entity.Conversation
     fields:
@@ -863,6 +877,7 @@ models:
       title:
       topic:
       infos:
+      kind:
       members:
   BertyEntityConversationInput:
     model: berty.tech/core/entity.Conversation
@@ -875,6 +890,7 @@ models:
       title:
       topic:
       infos:
+      kind:
       members:
   BertyEntityConversationPayload:
     model: berty.tech/core/entity.Conversation
@@ -887,6 +903,7 @@ models:
       title:
       topic:
       infos:
+      kind:
       members:
 
   BertyEntityConversationMember:
@@ -896,6 +913,7 @@ models:
         resolver: true
       createdAt:
       updatedAt:
+      readAt:
       status:
       contact:
       conversationId:
@@ -909,6 +927,7 @@ models:
         resolver: true
       createdAt:
       updatedAt:
+      readAt:
       status:
       contact:
       conversationId:
@@ -922,6 +941,7 @@ models:
         resolver: true
       createdAt:
       updatedAt:
+      readAt:
       status:
       contact:
       conversationId:
@@ -1185,6 +1205,150 @@ models:
     fields:
       conversation:
 
+  BertyEntityConversationMemberInviteAttrs:
+    model: berty.tech/core/entity.ConversationMemberInviteAttrs
+    fields:
+      id:
+      contact:
+      conversation:
+  BertyEntityConversationMemberInviteAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberInviteAttrs
+    fields:
+      id:
+      contact:
+      conversation:
+  BertyEntityConversationMemberInviteAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberInviteAttrs
+    fields:
+      id:
+      contact:
+      conversation:
+
+  BertyEntityConversationMemberLeaveAttrs:
+    model: berty.tech/core/entity.ConversationMemberLeaveAttrs
+    fields:
+      id:
+  BertyEntityConversationMemberLeaveAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberLeaveAttrs
+    fields:
+      id:
+  BertyEntityConversationMemberLeaveAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberLeaveAttrs
+    fields:
+      id:
+
+  BertyEntityConversationMemberSetTitleAttrs:
+    model: berty.tech/core/entity.ConversationMemberSetTitleAttrs
+    fields:
+      id:
+      title:
+  BertyEntityConversationMemberSetTitleAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberSetTitleAttrs
+    fields:
+      id:
+      title:
+  BertyEntityConversationMemberSetTitleAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberSetTitleAttrs
+    fields:
+      id:
+      title:
+
+  BertyEntityConversationMemberSetTopicAttrs:
+    model: berty.tech/core/entity.ConversationMemberSetTopicAttrs
+    fields:
+      id:
+      topic:
+  BertyEntityConversationMemberSetTopicAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberSetTopicAttrs
+    fields:
+      id:
+      topic:
+  BertyEntityConversationMemberSetTopicAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberSetTopicAttrs
+    fields:
+      id:
+      topic:
+
+  BertyEntityConversationMemberSetOwnerAttrs:
+    model: berty.tech/core/entity.ConversationMemberSetOwnerAttrs
+    fields:
+      id:
+      contactId:
+  BertyEntityConversationMemberSetOwnerAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberSetOwnerAttrs
+    fields:
+      id:
+      contactId:
+  BertyEntityConversationMemberSetOwnerAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberSetOwnerAttrs
+    fields:
+      id:
+      contactId:
+
+  BertyEntityConversationMemberBlockAttrs:
+    model: berty.tech/core/entity.ConversationMemberBlockAttrs
+    fields:
+      id:
+      contactId:
+  BertyEntityConversationMemberBlockAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberBlockAttrs
+    fields:
+      id:
+      contactId:
+  BertyEntityConversationMemberBlockAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberBlockAttrs
+    fields:
+      id:
+      contactId:
+
+  BertyEntityConversationMemberUnblockAttrs:
+    model: berty.tech/core/entity.ConversationMemberUnblockAttrs
+    fields:
+      id:
+      contactId:
+  BertyEntityConversationMemberUnblockAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberUnblockAttrs
+    fields:
+      id:
+      contactId:
+  BertyEntityConversationMemberUnblockAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberUnblockAttrs
+    fields:
+      id:
+      contactId:
+
+  BertyEntityConversationMemberReadAttrs:
+    model: berty.tech/core/entity.ConversationMemberReadAttrs
+    fields:
+      id:
+      at:
+  BertyEntityConversationMemberReadAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberReadAttrs
+    fields:
+      id:
+      at:
+  BertyEntityConversationMemberReadAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberReadAttrs
+    fields:
+      id:
+      at:
+
+  BertyEntityConversationMemberWriteAttrs:
+    model: berty.tech/core/entity.ConversationMemberWriteAttrs
+    fields:
+      id:
+      message:
+  BertyEntityConversationMemberWriteAttrsInput:
+    model: berty.tech/core/entity.ConversationMemberWriteAttrs
+    fields:
+      id:
+      message:
+  BertyEntityConversationMemberWriteAttrsPayload:
+    model: berty.tech/core/entity.ConversationMemberWriteAttrs
+    fields:
+      id:
+      message:
+
   BertyEntityDevtoolsMapsetAttrs:
     model: berty.tech/core/entity.DevtoolsMapsetAttrs
     fields:
@@ -1261,20 +1425,6 @@ models:
     fields:
       kind:
       attributes:
-
-
-  BertyEntityErr:
-    model: berty.tech/core/entity.Err
-    fields:
-      errMsg:
-  BertyEntityErrInput:
-    model: berty.tech/core/entity.Err
-    fields:
-      errMsg:
-  BertyEntityErrPayload:
-    model: berty.tech/core/entity.Err
-    fields:
-      errMsg:
 
 
   GoogleProtobufAny:
@@ -2033,12 +2183,14 @@ models:
       contacts:
       title:
       topic:
+      kind:
   BertyNodeConversationCreateInputPayload:
     model: berty.tech/core/api/node.ConversationCreateInput
     fields:
       contacts:
       title:
       topic:
+      kind:
 
   BertyNodeConversationManageMembersInput:
     model: berty.tech/core/api/node.ConversationManageMembersInput

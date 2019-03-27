@@ -121,6 +121,7 @@ type ComplexityRoot struct {
 		Title     func(childComplexity int) int
 		Topic     func(childComplexity int) int
 		Infos     func(childComplexity int) int
+		Kind      func(childComplexity int) int
 		Members   func(childComplexity int) int
 	}
 
@@ -132,10 +133,56 @@ type ComplexityRoot struct {
 		Id             func(childComplexity int) int
 		CreatedAt      func(childComplexity int) int
 		UpdatedAt      func(childComplexity int) int
+		ReadAt         func(childComplexity int) int
 		Status         func(childComplexity int) int
 		Contact        func(childComplexity int) int
 		ConversationId func(childComplexity int) int
 		ContactId      func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberBlockAttrs struct {
+		Id        func(childComplexity int) int
+		ContactId func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberInviteAttrs struct {
+		Id           func(childComplexity int) int
+		Contact      func(childComplexity int) int
+		Conversation func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberLeaveAttrs struct {
+		Id func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberReadAttrs struct {
+		Id func(childComplexity int) int
+		At func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberSetOwnerAttrs struct {
+		Id        func(childComplexity int) int
+		ContactId func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberSetTitleAttrs struct {
+		Id    func(childComplexity int) int
+		Title func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberSetTopicAttrs struct {
+		Id    func(childComplexity int) int
+		Topic func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberUnblockAttrs struct {
+		Id        func(childComplexity int) int
+		ContactId func(childComplexity int) int
+	}
+
+	BertyEntityConversationMemberWriteAttrs struct {
+		Id      func(childComplexity int) int
+		Message func(childComplexity int) int
 	}
 
 	BertyEntityConversationNewMessageAttrs struct {
@@ -705,8 +752,8 @@ type ComplexityRoot struct {
 		ContactAcceptRequest             func(childComplexity int, contactId string) int
 		ContactRemove                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ContactUpdate                    func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
-		ConversationCreate               func(childComplexity int, contacts []*entity.Contact, title string, topic string) int
-		ConversationUpdate               func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) int
+		ConversationCreate               func(childComplexity int, contacts []*entity.Contact, title string, topic string, kind *int32) int
+		ConversationUpdate               func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, kind *int32, members []*entity.ConversationMember) int
 		ConversationInvite               func(childComplexity int, conversation *entity.Conversation, contacts []*entity.Contact) int
 		ConversationExclude              func(childComplexity int, conversation *entity.Conversation, contacts []*entity.Contact) int
 		ConversationAddMessage           func(childComplexity int, conversation *entity.Conversation, message *entity.Message) int
@@ -734,8 +781,8 @@ type ComplexityRoot struct {
 		Contact                 func(childComplexity int, filter *entity.Contact) int
 		ContactCheckPublicKey   func(childComplexity int, filter *entity.Contact) int
 		ConversationList        func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		Conversation            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) int
-		ConversationMember      func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
+		Conversation            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, kind *int32, members []*entity.ConversationMember) int
+		ConversationMember      func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
 		ConversationLastEvent   func(childComplexity int, id string) int
 		DevicePushConfigList    func(childComplexity int, T bool) int
 		DeviceInfos             func(childComplexity int, T bool) int
@@ -816,8 +863,8 @@ type MutationResolver interface {
 	ContactAcceptRequest(ctx context.Context, contactId string) (*entity.Contact, error)
 	ContactRemove(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
 	ContactUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
-	ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string) (*entity.Conversation, error)
-	ConversationUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) (*entity.Conversation, error)
+	ConversationCreate(ctx context.Context, contacts []*entity.Contact, title string, topic string, kind *int32) (*entity.Conversation, error)
+	ConversationUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationInvite(ctx context.Context, conversation *entity.Conversation, contacts []*entity.Contact) (*entity.Conversation, error)
 	ConversationExclude(ctx context.Context, conversation *entity.Conversation, contacts []*entity.Contact) (*entity.Conversation, error)
 	ConversationAddMessage(ctx context.Context, conversation *entity.Conversation, message *entity.Message) (*entity.Event, error)
@@ -844,8 +891,8 @@ type QueryResolver interface {
 	Contact(ctx context.Context, filter *entity.Contact) (*entity.Contact, error)
 	ContactCheckPublicKey(ctx context.Context, filter *entity.Contact) (*node.Bool, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
-	Conversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, members []*entity.ConversationMember) (*entity.Conversation, error)
-	ConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
+	Conversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, title string, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error)
+	ConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
 	ConversationLastEvent(ctx context.Context, id string) (*entity.Event, error)
 	DevicePushConfigList(ctx context.Context, T bool) (*node.DevicePushConfigListOutput, error)
 	DeviceInfos(ctx context.Context, T bool) (*deviceinfo.DeviceInfos, error)
@@ -1411,6 +1458,20 @@ func field_Mutation_ConversationCreate_args(rawArgs map[string]interface{}) (map
 		}
 	}
 	args["topic"] = arg2
+	var arg3 *int32
+	if tmp, ok := rawArgs["kind"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg3 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["kind"] = arg3
 	return args, nil
 
 }
@@ -1495,7 +1556,21 @@ func field_Mutation_ConversationUpdate_args(rawArgs map[string]interface{}) (map
 		}
 	}
 	args["infos"] = arg6
-	var arg7 []*entity.ConversationMember
+	var arg7 *int32
+	if tmp, ok := rawArgs["kind"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg7 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["kind"] = arg7
+	var arg8 []*entity.ConversationMember
 	if tmp, ok := rawArgs["members"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -1506,19 +1581,19 @@ func field_Mutation_ConversationUpdate_args(rawArgs map[string]interface{}) (map
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg7 = make([]*entity.ConversationMember, len(rawIf1))
+		arg8 = make([]*entity.ConversationMember, len(rawIf1))
 		for idx1 := range rawIf1 {
 			var ptr2 entity.ConversationMember
 			if rawIf1[idx1] != nil {
 				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
-				arg7[idx1] = &ptr2
+				arg8[idx1] = &ptr2
 			}
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["members"] = arg7
+	args["members"] = arg8
 	return args, nil
 
 }
@@ -2541,7 +2616,21 @@ func field_Query_Conversation_args(rawArgs map[string]interface{}) (map[string]i
 		}
 	}
 	args["infos"] = arg6
-	var arg7 []*entity.ConversationMember
+	var arg7 *int32
+	if tmp, ok := rawArgs["kind"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg7 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["kind"] = arg7
+	var arg8 []*entity.ConversationMember
 	if tmp, ok := rawArgs["members"]; ok {
 		var err error
 		var rawIf1 []interface{}
@@ -2552,19 +2641,19 @@ func field_Query_Conversation_args(rawArgs map[string]interface{}) (map[string]i
 				rawIf1 = []interface{}{tmp}
 			}
 		}
-		arg7 = make([]*entity.ConversationMember, len(rawIf1))
+		arg8 = make([]*entity.ConversationMember, len(rawIf1))
 		for idx1 := range rawIf1 {
 			var ptr2 entity.ConversationMember
 			if rawIf1[idx1] != nil {
 				ptr2, err = UnmarshalBertyEntityConversationMemberInput(rawIf1[idx1])
-				arg7[idx1] = &ptr2
+				arg8[idx1] = &ptr2
 			}
 		}
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["members"] = arg7
+	args["members"] = arg8
 	return args, nil
 
 }
@@ -2608,12 +2697,12 @@ func field_Query_ConversationMember_args(rawArgs map[string]interface{}) (map[st
 		}
 	}
 	args["updatedAt"] = arg2
-	var arg3 *int32
-	if tmp, ok := rawArgs["status"]; ok {
+	var arg3 *time.Time
+	if tmp, ok := rawArgs["readAt"]; ok {
 		var err error
-		var ptr1 int32
+		var ptr1 time.Time
 		if tmp != nil {
-			ptr1, err = models.UnmarshalEnum(tmp)
+			ptr1, err = models.UnmarshalTime(tmp)
 			arg3 = &ptr1
 		}
 
@@ -2621,13 +2710,13 @@ func field_Query_ConversationMember_args(rawArgs map[string]interface{}) (map[st
 			return nil, err
 		}
 	}
-	args["status"] = arg3
-	var arg4 *entity.Contact
-	if tmp, ok := rawArgs["contact"]; ok {
+	args["readAt"] = arg3
+	var arg4 *int32
+	if tmp, ok := rawArgs["status"]; ok {
 		var err error
-		var ptr1 entity.Contact
+		var ptr1 int32
 		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			ptr1, err = models.UnmarshalEnum(tmp)
 			arg4 = &ptr1
 		}
 
@@ -2635,25 +2724,39 @@ func field_Query_ConversationMember_args(rawArgs map[string]interface{}) (map[st
 			return nil, err
 		}
 	}
-	args["contact"] = arg4
-	var arg5 string
-	if tmp, ok := rawArgs["conversationId"]; ok {
+	args["status"] = arg4
+	var arg5 *entity.Contact
+	if tmp, ok := rawArgs["contact"]; ok {
 		var err error
-		arg5, err = models.UnmarshalID(tmp)
+		var ptr1 entity.Contact
+		if tmp != nil {
+			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
+			arg5 = &ptr1
+		}
+
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["conversationId"] = arg5
+	args["contact"] = arg5
 	var arg6 string
-	if tmp, ok := rawArgs["contactId"]; ok {
+	if tmp, ok := rawArgs["conversationId"]; ok {
 		var err error
 		arg6, err = models.UnmarshalID(tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["contactId"] = arg6
+	args["conversationId"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["contactId"]; ok {
+		var err error
+		arg7, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["contactId"] = arg7
 	return args, nil
 
 }
@@ -3431,6 +3534,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityConversation.Infos(childComplexity), true
 
+	case "BertyEntityConversation.kind":
+		if e.complexity.BertyEntityConversation.Kind == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversation.Kind(childComplexity), true
+
 	case "BertyEntityConversation.members":
 		if e.complexity.BertyEntityConversation.Members == nil {
 			break
@@ -3466,6 +3576,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityConversationMember.UpdatedAt(childComplexity), true
 
+	case "BertyEntityConversationMember.readAt":
+		if e.complexity.BertyEntityConversationMember.ReadAt == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMember.ReadAt(childComplexity), true
+
 	case "BertyEntityConversationMember.status":
 		if e.complexity.BertyEntityConversationMember.Status == nil {
 			break
@@ -3493,6 +3610,132 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityConversationMember.ContactId(childComplexity), true
+
+	case "BertyEntityConversationMemberBlockAttrs.id":
+		if e.complexity.BertyEntityConversationMemberBlockAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberBlockAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberBlockAttrs.contactId":
+		if e.complexity.BertyEntityConversationMemberBlockAttrs.ContactId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberBlockAttrs.ContactId(childComplexity), true
+
+	case "BertyEntityConversationMemberInviteAttrs.id":
+		if e.complexity.BertyEntityConversationMemberInviteAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberInviteAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberInviteAttrs.contact":
+		if e.complexity.BertyEntityConversationMemberInviteAttrs.Contact == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberInviteAttrs.Contact(childComplexity), true
+
+	case "BertyEntityConversationMemberInviteAttrs.conversation":
+		if e.complexity.BertyEntityConversationMemberInviteAttrs.Conversation == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberInviteAttrs.Conversation(childComplexity), true
+
+	case "BertyEntityConversationMemberLeaveAttrs.id":
+		if e.complexity.BertyEntityConversationMemberLeaveAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberLeaveAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberReadAttrs.id":
+		if e.complexity.BertyEntityConversationMemberReadAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberReadAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberReadAttrs.at":
+		if e.complexity.BertyEntityConversationMemberReadAttrs.At == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberReadAttrs.At(childComplexity), true
+
+	case "BertyEntityConversationMemberSetOwnerAttrs.id":
+		if e.complexity.BertyEntityConversationMemberSetOwnerAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberSetOwnerAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberSetOwnerAttrs.contactId":
+		if e.complexity.BertyEntityConversationMemberSetOwnerAttrs.ContactId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberSetOwnerAttrs.ContactId(childComplexity), true
+
+	case "BertyEntityConversationMemberSetTitleAttrs.id":
+		if e.complexity.BertyEntityConversationMemberSetTitleAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberSetTitleAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberSetTitleAttrs.title":
+		if e.complexity.BertyEntityConversationMemberSetTitleAttrs.Title == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberSetTitleAttrs.Title(childComplexity), true
+
+	case "BertyEntityConversationMemberSetTopicAttrs.id":
+		if e.complexity.BertyEntityConversationMemberSetTopicAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberSetTopicAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberSetTopicAttrs.topic":
+		if e.complexity.BertyEntityConversationMemberSetTopicAttrs.Topic == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberSetTopicAttrs.Topic(childComplexity), true
+
+	case "BertyEntityConversationMemberUnblockAttrs.id":
+		if e.complexity.BertyEntityConversationMemberUnblockAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberUnblockAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberUnblockAttrs.contactId":
+		if e.complexity.BertyEntityConversationMemberUnblockAttrs.ContactId == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberUnblockAttrs.ContactId(childComplexity), true
+
+	case "BertyEntityConversationMemberWriteAttrs.id":
+		if e.complexity.BertyEntityConversationMemberWriteAttrs.Id == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberWriteAttrs.Id(childComplexity), true
+
+	case "BertyEntityConversationMemberWriteAttrs.message":
+		if e.complexity.BertyEntityConversationMemberWriteAttrs.Message == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityConversationMemberWriteAttrs.Message(childComplexity), true
 
 	case "BertyEntityConversationNewMessageAttrs.message":
 		if e.complexity.BertyEntityConversationNewMessageAttrs.Message == nil {
@@ -5648,7 +5891,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ConversationCreate(childComplexity, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string)), true
+		return e.complexity.Mutation.ConversationCreate(childComplexity, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string), args["kind"].(*int32)), true
 
 	case "Mutation.ConversationUpdate":
 		if e.complexity.Mutation.ConversationUpdate == nil {
@@ -5660,7 +5903,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.ConversationUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["members"].([]*entity.ConversationMember)), true
+		return e.complexity.Mutation.ConversationUpdate(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["kind"].(*int32), args["members"].([]*entity.ConversationMember)), true
 
 	case "Mutation.ConversationInvite":
 		if e.complexity.Mutation.ConversationInvite == nil {
@@ -5960,7 +6203,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Conversation(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["members"].([]*entity.ConversationMember)), true
+		return e.complexity.Query.Conversation(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["kind"].(*int32), args["members"].([]*entity.ConversationMember)), true
 
 	case "Query.ConversationMember":
 		if e.complexity.Query.ConversationMember == nil {
@@ -5972,7 +6215,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
+		return e.complexity.Query.ConversationMember(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string)), true
 
 	case "Query.ConversationLastEvent":
 		if e.complexity.Query.ConversationLastEvent == nil {
@@ -7365,6 +7608,8 @@ func (ec *executionContext) _BertyEntityConversation(ctx context.Context, sel as
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "kind":
+			out.Values[i] = ec._BertyEntityConversation_kind(ctx, field, obj)
 		case "members":
 			out.Values[i] = ec._BertyEntityConversation_members(ctx, field, obj)
 		default:
@@ -7531,6 +7776,26 @@ func (ec *executionContext) _BertyEntityConversation_infos(ctx context.Context, 
 }
 
 // nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversation_kind(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversation",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Kind, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(entity.Conversation_Kind)
+	rctx.Result = res
+	return models.MarshalEnum(int32(res))
+}
+
+// nolint: vetshadow
 func (ec *executionContext) _BertyEntityConversation_members(ctx context.Context, field graphql.CollectedField, obj *entity.Conversation) graphql.Marshaler {
 	rctx := &graphql.ResolverContext{
 		Object: "BertyEntityConversation",
@@ -7667,6 +7932,8 @@ func (ec *executionContext) _BertyEntityConversationMember(ctx context.Context, 
 			out.Values[i] = ec._BertyEntityConversationMember_createdAt(ctx, field, obj)
 		case "updatedAt":
 			out.Values[i] = ec._BertyEntityConversationMember_updatedAt(ctx, field, obj)
+		case "readAt":
+			out.Values[i] = ec._BertyEntityConversationMember_readAt(ctx, field, obj)
 		case "status":
 			out.Values[i] = ec._BertyEntityConversationMember_status(ctx, field, obj)
 		case "contact":
@@ -7754,6 +8021,26 @@ func (ec *executionContext) _BertyEntityConversationMember_updatedAt(ctx context
 	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.UpdatedAt, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMember_readAt(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMember) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMember",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ReadAt, nil
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -7852,6 +8139,726 @@ func (ec *executionContext) _BertyEntityConversationMember_contactId(ctx context
 	res := resTmp.(string)
 	rctx.Result = res
 	return models.MarshalID(res)
+}
+
+var bertyEntityConversationMemberBlockAttrsImplementors = []string{"BertyEntityConversationMemberBlockAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberBlockAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberBlockAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberBlockAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberBlockAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberBlockAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "contactId":
+			out.Values[i] = ec._BertyEntityConversationMemberBlockAttrs_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberBlockAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberBlockAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberBlockAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberBlockAttrs_contactId(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberBlockAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberBlockAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContactId, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyEntityConversationMemberInviteAttrsImplementors = []string{"BertyEntityConversationMemberInviteAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberInviteAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberInviteAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberInviteAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberInviteAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberInviteAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "contact":
+			out.Values[i] = ec._BertyEntityConversationMemberInviteAttrs_contact(ctx, field, obj)
+		case "conversation":
+			out.Values[i] = ec._BertyEntityConversationMemberInviteAttrs_conversation(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberInviteAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberInviteAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberInviteAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberInviteAttrs_contact(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberInviteAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberInviteAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Contact, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Contact)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityContact(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberInviteAttrs_conversation(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberInviteAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberInviteAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Conversation, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Conversation)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityConversation(ctx, field.Selections, res)
+}
+
+var bertyEntityConversationMemberLeaveAttrsImplementors = []string{"BertyEntityConversationMemberLeaveAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberLeaveAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberLeaveAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberLeaveAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberLeaveAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberLeaveAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberLeaveAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberLeaveAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberLeaveAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyEntityConversationMemberReadAttrsImplementors = []string{"BertyEntityConversationMemberReadAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberReadAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberReadAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberReadAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberReadAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberReadAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "at":
+			out.Values[i] = ec._BertyEntityConversationMemberReadAttrs_at(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberReadAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberReadAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberReadAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberReadAttrs_at(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberReadAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberReadAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.At, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	rctx.Result = res
+	return models.MarshalTime(res)
+}
+
+var bertyEntityConversationMemberSetOwnerAttrsImplementors = []string{"BertyEntityConversationMemberSetOwnerAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberSetOwnerAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberSetOwnerAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberSetOwnerAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberSetOwnerAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberSetOwnerAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "contactId":
+			out.Values[i] = ec._BertyEntityConversationMemberSetOwnerAttrs_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberSetOwnerAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberSetOwnerAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberSetOwnerAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberSetOwnerAttrs_contactId(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberSetOwnerAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberSetOwnerAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContactId, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyEntityConversationMemberSetTitleAttrsImplementors = []string{"BertyEntityConversationMemberSetTitleAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberSetTitleAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberSetTitleAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberSetTitleAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberSetTitleAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberSetTitleAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "title":
+			out.Values[i] = ec._BertyEntityConversationMemberSetTitleAttrs_title(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberSetTitleAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberSetTitleAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberSetTitleAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberSetTitleAttrs_title(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberSetTitleAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberSetTitleAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Title, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyEntityConversationMemberSetTopicAttrsImplementors = []string{"BertyEntityConversationMemberSetTopicAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberSetTopicAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberSetTopicAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberSetTopicAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberSetTopicAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberSetTopicAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "topic":
+			out.Values[i] = ec._BertyEntityConversationMemberSetTopicAttrs_topic(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberSetTopicAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberSetTopicAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberSetTopicAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberSetTopicAttrs_topic(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberSetTopicAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberSetTopicAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Topic, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyEntityConversationMemberUnblockAttrsImplementors = []string{"BertyEntityConversationMemberUnblockAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberUnblockAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberUnblockAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberUnblockAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberUnblockAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberUnblockAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "contactId":
+			out.Values[i] = ec._BertyEntityConversationMemberUnblockAttrs_contactId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberUnblockAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberUnblockAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberUnblockAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberUnblockAttrs_contactId(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberUnblockAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberUnblockAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ContactId, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+var bertyEntityConversationMemberWriteAttrsImplementors = []string{"BertyEntityConversationMemberWriteAttrs"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _BertyEntityConversationMemberWriteAttrs(ctx context.Context, sel ast.SelectionSet, obj *entity.ConversationMemberWriteAttrs) graphql.Marshaler {
+	fields := graphql.CollectFields(ctx, sel, bertyEntityConversationMemberWriteAttrsImplementors)
+
+	out := graphql.NewOrderedMap(len(fields))
+	invalid := false
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("BertyEntityConversationMemberWriteAttrs")
+		case "id":
+			out.Values[i] = ec._BertyEntityConversationMemberWriteAttrs_id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "message":
+			out.Values[i] = ec._BertyEntityConversationMemberWriteAttrs_message(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	if invalid {
+		return graphql.Null
+	}
+	return out
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberWriteAttrs_id(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberWriteAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberWriteAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityConversationMemberWriteAttrs_message(ctx context.Context, field graphql.CollectedField, obj *entity.ConversationMemberWriteAttrs) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityConversationMemberWriteAttrs",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Message, nil
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Message)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityMessage(ctx, field.Selections, res)
 }
 
 var bertyEntityConversationNewMessageAttrsImplementors = []string{"BertyEntityConversationNewMessageAttrs"}
@@ -20141,7 +21148,7 @@ func (ec *executionContext) _Mutation_ConversationCreate(ctx context.Context, fi
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ConversationCreate(rctx, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string))
+		return ec.resolvers.Mutation().ConversationCreate(rctx, args["contacts"].([]*entity.Contact), args["title"].(string), args["topic"].(string), args["kind"].(*int32))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -20172,7 +21179,7 @@ func (ec *executionContext) _Mutation_ConversationUpdate(ctx context.Context, fi
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().ConversationUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["members"].([]*entity.ConversationMember))
+		return ec.resolvers.Mutation().ConversationUpdate(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["kind"].(*int32), args["members"].([]*entity.ConversationMember))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -21171,7 +22178,7 @@ func (ec *executionContext) _Query_Conversation(ctx context.Context, field graph
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Conversation(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["members"].([]*entity.ConversationMember))
+		return ec.resolvers.Query().Conversation(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["title"].(string), args["topic"].(string), args["infos"].(string), args["kind"].(*int32), args["members"].([]*entity.ConversationMember))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -21202,7 +22209,7 @@ func (ec *executionContext) _Query_ConversationMember(ctx context.Context, field
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ConversationMember(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string))
+		return ec.resolvers.Query().ConversationMember(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["readAt"].(*time.Time), args["status"].(*int32), args["contact"].(*entity.Contact), args["conversationId"].(string), args["contactId"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -23504,6 +24511,15 @@ func UnmarshalBertyEntityConversationInput(v interface{}) (entity.Conversation, 
 			if err != nil {
 				return it, err
 			}
+		case "kind":
+			var err error
+
+			var castTmp int32
+			castTmp, err = models.UnmarshalEnum(v)
+			it.Kind = entity.Conversation_Kind(castTmp)
+			if err != nil {
+				return it, err
+			}
 		case "members":
 			var err error
 			var rawIf1 []interface{}
@@ -23552,6 +24568,12 @@ func UnmarshalBertyEntityConversationMemberInput(v interface{}) (entity.Conversa
 		case "updatedAt":
 			var err error
 			it.UpdatedAt, err = models.UnmarshalTime(v)
+			if err != nil {
+				return it, err
+			}
+		case "readAt":
+			var err error
+			it.ReadAt, err = models.UnmarshalTime(v)
 			if err != nil {
 				return it, err
 			}
@@ -24183,7 +25205,7 @@ interface Node {
 }
 
 type GoogleProtobufFileDescriptorSet  {
-    file: [GoogleProtobufFileDescriptorProto]
+  	file: [GoogleProtobufFileDescriptorProto]
 }
 type GoogleProtobufFileDescriptorProto  {
     name: String!
@@ -24191,19 +25213,19 @@ type GoogleProtobufFileDescriptorProto  {
     dependency: [String!]
     publicDependency: [Int32!]
     weakDependency: [Int32!]
-    messageType: [GoogleProtobufDescriptorProto]
-    enumType: [GoogleProtobufEnumDescriptorProto]
-    service: [GoogleProtobufServiceDescriptorProto]
-    extension: [GoogleProtobufFieldDescriptorProto]
-    options: GoogleProtobufFileOptions
-    sourceCodeInfo: GoogleProtobufSourceCodeInfo
+  	messageType: [GoogleProtobufDescriptorProto]
+  	enumType: [GoogleProtobufEnumDescriptorProto]
+  	service: [GoogleProtobufServiceDescriptorProto]
+  	extension: [GoogleProtobufFieldDescriptorProto]
+  	options: GoogleProtobufFileOptions
+  	sourceCodeInfo: GoogleProtobufSourceCodeInfo
     syntax: String!
 }
     
 type GoogleProtobufDescriptorProtoExtensionRange  {
     start: Int32!
     end: Int32!
-    options: GoogleProtobufExtensionRangeOptions
+  	options: GoogleProtobufExtensionRangeOptions
 }
 type GoogleProtobufDescriptorProtoReservedRange  {
     start: Int32!
@@ -24211,36 +25233,36 @@ type GoogleProtobufDescriptorProtoReservedRange  {
 }
 type GoogleProtobufDescriptorProto  {
     name: String!
-    field: [GoogleProtobufFieldDescriptorProto]
-    extension: [GoogleProtobufFieldDescriptorProto]
-    nestedType: [GoogleProtobufDescriptorProto]
-    enumType: [GoogleProtobufEnumDescriptorProto]
-    extensionRange: [GoogleProtobufDescriptorProtoExtensionRange]
-    oneofDecl: [GoogleProtobufOneofDescriptorProto]
-    options: GoogleProtobufMessageOptions
-    reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
+  	field: [GoogleProtobufFieldDescriptorProto]
+  	extension: [GoogleProtobufFieldDescriptorProto]
+  	nestedType: [GoogleProtobufDescriptorProto]
+  	enumType: [GoogleProtobufEnumDescriptorProto]
+  	extensionRange: [GoogleProtobufDescriptorProtoExtensionRange]
+  	oneofDecl: [GoogleProtobufOneofDescriptorProto]
+  	options: GoogleProtobufMessageOptions
+  	reservedRange: [GoogleProtobufDescriptorProtoReservedRange]
     reservedName: [String!]
 }
 type GoogleProtobufExtensionRangeOptions  {
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
       
       
 type GoogleProtobufFieldDescriptorProto  {
     name: String!
     number: Int32!
-    label: Enum
-    type: Enum
+  label: Enum
+  type: Enum
     typeName: String!
     extendee: String!
     defaultValue: String!
     oneofIndex: Int32!
     jsonName: String!
-    options: GoogleProtobufFieldOptions
+  	options: GoogleProtobufFieldOptions
 }
 type GoogleProtobufOneofDescriptorProto  {
     name: String!
-    options: GoogleProtobufOneofOptions
+  	options: GoogleProtobufOneofOptions
 }
     
 type GoogleProtobufEnumDescriptorProtoEnumReservedRange  {
@@ -24249,26 +25271,26 @@ type GoogleProtobufEnumDescriptorProtoEnumReservedRange  {
 }
 type GoogleProtobufEnumDescriptorProto  {
     name: String!
-    value: [GoogleProtobufEnumValueDescriptorProto]
-    options: GoogleProtobufEnumOptions
-    reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
+  	value: [GoogleProtobufEnumValueDescriptorProto]
+  	options: GoogleProtobufEnumOptions
+  	reservedRange: [GoogleProtobufEnumDescriptorProtoEnumReservedRange]
     reservedName: [String!]
 }
 type GoogleProtobufEnumValueDescriptorProto  {
     name: String!
     number: Int32!
-    options: GoogleProtobufEnumValueOptions
+  	options: GoogleProtobufEnumValueOptions
 }
 type GoogleProtobufServiceDescriptorProto  {
     name: String!
-    method: [GoogleProtobufMethodDescriptorProto]
-    options: GoogleProtobufServiceOptions
+  	method: [GoogleProtobufMethodDescriptorProto]
+  	options: GoogleProtobufServiceOptions
 }
 type GoogleProtobufMethodDescriptorProto  {
     name: String!
     inputType: String!
     outputType: String!
-    options: GoogleProtobufMethodOptions
+  	options: GoogleProtobufMethodOptions
     clientStreaming: Bool!
     serverStreaming: Bool!
 }
@@ -24279,7 +25301,7 @@ type GoogleProtobufFileOptions  {
     javaMultipleFiles: Bool!
     javaGenerateEqualsAndHash: Bool!
     javaStringCheckUtf8: Bool!
-    optimizeFor: Enum
+  optimizeFor: Enum
     goPackage: String!
     ccGenericServices: Bool!
     javaGenericServices: Bool!
@@ -24294,47 +25316,47 @@ type GoogleProtobufFileOptions  {
     phpNamespace: String!
     phpMetadataNamespace: String!
     rubyPackage: String!
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufMessageOptions  {
     messageSetWireFormat: Bool!
     noStandardDescriptorAccessor: Bool!
     deprecated: Bool!
     mapEntry: Bool!
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
       
       
 type GoogleProtobufFieldOptions  {
-    ctype: Enum
+  ctype: Enum
     packed: Bool!
-    jstype: Enum
+  jstype: Enum
     lazy: Bool!
     deprecated: Bool!
     weak: Bool!
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufOneofOptions  {
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufEnumOptions  {
     allowAlias: Bool!
     deprecated: Bool!
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufEnumValueOptions  {
     deprecated: Bool!
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
 type GoogleProtobufServiceOptions  {
     deprecated: Bool!
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
       
 type GoogleProtobufMethodOptions  {
     deprecated: Bool!
-    idempotencyLevel: Enum
-    uninterpretedOption: [GoogleProtobufUninterpretedOption]
+  idempotencyLevel: Enum
+  	uninterpretedOption: [GoogleProtobufUninterpretedOption]
 }
     
 type GoogleProtobufUninterpretedOptionNamePart  {
@@ -24342,7 +25364,7 @@ type GoogleProtobufUninterpretedOptionNamePart  {
     isExtension: Bool!
 }
 type GoogleProtobufUninterpretedOption  {
-    name: [GoogleProtobufUninterpretedOptionNamePart]
+  	name: [GoogleProtobufUninterpretedOptionNamePart]
     identifierValue: String!
     positiveIntValue: Uint64!
     negativeIntValue: Int64!
@@ -24359,7 +25381,7 @@ type GoogleProtobufSourceCodeInfoLocation  {
     leadingDetachedComments: [String!]
 }
 type GoogleProtobufSourceCodeInfo  {
-    location: [GoogleProtobufSourceCodeInfoLocation]
+  	location: [GoogleProtobufSourceCodeInfoLocation]
 }
     
 type GoogleProtobufGeneratedCodeInfoAnnotation  {
@@ -24369,7 +25391,7 @@ type GoogleProtobufGeneratedCodeInfoAnnotation  {
     end: Int32!
 }
 type GoogleProtobufGeneratedCodeInfo  {
-    annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
+  	annotation: [GoogleProtobufGeneratedCodeInfoAnnotation]
 }
   
   
@@ -24396,8 +25418,8 @@ type GqlNode implements Node {
 
 type BertyEntityDevicePushIdentifier implements Node {
     id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
     pushInfo: [Byte!]
     relayPubkey: String!
     deviceId: String!
@@ -24409,13 +25431,13 @@ type BertyEntityDevicePushIdentifier implements Node {
       
 type BertyEntityDevice implements Node {
     id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
     name: String!
-    status: Enum
+  status: Enum
     apiVersion: Uint32!
     contactId: String!
-    pushIdentifiers: [BertyEntityDevicePushIdentifier]
+  	pushIdentifiers: [BertyEntityDevicePushIdentifier]
 }
   
   
@@ -24424,11 +25446,11 @@ type BertyEntityDevice implements Node {
       
 type BertyEntityContact implements Node {
     id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
     sigchain: [Byte!]
-    status: Enum
-    devices: [BertyEntityDevice]
+  status: Enum
+  	devices: [BertyEntityDevice]
     displayName: String!
     displayStatus: String!
     overrideDisplayName: String!
@@ -24445,23 +25467,33 @@ type BertyEntityMessage  {
   
   
 
+type BertyEntityErr  {
+    errMsg: String!
+}
+  
+  
+  
+
+      
 type BertyEntityConversation implements Node {
     id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    readAt: GoogleProtobufTimestamp
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
+  	readAt: GoogleProtobufTimestamp
     title: String!
     topic: String!
     infos: String!
-    members: [BertyEntityConversationMember]
+  kind: Enum
+  	members: [BertyEntityConversationMember]
 }
       
 type BertyEntityConversationMember implements Node {
     id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    status: Enum
-    contact: BertyEntityContact
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
+  	readAt: GoogleProtobufTimestamp
+  status: Enum
+  	contact: BertyEntityContact
     conversationId: ID!
     contactId: ID!
 }
@@ -24472,9 +25504,9 @@ type BertyEntityConversationMember implements Node {
       
 type BertyEntitySenderAlias  {
     id: String!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    status: Enum
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
+  status: Enum
     originDeviceId: String!
     contactId: String!
     conversationId: String!
@@ -24489,7 +25521,7 @@ type BertyEntitySenderAlias  {
   
 type BertyPushPushDestination  {
     nonce: [Byte!]
-    pushType: Enum
+  pushType: Enum
     pushId: [Byte!]
 }
 type BertyPushPushNativeIdentifier  {
@@ -24499,7 +25531,7 @@ type BertyPushPushNativeIdentifier  {
 type BertyPushPushData  {
     pushIdentifier: [Byte!]
     envelope: [Byte!]
-    priority: Enum
+  priority: Enum
 }
   
   
@@ -24520,55 +25552,84 @@ type BertyEntitySeenAttrs  {
     ids: [String!]
 }
 type BertyEntityContactRequestAttrs  {
-    me: BertyEntityContact
+  	me: BertyEntityContact
     introText: String!
 }
 type BertyEntityContactRequestAcceptedAttrs  {
     T: Bool!
 }
 type BertyEntityContactShareMeAttrs  {
-    me: BertyEntityContact
+  	me: BertyEntityContact
 }
 type BertyEntityContactShareAttrs  {
-    contact: BertyEntityContact
+  	contact: BertyEntityContact
 }
 type BertyEntityConversationInviteAttrs  {
-    conversation: BertyEntityConversation
+  	conversation: BertyEntityConversation
 }
 type BertyEntityConversationNewMessageAttrs  {
-    message: BertyEntityMessage
+  	message: BertyEntityMessage
 }
 type BertyEntityConversationReadAttrs  {
-    conversation: BertyEntityConversation
+  	conversation: BertyEntityConversation
 }
 type BertyEntityConversationUpdateAttrs  {
-    conversation: BertyEntityConversation
+  	conversation: BertyEntityConversation
+}
+type BertyEntityConversationMemberInviteAttrs  {
+    id: String!
+  	contact: BertyEntityContact
+  	conversation: BertyEntityConversation
+}
+type BertyEntityConversationMemberLeaveAttrs  {
+    id: String!
+}
+type BertyEntityConversationMemberSetTitleAttrs  {
+    id: String!
+    title: String!
+}
+type BertyEntityConversationMemberSetTopicAttrs  {
+    id: String!
+    topic: String!
+}
+type BertyEntityConversationMemberSetOwnerAttrs  {
+    id: String!
+    contactId: String!
+}
+type BertyEntityConversationMemberBlockAttrs  {
+    id: String!
+    contactId: String!
+}
+type BertyEntityConversationMemberUnblockAttrs  {
+    id: String!
+    contactId: String!
+}
+type BertyEntityConversationMemberReadAttrs  {
+    id: String!
+  	at: GoogleProtobufTimestamp
+}
+type BertyEntityConversationMemberWriteAttrs  {
+    id: String!
+  	message: BertyEntityMessage
 }
 type BertyEntityDevtoolsMapsetAttrs  {
     key: String!
     val: String!
 }
 type BertyEntitySenderAliasUpdateAttrs  {
-    aliases: [BertyEntitySenderAlias]
+  	aliases: [BertyEntitySenderAlias]
 }
 type BertyEntityDeviceUpdatePushConfigAttrs  {
-    device: BertyEntityDevice
+  	device: BertyEntityDevice
 }
 type BertyEntityDevicePushToAttrs  {
     pushIdentifier: [Byte!]
     envelope: [Byte!]
-    priority: Enum
+  priority: Enum
 }
 type BertyEntityNodeAttrs  {
     kind: Int32!
     attributes: [Byte!]
-}
-  
-  
-  
-
-type BertyEntityErr  {
-    errMsg: String!
 }
   
   
@@ -24589,34 +25650,34 @@ type GoogleProtobufAny  {
 type BertyEntityEvent implements Node {
     id: ID!
     sourceDeviceId: String!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    sentAt: GoogleProtobufTimestamp
-    receivedAt: GoogleProtobufTimestamp
-    ackedAt: GoogleProtobufTimestamp
-    direction: Enum
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
+  	sentAt: GoogleProtobufTimestamp
+  	receivedAt: GoogleProtobufTimestamp
+  	ackedAt: GoogleProtobufTimestamp
+  direction: Enum
     apiVersion: Uint32!
-    kind: Enum
+  kind: Enum
     attributes: [Byte!]
-    seenAt: GoogleProtobufTimestamp
-    ackStatus: Enum
-    dispatches: [BertyEntityEventDispatch]
+  	seenAt: GoogleProtobufTimestamp
+  ackStatus: Enum
+  	dispatches: [BertyEntityEventDispatch]
     sourceContactId: String!
-    targetType: Enum
+  targetType: Enum
     targetAddr: ID!
-    errProxy: BertyEntityErr
-    metadata: [BertyEntityMetadataKeyValue]
+  	errProxy: BertyEntityErr
+  	metadata: [BertyEntityMetadataKeyValue]
 }
       
 type BertyEntityEventDispatch  {
     eventId: String!
     deviceId: String!
     contactId: String!
-    sentAt: GoogleProtobufTimestamp
-    ackedAt: GoogleProtobufTimestamp
-    seenAt: GoogleProtobufTimestamp
-    ackMedium: Enum
-    seenMedium: Enum
+  	sentAt: GoogleProtobufTimestamp
+  	ackedAt: GoogleProtobufTimestamp
+  	seenAt: GoogleProtobufTimestamp
+  ackMedium: Enum
+  seenMedium: Enum
 }
 type BertyEntityMetadataKeyValue  {
     key: String!
@@ -24633,7 +25694,7 @@ type BertyNetworkMetricBandwidthStats  {
     totalOut: Int64
     rateIn: Double
     rateOut: Double
-    type: Enum
+  type: Enum
 }
 type BertyNetworkMetricListAddrs  {
     addrs: [String!]
@@ -24669,7 +25730,7 @@ type BertyNodeDebugAttrs  {
 }
 type BertyNodeStatisticsAttrs  {
     errMsg: String!
-    totalNetworkBandwidth: BertyNetworkMetricBandwidthStats
+  	totalNetworkBandwidth: BertyNetworkMetricBandwidthStats
     peersCount: Int32!
 }
   
@@ -24680,10 +25741,10 @@ type BertyNodeStatisticsAttrs  {
 type BertyNetworkMetricPeer  {
     id: String!
     addrs: [String!]
-    connection: Enum
+  connection: Enum
 }
 type BertyNetworkMetricPeers  {
-    list: [BertyNetworkMetricPeer]
+  	list: [BertyNetworkMetricPeer]
 }
   
   
@@ -24692,18 +25753,18 @@ type BertyNetworkMetricPeers  {
   
 type BertyEntityConfig  {
     id: String!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
-    myself: BertyEntityContact
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
+  	myself: BertyEntityContact
     myselfId: String!
-    currentDevice: BertyEntityDevice
+  	currentDevice: BertyEntityDevice
     currentDeviceId: String!
     cryptoParams: [Byte!]
     pushRelayPubkeyApns: String!
     pushRelayPubkeyFcm: String!
     notificationsEnabled: Bool!
     notificationsPreviews: Bool!
-    debugNotificationVerbosity: Enum
+  debugNotificationVerbosity: Enum
 }
   
   
@@ -24711,10 +25772,10 @@ type BertyEntityConfig  {
 
 type BertyEntityDevicePushConfig implements Node {
     id: ID!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
     deviceId: String!
-    pushType: Enum
+  pushType: Enum
     pushId: [Byte!]
     relayPubkey: String!
 }
@@ -24724,14 +25785,14 @@ type BertyEntityDevicePushConfig implements Node {
 
   
 type BertyPkgDeviceinfoDeviceInfos  {
-    infos: [BertyPkgDeviceinfoDeviceInfo]
+  	infos: [BertyPkgDeviceinfoDeviceInfo]
 }
 type BertyPkgDeviceinfoDeviceInfo  {
     key: String!
     value: String!
     category: String!
     link: String!
-    type: Enum
+  type: Enum
     errMsg: String!
     weight: Int32!
 }
@@ -24752,51 +25813,51 @@ type BertyNodePingDestination  {
       
     
 type BertyNodeCommitLogEntity  {
-    config: BertyEntityConfig
-    contact: BertyEntityContact
-    device: BertyEntityDevice
-    conversation: BertyEntityConversation
-    conversationMember: BertyEntityConversationMember
-    event: BertyEntityEvent
-    devicePushConfig: BertyEntityDevicePushConfig
-    devicePushIdentifier: BertyEntityDevicePushIdentifier
-    eventDispatch: BertyEntityEventDispatch
-    senderAlias: BertyEntitySenderAlias
+  	config: BertyEntityConfig
+  	contact: BertyEntityContact
+  	device: BertyEntityDevice
+  	conversation: BertyEntityConversation
+  	conversationMember: BertyEntityConversationMember
+  	event: BertyEntityEvent
+  	devicePushConfig: BertyEntityDevicePushConfig
+  	devicePushIdentifier: BertyEntityDevicePushIdentifier
+  	eventDispatch: BertyEntityEventDispatch
+  	senderAlias: BertyEntitySenderAlias
 }
 type BertyNodeCommitLog  {
-    operation: Enum
-    entity: BertyNodeCommitLogEntity
+  operation: Enum
+  	entity: BertyNodeCommitLogEntity
 }
 type BertyNodeEventEdge  {
-    node: BertyEntityEvent
+  	node: BertyEntityEvent
     cursor: String!
 }
 type BertyNodeEventListConnection  {
-    edges: [BertyNodeEventEdge]
-    pageInfo: BertyNodePageInfo!
+  	edges: [BertyNodeEventEdge]
+  	pageInfo: BertyNodePageInfo!
 }
 type BertyNodeContactEdge  {
-    node: BertyEntityContact
+  	node: BertyEntityContact
     cursor: String!
 }
 type BertyNodeContactListConnection  {
-    edges: [BertyNodeContactEdge]
-    pageInfo: BertyNodePageInfo!
+  	edges: [BertyNodeContactEdge]
+  	pageInfo: BertyNodePageInfo!
 }
 type BertyNodeConversationEdge  {
-    node: BertyEntityConversation
+  	node: BertyEntityConversation
     cursor: String!
 }
 type BertyNodeConversationListConnection  {
-    edges: [BertyNodeConversationEdge]
-    pageInfo: BertyNodePageInfo!
+  	edges: [BertyNodeConversationEdge]
+  	pageInfo: BertyNodePageInfo!
 }
 type BertyNodeDevicePushConfigEdge  {
-    node: BertyEntityDevicePushConfig
+  	node: BertyEntityDevicePushConfig
     cursor: String!
 }
 type BertyNodeDevicePushConfigListOutput  {
-    edges: [BertyEntityDevicePushConfig]
+  	edges: [BertyEntityDevicePushConfig]
 }
 type BertyNodePagination  {
     orderBy: String!
@@ -24817,8 +25878,8 @@ type BertyNodeIntegrationTestOutput  {
     name: String!
     success: Bool!
     verbose: String!
-    startedAt: GoogleProtobufTimestamp
-    finishedAt: GoogleProtobufTimestamp
+  	startedAt: GoogleProtobufTimestamp
+  	finishedAt: GoogleProtobufTimestamp
 }
 type BertyNodeVoid  {
     T: Bool!
@@ -24832,22 +25893,22 @@ type BertyNodeLogEntry  {
 type BertyNodeLogfileEntry  {
     path: String!
     filesize: Int32!
-    createdAt: GoogleProtobufTimestamp
-    updatedAt: GoogleProtobufTimestamp
+  	createdAt: GoogleProtobufTimestamp
+  	updatedAt: GoogleProtobufTimestamp
 }
 type BertyNodeNodeEvent  {
-    kind: Enum
+  kind: Enum
     attributes: [Byte!]
 }
 input BertyEntityEventDispatchInput {
     eventId: String!
     deviceId: String!
     contactId: String!
-    sentAt: GoogleProtobufTimestampInput
-    ackedAt: GoogleProtobufTimestampInput
-    seenAt: GoogleProtobufTimestampInput
-    ackMedium: Enum
-    seenMedium: Enum
+  	sentAt: GoogleProtobufTimestampInput
+  	ackedAt: GoogleProtobufTimestampInput
+  	seenAt: GoogleProtobufTimestampInput
+  ackMedium: Enum
+  seenMedium: Enum
 }
 input BertyEntityErrInput {
     errMsg: String!
@@ -24859,23 +25920,23 @@ input BertyEntityMetadataKeyValueInput {
 input BertyEntityEventInput {
     id: ID!
     sourceDeviceId: String!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    sentAt: GoogleProtobufTimestampInput
-    receivedAt: GoogleProtobufTimestampInput
-    ackedAt: GoogleProtobufTimestampInput
-    direction: Enum
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	sentAt: GoogleProtobufTimestampInput
+  	receivedAt: GoogleProtobufTimestampInput
+  	ackedAt: GoogleProtobufTimestampInput
+  direction: Enum
     apiVersion: Uint32!
-    kind: Enum
+  kind: Enum
     attributes: [Byte!]
-    seenAt: GoogleProtobufTimestampInput
-    ackStatus: Enum
-    dispatches: [BertyEntityEventDispatchInput]
+  	seenAt: GoogleProtobufTimestampInput
+  ackStatus: Enum
+  	dispatches: [BertyEntityEventDispatchInput]
     sourceContactId: String!
-    targetType: Enum
+  targetType: Enum
     targetAddr: ID!
-    errProxy: BertyEntityErrInput
-    metadata: [BertyEntityMetadataKeyValueInput]
+  	errProxy: BertyEntityErrInput
+  	metadata: [BertyEntityMetadataKeyValueInput]
 }
 input BertyNodePaginationInput {
     orderBy: String!
@@ -24887,52 +25948,54 @@ input BertyNodePaginationInput {
 }
 input BertyEntityDevicePushIdentifierInput {
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
     pushInfo: [Byte!]
     relayPubkey: String!
     deviceId: String!
 }
 input BertyEntityDeviceInput {
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
     name: String!
-    status: Enum
+  status: Enum
     apiVersion: Uint32!
     contactId: String!
-    pushIdentifiers: [BertyEntityDevicePushIdentifierInput]
+  	pushIdentifiers: [BertyEntityDevicePushIdentifierInput]
 }
 input BertyEntityContactInput {
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
     sigchain: [Byte!]
-    status: Enum
-    devices: [BertyEntityDeviceInput]
+  status: Enum
+  	devices: [BertyEntityDeviceInput]
     displayName: String!
     displayStatus: String!
     overrideDisplayName: String!
     overrideDisplayStatus: String!
 }
-input BertyEntityConversationMemberInput {
-    id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    status: Enum
-    contact: BertyEntityContactInput
-    conversationId: ID!
-    contactId: ID!
-}
 input BertyEntityConversationInput {
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    readAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	readAt: GoogleProtobufTimestampInput
     title: String!
     topic: String!
     infos: String!
-    members: [BertyEntityConversationMemberInput]
+  kind: Enum
+  	members: [BertyEntityConversationMemberInput]
+}
+input BertyEntityConversationMemberInput {
+    id: ID!
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	readAt: GoogleProtobufTimestampInput
+  status: Enum
+  	contact: BertyEntityContactInput
+    conversationId: ID!
+    contactId: ID!
 }
 input BertyEntityMessageInput {
     text: String!
@@ -24944,9 +26007,9 @@ type Query {
     T: Bool!
   ): BertyNetworkMetricPeer
   EventList(
-    filter: BertyEntityEventInput
-    onlyWithoutAckedAt: Enum
-    onlyWithoutSeenAt: Enum
+  	filter: BertyEntityEventInput
+  onlyWithoutAckedAt: Enum
+  onlyWithoutSeenAt: Enum
     orderBy: String!
     orderDesc: Bool!
     first: Int32
@@ -24955,9 +26018,9 @@ type Query {
     before: String
   ): BertyNodeEventListConnection
   EventUnseen(
-    filter: BertyEntityEventInput
-    onlyWithoutAckedAt: Enum
-    onlyWithoutSeenAt: Enum
+  	filter: BertyEntityEventInput
+  onlyWithoutAckedAt: Enum
+  onlyWithoutSeenAt: Enum
     orderBy: String!
     orderDesc: Bool!
     first: Int32
@@ -24973,7 +26036,7 @@ type Query {
     T: Bool!
   ): BertyEntityConfig
   ContactList(
-    filter: BertyEntityContactInput
+  	filter: BertyEntityContactInput
     orderBy: String!
     orderDesc: Bool!
     first: Int32
@@ -24982,13 +26045,13 @@ type Query {
     before: String
   ): BertyNodeContactListConnection
   Contact(
-    filter: BertyEntityContactInput
+  	filter: BertyEntityContactInput
   ): BertyEntityContact
   ContactCheckPublicKey(
-    filter: BertyEntityContactInput
+  	filter: BertyEntityContactInput
   ): BertyNodeBool
   ConversationList(
-    filter: BertyEntityConversationInput
+  	filter: BertyEntityConversationInput
     orderBy: String!
     orderDesc: Bool!
     first: Int32
@@ -24998,20 +26061,22 @@ type Query {
   ): BertyNodeConversationListConnection
   Conversation(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    readAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	readAt: GoogleProtobufTimestampInput
     title: String!
     topic: String!
     infos: String!
-    members: [BertyEntityConversationMemberInput]
+  kind: Enum
+  	members: [BertyEntityConversationMemberInput]
   ): BertyEntityConversation
   ConversationMember(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    status: Enum
-    contact: BertyEntityContactInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	readAt: GoogleProtobufTimestampInput
+  status: Enum
+  	contact: BertyEntityContactInput
     conversationId: ID!
     contactId: ID!
   ): BertyEntityConversationMember
@@ -25033,7 +26098,7 @@ type Query {
   Protocols(
     id: String!
     addrs: [String!]
-    connection: Enum
+  connection: Enum
   ): BertyNodeProtocolsOutput
   LogfileList(
     T: Bool!
@@ -25071,18 +26136,18 @@ type Mutation {
   ): BertyEntityEvent
   ConfigUpdate(
     id: String!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    myself: BertyEntityContactInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	myself: BertyEntityContactInput
     myselfId: String!
-    currentDevice: BertyEntityDeviceInput
+  	currentDevice: BertyEntityDeviceInput
     currentDeviceId: String!
     cryptoParams: [Byte!]
     pushRelayPubkeyApns: String!
     pushRelayPubkeyFcm: String!
     notificationsEnabled: Bool!
     notificationsPreviews: Bool!
-    debugNotificationVerbosity: Enum
+  debugNotificationVerbosity: Enum
   ): BertyEntityConfig
   ContactRequest(
     contactId: ID!
@@ -25094,11 +26159,11 @@ type Mutation {
   ): BertyEntityContact
   ContactRemove(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
     sigchain: [Byte!]
-    status: Enum
-    devices: [BertyEntityDeviceInput]
+  status: Enum
+  	devices: [BertyEntityDeviceInput]
     displayName: String!
     displayStatus: String!
     overrideDisplayName: String!
@@ -25106,42 +26171,44 @@ type Mutation {
   ): BertyEntityContact
   ContactUpdate(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
     sigchain: [Byte!]
-    status: Enum
-    devices: [BertyEntityDeviceInput]
+  status: Enum
+  	devices: [BertyEntityDeviceInput]
     displayName: String!
     displayStatus: String!
     overrideDisplayName: String!
     overrideDisplayStatus: String!
   ): BertyEntityContact
   ConversationCreate(
-    contacts: [BertyEntityContactInput]
+  	contacts: [BertyEntityContactInput]
     title: String!
     topic: String!
+  kind: Enum
   ): BertyEntityConversation
   ConversationUpdate(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
-    readAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	readAt: GoogleProtobufTimestampInput
     title: String!
     topic: String!
     infos: String!
-    members: [BertyEntityConversationMemberInput]
+  kind: Enum
+  	members: [BertyEntityConversationMemberInput]
   ): BertyEntityConversation
   ConversationInvite(
-    conversation: BertyEntityConversationInput
-    contacts: [BertyEntityContactInput]
+  	conversation: BertyEntityConversationInput
+  	contacts: [BertyEntityContactInput]
   ): BertyEntityConversation
   ConversationExclude(
-    conversation: BertyEntityConversationInput
-    contacts: [BertyEntityContactInput]
+  	conversation: BertyEntityConversationInput
+  	contacts: [BertyEntityContactInput]
   ): BertyEntityConversation
   ConversationAddMessage(
-    conversation: BertyEntityConversationInput
-    message: BertyEntityMessageInput
+  	conversation: BertyEntityConversationInput
+  	message: BertyEntityMessageInput
   ): BertyEntityEvent
   ConversationRead(
     id: ID!
@@ -25152,7 +26219,7 @@ type Mutation {
   DevicePushConfigCreate(
     relayPubkey: String
     pushId: [Byte!]
-    pushType: Enum
+  pushType: Enum
   ): BertyEntityDevicePushConfig
   DevicePushConfigNativeRegister(
     T: Bool!
@@ -25165,10 +26232,10 @@ type Mutation {
   ): BertyEntityDevicePushConfig
   DevicePushConfigUpdate(
     id: ID!
-    createdAt: GoogleProtobufTimestampInput
-    updatedAt: GoogleProtobufTimestampInput
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
     deviceId: String!
-    pushType: Enum
+  pushType: Enum
     pushId: [Byte!]
     relayPubkey: String!
   ): BertyEntityDevicePushConfig
@@ -25191,7 +26258,7 @@ type Subscription {
     T: Bool!
   ): BertyNodeCommitLog
   EventStream(
-    filter: BertyEntityEventInput
+  	filter: BertyEntityEventInput
   ): BertyEntityEvent
   LogStream(
     continues: Bool!
@@ -25208,7 +26275,7 @@ type Subscription {
     totalOut: Int64
     rateIn: Double
     rateOut: Double
-    type: Enum
+  type: Enum
   ): BertyNetworkMetricBandwidthStats
   MonitorPeers(
     T: Bool!

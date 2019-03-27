@@ -4,4 +4,6 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
-message Void {};
+message Void {
+  bool t = 1;
+};

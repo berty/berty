@@ -48,7 +48,7 @@ func FindContact(db *gorm.DB, input *entity.Contact) (*entity.Contact, error) {
 
 func ConversationMemberByID(db *gorm.DB, id string) (*entity.ConversationMember, error) {
 	var conversationMember entity.ConversationMember
-	return &conversationMember, db.First(&conversationMember, "ID = ?", id).Error
+	return &conversationMember, db.Preload("Conversation").First(&conversationMember, "ID = ?", id).Error
 }
 
 func DeviceByID(db *gorm.DB, id string) (*entity.Device, error) {
@@ -58,7 +58,7 @@ func DeviceByID(db *gorm.DB, id string) (*entity.Device, error) {
 
 func ConversationByID(db *gorm.DB, id string) (*entity.Conversation, error) {
 	var conversation entity.Conversation
-	return &conversation, db.First(&conversation, "ID = ?", id).Error
+	return &conversation, db.Preload("Members").First(&conversation, "ID = ?", id).Error
 }
 
 func MembersByConversationID(db *gorm.DB, conversationID string) ([]*entity.ConversationMember, error) {
@@ -150,87 +150,27 @@ func conversationSetMetadata(conversation *entity.Conversation, input *entity.Co
 	}
 }
 
-func SaveConversation(db *gorm.DB, input *entity.Conversation, createID string) (*entity.Conversation, error) {
-	conversation, err := ConversationByID(db, input.ID)
-
-	if err != nil {
-		err = GenericError(err)
-		if !errorcodes.ErrDbNothingFound.Is(err) {
-			return nil, GenericError(err)
-		} else {
-			conversation = input
-		}
+func ConversationSave(db *gorm.DB, c *entity.Conversation) error {
+	if err := db.Save(c).Error; err != nil {
+		logger().Error(fmt.Sprintf("cannot save conversation %+v, err: %+v", c, err.Error()))
+		return err
 	}
 
-	for _, member := range input.Members {
-		conversation.Members = append(conversation.Members, member)
-	}
-
-	sortCleanDedupConversationContacts(conversation)
-
-	if len(conversation.Members) < 2 {
-		return nil, errorcodes.ErrConversationNotEnoughMembers.New()
-	} else if len(conversation.Members) == 2 && conversation.ID != "" {
-		return conversation, nil
-	}
-
-	conversationSetOneToOneMembers(conversation)
-	conversationSetMetadata(conversation, input)
-
-	if conversation.ID == "" {
-		conversation.ID = createID
-		if err := db.Create(conversation).Error; err != nil {
-			return nil, GenericError(err)
-		}
-	} else {
-		if err := db.Save(conversation).Error; err != nil {
-			return nil, GenericError(err)
-		}
-	}
-
-	for _, member := range conversation.Members {
-		existingMember := &entity.ConversationMember{}
-		err = db.Find(&existingMember, &entity.ConversationMember{ID: member.ID}).Error
-		if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
-			continue
-		} else if err != nil {
-			if err := db.Create(&member).Error; err != nil {
-				return nil, GenericError(err)
+	var err error
+	for _, member := range c.Members {
+		err := db.Find(&entity.Contact{ID: member.Contact.ID}).Error
+		if err != nil {
+			if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
+				return err
+			}
+			if err := db.Save(member.Contact).Error; err != nil {
+				return err
 			}
 		}
-
-		contact := &entity.Contact{}
-		err := db.Find(&contact, &entity.Contact{ID: member.ContactID}).Error
-		if errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
-			contact = member.Contact
-			contact.ID = member.ContactID
-
-			if err := db.Create(&contact).Error; err != nil {
-				return nil, GenericError(err)
-			}
-
-			for _, device := range member.Contact.Devices {
-				existingDevice := &entity.Device{}
-				err := db.Find(&existingDevice, &entity.Device{ID: device.ID}).Error
-				if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
-					continue
-				} else if err != nil {
-					return nil, GenericError(err)
-				}
-
-				if err := db.Create(&device).Error; err != nil {
-					return nil, GenericError(err)
-				}
-			}
-		} else if err != nil {
-			return nil, GenericError(err)
+		if err = db.Save(member).Error; err != nil {
+			return err
 		}
 	}
 
-	// load new conversation again, to preload associations
-	if conversation, err = ConversationByID(db, conversation.ID); err != nil {
-		return nil, GenericError(err)
-	}
-
-	return conversation, nil
+	return err
 }

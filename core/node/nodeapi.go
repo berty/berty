@@ -278,6 +278,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	if _, err := n.ConversationCreate(ctx,
 		&node.ConversationCreateInput{
 			Contacts: []*entity.Contact{contact},
+			Kind:     entity.Conversation_OneToOne,
 		},
 	); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)

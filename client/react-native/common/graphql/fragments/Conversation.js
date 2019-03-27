@@ -12,6 +12,7 @@ export default component =>
         title
         topic
         infos
+        kind
         members {
           id
           createdAt

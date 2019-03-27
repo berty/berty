@@ -37,8 +37,10 @@ const ItemBase = fragments.Conversation(
           data.members.length === 2
             ? data.members.find(
               element =>
-                element.contact.status !==
-                  enums.BertyEntityContactInputStatus.Myself
+                element &&
+                  element.contact &&
+                  element.contact.status !==
+                    enums.BertyEntityContactInputStatus.Myself
             )
             : null,
         interval:

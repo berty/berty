@@ -93,6 +93,8 @@ enum Code {
   ErrContactReqKeyMissing = 10002;
   ErrContactReqExisting = 10003;
   ErrContactReqMyself = 10004;
+  ErrContactLength = 10005;
+  ErrContactID = 10006;
 
   ErrCfg = 11000;
   ErrCfgMissing = 11001;
@@ -105,9 +107,38 @@ enum Code {
   ErrSenderAliasUpdateFailed = 12003;
 
   ErrConversation = 13000;
-  ErrConversationMembers = 13001;
-  ErrConversationNotEnoughMembers = 13002;
-  ErrConversationUpdate = 13003;
+  ErrConversationID = 13001;
+  ErrConversationTitle = 13002;
+  ErrConversationTopic = 13003;
+  ErrConversationInfos = 13004;
+  ErrConversationKind = 13005;
+  ErrConversationMembers = 13006;
+
+  ErrConversationMemberIsOneToOne = 13201;
+  ErrConversationIsGroup = 13202;
+  ErrConversationIsFull = 13203;
+  ErrConversationIsMember = 13204;
+  ErrConversationGetMember = 13205;
+  ErrConversationGetOwners = 13206;
+	ErrConversationGetInteractiveMember = 13207;
+
+  ErrConversationMember = 13500;
+  ErrConversationMemberID = 13501;
+  ErrConversationMemberStatus = 13502;
+  ErrConversationMemberContact = 13503;
+  ErrConversationMemberContactID = 13504;
+  ErrConversationMemberConversation = 13505;
+  ErrConversationMemberConversationID = 13506;
+
+  ErrConversationMemberInvite = 13701;
+	ErrConversationMemberLeave = 13702;
+  ErrConversationMemberSetTitle = 13703;
+  ErrConversationMemberSetTopic = 13704;
+  ErrConversationMemberSetOwner = 13705;
+  ErrConversationMemberBlock = 13706;
+	ErrConversationMemberUnblock = 13707;
+  ErrConversationMemberRead = 13708;
+  ErrConversationMemberWrite = 13709;
 
   ErrPush = 14000;
   ErrPushUnknownProvider = 14001;
@@ -131,6 +162,8 @@ enum Code {
 
   ErrNode = 16000;
   ErrNodePushNotifSub = 16001;
+	ErrNodeHandleConversationUpdate = 16701;
+	ErrNodeHandleConversationInvite = 16702;
 
   ErrChunk = 17000;
   ErrChunkBadIndex = 17001;

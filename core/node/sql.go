@@ -114,19 +114,24 @@ func (n *Node) createCommitLog(scope *gorm.Scope, operation string, reflectValue
 				return nil
 			}
 		}
+		logger().Debug(fmt.Sprintf("COMMIT_LOG CONVERSATION %+v", data))
 		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
-		data, err = sql.ConversationMemberByID(scope.DB(), data.ID)
-		if err != nil {
-			return nil
+		if operation != "delete" {
+			data, err = sql.ConversationMemberByID(scope.DB(), data.ID)
+			if err != nil {
+				return nil
+			}
 		}
 		log.Entity = &node.CommitLog_Entity{ConversationMember: data}
 	case *entity.Config:
 		log.Entity = &node.CommitLog_Entity{Config: data}
 	case *entity.Event:
-		data, err = sql.EventByID(scope.DB(), data.ID)
-		if err != nil {
-			return nil
+		if operation != "delete" {
+			data, err = sql.EventByID(scope.DB(), data.ID)
+			if err != nil {
+				return nil
+			}
 		}
 		log.Entity = &node.CommitLog_Entity{Event: data}
 	case *entity.DevicePushConfig:
