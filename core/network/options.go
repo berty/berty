@@ -4,6 +4,7 @@ import (
 	"runtime"
 
 	"berty.tech/core/network/config"
+	host "github.com/libp2p/go-libp2p-host"
 )
 
 // Default options
@@ -89,6 +90,22 @@ func WithDefaultMobileOptions() config.Option {
 	)
 }
 
+func WithDefaultMockNetOptions(h host.Host) config.Option {
+	return ChainOptions(
+		WithClientOptions(),
+
+		EnablePrivateNetwork(config.DefaultSwarmKey),
+		DisableDHTServer(),
+		DisableHOP(),
+		DisableDefaultBootstrap(),
+		DisableMDNS(),
+		DisableBLE(),
+		DisableQUIC(),
+		DisablePersistConfig(),
+		DisableRelay(),
+		OverrideHost(h),
+	)
+}
 func WithDefaultRelayOptions() config.Option {
 	return ChainOptions(
 		WithServerOptions(),
@@ -328,6 +345,21 @@ func EnablePeerCache() config.Option {
 func DisablePeerCache() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.PeerCache = false
+		return nil
+	}
+}
+
+func OverrideHost(h host.Host) config.Option {
+	return func(cfg *config.Config) error {
+		cfg.OverrideHost = h
+		cfg.Config.Peerstore = h.Peerstore()
+		return nil
+	}
+}
+
+func DisableRelay() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Config.Relay = false
 		return nil
 	}
 }

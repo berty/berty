@@ -21,12 +21,14 @@ func (n *Node) NewEvent(ctx context.Context) *entity.Event {
 	// ctx = tracer.Context()
 
 	return &entity.Event{
-		ID:             n.NewID(),
-		APIVersion:     p2p.Version,
-		CreatedAt:      time.Now().UTC(),
-		Direction:      entity.Event_Outgoing,
-		Dispatches:     make([]*entity.EventDispatch, 0),
-		SourceDeviceID: n.b64pubkey,
+		ID:              n.NewID(),
+		APIVersion:      p2p.Version,
+		CreatedAt:       time.Now().UTC(),
+		Direction:       entity.Event_Outgoing,
+		Dispatches:      make([]*entity.EventDispatch, 0),
+		SourceContactID: n.config.MyselfID,
+		SourceDeviceID:  n.b64pubkey,
+		AckStatus:       entity.Event_NotAcked,
 	}
 }
 

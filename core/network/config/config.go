@@ -11,6 +11,7 @@ import (
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_crypto "github.com/libp2p/go-libp2p-crypto"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	p2phost "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pnet "github.com/libp2p/go-libp2p-pnet"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
@@ -57,9 +58,9 @@ var BootstrapIpfs = []string{
 }
 
 var DefaultBind = map[string][]string{
-	"tcp":  []string{"/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0"},
-	"ble":  []string{"/ble/00000000-0000-0000-0000-000000000000"},
-	"quic": []string{"/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic"},
+	"tcp":  {"/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0"},
+	"ble":  {"/ble/00000000-0000-0000-0000-000000000000"},
+	"quic": {"/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic"},
 }
 
 type Config struct {
@@ -92,8 +93,9 @@ type Config struct {
 
 	Identity string
 
-	Persist         bool `json:"-"`
-	OverridePersist bool `json:"-"` // override persist config when apply
+	Persist         bool         `json:"-"`
+	OverridePersist bool         `json:"-"` // override persist config when apply
+	OverrideHost    p2phost.Host `json:"-"`
 }
 
 type Option func(cfg *Config) error
@@ -115,6 +117,7 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.Identity = override.Identity
 	cfg.SwarmKey = override.SwarmKey
 	cfg.PeerCache = override.PeerCache
+	cfg.OverrideHost = override.OverrideHost
 	return nil
 }
 
@@ -259,12 +262,17 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 
 	// use basic host
 	h := &host.BertyHost{}
-	h.Host, err = bhost.NewHost(ctx, swrm, &bhost.HostOpts{
-		ConnManager:  cfg.Config.ConnManager,
-		AddrsFactory: cfg.Config.AddrsFactory,
-		NATManager:   cfg.Config.NATManager,
-		EnablePing:   !cfg.Config.DisablePing,
-	})
+	if cfg.OverrideHost == nil {
+		h.Host, err = bhost.NewHost(ctx, swrm, &bhost.HostOpts{
+			ConnManager:  cfg.Config.ConnManager,
+			AddrsFactory: cfg.Config.AddrsFactory,
+			NATManager:   cfg.Config.NATManager,
+			EnablePing:   !cfg.Config.DisablePing,
+		})
+	} else {
+		h.Host, err = cfg.OverrideHost, nil
+	}
+
 	if err != nil {
 		swrm.Close()
 		return nil, err
