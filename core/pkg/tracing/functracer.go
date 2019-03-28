@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/gosimple/slug"
@@ -22,6 +23,7 @@ type FuncTracer struct {
 	logger    *zap.Logger
 	startTime time.Time
 	caller    string
+	mutex     sync.RWMutex
 }
 
 func (t *FuncTracer) Finish() {
@@ -48,24 +50,29 @@ func (t *FuncTracer) SetMetadata(key string, value string) {
 }
 
 func (t *FuncTracer) SetTag(key, value string) {
-	// FIXME: mutex
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
 	t.span.SetTag(key, value)
 	t.logger = t.logger.With(zap.String(key, value))
 }
 
 func (t *FuncTracer) SetStringField(key, value string) {
-	// FIXME: mutex
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
 	t.span.LogFields(log.String(key, value))
 	t.logger = t.logger.With(zap.String(key, value))
 }
 
 func (t *FuncTracer) SetAnyField(key string, value interface{}) {
-	// FIXME: mutex
+	t.mutex.Lock()
+	defer t.mutex.Unlock()
 	t.span.LogFields(log.String(key, fmt.Sprintf("%v", value)))
 	t.logger = t.logger.With(zap.Any(key, value))
 }
 
 func (t *FuncTracer) Span() opentracing.Span {
+	t.mutex.RLock()
+	defer t.mutex.RUnlock()
 	return t.span
 }
 
