@@ -161,6 +161,45 @@ func FindNonAcknowledgedEventDestinations(db *gorm.DB, before time.Time) ([]*Eve
 	return events, nil
 }
 
+// FindContactsWithNonAcknowledgedEvents finds non acknowledged event destinations as deviceIDs emitted before the supplied time value
+func FindDevicesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]string, error) {
+	var deviceIDs []string
+
+	err := db.
+		Model(&EventDispatch{}).
+		Joins("JOIN event ON event_dispatch.event_id = event.id").
+		Where("event.direction = ?", Event_Outgoing).
+		Where("event_dispatch.acked_at IS NULL").
+		Where("event_dispatch.sent_at < ?", before).
+		Group("event_dispatch.device_id").
+		Pluck("event_dispatch.device_id", &deviceIDs).
+		Error
+
+	if err != nil {
+		return nil, errorcodes.ErrDb.Wrap(err)
+	}
+
+	return deviceIDs, nil
+}
+
+func FindNonAcknowledgedDispatchesForDestination(db *gorm.DB, deviceID string) ([]*EventDispatch, error) {
+	var dispatches []*EventDispatch
+
+	if err := db.Model(&EventDispatch{}).
+		Joins("JOIN event ON event_dispatch.event_id = event.id").
+		Where("event_dispatch.acked_at IS NULL").
+		Where("event.direction = ?", Event_Outgoing).
+		Where("event_dispatch.device_id = ?", deviceID).
+		Where("event_dispatch.acked_at IS NULL").
+		Find(&dispatches).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return dispatches, nil
+
+}
+
 // FindNonAcknowledgedEventsForDestination finds non acknowledged events for the supplied destination (conversation/receiver)
 func FindNonAcknowledgedEventsForDestination(db *gorm.DB, destination *Event) ([]*Event, error) {
 	var events []*Event

@@ -2,7 +2,6 @@ package node
 
 import (
 	"context"
-	"sync"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -22,14 +21,25 @@ func (n *Node) EventRequeue(ctx context.Context, event *entity.Event) error {
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	db := n.sql(ctx)
+	dispatches, err := n.activeDispatchesFromEvent(ctx, event)
 
-	now := time.Now()
-	event.SentAt = &now
-	if err := db.Save(event).Error; err != nil {
-		return errors.Wrap(sql.GenericError(err), "error while updating SentAt on event")
+	if err != nil {
+		return errors.Wrap(err, "error while updating SentAt on event")
 	}
-	n.outgoingEvents <- event
+
+	for _, dispatch := range dispatches {
+		n.outgoingEvents <- dispatch
+	}
+
+	return nil
+}
+
+func (n *Node) EventDispatchRequeue(ctx context.Context, dispatch *entity.EventDispatch) error {
+	tracer := tracing.EnterFunc(ctx, dispatch)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	n.outgoingEvents <- dispatch
 
 	return nil
 }
@@ -41,28 +51,43 @@ func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*entity.Eve
 	ctx = tracer.Context()
 
 	db := n.sql(ctx)
+	retriedEventsMap := map[string]*entity.Event{}
 	var retriedEvents []*entity.Event
-	destinations, err := entity.FindNonAcknowledgedEventDestinations(db, before)
+	deviceIDs, err := entity.FindDevicesWithNonAcknowledgedEvents(db, before)
 
 	if err != nil {
 		return nil, err
 	}
 
-	for _, destination := range destinations {
-		events, err := entity.FindNonAcknowledgedEventsForDestination(db, destination)
+	for _, deviceID := range deviceIDs {
+		dispatches, err := entity.FindNonAcknowledgedDispatchesForDestination(db, deviceID)
 
 		if err != nil {
 			n.LogBackgroundError(ctx, errors.Wrap(err, "error while retrieving events for dst"))
 			continue
 		}
 
-		for _, event := range events {
-			if err := n.EventRequeue(ctx, event); err != nil {
+		// TODO: Bundle all dispatches (or at least few of them) in a single envelope
+
+		for _, dispatch := range dispatches {
+			if err := n.EventDispatchRequeue(ctx, dispatch); err != nil {
 				n.LogBackgroundError(ctx, errors.Wrap(err, "error while enqueuing event"))
 				continue
 			}
-			retriedEvents = append(retriedEvents, event)
+
+			event, err := sql.EventByID(db, dispatch.EventID)
+			if err != nil {
+				n.LogBackgroundError(ctx, errors.Wrap(err, "error while getting event detail"))
+				continue
+			}
+
+			retriedEventsMap[event.ID] = event
+
 		}
+	}
+
+	for _, event := range retriedEventsMap {
+		retriedEvents = append(retriedEvents, event)
 	}
 
 	return retriedEvents, nil
@@ -99,6 +124,58 @@ func (n *Node) handleClientEvent(ctx context.Context, event *entity.Event) {
 	n.clientEventsMutex.Unlock()
 }
 
+func (n *Node) generateDispatchesForEvent(ctx context.Context, event *entity.Event) error {
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	db := n.sql(ctx)
+
+	query := db.Model(&entity.Device{})
+
+	switch event.TargetType {
+	case entity.Event_ToSpecificConversation:
+		contactIDs := db.
+			Model(&entity.ConversationMember{}).
+			Select("contact_id").
+			Where(&entity.ConversationMember{ConversationID: event.ToConversationID()}).
+			QueryExpr()
+		query = query.Where("contact_id IN (?)", contactIDs)
+	case entity.Event_ToSpecificContact:
+		query = query.Where(&entity.Device{ContactID: event.ToContactID()})
+	case entity.Event_ToSpecificDevice:
+		query = query.Where(&entity.Device{ID: event.ToDeviceID()})
+	default:
+		return errors.New("activeDispatchesFromEvent: unhandled target type")
+	}
+
+	var devices []*entity.Device
+	if err := query.Find(&devices).Error; err != nil {
+		return sql.GenericError(err)
+	}
+
+	tx := db.Begin()
+	if err := tx.Error; err != nil {
+		return sql.GenericError(err)
+	}
+	for _, device := range devices {
+		dispatch := &entity.EventDispatch{
+			EventID:   event.ID,
+			DeviceID:  device.ID,
+			ContactID: device.ContactID,
+		}
+		if err := tx.Create(&dispatch).Error; err != nil {
+			tx.Rollback()
+			return sql.GenericError(err)
+		}
+	}
+	if err := tx.Commit().Error; err != nil {
+		return sql.GenericError(err)
+	}
+
+	return nil
+}
+
 func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Event) ([]*entity.EventDispatch, error) {
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
@@ -111,46 +188,8 @@ func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Even
 	db := n.sql(ctx)
 
 	if event.Dispatches == nil || len(event.Dispatches) == 0 { // intial Dispatches creation
-		query := db.Model(&entity.Device{})
-
-		switch event.TargetType {
-		case entity.Event_ToSpecificConversation:
-			contactIDs := db.
-				Model(&entity.ConversationMember{}).
-				Select("contact_id").
-				Where(&entity.ConversationMember{ConversationID: event.ToConversationID()}).
-				QueryExpr()
-			query = query.Where("contact_id IN (?)", contactIDs)
-		case entity.Event_ToSpecificContact:
-			query = query.Where(&entity.Device{ContactID: event.ToContactID()})
-		case entity.Event_ToSpecificDevice:
-			query = query.Where(&entity.Device{ID: event.ToDeviceID()})
-		default:
-			return nil, errors.New("activeDispatchesFromEvent: unhandled target type")
-		}
-
-		var devices []*entity.Device
-		if err := query.Find(&devices).Error; err != nil {
-			return nil, sql.GenericError(err)
-		}
-
-		tx := db.Begin()
-		if err := tx.Error; err != nil {
-			return nil, sql.GenericError(err)
-		}
-		for _, device := range devices {
-			dispatch := &entity.EventDispatch{
-				EventID:   event.ID,
-				DeviceID:  device.ID,
-				ContactID: device.ContactID,
-			}
-			if err := tx.Create(&dispatch).Error; err != nil {
-				tx.Rollback()
-				return nil, sql.GenericError(err)
-			}
-		}
-		if err := tx.Commit().Error; err != nil {
-			return nil, sql.GenericError(err)
+		if err := n.generateDispatchesForEvent(ctx, event); err != nil {
+			return nil, err
 		}
 	}
 
@@ -266,19 +305,22 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 	return nil
 }
 
-func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
-	tracer := tracing.EnterFunc(ctx, event)
+func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity.EventDispatch) {
+	tracer := tracing.EnterFunc(ctx, dispatch)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	// fetch active dispatches
-	dispatches, err := n.activeDispatchesFromEvent(ctx, event)
-	if err != nil {
-		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to prepare envelope from event"))
+	db := n.sql(ctx)
+	now := time.Now()
+	dispatch.SentAt = &now
+	if err := db.Save(dispatch).Error; err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(sql.GenericError(err), "error while updating SentAt on event dispatch"))
 		return
 	}
-	if len(dispatches) < 1 {
-		n.LogBackgroundError(ctx, errors.New("no active dispatches for a freshly added outgoing event"))
+
+	event, err := sql.EventByID(n.sql(ctx), dispatch.EventID)
+	if err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "unable to retrieve event detail"))
 		return
 	}
 
@@ -289,18 +331,9 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 		return
 	}
 
-	// send envelope to dispatches
-	wg := sync.WaitGroup{}
-	wg.Add(len(dispatches))
-	for _, dispatch := range dispatches {
-		go func(ctx context.Context, dispatch *entity.EventDispatch, event *entity.Event, envelope *entity.Envelope) {
-			if err := n.sendDispatch(ctx, dispatch, event, envelope); err != nil {
-				n.LogBackgroundError(ctx, errors.Wrap(err, "failed to send envelope to dispatch"))
-			}
-			wg.Done()
-		}(ctx, dispatch, event, envelope)
+	if err := n.sendDispatch(ctx, dispatch, event, envelope); err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to send envelope to dispatch"))
 	}
-	wg.Wait()
 
 	// FIXME: save dispatch status in database
 
@@ -356,8 +389,8 @@ func (n *Node) UseEventHandler(ctx context.Context) {
 	go func() {
 		for {
 			select {
-			case event := <-n.outgoingEvents:
-				n.handleOutgoingEvent(ctx, event)
+			case eventDispatch := <-n.outgoingEvents:
+				n.handleOutgoingEventDispatch(ctx, eventDispatch)
 				// emit the outgoing event on the node event stream
 			case event := <-n.clientEvents:
 				n.handleClientEvent(ctx, event)
