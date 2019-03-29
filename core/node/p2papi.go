@@ -155,6 +155,10 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *entity.Envelope) (*en
 }
 
 func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *entity.Envelope) error {
+	tracer := tracing.EnterFunc(ctx, event, envelope)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
 	pushIdentifiers, err := n.getPushDestinationsForEvent(ctx, event)
 	if err != nil {
 		return errorcodes.ErrPush.Wrap(err)
@@ -187,6 +191,7 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 }
 
 func (n *Node) queuePushEvent(ctx context.Context, event *entity.Event, envelope *entity.Envelope) {
+	// FIXME: this function should not take an Event in the arguments, it should be able to work only with envelopes
 	go func() {
 		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
 		defer cancel()

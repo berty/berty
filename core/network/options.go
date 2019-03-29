@@ -331,3 +331,10 @@ func DisablePeerCache() config.Option {
 		return nil
 	}
 }
+
+func DisableRelay() config.Option {
+	return func(cfg *config.Config) error {
+		cfg.Config.Relay = false
+		return nil
+	}
+}

@@ -10,6 +10,7 @@ import "network/metric/peer.proto";
 import "entity/config.proto";
 import "entity/contact.proto";
 import "entity/device.proto";
+import "entity/sender_alias.proto";
 import "entity/device_push_config.proto";
 import "entity/device_push_identifier.proto";
 import "entity/conversation.proto";
@@ -310,6 +311,8 @@ message CommitLog {
     berty.entity.Event event = 106;
     berty.entity.DevicePushConfig device_push_config = 107;
     berty.entity.DevicePushIdentifier device_push_identifier = 108;
+    berty.entity.EventDispatch event_dispatch = 109;
+    berty.entity.SenderAlias sender_alias = 110;
   }
 
   Operation operation = 1 [(validate.defined_only) = true];

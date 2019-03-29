@@ -133,8 +133,12 @@ func (n *Node) createCommitLog(scope *gorm.Scope, operation string, reflectValue
 		log.Entity = &node.CommitLog_Entity{DevicePushConfig: data}
 	case *entity.DevicePushIdentifier:
 		log.Entity = &node.CommitLog_Entity{DevicePushIdentifier: data}
+	case *entity.EventDispatch:
+		log.Entity = &node.CommitLog_Entity{EventDispatch: data}
+	case *entity.SenderAlias:
+		log.Entity = &node.CommitLog_Entity{SenderAlias: data}
 	default:
-		logger().Warn(fmt.Sprintf("unhandled entity %+v", data))
+		logger().Warn(fmt.Sprintf("unhandled entity (%+v)", data))
 		return nil
 	}
 	return log

@@ -696,11 +696,11 @@ func TestAliasesFlow(t *testing.T) {
 
 			contacts, err = alice.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
-			So(len(contacts), ShouldEqual, 2) // 'myself' is the only known contact
+			So(len(contacts), ShouldEqual, 2)
 
 			contacts, err = bob.client.ContactList(ctx, &node.ContactListInput{})
 			So(err, ShouldBeNil)
-			So(len(contacts), ShouldEqual, 2) // 'myself' is the only known contact
+			So(len(contacts), ShouldEqual, 2)
 
 			So(err, ShouldBeNil)
 			So(res, ShouldNotBeNil)

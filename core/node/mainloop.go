@@ -2,17 +2,17 @@ package node
 
 import (
 	"context"
-	"sync"
 	"time"
+
+	"github.com/gogo/protobuf/proto"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/sql"
-	"github.com/gogo/protobuf/proto"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 // EventsRetry updates SentAt and requeue an event
@@ -21,14 +21,25 @@ func (n *Node) EventRequeue(ctx context.Context, event *entity.Event) error {
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	sql := n.sql(ctx)
+	dispatches, err := n.activeDispatchesFromEvent(ctx, event)
 
-	now := time.Now()
-	event.SentAt = &now
-	if err := sql.Save(event).Error; err != nil {
+	if err != nil {
 		return errors.Wrap(err, "error while updating SentAt on event")
 	}
-	n.outgoingEvents <- event
+
+	for _, dispatch := range dispatches {
+		n.outgoingEvents <- dispatch
+	}
+
+	return nil
+}
+
+func (n *Node) EventDispatchRequeue(ctx context.Context, dispatch *entity.EventDispatch) error {
+	tracer := tracing.EnterFunc(ctx, dispatch)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	n.outgoingEvents <- dispatch
 
 	return nil
 }
@@ -39,29 +50,44 @@ func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*entity.Eve
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	sql := n.sql(ctx)
+	db := n.sql(ctx)
+	retriedEventsMap := map[string]*entity.Event{}
 	var retriedEvents []*entity.Event
-	destinations, err := entity.FindNonAcknowledgedEventDestinations(sql, before)
+	deviceIDs, err := entity.FindDevicesWithNonAcknowledgedEvents(db, before)
 
 	if err != nil {
 		return nil, err
 	}
 
-	for _, destination := range destinations {
-		events, err := entity.FindNonAcknowledgedEventsForDestination(sql, destination)
+	for _, deviceID := range deviceIDs {
+		dispatches, err := entity.FindNonAcknowledgedDispatchesForDestination(db, deviceID)
 
 		if err != nil {
 			n.LogBackgroundError(ctx, errors.Wrap(err, "error while retrieving events for dst"))
 			continue
 		}
 
-		for _, event := range events {
-			if err := n.EventRequeue(ctx, event); err != nil {
+		// TODO: Bundle all dispatches (or at least few of them) in a single envelope
+
+		for _, dispatch := range dispatches {
+			if err := n.EventDispatchRequeue(ctx, dispatch); err != nil {
 				n.LogBackgroundError(ctx, errors.Wrap(err, "error while enqueuing event"))
 				continue
 			}
-			retriedEvents = append(retriedEvents, event)
+
+			event, err := sql.EventByID(db, dispatch.EventID)
+			if err != nil {
+				n.LogBackgroundError(ctx, errors.Wrap(err, "error while getting event detail"))
+				continue
+			}
+
+			retriedEventsMap[event.ID] = event
+
 		}
+	}
+
+	for _, event := range retriedEventsMap {
+		retriedEvents = append(retriedEvents, event)
 	}
 
 	return retriedEvents, nil
@@ -98,20 +124,115 @@ func (n *Node) handleClientEvent(ctx context.Context, event *entity.Event) {
 	n.clientEventsMutex.Unlock()
 }
 
-func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
-	logger().Debug("outgoing event", zap.Stringer("event", event))
+func (n *Node) generateDispatchesForEvent(ctx context.Context, event *entity.Event) error {
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
-	span, ctx := event.CreateSpan(ctx)
+	db := n.sql(ctx)
 
-	envelope := entity.Envelope{}
-	eventBytes, err := proto.Marshal(event)
-	if err != nil {
-		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to marshal outgoing event"))
-		span.Finish()
-		return
+	query := db.Model(&entity.Device{})
+
+	switch event.TargetType {
+	case entity.Event_ToSpecificConversation:
+		contactIDs := db.
+			Model(&entity.ConversationMember{}).
+			Select("contact_id").
+			Where(&entity.ConversationMember{ConversationID: event.ToConversationID()}).
+			QueryExpr()
+		query = query.Where("contact_id IN (?)", contactIDs)
+	case entity.Event_ToSpecificContact:
+		query = query.Where(&entity.Device{ContactID: event.ToContactID()})
+	case entity.Event_ToSpecificDevice:
+		query = query.Where(&entity.Device{ID: event.ToDeviceID()})
+	default:
+		return errors.New("activeDispatchesFromEvent: unhandled target type")
 	}
 
-	event.SourceDeviceID = n.b64pubkey
+	var devices []*entity.Device
+	if err := query.Find(&devices).Error; err != nil {
+		return sql.GenericError(err)
+	}
+
+	tx := db.Begin()
+	if err := tx.Error; err != nil {
+		return sql.GenericError(err)
+	}
+	for _, device := range devices {
+		dispatch := &entity.EventDispatch{
+			EventID:   event.ID,
+			DeviceID:  device.ID,
+			ContactID: device.ContactID,
+		}
+		if err := tx.Create(&dispatch).Error; err != nil {
+			tx.Rollback()
+			return sql.GenericError(err)
+		}
+	}
+	if err := tx.Commit().Error; err != nil {
+		return sql.GenericError(err)
+	}
+
+	return nil
+}
+
+func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Event) ([]*entity.EventDispatch, error) {
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	if event.AckStatus == entity.Event_AckedByAllDevices {
+		return []*entity.EventDispatch{}, nil
+	}
+
+	db := n.sql(ctx)
+
+	if event.Dispatches == nil || len(event.Dispatches) == 0 { // intial Dispatches creation
+		if err := n.generateDispatchesForEvent(ctx, event); err != nil {
+			return nil, err
+		}
+	}
+
+	// refresh event.Dispatches in case there were changes since the time the event was loaded from DB
+	event.Dispatches = []*entity.EventDispatch{}
+	err := db.
+		Where(&entity.EventDispatch{EventID: event.ID}).
+		Find(&event.Dispatches).
+		Error
+	if err != nil {
+		return nil, err
+	}
+
+	// reload dispatches from DBs (if the status changed since the last event load from DB)
+	// and filter out to only keep active dispatches (unacked ones)
+	activeDispatches := []*entity.EventDispatch{}
+
+	for _, dispatch := range event.Dispatches {
+		if dispatch.ContactID == n.UserID() {
+			continue
+		}
+		if dispatch.AckedAt != nil && !dispatch.AckedAt.IsZero() {
+			continue
+		}
+		activeDispatches = append(activeDispatches, dispatch)
+	}
+
+	return activeDispatches, nil
+}
+
+func (n *Node) envelopeFromEvent(ctx context.Context, event *entity.Event) (*entity.Envelope, error) {
+	tracer := tracing.EnterFunc(ctx, event)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	envelope := entity.Envelope{}
+
+	// FIXME: we should probably filter-out the event before marshaling
+
+	eventBytes, err := proto.Marshal(event)
+	if err != nil {
+		return nil, err
+	}
 
 	switch event.TargetType {
 	case entity.Event_ToSpecificContact:
@@ -128,108 +249,95 @@ func (n *Node) handleOutgoingEvent(ctx context.Context, event *entity.Event) {
 		envelope.EncryptedEvent = eventBytes // FIXME: encrypt for the conversation
 		envelope.ChannelID = event.ToConversationID()
 	case entity.Event_ToAllContacts, entity.Event_ToSelf:
-		n.LogBackgroundError(ctx, errors.New("handleOutgoingEvent: target type not implemented"))
-		return
+		return nil, errors.New("handleOutgoingEvent: target type not implemented")
 	default:
-		n.LogBackgroundError(ctx, errors.New("handleOutgoingEvent: invalid target type"))
-		return
+		return nil, errors.New("handleOutgoingEvent: invalid target type")
 	}
 
-	contactsForEvent, err := n.getContactsForEvent(ctx, event)
-	if err != nil {
-		n.LogBackgroundError(ctx, errors.Wrap(err, "failed get contacts for event"))
-		span.Finish()
-		return
-	}
-
-	wg := sync.WaitGroup{}
-	wg.Add(len(contactsForEvent))
-
-	for _, contact := range contactsForEvent {
-		// Ignore myself
-		if contact.ID == n.UserID() {
-			wg.Done()
-			continue
-		}
-		go func(contact *entity.Contact) {
-			// Async subscribe to conversation
-			// wait for 1s to simulate a sync subscription,
-			// if too long, the task will be done in background
-			done := make(chan bool, 1)
-			go func() {
-				tctx, cancel := context.WithTimeout(ctx, time.Second*10)
-				defer cancel()
-
-				envCopy := envelope
-				envCopy.ChannelID = contact.ID
-
-				if envCopy.Signature, err = keypair.Sign(n.crypto, &envCopy); err != nil {
-					n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
-					span.Finish()
-					return
-				}
-				// FIXME: make something smarter, i.e., grouping events by contact or network driver
-				if err := n.networkDriver.Emit(tctx, &envCopy); err != nil {
-					n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
-
-					// push the outgoing event on the client stream
-					go n.queuePushEvent(ctx, event, &envelope)
-
-					span.Finish()
-					return
-				}
-
-				done <- true
-				span.Finish()
-			}()
-			select {
-			case <-done:
-			case <-time.After(1 * time.Second):
-				// push the outgoing event on the client stream
-				go n.queuePushEvent(ctx, event, &envelope)
-			}
-
-			wg.Done()
-		}(contact)
-	}
-
-	wg.Wait()
-
-	n.clientEvents <- event
+	return &envelope, nil
 }
 
-func (n *Node) getContactsForEvent(ctx context.Context, event *entity.Event) ([]*entity.Contact, error) {
-	// FIXME: this function should return Device instead of Contact
-	// FIXME: refactor this function for a better handling of Contact VS Device
+func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch, event *entity.Event, envelope *entity.Envelope) error {
+	tracer := tracing.EnterFunc(ctx, dispatch, envelope)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	if dispatch.ContactID == n.UserID() {
+		return nil
+	}
+	// Async subscribe to conversation
+	// wait for 1s to simulate a sync subscription,
+	// if too long, the task will be done in background
+	done := make(chan bool, 1)
+	go func() {
+		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
+		defer cancel()
+
+		envCopy := *envelope
+
+		// create a copy of the envelope for the contact and resign
+		// FIXME: envelope should be signed once per channel, not once per contact
+		envCopy.ChannelID = dispatch.ContactID
+		var err error
+		envCopy.Signature, err = keypair.Sign(n.crypto, &envCopy)
+		if err != nil {
+			n.LogBackgroundError(ctx, errors.Wrap(err, "failed to sign envelope"))
+			return
+		}
+
+		// FIXME: make something smarter, i.e., grouping events by contact or network driver
+		if err := n.networkDriver.Emit(tctx, &envCopy); err != nil {
+			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
+
+			// push the outgoing event on the client stream
+			go n.queuePushEvent(ctx, event, envelope)
+			return
+		}
+
+		done <- true
+	}()
+	select {
+	case <-done:
+	case <-time.After(1 * time.Second):
+		// push the outgoing event on the client stream
+		go n.queuePushEvent(ctx, event, envelope)
+	}
+	return nil
+}
+
+func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity.EventDispatch) {
+	tracer := tracing.EnterFunc(ctx, dispatch)
+	defer tracer.Finish()
+	ctx = tracer.Context()
 
 	db := n.sql(ctx)
-	var subqueryContactIDs interface{}
-	contacts := []*entity.Contact{}
-
-	switch event.TargetType {
-	case entity.Event_ToSpecificConversation:
-		subqueryContactIDs = db.
-			Model(&entity.ConversationMember{}).
-			Select("contact_id").
-			Where(&entity.ConversationMember{ConversationID: event.ToConversationID()}).
-			QueryExpr()
-	case entity.Event_ToSpecificContact:
-		subqueryContactIDs = []string{event.ToContactID()}
-	case entity.Event_ToSpecificDevice:
-		subqueryContactIDs = []string{event.ToDeviceID()}
-	default:
-		return nil, errors.New("getContactsForEvent: unhandled target type")
+	now := time.Now()
+	dispatch.SentAt = &now
+	if err := db.Save(dispatch).Error; err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(sql.GenericError(err), "error while updating SentAt on event dispatch"))
+		return
 	}
 
-	if err := db.
-		Model(&entity.Contact{}).
-		Where("id IN (?)", subqueryContactIDs).
-		Find(&contacts).
-		Error; err != nil {
-		return nil, sql.GenericError(err)
+	event, err := sql.EventByID(n.sql(ctx), dispatch.EventID)
+	if err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "unable to retrieve event detail"))
+		return
 	}
 
-	return contacts, nil
+	// generate an envelope
+	envelope, err := n.envelopeFromEvent(ctx, event)
+	if err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to prepare envelope from event"))
+		return
+	}
+
+	if err := n.sendDispatch(ctx, dispatch, event, envelope); err != nil {
+		n.LogBackgroundError(ctx, errors.Wrap(err, "failed to send envelope to dispatch"))
+	}
+
+	// FIXME: save dispatch status in database
+
+	n.clientEvents <- event
 }
 
 func (n *Node) UseNodeEvent(ctx context.Context) {
@@ -281,8 +389,8 @@ func (n *Node) UseEventHandler(ctx context.Context) {
 	go func() {
 		for {
 			select {
-			case event := <-n.outgoingEvents:
-				n.handleOutgoingEvent(ctx, event)
+			case eventDispatch := <-n.outgoingEvents:
+				n.handleOutgoingEventDispatch(ctx, eventDispatch)
 				// emit the outgoing event on the node event stream
 			case event := <-n.clientEvents:
 				n.handleClientEvent(ctx, event)

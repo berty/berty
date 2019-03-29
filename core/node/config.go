@@ -1,10 +1,11 @@
 package node
 
 import (
-	"berty.tech/core/pkg/errorcodes"
-	"berty.tech/core/push"
 	"context"
 	"encoding/base64"
+
+	"berty.tech/core/pkg/errorcodes"
+	"berty.tech/core/push"
 
 	"github.com/gofrs/uuid"
 	"github.com/gogo/protobuf/proto"

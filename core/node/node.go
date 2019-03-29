@@ -30,7 +30,7 @@ type Node struct {
 	clientEvents                chan *entity.Event
 	clientEventsSubscribers     []clientEventSubscriber
 	clientEventsMutex           sync.Mutex
-	outgoingEvents              chan *entity.Event
+	outgoingEvents              chan *entity.EventDispatch
 	sqlDriver                   *gorm.DB
 	config                      *entity.Config
 	initDevice                  *entity.Device
@@ -65,7 +65,7 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 
 	n := &Node{
 		// FIXME: fetch myself from db
-		outgoingEvents: make(chan *entity.Event, 100),
+		outgoingEvents: make(chan *entity.EventDispatch, 100),
 		clientEvents:   make(chan *entity.Event, 100),
 		createdAt:      time.Now().UTC(),
 		rootSpan:       tracer.Span(),

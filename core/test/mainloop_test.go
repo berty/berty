@@ -24,20 +24,32 @@ func setupNonAcknowledgedEventDestinations() (*AppMock, time.Time, time.Time, ti
 	future := now.Add(time.Second)
 
 	n.db.Save(&entity.Event{ID: "Event1", Direction: entity.Event_Outgoing, TargetType: entity.Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &past})
+	n.db.Save(&entity.EventDispatch{EventID: "Event1", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &past})
 	n.db.Save(&entity.Event{ID: "Event2", Direction: entity.Event_Outgoing, TargetType: entity.Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event2", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &future})
 	n.db.Save(&entity.Event{ID: "Event3", Direction: entity.Event_Outgoing, TargetType: entity.Event_ToSpecificContact, TargetAddr: "Receiver2", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event3", ContactID: "Receiver2", DeviceID: "Receiver2", SentAt: &future})
 
 	n.db.Save(&entity.Event{ID: "Event4", Direction: entity.Event_Incoming, TargetType: entity.Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &past})
+	n.db.Save(&entity.EventDispatch{EventID: "Event4", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &past})
 	n.db.Save(&entity.Event{ID: "Event5", Direction: entity.Event_Incoming, TargetType: entity.Event_ToSpecificContact, TargetAddr: "Receiver1", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event5", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &future})
 	n.db.Save(&entity.Event{ID: "Event6", Direction: entity.Event_Incoming, TargetType: entity.Event_ToSpecificContact, TargetAddr: "Receiver2", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event6", ContactID: "Receiver2", DeviceID: "Receiver2", SentAt: &future})
 
 	n.db.Save(&entity.Event{ID: "Event7", Direction: entity.Event_Outgoing, TargetType: entity.Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &past})
+	n.db.Save(&entity.EventDispatch{EventID: "Event7", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &past})
 	n.db.Save(&entity.Event{ID: "Event8", Direction: entity.Event_Outgoing, TargetType: entity.Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event8", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &future})
 	n.db.Save(&entity.Event{ID: "Event9", Direction: entity.Event_Outgoing, TargetType: entity.Event_ToSpecificConversation, TargetAddr: "Conversation2", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event9", ContactID: "Receiver2", DeviceID: "Receiver2", SentAt: &future})
 
 	n.db.Save(&entity.Event{ID: "Event10", Direction: entity.Event_Incoming, TargetType: entity.Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &past})
+	n.db.Save(&entity.EventDispatch{EventID: "Event10", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &past})
 	n.db.Save(&entity.Event{ID: "Event11", Direction: entity.Event_Incoming, TargetType: entity.Event_ToSpecificConversation, TargetAddr: "Conversation1", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event11", ContactID: "Receiver1", DeviceID: "Receiver1", SentAt: &future})
 	n.db.Save(&entity.Event{ID: "Event12", Direction: entity.Event_Incoming, TargetType: entity.Event_ToSpecificConversation, TargetAddr: "Conversation2", SentAt: &future})
+	n.db.Save(&entity.EventDispatch{EventID: "Event12", ContactID: "Receiver2", DeviceID: "Receiver2", SentAt: &future})
 
 	return n, past, now, future
 }

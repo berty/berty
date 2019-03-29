@@ -335,7 +335,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 			return nil, errorcodes.ErrDbCreate.Wrap(err)
 		}
 	} else if err != nil {
-		return nil, err
+		return nil, bsql.GenericError(err)
 
 	} else if contact.Status == entity.Contact_RequestedMe {
 		logger().Info("this contact has already asked us, accepting the request")

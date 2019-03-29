@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/pkg/errors"
+
 	"berty.tech/core/api/p2p"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
@@ -21,12 +23,14 @@ func (n *Node) NewEvent(ctx context.Context) *entity.Event {
 	// ctx = tracer.Context()
 
 	return &entity.Event{
-		ID:             n.NewID(),
-		APIVersion:     p2p.Version,
-		CreatedAt:      time.Now().UTC(),
-		Direction:      entity.Event_Outgoing,
-		Dispatches:     make([]*entity.EventDispatch, 0),
-		SourceDeviceID: n.b64pubkey,
+		ID:              n.NewID(),
+		APIVersion:      p2p.Version,
+		CreatedAt:       time.Now().UTC(),
+		Direction:       entity.Event_Outgoing,
+		Dispatches:      make([]*entity.EventDispatch, 0),
+		SourceContactID: n.config.MyselfID,
+		SourceDeviceID:  n.b64pubkey,
+		AckStatus:       entity.Event_NotAcked,
 	}
 }
 
@@ -54,7 +58,18 @@ func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entit
 		}
 	}
 
-	n.outgoingEvents <- event
+	dispatches, err := n.activeDispatchesFromEvent(ctx, event)
+	if err != nil {
+		return errors.Wrap(err, "failed to prepare envelope from event")
+	}
+
+	if len(dispatches) < 1 {
+		return errors.New("no active dispatches for a freshly added outgoing event")
+	}
+
+	for _, dispatch := range dispatches {
+		n.outgoingEvents <- dispatch
+	}
 
 	tracer.SetMetadata("new-outgoing-event", event.ID)
 

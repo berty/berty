@@ -57,9 +57,9 @@ var BootstrapIpfs = []string{
 }
 
 var DefaultBind = map[string][]string{
-	"tcp":  []string{"/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0"},
-	"ble":  []string{"/ble/00000000-0000-0000-0000-000000000000"},
-	"quic": []string{"/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic"},
+	"tcp":  {"/ip4/0.0.0.0/tcp/0", "/ip6/::/tcp/0"},
+	"ble":  {"/ble/00000000-0000-0000-0000-000000000000"},
+	"quic": {"/ip4/0.0.0.0/udp/0/quic", "/ip6/::/udp/0/quic"},
 }
 
 type Config struct {
@@ -265,6 +265,7 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 		NATManager:   cfg.Config.NATManager,
 		EnablePing:   !cfg.Config.DisablePing,
 	})
+
 	if err != nil {
 		swrm.Close()
 		return nil, err

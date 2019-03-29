@@ -6,15 +6,16 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/gofrs/uuid"
+	"github.com/pkg/errors"
+	"go.uber.org/zap"
+
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/i18n"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
 	bsql "berty.tech/core/sql"
-	"github.com/gofrs/uuid"
-	"github.com/pkg/errors"
-	"go.uber.org/zap"
 )
 
 type EventHandler func(context.Context, *entity.Event) error
@@ -333,31 +334,74 @@ func (n *Node) handleSeen(ctx context.Context, input *entity.Event) error {
 }
 
 func (n *Node) handleAck(ctx context.Context, input *entity.Event) error {
-	var ackedEvents []*entity.Event
+	var events []*entity.Event
 	ackCount := 0
+	now := time.Now().UTC()
 
 	ackAttrs, err := input.GetAckAttrs()
 	if err != nil {
 		return errors.Wrap(err, "unable to unmarshal ack attrs")
 	}
 
-	baseQuery := n.sql(ctx).
+	eventsIDs := ackAttrs.IDs
+
+	if err := n.sql(ctx).
 		Model(&entity.Event{}).
-		Where("id in (?)", ackAttrs.IDs)
+		Where("id IN (?)", eventsIDs).
+		Find(&events).Error; err != nil {
+		return errors.Wrap(err, "unable to find events to ack")
+	}
 
-	if err = baseQuery.
+	if err := n.sql(ctx).
+		Model(&entity.EventDispatch{}).
+		Where("event_id in (?) AND contact_id = ? AND device_id = ?", eventsIDs, input.SourceContactID, input.SourceDeviceID).
 		Count(&ackCount).
-		UpdateColumn("acked_at", time.Now().UTC()).
+		UpdateColumn("acked_at", &now).Error; err != nil {
+		return errors.Wrap(err, "unable to find event dispatch to ack")
+	}
+
+	if err := n.sql(ctx).
+		Model(&entity.Event{}).
+		Where("id IN (?) AND ack_status = ?", eventsIDs, entity.Event_NotAcked).
+		UpdateColumns(&entity.Event{
+			AckStatus: entity.Event_AckedAtLeastOnce,
+		}).Error; err != nil {
+		return errors.Wrap(err, "unable to find event dispatch to ack")
+	}
+
+	// TODO: find events acknowledged by at least one device per contact
+
+	whollyAcknowledgedEventsIDs := []string{}
+
+	if err := n.sql(ctx).
+		Model(&entity.Event{}).
+		Joins("LEFT JOIN event_dispatch ON event_dispatch.event_id = event.id AND event_dispatch.acked_at IS NULL").
+		Where("event.id in (?) AND event_dispatch.device_id IS NULL", eventsIDs).
+		Pluck("event.id", &whollyAcknowledgedEventsIDs).
 		Error; err != nil {
-		return errors.Wrap(err, "unable to mark events as acked")
+		return errors.Wrap(err, "unable to find events")
 	}
 
-	if ackCount == 0 {
-		return errors.Wrap(err, "no events to ack found")
+	if len(whollyAcknowledgedEventsIDs) == 0 {
+		return nil
 	}
 
-	if err = baseQuery.Find(&ackedEvents).Error; err != nil {
-		return errors.Wrap(err, "unable to fetch acked events")
+	if err := n.sql(ctx).
+		Model(&entity.Event{}).
+		Where("id IN (?)", whollyAcknowledgedEventsIDs).
+		UpdateColumns(&entity.Event{
+			AckedAt:   &now,
+			AckStatus: entity.Event_AckedByAllDevices,
+		}).Error; err != nil {
+		return errors.Wrap(err, "unable to update events acks")
+	}
+
+	ackedEvents := []*entity.Event{}
+	if err := n.sql(ctx).
+		Model(&entity.Event{}).
+		Where("id IN (?)", whollyAcknowledgedEventsIDs).
+		Find(&ackedEvents).Error; err != nil {
+		return errors.Wrap(err, "unable to find acked events")
 	}
 
 	if err := n.handleAckSenderAlias(ctx, ackAttrs); err != nil {
