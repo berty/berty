@@ -11,7 +11,6 @@ import (
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_crypto "github.com/libp2p/go-libp2p-crypto"
 	discovery "github.com/libp2p/go-libp2p-discovery"
-	p2phost "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pnet "github.com/libp2p/go-libp2p-pnet"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
@@ -93,9 +92,8 @@ type Config struct {
 
 	Identity string
 
-	Persist         bool         `json:"-"`
-	OverridePersist bool         `json:"-"` // override persist config when apply
-	OverrideHost    p2phost.Host `json:"-"`
+	Persist         bool `json:"-"`
+	OverridePersist bool `json:"-"` // override persist config when apply
 }
 
 type Option func(cfg *Config) error
@@ -117,7 +115,6 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.Identity = override.Identity
 	cfg.SwarmKey = override.SwarmKey
 	cfg.PeerCache = override.PeerCache
-	cfg.OverrideHost = override.OverrideHost
 	return nil
 }
 
@@ -262,16 +259,12 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 
 	// use basic host
 	h := &host.BertyHost{}
-	if cfg.OverrideHost == nil {
-		h.Host, err = bhost.NewHost(ctx, swrm, &bhost.HostOpts{
-			ConnManager:  cfg.Config.ConnManager,
-			AddrsFactory: cfg.Config.AddrsFactory,
-			NATManager:   cfg.Config.NATManager,
-			EnablePing:   !cfg.Config.DisablePing,
-		})
-	} else {
-		h.Host, err = cfg.OverrideHost, nil
-	}
+	h.Host, err = bhost.NewHost(ctx, swrm, &bhost.HostOpts{
+		ConnManager:  cfg.Config.ConnManager,
+		AddrsFactory: cfg.Config.AddrsFactory,
+		NATManager:   cfg.Config.NATManager,
+		EnablePing:   !cfg.Config.DisablePing,
+	})
 
 	if err != nil {
 		swrm.Close()
