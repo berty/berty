@@ -54,7 +54,7 @@ references:
           cd ~/go/src/golang.org/x/mobile
           git remote add upstream git@github.com:sfroment/mobile
           git fetch upstream
-          git cherry-pick af3c051e0603af005260579c432830164f68933b
+          git cherry-pick 85b699489d6f23377f5380e8b3d42ad7eecd4e0a
           go install golang.org/x/mobile/cmd/gomobile
           gomobile init
         fi
