@@ -17,7 +17,7 @@
     return [RCTLinkingManager application:application openURL:url options:options];
 }
 
-- (BOOL) application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray * _Nullable))restorationHandler
+- (BOOL) application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^ _Nonnull __strong)(NSArray<id<UIUserActivityRestoring>> * _Nullable __strong))restorationHandler
 {
   return [RCTLinkingManager application:application
                    continueUserActivity:userActivity

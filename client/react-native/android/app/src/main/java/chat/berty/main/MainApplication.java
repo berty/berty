@@ -51,7 +51,7 @@ public class MainApplication extends Application implements ReactApplication {
                 new CorePackage(),
                 new ImagePickerPackage(),
                 new MainReactPackage(),
-            new RNGestureHandlerPackage(),
+                new RNGestureHandlerPackage(),
                 new ReactNativeConfigPackage(),
                 new RNDevMenuPackage(),
                 new RNInstabugReactnativePackage.Builder(BuildConfig.INSTABUG_TOKEN,MainApplication.this)

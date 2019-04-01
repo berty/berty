@@ -104,7 +104,7 @@ $(ANDROID_BUILD_PATH)/core.aar: $(CORE_SOURCES)
 	# GOOS=android gobind -lang=go,java -outdir=$(BLE_BIND_PATH) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar berty.tech/core/network/ble
 	mkdir -p $(ANDROID_BUILD_PATH)
 	GO111MODULE=off GOOS=android GOPATH=$(GOPATH) CGO_CPPFLAGS="$(CGO_CPPFLAGS)" CGO_LDFLAGS="$(ANDROID_LDFLAGS)" \
-		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -target=android/arm -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/client/react-native/gomobile/core
+		gomobile bind -v $(EXT_LDFLAGS) $(GOMOBILES_OPT) -classpath=$(MAKEFILE_DIR)/../android/ble/libs/jars/ble.jar -o $(ANDROID_BUILD_PATH)/core.aar berty.tech/client/react-native/gomobile/core
 
 .PHONY: build.ios
 build.ios: $(IOS_BUILD_PATH)/core.framework/Core
