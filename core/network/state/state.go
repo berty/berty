@@ -3,6 +3,7 @@ package state
 type State int
 type NetType int
 type CellType int
+type BleState int
 
 const (
 	Unknown State = 0
@@ -16,9 +17,14 @@ const (
 	Cellular       NetType = 4
 
 	UnknownCellType CellType = 0
-	Cell2G          CellType = 1
-	Cell3G          CellType = 2
-	Cell4G          CellType = 3
+	None            CellType = 1
+	Cell2G          CellType = 2
+	Cell3G          CellType = 3
+	Cell4G          CellType = 4
+
+	UnknownBleState BleState = 0
+	BleOn           BleState = 1
+	BleOff          BleState = 2
 )
 
 type ConnectivityState struct {
@@ -30,7 +36,7 @@ type ConnectivityState struct {
 	Trusted   State
 	Network   NetType
 	Cellular  CellType
-	Bluetooth State
+	Bluetooth BleState
 }
 
 func StateToString(s State) string {
@@ -61,12 +67,25 @@ func NetTypeToString(n NetType) string {
 
 func CellTypeToString(c CellType) string {
 	switch c {
+	case None:
+		return "none"
 	case Cell2G:
 		return "2G"
 	case Cell3G:
 		return "3G"
 	case Cell4G:
 		return "4G"
+	default:
+		return "unknown"
+	}
+}
+
+func BleStateToString(b BleState) string {
+	switch b {
+	case BleOn:
+		return "on"
+	case BleOff:
+		return "off"
 	default:
 		return "unknown"
 	}
