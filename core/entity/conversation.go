@@ -539,12 +539,19 @@ func (m *ConversationMember) Write(message *Message) error {
 	for _, member := range m.Conversation.Members {
 		if member.Contact.ID == m.Contact.ID {
 			member.ReadAt = now
+
+			// say that conversation has not been read by others members
+			m.Conversation.ReadAt = time.Time{}
+
+			if m.Conversation.IsOneToOne() {
+				m.Conversation.Infos = message.Text
+			} else {
+				m.Conversation.Infos = m.Contact.DisplayName + ": " + message.Text
+			}
+
 			return nil
 		}
 	}
-
-	// say that conversation has not been read by others members
-	m.Conversation.ReadAt = time.Time{}
 
 	return errorcodes.ErrConversationMemberWrite.Wrap(
 		errorcodes.ErrConversationMembers.Wrap(
