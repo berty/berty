@@ -95,7 +95,6 @@ class SettingsScreenBase extends PureComponent {
     const conversation = this.props.navigation.getParam('conversation')
     const { edit, t, navigation, context } = this.props
     const { title, topic, members = [] } = conversation
-    const otherContacts = members.filter(m => m.contact.status !== 42)
     let oneToOneContact =
       conversation.kind === enums.BertyEntityConversationInputKind.OneToOne
 
