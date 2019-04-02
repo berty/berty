@@ -69,7 +69,6 @@ func WithSoftwareCrypto() NewNodeOption {
 			// FIXME: setting default keysize to 2048 to speedup development (tests), we need to increase the security before the release
 			priv, err := rsa.GenerateKey(rand.Reader, 2048)
 			if err != nil {
-				panic(err)
 				zap.Error(errors.Wrap(err, "failed to generate RSA key"))
 				return
 			}
@@ -77,14 +76,12 @@ func WithSoftwareCrypto() NewNodeOption {
 
 			if err != nil {
 				zap.Error(errors.Wrap(err, "failed to marshal private key"))
-				panic(err)
 				return
 			}
 
 			n.config.CryptoParams = privBytes
 			if err = n.sql(ctx).Save(n.config).Error; err != nil {
 				err := errors.Wrap(err, "failed to save RSA key")
-				panic(err)
 				n.LogBackgroundError(ctx, errors.Wrap(err, "node.WithSoftwareCrypto"))
 				return
 
@@ -93,7 +90,6 @@ func WithSoftwareCrypto() NewNodeOption {
 
 		cryptoImpl := &keypair.InsecureCrypto{}
 		if err := cryptoImpl.SetPrivateKeyData(n.config.CryptoParams); err != nil {
-			panic(err)
 			zap.Error(errors.Wrap(err, "failed to set private key in keypair"))
 			return
 		}
