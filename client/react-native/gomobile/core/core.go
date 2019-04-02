@@ -10,6 +10,7 @@ import (
 
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/network"
+	"berty.tech/core/network/state"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/pkg/notification"
 	"github.com/pkg/errors"
@@ -22,6 +23,7 @@ var (
 	rootContext                = context.Background()
 	NotificationDriver         = MobileNotification{}.New() // Android / iOS
 	ElectronNotificationDriver *notification.Driver         // Electron Desktop client
+	NetworkUpdater             = state.Global()
 )
 
 // Setup call it at first native start

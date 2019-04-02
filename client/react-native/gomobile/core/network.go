@@ -8,6 +8,7 @@ import (
 	network_config "berty.tech/core/network/config"
 )
 
+// Berty network config related
 func GetNetworkConfig() (string, error) {
 	defer panicHandler()
 	waitDaemon(accountName)
@@ -43,4 +44,17 @@ func UpdateNetworkConfig(jsonConf string) error {
 	}
 
 	return nil
+}
+
+// Device network state related
+func UpdateConnectivityState(state string) {
+	defer panicHandler()
+
+	NetworkUpdater.UpdateConnectivityState(state)
+}
+
+func UpdateBluetoothState(state int) {
+	defer panicHandler()
+
+	NetworkUpdater.UpdateBluetoothState(state)
 }
