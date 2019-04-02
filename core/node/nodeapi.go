@@ -35,7 +35,7 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 	sql := n.sql(ctx)
 
 	// prepare query
@@ -80,7 +80,7 @@ func (n *Node) EventUnseen(input *node.EventListInput, stream node.Service_Event
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 	sql := n.sql(ctx)
 
 	// prepare query
@@ -119,7 +119,7 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	event := &entity.Event{}
 
@@ -164,7 +164,7 @@ func (n *Node) GetEvent(ctx context.Context, input *entity.Event) (*entity.Event
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 	event := &entity.Event{}
@@ -185,7 +185,7 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *node.ContactAcce
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if err := input.Validate(); err != nil {
@@ -225,7 +225,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if err := req.Validate(); err != nil {
@@ -292,7 +292,7 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if contact == nil || contact.ID == "" {
@@ -339,7 +339,7 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if contact == nil || contact.ID == "" {
@@ -385,7 +385,7 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 
@@ -420,7 +420,7 @@ func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.C
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 	output := &entity.Contact{}
@@ -442,7 +442,7 @@ func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*nod
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	err := n.networkDriver.PingOtherNode(ctx, input.Destination)
 

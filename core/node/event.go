@@ -40,7 +40,7 @@ func (n *Node) handleEvent(ctx context.Context, input *entity.Event) error {
 	ctx = tracer.Context()
 
 	defer n.asyncWaitGroup(ctx)()
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	if input.SourceDeviceID == n.UserID() {
 		logger().Debug("skipping event created by myself",

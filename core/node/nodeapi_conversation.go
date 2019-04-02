@@ -18,7 +18,7 @@ func (n *Node) ConversationCreate(ctx context.Context, input *node.ConversationC
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	return n.conversationCreate(ctx, input)
 }
@@ -97,7 +97,7 @@ func (n *Node) ConversationAcceptInvite(ctx context.Context, input *entity.Conve
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	return nil, errorcodes.ErrUnimplemented.New()
 }
@@ -107,7 +107,7 @@ func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationM
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 	var err error
 
 	// find conversation
@@ -172,7 +172,7 @@ func (n *Node) ConversationExclude(ctx context.Context, input *node.Conversation
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	return nil, errorcodes.ErrUnimplemented.New()
 }
@@ -182,7 +182,7 @@ func (n *Node) ConversationList(input *node.ConversationListInput, stream node.S
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// prepare query
 	sql := n.sql(ctx)
@@ -215,7 +215,7 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	event := n.NewEvent(ctx)
 	return event, n.EnqueueOutgoingEvent(ctx, event.
@@ -229,7 +229,7 @@ func (n *Node) Conversation(ctx context.Context, input *entity.Conversation) (*e
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 	output := &entity.Conversation{}
@@ -246,7 +246,7 @@ func (n *Node) ConversationMember(ctx context.Context, input *entity.Conversatio
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 	output := &entity.ConversationMember{}
@@ -262,7 +262,7 @@ func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversatio
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 
