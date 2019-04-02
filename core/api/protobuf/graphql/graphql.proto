@@ -21,7 +21,7 @@ extend google.protobuf.FieldOptions {
   bool graphql_spread = 53006;
   bool graphql_nullable = 53008;
   bool graphql_non_nullable = 53009;
-	bool graphql_unexported = 53011;
+  bool graphql_unexported = 53011;
 }
 
 message Node {

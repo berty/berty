@@ -120,7 +120,7 @@ enum Code {
   ErrConversationIsMember = 13204;
   ErrConversationGetMember = 13205;
   ErrConversationGetOwners = 13206;
-	ErrConversationGetInteractiveMember = 13207;
+  ErrConversationGetInteractiveMember = 13207;
 
   ErrConversationMember = 13500;
   ErrConversationMemberID = 13501;
@@ -131,12 +131,12 @@ enum Code {
   ErrConversationMemberConversationID = 13506;
 
   ErrConversationMemberInvite = 13701;
-	ErrConversationMemberLeave = 13702;
+  ErrConversationMemberLeave = 13702;
   ErrConversationMemberSetTitle = 13703;
   ErrConversationMemberSetTopic = 13704;
   ErrConversationMemberSetOwner = 13705;
   ErrConversationMemberBlock = 13706;
-	ErrConversationMemberUnblock = 13707;
+  ErrConversationMemberUnblock = 13707;
   ErrConversationMemberRead = 13708;
   ErrConversationMemberWrite = 13709;
 
@@ -162,8 +162,8 @@ enum Code {
 
   ErrNode = 16000;
   ErrNodePushNotifSub = 16001;
-	ErrNodeHandleConversationUpdate = 16701;
-	ErrNodeHandleConversationInvite = 16702;
+  ErrNodeHandleConversationUpdate = 16701;
+  ErrNodeHandleConversationInvite = 16702;
 
   ErrChunk = 17000;
   ErrChunkBadIndex = 17001;

@@ -55,12 +55,12 @@ enum Kind {
   // ConversationMember events
   //
   ConversationMemberInvite = 701;
-	ConversationMemberLeave = 702;
+  ConversationMemberLeave = 702;
   ConversationMemberSetTitle = 703;
   ConversationMemberSetTopic = 704;
   ConversationMemberSetOwner = 705;
   ConversationMemberBlock = 706;
-	ConversationMemberUnblock = 707;
+  ConversationMemberUnblock = 707;
   ConversationMemberRead = 708;
   ConversationMemberWrite = 709;
 
@@ -127,7 +127,7 @@ message ConversationMemberInviteAttrs {
   Conversation conversation = 3;
 }
 message ConversationMemberLeaveAttrs {
-	string id = 1;
+  string id = 1;
 }
 message ConversationMemberSetTitleAttrs {
   string id = 1;
@@ -146,8 +146,8 @@ message ConversationMemberBlockAttrs {
   string contact_id = 2;
 }
 message ConversationMemberUnblockAttrs {
-	string id = 1;
-	string contact_id = 2;
+  string id = 1;
+  string contact_id = 2;
 }
 message ConversationMemberReadAttrs {
   string id = 1;

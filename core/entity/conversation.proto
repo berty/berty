@@ -38,8 +38,8 @@ message Conversation {
   //
 
   repeated ConversationMember members = 100 [
-		(gogoproto.moretags) = "gorm:\"foreignkey:ConversationID;association_foreignkey:ID\""
-	]; // HasMany to ConversationMember.Conversation
+    (gogoproto.moretags) = "gorm:\"foreignkey:ConversationID;association_foreignkey:ID\""
+  ]; // HasMany to ConversationMember.Conversation
 
   enum Kind {
     Unknown = 0;
@@ -78,24 +78,24 @@ message ConversationMember {
   //
 
   Contact contact = 100 [
-		(validate.required) = true,
-		(validate.skip) = false
-	];
+    (validate.required) = true,
+    (validate.skip) = false
+  ];
 
   string conversation_id = 101 [
     (gogoproto.customname) = "ConversationID",
     (validate.min_len) = 1,
-		(gql.graphql_id) = true
+    (gql.graphql_id) = true
   ]; // backref
 
   string contact_id = 102 [
     (gogoproto.customname) = "ContactID",
-   	(validate.min_len) = 1,
-		(gql.graphql_id) = true
+    (validate.min_len) = 1,
+    (gql.graphql_id) = true
   ];
 
   Conversation conversation = 103 [
-		(gogoproto.moretags) = "gorm:\"PRELOAD:false;foreignkey:ID;association_foreignkey:ConversationID\"",
-		(gql.graphql_unexported) = true
-	];
+    (gogoproto.moretags) = "gorm:\"PRELOAD:false;foreignkey:ID;association_foreignkey:ConversationID\"",
+    (gql.graphql_unexported) = true
+  ];
 }
