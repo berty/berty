@@ -275,7 +275,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	}
 
 	// create conversation if doesn't exist
-	if _, err := n.ConversationCreate(ctx,
+	if _, err := n.conversationCreate(ctx,
 		&node.ConversationCreateInput{
 			Contacts: []*entity.Contact{contact},
 			Kind:     entity.Conversation_OneToOne,

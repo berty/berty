@@ -78,29 +78,45 @@ func NewGroupConversation(contacts []*Contact) (*Conversation, error) {
 		Members: []*ConversationMember{},
 	}
 
-	for _, contact := range contacts {
-		// create the member
-		member, err := NewConversationMember(contact, c)
-		if err != nil {
-			return nil, errorcodes.ErrConversation.Wrap(err)
-		}
-
-		c.Members = append(c.Members, member)
-	}
-
-	var myselfID string
+	// get myself from contacts
+	var myself *Contact
 	for _, contact := range contacts {
 		if contact.Status == Contact_Myself {
-			myselfID = contact.ID
+			myself = contact
 		}
 	}
+	if myself == nil {
+		return nil, errorcodes.ErrConversation.Wrap(
+			errorcodes.ErrConversationMembers.New(),
+		)
+	}
 
-	im, err := c.GetInteractiveMember(myselfID)
+	// add myself as converastion member
+	mm, err := NewConversationMember(myself, c)
+	if err != nil {
+		return nil, errorcodes.ErrConversation.Wrap(err)
+	}
+	c.Members = append(c.Members, mm)
+
+	// get interactive member
+	im, err := c.GetInteractiveMember(myself.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = im.SetOwner(myselfID); err != nil {
+	// invite the contacts
+	for _, contact := range contacts {
+		// create the member
+		if contact.ID == myself.ID {
+			continue
+		}
+		if err := im.Invite(contact); err != nil {
+			return nil, err
+		}
+	}
+
+	// set myself as owner
+	if err = im.SetOwner(myself.ID); err != nil {
 		return nil, err
 	}
 
