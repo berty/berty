@@ -6380,9 +6380,9 @@ react-native-segmented-control-tab@^3.3.1:
   integrity sha512-TJXzSCr5ZeXAzSkjPUjfcy1B9bn5c7qnjCFf2d5YeYmR+wjU9bso2Z0A8mcqmXeMSA6Swc+HY/YBVNFlFzYpEQ==
 
 react-native-svg@^8.0.8:
-  version "8.0.10"
-  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-8.0.10.tgz#b07e2342d1486220f5fda1a584e316e7d2d1f392"
-  integrity sha512-gsG5GUdvlox67+ohLnq3tZSqiYBmz4M5lKKeUfnJZ8EPrMMS5ZgaVj7Zcccee1VvINS5xQaoenUJdha/GEo34w==
+  version "8.0.11"
+  resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-8.0.11.tgz#bf91658f3a2c5ba125b4643ca0d9660b161e2631"
+  integrity sha512-xj/2DgVt5WmvBVwc8MC3xR4MZDc/+PPTRoUe/oaL5yw+MIyuhYsY15MWm7k+Zm0UQAiqKne6TOPQ7XljpDEY1w==
   dependencies:
     color "^2.0.1"
     lodash "^4.16.6"
