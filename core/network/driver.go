@@ -211,17 +211,17 @@ func (net *Network) Find(ctx context.Context, pid peer.ID) (pstore.PeerInfo, err
 }
 
 func (net *Network) Emit(ctx context.Context, e *entity.Envelope) error {
-	tracer := tracing.EnterFunc(ctx, e)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, e)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	return net.EmitTo(ctx, e.GetChannelID(), e)
 }
 
 func (net *Network) EmitTo(ctx context.Context, contactID string, e *entity.Envelope) (err error) {
-	tracer := tracing.EnterFunc(ctx, contactID, e)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, contactID, e)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	pinfo, ok := net.cache.GetPeerForKey(contactID)
 	if !ok {

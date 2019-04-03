@@ -10,7 +10,6 @@ import (
 	"berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
-	"go.uber.org/zap"
 )
 
 // WithSQL registers a gorm connection as the node database
@@ -58,8 +57,6 @@ func (n *Node) sendCommitLog(commitLog *node.CommitLog) {
 	if commitLog == nil {
 		return
 	}
-
-	logger().Debug("commit log", zap.Stringer("commit log", commitLog))
 
 	n.clientCommitLogsMutex.Lock()
 	defer n.clientCommitLogsMutex.Unlock()
@@ -114,7 +111,6 @@ func (n *Node) createCommitLog(scope *gorm.Scope, operation string, reflectValue
 				return nil
 			}
 		}
-		logger().Debug(fmt.Sprintf("COMMIT_LOG CONVERSATION %+v", data))
 		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
 		if operation != "delete" {

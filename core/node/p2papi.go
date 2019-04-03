@@ -155,9 +155,9 @@ func (n *Node) OpenEnvelope(ctx context.Context, envelope *entity.Envelope) (*en
 }
 
 func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *entity.Envelope) error {
-	tracer := tracing.EnterFunc(ctx, event, envelope)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, event, envelope)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	pushIdentifiers, err := n.getPushDestinationsForEvent(ctx, event)
 	if err != nil {
