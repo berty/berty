@@ -756,7 +756,7 @@ func (r *queryResolver) ContactCheckPublicKey(ctx context.Context, contact *enti
 	})
 }
 
-func (r *mutationResolver) ConversationUpdate(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *mutationResolver) ConversationUpdate(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, wroteAt *time.Time, title, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	if id == "" {
 		return nil, errors.New("no id supplied")
 	}
@@ -798,7 +798,7 @@ func (r *mutationResolver) ConversationRemove(ctx context.Context, id string) (*
 	})
 }
 
-func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, title, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error) {
+func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, wroteAt *time.Time, title, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error) {
 	if id != "" {
 		id = strings.SplitN(id, ":", 2)[1]
 	}
@@ -815,7 +815,7 @@ func (r *queryResolver) Conversation(ctx context.Context, id string, createdAt, 
 		ID: id,
 	})
 }
-func (r *queryResolver) ConversationMember(ctx context.Context, id string, createAt, updatedAt *time.Time, readAt *time.Time, status *int32, contact *entity.Contact, conversationID, contactID string) (*entity.ConversationMember, error) {
+func (r *queryResolver) ConversationMember(ctx context.Context, id string, createAt, updatedAt *time.Time, readAt *time.Time, wroteAt *time.Time, status *int32, contact *entity.Contact, conversationID, contactID string) (*entity.ConversationMember, error) {
 	if id != "" {
 		id = strings.SplitN(id, ":", 2)[1]
 	}

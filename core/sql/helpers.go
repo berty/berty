@@ -158,19 +158,25 @@ func ConversationSave(db *gorm.DB, c *entity.Conversation) error {
 
 	var err error
 	for _, member := range c.Members {
-		err := db.Find(&entity.Contact{ID: member.Contact.ID}).Error
-		if err != nil {
-			if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
-				return err
-			}
-			if err := db.Save(member.Contact).Error; err != nil {
-				return err
+		if member.Contact != nil {
+			err := db.Find(&entity.Contact{ID: member.Contact.ID}).Error
+			if err != nil {
+				if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
+					db.Delete(c)
+					return err
+				}
+				member.Contact.Status = entity.Contact_Unknown
+				if err := db.Save(member.Contact).Error; err != nil {
+					db.Delete(c)
+					return err
+				}
 			}
 		}
 		if err = db.Save(member).Error; err != nil {
+			db.Delete(c)
 			return err
 		}
 	}
 
-	return err
+	return nil
 }

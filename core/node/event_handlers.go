@@ -141,25 +141,31 @@ func (n *Node) handleConversationUpdate(ctx context.Context, input *entity.Event
 
 	sql := n.sql(ctx)
 
-	update := attrs.Conversation
-
-	cm := &entity.ConversationMember{
-		ContactID:      input.SourceContactID,
-		ConversationID: attrs.Conversation.ID,
+	// find conversation
+	conversation := &entity.Conversation{ID: attrs.Conversation.ID}
+	if err = sql.Find(&conversation).Error; err != nil {
+		return err
 	}
+
+	// get interactive member
+	cm, err := conversation.GetMember(input.SourceContactID)
+	if err != nil {
+		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
+	}
+
 	if err := sql.Preload("Conversation").First(cm).Error; err != nil {
 		return bsql.GenericError(err)
 	}
 
-	if err := cm.SetTitle(update.Title); err != nil {
+	if err := cm.SetTitle(attrs.Conversation.Title); err != nil {
 		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
 	}
 
-	if err := cm.SetTopic(update.Title); err != nil {
+	if err := cm.SetTopic(attrs.Conversation.Title); err != nil {
 		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
 	}
 
-	if err := bsql.ConversationSave(sql, cm.Conversation); err != nil {
+	if err := bsql.ConversationSave(sql, conversation); err != nil {
 		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
 	}
 
@@ -228,14 +234,14 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 	}
 
 	// get interactive member
-	im, err := conversation.GetInteractiveMember(input.SourceContactID)
+	im, err := conversation.GetMember(input.SourceContactID)
 	if err != nil {
 		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Member not found"))
 		return err
 	}
 
 	// say that member have write to conversation
-	if err = im.Write(attrs.Message); err != nil {
+	if err = im.Write(input.CreatedAt, attrs.Message); err != nil {
 		return err
 	}
 
@@ -290,7 +296,7 @@ func (n *Node) handleConversationRead(ctx context.Context, input *entity.Event) 
 	}
 
 	// get interactive member
-	im, err := conversation.GetInteractiveMember(input.SourceContactID)
+	im, err := conversation.GetMember(input.SourceContactID)
 	if err != nil {
 		return err
 	}

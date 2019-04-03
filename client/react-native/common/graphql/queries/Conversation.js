@@ -9,6 +9,7 @@ const query = graphql`
     $createdAt: GoogleProtobufTimestampInput
     $updatedAt: GoogleProtobufTimestampInput
     $readAt: GoogleProtobufTimestampInput
+    $wroteAt: GoogleProtobufTimestampInput
     $title: String!
     $topic: String!
     $infos: String!
@@ -19,6 +20,7 @@ const query = graphql`
       createdAt: $createdAt
       updatedAt: $updatedAt
       readAt: $readAt
+      wroteAt: $wroteAt
       title: $title
       topic: $topic
       infos: $infos
@@ -29,6 +31,7 @@ const query = graphql`
       createdAt
       updatedAt
       readAt
+      wroteAt
       title
       topic
       infos
@@ -36,6 +39,7 @@ const query = graphql`
         id
         createdAt
         updatedAt
+        wroteAt
         status
         contact {
           id

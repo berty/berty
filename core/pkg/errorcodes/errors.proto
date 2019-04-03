@@ -120,7 +120,6 @@ enum Code {
   ErrConversationIsMember = 13204;
   ErrConversationGetMember = 13205;
   ErrConversationGetOwners = 13206;
-  ErrConversationGetInteractiveMember = 13207;
 
   ErrConversationMember = 13500;
   ErrConversationMemberID = 13501;

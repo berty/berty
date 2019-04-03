@@ -169,6 +169,8 @@
     "decline-action-feedback": "Contact request has been declined",
     "resend-action": "Resend",
     "resend-action-feedback": "Contact request has been sent again",
+    "request-action": "Request",
+    "request-action-feedback": "Contact request has been sent",
     "cancel-request-action": "Remove",
     "cancel-request-action-feedback": "Contact invitation has been removed",
     "block-confirm-question": "Are you sure you want to block this contact?",

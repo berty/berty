@@ -9,6 +9,7 @@ export default component =>
         createdAt
         updatedAt
         readAt
+        wroteAt
         title
         topic
         infos
@@ -18,6 +19,7 @@ export default component =>
           createdAt
           updatedAt
           readAt
+          wroteAt
           status
           contact {
             id

@@ -70,9 +70,9 @@ class Message extends React.Component {
       data: { seenAt },
     } = this.props
     if (seenAt !== nextProps.data.seenAt) {
-      return false
+      return true
     }
-    return true
+    return false
   }
 
   render () {
@@ -87,9 +87,8 @@ class Message extends React.Component {
     const isMyself = contact && contact.status === 42
     const isOneToOne =
       conversation.kind === enums.BertyEntityConversationInputKind.OneToOne
-
-    // TODO: implement message seen
-    if (this.props.data.seenAt === null) {
+    // TODO: implement message seeni
+    if (new Date(this.props.data.seenAt).getTime() === 0) {
       this.messageSeen()
     }
     return (
@@ -147,9 +146,7 @@ class Message extends React.Component {
           {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
           {isMyself ? (
             <Icon
-              name={
-                new Date(data.ackedAt).getTime() > 0 ? 'check-circle' : 'circle'
-              }
+              name={utils.isReadByOthers(data) ? 'check-circle' : 'circle'}
               size={10}
             />
           ) : null}{' '}

@@ -19,7 +19,7 @@ public class NotificationNative implements NativeNotificationDriver {
     public static int PERMISSION_CODE = 200;
     private Logger logger = new Logger("chat.berty.io");
 
-    private static final String CHANNEL_ID = "berty-chat-android-notification-id";
+    private static final String CHANNEL_ID = "berty-chat-wandroid-notification-id";
     private static final String CHANNEL_NAME = "berty.chat.android.core.notification.name";
     private static final String CHANNEL_DESCRIPTION = "berty.chat.android.core.notification.description";
 

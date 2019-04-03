@@ -10,14 +10,7 @@ import (
 	"github.com/gofrs/uuid"
 )
 
-type ConversationInteractive interface {
-	ConversationInformative
-
-	// only member should interact on conversation, not conversation itself
-	GetInteractiveMember(contactID string) (ConversationMemberInteractive, error)
-}
-
-type ConversationInformative interface {
+type ConversationInteractor interface {
 	IsOneToOne() bool
 	IsGroup() bool
 
@@ -25,15 +18,17 @@ type ConversationInformative interface {
 
 	IsMember(contactID string) bool
 
-	GetMember(contactID string) (ConversationMemberInformative, error)
+	GetMember(contactID string) (ConversationMemberInteractor, error)
 
-	GetOwners() []ConversationMemberInformative
+	GetOwners() []ConversationMemberInteractor
 
 	GetComputedTitle() string
+
+	Marshal() ([]byte, error)
+	Unmarshal([]byte) error
 }
 
-var _ ConversationInteractive = (*Conversation)(nil)
-var _ ConversationInformative = (*Conversation)(nil)
+var _ ConversationInteractor = (*Conversation)(nil)
 
 func NewOneToOneConversation(a *Contact, b *Contact) (*Conversation, error) {
 	c := &Conversation{
@@ -43,18 +38,18 @@ func NewOneToOneConversation(a *Contact, b *Contact) (*Conversation, error) {
 	}
 
 	// create the first member
-	ma, err := NewConversationMember(a, c)
+	ma, err := newConversationMember(a, c)
 	if err != nil {
 		return nil, errorcodes.ErrConversation.Wrap(err)
 	}
-	mb, err := NewConversationMember(b, c)
+	mb, err := newConversationMember(b, c)
 	if err != nil {
 		return nil, errorcodes.ErrConversation.Wrap(err)
 	}
 
 	c.Members = append(c.Members, ma, mb)
 
-	im, err := c.GetInteractiveMember(ma.GetContactID())
+	im, err := c.GetMember(ma.GetContactID())
 	if err != nil {
 		return nil, errorcodes.ErrConversation.Wrap(err)
 	}
@@ -92,14 +87,14 @@ func NewGroupConversation(contacts []*Contact) (*Conversation, error) {
 	}
 
 	// add myself as converastion member
-	mm, err := NewConversationMember(myself, c)
+	mm, err := newConversationMember(myself, c)
 	if err != nil {
 		return nil, errorcodes.ErrConversation.Wrap(err)
 	}
 	c.Members = append(c.Members, mm)
 
 	// get interactive member
-	im, err := c.GetInteractiveMember(myself.ID)
+	im, err := c.GetMember(myself.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -159,26 +154,14 @@ func (c *Conversation) IsGroup() bool {
 	return true
 }
 
-// GetInteractiveMember returns a member that can interact with conversation
-func (c *Conversation) GetInteractiveMember(contactID string) (ConversationMemberInteractive, error) {
+// GetMember returns a member that can interact with conversation
+func (c *Conversation) GetMember(contactID string) (ConversationMemberInteractor, error) {
 	for _, member := range c.Members {
 		if member.ContactID == contactID {
-			copy := *member
-			copy.Conversation = c
-			return &copy, nil
-		}
-	}
-	return nil, errorcodes.ErrConversationGetInteractiveMember.Wrap(
-		errorcodes.ErrConversationMembers.Wrap(
-			errorcodes.ErrConversationMemberContactID.New(),
-		),
-	)
-}
-
-func (c *Conversation) GetMember(contactID string) (ConversationMemberInformative, error) {
-	for _, member := range c.Members {
-		if member.ContactID == contactID {
-			return member, nil
+			return &conversationMember{
+				ConversationMember: member,
+				conversation:       c,
+			}, nil
 		}
 	}
 	return nil, errorcodes.ErrConversationGetMember.Wrap(
@@ -188,11 +171,14 @@ func (c *Conversation) GetMember(contactID string) (ConversationMemberInformativ
 	)
 }
 
-func (c *Conversation) GetOwners() []ConversationMemberInformative {
-	owners := []ConversationMemberInformative{}
+func (c *Conversation) GetOwners() []ConversationMemberInteractor {
+	owners := []ConversationMemberInteractor{}
 	for _, member := range c.Members {
 		if member.Status == ConversationMember_Owner {
-			owners = append(owners, member)
+			owners = append(owners, &conversationMember{
+				ConversationMember: member,
+				conversation:       c,
+			})
 		}
 	}
 	return owners
@@ -248,14 +234,13 @@ func (c Conversation) Filtered() *Conversation {
 		Title:   c.Title,
 		Topic:   c.Topic,
 		Kind:    c.Kind,
+		ReadAt:  c.ReadAt,
 		Members: filteredMembers,
 	}
 }
 
 // Conversation Member takes actions on conversation
-type ConversationMemberInteractive interface {
-	ConversationMemberInformative
-
+type ConversationMemberInteractor interface {
 	Invite(contact *Contact) error
 	Leave() error
 
@@ -268,23 +253,28 @@ type ConversationMemberInteractive interface {
 	Unblock(contactID string) error
 
 	Read(time.Time) error
-	Write(*Message) error
-}
+	Write(time.Time, *Message) error
 
-type ConversationMemberInformative interface {
 	IsOwner() bool
 	IsActive() bool
 	IsBlocked() bool
+
+	Marshal() ([]byte, error)
+	Unmarshal([]byte) error
 
 	GetContactID() string
 	GetContact() *Contact
 	GetConversationID() string
 }
 
-var _ ConversationMemberInformative = (*ConversationMember)(nil)
-var _ ConversationMemberInteractive = (*ConversationMember)(nil)
+type conversationMember struct {
+	*ConversationMember
+	conversation *Conversation
+}
 
-func NewConversationMember(contact *Contact, conversation *Conversation) (*ConversationMember, error) {
+var _ ConversationMemberInteractor = (*conversationMember)(nil)
+
+func newConversationMember(contact *Contact, conversation *Conversation) (*ConversationMember, error) {
 	m := &ConversationMember{
 		ID:             conversation.ID + ":" + contact.ID,
 		Status:         ConversationMember_Active,
@@ -295,47 +285,44 @@ func NewConversationMember(contact *Contact, conversation *Conversation) (*Conve
 	return m, nil
 }
 
-func (m *ConversationMember) IsOwner() bool {
+func (m *conversationMember) IsOwner() bool {
 	if m.Status == ConversationMember_Owner {
 		return true
 	}
 
-	// only for interactive member
-	if m.Conversation != nil {
-		// if conversation is 1 to 1, member is automatically owner
-		if m.Conversation.Kind == Conversation_OneToOne {
-			return true
-		}
+	// if conversation is 1 to 1, member is automatically owner
+	if m.conversation.Kind == Conversation_OneToOne {
+		return true
+	}
 
-		// if there is no member in conversation, member is automatically owner
-		if len(m.Conversation.Members) == 0 {
-			return true
-		}
+	// if there is no member in conversation, member is automatically owner
+	if len(m.conversation.Members) == 0 {
+		return true
+	}
 
-		// if there is no owner, member is automatically owner
-		if len(m.Conversation.GetOwners()) == 0 {
-			return true
-		}
+	// if there is no owner, member is automatically owner
+	if len(m.conversation.GetOwners()) == 0 {
+		return true
 	}
 
 	return false
 }
 
-func (m *ConversationMember) IsActive() bool {
+func (m *conversationMember) IsActive() bool {
 	if m.Status == ConversationMember_Active || m.IsOwner() {
 		return true
 	}
 	return false
 }
 
-func (m *ConversationMember) IsBlocked() bool {
+func (m *conversationMember) IsBlocked() bool {
 	if m.Status == ConversationMember_Blocked {
 		return true
 	}
 	return false
 }
 
-func (m *ConversationMember) Invite(contact *Contact) error {
+func (m *conversationMember) Invite(contact *Contact) error {
 	// check if member have the right to invite
 	if !m.IsActive() {
 		return errorcodes.ErrConversationMemberInvite.Wrap(
@@ -344,40 +331,31 @@ func (m *ConversationMember) Invite(contact *Contact) error {
 	}
 
 	// check if contact is already a member
-	if m.Conversation.IsMember(contact.ID) {
+	if m.conversation.IsMember(contact.ID) {
 		return nil
 	}
 
 	// check if we can add the member
-	if m.Conversation.IsFull() {
+	if m.conversation.IsFull() {
 		return errorcodes.ErrConversationMemberInvite.Wrap(
 			errorcodes.ErrConversationIsFull.New(),
 		)
 	}
 
 	// then add the member
-	cm, err := NewConversationMember(contact, m.Conversation)
+	cm, err := newConversationMember(contact, m.conversation)
 	if err != nil {
 		return errorcodes.ErrConversationMemberInvite.Wrap(err)
 	}
-	m.Conversation.Members = append(m.Conversation.Members, cm)
+	m.conversation.Members = append(m.conversation.Members, cm)
 	return nil
 }
 
-func (m *ConversationMember) Leave() error {
-	// check if the member is the only owner
-	if m.IsOwner() && len(m.Conversation.GetOwners()) == 1 {
-		return errorcodes.ErrConversationMemberLeave.Wrap(
-			errorcodes.ErrConversationMemberStatus.Wrap(
-				errorcodes.ErrConversationGetOwners.New(),
-			),
-		)
-	}
-
+func (m *conversationMember) Leave() error {
 	// retrieve member in list and remove it
-	for i, member := range m.Conversation.Members {
+	for i, member := range m.conversation.Members {
 		if m.ID == member.ID {
-			m.Conversation.Members = append(m.Conversation.Members[:i], m.Conversation.Members[i+1:]...)
+			m.conversation.Members = append(m.conversation.Members[:i], m.conversation.Members[i+1:]...)
 			return nil
 		}
 	}
@@ -387,7 +365,7 @@ func (m *ConversationMember) Leave() error {
 	)
 }
 
-func (m *ConversationMember) SetTitle(title string) error {
+func (m *conversationMember) SetTitle(title string) error {
 	// check if member have the right to set the title
 	if !m.IsOwner() {
 		return errorcodes.ErrConversationMemberSetTitle.Wrap(
@@ -403,11 +381,11 @@ func (m *ConversationMember) SetTitle(title string) error {
 	}
 
 	// then set the title
-	m.Conversation.Title = title
+	m.conversation.Title = title
 	return nil
 }
 
-func (m *ConversationMember) SetTopic(topic string) error {
+func (m *conversationMember) SetTopic(topic string) error {
 	// check if member have the right to set the topic
 	if !m.IsOwner() {
 		return errorcodes.ErrConversationMemberSetTopic.Wrap(
@@ -416,11 +394,11 @@ func (m *ConversationMember) SetTopic(topic string) error {
 	}
 
 	// then set the topic
-	m.Conversation.Topic = topic
+	m.conversation.Topic = topic
 	return nil
 }
 
-func (m *ConversationMember) SetOwner(contactID string) error {
+func (m *conversationMember) SetOwner(contactID string) error {
 	// check if member have the right to set new owner
 	if !m.IsOwner() {
 		return errorcodes.ErrConversationMemberSetOwner.Wrap(
@@ -428,7 +406,7 @@ func (m *ConversationMember) SetOwner(contactID string) error {
 		)
 	}
 
-	for _, member := range m.Conversation.Members {
+	for _, member := range m.conversation.Members {
 		if member.Contact.ID == contactID {
 			member.Status = ConversationMember_Owner
 			return nil
@@ -442,7 +420,7 @@ func (m *ConversationMember) SetOwner(contactID string) error {
 	)
 }
 
-func (m *ConversationMember) Block(contactID string) error {
+func (m *conversationMember) Block(contactID string) error {
 	// check if member have the right to block
 	if !m.IsOwner() {
 		return errorcodes.ErrConversationMemberBlock.Wrap(
@@ -451,7 +429,7 @@ func (m *ConversationMember) Block(contactID string) error {
 	}
 
 	// check if contact is an owner
-	cm, err := m.Conversation.GetInteractiveMember(contactID)
+	cm, err := m.conversation.GetMember(contactID)
 	if err != nil {
 		return errorcodes.ErrConversationMemberBlock.Wrap(err)
 	}
@@ -464,7 +442,7 @@ func (m *ConversationMember) Block(contactID string) error {
 	}
 
 	// then block the contact
-	for _, member := range m.Conversation.Members {
+	for _, member := range m.conversation.Members {
 		if member.Contact.ID == contactID {
 			member.Status = ConversationMember_Blocked
 			return nil
@@ -478,7 +456,7 @@ func (m *ConversationMember) Block(contactID string) error {
 	)
 }
 
-func (m *ConversationMember) Unblock(contactID string) error {
+func (m *conversationMember) Unblock(contactID string) error {
 	// check if member have the right to unblock
 	if !m.IsOwner() {
 		return errorcodes.ErrConversationMemberUnblock.Wrap(
@@ -486,7 +464,7 @@ func (m *ConversationMember) Unblock(contactID string) error {
 		)
 	}
 
-	for _, member := range m.Conversation.Members {
+	for _, member := range m.conversation.Members {
 		if member.Contact.ID == contactID {
 			member.Status = ConversationMember_Active
 			return nil
@@ -500,7 +478,7 @@ func (m *ConversationMember) Unblock(contactID string) error {
 	)
 }
 
-func (m *ConversationMember) Read(at time.Time) error {
+func (m *conversationMember) Read(at time.Time) error {
 	// check if member have the right to read
 	if !m.IsActive() {
 		return errorcodes.ErrConversationMemberRead.Wrap(
@@ -508,25 +486,15 @@ func (m *ConversationMember) Read(at time.Time) error {
 		)
 	}
 
+	at = at.UTC()
+
 	m.ReadAt = at
-	for _, member := range m.Conversation.Members {
-		if member.Contact.ID == m.Contact.ID {
-			member.ReadAt = at
-
-			// say that conversation has been read by at least one user
-			m.Conversation.ReadAt = at
-			return nil
-		}
-	}
-
-	return errorcodes.ErrConversationMemberRead.Wrap(
-		errorcodes.ErrConversationMembers.Wrap(
-			errorcodes.ErrConversationMemberContactID.New(),
-		),
-	)
+	// say that conversation has been read by at least one user
+	m.conversation.ReadAt = at
+	return nil
 }
 
-func (m *ConversationMember) Write(message *Message) error {
+func (m *conversationMember) Write(at time.Time, message *Message) error {
 	// check if member have the right to write
 	if !m.IsActive() {
 		return errorcodes.ErrConversationMemberWrite.Wrap(
@@ -534,30 +502,30 @@ func (m *ConversationMember) Write(message *Message) error {
 		)
 	}
 
-	now := time.Now()
-	m.ReadAt = now
-	for _, member := range m.Conversation.Members {
-		if member.Contact.ID == m.Contact.ID {
-			member.ReadAt = now
+	at = at.UTC()
 
-			// say that conversation has not been read by others members
-			m.Conversation.ReadAt = time.Time{}
+	m.ReadAt = at
+	m.WroteAt = at
+	m.conversation.WroteAt = at
 
-			if m.Conversation.IsOneToOne() {
-				m.Conversation.Infos = message.Text
-			} else {
-				m.Conversation.Infos = m.Contact.DisplayName + ": " + message.Text
-			}
-
-			return nil
-		}
+	if m.conversation.IsOneToOne() {
+		m.conversation.Infos = message.Text
+	} else {
+		m.conversation.Infos = m.Contact.DisplayName + ": " + message.Text
 	}
 
-	return errorcodes.ErrConversationMemberWrite.Wrap(
-		errorcodes.ErrConversationMembers.Wrap(
-			errorcodes.ErrConversationMemberContactID.New(),
-		),
-	)
+	return nil
+}
+
+func (m conversationMember) Filtered() *ConversationMember {
+	member := ConversationMember{
+		ID:     m.ID,
+		Status: m.Status,
+	}
+	if m.Contact != nil {
+		member.Contact = m.Contact.Filtered()
+	}
+	return &member
 }
 
 func (m ConversationMember) Filtered() *ConversationMember {

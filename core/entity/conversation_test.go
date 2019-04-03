@@ -21,24 +21,22 @@ func Test(t *testing.T) {
 		bart   = &Contact{ID: "bart", DisplayName: "bart", Status: Contact_IsRequested}
 		lisa   = &Contact{ID: "lisa", DisplayName: "lisa", Status: Contact_RequestedMe}
 
-		c *Conversation
+		c ConversationInteractor
 
-		active ConversationMemberInteractive
-
-		mm ConversationMemberInformative
-		hm ConversationMemberInformative
-		bm ConversationMemberInformative
-		lm ConversationMemberInformative
+		mm ConversationMemberInteractor
+		hm ConversationMemberInteractor
+		bm ConversationMemberInteractor
+		lm ConversationMemberInteractor
 	)
 
 	Convey("create 1to1 conversation between myself and homer", t, FailureHalts, func() {
 		c, err = NewOneToOneConversation(myself, homer)
 		So(err, ShouldBeNil)
 
-		mm, err = c.GetInteractiveMember(myself.ID)
+		mm, err = c.GetMember(myself.ID)
 		So(err, ShouldBeNil)
 
-		hm, err = c.GetInteractiveMember(homer.ID)
+		hm, err = c.GetMember(homer.ID)
 		So(err, ShouldBeNil)
 
 		Convey("myself and homer are owners", FailureHalts, func() {
@@ -47,25 +45,16 @@ func Test(t *testing.T) {
 		})
 
 		Convey("myself try to block homer", FailureHalts, func() {
-			active, err = c.GetInteractiveMember(mm.GetContactID())
-			So(err, ShouldBeNil)
-
-			err = active.Block(homer.ID)
+			err = mm.Block(homer.ID)
 			So(err, ShouldNotBeNil)
 		})
 
 		Convey("homer write a message", FailureHalts, func() {
-			active, err = c.GetInteractiveMember(hm.GetContactID())
-			So(err, ShouldBeNil)
-
-			err = active.Write(&Message{Text: "D'oh!"})
+			err = hm.Write(time.Now(), &Message{Text: "D'oh!"})
 			So(err, ShouldBeNil)
 
 			Convey("myself read the message", FailureHalts, func() {
-				active, err := c.GetInteractiveMember(mm.GetContactID())
-				So(err, ShouldBeNil)
-
-				err = active.Read(time.Now())
+				err = mm.Read(time.Now())
 				So(err, ShouldBeNil)
 			})
 		})
@@ -107,84 +96,55 @@ func Test(t *testing.T) {
 		})
 
 		Convey("bart invite homer", FailureHalts, func() {
-			active, err = c.GetInteractiveMember(bm.GetContactID())
-			So(err, ShouldBeNil)
-
-			err = active.Invite(homer)
+			err = bm.Invite(homer)
 			So(err, ShouldBeNil)
 
 			hm, err = c.GetMember(homer.ID)
 			So(err, ShouldBeNil)
 
 			Convey("homer write message", FailureHalts, func() {
-				active, err = c.GetInteractiveMember(hm.GetContactID())
-				So(err, ShouldBeNil)
-
-				err = active.Write(&Message{Text: "D'oh!"})
+				err = hm.Write(time.Now(), &Message{Text: "D'oh!"})
 				So(err, ShouldBeNil)
 			})
 
 			Convey("bart write message", FailureHalts, func() {
-				active, err = c.GetInteractiveMember(bm.GetContactID())
-				So(err, ShouldBeNil)
-
-				err = active.Write(&Message{Text: "¡ Ay, caramba!"})
+				err = bm.Write(time.Now(), &Message{Text: "¡ Ay, caramba!"})
 				So(err, ShouldBeNil)
 			})
 
 			Convey("myself block homer", FailureHalts, func() {
-				active, err = c.GetInteractiveMember(mm.GetContactID())
-				So(err, ShouldBeNil)
-
-				err = active.Block(homer.ID)
+				err = mm.Block(homer.ID)
 				So(err, ShouldBeNil)
 
 				Convey("homer try to write a message", FailureHalts, func() {
-					active, err = c.GetInteractiveMember(hm.GetContactID())
-					So(err, ShouldBeNil)
-
-					err = active.Write(&Message{Text: "D'oh!"})
+					err = hm.Write(time.Now(), &Message{Text: "D'oh!"})
 					So(err, ShouldNotBeNil)
 				})
 
 				Convey("bart try to unblock homer", FailureHalts, func() {
-					active, err = c.GetInteractiveMember(bm.GetContactID())
-					So(err, ShouldBeNil)
-
-					err = active.Unblock(homer.ID)
+					err = bm.Unblock(homer.ID)
 					So(err, ShouldNotBeNil)
 				})
 
 				Convey("bart try to block myself", FailureHalts, func() {
-					active, err = c.GetInteractiveMember(bm.GetContactID())
-					So(err, ShouldBeNil)
-
-					err = active.Block(myself.ID)
+					err = bm.Block(myself.ID)
 					So(err, ShouldNotBeNil)
 				})
 
 				Convey("bart try to set lisa as owner", FailureHalts, func() {
-					active, err = c.GetInteractiveMember(bm.GetContactID())
-					So(err, ShouldBeNil)
-
-					err = active.SetOwner(lisa.ID)
+					err = bm.SetOwner(lisa.ID)
 					So(err, ShouldNotBeNil)
 				})
 
 				Convey("myself set lisa as owner", FailureHalts, func() {
-					active, err = c.GetInteractiveMember(mm.GetContactID())
-					So(err, ShouldBeNil)
+					err = mm.SetOwner(lisa.ID)
 
-					err = active.SetOwner(lisa.ID)
 					So(err, ShouldBeNil)
 
 					So(lm.IsOwner(), ShouldBeTrue)
 
 					Convey("lisa unblock homer", FailureHalts, func() {
-						active, err = c.GetInteractiveMember(lm.GetContactID())
-						So(err, ShouldBeNil)
-
-						err = active.Unblock(homer.ID)
+						err = lm.Unblock(homer.ID)
 						So(err, ShouldBeNil)
 					})
 				})

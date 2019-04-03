@@ -298,6 +298,7 @@ type BertyEntityConversation implements Node {
   	createdAt: GoogleProtobufTimestamp
   	updatedAt: GoogleProtobufTimestamp
   	readAt: GoogleProtobufTimestamp
+  	wroteAt: GoogleProtobufTimestamp
     title: String!
     topic: String!
     infos: String!
@@ -310,6 +311,7 @@ type BertyEntityConversationMember implements Node {
   	createdAt: GoogleProtobufTimestamp
   	updatedAt: GoogleProtobufTimestamp
   	readAt: GoogleProtobufTimestamp
+  	wroteAt: GoogleProtobufTimestamp
   status: Enum
   	contact: BertyEntityContact
     conversationId: ID!
@@ -794,26 +796,28 @@ input BertyEntityContactInput {
     overrideDisplayName: String!
     overrideDisplayStatus: String!
 }
-input BertyEntityConversationInput {
-    id: ID!
-  	createdAt: GoogleProtobufTimestampInput
-  	updatedAt: GoogleProtobufTimestampInput
-  	readAt: GoogleProtobufTimestampInput
-    title: String!
-    topic: String!
-    infos: String!
-  kind: Enum
-  	members: [BertyEntityConversationMemberInput]
-}
 input BertyEntityConversationMemberInput {
     id: ID!
   	createdAt: GoogleProtobufTimestampInput
   	updatedAt: GoogleProtobufTimestampInput
   	readAt: GoogleProtobufTimestampInput
+  	wroteAt: GoogleProtobufTimestampInput
   status: Enum
   	contact: BertyEntityContactInput
     conversationId: ID!
     contactId: ID!
+}
+input BertyEntityConversationInput {
+    id: ID!
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+  	readAt: GoogleProtobufTimestampInput
+  	wroteAt: GoogleProtobufTimestampInput
+    title: String!
+    topic: String!
+    infos: String!
+  kind: Enum
+  	members: [BertyEntityConversationMemberInput]
 }
 input BertyEntityMessageInput {
     text: String!
@@ -882,6 +886,7 @@ type Query {
   	createdAt: GoogleProtobufTimestampInput
   	updatedAt: GoogleProtobufTimestampInput
   	readAt: GoogleProtobufTimestampInput
+  	wroteAt: GoogleProtobufTimestampInput
     title: String!
     topic: String!
     infos: String!
@@ -893,6 +898,7 @@ type Query {
   	createdAt: GoogleProtobufTimestampInput
   	updatedAt: GoogleProtobufTimestampInput
   	readAt: GoogleProtobufTimestampInput
+  	wroteAt: GoogleProtobufTimestampInput
   status: Enum
   	contact: BertyEntityContactInput
     conversationId: ID!
@@ -1010,6 +1016,7 @@ type Mutation {
   	createdAt: GoogleProtobufTimestampInput
   	updatedAt: GoogleProtobufTimestampInput
   	readAt: GoogleProtobufTimestampInput
+  	wroteAt: GoogleProtobufTimestampInput
     title: String!
     topic: String!
     infos: String!

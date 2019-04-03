@@ -134,10 +134,10 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
-	// check if event is from another contact
-	if event.Direction != entity.Event_Incoming {
-		return event, nil
-	}
+	// // check if event is from another contact
+	// if event.Direction != entity.Event_Incoming {
+	// 	return event, nil
+	// }
 
 	seenAt := time.Now().UTC()
 	event.SeenAt = &seenAt
@@ -145,14 +145,6 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 	// then mark as seen
 	if err := sql.Save(event).Error; err != nil {
 		return nil, errors.Wrap(err, "cannot set event as seen")
-	}
-
-	// mark conversation as read
-	if event.TargetType == entity.Event_ToSpecificConversation {
-		_, err := n.ConversationRead(ctx, &entity.Conversation{ID: event.ToConversationID()})
-		if err != nil {
-			return nil, err
-		}
 	}
 
 	return event, nil
@@ -258,7 +250,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	} else if contact.Status == entity.Contact_Myself {
 		return nil, errorcodes.ErrContactReqMyself.New()
 
-	} else {
+	} else if contact.Status != entity.Contact_Unknown {
 		return nil, errorcodes.ErrContactReqExisting.New()
 	}
 
@@ -365,14 +357,9 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 		return nil, errorcodes.ErrDbDelete.Wrap(err)
 	}
 
-	// remove 1-1 conversation
-	// don't return error if not found
-	conversation, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
-	switch {
-	case err == nil: // conversation exists, delete it
-		n.ConversationRemove(ctx, &entity.Conversation{ID: conversation.ID})
-	case gorm.IsRecordNotFoundError(errors.Cause(err)): // conversation is not found, do nothing
-	case err != nil: // another error is triggered, returning it
+	// remove one to one conversation
+	_, err = n.conversationRemove(ctx, &entity.Conversation{ID: entity.GetOneToOneID(n.config.Myself, contact)})
+	if err != nil {
 		return nil, err
 	}
 

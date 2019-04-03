@@ -874,6 +874,7 @@ models:
       createdAt:
       updatedAt:
       readAt:
+      wroteAt:
       title:
       topic:
       infos:
@@ -887,6 +888,7 @@ models:
       createdAt:
       updatedAt:
       readAt:
+      wroteAt:
       title:
       topic:
       infos:
@@ -900,6 +902,7 @@ models:
       createdAt:
       updatedAt:
       readAt:
+      wroteAt:
       title:
       topic:
       infos:
@@ -914,6 +917,7 @@ models:
       createdAt:
       updatedAt:
       readAt:
+      wroteAt:
       status:
       contact:
       conversationId:
@@ -928,6 +932,7 @@ models:
       createdAt:
       updatedAt:
       readAt:
+      wroteAt:
       status:
       contact:
       conversationId:
@@ -942,6 +947,7 @@ models:
       createdAt:
       updatedAt:
       readAt:
+      wroteAt:
       status:
       contact:
       conversationId:

@@ -117,7 +117,7 @@ func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationM
 	}
 
 	// find interactive member (current node user)
-	cm, err := c.GetInteractiveMember(n.UserID())
+	cm, err := c.GetMember(n.UserID())
 	if err != nil {
 		return nil, err
 	}
@@ -228,13 +228,13 @@ func (n *Node) ConversationAddMessage(ctx context.Context, input *node.Conversat
 	}
 
 	// get interactive member (current user)
-	im, err := conversation.GetInteractiveMember(n.UserID())
+	im, err := conversation.GetMember(n.UserID())
 	if err != nil {
 		return nil, err
 	}
 
 	// member write new message
-	if err = im.Write(input.Message); err != nil {
+	if err = im.Write(time.Now().UTC(), input.Message); err != nil {
 		return nil, err
 	}
 
@@ -301,7 +301,7 @@ func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversatio
 	}
 
 	// get interactive member (current user)
-	im, err := conversation.GetInteractiveMember(n.UserID())
+	im, err := conversation.GetMember(n.UserID())
 	if err != nil {
 		return nil, err
 	}
@@ -339,7 +339,7 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	}
 
 	// get interactive member (current user)
-	im, err := conversation.GetInteractiveMember(n.UserID())
+	im, err := conversation.GetMember(n.UserID())
 	if err != nil {
 		return nil, err
 	}
@@ -370,7 +370,7 @@ func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation)
 	return conversation, n.EnqueueOutgoingEvent(ctx,
 		n.NewEvent(ctx).
 			SetToConversation(conversation).
-			SetConversationReadAttrs(&entity.ConversationReadAttrs{Conversation: conversation}))
+			SetConversationReadAttrs(&entity.ConversationReadAttrs{Conversation: conversation.Filtered()}))
 }
 
 func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversation) (*entity.Event, error) {
@@ -389,24 +389,37 @@ func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversa
 }
 
 func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	defer n.handleMutex(ctx)()
+
+	return n.conversationRemove(ctx, input)
+}
+
+func (n *Node) conversationRemove(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	var err error
 
-	// get conversation
-	if err = n.sql(ctx).First(input).Error; err != nil {
-		return nil, bsql.GenericError(err)
-	}
-
-	// remove conversation
 	sql := n.sql(ctx)
-	if err = sql.
-		Where(&entity.ConversationMember{ConversationID: input.ID}).
-		Delete(&entity.ConversationMember{}).Error; err != nil {
-		return nil, errorcodes.ErrDbDelete.Wrap(err)
+
+	// get conversation
+	conversation := &entity.Conversation{ID: input.ID}
+	if err = sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+		return nil, err
 	}
 
-	if err = sql.Delete(input).Error; err != nil {
-		return nil, errorcodes.ErrDbDelete.Wrap(err)
+	// remove conversation before all
+	if err = sql.Delete(conversation).Error; err != nil {
+		return nil, err
 	}
 
-	return input, nil
+	// get interactive member (current user)
+	im, err := conversation.GetMember(n.UserID())
+	if err != nil {
+		return nil, err
+	}
+
+	// leave conversation
+	if err = im.Leave(); err != nil {
+		return nil, err
+	}
+
+	return conversation, nil
 }

@@ -123,12 +123,6 @@ func (n *Node) createCommitLog(scope *gorm.Scope, operation string, reflectValue
 	case *entity.Config:
 		log.Entity = &node.CommitLog_Entity{Config: data}
 	case *entity.Event:
-		if operation != "delete" {
-			data, err = sql.EventByID(scope.DB(), data.ID)
-			if err != nil {
-				return nil
-			}
-		}
 		log.Entity = &node.CommitLog_Entity{Event: data}
 	case *entity.DevicePushConfig:
 		log.Entity = &node.CommitLog_Entity{DevicePushConfig: data}
