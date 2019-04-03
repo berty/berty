@@ -211,11 +211,37 @@ func (n *Node) ConversationList(input *node.ConversationListInput, stream node.S
 }
 
 func (n *Node) ConversationAddMessage(ctx context.Context, input *node.ConversationAddMessageInput) (*entity.Event, error) {
+	var err error
+
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	defer n.handleMutex(ctx)()
+
+	sql := n.sql(ctx)
+
+	// get conversation
+	conversation := &entity.Conversation{ID: input.Conversation.ID}
+	if err = sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+		return nil, err
+	}
+
+	// get interactive member (current user)
+	im, err := conversation.GetInteractiveMember(n.UserID())
+	if err != nil {
+		return nil, err
+	}
+
+	// member write new message
+	if err = im.Write(input.Message); err != nil {
+		return nil, err
+	}
+
+	// save conversation
+	if err = bsql.ConversationSave(sql, conversation); err != nil {
+		return nil, errors.Wrap(err, "cannot update conversation")
+	}
 
 	event := n.NewEvent(ctx)
 	return event, n.EnqueueOutgoingEvent(ctx, event.
@@ -279,15 +305,29 @@ func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversatio
 func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
 	var err error
 
+	defer n.handleMutex(ctx)()
+
+	sql := n.sql(ctx)
+
 	// get conversation
 	conversation := &entity.Conversation{ID: input.ID}
-	if err = n.sql(ctx).Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+	if err = sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
 		return nil, err
 	}
 
-	// set conversation as read
-	conversation.ReadAt = time.Now().UTC()
-	if err = n.sql(ctx).Save(conversation).Error; err != nil {
+	// get interactive member (current user)
+	im, err := conversation.GetInteractiveMember(n.UserID())
+	if err != nil {
+		return nil, err
+	}
+
+	// member set conversation as read
+	if err = im.Read(time.Now().UTC()); err != nil {
+		return nil, err
+	}
+
+	// save conversation
+	if err = bsql.ConversationSave(sql, conversation); err != nil {
 		return nil, errors.Wrap(err, "cannot update conversation")
 	}
 
