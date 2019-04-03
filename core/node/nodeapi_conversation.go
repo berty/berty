@@ -284,6 +284,8 @@ func (n *Node) ConversationMember(ctx context.Context, input *entity.Conversatio
 }
 
 func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
+	var err error
+
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -292,7 +294,28 @@ func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversatio
 
 	sql := n.sql(ctx)
 
-	if err := sql.Save(input).Error; err != nil {
+	// get conversation
+	conversation := &entity.Conversation{ID: input.ID}
+	if err = sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+		return nil, err
+	}
+
+	// get interactive member (current user)
+	im, err := conversation.GetInteractiveMember(n.UserID())
+	if err != nil {
+		return nil, err
+	}
+
+	if err = im.SetTitle(input.Title); err != nil {
+		return nil, err
+	}
+
+	if err = im.SetTopic(input.Topic); err != nil {
+		return nil, err
+	}
+
+	// save conversation
+	if err = bsql.ConversationSave(sql, conversation); err != nil {
 		return nil, errors.Wrap(err, "cannot update conversation")
 	}
 

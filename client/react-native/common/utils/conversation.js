@@ -1,5 +1,7 @@
 import { btoa, atob } from 'b64-lite'
 
+import { BertyEntityContactInputStatus } from '../graphql/enums.gen'
+
 export default {
   id: '',
   title: '',
@@ -25,3 +27,13 @@ export const getTitle = ({ title, members }) =>
 
 export const getRelayID = id => btoa(`conversation:${id}`)
 export const getCoreID = id => atob(id).match(/:(.*)$/)[1]
+
+export const isRead = ({ members }) => {
+  const myself = members.find(
+    _ => _.contact.status === BertyEntityContactInputStatus.Myself
+  )
+  if (myself == null) {
+    return true
+  }
+  return new Date(myself.readAt).getTime() > 0
+}

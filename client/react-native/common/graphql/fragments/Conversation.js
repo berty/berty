@@ -17,6 +17,7 @@ export default component =>
           id
           createdAt
           updatedAt
+          readAt
           status
           contact {
             id

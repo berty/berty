@@ -258,9 +258,9 @@ func (n *Node) envelopeFromEvent(ctx context.Context, event *entity.Event) (*ent
 }
 
 func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch, event *entity.Event, envelope *entity.Envelope) error {
-	tracer := tracing.EnterFunc(ctx, dispatch, envelope)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, dispatch, envelope)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	if dispatch.ContactID == n.UserID() {
 		return nil

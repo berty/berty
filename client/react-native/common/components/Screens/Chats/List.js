@@ -138,8 +138,8 @@ const ItemBase = fragments.Conversation(
     render () {
       const { data, navigation, t } = this.props
       const { connected, unread } = this.state
-      const { readAt } = data
-      const isRead = new Date(readAt).getTime() > 0
+
+      const isRead = utils.isRead(data)
 
       // fix when contact request is send after conversation invite
       if (
