@@ -129,3 +129,5 @@ __generated__/
 /desktop/resources/app/
 /desktop/bind_*.go
 /desktop/bundler.json
+/desktop/appdmg/dist
+/desktop/appdmg/Berty.app
