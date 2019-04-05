@@ -13,11 +13,13 @@ import com.facebook.react.bridge.ReactMethod;
 
 import chat.berty.core.notification.NotificationNative;
 import core.Core;
+import core.NativeBridge;
 import core.MobileNotification;
 
 import chat.berty.ble.BleManager;
 
 public class CoreModule extends ReactContextBaseJavaModule {
+    private NativeBridge daemon = new NativeBridge()
     private Logger logger = new Logger("chat.berty.io");
 
     private ReactApplicationContext reactContext;
@@ -62,6 +64,18 @@ public class CoreModule extends ReactContextBaseJavaModule {
     public String getName() {
         return "CoreModule";
     }
+
+    @ReactMethod
+    public Invoke(method string, message string, Promise promise) {
+        try {
+            String data = this.daemon.Invoke(method, message);
+            promise.resolve(data);
+        } catch (Exception err) {
+            this.logger.format(Level.ERROR, this.getName(), "Unable to list accounts: %s", err);
+            promise.reject(err);
+        }
+    }
+
 
     @ReactMethod
     public void listAccounts(Promise promise) {

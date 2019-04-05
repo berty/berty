@@ -2,26 +2,35 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
-	"os"
+	"net"
+	"net/http"
 
-	"berty.tech/core/manager/account"
-	"berty.tech/core/network"
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc "google.golang.org/grpc"
+	grpc_codes "google.golang.org/grpc/codes"
+	grpc_status "google.golang.org/grpc/status"
+
+	"berty.tech/core/api/helper"
+	daemon "berty.tech/core/daemon"
 	network_config "berty.tech/core/network/config"
-	"berty.tech/core/pkg/banner"
-	"berty.tech/core/pkg/deviceinfo"
-	"berty.tech/core/pkg/logmanager"
+	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
-	"berty.tech/core/push"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
+
+const MessageMaxSize = 1 << 22 // 4mb
 
 type daemonOptions struct {
 	sql sqlOptions `mapstructure:"sql"`
 
+	daemonBind       string   `mapstructure:"daemon-bind"`
 	grpcBind         string   `mapstructure:"grpc-bind"`
 	gqlBind          string   `mapstructure:"gql-bind"`
 	hideBanner       bool     `mapstructure:"hide-banner"`
@@ -61,6 +70,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.privateKeyFile, "private-key-file", "", "set private key file for node")
 	flags.BoolVar(&opts.withBot, "bot", false, "enable bot")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
+	flags.StringVar(&opts.daemonBind, "daemon-bind", ":1338", "Bind daemon api")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 
 	// network
@@ -93,7 +103,7 @@ func newDaemonCommand() *cobra.Command {
 			if err := viper.Unmarshal(&opts.sql); err != nil {
 				return err
 			}
-			return daemon(opts)
+			return runDaemon(opts)
 		},
 	}
 
@@ -102,146 +112,143 @@ func newDaemonCommand() *cobra.Command {
 	return cmd
 }
 
-func daemon(opts *daemonOptions) error {
-	ctx := context.Background()
-	var err error
-	a := &account.Account{}
+func serveWeb(d *daemon.Daemon, interceptor ...grpc.ServerOption) error {
+	gs := grpc.NewServer(interceptor...)
+	daemon.RegisterDaemonServer(gs, d)
 
-	defer a.PanicHandler()
-	defer func() {
-		_ = logmanager.G().LogRotate()
+	iogrpc := helper.NewIOGrpc()
+	listener := iogrpc.Listener()
+	go func() {
+		if err := gs.Serve(listener); err != nil {
+			logger().Error("io serve error", zap.Error(err))
+		}
 	}()
-	deviceinfo.SetStoragePath("/tmp")
-	accountOptions := account.Options{
 
-		account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
-		account.WithRing(logmanager.G().Ring()),
-		account.WithName(opts.nickname),
-		account.WithPassphrase(opts.sql.key),
-		account.WithDatabase(&account.DatabaseOptions{
-			Path: ".",
-			Drop: opts.dropDatabase,
-		}),
-		account.WithBanner(banner.QOTD()),
-		account.WithGrpcServer(&account.GrpcServerOptions{
-			Bind:         opts.grpcBind,
-			Interceptors: true,
-		}),
-		account.WithGQL(&account.GQLOptions{
-			Bind:         opts.gqlBind,
-			Interceptors: true,
-		}),
-		account.WithPrivateKeyFile(opts.privateKeyFile),
+	dialer := iogrpc.NewDialer()
+	dialOpts := append([]grpc.DialOption{
+		grpc.WithInsecure(),
+		grpc.WithDialer(dialer),
+	})
+
+	conn, err := grpc.Dial("", dialOpts...)
+	if err != nil {
+		return err
 	}
-	if !opts.noP2P {
-		swarmKey := network_config.DefaultSwarmKey
 
-		if opts.SwarmKeyPath != "" {
-			file, err := os.Open(opts.SwarmKeyPath)
+	http.HandleFunc("/daemon", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+		w.Header().Add("Access-Control-Allow-Headers", "X-Method")
+
+		if method := r.Header.Get("X-Method"); method != "" {
+			buff, err := ioutil.ReadAll(r.Body)
 			if err != nil {
-				return fmt.Errorf("swarm key error: %s", err)
+				logger().Error("error while reading full body", zap.Error(err))
+				return
 			}
-			swarmKeyBytes, err := ioutil.ReadAll(file)
-			if err != nil {
-				return fmt.Errorf("swarm key error: %s", err)
+
+			in := helper.NewLazyMessage().FromBytes(buff)
+			out := helper.NewLazyMessage()
+
+			if err := conn.Invoke(context.Background(), method, in, out, helper.GrpcCallWithLazyCodec()); err != nil {
+				s, ok := grpc_status.FromError(err)
+				if !ok {
+					s = grpc_status.New(grpc_codes.Unknown, err.Error())
+				}
+
+				http.Error(w, s.Message(), errorcodes.HTTPStatusFromGrpcCode(s.Code()))
+				return
 			}
-			swarmKey = string(swarmKeyBytes)
+
+			w.Header().Set("Content-Type", "application/octet-stream")
+			w.Write(out.Bytes())
+			return
 		}
 
-		accountOptions = append(accountOptions, account.WithNetwork(
-			network.New(ctx,
-				network.WithDefaultOptions(),
-				network.WithConfig(&network_config.Config{
-					DefaultBind:      len(opts.bindP2P) == 0,
-					Bind:             opts.bindP2P,
-					MDNS:             opts.mdns,
-					DHTServer:        opts.dhtServer,
-					WS:               true,
-					TCP:              true,
-					BLE:              opts.ble,
-					QUIC:             true,
-					Metric:           true,
-					Ping:             true,
-					DefaultBootstrap: false,
-					Bootstrap:        opts.bootstrap,
-					HOP:              opts.hop,
-					SwarmKey:         swarmKey,
-					Identity:         opts.identity,
-					Persist:          false,
-					OverridePersist:  false,
-					PeerCache:        opts.peerCache,
+		w.WriteHeader(http.StatusNoContent)
+	})
 
-					//					DHTKVLogDatastore: opts.dhtkvLogDatastore,
-				}),
-			),
-		))
-	} else {
-		accountOptions = append(accountOptions, account.WithEnqueurNetwork())
-	}
-
-	if opts.withBot {
-		accountOptions = append(accountOptions, account.WithBot())
-	}
-
-	if opts.notification {
-		notificationDriver := notification.NewDesktopNotification()
-		accountOptions = append(accountOptions, account.WithNotificationDriver(notificationDriver))
-	}
-	pushDispatchers, err := listPushDispatchers(opts)
-	if err != nil {
-		return err
-	}
-
-	accountOptions = append(accountOptions, account.WithPushManager(push.New(pushDispatchers...)))
-
-	if opts.initOnly {
-		accountOptions = append(accountOptions, account.WithInitOnly())
-	}
-	a, err = account.New(ctx, accountOptions...)
-	if err != nil {
-		return err
-	}
-	defer a.Close(ctx)
-
-	err = a.Open(ctx)
-	if err != nil {
-		return err
-	}
-
-	if opts.initOnly {
-		return nil
-	}
-
-	return <-a.ErrChan()
+	return http.ListenAndServe(":8989", nil)
 }
 
-func listPushDispatchers(opts *daemonOptions) ([]push.Dispatcher, error) {
-	var pushDispatchers []push.Dispatcher
-	for _, certs := range []struct {
-		Certs    []string
-		ForceDev bool
-	}{
-		{Certs: opts.apnsCerts, ForceDev: false},
-		{Certs: opts.apnsDevVoipCerts, ForceDev: true},
-	} {
-		for _, cert := range certs.Certs {
-			dispatcher, err := push.NewAPNSDispatcher(cert, certs.ForceDev)
-			if err != nil {
-				return nil, err
-			}
-
-			pushDispatchers = append(pushDispatchers, dispatcher)
-		}
+func runDaemon(opts *daemonOptions) error {
+	sqlConfig := &daemon.SQLConfig{
+		Path: opts.sql.path,
+		Key:  opts.sql.key,
 	}
 
-	for _, apiKey := range opts.fcmAPIKeys {
-		dispatcher, err := push.NewFCMDispatcher(apiKey)
-		if err != nil {
-			return nil, err
-		}
-
-		pushDispatchers = append(pushDispatchers, dispatcher)
+	config := &daemon.Config{
+		SqlOpts:          sqlConfig,
+		GrpcBind:         opts.grpcBind,
+		GqlBind:          opts.gqlBind,
+		HideBanner:       opts.hideBanner,
+		DropDatabase:     opts.dropDatabase,
+		InitOnly:         opts.initOnly,
+		WithBot:          opts.withBot,
+		Notification:     opts.notification,
+		ApnsCerts:        opts.apnsCerts,
+		ApnsDevVoipCerts: opts.apnsDevVoipCerts,
+		FcmAPIKeys:       opts.fcmAPIKeys,
+		PrivateKeyFile:   opts.privateKeyFile,
+		PeerCache:        opts.peerCache,
+		Identity:         opts.identity,
+		Bootstrap:        opts.bootstrap,
+		NoP2P:            opts.noP2P,
+		BindP2P:          opts.bindP2P,
+		TransportP2P:     opts.transportP2P,
+		Hop:              opts.hop,
+		Ble:              opts.ble,
+		Mdns:             opts.mdns,
+		DhtServer:        opts.dhtServer,
+		PrivateNetwork:   opts.PrivateNetwork,
+		SwarmKeyPath:     opts.SwarmKeyPath,
+		Nickname:         opts.nickname,
 	}
 
-	return pushDispatchers, nil
+	dlogger := zap.L().Named("daemon.grpc")
+	serverStreamOpts := []grpc.StreamServerInterceptor{
+		// grpc_auth.StreamServerInterceptor(myAuthFunction),
+		grpc_ctxtags.StreamServerInterceptor(),
+		grpc_zap.StreamServerInterceptor(dlogger),
+		grpc_recovery.StreamServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
+		errorcodes.StreamServerInterceptor(),
+	}
+	serverUnaryOpts := []grpc.UnaryServerInterceptor{
+		// grpc_auth.UnaryServerInterceptor(myAuthFunction),
+		grpc_ctxtags.UnaryServerInterceptor(),
+		grpc_zap.UnaryServerInterceptor(dlogger),
+		grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
+		errorcodes.UnaryServerInterceptor(),
+	}
+
+	interceptors := []grpc.ServerOption{
+		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
+	}
+
+	gs := grpc.NewServer(interceptors...)
+
+	d := daemon.New()
+	if opts.notification {
+		d.Notification = notification.NewDesktopNotification()
+	}
+
+	if _, err := d.Start(context.Background(), config); err != nil {
+		return err
+	}
+
+	daemon.RegisterDaemonServer(gs, d)
+
+	listener, err := net.Listen("tcp", opts.daemonBind)
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		if err := serveWeb(d, interceptors...); err != nil {
+			logger().Error("serve web", zap.Error(err))
+		}
+	}()
+
+	return gs.Serve(listener)
 }

@@ -1,5 +1,4 @@
 import {
-  NativeModules,
   TextInput,
   View,
   Text,
@@ -27,8 +26,7 @@ import sleep from '../../../helpers/sleep'
 import withDeepLinkHandler from '../../../helpers/withDeepLinkHandler'
 import withRelayContext from '../../../helpers/withRelayContext'
 import withUpdateContext from '../../../helpers/withUpdateContext'
-
-const { CoreModule } = NativeModules
+import withBridgeContext from '../../../helpers/withBridgeContext'
 
 class Auth extends PureComponent {
   state = {
@@ -47,9 +45,10 @@ class Auth extends PureComponent {
   }
 
   getPort = async () => {
+    const { bridge } = this.props
+
     try {
-      const port = await CoreModule.getPort()
-      console.log('get port', port)
+      const { port } = await bridge.getPort({})
       return port
     } catch (error) {
       console.warn(error, 'retrying to get port')
@@ -83,40 +82,35 @@ class Auth extends PureComponent {
   }
 
   init = async () => {
-    const { t } = this.props
+    const { t, bridge } = this.props
 
     this.setState({ loading: true, message: t('core.initializing') })
     try {
-      await CoreModule.initialize()
-    } catch (error) {
-      throw error
+      await bridge.initialize({})
+    } catch (err) {
+      console.warn('initialize', err)
     }
   }
 
   list = async () => {
-    const { t } = this.props
+    const { t, bridge } = this.props
 
     this.setState({ loading: true, message: t('core.account-listing') })
     try {
-      let list = await CoreModule.listAccounts()
-      if (list === '') {
-        list = []
-      } else {
-        list = list.split(':')
-      }
-      this.setState({ list })
-      return list
-    } catch (error) {
-      throw error
+      const { accounts } = await bridge.listAccounts({})
+      this.setState({ accounts })
+      return accounts
+    } catch (err) {
+      console.warn('list account', err)
     }
   }
 
-  start = async nickname => {
-    const { t } = this.props
+  start = async config => {
+    const { t, bridge } = this.props
 
     this.setState({ loading: true, message: t('daemon.initializing') })
     try {
-      await CoreModule.start(nickname)
+      await bridge.start(config)
     } catch (error) {
       throw error
     }
@@ -126,7 +120,7 @@ class Auth extends PureComponent {
     let { firstLaunch } = options || {}
 
     if (nickname == null) {
-      await this.init()
+      // await this.init() @FIXME: remove this ?
       const list = await this.list()
       if (list.length <= 0) {
         const deviceName = defaultUsername()
@@ -139,7 +133,7 @@ class Auth extends PureComponent {
       nickname = list[0]
     }
 
-    await this.start(nickname)
+    // await this.start(nickname) // @FIXME: implement this later
     const context = await this.getRelayContext()
     getAvailableUpdate(context).then(update => {
       this.props.updateContext.setState(update)
@@ -285,6 +279,11 @@ class Auth extends PureComponent {
   }
 }
 
+// const withBridgeContext = Component => (
+//   <BridgeContext.Consumer>
+//     {bridge => <Component bridgeContext={bridge} />}
+//   </BridgeContext.Consumer>
+// )
 export default withDeepLinkHandler(
-  withRelayContext(withUpdateContext(withNamespaces()(hook(Auth))))
+  withBridgeContext(withRelayContext(withUpdateContext(withNamespaces()(hook(Auth)))))
 )

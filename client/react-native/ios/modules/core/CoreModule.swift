@@ -19,6 +19,25 @@ var logger = Logger("chat.berty.io", "CoreModule")
 @objc(CoreModule)
 class CoreModule: NSObject {
   let connectivity = ConnectivityUpdateHandler()
+  let serialCoreQueue = DispatchQueue(label: "BertyCore")
+  let daemon: CoreNativeBridge = NewCoreNativeBridge()
+
+  @objc func invoke(_ method: string, message: string, resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
+    self.serialCoreQueue.sync {
+      var err: NSError?
+
+      do {
+        let ret = self.daemon.Invoke(method, message, &err)
+        if let error = err {
+          throw error
+        }
+
+        resolve(ret)
+      } catch let error as NSError {
+        reject("\(String(describing: error.code))", error.userInfo.description, error)
+      }
+    }
+  }
 
   @objc func initialize(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     var err: NSError?

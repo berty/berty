@@ -6,6 +6,7 @@ require (
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/afero v1.2.0 // indirect
 	go.uber.org/zap v1.9.1
+	google.golang.org/grpc v1.19.0
 )
 
 replace berty.tech/core v0.0.0 => ../../../core

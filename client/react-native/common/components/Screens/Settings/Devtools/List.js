@@ -1,17 +1,10 @@
-import {
-  ActivityIndicator,
-  NativeModules,
-  Switch,
-  Alert,
-  Platform,
-} from 'react-native'
 import React, { PureComponent } from 'react'
+import { ActivityIndicator, Switch, Alert, Platform } from 'react-native'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
 import { colors } from '../../../../constants'
 import withRelayContext from '../../../../helpers/withRelayContext'
-
-const { CoreModule } = NativeModules
+import withBridgeContext from '../../../../helpers/withBridgeContext'
 
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -38,10 +31,12 @@ class List extends PureComponent {
   }
 
   restartDaemon = async () => {
+    const { bridge } = this.props
+
     this.props.navigation.setParams({ restartDaemon: true })
     this.setState({ restartDaemon: true }, async () => {
       try {
-        await CoreModule.restart()
+        await bridge.restart({})
       } catch (err) {
         console.error(err)
       }
@@ -53,13 +48,12 @@ class List extends PureComponent {
   }
 
   testPanic = async () => {
+    const { bridge } = this.props
+
     this.props.navigation.setParams({ testPanic: true })
     this.setState({ testPanic: true }, async () => {
-      if (Platform.OS === 'web' && !Platform.Desktop) {
-        await this.props.context.queries.TestPanic.fetch()
-      } else {
-        CoreModule.panic()
-      }
+      await bridge.panic({})
+
       this.props.navigation.setParams({
         testPanic: false,
       })
@@ -68,13 +62,12 @@ class List extends PureComponent {
   }
 
   testError = async () => {
+    const { bridge } = this.props
+
     this.props.navigation.setParams({ testError: true })
     this.setState({ testError: true }, async () => {
-      if (Platform.OS === 'web' && !Platform.Desktop) {
-        await this.props.context.queries.TestError.fetch() // FIXME: the 'kind' should be selectable
-      } else {
-        CoreModule.error()
-      }
+      await bridge.error({})
+
       this.props.navigation.setParams({
         testError: false,
       })
@@ -85,7 +78,6 @@ class List extends PureComponent {
   testLogBackgroundError = async () => {
     this.props.navigation.setParams({ testLogBackgroundError: true })
     this.setState({ testLogBackgroundError: true }, async () => {
-      console.log(this.props)
       await this.props.context.queries.TestLogBackgroundError.fetch()
       this.props.navigation.setParams({
         testLogBackgroundError: false,
@@ -117,75 +109,92 @@ class List extends PureComponent {
   }
 
   getBotState = async () => {
-    let running = await CoreModule.isBotRunning()
+    const { bridge } = this.props
 
-    this.setState({
-      botRunning: running,
-      botStateLoaded: true,
-    })
+    try {
+      let running = await bridge.isBotRunning({})
+
+      this.setState({
+        botRunning: running,
+        botStateLoaded: true,
+      })
+    } catch (err) {
+      console.warn(err)
+    }
   }
 
   antispamBot = false
 
   toggleBotState = async () => {
+    const { bridge } = this.props
+
     if (!this.antispamBot) {
       this.antispamBot = true
       try {
         if (this.state.botRunning === true) {
-          await CoreModule.stopBot()
+          await bridge.stopBot({})
         } else {
-          await CoreModule.startBot()
+          await bridge.startBot({})
         }
 
         this.setState({ botRunning: !this.state.botRunning })
         this.antispamBot = false
       } catch (err) {
-        Alert.alert('Error', `${err}`)
+        console.warn(err)
         this.antispamBot = false
       }
     }
   }
 
   getLocalGRPCState = async () => {
-    let json = await CoreModule.getLocalGRPCInfos()
-    let infos = JSON.parse(json)
+    const { bridge } = this.props
 
-    this.setState({
-      localGRPCRunning: infos.IsRunning,
-      localGRPCAddress: infos.LocalAddr,
-    })
+    try {
+      let config = await bridge.getLocalGrpcInfos({})
+      let infos = JSON.parse(config.json)
+
+      this.setState({
+        localGRPCRunning: infos.IsRunning,
+        localGRPCAddress: infos.LocalAddr,
+      })
+    } catch (err) {
+      console.warn(err)
+    }
   }
 
   antispamLocalGRPC = false
 
   toggleLocalGRPCState = async () => {
+    const { bridge } = this.props
+
     if (!this.antispamLocalGRPC) {
       this.antispamLocalGRPC = true
       try {
         if (this.state.localGRPCRunning === true) {
-          await CoreModule.stopLocalGRPC()
+          await bridge.stopLocalGRPC({})
         } else {
-          await CoreModule.startLocalGRPC()
+          await bridge.startLocalGRPC({})
         }
 
         this.setState({ localGRPCRunning: !this.state.localGRPCRunning })
         this.antispamLocalGRPC = false
       } catch (err) {
-        Alert.alert('Error', `${err}`)
+        console.warn(err)
         this.antispamLocalGRPC = false
       }
     }
   }
 
   componentDidMount () {
-    if (Platform.OS !== 'web' || Platform.Desktop) {
-      this.getBotState()
-      this.getLocalGRPCState()
-    }
+    this.getBotState()
+    this.getLocalGRPCState()
   }
 
   throwNativeException = () => {
-    CoreModule.throwException()
+    const { bridge } = this.props
+    bridge.throwException({}).catch(err => {
+      Alert.alert('Error', `${err}`)
+    })
   }
 
   throwJsException = () => {
@@ -199,6 +208,7 @@ class List extends PureComponent {
   render () {
     const { navigation } = this.props
     const { restartDaemon, panic } = this.state
+
     if (restartDaemon || panic) {
       return (
         <Screen style={{ backgroundColor: colors.white }}>
@@ -313,11 +323,31 @@ class List extends PureComponent {
           />
         </Menu.Section>
         <Menu.Section>
-          <Menu.Item icon='alert-triangle' title='Panic' onPress={this.testPanic} />
-          <Menu.Item icon='alert-triangle' title='Error' onPress={this.testError} />
-          <Menu.Item icon='info' title='Log bg Error' onPress={this.testLogBackgroundError} />
-          <Menu.Item icon='info' title='Log bg Warn' onPress={this.testLogBackgroundWarn} />
-          <Menu.Item icon='info' title='Log bg Debug' onPress={this.testLogBackgroundDebug} />
+          <Menu.Item
+            icon='alert-triangle'
+            title='Panic'
+            onPress={this.testPanic}
+          />
+          <Menu.Item
+            icon='alert-triangle'
+            title='Error'
+            onPress={this.testError}
+          />
+          <Menu.Item
+            icon='info'
+            title='Log bg Error'
+            onPress={this.testLogBackgroundError}
+          />
+          <Menu.Item
+            icon='info'
+            title='Log bg Warn'
+            onPress={this.testLogBackgroundWarn}
+          />
+          <Menu.Item
+            icon='info'
+            title='Log bg Debug'
+            onPress={this.testLogBackgroundDebug}
+          />
           <Menu.Item
             icon='slash'
             title='Throw native exception'
@@ -339,4 +369,4 @@ class List extends PureComponent {
   }
 }
 
-export default withRelayContext(List)
+export default withBridgeContext(withRelayContext(List))

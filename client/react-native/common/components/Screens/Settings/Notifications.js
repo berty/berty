@@ -15,6 +15,7 @@ import {
 import { enums } from '../../../graphql'
 import { withConfig } from '../../../helpers/config'
 import { showMessage } from 'react-native-flash-message'
+import withBridgeContext from '../../../helpers/withBridgeContext'
 
 const { CoreModule } = NativeModules
 
@@ -215,7 +216,7 @@ class NotificationsBase extends PureComponent {
   }
 }
 
-export default class NotificationWrapper extends React.PureComponent {
+class NotificationWrapper extends React.PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -271,3 +272,5 @@ export default class NotificationWrapper extends React.PureComponent {
 }
 
 const Notifications = withConfig(withNamespaces()(NotificationsBase), { showOnlyLoaded: true })
+
+export default withBridgeContext(NotificationWrapper)

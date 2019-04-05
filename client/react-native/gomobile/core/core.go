@@ -170,7 +170,7 @@ func DropDatabase() error {
 func run(cfg *MobileOptions) {
 	go func() {
 		for {
-			err := daemon(cfg)
+			err := runDaemon(cfg)
 			if err != nil {
 				logger().Error("handle error, try to restart", zap.Error(err))
 				time.Sleep(time.Second)
@@ -190,7 +190,7 @@ func waitDaemon(nickname string) {
 	}
 }
 
-func daemon(cfg *MobileOptions) error {
+func runDaemon(cfg *MobileOptions) error {
 	var err error
 	defer panicHandler()
 	_ = logmanager.G().LogRotate()

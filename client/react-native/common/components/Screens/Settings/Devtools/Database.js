@@ -1,12 +1,11 @@
-import { ActivityIndicator, Alert, NativeModules } from 'react-native'
+import { ActivityIndicator, Alert } from 'react-native'
 import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '../../../Library'
 import { colors } from '../../../../constants'
 import withRelayContext from '../../../../helpers/withRelayContext'
+import withBridgeContext from '../../../../helpers/withBridgeContext'
 import { RelayContext } from '../../../../relay'
-
-const { CoreModule } = NativeModules
 
 class Database extends PureComponent {
   static contextType = RelayContext
@@ -34,9 +33,11 @@ class Database extends PureComponent {
   }
 
   dropDatabase = async () => {
+    const { bridge } = this.props
+
     this.props.navigation.setParams({ dropDatabase: true })
     try {
-      await CoreModule.dropDatabase()
+      await bridge.dropDatabase({})
     } catch (err) {
       Alert.alert('An error occured, please, kill and restart the app')
       console.error(err)
@@ -81,4 +82,4 @@ class Database extends PureComponent {
   }
 }
 
-export default withRelayContext(Database)
+export default withBridgeContext(withRelayContext(Database))

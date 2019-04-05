@@ -16,6 +16,9 @@ import Mousetrap from '../helpers/Mousetrap'
 import NavigationService from './../helpers/NavigationService'
 import Navigator from './Navigator'
 import i18n from '../i18n'
+import BridgeContext, { rpc, services } from '../bridge'
+
+const { daemon } = services
 
 export default class App extends PureComponent {
   state = {
@@ -25,6 +28,7 @@ export default class App extends PureComponent {
       Platform.OS !== 'web',
     relayContext: null,
     availableUpdate: null,
+    bridge: daemon.createService(rpc.defaultPlatform),
   }
 
   constructor (props) {
@@ -98,37 +102,46 @@ export default class App extends PureComponent {
     this.setState({ availableUpdate: update })
   }
 
+  setStateBridge = bridge => {
+    this.setState({ bridge })
+  }
+
   render () {
-    const { relayContext, availableUpdate } = this.state
+    const { relayContext, availableUpdate, bridge } = this.state
     return (
-      <KeyboardContext.Provider>
-        <I18nextProvider i18n={i18n}>
-          <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-            <RelayContext.Provider
-              value={{ ...relayContext, setState: this.setStateContext }}
-            >
-              <UpdateContext.Provider
-                value={{ availableUpdate, setState: this.setStateUpdate }}
+      <BridgeContext.Provider value={bridge}>
+        <KeyboardContext.Provider>
+          <I18nextProvider i18n={i18n}>
+            <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
+              <RelayContext.Provider
+                value={{ ...relayContext, setState: this.setStateContext }}
               >
-                <Navigator />
-                <FlashMessage position='top' />
-                <View
-                  style={{
-                    zIndex: 1,
-                    position: 'absolute',
-                    top: 30,
-                    right: 48,
-                    padding: 5,
-                  }}
+                <UpdateContext.Provider
+                  value={{ availableUpdate, setState: this.setStateUpdate }}
                 >
-                  <MovableView>{this.state.debugBar}</MovableView>
-                </View>
-              </UpdateContext.Provider>
-            </RelayContext.Provider>
-            {Platform.OS === 'ios' && <KeyboardSpacer />}
-          </SafeAreaView>
-        </I18nextProvider>
-      </KeyboardContext.Provider>
+                  <BridgeContext.Consumer>
+                    {() => <Navigator />}
+                  </BridgeContext.Consumer>
+
+                  <FlashMessage position='top' />
+                  <View
+                    style={{
+                      zIndex: 1,
+                      position: 'absolute',
+                      top: 30,
+                      right: 48,
+                      padding: 5,
+                    }}
+                  >
+                    <MovableView>{this.state.debugBar}</MovableView>
+                  </View>
+                </UpdateContext.Provider>
+              </RelayContext.Provider>
+              {Platform.OS === 'ios' && <KeyboardSpacer />}
+            </SafeAreaView>
+          </I18nextProvider>
+        </KeyboardContext.Provider>
+      </BridgeContext.Provider>
     )
   }
 }
