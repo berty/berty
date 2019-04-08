@@ -162,12 +162,10 @@ func ConversationSave(db *gorm.DB, c *entity.Conversation) error {
 			err := db.Find(&entity.Contact{ID: member.Contact.ID}).Error
 			if err != nil {
 				if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
-					db.Delete(c)
 					return err
 				}
 				member.Contact.Status = entity.Contact_Unknown
-				if err := db.Save(member.Contact).Error; err != nil {
-					db.Delete(c)
+				if err := ContactSave(db, member.Contact); err != nil {
 					return err
 				}
 			}
