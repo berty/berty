@@ -228,11 +228,11 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	sql := n.sql(ctx)
 	contact, err := bsql.FindContact(sql, req.ToContact())
 
-	if errors.Cause(err) == gorm.ErrRecordNotFound {
+	if errors.Cause(err) == gorm.ErrRecordNotFound || contact.Status == entity.Contact_Unknown {
 		// save contact in database
 		contact = req.ToContact()
 		contact.Status = entity.Contact_IsRequested
-		if err = sql.Set("gorm:association_autoupdate", true).Save(contact).Error; err != nil {
+		if err = bsql.ContactSave(sql, contact); err != nil {
 			return nil, errorcodes.ErrDbCreate.Wrap(err)
 		}
 	} else if err != nil {
@@ -250,7 +250,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	} else if contact.Status == entity.Contact_Myself {
 		return nil, errorcodes.ErrContactReqMyself.New()
 
-	} else if contact.Status != entity.Contact_Unknown {
+	} else {
 		return nil, errorcodes.ErrContactReqExisting.New()
 	}
 

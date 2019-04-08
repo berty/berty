@@ -162,18 +162,33 @@ func ConversationSave(db *gorm.DB, c *entity.Conversation) error {
 			err := db.Find(&entity.Contact{ID: member.Contact.ID}).Error
 			if err != nil {
 				if !errorcodes.ErrDbNothingFound.Is(GenericError(err)) {
-					db.Delete(c)
 					return err
 				}
 				member.Contact.Status = entity.Contact_Unknown
-				if err := db.Save(member.Contact).Error; err != nil {
-					db.Delete(c)
+				if err := ContactSave(db, member.Contact); err != nil {
 					return err
 				}
 			}
 		}
 		if err = db.Save(member).Error; err != nil {
 			db.Delete(c)
+			return err
+		}
+	}
+
+	return nil
+}
+
+func ContactSave(db *gorm.DB, c *entity.Contact) error {
+	if err := db.Save(c).Error; err != nil {
+		logger().Error(fmt.Sprintf("cannot save contact %+v, err: %+v", c, err.Error()))
+		return err
+	}
+
+	c.Devices = append(c.Devices, &entity.Device{ID: c.ID, ContactID: c.ID})
+	for _, device := range c.Devices {
+		if err := db.Save(device).Error; err != nil {
+			logger().Error(fmt.Sprintf("cannot save devices %+v, err %+v", device, err.Error()))
 			return err
 		}
 	}
