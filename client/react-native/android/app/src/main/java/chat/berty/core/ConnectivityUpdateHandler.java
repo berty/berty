@@ -18,14 +18,30 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 import core.Core;
 
-@TargetApi(Build.VERSION_CODES.M)
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ConnectivityUpdateHandler extends BroadcastReceiver {
-    static final private short
-            STATE_ON      = 1,
-            STATE_OFF     = 2;
+    private static String TAG = "connectivity_update_handler";
+
+    ConnectivityUpdateHandler(ReactApplicationContext reactContext) {
+        super();
+
+        reactContext.registerReceiver(this, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        reactContext.registerReceiver(this, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (mBluetoothAdapter != null) {
+            updateBLE(mBluetoothAdapter.getState());
+        } else {
+            updateBLE(BluetoothAdapter.STATE_OFF);
+        }
+    }
+
+    private static BluetoothAdapter mBluetoothAdapter;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -36,17 +52,22 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
         }
     }
 
-    static final private void updateBLE(int state) {
-        if(state == BluetoothAdapter.STATE_ON)
-            Core.updateBluetoothState(STATE_ON);
-        else if(state == BluetoothAdapter.STATE_OFF)
-            Core.updateBluetoothState(STATE_OFF);
-    }
+    private static final void updateConnectivity(Context context) {
+        final short
+                STATE_ON      = 1,
+                STATE_OFF     = 2;
 
-    static final private void updateConnectivity(Context context) {
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        Network currentNet = connMgr.getActiveNetwork();
+        Network currentNet;
+        NetworkCapabilities currentNetCap;
+
         JSONObject connectivityState = new JSONObject();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            currentNet = connMgr.getActiveNetwork();
+        } else {
+            currentNet = connMgr.getProcessDefaultNetwork();
+        }
 
         if (currentNet == null) {
             try {
@@ -62,7 +83,7 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
                 e.printStackTrace();
             }
         } else {
-            NetworkCapabilities currentNetCap = connMgr.getNetworkCapabilities(currentNet);
+            currentNetCap = connMgr.getNetworkCapabilities(currentNet);
 
             try {
                 connectivityState.put("internet",
@@ -94,7 +115,7 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
                 connectivityState.put("cellular",
                         (currentNetCap.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) ?
                             CellularType.getType(context) :
-                            CellularType.TYPE_UNKNOWN
+                            CellularType.TYPE_NONE
                 );
                 Core.updateConnectivityState(connectivityState.toString());
             } catch (JSONException e) {
@@ -103,15 +124,15 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
         }
     }
 
-    static final private class NetworkType {
-        static final private short
+    private static final class NetworkType {
+        private static final short
                 TYPE_UNKNOWN   = 0,
                 TYPE_WIFI      = 1,
                 TYPE_ETHERNET  = 2,
                 TYPE_BLUETOOTH = 3,
                 TYPE_CELLULAR  = 4;
 
-        static final private int getType(NetworkCapabilities currentNetCap) {
+        private static final int getType(NetworkCapabilities currentNetCap) {
             if (currentNetCap.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
                 return TYPE_WIFI;
             } else if (currentNetCap.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
@@ -125,7 +146,7 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
             }
         }
 
-        static final private String getTypeString(NetworkCapabilities currentNetCap) {
+        private static final String getTypeString(NetworkCapabilities currentNetCap) {
             switch (getType(currentNetCap)) {
                 case TYPE_WIFI:
                     return "Wifi";
@@ -141,14 +162,15 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
         }
     }
 
-    static final private class CellularType {
-        static final private short
+    private static final class CellularType {
+        private static final short
                 TYPE_UNKNOWN = 0,
-                TYPE_2G      = 1,
-                TYPE_3G      = 2,
-                TYPE_4G      = 3;
+                TYPE_NONE    = 1,
+                TYPE_2G      = 2,
+                TYPE_3G      = 3,
+                TYPE_4G      = 4;
 
-        static final private int getType(Context context) {
+        private static final int getType(Context context) {
             TelephonyManager tm = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
             switch (tm.getNetworkType()) {
@@ -175,7 +197,7 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
             }
         }
 
-        static final private String getTypeString(Context context) {
+        private static final String getTypeString(Context context) {
             switch (getType(context)) {
                 case TYPE_2G:
                     return "2G";
@@ -187,5 +209,31 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
                     return "Unknown";
             }
         }
+    }
+
+    private static final void updateBLE(int state) {
+        final short
+                STATE_ON  = 1,
+                STATE_OFF = 2;
+
+        if(isBleAdvAndScanCompatible() && state == BluetoothAdapter.STATE_ON)
+            Core.updateBluetoothState(STATE_ON);
+        else if(state == BluetoothAdapter.STATE_OFF)
+            Core.updateBluetoothState(STATE_OFF);
+    }
+
+    private static final boolean isBleAdvAndScanCompatible() {
+        if (mBluetoothAdapter == null) {
+            Log.w(TAG, "Device doesn't support Bluetooth");
+        } else if (mBluetoothAdapter.getBluetoothLeScanner() == null) {
+            Log.w(TAG, "Device doesn't support BLE scanning");
+        } else if (mBluetoothAdapter.getBluetoothLeAdvertiser() == null) {
+            Log.w(TAG, "Device doesn't support BLE advertising");
+        } else {
+            Log.i(TAG, "Bluetooth adapter supports advertising and scanning");
+            return true;
+        }
+
+        return false;
     }
 }

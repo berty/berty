@@ -95,25 +95,6 @@ public final class BleManager {
         Log.d(TAG, "BleManager constructor called");
     }
 
-    // Compatibility checker
-    // TODO: Use this function to hide bluetooth option from app settings if device isn't compatible
-    static boolean isBleAdvAndScanCompatible() {
-        if (mBluetoothAdapter == null) {
-            Log.e(TAG, "Device doesn't support Bluetooth");
-        } else if (!mBluetoothAdapter.isEnabled()) {
-            Log.e(TAG, "Bluetooth is disabled");
-        } else if (mBluetoothLeScanner == null) {
-            Log.e(TAG, "Device doesn't support BLE scanning");
-        } else if (mBluetoothLeAdvertiser == null) {
-            Log.e(TAG, "Device doesn't support BLE advertising. MultipleAdvertisementSupported: " + mBluetoothAdapter.isMultipleAdvertisementSupported());
-        } else {
-            Log.i(TAG, "Bluetooth adapter is turned on and BLE advertising / scanning are supported");
-            return true;
-        }
-
-        return false;
-    }
-
     // Setters
     public static void setMultiAddr(String multiAddr) {
         Log.i(TAG, "Own multiAddr set: " + multiAddr);
