@@ -511,7 +511,11 @@ func (m *conversationMember) Write(at time.Time, message *Message) error {
 	if m.conversation.IsOneToOne() {
 		m.conversation.Infos = message.Text
 	} else {
-		m.conversation.Infos = m.Contact.DisplayName + ": " + message.Text
+		if m.Contact != nil {
+			m.conversation.Infos = m.Contact.DisplayName + ": " + message.Text
+		} else {
+			m.conversation.Infos = "Anonymous" + ": " + message.Text
+		}
 	}
 
 	return nil
