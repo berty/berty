@@ -32,8 +32,8 @@ func (n *Node) handleContactRequest(ctx context.Context, input *entity.Event) er
 	// FIXME: validate input
 
 	sql := n.sql(ctx)
-	_, err = bsql.FindContact(sql, &entity.Contact{ID: attrs.Me.ID})
-	if err == nil {
+	contact, err := bsql.FindContact(sql, &entity.Contact{ID: attrs.Me.ID})
+	if err == nil && contact.Status != entity.Contact_Unknown {
 		return errorcodes.ErrContactReqExisting.New()
 	}
 

@@ -180,3 +180,20 @@ func ConversationSave(db *gorm.DB, c *entity.Conversation) error {
 
 	return nil
 }
+
+func ContactSave(db *gorm.DB, c *entity.Contact) error {
+	if err := db.Save(c).Error; err != nil {
+		logger().Error(fmt.Sprintf("cannot save contact %+v, err: %+v", c, err.Error()))
+		return err
+	}
+
+	c.Devices = append(c.Devices, &entity.Device{ID: c.ID, ContactID: c.ID})
+	for _, device := range c.Devices {
+		if err := db.Save(device).Error; err != nil {
+			logger().Error(fmt.Sprintf("cannot save devices %+v, err %+v", device, err.Error()))
+			return err
+		}
+	}
+
+	return nil
+}
