@@ -138,6 +138,18 @@ export const ValueBertyEntityContactInputStatus = {
   42: 'Myself',
 }
 
+export const BertyEntityConversationInputKind = {
+  Unknown: 0,
+  OneToOne: 1,
+  Group: 2,
+}
+
+export const ValueBertyEntityConversationInputKind = {
+  0: 'Unknown',
+  1: 'OneToOne',
+  2: 'Group',
+}
+
 export const BertyEntityConversationMemberInputStatus = {
   Unknown: 0,
   Owner: 1,
@@ -206,6 +218,15 @@ export const BertyEntityKindInputKind = {
   ConversationNewMessage: 302,
   ConversationRead: 303,
   ConversationUpdate: 304,
+  ConversationMemberInvite: 701,
+  ConversationMemberLeave: 702,
+  ConversationMemberSetTitle: 703,
+  ConversationMemberSetTopic: 704,
+  ConversationMemberSetOwner: 705,
+  ConversationMemberBlock: 706,
+  ConversationMemberUnblock: 707,
+  ConversationMemberRead: 708,
+  ConversationMemberWrite: 709,
   DevtoolsMapset: 401,
   SenderAliasUpdate: 501,
   DeviceUpdatePushConfig: 601,
@@ -227,6 +248,15 @@ export const ValueBertyEntityKindInputKind = {
   302: 'ConversationNewMessage',
   303: 'ConversationRead',
   304: 'ConversationUpdate',
+  701: 'ConversationMemberInvite',
+  702: 'ConversationMemberLeave',
+  703: 'ConversationMemberSetTitle',
+  704: 'ConversationMemberSetTopic',
+  705: 'ConversationMemberSetOwner',
+  706: 'ConversationMemberBlock',
+  707: 'ConversationMemberUnblock',
+  708: 'ConversationMemberRead',
+  709: 'ConversationMemberWrite',
   401: 'DevtoolsMapset',
   501: 'SenderAliasUpdate',
   601: 'DeviceUpdatePushConfig',

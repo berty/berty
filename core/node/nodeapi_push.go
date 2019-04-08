@@ -18,7 +18,7 @@ func (n *Node) DevicePushConfigList(ctx context.Context, input *node.Void) (*nod
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	var devicePushConfigs []*entity.DevicePushConfig
 	if err := n.sql(ctx).Model(entity.DevicePushConfig{}).Find(&devicePushConfigs).Error; err != nil {
@@ -33,7 +33,7 @@ func (n *Node) DevicePushConfigCreate(ctx context.Context, input *node.DevicePus
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	if input.PushType == push.DevicePushType_UnknownDevicePushType {
 		return nil, errorcodes.ErrPushInvalidType.New()

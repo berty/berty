@@ -68,36 +68,43 @@ interface Node {
   {{- $type := getStore .TypeName}}
   {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
 
-  {{- if (boolFieldExtension 53006 .)}}
-    {{- template "Fields" $type.Field}}
-  {{- else}}
+	{{- if eq (boolFieldExtension 53011 .) true}}
+	{{- else }}
+  	{{- if (boolFieldExtension 53006 .)}}
+  	  {{- template "Fields" $type.Field}}
+  	{{- else}}
 
-    {{- if eq (boolFieldExtension 53009 .) true}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
-    {{- else}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}]{{else}}{{$typeName}}{{end}}
-    {{- end}}
-  {{- end}}
+  	  {{- if eq (boolFieldExtension 53009 .) true}}
+  	{{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}!]{{else}}{{$typeName}}!{{end}}
+  	  {{- else}}
+  	{{.JsonName}}: {{if isFieldRepeated .}}[{{$typeName}}]{{else}}{{$typeName}}{{end}}
+  	  {{- end}}
+  	{{- end}}
+	{{- end}}
 {{- end}}
 
 {{- define "InputMessageField"}}
   {{- $type := getStore .TypeName}}
   {{- $typeName := .TypeName}}
 
-  {{- if (boolFieldExtension 53006 .)}}
-    {{- template "InputFields" $type.Field}}
-  {{- else}}
+	{{- if eq (boolFieldExtension 53011 .) true}}
+	{{- else}}
+  	{{- if (boolFieldExtension 53006 .)}}
+  	  {{- template "InputFields" $type.Field}}
+  	{{- else}}
 
-    {{- if eq (boolFieldExtension 53009 .) true}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" $typeName}}!]{{else}}{{template "InputName" $typeName}}!{{end}}
-    {{- else}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" $typeName}}]{{else}}{{template "InputName" $typeName}}{{end}}
-    {{- end}}
+  	  {{- if eq (boolFieldExtension 53009 .) true}}
+  	{{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" $typeName}}!]{{else}}{{template "InputName" $typeName}}!{{end}}
+  	  {{- else}}
+  	{{.JsonName}}: {{if isFieldRepeated .}}[{{template "InputName" $typeName}}]{{else}}{{template "InputName" $typeName}}{{end}}
+  	  {{- end}}
+		{{- end}}
   {{- end}}
 {{- end}}
 
 {{- define "ScalarField"}}
-  {{- if (boolFieldExtension 53004 .)}}
+	{{- if eq (boolFieldExtension 53011 .) true}}
+  {{- else if (boolFieldExtension 53004 .)}}
     {{.JsonName}}: ID!
   {{- else}}
     {{- $typeName := .Type | string | replace "TYPE_" "" | lower | camelCase}}
@@ -117,8 +124,11 @@ interface Node {
 {{- end}}
 
 {{- define "EnumField"}}
-  {{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
-    {{.JsonName}}: {{if isFieldRepeated .}}[Enum]{{else}}Enum{{end}}
+	{{- if eq (boolFieldExtension 53011 .) true }}
+	{{- else}}
+ 	 	{{- $typeName := .TypeName | replace "." "_" | camelCase | replace "_" ""}}
+  {{.JsonName}}: {{if isFieldRepeated .}}[Enum]{{else}}Enum{{end}}
+	{{- end}}
 {{- end}}
 
 {{- define "Field"}}
@@ -227,10 +237,10 @@ input {{template "InputName" .}} {
         {{- $alreadyDefined := getStore $alreadyDefinedKey}}
         {{- if $alreadyDefined}}
         {{- else}}
+          {{- setStore $alreadyDefinedKey true}}
           {{- template "RecursiveInput" $typeName}}
           {{- template "Input" $typeName}}
         {{- end}}
-        {{- setStore $alreadyDefinedKey true}}
       {{- end}}
     {{- end}}
   {{- end}}

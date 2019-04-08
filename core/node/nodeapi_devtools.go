@@ -101,9 +101,9 @@ func (n *Node) GenerateFakeData(ctx context.Context, input *node.Void) (*node.Vo
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	// FIXME: enable mutex, but allow calling submethod, i.e., node.CreateConversation
-	//n.handleMutex.Lock()
-	//defer n.handleMutex.Unlock()
+	// FIXME: enable mutex, but allow calling submethod, i.e., node.SaveConversation
+	//defer n.handleMutex.Lock()
+	//defer defer n.handleMutex.Unlock()
 
 	contacts := []*entity.Contact{}
 	for i := 0; i < 10; i++ {

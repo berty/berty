@@ -132,87 +132,133 @@ func (n *Node) handleContactShareMe(ctx context.Context, input *entity.Event) er
 // Conversation handlers
 //
 
+// deprecated
 func (n *Node) handleConversationUpdate(ctx context.Context, input *entity.Event) error {
 	attrs, err := input.GetConversationUpdateAttrs()
 	if err != nil {
 		return err
 	}
 
-	if err := n.sql(ctx).Save(attrs.Conversation).Error; err != nil {
-		return errors.Wrap(err, "cannot update conversation")
+	sql := n.sql(ctx)
+
+	// find conversation
+	conversation := &entity.Conversation{ID: attrs.Conversation.ID}
+	if err = sql.Find(&conversation).Error; err != nil {
+		return err
+	}
+
+	// get interactive member
+	cm, err := conversation.GetMember(input.SourceContactID)
+	if err != nil {
+		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
+	}
+
+	if err := sql.Preload("Conversation").First(cm).Error; err != nil {
+		return bsql.GenericError(err)
+	}
+
+	if err := cm.SetTitle(attrs.Conversation.Title); err != nil {
+		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
+	}
+
+	if err := cm.SetTopic(attrs.Conversation.Title); err != nil {
+		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
+	}
+
+	if err := bsql.ConversationSave(sql, conversation); err != nil {
+		return errorcodes.ErrNodeHandleConversationUpdate.Wrap(err)
 	}
 
 	return nil
 }
 
+// deprecated
 func (n *Node) handleConversationInvite(ctx context.Context, input *entity.Event) error {
 	attrs, err := input.GetConversationInviteAttrs()
 	if err != nil {
 		return err
 	}
 
-	members := []*entity.ConversationMember{}
-	for _, member := range attrs.Conversation.Members {
-		members = append(members, &entity.ConversationMember{
-			ID:        member.ID,
-			ContactID: member.Contact.ID,
-			Status:    member.Status,
-		})
-	}
-	conversation := &entity.Conversation{
-		Members: members,
-		ID:      attrs.Conversation.ID,
-		Title:   attrs.Conversation.Title,
-		Topic:   attrs.Conversation.Topic,
+	sql := n.sql(ctx)
+
+	conversation := attrs.Conversation
+	// legacy check kind if unknown
+	if conversation.Kind == entity.Conversation_Unknown {
+		if len(conversation.Members) == 2 && conversation.ID == entity.GetOneToOneID(
+			conversation.Members[0].Contact,
+			conversation.Members[1].Contact,
+		) {
+			conversation.Kind = entity.Conversation_OneToOne
+		}
 	}
 
-	if _, err := bsql.CreateConversation(n.sql(ctx), conversation); err != nil {
+	if err = bsql.ConversationSave(sql, conversation); err != nil {
 		return err
 	}
 
 	n.DisplayNotification(&notification.Payload{
 		Title:    i18n.T("ConversationInviteTitle", nil),
 		Body:     i18n.T("ConversationInviteBody", nil),
-		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(attrs.Conversation.ID),
+		DeepLink: "berty://berty.chat/chats/detail#id=" + url.PathEscape(conversation.ID),
 	})
 
 	return nil
 }
 
+// deprecated
 func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.Event) error {
+	var err error
+
 	attrs, err := input.GetConversationNewMessageAttrs()
 	if err != nil {
+		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Conversation not found"))
 		return err
 	}
 
-	// say that conversation has not been read
-	n.sql(ctx).Save(&entity.Conversation{
-		ID:     input.TargetAddr,
-		ReadAt: time.Time{},
-		Infos:  attrs.Message.Text,
-	})
+	sql := n.sql(ctx)
 
-	sender := &entity.Contact{}
-	if err := n.sql(ctx).First(&sender, &entity.Contact{ID: input.SourceDeviceID}).Error; err != nil {
-		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Contact not found"))
-		sender = &entity.Contact{}
+	// find conversation
+	conversation := &entity.Conversation{ID: input.TargetAddr}
+	if err = sql.Find(&conversation).Error; err != nil {
+		return err
 	}
 
-	conversation := &entity.Conversation{}
-	if err := n.sql(ctx).First(&conversation, &entity.Conversation{ID: input.TargetAddr}).Error; err != nil {
-		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Conversation not found"))
-		conversation = &entity.Conversation{}
+	// legacy check kind if unknown
+	if conversation.Kind == entity.Conversation_Unknown {
+		if len(conversation.Members) == 2 && conversation.ID == entity.GetOneToOneID(
+			conversation.Members[0].Contact,
+			conversation.Members[1].Contact,
+		) {
+			conversation.Kind = entity.Conversation_OneToOne
+		}
+	}
+
+	// get interactive member
+	im, err := conversation.GetMember(input.SourceContactID)
+	if err != nil {
+		n.LogBackgroundWarn(ctx, errors.New("handleConversationNewMessage: Member not found"))
+		return err
+	}
+
+	// say that member have write to conversation
+	if err = im.Write(input.CreatedAt, attrs.Message); err != nil {
+		return err
+	}
+
+	// save conversation
+	if err = bsql.ConversationSave(sql, conversation); err != nil {
+		return err
 	}
 
 	title := i18n.T("NewMessageTitle", nil)
 	body := i18n.T("NewMessageBody", nil)
 
 	if n.config.NotificationsPreviews && conversation.ID != "" {
-		title = conversation.GetConversationTitle()
+		title = conversation.GetComputedTitle()
 		body = attrs.Message.Text
 
-		if sender.DisplayName != "" && len(conversation.Members) > 2 {
-			title = fmt.Sprintf("%s @ %s", sender.DisplayName, title)
+		if im.GetContact().DisplayName != "" && len(conversation.Members) > 2 {
+			title = fmt.Sprintf("%s @ %s", im.GetContact().DisplayName, title)
 		}
 	}
 
@@ -224,21 +270,43 @@ func (n *Node) handleConversationNewMessage(ctx context.Context, input *entity.E
 	return nil
 }
 
+// deprecated
 func (n *Node) handleConversationRead(ctx context.Context, input *entity.Event) error {
-	_, err := input.GetConversationReadAttrs()
+	attrs, err := input.GetConversationReadAttrs()
 	if err != nil {
 		return err
 	}
 
 	sql := n.sql(ctx)
 
+	// find conversation
 	conversation := &entity.Conversation{ID: input.TargetAddr}
-	if err := sql.Model(conversation).Where(conversation).First(conversation).Error; err != nil {
+	if err = sql.Find(&conversation).Error; err != nil {
 		return err
 	}
 
-	attrs, err := input.GetConversationReadAttrs()
+	// legacy check kind if unknown
+	if conversation.Kind == entity.Conversation_Unknown {
+		if len(conversation.Members) == 2 && conversation.ID == entity.GetOneToOneID(
+			conversation.Members[0].Contact,
+			conversation.Members[1].Contact,
+		) {
+			conversation.Kind = entity.Conversation_OneToOne
+		}
+	}
+
+	// get interactive member
+	im, err := conversation.GetMember(input.SourceContactID)
 	if err != nil {
+		return err
+	}
+
+	if err = im.Read(attrs.Conversation.ReadAt); err != nil {
+		return err
+	}
+
+	// save conversation
+	if err = bsql.ConversationSave(sql, conversation); err != nil {
 		return err
 	}
 
@@ -257,7 +325,6 @@ func (n *Node) handleConversationRead(ctx context.Context, input *entity.Event) 
 		Error; err != nil {
 		return err
 	}
-	logger().Debug(fmt.Sprintf("CONVERSATION_READ %+v", count))
 	return nil
 }
 

@@ -6,7 +6,6 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
-	"go.uber.org/zap"
 
 	"berty.tech/core/api/node"
 	"berty.tech/core/crypto/keypair"
@@ -35,9 +34,9 @@ func (n *Node) EventRequeue(ctx context.Context, event *entity.Event) error {
 }
 
 func (n *Node) EventDispatchRequeue(ctx context.Context, dispatch *entity.EventDispatch) error {
-	tracer := tracing.EnterFunc(ctx, dispatch)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, dispatch)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	n.outgoingEvents <- dispatch
 
@@ -109,7 +108,7 @@ func (n *Node) cron(ctx context.Context) {
 }
 
 func (n *Node) handleClientEvent(ctx context.Context, event *entity.Event) {
-	logger().Debug("client event", zap.Stringer("event", event))
+	// logger().Debug("client event", zap.Stringer("event", event))
 
 	// @FIXME: Don't create a span here for now
 	// span, _ := event.CreateSpan(context.Background())
@@ -125,9 +124,9 @@ func (n *Node) handleClientEvent(ctx context.Context, event *entity.Event) {
 }
 
 func (n *Node) generateDispatchesForEvent(ctx context.Context, event *entity.Event) error {
-	tracer := tracing.EnterFunc(ctx, event)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, event)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	db := n.sql(ctx)
 
@@ -177,9 +176,9 @@ func (n *Node) generateDispatchesForEvent(ctx context.Context, event *entity.Eve
 }
 
 func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Event) ([]*entity.EventDispatch, error) {
-	tracer := tracing.EnterFunc(ctx, event)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, event)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	if event.AckStatus == entity.Event_AckedByAllDevices {
 		return []*entity.EventDispatch{}, nil
@@ -221,9 +220,9 @@ func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Even
 }
 
 func (n *Node) envelopeFromEvent(ctx context.Context, event *entity.Event) (*entity.Envelope, error) {
-	tracer := tracing.EnterFunc(ctx, event)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, event)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	envelope := entity.Envelope{}
 
@@ -258,9 +257,9 @@ func (n *Node) envelopeFromEvent(ctx context.Context, event *entity.Event) (*ent
 }
 
 func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch, event *entity.Event, envelope *entity.Envelope) error {
-	tracer := tracing.EnterFunc(ctx, dispatch, envelope)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, dispatch, envelope)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	if dispatch.ContactID == n.UserID() {
 		return nil
@@ -306,9 +305,9 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 }
 
 func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity.EventDispatch) {
-	tracer := tracing.EnterFunc(ctx, dispatch)
-	defer tracer.Finish()
-	ctx = tracer.Context()
+	// tracer := tracing.EnterFunc(ctx, dispatch)
+	// defer tracer.Finish()
+	// ctx = tracer.Context()
 
 	db := n.sql(ctx)
 	now := time.Now()

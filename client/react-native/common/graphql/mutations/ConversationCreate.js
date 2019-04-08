@@ -7,9 +7,15 @@ const ConversationCreateMutation = graphql`
   mutation ConversationCreateMutation(
     $title: String!
     $topic: String!
+    $kind: Enum
     $contacts: [BertyEntityContactInput]
   ) {
-    ConversationCreate(title: $title, topic: $topic, contacts: $contacts) {
+    ConversationCreate(
+      title: $title
+      topic: $topic
+      kind: $kind
+      contacts: $contacts
+    ) {
       id
       createdAt
       updatedAt
@@ -53,5 +59,5 @@ export default context => (input, configs) =>
     ConversationCreateMutation,
     'ConversationCreate',
     input,
-    configs,
+    configs
   )

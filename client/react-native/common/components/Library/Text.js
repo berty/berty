@@ -1,4 +1,4 @@
-import { Text as TextNative, TextInput, StyleSheet } from 'react-native'
+import { Text as TextNative, TextInput, StyleSheet, View } from 'react-native'
 import React, { Fragment, PureComponent } from 'react'
 import hash from 'object-hash'
 
@@ -371,9 +371,7 @@ export class ForegroundText extends PureComponent {
       <Fragment>
         {icon && typeof icon === 'string' ? (
           <Icon name={icon} style={styles.icon} flip={flip} />
-        ) : (
-          icon && <Flex.Rows style={styles.iconView}>{icon}</Flex.Rows>
-        )}
+        ) : <View>{icon}</View>}
         {input ? (
           <TextInput
             {...(typeof input === 'object' ? input : {})}

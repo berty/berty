@@ -11,6 +11,7 @@ import "pkg/validate/validate.proto";
 import "api/protobuf/graphql/graphql.proto";
 import "entity/contact.proto";
 import "entity/message.proto";
+import "entity/err.proto";
 
 message Conversation {
   //
@@ -21,6 +22,7 @@ message Conversation {
   google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp read_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp wrote_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   //
   // metadata
@@ -30,11 +32,21 @@ message Conversation {
   string topic = 21;
   string infos = 22;
 
+  Kind kind = 23;
+
   //
   // associations
   //
 
-  repeated ConversationMember members = 100; // HasMany to ConversationMember.Conversation
+  repeated ConversationMember members = 100 [
+    (gogoproto.moretags) = "gorm:\"foreignkey:ConversationID;association_foreignkey:ID;save_associations:true\""
+  ]; // HasMany to ConversationMember.Conversation
+
+  enum Kind {
+    Unknown = 0;
+    OneToOne = 1;
+    Group = 2;
+  }
 }
 
 message ConversationMember {
@@ -45,6 +57,8 @@ message ConversationMember {
   string id = 1 [(gql.graphql_id) = true, (gogoproto.moretags) = "gorm:\"primary_key\"", (gogoproto.customname) = "ID", (validate.min_len) = 1];
   google.protobuf.Timestamp created_at = 2 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
   google.protobuf.Timestamp updated_at = 3 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp read_at = 4 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
+  google.protobuf.Timestamp wrote_at = 5 [(gogoproto.stdtime) = true, (gogoproto.nullable) = false];
 
   enum Status {
     Unknown = 0;
@@ -65,13 +79,21 @@ message ConversationMember {
   // associations
   //
 
-  Contact contact = 100 [(validate.required) = true, (validate.skip) = false];
-  string conversation_id = 101 [(gql.graphql_id) = true,
-                                (gogoproto.customname) = "ConversationID",
-                                (validate.min_len) = 1
-                                ]; // backref
-  string contact_id = 102 [(gql.graphql_id) = true,
-                            (gogoproto.customname) = "ContactID",
-                            (validate.min_len) = 1
-                            ];
+  Contact contact = 100 [
+    (gogoproto.moretags) = "gorm:\"association_autoupdate:false;association_create:true\"",
+    (validate.required) = true,
+    (validate.skip) = false
+  ];
+
+  string conversation_id = 101 [
+    (gogoproto.customname) = "ConversationID",
+    (validate.min_len) = 1,
+    (gql.graphql_id) = true
+  ]; // backref
+
+  string contact_id = 102 [
+    (gogoproto.customname) = "ContactID",
+    (validate.min_len) = 1,
+    (gql.graphql_id) = true
+  ];
 }

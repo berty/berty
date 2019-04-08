@@ -1,17 +1,17 @@
-import React from 'react'
-import { View, Platform, Text as RNText } from 'react-native'
+import { Platform, View, Text as RNText } from 'react-native'
 import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
 import I18n from 'i18next'
+import React from 'react'
 
-import Text from './Text'
-import Avatar from './Avatar'
 import { contact } from '../../utils'
 import { formattedFingerprint } from '../../helpers/fingerprint'
+import { makeShareableUrl } from '../../helpers/contacts'
 import { monospaceFont, tabNavigatorOptions } from '../../constants/styling'
 import { padding } from '../../styles'
 import { tabIcon, withScreenProps } from '../../helpers/views'
-import { makeShareableUrl } from '../../helpers/contacts'
+import Avatar from './Avatar'
 import QRGenerator from './QRGenerator'
+import Text from './Text'
 import colors from '../../constants/colors'
 
 const PublicKey = ({ data: { id } }) => (
@@ -102,14 +102,25 @@ class ContactIdentityBase extends React.Component {
 
     return (
       <>
-      <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-        <Avatar data={data} size={78} style={{ marginTop: 0 }} />
-      </View>
-      <Text large color={colors.fakeBlack} center padding>{data.overrideDisplayName || data.displayName}</Text>
-      <View
-        style={{ marginLeft: 15, marginRight: 15, marginBottom: 8, height: Platform.OS === 'android' ? 350 : undefined }}>
-        <ContactIdentityTabbedContent navigation={navigation} screenProps={{ data }} />
-      </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
+          <Avatar data={data} size={78} style={{ marginTop: 0 }} />
+        </View>
+        <Text large color={colors.fakeBlack} center padding>
+          {data.overrideDisplayName || data.displayName}
+        </Text>
+        <View
+          style={{
+            marginLeft: 15,
+            marginRight: 15,
+            marginBottom: 8,
+            height: Platform.OS === 'android' ? 350 : undefined,
+          }}
+        >
+          <ContactIdentityTabbedContent
+            navigation={navigation}
+            screenProps={{ data }}
+          />
+        </View>
       </>
     )
   }

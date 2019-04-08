@@ -37,8 +37,10 @@ const ItemBase = fragments.Conversation(
           data.members.length === 2
             ? data.members.find(
               element =>
-                element.contact.status !==
-                  enums.BertyEntityContactInputStatus.Myself
+                element &&
+                  element.contact &&
+                  element.contact.status !==
+                    enums.BertyEntityContactInputStatus.Myself
             )
             : null,
         interval:
@@ -136,9 +138,8 @@ const ItemBase = fragments.Conversation(
     render () {
       const { data, navigation, t } = this.props
       const { connected, unread } = this.state
-      const { readAt } = data
-      const isRead = new Date(readAt).getTime() > 0
 
+      const isRead = utils.isReadByMe(data)
       // fix when contact request is send after conversation invite
       if (
         data.members.length === 2 &&

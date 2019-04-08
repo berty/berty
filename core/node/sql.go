@@ -10,7 +10,6 @@ import (
 	"berty.tech/core/sql"
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
-	"go.uber.org/zap"
 )
 
 // WithSQL registers a gorm connection as the node database
@@ -58,8 +57,6 @@ func (n *Node) sendCommitLog(commitLog *node.CommitLog) {
 	if commitLog == nil {
 		return
 	}
-
-	logger().Debug("commit log", zap.Stringer("commit log", commitLog))
 
 	n.clientCommitLogsMutex.Lock()
 	defer n.clientCommitLogsMutex.Unlock()
@@ -116,17 +113,21 @@ func (n *Node) createCommitLog(scope *gorm.Scope, operation string, reflectValue
 		}
 		log.Entity = &node.CommitLog_Entity{Conversation: data}
 	case *entity.ConversationMember:
-		data, err = sql.ConversationMemberByID(scope.DB(), data.ID)
-		if err != nil {
-			return nil
+		if operation != "delete" {
+			data, err = sql.ConversationMemberByID(scope.DB(), data.ID)
+			if err != nil {
+				return nil
+			}
 		}
 		log.Entity = &node.CommitLog_Entity{ConversationMember: data}
 	case *entity.Config:
 		log.Entity = &node.CommitLog_Entity{Config: data}
 	case *entity.Event:
-		data, err = sql.EventByID(scope.DB(), data.ID)
-		if err != nil {
-			return nil
+		if operation != "delete" {
+			data, err = sql.EventByID(scope.DB(), data.ID)
+			if err != nil {
+				return nil
+			}
 		}
 		log.Entity = &node.CommitLog_Entity{Event: data}
 	case *entity.DevicePushConfig:
@@ -134,7 +135,15 @@ func (n *Node) createCommitLog(scope *gorm.Scope, operation string, reflectValue
 	case *entity.DevicePushIdentifier:
 		log.Entity = &node.CommitLog_Entity{DevicePushIdentifier: data}
 	case *entity.EventDispatch:
-		log.Entity = &node.CommitLog_Entity{EventDispatch: data}
+		var event *entity.Event
+		if operation != "delete" {
+			event, err = sql.EventByID(scope.DB(), data.EventID)
+			if err != nil {
+				return nil
+			}
+			log.Entity = &node.CommitLog_Entity{Event: event}
+		}
+		// log.Entity = &node.CommitLog_Entity{EventDispatch: data}
 	case *entity.SenderAlias:
 		log.Entity = &node.CommitLog_Entity{SenderAlias: data}
 	default:

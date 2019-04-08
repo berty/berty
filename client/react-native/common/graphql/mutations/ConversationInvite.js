@@ -5,9 +5,9 @@ import { commit } from '../../relay'
 const ConversationInviteMutation = graphql`
   mutation ConversationInviteMutation(
     $conversation: BertyEntityConversationInput
-    $members: [BertyEntityConversationMemberInput]
+    $contacts: [BertyEntityContactInput]
   ) {
-    ConversationInvite(conversation: $conversation, members: $members) {
+    ConversationInvite(conversation: $conversation, contacts: $contacts) {
       id
       createdAt
       updatedAt

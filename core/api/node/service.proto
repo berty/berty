@@ -380,11 +380,12 @@ message ConversationCreateInput {
   repeated berty.entity.Contact contacts = 1 [(validate.min_items) = 1];
   string title = 2;
   string topic = 3;
+  berty.entity.Conversation.Kind kind = 4;
 }
 
 message ConversationManageMembersInput {
   berty.entity.Conversation conversation = 1 [(validate.required) = true, (validate.skip) = false];
-  repeated berty.entity.ConversationMember members = 2 [(validate.min_items) = 1];
+  repeated berty.entity.Contact contacts = 2 [(validate.min_items) = 1];
 }
 
 message DevicePushConfigEdge {

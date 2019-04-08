@@ -75,6 +75,7 @@ class PaginationContainer extends Component {
         <>
           <ListComponent
             ListHeaderComponent={this.props.ListHeaderComponent}
+            ListEmptyComponent={this.props.ListEmptyComponent}
             data={data[alias].edges}
             inverted={inverted}
             refreshing={this.state.refetching}

@@ -67,9 +67,11 @@ func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entit
 		return errors.New("no active dispatches for a freshly added outgoing event")
 	}
 
-	for _, dispatch := range dispatches {
-		n.outgoingEvents <- dispatch
-	}
+	go func() {
+		for _, dispatch := range dispatches {
+			n.outgoingEvents <- dispatch
+		}
+	}()
 
 	tracer.SetMetadata("new-outgoing-event", event.ID)
 

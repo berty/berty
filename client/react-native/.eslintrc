@@ -19,11 +19,11 @@
     "import/no-cycle": "warn",
     "no-console": "off",
     "linebreak-style": "off",
-    "comma-dangle": ["error",
+    "comma-dangle": ["warn",
       "always-multiline"
     ],
     "no-multi-spaces": "off",
-    "no-unused-vars": "error",
+    "no-unused-vars": "warn",
     "react/prop-types": "off",
     "react/display-name": "warn",
     "react/no-unused-prop-types": "off",
@@ -34,6 +34,6 @@
     "require-jsdoc": "off",
     "jsx-a11y/href-no-hash": "off",
     "dependencies/no-cycles": 1,
-    "dependencies/no-unresolved": 1
+    "dependencies/no-unresolved": 1,
   }
 }

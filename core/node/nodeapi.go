@@ -35,7 +35,7 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 	sql := n.sql(ctx)
 
 	// prepare query
@@ -80,7 +80,7 @@ func (n *Node) EventUnseen(input *node.EventListInput, stream node.Service_Event
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 	sql := n.sql(ctx)
 
 	// prepare query
@@ -119,7 +119,7 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	event := &entity.Event{}
 
@@ -134,10 +134,10 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
-	// check if event is from another contact
-	if event.Direction != entity.Event_Incoming {
-		return event, nil
-	}
+	// // check if event is from another contact
+	// if event.Direction != entity.Event_Incoming {
+	// 	return event, nil
+	// }
 
 	seenAt := time.Now().UTC()
 	event.SeenAt = &seenAt
@@ -147,106 +147,7 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 		return nil, errors.Wrap(err, "cannot set event as seen")
 	}
 
-	// mark conversation as read
-	if event.TargetType == entity.Event_ToSpecificConversation {
-		_, err := n.ConversationRead(ctx, &entity.Conversation{ID: event.ToConversationID()})
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return event, nil
-}
-
-func (n *Node) ConversationUpdate(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	sql := n.sql(ctx)
-
-	if err := sql.Save(input).Error; err != nil {
-		return nil, errors.Wrap(err, "cannot update conversation")
-	}
-
-	return input, n.EnqueueOutgoingEvent(ctx,
-		n.NewEvent(ctx).
-			SetConversationUpdateAttrs(&entity.ConversationUpdateAttrs{Conversation: input}).
-			SetToConversation(input))
-}
-
-func (n *Node) ConversationRead(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
-	var err error
-
-	// get conversation
-	conversation := &entity.Conversation{ID: input.ID}
-	if err = n.sql(ctx).Model(conversation).Where(conversation).First(conversation).Error; err != nil {
-		return nil, err
-	}
-
-	// set conversation as read
-	conversation.ReadAt = time.Now().UTC()
-	if err = n.sql(ctx).Save(conversation).Error; err != nil {
-		return nil, errors.Wrap(err, "cannot update conversation")
-	}
-
-	// check if last message has been read
-	event := &entity.Event{}
-	filter := &entity.Event{
-		TargetType: entity.Event_ToSpecificConversation,
-		TargetAddr: conversation.ID,
-		Direction:  entity.Event_Incoming,
-	}
-	n.sql(ctx).Model(event).Where(filter).Order("created_at").Last(event)
-	if event.SeenAt == nil {
-		return conversation, nil
-	}
-
-	// send conversation as read
-	return conversation, n.EnqueueOutgoingEvent(ctx,
-		n.NewEvent(ctx).
-			SetToConversation(conversation).
-			SetConversationReadAttrs(&entity.ConversationReadAttrs{Conversation: conversation}))
-}
-
-func (n *Node) ConversationLastEvent(ctx context.Context, input *entity.Conversation) (*entity.Event, error) {
-	filter := &entity.Event{
-		TargetAddr: input.ID,
-		TargetType: entity.Event_ToSpecificConversation,
-	}
-	event := &entity.Event{}
-
-	// FIXME: add last_event_id in conversation new message handler to be sure to fetch the last event
-	time.Sleep(time.Second / 3)
-	if err := n.sql(ctx).Order("created_at desc").Where(filter).Last(event).Error; err != nil {
-		return nil, err
-	}
-	return event, nil
-}
-
-func (n *Node) ConversationRemove(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
-	var err error
-
-	// get conversation
-	if err = n.sql(ctx).First(input).Error; err != nil {
-		return nil, bsql.GenericError(err)
-	}
-
-	// remove conversation
-	sql := n.sql(ctx)
-	if err = sql.
-		Where(&entity.ConversationMember{ConversationID: input.ID}).
-		Delete(&entity.ConversationMember{}).Error; err != nil {
-		return nil, errorcodes.ErrDbDelete.Wrap(err)
-	}
-
-	if err = sql.Delete(input).Error; err != nil {
-		return nil, errorcodes.ErrDbDelete.Wrap(err)
-	}
-
-	return input, nil
 }
 
 // GetEvent implements berty.node.GetEvent
@@ -255,7 +156,7 @@ func (n *Node) GetEvent(ctx context.Context, input *entity.Event) (*entity.Event
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 	event := &entity.Event{}
@@ -276,7 +177,7 @@ func (n *Node) ContactAcceptRequest(ctx context.Context, input *node.ContactAcce
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if err := input.Validate(); err != nil {
@@ -316,7 +217,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if err := req.Validate(); err != nil {
@@ -349,7 +250,7 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	} else if contact.Status == entity.Contact_Myself {
 		return nil, errorcodes.ErrContactReqMyself.New()
 
-	} else {
+	} else if contact.Status != entity.Contact_Unknown {
 		return nil, errorcodes.ErrContactReqExisting.New()
 	}
 
@@ -366,9 +267,10 @@ func (n *Node) ContactRequest(ctx context.Context, req *node.ContactRequestInput
 	}
 
 	// create conversation if doesn't exist
-	if _, err := n.ConversationCreate(ctx,
+	if _, err := n.conversationCreate(ctx,
 		&node.ConversationCreateInput{
 			Contacts: []*entity.Contact{contact},
+			Kind:     entity.Conversation_OneToOne,
 		},
 	); err != nil {
 		return nil, errorcodes.ErrUndefined.Wrap(err)
@@ -382,7 +284,7 @@ func (n *Node) ContactUpdate(ctx context.Context, contact *entity.Contact) (*ent
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if contact == nil || contact.ID == "" {
@@ -429,7 +331,7 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	// input validation
 	if contact == nil || contact.ID == "" {
@@ -455,14 +357,9 @@ func (n *Node) ContactRemove(ctx context.Context, contact *entity.Contact) (*ent
 		return nil, errorcodes.ErrDbDelete.Wrap(err)
 	}
 
-	// remove 1-1 conversation
-	// don't return error if not found
-	conversation, err := bsql.ConversationOneToOne(sql, n.config.Myself.ID, contact.ID)
-	switch {
-	case err == nil: // conversation exists, delete it
-		n.ConversationRemove(ctx, &entity.Conversation{ID: conversation.ID})
-	case gorm.IsRecordNotFoundError(errors.Cause(err)): // conversation is not found, do nothing
-	case err != nil: // another error is triggered, returning it
+	// remove one to one conversation
+	_, err = n.conversationRemove(ctx, &entity.Conversation{ID: entity.GetOneToOneID(n.config.Myself, contact)})
+	if err != nil {
 		return nil, err
 	}
 
@@ -475,7 +372,7 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 
@@ -510,7 +407,7 @@ func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.C
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	sql := n.sql(ctx)
 	output := &entity.Contact{}
@@ -527,190 +424,12 @@ func (n *Node) ContactCheckPublicKey(ctx context.Context, input *node.ContactInp
 	return &node.Bool{Ret: err == nil}, err
 }
 
-//
-// Conversation
-//
-
-func (n *Node) ConversationCreate(ctx context.Context, input *node.ConversationCreateInput) (*entity.Conversation, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	return n.conversationCreate(ctx, input)
-}
-
-func (n *Node) conversationCreate(ctx context.Context, input *node.ConversationCreateInput) (*entity.Conversation, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	members := []*entity.ConversationMember{
-		{
-			ID:        n.NewID(),
-			ContactID: n.UserID(),
-			Status:    entity.ConversationMember_Owner,
-		},
-	}
-	for _, contact := range input.Contacts {
-		members = append(members, &entity.ConversationMember{
-			ID:        n.NewID(),
-			ContactID: contact.ID,
-			Status:    entity.ConversationMember_Active,
-		})
-	}
-
-	// save new conversation
-	createConversation := &entity.Conversation{
-		ID:      n.NewID(),
-		Members: members,
-		Title:   input.Title,
-		Topic:   input.Topic,
-	}
-
-	conversation, err := bsql.CreateConversation(n.sql(ctx), createConversation)
-	if err != nil {
-		return nil, err
-	}
-
-	// send invite to peers
-	filtered := conversation.Filtered()
-	for _, member := range conversation.Members {
-		if member.Contact.ID == n.UserID() {
-			// skipping myself
-			continue
-		}
-		if err := n.EnqueueOutgoingEvent(ctx,
-			n.NewEvent(ctx).
-				SetToContact(member.Contact).
-				SetConversationInviteAttrs(&entity.ConversationInviteAttrs{
-					Conversation: filtered,
-				}),
-		); err != nil {
-			return nil, err
-		}
-	}
-
-	return conversation, nil
-}
-
-func (n *Node) ConversationAcceptInvite(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	return nil, errorcodes.ErrUnimplemented.New()
-}
-
-func (n *Node) ConversationInvite(ctx context.Context, input *node.ConversationManageMembersInput) (*entity.Conversation, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	return nil, errorcodes.ErrUnimplemented.New()
-}
-
-func (n *Node) ConversationExclude(ctx context.Context, input *node.ConversationManageMembersInput) (*entity.Conversation, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	return nil, errorcodes.ErrUnimplemented.New()
-}
-
-func (n *Node) ConversationList(input *node.ConversationListInput, stream node.Service_ConversationListServer) error {
-	tracer := tracing.EnterFunc(stream.Context(), input)
-	defer tracer.Finish()
-	ctx := tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	// prepare query
-	sql := n.sql(ctx)
-	query := sql.Model(entity.Conversation{}).Where(input.Filter)
-
-	// pagination
-	var err error
-	query, err = paginate(query, input.Paginate)
-	if err != nil {
-		return errorcodes.ErrPagination.Wrap(err)
-	}
-
-	// perform query
-	var conversations []*entity.Conversation
-	if err := query.Find(&conversations).Error; err != nil {
-		return errorcodes.ErrDb.Wrap(err)
-	}
-
-	// stream results
-	for _, conversation := range conversations {
-		if err := stream.Send(conversation); err != nil {
-			return errorcodes.ErrNet.Wrap(err)
-		}
-	}
-	return nil
-}
-
-func (n *Node) ConversationAddMessage(ctx context.Context, input *node.ConversationAddMessageInput) (*entity.Event, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	event := n.NewEvent(ctx)
-	return event, n.EnqueueOutgoingEvent(ctx, event.
-		SetToConversation(input.Conversation).
-		SetConversationNewMessageAttrs(&entity.ConversationNewMessageAttrs{Message: input.Message}))
-}
-
-// GetConversation implements berty.node.GetConversation
-func (n *Node) Conversation(ctx context.Context, input *entity.Conversation) (*entity.Conversation, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	sql := n.sql(ctx)
-	output := &entity.Conversation{}
-	if err := sql.Where(input).First(output).Error; err != nil {
-		return nil, bsql.GenericError(err)
-	}
-
-	return output, nil
-}
-
-// GetConversationMember implements berty.node.GetConversationMember
-func (n *Node) ConversationMember(ctx context.Context, input *entity.ConversationMember) (*entity.ConversationMember, error) {
-	tracer := tracing.EnterFunc(ctx, input)
-	defer tracer.Finish()
-	ctx = tracer.Context()
-
-	n.handleMutex(ctx)()
-
-	sql := n.sql(ctx)
-	output := &entity.ConversationMember{}
-	if err := sql.Where(input).First(output).Error; err != nil {
-		return nil, bsql.GenericError(err)
-	}
-
-	return output, nil
-}
-
 func (n *Node) DebugPing(ctx context.Context, input *node.PingDestination) (*node.Void, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	n.handleMutex(ctx)()
+	defer n.handleMutex(ctx)()
 
 	err := n.networkDriver.PingOtherNode(ctx, input.Destination)
 

@@ -9,13 +9,17 @@ export default component =>
         createdAt
         updatedAt
         readAt
+        wroteAt
         title
         topic
         infos
+        kind
         members {
           id
           createdAt
           updatedAt
+          readAt
+          wroteAt
           status
           contact {
             id

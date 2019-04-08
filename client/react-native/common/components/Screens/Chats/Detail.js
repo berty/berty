@@ -1,8 +1,8 @@
 import {
   ActivityIndicator,
   Platform,
-  StyleSheet,
   TextInput as RNTextInput,
+  StyleSheet,
   View,
 } from 'react-native'
 import { btoa } from 'b64-lite'
@@ -10,24 +10,24 @@ import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
 import {
+  Avatar,
   Flex,
   Header,
   Icon,
+  Markdown,
   Screen,
   Text,
-  Avatar,
-  Markdown,
 } from '../../Library'
 import { Pagination, QueryReducer, RelayContext } from '../../../relay'
 import { colors } from '../../../constants'
-import { fragments } from '../../../graphql'
+import { enums, fragments } from '../../../graphql'
 import { merge } from '../../../helpers'
 import { parseEmbedded } from '../../../helpers/json'
 import { shadow } from '../../../styles'
 import { conversation as utils } from '../../../utils'
+import * as KeyboardContext from '../../../helpers/KeyboardContext'
 import * as dateFns from '../../../i18n/dateFns'
 import withRelayContext from '../../../helpers/withRelayContext'
-import * as KeyboardContext from '../../../helpers/KeyboardContext'
 
 const textStyles = StyleSheet.flatten([
   Markdown.styles,
@@ -70,26 +70,25 @@ class Message extends React.Component {
       data: { seenAt },
     } = this.props
     if (seenAt !== nextProps.data.seenAt) {
-      return false
+      return true
     }
-    return true
+    return false
   }
 
   render () {
     const { conversation, data, t } = this.props
 
     const contactId = btoa(`contact:${data.sourceDeviceId}`)
-    const contact = (
+    const { contact } =
       conversation.members.find(m => m.contact && m.contact.id === contactId) ||
       {}
-    ).contact
 
     const contactName = contact ? contact.displayName : t('contacts.unknown')
     const isMyself = contact && contact.status === 42
-    const isOneToOne = conversation.members.length <= 2
-
-    // TODO: implement message seen
-    if (this.props.data.seenAt === null) {
+    const isOneToOne =
+      conversation.kind === enums.BertyEntityConversationInputKind.OneToOne
+    // TODO: implement message seeni
+    if (new Date(this.props.data.seenAt).getTime() === 0) {
       this.messageSeen()
     }
     return (
@@ -147,9 +146,7 @@ class Message extends React.Component {
           {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
           {isMyself ? (
             <Icon
-              name={
-                new Date(data.ackedAt).getTime() > 0 ? 'check-circle' : 'circle'
-              }
+              name={utils.isReadByOthers(data) ? 'check-circle' : 'circle'}
               size={10}
             />
           ) : null}{' '}
@@ -187,7 +184,7 @@ class TextInputBase extends PureComponent {
                 padding: 0,
                 marginVertical: 8,
                 marginHorizontal: 0,
-                height: height,
+                height,
                 color: colors.fakeBlack,
                 backgroundColor: colors.inputGrey,
               },
@@ -254,6 +251,7 @@ class Input extends PureComponent {
 
     this.setState({ input: value })
   }
+
   render () {
     return (
       <Flex.Cols
@@ -411,8 +409,12 @@ class Detail extends PureComponent {
   }
 
   onConversationRead = async () => {
+    const id = this.props.navigation.getParam('id')
+    if (!id) {
+      return
+    }
     const res = await this.props.context.mutations.conversationRead({
-      id: this.props.navigation.getParam('id'),
+      id,
     })
 
     this.props.navigation.setParams(res.ConversationRead)
@@ -425,11 +427,12 @@ class Detail extends PureComponent {
       context,
       context: { queries },
     } = this.props
+
     return (
       <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
         <QueryReducer
           query={queries.Conversation.graphql}
-          variables={merge([queries.Conversation.defaultVariables, { id: id }])}
+          variables={merge([queries.Conversation.defaultVariables, { id }])}
         >
           {(state, retry) => {
             switch (state.type) {

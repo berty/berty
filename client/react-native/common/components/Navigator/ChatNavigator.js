@@ -2,6 +2,8 @@ import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 import { Platform } from 'react-native'
 import List from '../Screens/Chats/List'
 import Detail from '../Screens/Chats/Detail'
+import ContactDetailList from '../Screens/Contacts/Detail/Detail'
+import ContactDetailEdit from '../Screens/Contacts/Detail/Edit'
 import Add from '../Screens/Chats/Add'
 import ChatSettingsNavigator from './ChatSettingsNavigator'
 
@@ -39,6 +41,9 @@ export const SubviewsChatDetailsNavigator = createStackNavigator(
         header: null,
       }),
     },
+    'chats/contact/detail/list': ContactDetailList,
+    'chats/contact/detail/edit': ContactDetailEdit,
+    'chats/settings/add-member': Add,
   },
   {
     initialRouteName: 'chats/detail',

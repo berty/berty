@@ -169,6 +169,8 @@
     "decline-action-feedback": "L'invitation a été refusée",
     "resend-action": "Renvoyer",
     "resend-action-feedback": "L'invitation a été envoyée à nouveau",
+    "request-action": "Ajouter",
+    "request-action-feedback": "L'invitation a été envoyée",
     "cancel-request-action": "Annuler",
     "cancel-request-action-feedback": "L'invitation a été annulée",
     "block-confirm-question": "Êtes vous sûr de vouloir bloquer ce contact ?",
