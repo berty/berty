@@ -74,7 +74,7 @@ endif
 deps: fcm-opts apns-opts
 	docker pull bertychat/berty:latest
 	git clone git@github.com:berty/ios-push-certs || true
-	echo $(apns-private-key) | base64 -D  > apns_private_key
+	echo $(apns-private-key) | base64 -d  > apns_private_key
 
 .PHONY: build
 build: deps
