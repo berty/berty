@@ -39,7 +39,13 @@ fcm-opts ?=
 .PHONY: apns-opts
 apns-opts:
 ifeq ($(apns), true)
+
 ifndef apns-opts
+ifndef apns-private-key
+	@echo "error: you need to specify the apns-private-key in argument"
+	@false
+endif
+	$(eval apns-opts += --private-key-file apns_private_key)
 ifdef eval-apns-dev-certs
 	$(eval apns-opts += --apns-dev-voip-certs $(eval-apns-dev-certs))
 endif
@@ -54,7 +60,7 @@ fcm-opts:
 ifeq ($(fcm), true)
 ifndef fcm-opts
 ifndef fcm-api-key
-	@echo "error: you need to specify the fcm-api-key argument"
+	@echo "error: you need to specify the fcm-api-key in argument"
 	@false
 endif
 ifdef eval-fcm-api-keys
@@ -66,7 +72,9 @@ endif
 
 .PHONY: deps
 deps: fcm-opts apns-opts
+	docker pull bertychat/berty:latest
 	git clone git@github.com:berty/ios-push-certs || true
+	echo $(apns-private-key) | base64 -D  > apns_private_key
 
 .PHONY: build
 build: deps
