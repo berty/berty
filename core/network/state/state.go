@@ -21,10 +21,6 @@ const (
 	Cell2G          CellType = 2
 	Cell3G          CellType = 3
 	Cell4G          CellType = 4
-
-	UnknownBleState BleState = 0
-	BleOn           BleState = 1
-	BleOff          BleState = 2
 )
 
 type ConnectivityState struct {
@@ -36,7 +32,7 @@ type ConnectivityState struct {
 	Trusted   State
 	Network   NetType
 	Cellular  CellType
-	Bluetooth BleState
+	Bluetooth State
 }
 
 func StateToString(s State) string {
@@ -75,17 +71,6 @@ func CellTypeToString(c CellType) string {
 		return "3G"
 	case Cell4G:
 		return "4G"
-	default:
-		return "unknown"
-	}
-}
-
-func BleStateToString(b BleState) string {
-	switch b {
-	case BleOn:
-		return "on"
-	case BleOff:
-		return "off"
 	default:
 		return "unknown"
 	}

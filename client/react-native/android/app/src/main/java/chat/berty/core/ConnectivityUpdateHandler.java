@@ -25,6 +25,10 @@ import core.Core;
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ConnectivityUpdateHandler extends BroadcastReceiver {
     private static String TAG = "connectivity_update_handler";
+    private static final short
+            STATE_ON      = 1,
+            STATE_OFF     = 2;
+
 
     ConnectivityUpdateHandler(ReactApplicationContext reactContext) {
         super();
@@ -53,10 +57,6 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
     }
 
     private static final void updateConnectivity(Context context) {
-        final short
-                STATE_ON      = 1,
-                STATE_OFF     = 2;
-
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         Network currentNet;
         NetworkCapabilities currentNetCap;
@@ -212,10 +212,6 @@ public class ConnectivityUpdateHandler extends BroadcastReceiver {
     }
 
     private static final void updateBLE(int state) {
-        final short
-                STATE_ON  = 1,
-                STATE_OFF = 2;
-
         if(isBleAdvAndScanCompatible() && state == BluetoothAdapter.STATE_ON)
             Core.updateBluetoothState(STATE_ON);
         else if(state == BluetoothAdapter.STATE_OFF)

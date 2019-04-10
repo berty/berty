@@ -105,9 +105,9 @@ func (nu *NetworkUpdater) UpdateConnectivityState(connState string) {
 func (nu *NetworkUpdater) UpdateBluetoothState(bleState int) {
 	nu.lock.Lock()
 
-	if BleState(bleState) != nu.state.Bluetooth {
-		nu.state.Bluetooth = BleState(bleState)
-		nu.notif.notifyBluetoothChange(BleState(bleState))
+	if State(bleState) != nu.state.Bluetooth {
+		nu.state.Bluetooth = State(bleState)
+		nu.notif.notifyBluetoothChange(State(bleState))
 		nu.notif.notifyConnectivityChange(nu.state)
 	}
 

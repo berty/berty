@@ -15,7 +15,7 @@ type Notifee interface {
 	HandleTrustedChange(State)
 	HandleNetTypeChange(NetType)
 	HandleCellTypeChange(CellType)
-	HandleBluetoothChange(BleState)
+	HandleBluetoothChange(State)
 }
 
 type notifier struct {
@@ -35,7 +35,7 @@ func (nr *notifier) notifyConnectivityChange(cs ConnectivityState) {
 		zap.String("Trusted", StateToString(cs.Trusted)),
 		zap.String("Network", NetTypeToString(cs.Network)),
 		zap.String("Cellular", CellTypeToString(cs.Cellular)),
-		zap.String("Bluetooth", BleStateToString(cs.Bluetooth)),
+		zap.String("Bluetooth", StateToString(cs.Bluetooth)),
 	)
 	for _, notifee := range nr.notifees {
 		notifee.HandleConnectivityChange(cs)
@@ -132,10 +132,10 @@ func (nr *notifier) notifyCellTypeChange(c CellType) {
 	nr.lock.Unlock()
 }
 
-func (nr *notifier) notifyBluetoothChange(b BleState) {
+func (nr *notifier) notifyBluetoothChange(b State) {
 	nr.lock.Lock()
 
-	logger().Debug("notify bluetooth state change:", zap.String("new state", BleStateToString(b)))
+	logger().Debug("notify bluetooth state change:", zap.String("new state", StateToString(b)))
 	for _, notifee := range nr.notifees {
 		notifee.HandleBluetoothChange(b)
 	}
