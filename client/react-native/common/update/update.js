@@ -1,11 +1,13 @@
 import moment from 'moment'
 import { DeviceInfos } from '../graphql/queries'
 import RNDeviceInfo from 'react-native-device-info'
-import { Linking, Platform, PermissionsAndroid } from 'react-native'
+import { Linking, Platform, PermissionsAndroid, NativeModules } from 'react-native'
 import RNFetchBlob from '../helpers/rn-fetch-blob'
 import { showMessage } from 'react-native-flash-message'
 import { requestAndroidPermission } from '../helpers/permissions'
 import I18n from 'i18next'
+
+const { CoreModule } = NativeModules
 
 const updateApiSources = {
   'chat.berty.ios.staff': {
@@ -40,6 +42,10 @@ const updateApiSources = {
     url: 'https://yolo.berty.io/release/android.json',
     channel: 'beta',
   },
+  'chat.berty.macos': {
+    url: 'https://yolo.berty.io/release/desktop/mac.json',
+    channel: 'staff',
+  },
 }
 
 export const getAvailableUpdate = async context => {
@@ -52,7 +58,12 @@ export const getAvailableUpdate = async context => {
 }
 
 export const getInstalledVersion = async context => {
-  const bundleId = RNDeviceInfo.getBundleId()
+  let bundleId = ''
+  if (Platform.OS === 'web') {
+    bundleId = 'chat.berty.macos'
+  } else {
+    bundleId = RNDeviceInfo.getBundleId()
+  }
 
   if (!updateApiSources.hasOwnProperty(bundleId)) {
     return null
@@ -60,6 +71,7 @@ export const getInstalledVersion = async context => {
 
   const { channel } = updateApiSources[bundleId]
   const deviceData = await DeviceInfos(context).fetch()
+
   const [rawVersionInfo] = deviceData.infos
     .filter(d => d.key === 'versions')
     .map(d => d.value)
@@ -78,7 +90,13 @@ export const getInstalledVersion = async context => {
 }
 
 export const getLatestVersion = async () => {
-  const bundleId = RNDeviceInfo.getBundleId()
+  console.log('la12')
+  let bundleId = ''
+  if (Platform.OS === 'web') {
+    bundleId = 'chat.berty.macos'
+  } else {
+    bundleId = RNDeviceInfo.getBundleId()
+  }
 
   if (!updateApiSources.hasOwnProperty(bundleId)) {
     return null
@@ -90,8 +108,13 @@ export const getLatestVersion = async () => {
     const timeoutId = setTimeout(() => {
       reject(new Error('timeouted'))
     }, 5000)
-
-    fetch(url)
+    console.log('fetching')
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+      },
+    })
       .then(res => res.json())
       .then(r => {
         clearTimeout(timeoutId)
@@ -101,7 +124,6 @@ export const getLatestVersion = async () => {
 
   try {
     const releases = await releasesTimeout
-
     if (!releases.master) {
       return null
     }
@@ -178,6 +200,8 @@ export const installUpdate = async installUrl => {
           position: 'top',
         })
       })
+  } else if (Platform.OS === 'web') {
+    CoreModule.installUpdate(installUrl)
   }
 }
 

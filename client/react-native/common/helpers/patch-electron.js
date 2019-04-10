@@ -46,6 +46,7 @@ if (Platform.OS === 'web' &&
     'setCurrentRoute',
     'getLocalGRPCInfos',
     'openURL',
+    'installUpdate',
   ]
 
   for (let op of ops) {

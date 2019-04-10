@@ -3,6 +3,11 @@ package coreinterface
 import (
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"os/exec"
+	"regexp"
 
 	"berty.tech/client/react-native/gomobile/core"
 	"go.uber.org/zap"
@@ -24,6 +29,69 @@ func getStorageDir() (string, error) {
 	}
 
 	return storageDirs[0].Path, nil
+}
+
+func InstallUpdate(url string) (interface{}, error) {
+	fmt.Printf("install update url %s\n\n", url)
+	out, err := os.Create("/tmp/bertydl.dmg")
+	if err != nil {
+		return nil, err
+	}
+	defer out.Close()
+
+	// Get the data
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// Check server response
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("bad status: %s", resp.Status)
+	}
+
+	// Writer the body to file
+	_, err = io.Copy(out, resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	// hdiutil attach /tmp/1234.dmg
+	cmd := exec.Command("hdiutil", "attach", "/tmp/bertydl.dmg")
+	stdout, err := cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+
+	reg := regexp.MustCompile(`.*?Apple_HFS.*?(\/.*?Berty.*?)[\n|$]`)
+	vol := reg.FindStringSubmatch(string(stdout))
+
+	if len(vol) <= 1 {
+		return nil, fmt.Errorf("can't find the right volumes")
+	}
+	// cp -rf //
+	cmd = exec.Command("cp", "-rf", vol[1]+"/Berty.app", "/Applications/.")
+	stdout, err = cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+
+	cmd = exec.Command("hdiutil", "detach", vol[1])
+	stdout, err = cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+
+	cmd = exec.Command("open", "/Applications/Berty.app")
+	stdout, err = cmd.CombinedOutput()
+	if err != nil {
+		return nil, err
+	}
+
+	os.Exit(0)
+
+	return nil, nil
 }
 
 func Initialize() (interface{}, error) {

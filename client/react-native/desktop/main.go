@@ -11,6 +11,7 @@ import (
 
 	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
+	"github.com/asticode/go-astilog"
 )
 
 // Vars
@@ -39,7 +40,7 @@ func main() {
 	logman.SetGlobal()
 
 	zap.L().Debug("Berty desktop client started")
-
+	astilog.SetDefaultLogger()
 	homepageUrl := "index.html"
 	if homepage != nil {
 		homepageUrl = *homepage
