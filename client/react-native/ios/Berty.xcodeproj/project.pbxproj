@@ -57,6 +57,8 @@
 		895E8DFE9E05494099380954 /* libRNNetworkInfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EE7976B0AA348DBB9137627 /* libRNNetworkInfo.a */; };
 		8D1BA426216CF8EA00FEF0AE /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA425216CF8EA00FEF0AE /* libcrypto.a */; };
 		8D1BA428216CF8F700FEF0AE /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D1BA427216CF8F700FEF0AE /* libssl.a */; };
+		8D43788B225796230098C024 /* ConnectivityUpdateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */; };
+		8DBAC6422256652C000AE0BC /* Reachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DBAC6412256652C000AE0BC /* Reachability.swift */; };
 		90E88BBFF04C4F05A6D26075 /* libRNDevMenu.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46D4617AEDB145E1B15B2216 /* libRNDevMenu.a */; };
 		990E84192226DCB100751E73 /* RCTLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 990E84182226DCB100751E73 /* RCTLog.swift */; };
 		990E845C2226DCCB00751E73 /* RCTSwiftLog.m in Sources */ = {isa = PBXBuildFile; fileRef = 990E845B2226DCCB00751E73 /* RCTSwiftLog.m */; };
@@ -688,6 +690,8 @@
 		836972A508FE484CAFBB6331 /* RNNetworkInfo.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNNetworkInfo.xcodeproj; path = "../node_modules/react-native-network-info/ios/RNNetworkInfo.xcodeproj"; sourceTree = "<group>"; };
 		8D1BA425216CF8EA00FEF0AE /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = ../../common/openssl/built/ios/libcrypto.a; sourceTree = "<group>"; };
 		8D1BA427216CF8F700FEF0AE /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = ../../common/openssl/built/ios/libssl.a; sourceTree = "<group>"; };
+		8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityUpdateHandler.swift; sourceTree = "<group>"; };
+		8DBAC6412256652C000AE0BC /* Reachability.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Reachability.swift; sourceTree = "<group>"; };
 		8E1D0314925B45DFBA2E4B6B /* Lottie.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = Lottie.xcodeproj; path = "../node_modules/lottie-ios/Lottie.xcodeproj"; sourceTree = "<group>"; };
 		990E84182226DCB100751E73 /* RCTLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RCTLog.swift; sourceTree = "<group>"; };
 		990E845A2226DCCB00751E73 /* RCTSwiftLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTSwiftLog.h; sourceTree = "<group>"; };
@@ -983,6 +987,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				8DBAC6412256652C000AE0BC /* Reachability.swift */,
 				F09B398321C02721000AA9A8 /* RCTCameraRoll.xcodeproj */,
 				480E37922190872400BE10A5 /* RCTPushNotification.xcodeproj */,
 				5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */,
@@ -1252,6 +1257,7 @@
 		F8799D742136F3A7003B9FD7 /* core */ = {
 			isa = PBXGroup;
 			children = (
+				8D43788A225796230098C024 /* ConnectivityUpdateHandler.swift */,
 				486CFCF921C8FE9F00E7113B /* Notification.swift */,
 				F8799D752136F3C5003B9FD7 /* CoreModule.m */,
 				F8799D782136F3EA003B9FD7 /* CoreModule.swift */,
@@ -2142,7 +2148,9 @@
 				990E84192226DCB100751E73 /* RCTLog.swift in Sources */,
 				F844DEC121E8C5FD00A810A1 /* AppDelegate.swift in Sources */,
 				F8799D7B2136F44E003B9FD7 /* CoreModule.swift in Sources */,
+				8D43788B225796230098C024 /* ConnectivityUpdateHandler.swift in Sources */,
 				F8799D7A2136F44B003B9FD7 /* CoreModule.m in Sources */,
+				8DBAC6422256652C000AE0BC /* Reachability.swift in Sources */,
 				486CFD2A21C8FE9F00E7113B /* Notification.swift in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				48E2A93E2177575C005C6F40 /* Logger.swift in Sources */,
