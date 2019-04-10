@@ -48,13 +48,15 @@ func UpdateNetworkConfig(jsonConf string) error {
 
 // Device network state related
 func UpdateConnectivityState(state string) {
-	defer panicHandler()
-
-	NetworkUpdater.UpdateConnectivityState(state)
+	go func() {
+		defer panicHandler()
+		NetworkUpdater.UpdateConnectivityState(state)
+	}()
 }
 
 func UpdateBluetoothState(state int) {
-	defer panicHandler()
-
-	NetworkUpdater.UpdateBluetoothState(state)
+	go func() {
+		defer panicHandler()
+		NetworkUpdater.UpdateBluetoothState(state)
+	}()
 }

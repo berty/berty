@@ -25,6 +25,7 @@ func (nu *NetworkUpdater) GetState() ConnectivityState {
 
 func (nu *NetworkUpdater) UpdateConnectivityState(connState string) {
 	var newState ConnectivityState
+	var wg sync.WaitGroup
 
 	if err := json.Unmarshal([]byte(connState), &newState); err != nil {
 		logger().Error("update connectivity state: JSON unmarshaling failed")
@@ -34,20 +35,17 @@ func (nu *NetworkUpdater) UpdateConnectivityState(connState string) {
 	nu.lock.Lock()
 
 	if newState.Internet != nu.state.Internet || newState.Internet == Unknown {
+		wg.Add(1)
 		go func() {
-			// Asynchronously call the time consuming function isInternetReachable() (ping latency/timeout)
 			if newState.Internet == Unknown {
-				if isInternetReachable() {
-					newState.Internet = On
-				} else {
-					newState.Internet = Off
-				}
+				newState.Internet = isInternetReachable()
 			}
 
 			if newState.Internet != nu.state.Internet {
 				nu.state.Internet = newState.Internet
 				nu.notif.notifyInternetChange(newState.Internet)
 			}
+			wg.Done()
 		}()
 	}
 
@@ -57,20 +55,19 @@ func (nu *NetworkUpdater) UpdateConnectivityState(connState string) {
 	}
 
 	if newState.MDNS != nu.state.MDNS || newState.MDNS == Unknown {
+		wg.Add(1)
 		go func() {
-			// Asynchronously call the time consuming function isMDNSCompatible() (ping latency/timeout)
-			if newState.MDNS == Unknown && newState.Network != UnknownNetType && newState.Network != Cellular {
-				if isMDNSCompatible() {
-					newState.MDNS = On
-				} else {
-					newState.MDNS = Off
-				}
+			if newState.Network == Cellular {
+				newState.MDNS = Off
+			} else if newState.MDNS == Unknown && newState.Network != UnknownNetType {
+				newState.MDNS = isMDNSCompatible()
 			}
 
 			if newState.MDNS != nu.state.MDNS {
 				nu.state.MDNS = newState.MDNS
 				nu.notif.notifyMDNSChange(newState.MDNS)
 			}
+			wg.Done()
 		}()
 	}
 
@@ -99,12 +96,20 @@ func (nu *NetworkUpdater) UpdateConnectivityState(connState string) {
 		nu.notif.notifyNetTypeChange(newState.Network)
 	}
 
+	wg.Wait()
+	nu.notif.notifyConnectivityChange(nu.state)
+
 	nu.lock.Unlock()
 }
 
 func (nu *NetworkUpdater) UpdateBluetoothState(bleState int) {
-	if State(bleState) != nu.state.Bluetooth {
-		nu.state.Bluetooth = State(bleState)
-		nu.notif.notifyBluetoothChange(State(bleState))
+	nu.lock.Lock()
+
+	if BleState(bleState) != nu.state.Bluetooth {
+		nu.state.Bluetooth = BleState(bleState)
+		nu.notif.notifyBluetoothChange(BleState(bleState))
+		nu.notif.notifyConnectivityChange(nu.state)
 	}
+
+	nu.lock.Unlock()
 }
