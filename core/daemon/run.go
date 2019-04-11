@@ -10,13 +10,12 @@ import (
 	"berty.tech/core/network"
 	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/banner"
-	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/logmanager"
 	"berty.tech/core/push"
 	"go.uber.org/zap"
 )
 
-func (d *Daemon) daemon(ctx context.Context, cfg *Config) error {
+func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) error {
 	var err error
 	a := &account.Account{}
 
@@ -24,13 +23,12 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config) error {
 		_ = logmanager.G().LogRotate()
 	}()
 
-	deviceinfo.SetStoragePath("/tmp")
 	accountOptions := account.Options{
 		// account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
 
-		account.WithJaegerAddrName("jaeger.berty.io:6831", cfg.Nickname+":mobile"),
+		account.WithJaegerAddrName("jaeger.berty.io:6831", accountName+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
-		account.WithName(cfg.Nickname),
+		account.WithName(accountName),
 		account.WithPassphrase(cfg.SqlOpts.Key),
 		account.WithDatabase(&account.DatabaseOptions{
 			Path: ".",

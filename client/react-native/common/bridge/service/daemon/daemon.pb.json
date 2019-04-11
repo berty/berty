@@ -26,7 +26,7 @@
                   "responseType": "GetPortResponse"
                 },
                 "Initialize": {
-                  "requestType": "Void",
+                  "requestType": "Config",
                   "responseType": "Void"
                 },
                 "IsBotRunning": {
@@ -50,7 +50,7 @@
                   "responseType": "Void"
                 },
                 "Start": {
-                  "requestType": "Config",
+                  "requestType": "StartRequest",
                   "responseType": "Void"
                 },
                 "StartBot": {
@@ -81,6 +81,14 @@
             },
             "Void": {
               "fields": {}
+            },
+            "StartRequest": {
+              "fields": {
+                "nickname": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
             },
             "NetworkConfig": {
               "fields": {
@@ -205,10 +213,6 @@
                 "SwarmKeyPath": {
                   "type": "string",
                   "id": 24
-                },
-                "nickname": {
-                  "type": "string",
-                  "id": 25
                 }
               }
             },

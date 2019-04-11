@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"flag"
 	"fmt"
@@ -8,6 +9,8 @@ import (
 
 	"berty.tech/client/react-native/desktop/coreinterface"
 	"berty.tech/core/daemon"
+	network_config "berty.tech/core/network/config"
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/logmanager"
 	"go.uber.org/zap"
 
@@ -40,11 +43,19 @@ func getStorageDir() (string, error) {
 }
 
 func main() {
+	storagePath, err := getStorageDir()
+	if err != nil {
+		panic(err)
+	}
 
-	storagePath, error := getStorageDir()
+	if err = deviceinfo.SetStoragePath(storagePath); err != nil {
+		panic(err)
+	}
+
+	fmt.Println(storagePath)
 	sqlConfig := &daemon.SQLConfig{
-		Path: opts.sql.path,
-		Key:  opts.sql.key,
+		Path: fmt.Sprintf("%s/%s", storagePath, "berty.state.db"),
+		Key:  "s3cur3",
 	}
 
 	config := &daemon.Config{
@@ -56,30 +67,28 @@ func main() {
 		InitOnly:         false,
 		WithBot:          false,
 		Notification:     true,
-		ApnsCerts:        nil,
-		ApnsDevVoipCerts: nil,
-		FcmAPIKeys:       nil,
-		PrivateKeyFile:   nil,
+		ApnsCerts:        []string{},
+		ApnsDevVoipCerts: []string{},
+		FcmAPIKeys:       []string{},
+		PrivateKeyFile:   "",
 		PeerCache:        true,
 		Identity:         "",
 		Bootstrap:        network_config.DefaultBootstrap,
 		NoP2P:            false,
 		BindP2P:          []string{},
 		TransportP2P:     []string{},
-		Hop:              false,
+		Hop:              true,
 		Ble:              true,
 		Mdns:             true,
 		DhtServer:        true,
 		PrivateNetwork:   true,
-		SwarmKeyPath:     true,
-		Nickname:         "berty-desktop",
+		SwarmKeyPath:     "",
 	}
 
 	// Init
 	flag.Parse()
 
 	t := true
-
 	logman, err := logmanager.New(logmanager.Opts{
 		RingSize:      10 * 1024 * 1024,
 		LogLevel:      "debug",
@@ -94,15 +103,30 @@ func main() {
 
 	zap.L().Debug("Berty desktop client started")
 	astilog.SetDefaultLogger()
+
 	homepageUrl := "index.html"
 	if homepage != nil {
 		homepageUrl = *homepage
+	}
+
+	startRequest := &daemon.StartRequest{
+		Nickname: "daemon-desktop",
 	}
 
 	d, err := NewDaemonDesktop()
 	if err != nil {
 		panic(err)
 	}
+
+	if err := d.Initialize(context.Background(), config); err != nil {
+		panic(err)
+	}
+
+	if _, err := d.bridge.Start(context.Background(), startRequest); err != nil {
+		panic(err)
+	}
+
+	zap.L().Debug("Berty desktop client started")
 
 	// Run bootstrap
 	logger().Debug(fmt.Sprintf("Running app built at %s", BuiltAt))

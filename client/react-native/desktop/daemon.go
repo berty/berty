@@ -13,26 +13,26 @@ import (
 )
 
 type DaemonDesktop struct {
-	daemon *daemon.Daemon
+	bridge *daemon.Daemon
 
 	server *grpc.Server
 	conn   *grpc.ClientConn
 }
 
 func NewDaemonDesktop() (*DaemonDesktop, error) {
-	daemon := daemon.New()
+	bridge := daemon.New()
 
 	iogrpc := helper.NewIOGrpc()
 	dialer := iogrpc.NewDialer()
-	listener := iogrpc.NewListener()
+	listener := iogrpc.Listener()
 
 	dialOpts := append([]grpc.DialOption{
 		grpc.WithInsecure(),
-		grpc.WithDialer(icdialer),
+		grpc.WithDialer(dialer),
 	})
 
 	gs := grpc.NewServer()
-	daemon.RegisterDaemonServer(gs, daemon)
+	daemon.RegisterDaemonServer(gs, bridge)
 
 	conn, err := grpc.Dial("", dialOpts...)
 	if err != nil {
@@ -45,12 +45,12 @@ func NewDaemonDesktop() (*DaemonDesktop, error) {
 		}
 	}()
 
-	return &NativeBridge{
-		daemon: daemon,
+	return &DaemonDesktop{
+		bridge: bridge,
 
 		server: gs,
 		conn:   conn,
-	}
+	}, nil
 }
 
 func stringPayload(message json.RawMessage) (string, error) {
@@ -63,13 +63,14 @@ func stringPayload(message json.RawMessage) (string, error) {
 	return payload, nil
 }
 
-func (d *DaemonDesktop) Start(ctx context.Context, cfg *daemon.Config) error {
-	return d.daemon.Start(ctx, cfg)
+func (d *DaemonDesktop) Initialize(ctx context.Context, req *daemon.Config) error {
+	_, err := d.bridge.Initialize(ctx, req)
+	return err
 }
 
 func (d *DaemonDesktop) handleMessages(_ *astilectron.Window, m bootstrap.MessageIn) (interface{}, error) {
-	method := m.name
-	encoded, err := stringPayload(m.payload)
+	method := m.Name
+	encoded, err := stringPayload(m.Payload)
 	if err != nil {
 		return nil, err
 	}
@@ -81,13 +82,13 @@ func (d *DaemonDesktop) handleMessages(_ *astilectron.Window, m bootstrap.Messag
 	return &res, nil
 }
 
-func (n *DaemonDesktop) Invoke(method string, msgIn string) (string, error) {
+func (d *DaemonDesktop) Invoke(method string, msgIn string) (string, error) {
 	in, err := helper.NewLazyMessage().FromBase64(msgIn)
 	if err != nil {
 		return "", err
 	}
 
 	out := helper.NewLazyMessage()
-	err := n.conn.Invoke(context.TODO(), method, in, out, helper.GrpcCallWithLazyCodec())
+	err = d.conn.Invoke(context.TODO(), method, in, out, helper.GrpcCallWithLazyCodec())
 	return out.Base64(), err
 }

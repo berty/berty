@@ -69,28 +69,33 @@ func getLocalIP() (string, error) {
 	return localIP, nil
 }
 
-func (d *Daemon) Start(ctx context.Context, cfg *Config) (*Void, error) {
+// @TODO: implem this
+func (d *Daemon) Initialize(ctx context.Context, cfg *Config) (*Void, error) {
+	d.config = cfg
+	return &Void{}, nil
+}
+
+func (d *Daemon) Start(ctx context.Context, req *StartRequest) (*Void, error) {
 	var err error
 
-	if cfg == nil {
-		return &Void{}, fmt.Errorf("core empty configuration")
+	if d.config == nil || d.config.SqlOpts == nil {
+		return &Void{}, errors.New("no config/SqlPath set, initialize first")
 	}
 
-	currentAccount, _ := account.Get(d.rootContext, cfg.Nickname)
+	currentAccount, _ := account.Get(d.rootContext, req.Nickname)
 	if currentAccount != nil {
 		// daemon already started, no errors to return
 		return &Void{}, fmt.Errorf("daemon already started")
 	}
 
-	d.accountName = cfg.Nickname
-	d.config = cfg
+	d.accountName = req.Nickname
 
 	initialState := account.StateDB{
 		BotMode:   initialBotMode,
 		LocalGRPC: initiallocalGRPC,
 	}
 
-	d.appConfig, err = account.OpenStateDB(cfg.SqlOpts.Path, initialState)
+	d.appConfig, err = account.OpenStateDB(d.config.SqlOpts.Path, initialState)
 	if err != nil {
 		return &Void{}, errors.Wrap(err, "state DB init failed")
 	}
@@ -103,7 +108,7 @@ func (d *Daemon) Start(ctx context.Context, cfg *Config) (*Void, error) {
 	var cctx context.Context
 	cctx, d.cancel = context.WithCancel(d.rootContext)
 
-	return &Void{}, d.daemon(cctx, cfg)
+	return &Void{}, d.daemon(cctx, d.config, req.Nickname)
 }
 
 func (d *Daemon) DropDatabase(ctx context.Context, v *Void) (*Void, error) {
@@ -171,15 +176,6 @@ func (d *Daemon) GetPort(context.Context, *Void) (*GetPortResponse, error) {
 	return &GetPortResponse{
 		Port: int32(ia),
 	}, nil
-}
-
-// @TODO: implem this
-func (d *Daemon) Initialize(context.Context, *Void) (*Void, error) {
-	// if err := setupLogger("debug", datastorePath, d.Logger); err != nil {
-	//      return err
-	// }
-
-	return &Void{}, fmt.Errorf("not implemented")
 }
 
 func (d *Daemon) IsBotRunning(context.Context, *Void) (*Void, error) {

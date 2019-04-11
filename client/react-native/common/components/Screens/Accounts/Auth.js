@@ -81,12 +81,12 @@ class Auth extends PureComponent {
     return test
   }
 
-  init = async () => {
+  init = async (config) => {
     const { t, bridge } = this.props
 
     this.setState({ loading: true, message: t('core.initializing') })
     try {
-      await bridge.initialize({})
+      await bridge.initialize(config)
     } catch (err) {
       console.warn('initialize', err)
     }
@@ -105,14 +105,14 @@ class Auth extends PureComponent {
     }
   }
 
-  start = async config => {
+  start = async nickname => {
     const { t, bridge } = this.props
 
     this.setState({ loading: true, message: t('daemon.initializing') })
     try {
-      await bridge.start(config)
+      await bridge.start({ nickname })
     } catch (error) {
-      throw error
+      console.warn(error)
     }
   }
 
@@ -133,7 +133,7 @@ class Auth extends PureComponent {
       nickname = list[0]
     }
 
-    // await this.start(nickname) // @FIXME: implement this later
+    await this.start(nickname) // @FIXME: implement this later
     const context = await this.getRelayContext()
     getAvailableUpdate(context).then(update => {
       this.props.updateContext.setState(update)

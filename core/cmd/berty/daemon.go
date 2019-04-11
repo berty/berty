@@ -202,7 +202,10 @@ func runDaemon(opts *daemonOptions) error {
 		DhtServer:        opts.dhtServer,
 		PrivateNetwork:   opts.PrivateNetwork,
 		SwarmKeyPath:     opts.SwarmKeyPath,
-		Nickname:         opts.nickname,
+	}
+
+	startRequest := &daemon.StartRequest{
+		Nickname: opts.nickname,
 	}
 
 	dlogger := zap.L().Named("daemon.grpc")
@@ -233,7 +236,11 @@ func runDaemon(opts *daemonOptions) error {
 		d.Notification = notification.NewDesktopNotification()
 	}
 
-	if _, err := d.Start(context.Background(), config); err != nil {
+	if _, err := d.Initialize(context.Background(), config); err != nil {
+		return err
+	}
+
+	if _, err := d.Start(context.Background(), startRequest); err != nil {
 		return err
 	}
 

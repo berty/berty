@@ -9,13 +9,13 @@ service Daemon {
   rpc GetLocalGrpcInfos (Void) returns (Void) {};
   rpc GetNetworkConfig (Void) returns (NetworkConfig) {};
   rpc GetPort (Void) returns (GetPortResponse) {};
-  rpc Initialize (Void) returns (Void) {};
+  rpc Initialize (Config) returns (Void) {};
   rpc IsBotRunning (Void) returns (Void) {};
   rpc ListAccounts (Void) returns (ListAccountsResponse) {};
   rpc Panic (Void) returns (Void) {};
   rpc Restart (Void) returns (Void) {};
   rpc SetCurrentRoute (Void) returns (Void) {};
-  rpc Start (Config) returns (Void) {};
+  rpc Start (StartRequest) returns (Void) {};
   rpc StartBot (Void) returns (Void) {};
   rpc StartLocalGRPC (Void) returns (Void) {};
   rpc StopBot (Void) returns (Void) {};
@@ -25,6 +25,10 @@ service Daemon {
 }
 
 message Void {}
+
+message StartRequest {
+  string nickname = 1;
+}
 
 // @TODO: switch to protobuf message instead of json
 message NetworkConfig {
@@ -64,7 +68,6 @@ message Config {
 	bool dhtServer = 22;
 	bool PrivateNetwork = 23;
 	string SwarmKeyPath = 24;
-	string nickname = 25;
 }
 
 // @TODO: list all ports available

@@ -127,7 +127,7 @@ func Start(nickname string) (interface{}, error) {
 	cfg = cfg.WithNickname(nickname)
 	cfg = cfg.WithLoggerDriver(&CliLogger{})
 
-	return nil, core.Start(cfg)
+	return nil, fmt.Errorf("cannot start client")
 }
 
 func Restart() (interface{}, error) {
