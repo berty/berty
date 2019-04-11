@@ -104,7 +104,7 @@ generate: .generated
 		--workdir="/go/src/$(GO_ROOT_PKG)" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v8 \
+		bertychat/protoc:v9 \
 		-xec 'make IGNORE_GQLGEN=$(IGNORE_GQLGEN) generate_local'
 	touch $@
 
