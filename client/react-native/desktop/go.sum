@@ -635,6 +635,8 @@ github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa h1:E+gaaifz
 github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa/go.mod h1:2RVY1rIf+2J2o/IM9+vPq9RzmHDSseB7FoXiSNIUsoU=
 github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d/go.mod h1:UdhH50NIW0fCiwBSr0co2m7BnFLdv4fQTgdqdJTHFeE=
 github.com/sourcegraph/syntaxhighlight v0.0.0-20170531221838-bd320f5d308e/go.mod h1:HuIsMU8RRBOtsCgI77wP899iHVBQpCmg4ErYMZB+2IA=
+github.com/sparrc/go-ping v0.0.0-20181106165434-ef3ab45e41b0 h1:mu7brOsdaH5Dqf93vdch+mr/0To8Sgc+yInt/jE/RJM=
+github.com/sparrc/go-ping v0.0.0-20181106165434-ef3ab45e41b0/go.mod h1:eMyUVp6f/5jnzM+3zahzl7q6UXLbgSc3MKg/+ow9QW0=
 github.com/spf13/afero v1.1.2/go.mod h1:j4pytiNVoe2o6bmDsKpLACNPDBIoEAkihy7loJ1B0CQ=
 github.com/spf13/afero v1.2.0/go.mod h1:9ZxEEn6pIJ8Rxe320qSDBk6AsU0r9pR7Q4OcevTdifk=
 github.com/spf13/cast v1.2.0/go.mod h1:r2rcYCSwa1IExKTDiTfzaxqT2FNHs8hODu4LnUfgKEg=

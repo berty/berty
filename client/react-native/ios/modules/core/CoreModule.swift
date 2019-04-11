@@ -18,6 +18,7 @@ var logger = Logger("chat.berty.io", "CoreModule")
 
 @objc(CoreModule)
 class CoreModule: NSObject {
+  let connectivity = ConnectivityUpdateHandler()
 
   @objc func initialize(_ resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     var err: NSError?

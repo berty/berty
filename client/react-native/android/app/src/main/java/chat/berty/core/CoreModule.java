@@ -10,6 +10,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactMethod;
+
 import chat.berty.core.notification.NotificationNative;
 import core.Core;
 import core.MobileNotification;
@@ -21,6 +22,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
+    private ConnectivityUpdateHandler connectivity;
 
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -33,6 +35,8 @@ public class CoreModule extends ReactContextBaseJavaModule {
             logger.format(Level.ERROR, this.getName(), error.getMessage());
         }
         this.notificationDriver.setNative(new NotificationNative());
+
+        connectivity = new ConnectivityUpdateHandler(reactContext);
 
         // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
         // See https://facebook.github.io/react-native/docs/native-modules-android

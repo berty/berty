@@ -80,6 +80,7 @@ require (
 	github.com/sideshow/apns2 v0.0.0-20181014012405-060d44b53d05
 	github.com/smartystreets/assertions v0.0.0-20190215210624-980c5ac6f3ac // indirect
 	github.com/smartystreets/goconvey v0.0.0-20190222223459-a17d461953aa
+	github.com/sparrc/go-ping v0.0.0-20181106165434-ef3ab45e41b0
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.3.1
