@@ -26,7 +26,7 @@ type notifier struct {
 func (nr *notifier) notifyConnectivityChange(cs ConnectivityState) {
 	nr.lock.Lock()
 
-	logger().Info("connectivity state change:",
+	logger().Debug("connectivity state change:",
 		zap.String("Internet", StateToString(cs.Internet)),
 		zap.String("VPN", StateToString(cs.VPN)),
 		zap.String("MDNS", StateToString(cs.MDNS)),
@@ -132,12 +132,12 @@ func (nr *notifier) notifyCellTypeChange(c CellType) {
 	nr.lock.Unlock()
 }
 
-func (nr *notifier) notifyBluetoothChange(b State) {
+func (nr *notifier) notifyBluetoothChange(s State) {
 	nr.lock.Lock()
 
-	logger().Debug("notify bluetooth state change:", zap.String("new state", StateToString(b)))
+	logger().Debug("notify bluetooth state change:", zap.String("new state", StateToString(s)))
 	for _, notifee := range nr.notifees {
-		notifee.HandleBluetoothChange(b)
+		notifee.HandleBluetoothChange(s)
 	}
 
 	nr.lock.Unlock()

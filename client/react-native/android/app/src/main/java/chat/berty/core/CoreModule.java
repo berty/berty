@@ -22,7 +22,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
-    private ConnectivityUpdateHandler netState;
+    private ConnectivityUpdateHandler connectivity;
 
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -36,7 +36,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
         }
         this.notificationDriver.setNative(new NotificationNative());
 
-        netState = new ConnectivityUpdateHandler(reactContext);
+        connectivity = new ConnectivityUpdateHandler(reactContext);
 
         // TODO: Get rid of this and make a proper react-native module that extends ReactContextBaseJavaModule
         // See https://facebook.github.io/react-native/docs/native-modules-android

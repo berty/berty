@@ -86,10 +86,13 @@ func (nu *NetworkUpdater) UpdateConnectivityState(connState string) {
 		nu.notif.notifyTrustedChange(newState.Trusted)
 	}
 
-	if (newState.Network != nu.state.Network || newState.Cellular != nu.state.Cellular) && newState.Network == Cellular {
-		nu.notif.notifyCellTypeChange(newState.Cellular)
+	if newState.Network != Cellular {
+		newState.Cellular = None
 	}
-	nu.state.Cellular = newState.Cellular
+	if newState.Cellular != nu.state.Cellular {
+		nu.notif.notifyCellTypeChange(newState.Cellular)
+		nu.state.Cellular = newState.Cellular
+	}
 
 	if newState.Network != nu.state.Network {
 		nu.state.Network = newState.Network
@@ -112,4 +115,12 @@ func (nu *NetworkUpdater) UpdateBluetoothState(bleState int) {
 	}
 
 	nu.lock.Unlock()
+}
+
+func (nu *NetworkUpdater) RegisterNotifee(ne Notifee) {
+	nu.notif.RegisterNotifee(ne)
+}
+
+func (nu *NetworkUpdater) UnregisterNotifee(ne Notifee) {
+	nu.notif.UnregisterNotifee(ne)
 }

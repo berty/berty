@@ -6,6 +6,7 @@ import (
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/network"
 	network_config "berty.tech/core/network/config"
+	"berty.tech/core/network/state"
 )
 
 // Berty network config related
@@ -47,16 +48,16 @@ func UpdateNetworkConfig(jsonConf string) error {
 }
 
 // Device network state related
-func UpdateConnectivityState(state string) {
+func UpdateConnectivityState(newState string) {
 	go func() {
 		defer panicHandler()
-		NetworkUpdater.UpdateConnectivityState(state)
+		state.Global().UpdateConnectivityState(newState)
 	}()
 }
 
-func UpdateBluetoothState(state int) {
+func UpdateBluetoothState(newState int) {
 	go func() {
 		defer panicHandler()
-		NetworkUpdater.UpdateBluetoothState(state)
+		state.Global().UpdateBluetoothState(newState)
 	}()
 }
