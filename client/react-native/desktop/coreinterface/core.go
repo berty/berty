@@ -32,7 +32,6 @@ func getStorageDir() (string, error) {
 }
 
 func InstallUpdate(url string) (interface{}, error) {
-	fmt.Printf("install update url %s\n\n", url)
 	out, err := os.Create("/tmp/bertydl.dmg")
 	if err != nil {
 		return nil, err
@@ -57,6 +56,10 @@ func InstallUpdate(url string) (interface{}, error) {
 		return nil, err
 	}
 
+	_, err = exec.LookPath("hdiutil")
+	if err != nil {
+		return nil, err
+	}
 	// hdiutil attach /tmp/1234.dmg
 	cmd := exec.Command("hdiutil", "attach", "/tmp/bertydl.dmg")
 	stdout, err := cmd.CombinedOutput()

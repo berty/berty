@@ -58,12 +58,7 @@ export const getAvailableUpdate = async context => {
 }
 
 export const getInstalledVersion = async context => {
-  let bundleId = ''
-  if (Platform.OS === 'web') {
-    bundleId = 'chat.berty.macos'
-  } else {
-    bundleId = RNDeviceInfo.getBundleId()
-  }
+  const bundleId = RNDeviceInfo.getBundleId()
 
   if (!updateApiSources.hasOwnProperty(bundleId)) {
     return null
@@ -90,13 +85,7 @@ export const getInstalledVersion = async context => {
 }
 
 export const getLatestVersion = async () => {
-  console.log('la12')
-  let bundleId = ''
-  if (Platform.OS === 'web') {
-    bundleId = 'chat.berty.macos'
-  } else {
-    bundleId = RNDeviceInfo.getBundleId()
-  }
+  const bundleId = RNDeviceInfo.getBundleId()
 
   if (!updateApiSources.hasOwnProperty(bundleId)) {
     return null
@@ -108,7 +97,7 @@ export const getLatestVersion = async () => {
     const timeoutId = setTimeout(() => {
       reject(new Error('timeouted'))
     }, 5000)
-    console.log('fetching')
+
     fetch(url, {
       method: 'GET',
       headers: {

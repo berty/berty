@@ -1,10 +1,15 @@
 import { NativeModules, Platform } from 'react-native'
+import RNDeviceInfo from 'react-native-device-info'
 
 if (Platform.OS === 'web' &&
   window.navigator && window.navigator.userAgent && window.navigator.userAgent.toLowerCase().indexOf('electron') !== -1
 ) {
   Platform.Desktop = true
   const CoreModule = {}
+
+  RNDeviceInfo.getBundleId = () => {
+    return 'chat.berty.macos'
+  }
 
   let asyncActionQueue = []
 
