@@ -19,12 +19,12 @@ import core.MobileNotification;
 import chat.berty.ble.BleManager;
 
 public class CoreModule extends ReactContextBaseJavaModule {
-    private NativeBridge daemon = new NativeBridge()
     private Logger logger = new Logger("chat.berty.io");
 
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
     private ConnectivityUpdateHandler connectivity;
+    NativeBridge daemon = Core.newNativeBridge();
 
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -66,177 +66,24 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public Invoke(method string, message string, Promise promise) {
-        try {
-            String data = this.daemon.Invoke(method, message);
-            promise.resolve(data);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to list accounts: %s", err);
-            promise.reject(err);
-        }
-    }
-
-
-    @ReactMethod
-    public void listAccounts(Promise promise) {
-        try {
-            String data = Core.listAccounts();
-            promise.resolve(data);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to list accounts: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void initialize(Promise promise) {
-        try {
-            Core.initialize(this.logger, Core.getDeviceInfo().getStoragePath());
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to init core: %s", err);
-            promise.reject(err);
-        }
-    }
-
-
-    @ReactMethod
-    public void start(String nickname, Promise promise) {
-        try {
-            core.MobileOptions coreOptions = new core.MobileOptions()
-                    .withNickname(nickname)
-                    .withLoggerDriver(this.logger);
-
-            Core.start(coreOptions);
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to start core: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void restart(Promise promise) {
-        try {
-            Core.restart();
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to restart core: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void panic(Promise promise) throws Exception {
-        Core.panic();
-        promise.resolve(null);
+    public void Invoke(String method, String message, Promise promise) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String data = daemon.invoke(method, message);
+                    promise.resolve(data);
+                } catch (Exception err) {
+                    logger.format(Level.ERROR, getName(), "Invoke daemon failed: %s", err);
+                    promise.reject(err);
+                }
+            }
+        }).start();
     }
 
     @ReactMethod
     public void throwException() throws Exception {
         throw new Exception("thrown exception");
-    }
-
-    @ReactMethod
-    public void dropDatabase(Promise promise) {
-        try {
-            Core.dropDatabase();
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to drop database: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void getPort(Promise promise) {
-        try {
-            Long data = Core.getPort();
-            promise.resolve(data.toString());
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to get port: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void getNetworkConfig(Promise promise) {
-        try {
-            promise.resolve(Core.getNetworkConfig());
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to get network config: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void updateNetworkConfig(String config, Promise promise) {
-        try {
-            Core.updateNetworkConfig(config);
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to update network config: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void isBotRunning(Promise promise) {
-        promise.resolve(Core.isBotRunning());
-    }
-
-    @ReactMethod
-    public void startBot(Promise promise) {
-        try {
-            Core.startBot();
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to update start bot: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void stopBot(Promise promise) {
-        try {
-            Core.stopBot();
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to update stop bot: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void getLocalGRPCInfos(Promise promise) {
-        promise.resolve(Core.getLocalGRPCInfos());
-    }
-
-    @ReactMethod
-    public void startLocalGRPC(Promise promise) {
-        try {
-            Core.startLocalGRPC();
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to update start local gRPC: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void stopLocalGRPC(Promise promise) {
-        try {
-            Core.stopLocalGRPC();
-            promise.resolve(null);
-        } catch (Exception err) {
-            this.logger.format(Level.ERROR, this.getName(), "Unable to update stop local gRPC: %s", err);
-            promise.reject(err);
-        }
-    }
-
-    @ReactMethod
-    public void setCurrentRoute(String route) {
-        Core.getDeviceInfo().setAppRoute(route);
     }
 
     @ReactMethod
