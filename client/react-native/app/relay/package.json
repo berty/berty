@@ -1,0 +1,11 @@
+{
+  "name": "@berty/relay",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@berty/view": "^0.0.1"
+  }
+}
+

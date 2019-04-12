@@ -249,6 +249,7 @@ module.exports = {
           },
         ],
         include: paths.appSrc,
+        exclude: /node_modules/,
       },
       // See: https://github.com/aws/aws-amplify/issues/686#issuecomment-387710340
       {
@@ -276,6 +277,7 @@ module.exports = {
           {
             test: /\.(js|mjs|jsx)$/,
             include: [paths.appSrc],
+            exclude: /node_modules/,
             loader: require.resolve('babel-loader'),
             options: {
               presets: [
@@ -284,7 +286,13 @@ module.exports = {
               ],
               plugins: [
                 'react-native-web',
-                require.resolve('babel-plugin-transform-inline-environment-variables'),
+                [
+                  require.resolve('@babel/plugin-proposal-decorators'),
+                  { legacy: true },
+                ],
+                require.resolve(
+                  'babel-plugin-transform-inline-environment-variables'
+                ),
                 require.resolve('@babel/plugin-proposal-export-namespace-from'),
                 require.resolve('babel-plugin-relay'),
                 [
@@ -311,11 +319,13 @@ module.exports = {
             include: [
               /node_modules\/react-native.*/,
               /node_modules\/react-navigation/,
+              /node_modules\/@react-navigation\/native/,
+              /node_modules\/@react-navigation\/core/,
               /node_modules\/cavy/,
             ],
             loader: require.resolve('babel-loader'),
             options: {
-              babelrc: false,
+              babelrc: true,
               configFile: false,
               compact: false,
               presets: [

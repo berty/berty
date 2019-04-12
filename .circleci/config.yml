@@ -15,16 +15,16 @@ references:
   master_version: &master_version
     run:
       name: retrieve master version
+      working_directory: ~/go/src/berty.tech
       command: |
-        no_repo=false
+        mkdir -p ~/.ssh
         if [ ! -e .git ]; then
-          no_repo=true
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
           git init
           git remote add origin git@github.com:berty/berty
         fi
         git fetch origin master
         echo $(git rev-list --count origin/master) > /tmp/master_version
-        [ $no_repo = true ] && rm -rf .git || true
 
   install_retry: &install_retry
     run:
@@ -68,7 +68,7 @@ references:
           make deps
         fi
         brew install dylibbundler
-        yarn global add electron-builder
+        sudo npm install --global electron-builder
 
 jobs:
   lint:
@@ -99,7 +99,7 @@ jobs:
 
   generate:
     docker:
-      - image: bertychat/protoc:v9
+      - image: bertychat/protoc:v10
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go
@@ -252,13 +252,13 @@ jobs:
   client.rn.node:
     working_directory: ~/go/src/berty.tech
     docker:
-      - image: circleci/node:8
+      - image: circleci/node:latest
     steps:
 
       - *install_retry
       - checkout
       - restore_cache:
-          key: yarn-v1-{{ checksum "client/react-native/yarn.lock" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/react-native/package-lock.json" }}-{{ arch }}
 
       - restore_cache:
           key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
@@ -270,9 +270,9 @@ jobs:
             /tmp/retry -m 3 make deps
 
       - save_cache:
-          key: yarn-v1-{{ checksum "client/react-native/yarn.lock" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/react-native/package-lock.json" }}-{{ arch }}
           paths:
-            - ~/.cache/yarn
+            - ~/.cache/npm
 
       - save_cache:
           key: node-v1-{{ checksum "client/react-native/package.json" }}-{{ arch }}
@@ -286,7 +286,7 @@ jobs:
             - client/react-native/node_modules
 
   client.rn.android:
-    working_directory: ~/go/src/berty.tech/client/react-native/android
+    working_directory: ~/go/src/berty.tech
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
@@ -296,6 +296,11 @@ jobs:
     docker:
       - image: bertychat/android-ci:v3
     steps:
+
+      - *master_version
+      - restore_cache:
+          key: android-{{checksum "/tmp/master_version"}}
+
       - checkout:
           path: ~/go/src/berty.tech/
 
@@ -309,9 +314,8 @@ jobs:
 
       - run:
           name: gomobile android build
-          command: |
-            cd ../gomobile
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
+          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
       - restore_cache:
           key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
@@ -356,7 +360,7 @@ jobs:
           path: /tmp/fl
 
   client.rn.android-beta:
-    working_directory: ~/go/src/berty.tech/client/react-native/android
+    working_directory: ~/go/src/berty.tech
     environment:
       FASTLANE_SKIP_UPDATE_CHECK: 1
       FASTLANE_HIDE_CHANGELOG: 1
@@ -379,9 +383,8 @@ jobs:
 
       - run:
           name: gomobile android build
-          command: |
-            cd ../gomobile
-            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
+          working_directory: ~/go/src/berty.tech/client/react-native/gomobile
+          command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
       - restore_cache:
           key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
@@ -416,6 +419,14 @@ jobs:
           name: build app
           working_directory: ~/go/src/berty.tech/client/react-native
           command: find gomobile/vendor -name package.json -delete; /tmp/retry -m 3 make fastlane.android.yolo
+
+      - *master_version
+      - save_cache:
+          key: android-{{checksum "/tmp/master_version"}}
+          paths:
+            - ~/go/pkg
+            - ~/go/src
+            - ~/go-install
 
       - store_artifacts:
           path: /tmp/fl
@@ -476,9 +487,9 @@ jobs:
           command: make version.ios
 
       - run:
-          name: install fsevents
+          name: make deps
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 yarn add fsevents && yarn upgrade fsevents
+          command: /tmp/retry -m 3 make deps
 
       - run:
           name: add environment
@@ -551,9 +562,9 @@ jobs:
           command: make version.ios
 
       - run:
-          name: install fsevents
+          name: make deps
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 yarn add fsevents && yarn upgrade fsevents
+          command: /tmp/retry -m 3 make deps
 
       - run:
           name: add environment
@@ -592,27 +603,30 @@ jobs:
           at: ~/go/src/berty.tech/
 
       - restore_cache:
-          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
 
       - restore_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+          key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
 
-      - run: cd client/react-native/web && /tmp/retry -m 3 yarn
+      - run:
+          name: bootstrap dependencies
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 make deps
 
       - save_cache:
-          key: yarn-v1-{{ checksum "client/react-native/web/yarn.lock" }}-{{ arch }}
+          key: npm-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
           paths:
-            - ~/.cache/yarn
+            - ~/.cache/npm
 
       - save_cache:
-          key: node-v1-{{ checksum "client/react-native/web/package.json" }}-{{ arch }}
+          key: node-v1-{{ checksum "client/react-native/web/package-lock.json" }}-{{ arch }}
           paths:
             - node_modules
 
       - run:
           name: build web app
-          working_directory: ~/go/src/berty.tech/client/react-native/web
-          command: /tmp/retry -m 3 yarn build
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 ./node_modules/.bin/lerna run --stream build --scope=@berty/web
 
       - persist_to_workspace:
           root: ~/go/src/berty.tech/

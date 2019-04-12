@@ -1,0 +1,10 @@
+{
+  "name": "@berty/store",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "mobx": "^5.9.4"
+  }
+}

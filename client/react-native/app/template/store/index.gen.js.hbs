@@ -1,0 +1,121 @@
+{{~#if (contains filename "api/node/service.proto")~}}
+
+import { observable, action, computed, flow } from 'mobx'
+import EntityStore from './entity'
+import ServiceStore from './service'
+
+  {{#with (lookup 'berty.node.CommitLog')}}
+    {{#with fields.entity.resolvedType}}
+      {{#each fields}}
+        {{#with resolvedType}}
+          {{#if fields.id}}
+
+            export class {{name}} {
+                {{#each fields}}
+                  {{#if (and resolvedType (get (case 'camel' type) ../../../fields))}}
+                    @computed get {{name}} () {
+                      {{#if repeated}}
+                        return Object.values(this.store.entity.{{case 'camel' type}}).filter(
+                          _ => _.{{case 'camel' ../name}}Id === this.id
+                        )
+                      {{else}}
+                        return this.store.entity.{{case 'camel' type}}.map[this.{{name}}Id]
+                      {{/if}}
+                    }
+                  {{else}}
+                    {{#if repeated}}
+                      @observable {{name}} = []
+                    {{else}}
+                      @observable {{name}} = null
+                    {{/if}}
+                  {{/if}}
+                  {{!each commitlog.entity.fields}}
+                {{/each}}
+            }
+          {{/if}}
+        {{/with}}
+      {{/each}}
+    {{/with}}
+  {{/with}}
+
+  {{#with (lookup 'berty.node.Service')}}
+      export class NodeServiceStore extends ServiceStore {
+        constructor (store, bridge) {
+          super(store, bridge, 'NodeServiceStore')
+        }
+
+        {{#each methods}}
+          {{#if responseStream}}
+
+            {{case 'camel' name}} = flow(async function * (input) {
+              for await (const output of this.bridge.{{case 'camel' name}}(input)) {
+                {{#if (is name 'CommitLogStream')}}
+                  Object.keys(output.entity).forEach(
+                    key => {
+                      if (output.entity !== null) {
+                        switch (output.operation) {
+                          case 0:
+                            this.store[`${key}Store`].create(output.entity)
+                          case 1:
+                            this.store[`${key}Store`].update(output.entity)
+                          case 3:
+                            this.store[`${key}Store`].delete(output.entity)
+                          default:
+                            throw new Error('operation is not defined')
+                        }
+                      }
+                    }
+                  )
+                {{/if}}
+                {{#if resolvedResponseType}}
+                  {{#with (lookup 'berty.node.CommitLog')}}
+                    {{#with fields.entity.resolvedType}}
+                      {{#with (get (case 'camel' ../../resolvedResponseType.name) fields)}}
+                        if (this.store.entity.{{case 'camel' name}}.map[output.id]) {
+                          this.store.entity.{{case 'camel' name}}.update(output)
+                        } else {
+                          this.store.entity.{{case 'camel' name}}.add(output)
+                        }
+                      {{/with}}
+                    {{/with}}
+                  {{/with}}
+                {{/if}}
+                // See if yield block execution of stream
+                yield output
+              }
+            })
+          {{else}}
+
+            @action async {{case 'camel' name}} (input) {
+              return this.bridge.{{case 'camel' name}}(input)
+            }
+          {{/if}}
+        {{/each}}
+      }
+    {{/with}}
+
+    export class Store {
+      constructor (bridge) {
+        this.bridge = bridge
+      }
+
+      entity = {
+        {{#with (lookup 'berty.node.CommitLog')}}
+          {{#with fields.entity.resolvedType}}
+            {{#each fields}}
+              {{#with resolvedType}}
+                {{#if fields.id}}
+                  {{case 'camel' name}}: new EntityStore(this, {{name}}),
+                {{/if}}
+              {{/with}}
+            {{/each}}
+          {{/with}}
+        {{/with}}
+      }
+
+      service = {
+        node: new NodeServiceStore(this, this.bridge),
+      }
+    }
+
+{{~/if~}}
