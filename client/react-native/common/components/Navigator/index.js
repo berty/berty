@@ -56,23 +56,25 @@ class Navigator extends PureComponent {
     const { navigation } = this.props
 
     return (
-      <AppNavigator
-        {...this.props}
-        ref={() => {
-          if (Platform.OS !== 'web') {
-            this.navigation = navigation
-            NavigationService.setTopLevelNavigator(navigation)
-          }
-        }}
-        onNavigationStateChange={(prevState, currentState) => {
-          const currentRoute = getActiveRoute(currentState)
-          const prevRoute = getActiveRoute(prevState)
-          if (prevRoute !== currentRoute) {
-            CoreModule.setCurrentRoute(getURIFromRoute(currentRoute))
-            this.setState(currentRoute)
-          }
-        }}
-      />
+      <NavigatorContext.Provider value={this.state}>
+        <AppNavigator
+          {...this.props}
+          ref={() => {
+            if (Platform.OS !== 'web') {
+              this.navigation = navigation
+              NavigationService.setTopLevelNavigator(navigation)
+            }
+          }}
+          onNavigationStateChange={(prevState, currentState) => {
+            const currentRoute = getActiveRoute(currentState)
+            const prevRoute = getActiveRoute(prevState)
+            if (prevRoute !== currentRoute) {
+              CoreModule.setCurrentRoute(getURIFromRoute(currentRoute))
+              this.setState(currentRoute)
+            }
+          }}
+        />
+      </NavigatorContext.Provider>
     )
   }
 }
@@ -80,4 +82,3 @@ class Navigator extends PureComponent {
 export default (Platform.OS !== 'web'
   ? createAppContainer(Navigator)
   : Navigator)
-
