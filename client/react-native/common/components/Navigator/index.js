@@ -1,9 +1,11 @@
-import { NativeModules } from 'react-native'
+import { NativeModules, Platform } from 'react-native'
 import { atob } from 'b64-lite'
 import React, { PureComponent } from 'react'
+import { createAppContainer } from 'react-navigation'
 
+import NavigationService from './../../helpers/NavigationService'
 import { NavigatorContext } from './NavigatorContext'
-import AppNavigator from './AppNavigator'
+import { AppNavigator } from './AppNavigator'
 
 const { CoreModule } = NativeModules
 
@@ -46,26 +48,36 @@ const getURIFromRoute = route => {
 }
 
 class Navigator extends PureComponent {
+  static router = AppNavigator.router
+
   state = {}
 
   render () {
-    const { screenProps, ...props } = this.props
+    const { navigation } = this.props
+
     return (
-      <NavigatorContext.Provider value={this.state}>
-        <AppNavigator
-          {...props}
-          onNavigationStateChange={(prevState, currentState) => {
-            const currentRoute = getActiveRoute(currentState)
-            const prevRoute = getActiveRoute(prevState)
-            if (prevRoute !== currentRoute) {
-              CoreModule.setCurrentRoute(getURIFromRoute(currentRoute))
-              this.setState(currentRoute)
-            }
-          }}
-        />
-      </NavigatorContext.Provider>
+      <AppNavigator
+        {...this.props}
+        ref={() => {
+          if (Platform.OS !== 'web') {
+            this.navigation = navigation
+            NavigationService.setTopLevelNavigator(navigation)
+          }
+        }}
+        onNavigationStateChange={(prevState, currentState) => {
+          const currentRoute = getActiveRoute(currentState)
+          const prevRoute = getActiveRoute(prevState)
+          if (prevRoute !== currentRoute) {
+            CoreModule.setCurrentRoute(getURIFromRoute(currentRoute))
+            this.setState(currentRoute)
+          }
+        }}
+      />
     )
   }
 }
 
-export default Navigator
+export default (Platform.OS !== 'web'
+  ? createAppContainer(Navigator)
+  : Navigator)
+
