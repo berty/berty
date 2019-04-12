@@ -95,7 +95,9 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 		accountOptions = append(accountOptions, account.WithBot())
 	}
 
-	accountOptions = append(accountOptions, account.WithNotificationDriver(d.Notification))
+	if d.Notification != nil {
+		accountOptions = append(accountOptions, account.WithNotificationDriver(d.Notification))
+	}
 
 	pushDispatchers, err := listPushDispatchers(cfg)
 	if err != nil {
@@ -116,6 +118,16 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 	err = a.Open(ctx)
 	if err != nil {
 		return err
+	}
+
+	if d.appConfig.LocalGRPC {
+		_, err = d.StartLocalGRPC(ctx, &Void{})
+		if err != nil {
+			logger().Error(err.Error())
+			d.appConfig.LocalGRPC = false
+		}
+		// Continue if local gRPC fails (e.g wifi not connected)
+		// Still re-enableable via toggle in devtools
 	}
 
 	go func() {

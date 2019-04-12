@@ -6,11 +6,11 @@ option go_package = "berty.tech/core/daemon";
 
 service Daemon {
   rpc DropDatabase (Void) returns (Void) {};
-  rpc GetLocalGrpcInfos (Void) returns (Void) {};
+  rpc GetLocalGrpcInfos (Void) returns (GRPCInfos) {};
   rpc GetNetworkConfig (Void) returns (NetworkConfig) {};
   rpc GetPort (Void) returns (GetPortResponse) {};
   rpc Initialize (Config) returns (Void) {};
-  rpc IsBotRunning (Void) returns (Void) {};
+  rpc GetBotState (Void) returns (BotState) {};
   rpc ListAccounts (Void) returns (ListAccountsResponse) {};
   rpc Panic (Void) returns (Void) {};
   rpc Restart (Void) returns (Void) {};
@@ -20,14 +20,22 @@ service Daemon {
   rpc StartLocalGRPC (Void) returns (Void) {};
   rpc StopBot (Void) returns (Void) {};
   rpc StopLocalGRPC (Void) returns (Void) {};
-  rpc ThrowException (Void) returns (Void) {};
   rpc UpdateNetworkConfig (NetworkConfig) returns (Void) {};
 }
 
 message Void {}
 
+message BotState {
+  bool isBotRunning = 1;
+}
+
 message StartRequest {
   string nickname = 1;
+}
+
+// @TODO: switch to protobuf message instead of json
+message GRPCInfos {
+  string json = 1;
 }
 
 // @TODO: switch to protobuf message instead of json

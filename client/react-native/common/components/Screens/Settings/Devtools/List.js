@@ -112,10 +112,10 @@ class List extends PureComponent {
     const { bridge } = this.props
 
     try {
-      let running = await bridge.isBotRunning({})
+      const { isBotRunning } = await bridge.getBotState({})
 
       this.setState({
-        botRunning: running,
+        botRunning: isBotRunning,
         botStateLoaded: true,
       })
     } catch (err) {
@@ -227,45 +227,41 @@ class List extends PureComponent {
     return (
       <Menu>
         <Menu.Section>
-          {(Platform.OS !== 'web' || Platform.Desktop) && (
-            <Menu.Item
-              icon='cpu'
-              title='Bot mode'
-              customRight={
-                <Switch
-                  justify='end'
-                  disabled={!this.state.botStateLoaded}
-                  value={this.state.botRunning}
-                  onValueChange={this.toggleBotState}
-                />
-              }
-            />
-          )}
+          <Menu.Item
+            icon='cpu'
+            title='Bot mode'
+            customRight={
+              <Switch
+                justify='end'
+                disabled={!this.state.botStateLoaded}
+                value={this.state.botRunning}
+                onValueChange={this.toggleBotState}
+              />
+            }
+          />
           <Menu.Item
             icon='refresh-ccw'
             title='Restart daemon'
             onPress={this.restartDaemon}
           />
-          {(Platform.OS !== 'web' || Platform.Desktop) && (
-            <Menu.Item
-              icon='server'
-              title={
-                'Local gRPC (' +
-                (this.state.localGRPCAddress === ''
-                  ? 'no private IP'
-                  : this.state.localGRPCAddress) +
-                ')'
-              }
-              customRight={
-                <Switch
-                  justify='end'
-                  disabled={this.state.localGRPCAddress === ''}
-                  value={this.state.localGRPCRunning}
-                  onValueChange={this.toggleLocalGRPCState}
-                />
-              }
-            />
-          )}
+          <Menu.Item
+            icon='server'
+            title={
+              'Local gRPC (' +
+              (this.state.localGRPCAddress === ''
+                ? 'no private IP'
+                : this.state.localGRPCAddress) +
+              ')'
+            }
+            customRight={
+              <Switch
+                justify='end'
+                disabled={this.state.localGRPCAddress === ''}
+                value={this.state.localGRPCRunning}
+                onValueChange={this.toggleLocalGRPCState}
+              />
+            }
+          />
         </Menu.Section>
         <Menu.Section>
           <Menu.Item

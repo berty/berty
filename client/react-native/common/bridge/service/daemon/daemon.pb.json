@@ -15,7 +15,7 @@
                 },
                 "GetLocalGrpcInfos": {
                   "requestType": "Void",
-                  "responseType": "Void"
+                  "responseType": "GRPCInfos"
                 },
                 "GetNetworkConfig": {
                   "requestType": "Void",
@@ -29,9 +29,9 @@
                   "requestType": "Config",
                   "responseType": "Void"
                 },
-                "IsBotRunning": {
+                "GetBotState": {
                   "requestType": "Void",
-                  "responseType": "Void"
+                  "responseType": "BotState"
                 },
                 "ListAccounts": {
                   "requestType": "Void",
@@ -69,10 +69,6 @@
                   "requestType": "Void",
                   "responseType": "Void"
                 },
-                "ThrowException": {
-                  "requestType": "Void",
-                  "responseType": "Void"
-                },
                 "UpdateNetworkConfig": {
                   "requestType": "NetworkConfig",
                   "responseType": "Void"
@@ -82,9 +78,25 @@
             "Void": {
               "fields": {}
             },
+            "BotState": {
+              "fields": {
+                "isBotRunning": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
             "StartRequest": {
               "fields": {
                 "nickname": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "GRPCInfos": {
+              "fields": {
+                "json": {
                   "type": "string",
                   "id": 1
                 }

@@ -108,20 +108,12 @@ func main() {
 		homepageUrl = *homepage
 	}
 
-	startRequest := &daemon.StartRequest{
-		Nickname: "daemon-desktop",
-	}
-
 	d, err := NewDaemonDesktop()
 	if err != nil {
 		panic(err)
 	}
 
 	if err := d.Initialize(context.Background(), config); err != nil {
-		panic(err)
-	}
-
-	if _, err := d.bridge.Start(context.Background(), startRequest); err != nil {
 		panic(err)
 	}
 

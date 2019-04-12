@@ -15,19 +15,21 @@ import (
 	"berty.tech/core/pkg/notification"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
-	grpc "google.golang.org/grpc"
 )
 
+type localGRPCInfos struct {
+	IsRunning bool
+	LocalAddr string
+}
+
 type Daemon struct {
-	*grpc.Server
-
 	cancel context.CancelFunc
-
 	config *Config
-	// Accounts    []*account.Account
-	appConfig   *account.StateDB
-	rootContext context.Context
-	accountName string
+
+	grpcListener net.Listener
+	appConfig    *account.StateDB
+	rootContext  context.Context
+	accountName  string
 
 	// Network
 	NetworkConfig network_config.Option
@@ -111,38 +113,34 @@ func (d *Daemon) Start(ctx context.Context, req *StartRequest) (*Void, error) {
 	return &Void{}, d.daemon(cctx, d.config, req.Nickname)
 }
 
-func (d *Daemon) DropDatabase(ctx context.Context, v *Void) (*Void, error) {
-	// currentAccount, err := account.Get(d.rootContext, d.accountName)
-	// if err != nil {
-	// 	return &Void{}, err
-	// }
+func (d *Daemon) DropDatabase(ctx context.Context, _ *Void) (*Void, error) {
+	currentAccount, err := account.Get(d.rootContext, d.accountName)
+	if err != nil {
+		return &Void{}, err
+	}
 
-	// err = currentAccount.DropDatabase(d.rootContext)
-	// if err != nil {
-	// 	return &Void{}, err
-	// }
-
-	return &Void{}, fmt.Errorf("not implemented")
+	return nil, currentAccount.DropDatabase(d.rootContext)
 }
 
-func (d *Daemon) GetLocalGrpcInfos(ctx context.Context, _ *Void) (*Void, error) {
-	// localAddr, err := getLocalIP()
-	// if err == nil {
-	// 	localAddr = fmt.Sprintf("%s:%d", localAddr, defaultLocalGRPCPort)
-	// }
+func (d *Daemon) GetLocalGrpcInfos(ctx context.Context, _ *Void) (*GRPCInfos, error) {
+	localAddr, err := getLocalIP()
+	if err == nil {
+		localAddr = fmt.Sprintf("%s:%d", localAddr, defaultLocalGRPCPort)
+	}
 
-	// infos := &localGRPCInfos{
-	// 	IsRunning: localListener != nil,
-	// 	LocalAddr: localAddr,
-	// }
+	infos := &localGRPCInfos{
+		IsRunning: d.grpcListener != nil,
+		LocalAddr: localAddr,
+	}
 
-	// infosJSON, err := json.Marshal(infos)
-	// if err != nil {
-	// 	logger().Error(err.Error())
-	// 	panic(err)
-	// }
+	infosJSON, err := json.Marshal(infos)
+	if err != nil {
+		return nil, err
+	}
 
-	return &Void{}, fmt.Errorf("not implemented")
+	return &GRPCInfos{
+		Json: string(infosJSON),
+	}, nil
 }
 
 func (d *Daemon) GetNetworkConfig(ctx context.Context, _ *Void) (*NetworkConfig, error) {
@@ -178,10 +176,15 @@ func (d *Daemon) GetPort(context.Context, *Void) (*GetPortResponse, error) {
 	}, nil
 }
 
-func (d *Daemon) IsBotRunning(context.Context, *Void) (*Void, error) {
-	// currentAccount, _ := account.Get(d.rootContext, d.accountName)
+func (d *Daemon) GetBotState(context.Context, *Void) (*BotState, error) {
+	currentAccount, err := account.Get(d.rootContext, d.accountName)
+	if err != nil {
+		return nil, err
+	}
 
-	return &Void{}, fmt.Errorf("not implemented")
+	return &BotState{
+		IsBotRunning: currentAccount.BotRunning,
+	}, nil
 }
 
 func (d *Daemon) ListAccounts(context.Context, *Void) (*ListAccountsResponse, error) {
@@ -206,7 +209,7 @@ func (d *Daemon) Restart(ctx context.Context, _ *Void) (*Void, error) {
 		currentAccount.ErrChan() <- nil
 	}
 
-	return &Void{}, err
+	return nil, err
 }
 
 func (d *Daemon) SetCurrentRoute(context.Context, *Void) (*Void, error) {
@@ -214,73 +217,80 @@ func (d *Daemon) SetCurrentRoute(context.Context, *Void) (*Void, error) {
 }
 
 func (d *Daemon) StartBot(context.Context, *Void) (*Void, error) {
-	return &Void{}, fmt.Errorf("not implemented")
+	currentAccount, _ := account.Get(d.rootContext, d.accountName)
+	if currentAccount.BotRunning {
+		return nil, errors.New("bot is already started")
+	}
+
+	return &Void{}, currentAccount.StartBot(d.rootContext)
 }
 
 func (d *Daemon) StopBot(context.Context, *Void) (*Void, error) {
-	return &Void{}, fmt.Errorf("not implemented")
+	currentAccount, _ := account.Get(d.rootContext, d.accountName)
+
+	if !currentAccount.BotRunning {
+		return nil, errors.New("bot is already stopped")
+	}
+
+	return &Void{}, nil
 }
 
 func (d *Daemon) StartLocalGRPC(context.Context, *Void) (*Void, error) {
-	// waitDaemon(accountName)
-	// currentAccount, _ := account.Get(d.rootContext, d.accountName)
+	currentAccount, err := account.Get(d.rootContext, d.accountName)
+	if err != nil {
+		return nil, err
+	}
 
-	// if localListener != nil {
-	// 	return errors.New("local gRPC is already running")
-	// }
+	if d.grpcListener != nil {
+		return nil, errors.New("local gRPC is already running")
+	}
 
-	// localIP, err := getLocalIP()
-	// if err != nil {
-	// 	return errors.Wrap(err, "start local gRPC failed")
-	// }
+	localIP, err := getLocalIP()
+	if err != nil {
+		return nil, errors.Wrap(err, "start local gRPC failed")
+	}
 
-	// listener, err := net.Listen("tcp", fmt.Sprintf("%s:%d", localIP, defaultLocalGRPCPort))
-	// if err != nil {
-	// 	return errors.Wrap(err, "start local gRPC failed")
-	// }
+	addr := fmt.Sprintf("%s:%d", localIP, defaultLocalGRPCPort)
+	d.grpcListener, err = net.Listen("tcp", addr)
+	if err != nil {
+		return nil, errors.Wrap(err, "start local gRPC failed")
+	}
 
-	// localListener = &listener
-	// appConfig.LocalGRPC = true
-	// appConfig.StartCounter++
-	// if err := appConfig.Save(); err != nil {
-	// 	return errors.Wrap(err, "state DB save failed")
-	// }
-	// logger().Debug("local gRPC listener started")
+	d.appConfig.LocalGRPC = true
+	d.appConfig.StartCounter++
+	if err := d.appConfig.Save(); err != nil {
+		return nil, errors.Wrap(err, "state DB save failed")
+	}
 
-	// go func() {
-	// 	defer panicHandler()
-	// 	err := currentAccount.GrpcServer.Serve(*localListener)
-	// 	logger().Debug("local gRPC listener stopped")
-	// 	localListener = nil
-	// 	if err != nil {
-	// 		logger().Error(err.Error())
-	// 	}
-	// }()
+	logger().Debug("local gRPC listener started", zap.String("addr", addr))
 
-	return &Void{}, fmt.Errorf("not implemented")
+	go func() {
+		if err := currentAccount.GrpcServer.Serve(d.grpcListener); err != nil {
+			logger().Error("local grpc server stopped", zap.Error(err))
+			d.appConfig.LocalGRPC = false
+		}
+	}()
+
+	return &Void{}, nil
 }
 
 func (d *Daemon) StopLocalGRPC(context.Context, *Void) (*Void, error) {
-	// if localListener == nil {
-	// 	return errors.New("local gRPC is already stopped")
-	// }
+	if d.grpcListener == nil {
+		return nil, errors.New("local gRPC is already stopped")
+	}
 
-	// if err := (*localListener).Close(); err != nil {
-	// 	return errors.Wrap(err, "stop local gRPC failed")
-	// }
+	if err := d.grpcListener.Close(); err != nil {
+		return nil, errors.Wrap(err, "stop local gRPC failed")
+	}
 
-	// localListener = nil
-	// appConfig.LocalGRPC = false
-	// appConfig.StartCounter++
-	// if err := appConfig.Save(); err != nil {
-	// 	return errors.Wrap(err, "state DB save failed")
-	// }
+	d.grpcListener = nil
+	d.appConfig.LocalGRPC = false
+	d.appConfig.StartCounter++
+	if err := d.appConfig.Save(); err != nil {
+		return nil, errors.Wrap(err, "state DB save failed")
+	}
 
-	return &Void{}, fmt.Errorf("not implemented")
-}
-
-func (d *Daemon) ThrowException(context.Context, *Void) (*Void, error) {
-	return &Void{}, fmt.Errorf("not implemented")
+	return &Void{}, nil
 }
 
 func (d *Daemon) UpdateNetworkConfig(ctx context.Context, nc *NetworkConfig) (*Void, error) {
