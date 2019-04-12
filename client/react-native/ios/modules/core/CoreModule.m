@@ -31,6 +31,8 @@ RCT_EXTERN_METHOD(invoke:(NSString)method
                     resolve:(RCTPromiseResolveBlock)resolve
                     reject:(RCTPromiseRejectBlock)reject);
 
+RCT_EXTERN_METHOD(setCurrentRoute:(NSString)route);
+
 RCT_EXPORT_METHOD(throwException)
 {
     @throw [NSException exceptionWithName:@"throw exception" reason:@"throw native exception" userInfo:nil];

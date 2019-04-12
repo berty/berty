@@ -24,7 +24,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
     private ConnectivityUpdateHandler connectivity;
-    private NativeBridge daemon = Core.newNativeBridge(this.logger);
+    private NativeBridge daemon;
 
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -37,6 +37,8 @@ public class CoreModule extends ReactContextBaseJavaModule {
         } catch (Exception error) {
             logger.format(Level.ERROR, this.getName(), error.getMessage());
         }
+
+        daemon = Core.newNativeBridge(this.logger);
 
         this.notificationDriver.setNative(new NotificationNative());
 
@@ -81,6 +83,11 @@ public class CoreModule extends ReactContextBaseJavaModule {
                 }
             }
         }).start();
+    }
+
+    @ReactMethod
+    public void setCurrentRoute(String route) {
+        Core.getDeviceInfo().setAppRoute(route);
     }
 
     @ReactMethod

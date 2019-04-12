@@ -20,14 +20,20 @@ var logger = Logger("chat.berty.io", "CoreModule")
 class CoreModule: NSObject {
   let connectivity = ConnectivityUpdateHandler()
   let serialCoreQueue = DispatchQueue(label: "BertyCore")
-  let daemon = CoreNewNativeBridge(logger)
+  let daemon: CoreNativeBridge
+
+  override init() {
+    self.daemon = CoreNewNativeBridge(logger)!
+
+    super.init()
+  }
 
   @objc func invoke(_ method: NSString, message: NSString, resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     self.serialCoreQueue.sync {
       var err: NSError?
 
       do {
-        let ret = self.daemon?.invoke(method as String, msgIn: message as String, error: &err)
+        let ret = self.daemon.invoke(method as String, msgIn: message as String, error: &err)
         if let error = err {
           throw error
         }
@@ -36,6 +42,10 @@ class CoreModule: NSObject {
         reject("\(String(describing: error.code))", error.userInfo.description, error)
       }
     }
+  }
+
+  @objc func setCurrentRoute(_ route: String!) {
+    Core.deviceInfo()?.setAppRoute(route)
   }
 
   @objc static func requiresMainQueueSetup() -> Bool {

@@ -17,8 +17,8 @@ var sqlConfig = &daemon.SQLConfig{
 
 var config = &daemon.Config{
 	SqlOpts:          sqlConfig,
-	GrpcBind:         ":0",
-	GqlBind:          ":0",
+	GrpcBind:         ":1337",
+	GqlBind:          ":8700",
 	HideBanner:       true,
 	DropDatabase:     false,
 	InitOnly:         false,
@@ -35,7 +35,7 @@ var config = &daemon.Config{
 	BindP2P:          []string{},
 	TransportP2P:     []string{},
 	Hop:              false,
-	Ble:              true,
+	Ble:              false,
 	Mdns:             true,
 	DhtServer:        false,
 	PrivateNetwork:   true,

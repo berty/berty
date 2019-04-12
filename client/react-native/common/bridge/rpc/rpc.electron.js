@@ -30,9 +30,12 @@ export default serviceName => (method, request, callback) => {
       () =>
         new Promise((resolve, reject) => {
           window.astilectron.sendMessage(message, response => {
+            if (!response) {
+              reject(new Error('empty response'))
+            }
 
             if (response.name === 'error') {
-              reject(response.payload)
+              reject(new Error(response.payload || 'unknow reason'))
             } else {
               resolve(response.payload)
             }
