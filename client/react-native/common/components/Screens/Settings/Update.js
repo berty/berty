@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react'
 import { ScrollView } from 'react-native'
 import RelayContext from '../../../relay/RelayContext'
 import { getInstalledVersion, getLatestVersion, installUpdate, shouldUpdate } from '../../../update'
-import { Screen, Flex, Text, Button, Header } from '../../Library'
+import { Screen, Flex, Text, Button, Header, Loader } from '../../Library'
 import colors from '../../../constants/colors'
 import { borderBottom, padding } from '../../../styles'
 import { withNamespaces } from 'react-i18next'
@@ -28,6 +28,7 @@ class UpdateBase extends PureComponent {
     super(props)
 
     this.state = {
+      installing: false,
       installed: null,
       latest: null,
     }
@@ -40,26 +41,35 @@ class UpdateBase extends PureComponent {
 
   render = () => {
     const { t } = this.props
-    return <Screen>
-      <ScrollView>
-        <Text big padding>{t('settings.update-installed-version-label', { channel: this.state.installed ? this.state.installed.channel : '' })}</Text>
-        <VersionInfo version={this.state.installed} />
+    const { installing } = this.state
 
-        <Text big padding>{t('settings.update-latest-version-label')}</Text>
-        <VersionInfo version={this.state.latest} />
+    return !installing
+      ? <Screen>
+        <ScrollView>
+          <Text big padding>{t('settings.update-installed-version-label', { channel: this.state.installed ? this.state.installed.channel : '' })}</Text>
+          <VersionInfo version={this.state.installed} />
 
-        <Flex.Cols style={[{ height: 52 }, padding, borderBottom]}>
-          <Flex.Rows size={2} align='left' />
-          <Flex.Rows size={5} align='left'>
-            {shouldUpdate(this.state.installed, this.state.latest)
-              ? <Button onPress={() => installUpdate(this.state.latest.installUrl)} color={colors.blue}>
-                {t('settings.update-install')}
-              </Button>
-              : <Text left>{t('settings.updates-no-available')}</Text>}
-          </Flex.Rows>
-        </Flex.Cols>
-      </ScrollView>
-    </Screen>
+          <Text big padding>{t('settings.update-latest-version-label')}</Text>
+          <VersionInfo version={this.state.latest} />
+
+          <Flex.Cols style={[{ height: 52 }, padding, borderBottom]}>
+            <Flex.Rows size={2} align='left' />
+            <Flex.Rows size={5} align='left'>
+              {shouldUpdate(this.state.installed, this.state.latest)
+                ? <Button
+                  onPress={() => {
+                    this.setState({ installing: true })
+                    installUpdate(this.state.latest.installUrl)
+                  }} color={colors.blue}
+                >
+                  {t('settings.update-install')}
+                </Button>
+                : <Text left>{t('settings.updates-no-available')}</Text>}
+            </Flex.Rows>
+          </Flex.Cols>
+        </ScrollView>
+      </Screen>
+      : <Loader />
   }
 }
 

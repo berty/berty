@@ -1,5 +1,12 @@
 MAKEFILE_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
+BUILD_MODE ?= dev
+
+GIT_SHA ?= $(shell git rev-parse HEAD)
+GIT_TAG ?= $(shell git describe --tags --always)
+GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD)
+GIT_COMMIT_DATE ?= $(shell git show -s --format=%ct $(GIT_SHA))
+
 deps:
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	GO111MODULE=off go get -u github.com/asticode/go-astilectron-bundler/...
@@ -9,7 +16,7 @@ build: clean
 	GOPROXY=https://goproxy.berty.io GO111MODULE=on go mod vendor
 	sed s%TMPL_MAKEFILE_PATH%$(MAKEFILE_DIR)%g bundler.json.tmpl > bundler.json
 	cp -rf $(MAKEFILE_DIR)/../web/build $(MAKEFILE_DIR)/../desktop/resources/app
-	GOCACHE=/tmp/gocache astilectron-bundler -v
+	GOCACHE=/tmp/gocache astilectron-bundler -v -ldflags X:berty.tech/client/react-native/desktop/vendor/berty.tech/core.GitSha=$(GIT_SHA),berty.tech/client/react-native/desktop/vendor/berty.tech/core.GitTag=$(GIT_TAG),berty.tech/client/react-native/desktop/vendor/berty.tech/core.GitBranch=$(GIT_BRANCH),berty.tech/client/react-native/desktop/vendor/berty.tech/core.BuildMode=$(BUILD_MODE),berty.tech/client/react-native/desktop/vendor/berty.tech/core.commitDate=$(GIT_COMMIT_DATE)
 
 sign:
 ifndef CSC_LINK
