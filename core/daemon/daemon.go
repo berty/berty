@@ -82,6 +82,16 @@ func (d *Daemon) Start(ctx context.Context, req *StartRequest) (*Void, error) {
 		return &Void{}, errors.New("no config/SqlPath set, initialize first")
 	}
 
+	initialState := account.StateDB{
+		BotMode:   initialBotMode,
+		LocalGRPC: initiallocalGRPC,
+	}
+
+	d.appConfig, err = account.OpenStateDB(d.config.SqlOpts.Name, initialState)
+	if err != nil {
+		return &Void{}, errors.Wrap(err, "state DB init failed")
+	}
+
 	currentAccount, _ := account.Get(d.rootContext, req.Nickname)
 	if currentAccount != nil {
 		// daemon already started, no errors to return
@@ -89,16 +99,6 @@ func (d *Daemon) Start(ctx context.Context, req *StartRequest) (*Void, error) {
 	}
 
 	d.accountName = req.Nickname
-
-	initialState := account.StateDB{
-		BotMode:   initialBotMode,
-		LocalGRPC: initiallocalGRPC,
-	}
-
-	d.appConfig, err = account.OpenStateDB(d.config.SqlOpts.Path, initialState)
-	if err != nil {
-		return &Void{}, errors.Wrap(err, "state DB init failed")
-	}
 
 	logger().Debug("App state:", zap.Int("StartCounter", d.appConfig.StartCounter))
 	logger().Debug("App state:", zap.String("JSONNetConf", d.appConfig.JSONNetConf))

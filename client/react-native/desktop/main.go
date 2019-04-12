@@ -52,9 +52,8 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(storagePath)
 	sqlConfig := &daemon.SQLConfig{
-		Path: fmt.Sprintf("%s/%s", storagePath, "berty.state.db"),
+		Name: "berty.state.db",
 		Key:  "s3cur3",
 	}
 

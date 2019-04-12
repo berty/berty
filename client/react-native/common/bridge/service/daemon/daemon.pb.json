@@ -100,7 +100,7 @@
             },
             "SQLConfig": {
               "fields": {
-                "path": {
+                "name": {
                   "type": "string",
                   "id": 1
                 },

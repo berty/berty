@@ -24,7 +24,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
     private ConnectivityUpdateHandler connectivity;
-    NativeBridge daemon = Core.newNativeBridge();
+    private NativeBridge daemon = Core.newNativeBridge();
 
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);

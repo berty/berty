@@ -12,6 +12,9 @@ import (
 	"google.golang.org/grpc"
 )
 
+type InvokePayload struct {
+}
+
 type DaemonDesktop struct {
 	bridge *daemon.Daemon
 
@@ -69,13 +72,22 @@ func (d *DaemonDesktop) Initialize(ctx context.Context, req *daemon.Config) erro
 }
 
 func (d *DaemonDesktop) handleMessages(_ *astilectron.Window, m bootstrap.MessageIn) (interface{}, error) {
+	fmt.Printf("\n\n\n handle messages\n\n")
+	defer fmt.Printf("\n\n end here\n\n")
+
 	method := m.Name
+
+	fmt.Printf("name %s\n", method)
+	fmt.Printf("payload: %#v\n", m.Payload)
+
 	encoded, err := stringPayload(m.Payload)
 	if err != nil {
+		fmt.Printf("string payload: %s\n", err.Error())
 		return nil, err
 	}
 	res, err := d.Invoke(method, encoded)
 	if err != nil {
+		fmt.Printf("error: %s\n", err.Error())
 		return nil, err
 	}
 

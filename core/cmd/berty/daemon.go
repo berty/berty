@@ -17,6 +17,7 @@ import (
 	"berty.tech/core/api/helper"
 	daemon "berty.tech/core/daemon"
 	network_config "berty.tech/core/network/config"
+	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
 	"github.com/spf13/cobra"
@@ -173,7 +174,7 @@ func serveWeb(d *daemon.Daemon, interceptor ...grpc.ServerOption) error {
 
 func runDaemon(opts *daemonOptions) error {
 	sqlConfig := &daemon.SQLConfig{
-		Path: opts.sql.path,
+		Name: opts.sql.name,
 		Key:  opts.sql.key,
 	}
 
@@ -230,6 +231,11 @@ func runDaemon(opts *daemonOptions) error {
 	}
 
 	gs := grpc.NewServer(interceptors...)
+
+	// set storage path
+	if err := deviceinfo.SetStoragePath(opts.sql.path); err != nil {
+		return err
+	}
 
 	d := daemon.New()
 	if opts.notification {

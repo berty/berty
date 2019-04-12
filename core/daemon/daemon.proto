@@ -36,7 +36,7 @@ message NetworkConfig {
 }
 
 message SQLConfig {
-  string path = 1;
+  string name = 1;
 	string key = 2;
 }
 
