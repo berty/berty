@@ -51,11 +51,17 @@ type NativeBridge struct {
 
 // @FIXME: NewNativeBridge must  not panic, for now Initialize and Dial (should) never
 // return an error so it safe, but keep an eye on it.
-func NewNativeBridge() *NativeBridge {
+func NewNativeBridge(loggerNative NativeLogger) *NativeBridge {
 	bridge := daemon.New()
 	if _, err := bridge.Initialize(context.Background(), config); err != nil {
 		panic(err)
 	}
+
+	if err := setupLogger("debug", loggerNative); err != nil {
+		panic(err)
+	}
+
+	initBleFunc()
 
 	iogrpc := helper.NewIOGrpc()
 	dialer := iogrpc.NewDialer()

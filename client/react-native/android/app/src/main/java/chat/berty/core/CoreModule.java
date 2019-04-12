@@ -24,18 +24,20 @@ public class CoreModule extends ReactContextBaseJavaModule {
     private ReactApplicationContext reactContext;
     private MobileNotification notificationDriver = Core.getNotificationDriver();
     private ConnectivityUpdateHandler connectivity;
-    private NativeBridge daemon = Core.newNativeBridge();
+    private NativeBridge daemon = Core.newNativeBridge(this.logger);
 
     public CoreModule(ReactApplicationContext reactContext) {
         super(reactContext);
 
         this.reactContext = reactContext;
+
         String storagePath = reactContext.getFilesDir().getAbsolutePath();
         try {
             Core.getDeviceInfo().setStoragePath(storagePath);
         } catch (Exception error) {
             logger.format(Level.ERROR, this.getName(), error.getMessage());
         }
+
         this.notificationDriver.setNative(new NotificationNative());
 
         connectivity = new ConnectivityUpdateHandler(reactContext);

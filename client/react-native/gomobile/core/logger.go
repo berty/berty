@@ -36,7 +36,7 @@ func (mc *mobileCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
-func setupLogger(logLevel, datastorePath string, mlogger NativeLogger) error {
+func setupLogger(logLevel string, mlogger NativeLogger) error {
 	// native logger
 	nativeEncoderConfig := zap.NewDevelopmentEncoderConfig()
 	nativeEncoderConfig.LevelKey = ""
@@ -63,7 +63,7 @@ func setupLogger(logLevel, datastorePath string, mlogger NativeLogger) error {
 		RingSize:        10 * 1024 * 1024,
 		LogLevel:        logLevel,
 		LogNamespaces:   "*",
-		LogDirectory:    path.Join(datastorePath, "logs"),
+		LogDirectory:    path.Join(DeviceInfo.GetStoragePath(), "logs"),
 		AdditionalCores: []zapcore.Core{nativeCore},
 	})
 	if err != nil {

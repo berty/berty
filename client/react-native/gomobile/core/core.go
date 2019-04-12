@@ -76,7 +76,7 @@ func GetPort() (int, error) {
 func Initialize(loggerNative NativeLogger, datastorePath string) error {
 	defer panicHandler()
 
-	if err := setupLogger("debug", datastorePath, loggerNative); err != nil {
+	if err := setupLogger("debug", loggerNative); err != nil {
 		return err
 	}
 

@@ -20,7 +20,7 @@ var logger = Logger("chat.berty.io", "CoreModule")
 class CoreModule: NSObject {
   let connectivity = ConnectivityUpdateHandler()
   let serialCoreQueue = DispatchQueue(label: "BertyCore")
-  let daemon = CoreNewNativeBridge()
+  let daemon = CoreNewNativeBridge(logger)
 
   @objc func invoke(_ method: NSString, message: NSString, resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     self.serialCoreQueue.sync {
