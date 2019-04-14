@@ -5,14 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"berty.tech/core/api/helper"
-	"berty.tech/core/daemon"
 	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 	"google.golang.org/grpc"
+	grpc_codes "google.golang.org/grpc/codes"
+	grpc_status "google.golang.org/grpc/status"
+
+	"berty.tech/core/api/helper"
+	"berty.tech/core/daemon"
 )
 
 type InvokePayload struct {
+	method  string
+	request string
 }
 
 type DaemonDesktop struct {
@@ -56,42 +61,45 @@ func NewDaemonDesktop() (*DaemonDesktop, error) {
 	}, nil
 }
 
-func stringPayload(message json.RawMessage) (string, error) {
-	payload := ""
-
-	if err := json.Unmarshal(message, &payload); err != nil {
-		return err.Error(), err
-	}
-
-	return payload, nil
-}
-
 func (d *DaemonDesktop) Initialize(ctx context.Context, req *daemon.Config) error {
 	_, err := d.bridge.Initialize(ctx, req)
 	return err
 }
 
-func (d *DaemonDesktop) handleMessages(_ *astilectron.Window, m bootstrap.MessageIn) (interface{}, error) {
+func (d *DaemonDesktop) handleMessages(w *astilectron.Window, m bootstrap.MessageIn) (interface{}, error) {
 	fmt.Printf("\n\n\n handle messages\n\n")
 	defer fmt.Printf("\n\n end here\n\n")
 
-	method := m.Name
-
-	fmt.Printf("name %s\n", method)
+	fmt.Printf("name %s\n", m.Name)
 	fmt.Printf("payload: %#v\n", m.Payload)
 
-	encoded, err := stringPayload(m.Payload)
-	if err != nil {
-		fmt.Printf("string payload: %s\n", err.Error())
-		return nil, err
+	if m.Name == "invoke" {
+		return d.handleInvoke(m.Payload)
 	}
-	res, err := d.Invoke(method, encoded)
-	if err != nil {
-		fmt.Printf("error: %s\n", err.Error())
+
+	// fallback on deprecate handleMessage
+	return handleMessages(w, m)
+}
+
+func (d *DaemonDesktop) handleInvoke(message json.RawMessage) (interface{}, error) {
+	var payload InvokePayload
+
+	if err := json.Unmarshal(message, &payload); err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 
-	return &res, nil
+	msg, err := d.Invoke(payload.method, payload.request)
+	if err != nil {
+		s, ok := grpc_status.FromError(err)
+		if !ok {
+			s = grpc_status.New(grpc_codes.Unknown, err.Error())
+		}
+
+		return s.Message(), err
+	}
+
+	return msg, nil
 }
 
 func (d *DaemonDesktop) Invoke(method string, msgIn string) (string, error) {

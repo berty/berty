@@ -1,5 +1,6 @@
 import { serializeToBase64, deserializeFromBase64, isElectron } from './utils'
 
+// by default throw an error if this is call by another platform
 const wrongPlatform = new Error('cannot use rpc electron on another platform')
 let isElectronReady = async () => {
   throw wrongPlatform
@@ -9,21 +10,27 @@ if (isElectron) {
   const ready = new Promise(resolve =>
     document.addEventListener('astilectron-ready', resolve)
   )
-  isElectronReady = ready()
+  isElectronReady = async () => ready
 }
 
 // Electron rpc implem
 export default serviceName => (method, request, callback) => {
-  const message = {
-    name: `/${serviceName}/${method.name}`,
-    payload: serializeToBase64(request),
+  const payload = {
+    method: `/${serviceName}/${method.name}`,
+    request: serializeToBase64(request),
   }
 
-  isElectronReady
+  const message = {
+    name: 'invoke',
+    payload: payload,
+  }
+
+  isElectronReady()
     .then(
       () =>
         new Promise((resolve, reject) => {
           window.astilectron.sendMessage(message, response => {
+
             if (response.name === 'error') {
               reject(response.payload)
             } else {

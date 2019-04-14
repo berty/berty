@@ -137,6 +137,7 @@ func serveWeb(d *daemon.Daemon, interceptor ...grpc.ServerOption) error {
 	}
 
 	http.HandleFunc("/daemon", func(w http.ResponseWriter, r *http.Request) {
+		// Handle preflight CORS
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
 		w.Header().Add("Access-Control-Allow-Headers", "X-Method")
