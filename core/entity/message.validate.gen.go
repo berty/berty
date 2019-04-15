@@ -20,6 +20,9 @@ func (m *Message) Validate() error {
 		return nil
 	}
 
-	// handling field: Text - name:"text" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"text" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Text - name:"text" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"text" options:<[]:1 >  (is_contact_key=false, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetText()) < 1 {
+		return errors.New("Text must be longer than 1")
+	}
 	return nil
 }

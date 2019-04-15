@@ -6,17 +6,17 @@ FROM    golang:1.12-alpine as builder
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker
 
 # install compilers
-RUN     go get -u github.com/99designs/gqlgen
-RUN     go get -u github.com/gogo/protobuf/gogoproto
-RUN     go get -u github.com/gogo/protobuf/jsonpb
-RUN     go get -u github.com/gogo/protobuf/proto
-RUN     go get -u github.com/gogo/protobuf/protoc-gen-gofast
-RUN     go get -u github.com/gogo/protobuf/protoc-gen-gogo
-RUN     go get -u github.com/lyft/protoc-gen-validate
-RUN     go get -u github.com/spf13/cobra
-RUN     go get -u github.com/vektah/gorunpkg
-RUN     go get -u golang.org/x/tools/cmd/goimports
-RUN     go get -u moul.io/protoc-gen-gotemplate
+RUN     go get -u github.com/99designs/gqlgen \
+     && go get -u github.com/gogo/protobuf/gogoproto \
+     && go get -u github.com/gogo/protobuf/jsonpb \
+     && go get -u github.com/gogo/protobuf/proto \
+     && go get -u github.com/gogo/protobuf/protoc-gen-gofast \
+     && go get -u github.com/gogo/protobuf/protoc-gen-gogo \
+     && go get -d github.com/envoyproxy/protoc-gen-validate && make -C $GOPATH/src/github.com/envoyproxy/protoc-gen-validate build \
+     && go get -u github.com/spf13/cobra \
+     && go get -u github.com/vektah/gorunpkg \
+     && go get -u golang.org/x/tools/cmd/goimports \
+     && go get -u moul.io/protoc-gen-gotemplate
 
 # gqlgen
 RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.6.0 && go install github.com/99designs/gqlgen

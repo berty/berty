@@ -515,7 +515,7 @@ func (m *PushDestination) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -543,7 +543,7 @@ func (m *PushDestination) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -552,6 +552,9 @@ func (m *PushDestination) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthPush
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPush
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -574,7 +577,7 @@ func (m *PushDestination) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.PushType |= (DevicePushType(b) & 0x7F) << shift
+				m.PushType |= DevicePushType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -593,7 +596,7 @@ func (m *PushDestination) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -602,6 +605,9 @@ func (m *PushDestination) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthPush
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPush
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -617,6 +623,9 @@ func (m *PushDestination) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthPush
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthPush
 			}
 			if (iNdEx + skippy) > l {
@@ -647,7 +656,7 @@ func (m *PushNativeIdentifier) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -675,7 +684,7 @@ func (m *PushNativeIdentifier) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -685,6 +694,9 @@ func (m *PushNativeIdentifier) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthPush
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPush
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -704,7 +716,7 @@ func (m *PushNativeIdentifier) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -714,6 +726,9 @@ func (m *PushNativeIdentifier) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthPush
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPush
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -726,6 +741,9 @@ func (m *PushNativeIdentifier) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthPush
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthPush
 			}
 			if (iNdEx + skippy) > l {
@@ -756,7 +774,7 @@ func (m *PushData) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -784,7 +802,7 @@ func (m *PushData) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -793,6 +811,9 @@ func (m *PushData) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthPush
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPush
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -815,7 +836,7 @@ func (m *PushData) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -824,6 +845,9 @@ func (m *PushData) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthPush
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthPush
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -846,7 +870,7 @@ func (m *PushData) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Priority |= (Priority(b) & 0x7F) << shift
+				m.Priority |= Priority(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -858,6 +882,9 @@ func (m *PushData) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthPush
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthPush
 			}
 			if (iNdEx + skippy) > l {
@@ -927,8 +954,11 @@ func skipPush(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthPush
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthPush
 			}
 			return iNdEx, nil
@@ -959,6 +989,9 @@ func skipPush(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthPush
+				}
 			}
 			return iNdEx, nil
 		case 4:

@@ -713,26 +713,26 @@ func (m *Event) MarshalTo(dAtA []byte) (int, error) {
 	dAtA[i] = 0x1a
 	i++
 	i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if err1 != nil {
+		return 0, err1
 	}
 	i += n1
 	dAtA[i] = 0x22
 	i++
 	i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	if err2 != nil {
+		return 0, err2
 	}
 	i += n2
 	if m.SentAt != nil {
 		dAtA[i] = 0x32
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SentAt)))
-		n3, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i:])
-		if err != nil {
-			return 0, err
+		n3, err3 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i:])
+		if err3 != nil {
+			return 0, err3
 		}
 		i += n3
 	}
@@ -740,9 +740,9 @@ func (m *Event) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x3a
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.ReceivedAt)))
-		n4, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.ReceivedAt, dAtA[i:])
-		if err != nil {
-			return 0, err
+		n4, err4 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.ReceivedAt, dAtA[i:])
+		if err4 != nil {
+			return 0, err4
 		}
 		i += n4
 	}
@@ -750,9 +750,9 @@ func (m *Event) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x42
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.AckedAt)))
-		n5, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i:])
-		if err != nil {
-			return 0, err
+		n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i:])
+		if err5 != nil {
+			return 0, err5
 		}
 		i += n5
 	}
@@ -783,9 +783,9 @@ func (m *Event) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x1
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SeenAt)))
-		n6, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i:])
-		if err != nil {
-			return 0, err
+		n6, err6 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i:])
+		if err6 != nil {
+			return 0, err6
 		}
 		i += n6
 	}
@@ -839,9 +839,9 @@ func (m *Event) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x6
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(m.ErrProxy.Size()))
-		n7, err := m.ErrProxy.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
+		n7, err7 := m.ErrProxy.MarshalTo(dAtA[i:])
+		if err7 != nil {
+			return 0, err7
 		}
 		i += n7
 	}
@@ -902,9 +902,9 @@ func (m *EventDispatch) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x22
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SentAt)))
-		n8, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i:])
-		if err != nil {
-			return 0, err
+		n8, err8 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SentAt, dAtA[i:])
+		if err8 != nil {
+			return 0, err8
 		}
 		i += n8
 	}
@@ -912,9 +912,9 @@ func (m *EventDispatch) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x2a
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.AckedAt)))
-		n9, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i:])
-		if err != nil {
-			return 0, err
+		n9, err9 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.AckedAt, dAtA[i:])
+		if err9 != nil {
+			return 0, err9
 		}
 		i += n9
 	}
@@ -922,9 +922,9 @@ func (m *EventDispatch) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x32
 		i++
 		i = encodeVarintEvent(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(*m.SeenAt)))
-		n10, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i:])
-		if err != nil {
-			return 0, err
+		n10, err10 := github_com_gogo_protobuf_types.StdTimeMarshalTo(*m.SeenAt, dAtA[i:])
+		if err10 != nil {
+			return 0, err10
 		}
 		i += n10
 	}
@@ -1170,7 +1170,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1198,7 +1198,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1208,6 +1208,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1227,7 +1230,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1237,6 +1240,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1256,7 +1262,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1265,6 +1271,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1286,7 +1295,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1295,6 +1304,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1316,7 +1328,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1325,6 +1337,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1349,7 +1364,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1358,6 +1373,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1382,7 +1400,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1391,6 +1409,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1415,7 +1436,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Direction |= (Event_Direction(b) & 0x7F) << shift
+				m.Direction |= Event_Direction(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1434,7 +1455,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.APIVersion |= (uint32(b) & 0x7F) << shift
+				m.APIVersion |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1453,7 +1474,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Kind |= (Kind(b) & 0x7F) << shift
+				m.Kind |= Kind(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1472,7 +1493,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1481,6 +1502,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1503,7 +1527,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1512,6 +1536,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1536,7 +1563,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.AckStatus |= (Event_AckStatus(b) & 0x7F) << shift
+				m.AckStatus |= Event_AckStatus(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1555,7 +1582,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1564,6 +1591,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1586,7 +1616,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1596,6 +1626,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1615,7 +1648,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.TargetType |= (Event_TargetType(b) & 0x7F) << shift
+				m.TargetType |= Event_TargetType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1634,7 +1667,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1644,6 +1677,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1663,7 +1699,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1672,6 +1708,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1696,7 +1735,7 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1705,6 +1744,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1720,6 +1762,9 @@ func (m *Event) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthEvent
 			}
 			if (iNdEx + skippy) > l {
@@ -1750,7 +1795,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1778,7 +1823,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1788,6 +1833,9 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1807,7 +1855,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1817,6 +1865,9 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1836,7 +1887,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1846,6 +1897,9 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1865,7 +1919,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1874,6 +1928,9 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1898,7 +1955,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1907,6 +1964,9 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1931,7 +1991,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1940,6 +2000,9 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1964,7 +2027,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.AckMedium |= (EventDispatch_Medium(b) & 0x7F) << shift
+				m.AckMedium |= EventDispatch_Medium(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1983,7 +2046,7 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.SeenMedium |= (EventDispatch_Medium(b) & 0x7F) << shift
+				m.SeenMedium |= EventDispatch_Medium(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1995,6 +2058,9 @@ func (m *EventDispatch) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthEvent
 			}
 			if (iNdEx + skippy) > l {
@@ -2025,7 +2091,7 @@ func (m *MetadataKeyValue) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -2053,7 +2119,7 @@ func (m *MetadataKeyValue) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2063,6 +2129,9 @@ func (m *MetadataKeyValue) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -2082,7 +2151,7 @@ func (m *MetadataKeyValue) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2092,6 +2161,9 @@ func (m *MetadataKeyValue) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEvent
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEvent
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -2104,6 +2176,9 @@ func (m *MetadataKeyValue) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthEvent
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthEvent
 			}
 			if (iNdEx + skippy) > l {
@@ -2173,8 +2248,11 @@ func skipEvent(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthEvent
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthEvent
 			}
 			return iNdEx, nil
@@ -2205,6 +2283,9 @@ func skipEvent(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthEvent
+				}
 			}
 			return iNdEx, nil
 		case 4:

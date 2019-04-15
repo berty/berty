@@ -257,17 +257,17 @@ func (m *Contact) MarshalTo(dAtA []byte) (int, error) {
 	dAtA[i] = 0x12
 	i++
 	i = encodeVarintContact(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if err1 != nil {
+		return 0, err1
 	}
 	i += n1
 	dAtA[i] = 0x1a
 	i++
 	i = encodeVarintContact(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	if err2 != nil {
+		return 0, err2
 	}
 	i += n2
 	if len(m.Sigchain) > 0 {
@@ -411,7 +411,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -439,7 +439,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -449,6 +449,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -468,7 +471,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -477,6 +480,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -498,7 +504,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -507,6 +513,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -528,7 +537,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -537,6 +546,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -559,7 +571,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Status |= (Contact_Status(b) & 0x7F) << shift
+				m.Status |= Contact_Status(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -578,7 +590,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -587,6 +599,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -609,7 +624,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -619,6 +634,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -638,7 +656,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -648,6 +666,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -667,7 +688,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -677,6 +698,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -696,7 +720,7 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -706,6 +730,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthContact
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthContact
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -718,6 +745,9 @@ func (m *Contact) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthContact
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthContact
 			}
 			if (iNdEx + skippy) > l {
@@ -787,8 +817,11 @@ func skipContact(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthContact
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthContact
 			}
 			return iNdEx, nil
@@ -819,6 +852,9 @@ func skipContact(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthContact
+				}
 			}
 			return iNdEx, nil
 		case 4:

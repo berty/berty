@@ -20,7 +20,10 @@ func (m *Conversation) Validate() error {
 		return nil
 	}
 
-	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<53004:1  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<53004:1 []:1 []:"ID" 65006:"gorm:\"primary_key\"" >  (is_contact_key=false, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetID()) < 1 {
+		return errors.New("ID must be longer than 1")
+	}
 
 	// handling field: CreatedAt - name:"created_at" number:2 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"createdAt" options:<65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
@@ -77,7 +80,10 @@ func (m *ConversationMember) Validate() error {
 		return nil
 	}
 
-	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<53004:1  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<53004:1 []:1 []:"ID" 65006:"gorm:\"primary_key\"" >  (is_contact_key=false, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetID()) < 1 {
+		return errors.New("ID must be longer than 1")
+	}
 
 	// handling field: CreatedAt - name:"created_at" number:2 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".google.protobuf.Timestamp" json_name:"createdAt" options:<65001:0 65010:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
@@ -124,8 +130,14 @@ func (m *ConversationMember) Validate() error {
 		}
 	}
 
-	// handling field: ConversationID - name:"conversation_id" number:101 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"conversationId" options:<53004:1  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ConversationID - name:"conversation_id" number:101 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"conversationId" options:<53004:1 []:1 []:"ConversationID" >  (is_contact_key=false, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetConversationID()) < 1 {
+		return errors.New("ConversationID must be longer than 1")
+	}
 
-	// handling field: ContactID - name:"contact_id" number:102 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ContactID - name:"contact_id" number:102 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1 []:1 []:"ContactID" >  (is_contact_key=false, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetContactID()) < 1 {
+		return errors.New("ContactID must be longer than 1")
+	}
 	return nil
 }
