@@ -16,8 +16,8 @@ import (
 )
 
 type InvokePayload struct {
-	method  string
-	request string
+	Method  string `json:"method,omitempty"`
+	Request string `json:"request,omitempty"`
 }
 
 type DaemonDesktop struct {
@@ -67,12 +67,6 @@ func (d *DaemonDesktop) Initialize(ctx context.Context, req *daemon.Config) erro
 }
 
 func (d *DaemonDesktop) handleMessages(w *astilectron.Window, m bootstrap.MessageIn) (interface{}, error) {
-	fmt.Printf("\n\n\n handle messages\n\n")
-	defer fmt.Printf("\n\n end here\n\n")
-
-	fmt.Printf("name %s\n", m.Name)
-	fmt.Printf("payload: %#v\n", m.Payload)
-
 	if m.Name == "invoke" {
 		return d.handleInvoke(m.Payload)
 	}
@@ -89,7 +83,7 @@ func (d *DaemonDesktop) handleInvoke(message json.RawMessage) (interface{}, erro
 		return nil, err
 	}
 
-	msg, err := d.Invoke(payload.method, payload.request)
+	msg, err := d.Invoke(payload.Method, payload.Request)
 	if err != nil {
 		s, ok := grpc_status.FromError(err)
 		if !ok {
