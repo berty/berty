@@ -18,11 +18,11 @@ class DebugStateBar extends PureComponent {
   constructor (props) {
     super(props)
     this.state = {
-      watchTime: 3000,
+      watchTime: 10000,
       listenAddrs: [],
       listenInterfaceAddrs: [],
       timeouted: false,
-      requestTimeout: 2000,
+      requestTimeout: 5000,
       listenAddrTimer: null,
       InterfaceAddrTimer: null,
       bertyColor: colors.lightGrey,
@@ -169,7 +169,7 @@ class DebugStateBar extends PureComponent {
     let bleState = false
 
     if (listenAddrs.length > 0 && listenInterfaceAddrs.length > 0) {
-      listenInterfaceAddrs.forEach((v, i, arr) => {
+      listenAddrs.forEach((v, i, arr) => {
         try {
           const splited = v.split('/')
           if (splited[1] === 'ip4' && splited[2] !== '127.0.0.1') {
@@ -179,8 +179,8 @@ class DebugStateBar extends PureComponent {
             daemonState = daemonStateValues.connected
           }
           if (
-            splited[1] === 'ble' &&
-            splited[2] !== '00000000-0000-0000-0000-000000000000'
+            splited[1] === 'ble'
+            // && splited[2] !== '00000000-0000-0000-0000-000000000000'
           ) {
             bleColor = colors.green
             bgBleColor = colors.green25
