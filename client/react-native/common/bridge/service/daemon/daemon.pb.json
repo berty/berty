@@ -46,7 +46,7 @@
                   "responseType": "Void"
                 },
                 "SetCurrentRoute": {
-                  "requestType": "Void",
+                  "requestType": "SetCurrentRouteRequest",
                   "responseType": "Void"
                 },
                 "Start": {
@@ -77,6 +77,14 @@
             },
             "Void": {
               "fields": {}
+            },
+            "SetCurrentRouteRequest": {
+              "fields": {
+                "route": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
             },
             "BotState": {
               "fields": {

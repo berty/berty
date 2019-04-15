@@ -36,7 +36,7 @@ public class NotificationHandler extends FirebaseMessagingService implements Act
         Map<String, String> map = remoteMessage.getData();
         String data = new Gson().toJson(map);
         try {
-            Core.getDeviceInfo().setStoragePath(getApplicationContext().getFilesDir().getAbsolutePath());
+            Core.setStoragePath(getApplicationContext().getFilesDir().getAbsolutePath());
             this.notificationDriver.receive(data);
         } catch (Exception err) {
             this.logger.format(Level.ERROR, TAG, "cannot get storage path: %s", err);

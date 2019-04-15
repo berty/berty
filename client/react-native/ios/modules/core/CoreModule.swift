@@ -20,7 +20,7 @@ var logger = Logger("chat.berty.io", "CoreModule")
 class CoreModule: NSObject {
   let connectivity = ConnectivityUpdateHandler()
   let serialCoreQueue = DispatchQueue(label: "BertyCore")
-  let daemon: CoreNativeBridge
+  let daemon: CoreNativeBridgeProtocol
 
   override init() {
     self.daemon = CoreNewNativeBridge(logger)!
@@ -45,7 +45,7 @@ class CoreModule: NSObject {
   }
 
   @objc func setCurrentRoute(_ route: String!) {
-    Core.deviceInfo()?.setAppRoute(route)
+    CoreSetAppRoute(route)
   }
 
   @objc static func requiresMainQueueSetup() -> Bool {

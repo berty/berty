@@ -9,6 +9,10 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+func logger() *zap.Logger {
+	return zap.L().Named(defaultLoggerName)
+}
+
 type mobileCore struct {
 	zapcore.Core
 	enc zapcore.Encoder
@@ -36,7 +40,7 @@ func (mc *mobileCore) Write(entry zapcore.Entry, fields []zapcore.Field) error {
 	return mc.l.Log(entry.Level.CapitalString(), entry.LoggerName, buff.String())
 }
 
-func setupLogger(logLevel string, mlogger NativeLogger) error {
+func SetupLogger(logLevel, logPath string, mlogger NativeLogger) error {
 	// native logger
 	nativeEncoderConfig := zap.NewDevelopmentEncoderConfig()
 	nativeEncoderConfig.LevelKey = ""
@@ -63,7 +67,7 @@ func setupLogger(logLevel string, mlogger NativeLogger) error {
 		RingSize:        10 * 1024 * 1024,
 		LogLevel:        logLevel,
 		LogNamespaces:   "*",
-		LogDirectory:    path.Join(DeviceInfo.GetStoragePath(), "logs"),
+		LogDirectory:    path.Join(logPath, "logs"),
 		AdditionalCores: []zapcore.Core{nativeCore},
 	})
 	if err != nil {

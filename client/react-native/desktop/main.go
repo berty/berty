@@ -7,10 +7,8 @@ import (
 	"fmt"
 	"os"
 
-	"berty.tech/client/react-native/desktop/coreinterface"
 	"berty.tech/core/daemon"
 	network_config "berty.tech/core/network/config"
-	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/logmanager"
 	"go.uber.org/zap"
 
@@ -45,10 +43,6 @@ func getStorageDir() (string, error) {
 func main() {
 	storagePath, err := getStorageDir()
 	if err != nil {
-		panic(err)
-	}
-
-	if err = deviceinfo.SetStoragePath(storagePath); err != nil {
 		panic(err)
 	}
 
@@ -99,8 +93,6 @@ func main() {
 	}
 
 	logman.SetGlobal()
-
-	zap.L().Debug("Berty desktop client started")
 	astilog.SetDefaultLogger()
 
 	homepageUrl := "index.html"
@@ -113,6 +105,7 @@ func main() {
 		panic(err)
 	}
 
+	d.bridge.SetStoragePath(storagePath)
 	if err := d.Initialize(context.Background(), config); err != nil {
 		panic(err)
 	}
@@ -151,7 +144,7 @@ func main() {
 					{Role: astilectron.MenuItemRoleSelectAll},
 				},
 			}},
-		OnWait: coreinterface.SetNotificationDriver,
+		OnWait: d.SetNotificationDriver,
 		Windows: []*bootstrap.Window{{
 			Homepage:       homepageUrl,
 			MessageHandler: d.handleMessages,

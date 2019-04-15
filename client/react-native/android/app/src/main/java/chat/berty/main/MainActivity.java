@@ -41,7 +41,7 @@ public class MainActivity extends ReactActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         try {
-            Core.getDeviceInfo().setAppState(Core.getDeviceInfoAppStateBackground());
+            Core.setAppState(Core.getDeviceInfoAppStateBackground());
         } catch (Exception err) {
             this.logger.format(Level.ERROR, TAG, "on create: %s", err);
         }
@@ -51,7 +51,7 @@ public class MainActivity extends ReactActivity {
     protected void onPause() {
         super.onPause();
         try {
-            Core.getDeviceInfo().setAppState(Core.getDeviceInfoAppStateBackground());
+            Core.setAppState(Core.getDeviceInfoAppStateBackground());
         } catch (Exception err) {
             this.logger.format(Level.ERROR, TAG, "on pause: %s", err);
         }
@@ -61,7 +61,7 @@ public class MainActivity extends ReactActivity {
     protected void onResume() {
         super.onResume();
         try {
-            Core.getDeviceInfo().setAppState(Core.getDeviceInfoAppStateForeground());
+            Core.setAppState(Core.getDeviceInfoAppStateForeground());
         } catch (Exception err) {
             this.logger.format(Level.ERROR, TAG, "on resume: %s", err);
         }
@@ -71,7 +71,7 @@ public class MainActivity extends ReactActivity {
     protected void onDestroy() {
         super.onDestroy();
         try {
-            Core.getDeviceInfo().setAppState(Core.getDeviceInfoAppStateKill());
+            Core.setAppState(Core.getDeviceInfoAppStateKill());
         } catch (Exception err) {
             this.logger.format(Level.ERROR, TAG, "on destroy: %s", err);
         }

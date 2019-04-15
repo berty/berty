@@ -33,7 +33,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
         String storagePath = reactContext.getFilesDir().getAbsolutePath();
         try {
-            Core.getDeviceInfo().setStoragePath(storagePath);
+            Core.setStoragePath(storagePath);
         } catch (Exception error) {
             logger.format(Level.ERROR, this.getName(), error.getMessage());
         }
@@ -87,7 +87,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void setCurrentRoute(String route) {
-        Core.getDeviceInfo().setAppRoute(route);
+        Core.setAppRoute(route);
     }
 
     @ReactMethod

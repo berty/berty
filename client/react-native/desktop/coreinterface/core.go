@@ -114,6 +114,8 @@ func OpenURL(url string) (interface{}, error) {
 	return nil, err
 }
 
+var _ core.NativeLogger = &CliLogger{}
+
 type CliLogger struct {
 }
 
@@ -125,5 +127,3 @@ func (*CliLogger) Log(level, namespace, message string) error {
 	fmt.Printf("[%s] [%s]: %s\n", level, namespace, message)
 	return nil
 }
-
-var _ core.NativeLogger = &CliLogger{}

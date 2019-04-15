@@ -14,7 +14,7 @@ service Daemon {
   rpc ListAccounts (Void) returns (ListAccountsResponse) {};
   rpc Panic (Void) returns (Void) {};
   rpc Restart (Void) returns (Void) {};
-  rpc SetCurrentRoute (Void) returns (Void) {};
+  rpc SetCurrentRoute (SetCurrentRouteRequest) returns (Void) {};
   rpc Start (StartRequest) returns (Void) {};
   rpc StartBot (Void) returns (Void) {};
   rpc StartLocalGRPC (Void) returns (Void) {};
@@ -24,6 +24,10 @@ service Daemon {
 }
 
 message Void {}
+
+message SetCurrentRouteRequest {
+  string route = 1;
+}
 
 message BotState {
   bool isBotRunning = 1;

@@ -1,7 +1,6 @@
 package coreinterface
 
 import (
-	"berty.tech/client/react-native/gomobile/core"
 	"berty.tech/core/pkg/notification"
 	astilectron "github.com/asticode/go-astilectron"
 	"go.uber.org/zap"
@@ -11,12 +10,6 @@ var _ notification.Driver = (*ElectronNotification)(nil)
 
 type ElectronNotification struct {
 	electron *astilectron.Astilectron
-}
-
-func SetNotificationDriver(e *astilectron.Astilectron, _ []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
-	ElectronNotificationDriver := NewElectronNotification(e)
-	core.ElectronNotificationDriver = &ElectronNotificationDriver
-	return nil
 }
 
 func NewElectronNotification(e *astilectron.Astilectron) notification.Driver {

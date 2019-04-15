@@ -1,6 +1,6 @@
 package chat.berty.ble;
 
-import core.Core;
+//import core.Core;
 
 import java.util.UUID;
 import android.os.Build;
@@ -110,7 +110,7 @@ public class GattServer extends BluetoothGattServerCallback {
                 return;
             }
 
-            Core.bytesToConn(bertyDevice.getMultiAddr(), value);
+//            Core.bytesToConn(bertyDevice.getMultiAddr(), value);
 
             if (responseNeeded) {
                 mBluetoothGattServer.sendResponse(device, requestId, GATT_SUCCESS, offset, value);

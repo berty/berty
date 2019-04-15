@@ -46,6 +46,7 @@ class AppDelegate: AppDelegateObjC {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
+    var err: NSError?
     self.launchOptions = launchOptions
 
     // TODO: Move this line to applicationDidBecomeActive when envelope db with network independant start will be implem
@@ -72,13 +73,17 @@ class AppDelegate: AppDelegateObjC {
       }
     }
 
-    // set storage path
     do {
-      try Core.deviceInfo()?.setStoragePath(try self.getFilesDir())
+      // set storage path
+      CoreSetStoragePath(try self.getFilesDir(), &err)
+      if let error = err {
+        throw error
+      }
     } catch let error as NSError {
       logger.format("unable to set storage path: %@", level: .error, error.userInfo.description)
       return false
     }
+
 
     let deadlineTime = DispatchTime.now() + .seconds(10)
 
@@ -102,23 +107,25 @@ class AppDelegate: AppDelegateObjC {
   }
 
   override func applicationDidBecomeActive(_ application: UIApplication) {
+    var err: NSError?
+
     // start react if app was killed
-    if Core.deviceInfo()?.getAppState() == Core.deviceInfoAppStateKill() {
+    if CoreGetAppState() == Core.deviceInfoAppStateKill() {
       // self.startReact()
     }
 
-    do {
-      try Core.deviceInfo()?.setAppState(Core.deviceInfoAppStateForeground())
-    } catch let err as NSError {
-      logger.format("application did become active: %@", level: .error, err.userInfo.description)
+    CoreSetAppState(Core.deviceInfoAppStateForeground(), &err)
+    if let error = err {
+      logger.format("application did become active: %@", level: .error, error.userInfo.description)
     }
   }
 
   override func applicationDidEnterBackground(_ application: UIApplication) {
-    do {
-      try Core.deviceInfo()?.setAppState(Core.deviceInfoAppStateBackground())
-    } catch let err as NSError {
-      logger.format("application did enter background: %@", level: .error, err.userInfo.description)
+    var err: NSError?
+
+    CoreSetAppState(Core.deviceInfoAppStateBackground(), &err)
+    if let error = err {
+      logger.format("application did enter background: %@", level: .error, error.userInfo.description ?? "Unknown error")
     }
   }
 }

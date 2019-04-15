@@ -11,6 +11,7 @@ import (
 	grpc_codes "google.golang.org/grpc/codes"
 	grpc_status "google.golang.org/grpc/status"
 
+	"berty.tech/client/react-native/desktop/coreinterface"
 	"berty.tech/core/api/helper"
 	"berty.tech/core/daemon"
 )
@@ -59,6 +60,11 @@ func NewDaemonDesktop() (*DaemonDesktop, error) {
 		server: gs,
 		conn:   conn,
 	}, nil
+}
+
+func (d *DaemonDesktop) SetNotificationDriver(e *astilectron.Astilectron, _ []*astilectron.Window, _ *astilectron.Menu, _ *astilectron.Tray, _ *astilectron.Menu) error {
+	d.bridge.Notification = coreinterface.NewElectronNotification(e)
+	return nil
 }
 
 func (d *DaemonDesktop) Initialize(ctx context.Context, req *daemon.Config) error {
