@@ -9,6 +9,8 @@ import (
 	"os/exec"
 	"regexp"
 
+	"github.com/asticode/go-astilectron"
+
 	"berty.tech/client/react-native/gomobile/core"
 	"go.uber.org/zap"
 
@@ -16,6 +18,8 @@ import (
 	"github.com/pkg/browser"
 	"github.com/shibukawa/configdir"
 )
+
+var a *astilectron.Astilectron
 
 func getStorageDir() (string, error) {
 	storagePath := configdir.New("Berty Technologies", "Berty")
@@ -29,6 +33,10 @@ func getStorageDir() (string, error) {
 	}
 
 	return storageDirs[0].Path, nil
+}
+
+func SetAstilectron(w *astilectron.Astilectron) {
+	a = w
 }
 
 func InstallUpdate(url string) (interface{}, error) {
@@ -86,12 +94,12 @@ func InstallUpdate(url string) (interface{}, error) {
 		return nil, err
 	}
 
-	cmd = exec.Command("open", "/Applications/Berty.app")
+	cmd = exec.Command("open", "-nF", "/Applications/Berty.app")
 	stdout, err = cmd.CombinedOutput()
 	if err != nil {
 		return nil, err
 	}
-
+	a.Stop()
 	os.Exit(0)
 
 	return nil, nil

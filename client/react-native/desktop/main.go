@@ -49,6 +49,7 @@ func main() {
 	// Run bootstrap
 	logger().Debug(fmt.Sprintf("Running app built at %s", BuiltAt))
 	if err := bootstrap.Run(bootstrap.Options{
+		Adapter:       coreinterface.SetAstilectron,
 		Asset:         Asset,
 		AssetDir:      AssetDir,
 		RestoreAssets: RestoreAssets,
