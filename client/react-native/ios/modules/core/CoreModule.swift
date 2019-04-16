@@ -28,7 +28,8 @@ class CoreModule: NSObject {
     super.init()
   }
 
-  @objc func invoke(_ method: NSString, message: NSString, resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
+  @objc func invoke(_ method: NSString, message: NSString,
+                    resolve: RCTPromiseResolveBlock!, reject: RCTPromiseRejectBlock!) {
     self.serialCoreQueue.sync {
       var err: NSError?
 

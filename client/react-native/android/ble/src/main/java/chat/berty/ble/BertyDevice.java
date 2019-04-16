@@ -1,6 +1,6 @@
 package chat.berty.ble;
 
-//import core.Core;
+import core.Core;
 
 import android.os.Build;
 import android.content.Context;
@@ -174,7 +174,7 @@ class BertyDevice {
                                             }
                                         }
 
-//                                        Core.addToPeerStore(dPeerID, dMultiAddr);
+                                        Core.addToPeerStore(dPeerID, dMultiAddr);
                                     } else {
                                         Log.d(TAG, "asyncConnectionToDevice() Berty handshake failed with device: " + dDevice + ", caller: " + callerAndThread);
                                         disconnectFromDevice("Berty handshake failed, caller: " + callerAndThread);
@@ -192,7 +192,7 @@ class BertyDevice {
                                 Log.e(TAG, "asyncConnectionToDevice() reconnection failed: connection lost with previously connected device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
                                 // TODO: Check with sfroment if it's ok to use connClosed that way
                                 // TODO: Check with sfroment how libp2p handle a reconnection with a different mac address
-//                                Core.connClosed(dMultiAddr);
+                                Core.connClosed(dMultiAddr);
                             } else {
                                 Log.e(TAG, "asyncConnectionToDevice() failed: can't connect GATT with device: " + dDevice + ", caller: " + callerAndThread);
                             }

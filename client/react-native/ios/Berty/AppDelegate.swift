@@ -84,7 +84,6 @@ class AppDelegate: AppDelegateObjC {
       return false
     }
 
-
     let deadlineTime = DispatchTime.now() + .seconds(10)
 
     DispatchQueue.global(qos: .background).asyncAfter(deadline: deadlineTime) {
@@ -116,7 +115,8 @@ class AppDelegate: AppDelegateObjC {
 
     CoreSetAppState(Core.deviceInfoAppStateForeground(), &err)
     if let error = err {
-      logger.format("application did become active: %@", level: .error, error.userInfo.description)
+      logger.format("application did become active: %@",
+                    level: .error, error.userInfo.description)
     }
   }
 
@@ -125,7 +125,8 @@ class AppDelegate: AppDelegateObjC {
 
     CoreSetAppState(Core.deviceInfoAppStateBackground(), &err)
     if let error = err {
-      logger.format("application did enter background: %@", level: .error, error.userInfo.description ?? "Unknown error")
+      logger.format("application did enter background: %@",
+                    level: .error, error.userInfo.description ?? "Unknown error")
     }
   }
 }

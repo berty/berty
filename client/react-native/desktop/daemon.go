@@ -7,6 +7,7 @@ import (
 
 	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	grpc_codes "google.golang.org/grpc/codes"
 	grpc_status "google.golang.org/grpc/status"
@@ -50,7 +51,7 @@ func NewDaemonDesktop() (*DaemonDesktop, error) {
 
 	go func() {
 		if err := gs.Serve(listener); err != nil {
-			fmt.Errorf("serve error %s", err)
+			logger().Error("serve error", zap.Error(err))
 		}
 	}()
 

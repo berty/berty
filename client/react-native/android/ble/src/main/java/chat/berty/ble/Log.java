@@ -1,6 +1,6 @@
 package chat.berty.ble;
 
-//import core.Core;
+import core.Core;
 
 import static android.bluetooth.BluetoothProfile.STATE_DISCONNECTED;
 import static android.bluetooth.BluetoothProfile.STATE_CONNECTING;
@@ -11,23 +11,23 @@ final class Log {
 
     final static void v(String tag, String log) {
         // No verbose level on zap
-//        // Core.goLogger(tag, "verbose", log);
+        // Core.goLogger(tag, "verbose", log);
     }
 
     final static void d(String tag, String log) {
-//        Core.goLogger(tag, "debug", log);
+        Core.goLogger(tag, "debug", log);
     }
 
     final static void i(String tag, String log) {
-//        Core.goLogger(tag, "info", log);
+        Core.goLogger(tag, "info", log);
     }
 
     final static void w(String tag, String log) {
-//        Core.goLogger(tag, "warn", log);
+        Core.goLogger(tag, "warn", log);
     }
 
     final static void e(String tag, String log) {
-//        Core.goLogger(tag, "error", log);
+        Core.goLogger(tag, "error", log);
     }
 
     final static String connectionStateToString(int state) {

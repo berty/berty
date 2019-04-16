@@ -12,6 +12,7 @@ import (
 	"berty.tech/core/pkg/logmanager"
 	"go.uber.org/zap"
 
+	"berty.tech/client/react-native/desktop/coreinterface"
 	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 	astilog "github.com/asticode/go-astilog"

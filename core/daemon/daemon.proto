@@ -49,37 +49,37 @@ message NetworkConfig {
 
 message SQLConfig {
   string name = 1;
-	string key = 2;
+  string key = 2;
 }
 
 message Config {
-	SQLConfig sqlOpts = 1;
+  SQLConfig sqlOpts = 1;
 
-	string grpcBind = 2;
-	string gqlBind = 3;
-	bool hideBanner = 4;
-	bool dropDatabase = 5;
-	bool initOnly = 6;
-	bool withBot = 7;
-	bool notification = 8;
-	repeated string apnsCerts = 9;
-	repeated string apnsDevVoipCerts = 10;
-	repeated string fcmAPIKeys = 11;
-	string privateKeyFile = 12;
+  string grpcBind = 2;
+  string gqlBind = 3;
+  bool hideBanner = 4;
+  bool dropDatabase = 5;
+  bool initOnly = 6;
+  bool withBot = 7;
+  bool notification = 8;
+  repeated string apnsCerts = 9;
+  repeated string apnsDevVoipCerts = 10;
+  repeated string fcmAPIKeys = 11;
+  string privateKeyFile = 12;
 
-	// p2p
-	bool peerCache = 13;
-	string identity = 14;
-	repeated string bootstrap = 15;
-	bool noP2P = 16;
-	repeated string bindP2P = 17;
-	repeated string transportP2P = 18;
-	bool hop = 19;
-	bool ble = 20;
-	bool mdns = 21;
-	bool dhtServer = 22;
-	bool PrivateNetwork = 23;
-	string SwarmKeyPath = 24;
+  // p2p
+  bool peerCache = 13;
+  string identity = 14;
+  repeated string bootstrap = 15;
+  bool noP2P = 16;
+  repeated string bindP2P = 17;
+  repeated string transportP2P = 18;
+  bool hop = 19;
+  bool ble = 20;
+  bool mdns = 21;
+  bool dhtServer = 22;
+  bool PrivateNetwork = 23;
+  string SwarmKeyPath = 24;
 }
 
 // @TODO: list all ports available
