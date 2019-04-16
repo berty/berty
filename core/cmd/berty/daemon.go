@@ -31,7 +31,9 @@ const MessageMaxSize = 1 << 22 // 4mb
 type daemonOptions struct {
 	sql sqlOptions `mapstructure:"sql"`
 
-	daemonBind       string   `mapstructure:"daemon-bind"`
+	daemonWebBind  string `mapstructure:"daemon-web-bind"`
+	daemonGRPCBind string `mapstructure:"daemon-grpc-bind"`
+
 	grpcBind         string   `mapstructure:"grpc-bind"`
 	gqlBind          string   `mapstructure:"gql-bind"`
 	hideBanner       bool     `mapstructure:"hide-banner"`
@@ -70,8 +72,11 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.initOnly, "init-only", false, "stop after node initialization (useful for integration tests")
 	flags.StringVar(&opts.privateKeyFile, "private-key-file", "", "set private key file for node")
 	flags.BoolVar(&opts.withBot, "bot", false, "enable bot")
+
+	// binding
+	flags.StringVar(&opts.daemonWebBind, "daemon-web-bind", ":8989", "daemon web listening address")
+	flags.StringVar(&opts.daemonGRPCBind, "daemon-grpc-bind", "", "daemon service gRPC listening address")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
-	flags.StringVar(&opts.daemonBind, "daemon-bind", ":1338", "Bind daemon api")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 
 	// network
@@ -113,8 +118,8 @@ func newDaemonCommand() *cobra.Command {
 	return cmd
 }
 
-func serveWeb(d *daemon.Daemon, interceptor ...grpc.ServerOption) error {
-	gs := grpc.NewServer(interceptor...)
+func serveWeb(d *daemon.Daemon, bind string, interceptors ...grpc.ServerOption) error {
+	gs := grpc.NewServer(interceptors...)
 	daemon.RegisterDaemonServer(gs, d)
 
 	iogrpc := helper.NewIOGrpc()
@@ -170,7 +175,18 @@ func serveWeb(d *daemon.Daemon, interceptor ...grpc.ServerOption) error {
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	return http.ListenAndServe(":8989", nil)
+	return http.ListenAndServe(bind, nil)
+}
+
+func serveGrpc(d *daemon.Daemon, bind string, interceptors ...grpc.ServerOption) error {
+	gs := grpc.NewServer(interceptors...)
+	daemon.RegisterDaemonServer(gs, d)
+	listener, err := net.Listen("tcp", bind)
+	if err != nil {
+		return err
+	}
+
+	return gs.Serve(listener)
 }
 
 func runDaemon(opts *daemonOptions) error {
@@ -231,8 +247,6 @@ func runDaemon(opts *daemonOptions) error {
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
 	}
 
-	gs := grpc.NewServer(interceptors...)
-
 	// set storage path
 	if err := deviceinfo.SetStoragePath(opts.sql.path); err != nil {
 		return err
@@ -251,18 +265,25 @@ func runDaemon(opts *daemonOptions) error {
 		return err
 	}
 
-	daemon.RegisterDaemonServer(gs, d)
-
-	listener, err := net.Listen("tcp", opts.daemonBind)
-	if err != nil {
-		return err
+	if opts.daemonWebBind != "" {
+		go func() {
+			if err := serveWeb(d, opts.daemonWebBind, interceptors...); err != nil {
+				logger().Error("serve web", zap.Error(err))
+			}
+		}()
 	}
 
-	go func() {
-		if err := serveWeb(d, interceptors...); err != nil {
-			logger().Error("serve web", zap.Error(err))
-		}
-	}()
+	if opts.daemonGRPCBind != "" {
+		go func() {
+			if err := serveGrpc(d, opts.daemonGRPCBind, interceptors...); err != nil {
+				logger().Error("serve web", zap.Error(err))
+			}
+		}()
+	}
 
-	return gs.Serve(listener)
+	if !opts.initOnly {
+		select {}
+	}
+
+	return nil
 }

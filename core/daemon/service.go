@@ -11,7 +11,6 @@ import (
 	account "berty.tech/core/manager/account"
 	"berty.tech/core/network"
 	network_config "berty.tech/core/network/config"
-	"berty.tech/core/pkg/deviceinfo"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
@@ -54,7 +53,7 @@ func (d *Daemon) Start(ctx context.Context, req *StartRequest) (*Void, error) {
 	var cctx context.Context
 	cctx, d.cancel = context.WithCancel(d.rootContext)
 
-	d.SetAppState(deviceinfo.Application_Foreground.String())
+	// d.SetAppState(deviceinfo.Application_Foreground.String())
 	return &Void{}, d.daemon(cctx, d.config, req.Nickname)
 }
 
