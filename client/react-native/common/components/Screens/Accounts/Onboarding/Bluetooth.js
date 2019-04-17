@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, ScrollView, NativeModules } from 'react-native'
+import { Text, View, ScrollView } from 'react-native'
 import { Flex } from '../../../Library'
 import { withNavigation } from 'react-navigation'
 import * as onboardingStyle from './style'
@@ -37,7 +37,7 @@ const Bluetooth = ({ bridge, navigation, t }) => (
                   let currentConfig = JSON.parse(config.json)
                   currentConfig.BLE = true
                   await bridge.updateNetworkConfig({
-                    json: JSON.stringify(currentConfig)
+                    json: JSON.stringify(currentConfig),
                   })
                   navigation.navigate('onboarding/contacts')
                 }}

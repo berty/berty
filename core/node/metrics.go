@@ -10,6 +10,8 @@ import (
 	"berty.tech/core/pkg/tracing"
 )
 
+// @FIXME: networkMetric should never be nil
+
 const BandwidthInterval = time.Second
 
 // Return a list of peers
@@ -38,12 +40,20 @@ func (n *Node) MonitorPeers(_ *node.Void, stream node.Service_MonitorPeersServer
 	defer tracer.Finish()
 	ctx := tracer.Context()
 
+	var metric network_metric.Metric
+
 	lastMap := map[string]*network_metric.Peer{}
 	for {
 		currentMap := map[string]*network_metric.Peer{}
 
+		if metric = n.networkMetric; metric == nil {
+			logger().Error("network metrics not started or has been disabled")
+			<-time.After(time.Second * 1)
+			continue
+		}
+
 		// add peers to map
-		for _, peer := range n.networkMetric.Peers(ctx).List {
+		for _, peer := range metric.Peers(ctx).List {
 			currentMap[peer.ID] = peer
 		}
 
@@ -79,6 +89,10 @@ func (n *Node) MonitorBandwidth(input *network_metric.BandwidthStats, stream nod
 	tracer := tracing.EnterFunc(stream.Context(), input)
 	defer tracer.Finish()
 	ctx := tracer.Context()
+
+	if n.networkMetric == nil {
+		return fmt.Errorf("network metrics not started")
+	}
 
 	cerr := make(chan error, 1)
 
