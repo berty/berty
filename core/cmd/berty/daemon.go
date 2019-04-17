@@ -227,13 +227,13 @@ func runDaemon(opts *daemonOptions) error {
 	}
 
 	dlogger := zap.L().Named("daemon.grpc")
-	serverStreamOpts := []grpc.StreamServerInterceptor{
-		// grpc_auth.StreamServerInterceptor(myAuthFunction),
-		grpc_ctxtags.StreamServerInterceptor(),
-		grpc_zap.StreamServerInterceptor(dlogger),
-		grpc_recovery.StreamServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
-		errorcodes.StreamServerInterceptor(),
-	}
+	// serverStreamOpts := []grpc.StreamServerInterceptor{
+	// 	// grpc_auth.StreamServerInterceptor(myAuthFunction),
+	// 	grpc_ctxtags.StreamServerInterceptor(),
+	// 	grpc_zap.StreamServerInterceptor(dlogger),
+	// 	grpc_recovery.StreamServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
+	// 	errorcodes.StreamServerInterceptor(),
+	// }
 	serverUnaryOpts := []grpc.UnaryServerInterceptor{
 		// grpc_auth.UnaryServerInterceptor(myAuthFunction),
 		grpc_ctxtags.UnaryServerInterceptor(),
@@ -243,7 +243,7 @@ func runDaemon(opts *daemonOptions) error {
 	}
 
 	interceptors := []grpc.ServerOption{
-		grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
+		// grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(serverStreamOpts...)),
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
 	}
 

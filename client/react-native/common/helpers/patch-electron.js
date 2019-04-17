@@ -35,21 +35,21 @@ if (Platform.OS === 'web' &&
   })
 
   const ops = [
-    'initialize',
-    'listAccounts',
-    'start',
-    'restart',
-    'dropDatabase',
-    'panic',
-    'throwException',
-    'getPort',
-    'isBotRunning',
-    'startBot',
-    'stopBot',
-    'getNetworkConfig',
-    'updateNetworkConfig',
-    'setCurrentRoute',
-    'getLocalGRPCInfos',
+    // 'initialize',           @deprecated
+    // 'listAccounts',         @deprecated
+    // 'start',                @deprecated
+    // 'restart',              @deprecated
+    // 'dropDatabase',         @deprecated
+    // 'panic',                @deprecated
+    // 'throwException',       @deprecated
+    // 'getPort',              @deprecated
+    // 'isBotRunning',         @deprecated
+    // 'startBot',             @deprecated
+    // 'stopBot',              @deprecated
+    // 'getNetworkConfig',     @deprecated
+    // 'updateNetworkConfig',  @deprecated
+    // 'setCurrentRoute',      @deprecated
+    // 'getLocalGRPCInfos',    @deprecated
     'openURL',
     'installUpdate',
   ]

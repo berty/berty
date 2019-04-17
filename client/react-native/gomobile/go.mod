@@ -2,6 +2,7 @@ module berty.tech/client/react-native/gomobile
 
 require (
 	berty.tech/core v0.0.0
+	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190222133341-cfaf5686ec79
 	github.com/libp2p/go-buffer-pool v0.1.2-0.20181009094743-058210c5a0d0 // indirect
 	github.com/pkg/errors v0.8.1
 	github.com/spf13/afero v1.2.0 // indirect

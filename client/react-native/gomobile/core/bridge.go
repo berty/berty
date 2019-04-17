@@ -8,7 +8,14 @@ import (
 	"berty.tech/core/daemon"
 	network_config "berty.tech/core/network/config"
 	"berty.tech/core/pkg/deviceinfo"
-	"google.golang.org/grpc"
+	"berty.tech/core/pkg/errorcodes"
+
+	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
+	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	"go.uber.org/zap"
+	grpc "google.golang.org/grpc"
 )
 
 var (
@@ -87,22 +94,35 @@ func NewNativeBridge(loggerNative NativeLogger) NativeBridge {
 	initBleFunc()
 
 	iogrpc := helper.NewIOGrpc()
-	dialer := iogrpc.NewDialer()
-	listener := iogrpc.Listener()
 
+	dlogger := zap.L().Named("daemon.grpc")
+	serverUnaryOpts := []grpc.UnaryServerInterceptor{
+		// grpc_auth.UnaryServerInterceptor(myAuthFunction),
+		grpc_ctxtags.UnaryServerInterceptor(),
+		grpc_zap.UnaryServerInterceptor(dlogger),
+		grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
+		errorcodes.UnaryServerInterceptor(),
+	}
+
+	serverInterceptors := []grpc.ServerOption{
+		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(serverUnaryOpts...)),
+	}
+
+	gs := grpc.NewServer(serverInterceptors...)
+	daemon.RegisterDaemonServer(gs, bridge)
+
+	dialer := iogrpc.NewDialer()
 	dialOpts := append([]grpc.DialOption{
 		grpc.WithInsecure(),
 		grpc.WithDialer(dialer),
 	})
-
-	gs := grpc.NewServer()
-	daemon.RegisterDaemonServer(gs, bridge)
 
 	conn, err := grpc.Dial("", dialOpts...)
 	if err != nil {
 		panic(err)
 	}
 
+	listener := iogrpc.Listener()
 	go func() {
 		if err := gs.Serve(listener); err != nil {
 			fmt.Errorf("serve error %s", err)
