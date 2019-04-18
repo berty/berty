@@ -64,11 +64,11 @@ func (m *Event) Validate() error {
 		}
 	}
 
-	// handling field: Direction - name:"direction" number:9 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Event.Direction" json_name:"direction" options:<[]:"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Direction - name:"direction" number:9 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Event.Direction" json_name:"direction" options:<[]:0 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: APIVersion - name:"api_version" number:10 label:LABEL_OPTIONAL type:TYPE_UINT32 json_name:"apiVersion" options:<[]:"APIVersion" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: Kind - name:"kind" number:13 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Kind" json_name:"kind" options:<[]:"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Kind - name:"kind" number:13 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Kind" json_name:"kind" options:<[]:0 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Attributes - name:"attributes" number:14 label:LABEL_OPTIONAL type:TYPE_BYTES json_name:"attributes" options:<53005:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
@@ -80,7 +80,7 @@ func (m *Event) Validate() error {
 		}
 	}
 
-	// handling field: AckStatus - name:"ack_status" number:17 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Event.AckStatus" json_name:"ackStatus" options:<[]:"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: AckStatus - name:"ack_status" number:17 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Event.AckStatus" json_name:"ackStatus" options:<[]:0 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: Dispatches - name:"dispatches" number:18 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.EventDispatch" json_name:"dispatches"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
@@ -159,8 +159,14 @@ func (m *MetadataKeyValue) Validate() error {
 		return nil
 	}
 
-	// handling field: Key - name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"key" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Key - name:"key" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"key" options:<[]:1 >  (is_contact_key=false, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetKey()) < 1 {
+		return errors.New("Key must be longer than 1")
+	}
 
-	// handling field: Values - name:"values" number:2 label:LABEL_REPEATED type:TYPE_STRING json_name:"values" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Values - name:"values" number:2 label:LABEL_REPEATED type:TYPE_STRING json_name:"values" options:<[]:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=1, max_items=0)
+	if len(m.GetValues()) < 1 {
+		return errors.New("Values must contain at least 1 item(s)")
+	}
 	return nil
 }

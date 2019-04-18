@@ -12,7 +12,7 @@ PROTOC_OPTS = --proto_path=/protobuf:./vendor/github.com/gogo/protobuf:vendor:.
 SERVICE_PROTOS = $(call rwildcard, api, *.proto)
 GENERATED_PATTERNS = %.validate.gen.go %.service.gen.go %generated.gen.go %kind.gen.go %.pb.go %.gen.js %.gen.graphql
 GENERATED_FILES = $(filter $(GENERATED_PATTERNS),$(filter-out $(call rwildcard ./vendor/,*),$(call rwildcard,./,*)))
-GENERATION_TARGETS = .kind.generated .client.generated .pb.generated .gql.generated
+GENERATION_TARGETS = .kind.generated .json.generated .client.generated .pb.generated .gql.generated
 CGO_LDFLAGS ?= -L/usr/local/opt/openssl/lib
 CGO_CPPFLAGS ?= -I/usr/local/opt/openssl/include
 BUILD_ENV ?= GO111MODULE=on GOPROXY=https://goproxy.berty.io CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CPPFLAGS="$(CGO_CPPFLAGS)"
@@ -85,9 +85,9 @@ testloop: generate
 integration: install
 	rm -f /tmp/berty.integration.db
 	@# initialize a new daemon on a fresh db
-	$(BIN) daemon --init-only --no-p2p --sql-path=/tmp/berty.integration.db
+	$(BIN) daemon --init-only --no-p2p --sql-name=berty.integration.db
 	@# initialize a new daemon based on an existing db
-	$(BIN) daemon --init-only --no-p2p --sql-path=/tmp/berty.integration.db
+	$(BIN) daemon --init-only --no-p2p --sql-name=berty.integration.db
 
 .PHONY: lint
 lint: generate
@@ -104,7 +104,7 @@ generate: .generated
 		--workdir="/go/src/$(GO_ROOT_PKG)" \
 		--entrypoint="sh" \
 		--rm \
-		bertychat/protoc:v8 \
+		bertychat/protoc:v9 \
 		-xec 'make IGNORE_GQLGEN=$(IGNORE_GQLGEN) generate_local'
 	touch $@
 
@@ -141,6 +141,9 @@ _ci_prepare:
 		--gofast_out="plugins=grpc:$(GOPATH)/src" \
 		--gotemplate_out=debug=false,all=true,single-package-mode=false,template_dir=./pkg/validate:. \
 		"$(dir $<)"/*.proto
+
+.json.generated: $(PROTOS)
+	pbjs -t json ./daemon/daemon.proto > ../client/react-native/common/bridge/service/daemon/daemon.pb.json
 
 # FIXME: use an automated rule that matches every client generated files
 .client.generated: $(PROTOS)

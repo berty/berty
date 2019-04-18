@@ -1,13 +1,12 @@
-import { NativeModules, Platform } from 'react-native'
+import { Platform } from 'react-native'
 import { atob } from 'b64-lite'
 import React, { PureComponent } from 'react'
 import { createAppContainer } from 'react-navigation'
 
-import NavigationService from './../../helpers/NavigationService'
+import NavigationService from '../../helpers/NavigationService'
 import { NavigatorContext } from './NavigatorContext'
 import { AppNavigator } from './AppNavigator'
-
-const { CoreModule } = NativeModules
+import withBridgeContext from '../../helpers/withBridgeContext'
 
 const getActiveRoute = navigationState => {
   if (!navigationState) {
@@ -53,7 +52,7 @@ class Navigator extends PureComponent {
   state = {}
 
   render () {
-    const { navigation } = this.props
+    const { navigation, bridge } = this.props
 
     return (
       <NavigatorContext.Provider value={this.state}>
@@ -69,7 +68,9 @@ class Navigator extends PureComponent {
             const currentRoute = getActiveRoute(currentState)
             const prevRoute = getActiveRoute(prevState)
             if (prevRoute !== currentRoute) {
-              CoreModule.setCurrentRoute(getURIFromRoute(currentRoute))
+              bridge.setCurrentRoute({
+                route: getURIFromRoute(currentRoute),
+              })
               this.setState(currentRoute)
             }
           }}
@@ -79,6 +80,6 @@ class Navigator extends PureComponent {
   }
 }
 
-export default (Platform.OS !== 'web'
-  ? createAppContainer(Navigator)
-  : Navigator)
+export default withBridgeContext(
+  Platform.OS !== 'web' ? createAppContainer(Navigator) : Navigator
+)

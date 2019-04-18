@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import { Platform } from 'react-native'
 import { Menu, Header } from '../../../../Library'
 
 export default class Network extends PureComponent {
@@ -26,17 +25,15 @@ export default class Network extends PureComponent {
             }}
           />
         </Menu.Section>
-        {(Platform.OS !== 'web' || Platform.Desktop) && (
-          <Menu.Section>
-            <Menu.Item
-              icon='sliders'
-              title='Network configuration'
-              onPress={() => {
-                navigation.navigate('network/config')
-              }}
-            />
-          </Menu.Section>
-        )}
+        <Menu.Section>
+          <Menu.Item
+            icon='sliders'
+            title='Network configuration'
+            onPress={() => {
+              navigation.navigate('network/config')
+            }}
+          />
+        </Menu.Section>
       </Menu>
     )
   }

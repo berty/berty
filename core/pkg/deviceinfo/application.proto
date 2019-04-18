@@ -7,9 +7,11 @@ option go_package = "berty.tech/core/pkg/deviceinfo";
 message Application {
 
   enum State {
-    Kill = 0;
-    Background = 1;
-    Foreground = 2;
+    Unknown = 0;
+
+    Kill = 1;
+    Background = 2;
+    Foreground = 3;
   }
 
   State state = 1;

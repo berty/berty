@@ -761,9 +761,9 @@ func (m *Metadata) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x22
 		i++
 		i = encodeVarintErrors(dAtA, i, uint64(m.Parent.Size()))
-		n3, err := m.Parent.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
+		n3, err3 := m.Parent.MarshalTo(dAtA[i:])
+		if err3 != nil {
+			return 0, err3
 		}
 		i += n3
 	}
@@ -864,7 +864,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -892,7 +892,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Code |= (Code(b) & 0x7F) << shift
+				m.Code |= Code(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -909,7 +909,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					v |= (Code(b) & 0x7F) << shift
+					v |= Code(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -926,7 +926,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					packedLen |= (int(b) & 0x7F) << shift
+					packedLen |= int(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -935,6 +935,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 					return ErrInvalidLengthErrors
 				}
 				postIndex := iNdEx + packedLen
+				if postIndex < 0 {
+					return ErrInvalidLengthErrors
+				}
 				if postIndex > l {
 					return io.ErrUnexpectedEOF
 				}
@@ -953,7 +956,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 						}
 						b := dAtA[iNdEx]
 						iNdEx++
-						v |= (Code(b) & 0x7F) << shift
+						v |= Code(b&0x7F) << shift
 						if b < 0x80 {
 							break
 						}
@@ -977,7 +980,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -986,6 +989,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthErrors
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthErrors
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1006,7 +1012,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					wire |= (uint64(b) & 0x7F) << shift
+					wire |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -1023,7 +1029,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 						}
 						b := dAtA[iNdEx]
 						iNdEx++
-						stringLenmapkey |= (uint64(b) & 0x7F) << shift
+						stringLenmapkey |= uint64(b&0x7F) << shift
 						if b < 0x80 {
 							break
 						}
@@ -1033,6 +1039,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 						return ErrInvalidLengthErrors
 					}
 					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthErrors
+					}
 					if postStringIndexmapkey > l {
 						return io.ErrUnexpectedEOF
 					}
@@ -1049,7 +1058,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 						}
 						b := dAtA[iNdEx]
 						iNdEx++
-						stringLenmapvalue |= (uint64(b) & 0x7F) << shift
+						stringLenmapvalue |= uint64(b&0x7F) << shift
 						if b < 0x80 {
 							break
 						}
@@ -1059,6 +1068,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 						return ErrInvalidLengthErrors
 					}
 					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+					if postStringIndexmapvalue < 0 {
+						return ErrInvalidLengthErrors
+					}
 					if postStringIndexmapvalue > l {
 						return io.ErrUnexpectedEOF
 					}
@@ -1095,7 +1107,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1104,6 +1116,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthErrors
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthErrors
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1128,7 +1143,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1138,6 +1153,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthErrors
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthErrors
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1157,7 +1175,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1167,6 +1185,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthErrors
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthErrors
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1179,6 +1200,9 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthErrors
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthErrors
 			}
 			if (iNdEx + skippy) > l {
@@ -1248,8 +1272,11 @@ func skipErrors(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthErrors
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthErrors
 			}
 			return iNdEx, nil
@@ -1280,6 +1307,9 @@ func skipErrors(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthErrors
+				}
 			}
 			return iNdEx, nil
 		case 4:

@@ -33,7 +33,7 @@ func (m *Contact) Validate() error {
 
 	// handling field: Status - name:"status" number:11 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.Contact.Status" json_name:"status"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: Devices - name:"devices" number:12 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.Device" json_name:"devices" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Devices - name:"devices" number:12 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.Device" json_name:"devices"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	if v, ok := interface{}(m.GetDevices()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {

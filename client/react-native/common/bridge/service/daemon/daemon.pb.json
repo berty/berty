@@ -1,0 +1,261 @@
+{
+  "nested": {
+    "berty": {
+      "nested": {
+        "daemon": {
+          "options": {
+            "go_package": "berty.tech/core/daemon"
+          },
+          "nested": {
+            "Daemon": {
+              "methods": {
+                "DropDatabase": {
+                  "requestType": "Void",
+                  "responseType": "Void"
+                },
+                "GetLocalGrpcInfos": {
+                  "requestType": "Void",
+                  "responseType": "GRPCInfos"
+                },
+                "GetNetworkConfig": {
+                  "requestType": "Void",
+                  "responseType": "NetworkConfig"
+                },
+                "GetPort": {
+                  "requestType": "Void",
+                  "responseType": "GetPortResponse"
+                },
+                "Initialize": {
+                  "requestType": "Config",
+                  "responseType": "Void"
+                },
+                "GetBotState": {
+                  "requestType": "Void",
+                  "responseType": "BotState"
+                },
+                "ListAccounts": {
+                  "requestType": "Void",
+                  "responseType": "ListAccountsResponse"
+                },
+                "Panic": {
+                  "requestType": "Void",
+                  "responseType": "Void"
+                },
+                "Restart": {
+                  "requestType": "Void",
+                  "responseType": "Void"
+                },
+                "SetCurrentRoute": {
+                  "requestType": "SetCurrentRouteRequest",
+                  "responseType": "Void"
+                },
+                "Start": {
+                  "requestType": "StartRequest",
+                  "responseType": "Void"
+                },
+                "StartBot": {
+                  "requestType": "Void",
+                  "responseType": "Void"
+                },
+                "StartLocalGRPC": {
+                  "requestType": "Void",
+                  "responseType": "Void"
+                },
+                "StopBot": {
+                  "requestType": "Void",
+                  "responseType": "Void"
+                },
+                "StopLocalGRPC": {
+                  "requestType": "Void",
+                  "responseType": "Void"
+                },
+                "UpdateNetworkConfig": {
+                  "requestType": "NetworkConfig",
+                  "responseType": "Void"
+                }
+              }
+            },
+            "Void": {
+              "fields": {}
+            },
+            "SetCurrentRouteRequest": {
+              "fields": {
+                "route": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "BotState": {
+              "fields": {
+                "isBotRunning": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
+            "StartRequest": {
+              "fields": {
+                "nickname": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "GRPCInfos": {
+              "fields": {
+                "json": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "NetworkConfig": {
+              "fields": {
+                "json": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "SQLConfig": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "key": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "Config": {
+              "fields": {
+                "sqlOpts": {
+                  "type": "SQLConfig",
+                  "id": 1
+                },
+                "grpcBind": {
+                  "type": "string",
+                  "id": 2
+                },
+                "gqlBind": {
+                  "type": "string",
+                  "id": 3
+                },
+                "hideBanner": {
+                  "type": "bool",
+                  "id": 4
+                },
+                "dropDatabase": {
+                  "type": "bool",
+                  "id": 5
+                },
+                "initOnly": {
+                  "type": "bool",
+                  "id": 6
+                },
+                "withBot": {
+                  "type": "bool",
+                  "id": 7
+                },
+                "notification": {
+                  "type": "bool",
+                  "id": 8
+                },
+                "apnsCerts": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 9
+                },
+                "apnsDevVoipCerts": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 10
+                },
+                "fcmAPIKeys": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 11
+                },
+                "privateKeyFile": {
+                  "type": "string",
+                  "id": 12
+                },
+                "peerCache": {
+                  "type": "bool",
+                  "id": 13
+                },
+                "identity": {
+                  "type": "string",
+                  "id": 14
+                },
+                "bootstrap": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 15
+                },
+                "noP2P": {
+                  "type": "bool",
+                  "id": 16
+                },
+                "bindP2P": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 17
+                },
+                "transportP2P": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 18
+                },
+                "hop": {
+                  "type": "bool",
+                  "id": 19
+                },
+                "ble": {
+                  "type": "bool",
+                  "id": 20
+                },
+                "mdns": {
+                  "type": "bool",
+                  "id": 21
+                },
+                "dhtServer": {
+                  "type": "bool",
+                  "id": 22
+                },
+                "PrivateNetwork": {
+                  "type": "bool",
+                  "id": 23
+                },
+                "SwarmKeyPath": {
+                  "type": "string",
+                  "id": 24
+                }
+              }
+            },
+            "GetPortResponse": {
+              "fields": {
+                "port": {
+                  "type": "int32",
+                  "id": 1
+                }
+              }
+            },
+            "ListAccountsResponse": {
+              "fields": {
+                "accounts": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

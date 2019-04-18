@@ -5,30 +5,31 @@ import (
 
 	"berty.tech/client/react-native/desktop/coreinterface"
 
-	"github.com/asticode/go-astilectron"
+	astilectron "github.com/asticode/go-astilectron"
 	bootstrap "github.com/asticode/go-astilectron-bootstrap"
 	"github.com/pkg/errors"
 )
 
 var ptrErrFunc = map[string]func() (interface{}, error){
-	"initialize":        coreinterface.Initialize,
-	"restart":           coreinterface.Restart,      // FIXME: crashes electron process
-	"dropDatabase":      coreinterface.DropDatabase, // FIXME: crashes electron process
-	"panic":             coreinterface.Panic,
-	"startBot":          coreinterface.StartBot,
-	"stopBot":           coreinterface.StopBot,
-	"isBotRunning":      coreinterface.IsBotRunning,
-	"getNetworkConfig":  coreinterface.GetNetworkConfig,
-	"getLocalGRPCInfos": coreinterface.GetLocalGRPCInfos,
-	"getPort":           coreinterface.GetPort,
-	"listAccounts":      coreinterface.ListAccounts,
+	// "initialize":        coreinterface.Initialize,               // @deprecate
+	// "restart":           coreinterface.Restart,                  // @deprecate
+	// "dropDatabase":      coreinterface.DropDatabase,             // @deprecate
+	// "panic":             coreinterface.Panic,                    // @deprecate
+	// "startBot":          coreinterface.StartBot,                 // @deprecate
+	// "stopBot":           coreinterface.StopBot,                  // @deprecate
+	// "isBotRunning":      coreinterface.IsBotRunning,             // @deprecate
+	// "getNetworkConfig":  coreinterface.GetNetworkConfig,         // @deprecate
+	// "getLocalGRPCInfos": coreinterface.GetLocalGRPCInfos,        // @deprecate
+	// "getPort":           coreinterface.GetPort,                  // @deprecate
+	// "listAccounts":      coreinterface.ListAccounts,             // @deprecate
 }
 
 var ptrStrErrFunc = map[string]func(string) (interface{}, error){
-	"start":               coreinterface.Start,
-	"updateNetworkConfig": coreinterface.UpdateNetworkConfig,
-	"openURL":             coreinterface.OpenURL,
-	"installUpdate":       coreinterface.InstallUpdate,
+
+	// "start":               coreinterface.Start,			// @deprecate
+	// "updateNetworkConfig": coreinterface.UpdateNetworkConfig,	// @deprecate
+	"openURL":       coreinterface.OpenURL,
+	"installUpdate": coreinterface.InstallUpdate,
 }
 
 func stringPayload(message json.RawMessage) (string, error) {

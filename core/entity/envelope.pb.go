@@ -152,9 +152,9 @@ func (m *Envelope) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x1a
 		i++
 		i = encodeVarintEnvelope(dAtA, i, uint64(m.Signature.Size()))
-		n1, err := m.Signature.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
+		n1, err1 := m.Signature.MarshalTo(dAtA[i:])
+		if err1 != nil {
+			return 0, err1
 		}
 		i += n1
 	}
@@ -235,7 +235,7 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -263,7 +263,7 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -273,6 +273,9 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEnvelope
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEnvelope
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -292,7 +295,7 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -301,6 +304,9 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEnvelope
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEnvelope
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -323,7 +329,7 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -332,6 +338,9 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEnvelope
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthEnvelope
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -356,7 +365,7 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -366,6 +375,9 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthEnvelope
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthEnvelope
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -378,6 +390,9 @@ func (m *Envelope) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthEnvelope
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthEnvelope
 			}
 			if (iNdEx + skippy) > l {
@@ -447,8 +462,11 @@ func skipEnvelope(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthEnvelope
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthEnvelope
 			}
 			return iNdEx, nil
@@ -479,6 +497,9 @@ func skipEnvelope(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthEnvelope
+				}
 			}
 			return iNdEx, nil
 		case 4:

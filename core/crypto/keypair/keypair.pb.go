@@ -767,17 +767,17 @@ func (m *CertificateContent) MarshalTo(dAtA []byte) (int, error) {
 	dAtA[i] = 0x32
 	i++
 	i = encodeVarintKeypair(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.NotBefore)))
-	n1, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotBefore, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotBefore, dAtA[i:])
+	if err1 != nil {
+		return 0, err1
 	}
 	i += n1
 	dAtA[i] = 0x3a
 	i++
 	i = encodeVarintKeypair(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.NotAfter)))
-	n2, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotAfter, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.NotAfter, dAtA[i:])
+	if err2 != nil {
+		return 0, err2
 	}
 	i += n2
 	if len(m.Extension) > 0 {
@@ -811,9 +811,9 @@ func (m *Certificate) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintKeypair(dAtA, i, uint64(m.Content.Size()))
-		n3, err := m.Content.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
+		n3, err3 := m.Content.MarshalTo(dAtA[i:])
+		if err3 != nil {
+			return 0, err3
 		}
 		i += n3
 	}
@@ -821,9 +821,9 @@ func (m *Certificate) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintKeypair(dAtA, i, uint64(m.Signature.Size()))
-		n4, err := m.Signature.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
+		n4, err4 := m.Signature.MarshalTo(dAtA[i:])
+		if err4 != nil {
+			return 0, err4
 		}
 		i += n4
 	}
@@ -868,9 +868,9 @@ func (m *RevocationContent) MarshalTo(dAtA []byte) (int, error) {
 	dAtA[i] = 0x22
 	i++
 	i = encodeVarintKeypair(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.IssuedOn)))
-	n5, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.IssuedOn, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n5, err5 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.IssuedOn, dAtA[i:])
+	if err5 != nil {
+		return 0, err5
 	}
 	i += n5
 	if len(m.Extension) > 0 {
@@ -904,9 +904,9 @@ func (m *Revocation) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0xa
 		i++
 		i = encodeVarintKeypair(dAtA, i, uint64(m.Content.Size()))
-		n6, err := m.Content.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
+		n6, err6 := m.Content.MarshalTo(dAtA[i:])
+		if err6 != nil {
+			return 0, err6
 		}
 		i += n6
 	}
@@ -914,9 +914,9 @@ func (m *Revocation) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintKeypair(dAtA, i, uint64(m.Signature.Size()))
-		n7, err := m.Signature.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
+		n7, err7 := m.Signature.MarshalTo(dAtA[i:])
+		if err7 != nil {
+			return 0, err7
 		}
 		i += n7
 	}
@@ -1115,7 +1115,7 @@ func (m *Signature) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1143,7 +1143,7 @@ func (m *Signature) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1152,6 +1152,9 @@ func (m *Signature) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1174,7 +1177,7 @@ func (m *Signature) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.SignatureAlgorithm |= (SignatureAlgorithm(b) & 0x7F) << shift
+				m.SignatureAlgorithm |= SignatureAlgorithm(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1186,6 +1189,9 @@ func (m *Signature) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthKeypair
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKeypair
 			}
 			if (iNdEx + skippy) > l {
@@ -1216,7 +1222,7 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1244,7 +1250,7 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= (int(b) & 0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1264,7 +1270,7 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1273,6 +1279,9 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1295,7 +1304,7 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= (int(b) & 0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1315,7 +1324,7 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1324,6 +1333,9 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1339,6 +1351,9 @@ func (m *EcdsaSignature) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthKeypair
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKeypair
 			}
 			if (iNdEx + skippy) > l {
@@ -1369,7 +1384,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1397,7 +1412,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Version |= (CertRevocationVersions(b) & 0x7F) << shift
+				m.Version |= CertRevocationVersions(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1416,7 +1431,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.PublicKeyAlgorithm |= (PublicKeyAlgorithm(b) & 0x7F) << shift
+				m.PublicKeyAlgorithm |= PublicKeyAlgorithm(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1435,7 +1450,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1444,6 +1459,9 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1466,7 +1484,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1475,6 +1493,9 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1497,7 +1518,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1506,6 +1527,9 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1528,7 +1552,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1537,6 +1561,9 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1558,7 +1585,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1567,6 +1594,9 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1588,7 +1618,7 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1597,6 +1627,9 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1612,6 +1645,9 @@ func (m *CertificateContent) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthKeypair
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKeypair
 			}
 			if (iNdEx + skippy) > l {
@@ -1642,7 +1678,7 @@ func (m *Certificate) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1670,7 +1706,7 @@ func (m *Certificate) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1679,6 +1715,9 @@ func (m *Certificate) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1703,7 +1742,7 @@ func (m *Certificate) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1712,6 +1751,9 @@ func (m *Certificate) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1729,6 +1771,9 @@ func (m *Certificate) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthKeypair
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKeypair
 			}
 			if (iNdEx + skippy) > l {
@@ -1759,7 +1804,7 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1787,7 +1832,7 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Version |= (CertRevocationVersions(b) & 0x7F) << shift
+				m.Version |= CertRevocationVersions(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1806,7 +1851,7 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1815,6 +1860,9 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1837,7 +1885,7 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1846,6 +1894,9 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1868,7 +1919,7 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1877,6 +1928,9 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1898,7 +1952,7 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= (int(b) & 0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1907,6 +1961,9 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -1922,6 +1979,9 @@ func (m *RevocationContent) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthKeypair
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKeypair
 			}
 			if (iNdEx + skippy) > l {
@@ -1952,7 +2012,7 @@ func (m *Revocation) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -1980,7 +2040,7 @@ func (m *Revocation) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -1989,6 +2049,9 @@ func (m *Revocation) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -2013,7 +2076,7 @@ func (m *Revocation) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -2022,6 +2085,9 @@ func (m *Revocation) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthKeypair
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthKeypair
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -2039,6 +2105,9 @@ func (m *Revocation) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthKeypair
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthKeypair
 			}
 			if (iNdEx + skippy) > l {
@@ -2108,8 +2177,11 @@ func skipKeypair(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthKeypair
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthKeypair
 			}
 			return iNdEx, nil
@@ -2140,6 +2212,9 @@ func skipKeypair(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthKeypair
+				}
 			}
 			return iNdEx, nil
 		case 4:

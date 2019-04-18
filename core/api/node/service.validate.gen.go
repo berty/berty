@@ -59,7 +59,10 @@ func (m *ContactRequestInput) Validate() error {
 
 	// handling field: ContactOverrideDisplayName - name:"contact_override_display_name" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactOverrideDisplayName"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
-	// handling field: IntroText - name:"intro_text" number:3 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"introText" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: IntroText - name:"intro_text" number:3 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"introText" options:<[]:256 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=256, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetIntroText()) > 256 {
+		return errors.New("IntroText must not be longer than 256")
+	}
 	return nil
 }
 func (m *ContactAcceptRequestInput) Validate() error {
@@ -67,7 +70,10 @@ func (m *ContactAcceptRequestInput) Validate() error {
 		return nil
 	}
 
-	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ContactID - name:"contact_id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"contactId" options:<53004:1 []:1 []:true []:"ContactID" >  (is_contact_key=true, defined_only=false, min_len=1, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	if len(m.GetContactID()) < 1 {
+		return errors.New("ContactID must be longer than 1")
+	}
 	if err := validator.IsContactKey(m.GetContactID()); err != nil {
 		return err
 	}
@@ -348,12 +354,16 @@ func (m *ConversationCreateInput) Validate() error {
 		return nil
 	}
 
-	// handling field: Contacts - name:"contacts" number:1 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"contacts" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Contacts - name:"contacts" number:1 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"contacts" options:<[]:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=1, max_items=0)
 
 	if v, ok := interface{}(m.GetContacts()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
 			return errors.Wrap(err, "embedded message verification failed: Contacts")
 		}
+	}
+
+	if len(m.GetContacts()) < 1 {
+		return errors.New("Contacts must contain at least 1 item(s)")
 	}
 
 	// handling field: Title - name:"title" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"title"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
@@ -379,7 +389,7 @@ func (m *ConversationManageMembersInput) Validate() error {
 		}
 	}
 
-	// handling field: Contacts - name:"contacts" number:2 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"contacts" options:< (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: Contacts - name:"contacts" number:2 label:LABEL_REPEATED type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"contacts" options:<[]:1 >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=1, max_items=0)
 
 	if v, ok := interface{}(m.GetContacts()).(interface{ Validate() error }); ok {
 		if err := v.Validate(); err != nil {
@@ -387,6 +397,9 @@ func (m *ConversationManageMembersInput) Validate() error {
 		}
 	}
 
+	if len(m.GetContacts()) < 1 {
+		return errors.New("Contacts must contain at least 1 item(s)")
+	}
 	return nil
 }
 func (m *DevicePushConfigEdge) Validate() error {

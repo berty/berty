@@ -1,9 +1,10 @@
-import { Switch, NativeModules } from 'react-native'
+import { Switch } from 'react-native'
 import React, { PureComponent } from 'react'
+import withBridgeContext from '../../../../../helpers/withBridgeContext'
 
 import { Header, Loader, Menu } from '../../../../Library'
 
-export default class Network extends PureComponent {
+class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const updating =
       (navigation.state.params && navigation.state.params.updating) || false
@@ -23,19 +24,23 @@ export default class Network extends PureComponent {
   state = null
 
   async componentDidMount () {
-    const config = await NativeModules.CoreModule.getNetworkConfig()
-    console.warn(config)
-    this.setState(JSON.parse(config))
+    const { bridge } = this.props
+
+    const config = await bridge.getNetworkConfig({})
+    console.warn(config.json)
+    this.setState(JSON.parse(config.json))
   }
 
   updateConfig = async config => {
+    const { bridge } = this.props
     const lastConfig = this.state
+
     this.props.navigation.setParams({ updating: true })
     this.setState(config, async () => {
       try {
-        await NativeModules.CoreModule.updateNetworkConfig(
-          JSON.stringify(this.state)
-        )
+        await bridge.updateNetworkConfig({
+          json: JSON.stringify(this.state),
+        })
       } catch (err) {
         console.error(err)
         this.setState(lastConfig)
@@ -166,3 +171,5 @@ export default class Network extends PureComponent {
     )
   }
 }
+
+export default withBridgeContext(Network)

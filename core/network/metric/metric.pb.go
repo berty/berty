@@ -493,7 +493,7 @@ func (m *BandwidthStats) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -521,7 +521,7 @@ func (m *BandwidthStats) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -531,6 +531,9 @@ func (m *BandwidthStats) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthMetric
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -550,7 +553,7 @@ func (m *BandwidthStats) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.TotalIn |= (int64(b) & 0x7F) << shift
+				m.TotalIn |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -569,7 +572,7 @@ func (m *BandwidthStats) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.TotalOut |= (int64(b) & 0x7F) << shift
+				m.TotalOut |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -610,7 +613,7 @@ func (m *BandwidthStats) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Type |= (MetricsType(b) & 0x7F) << shift
+				m.Type |= MetricsType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -622,6 +625,9 @@ func (m *BandwidthStats) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthMetric
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthMetric
 			}
 			if (iNdEx + skippy) > l {
@@ -652,7 +658,7 @@ func (m *ListAddrs) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -680,7 +686,7 @@ func (m *ListAddrs) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -690,6 +696,9 @@ func (m *ListAddrs) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthMetric
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -702,6 +711,9 @@ func (m *ListAddrs) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthMetric
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthMetric
 			}
 			if (iNdEx + skippy) > l {
@@ -732,7 +744,7 @@ func (m *PingReq) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -760,7 +772,7 @@ func (m *PingReq) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -770,6 +782,9 @@ func (m *PingReq) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthMetric
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthMetric
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -782,6 +797,9 @@ func (m *PingReq) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthMetric
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthMetric
 			}
 			if (iNdEx + skippy) > l {
@@ -851,8 +869,11 @@ func skipMetric(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthMetric
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthMetric
 			}
 			return iNdEx, nil
@@ -883,6 +904,9 @@ func skipMetric(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthMetric
+				}
 			}
 			return iNdEx, nil
 		case 4:

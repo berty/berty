@@ -750,7 +750,6 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 }
 func (r *queryResolver) ContactCheckPublicKey(ctx context.Context, contact *entity.Contact) (*node.Bool, error) {
 	contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
-
 	return r.client.ContactCheckPublicKey(ctx, &node.ContactInput{
 		Filter: contact,
 	})

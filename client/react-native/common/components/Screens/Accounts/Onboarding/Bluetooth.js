@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View, ScrollView, NativeModules } from 'react-native'
+import { Text, View, ScrollView } from 'react-native'
 import { Flex } from '../../../Library'
 import { withNavigation } from 'react-navigation'
 import * as onboardingStyle from './style'
@@ -7,8 +7,9 @@ import { NextButton, SkipButton } from './Button'
 import { withNamespaces } from 'react-i18next'
 import { RelayContext } from '../../../../relay'
 import colors from '../../../../constants/colors'
+import withBridgeContext from '../../../../helpers/withBridgeContext'
 
-const Bluetooth = ({ navigation, t }) => (
+const Bluetooth = ({ bridge, navigation, t }) => (
   <View style={{ backgroundColor: colors.white, flex: 1 }}>
     <RelayContext.Consumer>
       {context => (
@@ -31,12 +32,13 @@ const Bluetooth = ({ navigation, t }) => (
               </SkipButton>
               <NextButton
                 onPress={async () => {
-                  let json = await NativeModules.CoreModule.getNetworkConfig()
-                  let currentConfig = JSON.parse(json)
+                  const config = await bridge.getNetworkConfig({})
+
+                  let currentConfig = JSON.parse(config.json)
                   currentConfig.BLE = true
-                  await NativeModules.CoreModule.updateNetworkConfig(
-                    JSON.stringify(currentConfig)
-                  )
+                  await bridge.updateNetworkConfig({
+                    json: JSON.stringify(currentConfig),
+                  })
                   navigation.navigate('onboarding/contacts')
                 }}
               >
@@ -50,4 +52,4 @@ const Bluetooth = ({ navigation, t }) => (
   </View>
 )
 
-export default withNamespaces()(withNavigation(Bluetooth))
+export default withNamespaces()(withBridgeContext(withNavigation(Bluetooth)))

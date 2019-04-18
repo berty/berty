@@ -10,7 +10,6 @@ import (
 	"sync"
 
 	"berty.tech/core/chunk"
-	"berty.tech/core/pkg/deviceinfo"
 	"berty.tech/core/pkg/errorcodes"
 	"berty.tech/core/pkg/notification"
 	"berty.tech/core/push"
@@ -35,12 +34,11 @@ type MobileNotification struct {
 	tokenSubscribersMutex sync.Mutex
 }
 
-func (n MobileNotification) New() *MobileNotification {
-	m := &MobileNotification{
+func NewMobileNotification() *MobileNotification {
+	return &MobileNotification{
 		subscribers:      []chan []byte{},
 		tokenSubscribers: []chan *notification.Token{},
 	}
-	return m
 }
 
 func (n *MobileNotification) Receive(data string) {
@@ -142,16 +140,17 @@ func (n *MobileNotification) UnsubscribeToken(sub chan *notification.Token) {
 // Native
 //
 func (n *MobileNotification) Display(p *notification.Payload) error {
-	route := "berty://berty.chat/" + app.GetRoute()
+	state := GetAppState()
+	route := "berty://berty.chat/" + GetAppRoute()
 
 	logger().Debug("display notification",
-		zap.String("state", deviceinfo.Application_State_name[int32(app.GetState())]),
+		zap.String("state", state),
 		zap.String("currentRoute", route),
 		zap.String("deepLink", p.DeepLink),
 	)
 
 	// force display in this state
-	if p.DeepLink == "" || app.GetState() != deviceinfo.Application_Foreground {
+	if p.DeepLink == "" || state != DeviceInfoAppStateForeground {
 		return n.Native.Display(p.Title, p.Body, p.Icon, p.Sound, p.DeepLink)
 	}
 

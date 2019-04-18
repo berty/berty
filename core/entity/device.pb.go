@@ -230,17 +230,17 @@ func (m *Device) MarshalTo(dAtA []byte) (int, error) {
 	dAtA[i] = 0x12
 	i++
 	i = encodeVarintDevice(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.CreatedAt)))
-	n1, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n1, err1 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.CreatedAt, dAtA[i:])
+	if err1 != nil {
+		return 0, err1
 	}
 	i += n1
 	dAtA[i] = 0x1a
 	i++
 	i = encodeVarintDevice(dAtA, i, uint64(github_com_gogo_protobuf_types.SizeOfStdTime(m.UpdatedAt)))
-	n2, err := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
-	if err != nil {
-		return 0, err
+	n2, err2 := github_com_gogo_protobuf_types.StdTimeMarshalTo(m.UpdatedAt, dAtA[i:])
+	if err2 != nil {
+		return 0, err2
 	}
 	i += n2
 	if len(m.Name) > 0 {
@@ -360,7 +360,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -388,7 +388,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -398,6 +398,9 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthDevice
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDevice
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -417,7 +420,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -426,6 +429,9 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthDevice
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDevice
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -447,7 +453,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -456,6 +462,9 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthDevice
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDevice
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -477,7 +486,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -487,6 +496,9 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthDevice
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDevice
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -506,7 +518,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Status |= (Device_Status(b) & 0x7F) << shift
+				m.Status |= Device_Status(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -525,7 +537,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ApiVersion |= (uint32(b) & 0x7F) << shift
+				m.ApiVersion |= uint32(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -544,7 +556,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -554,6 +566,9 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthDevice
 			}
 			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthDevice
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -573,7 +588,7 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -582,6 +597,9 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				return ErrInvalidLengthDevice
 			}
 			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthDevice
+			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
@@ -597,6 +615,9 @@ func (m *Device) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthDevice
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthDevice
 			}
 			if (iNdEx + skippy) > l {
@@ -666,8 +687,11 @@ func skipDevice(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthDevice
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthDevice
 			}
 			return iNdEx, nil
@@ -698,6 +722,9 @@ func skipDevice(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthDevice
+				}
 			}
 			return iNdEx, nil
 		case 4:

@@ -119,20 +119,21 @@ const ItemBase = fragments.Conversation(
     }
 
     getPing = () => {
-      const { context } = this.props
-      const { other } = this.state
+      // const { context } = this.props
+      // const { other } = this.state
 
-      other &&
-        other.contact &&
-        other.contact.devices &&
-        other.contact.devices.forEach(element => {
-          context.queries.Libp2PPing.fetch({ str: element.contactId })
-            .then(e => {
-              console.log('fetch ret', e)
-              this.setState({ connected: e.ret })
-            })
-            .catch(e => console.warn('err', e))
-        })
+      // @FIXME: not implemented on the back
+      // other &&
+      //   other.contact &&
+      //   other.contact.devices &&
+      //   other.contact.devices.forEach(element => {
+      //     context.queries.Libp2PPing.fetch({ str: element.contactId })
+      //       .then(e => {
+      //         console.log('fetch ret', e)
+      //         this.setState({ connected: e.ret })
+      //       })
+      //       .catch(e => console.warn('err', e))
+      //   })
     }
 
     render () {

@@ -26,59 +26,17 @@ RCT_EXPORT_MODULE_NO_LOAD(js_name, objc_name)
 
 @interface RCT_EXTERN_REMAP_MODULE_2(CoreModule, CoreModule, NSObject)
 
-RCT_EXTERN_METHOD(initialize:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(listAccounts:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(start:(NSString)nickname
+RCT_EXTERN_METHOD(invoke:(NSString)method
+                    message:(NSString)message
                     resolve:(RCTPromiseResolveBlock)resolve
                     reject:(RCTPromiseRejectBlock)reject);
 
-RCT_EXTERN_METHOD(restart:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(panic:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
+RCT_EXTERN_METHOD(setCurrentRoute:(NSString)route);
 
 RCT_EXPORT_METHOD(throwException)
 {
     @throw [NSException exceptionWithName:@"throw exception" reason:@"throw native exception" userInfo:nil];
 }
-
-RCT_EXTERN_METHOD(dropDatabase:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(getPort:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(getNetworkConfig:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(updateNetworkConfig:(NSString *)config
-                    resolve:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(isBotRunning:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(startBot:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(stopBot:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(getLocalGRPCInfos:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(startLocalGRPC:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(stopLocalGRPC:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject);
-
-RCT_EXTERN_METHOD(setCurrentRoute:(NSString)route);
 
 RCT_EXTERN_METHOD(getNotificationStatus:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject);

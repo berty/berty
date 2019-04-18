@@ -170,7 +170,7 @@ func (m *Void) Unmarshal(dAtA []byte) error {
 			}
 			b := dAtA[iNdEx]
 			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
+			wire |= uint64(b&0x7F) << shift
 			if b < 0x80 {
 				break
 			}
@@ -198,7 +198,7 @@ func (m *Void) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= (int(b) & 0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -211,6 +211,9 @@ func (m *Void) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			if skippy < 0 {
+				return ErrInvalidLengthVoid
+			}
+			if (iNdEx + skippy) < 0 {
 				return ErrInvalidLengthVoid
 			}
 			if (iNdEx + skippy) > l {
@@ -280,8 +283,11 @@ func skipVoid(dAtA []byte) (n int, err error) {
 					break
 				}
 			}
-			iNdEx += length
 			if length < 0 {
+				return 0, ErrInvalidLengthVoid
+			}
+			iNdEx += length
+			if iNdEx < 0 {
 				return 0, ErrInvalidLengthVoid
 			}
 			return iNdEx, nil
@@ -312,6 +318,9 @@ func skipVoid(dAtA []byte) (n int, err error) {
 					return 0, err
 				}
 				iNdEx = start + next
+				if iNdEx < 0 {
+					return 0, ErrInvalidLengthVoid
+				}
 			}
 			return iNdEx, nil
 		case 4:
