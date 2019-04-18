@@ -1,3 +1,5 @@
 export * as rpc from './rpc'
-export * as services from './service'
+export * as service from './service'
+export * as middleware from './middleware'
+
 export { default } from './Context'

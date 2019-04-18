@@ -16,9 +16,11 @@ import Mousetrap from '../helpers/Mousetrap'
 import NavigationService from './../helpers/NavigationService'
 import Navigator from './Navigator'
 import i18n from '../i18n'
-import BridgeContext, { rpc, services } from '../bridge'
+import BridgeContext, { rpc, service, middleware } from '../bridge'
 
-const { daemon } = services
+const bridgeMiddlewares = middleware.chain(
+  __DEV__ ? middleware.logger.create('DAEMON') : null, // eslint-disable-line
+)
 
 export default class App extends PureComponent {
   state = {
@@ -28,7 +30,7 @@ export default class App extends PureComponent {
       Platform.OS !== 'web',
     relayContext: null,
     availableUpdate: null,
-    bridge: daemon.createService(rpc.defaultPlatform),
+    bridge: service.create(service.Daemon, rpc.defaultPlatform, bridgeMiddlewares),
   }
 
   constructor (props) {
