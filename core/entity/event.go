@@ -182,6 +182,25 @@ func FindDevicesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]stri
 	return deviceIDs, nil
 }
 
+func FindDispatchesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]*EventDispatch, error) {
+	var dispatches []*EventDispatch
+
+	err := db.
+		Model(&EventDispatch{}).
+		Joins("JOIN event ON event_dispatch.event_id = event.id").
+		Where("event.direction = ?", Event_Outgoing).
+		Where("event_dispatch.acked_at IS NULL").
+		Where("event_dispatch.sent_at > ?", before).
+		Find(&dispatches).
+		Error
+
+	if err != nil {
+		return nil, errorcodes.ErrDb.Wrap(err)
+	}
+
+	return dispatches, nil
+}
+
 func FindNonAcknowledgedDispatchesForDestination(db *gorm.DB, deviceID string) ([]*EventDispatch, error) {
 	var dispatches []*EventDispatch
 

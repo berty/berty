@@ -18,7 +18,7 @@ type EventDispatch struct {
 	SeenAt               *time.Time           `protobuf:"bytes,6,opt,name=seen_at,json=seenAt,proto3,stdtime" json:"seen_at,omitempty"`
 	AckMedium            EventDispatch_Medium `protobuf:"varint,7,opt,name=ack_medium,json=ackMedium,proto3,enum=berty.entity.EventDispatch_Medium" json:"ack_medium,omitempty"`
 	SeenMedium           EventDispatch_Medium `protobuf:"varint,8,opt,name=seen_medium,json=seenMedium,proto3,enum=berty.entity.EventDispatch_Medium" json:"seen_medium,omitempty"`
-	RetryBackoff         float64              `protobuf:"fixed64,9,opt,name=retry_backoff,json=retryBackoff,proto3" json:"retry_backoff,omitempty"`
+	RetryBackoff         int64                `protobuf:"varint,9,opt,name=retry_backoff,json=retryBackoff,proto3" json:"retry_backoff,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}             `json:"-"`
 	XXX_unrecognized     []byte               `json:"-"`
 	XXX_sizecache        int32                `json:"-"`
