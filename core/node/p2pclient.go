@@ -42,6 +42,7 @@ func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entit
 	tracer := tracing.EnterFunc(ctx, event)
 	defer tracer.Finish()
 	ctx = tracer.Context()
+	db := n.sql(ctx)
 
 	if err := event.Err(); err != nil {
 		return errorcodes.ErrEventData.Wrap(err)
@@ -69,6 +70,16 @@ func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entit
 
 	go func() {
 		for _, dispatch := range dispatches {
+			// for each dispatch we need to retrieve the unacked event for this device to requeu it
+			unacked, err := entity.FindNonAcknowledgedDispatchesForDestination(db, dispatch.DeviceID)
+			if err == nil {
+				for _, v := range unacked {
+					n.outgoingEvents <- v
+				}
+			} else {
+				logger().Error("fail retrieving unacked events", zap.Error(err))
+			}
+
 			n.outgoingEvents <- dispatch
 		}
 	}()

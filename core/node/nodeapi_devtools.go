@@ -399,7 +399,7 @@ func (n *Node) DebugRequeueAll(ctx context.Context, _ *node.Void) (*node.Void, e
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
-	if _, err := n.EventsRetry(ctx, time.Now()); err != nil {
+	if _, err := n.OldEventsRetry(ctx, time.Now()); err != nil {
 		return nil, errorcodes.ErrNetQueue.Wrap(err)
 	}
 

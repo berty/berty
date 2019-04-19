@@ -179,6 +179,8 @@ message EventDispatch {
   // SeenMedium is the communication medium used when receiving a Seen event
   Medium seen_medium = 8;
 
+  int64 retry_backoff = 9;
+
   enum Medium {
     UnknownMedium = 0;
     LocalNetwork = 1;

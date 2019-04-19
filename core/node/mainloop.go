@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"math/rand"
 	"time"
 
 	"github.com/gogo/protobuf/proto"
@@ -13,6 +14,12 @@ import (
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/sql"
 )
+
+var rgenerator *rand.Rand
+
+func init() {
+	rgenerator = rand.New(rand.NewSource(time.Now().UnixNano()))
+}
 
 // EventsRetry updates SentAt and requeue an event
 func (n *Node) EventRequeue(ctx context.Context, event *entity.Event) error {
@@ -43,8 +50,21 @@ func (n *Node) EventDispatchRequeue(ctx context.Context, dispatch *entity.EventD
 	return nil
 }
 
-// EventsRetry sends events which lack an AckedAt value emitted before the supplied time value
-func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*entity.Event, error) {
+func getRetriableEvents(dispatches []*entity.EventDispatch) []*entity.EventDispatch {
+	ret := make([]*entity.EventDispatch, 0)
+	now := time.Now()
+	for _, dispatch := range dispatches {
+		eventTime := dispatch.SentAt.Add(time.Duration(dispatch.RetryBackoff) * time.Millisecond)
+		if eventTime.Before(now) {
+			ret = append(ret, dispatch)
+		}
+	}
+
+	return ret
+}
+
+// OldEventsRetry sends events which lack an AckedAt value emitted before the supplied time value
+func (n *Node) OldEventsRetry(ctx context.Context, before time.Time) ([]*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, before)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -92,18 +112,67 @@ func (n *Node) EventsRetry(ctx context.Context, before time.Time) ([]*entity.Eve
 	return retriedEvents, nil
 }
 
+// EventsRetry sends events which lack an AckedAt value emitted sent -24h
+func (n *Node) EventsRetry(ctx context.Context) (time.Duration, []*entity.Event, error) {
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	db := n.sql(ctx)
+
+	retriedEventsMap := map[string]*entity.Event{}
+	var retriedEvents []*entity.Event
+
+	dispatches, err := entity.FindDispatchesWithNonAcknowledgedEvents(db, time.Now().Add(-time.Hour*24))
+	if err != nil {
+		return 20000, nil, err
+	}
+
+	dispatches = getRetriableEvents(dispatches)
+	var ret int64
+	for i, dispatch := range dispatches {
+		if i == 0 {
+			ret = dispatch.RetryBackoff
+		}
+
+		if err := n.EventDispatchRequeue(ctx, dispatch); err != nil {
+			n.LogBackgroundError(ctx, errors.Wrap(err, "error while enqueuing event"))
+			continue
+		}
+		event, err := sql.EventByID(db, dispatch.EventID)
+		if err != nil {
+			n.LogBackgroundError(ctx, errors.Wrap(err, "error while getting event detail"))
+			continue
+		}
+
+		if dispatch.RetryBackoff < ret {
+			ret = dispatch.RetryBackoff
+		}
+
+		retriedEventsMap[event.ID] = event
+	}
+
+	for _, event := range retriedEventsMap {
+		retriedEvents = append(retriedEvents, event)
+	}
+
+	if ret == 0 {
+		ret = 20000
+	}
+
+	return time.Duration(ret), retriedEvents, nil
+}
+
 func (n *Node) cron(ctx context.Context) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	ctx = tracer.Context()
 
 	for {
-		before := time.Now().Add(-time.Second * 60 * 10)
-		if _, err := n.EventsRetry(ctx, before); err != nil {
+		waitTime, _, err := n.EventsRetry(ctx)
+		if err != nil {
 			n.LogBackgroundError(ctx, err)
 		}
-
-		time.Sleep(time.Second * 60)
+		time.Sleep(waitTime * time.Millisecond)
 	}
 }
 
@@ -312,6 +381,15 @@ func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity
 	db := n.sql(ctx)
 	now := time.Now()
 	dispatch.SentAt = &now
+	if dispatch.RetryBackoff == 0 {
+		dispatch.RetryBackoff = 1600
+	} else {
+		dispatch.RetryBackoff *= 16
+		dispatch.RetryBackoff /= 10
+		dispatch.RetryBackoff *= 10 + 2*((int64(rgenerator.Float64()*100)*2.0-1.0)/100)
+		dispatch.RetryBackoff /= 10
+	}
+
 	if err := db.Save(dispatch).Error; err != nil {
 		n.LogBackgroundError(ctx, errors.Wrap(sql.GenericError(err), "error while updating SentAt on event dispatch"))
 		return
