@@ -166,6 +166,17 @@ func (n *Node) cron(ctx context.Context) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	ctx = tracer.Context()
+	dispatches, err := entity.FindDispatchesWithNonAcknowledgedEvents(db, time.Now().Add(-time.Hour*24))
+	if len(dispatches) > 0 {
+		// reset dispatch backoff for event that we try to send a day ago
+		dispatches = getRetriableEvents(dispatches)
+		for _, dispatch := range dispatches {
+			dispatch.RetryBackoff = 1600
+			if err := db.Save(dispatch).Error; err != nil {
+				n.LogBackgroundError(ctx, errors.Wrap(sql.GenericError(err), "error while updating RetryBackoff on event dispatch"))
+			}
+		}
+	}
 
 	for {
 		waitTime, _, err := n.EventsRetry(ctx)
