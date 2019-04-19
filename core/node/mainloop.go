@@ -166,7 +166,9 @@ func (n *Node) cron(ctx context.Context) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	ctx = tracer.Context()
-	dispatches, err := entity.FindDispatchesWithNonAcknowledgedEvents(db, time.Now().Add(-time.Hour*24))
+	db := n.sql(ctx)
+
+	dispatches, _ := entity.FindDispatchesWithNonAcknowledgedEvents(db, time.Now().Add(-time.Hour*24))
 	if len(dispatches) > 0 {
 		// reset dispatch backoff for event that we try to send a day ago
 		dispatches = getRetriableEvents(dispatches)
