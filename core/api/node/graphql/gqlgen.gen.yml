@@ -29,6 +29,8 @@ models:
     model: berty.tech/core/api/node/graphql/models.Enum
   Double:
     model: berty.tech/core/api/node/graphql/models.Double
+  Float64:
+    model: berty.tech/core/api/node/graphql/models.Double
   Int64:
     model: berty.tech/core/api/node/graphql/models.Int64
   Uint64:
@@ -1537,6 +1539,7 @@ models:
       seenAt:
       ackMedium:
       seenMedium:
+      retryBackoff:
   BertyEntityEventDispatchInput:
     model: berty.tech/core/entity.EventDispatch
     fields:
@@ -1548,6 +1551,7 @@ models:
       seenAt:
       ackMedium:
       seenMedium:
+      retryBackoff:
   BertyEntityEventDispatchPayload:
     model: berty.tech/core/entity.EventDispatch
     fields:
@@ -1559,6 +1563,7 @@ models:
       seenAt:
       ackMedium:
       seenMedium:
+      retryBackoff:
 
   BertyEntityMetadataKeyValue:
     model: berty.tech/core/entity.MetadataKeyValue

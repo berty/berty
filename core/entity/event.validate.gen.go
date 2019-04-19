@@ -152,6 +152,8 @@ func (m *EventDispatch) Validate() error {
 	// handling field: AckMedium - name:"ack_medium" number:7 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.EventDispatch.Medium" json_name:"ackMedium"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: SeenMedium - name:"seen_medium" number:8 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.EventDispatch.Medium" json_name:"seenMedium"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: RetryBackoff - name:"retry_backoff" number:9 label:LABEL_OPTIONAL type:TYPE_INT64 json_name:"retryBackoff"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *MetadataKeyValue) Validate() error {

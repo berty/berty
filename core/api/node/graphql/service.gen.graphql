@@ -2,6 +2,7 @@
 
 scalar Enum
 scalar Double
+scalar Float64
 scalar Int64
 scalar Uint64
 scalar Int32
@@ -498,6 +499,7 @@ type BertyEntityEventDispatch  {
   	seenAt: GoogleProtobufTimestamp
   ackMedium: Enum
   seenMedium: Enum
+    retryBackoff: Int64!
 }
 type BertyEntityMetadataKeyValue  {
     key: String!
@@ -729,6 +731,7 @@ input BertyEntityEventDispatchInput {
   	seenAt: GoogleProtobufTimestampInput
   ackMedium: Enum
   seenMedium: Enum
+    retryBackoff: Int64!
 }
 input BertyEntityErrInput {
     errMsg: String!

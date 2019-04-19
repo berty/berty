@@ -271,14 +271,15 @@ type ComplexityRoot struct {
 	}
 
 	BertyEntityEventDispatch struct {
-		EventId    func(childComplexity int) int
-		DeviceId   func(childComplexity int) int
-		ContactId  func(childComplexity int) int
-		SentAt     func(childComplexity int) int
-		AckedAt    func(childComplexity int) int
-		SeenAt     func(childComplexity int) int
-		AckMedium  func(childComplexity int) int
-		SeenMedium func(childComplexity int) int
+		EventId      func(childComplexity int) int
+		DeviceId     func(childComplexity int) int
+		ContactId    func(childComplexity int) int
+		SentAt       func(childComplexity int) int
+		AckedAt      func(childComplexity int) int
+		SeenAt       func(childComplexity int) int
+		AckMedium    func(childComplexity int) int
+		SeenMedium   func(childComplexity int) int
+		RetryBackoff func(childComplexity int) int
 	}
 
 	BertyEntityMessage struct {
@@ -4200,6 +4201,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BertyEntityEventDispatch.SeenMedium(childComplexity), true
+
+	case "BertyEntityEventDispatch.retryBackoff":
+		if e.complexity.BertyEntityEventDispatch.RetryBackoff == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityEventDispatch.RetryBackoff(childComplexity), true
 
 	case "BertyEntityMessage.text":
 		if e.complexity.BertyEntityMessage.Text == nil {
@@ -10710,6 +10718,11 @@ func (ec *executionContext) _BertyEntityEventDispatch(ctx context.Context, sel a
 			out.Values[i] = ec._BertyEntityEventDispatch_ackMedium(ctx, field, obj)
 		case "seenMedium":
 			out.Values[i] = ec._BertyEntityEventDispatch_seenMedium(ctx, field, obj)
+		case "retryBackoff":
+			out.Values[i] = ec._BertyEntityEventDispatch_retryBackoff(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10900,6 +10913,29 @@ func (ec *executionContext) _BertyEntityEventDispatch_seenMedium(ctx context.Con
 	res := resTmp.(entity.EventDispatch_Medium)
 	rctx.Result = res
 	return models.MarshalEnum(int32(res))
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityEventDispatch_retryBackoff(ctx context.Context, field graphql.CollectedField, obj *entity.EventDispatch) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityEventDispatch",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.RetryBackoff, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int64)
+	rctx.Result = res
+	return models.MarshalInt64(res)
 }
 
 var bertyEntityMessageImplementors = []string{"BertyEntityMessage"}
@@ -24959,6 +24995,12 @@ func UnmarshalBertyEntityEventDispatchInput(v interface{}) (entity.EventDispatch
 			if err != nil {
 				return it, err
 			}
+		case "retryBackoff":
+			var err error
+			it.RetryBackoff, err = models.UnmarshalInt64(v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -25298,6 +25340,7 @@ var parsedSchema = gqlparser.MustLoadSchema(
 
 scalar Enum
 scalar Double
+scalar Float64
 scalar Int64
 scalar Uint64
 scalar Int32
@@ -25794,6 +25837,7 @@ type BertyEntityEventDispatch  {
   	seenAt: GoogleProtobufTimestamp
   ackMedium: Enum
   seenMedium: Enum
+    retryBackoff: Int64!
 }
 type BertyEntityMetadataKeyValue  {
     key: String!
@@ -26025,6 +26069,7 @@ input BertyEntityEventDispatchInput {
   	seenAt: GoogleProtobufTimestampInput
   ackMedium: Enum
   seenMedium: Enum
+    retryBackoff: Int64!
 }
 input BertyEntityErrInput {
     errMsg: String!
