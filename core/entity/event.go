@@ -190,7 +190,7 @@ func FindDispatchesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]*
 		Joins("JOIN event ON event_dispatch.event_id = event.id").
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.acked_at IS NULL").
-		Where("event_dispatch.sent_at > ?", before).
+		Where("event_dispatch.sent_at > ? OR event_dispatch.sent_at IS NULL", before).
 		Find(&dispatches).
 		Error
 

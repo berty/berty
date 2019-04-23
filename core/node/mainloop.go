@@ -54,6 +54,10 @@ func getRetriableEvents(dispatches []*entity.EventDispatch) []*entity.EventDispa
 	ret := make([]*entity.EventDispatch, 0)
 	now := time.Now()
 	for _, dispatch := range dispatches {
+		if dispatch.SentAt == nil {
+			ret = append(ret, dispatch)
+			continue
+		}
 		eventTime := dispatch.SentAt.Add(time.Duration(dispatch.RetryBackoff) * time.Millisecond)
 		if eventTime.Before(now) {
 			ret = append(ret, dispatch)
