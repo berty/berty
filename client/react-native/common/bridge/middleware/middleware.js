@@ -1,9 +1,9 @@
-export const chainMiddleware = (...middlewares) => (service, rpcImpl) => {
+export const chainMiddleware = (...middlewares) => (method, call) => {
   if (middlewares.length === 0) {
-    return rpcImpl
+    return call
   }
 
-  const middleware = middlewares.pop()
-  const next = chainMiddleware(...middlewares)(service, rpcImpl)
-  return middleware ? middleware(service, next) : next
+  const middleware = middlewares[0]
+  const next = chainMiddleware(...middlewares.slice(1))(method, call)
+  return middleware ? middleware(method, next) : next
 }

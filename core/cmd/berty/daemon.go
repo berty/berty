@@ -10,6 +10,7 @@ import (
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	grpc_ctxtags "github.com/grpc-ecosystem/go-grpc-middleware/tags"
+	grpc_web "github.com/improbable-eng/grpc-web/go/grpcweb"
 	grpc "google.golang.org/grpc"
 	grpc_codes "google.golang.org/grpc/codes"
 	grpc_status "google.golang.org/grpc/status"
@@ -141,12 +142,8 @@ func serveWeb(d *daemon.Daemon, bind string, interceptors ...grpc.ServerOption) 
 		return err
 	}
 
+	// web handler (should be deprecated in favor of grpc-web)
 	http.HandleFunc("/daemon", func(w http.ResponseWriter, r *http.Request) {
-		// Handle preflight CORS
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
-		w.Header().Add("Access-Control-Allow-Headers", "X-Method")
-
 		if method := r.Header.Get("X-Method"); method != "" {
 			buff, err := ioutil.ReadAll(r.Body)
 			if err != nil {
@@ -175,7 +172,47 @@ func serveWeb(d *daemon.Daemon, bind string, interceptors ...grpc.ServerOption) 
 		w.WriteHeader(http.StatusNoContent)
 	})
 
-	return http.ListenAndServe(bind, nil)
+	// grpc web
+	wgrpc := grpc_web.WrapServer(
+		gs,
+		// @TODO: do something smarter here
+		grpc_web.WithOriginFunc(func(_ string) bool {
+			return true
+		}),
+		// @TODO: check if this can be use by every platform; setting to
+		// false for the moment
+		grpc_web.WithWebsockets(false),
+	)
+
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Handle preflight CORS
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, XMLHttpRequest, x-user-agent, x-grpc-web, grpc-status, grpc-message, x-method")
+		w.Header().Add("Access-Control-Expose-Headers", "grpc-status, grpc-message")
+
+		if r.Method == "OPTIONS" {
+			return
+		}
+
+		if wgrpc.IsGrpcWebRequest(r) {
+			// set this headers to avoid unsafe header
+			w.Header().Set("grpc-status", "")
+			w.Header().Set("grpc-message", "")
+
+			wgrpc.ServeHTTP(w, r)
+			return
+		}
+
+		http.DefaultServeMux.ServeHTTP(w, r)
+	})
+
+	s := &http.Server{
+		Addr:    bind,
+		Handler: handler,
+	}
+
+	return s.ListenAndServe()
 }
 
 func serveGrpc(d *daemon.Daemon, bind string, interceptors ...grpc.ServerOption) error {

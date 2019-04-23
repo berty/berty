@@ -1,6 +1,9 @@
 // NOOP rpc: always failed
 
-const rpcerr = new Error('no rpc implem available')
-export default serviceName => (method, request, callback) => {
-  callback(rpcerr, null)
+const rpc = async () => {
+  throw new Error('no rpc implem available')
+}
+export default {
+  unaryCall: rpc,
+  streamCall: rpc,
 }

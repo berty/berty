@@ -24,6 +24,7 @@ require (
 	github.com/gorilla/websocket v1.4.0
 	github.com/gosimple/slug v1.4.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190222133341-cfaf5686ec79
+	github.com/improbable-eng/grpc-web v0.9.1
 	github.com/ipfs/go-cid v0.0.1
 	github.com/ipfs/go-datastore v0.0.2
 	github.com/ipfs/go-ipfs-addr v0.0.1

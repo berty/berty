@@ -30,23 +30,22 @@ const rpcLogger = (name, title, req, res, err) => {
   }
 }
 
-export default name => (service, rpcImpl) => (method, request, callback) => {
+export default name => (method, call) => async (payload, metadata) => {
   const start = new Date().getTime()
-  const req = service.lookup(method.requestType).decode(request)
-  const logCallback = (err, response) => {
+  const request = method.resolvedRequestType.create(payload)
+
+  try {
+    const res = await call(payload, metadata)
     const end = new Date().getTime()
-    const time = end - start
+    const title = `[${end - start}ms] ${method.name}`
+    rpcLogger(name, title, request, res, null)
 
-    const title = `[${time}ms] ${method.name}`
-    if (response) {
-      const res = service.lookup(method.responseType).decode(response)
-      rpcLogger(name, title, req, res, err)
-    } else {
-      rpcLogger(name, title, req, null, err)
-    }
+    return res
+  } catch (err) {
+    const end = new Date().getTime()
+    const title = `[${end - start}ms] ${method.name}`
+    rpcLogger(name, title, request, null, err)
 
-    callback(err, response)
+    throw err
   }
-
-  rpcImpl(method, request, logCallback)
 }
