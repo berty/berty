@@ -97,26 +97,25 @@ func (pc *peerCache) Connected(net inet.Network, c inet.Conn) {
 	}
 
 	p.connCount++
-
 	pc.muStore.Unlock()
+
 }
 
 func (pc *peerCache) Disconnected(net inet.Network, c inet.Conn) {
-	pc.muStore.Lock()
-
 	peerID := c.RemotePeer()
+	pc.muStore.Lock()
 	if p, ok := pc.peers[peerID]; ok {
 		p.connCount--
 
 		if p.connCount == 0 {
-			if p.key != "" {
-				delete(pc.store, p.key)
-			}
-
 			delete(pc.peers, peerID)
 		}
 	}
-
+	for k, v := range pc.store {
+		if v.info.ID == peerID {
+			delete(pc.store, k)
+		}
+	}
 	pc.muStore.Unlock()
 }
 
