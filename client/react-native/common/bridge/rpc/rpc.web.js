@@ -1,14 +1,12 @@
+import { ErrorStreamNotImplemented, getServiceName } from './utils'
+
 // WEB rpc implem
 
 export const DefautlWebURL = 'http://localhost:8989/daemon'
 
-export const rpcWebWithUrl = uri => serviceName => (
-  method,
-  request,
-  callback
-) => {
-  const methodName = `/${serviceName}/${method.name}`
-  fetch(uri, {
+const unary = uri => async (method, request, metadata) => {
+  const methodName = `/${getServiceName(method)}/${method.name}`
+  return fetch(uri, {
     headers: {
       'X-Method': methodName,
     },
@@ -29,12 +27,16 @@ export const rpcWebWithUrl = uri => serviceName => (
           throw new Error(`${methodName}: ${err}`)
         })
     })
-    .then(buff => {
-      callback(null, new Uint8Array(buff))
-    })
-    .catch(e => {
-      callback(e, null)
-    })
+    .then(buff => new Uint8Array(buff))
 }
+
+const stream = uri => async (method, request, metadata) => {
+  throw ErrorStreamNotImplemented
+}
+
+export const rpcWebWithUrl = uri => ({
+  unaryCall: unary(uri),
+  streamCall: stream(uri),
+})
 
 export default rpcWebWithUrl(DefautlWebURL)

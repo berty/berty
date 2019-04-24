@@ -1,5 +1,5 @@
 
-export default () => (service, rpcImpl) => (method, request, callback) => {
+export default () => (method, call) => async (payload, metadata) => {
   console.log(`i love ${method.name}`)
-  rpcImpl(method, request, callback)
+  return call(payload, metadata)
 }

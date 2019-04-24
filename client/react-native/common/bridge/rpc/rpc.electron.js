@@ -1,4 +1,10 @@
-import { serializeToBase64, deserializeFromBase64, isElectron } from './utils'
+import {
+  serializeToBase64,
+  deserializeFromBase64,
+  isElectron,
+  ErrorStreamNotImplemented,
+  getServiceName,
+} from './utils'
 
 // by default throw an error if this is call by another platform
 const wrongPlatform = new Error('cannot use rpc electron on another platform')
@@ -7,16 +13,16 @@ let isElectronReady = async () => {
 }
 
 if (isElectron) {
-  const ready = new Promise(resolve =>
+  isElectronReady = new Promise(resolve =>
     document.addEventListener('astilectron-ready', resolve)
   )
-  isElectronReady = async () => ready
 }
 
 // Electron rpc implem
-export default serviceName => (method, request, callback) => {
+
+const unary = async (method, request, metadata) => {
   const payload = {
-    method: `/${serviceName}/${method.name}`,
+    method: `/${getServiceName(method)}/${method.name}`,
     request: serializeToBase64(request),
   }
 
@@ -25,7 +31,7 @@ export default serviceName => (method, request, callback) => {
     payload: payload,
   }
 
-  isElectronReady()
+  return isElectronReady
     .then(
       () =>
         new Promise((resolve, reject) => {
@@ -42,11 +48,14 @@ export default serviceName => (method, request, callback) => {
           })
         })
     )
-    .then(res64 => {
-      const res = deserializeFromBase64(res64)
-      callback(null, res)
-    })
-    .catch(e => {
-      callback(e, null)
-    })
+    .then(res64 => deserializeFromBase64(res64))
+}
+
+const stream = async (method, request, metadata) => {
+  throw ErrorStreamNotImplemented
+}
+
+export default {
+  unaryCall: unary,
+  streamCall: stream,
 }

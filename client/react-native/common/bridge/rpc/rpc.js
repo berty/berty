@@ -3,7 +3,8 @@ import { isElectron } from './utils'
 
 import rpcIOS from './rpc.ios'
 import rpcAndroid from './rpc.android'
-import rpcWeb from './rpc.web'
+// import rpcWeb from './rpc.web'
+import rpcGrpcWeb from './rpc.grpcweb'
 import rpcElectron from './rpc.electron'
 import rpcNoop from './rpc.noop'
 
@@ -17,7 +18,7 @@ export const getRPCByPlatform = platform => {
       if (isElectron) {
         return rpcElectron
       }
-      return rpcWeb
+      return rpcGrpcWeb
     default:
       return rpcNoop
   }
