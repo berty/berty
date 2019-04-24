@@ -70,7 +70,7 @@ public class CoreModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void Invoke(String method, String message, Promise promise) {
+    public void invoke(String method, String message, Promise promise) {
         new Thread(new Runnable() {
             @Override
             public void run() {
