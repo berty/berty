@@ -62,31 +62,24 @@ func (pc *peerCache) GetPeerForKey(key string) (pinfo pstore.PeerInfo, ok bool) 
 
 func (pc *peerCache) UpdateCache(key string, pi pstore.PeerInfo) {
 	pc.muStore.Lock()
+	defer pc.muStore.Unlock()
 
 	p, ok := pc.peers[pi.ID]
-	if !ok {
-		p = &cpeer{
-			key:        key,
-			info:       pi,
-			connCount:  0,
-			lastUpdate: time.Now(),
-		}
-
-		pc.peers[pi.ID] = p
+	if !ok || p.connCount <= 0 {
+		return
 	}
 
 	p.key = key
 	p.info = pi
 	pc.store[key] = p
-
-	pc.muStore.Unlock()
 }
 
 func (pc *peerCache) Connected(net inet.Network, c inet.Conn) {
 	pc.muStore.Lock()
-
+	defer pc.muStore.Unlock()
 	peerID := c.RemotePeer()
 	p, ok := pc.peers[peerID]
+
 	if !ok {
 		p = &cpeer{
 			connCount:  0,
@@ -97,26 +90,22 @@ func (pc *peerCache) Connected(net inet.Network, c inet.Conn) {
 	}
 
 	p.connCount++
-	pc.muStore.Unlock()
-
 }
 
 func (pc *peerCache) Disconnected(net inet.Network, c inet.Conn) {
 	peerID := c.RemotePeer()
 	pc.muStore.Lock()
+	defer pc.muStore.Unlock()
 	if p, ok := pc.peers[peerID]; ok {
 		p.connCount--
 
 		if p.connCount == 0 {
+			if p.key != "" {
+				delete(pc.store, p.key)
+			}
 			delete(pc.peers, peerID)
 		}
 	}
-	for k, v := range pc.store {
-		if v.info.ID == peerID {
-			delete(pc.store, k)
-		}
-	}
-	pc.muStore.Unlock()
 }
 
 // Listen is no-op in this implementation.
