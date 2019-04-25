@@ -188,6 +188,8 @@ func FindDispatchesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]*
 	err := db.
 		Model(&EventDispatch{}).
 		Joins("JOIN event ON event_dispatch.event_id = event.id").
+		Joins("JOIN config").
+		Where("config.myself_id != event_dispatch.contact_id").
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event.kind != ? AND event.kind != ? AND event.kind != ?", Kind_Ack, Kind_Sent, Kind_Ping).
 		Where("event_dispatch.acked_at IS NULL").
@@ -207,7 +209,8 @@ func FindNonAcknowledgedDispatchesForDestination(db *gorm.DB, deviceID string) (
 
 	if err := db.Model(&EventDispatch{}).
 		Joins("JOIN event ON event_dispatch.event_id = event.id").
-		Where("event_dispatch.acked_at IS NULL").
+		Joins("JOIN config").
+		Where("config.myself_id != event_dispatch.contact_id").
 		Where("event.kind != ? AND event.kind != ? AND event.kind != ?", Kind_Ack, Kind_Sent, Kind_Ping).
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.device_id = ?", deviceID).
