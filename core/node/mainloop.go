@@ -431,7 +431,7 @@ func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity
 
 	// FIXME: save dispatch status in database
 
-	n.clientEvents <- event
+	defer func() { n.clientEvents <- event }()
 }
 
 func (n *Node) UseNodeEvent(ctx context.Context) {
