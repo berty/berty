@@ -99,7 +99,7 @@ jobs:
 
   generate:
     docker:
-      - image: bertychat/protoc:v10
+      - image: bertychat/protoc:v11
     working_directory: /go/src/berty.tech
     environment:
       GOPATH: /go

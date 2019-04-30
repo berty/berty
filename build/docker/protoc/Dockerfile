@@ -24,9 +24,8 @@ RUN     rm -f /go/bin/web-editor
 
 FROM    golang:1.12-alpine
 RUN     apk --no-cache add git make protobuf gcc libc-dev nodejs-npm && mkdir -p /.cache/go-build && chmod -R 777 /.cache
-RUN     mkdir -p /node/ && cd /node && npm install -g protobufjs prettier prettier-eslint prettier-eslint-cli
+RUN     mkdir -p /node/ && cd /node && npm install -g npm@6.9.0 protobufjs prettier prettier-eslint prettier-eslint-cli  pbhbs@latest
 RUN     echo 'syntax = "proto3";' | /usr/bin/pbjs - > /dev/null # init pbjs
-RUN     npm install -g pbhbs@latest
 COPY    --from=pgg /go/bin/* /go/bin/
 COPY    --from=builder /go/bin/* /go/bin/
 COPY    --from=pgg /protobuf /protobuf
