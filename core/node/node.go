@@ -65,8 +65,8 @@ func New(ctx context.Context, opts ...NewNodeOption) (*Node, error) {
 
 	n := &Node{
 		// FIXME: fetch myself from db
-		outgoingEvents: make(chan *entity.EventDispatch, 1000),
-		clientEvents:   make(chan *entity.Event, 1000),
+		outgoingEvents: make(chan *entity.EventDispatch, 1),
+		clientEvents:   make(chan *entity.Event, 1),
 		createdAt:      time.Now().UTC(),
 		rootSpan:       tracer.Span(),
 		rootContext:    ctx,

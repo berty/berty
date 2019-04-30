@@ -479,28 +479,12 @@ func (n *Node) UseNodeEvent(ctx context.Context) {
 	}()
 }
 
-func (n *Node) UseEventHandler(ctx context.Context) {
-	go func() {
-		for {
-			select {
-			case eventDispatch := <-n.outgoingEvents:
-				n.handleOutgoingEventDispatch(ctx, eventDispatch)
-				// emit the outgoing event on the node event stream
-			case event := <-n.clientEvents:
-				n.handleClientEvent(ctx, event)
-			case <-n.shutdown:
-				logger().Debug("node shutdown events handlers")
-				return
-			}
-		}
-	}()
-}
-
 // Start is the node's mainloop
 func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	ctx = tracer.Context()
+	n.UseEventHandler(ctx)
 
 	if withCron {
 		go n.cron(ctx)
@@ -513,6 +497,4 @@ func (n *Node) Start(ctx context.Context, withCron, withNodeEvents bool) {
 	if n.notificationDriver != nil {
 		n.UseNotificationDriver(ctx)
 	}
-
-	n.UseEventHandler(ctx)
 }
