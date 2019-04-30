@@ -678,11 +678,57 @@ jobs:
       - store_artifacts:
           path: /tmp/Berty.dmg
 
+  client.rn.mac-beta:
+    working_directory: ~/go/src/berty.tech
+    macos:
+      xcode: "10.2.0"
+
+    shell: /bin/bash --login -o pipefail
+    steps:
+      - *install_retry
+      - *master_version
+
+      - checkout:
+          path: ~/go/src/berty.tech/
+
+      - attach_workspace:
+          at: ~/go/src/berty.tech/
+
+      - *install_go
+
+      - restore_cache:
+          key: desktop-darwin-v2-{{ arch }}
+
+      - *install_mac
+
+      - save_cache:
+          key: desktop-darwin-v2-{{ arch }}
+          paths:
+            - /usr/local/Homebrew
+            - ~/go/src/github.com
+            - ~/go/bin
+
+      - run:
+          name: install mac
+          working_directory: ~/go/src/berty.tech/client/react-native/desktop
+          command: |
+            BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build
+            dylibbundler -od -b -x ./output/darwin-amd64/Berty.app/Contents/MacOS/berty -d ./output/darwin-amd64/Berty.app/Contents/libs/
+            mv output/darwin-amd64/Berty.app appdmg
+            cd appdmg
+            electron-builder build --publish never --prepackaged Berty.app
+            mv dist/Berty*.dmg /tmp/Berty.dmg
+
+      - store_artifacts:
+          path: /tmp/Berty.dmg
+
+
 workflows:
   version: 2
   build-client:
     jobs:
       - client.rn.node
+      # android
       - client.rn.android:
           requires:
             - client.rn.node
@@ -692,6 +738,7 @@ workflows:
               only: master
           requires:
             - client.rn.node
+      # ios
       - client.rn.ios:
           requires:
             - client.rn.node
@@ -701,10 +748,21 @@ workflows:
               only: master
           requires:
             - client.rn.node
+      # web
       - client.rn.web:
           requires:
             - client.rn.node
+      # desktop
       - client.rn.mac:
+          filters:
+            branches:
+              ignore: master
+          requires:
+            - client.rn.web
+      - client.rn.mac-beta:
+          filters:
+            branches:
+              only: master
           requires:
             - client.rn.web
   check-quality:
