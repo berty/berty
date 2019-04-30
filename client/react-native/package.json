@@ -4,24 +4,32 @@
   "description": "Berty's react native",
   "license": "Apache-2.0",
   "scripts": {
-    "postinstall": "yarn relay",
-    "start": "concurrently 'yarn relay --watch' 'react-native start --reset-cache'",
-    "relay": "relay-compiler --src common --schema common/schema.graphql"
+    "postinstall": "npm run relay",
+    "start": "concurrently --colors 'npm run relay --watch' 'react-native start --reset-cache'",
+    "relay": "relay-compiler --src app --schema app/schema.graphql"
   },
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.4.0",
+    "@babel/plugin-proposal-decorators": "^7.0.0",
     "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@berty/common": "^0.0.1",
+    "@berty/graphql": "^0.0.1",
+    "@berty/locale": "^0.0.1",
+    "@berty/relay": "^0.0.1",
+    "@berty/view": "^0.0.1",
     "b64-lite": "^1.3.1",
     "babel-plugin-relay": "^1.6.2",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "base64-js": "^1.3.0",
-    "case": "^1.6.0",
     "cavy": "git+https://git@github.com/berty/cavy.git",
     "concurrently": "^4.0.1",
     "crypto-js": "^3.1.9-1",
     "date-fns": "^1.30.1",
     "deepmerge": "^2.2.1",
     "eslint-plugin-dependencies": "^2.4.0",
+    "global": "^4.3.2",
     "graphql": "^14.0.2",
     "graphql-relay": "^0.5.5",
     "grpc-web": "^1.0.4",
@@ -75,6 +83,7 @@
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
     "babel-runtime": "^6.26.0",
+    "case": "^1.6.1",
     "eslint": "^5.7.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-config-prettier-standard": "^2.0.0",
@@ -90,21 +99,14 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-standard": "^4.0.0",
+    "lerna": "^3.13.4",
     "metro-react-native-babel-preset": "0.48.0",
     "prettier": "^1.14.3",
     "prettier-eslint": "^8.8.2",
     "prettier-eslint-cli": "^4.7.1",
     "react-test-renderer": "16.6.0-alpha.8af6728"
   },
-  "babel": {
-    "presets": [
-      "module:metro-react-native-babel-preset"
-    ],
-    "plugins": [
-      "@babel/plugin-syntax-export-namespace-from",
-      "transform-export-extensions",
-      "relay",
-      "transform-inline-environment-variables"
-    ]
+  "optionalDependencies": {
+    "fsevents": "*"
   }
 }

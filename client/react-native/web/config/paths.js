@@ -1,4 +1,3 @@
-
 const path = require('path')
 const fs = require('fs')
 const url = require('url')
@@ -46,7 +45,7 @@ module.exports = {
   appHtml: resolveApp('public/index.html'),
   appIndexJs: resolveApp('index.js'),
   appPackageJson: resolveApp('package.json'),
-  appSrc: resolveApp('../common'),
+  appSrc: resolveApp('../app'),
   yarnLockFile: resolveApp('yarn.lock'),
   appNodeModules: resolveApp('node_modules'),
   publicUrl: getPublicUrl(resolveApp('package.json')),

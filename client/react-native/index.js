@@ -1,1 +1,2 @@
-import './common'
+import '@berty/common'
+

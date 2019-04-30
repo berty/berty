@@ -51,6 +51,7 @@ local.properties
 node_modules/
 npm-debug.log
 yarn-error.log
+lerna-debug.log
 
 # BUCK
 buck-out/
@@ -77,6 +78,7 @@ android/app/libs/
 android/app/gradle/
 android/app/gradlew
 android/app/gradlew.bat
+gradle.properties
 
 # fastlane (additionals)
 fastlane/Appfile
@@ -116,7 +118,6 @@ jsconfig.json
 *.ud.wulo.ios.p12
 
 # package-lock.json files
-package-lock.json
 
 # Environment
 .env.debug
@@ -131,3 +132,4 @@ __generated__/
 /desktop/bundler.json
 /desktop/appdmg/dist
 /desktop/appdmg/Berty.app
+

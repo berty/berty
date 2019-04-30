@@ -6,6 +6,8 @@ IOS := $(ROOT)/ios
 ANDROID := $(ROOT)/android
 DESKTOP := $(ROOT)/desktop
 
+LERNA ?= $(shell ([ -e ./node_modules/.bin/lerna ] || npm install lerna) && echo ./node_modules/.bin/lerna)
+LERNA_RUN := $(LERNA) run --stream
 # Fastlane build related
 
 
@@ -71,7 +73,7 @@ get_iphone_udid:
 ### Dependencies part ###
 .PHONY: deps
 deps:
-	cd $(ROOT) && yarn
+	cd $(ROOT) && $(LERNA) bootstrap
 
 .PHONY: deps.android
 deps.android: deps
@@ -100,15 +102,26 @@ deps.ios: deps
 
 .PHONY: deps.web
 deps.web: deps
-	cd $(WEB) && yarn
+	$(LERNA) bootstrap --scope=@berty/web
 
 .PHONY: deps.logs
 deps.logs:
 	brew install --HEAD pidcat
 ##############################
 
+.PHONY: generate.relay
+generate.relay:
+	./node_modules/.bin/relay-compiler -src common --schema app/schema.graphql
+
+.PHONY: generate.relay.watch
+generate.relay.watch:
+	./node_modules/.bin/relay-compiler --src common --schema app/schema.graphql --watch
 
 ### Build release/debug part ###
+.PHONY: debug.react-native
+debug.react-native:
+	./node_modules/.bin/concurrently 'make generate.relay.watch' 'react-native start --reset-cache'
+
 .PHONY: patch.android
 patch.android:
 	@if [ -z "$$(sed -n 4p node_modules/react-native-network-info/android/build.gradle | grep 'url \"https://maven.google.com\"')" ]; then \
@@ -118,7 +131,7 @@ patch.android:
 
 .PHONY: debug.android
 debug.android: deps.android patch.android
-	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-android --no-packager' 'yarn start'
+	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-android --no-packager' 'make debug.react-native'
 
 .PHONY: release.android
 release.android: deps.android
@@ -130,8 +143,8 @@ deps.desktop: deps.web
 
 .PHONY: release.desktop
 release.desktop: deps.desktop
-	cd $(WEB) && yarn build
-	cd $(ROOT) && $(MAKE) -C $(DESKTOP) build
+	$(LERNA_RUN) --scope=@berty/web build
+	$(MAKE) -C $(DESKTOP) build
 
 .PHONY: clean.desktop
 clean.desktop: clean.web
@@ -139,7 +152,7 @@ clean.desktop: clean.web
 
 .PHONY: debug.ios
 debug.ios: deps.ios get_iphone_udid
-	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-ios --no-packager --configuration=Debug --scheme=debug $(IOS_UDID)' 'yarn start'
+	cd $(ROOT) && ./node_modules/.bin/concurrently 'react-native run-ios --no-packager --configuration=Debug --scheme=debug $(IOS_UDID)' 'make debug.react-native'
 
 .PHONY: release.ios
 release.ios: deps.ios get_iphone_udid
@@ -151,11 +164,12 @@ adhoc.ios: deps.ios get_iphone_udid
 
 .PHONY: debug.web
 debug.web: deps.web
-	cd $(WEB) && yarn start
+	$(LERNA_RUN) --scope=@berty/web start
 
 .PHONY: debug.web.cleared
 debug.web.cleared: deps.web
-	cd $(WEB) && yarn clear-babel-cache && yarn start
+	$(LERNA_RUN) --scope=@berty/web clear-babel-cache
+	$(LERNA_RUN) --scope=@berty/web start
 ##############################
 
 
@@ -175,9 +189,9 @@ log.ios:
 ### Clean dependencies part ###
 .PHONY: clean.bundler_and_pkgs
 clean.bundler_and_pkgs:
+	$(LERNA) clean
 	cd $(ROOT)					\
 		&& rm -rf node_modules	\
-		&& yarn cache clean		\
 		&& watchman watch-del-all
 	rm -rf $$TMPDIR/metro-*
 	rm -rf $$TMPDIR/react-*
@@ -197,7 +211,6 @@ clean.ios:
 clean.web:
 	cd $(WEB)					\
 		&& rm -rf node_modules	\
-		&& yarn cache clean		\
 		&& watchman watch-del-all
 
 .PHONY: fclean.android
@@ -373,7 +386,7 @@ fastlane.setup_circle:
 	security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $(KEYCHAIN_PASSWORD) $(KEYCHAIN_NAME)
 
 
-fastlane.ios.debug:
+fastlane.ios.debug: deps
 	mkdir -p $(IOS_BUILD)
 
 	GYM_CLEAN=false \
@@ -387,7 +400,7 @@ fastlane.ios.debug:
 	GYM_INCLUDE_SYMBOLS=false \
 		time bundle exec fastlane ios build --verbose
 
-fastlane.ios.adhoc:
+fastlane.ios.adhoc: deps
 	mkdir -p $(IOS_BUILD)
 
 	GYM_CLEAN=false \
@@ -407,7 +420,7 @@ fastlane.ios.adhoc:
 	# extract build informations
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
-fastlane.ios.house:
+fastlane.ios.house: deps
 	mkdir -p $(IOS_BUILD)
 
 	GYM_CLEAN=true \
@@ -428,7 +441,7 @@ fastlane.ios.house:
 	# extract build informations
 	unzip -p $(IOS_BUILD)/$(NAME).ipa Payload/*.app/embedded.mobileprovision | security cms -D > $(IOS_BUILD)/$(NAME).embedded.mobileprovision.txt
 
-fastlane.ios.release:
+fastlane.ios.release: deps
 	mkdir -p $(IOS_BUILD)
 
 	GYM_CLEAN=true \
@@ -452,7 +465,7 @@ fastlane.ios.release:
 fastlane.ios.release.appstore: fastlane.ios.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
-fastlane.android.staff:
+fastlane.android.staff: deps
 	# get the google-services.json
 	[ -e $(ROOT)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
@@ -469,7 +482,7 @@ fastlane.android.staff:
 	# check if apk is correctly signed
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
-fastlane.android.yolo:
+fastlane.android.yolo: deps
 	# get the google-services.json
 	[ -e $(ROOT)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
@@ -485,7 +498,7 @@ fastlane.android.yolo:
 	# check if apk is correctly signed
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
-fastlane.android.release:
+fastlane.android.release: deps
 	# get the google-services.json
 	[ -e $(ROOT)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
