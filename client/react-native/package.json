@@ -6,7 +6,8 @@
   "scripts": {
     "postinstall": "npm run relay",
     "start": "concurrently --colors 'npm run relay --watch' 'react-native start --reset-cache'",
-    "relay": "relay-compiler --src app --schema app/schema.graphql"
+    "relay": "relay-compiler --src app --schema app/schema.graphql",
+    "prettify": "prettier-eslint --write"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.4.0",
