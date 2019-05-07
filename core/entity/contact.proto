@@ -4,11 +4,11 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
-import "pkg/validate/validate.proto";
-import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
 import "api/protobuf/graphql/graphql.proto";
 import "entity/device.proto";
+import "pkg/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
 
 message Contact {
   // option (validate.additional_handler) = "m.customValidate()";

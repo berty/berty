@@ -2,11 +2,9 @@ syntax = "proto3";
 
 package berty.node;
 
+import "api/node/kind.proto";
 import "api/protobuf/graphql/graphql.proto";
 import "entity/event.proto";
-import "api/node/kind.proto";
-import "network/metric/metric.proto";
-import "network/metric/peer.proto";
 import "entity/config.proto";
 import "entity/contact.proto";
 import "entity/device.proto";
@@ -15,9 +13,11 @@ import "entity/device_push_config.proto";
 import "entity/device_push_identifier.proto";
 import "entity/conversation.proto";
 import "entity/message.proto";
-import "push/push.proto";
+import "network/metric/metric.proto";
+import "network/metric/peer.proto";
 import "pkg/deviceinfo/deviceinfo.proto";
 import "pkg/validate/validate.proto";
+import "push/push.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 

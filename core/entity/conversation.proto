@@ -4,14 +4,13 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
-import "gogoproto/gogo.proto";
-import "google/protobuf/timestamp.proto";
-import "pkg/validate/validate.proto";
-
 import "api/protobuf/graphql/graphql.proto";
 import "entity/contact.proto";
 import "entity/message.proto";
 import "entity/err.proto";
+import "pkg/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
 
 message Conversation {
   //

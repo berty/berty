@@ -4,8 +4,8 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
-import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
 
 message SenderAlias {
   enum Status {
