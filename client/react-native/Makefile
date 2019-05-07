@@ -6,7 +6,7 @@ IOS := $(ROOT)/ios
 ANDROID := $(ROOT)/android
 DESKTOP := $(ROOT)/desktop
 
-LERNA ?= $(shell [ ! -e ./node_modules/.bin/lerna ] && npm install lerna; echo ./node_modules/.bin/lerna)
+LERNA ?= ./node_modules/.bin/lerna
 LERNA_RUN := $(LERNA) run --stream
 # Fastlane build related
 
@@ -71,17 +71,19 @@ get_iphone_udid:
 
 
 .PHONY: pretty
-pretty:
+pretty: deps
 	$(LERNA_RUN) prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*')
 
 .PHONY: gen.pretty
-gen.pretty:
+gen.pretty: deps
 	$(LERNA_RUN) prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*')
 
 ### Dependencies part ###
 .PHONY: deps
 deps:
-	cd $(ROOT) && $(LERNA) bootstrap
+	cd $(ROOT); \
+		[ ! -e ./node_modules/.bin/lerna ] && npm install --no-package-lock lerna; \
+		$(LERNA) bootstrap $$([ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
 
 .PHONY: deps.android
 deps.android: deps

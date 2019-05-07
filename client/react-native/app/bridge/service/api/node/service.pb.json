@@ -1,0 +1,3465 @@
+{
+  "nested": {
+    "berty": {
+      "nested": {
+        "node": {
+          "options": {
+            "go_package": "berty.tech/core/api/node"
+          },
+          "nested": {
+            "Service": {
+              "methods": {
+                "ID": {
+                  "requestType": "Void",
+                  "responseType": "berty.network.metric.Peer",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "CommitLogStream": {
+                  "requestType": "Void",
+                  "responseType": "CommitLog",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Subscription"
+                  }
+                },
+                "EventStream": {
+                  "requestType": "EventStreamInput",
+                  "responseType": "berty.entity.Event",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Subscription"
+                  }
+                },
+                "EventList": {
+                  "requestType": "EventListInput",
+                  "responseType": "berty.entity.Event",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_output)": ".berty.node.EventListConnection",
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "EventUnseen": {
+                  "requestType": "EventListInput",
+                  "responseType": "berty.entity.Event",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "GetEvent": {
+                  "requestType": "berty.entity.Event",
+                  "responseType": "berty.entity.Event",
+                  "options": {
+                    "(gql.graphql_input)": ".gql.Node",
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "EventSeen": {
+                  "requestType": "berty.entity.Event",
+                  "responseType": "berty.entity.Event",
+                  "options": {
+                    "(gql.graphql_input)": ".gql.Node",
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ConfigPublic": {
+                  "requestType": "Void",
+                  "responseType": "berty.entity.Config",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "ConfigUpdate": {
+                  "requestType": "berty.entity.Config",
+                  "responseType": "berty.entity.Config",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ContactRequest": {
+                  "requestType": "ContactRequestInput",
+                  "responseType": "berty.entity.Contact",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ContactAcceptRequest": {
+                  "requestType": "ContactAcceptRequestInput",
+                  "responseType": "berty.entity.Contact",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ContactRemove": {
+                  "requestType": "berty.entity.Contact",
+                  "responseType": "berty.entity.Contact",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ContactUpdate": {
+                  "requestType": "berty.entity.Contact",
+                  "responseType": "berty.entity.Contact",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ContactList": {
+                  "requestType": "ContactListInput",
+                  "responseType": "berty.entity.Contact",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_output)": ".berty.node.ContactListConnection",
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "Contact": {
+                  "requestType": "ContactInput",
+                  "responseType": "berty.entity.Contact",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "ContactCheckPublicKey": {
+                  "requestType": "ContactInput",
+                  "responseType": "Bool",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "ConversationCreate": {
+                  "requestType": "ConversationCreateInput",
+                  "responseType": "berty.entity.Conversation",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ConversationUpdate": {
+                  "requestType": "berty.entity.Conversation",
+                  "responseType": "berty.entity.Conversation",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ConversationList": {
+                  "requestType": "ConversationListInput",
+                  "responseType": "berty.entity.Conversation",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_output)": ".berty.node.ConversationListConnection",
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "ConversationInvite": {
+                  "requestType": "ConversationManageMembersInput",
+                  "responseType": "berty.entity.Conversation",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ConversationExclude": {
+                  "requestType": "ConversationManageMembersInput",
+                  "responseType": "berty.entity.Conversation",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ConversationAddMessage": {
+                  "requestType": "ConversationAddMessageInput",
+                  "responseType": "berty.entity.Event",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "Conversation": {
+                  "requestType": "berty.entity.Conversation",
+                  "responseType": "berty.entity.Conversation",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "ConversationMember": {
+                  "requestType": "berty.entity.ConversationMember",
+                  "responseType": "berty.entity.ConversationMember",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "ConversationRead": {
+                  "requestType": "berty.entity.Conversation",
+                  "responseType": "berty.entity.Conversation",
+                  "options": {
+                    "(gql.graphql_input)": ".gql.Node",
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ConversationRemove": {
+                  "requestType": "berty.entity.Conversation",
+                  "responseType": "berty.entity.Conversation",
+                  "options": {
+                    "(gql.graphql_input)": ".gql.Node",
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "ConversationLastEvent": {
+                  "requestType": "berty.entity.Conversation",
+                  "responseType": "berty.entity.Event",
+                  "options": {
+                    "(gql.graphql_input)": ".gql.Node",
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "DevicePushConfigList": {
+                  "requestType": "Void",
+                  "responseType": "DevicePushConfigListOutput",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "DevicePushConfigCreate": {
+                  "requestType": "DevicePushConfigCreateInput",
+                  "responseType": "berty.entity.DevicePushConfig",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "DevicePushConfigNativeRegister": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "DevicePushConfigNativeUnregister": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "DevicePushConfigRemove": {
+                  "requestType": "berty.entity.DevicePushConfig",
+                  "responseType": "berty.entity.DevicePushConfig",
+                  "options": {
+                    "(gql.graphql_input)": ".gql.Node",
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "DevicePushConfigUpdate": {
+                  "requestType": "berty.entity.DevicePushConfig",
+                  "responseType": "berty.entity.DevicePushConfig",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "HandleEvent": {
+                  "requestType": "berty.entity.Event",
+                  "responseType": "Void"
+                },
+                "GenerateFakeData": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "RunIntegrationTests": {
+                  "requestType": "IntegrationTestInput",
+                  "responseType": "IntegrationTestOutput",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "DebugPing": {
+                  "requestType": "PingDestination",
+                  "responseType": "Void"
+                },
+                "DebugRequeueEvent": {
+                  "requestType": "EventIDInput",
+                  "responseType": "berty.entity.Event",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "DebugRequeueAll": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
+                "DeviceInfos": {
+                  "requestType": "Void",
+                  "responseType": "berty.pkg.deviceinfo.DeviceInfos",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "AppVersion": {
+                  "requestType": "Void",
+                  "responseType": "AppVersionOutput",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "Peers": {
+                  "requestType": "Void",
+                  "responseType": "berty.network.metric.Peers",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "Protocols": {
+                  "requestType": "berty.network.metric.Peer",
+                  "responseType": "ProtocolsOutput",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "LogStream": {
+                  "requestType": "LogStreamInput",
+                  "responseType": "LogEntry",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Subscription"
+                  }
+                },
+                "LogfileList": {
+                  "requestType": "Void",
+                  "responseType": "LogfileEntry",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "LogfileRead": {
+                  "requestType": "LogfileReadInput",
+                  "responseType": "LogEntry",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Subscription"
+                  }
+                },
+                "TestLogBackgroundError": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "TestLogBackgroundWarn": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "TestLogBackgroundDebug": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "TestPanic": {
+                  "requestType": "Void",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "TestError": {
+                  "requestType": "TestErrorInput",
+                  "responseType": "Void",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "MonitorBandwidth": {
+                  "requestType": "berty.network.metric.BandwidthStats",
+                  "responseType": "berty.network.metric.BandwidthStats",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Subscription"
+                  }
+                },
+                "MonitorPeers": {
+                  "requestType": "Void",
+                  "responseType": "berty.network.metric.Peer",
+                  "responseStream": true,
+                  "options": {
+                    "(gql.graphql_type)": "Subscription"
+                  }
+                },
+                "GetListenAddrs": {
+                  "requestType": "Void",
+                  "responseType": "berty.network.metric.ListAddrs",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "GetListenInterfaceAddrs": {
+                  "requestType": "Void",
+                  "responseType": "berty.network.metric.ListAddrs",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                },
+                "Libp2PPing": {
+                  "requestType": "berty.network.metric.PingReq",
+                  "responseType": "Bool",
+                  "options": {
+                    "(gql.graphql_type)": "Query"
+                  }
+                }
+              }
+            },
+            "TestErrorInput": {
+              "fields": {
+                "kind": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "ProtocolsOutput": {
+              "fields": {
+                "protocols": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "AppVersionOutput": {
+              "fields": {
+                "version": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "PingDestination": {
+              "fields": {
+                "destination": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "ContactRequestInput": {
+              "fields": {
+                "contactId": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.customname)": "ContactID",
+                    "(validate.is_contact_key)": true
+                  }
+                },
+                "contactOverrideDisplayName": {
+                  "type": "string",
+                  "id": 2
+                },
+                "introText": {
+                  "type": "string",
+                  "id": 3,
+                  "options": {
+                    "(validate.max_len)": 256
+                  }
+                }
+              }
+            },
+            "ContactAcceptRequestInput": {
+              "fields": {
+                "contactId": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.customname)": "ContactID",
+                    "(validate.min_len)": 1,
+                    "(validate.is_contact_key)": true
+                  }
+                }
+              }
+            },
+            "ConversationAddMessageInput": {
+              "fields": {
+                "conversation": {
+                  "type": "berty.entity.Conversation",
+                  "id": 1,
+                  "options": {
+                    "(validate.required)": true,
+                    "(validate.skip)": false
+                  }
+                },
+                "message": {
+                  "type": "berty.entity.Message",
+                  "id": 2,
+                  "options": {
+                    "(validate.required)": true,
+                    "(validate.skip)": false
+                  }
+                }
+              }
+            },
+            "EventStreamInput": {
+              "fields": {
+                "filter": {
+                  "type": "berty.entity.Event",
+                  "id": 1
+                }
+              }
+            },
+            "CommitLog": {
+              "fields": {
+                "operation": {
+                  "type": "Operation",
+                  "id": 1,
+                  "options": {
+                    "(validate.defined_only)": true
+                  }
+                },
+                "entity": {
+                  "type": "Entity",
+                  "id": 2,
+                  "options": {
+                    "(validate.required)": true,
+                    "(validate.skip)": false
+                  }
+                }
+              },
+              "nested": {
+                "Operation": {
+                  "values": {
+                    "Create": 0,
+                    "Update": 1,
+                    "Delete": 2
+                  }
+                },
+                "Entity": {
+                  "fields": {
+                    "config": {
+                      "type": "berty.entity.Config",
+                      "id": 101
+                    },
+                    "contact": {
+                      "type": "berty.entity.Contact",
+                      "id": 102
+                    },
+                    "device": {
+                      "type": "berty.entity.Device",
+                      "id": 103
+                    },
+                    "conversation": {
+                      "type": "berty.entity.Conversation",
+                      "id": 104
+                    },
+                    "conversationMember": {
+                      "type": "berty.entity.ConversationMember",
+                      "id": 105
+                    },
+                    "event": {
+                      "type": "berty.entity.Event",
+                      "id": 106
+                    },
+                    "devicePushConfig": {
+                      "type": "berty.entity.DevicePushConfig",
+                      "id": 107
+                    },
+                    "devicePushIdentifier": {
+                      "type": "berty.entity.DevicePushIdentifier",
+                      "id": 108
+                    },
+                    "eventDispatch": {
+                      "type": "berty.entity.EventDispatch",
+                      "id": 109
+                    },
+                    "senderAlias": {
+                      "type": "berty.entity.SenderAlias",
+                      "id": 110
+                    }
+                  }
+                }
+              }
+            },
+            "EventListInput": {
+              "fields": {
+                "filter": {
+                  "type": "berty.entity.Event",
+                  "id": 1
+                },
+                "onlyWithoutAckedAt": {
+                  "type": "NullableTrueFalse",
+                  "id": 2
+                },
+                "onlyWithoutSeenAt": {
+                  "type": "NullableTrueFalse",
+                  "id": 3
+                },
+                "paginate": {
+                  "type": "Pagination",
+                  "id": 99,
+                  "options": {
+                    "(gql.graphql_spread)": true
+                  }
+                }
+              }
+            },
+            "EventEdge": {
+              "fields": {
+                "node": {
+                  "type": "berty.entity.Event",
+                  "id": 1
+                },
+                "cursor": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "EventListConnection": {
+              "fields": {
+                "edges": {
+                  "rule": "repeated",
+                  "type": "EventEdge",
+                  "id": 1
+                },
+                "pageInfo": {
+                  "type": "PageInfo",
+                  "id": 99,
+                  "options": {
+                    "(gql.graphql_non_nullable)": true
+                  }
+                }
+              }
+            },
+            "ContactListInput": {
+              "fields": {
+                "filter": {
+                  "type": "berty.entity.Contact",
+                  "id": 1
+                },
+                "paginate": {
+                  "type": "Pagination",
+                  "id": 99,
+                  "options": {
+                    "(gql.graphql_spread)": true
+                  }
+                }
+              }
+            },
+            "ContactEdge": {
+              "fields": {
+                "node": {
+                  "type": "berty.entity.Contact",
+                  "id": 1
+                },
+                "cursor": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ContactListConnection": {
+              "fields": {
+                "edges": {
+                  "rule": "repeated",
+                  "type": "ContactEdge",
+                  "id": 1
+                },
+                "pageInfo": {
+                  "type": "PageInfo",
+                  "id": 99,
+                  "options": {
+                    "(gql.graphql_non_nullable)": true
+                  }
+                }
+              }
+            },
+            "ContactInput": {
+              "fields": {
+                "filter": {
+                  "type": "berty.entity.Contact",
+                  "id": 1
+                }
+              }
+            },
+            "ConversationListInput": {
+              "fields": {
+                "filter": {
+                  "type": "berty.entity.Conversation",
+                  "id": 1
+                },
+                "paginate": {
+                  "type": "Pagination",
+                  "id": 99,
+                  "options": {
+                    "(gql.graphql_spread)": true
+                  }
+                }
+              }
+            },
+            "ConversationEdge": {
+              "fields": {
+                "node": {
+                  "type": "berty.entity.Conversation",
+                  "id": 1
+                },
+                "cursor": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ConversationListConnection": {
+              "fields": {
+                "edges": {
+                  "rule": "repeated",
+                  "type": "ConversationEdge",
+                  "id": 1
+                },
+                "pageInfo": {
+                  "type": "PageInfo",
+                  "id": 99,
+                  "options": {
+                    "(gql.graphql_non_nullable)": true
+                  }
+                }
+              }
+            },
+            "ConversationCreateInput": {
+              "fields": {
+                "contacts": {
+                  "rule": "repeated",
+                  "type": "berty.entity.Contact",
+                  "id": 1,
+                  "options": {
+                    "(validate.min_items)": 1
+                  }
+                },
+                "title": {
+                  "type": "string",
+                  "id": 2
+                },
+                "topic": {
+                  "type": "string",
+                  "id": 3
+                },
+                "kind": {
+                  "type": "berty.entity.Conversation.Kind",
+                  "id": 4
+                }
+              }
+            },
+            "ConversationManageMembersInput": {
+              "fields": {
+                "conversation": {
+                  "type": "berty.entity.Conversation",
+                  "id": 1,
+                  "options": {
+                    "(validate.required)": true,
+                    "(validate.skip)": false
+                  }
+                },
+                "contacts": {
+                  "rule": "repeated",
+                  "type": "berty.entity.Contact",
+                  "id": 2,
+                  "options": {
+                    "(validate.min_items)": 1
+                  }
+                }
+              }
+            },
+            "DevicePushConfigEdge": {
+              "fields": {
+                "node": {
+                  "type": "berty.entity.DevicePushConfig",
+                  "id": 1
+                },
+                "cursor": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "DevicePushConfigListOutput": {
+              "fields": {
+                "edges": {
+                  "rule": "repeated",
+                  "type": "entity.DevicePushConfig",
+                  "id": 1
+                }
+              }
+            },
+            "DevicePushConfigCreateInput": {
+              "fields": {
+                "relayPubkey": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_nullable)": true,
+                    "(gogoproto.customname)": "RelayPubkey"
+                  }
+                },
+                "pushId": {
+                  "type": "bytes",
+                  "id": 2,
+                  "options": {
+                    "(gql.graphql_nullable)": true,
+                    "(gogoproto.customname)": "PushID"
+                  }
+                },
+                "pushType": {
+                  "type": "berty.push.DevicePushType",
+                  "id": 3
+                }
+              }
+            },
+            "Pagination": {
+              "fields": {
+                "orderBy": {
+                  "type": "string",
+                  "id": 1
+                },
+                "orderDesc": {
+                  "type": "bool",
+                  "id": 2
+                },
+                "first": {
+                  "type": "int32",
+                  "id": 11,
+                  "options": {
+                    "(gql.graphql_nullable)": true
+                  }
+                },
+                "after": {
+                  "type": "string",
+                  "id": 12,
+                  "options": {
+                    "(gql.graphql_nullable)": true
+                  }
+                },
+                "last": {
+                  "type": "int32",
+                  "id": 13,
+                  "options": {
+                    "(gql.graphql_nullable)": true
+                  }
+                },
+                "before": {
+                  "type": "string",
+                  "id": 14,
+                  "options": {
+                    "(gql.graphql_nullable)": true
+                  }
+                }
+              }
+            },
+            "PageInfo": {
+              "fields": {
+                "startCursor": {
+                  "type": "string",
+                  "id": 1
+                },
+                "endCursor": {
+                  "type": "string",
+                  "id": 2
+                },
+                "hasNextPage": {
+                  "type": "bool",
+                  "id": 3
+                },
+                "hasPreviousPage": {
+                  "type": "bool",
+                  "id": 4
+                },
+                "count": {
+                  "type": "uint32",
+                  "id": 5
+                }
+              }
+            },
+            "IntegrationTestInput": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "IntegrationTestOutput": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "success": {
+                  "type": "bool",
+                  "id": 2
+                },
+                "verbose": {
+                  "type": "string",
+                  "id": 3
+                },
+                "startedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "finishedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                }
+              }
+            },
+            "Void": {
+              "fields": {
+                "T": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
+            "Bool": {
+              "fields": {
+                "ret": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
+            "NullableTrueFalse": {
+              "values": {
+                "Null": 0,
+                "True": 1,
+                "False": 2
+              }
+            },
+            "EventIDInput": {
+              "fields": {
+                "eventId": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.customname)": "EventID"
+                  }
+                }
+              }
+            },
+            "LogStreamInput": {
+              "fields": {
+                "continues": {
+                  "type": "bool",
+                  "id": 1
+                },
+                "logLevel": {
+                  "type": "string",
+                  "id": 2
+                },
+                "namespaces": {
+                  "type": "string",
+                  "id": 3
+                },
+                "last": {
+                  "type": "int32",
+                  "id": 4
+                }
+              }
+            },
+            "LogEntry": {
+              "fields": {
+                "line": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "LogfileEntry": {
+              "fields": {
+                "path": {
+                  "type": "string",
+                  "id": 1
+                },
+                "filesize": {
+                  "type": "int32",
+                  "id": 2
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": true
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": true
+                  }
+                }
+              }
+            },
+            "LogfileReadInput": {
+              "fields": {
+                "path": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "NodeEvent": {
+              "fields": {
+                "kind": {
+                  "type": "Kind",
+                  "id": 1
+                },
+                "attributes": {
+                  "type": "bytes",
+                  "id": 2
+                }
+              }
+            },
+            "Kind": {
+              "values": {
+                "Unknown": 0,
+                "NodeStarted": 1,
+                "NodeStopped": 2,
+                "NodeIsAlive": 3,
+                "BackgroundCritical": 4,
+                "BackgroundError": 5,
+                "BackgroundWarn": 6,
+                "BackgroundInfo": 7,
+                "Debug": 8,
+                "Statistics": 9
+              }
+            },
+            "NodeStartedAttrs": {
+              "fields": {
+                "T": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
+            "NodeStoppedAttrs": {
+              "fields": {
+                "errMsg": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "NodeIsAliveAttrs": {
+              "fields": {
+                "T": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
+            "BackgroundCriticalAttrs": {
+              "fields": {
+                "errMsg": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "BackgroundErrorAttrs": {
+              "fields": {
+                "errMsg": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "BackgroundWarnAttrs": {
+              "fields": {
+                "errMsg": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "DebugAttrs": {
+              "fields": {
+                "msg": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "StatisticsAttrs": {
+              "fields": {
+                "errMsg": {
+                  "type": "string",
+                  "id": 1
+                },
+                "totalNetworkBandwidth": {
+                  "type": "berty.network.metric.BandwidthStats",
+                  "id": 2
+                },
+                "peersCount": {
+                  "type": "int32",
+                  "id": 3
+                }
+              }
+            }
+          }
+        },
+        "network": {
+          "nested": {
+            "metric": {
+              "options": {
+                "go_package": "berty.tech/core/network/metric"
+              },
+              "nested": {
+                "MetricsType": {
+                  "values": {
+                    "PEER": 0,
+                    "PROTOCOL": 1,
+                    "GLOBAL": 2
+                  }
+                },
+                "BandwidthStats": {
+                  "fields": {
+                    "id": {
+                      "type": "string",
+                      "id": 1,
+                      "options": {
+                        "(gql.graphql_nullable)": true,
+                        "(gogoproto.customname)": "ID"
+                      }
+                    },
+                    "totalIn": {
+                      "type": "int64",
+                      "id": 2,
+                      "options": {
+                        "(gql.graphql_nullable)": true
+                      }
+                    },
+                    "totalOut": {
+                      "type": "int64",
+                      "id": 3,
+                      "options": {
+                        "(gql.graphql_nullable)": true
+                      }
+                    },
+                    "rateIn": {
+                      "type": "double",
+                      "id": 4,
+                      "options": {
+                        "(gql.graphql_nullable)": true
+                      }
+                    },
+                    "rateOut": {
+                      "type": "double",
+                      "id": 5,
+                      "options": {
+                        "(gql.graphql_nullable)": true
+                      }
+                    },
+                    "type": {
+                      "type": "MetricsType",
+                      "id": 6
+                    }
+                  }
+                },
+                "ListAddrs": {
+                  "fields": {
+                    "addrs": {
+                      "rule": "repeated",
+                      "type": "string",
+                      "id": 1
+                    }
+                  }
+                },
+                "PingReq": {
+                  "fields": {
+                    "str": {
+                      "type": "string",
+                      "id": 1
+                    }
+                  }
+                },
+                "ConnectionType": {
+                  "values": {
+                    "NOT_CONNECTED": 0,
+                    "CONNECTED": 1,
+                    "CAN_CONNECT": 2,
+                    "CANNOT_CONNECT": 3
+                  }
+                },
+                "Peer": {
+                  "fields": {
+                    "id": {
+                      "type": "string",
+                      "id": 1,
+                      "options": {
+                        "(gogoproto.customname)": "ID"
+                      }
+                    },
+                    "addrs": {
+                      "rule": "repeated",
+                      "type": "string",
+                      "id": 2
+                    },
+                    "connection": {
+                      "type": "ConnectionType",
+                      "id": 3
+                    }
+                  }
+                },
+                "Peers": {
+                  "fields": {
+                    "list": {
+                      "rule": "repeated",
+                      "type": "Peer",
+                      "id": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "entity": {
+          "options": {
+            "go_package": "berty.tech/core/entity"
+          },
+          "nested": {
+            "Event": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "sourceDeviceId": {
+                  "type": "string",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "SourceDeviceID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "sentAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.stdtime)": true
+                  }
+                },
+                "receivedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 7,
+                  "options": {
+                    "(gogoproto.stdtime)": true
+                  }
+                },
+                "ackedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 8,
+                  "options": {
+                    "(gogoproto.stdtime)": true
+                  }
+                },
+                "direction": {
+                  "type": "Direction",
+                  "id": 9,
+                  "options": {
+                    "(validate.int_gt)": 0
+                  }
+                },
+                "apiVersion": {
+                  "type": "uint32",
+                  "id": 10,
+                  "options": {
+                    "(gogoproto.customname)": "APIVersion"
+                  }
+                },
+                "kind": {
+                  "type": "entity.Kind",
+                  "id": 13,
+                  "options": {
+                    "(validate.int_gt)": 0
+                  }
+                },
+                "attributes": {
+                  "type": "bytes",
+                  "id": 14,
+                  "options": {
+                    "(gql.graphql_resolver)": true
+                  }
+                },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 16,
+                  "options": {
+                    "(gogoproto.stdtime)": true
+                  }
+                },
+                "ackStatus": {
+                  "type": "AckStatus",
+                  "id": 17,
+                  "options": {
+                    "(validate.int_gt)": 0
+                  }
+                },
+                "dispatches": {
+                  "rule": "repeated",
+                  "type": "EventDispatch",
+                  "id": 18
+                },
+                "sourceContactId": {
+                  "type": "string",
+                  "id": 19,
+                  "options": {
+                    "(gogoproto.customname)": "SourceContactID"
+                  }
+                },
+                "targetType": {
+                  "type": "TargetType",
+                  "id": 20
+                },
+                "targetAddr": {
+                  "type": "string",
+                  "id": 21,
+                  "options": {
+                    "(gql.graphql_id)": true
+                  }
+                },
+                "errProxy": {
+                  "type": "Err",
+                  "id": 98,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:-"
+                  }
+                },
+                "metadata": {
+                  "rule": "repeated",
+                  "type": "MetadataKeyValue",
+                  "id": 99,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:-"
+                  }
+                }
+              },
+              "reserved": [
+                [
+                  11,
+                  11
+                ],
+                [
+                  12,
+                  12
+                ],
+                [
+                  15,
+                  15
+                ]
+              ],
+              "nested": {
+                "AckStatus": {
+                  "values": {
+                    "UnknownAckStatus": 0,
+                    "NotAcked": 1,
+                    "AckedAtLeastOnce": 2,
+                    "AckedByAllContacts": 3,
+                    "AckedByAllDevices": 4
+                  }
+                },
+                "SeenStatus": {
+                  "values": {
+                    "UnknownSeenStatus": 0,
+                    "NotSeen": 1,
+                    "SeenAtLeastOnce": 2,
+                    "SeenByAllContacts": 3
+                  }
+                },
+                "TargetType": {
+                  "values": {
+                    "UnknownTargetType": 0,
+                    "ToSpecificDevice": 1,
+                    "ToSpecificContact": 2,
+                    "ToAllContacts": 3,
+                    "ToSpecificConversation": 4,
+                    "ToSelf": 5
+                  }
+                },
+                "Direction": {
+                  "values": {
+                    "UnknownDirection": 0,
+                    "Incoming": 1,
+                    "Outgoing": 2,
+                    "Node": 99
+                  }
+                }
+              }
+            },
+            "EventDispatch": {
+              "fields": {
+                "eventId": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "EventID"
+                  }
+                },
+                "deviceId": {
+                  "type": "string",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "DeviceID"
+                  }
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.customname)": "ContactID"
+                  }
+                },
+                "sentAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true
+                  }
+                },
+                "ackedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true
+                  }
+                },
+                "seenAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.stdtime)": true
+                  }
+                },
+                "ackMedium": {
+                  "type": "Medium",
+                  "id": 7
+                },
+                "seenMedium": {
+                  "type": "Medium",
+                  "id": 8
+                },
+                "retryBackoff": {
+                  "type": "int64",
+                  "id": 9
+                }
+              },
+              "nested": {
+                "Medium": {
+                  "values": {
+                    "UnknownMedium": 0,
+                    "LocalNetwork": 1,
+                    "BLE": 2,
+                    "Relay": 3
+                  }
+                }
+              }
+            },
+            "MetadataKeyValue": {
+              "fields": {
+                "key": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(validate.min_len)": 1
+                  }
+                },
+                "values": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 2,
+                  "options": {
+                    "(validate.min_items)": 1
+                  }
+                }
+              }
+            },
+            "Kind": {
+              "values": {
+                "Unknown": 0,
+                "Sent": 101,
+                "Ack": 102,
+                "Ping": 103,
+                "Seen": 104,
+                "ContactRequest": 201,
+                "ContactRequestAccepted": 202,
+                "ContactShareMe": 203,
+                "ContactShare": 204,
+                "ConversationInvite": 301,
+                "ConversationNewMessage": 302,
+                "ConversationRead": 303,
+                "ConversationUpdate": 304,
+                "ConversationMemberInvite": 701,
+                "ConversationMemberLeave": 702,
+                "ConversationMemberSetTitle": 703,
+                "ConversationMemberSetTopic": 704,
+                "ConversationMemberSetOwner": 705,
+                "ConversationMemberBlock": 706,
+                "ConversationMemberUnblock": 707,
+                "ConversationMemberRead": 708,
+                "ConversationMemberWrite": 709,
+                "DevtoolsMapset": 401,
+                "SenderAliasUpdate": 501,
+                "DeviceUpdatePushConfig": 601,
+                "DevicePushTo": 602,
+                "Node": 99
+              }
+            },
+            "SentAttrs": {
+              "fields": {
+                "ids": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.customname)": "IDs"
+                  }
+                }
+              }
+            },
+            "AckAttrs": {
+              "fields": {
+                "ids": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.customname)": "IDs"
+                  }
+                },
+                "errMsg": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "PingAttrs": {
+              "fields": {
+                "T": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
+            "SeenAttrs": {
+              "fields": {
+                "ids": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.customname)": "IDs"
+                  }
+                }
+              }
+            },
+            "ContactRequestAttrs": {
+              "fields": {
+                "me": {
+                  "type": "berty.entity.Contact",
+                  "id": 1
+                },
+                "introText": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ContactRequestAcceptedAttrs": {
+              "fields": {
+                "T": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            },
+            "ContactShareMeAttrs": {
+              "fields": {
+                "me": {
+                  "type": "berty.entity.Contact",
+                  "id": 1
+                }
+              }
+            },
+            "ContactShareAttrs": {
+              "fields": {
+                "contact": {
+                  "type": "berty.entity.Contact",
+                  "id": 1
+                }
+              }
+            },
+            "ConversationInviteAttrs": {
+              "fields": {
+                "conversation": {
+                  "type": "berty.entity.Conversation",
+                  "id": 1
+                }
+              }
+            },
+            "ConversationNewMessageAttrs": {
+              "fields": {
+                "message": {
+                  "type": "berty.entity.Message",
+                  "id": 1
+                }
+              }
+            },
+            "ConversationReadAttrs": {
+              "fields": {
+                "conversation": {
+                  "type": "berty.entity.Conversation",
+                  "id": 1
+                }
+              }
+            },
+            "ConversationUpdateAttrs": {
+              "fields": {
+                "conversation": {
+                  "type": "berty.entity.Conversation",
+                  "id": 1
+                }
+              }
+            },
+            "ConversationMemberInviteAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "contact": {
+                  "type": "Contact",
+                  "id": 2
+                },
+                "conversation": {
+                  "type": "Conversation",
+                  "id": 3
+                }
+              }
+            },
+            "ConversationMemberLeaveAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "ConversationMemberSetTitleAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "title": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ConversationMemberSetTopicAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "topic": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ConversationMemberSetOwnerAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ConversationMemberBlockAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ConversationMemberUnblockAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "ConversationMemberReadAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "at": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                }
+              }
+            },
+            "ConversationMemberWriteAttrs": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1
+                },
+                "message": {
+                  "type": "Message",
+                  "id": 2
+                }
+              }
+            },
+            "DevtoolsMapsetAttrs": {
+              "fields": {
+                "key": {
+                  "type": "string",
+                  "id": 1
+                },
+                "val": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "SenderAliasUpdateAttrs": {
+              "fields": {
+                "aliases": {
+                  "rule": "repeated",
+                  "type": "berty.entity.SenderAlias",
+                  "id": 1
+                }
+              }
+            },
+            "DeviceUpdatePushConfigAttrs": {
+              "fields": {
+                "device": {
+                  "type": "berty.entity.Device",
+                  "id": 1
+                }
+              }
+            },
+            "DevicePushToAttrs": {
+              "fields": {
+                "pushIdentifier": {
+                  "type": "bytes",
+                  "id": 1
+                },
+                "envelope": {
+                  "type": "bytes",
+                  "id": 2
+                },
+                "priority": {
+                  "type": "berty.push.Priority",
+                  "id": 3
+                }
+              }
+            },
+            "NodeAttrs": {
+              "fields": {
+                "kind": {
+                  "type": "int32",
+                  "id": 1
+                },
+                "attributes": {
+                  "type": "bytes",
+                  "id": 2
+                }
+              }
+            },
+            "Contact": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID",
+                    "(validate.is_contact_key)": true
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false,
+                    "(validate.skip)": true
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false,
+                    "(validate.skip)": true
+                  }
+                },
+                "sigchain": {
+                  "type": "bytes",
+                  "id": 10
+                },
+                "status": {
+                  "type": "Status",
+                  "id": 11
+                },
+                "devices": {
+                  "rule": "repeated",
+                  "type": "Device",
+                  "id": 12
+                },
+                "displayName": {
+                  "type": "string",
+                  "id": 13
+                },
+                "displayStatus": {
+                  "type": "string",
+                  "id": 14
+                },
+                "overrideDisplayName": {
+                  "type": "string",
+                  "id": 15
+                },
+                "overrideDisplayStatus": {
+                  "type": "string",
+                  "id": 16
+                }
+              },
+              "nested": {
+                "Status": {
+                  "values": {
+                    "Unknown": 0,
+                    "IsFriend": 1,
+                    "IsTrustedFriend": 2,
+                    "IsRequested": 3,
+                    "RequestedMe": 4,
+                    "IsBlocked": 5,
+                    "Myself": 42
+                  }
+                }
+              }
+            },
+            "Device": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "id": 5
+                },
+                "status": {
+                  "type": "Status",
+                  "id": 10
+                },
+                "apiVersion": {
+                  "type": "uint32",
+                  "id": 11
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 12,
+                  "options": {
+                    "(gogoproto.customname)": "ContactID"
+                  }
+                },
+                "pushIdentifiers": {
+                  "rule": "repeated",
+                  "type": "DevicePushIdentifier",
+                  "id": 13
+                }
+              },
+              "nested": {
+                "Status": {
+                  "values": {
+                    "Unknown": 0,
+                    "Connected": 1,
+                    "Disconnected": 2,
+                    "Available": 3,
+                    "Myself": 42
+                  }
+                }
+              }
+            },
+            "DevicePushIdentifier": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "pushInfo": {
+                  "type": "bytes",
+                  "id": 4
+                },
+                "relayPubkey": {
+                  "type": "string",
+                  "id": 5,
+                  "options": {
+                    "(gogoproto.customname)": "RelayPubkey"
+                  }
+                },
+                "deviceId": {
+                  "type": "string",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.customname)": "DeviceID"
+                  }
+                }
+              }
+            },
+            "Conversation": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID",
+                    "(validate.min_len)": 1
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "readAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "wroteAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "title": {
+                  "type": "string",
+                  "id": 20
+                },
+                "topic": {
+                  "type": "string",
+                  "id": 21
+                },
+                "infos": {
+                  "type": "string",
+                  "id": 22
+                },
+                "kind": {
+                  "type": "Kind",
+                  "id": 23
+                },
+                "members": {
+                  "rule": "repeated",
+                  "type": "ConversationMember",
+                  "id": 100,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:foreignkey:ConversationID;association_foreignkey:ID;save_associations:true"
+                  }
+                }
+              },
+              "nested": {
+                "Kind": {
+                  "values": {
+                    "Unknown": 0,
+                    "OneToOne": 1,
+                    "Group": 2
+                  }
+                }
+              }
+            },
+            "ConversationMember": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID",
+                    "(validate.min_len)": 1
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "readAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "wroteAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 5,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "status": {
+                  "type": "Status",
+                  "id": 10
+                },
+                "contact": {
+                  "type": "Contact",
+                  "id": 100,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:association_autoupdate:false;association_create:true",
+                    "(validate.required)": true,
+                    "(validate.skip)": false
+                  }
+                },
+                "conversationId": {
+                  "type": "string",
+                  "id": 101,
+                  "options": {
+                    "(gogoproto.customname)": "ConversationID",
+                    "(validate.min_len)": 1,
+                    "(gql.graphql_id)": true
+                  }
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 102,
+                  "options": {
+                    "(gogoproto.customname)": "ContactID",
+                    "(validate.min_len)": 1,
+                    "(gql.graphql_id)": true
+                  }
+                }
+              },
+              "nested": {
+                "Status": {
+                  "values": {
+                    "Unknown": 0,
+                    "Owner": 1,
+                    "Active": 2,
+                    "Blocked": 3
+                  }
+                }
+              }
+            },
+            "Message": {
+              "fields": {
+                "text": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(validate.min_len)": 1
+                  }
+                }
+              }
+            },
+            "Err": {
+              "fields": {
+                "errMsg": {
+                  "type": "string",
+                  "id": 1
+                }
+              }
+            },
+            "SenderAlias": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "status": {
+                  "type": "Status",
+                  "id": 5
+                },
+                "originDeviceId": {
+                  "type": "string",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.customname)": "OriginDeviceID"
+                  }
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 7,
+                  "options": {
+                    "(gogoproto.customname)": "ContactID"
+                  }
+                },
+                "conversationId": {
+                  "type": "string",
+                  "id": 8,
+                  "options": {
+                    "(gogoproto.customname)": "ConversationID"
+                  }
+                },
+                "aliasIdentifier": {
+                  "type": "string",
+                  "id": 9
+                },
+                "used": {
+                  "type": "bool",
+                  "id": 10
+                }
+              },
+              "nested": {
+                "Status": {
+                  "values": {
+                    "UNKNOWN": 0,
+                    "SENT": 1,
+                    "SENT_AND_ACKED": 2,
+                    "RECEIVED": 3
+                  }
+                }
+              }
+            },
+            "DebugVerbosity": {
+              "values": {
+                "VERBOSITY_LEVEL_NONE": 0,
+                "VERBOSITY_LEVEL_CRITICAL": 1,
+                "VERBOSITY_LEVEL_ERROR": 2,
+                "VERBOSITY_LEVEL_WARN": 3,
+                "VERBOSITY_LEVEL_INFO": 4,
+                "VERBOSITY_LEVEL_DEBUG": 5
+              }
+            },
+            "Config": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "myself": {
+                  "type": "Contact",
+                  "id": 5,
+                  "options": {
+                    "(validate.required)": true,
+                    "(validate.skip)": false
+                  }
+                },
+                "myselfId": {
+                  "type": "string",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.customname)": "MyselfID"
+                  }
+                },
+                "currentDevice": {
+                  "type": "Device",
+                  "id": 7
+                },
+                "currentDeviceId": {
+                  "type": "string",
+                  "id": 8,
+                  "options": {
+                    "(gogoproto.customname)": "CurrentDeviceID"
+                  }
+                },
+                "cryptoParams": {
+                  "type": "bytes",
+                  "id": 9
+                },
+                "pushRelayPubkeyApns": {
+                  "type": "string",
+                  "id": 10,
+                  "options": {
+                    "(gogoproto.customname)": "PushRelayPubkeyAPNS"
+                  }
+                },
+                "pushRelayPubkeyFcm": {
+                  "type": "string",
+                  "id": 11,
+                  "options": {
+                    "(gogoproto.customname)": "PushRelayPubkeyFCM"
+                  }
+                },
+                "notificationsEnabled": {
+                  "type": "bool",
+                  "id": 12
+                },
+                "notificationsPreviews": {
+                  "type": "bool",
+                  "id": 13
+                },
+                "debugNotificationVerbosity": {
+                  "type": "DebugVerbosity",
+                  "id": 14
+                }
+              }
+            },
+            "DevicePushConfig": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gql.graphql_id)": true,
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "deviceId": {
+                  "type": "string",
+                  "id": 4,
+                  "options": {
+                    "(gogoproto.customname)": "DeviceID"
+                  }
+                },
+                "pushType": {
+                  "type": "berty.push.DevicePushType",
+                  "id": 5
+                },
+                "pushId": {
+                  "type": "bytes",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.customname)": "PushID"
+                  }
+                },
+                "relayPubkey": {
+                  "type": "string",
+                  "id": 7,
+                  "options": {
+                    "(gogoproto.customname)": "RelayPubkey"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "push": {
+          "options": {
+            "go_package": "berty.tech/core/push"
+          },
+          "nested": {
+            "DevicePushType": {
+              "values": {
+                "UnknownDevicePushType": 0,
+                "APNS": 1,
+                "FCM": 2,
+                "MQTT": 3
+              }
+            },
+            "Priority": {
+              "values": {
+                "UnknownPriority": 0,
+                "Low": 1,
+                "Normal": 2
+              }
+            },
+            "PushDestination": {
+              "fields": {
+                "nonce": {
+                  "type": "bytes",
+                  "id": 1
+                },
+                "pushType": {
+                  "type": "DevicePushType",
+                  "id": 2
+                },
+                "pushId": {
+                  "type": "bytes",
+                  "id": 3
+                }
+              }
+            },
+            "PushNativeIdentifier": {
+              "fields": {
+                "packageId": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.customname)": "PackageID"
+                  }
+                },
+                "deviceToken": {
+                  "type": "string",
+                  "id": 2
+                }
+              }
+            },
+            "PushData": {
+              "fields": {
+                "pushIdentifier": {
+                  "type": "bytes",
+                  "id": 1
+                },
+                "envelope": {
+                  "type": "bytes",
+                  "id": 2
+                },
+                "priority": {
+                  "type": "Priority",
+                  "id": 3
+                }
+              }
+            }
+          }
+        },
+        "pkg": {
+          "nested": {
+            "deviceinfo": {
+              "options": {
+                "go_package": "berty.tech/core/pkg/deviceinfo"
+              },
+              "nested": {
+                "DeviceInfos": {
+                  "fields": {
+                    "infos": {
+                      "rule": "repeated",
+                      "type": "DeviceInfo",
+                      "id": 1
+                    }
+                  }
+                },
+                "Type": {
+                  "values": {
+                    "Unknown": 0,
+                    "Raw": 1,
+                    "Json": 2
+                  }
+                },
+                "DeviceInfo": {
+                  "fields": {
+                    "key": {
+                      "type": "string",
+                      "id": 1
+                    },
+                    "value": {
+                      "type": "string",
+                      "id": 2
+                    },
+                    "category": {
+                      "type": "string",
+                      "id": 3
+                    },
+                    "link": {
+                      "type": "string",
+                      "id": 4
+                    },
+                    "type": {
+                      "type": "Type",
+                      "id": 5
+                    },
+                    "errMsg": {
+                      "type": "string",
+                      "id": 6
+                    },
+                    "weight": {
+                      "type": "int32",
+                      "id": 7
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "gql": {
+      "options": {
+        "go_package": "berty.tech/core/api/protobuf/graphql"
+      },
+      "nested": {
+        "graphqlFields": {
+          "type": "string",
+          "id": 53001,
+          "extend": "google.protobuf.MethodOptions"
+        },
+        "graphqlType": {
+          "type": "string",
+          "id": 53002,
+          "extend": "google.protobuf.MethodOptions"
+        },
+        "graphqlInterface": {
+          "type": "string",
+          "id": 53003,
+          "extend": "google.protobuf.MethodOptions"
+        },
+        "graphqlOutput": {
+          "type": "string",
+          "id": 53007,
+          "extend": "google.protobuf.MethodOptions"
+        },
+        "graphqlInput": {
+          "type": "string",
+          "id": 53010,
+          "extend": "google.protobuf.MethodOptions"
+        },
+        "graphqlId": {
+          "type": "bool",
+          "id": 53004,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "graphqlResolver": {
+          "type": "bool",
+          "id": 53005,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "graphqlSpread": {
+          "type": "bool",
+          "id": 53006,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "graphqlNullable": {
+          "type": "bool",
+          "id": 53008,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "graphqlNonNullable": {
+          "type": "bool",
+          "id": 53009,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "graphqlUnexported": {
+          "type": "bool",
+          "id": 53011,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "Node": {
+          "fields": {
+            "id": {
+              "type": "string",
+              "id": 1,
+              "options": {
+                "(gql.graphql_id)": true,
+                "(gogoproto.customname)": "ID"
+              }
+            }
+          }
+        }
+      }
+    },
+    "validate": {
+      "options": {
+        "go_package": "berty.tech/core/pkg/validate"
+      },
+      "nested": {
+        "disabled": {
+          "type": "bool",
+          "id": 53201,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "additionalHandler": {
+          "type": "string",
+          "id": 53202,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "required": {
+          "type": "bool",
+          "id": 53301,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "skip": {
+          "type": "bool",
+          "id": 53302,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "minLen": {
+          "type": "int64",
+          "id": 53303,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "maxLen": {
+          "type": "int64",
+          "id": 53304,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "isContactKey": {
+          "type": "bool",
+          "id": 53310,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "minItems": {
+          "type": "int64",
+          "id": 53305,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "maxItems": {
+          "type": "int64",
+          "id": 53306,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "intGt": {
+          "type": "int64",
+          "id": 53307,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "intLt": {
+          "type": "int64",
+          "id": 53308,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "definedOnly": {
+          "type": "bool",
+          "id": 53309,
+          "extend": "google.protobuf.FieldOptions"
+        }
+      }
+    },
+    "google": {
+      "nested": {
+        "protobuf": {
+          "nested": {
+            "FileDescriptorSet": {
+              "fields": {
+                "file": {
+                  "rule": "repeated",
+                  "type": "FileDescriptorProto",
+                  "id": 1
+                }
+              }
+            },
+            "FileDescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "package": {
+                  "type": "string",
+                  "id": 2
+                },
+                "dependency": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 3
+                },
+                "publicDependency": {
+                  "rule": "repeated",
+                  "type": "int32",
+                  "id": 10,
+                  "options": {
+                    "packed": false
+                  }
+                },
+                "weakDependency": {
+                  "rule": "repeated",
+                  "type": "int32",
+                  "id": 11,
+                  "options": {
+                    "packed": false
+                  }
+                },
+                "messageType": {
+                  "rule": "repeated",
+                  "type": "DescriptorProto",
+                  "id": 4
+                },
+                "enumType": {
+                  "rule": "repeated",
+                  "type": "EnumDescriptorProto",
+                  "id": 5
+                },
+                "service": {
+                  "rule": "repeated",
+                  "type": "ServiceDescriptorProto",
+                  "id": 6
+                },
+                "extension": {
+                  "rule": "repeated",
+                  "type": "FieldDescriptorProto",
+                  "id": 7
+                },
+                "options": {
+                  "type": "FileOptions",
+                  "id": 8
+                },
+                "sourceCodeInfo": {
+                  "type": "SourceCodeInfo",
+                  "id": 9
+                },
+                "syntax": {
+                  "type": "string",
+                  "id": 12
+                }
+              }
+            },
+            "DescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "field": {
+                  "rule": "repeated",
+                  "type": "FieldDescriptorProto",
+                  "id": 2
+                },
+                "extension": {
+                  "rule": "repeated",
+                  "type": "FieldDescriptorProto",
+                  "id": 6
+                },
+                "nestedType": {
+                  "rule": "repeated",
+                  "type": "DescriptorProto",
+                  "id": 3
+                },
+                "enumType": {
+                  "rule": "repeated",
+                  "type": "EnumDescriptorProto",
+                  "id": 4
+                },
+                "extensionRange": {
+                  "rule": "repeated",
+                  "type": "ExtensionRange",
+                  "id": 5
+                },
+                "oneofDecl": {
+                  "rule": "repeated",
+                  "type": "OneofDescriptorProto",
+                  "id": 8
+                },
+                "options": {
+                  "type": "MessageOptions",
+                  "id": 7
+                },
+                "reservedRange": {
+                  "rule": "repeated",
+                  "type": "ReservedRange",
+                  "id": 9
+                },
+                "reservedName": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 10
+                }
+              },
+              "nested": {
+                "ExtensionRange": {
+                  "fields": {
+                    "start": {
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "end": {
+                      "type": "int32",
+                      "id": 2
+                    }
+                  }
+                },
+                "ReservedRange": {
+                  "fields": {
+                    "start": {
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "end": {
+                      "type": "int32",
+                      "id": 2
+                    }
+                  }
+                }
+              }
+            },
+            "FieldDescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "number": {
+                  "type": "int32",
+                  "id": 3
+                },
+                "label": {
+                  "type": "Label",
+                  "id": 4
+                },
+                "type": {
+                  "type": "Type",
+                  "id": 5
+                },
+                "typeName": {
+                  "type": "string",
+                  "id": 6
+                },
+                "extendee": {
+                  "type": "string",
+                  "id": 2
+                },
+                "defaultValue": {
+                  "type": "string",
+                  "id": 7
+                },
+                "oneofIndex": {
+                  "type": "int32",
+                  "id": 9
+                },
+                "jsonName": {
+                  "type": "string",
+                  "id": 10
+                },
+                "options": {
+                  "type": "FieldOptions",
+                  "id": 8
+                }
+              },
+              "nested": {
+                "Type": {
+                  "values": {
+                    "TYPE_DOUBLE": 1,
+                    "TYPE_FLOAT": 2,
+                    "TYPE_INT64": 3,
+                    "TYPE_UINT64": 4,
+                    "TYPE_INT32": 5,
+                    "TYPE_FIXED64": 6,
+                    "TYPE_FIXED32": 7,
+                    "TYPE_BOOL": 8,
+                    "TYPE_STRING": 9,
+                    "TYPE_GROUP": 10,
+                    "TYPE_MESSAGE": 11,
+                    "TYPE_BYTES": 12,
+                    "TYPE_UINT32": 13,
+                    "TYPE_ENUM": 14,
+                    "TYPE_SFIXED32": 15,
+                    "TYPE_SFIXED64": 16,
+                    "TYPE_SINT32": 17,
+                    "TYPE_SINT64": 18
+                  }
+                },
+                "Label": {
+                  "values": {
+                    "LABEL_OPTIONAL": 1,
+                    "LABEL_REQUIRED": 2,
+                    "LABEL_REPEATED": 3
+                  }
+                }
+              }
+            },
+            "OneofDescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "options": {
+                  "type": "OneofOptions",
+                  "id": 2
+                }
+              }
+            },
+            "EnumDescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "value": {
+                  "rule": "repeated",
+                  "type": "EnumValueDescriptorProto",
+                  "id": 2
+                },
+                "options": {
+                  "type": "EnumOptions",
+                  "id": 3
+                }
+              }
+            },
+            "EnumValueDescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "number": {
+                  "type": "int32",
+                  "id": 2
+                },
+                "options": {
+                  "type": "EnumValueOptions",
+                  "id": 3
+                }
+              }
+            },
+            "ServiceDescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "method": {
+                  "rule": "repeated",
+                  "type": "MethodDescriptorProto",
+                  "id": 2
+                },
+                "options": {
+                  "type": "ServiceOptions",
+                  "id": 3
+                }
+              }
+            },
+            "MethodDescriptorProto": {
+              "fields": {
+                "name": {
+                  "type": "string",
+                  "id": 1
+                },
+                "inputType": {
+                  "type": "string",
+                  "id": 2
+                },
+                "outputType": {
+                  "type": "string",
+                  "id": 3
+                },
+                "options": {
+                  "type": "MethodOptions",
+                  "id": 4
+                },
+                "clientStreaming": {
+                  "type": "bool",
+                  "id": 5
+                },
+                "serverStreaming": {
+                  "type": "bool",
+                  "id": 6
+                }
+              }
+            },
+            "FileOptions": {
+              "fields": {
+                "javaPackage": {
+                  "type": "string",
+                  "id": 1
+                },
+                "javaOuterClassname": {
+                  "type": "string",
+                  "id": 8
+                },
+                "javaMultipleFiles": {
+                  "type": "bool",
+                  "id": 10
+                },
+                "javaGenerateEqualsAndHash": {
+                  "type": "bool",
+                  "id": 20,
+                  "options": {
+                    "deprecated": true
+                  }
+                },
+                "javaStringCheckUtf8": {
+                  "type": "bool",
+                  "id": 27
+                },
+                "optimizeFor": {
+                  "type": "OptimizeMode",
+                  "id": 9,
+                  "options": {
+                    "default": "SPEED"
+                  }
+                },
+                "goPackage": {
+                  "type": "string",
+                  "id": 11
+                },
+                "ccGenericServices": {
+                  "type": "bool",
+                  "id": 16
+                },
+                "javaGenericServices": {
+                  "type": "bool",
+                  "id": 17
+                },
+                "pyGenericServices": {
+                  "type": "bool",
+                  "id": 18
+                },
+                "deprecated": {
+                  "type": "bool",
+                  "id": 23
+                },
+                "ccEnableArenas": {
+                  "type": "bool",
+                  "id": 31
+                },
+                "objcClassPrefix": {
+                  "type": "string",
+                  "id": 36
+                },
+                "csharpNamespace": {
+                  "type": "string",
+                  "id": 37
+                },
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ],
+              "reserved": [
+                [
+                  38,
+                  38
+                ]
+              ],
+              "nested": {
+                "OptimizeMode": {
+                  "values": {
+                    "SPEED": 1,
+                    "CODE_SIZE": 2,
+                    "LITE_RUNTIME": 3
+                  }
+                }
+              }
+            },
+            "MessageOptions": {
+              "fields": {
+                "messageSetWireFormat": {
+                  "type": "bool",
+                  "id": 1
+                },
+                "noStandardDescriptorAccessor": {
+                  "type": "bool",
+                  "id": 2
+                },
+                "deprecated": {
+                  "type": "bool",
+                  "id": 3
+                },
+                "mapEntry": {
+                  "type": "bool",
+                  "id": 7
+                },
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ],
+              "reserved": [
+                [
+                  8,
+                  8
+                ]
+              ]
+            },
+            "FieldOptions": {
+              "fields": {
+                "ctype": {
+                  "type": "CType",
+                  "id": 1,
+                  "options": {
+                    "default": "STRING"
+                  }
+                },
+                "packed": {
+                  "type": "bool",
+                  "id": 2
+                },
+                "jstype": {
+                  "type": "JSType",
+                  "id": 6,
+                  "options": {
+                    "default": "JS_NORMAL"
+                  }
+                },
+                "lazy": {
+                  "type": "bool",
+                  "id": 5
+                },
+                "deprecated": {
+                  "type": "bool",
+                  "id": 3
+                },
+                "weak": {
+                  "type": "bool",
+                  "id": 10
+                },
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ],
+              "reserved": [
+                [
+                  4,
+                  4
+                ]
+              ],
+              "nested": {
+                "CType": {
+                  "values": {
+                    "STRING": 0,
+                    "CORD": 1,
+                    "STRING_PIECE": 2
+                  }
+                },
+                "JSType": {
+                  "values": {
+                    "JS_NORMAL": 0,
+                    "JS_STRING": 1,
+                    "JS_NUMBER": 2
+                  }
+                }
+              }
+            },
+            "OneofOptions": {
+              "fields": {
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ]
+            },
+            "EnumOptions": {
+              "fields": {
+                "allowAlias": {
+                  "type": "bool",
+                  "id": 2
+                },
+                "deprecated": {
+                  "type": "bool",
+                  "id": 3
+                },
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ]
+            },
+            "EnumValueOptions": {
+              "fields": {
+                "deprecated": {
+                  "type": "bool",
+                  "id": 1
+                },
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ]
+            },
+            "ServiceOptions": {
+              "fields": {
+                "deprecated": {
+                  "type": "bool",
+                  "id": 33
+                },
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ]
+            },
+            "MethodOptions": {
+              "fields": {
+                "deprecated": {
+                  "type": "bool",
+                  "id": 33
+                },
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ]
+            },
+            "UninterpretedOption": {
+              "fields": {
+                "name": {
+                  "rule": "repeated",
+                  "type": "NamePart",
+                  "id": 2
+                },
+                "identifierValue": {
+                  "type": "string",
+                  "id": 3
+                },
+                "positiveIntValue": {
+                  "type": "uint64",
+                  "id": 4
+                },
+                "negativeIntValue": {
+                  "type": "int64",
+                  "id": 5
+                },
+                "doubleValue": {
+                  "type": "double",
+                  "id": 6
+                },
+                "stringValue": {
+                  "type": "bytes",
+                  "id": 7
+                },
+                "aggregateValue": {
+                  "type": "string",
+                  "id": 8
+                }
+              },
+              "nested": {
+                "NamePart": {
+                  "fields": {
+                    "namePart": {
+                      "rule": "required",
+                      "type": "string",
+                      "id": 1
+                    },
+                    "isExtension": {
+                      "rule": "required",
+                      "type": "bool",
+                      "id": 2
+                    }
+                  }
+                }
+              }
+            },
+            "SourceCodeInfo": {
+              "fields": {
+                "location": {
+                  "rule": "repeated",
+                  "type": "Location",
+                  "id": 1
+                }
+              },
+              "nested": {
+                "Location": {
+                  "fields": {
+                    "path": {
+                      "rule": "repeated",
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "span": {
+                      "rule": "repeated",
+                      "type": "int32",
+                      "id": 2
+                    },
+                    "leadingComments": {
+                      "type": "string",
+                      "id": 3
+                    },
+                    "trailingComments": {
+                      "type": "string",
+                      "id": 4
+                    },
+                    "leadingDetachedComments": {
+                      "rule": "repeated",
+                      "type": "string",
+                      "id": 6
+                    }
+                  }
+                }
+              }
+            },
+            "GeneratedCodeInfo": {
+              "fields": {
+                "annotation": {
+                  "rule": "repeated",
+                  "type": "Annotation",
+                  "id": 1
+                }
+              },
+              "nested": {
+                "Annotation": {
+                  "fields": {
+                    "path": {
+                      "rule": "repeated",
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "sourceFile": {
+                      "type": "string",
+                      "id": 2
+                    },
+                    "begin": {
+                      "type": "int32",
+                      "id": 3
+                    },
+                    "end": {
+                      "type": "int32",
+                      "id": 4
+                    }
+                  }
+                }
+              }
+            },
+            "Timestamp": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            },
+            "Any": {
+              "fields": {
+                "type_url": {
+                  "type": "string",
+                  "id": 1
+                },
+                "value": {
+                  "type": "bytes",
+                  "id": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

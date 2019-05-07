@@ -1,0 +1,56 @@
+{
+  "nested": {
+    "berty": {
+      "nested": {
+        "network": {
+          "nested": {
+            "metric": {
+              "options": {
+                "go_package": "berty.tech/core/network/metric"
+              },
+              "nested": {
+                "ConnectionType": {
+                  "values": {
+                    "NOT_CONNECTED": 0,
+                    "CONNECTED": 1,
+                    "CAN_CONNECT": 2,
+                    "CANNOT_CONNECT": 3
+                  }
+                },
+                "Peer": {
+                  "fields": {
+                    "id": {
+                      "type": "string",
+                      "id": 1,
+                      "options": {
+                        "(gogoproto.customname)": "ID"
+                      }
+                    },
+                    "addrs": {
+                      "rule": "repeated",
+                      "type": "string",
+                      "id": 2
+                    },
+                    "connection": {
+                      "type": "ConnectionType",
+                      "id": 3
+                    }
+                  }
+                },
+                "Peers": {
+                  "fields": {
+                    "list": {
+                      "rule": "repeated",
+                      "type": "Peer",
+                      "id": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

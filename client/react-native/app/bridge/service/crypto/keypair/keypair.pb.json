@@ -1,0 +1,193 @@
+{
+  "nested": {
+    "keypair": {
+      "options": {
+        "go_package": "berty.tech/core/crypto/keypair"
+      },
+      "nested": {
+        "CertRevocationVersions": {
+          "values": {
+            "UNKNOWN_VERSION": 0,
+            "VERSION_1": 1
+          }
+        },
+        "PublicKeyAlgorithm": {
+          "values": {
+            "UNKNOWN_PUBLIC_KEY_ALGORITHM": 0,
+            "RSA": 1,
+            "DSA": 2,
+            "ECDSA": 3
+          }
+        },
+        "SignatureAlgorithm": {
+          "values": {
+            "UNKNOWN_SIGNATURE_ALGORITHM": 0,
+            "MD2_WITH_RSA": 1,
+            "MD5_WITH_RSA": 2,
+            "SHA1_WITH_RSA": 3,
+            "SHA256_WITH_RSA": 4,
+            "SHA384_WITH_RSA": 5,
+            "SHA512_WITH_RSA": 6,
+            "DSA_WITH_SHA1": 7,
+            "DSA_WITH_SHA256": 8,
+            "ECDSA_WITH_SHA1": 9,
+            "ECDSA_WITH_SHA256": 10,
+            "ECDSA_WITH_SHA384": 11,
+            "ECDSA_WITH_SHA512": 12,
+            "SHA256_WITH_RSAPSS": 13,
+            "SHA384_WITH_RSAPSS": 14,
+            "SHA512_WITH_RSAPSS": 15
+          }
+        },
+        "Signature": {
+          "fields": {
+            "signature": {
+              "type": "bytes",
+              "id": 1
+            },
+            "signatureAlgorithm": {
+              "type": "SignatureAlgorithm",
+              "id": 2
+            }
+          }
+        },
+        "EcdsaSignature": {
+          "fields": {
+            "rNeg": {
+              "type": "bool",
+              "id": 1
+            },
+            "r": {
+              "type": "bytes",
+              "id": 2
+            },
+            "sNeg": {
+              "type": "bool",
+              "id": 3
+            },
+            "s": {
+              "type": "bytes",
+              "id": 4
+            }
+          }
+        },
+        "CertificateContent": {
+          "fields": {
+            "version": {
+              "type": "CertRevocationVersions",
+              "id": 1
+            },
+            "publicKeyAlgorithm": {
+              "type": "PublicKeyAlgorithm",
+              "id": 2
+            },
+            "publicKey": {
+              "type": "bytes",
+              "id": 3
+            },
+            "issuer": {
+              "type": "bytes",
+              "id": 4
+            },
+            "subject": {
+              "type": "bytes",
+              "id": 5
+            },
+            "notBefore": {
+              "type": "google.protobuf.Timestamp",
+              "id": 6,
+              "options": {
+                "(gogoproto.stdtime)": true,
+                "(gogoproto.nullable)": false
+              }
+            },
+            "notAfter": {
+              "type": "google.protobuf.Timestamp",
+              "id": 7,
+              "options": {
+                "(gogoproto.stdtime)": true,
+                "(gogoproto.nullable)": false
+              }
+            },
+            "extension": {
+              "type": "bytes",
+              "id": 8
+            }
+          }
+        },
+        "Certificate": {
+          "fields": {
+            "content": {
+              "type": "CertificateContent",
+              "id": 1
+            },
+            "signature": {
+              "type": "Signature",
+              "id": 2
+            }
+          }
+        },
+        "RevocationContent": {
+          "fields": {
+            "version": {
+              "type": "CertRevocationVersions",
+              "id": 1
+            },
+            "issuer": {
+              "type": "bytes",
+              "id": 2
+            },
+            "subject": {
+              "type": "bytes",
+              "id": 3
+            },
+            "issuedOn": {
+              "type": "google.protobuf.Timestamp",
+              "id": 4,
+              "options": {
+                "(gogoproto.stdtime)": true,
+                "(gogoproto.nullable)": false
+              }
+            },
+            "extension": {
+              "type": "bytes",
+              "id": 5
+            }
+          }
+        },
+        "Revocation": {
+          "fields": {
+            "content": {
+              "type": "RevocationContent",
+              "id": 1
+            },
+            "signature": {
+              "type": "Signature",
+              "id": 2
+            }
+          }
+        }
+      }
+    },
+    "google": {
+      "nested": {
+        "protobuf": {
+          "nested": {
+            "Timestamp": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -3,8 +3,7 @@
   "packages": [
     ".",
     "app/*",
-    "web",
-    "tool/*"
+    "web"
   ],
   "version": "0.0.0"
 }
