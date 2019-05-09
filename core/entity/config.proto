@@ -4,13 +4,11 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
-import "gogoproto/gogo.proto";
-import "pkg/validate/validate.proto";
-import "google/protobuf/timestamp.proto";
-
 import "entity/contact.proto";
 import "entity/device.proto";
-
+import "pkg/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "gogoproto/gogo.proto";
 
 enum DebugVerbosity {
   VERBOSITY_LEVEL_NONE = 0;

@@ -724,6 +724,171 @@ models:
         resolver: true
 
 
+  BertyNetworkMetricBandwidthStats:
+    model: berty.tech/core/network/metric.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyNetworkMetricBandwidthStatsInput:
+    model: berty.tech/core/network/metric.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+  BertyNetworkMetricBandwidthStatsPayload:
+    model: berty.tech/core/network/metric.BandwidthStats
+    fields:
+      id:
+      totalIn:
+      totalOut:
+      rateIn:
+      rateOut:
+      type:
+
+  BertyNetworkMetricListAddrs:
+    model: berty.tech/core/network/metric.ListAddrs
+    fields:
+      addrs:
+  BertyNetworkMetricListAddrsInput:
+    model: berty.tech/core/network/metric.ListAddrs
+    fields:
+      addrs:
+  BertyNetworkMetricListAddrsPayload:
+    model: berty.tech/core/network/metric.ListAddrs
+    fields:
+      addrs:
+
+  BertyNetworkMetricPingReq:
+    model: berty.tech/core/network/metric.PingReq
+    fields:
+      str:
+  BertyNetworkMetricPingReqInput:
+    model: berty.tech/core/network/metric.PingReq
+    fields:
+      str:
+  BertyNetworkMetricPingReqPayload:
+    model: berty.tech/core/network/metric.PingReq
+    fields:
+      str:
+
+
+  BertyNodeNodeStartedAttrs:
+    model: berty.tech/core/api/node.NodeStartedAttrs
+    fields:
+      t:
+  BertyNodeNodeStartedAttrsInput:
+    model: berty.tech/core/api/node.NodeStartedAttrs
+    fields:
+      t:
+  BertyNodeNodeStartedAttrsPayload:
+    model: berty.tech/core/api/node.NodeStartedAttrs
+    fields:
+      t:
+
+  BertyNodeNodeStoppedAttrs:
+    model: berty.tech/core/api/node.NodeStoppedAttrs
+    fields:
+      errMsg:
+  BertyNodeNodeStoppedAttrsInput:
+    model: berty.tech/core/api/node.NodeStoppedAttrs
+    fields:
+      errMsg:
+  BertyNodeNodeStoppedAttrsPayload:
+    model: berty.tech/core/api/node.NodeStoppedAttrs
+    fields:
+      errMsg:
+
+  BertyNodeNodeIsAliveAttrs:
+    model: berty.tech/core/api/node.NodeIsAliveAttrs
+    fields:
+      t:
+  BertyNodeNodeIsAliveAttrsInput:
+    model: berty.tech/core/api/node.NodeIsAliveAttrs
+    fields:
+      t:
+  BertyNodeNodeIsAliveAttrsPayload:
+    model: berty.tech/core/api/node.NodeIsAliveAttrs
+    fields:
+      t:
+
+  BertyNodeBackgroundCriticalAttrs:
+    model: berty.tech/core/api/node.BackgroundCriticalAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundCriticalAttrsInput:
+    model: berty.tech/core/api/node.BackgroundCriticalAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundCriticalAttrsPayload:
+    model: berty.tech/core/api/node.BackgroundCriticalAttrs
+    fields:
+      errMsg:
+
+  BertyNodeBackgroundErrorAttrs:
+    model: berty.tech/core/api/node.BackgroundErrorAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundErrorAttrsInput:
+    model: berty.tech/core/api/node.BackgroundErrorAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundErrorAttrsPayload:
+    model: berty.tech/core/api/node.BackgroundErrorAttrs
+    fields:
+      errMsg:
+
+  BertyNodeBackgroundWarnAttrs:
+    model: berty.tech/core/api/node.BackgroundWarnAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundWarnAttrsInput:
+    model: berty.tech/core/api/node.BackgroundWarnAttrs
+    fields:
+      errMsg:
+  BertyNodeBackgroundWarnAttrsPayload:
+    model: berty.tech/core/api/node.BackgroundWarnAttrs
+    fields:
+      errMsg:
+
+  BertyNodeDebugAttrs:
+    model: berty.tech/core/api/node.DebugAttrs
+    fields:
+      msg:
+  BertyNodeDebugAttrsInput:
+    model: berty.tech/core/api/node.DebugAttrs
+    fields:
+      msg:
+  BertyNodeDebugAttrsPayload:
+    model: berty.tech/core/api/node.DebugAttrs
+    fields:
+      msg:
+
+  BertyNodeStatisticsAttrs:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
+  BertyNodeStatisticsAttrsInput:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
+  BertyNodeStatisticsAttrsPayload:
+    model: berty.tech/core/api/node.StatisticsAttrs
+    fields:
+      errMsg:
+      totalNetworkBandwidth:
+      peersCount:
+
 
 
   BertyEntityDevicePushIdentifier:
@@ -794,6 +959,7 @@ models:
       apiVersion:
       contactId:
       pushIdentifiers:
+
 
 
   BertyEntityContact:
@@ -1582,205 +1748,6 @@ models:
       values:
 
 
-  BertyNetworkMetricBandwidthStats:
-    model: berty.tech/core/network/metric.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-  BertyNetworkMetricBandwidthStatsInput:
-    model: berty.tech/core/network/metric.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-  BertyNetworkMetricBandwidthStatsPayload:
-    model: berty.tech/core/network/metric.BandwidthStats
-    fields:
-      id:
-      totalIn:
-      totalOut:
-      rateIn:
-      rateOut:
-      type:
-
-  BertyNetworkMetricListAddrs:
-    model: berty.tech/core/network/metric.ListAddrs
-    fields:
-      addrs:
-  BertyNetworkMetricListAddrsInput:
-    model: berty.tech/core/network/metric.ListAddrs
-    fields:
-      addrs:
-  BertyNetworkMetricListAddrsPayload:
-    model: berty.tech/core/network/metric.ListAddrs
-    fields:
-      addrs:
-
-  BertyNetworkMetricPingReq:
-    model: berty.tech/core/network/metric.PingReq
-    fields:
-      str:
-  BertyNetworkMetricPingReqInput:
-    model: berty.tech/core/network/metric.PingReq
-    fields:
-      str:
-  BertyNetworkMetricPingReqPayload:
-    model: berty.tech/core/network/metric.PingReq
-    fields:
-      str:
-
-
-  BertyNodeNodeStartedAttrs:
-    model: berty.tech/core/api/node.NodeStartedAttrs
-    fields:
-      t:
-  BertyNodeNodeStartedAttrsInput:
-    model: berty.tech/core/api/node.NodeStartedAttrs
-    fields:
-      t:
-  BertyNodeNodeStartedAttrsPayload:
-    model: berty.tech/core/api/node.NodeStartedAttrs
-    fields:
-      t:
-
-  BertyNodeNodeStoppedAttrs:
-    model: berty.tech/core/api/node.NodeStoppedAttrs
-    fields:
-      errMsg:
-  BertyNodeNodeStoppedAttrsInput:
-    model: berty.tech/core/api/node.NodeStoppedAttrs
-    fields:
-      errMsg:
-  BertyNodeNodeStoppedAttrsPayload:
-    model: berty.tech/core/api/node.NodeStoppedAttrs
-    fields:
-      errMsg:
-
-  BertyNodeNodeIsAliveAttrs:
-    model: berty.tech/core/api/node.NodeIsAliveAttrs
-    fields:
-      t:
-  BertyNodeNodeIsAliveAttrsInput:
-    model: berty.tech/core/api/node.NodeIsAliveAttrs
-    fields:
-      t:
-  BertyNodeNodeIsAliveAttrsPayload:
-    model: berty.tech/core/api/node.NodeIsAliveAttrs
-    fields:
-      t:
-
-  BertyNodeBackgroundCriticalAttrs:
-    model: berty.tech/core/api/node.BackgroundCriticalAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundCriticalAttrsInput:
-    model: berty.tech/core/api/node.BackgroundCriticalAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundCriticalAttrsPayload:
-    model: berty.tech/core/api/node.BackgroundCriticalAttrs
-    fields:
-      errMsg:
-
-  BertyNodeBackgroundErrorAttrs:
-    model: berty.tech/core/api/node.BackgroundErrorAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundErrorAttrsInput:
-    model: berty.tech/core/api/node.BackgroundErrorAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundErrorAttrsPayload:
-    model: berty.tech/core/api/node.BackgroundErrorAttrs
-    fields:
-      errMsg:
-
-  BertyNodeBackgroundWarnAttrs:
-    model: berty.tech/core/api/node.BackgroundWarnAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundWarnAttrsInput:
-    model: berty.tech/core/api/node.BackgroundWarnAttrs
-    fields:
-      errMsg:
-  BertyNodeBackgroundWarnAttrsPayload:
-    model: berty.tech/core/api/node.BackgroundWarnAttrs
-    fields:
-      errMsg:
-
-  BertyNodeDebugAttrs:
-    model: berty.tech/core/api/node.DebugAttrs
-    fields:
-      msg:
-  BertyNodeDebugAttrsInput:
-    model: berty.tech/core/api/node.DebugAttrs
-    fields:
-      msg:
-  BertyNodeDebugAttrsPayload:
-    model: berty.tech/core/api/node.DebugAttrs
-    fields:
-      msg:
-
-  BertyNodeStatisticsAttrs:
-    model: berty.tech/core/api/node.StatisticsAttrs
-    fields:
-      errMsg:
-      totalNetworkBandwidth:
-      peersCount:
-  BertyNodeStatisticsAttrsInput:
-    model: berty.tech/core/api/node.StatisticsAttrs
-    fields:
-      errMsg:
-      totalNetworkBandwidth:
-      peersCount:
-  BertyNodeStatisticsAttrsPayload:
-    model: berty.tech/core/api/node.StatisticsAttrs
-    fields:
-      errMsg:
-      totalNetworkBandwidth:
-      peersCount:
-
-
-  BertyNetworkMetricPeer:
-    model: berty.tech/core/network/metric.Peer
-    fields:
-      id:
-      addrs:
-      connection:
-  BertyNetworkMetricPeerInput:
-    model: berty.tech/core/network/metric.Peer
-    fields:
-      id:
-      addrs:
-      connection:
-  BertyNetworkMetricPeerPayload:
-    model: berty.tech/core/network/metric.Peer
-    fields:
-      id:
-      addrs:
-      connection:
-
-  BertyNetworkMetricPeers:
-    model: berty.tech/core/network/metric.Peers
-    fields:
-      list:
-  BertyNetworkMetricPeersInput:
-    model: berty.tech/core/network/metric.Peers
-    fields:
-      list:
-  BertyNetworkMetricPeersPayload:
-    model: berty.tech/core/network/metric.Peers
-    fields:
-      list:
-
-
   BertyEntityConfig:
     model: berty.tech/core/entity.Config
     fields:
@@ -1864,6 +1831,39 @@ models:
       pushType:
       pushId:
       relayPubkey:
+
+
+  BertyNetworkMetricPeer:
+    model: berty.tech/core/network/metric.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+  BertyNetworkMetricPeerInput:
+    model: berty.tech/core/network/metric.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+  BertyNetworkMetricPeerPayload:
+    model: berty.tech/core/network/metric.Peer
+    fields:
+      id:
+      addrs:
+      connection:
+
+  BertyNetworkMetricPeers:
+    model: berty.tech/core/network/metric.Peers
+    fields:
+      list:
+  BertyNetworkMetricPeersInput:
+    model: berty.tech/core/network/metric.Peers
+    fields:
+      list:
+  BertyNetworkMetricPeersPayload:
+    model: berty.tech/core/network/metric.Peers
+    fields:
+      list:
 
 
   BertyPkgDeviceinfoDeviceInfos:

@@ -1,0 +1,106 @@
+{
+  "nested": {
+    "berty": {
+      "nested": {
+        "entity": {
+          "options": {
+            "go_package": "berty.tech/core/entity"
+          },
+          "nested": {
+            "SenderAlias": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "status": {
+                  "type": "Status",
+                  "id": 5
+                },
+                "originDeviceId": {
+                  "type": "string",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.customname)": "OriginDeviceID"
+                  }
+                },
+                "contactId": {
+                  "type": "string",
+                  "id": 7,
+                  "options": {
+                    "(gogoproto.customname)": "ContactID"
+                  }
+                },
+                "conversationId": {
+                  "type": "string",
+                  "id": 8,
+                  "options": {
+                    "(gogoproto.customname)": "ConversationID"
+                  }
+                },
+                "aliasIdentifier": {
+                  "type": "string",
+                  "id": 9
+                },
+                "used": {
+                  "type": "bool",
+                  "id": 10
+                }
+              },
+              "nested": {
+                "Status": {
+                  "values": {
+                    "UNKNOWN": 0,
+                    "SENT": 1,
+                    "SENT_AND_ACKED": 2,
+                    "RECEIVED": 3
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "google": {
+      "nested": {
+        "protobuf": {
+          "nested": {
+            "Timestamp": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

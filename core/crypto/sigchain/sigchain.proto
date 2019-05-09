@@ -4,9 +4,8 @@ package sigchain;
 
 option go_package = "berty.tech/core/crypto/sigchain";
 
-import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
-
+import "gogoproto/gogo.proto";
 
 enum EventExtensionVersions {
     UNKNOWN_VERSION = 0;

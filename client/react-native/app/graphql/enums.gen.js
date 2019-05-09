@@ -102,6 +102,44 @@ export const ValueGoogleProtobufMethodOptionsInputIdempotencyLevel = {
   2: 'IDEMPOTENT',
 }
 
+export const BertyNetworkMetricMetricsTypeInputMetricsType = {
+  PEER: 0,
+  PROTOCOL: 1,
+  GLOBAL: 2,
+}
+
+export const ValueBertyNetworkMetricMetricsTypeInputMetricsType = {
+  0: 'PEER',
+  1: 'PROTOCOL',
+  2: 'GLOBAL',
+}
+
+export const BertyNodeKindInputKind = {
+  Unknown: 0,
+  NodeStarted: 1,
+  NodeStopped: 2,
+  NodeIsAlive: 3,
+  BackgroundCritical: 4,
+  BackgroundError: 5,
+  BackgroundWarn: 6,
+  BackgroundInfo: 7,
+  Debug: 8,
+  Statistics: 9,
+}
+
+export const ValueBertyNodeKindInputKind = {
+  0: 'Unknown',
+  1: 'NodeStarted',
+  2: 'NodeStopped',
+  3: 'NodeIsAlive',
+  4: 'BackgroundCritical',
+  5: 'BackgroundError',
+  6: 'BackgroundWarn',
+  7: 'BackgroundInfo',
+  8: 'Debug',
+  9: 'Statistics',
+}
+
 export const BertyEntityDeviceInputStatus = {
   Unknown: 0,
   Connected: 1,
@@ -340,58 +378,6 @@ export const ValueBertyEntityEventDispatchInputMedium = {
   3: 'Relay',
 }
 
-export const BertyNetworkMetricMetricsTypeInputMetricsType = {
-  PEER: 0,
-  PROTOCOL: 1,
-  GLOBAL: 2,
-}
-
-export const ValueBertyNetworkMetricMetricsTypeInputMetricsType = {
-  0: 'PEER',
-  1: 'PROTOCOL',
-  2: 'GLOBAL',
-}
-
-export const BertyNodeKindInputKind = {
-  Unknown: 0,
-  NodeStarted: 1,
-  NodeStopped: 2,
-  NodeIsAlive: 3,
-  BackgroundCritical: 4,
-  BackgroundError: 5,
-  BackgroundWarn: 6,
-  BackgroundInfo: 7,
-  Debug: 8,
-  Statistics: 9,
-}
-
-export const ValueBertyNodeKindInputKind = {
-  0: 'Unknown',
-  1: 'NodeStarted',
-  2: 'NodeStopped',
-  3: 'NodeIsAlive',
-  4: 'BackgroundCritical',
-  5: 'BackgroundError',
-  6: 'BackgroundWarn',
-  7: 'BackgroundInfo',
-  8: 'Debug',
-  9: 'Statistics',
-}
-
-export const BertyNetworkMetricConnectionTypeInputConnectionType = {
-  NOT_CONNECTED: 0,
-  CONNECTED: 1,
-  CAN_CONNECT: 2,
-  CANNOT_CONNECT: 3,
-}
-
-export const ValueBertyNetworkMetricConnectionTypeInputConnectionType = {
-  0: 'NOT_CONNECTED',
-  1: 'CONNECTED',
-  2: 'CAN_CONNECT',
-  3: 'CANNOT_CONNECT',
-}
-
 export const BertyEntityDebugVerbosityInputDebugVerbosity = {
   VERBOSITY_LEVEL_NONE: 0,
   VERBOSITY_LEVEL_CRITICAL: 1,
@@ -408,6 +394,20 @@ export const ValueBertyEntityDebugVerbosityInputDebugVerbosity = {
   3: 'VERBOSITY_LEVEL_WARN',
   4: 'VERBOSITY_LEVEL_INFO',
   5: 'VERBOSITY_LEVEL_DEBUG',
+}
+
+export const BertyNetworkMetricConnectionTypeInputConnectionType = {
+  NOT_CONNECTED: 0,
+  CONNECTED: 1,
+  CAN_CONNECT: 2,
+  CANNOT_CONNECT: 3,
+}
+
+export const ValueBertyNetworkMetricConnectionTypeInputConnectionType = {
+  0: 'NOT_CONNECTED',
+  1: 'CONNECTED',
+  2: 'CAN_CONNECT',
+  3: 'CANNOT_CONNECT',
 }
 
 export const BertyPkgDeviceinfoTypeInputType = { Unknown: 0, Raw: 1, Json: 2 }

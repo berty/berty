@@ -25566,6 +25566,52 @@ type GqlNode implements Node {
   
 
   
+type BertyNetworkMetricBandwidthStats  {
+    id: String
+    totalIn: Int64
+    totalOut: Int64
+    rateIn: Double
+    rateOut: Double
+  type: Enum
+}
+type BertyNetworkMetricListAddrs  {
+    addrs: [String!]
+}
+type BertyNetworkMetricPingReq  {
+    str: String!
+}
+  
+  
+  
+
+  
+type BertyNodeNodeStartedAttrs  {
+    T: Bool!
+}
+type BertyNodeNodeStoppedAttrs  {
+    errMsg: String!
+}
+type BertyNodeNodeIsAliveAttrs  {
+    T: Bool!
+}
+type BertyNodeBackgroundCriticalAttrs  {
+    errMsg: String!
+}
+type BertyNodeBackgroundErrorAttrs  {
+    errMsg: String!
+}
+type BertyNodeBackgroundWarnAttrs  {
+    errMsg: String!
+}
+type BertyNodeDebugAttrs  {
+    msg: String!
+}
+type BertyNodeStatisticsAttrs  {
+    errMsg: String!
+  	totalNetworkBandwidth: BertyNetworkMetricBandwidthStats
+    peersCount: Int32!
+}
+  
   
   
 
@@ -25596,6 +25642,10 @@ type BertyEntityDevice implements Node {
     contactId: String!
   	pushIdentifiers: [BertyEntityDevicePushIdentifier]
 }
+  
+  
+  
+
   
   
   
@@ -25848,69 +25898,6 @@ type BertyEntityMetadataKeyValue  {
   
 
   
-type BertyNetworkMetricBandwidthStats  {
-    id: String
-    totalIn: Int64
-    totalOut: Int64
-    rateIn: Double
-    rateOut: Double
-  type: Enum
-}
-type BertyNetworkMetricListAddrs  {
-    addrs: [String!]
-}
-type BertyNetworkMetricPingReq  {
-    str: String!
-}
-  
-  
-  
-
-  
-type BertyNodeNodeStartedAttrs  {
-    T: Bool!
-}
-type BertyNodeNodeStoppedAttrs  {
-    errMsg: String!
-}
-type BertyNodeNodeIsAliveAttrs  {
-    T: Bool!
-}
-type BertyNodeBackgroundCriticalAttrs  {
-    errMsg: String!
-}
-type BertyNodeBackgroundErrorAttrs  {
-    errMsg: String!
-}
-type BertyNodeBackgroundWarnAttrs  {
-    errMsg: String!
-}
-type BertyNodeDebugAttrs  {
-    msg: String!
-}
-type BertyNodeStatisticsAttrs  {
-    errMsg: String!
-  	totalNetworkBandwidth: BertyNetworkMetricBandwidthStats
-    peersCount: Int32!
-}
-  
-  
-  
-
-  
-type BertyNetworkMetricPeer  {
-    id: String!
-    addrs: [String!]
-  connection: Enum
-}
-type BertyNetworkMetricPeers  {
-  	list: [BertyNetworkMetricPeer]
-}
-  
-  
-  
-
-  
 type BertyEntityConfig  {
     id: String!
   	createdAt: GoogleProtobufTimestamp
@@ -25938,6 +25925,19 @@ type BertyEntityDevicePushConfig implements Node {
   pushType: Enum
     pushId: [Byte!]
     relayPubkey: String!
+}
+  
+  
+  
+
+  
+type BertyNetworkMetricPeer  {
+    id: String!
+    addrs: [String!]
+  connection: Enum
+}
+type BertyNetworkMetricPeers  {
+  	list: [BertyNetworkMetricPeer]
 }
   
   

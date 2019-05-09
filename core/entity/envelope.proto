@@ -4,8 +4,8 @@ package berty.entity;
 
 option go_package = "berty.tech/core/entity";
 
-import "gogoproto/gogo.proto";
 import "crypto/keypair/keypair.proto";
+import "gogoproto/gogo.proto";
 
 message Envelope {
   string              channel_id = 1 [(gogoproto.customname) = "ChannelID"];

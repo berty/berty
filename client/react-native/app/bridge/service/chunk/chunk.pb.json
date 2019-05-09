@@ -1,0 +1,82 @@
+{
+  "nested": {
+    "berty": {
+      "nested": {
+        "chunk": {
+          "options": {
+            "go_package": "berty.tech/core/chunk"
+          },
+          "nested": {
+            "Chunk": {
+              "fields": {
+                "id": {
+                  "type": "string",
+                  "id": 1,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:primary_key",
+                    "(gogoproto.customname)": "ID"
+                  }
+                },
+                "createdAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 2,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "updatedAt": {
+                  "type": "google.protobuf.Timestamp",
+                  "id": 3,
+                  "options": {
+                    "(gogoproto.stdtime)": true,
+                    "(gogoproto.nullable)": false
+                  }
+                },
+                "index": {
+                  "type": "int32",
+                  "id": 4
+                },
+                "data": {
+                  "type": "bytes",
+                  "id": 5
+                },
+                "sliceId": {
+                  "type": "string",
+                  "id": 6,
+                  "options": {
+                    "(gogoproto.customname)": "SliceID"
+                  }
+                },
+                "sliceLength": {
+                  "type": "int32",
+                  "id": 7
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "google": {
+      "nested": {
+        "protobuf": {
+          "nested": {
+            "Timestamp": {
+              "fields": {
+                "seconds": {
+                  "type": "int64",
+                  "id": 1
+                },
+                "nanos": {
+                  "type": "int32",
+                  "id": 2
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

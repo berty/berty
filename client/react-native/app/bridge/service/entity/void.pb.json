@@ -1,0 +1,23 @@
+{
+  "nested": {
+    "berty": {
+      "nested": {
+        "entity": {
+          "options": {
+            "go_package": "berty.tech/core/entity"
+          },
+          "nested": {
+            "Void": {
+              "fields": {
+                "t": {
+                  "type": "bool",
+                  "id": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
