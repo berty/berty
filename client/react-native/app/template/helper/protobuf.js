@@ -33,7 +33,7 @@ module.exports.register = handlebars => {
   })
 
   handlebars.registerHelper('typeof', function (context) {
-    if (typeof context === 'object') {
+    if (typeof context === 'object' && context != null) {
       return context.constructor.name
     }
     return typeof context
@@ -48,5 +48,13 @@ module.exports.register = handlebars => {
       (context.parent ? namespace(context.parent, options) + '.' : '') +
       context.name
     )
+  })
+
+  handlebars.registerHelper('importPaths', function (options) {
+    const importPaths = []
+    for (const path of options.data.root.files) {
+      importPaths.push(options.data.root.resolvePath('.', path))
+    }
+    return importPaths
   })
 }

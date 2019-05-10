@@ -5,6 +5,7 @@
   "plugins": [
     [ "@babel/plugin-proposal-decorators", { "legacy": true } ],
     "@babel/plugin-syntax-export-namespace-from",
+    "@babel/plugin-proposal-async-generator-functions",
     "transform-export-extensions",
     "relay",
     "transform-inline-environment-variables"

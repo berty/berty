@@ -98,10 +98,10 @@ service Service {
     option (gql.graphql_output) = ".berty.node.ContactListConnection";
     option (gql.graphql_type) = "Query";
   };
-  rpc Contact (ContactInput) returns (berty.entity.Contact) {
+  rpc Contact (berty.entity.Contact) returns (berty.entity.Contact) {
     option (gql.graphql_type) = "Query";
   };
-  rpc ContactCheckPublicKey (ContactInput) returns (Bool) {
+  rpc ContactCheckPublicKey (berty.entity.Contact) returns (Bool) {
     option (gql.graphql_type) = "Query";
   };
 

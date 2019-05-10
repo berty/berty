@@ -21,6 +21,7 @@ import withDeepLinkHandler from '@berty/common/helpers/withDeepLinkHandler'
 import withRelayContext from '@berty/common/helpers/withRelayContext'
 import withUpdateContext from '@berty/common/helpers/withUpdateContext'
 import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { rpc, service, middleware } from '@berty/bridge'
 
 class Auth extends PureComponent {
   state = {
@@ -42,8 +43,7 @@ class Auth extends PureComponent {
     const { bridge } = this.props
 
     try {
-      const { gqlPort } = await bridge.getPort({})
-      return gqlPort
+      return await bridge.daemon.getPort({})
     } catch (error) {
       console.warn(error, 'retrying to get port')
       await sleep(1000)
@@ -63,7 +63,7 @@ class Auth extends PureComponent {
     const test = await contextValue({
       environment: await environment.setup({
         getIp: this.getIp,
-        getPort: this.getPort,
+        getPort: async () => (await this.getPort()).gqlPort,
       }),
       mutations,
       subscriptions,
@@ -80,7 +80,7 @@ class Auth extends PureComponent {
 
     this.setState({ loading: true, message: t('core.initializing') })
     try {
-      await bridge.initialize(config)
+      await bridge.daemon.initialize(config)
     } catch (err) {
       console.warn('initialize', err)
     }
@@ -88,10 +88,9 @@ class Auth extends PureComponent {
 
   list = async () => {
     const { t, bridge } = this.props
-
     this.setState({ loading: true, message: t('core.account-listing') })
     try {
-      const { accounts } = await bridge.listAccounts({})
+      const { accounts } = await bridge.daemon.listAccounts({})
       this.setState({ accounts })
       return accounts
     } catch (err) {
@@ -104,7 +103,7 @@ class Auth extends PureComponent {
 
     this.setState({ loading: true, message: t('daemon.initializing') })
     try {
-      await bridge.start({ nickname })
+      await bridge.daemon.start({ nickname })
     } catch (error) {
       console.warn(error)
     }
@@ -141,6 +140,20 @@ class Auth extends PureComponent {
         this.openDeepLink()
       }
     )
+    const nodeService = service.create(
+      service.NodeService,
+      rpc.grpcWebWithHostname(
+        'http://localhost:' + (await this.getPort()).grpcWebPort
+      ),
+      middleware.chain(
+        __DEV__ ? middleware.logger.create('NODE-SERVICE') : null // eslint-disable-line
+      )
+    )
+    this.props.bridge.setContext({
+      node: {
+        service: nodeService,
+      },
+    })
 
     this.props.navigation.navigate('switch/picker', {
       firstLaunch,

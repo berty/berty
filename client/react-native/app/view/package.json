@@ -9,6 +9,10 @@
     "@berty/graphql": "^0.0.1",
     "@berty/locale": "^0.0.1",
     "@berty/relay": "^0.0.1",
-    "react": "^16.8.6"
+    "@berty/store": "^0.0.1",
+    "onetime": "^5.1.0",
+    "react": "^16.8.6",
+    "recyclerlistview": "^1.3.4",
+    "throttle-debounce": "^2.1.0"
   }
 }

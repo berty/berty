@@ -68,7 +68,7 @@ class Navigator extends PureComponent {
             const currentRoute = getActiveRoute(currentState)
             const prevRoute = getActiveRoute(prevState)
             if (prevRoute !== currentRoute) {
-              bridge.setCurrentRoute({
+              bridge.daemon.setCurrentRoute({
                 route: getURIFromRoute(currentRoute),
               })
               this.setState(currentRoute)

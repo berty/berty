@@ -2,9 +2,14 @@
   "name": "@berty/store",
   "version": "0.0.1",
   "main": "index.js",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "mobx": "^5.9.4"
+    "async-mutex": "^0.1.3",
+    "deep-equal": "^1.0.1",
+    "mobx": "^5.9.4",
+    "mobx-react": "^5.4.3",
+    "mobx-utils": "^5.4.0",
+    "throttle-debounce": "^2.1.0"
   }
 }

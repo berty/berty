@@ -1,3 +1,8 @@
+import { Pagination, QueryReducer, RelayContext } from '@berty/relay'
+import { enums, fragments } from '@berty/graphql'
+import React, { PureComponent } from 'react'
+import * as dateFns from '@berty/locale/dateFns'
+
 import {
   ActivityIndicator,
   Platform,
@@ -5,11 +10,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native'
-import { btoa } from 'b64-lite'
-import { withNamespaces } from 'react-i18next'
-import React, { PureComponent } from 'react'
 import ActionSheet from 'react-native-actionsheet'
-
 import {
   Avatar,
   Flex,
@@ -19,15 +20,14 @@ import {
   Screen,
   Text,
 } from '@berty/view/component'
-import { Pagination, QueryReducer, RelayContext } from '@berty/relay'
+import { btoa } from 'b64-lite'
 import { colors } from '@berty/common/constants'
-import { enums, fragments } from '@berty/graphql'
 import { merge } from '@berty/common/helpers'
 import { parseEmbedded } from '@berty/common/helpers/json'
 import { shadow } from '@berty/common/styles'
 import { conversation as utils } from '@berty/common/utils'
+import { withNamespaces } from 'react-i18next'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
-import * as dateFns from '@berty/locale/dateFns'
 import withRelayContext from '@berty/common/helpers/withRelayContext'
 
 const textStyles = StyleSheet.flatten([
@@ -73,13 +73,13 @@ class Message extends React.Component {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    const {
-      data,
-    } = this.props
+    const { data } = this.props
 
-    if (data.seenAt !== nextProps.data.seenAt ||
+    if (
+      data.seenAt !== nextProps.data.seenAt ||
       (utils.isReadByOthers(nextProps.data) && !utils.isReadByOthers(data)) ||
-      utils.messageHasError(nextProps.data) !== utils.messageHasError(data)) {
+      utils.messageHasError(nextProps.data) !== utils.messageHasError(data)
+    ) {
       return true
     }
     return false
@@ -168,13 +168,17 @@ class Message extends React.Component {
               name={iconName}
               color={iconColor}
               size={10}
-              onPress={failed ? () => {
-                if (Platform.OS !== 'web') {
-                  this.ActionSheet.show()
-                } else if (window.confirm('Do you want to retry?')) {
-                  this.messageRetry()
-                }
-              } : null}
+              onPress={
+                failed
+                  ? () => {
+                    if (Platform.OS !== 'web') {
+                      this.ActionSheet.show()
+                    } else if (window.confirm('Do you want to retry?')) {
+                      this.messageRetry()
+                    }
+                  }
+                  : null
+              }
             />
           ) : null}{' '}
         </Text>
@@ -186,9 +190,9 @@ class Message extends React.Component {
             title={'Do you want to retry?'}
             options={['Yes', 'No']}
             cancelButtonIndex={1}
-            onPress={(index) => index !== 1 && this.messageRetry()}
-          />)
-          : null }
+            onPress={index => index !== 1 && this.messageRetry()}
+          />
+        ) : null}
       </Flex.Rows>
     )
   }

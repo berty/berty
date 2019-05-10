@@ -16,7 +16,8 @@ import Mousetrap from '@berty/common/helpers/Mousetrap'
 import NavigationService from '@berty/common/helpers/NavigationService'
 import Navigation from '@berty/view/navigation'
 import BridgeContext, { rpc, service, middleware } from '@berty/bridge'
-
+import StoreContext from '@berty/store/context'
+import { Store } from '@berty/store/store.gen'
 import i18n from '@berty/locale'
 
 const bridgeMiddlewares = middleware.chain(
@@ -31,11 +32,18 @@ export default class App extends PureComponent {
       Platform.OS !== 'web',
     relayContext: null,
     availableUpdate: null,
-    bridge: service.create(
-      service.Daemon,
-      rpc.defaultPlatform,
-      bridgeMiddlewares
-    ),
+    bridge: {
+      daemon: service.create(
+        service.Daemon,
+        rpc.defaultPlatform,
+        bridgeMiddlewares
+      ),
+      node: {
+        service: null,
+      },
+      setContext: bridge =>
+        this.setState({ bridge: { ...this.state.bridge, ...bridge } }),
+    },
   }
 
   constructor (props) {
@@ -109,8 +117,8 @@ export default class App extends PureComponent {
     this.setState({ availableUpdate: update })
   }
 
-  setStateBridge = bridge => {
-    this.setState({ bridge })
+  setStore = store => {
+    this.setState({ store })
   }
 
   render () {
@@ -120,30 +128,38 @@ export default class App extends PureComponent {
         <KeyboardContext.Provider>
           <I18nextProvider i18n={i18n}>
             <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-              <RelayContext.Provider
-                value={{ ...relayContext, setState: this.setStateContext }}
-              >
-                <UpdateContext.Provider
-                  value={{ availableUpdate, setState: this.setStateUpdate }}
+              <StoreContext.Provider value={new Store(bridge)}>
+                <RelayContext.Provider
+                  value={{
+                    ...relayContext,
+                    setState: this.setStateContext,
+                  }}
                 >
-                  <BridgeContext.Consumer>
-                    {() => <Navigation />}
-                  </BridgeContext.Consumer>
-
-                  <FlashMessage position='top' />
-                  <View
-                    style={{
-                      zIndex: 1,
-                      position: 'absolute',
-                      top: 30,
-                      right: 48,
-                      padding: 5,
+                  <UpdateContext.Provider
+                    value={{
+                      availableUpdate,
+                      setState: this.setStateUpdate,
                     }}
                   >
-                    <MovableView>{this.state.debugBar}</MovableView>
-                  </View>
-                </UpdateContext.Provider>
-              </RelayContext.Provider>
+                    <BridgeContext.Consumer>
+                      {() => <Navigation />}
+                    </BridgeContext.Consumer>
+
+                    <FlashMessage position='top' />
+                    <View
+                      style={{
+                        zIndex: 1,
+                        position: 'absolute',
+                        top: 30,
+                        right: 48,
+                        padding: 5,
+                      }}
+                    >
+                      <MovableView>{this.state.debugBar}</MovableView>
+                    </View>
+                  </UpdateContext.Provider>
+                </RelayContext.Provider>
+              </StoreContext.Provider>
               {Platform.OS === 'ios' && <KeyboardSpacer />}
             </SafeAreaView>
           </I18nextProvider>

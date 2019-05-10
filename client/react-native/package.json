@@ -6,21 +6,14 @@
   "scripts": {
     "postinstall": "npm run relay",
     "start": "concurrently --colors 'npm run relay --watch' 'react-native start --reset-cache'",
-    "relay": "relay-compiler --src app --schema app/schema.graphql",
-    "prettify": "prettier-eslint --write"
+    "relay": "relay-compiler --src app/graphql --schema app/schema.graphql",
+    "prettify": "prettier-eslint_d --write"
   },
   "dependencies": {
+    "@babel/plugin-proposal-async-generator-functions": "^7.2.0",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/plugin-proposal-decorators": "^7.0.0",
     "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
-    "@berty/common": "^0.0.1",
-    "@berty/graphql": "^0.0.1",
-    "@berty/locale": "^0.0.1",
-    "@berty/relay": "^0.0.1",
-    "@berty/store": "^0.0.1",
-    "@berty/template": "^0.0.1",
-    "@berty/view": "^0.0.1",
-    "@berty/web": "^0.0.1",
     "b64-lite": "^1.3.1",
     "babel-plugin-relay": "^1.6.2",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
@@ -81,7 +74,8 @@
     "relay-devtools": "^1.4.0",
     "rn-fetch-blob": "^0.10.14",
     "subscriptions-transport-ws": "^0.9.15",
-    "text-encoding": "^0.7.0"
+    "text-encoding": "^0.7.0",
+    "throttle-debounce": "^2.1.0"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
@@ -90,7 +84,7 @@
     "babel-runtime": "^6.26.0",
     "case": "^1.6.1",
     "eslint": "^5.7.0",
-    "eslint-config-prettier": "^3.1.0",
+    "eslint-config-prettier": "^4.2.0",
     "eslint-config-prettier-standard": "^2.0.0",
     "eslint-config-react-app": "^3.0.4",
     "eslint-config-standard": "^12.0.0",
@@ -100,15 +94,16 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-prettier": "^3.0.0",
+    "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-standard": "^4.0.0",
     "lerna": "^3.14.1",
     "metro-react-native-babel-preset": "0.48.0",
-    "prettier": "^1.14.3",
+    "prettier": "^1.17.0",
     "prettier-eslint": "^8.8.2",
     "prettier-eslint-cli": "^4.7.1",
+    "prettier-eslint_d": "0.0.3",
     "react-test-renderer": "16.6.0-alpha.8af6728"
   },
   "optionalDependencies": {

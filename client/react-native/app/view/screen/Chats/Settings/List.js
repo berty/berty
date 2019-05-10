@@ -13,7 +13,6 @@ import {
 } from '@berty/common/utils'
 import { enums } from '@berty/graphql'
 import { merge } from '@berty/common/helpers'
-import { showContact } from '@berty/common/helpers/contacts'
 import { withGoBack } from '@berty/view/component/BackActionProvider'
 import withRelayContext from '@berty/common/helpers/withRelayContext'
 
@@ -174,15 +173,11 @@ class SettingsScreenBase extends PureComponent {
                 return (
                   <Menu.Item
                     key={id}
-                    icon={<Avatar data={{ id: contactId }} size={28} />}
+                    icon={<Avatar data={{ id }} size={28} />}
                     title={overrideDisplayName || displayName}
                     onPress={() =>
-                      showContact({
-                        context,
-                        navigation,
-                        data: contact || { id: contactId },
-                        detailRoute: 'chats/contact/detail/list',
-                        editRoute: 'chats/contact/detail/edit',
+                      navigation.navigate('modal/contacts/card', {
+                        id,
                       })
                     }
                   />

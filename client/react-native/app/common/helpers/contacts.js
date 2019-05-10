@@ -8,45 +8,9 @@ import { BASE_WEBSITE_URL } from '../constants'
 import { contact } from '../utils'
 import { enums } from '@berty/graphql'
 
-export const showContact = async ({
-  data,
-  context,
-  navigation,
-  detailRoute = 'contact/detail/list',
-  editRoute = 'contact/detail/edit',
-}) => {
-  const { id, displayName, status, overrideDisplayName } = data
-
-  if (
-    [
-      enums.BertyEntityContactInputStatus.IsRequested,
-      enums.BertyEntityContactInputStatus.RequestedMe,
-    ].indexOf(status) !== -1
-  ) {
-    await showContactModal({
-      relayContext: context,
-      data: {
-        id: contact.getCoreID(id),
-        displayName,
-      },
-    })
-
-    return
-  }
-
-  navigation.navigate(detailRoute, {
-    contact: {
-      id,
-      overrideDisplayName,
-      displayName,
-    },
-    editRoute,
-  })
-}
-
-export const extractPublicKeyFromId = contactId => {
+export const extractPublicKeyFromId = id => {
   try {
-    return atob(contactId).split('contact:')[1]
+    return id
   } catch (e) {
     console.warn(e)
   }
@@ -79,51 +43,12 @@ export const shareLinkOther = ({ id, displayName }) => {
   }).catch(() => null)
 }
 
-export const isPubKeyValid = async ({ queries, data: { id } }) => {
+export const isPubKeyValid = async ({ context, id }) => {
   try {
-    const res = await queries.ContactCheckPublicKey.fetch({
-      filter: {
-        ...contact.default,
-        id,
-      },
-    })
-
-    return res.ret
+    return context.node.service.contactCheckPublicKey({ id })
   } catch (e) {
     return false
   }
-}
-
-export const showContactModal = async ({
-  relayContext: { queries },
-  navigation,
-  beforeDismiss,
-  data,
-}) => {
-  if (
-    !(await isPubKeyValid({
-      queries,
-      data: {
-        ...data,
-        id: contact.getRelayID(data.id),
-      },
-    }))
-  ) {
-    showMessage({
-      message: I18n.t('contacts.add.invalid-public-key'),
-      type: 'danger',
-      position: 'top',
-      icon: 'danger',
-    })
-
-    return false
-  }
-
-  navigation.navigate('modal/contacts/card', {
-    id: data.id,
-    displayName: data.displayName,
-    beforeDismiss,
-  })
 }
 
 export const defaultUsername = () => {

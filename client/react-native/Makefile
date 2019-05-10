@@ -71,19 +71,21 @@ get_iphone_udid:
 
 
 .PHONY: pretty
-pretty: deps
-	$(LERNA_RUN) prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*')
+pretty: deps.root
+	npm run prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*')
 
 .PHONY: gen.pretty
-gen.pretty: deps
-	$(LERNA_RUN) prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*')
+gen.pretty: deps.root
+	npm run prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*')
 
 ### Dependencies part ###
+.PHONY: deps.root
+deps.root:
+	npm install
+
 .PHONY: deps
-deps:
-	cd $(ROOT); \
-		[ ! -e ./node_modules/.bin/lerna ] && npm install --no-package-lock lerna; \
-		$(LERNA) bootstrap $$([ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
+deps: deps.root
+	$(LERNA) bootstrap $$([ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
 
 .PHONY: deps.android
 deps.android: deps

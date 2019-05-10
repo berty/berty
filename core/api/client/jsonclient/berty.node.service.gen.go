@@ -419,7 +419,7 @@ func NodeContact(client *client.Client, ctx context.Context, jsonInput []byte) (
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.Contact")
-	var typedInput node.ContactInput
+	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}
@@ -439,7 +439,7 @@ func NodeContactCheckPublicKey(client *client.Client, ctx context.Context, jsonI
 	defer tracer.Finish()
 	ctx = tracer.Context()
 	tracer.SetTag("full-method", "berty.node.ContactCheckPublicKey")
-	var typedInput node.ContactInput
+	var typedInput entity.Contact
 	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
 		return nil, nil, nil, err
 	}

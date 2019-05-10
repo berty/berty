@@ -1,0 +1,132 @@
+{{~#if (contains filename "api/node/service.proto")~}}
+
+import { observer } from 'mobx-react'
+import { observe } from 'mobx'
+import { Stream, StreamPagination } from './stream'
+import { Unary } from './unary'
+import { withContext } from './context'
+import React, { Component } from 'react'
+
+  {{#with (lookup 'berty.node.CommitLog')}}
+    {{#with fields.entity.resolvedType}}
+      {{#each fields}}
+        {{#with resolvedType}}
+          {{#if fields.id}}
+
+            @withContext
+            @observer
+            export class {{name}}EntityContainer extends Component {
+              render () {
+                const { context, id, children } = this.props
+                const entity = context.entity.{{case 'camel' name}}.get(id)
+                if (entity) {
+                  return children(entity)
+                }
+                return null
+              }
+            }
+          {{/if}}
+        {{/with}}
+      {{/each}}
+    {{/with}}
+  {{/with}}
+
+  {{#with (lookup 'berty.node.Service')}}
+      {{#each methods}}
+        {{#if responseStream}}
+
+          @withContext
+          @observer
+          export class {{name}}ServiceNodeContainer extends Stream {
+            get service () {
+              return this.props.context.node.service.{{case 'camel' name}}
+            }
+          }
+
+          {{#if (hasOwn resolvedRequestType.fields 'paginate')}}
+            {{#with (lookup 'berty.node.CommitLog.Entity')}}
+              {{#each fields}}
+                {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
+                  {{#with ../../this}}
+                    @withContext
+                    class {{name}}ServiceNodePaginationContainer extends StreamPagination {
+                      constructor (props, context) {
+                        super(props, context)
+                        observe(
+                          this.props.context.entity.{{case 'camel' resolvedResponseType.name}},
+                          this.observe,
+                        )
+                      }
+
+                      get service () {
+                        return this.props.context.node.service.{{case 'camel' name}}
+                      }
+                    }
+                    {{name}}ServiceNodeContainer.Pagination = {{name}}ServiceNodePaginationContainer
+                  {{/with}}
+                {{/if}}
+              {{/each}}
+            {{/with}}
+          {{/if}}
+
+
+        {{else}}
+
+        @withContext
+        @observer
+        export class {{name}}ServiceNodeContainer extends Unary {
+          get service () {
+            return this.props.context.node.service.{{case 'camel' name}}
+          }
+        }
+        {{/if}}
+      {{/each}}
+
+      @withContext
+      @observer
+      export class ServiceNodeContainer extends Component {
+        {{#each methods}}
+          {{#if responseStream}}
+          static {{name}} = {{name}}ServiceNodeContainer
+         {{/if}}
+        {{/each}}
+
+        render () {
+          const { context } = this.props
+          return context => this.props.children(context.node)
+        }
+      }
+    {{/with}}
+
+    @withContext
+    @observer
+    export class StoreContainer extends Component {
+      static Entity = {
+        {{#with (lookup 'berty.node.CommitLog')}}
+          {{#with fields.entity.resolvedType}}
+            {{#each fields}}
+              {{#with resolvedType}}
+                {{#if fields.id}}
+                {{name}}: {{name}}EntityContainer,
+                {{/if}}
+              {{/with}}
+            {{/each}}
+          {{/with}}
+        {{/with}}
+      }
+
+      static Node = {
+        Service: ServiceNodeContainer,
+      }
+
+      render () {
+        const { context } = this.props
+        return (
+          this.props.children(context)
+        )
+      }
+    }
+
+    export default StoreContainer
+
+{{~/if~}}

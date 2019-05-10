@@ -381,7 +381,7 @@ func (r *queryResolver) Node(ctx context.Context, id string) (models.Node, error
 	gID := strings.SplitN(id, ":", 2)
 	switch gID[0] {
 	case "contact":
-		return r.Contact(ctx, &entity.Contact{ID: id})
+		return r.client.Contact(ctx, &entity.Contact{ID: id})
 	case "conversation":
 		return r.client.Conversation(ctx, &entity.Conversation{ID: id})
 	case "conversation_member":
@@ -677,16 +677,30 @@ func (r *queryResolver) ContactList(ctx context.Context, filter *entity.Contact,
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) Contact(ctx context.Context, filter *entity.Contact) (*entity.Contact, error) {
-	if filter.ID != "" {
-		filter.ID = strings.SplitN(filter.ID, ":", 2)[1]
+func (r *queryResolver) Contact(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	sigchain []byte,
+	status *int32,
+	devices []*entity.Device,
+	displayName string,
+	displayStatus string,
+	overrideDisplayName string,
+	overrideDisplayStatus string,
+) (*entity.Contact, error) {
+	if id != "" {
+		id = strings.SplitN(id, ":", 2)[1]
 	}
-	if filter.Devices != nil && len(filter.Devices) != 0 {
-		for i := range filter.Devices {
-			filter.Devices[i].ID = strings.SplitN(filter.Devices[i].ID, ":", 2)[1]
+	if devices != nil && len(devices) != 0 {
+		for i := range devices {
+			devices[i].ID = strings.SplitN(devices[i].ID, ":", 2)[1]
 		}
 	}
-	return r.client.Contact(ctx, &node.ContactInput{Filter: filter})
+	return r.client.Contact(ctx, &entity.Contact{
+		ID: id,
+	})
 }
 func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {
 	if filter != nil && filter.ID != "" {
@@ -756,11 +770,21 @@ func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Con
 	output.PageInfo.HasNextPage = hasNextPage
 	return output, nil
 }
-func (r *queryResolver) ContactCheckPublicKey(ctx context.Context, contact *entity.Contact) (*node.Bool, error) {
-	contact.ID = strings.SplitN(contact.ID, ":", 2)[1]
-	return r.client.ContactCheckPublicKey(ctx, &node.ContactInput{
-		Filter: contact,
-	})
+func (r *queryResolver) ContactCheckPublicKey(
+	ctx context.Context,
+	id string,
+	createdAt *time.Time,
+	updatedAt *time.Time,
+	sigchain []byte,
+	status *int32,
+	devices []*entity.Device,
+	displayName string,
+	displayStatus string,
+	overrideDisplayName string,
+	overrideDisplayStatus string,
+) (*node.Bool, error) {
+	id = strings.SplitN(id, ":", 2)[1]
+	return r.client.ContactCheckPublicKey(ctx, &entity.Contact{ID: id})
 }
 
 func (r *mutationResolver) ConversationUpdate(ctx context.Context, id string, createdAt, updatedAt, readAt *time.Time, wroteAt *time.Time, title, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error) {

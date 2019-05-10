@@ -8,7 +8,9 @@
   },
   "author": "",
   "license": "UNLICENSED",
-  "dependencies": {
-    "case": "^1.6.1"
+  "dependencies": {},
+  "devDependencies": {
+    "case": "^1.6.1",
+    "pbhbs": "0.0.11"
   }
 }

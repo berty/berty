@@ -225,6 +225,9 @@ module.exports = {
                   'babel-plugin-transform-inline-environment-variables'
                 ),
                 require.resolve('@babel/plugin-proposal-export-namespace-from'),
+                require.resolve(
+                  '@babel/plugin-proposal-async-generator-functions'
+                ),
                 require.resolve('babel-plugin-relay'),
                 [
                   require.resolve('babel-plugin-named-asset-import'),
@@ -266,7 +269,10 @@ module.exports = {
               ],
               plugins: [
                 'react-native-web',
-                require.resolve('@babel/plugin-proposal-class-properties'),
+                [
+                  require.resolve('@babel/plugin-proposal-class-properties'),
+                  { loose: true },
+                ],
               ],
               cacheDirectory: true,
               // Don't waste time on Gzipping the cache

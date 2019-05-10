@@ -1,6 +1,6 @@
 import grpc from 'grpc-web'
-import { getServiceName } from './utils'
-
+import { getServiceName, streamToAsyncGeneratorFunction } from './utils'
+import sleep from '@berty/common/helpers/sleep'
 export const DefautlHostname = 'http://localhost:8989'
 
 const { MethodInfo } = grpc.AbstractClientBase
@@ -14,10 +14,11 @@ const unary = (client, hostname) => async (method, request, metadata) => {
     lazyMethod
   )
 
-  return client.unaryCall(url, request, metadata || {}, methodInfo)
+  const unary = client.unaryCall(url, request, metadata || {}, methodInfo)
+  return unary
 }
 
-const stream = (client, hostname) => async (method, request, metadata) => {
+const stream = (client, hostname) => (method, request, metadata) => {
   const url = `${hostname}/${getServiceName(method)}/${method.name}`
   const responseType = method.resolvedResponseType
   const methodInfo = new MethodInfo(
@@ -32,15 +33,8 @@ const stream = (client, hostname) => async (method, request, metadata) => {
     metadata || {},
     methodInfo
   )
-  return {
-    // grpc web doesn't support client side streaming yet
-    emit: payload => {
-      throw new Error('not implemented')
-    },
-    onData: callback => stream.on('data', callback),
-    onEnd: callback => stream.on('end', callback),
-    onStatus: callback => stream.on('status', callback),
-  }
+
+  return streamToAsyncGeneratorFunction(stream)
 }
 
 export const rpcWithHostname = hostname => {

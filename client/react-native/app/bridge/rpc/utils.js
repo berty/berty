@@ -1,5 +1,6 @@
 import { Platform } from 'react-native'
 import base64 from 'base64-js'
+import sleep from '@berty/common/helpers/sleep'
 
 // methods
 export const serializeToBase64 = req => base64.fromByteArray(req)
@@ -22,5 +23,31 @@ export const isElectron =
   window.navigator.userAgent.toLowerCase().indexOf('electron') !== -1
 
 // Error
-export const ErrorStreamNotImplemented = new Error('stream service not implemented')
-export const ErrorUnaryNotImplemented = new Error('unary service not implemented')
+export const ErrorStreamNotImplemented = new Error(
+  'stream service not implemented'
+)
+export const ErrorUnaryNotImplemented = new Error(
+  'unary service not implemented'
+)
+
+export async function * streamToAsyncGeneratorFunction (stream) {
+  const queue = []
+  stream.on('data', data => queue.push({ value: data, done: false }))
+  stream.on('end', () => queue.push({ value: undefined, done: true }))
+  stream.on('status', status => queue.push(status))
+
+  let sleepTime = 10
+  while (true) {
+    const { code, done, value } = queue[0] || { done: false, value: null }
+    queue.shift()
+    if (done || code === 0) {
+      return
+    } else if (value) {
+      yield value
+      sleepTime = 10
+    } else {
+      await sleep(sleepTime)
+      sleepTime = sleepTime >= 1000 ? 1000 : sleepTime * 2
+    }
+  }
+}

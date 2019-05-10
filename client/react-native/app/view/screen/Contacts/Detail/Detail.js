@@ -7,8 +7,11 @@ import { Avatar, Header, Menu, Screen } from '@berty/view/component'
 import { colors } from '@berty/common/constants'
 import { contact as contactHelper } from '@berty/common/utils'
 import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { StoreContainer as Store } from '@berty/store/container.gen'
 import { withGoBack } from '@berty/view/component/BackActionProvider'
+import { withContext as withStoreContext } from '@berty/store/context'
 
+@withStoreContext
 class DetailsBase extends PureComponent {
   blockContact = () => {
     console.log('Block')
@@ -56,8 +59,8 @@ class DetailsBase extends PureComponent {
 
   deleteContact = async () => {
     try {
-      await this.props.context.mutations.contactRemove({
-        id: this.props.navigation.getParam('contact').id,
+      await this.props.context.contactRemove({
+        id: this.props.navigation.getParam('id'),
       })
       this.props.goBack(null)
     } catch (err) {
@@ -67,59 +70,57 @@ class DetailsBase extends PureComponent {
 
   render () {
     const { navigation, t } = this.props
-    const contact = navigation.getParam('contact')
-    if (contact == null) {
-      return null
-    }
+    const id = navigation.getParam('id')
     return (
-      <Screen>
-        <Menu absolute>
-          <Menu.Header
-            icon={<Avatar data={contact} size={78} />}
-            title={contact.overrideDisplayName || contact.displayName}
-          />
-          <Menu.Section>
-            <Menu.Item
-              icon='message-circle'
-              title={t('contacts.send-message')}
-              onPress={() => console.log('Send')}
-            />
-            <Menu.Item
-              icon='phone'
-              title={t('contacts.call')}
-              onPress={() => console.log('Call')}
-            />
-          </Menu.Section>
-          <Menu.Section>
-            <Menu.Item
-              icon='eye'
-              title={t('contacts.view-pub-key')}
-              onPress={() =>
-                navigation.navigate('modal/contacts/card', {
-                  ...contact,
-                  id: contactHelper.getCoreID(contact.id),
-                })
-              }
-            />
-          </Menu.Section>
-          <Menu.Section>
-            <Menu.Item
-              icon='slash'
-              title={t('contacts.block')}
-              color={colors.error}
-              onPress={() => this.blockConfirm()}
-            />
-          </Menu.Section>
-          <Menu.Section>
-            <Menu.Item
-              icon='slash'
-              title={t('contacts.delete')}
-              color={colors.error}
-              onPress={this.deleteContact}
-            />
-          </Menu.Section>
-        </Menu>
-      </Screen>
+      <Store.Entity.Contact id={id}>
+        {data => (
+          <Screen>
+            <Menu absolute>
+              <Menu.Header
+                icon={<Avatar data={data} size={78} />}
+                title={data.overrideDisplayName || data.displayName}
+              />
+              <Menu.Section>
+                <Menu.Item
+                  icon='message-circle'
+                  title={t('contacts.send-message')}
+                  onPress={() => console.log('Send')}
+                />
+                <Menu.Item
+                  icon='phone'
+                  title={t('contacts.call')}
+                  onPress={() => console.log('Call')}
+                />
+              </Menu.Section>
+              <Menu.Section>
+                <Menu.Item
+                  icon='eye'
+                  title={t('contacts.view-pub-key')}
+                  onPress={() =>
+                    navigation.navigate('modal/contacts/card', data)
+                  }
+                />
+              </Menu.Section>
+              <Menu.Section>
+                <Menu.Item
+                  icon='slash'
+                  title={t('contacts.block')}
+                  color={colors.error}
+                  onPress={() => this.blockConfirm()}
+                />
+              </Menu.Section>
+              <Menu.Section>
+                <Menu.Item
+                  icon='slash'
+                  title={t('contacts.delete')}
+                  color={colors.error}
+                  onPress={this.deleteContact}
+                />
+              </Menu.Section>
+            </Menu>
+          </Screen>
+        )}
+      </Store.Entity.Contact>
     )
   }
 }

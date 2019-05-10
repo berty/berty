@@ -1,13 +1,23 @@
-import React, { PureComponent } from 'react'
-import { View, Text, InteractionManager, TouchableOpacity } from 'react-native'
-import { Screen, Icon, EmptyList } from '@berty/view/component'
+import React, { PureComponent, Fragment } from 'react'
+import {
+  View,
+  Text,
+  InteractionManager,
+  TouchableOpacity,
+  ActivityIndicator,
+  FlatList,
+  Platform,
+} from 'react-native'
+import { Screen, Icon, EmptyList, Loader } from '@berty/view/component'
 import { colors } from '@berty/common/constants'
 import { Pagination } from '@berty/relay'
 import { merge } from '@berty/common/helpers'
 import withRelayContext from '@berty/common/helpers/withRelayContext'
 import { fragments } from '@berty/graphql'
-import Item from './Item'
+import { Item } from './Item'
 import I18n from 'i18next'
+import { StoreContainer as Store } from '@berty/store/container.gen'
+import { withContext as withStoreContext } from '@berty/store/context'
 
 const cond = data => data && data.edges.length < 5
 
@@ -65,6 +75,7 @@ class CondComponent extends PureComponent {
   }
 }
 
+@withStoreContext
 class GenericList extends React.Component {
   state = {
     didFinishInitialAnimation: false,
@@ -95,46 +106,85 @@ class GenericList extends React.Component {
     })
   }
 
+  renderItem = (
+    { item: data, index },
+    { onPress, ignoreMyself } = this.props
+  ) => (
+    <Item
+      data={data}
+      context={this.props.context}
+      onPress={onPress}
+      ignoreMyself={ignoreMyself}
+    />
+  )
+
+  getItemLayout = (data, index) => ({
+    length: 80.5,
+    offset: 80.5 * index,
+    index,
+  })
+
+  keyExtractor = item => item.id
+
+  renderList = ({ queue, paginate, count, loading, retry }) => {
+    if (count) {
+      return (
+        <>
+          <FlatList
+            initialNumToRender={20}
+            maxToRenderPerBatch={10}
+            data={queue}
+            windowSize={3}
+            getItemLayout={this.getItemLayout}
+            keyExtractor={this.keyExtractor}
+            extraData={count}
+            onEndReached={paginate}
+            onEndReachedThreshold={1}
+            renderItem={this.renderItem}
+            onRefresh={Platform.OS !== 'web' && retry}
+          />
+          {count < 5 ? <CondComponent onPress={this.props.onPress} /> : null}
+        </>
+      )
+    }
+    return (
+      <EmptyList
+        source={require('@berty/common/static/img/empty-contact.png')}
+        text={I18n.t('contacts.empty')}
+        icon={'user-plus'}
+        btnText={I18n.t('contacts.add.title')}
+        onPress={this.props.onPress}
+      />
+    )
+  }
+
   render () {
     const { didFinishInitialAnimation } = this.state
     if (!didFinishInitialAnimation) {
       return null
     }
-    const {
-      filter,
-      ignoreMyself,
-      onPress,
-      context: { queries, subscriptions },
-      context,
-    } = this.props
-
+    const { filter } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <Pagination
-          direction='forward'
-          query={queries.ContactList.graphql}
-          variables={merge([queries.ContactList.defaultVariables, filter])}
-          fragment={fragments.ContactList}
-          alias='ContactList'
-          subscriptions={[subscriptions.contact]}
-          renderItem={props => (
-            <Item {...props} context={context} ignoreMyself={ignoreMyself} />
-          )}
-          cond={cond}
-          condComponent={() => <CondComponent onPress={() => onPress()} />}
-          emptyItem={() => (
-            <EmptyList
-              source={require('@berty/common/static/img/empty-contact.png')}
-              text={I18n.t('contacts.empty')}
-              icon={'user-plus'}
-              btnText={I18n.t('contacts.add.title')}
-              onPress={() => onPress()}
-            />
-          )}
-        />
+        <Store.Node.Service.ContactList.Pagination
+          filter={{ ...((filter && filter.filter) || {}) }}
+          paginate={({ cursor, count }) => ({
+            first: count ? 50 : 20,
+            after: cursor,
+          })}
+          fallback={<Loader />}
+        >
+          {this.renderList}
+        </Store.Node.Service.ContactList.Pagination>
       </Screen>
     )
   }
 }
 
-export default withRelayContext(GenericList)
+export class GenericMobxList extends PureComponent {
+  render () {
+    return <Screen style={[{ backgroundColor: colors.white }]} />
+  }
+}
+
+export default GenericList
