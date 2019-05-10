@@ -144,6 +144,10 @@
                   "type": "string",
                   "id": 3
                 },
+                "grpcWebBind": {
+                  "type": "string",
+                  "id": 25
+                },
                 "hideBanner": {
                   "type": "bool",
                   "id": 4
@@ -238,9 +242,13 @@
             },
             "GetPortResponse": {
               "fields": {
-                "port": {
+                "gqlPort": {
                   "type": "int32",
                   "id": 1
+                },
+                "grpcWebPort": {
+                  "type": "int32",
+                  "id": 2
                 }
               }
             },
