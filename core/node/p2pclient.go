@@ -65,6 +65,10 @@ func (n *Node) EnqueueOutgoingEventWithOptions(ctx context.Context, event *entit
 	}
 
 	if len(dispatches) < 1 {
+		// if the event isn't a push notif event type of course there aren't any dispatch to be done
+		if event.Kind == entity.Kind_DevicePushTo {
+			return nil
+		}
 		return errors.New("no active dispatches for a freshly added outgoing event")
 	}
 
