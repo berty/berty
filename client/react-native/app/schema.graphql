@@ -550,6 +550,8 @@ type BertyEntityEventDispatch  {
   ackMedium: Enum
   seenMedium: Enum
     retryBackoff: Int64!
+    sendErrorMessage: String!
+    sendErrorDetail: String!
 }
 type BertyEntityMetadataKeyValue  {
     key: String!
@@ -732,6 +734,8 @@ input BertyEntityEventDispatchInput {
   ackMedium: Enum
   seenMedium: Enum
     retryBackoff: Int64!
+    sendErrorMessage: String!
+    sendErrorDetail: String!
 }
 input BertyEntityErrInput {
     errMsg: String!

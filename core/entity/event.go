@@ -16,6 +16,13 @@ import (
 	"berty.tech/core/push"
 )
 
+// 1st send backoff ~1600
+// 2nd send backoff ~2560
+// 3rd send backoff ~4096
+// 4th send backoff ~6554
+// 5th send backoff ~10485
+const MaxBackoff = 10485
+
 func NewEvent() *Event {
 	return &Event{
 		Dispatches: make([]*EventDispatch, 0),
@@ -171,6 +178,7 @@ func FindDevicesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]stri
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.acked_at IS NULL").
 		Where("event_dispatch.sent_at < ?", before).
+		Where("event_dispatch.retry_backoff < ?", MaxBackoff).
 		Group("event_dispatch.device_id").
 		Pluck("event_dispatch.device_id", &deviceIDs).
 		Error
@@ -194,6 +202,7 @@ func FindDispatchesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]*
 		Where("event.kind != ? AND event.kind != ? AND event.kind != ?", Kind_Ack, Kind_Sent, Kind_Ping).
 		Where("event_dispatch.acked_at IS NULL").
 		Where("event_dispatch.sent_at > ? OR event_dispatch.sent_at IS NULL", before).
+		Where("event_dispatch.retry_backoff < ?", MaxBackoff).
 		Find(&dispatches).
 		Error
 
@@ -215,6 +224,7 @@ func FindNonAcknowledgedDispatchesForDestination(db *gorm.DB, deviceID string) (
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.device_id = ?", deviceID).
 		Where("event_dispatch.acked_at IS NULL").
+		Where("event_dispatch.retry_backoff < ?", MaxBackoff).
 		Find(&dispatches).
 		Error; err != nil {
 		return nil, err
