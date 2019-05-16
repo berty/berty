@@ -179,7 +179,14 @@ message EventDispatch {
   // SeenMedium is the communication medium used when receiving a Seen event
   Medium seen_medium = 8;
 
+  // retry_backoff time before adding event to retry outgoing event queue
   int64 retry_backoff = 9;
+
+  // send_error_message error message for display
+  string send_error_message = 10 [(gogoproto.moretags) = "gorm:\"type:TEXT\""];
+
+  // send_error_detail string error from api
+  string send_error_detail = 11 [(gogoproto.moretags) = "gorm:\"type:TEXT\""];
 
   enum Medium {
     UnknownMedium = 0;
