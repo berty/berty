@@ -65,6 +65,14 @@
                     "(gql.graphql_type)": "Mutation"
                   }
                 },
+                "EventRetry": {
+                  "requestType": "berty.entity.Event",
+                  "responseType": "berty.entity.Event",
+                  "options": {
+                    "(gql.graphql_input)": ".gql.Node",
+                    "(gql.graphql_type)": "Mutation"
+                  }
+                },
                 "ConfigPublic": {
                   "requestType": "Void",
                   "responseType": "berty.entity.Config",

@@ -216,6 +216,10 @@ export class NodeServiceStore extends ServiceStore {
     return this.bridge.eventSeen(input)
   }
 
+  @action async eventRetry (input) {
+    return this.bridge.eventRetry(input)
+  }
+
   @action async configPublic (input) {
     return this.bridge.configPublic(input)
   }

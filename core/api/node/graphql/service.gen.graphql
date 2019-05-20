@@ -965,6 +965,9 @@ type Mutation {
   EventSeen(
     id: ID!
   ): BertyEntityEvent
+  EventRetry(
+    id: ID!
+  ): BertyEntityEvent
   ConfigUpdate(
     id: String!
   	createdAt: GoogleProtobufTimestampInput
