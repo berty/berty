@@ -25,6 +25,7 @@ export default component =>
           sentAt
           ackedAt
           seenAt
+          sendErrorMessage
           ackMedium
           seenMedium
         }

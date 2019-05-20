@@ -91,6 +91,23 @@ class Message extends React.Component {
     if (new Date(this.props.data.seenAt).getTime() === 0) {
       this.messageSeen()
     }
+    let test = false
+    console.log('olddddd butch')
+    this.props.data.dispatches.forEach(element => {
+      console.log('disp.sendError', element.sendErrorMessage)
+      if (element.sendErrorMessage !== '') {
+        test = true
+      }
+    })
+    let colorNam = null
+    let iconNam = 'circle'
+    if (test === true) {
+      iconNam = 'x-circle'
+      colorNam = 'red'
+    } else if (utils.isReadByOthers(data)) {
+      iconNam = 'check-circle'
+    }
+
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
@@ -145,10 +162,16 @@ class Message extends React.Component {
         >
           {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
           {isMyself ? (
-            <Icon
-              name={utils.isReadByOthers(data) ? 'check-circle' : 'circle'}
-              size={10}
-            />
+            <>
+              <Icon
+                name={iconNam}
+                color={colorNam}
+                size={10}
+                onPress={() => {
+                  this.ActionSheet.show()
+                }}
+              />
+            </>
           ) : null}{' '}
         </Text>
       </Flex.Rows>

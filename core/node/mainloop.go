@@ -407,6 +407,16 @@ func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity
 		dispatch.RetryBackoff /= 10
 	}
 
+	if dispatch.RetryBackoff > entity.MaxBackoff {
+	  logger().Error("No longer retrying the event")
+		dispatch.SendErrorMessage = "Error sending message do you want to send it again ?"
+		dispatch.SendErrorDetail = "Retry limit reached"
+		if err := db.Save(dispatch).Error; err != nil {
+			n.LogBackgroundError(ctx, errors.Wrap(sql.GenericError(err), "error while updating SentAt on event dispatch"))
+		}
+		return
+	}
+
 	if err := db.Save(dispatch).Error; err != nil {
 		n.LogBackgroundError(ctx, errors.Wrap(sql.GenericError(err), "error while updating SentAt on event dispatch"))
 		return

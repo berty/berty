@@ -178,7 +178,7 @@ func FindDevicesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]stri
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.acked_at IS NULL").
 		Where("event_dispatch.sent_at < ?", before).
-		Where("event_dispatch.retry_backoff < ?", MaxBackoff).
+		Where("event_dispatch.retry_backoff < ?", MaxBackoff+1).
 		Group("event_dispatch.device_id").
 		Pluck("event_dispatch.device_id", &deviceIDs).
 		Error
@@ -202,7 +202,7 @@ func FindDispatchesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]*
 		Where("event.kind != ? AND event.kind != ? AND event.kind != ?", Kind_Ack, Kind_Sent, Kind_Ping).
 		Where("event_dispatch.acked_at IS NULL").
 		Where("event_dispatch.sent_at > ? OR event_dispatch.sent_at IS NULL", before).
-		Where("event_dispatch.retry_backoff < ?", MaxBackoff).
+		Where("event_dispatch.retry_backoff < ?", MaxBackoff+1).
 		Find(&dispatches).
 		Error
 
@@ -224,7 +224,7 @@ func FindNonAcknowledgedDispatchesForDestination(db *gorm.DB, deviceID string) (
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.device_id = ?", deviceID).
 		Where("event_dispatch.acked_at IS NULL").
-		Where("event_dispatch.retry_backoff < ?", MaxBackoff).
+		Where("event_dispatch.retry_backoff < ?", (MaxBackoff + 100)).
 		Find(&dispatches).
 		Error; err != nil {
 		return nil, err
