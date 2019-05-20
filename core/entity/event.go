@@ -8,6 +8,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	context "golang.org/x/net/context"
 
@@ -166,6 +167,53 @@ func FindNonAcknowledgedEventDestinations(db *gorm.DB, before time.Time) ([]*Eve
 	}
 
 	return events, nil
+}
+
+func GetEventByID(db *gorm.DB, ID string) (*Event, error) {
+	event := &Event{}
+
+	if err := db.
+		Model(&Event{}).
+		Where(&Event{ID: ID}).
+		First(event).
+		Error; err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
+	return event, nil
+}
+
+func FindDispatchForEvent(db *gorm.DB, event *Event) ([]*EventDispatch, error) {
+	var dispatches []*EventDispatch
+
+	query := db.
+		Model(&EventDispatch{}).
+		Where("event_dispatch.event_id = ?", event.ID)
+
+	switch event.TargetType {
+	case Event_ToSpecificConversation:
+		contactIDs := db.
+			Model(&ConversationMember{}).
+			Select("contact_id").
+			Where(&ConversationMember{ConversationID: event.ToConversationID()}).
+			QueryExpr()
+		query = query.Where("contact_id IN (?)", contactIDs)
+		break
+	case Event_ToSpecificContact:
+		query = query.Where("contact_id = ?", event.ToContactID())
+		break
+	case Event_ToSpecificDevice:
+		query = query.Where("device_id = ?", event.ToDeviceID())
+		break
+	default:
+		return nil, errors.New("activeDispatchesFromEvent: unhandled target type")
+	}
+
+	if err := query.Find(&dispatches).Error; err != nil {
+		return nil, errorcodes.ErrDb.Wrap(err)
+	}
+
+	return dispatches, nil
 }
 
 // FindContactsWithNonAcknowledgedEvents finds non acknowledged event destinations as deviceIDs emitted before the supplied time value

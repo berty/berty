@@ -8,6 +8,7 @@ import {
 import { btoa } from 'b64-lite'
 import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
+import ActionSheet from 'react-native-actionsheet'
 
 import {
   Avatar,
@@ -61,6 +62,12 @@ class Message extends React.Component {
 
   messageSeen = () => {
     this.props.context.mutations.eventSeen({
+      id: this.props.data.id,
+    })
+  }
+
+  messageRetry = () => {
+    this.props.context.mutations.eventRetry({
       id: this.props.data.id,
     })
   }
@@ -174,6 +181,19 @@ class Message extends React.Component {
             </>
           ) : null}{' '}
         </Text>
+        <ActionSheet
+          ref={o => {
+            this.ActionSheet = o
+          }}
+          title={'Which one do you like ?'}
+          options={['Apple', 'Banana', 'cancel']}
+          cancelButtonIndex={2}
+          destructiveButtonIndex={1}
+          onPress={(index) => {
+            console.log('has press' + index)
+            this.messageRetry()
+          }}
+        />
       </Flex.Rows>
     )
   }

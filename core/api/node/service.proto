@@ -62,6 +62,10 @@ service Service {
     option (gql.graphql_input) = ".gql.Node";
     option (gql.graphql_type) = "Mutation";
   }
+  rpc EventRetry (berty.entity.Event) returns (berty.entity.Event) {
+    option (gql.graphql_input) = ".gql.Node";
+    option (gql.graphql_type) = "Mutation";
+  }
 
   //
   // Config

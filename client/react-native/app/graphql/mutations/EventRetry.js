@@ -1,10 +1,9 @@
 import { graphql } from 'react-relay'
+import { commit } from '../../relay'
 
-import { subscriber } from '../../relay'
-
-const EventStream = graphql`
-  subscription EventStreamSubscription {
-    EventStream {
+const EventRetryMutation = graphql`
+  mutation EventRetryMutation($id: ID!) {
+    EventRetry(id: $id) {
       id
       sourceDeviceId
       createdAt
@@ -40,14 +39,5 @@ const EventStream = graphql`
   }
 `
 
-let _subscriber = null
-
-export default context => {
-  if (_subscriber === null) {
-    _subscriber = subscriber({
-      environment: context.environment,
-      subscription: EventStream,
-    })
-  }
-  return _subscriber
-}
+export default context => (input, configs) =>
+  commit(context.environment, EventRetryMutation, 'EventRetry', input, configs)

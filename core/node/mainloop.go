@@ -5,14 +5,13 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/gogo/protobuf/proto"
-	"github.com/pkg/errors"
-
 	"berty.tech/core/api/node"
 	"berty.tech/core/crypto/keypair"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/sql"
+	"github.com/gogo/protobuf/proto"
+	"github.com/pkg/errors"
 )
 
 var rgenerator *rand.Rand
@@ -243,6 +242,7 @@ func (n *Node) generateDispatchesForEvent(ctx context.Context, event *entity.Eve
 	if err := tx.Error; err != nil {
 		return sql.GenericError(err)
 	}
+
 	for _, device := range devices {
 		dispatch := &entity.EventDispatch{
 			EventID:   event.ID,
@@ -271,7 +271,6 @@ func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Even
 	}
 
 	db := n.sql(ctx)
-
 	if event.Dispatches == nil || len(event.Dispatches) == 0 { // intial Dispatches creation
 		if err := n.generateDispatchesForEvent(ctx, event); err != nil {
 			return nil, err
@@ -381,6 +380,7 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 
 		done <- true
 	}()
+
 	select {
 	case <-done:
 	case <-time.After(1 * time.Second):
@@ -408,7 +408,6 @@ func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity
 	}
 
 	if dispatch.RetryBackoff > entity.MaxBackoff {
-	  logger().Error("No longer retrying the event")
 		dispatch.SendErrorMessage = "Error sending message do you want to send it again ?"
 		dispatch.SendErrorDetail = "Retry limit reached"
 		if err := db.Save(dispatch).Error; err != nil {

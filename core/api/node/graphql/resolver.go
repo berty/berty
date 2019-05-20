@@ -589,6 +589,14 @@ func (r *queryResolver) GetEvent(ctx context.Context, id string) (*entity.Event,
 	})
 }
 
+func (r *mutationResolver) EventRetry(ctx context.Context, id string) (*entity.Event, error) {
+	id = strings.SplitN(id, ":", 2)[1]
+
+	return r.client.EventRetry(ctx, &entity.Event{
+		ID: id,
+	})
+}
+
 func (r *mutationResolver) EventSeen(ctx context.Context, id string) (*entity.Event, error) {
 	id = strings.SplitN(id, ":", 2)[1]
 
