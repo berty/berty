@@ -294,7 +294,7 @@ jobs:
       BUILD: /tmp/fl/build
 
     docker:
-      - image: bertychat/android-ci:v3
+      - image: bertychat/android-ci:v4
     steps:
 
       - *master_version
@@ -368,7 +368,7 @@ jobs:
       BUILD: /tmp/fl/build
 
     docker:
-      - image: bertychat/android-ci:v3
+      - image: bertychat/android-ci:v4
     steps:
       - checkout:
           path: ~/go/src/berty.tech/

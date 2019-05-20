@@ -26,6 +26,7 @@ func makeSecurityTransport(h host.Host, tpts []libp2p_config.MsSecC) (security.T
 		}
 		transportSet[tptC.ID] = struct{}{}
 	}
+
 	for _, tptC := range tpts {
 		tpt, err := tptC.SecC(h)
 		if err != nil {

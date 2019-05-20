@@ -7,14 +7,17 @@ import (
 	"strings"
 	"time"
 
+	security "github.com/libp2p/go-conn-security"
 	libp2p "github.com/libp2p/go-libp2p"
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	libp2p_crypto "github.com/libp2p/go-libp2p-crypto"
 	discovery "github.com/libp2p/go-libp2p-discovery"
+	libp2p_host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pnet "github.com/libp2p/go-libp2p-pnet"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
 	swarm "github.com/libp2p/go-libp2p-swarm"
+	tls "github.com/libp2p/go-libp2p-tls"
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
@@ -88,7 +91,7 @@ type Config struct {
 
 	HOP bool
 
-	SwarmKey string
+	PrivateNetwork bool
 
 	Identity string
 
@@ -113,7 +116,7 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.Ping = override.Ping
 	cfg.HOP = override.HOP
 	cfg.Identity = override.Identity
-	cfg.SwarmKey = override.SwarmKey
+	cfg.PrivateNetwork = override.PrivateNetwork
 	cfg.PeerCache = override.PeerCache
 	return nil
 }
@@ -186,8 +189,8 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	// private network
-	if cfg.SwarmKey != "" {
-		prot, err := pnet.NewProtector(strings.NewReader(cfg.SwarmKey))
+	if cfg.PrivateNetwork {
+		prot, err := pnet.NewProtector(strings.NewReader(DefaultSwarmKey))
 		if err != nil {
 			return err
 		}
@@ -211,7 +214,7 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	libp2pOpts = append(libp2pOpts,
-		libp2p.ConnectionManager(host.NewBertyConnMgr(ctx, 10, 20, time.Duration(60*time.Minute))))
+		libp2p.ConnectionManager(host.NewBertyConnMgr(ctx, 20, 40, time.Minute)))
 
 	libp2pOpts = append(libp2pOpts, libp2p.NATPortMap())
 
@@ -278,6 +281,22 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	if cfg.Config.Insecure {
 		upgrader.Secure = makeInsecureTransport(pid)
 	} else {
+		tpts := []libp2p_config.MsSecC{
+			libp2p_config.MsSecC{
+				ID: tls.ID,
+				SecC: func(libp2p_host.Host) (security.Transport, error) {
+					return tls.New(cfg.Config.PeerKey)
+				},
+			},
+			// use secio
+			// libp2p_config.MsSecC{
+			//      ID: secio.ID,
+			//      SecC: func(libp2p_host.Host) (security.Transport, error) {
+			//              return secio.New(cfg.Config.PeerKey)
+			//      },
+			// },
+		}
+		cfg.Config.SecurityTransports = append(cfg.Config.SecurityTransports, tpts...)
 		upgrader.Secure, err = makeSecurityTransport(h, cfg.Config.SecurityTransports)
 		if err != nil {
 			h.Close()

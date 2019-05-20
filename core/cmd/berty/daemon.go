@@ -46,6 +46,7 @@ type daemonOptions struct {
 	apnsDevVoipCerts []string `mapstructure:"apns-dev-voip-certs"`
 	fcmAPIKeys       []string `mapstructure:"fcm-api-keys"`
 	privateKeyFile   string   `mapstructure:"private-key-file"`
+	ipfs             bool     `mapstructure:"ipfs"`
 
 	// p2p
 
@@ -60,7 +61,6 @@ type daemonOptions struct {
 	mdns           bool     `mapstructure:"mdns"`
 	dhtServer      bool     `mapstructure:"dht"`
 	PrivateNetwork bool     `mapstructure:"private-network"`
-	SwarmKeyPath   string   `mapstructure:"swarm-key"`
 	nickname       string   `mapstructure:"nickname"`
 }
 
@@ -89,12 +89,12 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.BoolVar(&opts.noP2P, "no-p2p", false, "Disable p2p Driver")
 	flags.BoolVar(&opts.hop, "hop", false, "enable relay hop (should not be enable for client)")
 	flags.BoolVar(&opts.mdns, "mdns", true, "enable mdns discovery")
-	flags.BoolVar(&opts.dhtServer, "dht-server", false, "enable dht server")
+	flags.BoolVar(&opts.dhtServer, "dht-server", true, "enable dht server")
 	flags.BoolVar(&opts.ble, "ble", false, "enable ble transport")
 	flags.BoolVar(&opts.PrivateNetwork, "private-network", true, "enable private network with the default swarm key")
+	flags.BoolVar(&opts.ipfs, "ipfs", false, "connect to ipfs network (override private-network & boostrap)")
 	flags.BoolVar(&opts.peerCache, "cache-peer", true, "if false, network will ask the dht every time he need to send an envelope (emit)")
 	flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{}, "p2p listening address")
-	flags.StringVar(&opts.SwarmKeyPath, "swarm-key", "", "path to a custom swarm key, only peers that use the same swarm key will be able to talk with you")
 	// flags.StringSliceVar(&opts.bindP2P, "bind-p2p", []string{"/ip4/0.0.0.0/tcp/0"}, "p2p listening address")
 	_ = viper.BindPFlags(flags)
 }
@@ -232,6 +232,12 @@ func runDaemon(opts *daemonOptions) error {
 		Key:  opts.sql.key,
 	}
 
+	if opts.ipfs {
+		logger().Warn("Connecting to ipfs network")
+		opts.bootstrap = network_config.BootstrapIpfs
+		opts.PrivateNetwork = false
+	}
+
 	config := &daemon.Config{
 		SqlOpts:          sqlConfig,
 		GrpcBind:         opts.grpcBind,
@@ -256,7 +262,6 @@ func runDaemon(opts *daemonOptions) error {
 		Mdns:             opts.mdns,
 		DhtServer:        opts.dhtServer,
 		PrivateNetwork:   opts.PrivateNetwork,
-		SwarmKeyPath:     opts.SwarmKeyPath,
 	}
 
 	startRequest := &daemon.StartRequest{
