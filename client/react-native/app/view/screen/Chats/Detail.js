@@ -98,22 +98,18 @@ class Message extends React.Component {
     if (new Date(this.props.data.seenAt).getTime() === 0) {
       this.messageSeen()
     }
-    let test = false
-    console.log('olddddd butch')
+
+    let iconColor = null
+    let iconName = utils.isReadByOthers(data) ? 'check-circle' : 'circle'
+    let failed = false
+
     this.props.data.dispatches.forEach(element => {
-      console.log('disp.sendError', element.sendErrorMessage)
       if (element.sendErrorMessage !== '') {
-        test = true
+        iconName = 'x-circle'
+        iconColor = 'red'
+        failed = true
       }
     })
-    let colorNam = null
-    let iconNam = 'circle'
-    if (test === true) {
-      iconNam = 'x-circle'
-      colorNam = 'red'
-    } else if (utils.isReadByOthers(data)) {
-      iconNam = 'check-circle'
-    }
 
     return (
       <Flex.Rows
@@ -169,31 +165,31 @@ class Message extends React.Component {
         >
           {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
           {isMyself ? (
-            <>
-              <Icon
-                name={iconNam}
-                color={colorNam}
-                size={10}
-                onPress={() => {
+            <Icon
+              name={iconName}
+              color={iconColor}
+              size={10}
+              onPress={failed ? () => {
+                if (Platform.OS !== 'web') {
                   this.ActionSheet.show()
-                }}
-              />
-            </>
+                } else if (window.confirm('Do you want to retry?')) {
+                  this.messageRetry()
+                }
+              } : null}
+            />
           ) : null}{' '}
         </Text>
-        <ActionSheet
-          ref={o => {
-            this.ActionSheet = o
-          }}
-          title={'Which one do you like ?'}
-          options={['Apple', 'Banana', 'cancel']}
-          cancelButtonIndex={2}
-          destructiveButtonIndex={1}
-          onPress={(index) => {
-            console.log('has press' + index)
-            this.messageRetry()
-          }}
-        />
+        {failed && Platform.OS !== 'web' ? (
+          <ActionSheet
+            ref={o => {
+              this.ActionSheet = o
+            }}
+            title={'Do you want to retry?'}
+            options={['Yes', 'No']}
+            cancelButtonIndex={1}
+            onPress={(index) => index !== 1 && this.messageRetry()}
+          />)
+          : null }
       </Flex.Rows>
     )
   }
