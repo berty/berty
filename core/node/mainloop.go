@@ -413,6 +413,12 @@ func (n *Node) handleOutgoingEventDispatch(ctx context.Context, dispatch *entity
 		if err := db.Save(dispatch).Error; err != nil {
 			n.LogBackgroundError(ctx, errors.Wrap(sql.GenericError(err), "error while updating SentAt on event dispatch"))
 		}
+		event, err := sql.EventByID(n.sql(ctx), dispatch.EventID)
+		if err != nil {
+			n.LogBackgroundError(ctx, errors.Wrap(err, "unable to retrieve event detail"))
+			return
+		}
+		n.clientEvents <- event
 		return
 	}
 

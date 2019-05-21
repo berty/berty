@@ -74,9 +74,12 @@ class Message extends React.Component {
 
   shouldComponentUpdate (nextProps, nextState) {
     const {
-      data: { seenAt },
+      data,
     } = this.props
-    if (seenAt !== nextProps.data.seenAt) {
+
+    if (data.seenAt !== nextProps.data.seenAt ||
+      (utils.isReadByOthers(nextProps.data) && !utils.isReadByOthers(data)) ||
+      utils.messageHasError(nextProps.data) !== utils.messageHasError(data)) {
       return true
     }
     return false
@@ -101,15 +104,11 @@ class Message extends React.Component {
 
     let iconColor = null
     let iconName = utils.isReadByOthers(data) ? 'check-circle' : 'circle'
-    let failed = false
-
-    this.props.data.dispatches.forEach(element => {
-      if (element.sendErrorMessage !== '') {
-        iconName = 'x-circle'
-        iconColor = 'red'
-        failed = true
-      }
-    })
+    let failed = utils.messageHasError(data)
+    if (failed) {
+      iconName = 'x-circle'
+      iconColor = 'red'
+    }
 
     return (
       <Flex.Rows

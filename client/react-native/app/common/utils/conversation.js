@@ -51,3 +51,5 @@ export const isMessageReadByMe = ({ members }, { createdAt }) => {
 export const isReadByOthers = message =>
   message.dispatches &&
   message.dispatches.some(_ => new Date(_.ackedAt).getTime() > 0)
+
+export const messageHasError = message => message.dispatches.some(_ => _.sendErrorMessage !== undefined && _.sendErrorMessage !== '')
