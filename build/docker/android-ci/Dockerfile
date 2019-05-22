@@ -19,7 +19,6 @@ COPY ./gomobile-env-flag.diff /tmp/gomobile-env-flag.diff
 RUN patch -l < /tmp/gomobile-env-flag.diff ~/go/src/golang.org/x/mobile/cmd/gomobile/env.go \
 &&  go install golang.org/x/mobile/cmd/gomobile
 
-# see https://github.com/RedCoolBeans/dockerlint/issues/49
 RUN gomobile init -v
 
 RUN mkdir -p /opt/android/sdk/ndk-bundle/toolchains/mips64el-linux-android/prebuilt/linux-x86_64
