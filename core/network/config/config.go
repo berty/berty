@@ -106,18 +106,20 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.DefaultBind = override.DefaultBind
 	cfg.Bind = override.Bind
 	cfg.MDNS = override.MDNS
+	cfg.DHTServer = override.DHTServer
 	cfg.WS = override.WS
 	cfg.TCP = override.TCP
-	cfg.DHTServer = override.DHTServer
 	cfg.BLE = override.BLE
 	cfg.QUIC = override.QUIC
 	cfg.DefaultBootstrap = override.DefaultBootstrap
 	cfg.Bootstrap = override.Bootstrap
+	cfg.PeerCache = override.PeerCache
 	cfg.Ping = override.Ping
+	cfg.Metric = override.Metric
 	cfg.HOP = override.HOP
 	cfg.Identity = override.Identity
-	cfg.PrivateNetwork = override.PrivateNetwork
-	cfg.PeerCache = override.PeerCache
+	cfg.Persist = override.Persist
+	cfg.OverridePersist = override.OverridePersist
 	return nil
 }
 
