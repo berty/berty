@@ -2,9 +2,6 @@ package daemon
 
 import (
 	"context"
-	fmt "fmt"
-	"io/ioutil"
-	"os"
 
 	"berty.tech/core/manager/account"
 	"berty.tech/core/network"
@@ -46,20 +43,6 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 		account.WithPrivateKeyFile(cfg.PrivateKeyFile),
 	}
 	if !cfg.NoP2P {
-		swarmKey := network_config.DefaultSwarmKey
-
-		if cfg.SwarmKeyPath != "" {
-			file, err := os.Open(cfg.SwarmKeyPath)
-			if err != nil {
-				return fmt.Errorf("swarm key error: %s", err)
-			}
-			swarmKeyBytes, err := ioutil.ReadAll(file)
-			if err != nil {
-				return fmt.Errorf("swarm key error: %s", err)
-			}
-			swarmKey = string(swarmKeyBytes)
-		}
-
 		accountOptions = append(accountOptions, account.WithNetwork(
 			network.New(ctx,
 				network.WithDefaultOptions(),
@@ -77,7 +60,7 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 					DefaultBootstrap: false,
 					Bootstrap:        cfg.Bootstrap,
 					HOP:              cfg.Hop,
-					SwarmKey:         swarmKey,
+					PrivateNetwork:   cfg.PrivateNetwork,
 					Identity:         cfg.Identity,
 					Persist:          false,
 					OverridePersist:  false,

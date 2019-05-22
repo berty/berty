@@ -45,7 +45,7 @@ func WithDefaultOptions() config.Option {
 	return ChainOptions(
 		WithServerOptions(),
 
-		EnablePrivateNetwork(config.DefaultSwarmKey),
+		EnablePrivateNetwork(),
 		EnableBLE(),
 		EnableMDNS(),
 		EnableDefaultBootstrap(),
@@ -80,7 +80,7 @@ func WithDefaultMobileOptions() config.Option {
 	return ChainOptions(
 		WithClientOptions(),
 
-		EnablePrivateNetwork(config.DefaultSwarmKey),
+		EnablePrivateNetwork(),
 		EnableDefaultBootstrap(),
 		EnableMDNS(),
 		DisableBLE(),
@@ -131,16 +131,16 @@ func WithIdentity(identity string) config.Option {
 	}
 }
 
-func EnablePrivateNetwork(swarmKey string) config.Option {
+func EnablePrivateNetwork() config.Option {
 	return func(cfg *config.Config) error {
-		cfg.SwarmKey = swarmKey
+		cfg.PrivateNetwork = true
 		return nil
 	}
 }
 
 func DisablePrivateNetwork(swarmKey string) config.Option {
 	return func(cfg *config.Config) error {
-		cfg.SwarmKey = ""
+		cfg.PrivateNetwork = false
 		return nil
 	}
 }
