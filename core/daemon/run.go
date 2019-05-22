@@ -46,6 +46,15 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 		}),
 		account.WithPrivateKeyFile(cfg.PrivateKeyFile),
 	}
+
+	if cfg.GrpcWebBind != "" {
+		accountOptions = append(accountOptions,
+			account.WithGrpcWeb(&account.GrpcWebOptions{
+				Bind:         cfg.GrpcWebBind,
+				Interceptors: true,
+			}))
+	}
+
 	if !cfg.NoP2P {
 		accountOptions = append(accountOptions, account.WithNetwork(
 			network.New(ctx,

@@ -56,6 +56,7 @@ func main() {
 		SqlOpts:          sqlConfig,
 		GrpcBind:         ":1337",
 		GqlBind:          ":1338",
+		GrpcWebBind:      ":8737",
 		HideBanner:       true,
 		DropDatabase:     false,
 		InitOnly:         false,
