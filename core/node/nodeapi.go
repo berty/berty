@@ -125,6 +125,9 @@ func (n *Node) EventRetry(ctx context.Context, input *entity.Event) (*entity.Eve
 
 	// get event
 	event, err := entity.GetEventByID(sql, input.ID)
+	if err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
 
 	dispatches, err := entity.FindDispatchForEvent(sql, event)
 	if err != nil {
@@ -157,16 +160,11 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 
 	defer n.handleMutex(ctx)()
 
-	event := &entity.Event{}
-
 	sql := n.sql(ctx)
 
 	// get event
-	if err := sql.
-		Model(&entity.Event{}).
-		Where(&entity.Event{ID: input.ID}).
-		First(event).
-		Error; err != nil {
+	event, err := entity.GetEventByID(sql, input.ID)
+	if err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 
