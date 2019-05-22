@@ -62,10 +62,9 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 					HOP:              cfg.Hop,
 					PrivateNetwork:   cfg.PrivateNetwork,
 					Identity:         cfg.Identity,
-					Persist:          false,
+					Persist:          true,
 					OverridePersist:  false,
 					PeerCache:        cfg.PeerCache,
-
 					//					DHTKVLogDatastore: cfg.DhtkvLogDatastore,
 				}),
 			),

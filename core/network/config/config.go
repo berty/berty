@@ -118,6 +118,7 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.Metric = override.Metric
 	cfg.HOP = override.HOP
 	cfg.Identity = override.Identity
+	cfg.PrivateNetwork = override.PrivateNetwork
 	cfg.Persist = override.Persist
 	cfg.OverridePersist = override.OverridePersist
 	return nil
