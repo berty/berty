@@ -271,15 +271,17 @@ type ComplexityRoot struct {
 	}
 
 	BertyEntityEventDispatch struct {
-		EventId      func(childComplexity int) int
-		DeviceId     func(childComplexity int) int
-		ContactId    func(childComplexity int) int
-		SentAt       func(childComplexity int) int
-		AckedAt      func(childComplexity int) int
-		SeenAt       func(childComplexity int) int
-		AckMedium    func(childComplexity int) int
-		SeenMedium   func(childComplexity int) int
-		RetryBackoff func(childComplexity int) int
+		EventId          func(childComplexity int) int
+		DeviceId         func(childComplexity int) int
+		ContactId        func(childComplexity int) int
+		SentAt           func(childComplexity int) int
+		AckedAt          func(childComplexity int) int
+		SeenAt           func(childComplexity int) int
+		AckMedium        func(childComplexity int) int
+		SeenMedium       func(childComplexity int) int
+		RetryBackoff     func(childComplexity int) int
+		SendErrorMessage func(childComplexity int) int
+		SendErrorDetail  func(childComplexity int) int
 	}
 
 	BertyEntityMessage struct {
@@ -750,6 +752,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		EventSeen                        func(childComplexity int, id string) int
+		EventRetry                       func(childComplexity int, id string) int
 		ConfigUpdate                     func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string, notificationsEnabled bool, notificationsPreviews bool, debugNotificationVerbosity *int32) int
 		ContactRequest                   func(childComplexity int, contactId string, contactOverrideDisplayName string, introText string) int
 		ContactAcceptRequest             func(childComplexity int, contactId string) int
@@ -861,6 +864,7 @@ type GqlNodeResolver interface {
 }
 type MutationResolver interface {
 	EventSeen(ctx context.Context, id string) (*entity.Event, error)
+	EventRetry(ctx context.Context, id string) (*entity.Event, error)
 	ConfigUpdate(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, myself *entity.Contact, myselfId string, currentDevice *entity.Device, currentDeviceId string, cryptoParams []byte, pushRelayPubkeyApns string, pushRelayPubkeyFcm string, notificationsEnabled bool, notificationsPreviews bool, debugNotificationVerbosity *int32) (*entity.Config, error)
 	ContactRequest(ctx context.Context, contactId string, contactOverrideDisplayName string, introText string) (*entity.Contact, error)
 	ContactAcceptRequest(ctx context.Context, contactId string) (*entity.Contact, error)
@@ -922,6 +926,21 @@ type SubscriptionResolver interface {
 }
 
 func field_Mutation_EventSeen_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		var err error
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+
+}
+
+func field_Mutation_EventRetry_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
 	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
@@ -4209,6 +4228,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BertyEntityEventDispatch.RetryBackoff(childComplexity), true
 
+	case "BertyEntityEventDispatch.sendErrorMessage":
+		if e.complexity.BertyEntityEventDispatch.SendErrorMessage == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityEventDispatch.SendErrorMessage(childComplexity), true
+
+	case "BertyEntityEventDispatch.sendErrorDetail":
+		if e.complexity.BertyEntityEventDispatch.SendErrorDetail == nil {
+			break
+		}
+
+		return e.complexity.BertyEntityEventDispatch.SendErrorDetail(childComplexity), true
+
 	case "BertyEntityMessage.text":
 		if e.complexity.BertyEntityMessage.Text == nil {
 			break
@@ -5886,6 +5919,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.EventSeen(childComplexity, args["id"].(string)), true
+
+	case "Mutation.EventRetry":
+		if e.complexity.Mutation.EventRetry == nil {
+			break
+		}
+
+		args, err := field_Mutation_EventRetry_args(rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.EventRetry(childComplexity, args["id"].(string)), true
 
 	case "Mutation.ConfigUpdate":
 		if e.complexity.Mutation.ConfigUpdate == nil {
@@ -10723,6 +10768,16 @@ func (ec *executionContext) _BertyEntityEventDispatch(ctx context.Context, sel a
 			if out.Values[i] == graphql.Null {
 				invalid = true
 			}
+		case "sendErrorMessage":
+			out.Values[i] = ec._BertyEntityEventDispatch_sendErrorMessage(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
+		case "sendErrorDetail":
+			out.Values[i] = ec._BertyEntityEventDispatch_sendErrorDetail(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalid = true
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10936,6 +10991,52 @@ func (ec *executionContext) _BertyEntityEventDispatch_retryBackoff(ctx context.C
 	res := resTmp.(int64)
 	rctx.Result = res
 	return models.MarshalInt64(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityEventDispatch_sendErrorMessage(ctx context.Context, field graphql.CollectedField, obj *entity.EventDispatch) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityEventDispatch",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SendErrorMessage, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _BertyEntityEventDispatch_sendErrorDetail(ctx context.Context, field graphql.CollectedField, obj *entity.EventDispatch) graphql.Marshaler {
+	rctx := &graphql.ResolverContext{
+		Object: "BertyEntityEventDispatch",
+		Args:   nil,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, obj, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SendErrorDetail, nil
+	})
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	rctx.Result = res
+	return models.MarshalString(res)
 }
 
 var bertyEntityMessageImplementors = []string{"BertyEntityMessage"}
@@ -21031,6 +21132,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = graphql.MarshalString("Mutation")
 		case "EventSeen":
 			out.Values[i] = ec._Mutation_EventSeen(ctx, field)
+		case "EventRetry":
+			out.Values[i] = ec._Mutation_EventRetry(ctx, field)
 		case "ConfigUpdate":
 			out.Values[i] = ec._Mutation_ConfigUpdate(ctx, field)
 		case "ContactRequest":
@@ -21101,6 +21204,37 @@ func (ec *executionContext) _Mutation_EventSeen(ctx context.Context, field graph
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return ec.resolvers.Mutation().EventSeen(rctx, args["id"].(string))
+	})
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*entity.Event)
+	rctx.Result = res
+
+	if res == nil {
+		return graphql.Null
+	}
+
+	return ec._BertyEntityEvent(ctx, field.Selections, res)
+}
+
+// nolint: vetshadow
+func (ec *executionContext) _Mutation_EventRetry(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := field_Mutation_EventRetry_args(rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx := &graphql.ResolverContext{
+		Object: "Mutation",
+		Args:   args,
+		Field:  field,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().EventRetry(rctx, args["id"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -25001,6 +25135,18 @@ func UnmarshalBertyEntityEventDispatchInput(v interface{}) (entity.EventDispatch
 			if err != nil {
 				return it, err
 			}
+		case "sendErrorMessage":
+			var err error
+			it.SendErrorMessage, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
+		case "sendErrorDetail":
+			var err error
+			it.SendErrorDetail, err = models.UnmarshalString(v)
+			if err != nil {
+				return it, err
+			}
 		}
 	}
 
@@ -25888,6 +26034,8 @@ type BertyEntityEventDispatch  {
   ackMedium: Enum
   seenMedium: Enum
     retryBackoff: Int64!
+    sendErrorMessage: String!
+    sendErrorDetail: String!
 }
 type BertyEntityMetadataKeyValue  {
     key: String!
@@ -26070,6 +26218,8 @@ input BertyEntityEventDispatchInput {
   ackMedium: Enum
   seenMedium: Enum
     retryBackoff: Int64!
+    sendErrorMessage: String!
+    sendErrorDetail: String!
 }
 input BertyEntityErrInput {
     errMsg: String!
@@ -26297,6 +26447,9 @@ type Query {
   
 type Mutation {
   EventSeen(
+    id: ID!
+  ): BertyEntityEvent
+  EventRetry(
     id: ID!
   ): BertyEntityEvent
   ConfigUpdate(

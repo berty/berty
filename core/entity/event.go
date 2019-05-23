@@ -8,6 +8,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/pkg/errors"
 	"go.uber.org/zap"
 	context "golang.org/x/net/context"
 
@@ -15,6 +16,13 @@ import (
 	"berty.tech/core/pkg/tracing"
 	"berty.tech/core/push"
 )
+
+// 1st send backoff ~1600
+// 2nd send backoff ~2560
+// 3rd send backoff ~4096
+// 4th send backoff ~6554
+// 5th send backoff ~10485
+const MaxBackoff = 10485
 
 func NewEvent() *Event {
 	return &Event{
@@ -161,6 +169,53 @@ func FindNonAcknowledgedEventDestinations(db *gorm.DB, before time.Time) ([]*Eve
 	return events, nil
 }
 
+func GetEventByID(db *gorm.DB, ID string) (*Event, error) {
+	event := &Event{}
+
+	if err := db.
+		Model(&Event{}).
+		Where(&Event{ID: ID}).
+		First(event).
+		Error; err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
+	return event, nil
+}
+
+func FindDispatchForEvent(db *gorm.DB, event *Event) ([]*EventDispatch, error) {
+	var dispatches []*EventDispatch
+
+	query := db.
+		Model(&EventDispatch{}).
+		Where("event_dispatch.event_id = ?", event.ID)
+
+	switch event.TargetType {
+	case Event_ToSpecificConversation:
+		contactIDs := db.
+			Model(&ConversationMember{}).
+			Select("contact_id").
+			Where(&ConversationMember{ConversationID: event.ToConversationID()}).
+			QueryExpr()
+		query = query.Where("contact_id IN (?)", contactIDs)
+		break
+	case Event_ToSpecificContact:
+		query = query.Where("contact_id = ?", event.ToContactID())
+		break
+	case Event_ToSpecificDevice:
+		query = query.Where("device_id = ?", event.ToDeviceID())
+		break
+	default:
+		return nil, errors.New("activeDispatchesFromEvent: unhandled target type")
+	}
+
+	if err := query.Find(&dispatches).Error; err != nil {
+		return nil, errorcodes.ErrDb.Wrap(err)
+	}
+
+	return dispatches, nil
+}
+
 // FindContactsWithNonAcknowledgedEvents finds non acknowledged event destinations as deviceIDs emitted before the supplied time value
 func FindDevicesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]string, error) {
 	var deviceIDs []string
@@ -171,6 +226,7 @@ func FindDevicesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]stri
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.acked_at IS NULL").
 		Where("event_dispatch.sent_at < ?", before).
+		Where("event_dispatch.retry_backoff < ?", MaxBackoff+1).
 		Group("event_dispatch.device_id").
 		Pluck("event_dispatch.device_id", &deviceIDs).
 		Error
@@ -194,6 +250,7 @@ func FindDispatchesWithNonAcknowledgedEvents(db *gorm.DB, before time.Time) ([]*
 		Where("event.kind != ? AND event.kind != ? AND event.kind != ?", Kind_Ack, Kind_Sent, Kind_Ping).
 		Where("event_dispatch.acked_at IS NULL").
 		Where("event_dispatch.sent_at > ? OR event_dispatch.sent_at IS NULL", before).
+		Where("event_dispatch.retry_backoff < ?", MaxBackoff+1).
 		Find(&dispatches).
 		Error
 
@@ -215,6 +272,7 @@ func FindNonAcknowledgedDispatchesForDestination(db *gorm.DB, deviceID string) (
 		Where("event.direction = ?", Event_Outgoing).
 		Where("event_dispatch.device_id = ?", deviceID).
 		Where("event_dispatch.acked_at IS NULL").
+		Where("event_dispatch.retry_backoff < ?", (MaxBackoff + 100)).
 		Find(&dispatches).
 		Error; err != nil {
 		return nil, err

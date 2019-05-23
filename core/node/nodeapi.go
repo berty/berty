@@ -114,6 +114,45 @@ func (n *Node) EventUnseen(input *node.EventListInput, stream node.Service_Event
 	return nil
 }
 
+func (n *Node) EventRetry(ctx context.Context, input *entity.Event) (*entity.Event, error) {
+	tracer := tracing.EnterFunc(ctx, input)
+	defer tracer.Finish()
+	ctx = tracer.Context()
+
+	defer n.handleMutex(ctx)()
+
+	sql := n.sql(ctx)
+
+	// get event
+	event, err := entity.GetEventByID(sql, input.ID)
+	if err != nil {
+		return nil, errorcodes.ErrDbUpdate.Wrap(err)
+	}
+
+	dispatches, err := entity.FindDispatchForEvent(sql, event)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, dispatch := range dispatches {
+		if dispatch.ContactID != n.config.Myself.ID {
+			dispatch.RetryBackoff = 0
+			dispatch.SendErrorMessage = ""
+			dispatch.SendErrorDetail = ""
+			if err := sql.Save(dispatch).Error; err != nil {
+				n.LogBackgroundError(ctx, errors.Wrap(bsql.GenericError(err), "error while updating RetryBackoff on event dispatch"))
+				continue
+			}
+			go func(dispatch *entity.EventDispatch) {
+				n.outgoingEvents <- dispatch
+			}(dispatch)
+		}
+	}
+	event.Dispatches = dispatches
+
+	return event, nil
+}
+
 func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Event, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
@@ -121,16 +160,11 @@ func (n *Node) EventSeen(ctx context.Context, input *entity.Event) (*entity.Even
 
 	defer n.handleMutex(ctx)()
 
-	event := &entity.Event{}
-
 	sql := n.sql(ctx)
 
 	// get event
-	if err := sql.
-		Model(&entity.Event{}).
-		Where(&entity.Event{ID: input.ID}).
-		First(event).
-		Error; err != nil {
+	event, err := entity.GetEventByID(sql, input.ID)
+	if err != nil {
 		return nil, errorcodes.ErrDbUpdate.Wrap(err)
 	}
 

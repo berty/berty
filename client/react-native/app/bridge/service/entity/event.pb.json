@@ -253,6 +253,20 @@
                 "retryBackoff": {
                   "type": "int64",
                   "id": 9
+                },
+                "sendErrorMessage": {
+                  "type": "string",
+                  "id": 10,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:type:TEXT"
+                  }
+                },
+                "sendErrorDetail": {
+                  "type": "string",
+                  "id": 11,
+                  "options": {
+                    "(gogoproto.moretags)": "gorm:type:TEXT"
+                  }
                 }
               },
               "nested": {

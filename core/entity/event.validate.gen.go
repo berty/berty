@@ -154,6 +154,10 @@ func (m *EventDispatch) Validate() error {
 	// handling field: SeenMedium - name:"seen_medium" number:8 label:LABEL_OPTIONAL type:TYPE_ENUM type_name:".berty.entity.EventDispatch.Medium" json_name:"seenMedium"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 
 	// handling field: RetryBackoff - name:"retry_backoff" number:9 label:LABEL_OPTIONAL type:TYPE_INT64 json_name:"retryBackoff"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: SendErrorMessage - name:"send_error_message" number:10 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"sendErrorMessage" options:<65006:"gorm:\"type:TEXT\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+
+	// handling field: SendErrorDetail - name:"send_error_detail" number:11 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"sendErrorDetail" options:<65006:"gorm:\"type:TEXT\"" >  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *MetadataKeyValue) Validate() error {

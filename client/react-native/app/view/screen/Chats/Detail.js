@@ -8,6 +8,7 @@ import {
 import { btoa } from 'b64-lite'
 import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
+import ActionSheet from 'react-native-actionsheet'
 
 import {
   Avatar,
@@ -65,11 +66,20 @@ class Message extends React.Component {
     })
   }
 
+  messageRetry = () => {
+    this.props.context.mutations.eventRetry({
+      id: this.props.data.id,
+    })
+  }
+
   shouldComponentUpdate (nextProps, nextState) {
     const {
-      data: { seenAt },
+      data,
     } = this.props
-    if (seenAt !== nextProps.data.seenAt) {
+
+    if (data.seenAt !== nextProps.data.seenAt ||
+      (utils.isReadByOthers(nextProps.data) && !utils.isReadByOthers(data)) ||
+      utils.messageHasError(nextProps.data) !== utils.messageHasError(data)) {
       return true
     }
     return false
@@ -91,6 +101,15 @@ class Message extends React.Component {
     if (new Date(this.props.data.seenAt).getTime() === 0) {
       this.messageSeen()
     }
+
+    let iconColor = null
+    let iconName = utils.isReadByOthers(data) ? 'check-circle' : 'circle'
+    let failed = utils.messageHasError(data)
+    if (failed) {
+      iconName = 'x-circle'
+      iconColor = 'red'
+    }
+
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
@@ -146,11 +165,30 @@ class Message extends React.Component {
           {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
           {isMyself ? (
             <Icon
-              name={utils.isReadByOthers(data) ? 'check-circle' : 'circle'}
+              name={iconName}
+              color={iconColor}
               size={10}
+              onPress={failed ? () => {
+                if (Platform.OS !== 'web') {
+                  this.ActionSheet.show()
+                } else if (window.confirm('Do you want to retry?')) {
+                  this.messageRetry()
+                }
+              } : null}
             />
           ) : null}{' '}
         </Text>
+        {failed && Platform.OS !== 'web' ? (
+          <ActionSheet
+            ref={o => {
+              this.ActionSheet = o
+            }}
+            title={'Do you want to retry?'}
+            options={['Yes', 'No']}
+            cancelButtonIndex={1}
+            onPress={(index) => index !== 1 && this.messageRetry()}
+          />)
+          : null }
       </Flex.Rows>
     )
   }

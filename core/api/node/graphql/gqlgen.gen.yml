@@ -1706,6 +1706,8 @@ models:
       ackMedium:
       seenMedium:
       retryBackoff:
+      sendErrorMessage:
+      sendErrorDetail:
   BertyEntityEventDispatchInput:
     model: berty.tech/core/entity.EventDispatch
     fields:
@@ -1718,6 +1720,8 @@ models:
       ackMedium:
       seenMedium:
       retryBackoff:
+      sendErrorMessage:
+      sendErrorDetail:
   BertyEntityEventDispatchPayload:
     model: berty.tech/core/entity.EventDispatch
     fields:
@@ -1730,6 +1734,8 @@ models:
       ackMedium:
       seenMedium:
       retryBackoff:
+      sendErrorMessage:
+      sendErrorDetail:
 
   BertyEntityMetadataKeyValue:
     model: berty.tech/core/entity.MetadataKeyValue
