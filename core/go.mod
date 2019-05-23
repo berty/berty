@@ -56,7 +56,6 @@ require (
 	github.com/libp2p/go-libp2p-quic-transport v0.0.1
 	github.com/libp2p/go-libp2p-record v0.0.1
 	github.com/libp2p/go-libp2p-routing v0.0.1
-	github.com/libp2p/go-libp2p-secio v0.0.1
 	github.com/libp2p/go-libp2p-swarm v0.0.1
 	github.com/libp2p/go-libp2p-tls v0.0.1
 	github.com/libp2p/go-libp2p-transport v0.0.4
@@ -100,9 +99,11 @@ require (
 	go.uber.org/atomic v1.3.2 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
 	go.uber.org/zap v1.9.1
-	golang.org/x/net v0.0.0-20190310074541-c10a0554eabf
-	golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2
-	golang.org/x/tools v0.0.0-20190227232517-f0a709d59f0f // indirect
+	golang.org/x/crypto v0.0.0-20190513172903-22d7a77e9e5f // indirect
+	golang.org/x/net v0.0.0-20190522135303-fa69b94a3b58
+	golang.org/x/sys v0.0.0-20190522044717-8097e1b27ff5 // indirect
+	golang.org/x/text v0.3.2
+	golang.org/x/tools v0.0.0-20190521203540-521d6ed310dd // indirect
 	google.golang.org/genproto v0.0.0-20190227213309-4f5b463f9597
 	google.golang.org/grpc v1.19.0
 	gopkg.in/gormigrate.v1 v1.4.0

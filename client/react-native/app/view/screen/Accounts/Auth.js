@@ -42,8 +42,8 @@ class Auth extends PureComponent {
     const { bridge } = this.props
 
     try {
-      const { port } = await bridge.getPort({})
-      return port
+      const { gqlPort } = await bridge.getPort({})
+      return gqlPort
     } catch (error) {
       console.warn(error, 'retrying to get port')
       await sleep(1000)

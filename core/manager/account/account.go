@@ -31,6 +31,7 @@ import (
 	"berty.tech/core/push"
 	"berty.tech/core/sql"
 	"berty.tech/core/sql/sqlcipher"
+	grpc_web "github.com/improbable-eng/grpc-web/go/grpcweb"
 	"github.com/jinzhu/gorm"
 	reuse "github.com/libp2p/go-reuseport"
 	opentracing "github.com/opentracing/opentracing-go"
@@ -50,12 +51,13 @@ func Info(ctx context.Context) map[string]string {
 	}
 	a := list[0] // FIXME: support multi accounts
 	return map[string]string{
-		"manager: accounts":  fmt.Sprintf("%d accounts", len(list)),
-		"manager: gql-bind":  a.GQLBind,
-		"manager: grpc-bind": a.GrpcBind,
-		"manager: db":        a.dbPath(),
-		"manager: name":      a.Name,
-		"manager: with-bot":  fmt.Sprintf("%v", a.withBot),
+		"manager: accounts":      fmt.Sprintf("%d accounts", len(list)),
+		"manager: gql-bind":      a.GQLBind,
+		"manager: grpc-bind":     a.GrpcBind,
+		"manager: grpc-web-bind": a.GrpcWebBind,
+		"manager: db":            a.dbPath(),
+		"manager: name":          a.Name,
+		"manager: with-bot":      fmt.Sprintf("%v", a.withBot),
 		// FIXME: retrieve info from manager's DB
 	}
 }
@@ -69,11 +71,14 @@ type Account struct {
 	dbDir  string
 	dbDrop bool
 
-	gqlHandler     http.Handler
-	GQLBind        string
-	ioGrpc         *helper.IOGrpc
-	ioGrpcListener net.Listener
-	gqlServer      *http.Server
+	gqlHandler               http.Handler
+	GQLBind                  string
+	ioGrpc                   *helper.IOGrpc
+	ioGrpcListener           net.Listener
+	gqlServer                *http.Server
+	GrpcWebBind              string
+	grpcWebServer            *http.Server
+	grpcWebGrpcServerWrapper *grpc_web.WrappedGrpcServer
 
 	GrpcServer   *grpc.Server
 	GrpcBind     string
@@ -231,6 +236,10 @@ func (a *Account) Open(ctx context.Context) error {
 		return err
 	}
 	if err := a.startGQL(ctx); err != nil {
+		a.Close(ctx)
+		return err
+	}
+	if err := a.startGrpcWeb(ctx); err != nil {
 		a.Close(ctx)
 		return err
 	}
@@ -433,6 +442,32 @@ func (a *Account) StopBot(ctx context.Context) error {
 	// TODO: implement bot closing function
 	// Then set a.BotRunning = false
 	return errorcodes.ErrUnimplemented.New()
+}
+
+func (a *Account) startGrpcWeb(ctx context.Context) error {
+	tracer := tracing.EnterFunc(ctx)
+	defer tracer.Finish()
+
+	go func() {
+		defer a.PanicHandler()
+		errChan := make(chan error, 1)
+		for {
+			go func() {
+				a.grpcWebGrpcServerWrapper = grpc_web.WrapServer(a.GrpcServer)
+				errChan <- a.grpcWebServer.ListenAndServe()
+			}()
+			select {
+			case err := <-errChan:
+				a.errChan <- err
+			case <-a.shutdown:
+				logger().Debug("account shutdown grpc web server")
+				a.grpcWebServer.Close()
+				return
+			}
+			time.Sleep(1)
+		}
+	}()
+	return nil
 }
 
 func (a *Account) startGQL(ctx context.Context) error {

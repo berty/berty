@@ -172,6 +172,52 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 	}
 }
 
+type GrpcWebOptions struct {
+	Bind         string
+	Interceptors bool
+}
+
+func WithGrpcWeb(opts *GrpcWebOptions) NewOption {
+	return func(a *Account) error {
+		if opts == nil {
+			opts = &GrpcWebOptions{}
+		}
+
+		handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// Handle preflight CORS
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, XMLHttpRequest, x-user-agent, x-grpc-web, grpc-status, grpc-message, x-method")
+			w.Header().Add("Access-Control-Expose-Headers", "grpc-status, grpc-message")
+
+			if r.Method == "OPTIONS" {
+				return
+			}
+
+			if a.grpcWebGrpcServerWrapper.IsGrpcWebRequest(r) {
+				// set this headers to avoid unsafe header
+				w.Header().Set("grpc-status", "")
+				w.Header().Set("grpc-message", "")
+
+				a.grpcWebGrpcServerWrapper.ServeHTTP(w, r)
+				return
+			}
+
+			http.DefaultServeMux.ServeHTTP(w, r)
+		})
+
+		a.GrpcWebBind = opts.Bind
+		if a.GrpcWebBind == "" {
+			a.GrpcWebBind = ":8737"
+		}
+		a.grpcWebServer = &http.Server{
+			Addr:    a.GrpcWebBind,
+			Handler: handler,
+		}
+		return nil
+	}
+}
+
 type GQLOptions struct {
 	Bind         string
 	Interceptors bool

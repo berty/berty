@@ -37,6 +37,7 @@ type daemonOptions struct {
 
 	grpcBind         string   `mapstructure:"grpc-bind"`
 	gqlBind          string   `mapstructure:"gql-bind"`
+	grpcWebBind      string   `mapstructure:"grpc-web-bind"`
 	hideBanner       bool     `mapstructure:"hide-banner"`
 	dropDatabase     bool     `mapstructure:"drop-database"`
 	initOnly         bool     `mapstructure:"init-only"`
@@ -78,6 +79,7 @@ func daemonSetupFlags(flags *pflag.FlagSet, opts *daemonOptions) {
 	flags.StringVar(&opts.daemonWebBind, "daemon-web-bind", ":8989", "daemon web listening address")
 	flags.StringVar(&opts.daemonGRPCBind, "daemon-grpc-bind", "", "daemon service gRPC listening address")
 	flags.StringVar(&opts.grpcBind, "grpc-bind", ":1337", "gRPC listening address")
+	flags.StringVar(&opts.grpcWebBind, "grpc-web-bind", ":8737", "Bind grpc web api")
 	flags.StringVar(&opts.gqlBind, "gql-bind", ":8700", "Bind graphql api")
 
 	// network
@@ -241,6 +243,7 @@ func runDaemon(opts *daemonOptions) error {
 	config := &daemon.Config{
 		SqlOpts:          sqlConfig,
 		GrpcBind:         opts.grpcBind,
+		GrpcWebBind:      opts.grpcWebBind,
 		GqlBind:          opts.gqlBind,
 		HideBanner:       opts.hideBanner,
 		DropDatabase:     opts.dropDatabase,
