@@ -1,6 +1,6 @@
 # Entropy pool
 
-Date: 2019-05-24
+Date: 2019-05-24  
 Author: Manfred Touron (moul)
 
 ## Description
