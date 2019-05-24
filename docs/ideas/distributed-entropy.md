@@ -1,6 +1,6 @@
 # Distributed entropy
 
-Date: 2019-05-24
+Date: 2019-05-24  
 Author: Antoine Eddi (aeddi)
 
 ## Description
