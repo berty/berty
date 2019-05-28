@@ -8,14 +8,14 @@ import "gogoproto/gogo.proto";
 option go_package = "berty.tech/core/network/metric";
 
 enum MetricsType {
-  // peer monitor a specific peer
-  PEER = 0;
+  // global monitor a metric globally
+  GLOBAL = 0;
 
   // protocol monitor a specific protocol
   PROTOCOL = 1;
 
-  // global monitor a metric globally
-  GLOBAL = 2;
+  // peer monitor a specific peer
+  PEER = 2;
 }
 
 message BandwidthStats {
