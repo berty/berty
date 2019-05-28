@@ -20,6 +20,7 @@
     "@berty/graphql": "^0.0.1",
     "@berty/locale": "^0.0.1",
     "@berty/relay": "^0.0.1",
+    "@berty/store": "^0.0.1",
     "@berty/view": "^0.0.1",
     "@svgr/webpack": "2.4.1",
     "babel-loader": "8.0.4",
@@ -42,6 +43,7 @@
     "jest-resolve": "23.6.0",
     "metro-react-native-babel-preset": "^0.48.1",
     "mini-css-extract-plugin": "0.4.3",
+    "node-libs-browser": "^2.2.0",
     "optimize-css-assets-webpack-plugin": "5.0.1",
     "pnp-webpack-plugin": "1.1.0",
     "postcss-flexbugs-fixes": "4.1.0",
@@ -105,6 +107,7 @@
     ],
     "moduleNameMapper": {
       "^react-native$": "react-native-web",
+      "^node-libs-react-native$": "node-libs-browser",
       "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
     },
     "moduleFileExtensions": [

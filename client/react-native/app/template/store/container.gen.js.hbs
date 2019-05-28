@@ -36,7 +36,6 @@ import React, { Component } from 'react'
         {{#if responseStream}}
 
           @withContext
-          @observer
           export class {{name}}ServiceNodeContainer extends Stream {
             get service () {
               return this.props.context.node.service.{{case 'camel' name}}
@@ -73,7 +72,6 @@ import React, { Component } from 'react'
         {{else}}
 
         @withContext
-        @observer
         export class {{name}}ServiceNodeContainer extends Unary {
           get service () {
             return this.props.context.node.service.{{case 'camel' name}}
@@ -83,7 +81,6 @@ import React, { Component } from 'react'
       {{/each}}
 
       @withContext
-      @observer
       export class ServiceNodeContainer extends Component {
         {{#each methods}}
           {{#if responseStream}}
@@ -99,7 +96,6 @@ import React, { Component } from 'react'
     {{/with}}
 
     @withContext
-    @observer
     export class StoreContainer extends Component {
       static Entity = {
         {{#with (lookup 'berty.node.CommitLog')}}

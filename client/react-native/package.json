@@ -39,6 +39,7 @@
     "markdown-it": "^8.4.2",
     "moment": "^2.22.2",
     "mousetrap": "^1.6.3",
+    "node-libs-react-native": "^1.0.3",
     "object-hash": "^1.3.0",
     "protobufjs": "^6.8.8",
     "react": "16.8.3",

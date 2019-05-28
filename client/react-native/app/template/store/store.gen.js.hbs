@@ -3,6 +3,7 @@
 import { observable, action, computed } from 'mobx'
 import EntityStore from './entity'
 import hash from 'object-hash'
+import Stream from 'stream'
 
   {{#with (lookup 'berty.node.CommitLog.Entity')}}
     {{#each fields}}
@@ -38,9 +39,9 @@ import hash from 'object-hash'
                 }
               {{else}}
                 {{#if repeated}}
-                  @observable {{name}} = []
+                  {{name}} = []
                 {{else}}
-                  @observable {{name}} = null
+                  {{name}} = null
                 {{/if}}
               {{/if}}
             {{/each}}
@@ -58,87 +59,82 @@ import hash from 'object-hash'
         this.commitLogStream({})
       }
 
+      pages = {}
 
       {{#each methods}}
 
         {{#if responseStream}}
-          {{case 'camel' name}} = async function * (input) {
+          {{case 'camel' name}} = async (input) => {
         {{else}}
-        {{case 'camel' name}} = async (input) => {
+          {{case 'camel' name}} = async (input) => {
         {{/if}}
 
-        {{#if responseStream}}
-            for await (let output of await this.bridge.{{case 'camel' name}}(input)) {
-        {{else}}
+          {{#if responseStream}}
+            const stream = await this.bridge.{{case 'camel' name}}(input)
+            stream.on('data', output => {
+          {{else}}
             let output = await this.bridge.{{case 'camel' name}}(input)
-        {{/if}}
+          {{/if}}
 
-        {{#if (is name 'CommitLogStream')}}
-          {{#with resolvedResponseType.nested.Entity}}
-             Object.keys(output.entity).forEach(
-               key => {
-                 if (output.entity[key] == null) {
-                   return
-                 }
-                 switch (key) {
-                   {{#each fields}}
-                     case '{{name}}': {
-                       output.entity[key] = new {{resolvedType.name}}EntityStore(
-                         this.store,
-                         output.entity[key],
-                       )
-                       switch (output.operation) {
-                         case 0:
-                         case 1:
-                           this.store.entity.{{case 'camel' resolvedType.name}}.set(
-                             output.entity[key].id,
-                             output.entity[key],
-                           )
-                         case 2:
-                           if (this.store.entity.{{case 'camel' resolvedType.name}}.has(
-                             output.entity[key].id,
-                           )) {
-                             this.store.entity.{{case 'camel' resolvedType.name}}.delete(
-                               output.entity[key].id,
-                             )
-                           }
-                         default:
-                           console.error('commitLog: operation not defined for entity')
-                       }
-                     }
-                   {{/each}}
-                 }
-               }
-             )
-          {{/with}}
-        {{/if}}
-        {{#with (lookup 'berty.node.CommitLog.Entity')}}
-          {{#each fields}}
-            {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
-              {{#if (test ../../name (toRegex '(Remove|Delete)$'))}}
-                if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.id)) {
-                  this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
+          {{#if (is name 'CommitLogStream')}}
+            {{#with resolvedResponseType.nested.Entity}}
+              Object.keys(output.entity).forEach(
+                key => {
+                  if (output.entity[key] == null) {
+                    return
+                  }
+                  switch (key) {
+                    {{#each fields}}
+                      case '{{name}}': {
+                        switch (output.operation) {
+                          case 0:
+                          case 1:
+                            this.store.entity.{{case 'camel' resolvedType.name}}.set(
+                              output.entity[key].id,
+                              new {{resolvedType.name}}EntityStore(this.store, output.entity[key]),
+                            )
+                            break
+                          case 2:
+                            if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.entity[key].id)) {
+                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.entity[key].id)
+                            }
+                            break
+                          default:
+                            break
+                        }
+                      }
+                    {{/each}}
+                  }
                 }
-              {{else}}
-                output = new {{resolvedType.name}}EntityStore(this.store, output)
-                this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, output)
+              )
+            {{/with}}
+          {{/if}}
+
+          {{#with (lookup 'berty.node.CommitLog.Entity')}}
+            {{#each fields}}
+              {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
+                {{#if (test ../../name (toRegex '(Remove|Delete)$'))}}
+                  if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.id)) {
+                    this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
+                  }
+                {{else}}
+                  output = new {{resolvedType.name}}EntityStore(this.store, output)
+                  this.store.entity.{{case 'camel' resolvedType.name}}.set(output.id, output)
+                {{/if}}
               {{/if}}
-            {{/if}}
-          {{/each}}
-        {{/with}}
+            {{/each}}
+          {{/with}}
 
-        {{#if responseStream}}
-            yield this.store.entity.{{case 'camel' resolvedResponseType.name}}.get(output.id)
-          }
-        {{else}}
-          return this.store.entity.{{case 'camel' resolvedResponseType.name}}.get(output.id)
-        {{/if}}
+          {{#if responseStream}}
+            })
+            const copyStream = new Stream.PassThrough()
+            stream.pipe(copyStream)
+            return copyStream
+          {{else}}
+            return output
+          {{/if}}
 
-        {{#if responseStream}}
-          }.bind(this)
-        {{else}}
-          }
-        {{/if}}
+        }
       {{/each}}
     }
   {{/with}}

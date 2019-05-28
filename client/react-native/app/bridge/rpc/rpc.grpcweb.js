@@ -1,6 +1,7 @@
 import grpc from 'grpc-web'
-import { getServiceName, streamToAsyncGeneratorFunction } from './utils'
+import { getServiceName } from './utils'
 import sleep from '@berty/common/helpers/sleep'
+import Stream from 'stream'
 export const DefautlHostname = 'http://localhost:8989'
 
 const { MethodInfo } = grpc.AbstractClientBase
@@ -18,7 +19,7 @@ const unary = (client, hostname) => async (method, request, metadata) => {
   return unary
 }
 
-const stream = (client, hostname) => (method, request, metadata) => {
+const stream = (client, hostname) => async (method, request, metadata) => {
   const url = `${hostname}/${getServiceName(method)}/${method.name}`
   const responseType = method.resolvedResponseType
   const methodInfo = new MethodInfo(
@@ -27,14 +28,31 @@ const stream = (client, hostname) => (method, request, metadata) => {
     res => responseType.decode(res)
   )
 
-  const stream = client.serverStreaming(
+  const stream = await client.serverStreaming(
     url,
     request,
     metadata || {},
     methodInfo
   )
+  stream.pause = () => {}
+  stream.resume = () => {}
 
-  return streamToAsyncGeneratorFunction(stream)
+  // grpc-web does not implement true rw stream
+  const ptStream = new Stream.PassThrough({
+    readableObjectMode: true,
+    writableObjectMode: true,
+  }).wrap(stream)
+
+  // fix that onEnd is not called
+  stream.on('status', status => {
+    if (status.code === 0) {
+      ptStream.end()
+      stream.cancel()
+    }
+  })
+  stream.on('error', () => {})
+
+  return ptStream
 }
 
 export const rpcWithHostname = hostname => {

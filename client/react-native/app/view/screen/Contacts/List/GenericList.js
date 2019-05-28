@@ -5,9 +5,10 @@ import {
   InteractionManager,
   TouchableOpacity,
   ActivityIndicator,
-  FlatList,
   Platform,
+  FlatList as FlatListWeb,
 } from 'react-native'
+import { FlatList } from 'react-navigation'
 import { Screen, Icon, EmptyList, Loader } from '@berty/view/component'
 import { colors } from '@berty/common/constants'
 import { Pagination } from '@berty/relay'
@@ -118,29 +119,69 @@ class GenericList extends React.Component {
     />
   )
 
+  static ITEM_HEIGHT = (() => {
+    switch (Platform.OS) {
+      case 'web':
+        // eslint-disable-next-line
+        return __DEV__ ? 80.5 : 72
+      case 'android':
+      case 'ios':
+      default:
+        return 72
+    }
+  })()
+
   getItemLayout = (data, index) => ({
-    length: 80.5,
-    offset: 80.5 * index,
+    length: GenericList.ITEM_HEIGHT,
+    offset: GenericList.ITEM_HEIGHT * index,
     index,
   })
 
   keyExtractor = item => item.id
 
+  shouldItemUpdate = (props, nextProps) => {
+    if (props.data.status !== nextProps.data.status) {
+      return true
+    }
+    return false
+  }
+
+  static List = Platform.OS === 'web' ? FlatListWeb : FlatList
+
+  lastIndex = null
+  onScroll = paginate => {
+    return e => {
+      if (this.lastIndex) {
+        if (
+          e.nativeEvent.contentOffset.y > this.lastIndex &&
+          e.nativeEvent.contentOffset.y >
+            e.nativeEvent.contentSize.height * 0.666
+        ) {
+          paginate()
+        }
+      }
+      this.lastIndex = e.nativeEvent.contentOffset.y
+    }
+  }
+
   renderList = ({ queue, paginate, count, loading, retry }) => {
     if (count) {
       return (
         <>
-          <FlatList
-            initialNumToRender={20}
-            maxToRenderPerBatch={10}
+          <GenericList.List
+            windowSize={11}
+            initialNumToRender={50}
+            maxToRenderPerBatch={5}
+            updateCellsBatchingPeriod={64}
+            onScroll={this.onScroll(paginate)}
+            scrollEventThrottle={64}
+            onEndReached={this.paginate}
             data={queue}
-            windowSize={3}
             getItemLayout={this.getItemLayout}
             keyExtractor={this.keyExtractor}
             extraData={count}
-            onEndReached={paginate}
-            onEndReachedThreshold={1}
             renderItem={this.renderItem}
+            refreshing={count === 0 && loading}
             onRefresh={Platform.OS !== 'web' && retry}
           />
           {count < 5 ? <CondComponent onPress={this.props.onPress} /> : null}
@@ -169,7 +210,7 @@ class GenericList extends React.Component {
         <Store.Node.Service.ContactList.Pagination
           filter={{ ...((filter && filter.filter) || {}) }}
           paginate={({ cursor, count }) => ({
-            first: count ? 50 : 20,
+            first: count ? 10 : 50,
             after: cursor,
           })}
           fallback={<Loader />}
@@ -178,12 +219,6 @@ class GenericList extends React.Component {
         </Store.Node.Service.ContactList.Pagination>
       </Screen>
     )
-  }
-}
-
-export class GenericMobxList extends PureComponent {
-  render () {
-    return <Screen style={[{ backgroundColor: colors.white }]} />
   }
 }
 

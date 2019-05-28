@@ -1,6 +1,7 @@
 import './helpers/crash-handler.js'
 import './helpers/patch-web.js'
 import './helpers/patch-electron.js'
+import 'node-libs-react-native/globals'
 
 import { Platform, AppRegistry } from 'react-native'
 import React from 'react'

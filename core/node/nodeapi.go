@@ -432,6 +432,7 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 			return errorcodes.ErrNetStream.Wrap(err)
 		}
 	}
+
 	return nil
 }
 

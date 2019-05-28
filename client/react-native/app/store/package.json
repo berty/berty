@@ -10,6 +10,7 @@
     "mobx": "^5.9.4",
     "mobx-react": "^5.4.3",
     "mobx-utils": "^5.4.0",
+    "once": "^1.4.0",
     "throttle-debounce": "^2.1.0"
   }
 }

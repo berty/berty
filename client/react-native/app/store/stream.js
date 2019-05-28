@@ -1,7 +1,9 @@
 import { Mutex } from 'async-mutex'
 import { debounce, throttle } from 'throttle-debounce'
-
+import { Platform, InteractionManager } from 'react-native'
 import { Component } from 'react'
+import once from 'once'
+import objectHash from 'object-hash'
 
 export class Stream extends Component {
   get service () {
@@ -36,10 +38,10 @@ export class Stream extends Component {
     const stream = await this.service(this.request)
     const queue = []
 
-    for await (const response of stream) {
+    stream.on('data', response => {
       this.props.response(queue, response)
       this.setStateDebounce({ queue })
-    }
+    })
   }
 
   setStateDebounce = debounce(50, this.setState)
@@ -73,45 +75,56 @@ const deepFilterEqual = (a, b) => {
 
 export class StreamPagination extends Stream {
   queue = []
-  queueMutex = new Mutex()
   cursor = ''
   count = 0
   loading = true
 
   retry = () => {
-    this.queue = []
-    this.cursor = ''
-    this.count = 0
     this.loading = true
     this.forceUpdate()
+    this.cursor = ''
+    this.queue = []
+    this.invokeHashTable = {}
+    this.invoke()
   }
 
   add = change => {
     const { newValue } = change
-    // compare with filter
+
+    // delete item from list if not equal with filter
     if (!deepFilterEqual(this.filter, newValue)) {
       this.delete({ ...change, oldValue: newValue })
       return
     }
 
-    const index = this.queue.findIndex(item => item.id === newValue.id)
+    // if item exist, update it
+    const index = this.queue.findIndex(item => newValue.id === item.id)
     if (index !== -1) {
       this.queue.splice(index, 1, newValue)
       return
     }
 
+    // else find where to put the new item
     const cursorField = this.paginate.sortedBy || 'id'
     const cursor = newValue[cursorField]
 
-    for (const index in this.queue) {
-      const item = this.queue[index]
-      const inf = cursor <= item[cursorField]
-      if (inf) {
-        this.queue.splice(index, 0, newValue)
+    for (let topIndex in this.queue) {
+      let itemTop = this.queue[topIndex]
+      let infTop = cursor <= itemTop[cursorField]
+      if (infTop) {
+        this.queue.splice(topIndex, 0, newValue)
+        return
+      }
+      let bottomIndex = this.queue.length - topIndex - 1
+      let itemBottom = this.queue[bottomIndex]
+      let infBottom = cursor <= itemBottom[cursorField]
+      if (infBottom) {
+        this.queue.splice(bottomIndex, 0, newValue)
         return
       }
     }
 
+    // if forced to add, push it
     if (change.force) {
       this.queue.push(newValue)
     }
@@ -131,10 +144,7 @@ export class StreamPagination extends Stream {
     this.queue.splice(index, 1)
   }
 
-  forceUpdateDebounce = debounce(50, this.forceUpdate)
-
   observe = async change => {
-    const release = await this.queueMutex.acquire()
     const { type } = change
     switch (type) {
       case 'add':
@@ -148,10 +158,18 @@ export class StreamPagination extends Stream {
         break
       default:
     }
-    this.count = this.queue.length
-    release()
-    this.forceUpdateDebounce()
+    this.smartForceUpdate()
   }
+
+  smartForceUpdateMutex = new Mutex()
+  smartForceUpdate = async () => {
+    if (this.smartForceUpdateMutex.isLocked()) {
+      return
+    }
+    const release = await this.smartForceUpdateMutex.acquire()
+    this.forceUpdateDebounced(release)
+  }
+  forceUpdateDebounced = debounce(16, this.forceUpdate)
 
   get request () {
     return { filter: this.filter, paginate: this.paginate }
@@ -166,7 +184,10 @@ export class StreamPagination extends Stream {
 
   get paginate () {
     if (this.props.paginate) {
-      return this.props.paginate({ cursor: this.cursor, count: this.count })
+      return this.props.paginate({
+        cursor: this.cursor,
+        count: this.queue.length,
+      })
     }
     return {
       first: 10,
@@ -174,13 +195,21 @@ export class StreamPagination extends Stream {
     }
   }
 
-  invokeMutex = new Mutex()
+  invokeHashTable = {}
   invoke = async () => {
     const queue = []
 
-    let release = await this.invokeMutex.acquire()
+    const request = this.request
+    const requestHash = objectHash(request)
+    if (this.invokeHashTable[requestHash]) {
+      return
+    }
+    this.invokeHashTable[requestHash] = true
+
     this.loading = true
-    for await (const response of await this.service(this.request)) {
+    const stream = await this.service(request)
+
+    stream.on('data', response => {
       queue.push(response)
       this.observe({
         type: 'add',
@@ -188,24 +217,25 @@ export class StreamPagination extends Stream {
         name: response.id,
         force: true,
       })
-    }
-    this.loading = false
-    if (queue.length === 0) {
-      release()
-      return
-    }
-    this.cursor = queue[queue.length - 1][this.paginate.sortedBy || 'id']
-    release()
+    })
+
+    stream.on('end', () => {
+      this.loading = false
+      if (queue.length !== 0) {
+        this.cursor = queue[queue.length - 1][this.paginate.sortedBy || 'id']
+      }
+      this.smartForceUpdate()
+    })
   }
 
   render () {
-    if (this.loading && this.count === 0) {
+    if (this.props.fallback && this.loading && this.queue.length === 0) {
       return this.props.fallback
     }
     return this.props.children({
       queue: this.queue,
       paginate: this.invoke,
-      count: this.count,
+      count: this.queue.length,
       loading: this.loading,
       retry: this.retry,
     })

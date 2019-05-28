@@ -123,7 +123,6 @@ export class SenderAliasEntityContainer extends Component {
 }
 
 @withContext
-@observer
 export class IDServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.id
@@ -131,7 +130,6 @@ export class IDServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class CommitLogStreamServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.commitLogStream
@@ -139,7 +137,6 @@ export class CommitLogStreamServiceNodeContainer extends Stream {
 }
 
 @withContext
-@observer
 export class EventStreamServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.eventStream
@@ -147,7 +144,6 @@ export class EventStreamServiceNodeContainer extends Stream {
 }
 
 @withContext
-@observer
 export class EventListServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.eventList
@@ -168,7 +164,6 @@ class EventListServiceNodePaginationContainer extends StreamPagination {
 EventListServiceNodeContainer.Pagination = EventListServiceNodePaginationContainer
 
 @withContext
-@observer
 export class EventUnseenServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.eventUnseen
@@ -189,7 +184,6 @@ class EventUnseenServiceNodePaginationContainer extends StreamPagination {
 EventUnseenServiceNodeContainer.Pagination = EventUnseenServiceNodePaginationContainer
 
 @withContext
-@observer
 export class GetEventServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.getEvent
@@ -197,7 +191,6 @@ export class GetEventServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class EventSeenServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.eventSeen
@@ -205,7 +198,6 @@ export class EventSeenServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class EventRetryServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.eventRetry
@@ -213,7 +205,6 @@ export class EventRetryServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConfigPublicServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.configPublic
@@ -221,7 +212,6 @@ export class ConfigPublicServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConfigUpdateServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.configUpdate
@@ -229,7 +219,6 @@ export class ConfigUpdateServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ContactRequestServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.contactRequest
@@ -237,7 +226,6 @@ export class ContactRequestServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ContactAcceptRequestServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.contactAcceptRequest
@@ -245,7 +233,6 @@ export class ContactAcceptRequestServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ContactRemoveServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.contactRemove
@@ -253,7 +240,6 @@ export class ContactRemoveServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ContactUpdateServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.contactUpdate
@@ -261,7 +247,6 @@ export class ContactUpdateServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ContactListServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.contactList
@@ -282,7 +267,6 @@ class ContactListServiceNodePaginationContainer extends StreamPagination {
 ContactListServiceNodeContainer.Pagination = ContactListServiceNodePaginationContainer
 
 @withContext
-@observer
 export class ContactServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.contact
@@ -290,7 +274,6 @@ export class ContactServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ContactCheckPublicKeyServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.contactCheckPublicKey
@@ -298,7 +281,6 @@ export class ContactCheckPublicKeyServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationCreateServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationCreate
@@ -306,7 +288,6 @@ export class ConversationCreateServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationUpdateServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationUpdate
@@ -314,7 +295,6 @@ export class ConversationUpdateServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationListServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.conversationList
@@ -335,7 +315,6 @@ class ConversationListServiceNodePaginationContainer extends StreamPagination {
 ConversationListServiceNodeContainer.Pagination = ConversationListServiceNodePaginationContainer
 
 @withContext
-@observer
 export class ConversationInviteServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationInvite
@@ -343,7 +322,6 @@ export class ConversationInviteServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationExcludeServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationExclude
@@ -351,7 +329,6 @@ export class ConversationExcludeServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationAddMessageServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationAddMessage
@@ -359,7 +336,6 @@ export class ConversationAddMessageServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversation
@@ -367,7 +343,6 @@ export class ConversationServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationMemberServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationMember
@@ -375,7 +350,6 @@ export class ConversationMemberServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationReadServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationRead
@@ -383,7 +357,6 @@ export class ConversationReadServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationRemoveServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationRemove
@@ -391,7 +364,6 @@ export class ConversationRemoveServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ConversationLastEventServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.conversationLastEvent
@@ -399,7 +371,6 @@ export class ConversationLastEventServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DevicePushConfigListServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigList
@@ -407,7 +378,6 @@ export class DevicePushConfigListServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DevicePushConfigCreateServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigCreate
@@ -415,7 +385,6 @@ export class DevicePushConfigCreateServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DevicePushConfigNativeRegisterServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigNativeRegister
@@ -423,7 +392,6 @@ export class DevicePushConfigNativeRegisterServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DevicePushConfigNativeUnregisterServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigNativeUnregister
@@ -431,7 +399,6 @@ export class DevicePushConfigNativeUnregisterServiceNodeContainer extends Unary 
 }
 
 @withContext
-@observer
 export class DevicePushConfigRemoveServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigRemove
@@ -439,7 +406,6 @@ export class DevicePushConfigRemoveServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DevicePushConfigUpdateServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigUpdate
@@ -447,7 +413,6 @@ export class DevicePushConfigUpdateServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class HandleEventServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.handleEvent
@@ -455,7 +420,6 @@ export class HandleEventServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class GenerateFakeDataServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.generateFakeData
@@ -463,7 +427,6 @@ export class GenerateFakeDataServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class RunIntegrationTestsServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.runIntegrationTests
@@ -471,7 +434,6 @@ export class RunIntegrationTestsServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DebugPingServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.debugPing
@@ -479,7 +441,6 @@ export class DebugPingServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DebugRequeueEventServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.debugRequeueEvent
@@ -487,7 +448,6 @@ export class DebugRequeueEventServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DebugRequeueAllServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.debugRequeueAll
@@ -495,7 +455,6 @@ export class DebugRequeueAllServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class DeviceInfosServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.deviceInfos
@@ -503,7 +462,6 @@ export class DeviceInfosServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class AppVersionServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.appVersion
@@ -511,7 +469,6 @@ export class AppVersionServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class PeersServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.peers
@@ -519,7 +476,6 @@ export class PeersServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ProtocolsServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.protocols
@@ -527,7 +483,6 @@ export class ProtocolsServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class LogStreamServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.logStream
@@ -535,7 +490,6 @@ export class LogStreamServiceNodeContainer extends Stream {
 }
 
 @withContext
-@observer
 export class LogfileListServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.logfileList
@@ -543,7 +497,6 @@ export class LogfileListServiceNodeContainer extends Stream {
 }
 
 @withContext
-@observer
 export class LogfileReadServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.logfileRead
@@ -551,7 +504,6 @@ export class LogfileReadServiceNodeContainer extends Stream {
 }
 
 @withContext
-@observer
 export class TestLogBackgroundErrorServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.testLogBackgroundError
@@ -559,7 +511,6 @@ export class TestLogBackgroundErrorServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class TestLogBackgroundWarnServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.testLogBackgroundWarn
@@ -567,7 +518,6 @@ export class TestLogBackgroundWarnServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class TestLogBackgroundDebugServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.testLogBackgroundDebug
@@ -575,7 +525,6 @@ export class TestLogBackgroundDebugServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class TestPanicServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.testPanic
@@ -583,7 +532,6 @@ export class TestPanicServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class TestErrorServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.testError
@@ -591,7 +539,6 @@ export class TestErrorServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class MonitorBandwidthServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.monitorBandwidth
@@ -599,7 +546,6 @@ export class MonitorBandwidthServiceNodeContainer extends Stream {
 }
 
 @withContext
-@observer
 export class MonitorPeersServiceNodeContainer extends Stream {
   get service () {
     return this.props.context.node.service.monitorPeers
@@ -607,7 +553,6 @@ export class MonitorPeersServiceNodeContainer extends Stream {
 }
 
 @withContext
-@observer
 export class GetListenAddrsServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.getListenAddrs
@@ -615,7 +560,6 @@ export class GetListenAddrsServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class GetListenInterfaceAddrsServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.getListenInterfaceAddrs
@@ -623,7 +567,6 @@ export class GetListenInterfaceAddrsServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class Libp2PPingServiceNodeContainer extends Unary {
   get service () {
     return this.props.context.node.service.libp2PPing
@@ -631,7 +574,6 @@ export class Libp2PPingServiceNodeContainer extends Unary {
 }
 
 @withContext
-@observer
 export class ServiceNodeContainer extends Component {
   static CommitLogStream = CommitLogStreamServiceNodeContainer
   static EventStream = EventStreamServiceNodeContainer
@@ -652,7 +594,6 @@ export class ServiceNodeContainer extends Component {
 }
 
 @withContext
-@observer
 export class StoreContainer extends Component {
   static Entity = {
     Config: ConfigEntityContainer,
