@@ -261,7 +261,7 @@ module.exports = {
             ],
             loader: require.resolve('babel-loader'),
             options: {
-              babelrc: true,
+              babelrc: false,
               configFile: false,
               compact: false,
               presets: [

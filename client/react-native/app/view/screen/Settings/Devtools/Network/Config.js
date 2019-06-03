@@ -1,8 +1,8 @@
 import { Switch } from 'react-native'
 import React, { PureComponent } from 'react'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { withBridgeContext } from '@berty/bridge/Context'
 
-import { Header, Loader, Menu } from '@berty/view/component'
+import { Header, Loader, Menu } from '@berty/component'
 
 class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => {

@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View } from 'react-native'
 import React, { PureComponent } from 'react'
 import moment from 'moment'
 
-import { FilterModal, PickerFilter } from '@berty/view/component/Filters'
+import { FilterModal, PickerFilter } from '@berty/component/Filters'
 import {
   Flex,
   Header,
@@ -10,13 +10,14 @@ import {
   SearchBar,
   Icon,
   Text as LibText,
-} from '@berty/view/component'
+} from '@berty/component'
 import { Pagination, RelayContext } from '@berty/relay'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { fragments, enums } from '@berty/graphql'
-import Button from '@berty/view/component/Button'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { fragments } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
+import Button from '@berty/component/Button'
+import { withRelayContext } from '@berty/relay/context'
 
 const Item = fragments.Event(({ data, navigation }) => (
   <TouchableOpacity

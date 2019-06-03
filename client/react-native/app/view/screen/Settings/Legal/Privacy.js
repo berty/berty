@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Header, Text, Flex } from '@berty/view/component'
+import { Header, Text, Flex } from '@berty/component'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
 

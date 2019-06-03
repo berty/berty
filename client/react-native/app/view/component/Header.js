@@ -5,7 +5,7 @@ import Flex from './Flex'
 import Text from './Text'
 import { colors } from '@berty/common/constants'
 import { padding, borderBottom } from '@berty/common/styles'
-import { isRTL } from '@berty/locale'
+import { isRTL } from '@berty/common/locale'
 import { withGoBack } from './BackActionProvider'
 
 const [defaultTextColor, defaultBackColor] = [colors.fakeBlack, colors.white]

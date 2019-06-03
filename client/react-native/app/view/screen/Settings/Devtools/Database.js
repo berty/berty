@@ -1,10 +1,10 @@
 import { ActivityIndicator, Alert } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Flex, Header, Menu, Screen, Text } from '@berty/view/component'
+import { Flex, Header, Menu, Screen, Text } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { withRelayContext } from '@berty/relay/context'
+import { withBridgeContext } from '@berty/bridge/Context'
 import { RelayContext } from '@berty/relay'
 
 class Database extends PureComponent {

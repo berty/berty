@@ -3,8 +3,7 @@ import { withNavigation } from 'react-navigation'
 import React from 'react'
 
 import ActionList from './ActionList'
-import RelayContext from '@berty/relay/RelayContext'
-import { withContext as withStoreContext } from '@berty/store/context'
+import { withStoreContext } from '@berty/store/context'
 
 const ActionsAdd = withStoreContext(
   ({ data, self, context, navigation, inModal, t }) => (

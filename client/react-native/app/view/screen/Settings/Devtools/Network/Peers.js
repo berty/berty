@@ -6,7 +6,7 @@ import {
   ScrollView,
   View,
 } from 'react-native'
-import { Header, SearchBar, Text as LibText } from '@berty/view/component'
+import { Header, SearchBar, Text as LibText } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import {
   bold,
@@ -18,7 +18,7 @@ import {
   smallText,
 } from '@berty/common/styles'
 import Accordion from 'react-native-collapsible/Accordion'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withRelayContext } from '@berty/relay/context'
 
 const Connection = {
   NOT_CONNECTED: 0,

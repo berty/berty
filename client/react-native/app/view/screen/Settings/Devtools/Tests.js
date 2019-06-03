@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
-import { Menu, Header } from '@berty/view/component'
+import { Menu, Header } from '@berty/component'
 import { RelayContext } from '@berty/relay'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withRelayContext } from '@berty/relay/context'
 
 const testScenarios = [
   {

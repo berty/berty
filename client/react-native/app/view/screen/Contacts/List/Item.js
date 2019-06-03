@@ -1,21 +1,20 @@
 import React, { PureComponent } from 'react'
-import { enums, fragments } from '@berty/graphql'
-import { Avatar, Flex, Text } from '@berty/view/component'
+import { fragments } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
+import { Avatar, Flex, Text } from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
 import { withNavigation } from 'react-navigation'
-import ActionsUnknown from '@berty/view/component/ContactIdentityActions/ActionsUnknown'
-import ActionsReceived from '@berty/view/component/ContactIdentityActions/ActionsReceived'
-import ActionsSent from '@berty/view/component/ContactIdentityActions/ActionsSent'
+import ActionsUnknown from '@berty/component/ContactIdentityActions/ActionsUnknown'
+import ActionsReceived from '@berty/component/ContactIdentityActions/ActionsReceived'
+import ActionsSent from '@berty/component/ContactIdentityActions/ActionsSent'
 import { withNamespaces } from 'react-i18next'
-import { StoreContainer as Store } from '@berty/store/container.gen'
-import { withContext as withStoreContext } from '@berty/store/context'
 
 @withNamespaces()
 @withNavigation
 export class Item extends PureComponent {
-  async showDetails () {
-    const { data, context, navigation } = this.props
+  showDetails = () => {
+    const { data, navigation } = this.props
     if (
       [
         enums.BertyEntityContactInputStatus.IsRequested,
@@ -39,7 +38,7 @@ export class Item extends PureComponent {
       <Flex.Cols
         align='center'
         style={[{ height: 72 }, padding, borderBottom]}
-        onPress={() => this.showDetails()}
+        onPress={this.showDetails}
       >
         <Flex.Cols size={1} align='center'>
           <Avatar data={data} size={40} />

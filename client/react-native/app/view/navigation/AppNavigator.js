@@ -1,7 +1,7 @@
 import { createSwitchNavigator } from 'react-navigation'
 
-import { Picker } from '../screen/Picker'
-import Auth from '../screen/Accounts/Auth'
+import { Picker } from '@berty/screen/Picker'
+import Auth from '@berty/screen/Accounts/Auth'
 import MainNavigator from './MainNavigator'
 import OnboardingNavigator from './OnboardingNavigator'
 

@@ -1,8 +1,6 @@
 {{~#if (contains filename "api/node/service.proto")~}}
 
-import { observable, action, computed } from 'mobx'
-import EntityStore from './entity'
-import hash from 'object-hash'
+import { observable, computed } from 'mobx'
 import Stream from 'stream'
 
   {{#with (lookup 'berty.node.CommitLog.Entity')}}
@@ -84,9 +82,12 @@ import Stream from 'stream'
                     return
                   }
                   switch (key) {
+                    default:
+                      break
                     {{#each fields}}
-                      case '{{name}}': {
+                      case '{{name}}':
                         switch (output.operation) {
+                          default:
                           case 0:
                           case 1:
                             this.store.entity.{{case 'camel' resolvedType.name}}.set(
@@ -99,10 +100,8 @@ import Stream from 'stream'
                               this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.entity[key].id)
                             }
                             break
-                          default:
-                            break
                         }
-                      }
+                        break
                     {{/each}}
                   }
                 }
@@ -127,7 +126,10 @@ import Stream from 'stream'
 
           {{#if responseStream}}
             })
-            const copyStream = new Stream.PassThrough()
+            const copyStream = new Stream.PassThrough({
+              writableObjectMode: true,
+              readableObjectMode: true,
+            })
             stream.pipe(copyStream)
             return copyStream
           {{else}}
@@ -146,7 +148,7 @@ import Stream from 'stream'
       this.entity = {
         {{#with (lookup 'berty.node.CommitLog.Entity')}}
           {{#each fields}}
-            {{case 'camel' resolvedType.name}}: observable.map({}, { deep: true }),
+            {{case 'camel' resolvedType.name}}: observable.map({}, { deep: false }),
           {{/each}}
         {{/with}}
       }

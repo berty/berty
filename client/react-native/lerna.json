@@ -2,7 +2,8 @@
   "lerna": "3.13.4",
   "packages": [
     "app/*",
+    "app/view/*",
     "web"
   ],
-  "version": "0.0.0"
+  "version": "0.0.1"
 }

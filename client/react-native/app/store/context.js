@@ -1,23 +1,9 @@
 import React from 'react'
-import hoistStatics from 'hoist-non-react-statics'
-import { Store } from './store.gen'
+import { withContext } from '@berty/common/helpers/views'
 
-const StoreContext = React.createContext()
-const withStoreContext = Component => {
-  return hoistStatics(
-    props =>
-      props.context &&
-      props.context.constructor &&
-      props.context.constructor === Store ? (
-          <Component {...props} />
-        ) : (
-          <StoreContext.Consumer>
-            {context => <Component {...props} context={context} />}
-          </StoreContext.Consumer>
-        ),
-    Component
-  )
-}
+export const StoreContext = React.createContext()
+StoreContext.displayName = 'StoreContext'
+
+export const withStoreContext = withContext(StoreContext)
 
 export default StoreContext
-export { StoreContext as Context, withStoreContext as withContext }

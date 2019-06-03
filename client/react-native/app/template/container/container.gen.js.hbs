@@ -4,8 +4,8 @@ import { observer } from 'mobx-react'
 import { observe } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
-import { withContext } from './context'
-import React, { Component } from 'react'
+import { withStoreContext } from '@berty/store/context'
+import { Component } from 'react'
 
   {{#with (lookup 'berty.node.CommitLog')}}
     {{#with fields.entity.resolvedType}}
@@ -13,9 +13,9 @@ import React, { Component } from 'react'
         {{#with resolvedType}}
           {{#if fields.id}}
 
-            @withContext
+            @withStoreContext
             @observer
-            export class {{name}}EntityContainer extends Component {
+            export class {{name}}Entity extends Component {
               render () {
                 const { context, id, children } = this.props
                 const entity = context.entity.{{case 'camel' name}}.get(id)
@@ -35,8 +35,8 @@ import React, { Component } from 'react'
       {{#each methods}}
         {{#if responseStream}}
 
-          @withContext
-          export class {{name}}ServiceNodeContainer extends Stream {
+          @withStoreContext
+          export class {{name}}ServiceNode extends Stream {
             get service () {
               return this.props.context.node.service.{{case 'camel' name}}
             }
@@ -47,8 +47,8 @@ import React, { Component } from 'react'
               {{#each fields}}
                 {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
                   {{#with ../../this}}
-                    @withContext
-                    class {{name}}ServiceNodePaginationContainer extends StreamPagination {
+                    @withStoreContext
+                    class {{name}}ServiceNodePagination extends StreamPagination {
                       constructor (props, context) {
                         super(props, context)
                         observe(
@@ -61,7 +61,7 @@ import React, { Component } from 'react'
                         return this.props.context.node.service.{{case 'camel' name}}
                       }
                     }
-                    {{name}}ServiceNodeContainer.Pagination = {{name}}ServiceNodePaginationContainer
+                    {{name}}ServiceNode.Pagination = {{name}}ServiceNodePagination
                   {{/with}}
                 {{/if}}
               {{/each}}
@@ -71,8 +71,8 @@ import React, { Component } from 'react'
 
         {{else}}
 
-        @withContext
-        export class {{name}}ServiceNodeContainer extends Unary {
+        @withStoreContext
+        export class {{name}}ServiceNode extends Unary {
           get service () {
             return this.props.context.node.service.{{case 'camel' name}}
           }
@@ -80,30 +80,29 @@ import React, { Component } from 'react'
         {{/if}}
       {{/each}}
 
-      @withContext
-      export class ServiceNodeContainer extends Component {
+      @withStoreContext
+      export class ServiceNode extends Component {
         {{#each methods}}
           {{#if responseStream}}
-          static {{name}} = {{name}}ServiceNodeContainer
+          static {{name}} = {{name}}ServiceNode
          {{/if}}
         {{/each}}
 
         render () {
-          const { context } = this.props
           return context => this.props.children(context.node)
         }
       }
     {{/with}}
 
-    @withContext
-    export class StoreContainer extends Component {
+    @withStoreContext
+    export class Store extends Component {
       static Entity = {
         {{#with (lookup 'berty.node.CommitLog')}}
           {{#with fields.entity.resolvedType}}
             {{#each fields}}
               {{#with resolvedType}}
                 {{#if fields.id}}
-                {{name}}: {{name}}EntityContainer,
+                {{name}}: {{name}}Entity,
                 {{/if}}
               {{/with}}
             {{/each}}
@@ -112,7 +111,7 @@ import React, { Component } from 'react'
       }
 
       static Node = {
-        Service: ServiceNodeContainer,
+        Service: ServiceNode,
       }
 
       render () {
@@ -123,6 +122,6 @@ import React, { Component } from 'react'
       }
     }
 
-    export default StoreContainer
+    export default Store
 
 {{~/if~}}

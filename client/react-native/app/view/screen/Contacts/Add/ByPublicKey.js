@@ -2,12 +2,12 @@ import { View, Clipboard, Platform } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
-import { TextInputMultilineFix, Button, Flex } from '@berty/view/component'
+import { TextInputMultilineFix, Button, Flex } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { marginTop, padding, rounded, textTiny } from '@berty/common/styles'
 import { monospaceFont } from '@berty/common/constants/styling'
 import { parse as parseUrl } from '@berty/common/helpers/url'
-import { withContext as withStoreContext } from '@berty/store/context'
+import { withStoreContext } from '@berty/store/context'
 
 @withStoreContext
 class ByPublicKey extends PureComponent {

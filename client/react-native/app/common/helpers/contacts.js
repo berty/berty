@@ -1,12 +1,8 @@
 import { Platform, Share } from 'react-native'
-import { atob } from 'b64-lite'
-import { showMessage } from 'react-native-flash-message'
 import DeviceInfo from 'react-native-device-info'
 import I18n from 'i18next'
 
 import { BASE_WEBSITE_URL } from '../constants'
-import { contact } from '../utils'
-import { enums } from '@berty/graphql'
 
 export const extractPublicKeyFromId = id => {
   try {

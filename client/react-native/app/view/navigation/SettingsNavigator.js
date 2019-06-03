@@ -2,15 +2,15 @@ import { createStackNavigator } from 'react-navigation'
 import I18n from 'i18next'
 import React from 'react'
 
-import { Header } from '@berty/view/component'
+import { Header } from '@berty/component'
 import AboutNavigator from './AboutNavigator'
 import DevtoolsNavigator from './DevtoolsNavigator'
 import HelpNavigator from './HelpNavigator'
 import LegalNavigator from './LegalNavigator'
-import List from '../screen/Settings/List'
-import MyAccount from '../screen/Settings/MyAccount/MyAccount'
-import Notifications from '../screen/Settings/Notifications'
-import Update from '../screen/Settings/Update'
+import List from '@berty/screen/Settings/List'
+import MyAccount from '@berty/screen/Settings/MyAccount/MyAccount'
+import Notifications from '@berty/screen/Settings/Notifications'
+import Update from '@berty/screen/Settings/Update'
 
 export default createStackNavigator(
   {

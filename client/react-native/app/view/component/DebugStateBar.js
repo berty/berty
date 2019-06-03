@@ -6,7 +6,7 @@ import Text from './Text'
 import { View, Platform } from 'react-native'
 import Icon from './Icon'
 import NavigationService from '@berty/common/helpers/NavigationService'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withRelayContext } from '@berty/relay/context'
 
 const daemonStateValues = {
   down: 0,

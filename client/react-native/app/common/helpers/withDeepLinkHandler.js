@@ -3,7 +3,6 @@ import React from 'react'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 
 import { BASE_WEBSITE_URL } from '../constants'
-import { conversation, contact } from '../utils'
 import { parse as parseUrl } from './url'
 
 export const withDeepLinkHandler = Component => {
@@ -22,7 +21,7 @@ export const withDeepLinkHandler = Component => {
       switch (url.pathname) {
         case '/chats/detail':
           if (url.hashParts['id']) {
-            url.hashParts['id'] = conversation.getRelayID(url.hashParts['id'])
+            url.hashParts['id'] = btoa(`conversation:${url.hashParts['id']}`)
           }
           this.setState({
             routeName: 'chats/detail',
@@ -30,9 +29,6 @@ export const withDeepLinkHandler = Component => {
           })
           break
         case '/contacts/add':
-          if (url.hashParts['id']) {
-            url.hashParts['id'] = contact.getRelayID(url.hashParts['id'])
-          }
           this.setState({
             routeName: 'modal/contacts/card',
             params: url.hashParts,

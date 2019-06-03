@@ -1,13 +1,13 @@
-import './helpers/crash-handler.js'
-import './helpers/patch-web.js'
-import './helpers/patch-electron.js'
+import '@berty/common/helpers/crash-handler.js'
+import '@berty/common/helpers/patch-web.js'
+import '@berty/common/helpers/patch-electron.js'
 import 'node-libs-react-native/globals'
 
 import { Platform, AppRegistry } from 'react-native'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import App from '@berty/view/screen/App'
+import App from '@berty/navigation'
 import AppTest from './integration/AppWrapper'
 
 const isIntegrationMode = process.env['ENVIRONMENT'] === 'integration_test'
@@ -22,9 +22,9 @@ if (Platform.OS === 'web') {
     process.versions !== undefined &&
     process.versions['electron'] !== undefined
   ) {
-    import('./helpers/patch-electron.js')
+    import('@berty/common/helpers/patch-electron.js')
   } else {
-    import('./helpers/patch-web.js')
+    import('@berty/common/helpers/patch-web.js')
   }
   ReactDOM.render(
     isIntegrationMode === true ? <AppTest /> : <App />,
@@ -32,7 +32,8 @@ if (Platform.OS === 'web') {
   )
   import('./registerServiceWorker').then()
 } else {
-  AppRegistry.registerComponent('root', () =>
-    isIntegrationMode === true ? AppTest : App
+  AppRegistry.registerComponent(
+    'root',
+    isIntegrationMode === true ? <AppTest /> : <App />
   )
 }

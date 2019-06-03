@@ -1,26 +1,19 @@
-import React, { PureComponent, Fragment } from 'react'
+import React, { PureComponent } from 'react'
 import {
   View,
   Text,
   InteractionManager,
   TouchableOpacity,
-  ActivityIndicator,
   Platform,
   FlatList as FlatListWeb,
 } from 'react-native'
 import { FlatList } from 'react-navigation'
-import { Screen, Icon, EmptyList, Loader } from '@berty/view/component'
+import { Screen, Icon, EmptyList, Loader } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { Pagination } from '@berty/relay'
-import { merge } from '@berty/common/helpers'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import { fragments } from '@berty/graphql'
 import { Item } from './Item'
 import I18n from 'i18next'
-import { StoreContainer as Store } from '@berty/store/container.gen'
-import { withContext as withStoreContext } from '@berty/store/context'
-
-const cond = data => data && data.edges.length < 5
+import { Store } from '@berty/container'
+import { withStoreContext } from '@berty/store/context'
 
 class CondComponent extends PureComponent {
   state = {
@@ -174,7 +167,7 @@ class GenericList extends React.Component {
             maxToRenderPerBatch={5}
             updateCellsBatchingPeriod={64}
             onScroll={this.onScroll(paginate)}
-            scrollEventThrottle={64}
+            scrollEventThrottle={128}
             onEndReached={this.paginate}
             data={queue}
             getItemLayout={this.getItemLayout}
@@ -204,14 +197,15 @@ class GenericList extends React.Component {
     if (!didFinishInitialAnimation) {
       return null
     }
-    const { filter } = this.props
+    const { paginate, filter } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
         <Store.Node.Service.ContactList.Pagination
           filter={{ ...((filter && filter.filter) || {}) }}
           paginate={({ cursor, count }) => ({
-            first: count ? 10 : 50,
+            first: count ? 50 : 50,
             after: cursor,
+            ...(paginate || {}),
           })}
           fallback={<Loader />}
         >

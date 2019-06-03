@@ -1,20 +1,13 @@
 import React, { PureComponent } from 'react'
 import { ScrollView } from 'react-native'
-import {
-  Screen,
-  Flex,
-  Text,
-  Button,
-  Header,
-  Loader,
-} from '@berty/view/component'
-import RelayContext from '@berty/relay/RelayContext'
+import { Screen, Flex, Text, Button, Header, Loader } from '@berty/component'
+import RelayContext from '@berty/relay/context'
 import {
   getInstalledVersion,
   getLatestVersion,
   installUpdate,
   shouldUpdate,
-} from '@berty/common/update'
+} from '@berty/update'
 import colors from '@berty/common/constants/colors'
 import { borderBottom, padding } from '@berty/common/styles'
 import { withNamespaces } from 'react-i18next'

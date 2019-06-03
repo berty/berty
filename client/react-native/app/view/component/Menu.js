@@ -11,7 +11,7 @@ import {
   padding,
 } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { isRTL } from '@berty/locale'
+import { isRTL } from '@berty/common/locale'
 
 export default class Menu extends Component {
   static Header = ({ icon, color, descriptionColor, title, description }) => (

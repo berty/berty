@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
 import { ActivityIndicator, Switch, Alert, Platform } from 'react-native'
 
-import { Flex, Header, Menu, Screen, Text } from '@berty/view/component'
+import { Flex, Header, Menu, Screen, Text } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { withRelayContext } from '@berty/relay/context'
+import { withBridgeContext } from '@berty/bridge/Context'
 
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({

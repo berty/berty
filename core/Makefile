@@ -177,7 +177,7 @@ _ci_prepare:
 	cd ./api/node/graphql; test "$(IGNORE_GQLGEN)" = "1" || $(GQLGEN) -c gqlgen.gen.yml -v gen
 	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/service.gen.graphql  ../client/react-native/app/schema.graphql
 	test "$(IGNORE_GQLGEN)" = "1" || prettier-eslint --trailing-comma all --single-quote --no-semi --write ./api/node/graphql/enums.gen.js
-	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/enums.gen.js ../client/react-native/app/graphql/enums.gen.js
+	test "$(IGNORE_GQLGEN)" = "1" || cp ./api/node/graphql/enums.gen.js ../client/react-native/app/common/enums.gen.js
 	test "$(IGNORE_GQLGEN)" = "0" || git checkout api/node/graphql/models/generated.gen.go api/node/graphql/graph/generated/generated.gen.go || true
 
 	@# everything worked as expected

@@ -7,18 +7,17 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 import ReactNativeLanguages from 'react-native-languages'
 
-import { MovableView, DebugStateBar } from '@berty/view/component'
+import { MovableView, DebugStateBar } from '@berty/component'
 import { RelayContext } from '@berty/relay'
-import { UpdateContext } from '@berty/common/update'
+import { UpdateContext } from '@berty/update'
 import Instabug from '@berty/common/helpers/Instabug'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
 import Mousetrap from '@berty/common/helpers/Mousetrap'
 import NavigationService from '@berty/common/helpers/NavigationService'
-import Navigation from '@berty/view/navigation'
 import BridgeContext, { rpc, service, middleware } from '@berty/bridge'
 import StoreContext from '@berty/store/context'
 import { Store } from '@berty/store/store.gen'
-import i18n from '@berty/locale'
+import i18n from '@berty/common/locale'
 
 const bridgeMiddlewares = middleware.chain(
   __DEV__ ? middleware.logger.create('DAEMON') : null // eslint-disable-line
@@ -141,9 +140,7 @@ export default class App extends PureComponent {
                       setState: this.setStateUpdate,
                     }}
                   >
-                    <BridgeContext.Consumer>
-                      {() => <Navigation />}
-                    </BridgeContext.Consumer>
+                    {this.props.children}
 
                     <FlashMessage position='top' />
                     <View

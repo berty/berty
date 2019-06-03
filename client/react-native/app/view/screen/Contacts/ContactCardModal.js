@@ -5,9 +5,8 @@ import {
   ContactIdentity,
   ContactIdentityActions,
   ModalScreen,
-} from '@berty/view/component'
+} from '@berty/component'
 import { withNavigation } from 'react-navigation'
-import { StoreContainer as Store } from '@berty/store/container.gen'
 
 const modalWidth = 320
 

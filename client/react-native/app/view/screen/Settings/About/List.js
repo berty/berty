@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
-import { Header, Menu } from '@berty/view/component'
+import { Header, Menu } from '@berty/component'
 import { withNamespaces } from 'react-i18next'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withRelayContext } from '@berty/relay/context'
 import I18n from 'i18next'
 
 class List extends PureComponent {

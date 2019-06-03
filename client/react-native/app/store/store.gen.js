@@ -1,6 +1,4 @@
-import { observable, action, computed } from 'mobx'
-import EntityStore from './entity'
-import hash from 'object-hash'
+import { observable, computed } from 'mobx'
 import Stream from 'stream'
 
 export class ConfigEntityStore {
@@ -279,8 +277,11 @@ export class NodeServiceStore {
           return
         }
         switch (key) {
-          case 'config': {
+          default:
+            break
+          case 'config':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.config.set(
@@ -293,12 +294,11 @@ export class NodeServiceStore {
                   this.store.entity.config.delete(output.entity[key].id)
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'contact': {
+            break
+          case 'contact':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.contact.set(
@@ -311,12 +311,11 @@ export class NodeServiceStore {
                   this.store.entity.contact.delete(output.entity[key].id)
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'device': {
+            break
+          case 'device':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.device.set(
@@ -329,12 +328,11 @@ export class NodeServiceStore {
                   this.store.entity.device.delete(output.entity[key].id)
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'conversation': {
+            break
+          case 'conversation':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.conversation.set(
@@ -347,12 +345,11 @@ export class NodeServiceStore {
                   this.store.entity.conversation.delete(output.entity[key].id)
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'conversationMember': {
+            break
+          case 'conversationMember':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.conversationMember.set(
@@ -374,12 +371,11 @@ export class NodeServiceStore {
                   )
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'event': {
+            break
+          case 'event':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.event.set(
@@ -392,12 +388,11 @@ export class NodeServiceStore {
                   this.store.entity.event.delete(output.entity[key].id)
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'devicePushConfig': {
+            break
+          case 'devicePushConfig':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.devicePushConfig.set(
@@ -417,12 +412,11 @@ export class NodeServiceStore {
                   )
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'devicePushIdentifier': {
+            break
+          case 'devicePushIdentifier':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.devicePushIdentifier.set(
@@ -444,12 +438,11 @@ export class NodeServiceStore {
                   )
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'eventDispatch': {
+            break
+          case 'eventDispatch':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.eventDispatch.set(
@@ -464,12 +457,11 @@ export class NodeServiceStore {
                   this.store.entity.eventDispatch.delete(output.entity[key].id)
                 }
                 break
-              default:
-                break
             }
-          }
-          case 'senderAlias': {
+            break
+          case 'senderAlias':
             switch (output.operation) {
+              default:
               case 0:
               case 1:
                 this.store.entity.senderAlias.set(
@@ -482,14 +474,15 @@ export class NodeServiceStore {
                   this.store.entity.senderAlias.delete(output.entity[key].id)
                 }
                 break
-              default:
-                break
             }
-          }
+            break
         }
       })
     })
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -500,7 +493,10 @@ export class NodeServiceStore {
       output = new EventEntityStore(this.store, output)
       this.store.entity.event.set(output.id, output)
     })
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -511,7 +507,10 @@ export class NodeServiceStore {
       output = new EventEntityStore(this.store, output)
       this.store.entity.event.set(output.id, output)
     })
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -522,7 +521,10 @@ export class NodeServiceStore {
       output = new EventEntityStore(this.store, output)
       this.store.entity.event.set(output.id, output)
     })
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -615,7 +617,10 @@ export class NodeServiceStore {
       output = new ContactEntityStore(this.store, output)
       this.store.entity.contact.set(output.id, output)
     })
-    const copyStream = new Stream.PassThrough({ objectMode: true })
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -659,7 +664,10 @@ export class NodeServiceStore {
       output = new ConversationEntityStore(this.store, output)
       this.store.entity.conversation.set(output.id, output)
     })
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -849,7 +857,10 @@ export class NodeServiceStore {
   logStream = async input => {
     const stream = await this.bridge.logStream(input)
     stream.on('data', output => {})
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -857,7 +868,10 @@ export class NodeServiceStore {
   logfileList = async input => {
     const stream = await this.bridge.logfileList(input)
     stream.on('data', output => {})
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -865,7 +879,10 @@ export class NodeServiceStore {
   logfileRead = async input => {
     const stream = await this.bridge.logfileRead(input)
     stream.on('data', output => {})
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -903,7 +920,10 @@ export class NodeServiceStore {
   monitorBandwidth = async input => {
     const stream = await this.bridge.monitorBandwidth(input)
     stream.on('data', output => {})
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -911,7 +931,10 @@ export class NodeServiceStore {
   monitorPeers = async input => {
     const stream = await this.bridge.monitorPeers(input)
     stream.on('data', output => {})
-    const copyStream = new Stream.PassThrough()
+    const copyStream = new Stream.PassThrough({
+      writableObjectMode: true,
+      readableObjectMode: true,
+    })
     stream.pipe(copyStream)
     return copyStream
   }
@@ -940,16 +963,16 @@ export class Store {
     this.bridge = bridge
 
     this.entity = {
-      config: observable.map({}, { deep: true }),
-      contact: observable.map({}, { deep: true }),
-      device: observable.map({}, { deep: true }),
-      conversation: observable.map({}, { deep: true }),
-      conversationMember: observable.map({}, { deep: true }),
-      event: observable.map({}, { deep: true }),
-      devicePushConfig: observable.map({}, { deep: true }),
-      devicePushIdentifier: observable.map({}, { deep: true }),
-      eventDispatch: observable.map({}, { deep: true }),
-      senderAlias: observable.map({}, { deep: true }),
+      config: observable.map({}, { deep: false }),
+      contact: observable.map({}, { deep: false }),
+      device: observable.map({}, { deep: false }),
+      conversation: observable.map({}, { deep: false }),
+      conversationMember: observable.map({}, { deep: false }),
+      event: observable.map({}, { deep: false }),
+      devicePushConfig: observable.map({}, { deep: false }),
+      devicePushIdentifier: observable.map({}, { deep: false }),
+      eventDispatch: observable.map({}, { deep: false }),
+      senderAlias: observable.map({}, { deep: false }),
     }
 
     this.node = {

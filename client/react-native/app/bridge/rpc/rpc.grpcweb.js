@@ -1,6 +1,5 @@
 import grpc from 'grpc-web'
 import { getServiceName } from './utils'
-import sleep from '@berty/common/helpers/sleep'
 import Stream from 'stream'
 export const DefautlHostname = 'http://localhost:8989'
 

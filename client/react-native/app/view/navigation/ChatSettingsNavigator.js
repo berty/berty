@@ -1,6 +1,6 @@
 import { createStackNavigator } from 'react-navigation'
-import List from '../screen/Chats/Settings/List'
-import Notifications from '../screen/Chats/Settings/Notifications'
+import List from '@berty/screen/Chats/Settings/List'
+import Notifications from '@berty/screen/Chats/Settings/Notifications'
 
 export default createStackNavigator(
   {

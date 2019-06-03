@@ -1,8 +1,6 @@
 import { Mutex } from 'async-mutex'
 import { debounce, throttle } from 'throttle-debounce'
-import { Platform, InteractionManager } from 'react-native'
 import { Component } from 'react'
-import once from 'once'
 import objectHash from 'object-hash'
 
 export class Stream extends Component {

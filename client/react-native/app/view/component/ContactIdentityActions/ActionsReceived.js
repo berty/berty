@@ -1,9 +1,9 @@
 import React from 'react'
 import { colors } from '@berty/common/constants'
 import ActionList from './ActionList'
-import RelayContext from '@berty/relay/RelayContext'
+import RelayContext from '@berty/relay/context'
 import { withNamespaces } from 'react-i18next'
-import { withContext as withStoreContext } from '@berty/store/context'
+import { withStoreContext } from '@berty/store/context'
 
 const ReceivedActions = withStoreContext(
   ({ data: { id }, inModal, t, context }) => (

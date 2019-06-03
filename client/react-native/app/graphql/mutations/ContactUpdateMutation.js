@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay'
 
 import { commit } from '../../relay'
-import { contact } from '@berty/common/utils'
+import { contact } from '@berty/relay/utils'
 import { merge } from '@berty/common/helpers'
 
 const ContactUpdateMutation = graphql`

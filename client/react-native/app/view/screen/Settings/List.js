@@ -1,15 +1,15 @@
 import { ActivityIndicator } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Menu, Text, Screen, Avatar, Header } from '@berty/view/component'
+import { Menu, Text, Screen, Avatar, Header } from '@berty/component'
 import { QueryReducer } from '@berty/relay'
 import { colors } from '@berty/common/constants'
 import { fragments } from '@berty/graphql'
 import { merge } from '@berty/common/helpers'
-import { UpdateContext, installUpdate } from '@berty/common/update'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { UpdateContext, installUpdate } from '@berty/update'
+import { withRelayContext } from '@berty/relay/context'
 import { withNamespaces } from 'react-i18next'
-import { contact } from '@berty/common/utils'
+import { contact } from '@berty/relay/utils'
 import I18n from 'i18next'
 
 class List extends PureComponent {

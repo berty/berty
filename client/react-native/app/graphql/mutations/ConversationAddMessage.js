@@ -1,7 +1,7 @@
 import { graphql } from 'react-relay'
 
 import { commit } from '@berty/relay'
-import { conversation } from '@berty/common/utils'
+import { conversation } from '@berty/relay/utils'
 import { merge } from '@berty/common/helpers'
 
 const ConversationAddMessageMutation = graphql`

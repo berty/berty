@@ -205,7 +205,7 @@ module.exports = {
     alias: {
       'react-native': 'react-native-web',
       'react-native-svg': 'react-native-svg-web',
-      'node-libs-react-native/alias': 'node-libs-browser',
+      'node-libs-react-native/globals': 'node-libs-browser',
       'node-libs-react-native': 'node-libs-browser',
       'react-dom/unstable-native-dependencies': path.resolve(
         paths.appPath,

@@ -1,8 +1,8 @@
 import IconAwesome from 'react-native-vector-icons/Fonts/FontAwesome.ttf'
 import IconFeather from 'react-native-vector-icons/Fonts/Feather.ttf'
 import IconMatCom from 'react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf'
-import IconBerty from '@berty/common/static/svg/fontello.ttf'
-import '@berty/common'
+import IconBerty from './app/common/static/svg/fontello.ttf'
+import './app/main'
 
 /** ***** Fonts ***********/
 

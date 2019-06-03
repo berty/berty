@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Text, Flex } from '@berty/view/component'
+import { Text, Flex } from '@berty/component'
 
 export default class Invite extends PureComponent {
   render () {

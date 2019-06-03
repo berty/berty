@@ -1,11 +1,11 @@
 import { Easing, Animated, Platform } from 'react-native'
 import { createStackNavigator } from 'react-navigation'
 
-import { EventListFilterModal } from '../screen/Settings/Devtools/EventList'
+import { EventListFilterModal } from '@berty/screen/Settings/Devtools/EventList'
 import { ViewExportComponent } from '@berty/common/helpers/saveViewToCamera'
 import BottomNavigator, { SplitNavigator } from './BottomNavigator'
-import ChatsSwitcherModal from '../screen/Contacts/ChatsSwitcherModal'
-import ContactCardModal from '../screen/Contacts/ContactCardModal'
+import ChatsSwitcherModal from '@berty/screen/Contacts/ChatsSwitcherModal'
+import ContactCardModal from '@berty/screen/Contacts/ContactCardModal'
 
 export default createStackNavigator(
   {

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Header, Menu, Badge, Avatar } from '@berty/view/component'
+import { Header, Menu, Badge, Avatar } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import I18n from 'i18next'

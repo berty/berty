@@ -2,12 +2,12 @@ import { observer } from 'mobx-react'
 import { observe } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
-import { withContext } from './context'
-import React, { Component } from 'react'
+import { withStoreContext } from '@berty/store/context'
+import { Component } from 'react'
 
-@withContext
+@withStoreContext
 @observer
-export class ConfigEntityContainer extends Component {
+export class ConfigEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.config.get(id)
@@ -18,9 +18,9 @@ export class ConfigEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class ContactEntityContainer extends Component {
+export class ContactEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.contact.get(id)
@@ -31,9 +31,9 @@ export class ContactEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class DeviceEntityContainer extends Component {
+export class DeviceEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.device.get(id)
@@ -44,9 +44,9 @@ export class DeviceEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class ConversationEntityContainer extends Component {
+export class ConversationEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.conversation.get(id)
@@ -57,9 +57,9 @@ export class ConversationEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class ConversationMemberEntityContainer extends Component {
+export class ConversationMemberEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.conversationMember.get(id)
@@ -70,9 +70,9 @@ export class ConversationMemberEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class EventEntityContainer extends Component {
+export class EventEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.event.get(id)
@@ -83,9 +83,9 @@ export class EventEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class DevicePushConfigEntityContainer extends Component {
+export class DevicePushConfigEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.devicePushConfig.get(id)
@@ -96,9 +96,9 @@ export class DevicePushConfigEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class DevicePushIdentifierEntityContainer extends Component {
+export class DevicePushIdentifierEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.devicePushIdentifier.get(id)
@@ -109,9 +109,9 @@ export class DevicePushIdentifierEntityContainer extends Component {
   }
 }
 
-@withContext
+@withStoreContext
 @observer
-export class SenderAliasEntityContainer extends Component {
+export class SenderAliasEntity extends Component {
   render () {
     const { context, id, children } = this.props
     const entity = context.entity.senderAlias.get(id)
@@ -122,36 +122,36 @@ export class SenderAliasEntityContainer extends Component {
   }
 }
 
-@withContext
-export class IDServiceNodeContainer extends Unary {
+@withStoreContext
+export class IDServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.id
   }
 }
 
-@withContext
-export class CommitLogStreamServiceNodeContainer extends Stream {
+@withStoreContext
+export class CommitLogStreamServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.commitLogStream
   }
 }
 
-@withContext
-export class EventStreamServiceNodeContainer extends Stream {
+@withStoreContext
+export class EventStreamServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.eventStream
   }
 }
 
-@withContext
-export class EventListServiceNodeContainer extends Stream {
+@withStoreContext
+export class EventListServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.eventList
   }
 }
 
-@withContext
-class EventListServiceNodePaginationContainer extends StreamPagination {
+@withStoreContext
+class EventListServiceNodePagination extends StreamPagination {
   constructor (props, context) {
     super(props, context)
     observe(this.props.context.entity.event, this.observe)
@@ -161,17 +161,17 @@ class EventListServiceNodePaginationContainer extends StreamPagination {
     return this.props.context.node.service.eventList
   }
 }
-EventListServiceNodeContainer.Pagination = EventListServiceNodePaginationContainer
+EventListServiceNode.Pagination = EventListServiceNodePagination
 
-@withContext
-export class EventUnseenServiceNodeContainer extends Stream {
+@withStoreContext
+export class EventUnseenServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.eventUnseen
   }
 }
 
-@withContext
-class EventUnseenServiceNodePaginationContainer extends StreamPagination {
+@withStoreContext
+class EventUnseenServiceNodePagination extends StreamPagination {
   constructor (props, context) {
     super(props, context)
     observe(this.props.context.entity.event, this.observe)
@@ -181,80 +181,80 @@ class EventUnseenServiceNodePaginationContainer extends StreamPagination {
     return this.props.context.node.service.eventUnseen
   }
 }
-EventUnseenServiceNodeContainer.Pagination = EventUnseenServiceNodePaginationContainer
+EventUnseenServiceNode.Pagination = EventUnseenServiceNodePagination
 
-@withContext
-export class GetEventServiceNodeContainer extends Unary {
+@withStoreContext
+export class GetEventServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.getEvent
   }
 }
 
-@withContext
-export class EventSeenServiceNodeContainer extends Unary {
+@withStoreContext
+export class EventSeenServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.eventSeen
   }
 }
 
-@withContext
-export class EventRetryServiceNodeContainer extends Unary {
+@withStoreContext
+export class EventRetryServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.eventRetry
   }
 }
 
-@withContext
-export class ConfigPublicServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConfigPublicServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.configPublic
   }
 }
 
-@withContext
-export class ConfigUpdateServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConfigUpdateServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.configUpdate
   }
 }
 
-@withContext
-export class ContactRequestServiceNodeContainer extends Unary {
+@withStoreContext
+export class ContactRequestServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.contactRequest
   }
 }
 
-@withContext
-export class ContactAcceptRequestServiceNodeContainer extends Unary {
+@withStoreContext
+export class ContactAcceptRequestServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.contactAcceptRequest
   }
 }
 
-@withContext
-export class ContactRemoveServiceNodeContainer extends Unary {
+@withStoreContext
+export class ContactRemoveServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.contactRemove
   }
 }
 
-@withContext
-export class ContactUpdateServiceNodeContainer extends Unary {
+@withStoreContext
+export class ContactUpdateServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.contactUpdate
   }
 }
 
-@withContext
-export class ContactListServiceNodeContainer extends Stream {
+@withStoreContext
+export class ContactListServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.contactList
   }
 }
 
-@withContext
-class ContactListServiceNodePaginationContainer extends StreamPagination {
+@withStoreContext
+class ContactListServiceNodePagination extends StreamPagination {
   constructor (props, context) {
     super(props, context)
     observe(this.props.context.entity.contact, this.observe)
@@ -264,45 +264,45 @@ class ContactListServiceNodePaginationContainer extends StreamPagination {
     return this.props.context.node.service.contactList
   }
 }
-ContactListServiceNodeContainer.Pagination = ContactListServiceNodePaginationContainer
+ContactListServiceNode.Pagination = ContactListServiceNodePagination
 
-@withContext
-export class ContactServiceNodeContainer extends Unary {
+@withStoreContext
+export class ContactServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.contact
   }
 }
 
-@withContext
-export class ContactCheckPublicKeyServiceNodeContainer extends Unary {
+@withStoreContext
+export class ContactCheckPublicKeyServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.contactCheckPublicKey
   }
 }
 
-@withContext
-export class ConversationCreateServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationCreateServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationCreate
   }
 }
 
-@withContext
-export class ConversationUpdateServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationUpdateServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationUpdate
   }
 }
 
-@withContext
-export class ConversationListServiceNodeContainer extends Stream {
+@withStoreContext
+export class ConversationListServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.conversationList
   }
 }
 
-@withContext
-class ConversationListServiceNodePaginationContainer extends StreamPagination {
+@withStoreContext
+class ConversationListServiceNodePagination extends StreamPagination {
   constructor (props, context) {
     super(props, context)
     observe(this.props.context.entity.conversation, this.observe)
@@ -312,303 +312,302 @@ class ConversationListServiceNodePaginationContainer extends StreamPagination {
     return this.props.context.node.service.conversationList
   }
 }
-ConversationListServiceNodeContainer.Pagination = ConversationListServiceNodePaginationContainer
+ConversationListServiceNode.Pagination = ConversationListServiceNodePagination
 
-@withContext
-export class ConversationInviteServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationInviteServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationInvite
   }
 }
 
-@withContext
-export class ConversationExcludeServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationExcludeServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationExclude
   }
 }
 
-@withContext
-export class ConversationAddMessageServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationAddMessageServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationAddMessage
   }
 }
 
-@withContext
-export class ConversationServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversation
   }
 }
 
-@withContext
-export class ConversationMemberServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationMemberServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationMember
   }
 }
 
-@withContext
-export class ConversationReadServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationReadServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationRead
   }
 }
 
-@withContext
-export class ConversationRemoveServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationRemoveServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationRemove
   }
 }
 
-@withContext
-export class ConversationLastEventServiceNodeContainer extends Unary {
+@withStoreContext
+export class ConversationLastEventServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.conversationLastEvent
   }
 }
 
-@withContext
-export class DevicePushConfigListServiceNodeContainer extends Unary {
+@withStoreContext
+export class DevicePushConfigListServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigList
   }
 }
 
-@withContext
-export class DevicePushConfigCreateServiceNodeContainer extends Unary {
+@withStoreContext
+export class DevicePushConfigCreateServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigCreate
   }
 }
 
-@withContext
-export class DevicePushConfigNativeRegisterServiceNodeContainer extends Unary {
+@withStoreContext
+export class DevicePushConfigNativeRegisterServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigNativeRegister
   }
 }
 
-@withContext
-export class DevicePushConfigNativeUnregisterServiceNodeContainer extends Unary {
+@withStoreContext
+export class DevicePushConfigNativeUnregisterServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigNativeUnregister
   }
 }
 
-@withContext
-export class DevicePushConfigRemoveServiceNodeContainer extends Unary {
+@withStoreContext
+export class DevicePushConfigRemoveServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigRemove
   }
 }
 
-@withContext
-export class DevicePushConfigUpdateServiceNodeContainer extends Unary {
+@withStoreContext
+export class DevicePushConfigUpdateServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.devicePushConfigUpdate
   }
 }
 
-@withContext
-export class HandleEventServiceNodeContainer extends Unary {
+@withStoreContext
+export class HandleEventServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.handleEvent
   }
 }
 
-@withContext
-export class GenerateFakeDataServiceNodeContainer extends Unary {
+@withStoreContext
+export class GenerateFakeDataServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.generateFakeData
   }
 }
 
-@withContext
-export class RunIntegrationTestsServiceNodeContainer extends Unary {
+@withStoreContext
+export class RunIntegrationTestsServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.runIntegrationTests
   }
 }
 
-@withContext
-export class DebugPingServiceNodeContainer extends Unary {
+@withStoreContext
+export class DebugPingServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.debugPing
   }
 }
 
-@withContext
-export class DebugRequeueEventServiceNodeContainer extends Unary {
+@withStoreContext
+export class DebugRequeueEventServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.debugRequeueEvent
   }
 }
 
-@withContext
-export class DebugRequeueAllServiceNodeContainer extends Unary {
+@withStoreContext
+export class DebugRequeueAllServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.debugRequeueAll
   }
 }
 
-@withContext
-export class DeviceInfosServiceNodeContainer extends Unary {
+@withStoreContext
+export class DeviceInfosServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.deviceInfos
   }
 }
 
-@withContext
-export class AppVersionServiceNodeContainer extends Unary {
+@withStoreContext
+export class AppVersionServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.appVersion
   }
 }
 
-@withContext
-export class PeersServiceNodeContainer extends Unary {
+@withStoreContext
+export class PeersServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.peers
   }
 }
 
-@withContext
-export class ProtocolsServiceNodeContainer extends Unary {
+@withStoreContext
+export class ProtocolsServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.protocols
   }
 }
 
-@withContext
-export class LogStreamServiceNodeContainer extends Stream {
+@withStoreContext
+export class LogStreamServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.logStream
   }
 }
 
-@withContext
-export class LogfileListServiceNodeContainer extends Stream {
+@withStoreContext
+export class LogfileListServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.logfileList
   }
 }
 
-@withContext
-export class LogfileReadServiceNodeContainer extends Stream {
+@withStoreContext
+export class LogfileReadServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.logfileRead
   }
 }
 
-@withContext
-export class TestLogBackgroundErrorServiceNodeContainer extends Unary {
+@withStoreContext
+export class TestLogBackgroundErrorServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.testLogBackgroundError
   }
 }
 
-@withContext
-export class TestLogBackgroundWarnServiceNodeContainer extends Unary {
+@withStoreContext
+export class TestLogBackgroundWarnServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.testLogBackgroundWarn
   }
 }
 
-@withContext
-export class TestLogBackgroundDebugServiceNodeContainer extends Unary {
+@withStoreContext
+export class TestLogBackgroundDebugServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.testLogBackgroundDebug
   }
 }
 
-@withContext
-export class TestPanicServiceNodeContainer extends Unary {
+@withStoreContext
+export class TestPanicServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.testPanic
   }
 }
 
-@withContext
-export class TestErrorServiceNodeContainer extends Unary {
+@withStoreContext
+export class TestErrorServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.testError
   }
 }
 
-@withContext
-export class MonitorBandwidthServiceNodeContainer extends Stream {
+@withStoreContext
+export class MonitorBandwidthServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.monitorBandwidth
   }
 }
 
-@withContext
-export class MonitorPeersServiceNodeContainer extends Stream {
+@withStoreContext
+export class MonitorPeersServiceNode extends Stream {
   get service () {
     return this.props.context.node.service.monitorPeers
   }
 }
 
-@withContext
-export class GetListenAddrsServiceNodeContainer extends Unary {
+@withStoreContext
+export class GetListenAddrsServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.getListenAddrs
   }
 }
 
-@withContext
-export class GetListenInterfaceAddrsServiceNodeContainer extends Unary {
+@withStoreContext
+export class GetListenInterfaceAddrsServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.getListenInterfaceAddrs
   }
 }
 
-@withContext
-export class Libp2PPingServiceNodeContainer extends Unary {
+@withStoreContext
+export class Libp2PPingServiceNode extends Unary {
   get service () {
     return this.props.context.node.service.libp2PPing
   }
 }
 
-@withContext
-export class ServiceNodeContainer extends Component {
-  static CommitLogStream = CommitLogStreamServiceNodeContainer
-  static EventStream = EventStreamServiceNodeContainer
-  static EventList = EventListServiceNodeContainer
-  static EventUnseen = EventUnseenServiceNodeContainer
-  static ContactList = ContactListServiceNodeContainer
-  static ConversationList = ConversationListServiceNodeContainer
-  static LogStream = LogStreamServiceNodeContainer
-  static LogfileList = LogfileListServiceNodeContainer
-  static LogfileRead = LogfileReadServiceNodeContainer
-  static MonitorBandwidth = MonitorBandwidthServiceNodeContainer
-  static MonitorPeers = MonitorPeersServiceNodeContainer
+@withStoreContext
+export class ServiceNode extends Component {
+  static CommitLogStream = CommitLogStreamServiceNode
+  static EventStream = EventStreamServiceNode
+  static EventList = EventListServiceNode
+  static EventUnseen = EventUnseenServiceNode
+  static ContactList = ContactListServiceNode
+  static ConversationList = ConversationListServiceNode
+  static LogStream = LogStreamServiceNode
+  static LogfileList = LogfileListServiceNode
+  static LogfileRead = LogfileReadServiceNode
+  static MonitorBandwidth = MonitorBandwidthServiceNode
+  static MonitorPeers = MonitorPeersServiceNode
 
   render () {
-    const { context } = this.props
     return context => this.props.children(context.node)
   }
 }
 
-@withContext
-export class StoreContainer extends Component {
+@withStoreContext
+export class Store extends Component {
   static Entity = {
-    Config: ConfigEntityContainer,
-    Contact: ContactEntityContainer,
-    Device: DeviceEntityContainer,
-    Conversation: ConversationEntityContainer,
-    ConversationMember: ConversationMemberEntityContainer,
-    Event: EventEntityContainer,
-    DevicePushConfig: DevicePushConfigEntityContainer,
-    DevicePushIdentifier: DevicePushIdentifierEntityContainer,
-    SenderAlias: SenderAliasEntityContainer,
+    Config: ConfigEntity,
+    Contact: ContactEntity,
+    Device: DeviceEntity,
+    Conversation: ConversationEntity,
+    ConversationMember: ConversationMemberEntity,
+    Event: EventEntity,
+    DevicePushConfig: DevicePushConfigEntity,
+    DevicePushIdentifier: DevicePushIdentifierEntity,
+    SenderAlias: SenderAliasEntity,
   }
 
   static Node = {
-    Service: ServiceNodeContainer,
+    Service: ServiceNode,
   }
 
   render () {
@@ -617,4 +616,4 @@ export class StoreContainer extends Component {
   }
 }
 
-export default StoreContainer
+export default Store

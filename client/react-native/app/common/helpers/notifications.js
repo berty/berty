@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import I18n from 'i18next'
-import { enums } from '@berty/graphql'
+import * as enums from '../enums.gen'
 import { showMessage } from 'react-native-flash-message'
 
 export const getNativePushType = () => {

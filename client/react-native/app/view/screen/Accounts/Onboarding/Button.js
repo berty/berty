@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '@berty/view/component'
+import { Button } from '@berty/component'
 import colors from '@berty/common/constants/colors'
 
 export const SkipButton = props => (

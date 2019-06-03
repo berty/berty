@@ -3,11 +3,11 @@ import { hook } from 'cavy'
 import { withNamespaces } from 'react-i18next'
 import React, { PureComponent } from 'react'
 
-import { Animation, Flex, Loader, Screen } from '@berty/view/component'
+import { Animation, Flex, Loader, Screen } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { defaultUsername } from '@berty/common/helpers/contacts'
 import { environment, contextValue } from '@berty/relay'
-import { getAvailableUpdate } from '@berty/common/update'
+import { getAvailableUpdate } from '@berty/update'
 import {
   queries,
   mutations,
@@ -18,9 +18,9 @@ import {
 import NavigationService from '@berty/common/helpers/NavigationService'
 import sleep from '@berty/common/helpers/sleep'
 import withDeepLinkHandler from '@berty/common/helpers/withDeepLinkHandler'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import withUpdateContext from '@berty/common/helpers/withUpdateContext'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { withRelayContext } from '@berty/relay/context'
+import { withUpdateContext } from '@berty/update/context'
+import { withBridgeContext } from '@berty/bridge/Context'
 import { rpc, service, middleware } from '@berty/bridge'
 
 class Auth extends PureComponent {

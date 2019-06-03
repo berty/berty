@@ -1,5 +1,5 @@
 import { fetchQuery, graphql } from 'react-relay'
-import { contact } from '@berty/common/utils'
+import { contact } from '@berty/relay/utils'
 import { merge } from '@berty/common/helpers'
 
 const query = graphql`

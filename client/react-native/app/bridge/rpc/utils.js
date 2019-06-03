@@ -1,7 +1,5 @@
 import { Platform } from 'react-native'
 import base64 from 'base64-js'
-import sleep from '@berty/common/helpers/sleep'
-import { Mutex } from '../../store/node_modules/async-mutex'
 
 // methods
 export const serializeToBase64 = req => base64.fromByteArray(req)

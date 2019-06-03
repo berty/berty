@@ -3,6 +3,7 @@
     "module:metro-react-native-babel-preset"
   ],
   "plugins": [
+    "babel-plugin-root-import",
     [ "@babel/plugin-proposal-decorators", { "legacy": true } ],
     "@babel/plugin-syntax-export-namespace-from",
     "@babel/plugin-proposal-async-generator-functions",

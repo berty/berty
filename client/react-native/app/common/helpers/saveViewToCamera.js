@@ -4,7 +4,7 @@ import { View, CameraRoll, Platform, PermissionsAndroid } from 'react-native'
 import { StackActions } from 'react-navigation'
 import NavigationService from './NavigationService'
 import { requestAndroidPermission } from './permissions'
-import I18n from '@berty/locale'
+import I18n from '../locale'
 
 export class ViewExportComponent extends Component {
   async componentDidMount () {

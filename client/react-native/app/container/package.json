@@ -1,0 +1,17 @@
+{
+  "name": "@berty/container",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@berty/common": "^0.0.1",
+    "@berty/component": "^0.0.1",
+    "@berty/store": "^0.0.1",
+    "async-mutex": "^0.1.3",
+    "deep-equal": "^1.0.1",
+    "mobx": "^5.10.0",
+    "mobx-react": "^5.4.3",
+    "once": "^1.4.0",
+    "throttle-debounce": "^2.1.0"
+  }
+}

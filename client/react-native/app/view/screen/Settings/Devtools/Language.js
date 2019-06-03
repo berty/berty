@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
-import { Header, Menu } from '@berty/view/component'
+import { Header, Menu } from '@berty/component'
 import { withI18n } from 'react-i18next'
-import { languages } from '@berty/locale'
+import { languages } from '@berty/common/locale'
 
 class Language extends PureComponent {
   static navigationOptions = ({ navigation }) => ({

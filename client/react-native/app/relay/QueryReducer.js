@@ -1,6 +1,6 @@
 import React from 'react'
 import Relay from 'react-relay'
-import RelayContext from './RelayContext'
+import RelayContext from './context'
 
 const handleChildren = (children, state, retry) => {
   if (typeof children === 'function') {

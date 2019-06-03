@@ -33,8 +33,14 @@ const senderAlias = exportPbJson(senderAliasJson, 'berty.entity.SenderAlias')
 const voidService = exportPbJson(voidJson, 'berty.entity.Void')
 const err = exportPbJson(errJson, 'berty.entity.Err')
 const event = exportPbJson(eventJson, 'berty.entity.Event')
-const devicePushConfig = exportPbJson(devicePushConfigJson, 'berty.entity.DevicePushConfig')
-const devicePushIdentifier = exportPbJson(devicePushIdentifierJson, 'berty.entity.DevicePushIdentifier')
+const devicePushConfig = exportPbJson(
+  devicePushConfigJson,
+  'berty.entity.DevicePushConfig'
+)
+const devicePushIdentifier = exportPbJson(
+  devicePushIdentifierJson,
+  'berty.entity.DevicePushIdentifier'
+)
 const message = exportPbJson(messageJson, 'berty.entity.Message')
 const device = exportPbJson(deviceJson, 'berty.entity.Device')
 const config = exportPbJson(configJson, 'berty.entity.Config')

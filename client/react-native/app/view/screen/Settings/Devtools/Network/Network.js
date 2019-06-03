@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Menu, Header } from '@berty/view/component'
+import { Menu, Header } from '@berty/component'
 
 export default class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => ({

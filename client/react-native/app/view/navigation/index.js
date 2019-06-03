@@ -1,12 +1,14 @@
+import App from '@berty/screen/App'
+import NavigationService from '@berty/common/helpers/NavigationService'
+import React, { PureComponent } from 'react'
+
 import { Platform } from 'react-native'
 import { atob } from 'b64-lite'
-import React, { PureComponent } from 'react'
 import { createAppContainer } from 'react-navigation'
 
-import NavigationService from '@berty/common/helpers/NavigationService'
-import { NavigatorContext } from './NavigatorContext'
 import { AppNavigator } from './AppNavigator'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { NavigatorContext } from './NavigatorContext'
+import { withBridgeContext } from '@berty/bridge/Context'
 
 const getActiveRoute = navigationState => {
   if (!navigationState) {
@@ -46,6 +48,7 @@ const getURIFromRoute = route => {
   return route.routeName + fragment
 }
 
+@withBridgeContext
 class Navigator extends PureComponent {
   static router = AppNavigator.router
 
@@ -79,7 +82,13 @@ class Navigator extends PureComponent {
     )
   }
 }
-
-export default withBridgeContext(
+const NavigatorAppContainer =
   Platform.OS !== 'web' ? createAppContainer(Navigator) : Navigator
+
+export const AppNavigation = () => (
+  <App>
+    <NavigatorAppContainer />
+  </App>
 )
+
+export default AppNavigation

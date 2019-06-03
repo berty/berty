@@ -1,7 +1,8 @@
 import { Pagination, QueryReducer, RelayContext } from '@berty/relay'
-import { enums, fragments } from '@berty/graphql'
+import { fragments } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
 import React, { PureComponent } from 'react'
-import * as dateFns from '@berty/locale/dateFns'
+import * as dateFns from '@berty/common/locale/dateFns'
 
 import {
   ActivityIndicator,
@@ -19,16 +20,16 @@ import {
   Markdown,
   Screen,
   Text,
-} from '@berty/view/component'
+} from '@berty/component'
 import { btoa } from 'b64-lite'
 import { colors } from '@berty/common/constants'
 import { merge } from '@berty/common/helpers'
 import { parseEmbedded } from '@berty/common/helpers/json'
 import { shadow } from '@berty/common/styles'
-import { conversation as utils } from '@berty/common/utils'
+import { conversation as utils } from '@berty/relay/utils'
 import { withNamespaces } from 'react-i18next'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withRelayContext } from '@berty/relay/context'
 
 const textStyles = StyleSheet.flatten([
   Markdown.styles,

@@ -72,11 +72,11 @@ get_iphone_udid:
 
 .PHONY: pretty
 pretty: deps.root
-	npm run prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*')
+	npm run prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*' -not -path '*/__generated__/*')
 
 .PHONY: gen.pretty
 gen.pretty: deps.root
-	npm run prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*')
+	npm run prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*' -not -path '*/__generated__/*')
 
 ### Dependencies part ###
 .PHONY: deps.root
@@ -122,11 +122,11 @@ deps.logs:
 
 .PHONY: generate.relay
 generate.relay:
-	./node_modules/.bin/relay-compiler -src common --schema app/schema.graphql
+	./node_modules/.bin/relay-compiler -src app/graphql --schema app/schema.graphql
 
 .PHONY: generate.relay.watch
 generate.relay.watch:
-	./node_modules/.bin/relay-compiler --src common --schema app/schema.graphql --watch
+	./node_modules/.bin/relay-compiler --src app/graphql --schema app/schema.graphql --watch
 
 ### Build release/debug part ###
 .PHONY: debug.react-native

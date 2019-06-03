@@ -1,8 +1,8 @@
 import React from 'react'
 import { View } from 'react-native'
-import { QueryReducer } from '@berty/relay'
-import { merge } from '../helpers'
-import RelayContext from '@berty/relay/RelayContext'
+import QueryReducer from '../QueryReducer'
+import { merge } from '@berty/common/helpers'
+import RelayContext from '../context'
 import { btoa, atob } from 'b64-lite'
 
 const defaultValuesContact = {

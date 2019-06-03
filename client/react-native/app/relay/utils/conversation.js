@@ -1,6 +1,6 @@
 import { btoa, atob } from 'b64-lite'
 
-import { BertyEntityContactInputStatus } from '@berty/graphql/enums.gen'
+import { BertyEntityContactInputStatus } from '@berty/common/enums.gen'
 
 export default {
   id: '',
@@ -52,4 +52,7 @@ export const isReadByOthers = message =>
   message.dispatches &&
   message.dispatches.some(_ => new Date(_.ackedAt).getTime() > 0)
 
-export const messageHasError = message => message.dispatches.some(_ => _.sendErrorMessage !== undefined && _.sendErrorMessage !== '')
+export const messageHasError = message =>
+  message.dispatches.some(
+    _ => _.sendErrorMessage !== undefined && _.sendErrorMessage !== ''
+  )

@@ -3,8 +3,8 @@ import { createBottomTabNavigator } from 'react-navigation'
 import I18n from 'i18next'
 import React, { Component } from 'react'
 
-import { Icon } from '@berty/view/component'
-import { UpdateContext } from '@berty/common/update'
+import { Icon } from '@berty/component'
+import { UpdateContext } from '@berty/update'
 import { colors } from '@berty/common/constants'
 import { createSplitNavigator } from './SplitNavigator'
 import { merge } from '@berty/common/helpers'
@@ -16,9 +16,9 @@ import ContactNavigator, {
   SplitSideContactNavigator,
   SubviewsContactNavigator,
 } from './ContactNavigator'
-import Placeholder from '../screen/Placeholder'
+import Placeholder from '@berty/screen/Placeholder'
 import SettingsNavigator from './SettingsNavigator'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withRelayContext } from '@berty/relay/context'
 
 class TabBarIconBase extends Component {
   constructor (props) {

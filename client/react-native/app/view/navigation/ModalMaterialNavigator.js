@@ -1,10 +1,12 @@
-import { createMaterialTopTabNavigator } from 'react-navigation'
-import { Keyboard } from 'react-native'
-import ByQRCode from '../screen/Contacts/Add/ByQRCode'
-import ByPublicKey from '../screen/Contacts/Add/ByPublicKey'
-import Invite from '../screen/Contacts/Add/Invite'
-import { tabIcon } from '@berty/common/helpers/views'
 import { tabNavigatorOptions } from '@berty/common/constants/styling'
+import { withProps, asFunctional } from '@berty/common/helpers/views'
+import ByPublicKey from '@berty/screen/Contacts/Add/ByPublicKey'
+import ByQRCode from '@berty/screen/Contacts/Add/ByQRCode'
+import Invite from '@berty/screen/Contacts/Add/Invite'
+
+import TabIcon from '@berty/component/TabIcon'
+import { Keyboard } from 'react-native'
+import { createMaterialTopTabNavigator } from 'react-navigation'
 import I18n from 'i18next'
 
 export default createMaterialTopTabNavigator(
@@ -13,28 +15,34 @@ export default createMaterialTopTabNavigator(
       screen: ByQRCode,
       navigationOptions: () => ({
         title: I18n.t('qrcode'),
-        tabBarIcon: tabIcon('material-qrcode'),
+        tabBarIcon: asFunctional(
+          withProps({ name: 'material-qrcode' })(TabIcon)
+        ),
       }),
     },
     'public-key': {
       screen: ByPublicKey,
       navigationOptions: () => ({
         title: I18n.t('public-key'),
-        tabBarIcon: tabIcon('material-key-variant'),
+        tabBarIcon: asFunctional(
+          withProps({ name: 'material-key-variant' })(TabIcon)
+        ),
       }),
     },
     nearby: {
       screen: Invite,
       navigationOptions: () => ({
         title: I18n.t('contacts.add.nearby'),
-        tabBarIcon: tabIcon('radio'),
+        tabBarIcon: asFunctional(withProps({ name: 'radio' })(TabIcon)),
       }),
     },
     invite: {
       screen: Invite,
       navigationOptions: () => ({
         title: I18n.t('contacts.add.invite'),
-        tabBarIcon: tabIcon('material-email'),
+        tabBarIcon: asFunctional(
+          withProps({ name: 'material-email' })(TabIcon)
+        ),
       }),
     },
   },

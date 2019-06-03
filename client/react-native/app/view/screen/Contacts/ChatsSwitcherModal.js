@@ -1,17 +1,17 @@
 import { FlatList, View } from 'react-native'
 import React from 'react'
 
-import { Avatar, Flex, ModalScreen } from '@berty/view/component'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import Text from '@berty/view/component/Text'
+import { Avatar, Flex, ModalScreen } from '@berty/component'
+import { withRelayContext } from '@berty/relay/context'
+import Text from '@berty/component/Text'
 import { colors } from '@berty/common/constants'
 import { withNamespaces } from 'react-i18next'
 import { Pagination } from '@berty/relay'
 import { fragments } from '@berty/graphql'
 import { borderTop, marginLeft, padding } from '@berty/common/styles'
-import { conversation as utils } from '@berty/common/utils'
+import { conversation as utils } from '@berty/relay/utils'
 import Mousetrap from '@berty/common/helpers/Mousetrap'
-import { withGoBack } from '@berty/view/component/BackActionProvider'
+import { withGoBack } from '@berty/component/BackActionProvider'
 import {
   withNavigation,
   withNavigationFocus,

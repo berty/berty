@@ -3,18 +3,18 @@ import { withNavigation } from 'react-navigation'
 import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Avatar, Header, Menu, Screen } from '@berty/view/component'
+import { Avatar, Header, Menu, Screen } from '@berty/component'
 import { QueryReducer, RelayContext } from '@berty/relay'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import { colors } from '@berty/common/constants'
 import {
   contact as contactUtils,
   conversation as utils,
-} from '@berty/common/utils'
-import { enums } from '@berty/graphql'
+} from '@berty/relay/utils'
+import * as enums from '@berty/common/enums.gen'
 import { merge } from '@berty/common/helpers'
-import { withGoBack } from '@berty/view/component/BackActionProvider'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withGoBack } from '@berty/component/BackActionProvider'
+import { withRelayContext } from '@berty/relay/context'
 
 class SettingsScreenBase extends PureComponent {
   constructor (props) {
@@ -92,7 +92,7 @@ class SettingsScreenBase extends PureComponent {
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
-    const { edit, t, navigation, context } = this.props
+    const { edit, t, navigation } = this.props
     const { title, topic, members = [] } = conversation
     let oneToOneContact =
       conversation.kind === enums.BertyEntityConversationInputKind.OneToOne

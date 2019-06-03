@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Header, Text, Flex } from '@berty/view/component'
+import { Header, Text, Flex } from '@berty/component'
 import I18n from 'i18next'
 
 export default class More extends PureComponent {

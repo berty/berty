@@ -4,9 +4,9 @@ import { withNamespaces } from 'react-i18next'
 import { withOrientation, withNavigation } from 'react-navigation'
 import React, { PureComponent } from 'react'
 
-import { withContext as withStoreContext } from '@berty/store/context'
+import { withStoreContext } from '@berty/store/context'
 import { parse as parseUrl } from '@berty/common/helpers/url'
-import QRReader from '@berty/view/component/QRReader'
+import QRReader from '@berty/component/QRReader'
 import colors from '@berty/common/constants/colors'
 
 @withNavigation

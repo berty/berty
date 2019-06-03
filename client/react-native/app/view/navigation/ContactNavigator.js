@@ -1,10 +1,10 @@
 import React from 'react'
 import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
-import { Header, SelfAvatarIcon } from '@berty/view/component'
+import { Header, SelfAvatarIcon } from '@berty/component'
 import ContactTopNavigator from './ContactTopNavigator'
 import AddContactMaterialNavigator from './ModalMaterialNavigator'
-import List from '../screen/Contacts/Detail/Detail'
-import Edit from '../screen/Contacts/Detail/Edit'
+import List from '@berty/screen/Contacts/Detail/Detail'
+import Edit from '@berty/screen/Contacts/Detail/Edit'
 import I18n from 'i18next'
 
 export const SplitSideContactNavigator = createStackNavigator(

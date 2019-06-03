@@ -3,15 +3,12 @@ import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Avatar, Header, Menu, Screen } from '@berty/view/component'
+import { Avatar, Header, Menu, Screen } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { contact as contactHelper } from '@berty/common/utils'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import { StoreContainer as Store } from '@berty/store/container.gen'
-import { withGoBack } from '@berty/view/component/BackActionProvider'
-import { withContext as withStoreContext } from '@berty/store/context'
+import { withRelayContext } from '@berty/relay/context'
+import { Store } from '@berty/container'
+import { withGoBack } from '@berty/component/BackActionProvider'
 
-@withStoreContext
 class DetailsBase extends PureComponent {
   blockContact = () => {
     console.log('Block')
