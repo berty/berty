@@ -9,7 +9,7 @@ import (
 
 	"berty.tech/core/pkg/tracing"
 	host "github.com/libp2p/go-libp2p-host"
-	bw "github.com/libp2p/go-libp2p-metrics"
+	libp2p_metrics "github.com/libp2p/go-libp2p-metrics"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
@@ -41,7 +41,7 @@ type BertyMetric struct {
 	peersHandlers []func(*Peer, error) error
 	muHPeers      sync.Mutex
 
-	bw *bw.BandwidthCounter
+	rep libp2p_metrics.Reporter
 
 	latconn map[connKey]time.Duration
 	latpeer map[peer.ID]time.Duration
@@ -51,7 +51,7 @@ type BertyMetric struct {
 	rootContext context.Context
 }
 
-func NewBertyMetric(ctx context.Context, h host.Host, ping PingService) *BertyMetric {
+func NewBertyMetric(ctx context.Context, h host.Host, rep libp2p_metrics.Reporter, ping PingService) *BertyMetric {
 	tracer := tracing.EnterFunc(ctx, h, ping)
 	defer tracer.Finish()
 
@@ -60,7 +60,7 @@ func NewBertyMetric(ctx context.Context, h host.Host, ping PingService) *BertyMe
 		ping:          ping,
 		handlePeer:    make(chan peer.ID, 1),
 		peersHandlers: make([]func(*Peer, error) error, 0),
-		bw:            bw.NewBandwidthCounter(),
+		rep:           rep,
 		latconn:       make(map[connKey]time.Duration),
 		latpeer:       make(map[peer.ID]time.Duration),
 		rootContext:   ctx,
@@ -221,12 +221,12 @@ func (m *BertyMetric) Peers(ctx context.Context) *Peers {
 	return pis
 }
 
-func (m *BertyMetric) bandwidthToStats(b bw.Stats) *BandwidthStats {
+func (m *BertyMetric) bandwidthToStats(s libp2p_metrics.Stats) *BandwidthStats {
 	return &BandwidthStats{
-		TotalIn:  b.TotalIn,
-		TotalOut: b.TotalOut,
-		RateIn:   b.RateIn,
-		RateOut:  b.RateOut,
+		TotalIn:  s.TotalIn,
+		TotalOut: s.TotalOut,
+		RateIn:   s.RateIn,
+		RateOut:  s.RateOut,
 	}
 }
 
@@ -250,7 +250,7 @@ func (m *BertyMetric) MonitorBandwidth(interval time.Duration, handler func(*Ban
 				handler(nil, errors.New("metrics shutdown"))
 				return
 			}
-			out := m.bw.GetBandwidthTotals()
+			out := m.rep.GetBandwidthTotals()
 
 			logger().Debug("monitoring bandwidth", zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
 
@@ -275,7 +275,7 @@ func (m *BertyMetric) MonitorBandwidthProtocol(id string, interval time.Duration
 				handler(nil, errors.New("metrics shutdown"))
 				return
 			}
-			out := m.bw.GetBandwidthForProtocol(pid)
+			out := m.rep.GetBandwidthForProtocol(pid)
 
 			logger().Debug("monitoring bandwidth protocol", zap.String("protocol", id), zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
 
@@ -309,7 +309,7 @@ func (m *BertyMetric) MonitorBandwidthPeer(id string, interval time.Duration, ha
 				return
 			}
 
-			out := m.bw.GetBandwidthForPeer(peerid)
+			out := m.rep.GetBandwidthForPeer(peerid)
 
 			logger().Debug("monitor bandwidth peer", zap.String("peer id", id), zap.Int64("in", out.TotalIn), zap.Int64("out", out.TotalOut))
 

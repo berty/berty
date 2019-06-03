@@ -13,6 +13,7 @@ import (
 	libp2p_crypto "github.com/libp2p/go-libp2p-crypto"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	libp2p_host "github.com/libp2p/go-libp2p-host"
+	libp2p_metrics "github.com/libp2p/go-libp2p-metrics"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pnet "github.com/libp2p/go-libp2p-pnet"
 	quic "github.com/libp2p/go-libp2p-quic-transport"
@@ -177,6 +178,10 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 		if cfg.DefaultBind {
 			libp2pOpts = append(libp2pOpts, libp2p.ListenAddrStrings(DefaultBind["quic"]...))
 		}
+	}
+
+	if cfg.Metric {
+		libp2pOpts = append(libp2pOpts, libp2p.BandwidthReporter(libp2p_metrics.NewBandwidthCounter()))
 	}
 
 	// add listening adresses after setup transport
@@ -379,11 +384,11 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 
 	// configure metric service
-	if cfg.Metric {
+	if cfg.Config.Reporter != nil {
 		if !cfg.Ping {
 			return nil, fmt.Errorf("cannot enable metric; ping is not enabled")
 		}
-		h.Metric = metric.NewBertyMetric(ctx, h, h.Ping)
+		h.Metric = metric.NewBertyMetric(ctx, h, cfg.Config.Reporter, h.Ping)
 	}
 
 	h.Discovery = host.NewBertyDiscovery(ctx, discoveries)

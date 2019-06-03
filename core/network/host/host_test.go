@@ -12,6 +12,7 @@ import (
 	libp2p "github.com/libp2p/go-libp2p"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	host "github.com/libp2p/go-libp2p-host"
+	libp2p_metrics "github.com/libp2p/go-libp2p-metrics"
 	inet "github.com/libp2p/go-libp2p-net"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
@@ -36,7 +37,9 @@ func setupHost(ctx context.Context) (*BertyHost, error) {
 	}
 
 	ping := NewPingService(h)
-	metric := metric.NewBertyMetric(ctx, h, ping)
+
+	rep := libp2p_metrics.NewBandwidthCounter()
+	metric := metric.NewBertyMetric(ctx, h, rep, ping)
 
 	// @TODO: We should test this as well, for the skip routing/discovery since
 	// it's not use in tests

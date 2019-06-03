@@ -104,9 +104,9 @@
               "nested": {
                 "MetricsType": {
                   "values": {
-                    "PEER": 0,
+                    "GLOBAL": 0,
                     "PROTOCOL": 1,
-                    "GLOBAL": 2
+                    "PEER": 2
                   }
                 },
                 "BandwidthStats": {

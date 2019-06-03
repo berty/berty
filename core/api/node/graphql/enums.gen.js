@@ -103,15 +103,15 @@ export const ValueGoogleProtobufMethodOptionsInputIdempotencyLevel = {
 }
 
 export const BertyNetworkMetricMetricsTypeInputMetricsType = {
-  PEER: 0,
+  GLOBAL: 0,
   PROTOCOL: 1,
-  GLOBAL: 2,
+  PEER: 2,
 }
 
 export const ValueBertyNetworkMetricMetricsTypeInputMetricsType = {
-  0: 'PEER',
+  0: 'GLOBAL',
   1: 'PROTOCOL',
-  2: 'GLOBAL',
+  2: 'PEER',
 }
 
 export const BertyNodeKindInputKind = {
