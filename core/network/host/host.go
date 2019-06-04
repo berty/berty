@@ -4,38 +4,39 @@ import (
 	"context"
 	"fmt"
 
+	"berty.tech/core/network/helper"
 	"berty.tech/core/network/metric"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	host "github.com/libp2p/go-libp2p-host"
 	routing "github.com/libp2p/go-libp2p-routing"
 
 	circuit "github.com/libp2p/go-libp2p-circuit"
+	"github.com/libp2p/go-libp2p-core/protocol"
 	ifconnmgr "github.com/libp2p/go-libp2p-interface-connmgr"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
-	protocol "github.com/libp2p/go-libp2p-protocol"
+
+	// protocol "github.com/libp2p/go-libp2p-protocol"
 	ma "github.com/multiformats/go-multiaddr"
 	msmux "github.com/multiformats/go-multistream"
 )
 
 var _ (host.Host) = (*BertyHost)(nil)
 
-// BertyHost is an host.Host but with capability to choose a specific conn when
+// BertyHost is an host.Host but with capabilsity to choose a specific conn when
 // calling NewStream
 type BertyHost struct {
 	host.Host
 	Discovery discovery.Discovery
 	Routing   routing.IpfsRouting
 	Metric    metric.Metric
-	Ping      *PingService
 }
 
 type BertyHostOptions struct {
 	Discovery discovery.Discovery
 	Routing   routing.IpfsRouting
 	Metric    metric.Metric
-	Ping      *PingService
 }
 
 func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (*BertyHost, error) {
@@ -44,7 +45,6 @@ func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (
 		Discovery: opts.Discovery,
 		Routing:   opts.Routing,
 		Metric:    opts.Metric,
-		Ping:      opts.Ping,
 	}
 
 	if h.Metric != nil {
@@ -150,7 +150,7 @@ func (bh *BertyHost) Network() inet.Network {
 	return bh.Host.Network()
 }
 
-func (bh *BertyHost) Mux() *msmux.MultistreamMuxer {
+func (bh *BertyHost) Mux() protocol.Switch {
 	return bh.Host.Mux()
 }
 
@@ -261,9 +261,9 @@ func (bh *BertyHost) newStream(ctx context.Context, p peer.ID, pid protocol.ID) 
 	s.SetProtocol(pid)
 
 	lzcon := msmux.NewMSSelect(s, string(pid))
-	return &StreamWrapper{
-		Stream: s,
-		rw:     lzcon,
+	return &helper.StreamWrapper{
+		Stream:     s,
+		ReadWriter: lzcon,
 	}, nil
 }
 

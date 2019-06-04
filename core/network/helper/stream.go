@@ -1,4 +1,4 @@
-package host
+package helper
 
 import (
 	"io"
@@ -10,7 +10,7 @@ import (
 
 type StreamWrapper struct {
 	inet.Stream
-	rw io.ReadWriter
+	io.ReadWriter
 }
 
 func NewStreamWrapper(s inet.Stream, pid protocol.ID) *StreamWrapper {
@@ -18,15 +18,15 @@ func NewStreamWrapper(s inet.Stream, pid protocol.ID) *StreamWrapper {
 
 	lzcon := msmux.NewMSSelect(s, string(pid))
 	return &StreamWrapper{
-		Stream: s,
-		rw:     lzcon,
+		Stream:     s,
+		ReadWriter: lzcon,
 	}
 }
 
 func (s *StreamWrapper) Read(b []byte) (int, error) {
-	return s.rw.Read(b)
+	return s.ReadWriter.Read(b)
 }
 
 func (s *StreamWrapper) Write(b []byte) (int, error) {
-	return s.rw.Write(b)
+	return s.ReadWriter.Write(b)
 }

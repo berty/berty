@@ -1,4 +1,4 @@
-package host
+package metric
 
 import (
 	"bytes"
@@ -7,18 +7,18 @@ import (
 	"io"
 	"time"
 
+	"berty.tech/core/network/helper"
 	u "github.com/ipfs/go-ipfs-util"
 	host "github.com/libp2p/go-libp2p-host"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
 	p2pp "github.com/libp2p/go-libp2p/p2p/protocol/ping"
-	"go.uber.org/zap"
 )
 
 // PingService a fork of p2pp.PingService, but a the capability to ping a
 // signle conn
 type PingService struct {
-	ping *p2pp.PingService
+	host host.Host
 }
 
 // Keep the same ID as ipfs ping service, so we can ping them as well.
@@ -28,46 +28,53 @@ const ID = p2pp.ID
 var PingSize = p2pp.PingSize
 
 func NewPingService(h host.Host) *PingService {
-	ping := p2pp.NewPingService(h)
-	return &PingService{ping}
+	return &PingService{h}
 }
 
-func (ps *PingService) PingConn(ctx context.Context, c inet.Conn) (<-chan time.Duration, error) {
+func (ps *PingService) PingConn(ctx context.Context, c inet.Conn) <-chan p2pp.Result {
 	s, err := c.NewStream()
 	if err != nil {
-		return nil, err
+		ch := make(chan p2pp.Result, 1)
+		ch <- p2pp.Result{Error: err}
+		close(ch)
+		return ch
 	}
 
-	sw := NewStreamWrapper(s, ID)
-	out := make(chan time.Duration)
+	ctx, cancel := context.WithCancel(ctx)
+	sw := helper.NewStreamWrapper(s, ID)
+
+	out := make(chan p2pp.Result)
 	go func() {
 		defer close(out)
-		defer sw.Reset()
-		for {
+		defer cancel()
+
+		for ctx.Err() == nil {
+			var res p2pp.Result
+			res.RTT, res.Error = ping(sw)
+
+			// canceled, ignore everything.
+			if ctx.Err() != nil {
+				return
+			}
+
 			select {
+			case out <- res:
 			case <-ctx.Done():
 				return
-			default:
-				t, err := ping(sw)
-				if err != nil {
-					logger().Warn("ping error", zap.Error(err))
-					return
-				}
-
-				select {
-				case out <- t:
-				case <-ctx.Done():
-					return
-				}
 			}
 		}
 	}()
+	go func() {
+		// forces the ping to abort.
+		<-ctx.Done()
+		sw.Reset()
+	}()
 
-	return out, nil
+	return out
 }
 
-func (ps *PingService) Ping(ctx context.Context, p peer.ID) (<-chan time.Duration, error) {
-	return ps.ping.Ping(ctx, p)
+func (ps *PingService) Ping(ctx context.Context, p peer.ID) <-chan p2pp.Result {
+	return p2pp.Ping(ctx, ps.host, p)
 }
 
 // p2pp.ping is not exposed, so we need to duplicate this here

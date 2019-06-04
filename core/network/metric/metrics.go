@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"berty.tech/core/pkg/tracing"
-	host "github.com/libp2p/go-libp2p-host"
+	libp2p_host "github.com/libp2p/go-libp2p-host"
 	libp2p_metrics "github.com/libp2p/go-libp2p-metrics"
 	inet "github.com/libp2p/go-libp2p-net"
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -34,8 +34,8 @@ var _ inet.Notifiee = (*BertyMetric)(nil)
 
 // TODO: Use only chan to subscribe to Notifee interface
 type BertyMetric struct {
-	host host.Host
-	ping PingService
+	host libp2p_host.Host
+	ping *PingService
 
 	handlePeer    chan peer.ID
 	peersHandlers []func(*Peer, error) error
@@ -51,13 +51,13 @@ type BertyMetric struct {
 	rootContext context.Context
 }
 
-func NewBertyMetric(ctx context.Context, h host.Host, rep libp2p_metrics.Reporter, ping PingService) *BertyMetric {
+func NewBertyMetric(ctx context.Context, h libp2p_host.Host, rep libp2p_metrics.Reporter) *BertyMetric {
 	tracer := tracing.EnterFunc(ctx, h, ping)
 	defer tracer.Finish()
 
 	m := &BertyMetric{
 		host:          h,
-		ping:          ping,
+		ping:          NewPingService(h),
 		handlePeer:    make(chan peer.ID, 1),
 		peersHandlers: make([]func(*Peer, error) error, 0),
 		rep:           rep,
@@ -147,36 +147,38 @@ func (m *BertyMetric) LatencyEWMA(p peer.ID) time.Duration {
 }
 
 func (m *BertyMetric) PingConn(ctx context.Context, c inet.Conn) (t time.Duration, err error) {
-	var cp <-chan time.Duration
-
-	cp, err = m.ping.PingConn(ctx, c)
-	if err != nil {
-		return
-	}
+	ctx, cancel := context.WithCancel(ctx)
 	select {
 	case <-ctx.Done():
 		err = ctx.Err()
-	case t = <-cp:
-		m.RecordConnLatency(c, t)
+	case res := <-m.ping.PingConn(ctx, c):
+		err = res.Error
+		t = res.RTT
+		if err == nil {
+			m.RecordConnLatency(c, t)
+		}
 	}
 
+	// abort
+	cancel()
 	return
 }
 
 func (m *BertyMetric) Ping(ctx context.Context, p peer.ID) (t time.Duration, err error) {
-	var cp <-chan time.Duration
-
-	cp, err = m.ping.Ping(ctx, p)
-	if err != nil {
-		return
-	}
+	ctx, cancel := context.WithCancel(ctx)
 	select {
 	case <-ctx.Done():
 		err = ctx.Err()
-	case t = <-cp:
-		m.RecordLatency(p, t)
+	case res := <-m.ping.Ping(ctx, p):
+		err = res.Error
+		t = res.RTT
+		if err == nil {
+			m.RecordLatency(p, t)
+		}
 	}
 
+	// abort
+	cancel()
 	return
 }
 

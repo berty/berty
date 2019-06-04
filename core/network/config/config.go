@@ -86,8 +86,6 @@ type Config struct {
 
 	PeerCache bool
 
-	Ping bool
-
 	Metric bool
 
 	HOP bool
@@ -115,7 +113,6 @@ func (cfg *Config) Override(override *Config) error {
 	cfg.DefaultBootstrap = override.DefaultBootstrap
 	cfg.Bootstrap = override.Bootstrap
 	cfg.PeerCache = override.PeerCache
-	cfg.Ping = override.Ping
 	cfg.Metric = override.Metric
 	cfg.HOP = override.HOP
 	cfg.Identity = override.Identity
@@ -233,9 +230,6 @@ func (cfg *Config) Apply(ctx context.Context, opts ...Option) error {
 	}
 
 	// override conn manager
-
-	// override ping service
-	cfg.Config.DisablePing = true
 	return nil
 }
 
@@ -274,7 +268,6 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 		ConnManager:  cfg.Config.ConnManager,
 		AddrsFactory: cfg.Config.AddrsFactory,
 		NATManager:   cfg.Config.NATManager,
-		EnablePing:   !cfg.Config.DisablePing,
 	})
 
 	if err != nil {
@@ -378,17 +371,9 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 		discoveries = append(discoveries, mdnsRes)
 	}
 
-	// configure ping service
-	if cfg.Ping {
-		h.Ping = host.NewPingService(h)
-	}
-
 	// configure metric service
 	if cfg.Config.Reporter != nil {
-		if !cfg.Ping {
-			return nil, fmt.Errorf("cannot enable metric; ping is not enabled")
-		}
-		h.Metric = metric.NewBertyMetric(ctx, h, cfg.Config.Reporter, h.Ping)
+		h.Metric = metric.NewBertyMetric(ctx, h, cfg.Config.Reporter)
 	}
 
 	h.Discovery = host.NewBertyDiscovery(ctx, discoveries)
