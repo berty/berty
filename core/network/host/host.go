@@ -6,9 +6,11 @@ import (
 
 	"berty.tech/core/network/helper"
 	"berty.tech/core/network/metric"
+	"berty.tech/core/network/state"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	host "github.com/libp2p/go-libp2p-host"
 	routing "github.com/libp2p/go-libp2p-routing"
+	filter "github.com/libp2p/go-maddr-filter"
 
 	circuit "github.com/libp2p/go-libp2p-circuit"
 	"github.com/libp2p/go-libp2p-core/protocol"
@@ -28,9 +30,10 @@ var _ (host.Host) = (*BertyHost)(nil)
 // calling NewStream
 type BertyHost struct {
 	host.Host
-	Discovery discovery.Discovery
-	Routing   routing.IpfsRouting
-	Metric    metric.Metric
+	Discovery      discovery.Discovery
+	Routing        routing.IpfsRouting
+	Metric         metric.Metric
+	ContextFilters *ContextFilters
 }
 
 type BertyHostOptions struct {
@@ -41,10 +44,11 @@ type BertyHostOptions struct {
 
 func NewBertyHost(ctx context.Context, host host.Host, opts *BertyHostOptions) (*BertyHost, error) {
 	h := &BertyHost{
-		Host:      host,
-		Discovery: opts.Discovery,
-		Routing:   opts.Routing,
-		Metric:    opts.Metric,
+		Host:           host,
+		Discovery:      opts.Discovery,
+		Routing:        opts.Routing,
+		Metric:         opts.Metric,
+		ContextFilters: NewContextFilters(filter.NewFilters()),
 	}
 
 	if h.Metric != nil {
@@ -62,6 +66,7 @@ func (bh *BertyHost) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 	if bh.Network().Connectedness(pi.ID) == inet.Connected {
 		return nil
 	}
+
 	// if we were given some addresses, keep + use them.
 	if len(pi.Addrs) > 0 {
 		bh.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
@@ -77,6 +82,7 @@ func (bh *BertyHost) Connect(ctx context.Context, pi pstore.PeerInfo) error {
 			return err
 		}
 	}
+
 	// Issue 448: if our address set includes routed specific relay addrs,
 	// we need to make sure the relay's addr itself is in the peerstore or else
 	// we wont be able to dial it.
@@ -296,4 +302,23 @@ func (bh *BertyHost) Close() error {
 
 func (bh *BertyHost) ConnManager() ifconnmgr.ConnManager {
 	return bh.Host.ConnManager()
+}
+
+func (bh *BertyHost) RegisterNetworkUpdater(nu *state.NetworkUpdater) {
+	s := nu.GetState()
+
+	// Handle current state
+	bh.HandleConnectivityChange(s)
+	bh.HandleInternetChange(s.Internet)
+	bh.HandleVPNChange(s.VPN)
+	bh.HandleMDNSChange(s.MDNS)
+	bh.HandleMeteredChange(s.Metered)
+	bh.HandleRoamingChange(s.Roaming)
+	bh.HandleTrustedChange(s.Trusted)
+	bh.HandleNetTypeChange(s.Network)
+	bh.HandleCellTypeChange(s.Cellular)
+	bh.HandleBluetoothChange(s.Bluetooth)
+
+	// Register notifee
+	nu.RegisterNotifee(bh)
 }

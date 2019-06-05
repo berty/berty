@@ -22,6 +22,7 @@ import (
 	tptu "github.com/libp2p/go-libp2p-transport-upgrader"
 	libp2p_config "github.com/libp2p/go-libp2p/config"
 	bhost "github.com/libp2p/go-libp2p/p2p/host/basic"
+	filter "github.com/libp2p/go-maddr-filter"
 	tcp "github.com/libp2p/go-tcp-transport"
 	ws "github.com/libp2p/go-ws-transport"
 
@@ -30,6 +31,7 @@ import (
 	"berty.tech/core/network/protocol/ble"
 	"berty.tech/core/network/protocol/dht"
 	"berty.tech/core/network/protocol/mdns"
+	"berty.tech/core/network/state"
 	"berty.tech/core/pkg/errorcodes"
 )
 
@@ -256,14 +258,21 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 		cfg.Config.Peerstore.AddPubKey(pid, cfg.Config.PeerKey.GetPublic())
 	}
 
-	// TODO: Make the swarm implementation configurable.
-	swrm := swarm.NewSwarm(ctx, pid, cfg.Config.Peerstore, cfg.Config.Reporter)
-	if cfg.Config.Filters != nil {
-		swrm.Filters = cfg.Config.Filters
+	if cfg.Config.Filters == nil {
+		cfg.Config.Filters = filter.NewFilters()
 	}
 
+	ctxfilter := host.NewContextFilters(cfg.Config.Filters)
+
+	// TODO: Make the swarm implementation configurable.
+	swrm := swarm.NewSwarm(ctx, pid, cfg.Config.Peerstore, cfg.Config.Reporter)
+	swrm.Filters = ctxfilter.Filters()
+
 	// use basic host
-	h := &host.BertyHost{}
+	h := &host.BertyHost{
+		ContextFilters: ctxfilter,
+	}
+
 	h.Host, err = bhost.NewHost(ctx, swrm, &bhost.HostOpts{
 		ConnManager:  cfg.Config.ConnManager,
 		AddrsFactory: cfg.Config.AddrsFactory,
@@ -278,7 +287,7 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	// upgrader
 	upgrader := new(tptu.Upgrader)
 	upgrader.Protector = cfg.Config.Protector
-	upgrader.Filters = swrm.Filters
+	upgrader.Filters = ctxfilter.Filters()
 	if cfg.Config.Insecure {
 		upgrader.Secure = makeInsecureTransport(pid)
 	} else {
@@ -377,5 +386,6 @@ func (cfg *Config) NewNode(ctx context.Context) (*host.BertyHost, error) {
 	}
 
 	h.Discovery = host.NewBertyDiscovery(ctx, discoveries)
+	h.RegisterNetworkUpdater(state.Global())
 	return h, nil
 }
