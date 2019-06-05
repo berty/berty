@@ -10,12 +10,16 @@ import (
 	"encoding/hex"
 	"io"
 
+	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	record "github.com/libp2p/go-libp2p-record"
 	routing "github.com/libp2p/go-libp2p-routing"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
 )
+
+// default quorum value
+const defaultGetValueQuorum = 16
 
 type TranslateValidator struct{}
 
@@ -143,7 +147,7 @@ func GetTranslateRecord(ctx context.Context, r routing.IpfsRouting, contactID st
 	hash := sha256.Sum256([]byte(contactID))
 	key := "/bertyTranslate/" + hex.EncodeToString(hash[:])
 
-	value, err = r.GetValue(ctx, key)
+	value, err = r.GetValue(ctx, key, dht.Quorum(defaultGetValueQuorum))
 	if err != nil {
 		return []byte{}, err
 	}
