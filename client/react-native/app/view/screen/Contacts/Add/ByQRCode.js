@@ -57,9 +57,7 @@ class ByQRCode extends PureComponent {
           setScanner={this.setScanner}
           cameraStyle={{ height: size, width: size }}
           onFound={async data => {
-            console.log(data)
             const url = parseUrl(data)
-            console.log(url)
 
             if (!url || url.pathname !== '/contacts/add') {
               showMessage({
@@ -72,7 +70,6 @@ class ByQRCode extends PureComponent {
 
               return
             }
-            console.log('navigate')
             navigation.navigate('modal/contacts/card', {
               id: url.hashParts['id'],
               displayName: url.hashParts['display-name'] || '',

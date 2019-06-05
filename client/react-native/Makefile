@@ -81,7 +81,7 @@ gen.pretty: deps.root
 ### Dependencies part ###
 .PHONY: deps.root
 deps.root:
-	npm install
+	npm $$([ ! -z "$$CIRCLE_JOB" ] && echo "ci" || echo "install")
 
 .PHONY: deps
 deps: deps.root
@@ -200,7 +200,7 @@ log.ios:
 ### Clean dependencies part ###
 .PHONY: clean.bundler_and_pkgs
 clean.bundler_and_pkgs:
-	$(LERNA) clean
+	$(LERNA) clean -y
 	cd $(ROOT)					\
 		&& rm -rf node_modules	\
 		&& watchman watch-del-all
@@ -220,9 +220,6 @@ clean.ios:
 
 .PHONY: clean.web
 clean.web:
-	cd $(WEB)					\
-		&& rm -rf node_modules	\
-		&& watchman watch-del-all
 
 .PHONY: fclean.android
 fclean.android: clean.android clean.bundler_and_pkgs

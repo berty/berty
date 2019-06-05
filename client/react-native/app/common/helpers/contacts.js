@@ -4,16 +4,6 @@ import I18n from 'i18next'
 
 import { BASE_WEBSITE_URL } from '../constants'
 
-export const extractPublicKeyFromId = id => {
-  try {
-    return id
-  } catch (e) {
-    console.warn(e)
-  }
-
-  return ''
-}
-
 export const makeShareableUrl = ({ id, displayName }) =>
   `${BASE_WEBSITE_URL}/contacts/add#id=${encodeURIComponent(
     id

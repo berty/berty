@@ -1,7 +1,6 @@
 import React from 'react'
 import { Platform, Clipboard } from 'react-native'
 import {
-  extractPublicKeyFromId,
   makeShareableUrl,
   shareLinkOther,
   shareLinkSelf,
@@ -14,7 +13,7 @@ import { withNamespaces } from 'react-i18next'
 const ActionsShare = ({ data, self, inModal, t }) => {
   const { id, displayName } = data
 
-  const pubKey = extractPublicKeyFromId(id)
+  const pubKey = id
 
   return (
     <ActionList inModal={inModal}>

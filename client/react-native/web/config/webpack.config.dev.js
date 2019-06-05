@@ -241,6 +241,7 @@ module.exports = {
                     },
                   },
                 ],
+                require.resolve('babel-plugin-transform-remove-console'),
               ],
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/

@@ -6,10 +6,7 @@ import * as onboardingStyle from './style'
 import { NextButton, SkipButton } from './Button'
 import { withNamespaces } from 'react-i18next'
 import { withCurrentUser } from '@berty/relay/utils/contact'
-import {
-  extractPublicKeyFromId,
-  shareLinkSelf,
-} from '@berty/common/helpers/contacts'
+import { shareLinkSelf } from '@berty/common/helpers/contacts'
 import colors from '@berty/common/constants/colors'
 
 const Contacts = ({ navigation, currentUser, t }) => (
@@ -29,7 +26,7 @@ const Contacts = ({ navigation, currentUser, t }) => (
           <NextButton
             onPress={() =>
               shareLinkSelf({
-                id: extractPublicKeyFromId(currentUser.id),
+                id: currentUser.id,
                 displayName: currentUser.displayName,
               })
             }

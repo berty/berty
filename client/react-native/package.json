@@ -82,7 +82,7 @@
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.4",
-    "babel-plugin-root-import": "^6.2.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-runtime": "^6.26.0",
     "case": "^1.6.1",
     "eslint": "^5.7.0",

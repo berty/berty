@@ -21,6 +21,7 @@ export const withDeepLinkHandler = Component => {
       switch (url.pathname) {
         case '/chats/detail':
           if (url.hashParts['id']) {
+            // TODO: remove that part when we'll have get rid of graphql/relay
             url.hashParts['id'] = btoa(`conversation:${url.hashParts['id']}`)
           }
           this.setState({
