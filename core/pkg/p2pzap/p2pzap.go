@@ -13,7 +13,7 @@ type p2pLogBackendWrapper struct {
 }
 
 func (l *p2pLogBackendWrapper) Log(level logging.Level, calldepth int, rec *logging.Record) error {
-	module := l.logger.Named(rec.Module)
+	module := l.logger.Named("lp2p." + rec.Module)
 	switch level {
 	case logging.DEBUG:
 		module.Debug(rec.Message())
