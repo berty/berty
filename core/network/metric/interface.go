@@ -8,11 +8,6 @@ import (
 	peer "github.com/libp2p/go-libp2p-peer"
 )
 
-type PingService interface {
-	PingConn(context.Context, inet.Conn) (<-chan time.Duration, error)
-	Ping(context.Context, peer.ID) (<-chan time.Duration, error)
-}
-
 type Metric interface {
 	inet.Notifiee
 

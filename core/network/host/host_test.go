@@ -36,10 +36,8 @@ func setupHost(ctx context.Context) (*BertyHost, error) {
 		return nil, err
 	}
 
-	ping := NewPingService(h)
-
 	rep := libp2p_metrics.NewBandwidthCounter()
-	metric := metric.NewBertyMetric(ctx, h, rep, ping)
+	metric := metric.NewBertyMetric(ctx, h, rep)
 
 	// @TODO: We should test this as well, for the skip routing/discovery since
 	// it's not use in tests
@@ -50,7 +48,6 @@ func setupHost(ctx context.Context) (*BertyHost, error) {
 		Discovery: discovery,
 		Routing:   crouter,
 		Metric:    metric,
-		Ping:      ping,
 	}
 
 	return NewBertyHost(ctx, h, opts)

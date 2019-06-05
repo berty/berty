@@ -328,18 +328,19 @@ func (net *Network) OnEnvelopeHandler(f func(context.Context, *entity.Envelope) 
 }
 
 func (net *Network) PingOtherNode(ctx context.Context, destination string) (err error) {
-	peerid, err := peer.IDB58Decode(destination)
+	var peerid peer.ID
+
+	if net.host.Metric == nil {
+		return fmt.Errorf("cannot ping other node since metric is not enabled")
+	}
+
+	peerid, err = peer.IDB58Decode(destination)
 	if err != nil {
 		return err
 	}
 
-	ch, err := net.host.Ping.Ping(ctx, peerid)
-	if err != nil {
-		return err
-	}
-
-	<-ch
-	return nil
+	_, err = net.host.Metric.Ping(ctx, peerid)
+	return err
 }
 
 func (net *Network) Metric() metric.Metric {

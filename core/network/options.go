@@ -22,7 +22,6 @@ func WithClientOptions() config.Option {
 		DisablePersistConfig(),
 		EnableDefaultBind(),
 		EnableMetric(),
-		EnablePing(),
 		EnableTCP(),
 		EnablePeerCache(),
 	)
@@ -36,7 +35,6 @@ func WithServerOptions() config.Option {
 		EnableDefaultBind(),
 		EnableHOP(),
 		EnableMetric(),
-		EnablePing(),
 		EnableTCP(),
 	)
 }
@@ -225,20 +223,6 @@ func EnableDHTServer() config.Option {
 func DisableDHTServer() config.Option {
 	return func(cfg *config.Config) error {
 		cfg.DHTServer = false
-		return nil
-	}
-}
-
-func EnablePing() config.Option {
-	return func(cfg *config.Config) error {
-		cfg.Ping = true
-		return nil
-	}
-}
-
-func DisablePing() config.Option {
-	return func(cfg *config.Config) error {
-		cfg.Ping = false
 		return nil
 	}
 }

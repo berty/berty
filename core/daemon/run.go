@@ -69,7 +69,6 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 					BLE:              cfg.Ble,
 					QUIC:             true,
 					Metric:           true,
-					Ping:             true,
 					DefaultBootstrap: false,
 					Bootstrap:        cfg.Bootstrap,
 					HOP:              cfg.Hop,
