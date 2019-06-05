@@ -7,14 +7,23 @@ import { Platform, AppRegistry } from 'react-native'
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import App from '@berty/navigation'
-import AppTest from './integration/AppWrapper'
+import RootNavigator from '@berty/navigation'
+import AppWrapper from './integration/AppWrapper'
+console.log('test')
 
 const isIntegrationMode = process.env['ENVIRONMENT'] === 'integration_test'
 
 if (Platform.Desktop === undefined) {
   Platform.Desktop = false
 }
+const Root = () =>
+  isIntegrationMode ? (
+    <AppWrapper>
+      <RootNavigator />
+    </AppWrapper>
+  ) : (
+    <RootNavigator />
+  )
 
 if (Platform.OS === 'web') {
   if (
@@ -26,14 +35,8 @@ if (Platform.OS === 'web') {
   } else {
     import('@berty/common/helpers/patch-web.js')
   }
-  ReactDOM.render(
-    isIntegrationMode === true ? <AppTest /> : <App />,
-    document.getElementById('root')
-  )
+  ReactDOM.render(<Root />, document.getElementById('root'))
   import('./registerServiceWorker').then()
 } else {
-  AppRegistry.registerComponent(
-    'root',
-    isIntegrationMode === true ? <AppTest /> : <App />
-  )
+  AppRegistry.registerComponent('root', () => Root)
 }

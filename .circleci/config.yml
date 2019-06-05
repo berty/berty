@@ -299,7 +299,7 @@ jobs:
 
       - *master_version
       - restore_cache:
-          key: android-{{checksum "/tmp/master_version"}}
+          key: android-{{checksum "/tmp/master_version"}}-v1
 
       - checkout:
           path: ~/go/src/berty.tech/
@@ -406,7 +406,7 @@ jobs:
 
       - *master_version
       - save_cache:
-          key: android-{{checksum "/tmp/master_version"}}
+          key: android-{{checksum "/tmp/master_version"}}-v1
           paths:
             - ~/go/pkg
             - ~/go/src

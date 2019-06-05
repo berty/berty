@@ -8,7 +8,11 @@
     "@babel/plugin-proposal-async-generator-functions",
     "transform-export-extensions",
     "relay",
-    "transform-inline-environment-variables",
-    "transform-remove-console"
-  ]
+    "transform-inline-environment-variables"
+  ],
+  "env": {
+    "production": {
+      "plugins": ["transform-remove-console"]
+    }
+  }
 }

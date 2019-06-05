@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react'
 import hoistNonReactStatic from 'hoist-non-react-statics'
 
+export const Children = props =>
+  React.Children.map(props.children, child => React.cloneElement(child, props))
+
 export const withScreenProps = Component =>
   withHOC(
     class WithScreenProps extends PureComponent {
@@ -47,7 +50,7 @@ export const asFunctional = Component =>
 
 export const withHOC = HOC => Component =>
   hoistNonReactStatic(
-    class WithHOC extends HOC {
+    class extends HOC {
       static displayName = `${getDisplayName(HOC)}(${getDisplayName(
         Component
       )})`

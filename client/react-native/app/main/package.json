@@ -8,6 +8,7 @@
   "private": true,
   "dependencies": {
     "@berty/common": "^0.0.1",
-    "@berty/navigation": "^0.0.1"
+    "@berty/navigation": "^0.0.1",
+    "@berty/screen": "^0.0.1"
   }
 }

@@ -141,7 +141,6 @@ export default class App extends PureComponent {
                     }}
                   >
                     {this.props.children}
-
                     <FlashMessage position='top' />
                     <View
                       style={{

@@ -3,7 +3,7 @@ import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
 import ByQRCode from './ByQRCode'
 import ByPublicKey from './ByPublicKey'
 import Invite from './Invite'
-import { withProps, withScreenProps } from '@berty/common/helpers/views'
+import { withProps, asFunctional, withScreenProps } from '@berty/common/helpers/views'
 import { tabNavigatorOptions } from '@berty/common/constants/styling'
 import TabIcon from '@berty/component/TabIcon'
 import { View, Keyboard } from 'react-native'
@@ -15,28 +15,28 @@ const AddContactTabbedContent = createMaterialTopTabNavigator(
       screen: withScreenProps(ByQRCode),
       navigationOptions: () => ({
         title: I18n.t('qrcode'),
-        tabBarIcon: withProps({ name: 'material-qrcode' })(TabIcon),
+        tabBarIcon: asFunctional(withProps({ name: 'material-qrcode' })(TabIcon)),
       }),
     },
     'public-key': {
       screen: withScreenProps(ByPublicKey),
       navigationOptions: () => ({
         title: I18n.t('public-key'),
-        tabBarIcon: withProps({ name: 'material-key-variant' })(TabIcon),
+        tabBarIcon: asFunctional(withProps({ name: 'material-key-variant' })(TabIcon)),
       }),
     },
     nearby: {
       screen: withScreenProps(Invite),
       navigationOptions: () => ({
         title: I18n.t('contacts.add.nearby'),
-        tabBarIcon: withProps({ name: 'radio' })(TabIcon),
+        tabBarIcon: asFunctional(withProps({ name: 'radio' })(TabIcon)),
       }),
     },
     invite: {
       screen: withScreenProps(Invite),
       navigationOptions: () => ({
         title: I18n.t('contacts.add.invite'),
-        tabBarIcon: withProps({ name: 'material-email' })(TabIcon),
+        tabBarIcon: asFunctional(withProps({ name: 'material-email' })(TabIcon)),
       }),
     },
   },

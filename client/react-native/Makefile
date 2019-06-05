@@ -146,7 +146,10 @@ debug.android: deps.android patch.android
 
 .PHONY: release.android
 release.android: deps.android
-	cd $(ROOT) && react-native run-android --variant=release --no-packager
+	cd $(ROOT) \
+		&& source .environment \
+		&& export APP_TOKEN="$$INSTABUG_TOKEN" \
+		&& react-native run-android --variant=release --no-packager
 
 .PHONY: deps.desktop
 deps.desktop: deps.web
@@ -210,7 +213,9 @@ clean.bundler_and_pkgs:
 
 .PHONY .IGNORE: clean.android
 clean.android:
-	cd $(ANDROID) && ./gradlew cleanBuildCache
+	cd $(ANDROID) \
+		&& ./gradlew clean \
+		&& ./gradlew cleanBuildCache
 
 .PHONY .IGNORE: clean.ios
 clean.ios:
@@ -223,7 +228,7 @@ clean.web:
 .PHONY .IGNORE: fclean.android
 fclean.android: clean.android clean.bundler_and_pkgs
 	$(MAKE) -C $(GOMOB) clean.android
-	cd $(ANDROID) && rm -rf app/build ble/build && ./gradlew clean
+	cd $(ANDROID) && rm -rf app/build ble/build
 
 .PHONY .IGNORE: fclean.ios
 fclean.ios: clean.ios clean.bundler_and_pkgs
