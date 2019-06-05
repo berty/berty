@@ -1,4 +1,4 @@
-- hosts: scw
+- hosts: bootstrap
   vars:
      local_home: "{{ lookup('env','GOPATH') }}"
   tasks:

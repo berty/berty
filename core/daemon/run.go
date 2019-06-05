@@ -23,7 +23,7 @@ func (d *Daemon) daemon(ctx context.Context, cfg *Config, accountName string) er
 	accountOptions := account.Options{
 		// account.WithJaegerAddrName(jaegerAddr, jaegerName+":node"),
 
-		account.WithJaegerAddrName("jaeger.berty.io:6831", accountName+":mobile"),
+		// account.WithJaegerAddrName("jaeger.berty.io:6831", accountName+":mobile"),
 		account.WithRing(logmanager.G().Ring()),
 		account.WithName(accountName),
 		account.WithPassphrase(cfg.SqlOpts.Key),

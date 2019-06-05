@@ -91,7 +91,6 @@ func (cm *BertyConnMgr) Notifee() inet.Notifiee {
 }
 
 func (cm *BertyConnMgr) Connected(net inet.Network, c inet.Conn) {
-	logger().Debug("Connected")
 	cm.BasicConnMgr.Notifee().Connected(net, c)
 }
 

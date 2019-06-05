@@ -1,4 +1,4 @@
-- hosts: scw
+- hosts: bootstrap
   vars:
      local_home: "{{ lookup('env','GOPATH') }}"
   tasks:
@@ -6,8 +6,9 @@
     local_action:
       module: shell
       _raw_params: "cd $GOPATH/src/berty.tech && docker build -f Dockerfile.scw -t berty/berty . && docker run --rm --entrypoint /bin/sh berty/berty:latest -c \"cat /go/bin/berty\" > berty"
-    # register: command_output
-#   - debug: msg="{{ command_output.stdout }}"
+    run_once: true
+    register: command_output
+  - debug: msg="{{ command_output.stdout }}"
   - name: copy binary
     copy:
       src: "{{ local_home }}/src/berty.tech/berty"

@@ -45,7 +45,7 @@ func (b *Listener) Addr() net.Addr {
 }
 
 func (b *Listener) Multiaddr() ma.Multiaddr {
-	logger().Debug("BLEListener Multiaddr")
+	// logger().Debug("BLEListener Multiaddr") @FIXME: Better log here
 	return b.lAddr
 }
 
@@ -80,7 +80,7 @@ func (b *Listener) Accept() (tpt.Conn, error) {
 
 // Close TODO: stop advertising release object etc...
 func (b *Listener) Close() error {
-	logger().Debug("BLEListener Close")
+	// logger().Debug("BLEListener Close") @FIXME: Better log here
 	select {
 	case _, ok := <-b.closer:
 		if !ok {
