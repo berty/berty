@@ -354,7 +354,7 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 	// if too long, the task will be done in background
 	done := make(chan bool, 1)
 	go func() {
-		tctx, cancel := context.WithTimeout(ctx, time.Second*10)
+		tctx, cancel := context.WithTimeout(ctx, time.Minute)
 		defer cancel()
 
 		envCopy := *envelope
