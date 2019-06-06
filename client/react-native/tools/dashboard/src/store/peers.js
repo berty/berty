@@ -14,8 +14,6 @@ export const lookup = memoize(ipfsAddr => {
   return geoip.lookup(addr);
 });
 
-const call = name => thing => thing[name]();
-
 class Peers {
   @observable connected = new Map();
   @observable addresses = new Map();
@@ -48,7 +46,6 @@ class Peers {
     const key = JSON.stringify(location);
     const count = locations.get(key) || 0;
     locations.set(key, count + 1);
-    //console.log("location", location);
     if (count === 0) addCountry(location.country);
   }
 
@@ -113,7 +110,6 @@ class Peers {
   }
 
   @action.bound async reset(api) {
-    console.log("PEERS RESET");
     const {
       addConnected,
       removeConnected,
@@ -123,7 +119,7 @@ class Peers {
       connected
     } = this;
 
-    [connected, addresses, countries, locations].forEach(call("clear"));
+    [connected, addresses, countries, locations].forEach(map => map.clear());
 
     // TODO: fetch and process an api.Peers({}) batch first
 

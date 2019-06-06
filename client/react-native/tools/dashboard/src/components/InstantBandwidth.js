@@ -5,8 +5,6 @@ import Gauge from "./Gauge";
 
 const colors = palette("tol", 2).map(c => "#" + c);
 
-console.log("colors", colors);
-
 export const IN_COLOR = colors[0];
 export const OUT_COLOR = colors[1];
 

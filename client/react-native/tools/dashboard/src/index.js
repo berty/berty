@@ -6,7 +6,6 @@ import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
 import peers from "./store/peers";
-import routing from "./store/routing";
 import node from "./store/node";
 
 import App from "./components/App";
@@ -14,10 +13,8 @@ import App from "./components/App";
 ReactDOM.render(
   <Provider
     {...{
-      routing,
       node,
-      locations: peers.locations,
-      countries: peers.countries
+      locations: peers.locations
     }}
   >
     <App />
