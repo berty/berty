@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
-import { RelayContext, QueryReducer } from './context'
+import { RelayContext } from './context'
+import QueryReducer from './QueryReducer'
 import { View } from 'react-native'
 import { withHOC, withContext } from '@berty/common/helpers/views'
 
