@@ -1,0 +1,36 @@
+{
+	"name"        :  "geoip-lite",
+	"version"     :  "1.3.7",
+	"description" :  "A light weight native JavaScript implementation of GeoIP API from MaxMind",
+	"keywords"    :  ["geo", "geoip", "ip", "ipv4", "ipv6", "geolookup", "maxmind", "geolite"],
+	"homepage"    :  "https://github.com/bluesmoon/node-geoip",
+	"author"      :  "Philip Tellis <philip@bluesmoon.info> (http://bluesmoon.info/)",
+	"files"       :  ["lib/", "data/", "test/","scripts/"],
+	"main"        :  "lib/geoip.js",
+	"repository"  :  { "type": "git", "url": "git://github.com/bluesmoon/node-geoip.git" },
+	"engines"     :  { "node": ">=5.10.0" },
+	"scripts": {
+        "pretest": "eslint .",
+		"test": "nodeunit --reporter=minimal test/tests.js",
+		"updatedb": "node scripts/updatedb.js",
+		"updatedb-debug": "node scripts/updatedb.js debug",
+		"updatedb-force": "node scripts/updatedb.js force"
+	},
+	"dependencies": {
+		"async": "^2.1.1",
+		"colors": "^1.1.2",
+		"iconv-lite": "^0.4.13",
+		"ip-address": "^5.8.9",
+		"lazy": "^1.0.11",
+		"rimraf": "^2.5.2",
+		"yauzl": "^2.9.2"
+	},
+	"config": {
+		"update": true
+	},
+	"devDependencies": {
+		"eslint": "^5.12.1",
+		"nodeunit": "^0.11.2"
+	},
+	"license": "Apache-2.0"
+}
