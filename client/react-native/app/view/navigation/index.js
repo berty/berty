@@ -6,7 +6,7 @@ import { atob } from 'b64-lite'
 
 import AppNavigator from './AppNavigator'
 import { NavigatorContext } from './NavigatorContext'
-import { BridgeContext } from '@berty/bridge/Context'
+import { StoreContext } from '@berty/store/context'
 import App from '@berty/screen/App'
 
 const getActiveRoute = navigationState => {
@@ -58,8 +58,8 @@ class RootNavigator extends PureComponent {
     return (
       <NavigatorContext.Provider value={this.state}>
         <App>
-          <BridgeContext.Consumer>
-            {bridge => (
+          <StoreContext.Consumer>
+            {store => (
               <AppNavigator
                 {...this.props}
                 ref={() => {
@@ -72,7 +72,7 @@ class RootNavigator extends PureComponent {
                   const currentRoute = getActiveRoute(currentState)
                   const prevRoute = getActiveRoute(prevState)
                   if (prevRoute !== currentRoute) {
-                    bridge.daemon.setCurrentRoute({
+                    store.daemon.setCurrentRoute({
                       route: getURIFromRoute(currentRoute),
                     })
                     this.setState(currentRoute)
@@ -80,7 +80,7 @@ class RootNavigator extends PureComponent {
                 }}
               />
             )}
-          </BridgeContext.Consumer>
+          </StoreContext.Consumer>
         </App>
       </NavigatorContext.Provider>
     )

@@ -150,6 +150,7 @@ class Auth extends PureComponent {
       )
     )
     this.props.bridge.setContext({
+      ...this.props.bridge,
       node: {
         service: nodeService,
       },

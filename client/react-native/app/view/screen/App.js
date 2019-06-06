@@ -31,7 +31,7 @@ export default class App extends PureComponent {
       Platform.OS !== 'web',
     relayContext: null,
     availableUpdate: null,
-    bridge: {
+    store: new Store({
       daemon: service.create(
         service.Daemon,
         rpc.defaultPlatform,
@@ -40,9 +40,10 @@ export default class App extends PureComponent {
       node: {
         service: null,
       },
-      setContext: bridge =>
-        this.setState({ bridge: { ...this.state.bridge, ...bridge } }),
-    },
+      setContext: bridge => {
+        this.setState({ store: new Store(bridge) })
+      },
+    }),
   }
 
   constructor (props) {
@@ -116,18 +117,19 @@ export default class App extends PureComponent {
     this.setState({ availableUpdate: update })
   }
 
-  setStore = store => {
-    this.setState({ store })
-  }
-
   render () {
-    const { relayContext, availableUpdate, bridge } = this.state
+    const {
+      relayContext,
+      availableUpdate,
+      store: { bridge },
+      store,
+    } = this.state
     return (
       <BridgeContext.Provider value={bridge}>
         <KeyboardContext.Provider>
           <I18nextProvider i18n={i18n}>
             <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-              <StoreContext.Provider value={new Store(bridge)}>
+              <StoreContext.Provider value={store}>
                 <RelayContext.Provider
                   value={{
                     ...relayContext,

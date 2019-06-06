@@ -12,6 +12,7 @@
     "@berty/component": "^0.0.1",
     "@berty/relay": "^0.0.1",
     "@berty/screen": "^0.0.1",
+    "@berty/store": "^0.0.1",
     "@berty/update": "^0.0.1",
     "react": "16.8.3"
   }

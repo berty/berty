@@ -980,5 +980,7 @@ export class Store {
         this.bridge.node.service &&
         new NodeServiceStore(this, this.bridge.node.service),
     }
+
+    this.daemon = this.bridge.daemon
   }
 }

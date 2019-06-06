@@ -70,53 +70,55 @@ class DetailsBase extends PureComponent {
     const id = navigation.getParam('id')
     return (
       <Store.Entity.Contact id={id}>
-        {data => (
-          <Screen>
-            <Menu absolute>
-              <Menu.Header
-                icon={<Avatar data={data} size={78} />}
-                title={data.overrideDisplayName || data.displayName}
-              />
-              <Menu.Section>
-                <Menu.Item
-                  icon='message-circle'
-                  title={t('contacts.send-message')}
-                  onPress={() => console.log('Send')}
+        {data =>
+          (
+            <Screen>
+              <Menu absolute>
+                <Menu.Header
+                  icon={<Avatar data={data} size={78} />}
+                  title={data.overrideDisplayName || data.displayName}
                 />
-                <Menu.Item
-                  icon='phone'
-                  title={t('contacts.call')}
-                  onPress={() => console.log('Call')}
-                />
-              </Menu.Section>
-              <Menu.Section>
-                <Menu.Item
-                  icon='eye'
-                  title={t('contacts.view-pub-key')}
-                  onPress={() =>
-                    navigation.navigate('modal/contacts/card', data)
-                  }
-                />
-              </Menu.Section>
-              <Menu.Section>
-                <Menu.Item
-                  icon='slash'
-                  title={t('contacts.block')}
-                  color={colors.error}
-                  onPress={() => this.blockConfirm()}
-                />
-              </Menu.Section>
-              <Menu.Section>
-                <Menu.Item
-                  icon='slash'
-                  title={t('contacts.delete')}
-                  color={colors.error}
-                  onPress={this.deleteContact}
-                />
-              </Menu.Section>
-            </Menu>
-          </Screen>
-        )}
+                <Menu.Section>
+                  <Menu.Item
+                    icon='message-circle'
+                    title={t('contacts.send-message')}
+                    onPress={() => console.log('Send')}
+                  />
+                  <Menu.Item
+                    icon='phone'
+                    title={t('contacts.call')}
+                    onPress={() => console.log('Call')}
+                  />
+                </Menu.Section>
+                <Menu.Section>
+                  <Menu.Item
+                    icon='eye'
+                    title={t('contacts.view-pub-key')}
+                    onPress={() =>
+                      navigation.navigate('modal/contacts/card', data)
+                    }
+                  />
+                </Menu.Section>
+                <Menu.Section>
+                  <Menu.Item
+                    icon='slash'
+                    title={t('contacts.block')}
+                    color={colors.error}
+                    onPress={() => this.blockConfirm()}
+                  />
+                </Menu.Section>
+                <Menu.Section>
+                  <Menu.Item
+                    icon='slash'
+                    title={t('contacts.delete')}
+                    color={colors.error}
+                    onPress={this.deleteContact}
+                  />
+                </Menu.Section>
+              </Menu>
+            </Screen>
+          )
+        }
       </Store.Entity.Contact>
     )
   }
