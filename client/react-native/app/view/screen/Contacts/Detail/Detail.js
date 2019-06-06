@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react'
 
 import { Avatar, Header, Menu, Screen } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 import { Store } from '@berty/container'
 import { withGoBack } from '@berty/component/BackActionProvider'
 
@@ -56,7 +56,7 @@ class DetailsBase extends PureComponent {
 
   deleteContact = async () => {
     try {
-      await this.props.context.contactRemove({
+      await this.props.context.node.service.contactRemove({
         id: this.props.navigation.getParam('id'),
       })
       this.props.goBack(null)
@@ -70,61 +70,59 @@ class DetailsBase extends PureComponent {
     const id = navigation.getParam('id')
     return (
       <Store.Entity.Contact id={id}>
-        {data =>
-          (
-            <Screen>
-              <Menu absolute>
-                <Menu.Header
-                  icon={<Avatar data={data} size={78} />}
-                  title={data.overrideDisplayName || data.displayName}
+        {data => (
+          <Screen>
+            <Menu absolute>
+              <Menu.Header
+                icon={<Avatar data={data} size={78} />}
+                title={data.overrideDisplayName || data.displayName}
+              />
+              <Menu.Section>
+                <Menu.Item
+                  icon='message-circle'
+                  title={t('contacts.send-message')}
+                  onPress={() => console.log('Send')}
                 />
-                <Menu.Section>
-                  <Menu.Item
-                    icon='message-circle'
-                    title={t('contacts.send-message')}
-                    onPress={() => console.log('Send')}
-                  />
-                  <Menu.Item
-                    icon='phone'
-                    title={t('contacts.call')}
-                    onPress={() => console.log('Call')}
-                  />
-                </Menu.Section>
-                <Menu.Section>
-                  <Menu.Item
-                    icon='eye'
-                    title={t('contacts.view-pub-key')}
-                    onPress={() =>
-                      navigation.navigate('modal/contacts/card', data)
-                    }
-                  />
-                </Menu.Section>
-                <Menu.Section>
-                  <Menu.Item
-                    icon='slash'
-                    title={t('contacts.block')}
-                    color={colors.error}
-                    onPress={() => this.blockConfirm()}
-                  />
-                </Menu.Section>
-                <Menu.Section>
-                  <Menu.Item
-                    icon='slash'
-                    title={t('contacts.delete')}
-                    color={colors.error}
-                    onPress={this.deleteContact}
-                  />
-                </Menu.Section>
-              </Menu>
-            </Screen>
-          )
-        }
+                <Menu.Item
+                  icon='phone'
+                  title={t('contacts.call')}
+                  onPress={() => console.log('Call')}
+                />
+              </Menu.Section>
+              <Menu.Section>
+                <Menu.Item
+                  icon='eye'
+                  title={t('contacts.view-pub-key')}
+                  onPress={() =>
+                    navigation.navigate('modal/contacts/card', data)
+                  }
+                />
+              </Menu.Section>
+              <Menu.Section>
+                <Menu.Item
+                  icon='slash'
+                  title={t('contacts.block')}
+                  color={colors.error}
+                  onPress={() => this.blockConfirm()}
+                />
+              </Menu.Section>
+              <Menu.Section>
+                <Menu.Item
+                  icon='slash'
+                  title={t('contacts.delete')}
+                  color={colors.error}
+                  onPress={this.deleteContact}
+                />
+              </Menu.Section>
+            </Menu>
+          </Screen>
+        )}
       </Store.Entity.Contact>
     )
   }
 }
 
-const Details = withGoBack(withRelayContext(withNamespaces()(DetailsBase)))
+const Details = withGoBack(withStoreContext(withNamespaces()(DetailsBase)))
 
 Details.navigationOptions = ({ navigation }) => ({
   header: (
