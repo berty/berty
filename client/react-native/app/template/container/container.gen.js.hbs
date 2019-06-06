@@ -18,11 +18,7 @@ import { Component } from 'react'
             export class {{name}}Entity extends Component {
               render () {
                 const { context, id, children } = this.props
-                const entity = context.entity.{{case 'camel' name}}.get(id)
-                if (entity) {
-                  return children(entity)
-                }
-                return null
+                return children(context.entity.{{case 'camel' name}}.get(id))
               }
             }
           {{/if}}

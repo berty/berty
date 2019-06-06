@@ -693,13 +693,18 @@ func (r *queryResolver) Contact(
 	if id != "" {
 		id = strings.SplitN(id, ":", 2)[1]
 	}
+	if status == nil {
+		var value int32
+		status = &value
+	}
 	if devices != nil && len(devices) != 0 {
 		for i := range devices {
 			devices[i].ID = strings.SplitN(devices[i].ID, ":", 2)[1]
 		}
 	}
 	return r.client.Contact(ctx, &entity.Contact{
-		ID: id,
+		ID:     id,
+		Status: entity.Contact_Status(*status),
 	})
 }
 func (r *queryResolver) ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error) {

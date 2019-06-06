@@ -62,9 +62,7 @@ export const withCurrentUser = (WrappedComponent, opts) => {
             variables={merge([
               queries.Contact.defaultVariables,
               {
-                filter: {
-                  status: 42,
-                },
+                status: 42,
               },
             ])}
           >

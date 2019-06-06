@@ -10,11 +10,7 @@ import { Component } from 'react'
 export class ConfigEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.config.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.config.get(id))
   }
 }
 
@@ -23,11 +19,7 @@ export class ConfigEntity extends Component {
 export class ContactEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.contact.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.contact.get(id))
   }
 }
 
@@ -36,11 +28,7 @@ export class ContactEntity extends Component {
 export class DeviceEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.device.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.device.get(id))
   }
 }
 
@@ -49,11 +37,7 @@ export class DeviceEntity extends Component {
 export class ConversationEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.conversation.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.conversation.get(id))
   }
 }
 
@@ -62,11 +46,7 @@ export class ConversationEntity extends Component {
 export class ConversationMemberEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.conversationMember.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.conversationMember.get(id))
   }
 }
 
@@ -75,11 +55,7 @@ export class ConversationMemberEntity extends Component {
 export class EventEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.event.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.event.get(id))
   }
 }
 
@@ -88,11 +64,7 @@ export class EventEntity extends Component {
 export class DevicePushConfigEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.devicePushConfig.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.devicePushConfig.get(id))
   }
 }
 
@@ -101,11 +73,7 @@ export class DevicePushConfigEntity extends Component {
 export class DevicePushIdentifierEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.devicePushIdentifier.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.devicePushIdentifier.get(id))
   }
 }
 
@@ -114,11 +82,7 @@ export class DevicePushIdentifierEntity extends Component {
 export class SenderAliasEntity extends Component {
   render () {
     const { context, id, children } = this.props
-    const entity = context.entity.senderAlias.get(id)
-    if (entity) {
-      return children(entity)
-    }
-    return null
+    return children(context.entity.senderAlias.get(id))
   }
 }
 

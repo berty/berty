@@ -17,15 +17,15 @@ class ContactCardModal extends React.Component {
 
   render () {
     const { navigation } = this.props
-    const data = {
+    const navigationData = {
       id: navigation.getParam('id'),
       displayName: navigation.getParam('displayName'),
       status: navigation.getParam('status'),
     }
 
     return (
-      <Store.Entity.Contact id={data.id}>
-        {data => (
+      <Store.Entity.Contact id={navigationData.id}>
+        {(data = navigationData) => (
           <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           >
