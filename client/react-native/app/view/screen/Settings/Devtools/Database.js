@@ -37,7 +37,7 @@ class Database extends PureComponent {
 
     this.props.navigation.setParams({ dropDatabase: true })
     try {
-      await bridge.dropDatabase({})
+      await bridge.daemon.dropDatabase({})
     } catch (err) {
       Alert.alert('An error occured, please, kill and restart the app')
       console.error(err)

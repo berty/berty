@@ -26,7 +26,7 @@ class Network extends PureComponent {
   async componentDidMount () {
     const { bridge } = this.props
 
-    const config = await bridge.getNetworkConfig({})
+    const config = await bridge.daemon.getNetworkConfig({})
     console.warn(config.json)
     this.setState(JSON.parse(config.json))
   }
@@ -38,7 +38,7 @@ class Network extends PureComponent {
     this.props.navigation.setParams({ updating: true })
     this.setState(config, async () => {
       try {
-        await bridge.updateNetworkConfig({
+        await bridge.daemon.updateNetworkConfig({
           json: JSON.stringify(this.state),
         })
       } catch (err) {

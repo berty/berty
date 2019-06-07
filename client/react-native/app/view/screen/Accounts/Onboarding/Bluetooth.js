@@ -32,11 +32,11 @@ const Bluetooth = ({ bridge, navigation, t }) => (
               </SkipButton>
               <NextButton
                 onPress={async () => {
-                  const config = await bridge.getNetworkConfig({})
+                  const config = await bridge.daemon.getNetworkConfig({})
 
                   let currentConfig = JSON.parse(config.json)
                   currentConfig.BLE = true
-                  await bridge.updateNetworkConfig({
+                  await bridge.daemon.updateNetworkConfig({
                     json: JSON.stringify(currentConfig),
                   })
                   navigation.navigate('onboarding/contacts')
