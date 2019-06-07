@@ -115,9 +115,9 @@ export class StreamPagination extends Stream {
       }
       let bottomIndex = this.queue.length - topIndex - 1
       let itemBottom = this.queue[bottomIndex]
-      let infBottom = cursor <= itemBottom[cursorField]
-      if (infBottom) {
-        this.queue.splice(bottomIndex, 0, newValue)
+      let supBottom = cursor > itemBottom[cursorField]
+      if (supBottom) {
+        this.queue.splice(bottomIndex + 1, 0, newValue)
         return
       }
     }
@@ -125,6 +125,12 @@ export class StreamPagination extends Stream {
     // if forced to add, push it
     if (change.force) {
       this.queue.push(newValue)
+      return
+    }
+
+    // force to re-paginate if queue first page is not fulfilled
+    if (this.queue.length < this.paginate.first) {
+      this.invoke()
     }
   }
 
@@ -222,6 +228,12 @@ export class StreamPagination extends Stream {
       if (queue.length !== 0) {
         this.cursor = queue[queue.length - 1][this.paginate.sortedBy || 'id']
       }
+
+      // permit to re-request when page not been fulfilled
+      if (queue.length < this.paginate.first) {
+        this.invokeHashTable[requestHash] = false
+      }
+
       this.smartForceUpdate()
     })
   }
