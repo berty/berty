@@ -1,13 +1,13 @@
-import React, {Fragment} from "react";
-import {observer} from "mobx-react";
+import React, { Fragment } from "react";
+import { observer } from "mobx-react";
 import palette from "google-palette";
-import {Doughnut} from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 
 import peers from "../store/peers";
 
 const MAX_COUNTRIES = 7;
 
-export default observer(({style}) => {
+export default observer(({ style }) => {
   const countries = peers.countries;
   if (countries.size < 1) return null;
   const entries = Object.entries(countries.toJSON());

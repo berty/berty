@@ -1,5 +1,5 @@
 import React from "react";
-import {observer} from "mobx-react";
+import { observer } from "mobx-react";
 
 import peers from "../store/peers";
 import node from "../store/node";
@@ -14,7 +14,7 @@ const LocalisablesCount = observer(
   () => `${peers.locations.size} localisables`
 );
 
-export default observer(({style}) => (
+export default observer(({ style }) => (
   <div style={style}>
     <h1>Node info</h1>
     <p>ID: {node.id}</p>

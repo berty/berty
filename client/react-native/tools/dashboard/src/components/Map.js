@@ -1,10 +1,10 @@
-import React, {Component, Fragment} from "react";
-import {Map as LeafletMap, TileLayer, Marker} from "react-leaflet";
-import {observer, inject} from "mobx-react";
+import React, { Component, Fragment } from "react";
+import { Map as LeafletMap, TileLayer, Marker } from "react-leaflet";
+import { observer, inject } from "mobx-react";
 import wu from "wu";
 import HeatmapLayer from "react-leaflet-heatmap-layer";
 
-import {COUNTRIES_INFO} from "../countriesPositions";
+import { COUNTRIES_INFO } from "../countriesPositions";
 
 const HEAT_GAIN = 100.0;
 
@@ -13,7 +13,7 @@ export default
 @observer
 class extends Component {
   render() {
-    const {locations, showHeat = true, showMarkers} = this.props;
+    const { locations, showHeat = true, showMarkers } = this.props;
 
     const markers = wu(locations.entries()).reduce((m, [key, value]) => {
       const llStr = JSON.stringify(
@@ -33,7 +33,7 @@ class extends Component {
 
     return (
       <Fragment>
-        <h1 style={{textAlign: "center"}}>Connected peers heatmap</h1>
+        <h1 style={{ textAlign: "center" }}>Connected peers heatmap</h1>
         <LeafletMap center={[0, 0]} zoom={1}>
           <TileLayer
             // TileLayer skins: https://leaflet-extras.github.io/leaflet-providers/preview/

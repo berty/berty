@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {Provider} from "mobx-react";
+import { Provider } from "mobx-react";
 
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";

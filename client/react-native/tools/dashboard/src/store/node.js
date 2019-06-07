@@ -1,6 +1,6 @@
-import {observable, computed, action, reaction} from "mobx";
-import {get} from "lodash";
-import {rpc, service} from "@berty/bridge";
+import { observable, computed, action, reaction } from "mobx";
+import { get } from "lodash";
+import { rpc, service } from "@berty/bridge";
 
 import routing from "../store/routing";
 import peers from "../store/peers";
@@ -27,20 +27,20 @@ class Node {
   }
 
   @computed get prettyVersion() {
-    const {infos} = this;
+    const { infos } = this;
 
     if (!infos) return null;
     const versions = JSON.parse(infos.get("versions"));
-    const {BuildMode, GitBranch, GitSha, Version} = versions.Core;
+    const { BuildMode, GitBranch, GitSha, Version } = versions.Core;
     return `Version: ${Version}, BuildMode: ${BuildMode}, Branch: ${GitBranch}, Commit: ${GitSha}`;
   }
 
   @computed get prettyDeviceInfos() {
-    const {infos} = this;
+    const { infos } = this;
 
     if (!infos) return null;
     const system = JSON.parse(infos.get("system"));
-    const {OS, Arch, NumCPU, Hostname} = system;
+    const { OS, Arch, NumCPU, Hostname } = system;
     return `Host: ${Hostname}, OS: ${OS}, Arch: ${Arch}, NumCPU: ${NumCPU}`;
   }
 
@@ -51,7 +51,7 @@ class Node {
   }
 
   @action.bound async handleBandwidthData(data) {
-    const {rateIn, rateOut} = data;
+    const { rateIn, rateOut } = data;
 
     this.rateIn = rateIn;
     if (this.maxRateIn < rateIn) this.maxRateIn = rateIn;
@@ -116,6 +116,6 @@ class Node {
 
 const node = new Node();
 
-reaction(() => node.url, node.reset, {fireImmediately: true});
+reaction(() => node.url, node.reset, { fireImmediately: true });
 
 export default node;

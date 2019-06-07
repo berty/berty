@@ -1,6 +1,6 @@
-import {observable, action} from "mobx";
+import { observable, action } from "mobx";
 import geoip from "geoip-nano";
-import {memoize} from "lodash";
+import { memoize } from "lodash";
 
 const localisableAddr = ipfsAddr => {
   if (typeof ipfsAddr !== "string") return null;
@@ -22,8 +22,8 @@ class Peers {
   @observable protocols = new Map();
 
   @action.bound addConnected(peer) {
-    const {connected, addAddress, removeConnected} = this;
-    const {id, addrs} = peer;
+    const { connected, addAddress, removeConnected } = this;
+    const { id, addrs } = peer;
 
     removeConnected(id);
     connected.set(id, peer);
@@ -31,7 +31,7 @@ class Peers {
   }
 
   @action.bound removeConnected(id) {
-    const {connected, removeAddress} = this;
+    const { connected, removeAddress } = this;
 
     const peer = connected.get(id);
     if (peer) {
@@ -41,7 +41,7 @@ class Peers {
   }
 
   @action.bound addLocation(location) {
-    const {locations, addCountry} = this;
+    const { locations, addCountry } = this;
 
     const key = JSON.stringify(location);
     const count = locations.get(key) || 0;
@@ -50,7 +50,7 @@ class Peers {
   }
 
   @action.bound removeLocation(location) {
-    const {locations, removeCountry} = this;
+    const { locations, removeCountry } = this;
 
     const key = JSON.stringify(location);
     const count = locations.get(key) || 0;
@@ -63,14 +63,14 @@ class Peers {
   }
 
   @action.bound addAddress(address) {
-    const {addresses, addLocation} = this;
+    const { addresses, addLocation } = this;
 
     const existing = addresses.get(address) || {
       count: 0,
       location: lookup(address)
     };
     existing.count += 1;
-    const {count, location} = existing;
+    const { count, location } = existing;
 
     if (count === 1) {
       addresses.set(address, existing);
@@ -79,11 +79,11 @@ class Peers {
   }
 
   @action.bound removeAddress(address) {
-    const {addresses, removeLocation} = this;
+    const { addresses, removeLocation } = this;
 
     const existing = addresses.get(address);
     if (existing) {
-      const {count, location} = existing;
+      const { count, location } = existing;
 
       if (count > 1) {
         existing.count -= 1;
@@ -95,14 +95,14 @@ class Peers {
   }
 
   @action.bound addCountry(country) {
-    const {countries} = this;
+    const { countries } = this;
 
     const count = countries.get(country) || 0;
     countries.set(country, count + 1);
   }
 
   @action.bound removeCountry(country) {
-    const {countries} = this;
+    const { countries } = this;
 
     const count = countries.get(country) || 0;
     if (count < 2) countries.delete(country);

@@ -1,6 +1,6 @@
-import React, {Fragment} from "react";
-import {inject, observer} from "mobx-react";
-import {Layout, Row, Col} from "antd";
+import React, { Fragment } from "react";
+import { inject, observer } from "mobx-react";
+import { Layout, Row, Col } from "antd";
 
 import "antd/dist/antd.css";
 import "./App.css";
@@ -11,9 +11,9 @@ import InstantBandwidth from "./InstantBandwidth";
 import Node from "./Node";
 import BandwidthOverTime from "./BandwidthOverTime";
 
-const {Content} = Layout;
+const { Content } = Layout;
 
-const AppView = ({node: {id}}) => (
+const AppView = ({ node: { id } }) => (
   <Content>
     {id ? (
       <Fragment>
@@ -38,7 +38,7 @@ const AppView = ({node: {id}}) => (
         </Row>
       </Fragment>
     ) : (
-      <div style={{height: "100vh"}}>
+      <div style={{ height: "100vh" }}>
         <h1
           style={{
             textAlign: "center",

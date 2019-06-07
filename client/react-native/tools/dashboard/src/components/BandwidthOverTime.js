@@ -1,11 +1,11 @@
-import React, {Fragment} from "react";
-import {inject, observer} from "mobx-react";
-import {Line} from "react-chartjs-2";
+import React, { Fragment } from "react";
+import { inject, observer } from "mobx-react";
+import { Line } from "react-chartjs-2";
 
-import {prettyNetworkRate} from "./Gauge";
-import {IN_COLOR, OUT_COLOR} from "./InstantBandwidth";
+import { prettyNetworkRate } from "./Gauge";
+import { IN_COLOR, OUT_COLOR } from "./InstantBandwidth";
 
-const BandwidthOverTimeView = ({style, node}) => {
+const BandwidthOverTimeView = ({ style, node }) => {
   const data = node.rateInOverTime.slice();
   const now = Date.now();
   return (
@@ -41,7 +41,7 @@ const BandwidthOverTimeView = ({style, node}) => {
             ],
             yAxes: [
               {
-                ticks: {callback: prettyNetworkRate},
+                ticks: { callback: prettyNetworkRate },
                 stacked: true
               }
             ]

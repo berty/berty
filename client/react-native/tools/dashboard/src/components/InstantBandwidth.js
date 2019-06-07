@@ -1,5 +1,5 @@
 import React from "react";
-import {inject, observer} from "mobx-react";
+import { inject, observer } from "mobx-react";
 import palette from "google-palette";
 import Gauge from "./Gauge";
 
@@ -8,7 +8,7 @@ const colors = palette("tol", 2).map(c => "#" + c);
 export const IN_COLOR = colors[0];
 export const OUT_COLOR = colors[1];
 
-const InstantBandwidthView = ({style, node}) => {
+const InstantBandwidthView = ({ style, node }) => {
   const gaugeStyle = {
     display: "inline-block",
     width: "50%"

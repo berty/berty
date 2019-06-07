@@ -1,5 +1,5 @@
 import React from "react";
-import {Doughnut} from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 
 const makeUnit = suffix => [
   suffix,
@@ -65,8 +65,8 @@ export default ({
   const valPercent = (value / max) * 100;
   return (
     <div style={style}>
-      <div style={{textAlign: "center"}}>{label}</div>
-      <div style={{textAlign: "center", margin: "auto"}}>
+      <div style={{ textAlign: "center" }}>{label}</div>
+      <div style={{ textAlign: "center", margin: "auto" }}>
         <Doughnut
           data={{
             datasets: [
