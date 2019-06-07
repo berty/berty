@@ -1,72 +1,61 @@
-var fs = require('fs'),
-	path = require('path'),
-	FSWatcher = {};
+var fs = require("fs"),
+  path = require("path"),
+  FSWatcher = {};
 
-/**
- * Takes a directory/file and watch for change. Upon change, call the
- * callback.
- *
- * @param {String} name: name of this watcher
- * @param {String} directory: path to the directory to watch
- * @param {String} [filename]: (optional) specific filename to watch for,
- *     watches for all files in the directory if unspecified
- * @param {Integer} cooldownDelay: delay to wait before triggering the callback
- * @param {Function} callback: function () : called when changes are detected
-**/
 function makeFsWatchFilter(name, directory, filename, cooldownDelay, callback) {
-	var cooldownId = null;
+  var cooldownId = null;
 
-	//Delete the cooldownId and callback the outer function
-	function timeoutCallback() {
-		cooldownId = null;
-		callback();
-	}
+  //Delete the cooldownId and callback the outer function
+  function timeoutCallback() {
+    cooldownId = null;
+    callback();
+  }
 
-	//This function is called when there is a change in the data directory
-	//It sets a timer to wait for the change to be completed
-	function onWatchEvent(event, changedFile) {
-		// check to make sure changedFile is not null
-		if (!changedFile) {
-			return;
-		}
-		
-		var filePath = path.join(directory, changedFile);
+  //This function is called when there is a change in the data directory
+  //It sets a timer to wait for the change to be completed
+  function onWatchEvent(event, changedFile) {
+    // check to make sure changedFile is not null
+    if (!changedFile) {
+      return;
+    }
 
-		if (!filename || filename === changedFile) {
-			fs.exists(filePath, function onExists(exists) {
-				if (!exists) {
-					// if the changed file no longer exists, it was a deletion.
-					// we ignore deleted files
-					return;
-				}
+    var filePath = path.join(directory, changedFile);
 
-				//At this point, a new file system activity has been detected,
-				//We have to wait for file transfert to be finished before moving on.
+    if (!filename || filename === changedFile) {
+      fs.exists(filePath, function onExists(exists) {
+        if (!exists) {
+          // if the changed file no longer exists, it was a deletion.
+          // we ignore deleted files
+          return;
+        }
 
-				//If a cooldownId already exists, we delete it
-				if (cooldownId !== null) {
-					clearTimeout(cooldownId);
-					cooldownId = null;
-				}
+        //At this point, a new file system activity has been detected,
+        //We have to wait for file transfert to be finished before moving on.
 
-				//Once the cooldownDelay has passed, the timeoutCallback function will be called
-				cooldownId = setTimeout(timeoutCallback, cooldownDelay);
-			});
-		}
-	}
+        //If a cooldownId already exists, we delete it
+        if (cooldownId !== null) {
+          clearTimeout(cooldownId);
+          cooldownId = null;
+        }
 
-	//Manage the case where filename is missing (because it's optionnal)
-	if (typeof cooldownDelay === 'function') {
-		callback = cooldownDelay;
-		cooldownDelay = filename;
-		filename = null;
-	}
+        //Once the cooldownDelay has passed, the timeoutCallback function will be called
+        cooldownId = setTimeout(timeoutCallback, cooldownDelay);
+      });
+    }
+  }
 
-	if (FSWatcher[name]) {
-		stopWatching(name);
-	}
+  //Manage the case where filename is missing (because it's optionnal)
+  if (typeof cooldownDelay === "function") {
+    callback = cooldownDelay;
+    cooldownDelay = filename;
+    filename = null;
+  }
 
-	FSWatcher[name] = fs.watch(directory, onWatchEvent);
+  if (FSWatcher[name]) {
+    stopWatching(name);
+  }
+
+  FSWatcher[name] = fs.watch(directory, onWatchEvent);
 }
 
 /**
@@ -74,9 +63,9 @@ function makeFsWatchFilter(name, directory, filename, cooldownDelay, callback) {
  *
  * @param {string} name: name of the watcher to close
  *
-**/
+ **/
 function stopWatching(name) {
-	FSWatcher[name].close();
+  FSWatcher[name].close();
 }
 
 module.exports.makeFsWatchFilter = makeFsWatchFilter;
