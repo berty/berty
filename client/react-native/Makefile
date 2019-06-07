@@ -78,6 +78,10 @@ pretty: deps.root
 gen.pretty: deps.root
 	npm run prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*' -not -path '*/__generated__/*')
 
+.PHONY: tools.pretty
+tools.pretty: deps
+	$(LERNA_RUN) prettify -- $$(find tools -type f -name '*.js' -not -path '*/node_modules/*')
+
 ### Dependencies part ###
 .PHONY: deps.root
 deps.root:
