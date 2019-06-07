@@ -1,13 +1,10 @@
-import { ActivityIndicator } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Menu, Text, Screen, Avatar, Header } from '@berty/component'
-import { QueryReducer } from '@berty/relay'
+import { Menu, Screen, Avatar, Header, Loader } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { fragments } from '@berty/graphql'
-import { merge } from '@berty/common/helpers'
 import { UpdateContext, installUpdate } from '@berty/update'
-import { withRelayContext } from '@berty/relay/context'
+import { withCurrentUser } from '@berty/relay/utils/contact'
 import { withNamespaces } from 'react-i18next'
 import { contact } from '@berty/relay/utils'
 import I18n from 'i18next'
@@ -121,62 +118,26 @@ class List extends PureComponent {
   )
 
   render () {
-    const {
-      navigation,
-      context: { queries },
-      t,
-    } = this.props
+    const { navigation, currentUser, t } = this.props
 
     return (
       <Screen>
-        <QueryReducer
-          query={queries.Contact.graphql}
-          variables={merge([
-            queries.Contact.defaultVariables,
-            {
-              filter: {
-                status: 42,
-              },
-            },
-          ])}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return <ActivityIndicator />
-              case state.success:
-                return (
-                  <UpdateContext.Consumer>
-                    {({ availableUpdate }) => (
-                      <List.Menu
-                        navigation={navigation}
-                        data={state.data.Contact}
-                        availableUpdate={availableUpdate}
-                        t={t}
-                      />
-                    )}
-                  </UpdateContext.Consumer>
-                )
-              case state.error:
-                return (
-                  <Text
-                    background={colors.error}
-                    color={colors.white}
-                    medium
-                    middle
-                    center
-                    self='center'
-                  >
-                    An unexpected error occurred, please restart the application
-                  </Text>
-                )
-            }
-          }}
-        </QueryReducer>
+        <UpdateContext.Consumer>
+          {({ availableUpdate }) => (
+            <List.Menu
+              navigation={navigation}
+              data={currentUser}
+              availableUpdate={availableUpdate}
+              t={t}
+            />
+          )}
+        </UpdateContext.Consumer>
       </Screen>
     )
   }
 }
 
-export default withRelayContext(withNamespaces()(List))
+export default withCurrentUser(withNamespaces()(List), {
+  showOnlyLoaded: true,
+  fallback: <Loader />,
+})

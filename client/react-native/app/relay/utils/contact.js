@@ -51,7 +51,7 @@ export const WithContact = ({ id, children }) => (
 )
 
 export const withCurrentUser = (WrappedComponent, opts) => {
-  const { showOnlyLoaded } = opts || {}
+  const { showOnlyLoaded, fallback } = opts || {}
 
   class WithCurrentUser extends React.Component {
     render = () => (
@@ -78,7 +78,7 @@ export const withCurrentUser = (WrappedComponent, opts) => {
                   currentUserRetry={retry}
                 />
               ) : (
-                <View />
+                fallback || <View />
               )
             }
           </QueryReducer>
