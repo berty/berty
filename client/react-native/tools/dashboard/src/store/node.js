@@ -1,11 +1,11 @@
-import { observable, computed, action, reaction } from "mobx";
+import { observable, computed, action, reaction, flow } from "mobx";
 import { get } from "lodash";
 import { rpc, service } from "@berty/bridge";
 
 import routing from "../store/routing";
 import peers from "../store/peers";
 
-// [{"key": "someKey", value: "someValue"}] => {someKey: someValue}
+// [{key: "someKey", value: "someValue"}] => {someKey: someValue}
 const convertListMap = l =>
   l.reduce((m, e) => m.set(e.key, e.value), new Map());
 
@@ -19,6 +19,8 @@ class Node {
   @observable id = null;
   @observable deviceInfos = null;
   @observable appVersion = null;
+  watchdog = undefined;
+  resetTimeout = undefined;
 
   @computed get infos() {
     const raw = get(this, "deviceInfos.infos");
@@ -69,11 +71,11 @@ class Node {
       this.rateOutOverTime.shift();
   }
 
-  @action.bound async reset() {
-    if (this.watchdog !== null) clearInterval(this.watchdog);
-    this.watchdog = null;
-    if (this.resetTimeout !== null) clearTimeout(this.resetTimeout);
-    this.resetTimeout = null;
+  @action.bound reset = flow(function* resetFlow() {
+    if (this.watchdog !== undefined)
+      this.watchdog = clearInterval(this.watchdog);
+    if (this.resetTimeout !== undefined)
+      this.resetTimeout = clearTimeout(this.resetTimeout);
 
     if (this.id !== null) {
       this.id = null;
@@ -92,7 +94,7 @@ class Node {
 
     let idObj;
     try {
-      idObj = await api.iD({});
+      idObj = yield api.iD({});
     } catch (e) {
       console.error(e);
     }
@@ -104,14 +106,14 @@ class Node {
       this.watchdog = setInterval(() => api.iD({}).catch(this.reset), 2000);
     }
 
-    this.deviceInfos = await api.deviceInfos({});
-    this.appVersion = await api.appVersion({});
-    (await api.monitorBandwidth({})).onData(this.handleBandwidthData);
+    this.deviceInfos = yield api.deviceInfos({});
+    this.appVersion = yield api.appVersion({});
+    (yield api.monitorBandwidth({})).onData(this.handleBandwidthData);
 
-    await peers.reset(api);
+    yield peers.reset(api);
 
     this.id = idObj.id;
-  }
+  });
 }
 
 const node = new Node();
