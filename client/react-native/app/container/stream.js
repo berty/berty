@@ -149,19 +149,7 @@ export class StreamPagination extends Stream {
   }
 
   observe = async change => {
-    const { type } = change
-    switch (type) {
-      case 'add':
-        this.add(change)
-        break
-      case 'update':
-        this.update(change)
-        break
-      case 'delete':
-        this.delete(change)
-        break
-      default:
-    }
+    this[change.type](change)
     this.smartForceUpdate()
   }
 

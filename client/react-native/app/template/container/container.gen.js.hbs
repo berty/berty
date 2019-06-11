@@ -45,12 +45,17 @@ import { Component } from 'react'
                   {{#with ../../this}}
                     @withStoreContext
                     class {{name}}ServiceNodePagination extends StreamPagination {
-                      constructor (props, context) {
-                        super(props, context)
-                        observe(
+                      componentDidMount () {
+                        super.componentDidMount()
+                        this.dispose = observe(
                           this.props.context.entity.{{case 'camel' resolvedResponseType.name}},
                           this.observe,
                         )
+                      }
+
+                      componentWillUnmount () {
+                        super.componentWillUnmount()
+                        this.dispose()
                       }
 
                       get service () {

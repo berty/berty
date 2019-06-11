@@ -116,9 +116,14 @@ export class EventListServiceNode extends Stream {
 
 @withStoreContext
 class EventListServiceNodePagination extends StreamPagination {
-  constructor (props, context) {
-    super(props, context)
-    observe(this.props.context.entity.event, this.observe)
+  componentDidMount () {
+    super.componentDidMount()
+    this.dispose = observe(this.props.context.entity.event, this.observe)
+  }
+
+  componentWillUnmount () {
+    super.componentWillUnmount()
+    this.dispose()
   }
 
   get service () {
@@ -136,9 +141,14 @@ export class EventUnseenServiceNode extends Stream {
 
 @withStoreContext
 class EventUnseenServiceNodePagination extends StreamPagination {
-  constructor (props, context) {
-    super(props, context)
-    observe(this.props.context.entity.event, this.observe)
+  componentDidMount () {
+    super.componentDidMount()
+    this.dispose = observe(this.props.context.entity.event, this.observe)
+  }
+
+  componentWillUnmount () {
+    super.componentWillUnmount()
+    this.dispose()
   }
 
   get service () {
@@ -219,9 +229,14 @@ export class ContactListServiceNode extends Stream {
 
 @withStoreContext
 class ContactListServiceNodePagination extends StreamPagination {
-  constructor (props, context) {
-    super(props, context)
-    observe(this.props.context.entity.contact, this.observe)
+  componentDidMount () {
+    super.componentDidMount()
+    this.dispose = observe(this.props.context.entity.contact, this.observe)
+  }
+
+  componentWillUnmount () {
+    super.componentWillUnmount()
+    this.dispose()
   }
 
   get service () {
@@ -267,9 +282,14 @@ export class ConversationListServiceNode extends Stream {
 
 @withStoreContext
 class ConversationListServiceNodePagination extends StreamPagination {
-  constructor (props, context) {
-    super(props, context)
-    observe(this.props.context.entity.conversation, this.observe)
+  componentDidMount () {
+    super.componentDidMount()
+    this.dispose = observe(this.props.context.entity.conversation, this.observe)
+  }
+
+  componentWillUnmount () {
+    super.componentWillUnmount()
+    this.dispose()
   }
 
   get service () {
