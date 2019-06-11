@@ -1,6 +1,7 @@
 import { NavigationActions } from '@react-navigation/core'
 import React from 'react'
 import { withNavigation } from 'react-navigation'
+import { withHOC } from '@berty/common/helpers/views'
 
 const getSplitNavigator = navigation => {
   if (!navigation) {
@@ -49,22 +50,20 @@ const BackActionProvider = ({ navigation, children }) => {
   return children({ goBack })
 }
 
-const withGoBackBase = WrappedComponent => {
-  class WrappedGoBack extends React.Component {
-    render () {
-      return (
-        <BackActionProvider navigation={this.props.navigation}>
-          {({ goBack }) => <WrappedComponent {...this.props} goBack={goBack} />}
-        </BackActionProvider>
-      )
-    }
-  }
-  WrappedGoBack.displayName = `WithGoBack(${getDisplayName(WrappedComponent)})`
-
-  return WrappedGoBack
-}
-
-export const withGoBack = props => withNavigation(withGoBackBase(props))
+export const withGoBack = Component =>
+  withHOC(
+    withNavigation(
+      class WithGoBack extends React.Component {
+        render () {
+          return (
+            <BackActionProvider navigation={this.props.navigation}>
+              {({ goBack }) => <Component {...this.props} goBack={goBack} />}
+            </BackActionProvider>
+          )
+        }
+      }
+    )
+  )(Component)
 
 const getDisplayName = WrappedComponent =>
   WrappedComponent.displayName || WrappedComponent.name || 'Component'

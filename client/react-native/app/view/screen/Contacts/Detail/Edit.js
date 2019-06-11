@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react'
-import { Header, Menu, Badge, Avatar } from '@berty/component'
+import { Header, Menu, Badge, Avatar, Loader } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import I18n from 'i18next'
+import { Store } from '@berty/container'
 
 export default class Edit extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -24,28 +25,38 @@ export default class Edit extends PureComponent {
   onChoosePicture = async event => this.setState(await choosePicture(event))
 
   render () {
-    const contact = this.props.navigation.getParam('contact') || {}
+    const id = this.props.navigation.getParam('id') || {}
 
     return (
-      <Menu>
-        <Menu.Header
-          icon={
-            <Badge
-              background={colors.blue}
-              icon='camera'
-              medium
-              onPress={this.onChoosePicture}
-            >
-              <Avatar data={contact} size={78} />
-            </Badge>
-          }
-        />
-        <Menu.Section title='Nickname'>
-          <Menu.Input
-            value={contact.overrideDisplayName || contact.displayName || ''}
-          />
-        </Menu.Section>
-      </Menu>
+      <Store.Entity.Contact id={id}>
+        {contact =>
+          contact ? (
+            <Menu>
+              <Menu.Header
+                icon={
+                  <Badge
+                    background={colors.blue}
+                    icon='camera'
+                    medium
+                    onPress={this.onChoosePicture}
+                  >
+                    <Avatar data={contact} size={78} />
+                  </Badge>
+                }
+              />
+              <Menu.Section title='Nickname'>
+                <Menu.Input
+                  value={
+                    contact.overrideDisplayName || contact.displayName || ''
+                  }
+                />
+              </Menu.Section>
+            </Menu>
+          ) : (
+            <Loader />
+          )
+        }
+      </Store.Entity.Contact>
     )
   }
 }

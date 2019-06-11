@@ -9,7 +9,26 @@ import { withStoreContext } from '@berty/store/context'
 import { Store } from '@berty/container'
 import { withGoBack } from '@berty/component/BackActionProvider'
 
-class DetailsBase extends PureComponent {
+@withGoBack
+@withStoreContext
+@withNamespaces()
+class Details extends PureComponent {
+  static navigationOptions = ({ navigation }) => ({
+    header: (
+      <Header
+        navigation={navigation}
+        title={I18n.t('contacts.details')}
+        rightBtnIcon={'edit-2'}
+        onPressRightBtn={() => {
+          navigation.navigate('contact/detail/edit', {
+            id: navigation.getParam('id'),
+          })
+        }}
+        backBtn
+      />
+    ),
+  })
+
   blockContact = () => {
     console.log('Block')
   }
@@ -125,26 +144,5 @@ class DetailsBase extends PureComponent {
     )
   }
 }
-
-const Details = withGoBack(withStoreContext(withNamespaces()(DetailsBase)))
-
-Details.navigationOptions = ({ navigation }) => ({
-  header: (
-    <Header
-      navigation={navigation}
-      title={I18n.t('contacts.details')}
-      rightBtnIcon={'edit-2'}
-      onPressRightBtn={() =>
-        navigation.navigate(
-          navigation.getParam('editRoute', 'chats/contact/detail/list'),
-          {
-            contact: navigation.getParam('contact'),
-          }
-        )
-      }
-      backBtn
-    />
-  ),
-})
 
 export default Details
