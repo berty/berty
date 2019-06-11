@@ -137,12 +137,18 @@ class SettingsScreenBase extends PureComponent {
               <Menu.Item
                 icon='user'
                 title={t('contacts.details')}
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate('chats/contact/detail/list', {
-                    contact: oneToOneContact,
+                    id: contactUtils.getCoreID(
+                      members.find(
+                        _ =>
+                          _.contact.status !==
+                          enums.BertyEntityContactInputStatus.Myself
+                      ).contactId
+                    ),
                     editRoute: 'chats/contact/detail/edit',
                   })
-                }
+                }}
               />
             </Menu.Section>
           ) : (

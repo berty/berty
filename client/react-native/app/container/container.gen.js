@@ -2,87 +2,133 @@ import { observer } from 'mobx-react'
 import { observe } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
+import { Entity } from './entity'
 import { withStoreContext } from '@berty/store/context'
 import { Component } from 'react'
 
 @withStoreContext
 @observer
-export class ConfigEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.config.get(id))
+export class ConfigEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.config({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.config.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class ContactEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.contact.get(id))
+export class ContactEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.contact({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.contact.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class DeviceEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.device.get(id))
+export class DeviceEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.device({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.device.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class ConversationEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.conversation.get(id))
+export class ConversationEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.conversation({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.conversation.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class ConversationMemberEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.conversationMember.get(id))
+export class ConversationMemberEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.conversationMember({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.conversationMember.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class EventEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.event.get(id))
+export class EventEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.event({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.event.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class DevicePushConfigEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.devicePushConfig.get(id))
+export class DevicePushConfigEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.devicePushConfig({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.devicePushConfig.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class DevicePushIdentifierEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.devicePushIdentifier.get(id))
+export class DevicePushIdentifierEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.devicePushIdentifier({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.devicePushIdentifier.get(id)
   }
 }
 
 @withStoreContext
 @observer
-export class SenderAliasEntity extends Component {
-  render () {
-    const { context, id, children } = this.props
-    return children(context.entity.senderAlias.get(id))
+export class SenderAliasEntity extends Entity {
+  fetch = () => {
+    const { context, id } = this.props
+    return context.node.service.senderAlias({ id })
+  }
+
+  get entity () {
+    const { context, id } = this.props
+    return context.entity.senderAlias.get(id)
   }
 }
 

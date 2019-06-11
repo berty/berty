@@ -20,9 +20,12 @@ class Details extends PureComponent {
         title={I18n.t('contacts.details')}
         rightBtnIcon={'edit-2'}
         onPressRightBtn={() => {
-          navigation.navigate('contact/detail/edit', {
-            id: navigation.getParam('id'),
-          })
+          navigation.navigate(
+            navigation.getParam('editRoute', 'contact/detail/edit'),
+            {
+              id: navigation.getParam('id'),
+            }
+          )
         }}
         backBtn
       />

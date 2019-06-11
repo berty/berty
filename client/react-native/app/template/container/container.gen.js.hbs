@@ -4,6 +4,7 @@ import { observer } from 'mobx-react'
 import { observe } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
+import { Entity } from './entity'
 import { withStoreContext } from '@berty/store/context'
 import { Component } from 'react'
 
@@ -15,10 +16,15 @@ import { Component } from 'react'
 
             @withStoreContext
             @observer
-            export class {{name}}Entity extends Component {
-              render () {
-                const { context, id, children } = this.props
-                return children(context.entity.{{case 'camel' name}}.get(id))
+            export class {{name}}Entity extends Entity {
+              fetch = () => {
+                const { context, id } = this.props
+                return context.node.service.{{case 'camel' name}}({ id })
+              }
+
+              get entity () {
+                const { context, id } = this.props
+                return context.entity.{{case 'camel' name}}.get(id)
               }
             }
           {{/if}}
