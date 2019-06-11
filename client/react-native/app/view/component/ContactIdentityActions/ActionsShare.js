@@ -9,8 +9,9 @@ import saveViewToCamera from '@berty/common/helpers/saveViewToCamera'
 import QRCodeExport from '../QRExport'
 import ActionList from './ActionList'
 import { withNamespaces } from 'react-i18next'
+import { withNavigation } from 'react-navigation'
 
-const ActionsShare = ({ data, self, inModal, t }) => {
+const ActionsShare = ({ data, self, inModal, t, navigation }) => {
   const { id, displayName } = data
 
   const pubKey = id
@@ -35,6 +36,7 @@ const ActionsShare = ({ data, self, inModal, t }) => {
           title={t('contacts.save-qrcode-action')}
           action={() =>
             saveViewToCamera({
+              navigation,
               view: <QRCodeExport data={{ ...data, id: pubKey }} />,
             })
           }
@@ -61,4 +63,4 @@ const ActionsShare = ({ data, self, inModal, t }) => {
   )
 }
 
-export default withNamespaces()(ActionsShare)
+export default withNavigation(withNamespaces()(ActionsShare))
