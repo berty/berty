@@ -9,6 +9,7 @@ import { monospaceFont } from '@berty/common/constants/styling'
 import { parse as parseUrl } from '@berty/common/helpers/url'
 import { withStoreContext } from '@berty/store/context'
 
+@withNamespaces()
 @withStoreContext
 class ByPublicKey extends PureComponent {
   constructor (props) {
@@ -20,7 +21,7 @@ class ByPublicKey extends PureComponent {
   }
 
   onAdd = () => {
-    const { navigation } = this.props.navigation
+    const { navigation } = this.props
     const url = parseUrl(this.state.id)
 
     if (!url || url.pathname !== '/contacts/add') {
@@ -126,4 +127,4 @@ class ByPublicKey extends PureComponent {
   }
 }
 
-export default withNamespaces()(ByPublicKey)
+export default ByPublicKey

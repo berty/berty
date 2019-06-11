@@ -53,7 +53,7 @@ const BackActionProvider = ({ navigation, children }) => {
 export const withGoBack = Component =>
   withHOC(
     withNavigation(
-      class WithGoBack extends React.Component {
+      class WithGoBack extends React.PureComponent {
         render () {
           return (
             <BackActionProvider navigation={this.props.navigation}>
@@ -64,6 +64,3 @@ export const withGoBack = Component =>
       }
     )
   )(Component)
-
-const getDisplayName = WrappedComponent =>
-  WrappedComponent.displayName || WrappedComponent.name || 'Component'
