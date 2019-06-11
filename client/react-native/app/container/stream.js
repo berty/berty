@@ -4,8 +4,8 @@ import { Component } from 'react'
 import objectHash from 'object-hash'
 
 export class Stream extends Component {
-  get service () {
-    return this.props.service || async function * () {}
+  get method () {
+    return this.props.method || function () {}
   }
   get request () {
     return this.props.request
@@ -33,7 +33,7 @@ export class Stream extends Component {
   }
 
   invoke = async () => {
-    const stream = await this.service(this.request)
+    const stream = await this.method(this.request)
     const queue = []
 
     stream.on('data', response => {
@@ -53,7 +53,8 @@ export class Stream extends Component {
   }
 }
 
-const deepFilterEqual = (a, b) => {
+const deepFilterEqual = (a, b, opts = { exclude: [] }) => {
+  const { exclude } = opts
   if (!a) {
     return true
   }
@@ -65,7 +66,11 @@ const deepFilterEqual = (a, b) => {
       if (Array.isArray(a)) {
         return a.every(av => b.some(bv => deepFilterEqual(av, bv)))
       }
-      return Object.keys(a).every(k => deepFilterEqual(a[k], b[k]))
+      return Object.keys(a).every(
+        k =>
+          exclude.some(excludeKey => excludeKey === k) ||
+          deepFilterEqual(a[k], b[k])
+      )
     default:
       return a === b
   }
@@ -116,7 +121,7 @@ export class StreamPagination extends Stream {
       let bottomIndex = this.queue.length - topIndex - 1
       let itemBottom = this.queue[bottomIndex]
       let supBottom = cursor > itemBottom[cursorField]
-      if (supBottom) {
+      if (supBottom && bottomIndex + 1 !== this.queue.length) {
         this.queue.splice(bottomIndex + 1, 0, newValue)
         return
       }
@@ -125,12 +130,6 @@ export class StreamPagination extends Stream {
     // if forced to add, push it
     if (change.force) {
       this.queue.push(newValue)
-      return
-    }
-
-    // force to re-paginate if queue first page is not fulfilled
-    if (this.queue.length < this.paginate.first) {
-      this.invoke()
     }
   }
 
@@ -199,7 +198,7 @@ export class StreamPagination extends Stream {
     this.invokeHashTable[requestHash] = true
 
     this.loading = true
-    const stream = await this.service(request)
+    const stream = await this.method(request)
 
     stream.on('data', response => {
       queue.push(response)
@@ -213,16 +212,14 @@ export class StreamPagination extends Stream {
 
     stream.on('end', () => {
       this.loading = false
+
       if (queue.length !== 0) {
         this.cursor = queue[queue.length - 1][this.paginate.sortedBy || 'id']
       }
 
-      // permit to re-request when page not been fulfilled
-      if (queue.length < this.paginate.first) {
-        this.invokeHashTable[requestHash] = false
-      }
-
       this.smartForceUpdate()
+
+      this.invokeHashTable[requestHash] = false
     })
   }
 

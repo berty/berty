@@ -88,7 +88,7 @@ export class SenderAliasEntity extends Component {
 
 @withStoreContext
 export class IDServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.id
   }
 }
@@ -126,7 +126,7 @@ class EventListServiceNodePagination extends StreamPagination {
     this.dispose()
   }
 
-  get service () {
+  get method () {
     return this.props.context.node.service.eventList
   }
 }
@@ -151,7 +151,7 @@ class EventUnseenServiceNodePagination extends StreamPagination {
     this.dispose()
   }
 
-  get service () {
+  get method () {
     return this.props.context.node.service.eventUnseen
   }
 }
@@ -159,63 +159,63 @@ EventUnseenServiceNode.Pagination = EventUnseenServiceNodePagination
 
 @withStoreContext
 export class GetEventServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.getEvent
   }
 }
 
 @withStoreContext
 export class EventSeenServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.eventSeen
   }
 }
 
 @withStoreContext
 export class EventRetryServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.eventRetry
   }
 }
 
 @withStoreContext
 export class ConfigPublicServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.configPublic
   }
 }
 
 @withStoreContext
 export class ConfigUpdateServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.configUpdate
   }
 }
 
 @withStoreContext
 export class ContactRequestServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.contactRequest
   }
 }
 
 @withStoreContext
 export class ContactAcceptRequestServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.contactAcceptRequest
   }
 }
 
 @withStoreContext
 export class ContactRemoveServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.contactRemove
   }
 }
 
 @withStoreContext
 export class ContactUpdateServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.contactUpdate
   }
 }
@@ -239,7 +239,7 @@ class ContactListServiceNodePagination extends StreamPagination {
     this.dispose()
   }
 
-  get service () {
+  get method () {
     return this.props.context.node.service.contactList
   }
 }
@@ -247,28 +247,28 @@ ContactListServiceNode.Pagination = ContactListServiceNodePagination
 
 @withStoreContext
 export class ContactServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.contact
   }
 }
 
 @withStoreContext
 export class ContactCheckPublicKeyServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.contactCheckPublicKey
   }
 }
 
 @withStoreContext
 export class ConversationCreateServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationCreate
   }
 }
 
 @withStoreContext
 export class ConversationUpdateServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationUpdate
   }
 }
@@ -292,7 +292,7 @@ class ConversationListServiceNodePagination extends StreamPagination {
     this.dispose()
   }
 
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationList
   }
 }
@@ -300,168 +300,168 @@ ConversationListServiceNode.Pagination = ConversationListServiceNodePagination
 
 @withStoreContext
 export class ConversationInviteServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationInvite
   }
 }
 
 @withStoreContext
 export class ConversationExcludeServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationExclude
   }
 }
 
 @withStoreContext
 export class ConversationAddMessageServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationAddMessage
   }
 }
 
 @withStoreContext
 export class ConversationServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversation
   }
 }
 
 @withStoreContext
 export class ConversationMemberServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationMember
   }
 }
 
 @withStoreContext
 export class ConversationReadServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationRead
   }
 }
 
 @withStoreContext
 export class ConversationRemoveServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationRemove
   }
 }
 
 @withStoreContext
 export class ConversationLastEventServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationLastEvent
   }
 }
 
 @withStoreContext
 export class DevicePushConfigListServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.devicePushConfigList
   }
 }
 
 @withStoreContext
 export class DevicePushConfigCreateServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.devicePushConfigCreate
   }
 }
 
 @withStoreContext
 export class DevicePushConfigNativeRegisterServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.devicePushConfigNativeRegister
   }
 }
 
 @withStoreContext
 export class DevicePushConfigNativeUnregisterServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.devicePushConfigNativeUnregister
   }
 }
 
 @withStoreContext
 export class DevicePushConfigRemoveServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.devicePushConfigRemove
   }
 }
 
 @withStoreContext
 export class DevicePushConfigUpdateServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.devicePushConfigUpdate
   }
 }
 
 @withStoreContext
 export class HandleEventServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.handleEvent
   }
 }
 
 @withStoreContext
 export class GenerateFakeDataServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.generateFakeData
   }
 }
 
 @withStoreContext
 export class RunIntegrationTestsServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.runIntegrationTests
   }
 }
 
 @withStoreContext
 export class DebugPingServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.debugPing
   }
 }
 
 @withStoreContext
 export class DebugRequeueEventServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.debugRequeueEvent
   }
 }
 
 @withStoreContext
 export class DebugRequeueAllServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.debugRequeueAll
   }
 }
 
 @withStoreContext
 export class DeviceInfosServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.deviceInfos
   }
 }
 
 @withStoreContext
 export class AppVersionServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.appVersion
   }
 }
 
 @withStoreContext
 export class PeersServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.peers
   }
 }
 
 @withStoreContext
 export class ProtocolsServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.protocols
   }
 }
@@ -489,35 +489,35 @@ export class LogfileReadServiceNode extends Stream {
 
 @withStoreContext
 export class TestLogBackgroundErrorServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.testLogBackgroundError
   }
 }
 
 @withStoreContext
 export class TestLogBackgroundWarnServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.testLogBackgroundWarn
   }
 }
 
 @withStoreContext
 export class TestLogBackgroundDebugServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.testLogBackgroundDebug
   }
 }
 
 @withStoreContext
 export class TestPanicServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.testPanic
   }
 }
 
 @withStoreContext
 export class TestErrorServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.testError
   }
 }
@@ -538,21 +538,21 @@ export class MonitorPeersServiceNode extends Stream {
 
 @withStoreContext
 export class GetListenAddrsServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.getListenAddrs
   }
 }
 
 @withStoreContext
 export class GetListenInterfaceAddrsServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.getListenInterfaceAddrs
   }
 }
 
 @withStoreContext
 export class Libp2PPingServiceNode extends Unary {
-  get service () {
+  get method () {
     return this.props.context.node.service.libp2PPing
   }
 }

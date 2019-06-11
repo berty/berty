@@ -32,7 +32,10 @@ import Stream from 'stream'
                       new {{type}}EntityStore(this.store, _),
                     ))
                   {{else}}
-                    this.store.entity.{{case 'camel' type}}.set(this.{{name}}Id, {{case 'camel' name}})
+                    this.store.entity.{{case 'camel' type}}.set(
+                      this.{{name}}Id,
+                      new {{type}}EntityStore(this.store, {{case 'camel' name}}),
+                    )
                   {{/if}}
                 }
               {{else}}
@@ -54,22 +57,23 @@ import Stream from 'stream'
       constructor (store, bridge) {
         this.store = store
         this.bridge = bridge
-        this.commitLogStream({})
+        this.commitLogStream({}).then(commitLog => {
+          commitLog.on('data', data => {
+            // init the stream
+          })
+        })
       }
-
-      pages = {}
 
       {{#each methods}}
 
-        {{#if responseStream}}
-          {{case 'camel' name}} = async (input) => {
-        {{else}}
-          {{case 'camel' name}} = async (input) => {
-        {{/if}}
+        {{case 'camel' name}} = async (input) => {
 
           {{#if responseStream}}
             const stream = await this.bridge.{{case 'camel' name}}(input)
-            stream.on('data', output => {
+            const transformStream = new Stream.Transform({
+              writableObjectMode: true,
+              readableObjectMode: true,
+              transform: (output, encoding, callback) => {
           {{else}}
             let output = await this.bridge.{{case 'camel' name}}(input)
           {{/if}}
@@ -78,7 +82,8 @@ import Stream from 'stream'
             {{#with resolvedResponseType.nested.Entity}}
               Object.keys(output.entity).forEach(
                 key => {
-                  if (output.entity[key] == null) {
+                  let entity = output.entity[key]
+                  if (entity == null) {
                     return
                   }
                   switch (key) {
@@ -91,19 +96,21 @@ import Stream from 'stream'
                           case 0:
                           case 1:
                             this.store.entity.{{case 'camel' resolvedType.name}}.set(
-                              output.entity[key].id,
-                              new {{resolvedType.name}}EntityStore(this.store, output.entity[key]),
+                              entity.id,
+                              new {{resolvedType.name}}EntityStore(this.store, entity),
                             )
                             break
                           case 2:
-                            if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.entity[key].id)) {
-                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.entity[key].id)
+                            if (this.store.entity.{{case 'camel' resolvedType.name}}.has(entity.id)) {
+                              entity = this.store.entity.{{case 'camel' resolvedType.name}}.get(entity.id)
+                              this.store.entity.{{case 'camel' resolvedType.name}}.delete(entity.id)
                             }
                             break
                         }
                         break
                     {{/each}}
                   }
+                  output.entity[key] = entity
                 }
               )
             {{/with}}
@@ -114,6 +121,7 @@ import Stream from 'stream'
               {{#if (eq resolvedType.name ../../resolvedResponseType.name)}}
                 {{#if (test ../../name (toRegex '(Remove|Delete)$'))}}
                   if (this.store.entity.{{case 'camel' resolvedType.name}}.has(output.id)) {
+                    output = this.store.entity.{{case 'camel' resolvedType.name}}.get(output.id)
                     this.store.entity.{{case 'camel' resolvedType.name}}.delete(output.id)
                   }
                 {{else}}
@@ -125,13 +133,11 @@ import Stream from 'stream'
           {{/with}}
 
           {{#if responseStream}}
+                callback(null, output)
+              },
             })
-            const copyStream = new Stream.PassThrough({
-              writableObjectMode: true,
-              readableObjectMode: true,
-            })
-            stream.pipe(copyStream)
-            return copyStream
+            stream.pipe(transformStream)
+            return transformStream
           {{else}}
             return output
           {{/if}}

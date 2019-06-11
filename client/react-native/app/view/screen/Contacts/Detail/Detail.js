@@ -59,10 +59,10 @@ class DetailsBase extends PureComponent {
       await this.props.context.node.service.contactRemove({
         id: this.props.navigation.getParam('id'),
       })
-      this.props.goBack(null)
     } catch (err) {
       console.error(err)
     }
+    this.props.goBack(null)
   }
 
   render () {

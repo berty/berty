@@ -58,7 +58,7 @@ import { Component } from 'react'
                         this.dispose()
                       }
 
-                      get service () {
+                      get method () {
                         return this.props.context.node.service.{{case 'camel' name}}
                       }
                     }
@@ -74,7 +74,7 @@ import { Component } from 'react'
 
         @withStoreContext
         export class {{name}}ServiceNode extends Unary {
-          get service () {
+          get method () {
             return this.props.context.node.service.{{case 'camel' name}}
           }
         }
