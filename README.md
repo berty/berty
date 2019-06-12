@@ -34,12 +34,6 @@
     <img src="https://codecov.io/gh/berty/berty/branch/master/graph/badge.svg?token=rBPpNHNNow" />
   </a>
 </p>
-<p align="center">
-  <a href="https://waffle.io/berty/berty">
-    <img src="https://badge.waffle.io/8a578732b451e07380b929f107b060f3.svg?columns=all"
-         alt="Waffle Board">
-  </a>
-</p>
 
 <p align="center"><b>
     <a href="https://berty.chat">berty.chat</a> •
