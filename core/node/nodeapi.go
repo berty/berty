@@ -432,11 +432,12 @@ func (n *Node) ContactList(input *node.ContactListInput, stream node.Service_Con
 			return errorcodes.ErrNetStream.Wrap(err)
 		}
 	}
+
 	return nil
 }
 
 // Contact implements berty.node.Contact
-func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.Contact, error) {
+func (n *Node) Contact(ctx context.Context, input *entity.Contact) (*entity.Contact, error) {
 	tracer := tracing.EnterFunc(ctx, input)
 	defer tracer.Finish()
 	ctx = tracer.Context()
@@ -445,15 +446,15 @@ func (n *Node) Contact(ctx context.Context, input *node.ContactInput) (*entity.C
 
 	sql := n.sql(ctx)
 	output := &entity.Contact{}
-	if err := sql.Where(input.Filter).First(output).Error; err != nil {
+	if err := sql.Where(input).First(output).Error; err != nil {
 		return nil, errorcodes.ErrDb.Wrap(err)
 	}
 
 	return output, nil
 }
 
-func (n *Node) ContactCheckPublicKey(ctx context.Context, input *node.ContactInput) (*node.Bool, error) {
-	err := input.Filter.Validate()
+func (n *Node) ContactCheckPublicKey(ctx context.Context, input *entity.Contact) (*node.Bool, error) {
+	err := input.Validate()
 
 	return &node.Bool{Ret: err == nil}, err
 }

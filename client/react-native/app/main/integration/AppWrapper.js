@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Platform } from 'react-native'
-import App from '@berty/view/screen/App'
 import { Tester, TestHookStore } from 'cavy'
 
 import Onboarding from './tests/Onboarding.js'
@@ -45,7 +44,7 @@ export default class AppWrapper extends Component {
         reportServerHost={reportServer.host}
         reportServerPort={reportServer.port}
       >
-        <App />
+        {this.props.children}
       </Tester>
     )
   }

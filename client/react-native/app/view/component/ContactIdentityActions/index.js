@@ -1,5 +1,5 @@
 import React from 'react'
-import { enums } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
 import { Text, View } from 'react-native'
 import { withNavigation } from 'react-navigation'
 import ActionsAdd from './ActionsAdd'

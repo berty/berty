@@ -453,7 +453,7 @@ func (a *Account) startGrpcWeb(ctx context.Context) error {
 		errChan := make(chan error, 1)
 		for {
 			go func() {
-				a.grpcWebGrpcServerWrapper = grpc_web.WrapServer(a.GrpcServer)
+				a.grpcWebGrpcServerWrapper = grpc_web.WrapServer(a.GrpcServer, grpc_web.WithWebsockets(true), grpc_web.WithWebsocketOriginFunc(func(*http.Request) bool { return true }))
 				errChan <- a.grpcWebServer.ListenAndServe()
 			}()
 			select {

@@ -1,20 +1,29 @@
 import React, { PureComponent } from 'react'
-import { enums, fragments } from '@berty/graphql'
-import { Avatar, Flex, Text } from '@berty/view/component'
+import { fragments } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
+import { Avatar, Flex, Text } from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { showContact } from '@berty/common/helpers/contacts'
 import { withNavigation } from 'react-navigation'
-import ActionsUnknown from '@berty/view/component/ContactIdentityActions/ActionsUnknown'
-import ActionsReceived from '@berty/view/component/ContactIdentityActions/ActionsReceived'
-import ActionsSent from '@berty/view/component/ContactIdentityActions/ActionsSent'
+import ActionsUnknown from '@berty/component/ContactIdentityActions/ActionsUnknown'
+import ActionsReceived from '@berty/component/ContactIdentityActions/ActionsReceived'
+import ActionsSent from '@berty/component/ContactIdentityActions/ActionsSent'
 import { withNamespaces } from 'react-i18next'
 
-class Item extends PureComponent {
-  async showDetails () {
-    const { data, context, navigation } = this.props
-
-    return showContact({ data, context, navigation })
+@withNamespaces()
+@withNavigation
+export class Item extends PureComponent {
+  showDetails = () => {
+    const { data, navigation } = this.props
+    if (
+      [
+        enums.BertyEntityContactInputStatus.IsRequested,
+        enums.BertyEntityContactInputStatus.RequestedMe,
+      ].indexOf(data.status) !== -1
+    ) {
+      return navigation.navigate('modal/contacts/card', data)
+    }
+    return navigation.navigate('contact/detail/list', data)
   }
 
   render () {
@@ -29,7 +38,7 @@ class Item extends PureComponent {
       <Flex.Cols
         align='center'
         style={[{ height: 72 }, padding, borderBottom]}
-        onPress={() => this.showDetails()}
+        onPress={this.showDetails}
       >
         <Flex.Cols size={1} align='center'>
           <Avatar data={data} size={40} />
@@ -60,4 +69,4 @@ class Item extends PureComponent {
   }
 }
 
-export default withNavigation(withNamespaces()(fragments.Contact(Item)))
+export default fragments.Contact(Item)

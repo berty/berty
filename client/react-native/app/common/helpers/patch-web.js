@@ -14,7 +14,10 @@ if (Platform.OS === 'web') {
     },
     getPort: async () => {
       const url = new URL(window.location.href)
-      return url.searchParams.get('gql-port') || '8700'
+      return {
+        gqlPort: url.searchParams.get('gql-port') || '8700',
+        grpcWebPort: url.searchParams.get('grpc-web-port') || '8737',
+      }
     },
     isBotRunning: async () => console.warn('not implemented in web'),
     startBot: async () => console.warn('not implemented in web'),

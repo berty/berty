@@ -35,5 +35,11 @@
     "jsx-a11y/href-no-hash": "off",
     "dependencies/no-cycles": 1,
     "dependencies/no-unresolved": 1,
+
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
   }
 }

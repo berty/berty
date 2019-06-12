@@ -14,14 +14,15 @@ import {
   Text,
   Badge,
   Icon,
-} from '@berty/view/component'
+} from '@berty/component'
 import { Pagination } from '@berty/relay'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { fragments, enums } from '@berty/graphql'
+import { fragments } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
 import { merge } from '@berty/common/helpers'
-import { conversation as utils } from '@berty/common/utils'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { conversation as utils } from '@berty/relay/utils'
+import { withRelayContext } from '@berty/relay/context'
 
 /* global __DEV__ */
 

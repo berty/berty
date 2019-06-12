@@ -10,11 +10,11 @@ import {
 } from 'react-native'
 import React, { PureComponent } from 'react'
 
-import { Menu, Header, Text, Flex } from '@berty/view/component'
+import { Menu, Header, Text, Flex } from '@berty/component'
 import { borderBottom } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import { withGoBack } from '@berty/view/component/BackActionProvider'
+import { withRelayContext } from '@berty/relay/context'
+import { withGoBack } from '@berty/component/BackActionProvider'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300

@@ -1,2 +1,1 @@
-import '@berty/common'
-
+import './app/main/index.js'

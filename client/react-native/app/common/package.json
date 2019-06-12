@@ -1,14 +1,7 @@
 {
   "name": "@berty/common",
   "version": "0.0.1",
-  "main": "index.js",
   "license": "UNLICENSED",
   "private": true,
-  "dependencies": {
-    "@berty/graphql": "^0.0.1",
-    "@berty/locale": "^0.0.1",
-    "@berty/view": "^0.0.1",
-    "@berty/relay": "^0.0.1",
-    "@berty/bridge": "^0.0.1"
-  }
+  "dependencies": {}
 }

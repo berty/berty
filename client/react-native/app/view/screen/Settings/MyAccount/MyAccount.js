@@ -1,13 +1,13 @@
 import React from 'react'
-import { Screen, Menu, Header, Badge, Avatar } from '@berty/view/component'
+import { Screen, Menu, Header, Badge, Avatar } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
-import { withCurrentUser } from '@berty/common/utils/contact'
-import RelayContext from '@berty/relay/RelayContext'
+import { withCurrentUser } from '@berty/relay/utils/contact'
+import RelayContext from '@berty/relay/context'
 import { showMessage } from 'react-native-flash-message'
-import { withGoBack } from '@berty/view/component/BackActionProvider'
+import { withGoBack } from '@berty/component/BackActionProvider'
 
 class MyAccountBase extends React.PureComponent {
   constructor (props) {

@@ -1,6 +1,6 @@
 import React from 'react'
-import Icon from '@berty/view/component/Icon'
-import Flex from '@berty/view/component/Flex'
+import Icon from '@berty/component/Icon'
+import Flex from '@berty/component/Flex'
 import { colors } from '@berty/common/constants'
 
 const Placeholder = () => (

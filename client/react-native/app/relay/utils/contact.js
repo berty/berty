@@ -1,8 +1,8 @@
 import React from 'react'
 import { View } from 'react-native'
-import { QueryReducer } from '@berty/relay'
-import { merge } from '../helpers'
-import RelayContext from '@berty/relay/RelayContext'
+import QueryReducer from '../QueryReducer'
+import { merge } from '@berty/common/helpers'
+import RelayContext from '../context'
 import { btoa, atob } from 'b64-lite'
 
 const defaultValuesContact = {
@@ -51,7 +51,7 @@ export const WithContact = ({ id, children }) => (
 )
 
 export const withCurrentUser = (WrappedComponent, opts) => {
-  const { showOnlyLoaded } = opts || {}
+  const { showOnlyLoaded, fallback } = opts || {}
 
   class WithCurrentUser extends React.Component {
     render = () => (
@@ -62,9 +62,7 @@ export const withCurrentUser = (WrappedComponent, opts) => {
             variables={merge([
               queries.Contact.defaultVariables,
               {
-                filter: {
-                  status: 42,
-                },
+                status: 42,
               },
             ])}
           >
@@ -80,7 +78,7 @@ export const withCurrentUser = (WrappedComponent, opts) => {
                   currentUserRetry={retry}
                 />
               ) : (
-                <View />
+                fallback || <View />
               )
             }
           </QueryReducer>

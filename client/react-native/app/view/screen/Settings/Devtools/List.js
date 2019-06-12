@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
 import { ActivityIndicator, Switch, Alert, Platform } from 'react-native'
 
-import { Flex, Header, Menu, Screen, Text } from '@berty/view/component'
+import { Flex, Header, Menu, Screen, Text } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { withRelayContext } from '@berty/relay/context'
+import { withBridgeContext } from '@berty/bridge/Context'
 
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -36,7 +36,7 @@ class List extends PureComponent {
     this.props.navigation.setParams({ restartDaemon: true })
     this.setState({ restartDaemon: true }, async () => {
       try {
-        await bridge.restart({})
+        await bridge.daemon.restart({})
       } catch (err) {
         console.error(err)
       }
@@ -52,7 +52,7 @@ class List extends PureComponent {
 
     this.props.navigation.setParams({ testPanic: true })
     this.setState({ testPanic: true }, async () => {
-      await bridge.panic({})
+      await bridge.daemon.panic({})
 
       this.props.navigation.setParams({
         testPanic: false,
@@ -66,7 +66,7 @@ class List extends PureComponent {
 
     this.props.navigation.setParams({ testError: true })
     this.setState({ testError: true }, async () => {
-      await bridge.error({})
+      await bridge.daemon.error({})
 
       this.props.navigation.setParams({
         testError: false,
@@ -112,7 +112,7 @@ class List extends PureComponent {
     const { bridge } = this.props
 
     try {
-      const { isBotRunning } = await bridge.getBotState({})
+      const { isBotRunning } = await bridge.daemon.getBotState({})
 
       this.setState({
         botRunning: isBotRunning,
@@ -132,9 +132,9 @@ class List extends PureComponent {
       this.antispamBot = true
       try {
         if (this.state.botRunning === true) {
-          await bridge.stopBot({})
+          await bridge.daemon.stopBot({})
         } else {
-          await bridge.startBot({})
+          await bridge.daemon.startBot({})
         }
 
         this.setState({ botRunning: !this.state.botRunning })
@@ -150,7 +150,7 @@ class List extends PureComponent {
     const { bridge } = this.props
 
     try {
-      let config = await bridge.getLocalGrpcInfos({})
+      let config = await bridge.daemon.getLocalGrpcInfos({})
       let infos = JSON.parse(config.json)
 
       this.setState({
@@ -171,9 +171,9 @@ class List extends PureComponent {
       this.antispamLocalGRPC = true
       try {
         if (this.state.localGRPCRunning === true) {
-          await bridge.stopLocalGRPC({})
+          await bridge.daemon.stopLocalGRPC({})
         } else {
-          await bridge.startLocalGRPC({})
+          await bridge.daemon.startLocalGRPC({})
         }
 
         this.setState({ localGRPCRunning: !this.state.localGRPCRunning })
@@ -192,7 +192,7 @@ class List extends PureComponent {
 
   throwNativeException = () => {
     const { bridge } = this.props
-    bridge.throwException({}).catch(err => {
+    bridge.daemon.throwException({}).catch(err => {
       Alert.alert('Error', `${err}`)
     })
   }

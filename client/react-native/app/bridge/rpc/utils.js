@@ -22,5 +22,9 @@ export const isElectron =
   window.navigator.userAgent.toLowerCase().indexOf('electron') !== -1
 
 // Error
-export const ErrorStreamNotImplemented = new Error('stream service not implemented')
-export const ErrorUnaryNotImplemented = new Error('unary service not implemented')
+export const ErrorStreamNotImplemented = new Error(
+  'stream service not implemented'
+)
+export const ErrorUnaryNotImplemented = new Error(
+  'unary service not implemented'
+)

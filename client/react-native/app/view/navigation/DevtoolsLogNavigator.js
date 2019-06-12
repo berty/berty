@@ -1,5 +1,5 @@
 import { createStackNavigator } from 'react-navigation'
-import { LogStream, FilterModal } from '../screen/Settings/Devtools/Logs'
+import { LogStream, FilterModal } from '@berty/screen/Settings/Devtools/Logs'
 
 export default createStackNavigator(
   {

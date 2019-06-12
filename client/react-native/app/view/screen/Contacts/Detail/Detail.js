@@ -3,13 +3,35 @@ import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Avatar, Header, Menu, Screen } from '@berty/view/component'
+import { Avatar, Header, Menu, Screen, Loader } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { contact as contactHelper } from '@berty/common/utils'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import { withGoBack } from '@berty/view/component/BackActionProvider'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
+import { withGoBack } from '@berty/component/BackActionProvider'
 
-class DetailsBase extends PureComponent {
+@withGoBack
+@withStoreContext
+@withNamespaces()
+class Details extends PureComponent {
+  static navigationOptions = ({ navigation }) => ({
+    header: (
+      <Header
+        navigation={navigation}
+        title={I18n.t('contacts.details')}
+        rightBtnIcon={'edit-2'}
+        onPressRightBtn={() => {
+          navigation.navigate(
+            navigation.getParam('editRoute', 'contact/detail/edit'),
+            {
+              id: navigation.getParam('id'),
+            }
+          )
+        }}
+        backBtn
+      />
+    ),
+  })
+
   blockContact = () => {
     console.log('Block')
   }
@@ -56,93 +78,74 @@ class DetailsBase extends PureComponent {
 
   deleteContact = async () => {
     try {
-      await this.props.context.mutations.contactRemove({
-        id: this.props.navigation.getParam('contact').id,
+      await this.props.context.node.service.contactRemove({
+        id: this.props.navigation.getParam('id'),
       })
-      this.props.goBack(null)
     } catch (err) {
       console.error(err)
     }
+    this.props.goBack(null)
   }
 
   render () {
     const { navigation, t } = this.props
-    const contact = navigation.getParam('contact')
-    if (contact == null) {
-      return null
-    }
+    const id = navigation.getParam('id')
     return (
-      <Screen>
-        <Menu absolute>
-          <Menu.Header
-            icon={<Avatar data={contact} size={78} />}
-            title={contact.overrideDisplayName || contact.displayName}
-          />
-          <Menu.Section>
-            <Menu.Item
-              icon='message-circle'
-              title={t('contacts.send-message')}
-              onPress={() => console.log('Send')}
-            />
-            <Menu.Item
-              icon='phone'
-              title={t('contacts.call')}
-              onPress={() => console.log('Call')}
-            />
-          </Menu.Section>
-          <Menu.Section>
-            <Menu.Item
-              icon='eye'
-              title={t('contacts.view-pub-key')}
-              onPress={() =>
-                navigation.navigate('modal/contacts/card', {
-                  ...contact,
-                  id: contactHelper.getCoreID(contact.id),
-                })
-              }
-            />
-          </Menu.Section>
-          <Menu.Section>
-            <Menu.Item
-              icon='slash'
-              title={t('contacts.block')}
-              color={colors.error}
-              onPress={() => this.blockConfirm()}
-            />
-          </Menu.Section>
-          <Menu.Section>
-            <Menu.Item
-              icon='slash'
-              title={t('contacts.delete')}
-              color={colors.error}
-              onPress={this.deleteContact}
-            />
-          </Menu.Section>
-        </Menu>
-      </Screen>
+      <Store.Entity.Contact id={id}>
+        {data =>
+          data ? (
+            <Screen>
+              <Menu absolute>
+                <Menu.Header
+                  icon={<Avatar data={data} size={78} />}
+                  title={data.overrideDisplayName || data.displayName}
+                />
+                <Menu.Section>
+                  <Menu.Item
+                    icon='message-circle'
+                    title={t('contacts.send-message')}
+                    onPress={() => console.log('Send')}
+                  />
+                  <Menu.Item
+                    icon='phone'
+                    title={t('contacts.call')}
+                    onPress={() => console.log('Call')}
+                  />
+                </Menu.Section>
+                <Menu.Section>
+                  <Menu.Item
+                    icon='eye'
+                    title={t('contacts.view-pub-key')}
+                    onPress={() =>
+                      navigation.navigate('modal/contacts/card', data)
+                    }
+                  />
+                </Menu.Section>
+                <Menu.Section>
+                  <Menu.Item
+                    icon='slash'
+                    title={t('contacts.block')}
+                    color={colors.error}
+                    onPress={this.blockConfirm}
+                  />
+                </Menu.Section>
+                <Menu.Section>
+                  <Menu.Item
+                    icon='slash'
+                    title={t('contacts.delete')}
+                    color={colors.error}
+                    onPress={this.deleteContact}
+                  />
+                </Menu.Section>
+              </Menu>
+            </Screen>
+          ) : (
+            <Loader />
+          )
+        }
+      </Store.Entity.Contact>
     )
   }
 }
-
-const Details = withGoBack(withRelayContext(withNamespaces()(DetailsBase)))
-
-Details.navigationOptions = ({ navigation }) => ({
-  header: (
-    <Header
-      navigation={navigation}
-      title={I18n.t('contacts.details')}
-      rightBtnIcon={'edit-2'}
-      onPressRightBtn={() =>
-        navigation.navigate(
-          navigation.getParam('editRoute', 'chats/contact/detail/list'),
-          {
-            contact: navigation.getParam('contact'),
-          }
-        )
-      }
-      backBtn
-    />
-  ),
-})
 
 export default Details

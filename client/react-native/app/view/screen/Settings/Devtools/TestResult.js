@@ -6,7 +6,7 @@ import {
   Flex,
   TextInputMultilineFix,
   Button,
-} from '@berty/view/component'
+} from '@berty/component'
 import { colors } from '@berty/common/constants'
 import {
   marginTop,

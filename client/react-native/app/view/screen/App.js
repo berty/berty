@@ -7,17 +7,17 @@ import KeyboardSpacer from 'react-native-keyboard-spacer'
 import React, { PureComponent } from 'react'
 import ReactNativeLanguages from 'react-native-languages'
 
-import { MovableView, DebugStateBar } from '@berty/view/component'
+import { MovableView, DebugStateBar } from '@berty/component'
 import { RelayContext } from '@berty/relay'
-import { UpdateContext } from '@berty/common/update'
+import { UpdateContext } from '@berty/update'
 import Instabug from '@berty/common/helpers/Instabug'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
 import Mousetrap from '@berty/common/helpers/Mousetrap'
 import NavigationService from '@berty/common/helpers/NavigationService'
-import Navigation from '@berty/view/navigation'
 import BridgeContext, { rpc, service, middleware } from '@berty/bridge'
-
-import i18n from '@berty/locale'
+import StoreContext from '@berty/store/context'
+import { Store } from '@berty/store/store.gen'
+import i18n from '@berty/common/locale'
 
 const bridgeMiddlewares = middleware.chain(
   __DEV__ ? middleware.logger.create('DAEMON') : null // eslint-disable-line
@@ -31,11 +31,19 @@ export default class App extends PureComponent {
       Platform.OS !== 'web',
     relayContext: null,
     availableUpdate: null,
-    bridge: service.create(
-      service.Daemon,
-      rpc.defaultPlatform,
-      bridgeMiddlewares
-    ),
+    store: new Store({
+      daemon: service.create(
+        service.Daemon,
+        rpc.defaultPlatform,
+        bridgeMiddlewares
+      ),
+      node: {
+        service: null,
+      },
+      setContext: bridge => {
+        this.setState({ store: new Store(bridge) })
+      },
+    }),
   }
 
   constructor (props) {
@@ -109,41 +117,47 @@ export default class App extends PureComponent {
     this.setState({ availableUpdate: update })
   }
 
-  setStateBridge = bridge => {
-    this.setState({ bridge })
-  }
-
   render () {
-    const { relayContext, availableUpdate, bridge } = this.state
+    const {
+      relayContext,
+      availableUpdate,
+      store: { bridge },
+      store,
+    } = this.state
     return (
       <BridgeContext.Provider value={bridge}>
         <KeyboardContext.Provider>
           <I18nextProvider i18n={i18n}>
             <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
-              <RelayContext.Provider
-                value={{ ...relayContext, setState: this.setStateContext }}
-              >
-                <UpdateContext.Provider
-                  value={{ availableUpdate, setState: this.setStateUpdate }}
+              <StoreContext.Provider value={store}>
+                <RelayContext.Provider
+                  value={{
+                    ...relayContext,
+                    setState: this.setStateContext,
+                  }}
                 >
-                  <BridgeContext.Consumer>
-                    {() => <Navigation />}
-                  </BridgeContext.Consumer>
-
-                  <FlashMessage position='top' />
-                  <View
-                    style={{
-                      zIndex: 1,
-                      position: 'absolute',
-                      top: 30,
-                      right: 48,
-                      padding: 5,
+                  <UpdateContext.Provider
+                    value={{
+                      availableUpdate,
+                      setState: this.setStateUpdate,
                     }}
                   >
-                    <MovableView>{this.state.debugBar}</MovableView>
-                  </View>
-                </UpdateContext.Provider>
-              </RelayContext.Provider>
+                    {this.props.children}
+                    <FlashMessage position='top' />
+                    <View
+                      style={{
+                        zIndex: 1,
+                        position: 'absolute',
+                        top: 30,
+                        right: 48,
+                        padding: 5,
+                      }}
+                    >
+                      <MovableView>{this.state.debugBar}</MovableView>
+                    </View>
+                  </UpdateContext.Provider>
+                </RelayContext.Provider>
+              </StoreContext.Provider>
               {Platform.OS === 'ios' && <KeyboardSpacer />}
             </SafeAreaView>
           </I18nextProvider>

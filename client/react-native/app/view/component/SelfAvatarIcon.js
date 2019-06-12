@@ -5,8 +5,8 @@ import { withNavigation } from 'react-navigation'
 import Avatar from './Avatar'
 import { HeaderButton } from './Header'
 import { colors } from '@berty/common/constants'
-import { contact } from '@berty/common/utils'
-import { withCurrentUser } from '@berty/common/utils/contact'
+import { contact } from '@berty/relay/utils'
+import { withCurrentUser } from '@berty/relay/utils/contact'
 
 class SelfAvatarLink extends PureComponent {
   onPress = data => {

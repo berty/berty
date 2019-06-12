@@ -784,8 +784,8 @@ type ComplexityRoot struct {
 		GetEvent                func(childComplexity int, id string) int
 		ConfigPublic            func(childComplexity int, T bool) int
 		ContactList             func(childComplexity int, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
-		Contact                 func(childComplexity int, filter *entity.Contact) int
-		ContactCheckPublicKey   func(childComplexity int, filter *entity.Contact) int
+		Contact                 func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
+		ContactCheckPublicKey   func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) int
 		ConversationList        func(childComplexity int, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) int
 		Conversation            func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, wroteAt *time.Time, title string, topic string, infos string, kind *int32, members []*entity.ConversationMember) int
 		ConversationMember      func(childComplexity int, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, wroteAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) int
@@ -895,8 +895,8 @@ type QueryResolver interface {
 	GetEvent(ctx context.Context, id string) (*entity.Event, error)
 	ConfigPublic(ctx context.Context, T bool) (*entity.Config, error)
 	ContactList(ctx context.Context, filter *entity.Contact, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ContactListConnection, error)
-	Contact(ctx context.Context, filter *entity.Contact) (*entity.Contact, error)
-	ContactCheckPublicKey(ctx context.Context, filter *entity.Contact) (*node.Bool, error)
+	Contact(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*entity.Contact, error)
+	ContactCheckPublicKey(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, sigchain []byte, status *int32, devices []*entity.Device, displayName string, displayStatus string, overrideDisplayName string, overrideDisplayStatus string) (*node.Bool, error)
 	ConversationList(ctx context.Context, filter *entity.Conversation, orderBy string, orderDesc bool, first *int32, after *string, last *int32, before *string) (*node.ConversationListConnection, error)
 	Conversation(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, wroteAt *time.Time, title string, topic string, infos string, kind *int32, members []*entity.ConversationMember) (*entity.Conversation, error)
 	ConversationMember(ctx context.Context, id string, createdAt *time.Time, updatedAt *time.Time, readAt *time.Time, wroteAt *time.Time, status *int32, contact *entity.Contact, conversationId string, contactId string) (*entity.ConversationMember, error)
@@ -2440,40 +2440,274 @@ func field_Query_ContactList_args(rawArgs map[string]interface{}) (map[string]in
 
 func field_Query_Contact_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
-	var arg0 *entity.Contact
-	if tmp, ok := rawArgs["filter"]; ok {
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
 		var err error
-		var ptr1 entity.Contact
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
 		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg0 = &ptr1
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["filter"] = arg0
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 []byte
+	if tmp, ok := rawArgs["sigchain"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg3 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sigchain"] = arg3
+	var arg4 *int32
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg4
+	var arg5 []*entity.Device
+	if tmp, ok := rawArgs["devices"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg5 = make([]*entity.Device, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.Device
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
+				arg5[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["devices"] = arg5
+	var arg6 string
+	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
+		var err error
+		arg7, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayStatus"] = arg7
+	var arg8 string
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+		var err error
+		arg8, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayName"] = arg8
+	var arg9 string
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
+		var err error
+		arg9, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayStatus"] = arg9
 	return args, nil
 
 }
 
 func field_Query_ContactCheckPublicKey_args(rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	args := map[string]interface{}{}
-	var arg0 *entity.Contact
-	if tmp, ok := rawArgs["filter"]; ok {
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
 		var err error
-		var ptr1 entity.Contact
+		arg0, err = models.UnmarshalID(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	var arg1 *time.Time
+	if tmp, ok := rawArgs["createdAt"]; ok {
+		var err error
+		var ptr1 time.Time
 		if tmp != nil {
-			ptr1, err = UnmarshalBertyEntityContactInput(tmp)
-			arg0 = &ptr1
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg1 = &ptr1
 		}
 
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["filter"] = arg0
+	args["createdAt"] = arg1
+	var arg2 *time.Time
+	if tmp, ok := rawArgs["updatedAt"]; ok {
+		var err error
+		var ptr1 time.Time
+		if tmp != nil {
+			ptr1, err = models.UnmarshalTime(tmp)
+			arg2 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["updatedAt"] = arg2
+	var arg3 []byte
+	if tmp, ok := rawArgs["sigchain"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg3 = make([]byte, len(rawIf1))
+		for idx1 := range rawIf1 {
+			arg3[idx1], err = models.UnmarshalByte(rawIf1[idx1])
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["sigchain"] = arg3
+	var arg4 *int32
+	if tmp, ok := rawArgs["status"]; ok {
+		var err error
+		var ptr1 int32
+		if tmp != nil {
+			ptr1, err = models.UnmarshalEnum(tmp)
+			arg4 = &ptr1
+		}
+
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["status"] = arg4
+	var arg5 []*entity.Device
+	if tmp, ok := rawArgs["devices"]; ok {
+		var err error
+		var rawIf1 []interface{}
+		if tmp != nil {
+			if tmp1, ok := tmp.([]interface{}); ok {
+				rawIf1 = tmp1
+			} else {
+				rawIf1 = []interface{}{tmp}
+			}
+		}
+		arg5 = make([]*entity.Device, len(rawIf1))
+		for idx1 := range rawIf1 {
+			var ptr2 entity.Device
+			if rawIf1[idx1] != nil {
+				ptr2, err = UnmarshalBertyEntityDeviceInput(rawIf1[idx1])
+				arg5[idx1] = &ptr2
+			}
+		}
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["devices"] = arg5
+	var arg6 string
+	if tmp, ok := rawArgs["displayName"]; ok {
+		var err error
+		arg6, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayName"] = arg6
+	var arg7 string
+	if tmp, ok := rawArgs["displayStatus"]; ok {
+		var err error
+		arg7, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["displayStatus"] = arg7
+	var arg8 string
+	if tmp, ok := rawArgs["overrideDisplayName"]; ok {
+		var err error
+		arg8, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayName"] = arg8
+	var arg9 string
+	if tmp, ok := rawArgs["overrideDisplayStatus"]; ok {
+		var err error
+		arg9, err = models.UnmarshalString(tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["overrideDisplayStatus"] = arg9
 	return args, nil
 
 }
@@ -6278,7 +6512,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Contact(childComplexity, args["filter"].(*entity.Contact)), true
+		return e.complexity.Query.Contact(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
 
 	case "Query.ContactCheckPublicKey":
 		if e.complexity.Query.ContactCheckPublicKey == nil {
@@ -6290,7 +6524,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.ContactCheckPublicKey(childComplexity, args["filter"].(*entity.Contact)), true
+		return e.complexity.Query.ContactCheckPublicKey(childComplexity, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string)), true
 
 	case "Query.ConversationList":
 		if e.complexity.Query.ConversationList == nil {
@@ -22357,7 +22591,7 @@ func (ec *executionContext) _Query_Contact(ctx context.Context, field graphql.Co
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Contact(rctx, args["filter"].(*entity.Contact))
+		return ec.resolvers.Query().Contact(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -22388,7 +22622,7 @@ func (ec *executionContext) _Query_ContactCheckPublicKey(ctx context.Context, fi
 	ctx = graphql.WithResolverContext(ctx, rctx)
 	resTmp := ec.FieldMiddleware(ctx, nil, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().ContactCheckPublicKey(rctx, args["filter"].(*entity.Contact))
+		return ec.resolvers.Query().ContactCheckPublicKey(rctx, args["id"].(string), args["createdAt"].(*time.Time), args["updatedAt"].(*time.Time), args["sigchain"].([]byte), args["status"].(*int32), args["devices"].([]*entity.Device), args["displayName"].(string), args["displayStatus"].(string), args["overrideDisplayName"].(string), args["overrideDisplayStatus"].(string))
 	})
 	if resTmp == nil {
 		return graphql.Null
@@ -26358,10 +26592,28 @@ type Query {
     before: String
   ): BertyNodeContactListConnection
   Contact(
-  	filter: BertyEntityContactInput
+    id: ID!
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+    sigchain: [Byte!]
+  status: Enum
+  	devices: [BertyEntityDeviceInput]
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
   ): BertyEntityContact
   ContactCheckPublicKey(
-  	filter: BertyEntityContactInput
+    id: ID!
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+    sigchain: [Byte!]
+  status: Enum
+  	devices: [BertyEntityDeviceInput]
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
   ): BertyNodeBool
   ConversationList(
   	filter: BertyEntityConversationInput

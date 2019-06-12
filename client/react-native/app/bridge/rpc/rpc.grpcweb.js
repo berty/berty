@@ -1,6 +1,6 @@
 import grpc from 'grpc-web'
 import { getServiceName } from './utils'
-
+import Stream from 'stream'
 export const DefautlHostname = 'http://localhost:8989'
 
 const { MethodInfo } = grpc.AbstractClientBase
@@ -14,7 +14,8 @@ const unary = (client, hostname) => async (method, request, metadata) => {
     lazyMethod
   )
 
-  return client.unaryCall(url, request, metadata || {}, methodInfo)
+  const unary = client.unaryCall(url, request, metadata || {}, methodInfo)
+  return unary
 }
 
 const stream = (client, hostname) => async (method, request, metadata) => {
@@ -26,21 +27,31 @@ const stream = (client, hostname) => async (method, request, metadata) => {
     res => responseType.decode(res)
   )
 
-  const stream = client.serverStreaming(
+  const stream = await client.serverStreaming(
     url,
     request,
     metadata || {},
     methodInfo
   )
-  return {
-    // grpc web doesn't support client side streaming yet
-    emit: payload => {
-      throw new Error('not implemented')
-    },
-    onData: callback => stream.on('data', callback),
-    onEnd: callback => stream.on('end', callback),
-    onStatus: callback => stream.on('status', callback),
-  }
+  stream.pause = () => {}
+  stream.resume = () => {}
+
+  // grpc-web does not implement true rw stream
+  const ptStream = new Stream.PassThrough({
+    readableObjectMode: true,
+    writableObjectMode: true,
+  }).wrap(stream)
+
+  // fix that onEnd is not called
+  stream.on('status', status => {
+    if (status.code === 0) {
+      ptStream.end()
+      stream.cancel()
+    }
+  })
+  stream.on('error', () => {})
+
+  return ptStream
 }
 
 export const rpcWithHostname = hostname => {

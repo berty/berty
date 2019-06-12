@@ -1,8 +1,8 @@
 import { Switch } from 'react-native'
 import React, { PureComponent } from 'react'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { withBridgeContext } from '@berty/bridge/Context'
 
-import { Header, Loader, Menu } from '@berty/view/component'
+import { Header, Loader, Menu } from '@berty/component'
 
 class Network extends PureComponent {
   static navigationOptions = ({ navigation }) => {
@@ -26,7 +26,7 @@ class Network extends PureComponent {
   async componentDidMount () {
     const { bridge } = this.props
 
-    const config = await bridge.getNetworkConfig({})
+    const config = await bridge.daemon.getNetworkConfig({})
     console.warn(config.json)
     this.setState(JSON.parse(config.json))
   }
@@ -38,7 +38,7 @@ class Network extends PureComponent {
     this.props.navigation.setParams({ updating: true })
     this.setState(config, async () => {
       try {
-        await bridge.updateNetworkConfig({
+        await bridge.daemon.updateNetworkConfig({
           json: JSON.stringify(this.state),
         })
       } catch (err) {

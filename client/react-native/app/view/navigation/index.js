@@ -1,12 +1,13 @@
+import NavigationService from '@berty/common/helpers/NavigationService'
+import React, { PureComponent } from 'react'
+
 import { Platform } from 'react-native'
 import { atob } from 'b64-lite'
-import React, { PureComponent } from 'react'
-import { createAppContainer } from 'react-navigation'
 
-import NavigationService from '@berty/common/helpers/NavigationService'
+import AppNavigator from './AppNavigator'
 import { NavigatorContext } from './NavigatorContext'
-import { AppNavigator } from './AppNavigator'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { StoreContext } from '@berty/store/context'
+import App from '@berty/screen/App'
 
 const getActiveRoute = navigationState => {
   if (!navigationState) {
@@ -46,40 +47,44 @@ const getURIFromRoute = route => {
   return route.routeName + fragment
 }
 
-class Navigator extends PureComponent {
+class RootNavigator extends PureComponent {
   static router = AppNavigator.router
 
   state = {}
 
   render () {
-    const { navigation, bridge } = this.props
+    const { navigation } = this.props
 
     return (
       <NavigatorContext.Provider value={this.state}>
-        <AppNavigator
-          {...this.props}
-          ref={() => {
-            if (Platform.OS !== 'web') {
-              this.navigation = navigation
-              NavigationService.setTopLevelNavigator(navigation)
-            }
-          }}
-          onNavigationStateChange={(prevState, currentState) => {
-            const currentRoute = getActiveRoute(currentState)
-            const prevRoute = getActiveRoute(prevState)
-            if (prevRoute !== currentRoute) {
-              bridge.setCurrentRoute({
-                route: getURIFromRoute(currentRoute),
-              })
-              this.setState(currentRoute)
-            }
-          }}
-        />
+        <App>
+          <StoreContext.Consumer>
+            {store => (
+              <AppNavigator
+                {...this.props}
+                ref={() => {
+                  if (Platform.OS !== 'web') {
+                    this.navigation = navigation
+                    NavigationService.setTopLevelNavigator(navigation)
+                  }
+                }}
+                onNavigationStateChange={(prevState, currentState) => {
+                  const currentRoute = getActiveRoute(currentState)
+                  const prevRoute = getActiveRoute(prevState)
+                  if (prevRoute !== currentRoute) {
+                    store.daemon.setCurrentRoute({
+                      route: getURIFromRoute(currentRoute),
+                    })
+                    this.setState(currentRoute)
+                  }
+                }}
+              />
+            )}
+          </StoreContext.Consumer>
+        </App>
       </NavigatorContext.Provider>
     )
   }
 }
 
-export default withBridgeContext(
-  Platform.OS !== 'web' ? createAppContainer(Navigator) : Navigator
-)
+export default RootNavigator

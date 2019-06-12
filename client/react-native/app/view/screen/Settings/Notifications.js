@@ -6,7 +6,7 @@ import {
   NativeModules,
   Alert,
 } from 'react-native'
-import { Flex, Header, Menu } from '@berty/view/component'
+import { Flex, Header, Menu } from '@berty/component'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
 import { QueryReducer, RelayContext } from '@berty/relay'
@@ -18,10 +18,10 @@ import {
   enableMQTTNotifications,
   disableMQTTNotifications,
 } from '@berty/common/helpers/notifications'
-import { enums } from '@berty/graphql'
-import { withConfig } from '@berty/common/helpers/config'
+import * as enums from '@berty/common/enums.gen'
+import { withConfig } from '@berty/relay/config'
 import { showMessage } from 'react-native-flash-message'
-import withBridgeContext from '@berty/common/helpers/withBridgeContext'
+import { withBridgeContext } from '@berty/bridge/Context'
 
 const { CoreModule } = NativeModules
 

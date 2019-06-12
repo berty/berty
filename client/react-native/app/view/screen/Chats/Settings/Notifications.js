@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Switch, Text } from 'react-native'
-import { Header, Menu } from '@berty/view/component'
+import { Header, Menu } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'

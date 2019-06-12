@@ -71,19 +71,21 @@ get_iphone_udid:
 
 
 .PHONY: pretty
-pretty: deps
-	$(LERNA_RUN) prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*')
+pretty: deps.root
+	npm run prettify -- $$(find app -type f -name '*.js' -not -path '*/node_modules/*' -not -path '*/__generated__/*')
 
 .PHONY: gen.pretty
-gen.pretty: deps
-	$(LERNA_RUN) prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*')
+gen.pretty: deps.root
+	npm run prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*' -not -path '*/__generated__/*')
 
 ### Dependencies part ###
+.PHONY: deps.root
+deps.root:
+	npm $$([ ! -z "$$CIRCLE_JOB" ] && echo "ci" || echo "install")
+
 .PHONY: deps
-deps:
-	cd $(ROOT); \
-		[ ! -e ./node_modules/.bin/lerna ] && npm install --no-package-lock lerna; \
-		$(LERNA) bootstrap $$([ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
+deps: deps.root
+	$(LERNA) bootstrap $$([ ! -z "$$CIRCLE_JOB" ] && echo "--ci")
 
 .PHONY: deps.android
 deps.android: deps
@@ -120,11 +122,11 @@ deps.logs:
 
 .PHONY: generate.relay
 generate.relay:
-	./node_modules/.bin/relay-compiler -src common --schema app/schema.graphql
+	./node_modules/.bin/relay-compiler -src app/graphql --schema app/schema.graphql
 
 .PHONY: generate.relay.watch
 generate.relay.watch:
-	./node_modules/.bin/relay-compiler --src common --schema app/schema.graphql --watch
+	./node_modules/.bin/relay-compiler --src app/graphql --schema app/schema.graphql --watch
 
 ### Build release/debug part ###
 .PHONY: debug.react-native
@@ -144,7 +146,10 @@ debug.android: deps.android patch.android
 
 .PHONY: release.android
 release.android: deps.android
-	cd $(ROOT) && react-native run-android --variant=release --no-packager
+	cd $(ROOT) \
+		&& source .environment \
+		&& export APP_TOKEN="$$INSTABUG_TOKEN" \
+		&& react-native run-android --variant=release --no-packager
 
 .PHONY: deps.desktop
 deps.desktop: deps.web
@@ -155,7 +160,7 @@ release.desktop: deps.desktop
 	$(LERNA_RUN) --scope=@berty/web build
 	$(MAKE) -C $(DESKTOP) build
 
-.PHONY: clean.desktop
+.PHONY .IGNORE: clean.desktop
 clean.desktop: clean.web
 	$(MAKE) -C $(DESKTOP) clean
 
@@ -196,9 +201,9 @@ log.ios:
 
 
 ### Clean dependencies part ###
-.PHONY: clean.bundler_and_pkgs
+.PHONY .IGNORE: clean.bundler_and_pkgs
 clean.bundler_and_pkgs:
-	$(LERNA) clean
+	$(LERNA) clean -y
 	cd $(ROOT)					\
 		&& rm -rf node_modules	\
 		&& watchman watch-del-all
@@ -206,33 +211,33 @@ clean.bundler_and_pkgs:
 	rm -rf $$TMPDIR/react-*
 	rm -rf $$TMPDIR/haste-*
 
-.PHONY: clean.android
+.PHONY .IGNORE: clean.android
 clean.android:
-	$(MAKE) -C $(GOMOB) clean.android
-	cd $(ANDROID) && rm -rf app/build ble/build && ./gradlew clean
+	cd $(ANDROID) \
+		&& ./gradlew clean \
+		&& ./gradlew cleanBuildCache
 
-.PHONY: clean.ios
+.PHONY .IGNORE: clean.ios
 clean.ios:
 	$(MAKE) -C $(GOMOB) clean.ios
 	cd $(IOS) && rm -rf build && xcodebuild clean
 
-.PHONY: clean.web
+.PHONY .IGNORE: clean.web
 clean.web:
-	cd $(WEB)					\
-		&& rm -rf node_modules	\
-		&& watchman watch-del-all
 
-.PHONY: fclean.android
+.PHONY .IGNORE: fclean.android
 fclean.android: clean.android clean.bundler_and_pkgs
+	$(MAKE) -C $(GOMOB) clean.android
+	cd $(ANDROID) && rm -rf app/build ble/build
 
-.PHONY: fclean.ios
+.PHONY .IGNORE: fclean.ios
 fclean.ios: clean.ios clean.bundler_and_pkgs
 
-.PHONY: fclean.web
+.PHONY .IGNORE: fclean.web
 fclean.web: clean.web clean.bundler_and_pkgs
 
-.PHONY: fclean
-fclean: clean.android clean.ios clean.web clean.bundler_and_pkgs
+.PHONY .IGNORE: fclean
+fclean: fclean.android fclean.ios fclean.web clean.bundler_and_pkgs
 
 .PHONY: re.android
 re.android: fclean.android debug.android
@@ -474,7 +479,7 @@ fastlane.ios.release: deps
 fastlane.ios.release.appstore: fastlane.ios.release
 	time bundle exec fastlane run pilot upload --verbose ipa:$(IOS_BUILD)/Berty.ipa skip_waiting_for_build_processing:true
 
-fastlane.android.staff: deps
+fastlane.android.staff: clean.android deps
 	# get the google-services.json
 	[ -e $(ROOT)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
@@ -491,7 +496,7 @@ fastlane.android.staff: deps
 	# check if apk is correctly signed
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
-fastlane.android.yolo: deps
+fastlane.android.yolo: clean.android deps
 	# get the google-services.json
 	[ -e $(ROOT)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json
@@ -507,7 +512,7 @@ fastlane.android.yolo: deps
 	# check if apk is correctly signed
 	jarsigner -verify $(ANDROID_BUILD)/*.apk
 
-fastlane.android.release: deps
+fastlane.android.release: clean.android deps
 	# get the google-services.json
 	[ -e $(ROOT)/android/app/google-services.json ] \
 		|| echo  $$GOOGLE_SERVICES | base64 --decode > $(ROOT)/android/app/google-services.json

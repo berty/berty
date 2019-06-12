@@ -1,7 +1,6 @@
 import React from 'react'
 import { Image } from 'react-native'
 import { fingerprint } from '@berty/common/helpers/fingerprint'
-import { extractPublicKeyFromId } from '@berty/common/helpers/contacts'
 
 const Avatar = ({ data, size = 40, margin = 4, uri = null, style = [] }) => {
   if (uri !== null) {
@@ -27,7 +26,7 @@ const Avatar = ({ data, size = 40, margin = 4, uri = null, style = [] }) => {
     return null
   }
 
-  const extractedPublicKey = extractPublicKeyFromId(data.id)
+  const extractedPublicKey = data.id
 
   const hexCode = fingerprint(extractedPublicKey || data.id).substring(0, 16)
   const retinaMode = 2

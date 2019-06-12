@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react'
 import { Text, ScrollView, TouchableOpacity, Clipboard } from 'react-native'
 import { RelayContext } from '@berty/relay'
-import { Header } from '@berty/view/component'
+import { Header } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { padding } from '@berty/common/styles'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withRelayContext } from '@berty/relay/context'
 
 class EventDetails extends PureComponent {
   static contextType = RelayContext

@@ -1,15 +1,19 @@
 import React, { PureComponent } from 'react'
-import { View, Text, InteractionManager, TouchableOpacity } from 'react-native'
-import { Screen, Icon, EmptyList } from '@berty/view/component'
+import {
+  View,
+  Text,
+  InteractionManager,
+  TouchableOpacity,
+  Platform,
+  FlatList as FlatListWeb,
+} from 'react-native'
+import { FlatList } from 'react-navigation'
+import { Screen, Icon, EmptyList, Loader } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { Pagination } from '@berty/relay'
-import { merge } from '@berty/common/helpers'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
-import { fragments } from '@berty/graphql'
-import Item from './Item'
+import { Item } from './Item'
 import I18n from 'i18next'
-
-const cond = data => data && data.edges.length < 5
+import { Store } from '@berty/container'
+import { withStoreContext } from '@berty/store/context'
 
 class CondComponent extends PureComponent {
   state = {
@@ -65,6 +69,7 @@ class CondComponent extends PureComponent {
   }
 }
 
+@withStoreContext
 class GenericList extends React.Component {
   state = {
     didFinishInitialAnimation: false,
@@ -95,46 +100,120 @@ class GenericList extends React.Component {
     })
   }
 
+  renderItem = (
+    { item: data, index },
+    { onPress, ignoreMyself } = this.props
+  ) => (
+    <Item
+      data={data}
+      context={this.props.context}
+      onPress={onPress}
+      ignoreMyself={ignoreMyself}
+    />
+  )
+
+  static ITEM_HEIGHT = (() => {
+    switch (Platform.OS) {
+      case 'web':
+        // eslint-disable-next-line
+        return __DEV__ ? 80.5 : 72
+      case 'android':
+      case 'ios':
+      default:
+        return 72
+    }
+  })()
+
+  getItemLayout = (data, index) => ({
+    length: GenericList.ITEM_HEIGHT,
+    offset: GenericList.ITEM_HEIGHT * index,
+    index,
+  })
+
+  keyExtractor = item => item.id
+
+  shouldItemUpdate = (props, nextProps) => {
+    if (props.data.status !== nextProps.data.status) {
+      return true
+    }
+    return false
+  }
+
+  static List = Platform.OS === 'web' ? FlatListWeb : FlatList
+
+  lastIndex = null
+  onScroll = paginate => {
+    return e => {
+      if (this.lastIndex) {
+        if (
+          e.nativeEvent.contentOffset.y > this.lastIndex &&
+          e.nativeEvent.contentOffset.y >
+            e.nativeEvent.contentSize.height * 0.666
+        ) {
+          paginate()
+        }
+      }
+      this.lastIndex = e.nativeEvent.contentOffset.y
+    }
+  }
+
+  renderList = ({ queue, paginate, count, loading, retry }) => {
+    if (count) {
+      return (
+        <>
+          <GenericList.List
+            windowSize={11}
+            initialNumToRender={50}
+            maxToRenderPerBatch={5}
+            updateCellsBatchingPeriod={64}
+            onScroll={this.onScroll(paginate)}
+            scrollEventThrottle={128}
+            onEndReached={this.paginate}
+            data={queue}
+            getItemLayout={this.getItemLayout}
+            keyExtractor={this.keyExtractor}
+            extraData={count}
+            renderItem={this.renderItem}
+            refreshing={count === 0 && loading}
+            onRefresh={Platform.OS !== 'web' && retry}
+          />
+          {count < 5 ? <CondComponent onPress={this.props.onPress} /> : null}
+        </>
+      )
+    }
+    return (
+      <EmptyList
+        source={require('@berty/common/static/img/empty-contact.png')}
+        text={I18n.t('contacts.empty')}
+        icon={'user-plus'}
+        btnText={I18n.t('contacts.add.title')}
+        onPress={this.props.onPress}
+      />
+    )
+  }
+
   render () {
     const { didFinishInitialAnimation } = this.state
     if (!didFinishInitialAnimation) {
       return null
     }
-    const {
-      filter,
-      ignoreMyself,
-      onPress,
-      context: { queries, subscriptions },
-      context,
-    } = this.props
-
+    const { paginate, filter } = this.props
     return (
       <Screen style={[{ backgroundColor: colors.white }]}>
-        <Pagination
-          direction='forward'
-          query={queries.ContactList.graphql}
-          variables={merge([queries.ContactList.defaultVariables, filter])}
-          fragment={fragments.ContactList}
-          alias='ContactList'
-          subscriptions={[subscriptions.contact]}
-          renderItem={props => (
-            <Item {...props} context={context} ignoreMyself={ignoreMyself} />
-          )}
-          cond={cond}
-          condComponent={() => <CondComponent onPress={() => onPress()} />}
-          emptyItem={() => (
-            <EmptyList
-              source={require('@berty/common/static/img/empty-contact.png')}
-              text={I18n.t('contacts.empty')}
-              icon={'user-plus'}
-              btnText={I18n.t('contacts.add.title')}
-              onPress={() => onPress()}
-            />
-          )}
-        />
+        <Store.Node.Service.ContactList.Pagination
+          filter={{ ...((filter && filter.filter) || {}) }}
+          paginate={({ cursor, count }) => ({
+            first: count ? 50 : 50,
+            after: cursor,
+            ...(paginate || {}),
+          })}
+          fallback={<Loader />}
+        >
+          {this.renderList}
+        </Store.Node.Service.ContactList.Pagination>
       </Screen>
     )
   }
 }
 
-export default withRelayContext(GenericList)
+export default GenericList

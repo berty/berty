@@ -874,10 +874,28 @@ type Query {
     before: String
   ): BertyNodeContactListConnection
   Contact(
-  	filter: BertyEntityContactInput
+    id: ID!
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+    sigchain: [Byte!]
+  status: Enum
+  	devices: [BertyEntityDeviceInput]
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
   ): BertyEntityContact
   ContactCheckPublicKey(
-  	filter: BertyEntityContactInput
+    id: ID!
+  	createdAt: GoogleProtobufTimestampInput
+  	updatedAt: GoogleProtobufTimestampInput
+    sigchain: [Byte!]
+  status: Enum
+  	devices: [BertyEntityDeviceInput]
+    displayName: String!
+    displayStatus: String!
+    overrideDisplayName: String!
+    overrideDisplayStatus: String!
   ): BertyNodeBool
   ConversationList(
   	filter: BertyEntityConversationInput

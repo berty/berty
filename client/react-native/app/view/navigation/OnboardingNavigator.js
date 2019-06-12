@@ -1,47 +1,49 @@
-import { createMaterialTopTabNavigator } from 'react-navigation'
-import Welcome from '../screen/Accounts/Onboarding/Welcome'
-import Notifications from '../screen/Accounts/Onboarding/Notifications'
-import Bluetooth from '../screen/Accounts/Onboarding/Bluetooth'
-import Contacts from '../screen/Accounts/Onboarding/Contacts'
-import Ready from '../screen/Accounts/Onboarding/Ready'
-import { tabIcon } from '@berty/common/helpers/views'
 import { tabNavigatorOptions } from '@berty/common/constants/styling'
-import I18n from '@berty/locale'
+import Bluetooth from '@berty/screen/Accounts/Onboarding/Bluetooth'
+import Contacts from '@berty/screen/Accounts/Onboarding/Contacts'
+import I18n from '@berty/common/locale'
+import Notifications from '@berty/screen/Accounts/Onboarding/Notifications'
+import Ready from '@berty/screen/Accounts/Onboarding/Ready'
+import Welcome from '@berty/screen/Accounts/Onboarding/Welcome'
+import { withProps, asFunctional } from '@berty/common/helpers/views'
+import TabIcon from '@berty/component/TabIcon'
+
+import { createMaterialTopTabNavigator } from 'react-navigation'
 
 export default createMaterialTopTabNavigator(
   {
     'onboarding/welcome': {
       screen: Welcome,
       navigationOptions: () => ({
-        tabBarIcon: tabIcon('lock'),
+        tabBarIcon: asFunctional(withProps({ name: 'lock' })(TabIcon)),
         title: I18n.t('onboarding.welcome.tab'),
       }),
     },
     'onboarding/notifications': {
       screen: Notifications,
       navigationOptions: () => ({
-        tabBarIcon: tabIcon('bell'),
+        tabBarIcon: asFunctional(withProps({ name: 'bell' })(TabIcon)),
         title: I18n.t('onboarding.notifications.tab'),
       }),
     },
     'onboarding/bluetooth': {
       screen: Bluetooth,
       navigationOptions: () => ({
-        tabBarIcon: tabIcon('bluetooth'),
+        tabBarIcon: asFunctional(withProps({ name: 'bluetooth' })(TabIcon)),
         title: I18n.t('onboarding.bluetooth.tab'),
       }),
     },
     'onboarding/contacts': {
       screen: Contacts,
       navigationOptions: () => ({
-        tabBarIcon: tabIcon('users'),
+        tabBarIcon: asFunctional(withProps({ name: 'users' })(TabIcon)),
         title: I18n.t('onboarding.contacts.tab'),
       }),
     },
     'onboarding/ready': {
       screen: Ready,
       navigationOptions: () => ({
-        tabBarIcon: tabIcon('check-circle'),
+        tabBarIcon: asFunctional(withProps({ name: 'check-circle' })(TabIcon)),
         title: I18n.t('onboarding.ready.tab'),
       }),
     },

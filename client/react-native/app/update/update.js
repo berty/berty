@@ -1,16 +1,17 @@
-import moment from 'moment'
 import { DeviceInfos } from '@berty/graphql/queries'
-import RNDeviceInfo from 'react-native-device-info'
+import { requestAndroidPermission } from '@berty/common/helpers/permissions'
+import RNFetchBlob from '@berty/common/helpers/rn-fetch-blob'
+
 import {
   Linking,
   Platform,
   PermissionsAndroid,
   NativeModules,
 } from 'react-native'
-import RNFetchBlob from '../helpers/rn-fetch-blob'
 import { showMessage } from 'react-native-flash-message'
-import { requestAndroidPermission } from '../helpers/permissions'
 import I18n from 'i18next'
+import RNDeviceInfo from 'react-native-device-info'
+import moment from 'moment'
 
 const { CoreModule } = NativeModules
 

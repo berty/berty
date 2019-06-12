@@ -1,10 +1,10 @@
 import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 import { Platform } from 'react-native'
-import List from '../screen/Chats/List'
-import Detail from '../screen/Chats/Detail'
-import ContactDetailList from '../screen/Contacts/Detail/Detail'
-import ContactDetailEdit from '../screen/Contacts/Detail/Edit'
-import Add from '../screen/Chats/Add'
+import List from '@berty/screen/Chats/List'
+import Detail from '@berty/screen/Chats/Detail'
+import ContactDetailList from '@berty/screen/Contacts/Detail/Detail'
+import ContactDetailEdit from '@berty/screen/Contacts/Detail/Edit'
+import Add from '@berty/screen/Chats/Add'
 import ChatSettingsNavigator from './ChatSettingsNavigator'
 
 const handleNavigationsOptions = ({ navigation, screenProps }) => {

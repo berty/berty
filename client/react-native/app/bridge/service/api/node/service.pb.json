@@ -125,14 +125,14 @@
                   }
                 },
                 "Contact": {
-                  "requestType": "ContactInput",
+                  "requestType": "berty.entity.Contact",
                   "responseType": "berty.entity.Contact",
                   "options": {
                     "(gql.graphql_type)": "Query"
                   }
                 },
                 "ContactCheckPublicKey": {
-                  "requestType": "ContactInput",
+                  "requestType": "berty.entity.Contact",
                   "responseType": "Bool",
                   "options": {
                     "(gql.graphql_type)": "Query"

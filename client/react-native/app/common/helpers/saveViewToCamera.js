@@ -1,10 +1,8 @@
 import ViewShot from 'react-native-view-shot'
 import React, { Component } from 'react'
 import { View, CameraRoll, Platform, PermissionsAndroid } from 'react-native'
-import { StackActions } from 'react-navigation'
-import NavigationService from './NavigationService'
 import { requestAndroidPermission } from './permissions'
-import I18n from '@berty/locale'
+import I18n from '../locale'
 
 export class ViewExportComponent extends Component {
   async componentDidMount () {
@@ -19,11 +17,7 @@ export class ViewExportComponent extends Component {
       reject(e)
     }
 
-    this.props.navigation.dispatch(
-      StackActions.pop({
-        n: 1,
-      })
-    )
+    this.props.navigation.goBack(null)
   }
 
   render () {
@@ -37,7 +31,7 @@ export class ViewExportComponent extends Component {
   }
 }
 
-export default async ({ view }) => {
+export default async ({ view, navigation }) => {
   if (Platform.OS === 'android') {
     const allowed = await requestAndroidPermission({
       permission: PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
@@ -56,7 +50,7 @@ export default async ({ view }) => {
 
   try {
     const uri = await new Promise((resolve, reject) => {
-      NavigationService.navigate('virtual/view-export', {
+      navigation.navigate('virtual/view-export', {
         resolve,
         reject,
         view,

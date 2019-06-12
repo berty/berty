@@ -1,4 +1,8 @@
 import React from 'react'
+import { withContext } from '@berty/common/helpers/views'
+
+export const RelayContext = React.createContext()
+RelayContext.displayName = 'RelayContext'
 
 export const contextValue = ({
   environment,
@@ -30,5 +34,6 @@ export const contextValue = ({
   return ctx
 }
 
-const RelayContext = React.createContext()
+export const withRelayContext = withContext(RelayContext)
+
 export default RelayContext

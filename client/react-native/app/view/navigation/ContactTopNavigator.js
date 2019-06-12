@@ -1,9 +1,9 @@
 import { colors } from '@berty/common/constants'
 import { borderBottom } from '@berty/common/styles'
 import { createMaterialTopTabNavigator } from 'react-navigation'
-import Mutuals from '../screen/Contacts/List/Mutuals'
-import Received from '../screen/Contacts/List/Received'
-import Sent from '../screen/Contacts/List/Sent'
+import Mutuals from '@berty/screen/Contacts/List/Mutuals'
+import Received from '@berty/screen/Contacts/List/Received'
+import Sent from '@berty/screen/Contacts/List/Sent'
 import I18n from 'i18next'
 
 export default createMaterialTopTabNavigator(

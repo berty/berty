@@ -1,7 +1,7 @@
 import { createStackNavigator } from 'react-navigation'
-import Network from '../screen/Settings/Devtools/Network/Network'
-import Peers from '../screen/Settings/Devtools/Network/Peers'
-import Config from '../screen/Settings/Devtools/Network/Config'
+import Network from '@berty/screen/Settings/Devtools/Network/Network'
+import Peers from '@berty/screen/Settings/Devtools/Network/Peers'
+import Config from '@berty/screen/Settings/Devtools/Network/Config'
 
 export default createStackNavigator(
   {

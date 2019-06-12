@@ -1,18 +1,28 @@
 const logStyle = {
   rpcOK:
-  'font-weight:bold;color:#FFFFFF;background-color:#46868C;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:left;font-family:arial, helvetica, sans-serif;line-height:1;',
+    'font-weight:bold;color:#FFFFFF;background-color:#46868C;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:left;font-family:arial, helvetica, sans-serif;line-height:1;',
   rpcERROR:
-  'font-weight:bold;color:#FFFFFF;background-color:#880606;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:left;font-family:arial, helvetica, sans-serif;line-height:1;',
+    'font-weight:bold;color:#FFFFFF;background-color:#880606;letter-spacing:1pt;word-spacing:2pt;font-size:12px;text-align:left;font-family:arial, helvetica, sans-serif;line-height:1;',
   title:
-  'font-weight:normal;font-style:italic;color:#FFFFFF;background-color:#000000;',
+    'font-weight:normal;font-style:italic;color:#FFFFFF;background-color:#000000;',
 }
 
 const rpcLogger = (name, title, req, res, err) => {
   try {
     if (res) {
-      console.groupCollapsed(`%c ${name} %c %s`, logStyle.rpcOK, logStyle.title, title)
+      console.groupCollapsed(
+        `%c ${name} %c %s`,
+        logStyle.rpcOK,
+        logStyle.title,
+        title
+      )
     } else {
-      console.group(`%c ${name} %c %s`, logStyle.rpcERROR, logStyle.title, title)
+      console.group(
+        `%c ${name} %c %s`,
+        logStyle.rpcERROR,
+        logStyle.title,
+        title
+      )
       console.warn(err.message)
     }
 

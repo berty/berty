@@ -1,0 +1,16 @@
+{
+  "name": "@berty/component",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@berty/common": "^0.0.1",
+    "@berty/relay": "^0.0.1",
+    "@berty/store": "^0.0.1",
+    "@berty/update": "^0.0.1",
+    "react": "16.8.3"
+  }
+}

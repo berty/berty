@@ -1,7 +1,7 @@
 import { createStackNavigator } from 'react-navigation'
-import List from '../screen/Settings/About/List'
-import Changelog from '../screen/Settings/About/Changelog'
-import More from '../screen/Settings/About/More'
+import List from '@berty/screen/Settings/About/List'
+import Changelog from '@berty/screen/Settings/About/Changelog'
+import More from '@berty/screen/Settings/About/More'
 
 export default createStackNavigator(
   {

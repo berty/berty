@@ -1,10 +1,32 @@
 import { fetchQuery, graphql } from 'react-relay'
-import { contact } from '@berty/common/utils'
+import { contact } from '@berty/relay/utils'
 import { merge } from '@berty/common/helpers'
 
 const query = graphql`
-  query ContactQuery($filter: BertyEntityContactInput) {
-    Contact(filter: $filter) {
+  query ContactQuery(
+    $id: ID!
+    $createdAt: GoogleProtobufTimestampInput
+    $updatedAt: GoogleProtobufTimestampInput
+    $sigchain: [Byte!]
+    $status: Enum
+    $devices: [BertyEntityDeviceInput]
+    $displayName: String!
+    $displayStatus: String!
+    $overrideDisplayName: String!
+    $overrideDisplayStatus: String!
+  ) {
+    Contact(
+      id: $id
+      createdAt: $createdAt
+      updatedAt: $updatedAt
+      sigchain: $sigchain
+      status: $status
+      devices: $devices
+      displayName: $displayName
+      displayStatus: $displayStatus
+      overrideDisplayName: $overrideDisplayName
+      overrideDisplayStatus: $overrideDisplayStatus
+    ) {
       id
       createdAt
       updatedAt
@@ -28,9 +50,7 @@ const query = graphql`
   }
 `
 
-const defaultVariables = {
-  filter: contact.default,
-}
+const defaultVariables = contact.default
 
 export default context => ({
   graphql: query,

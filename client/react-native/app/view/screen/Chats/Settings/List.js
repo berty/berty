@@ -3,19 +3,18 @@ import { withNavigation } from 'react-navigation'
 import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Avatar, Header, Menu, Screen } from '@berty/view/component'
+import { Avatar, Header, Menu, Screen } from '@berty/component'
 import { QueryReducer, RelayContext } from '@berty/relay'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import { colors } from '@berty/common/constants'
 import {
   contact as contactUtils,
   conversation as utils,
-} from '@berty/common/utils'
-import { enums } from '@berty/graphql'
+} from '@berty/relay/utils'
+import * as enums from '@berty/common/enums.gen'
 import { merge } from '@berty/common/helpers'
-import { showContact } from '@berty/common/helpers/contacts'
-import { withGoBack } from '@berty/view/component/BackActionProvider'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { withGoBack } from '@berty/component/BackActionProvider'
+import { withRelayContext } from '@berty/relay/context'
 
 class SettingsScreenBase extends PureComponent {
   constructor (props) {
@@ -93,7 +92,7 @@ class SettingsScreenBase extends PureComponent {
 
   render () {
     const conversation = this.props.navigation.getParam('conversation')
-    const { edit, t, navigation, context } = this.props
+    const { edit, t, navigation } = this.props
     const { title, topic, members = [] } = conversation
     let oneToOneContact =
       conversation.kind === enums.BertyEntityConversationInputKind.OneToOne
@@ -138,12 +137,18 @@ class SettingsScreenBase extends PureComponent {
               <Menu.Item
                 icon='user'
                 title={t('contacts.details')}
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate('chats/contact/detail/list', {
-                    contact: oneToOneContact,
+                    id: contactUtils.getCoreID(
+                      members.find(
+                        _ =>
+                          _.contact.status !==
+                          enums.BertyEntityContactInputStatus.Myself
+                      ).contactId
+                    ),
                     editRoute: 'chats/contact/detail/edit',
                   })
-                }
+                }}
               />
             </Menu.Section>
           ) : (
@@ -174,15 +179,11 @@ class SettingsScreenBase extends PureComponent {
                 return (
                   <Menu.Item
                     key={id}
-                    icon={<Avatar data={{ id: contactId }} size={28} />}
+                    icon={<Avatar data={{ id }} size={28} />}
                     title={overrideDisplayName || displayName}
                     onPress={() =>
-                      showContact({
-                        context,
-                        navigation,
-                        data: contact || { id: contactId },
-                        detailRoute: 'chats/contact/detail/list',
-                        editRoute: 'chats/contact/detail/edit',
+                      navigation.navigate('modal/contacts/card', {
+                        id,
                       })
                     }
                   />

@@ -203,7 +203,10 @@ module.exports = {
     // for React Native Web.
     extensions: ['.mjs', '.web.js', '.js', '.json', '.web.jsx', '.jsx'],
     alias: {
+      'react-native': 'react-native-web',
       'react-native-svg': 'react-native-svg-web',
+      'node-libs-react-native/globals': 'node-libs-browser',
+      'node-libs-react-native': 'node-libs-browser',
       'react-dom/unstable-native-dependencies': path.resolve(
         paths.appPath,
         'config/unstable-native-dependencies'
@@ -276,7 +279,7 @@ module.exports = {
           // The preset includes JSX, Flow, and some ESnext features.
           {
             test: /\.(js|mjs|jsx)$/,
-            include: [paths.appSrc],
+            include: paths.appSrc,
             exclude: /node_modules/,
             loader: require.resolve('babel-loader'),
             options: {
@@ -294,6 +297,9 @@ module.exports = {
                   'babel-plugin-transform-inline-environment-variables'
                 ),
                 require.resolve('@babel/plugin-proposal-export-namespace-from'),
+                require.resolve(
+                  '@babel/plugin-proposal-async-generator-functions'
+                ),
                 require.resolve('babel-plugin-relay'),
                 [
                   require.resolve('babel-plugin-named-asset-import'),
@@ -305,6 +311,7 @@ module.exports = {
                     },
                   },
                 ],
+                require.resolve('babel-plugin-transform-remove-console'),
               ],
               // This is a feature of `babel-loader` for webpack (not Babel itself).
               // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -335,7 +342,10 @@ module.exports = {
               ],
               plugins: [
                 'react-native-web',
-                require.resolve('@babel/plugin-proposal-class-properties'),
+                [
+                  require.resolve('@babel/plugin-proposal-class-properties'),
+                  { loose: true },
+                ],
               ],
               cacheDirectory: true,
               // Don't waste time on Gzipping the cache

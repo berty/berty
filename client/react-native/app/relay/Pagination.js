@@ -1,8 +1,7 @@
-import { ActivityIndicator, FlatList } from 'react-native'
+import { ActivityIndicator, FlatList, View } from 'react-native'
 import React, { Component, PureComponent } from 'react'
 import Relay from 'react-relay'
 
-import Flex from '@berty/view/component/Flex'
 import QueryReducer from './QueryReducer'
 import genericUpdater from './genericUpdater'
 
@@ -156,11 +155,23 @@ export default class Pagination extends PureComponent {
             default:
             case state.loading:
               return noLoader === true ? null : (
-                <Flex.Rows align='center'>
-                  <Flex.Cols align='center'>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                  >
                     <ActivityIndicator size='large' />
-                  </Flex.Cols>
-                </Flex.Rows>
+                  </View>
+                </View>
               )
             case state.success:
               return (

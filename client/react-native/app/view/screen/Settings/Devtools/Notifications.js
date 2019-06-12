@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
-import { Header, Menu } from '@berty/view/component'
-import { withConfig } from '@berty/common/helpers/config'
+import { Header, Menu } from '@berty/component'
+import { withConfig } from '@berty/relay/config'
 import colors from '@berty/common/constants/colors'
 import { withNavigation } from 'react-navigation'
 import { showMessage } from 'react-native-flash-message'
 import { RelayContext } from '@berty/relay'
-import { enums } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
 
 class NotificationsBase extends PureComponent {
   constructor (props) {

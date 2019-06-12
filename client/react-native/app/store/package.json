@@ -1,10 +1,11 @@
 {
   "name": "@berty/store",
   "version": "0.0.1",
-  "main": "index.js",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "mobx": "^5.9.4"
+    "@berty/common": "^0.0.1",
+    "async-mutex": "^0.1.3",
+    "mobx": "^5.10.0"
   }
 }

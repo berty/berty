@@ -3,7 +3,7 @@ import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
 import I18n from 'i18next'
 import React from 'react'
 
-import { contact } from '@berty/common/utils'
+import { contact } from '@berty/relay/utils'
 import { formattedFingerprint } from '@berty/common/helpers/fingerprint'
 import { makeShareableUrl } from '@berty/common/helpers/contacts'
 import {
@@ -11,9 +11,14 @@ import {
   tabNavigatorOptions,
 } from '@berty/common/constants/styling'
 import { padding } from '@berty/common/styles'
-import { tabIcon, withScreenProps } from '@berty/common/helpers/views'
+import {
+  withProps,
+  asFunctional,
+  withScreenProps,
+} from '@berty/common/helpers/views'
 import Avatar from './Avatar'
 import QRGenerator from './QRGenerator'
+import TabIcon from './TabIcon'
 import Text from './Text'
 import colors from '@berty/common/constants/colors'
 
@@ -73,21 +78,27 @@ const ContactIdentityTabbedContent = createMaterialTopTabNavigator(
       screen: withScreenProps(QrCode),
       navigationOptions: () => ({
         title: I18n.t('qrcode'),
-        tabBarIcon: tabIcon('material-qrcode'),
+        tabBarIcon: asFunctional(
+          withProps({ name: 'material-qrcode' })(TabIcon)
+        ),
       }),
     },
     'public-key': {
       screen: withScreenProps(PublicKey),
       navigationOptions: () => ({
         title: I18n.t('public-key'),
-        tabBarIcon: tabIcon('material-key-variant'),
+        tabBarIcon: asFunctional(
+          withProps({ name: 'material-key-variant' })(TabIcon)
+        ),
       }),
     },
     fingerprint: {
       screen: withScreenProps(Fingerprint),
       navigationOptions: () => ({
         title: I18n.t('fingerprint'),
-        tabBarIcon: tabIcon('material-fingerprint'),
+        tabBarIcon: asFunctional(
+          withProps({ name: 'material-fingerprint' })(TabIcon)
+        ),
       }),
     },
   },

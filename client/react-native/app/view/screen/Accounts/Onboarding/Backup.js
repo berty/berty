@@ -1,6 +1,6 @@
 import React from 'react'
 import { ScrollView, Text, View } from 'react-native'
-import { Flex } from '@berty/view/component'
+import { Flex } from '@berty/component'
 import { withNavigation } from 'react-navigation'
 import * as onboardingStyle from './style'
 import { NextButton, SkipButton } from './Button'

@@ -1,6 +1,6 @@
 import { fetchQuery, graphql } from 'react-relay'
 
-import { event } from '@berty/common/utils'
+import { event } from '@berty/relay/utils'
 import { merge } from '@berty/common/helpers'
 
 const query = graphql`

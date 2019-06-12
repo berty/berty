@@ -299,7 +299,7 @@ jobs:
 
       - *master_version
       - restore_cache:
-          key: android-{{checksum "/tmp/master_version"}}
+          key: android-{{checksum "/tmp/master_version"}}-v1
 
       - checkout:
           path: ~/go/src/berty.tech/
@@ -317,19 +317,11 @@ jobs:
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
-      - restore_cache:
-          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
-
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
-
-      - save_cache:
-          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
-          paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: patch android repo
@@ -386,19 +378,11 @@ jobs:
           working_directory: ~/go/src/berty.tech/client/react-native/gomobile
           command: BUILD_MODE=ci-${CIRCLE_BRANCH} /tmp/retry -m 3 make build.android
 
-      - restore_cache:
-          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
-
       - run:
           name: install bundle
           working_directory: ~/go/src/berty.tech/client/react-native
           command: |
             bundle check || /tmp/retry -m 3 bundle install --path vendor/bundle
-
-      - save_cache:
-          key: v1-rn-gems-{{ checksum "~/go/src/berty.tech/client/react-native/Gemfile.lock" }}
-          paths:
-            - ~/go/src/berty.tech/client/react-native/vendor/bundle
 
       - run:
           name: patch android repo
@@ -422,7 +406,7 @@ jobs:
 
       - *master_version
       - save_cache:
-          key: android-{{checksum "/tmp/master_version"}}
+          key: android-{{checksum "/tmp/master_version"}}-v1
           paths:
             - ~/go/pkg
             - ~/go/src

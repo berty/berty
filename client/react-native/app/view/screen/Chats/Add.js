@@ -4,18 +4,12 @@ import I18n from 'i18next'
 import React, { Component, PureComponent } from 'react'
 
 import { Pagination, RelayContext } from '@berty/relay'
-import {
-  Avatar,
-  Flex,
-  Header,
-  Screen,
-  SearchBar,
-  Text,
-} from '@berty/view/component'
+import { Avatar, Flex, Header, Screen, SearchBar, Text } from '@berty/component'
 import { border, borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { enums, fragments } from '@berty/graphql'
-import withRelayContext from '@berty/common/helpers/withRelayContext'
+import { fragments } from '@berty/graphql'
+import * as enums from '@berty/common/enums.gen'
+import { withRelayContext } from '@berty/relay/context'
 
 class ItemBase extends PureComponent {
   state = { selected: false }
