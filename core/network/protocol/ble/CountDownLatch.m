@@ -16,10 +16,12 @@
         return nil;
     }
 
+    [super self];
+
     self.count = count;
     self.semaphore = dispatch_semaphore_create(0);
-    self.dispatch_queue = dispatch_queue_create("CountDownLatchQueue", DISPATCH_QUEUE_CONCURRENT);
-    [super self];
+    self.dispatch_queue = dispatch_queue_create("CountDownLatchQueue", DISPATCH_QUEUE_SERIAL);
+    
     return self;
 }
 
@@ -27,7 +29,7 @@
     dispatch_async(self.dispatch_queue, ^{
         self.count--;
         if (self.count == 0) {
-            while (dispatch_semaphore_signal(self.semaphore) != 0) {};
+            dispatch_semaphore_signal(self.semaphore);
         }
     });
 }

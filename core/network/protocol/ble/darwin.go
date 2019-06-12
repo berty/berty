@@ -5,7 +5,6 @@ package ble
 import (
 	"context"
 	"fmt"
-	"time"
 	"unsafe"
 
 	peer "github.com/libp2p/go-libp2p-peer"
@@ -18,6 +17,7 @@ import (
 #cgo darwin CFLAGS: -x objective-c -Wno-incompatible-pointer-types -Wno-missing-field-initializers -Wno-missing-prototypes -Werror=return-type -Wdocumentation -Wunreachable-code -Wno-implicit-atomic-properties -Werror=deprecated-objc-isa-usage -Wno-objc-interface-ivars -Werror=objc-root-class -Wno-arc-repeated-use-of-weak -Wimplicit-retain-self -Wduplicate-method-match -Wno-missing-braces -Wparentheses -Wswitch -Wunused-function -Wno-unused-label -Wno-unused-parameter -Wunused-variable -Wunused-value -Wempty-body -Wuninitialized -Wconditional-uninitialized -Wno-unknown-pragmas -Wno-shadow -Wno-four-char-constants -Wno-conversion -Wconstant-conversion -Wint-conversion -Wbool-conversion -Wenum-conversion -Wno-float-conversion -Wnon-literal-null-conversion -Wobjc-literal-conversion -Wshorten-64-to-32 -Wpointer-sign -Wno-newline-eof -Wno-selector -Wno-strict-selector-match -Wundeclared-selector -Wdeprecated-implementations -DNS_BLOCK_ASSERTIONS=1 -DOBJC_OLD_DISPATCH_PROTOTYPES=0
 #cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
 #import "ble.h"
+#import "BleManager.h"
 */
 import "C"
 
@@ -30,18 +30,18 @@ const (
 	CBManagerStatePoweredOn
 )
 
-//export sendBytesToConn
-func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
-	goBleUUID := C.GoString(bleUUID)
-	b := C.GoBytes(bytes, length)
-	BytesToConn(goBleUUID, b)
-}
+// export sendBytesToConn
+// func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
+// 	goBleUUID := C.GoString(bleUUID)
+// 	b := C.GoBytes(bytes, length)
+// 	BytesToConn(goBleUUID, b)
+// }
 
-//export setConnClosed
-func setConnClosed(bleUUID *C.char) {
-	goBleUUID := C.GoString(bleUUID)
-	ConnClosed(goBleUUID)
-}
+// export setConnClosed
+// func setConnClosed(bleUUID *C.char) {
+// 	goBleUUID := C.GoString(bleUUID)
+// 	ConnClosed(goBleUUID)
+// }
 
 func (b *Conn) IsClosed() bool {
 	val, err := b.rAddr.ValueForProtocol(P_BLE)
@@ -96,13 +96,13 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 	return len(p), nil
 }
 
-//export sendAcceptToListenerForPeerID
-func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.char) {
-	goPeerID := C.GoString(peerID)
-	goble := C.GoString(ble)
-	goIncPeerID := C.GoString(incPeerID)
-	go RealAcceptSender(goPeerID, goble, goIncPeerID)
-}
+// export sendAcceptToListenerForPeerID
+// func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.char) {
+// 	goPeerID := C.GoString(peerID)
+// 	goble := C.GoString(ble)
+// 	goIncPeerID := C.GoString(incPeerID)
+// 	go RealAcceptSender(goPeerID, goble, goIncPeerID)
+// }
 
 func SetMa(ma string) {
 	cMa := C.CString(ma)
@@ -118,43 +118,28 @@ func SetPeerID(peerID string) {
 
 func waitForOn() int {
 	realState := 0
-	cState := int(C.centralManagerGetState())
-	if cState == CBManagerStatePoweredOn {
-		realState = 1
-	} else if cState == CBManagerStateUnsupported {
-		return -1
-	}
+	// cState := int(C.centralManagerGetState())
+	// if cState == CBManagerStatePoweredOn {
+		// realState = 1
+	// } else if cState == CBManagerStateUnsupported {
+		// return -1
+	// }
 
-	pState := int(C.peripheralManagerGetState())
-	if pState == CBManagerStatePoweredOn {
-		realState = 1
-	} else if pState == CBManagerStateUnsupported {
-		return -1
-	}
+	// pState := int(C.peripheralManagerGetState())
+	// if pState == CBManagerStatePoweredOn {
+	// 	realState = 1
+	// } else if pState == CBManagerStateUnsupported {
+	// 	return -1
+	// }
 
 	return realState
 }
 
 func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
-	C.init()
-
-	i := 0
-	for res := waitForOn(); res != 1; res = waitForOn() {
-		if res == -1 {
-			return nil, fmt.Errorf("error ble not supported")
-		}
-		logger().Debug("Ble centralManager or peripheralManager isn't on wait 1sec and retry")
-		i++
-		if i == 5 {
-			return nil, fmt.Errorf("error ble not activated")
-		}
-		time.Sleep(1 * time.Second)
-	}
-
-	C.addService()
-	C.startAdvertising()
+	C.InitScannerAndAdvertiser()
 	C.startScanning()
-
+	C.startAdvertising()
+	logger().Error("BLE: 123")
 	listerner := &Listener{
 		lAddr:           lAddr,
 		incomingBLEUUID: make(chan string),
@@ -179,7 +164,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 
 	ma := C.CString(s)
 	defer C.free(unsafe.Pointer(ma))
-	if C.dialPeer(ma) == 0 {
+	if C.dialPeer(ma) == false {
 		return nil, fmt.Errorf("error dialing ble")
 	}
 
@@ -192,7 +177,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 	return &c, nil
 }
 
-//export AddToPeerStoreC
+// export AddToPeerStoreC
 func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
 	goPeerID := C.GoString(peerID)
 	goRAddr := C.GoString(rAddr)

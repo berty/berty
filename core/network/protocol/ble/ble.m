@@ -8,15 +8,11 @@
 //
 
 #import "ble.h"
-#import "BertyUtils.h"
-#import "BertyDevice.h"
-#import "BertyCentralManagerDelegate.h"
-#import "BertyPeripheralManagerDelegate.h"
-
-CBCentralManager *centralManager;
-CBPeripheralManager *peripheralManager;
-BertyPeripheralManagerDelegate *BPMD;
-BertyCentralManagerDelegate *BCMD;
+//#import "BertyUtils.h"
+//#import "BertyDevice.h"
+//#import "BertyCentralManagerDelegate.h"
+//#import "BleManager.m"
+//#import "BertyPeripheralManagerDelegate.h"
 
 void handleSigInt(int sig) {
     exit(-1);
@@ -30,137 +26,113 @@ void handleException(NSException* exception) {
     NSLog(@"Unhandled exception %@", exception);
 }
 
-void init() {
-    if (centralManager == nil && peripheralManager == nil) {
-        BertyPeripheralDelegate *peripheralDelegate = [[BertyPeripheralDelegate alloc] init];
+static BleManager *manager = nil;
 
-        BCMD = [[BertyCentralManagerDelegate alloc]initWithPeripheralDelegate:peripheralDelegate];
+BleManager* getManager(void) {
+    NSLog(@"getting manager");
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        manager = [[BleManager alloc] initScannerAndAdvertiser];
+    });
+    NSLog(@"getting manager rey");
+    return manager;
+}
 
-        BPMD = [[BertyPeripheralManagerDelegate alloc]initWithPeripheralDelegate:peripheralDelegate];
-
-        centralManager = [[CBCentralManager alloc]
-                          initWithDelegate:BCMD
-                          queue:dispatch_queue_create("CentralManager", DISPATCH_QUEUE_SERIAL)
-                          options:@{CBCentralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}
-                          ];
-
-        peripheralManager = [[CBPeripheralManager alloc]
-                             initWithDelegate:BPMD
-                             queue:dispatch_queue_create("PeripheralManager", DISPATCH_QUEUE_SERIAL)
-                             options:@{CBPeripheralManagerOptionShowPowerAlertKey:[NSNumber numberWithBool:YES]}];
-
-        [BCMD centralManagerDidUpdateState:centralManager];
-        [BPMD peripheralManagerDidUpdateState:peripheralManager];
-
-        NSSetUncaughtExceptionHandler(handleException);
-        initSignalHandling();
-    }
+void InitScannerAndAdvertiser() {
+    getManager();
+    NSSetUncaughtExceptionHandler(handleException);
 }
 
 void closeBle() {
-    if (centralManager != nil) {
-      stopScanning();
-    }
-    if (peripheralManager != nil) {
-      removeService();
-      stopAdvertising();
-    }
-    [BertyUtils removeAllDevices];
+//    if (centralManager != nil) {
+//      stopScanning();
+//    }
+//    if (peripheralManager != nil) {
+//      removeService();
+//      stopAdvertising();
+//    }
+//    [BertyUtils removeAllDevices];
 }
 
 void addService() {
-  if ([BertyUtils sharedUtils].serviceAdded == NO) {
-    [BertyUtils sharedUtils].serviceAdded = YES;
-    [peripheralManager addService:[BertyUtils sharedUtils].bertyService];
-  }
+    [getManager() addService];
 }
 
 void removeService() {
-  if ([BertyUtils sharedUtils].serviceAdded == YES) {
-    [BertyUtils sharedUtils].serviceAdded = NO;
-    [peripheralManager removeService:[BertyUtils sharedUtils].bertyService];
-  }
+//  if ([BertyUtils sharedUtils].serviceAdded == YES) {
+//    [BertyUtils sharedUtils].serviceAdded = NO;
+//    [peripheralManager removeService:[BertyUtils sharedUtils].bertyService];
+//  }
 }
 
 void setMa(char *ma) {
-  [BertyUtils setMa:[NSString stringWithUTF8String:ma]];
+    NSLog(@"will set");
+  [getManager() setMa:[NSString stringWithUTF8String:ma]];
+    NSLog(@"SETTED3");
 }
 
 void setPeerID(char *peerID) {
-  [BertyUtils setPeerID:[NSString stringWithUTF8String:peerID]];
-}
-
-int centralManagerGetState(void) {
-    return centralManager.state;
-}
-
-int peripheralManagerGetState(void) {
-    return peripheralManager.state;
+    NSLog(@"will setbis");
+  [getManager() setPeerID:[NSString stringWithUTF8String:peerID]];
+    NSLog(@"SETTED");
 }
 
 void connDevice(CBPeripheral *peripheral) {
-    [centralManager connectPeripheral:peripheral options:nil];
+//    [centralManager connectPeripheral:peripheral options:nil];
 }
 
-int startScanning() {
+void startScanning() {
     NSLog(@"startScanning()");
-    if (![centralManager isScanning]) {
-        NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], CBCentralManagerScanOptionAllowDuplicatesKey, nil];
-        [centralManager scanForPeripheralsWithServices: @[[BertyUtils sharedUtils].serviceUUID] options:options];
-        return 1;
-    }
-    return 0;
+    [getManager() startScanning];
 }
 
 int stopScanning() {
-    NSLog(@"stopScanning()");
-    if ([centralManager isScanning]) {
-        [centralManager stopScan];
-        return 1;
-    }
+//    NSLog(@"stopScanning()");
+//    if ([centralManager isScanning]) {
+//        [centralManager stopScan];
+//        return 1;
+//    }
     return 0;
 }
 
 int isDiscovering() {
-    return (int)[centralManager isScanning];
+//    return (int)[centralManager isScanning];
+    return 1;
 }
 
 int isAdvertising() {
-    return (int)[peripheralManager isAdvertising];
+//    return (int)[peripheralManager isAdvertising];
+    return 1;
 }
 
-int startAdvertising() {
+void startAdvertising() {
     NSLog(@"startAdvertising()");
-    if (![peripheralManager isAdvertising]) {
-        [peripheralManager startAdvertising:@{CBAdvertisementDataServiceUUIDsKey:@[[BertyUtils sharedUtils].serviceUUID]}];
-        return 1;
-    }
-    return 0;
+    [manager startAdvertising];
 }
 
 int stopAdvertising() {
     NSLog(@"stopAdvertising()");
-    if ([peripheralManager isAdvertising]) {
-        [peripheralManager stopAdvertising];
-        return 1;
-    }
+//    if ([peripheralManager isAdvertising]) {
+//        [peripheralManager stopAdvertising];
+//        return 1;
+//    }
     return 0;
 }
 
 NSData *Bytes2NSData(void *bytes, int length) { return [NSData dataWithBytes:bytes length:length]; }
 
 void writeNSData(NSData *data, char *ma) {
-    BertyDevice *bDevice = [BertyUtils getDeviceFromMa:[NSString stringWithUTF8String:ma]];
-    [bDevice write:data];
+//    BertyDevice *bDevice = [BertyUtils getDeviceFromMa:[NSString stringWithUTF8String:ma]];
+//    [bDevice write:data];
 }
 
-int dialPeer(char *peerID) {
-    if ([BertyUtils inDevicesWithMa:[NSString stringWithUTF8String:peerID]] == YES) {
-        NSLog(@"TEST 1 %@", [NSString stringWithUTF8String:peerID]);
-        return 1;
-    }
+bool dialPeer(char *peerID) {
+//    if ([BertyUtils inDevicesWithMa:[NSString stringWithUTF8String:peerID]] == YES) {
+//        NSLog(@"TEST 1 %@", [NSString stringWithUTF8String:peerID]);
+//        return TRUE;
+//    }
     NSLog(@"TEST 0 %@", [NSString stringWithUTF8String:peerID]);
-    return 0;
+    return FALSE;
 }
 
 void closeConn(char *ma) {
@@ -169,9 +141,9 @@ void closeConn(char *ma) {
 }
 
 int isClosed(char *ma) {
-    BertyDevice *bDevice = [BertyUtils getDeviceFromMa:[NSString stringWithUTF8String:ma]];
-    if (bDevice.peripheral.state == CBPeripheralStateConnected) {
-        return 0;
-    }
+//    BertyDevice *bDevice = [BertyUtils getDeviceFromMa:[NSString stringWithUTF8String:ma]];
+//    if (bDevice.peripheral.state == CBPeripheralStateConnected) {
+//        return 0;
+//    }
     return 1;
 }
