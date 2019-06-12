@@ -119,6 +119,9 @@ deps.ios: deps
 .PHONY: deps.web
 deps.web: deps
 
+.PHONY: deps.dashboard
+deps.dashboard: deps
+
 .PHONY: deps.logs
 deps.logs:
 	brew install --HEAD pidcat
@@ -188,6 +191,14 @@ debug.web: deps.web
 debug.web.cleared: deps.web
 	$(LERNA_RUN) --scope=@berty/web clear-babel-cache
 	$(LERNA_RUN) --scope=@berty/web start
+
+.PHONY: debug.dashboard
+debug.dashboard: deps.dashboard
+	$(LERNA_RUN) --scope=@berty/dashboard start
+
+.PHONY: build.dashboard
+build.dashboard: deps.dashboard
+	$(LERNA_RUN) --scope=@berty/dashboard build
 ##############################
 
 
