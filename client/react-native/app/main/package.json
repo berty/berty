@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "",
   "license": "UNLICENSED",
+  "source": true,
   "private": true,
   "dependencies": {
     "@berty/common": "^0.0.1",
