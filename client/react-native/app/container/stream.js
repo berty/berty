@@ -130,6 +130,11 @@ export class StreamPagination extends Stream {
     // if forced to add, push it
     if (change.force) {
       this.queue.push(newValue)
+      return
+    }
+
+    if (this.queue.length < this.paginate.first) {
+      this.invoke()
     }
   }
 
