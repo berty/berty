@@ -3,14 +3,7 @@
 package ble
 
 import (
-	"context"
-	"fmt"
 	"unsafe"
-
-	peer "github.com/libp2p/go-libp2p-peer"
-	tpt "github.com/libp2p/go-libp2p-transport"
-	ma "github.com/multiformats/go-multiaddr"
-	"go.uber.org/zap"
 )
 
 /*
@@ -30,6 +23,63 @@ const (
 	CBManagerStatePoweredOn
 )
 
+func SetMa(ma string) {
+	cMa := C.CString(ma)
+	defer C.free(unsafe.Pointer(cMa))
+	C.setMa(cMa)
+}
+
+func SetPeerID(peerID string) {
+	cPeerID := C.CString(peerID)
+	defer C.free(unsafe.Pointer(cPeerID))
+	C.setPeerID(cPeerID)
+}
+
+func StartScanning() { C.startScanning() }
+
+func StartAdvertising() { C.startAdvertising() }
+
+func Write(p []byte, ma string) bool {
+	cMa := C.CString(ma)
+	defer C.free(unsafe.Pointer(cMa))
+	C.writeNSData(
+		C.Bytes2NSData(
+			unsafe.Pointer(&p[0]),
+			C.int(len(p)),
+		),
+		cMa,
+	)
+	return false
+}
+	
+func DialPeer(ma string) bool {
+	// ma := C.CString(s)
+	// defer C.free(unsafe.Pointer(ma))
+	// if C.dialPeer(ma) == false {
+		// return nil, fmt.Errorf("error dialing ble")
+	// }
+	return false 
+}
+
+func InitScannerAndAdvertiser() { C.InitScannerAndAdvertiser() }
+
+func CloseScannerAndAdvertiser() { 
+	C.closeBle()
+}
+
+func CloseConnFromMa(ma string) {
+	// ma := C.CString(val)
+	// logger().Debug("BLEConn close", zap.String("VALUE",val))
+	// defer C.free(unsafe.Pointer(ma))
+}
+
+// export AddToPeerStoreC
+func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
+	goPeerID := C.GoString(peerID)
+	goRAddr := C.GoString(rAddr)
+	AddToPeerStore(goPeerID, goRAddr)
+}
+
 // export sendBytesToConn
 // func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
 // 	goBleUUID := C.GoString(bleUUID)
@@ -43,59 +93,6 @@ const (
 // 	ConnClosed(goBleUUID)
 // }
 
-func (b *Conn) IsClosed() bool {
-	val, err := b.rAddr.ValueForProtocol(P_BLE)
-	if err != nil {
-		logger().Debug("BLEConn IsClosed", zap.Error(err))
-		return true
-	}
-	ma := C.CString(val)
-	defer C.free(unsafe.Pointer(ma))
-
-	return b.closed
-}
-
-func (b *Conn) Close() error {
-	logger().Debug("BLEConn Close", zap.Bool("CLOSED ", b.closed))
-	if b.closed != true {
-		close(b.closer)
-		b.closed = true
-	}
-	_, err := b.rAddr.ValueForProtocol(P_BLE)
-	if err != nil {
-		logger().Debug("BLEConn close", zap.Error(err))
-		return err
-	}
-	// ma := C.CString(val)
-	// logger().Debug("BLEConn close", zap.String("VALUE",val))
-	// defer C.free(unsafe.Pointer(ma))
-	// C.closeConn(ma)
-	return nil
-}
-
-func (b *Conn) Write(p []byte) (n int, err error) {
-	if b.IsClosed() {
-		return 0, fmt.Errorf("conn already closed")
-	}
-	val, err := b.rAddr.ValueForProtocol(P_BLE)
-	if err != nil {
-		return 0, err
-	} else if val == "" {
-		return 0, fmt.Errorf("ble can't dial unknow multiaddr")
-	}
-
-	ma := C.CString(val)
-	defer C.free(unsafe.Pointer(ma))
-	C.writeNSData(
-		C.Bytes2NSData(
-			unsafe.Pointer(&p[0]),
-			C.int(len(p)),
-		),
-		ma,
-	)
-	return len(p), nil
-}
-
 // export sendAcceptToListenerForPeerID
 // func sendAcceptToListenerForPeerID(peerID *C.char, ble *C.char, incPeerID *C.char) {
 // 	goPeerID := C.GoString(peerID)
@@ -103,88 +100,3 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 // 	goIncPeerID := C.GoString(incPeerID)
 // 	go RealAcceptSender(goPeerID, goble, goIncPeerID)
 // }
-
-func SetMa(ma string) {
-	cMa := C.CString(ma)
-	defer C.free(unsafe.Pointer(cMa))
-	C.setMa(cMa)
-}
-
-func SetPeerID(peerID string) {
-	cPeerID := C.CString(peerID)
-	defer C.free(unsafe.Pointer(cPeerID))
-	C.setPeerID(cPeerID)
-}
-
-func waitForOn() int {
-	realState := 0
-	// cState := int(C.centralManagerGetState())
-	// if cState == CBManagerStatePoweredOn {
-		// realState = 1
-	// } else if cState == CBManagerStateUnsupported {
-		// return -1
-	// }
-
-	// pState := int(C.peripheralManagerGetState())
-	// if pState == CBManagerStatePoweredOn {
-	// 	realState = 1
-	// } else if pState == CBManagerStateUnsupported {
-	// 	return -1
-	// }
-
-	return realState
-}
-
-func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, error) {
-	C.InitScannerAndAdvertiser()
-	C.startScanning()
-	C.startAdvertising()
-	logger().Error("BLE: 123")
-	listerner := &Listener{
-		lAddr:           lAddr,
-		incomingBLEUUID: make(chan string),
-		incomingPeerID:  make(chan string),
-		transport:       t,
-		closer:          make(chan struct{}),
-	}
-
-	listeners[t.ID] = listerner
-	return listerner, nil
-}
-
-// Dial dials the peer at the remote address.
-func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
-	if int(C.isDiscovering()) != 1 {
-		go C.startScanning()
-	}
-	s, err := rAddr.ValueForProtocol(P_BLE)
-	if err != nil {
-		return nil, err
-	}
-
-	ma := C.CString(s)
-	defer C.free(unsafe.Pointer(ma))
-	if C.dialPeer(ma) == false {
-		return nil, fmt.Errorf("error dialing ble")
-	}
-
-	if conn, ok := getConn(s); ok {
-		conn.closed = false
-		conn.closer = make(chan struct{})
-		return conn, nil
-	}
-	c := NewConn(t, t.Host.ID(), p, t.lAddr, rAddr, 0)
-	return &c, nil
-}
-
-// export AddToPeerStoreC
-func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
-	goPeerID := C.GoString(peerID)
-	goRAddr := C.GoString(rAddr)
-	AddToPeerStore(goPeerID, goRAddr)
-}
-
-func (b *Listener) closeNative() {
-	C.closeBle()
-	logger().Debug("BLE transport closed")
-}
