@@ -121,8 +121,10 @@ export class StreamPagination extends Stream {
       let bottomIndex = this.queue.length - topIndex - 1
       let itemBottom = this.queue[bottomIndex]
       let supBottom = cursor > itemBottom[cursorField]
-      if (supBottom && bottomIndex + 1 !== this.queue.length) {
-        this.queue.splice(bottomIndex + 1, 0, newValue)
+      if (supBottom) {
+        if (bottomIndex + 1 !== this.queue.length || change.force) {
+          this.queue.splice(bottomIndex + 1, 0, newValue)
+        }
         return
       }
     }
