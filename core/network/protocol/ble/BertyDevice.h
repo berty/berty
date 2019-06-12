@@ -1,50 +1,60 @@
 //
 //  BertyDevice.h
-//  bluetooth
+//  ble
 //
-//  Created by sacha on 18/09/2018.
-//  Copyright © 2018 Facebook. All rights reserved.
+//  Created by sacha on 03/06/2019.
+//  Copyright © 2019 berty. All rights reserved.
 //
 
+#import "BleManager.h"
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
-#import "CountDownLatch.h"
 
 #ifndef BertyDevice_h
 #define BertyDevice_h
+@class BertyDevice;
 
-//extern void AddToPeerStoreC(char *, char*);
+typedef void (^BertyDeviceConnectCallbackBlockType)(BertyDevice * __nullable, NSError * __nullable);
+typedef void (^BertyDeviceServiceCallbackBlockType)(NSArray * __nullable, NSError * __nullable);
+typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
+#define _BERTY_ON_D_THREAD(block) dispatch_async(self.dQueue, block)
 
-@interface BertyDevice : NSObject
+@interface BertyDevice : NSObject <CBPeripheralDelegate>
 
-@property (nonatomic, readwrite, strong) NSMutableArray *toSend;
-@property (nonatomic, readwrite, strong) NSString *peerID;
-@property (nonatomic, readwrite, strong) NSString *ma;
-@property (nonatomic, readwrite, assign) BOOL isWaiting;
-@property (nonatomic, strong) dispatch_queue_t dispatch_queue;
-@property (atomic, readwrite, assign) BOOL closedSend;
-@property (atomic, readwrite, assign) BOOL closed;
-@property (atomic, readwrite, assign) BOOL didRdySema;
-@property (atomic, readwrite, strong) CBPeripheral *peripheral;
-@property (atomic, readwrite, strong) CBService *svc;
-@property (atomic, readwrite, strong) CBCharacteristic *writer;
-@property (atomic, readwrite, strong) CBCharacteristic *closer;
-@property (atomic, readwrite, strong) CBCharacteristic *peerIDChar;
-@property (atomic, readwrite, strong) CBCharacteristic *maChar;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t writeWaiter;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t closerWaiterSema;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t connSema;
-@property (nonatomic, readwrite, strong) dispatch_semaphore_t svcSema;
-@property (nonatomic, readwrite, strong) CountDownLatch *latchRdy;
-@property (nonatomic, readwrite, strong) CountDownLatch *latchChar;
-@property (nonatomic, readwrite, strong) CountDownLatch *latchRead;
-@property (nonatomic, readwrite, strong) CountDownLatch *latchOtherRead;
-@property (nonatomic, strong) CBCentralManager *centralManager;
+@property (nonatomic, strong, nonnull) NSDictionary *serviceDict;
+@property (readwrite) BOOL isConnected;
+@property (readwrite) BOOL maSend;
+@property (readwrite) BOOL peerIDSend;
+@property (readwrite) BOOL maRecv;
+@property (readwrite) BOOL peerIDRecv;
+@property (nonatomic, strong, nonnull) CBPeripheral *peripheral;
+@property (nonatomic, strong, nonnull) BleManager *manager;
+@property (nonatomic, strong, nonnull) dispatch_queue_t dQueue;
+@property (nonatomic, strong, nonnull) dispatch_queue_t writeQueue;
+@property (nonatomic, strong, nullable) CBCharacteristic *ma;
+@property (nonatomic, strong, nullable) CBCharacteristic *peerID;
+@property (nonatomic, strong, nullable) CBCharacteristic *writer;
 
-- (instancetype)initWithPeripheral:(CBPeripheral *)peripheral withCentralManager:(CBCentralManager *)manager;
-- (void)write:(NSData *)data;
-- (void)checkAndWrite;
-- (void)popToSend;
+@property (nonatomic, strong, nonnull) NSDictionary* characteristicHandlers;
+@property (nonatomic, strong, nonnull) NSDictionary* characteristicDatas;
+
+@property (nonatomic, strong, nullable) CBCentral* remoteCentral;
+
+@property (nonatomic, strong, nullable) NSMutableData *remainingData;
+
+@property (nonatomic, strong, nullable) NSString *remoteMa;
+@property (nonatomic, strong, nullable) NSString *remotePeerID;
+
+- (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral
+                           central:(BleManager *__nonnull)manager;
+- (void)discoverServices:(NSArray *__nonnull)serviceUUIDs;
+- (void)handshake;
+- (void)handleConnect:(NSError * __nullable)error;
+- (void)connectWithOptions:(NSDictionary * __nullable)options withBlock:(void (^)(BertyDevice *__nullable, NSError *__nullable))connectCallback;
+@property (nonatomic, copy, nullable) BertyDeviceConnectCallbackBlockType connectCallback;
+@property (nonatomic, copy, nullable) BertyDeviceServiceCallbackBlockType serviceCallback;
+@property (nonatomic, copy, nullable) BertyDeviceServiceCallbackBlockType characteristicCallback;
+@property (nonatomic, readwrite, strong) BertyDeviceWriteCallbackBlockType writeCallback;
 
 @end
 
