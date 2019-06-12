@@ -80,7 +80,7 @@ gen.pretty: deps.root
 
 .PHONY: tools.pretty
 tools.pretty: deps
-	$(LERNA_RUN) prettify -- $$(find tools -type f -name '*.js' -not -path '*/node_modules/*')
+	npm run prettify -- $$(find tools -type f -name '*.js' -not -path '*/node_modules/*' -not -path '*/dist/*')
 
 ### Dependencies part ###
 .PHONY: deps.root

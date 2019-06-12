@@ -1,18 +1,18 @@
-import React from "react";
-import { inject, observer } from "mobx-react";
-import palette from "google-palette";
-import Gauge from "./Gauge";
+import React from 'react'
+import { inject, observer } from 'mobx-react'
+import palette from 'google-palette'
+import Gauge from './Gauge'
 
-const colors = palette("tol", 2).map(c => "#" + c);
+const colors = palette('tol', 2).map(c => '#' + c)
 
-export const IN_COLOR = colors[0];
-export const OUT_COLOR = colors[1];
+export const IN_COLOR = colors[0]
+export const OUT_COLOR = colors[1]
 
 const InstantBandwidthView = ({ style, node }) => {
   const gaugeStyle = {
-    display: "inline-block",
-    width: "50%"
-  };
+    display: 'inline-block',
+    width: '50%',
+  }
   return (
     <div style={style}>
       <h1>Network traffic</h1>
@@ -20,7 +20,7 @@ const InstantBandwidthView = ({ style, node }) => {
         <Gauge
           value={node.rateIn}
           max={node.maxRateIn}
-          label="Incoming"
+          label='Incoming'
           color={IN_COLOR}
         />
       </div>
@@ -28,12 +28,12 @@ const InstantBandwidthView = ({ style, node }) => {
         <Gauge
           value={node.rateOut}
           max={node.maxRateOut}
-          label="Outgoing"
+          label='Outgoing'
           color={OUT_COLOR}
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default inject("node")(observer(InstantBandwidthView));
+export default inject('node')(observer(InstantBandwidthView))

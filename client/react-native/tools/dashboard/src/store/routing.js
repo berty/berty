@@ -1,8 +1,8 @@
-import { RouterStore, syncHistoryWithStore } from "mobx-react-router";
-import { createBrowserHistory } from "history";
+import { RouterStore, syncHistoryWithStore } from 'mobx-react-router'
+import { createBrowserHistory } from 'history'
 
-const routing = new RouterStore();
+const routing = new RouterStore()
 
-syncHistoryWithStore(createBrowserHistory(), routing);
+syncHistoryWithStore(createBrowserHistory(), routing)
 
-export default routing;
+export default routing

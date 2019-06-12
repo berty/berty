@@ -1,61 +1,61 @@
-var fs = require("fs"),
-  path = require("path"),
-  FSWatcher = {};
+var fs = require('fs')
+var path = require('path')
+var FSWatcher = {}
 
-function makeFsWatchFilter(name, directory, filename, cooldownDelay, callback) {
-  var cooldownId = null;
+function makeFsWatchFilter (name, directory, filename, cooldownDelay, callback) {
+  var cooldownId = null
 
-  //Delete the cooldownId and callback the outer function
-  function timeoutCallback() {
-    cooldownId = null;
-    callback();
+  // Delete the cooldownId and callback the outer function
+  function timeoutCallback () {
+    cooldownId = null
+    callback()
   }
 
-  //This function is called when there is a change in the data directory
-  //It sets a timer to wait for the change to be completed
-  function onWatchEvent(event, changedFile) {
+  // This function is called when there is a change in the data directory
+  // It sets a timer to wait for the change to be completed
+  function onWatchEvent (event, changedFile) {
     // check to make sure changedFile is not null
     if (!changedFile) {
-      return;
+      return
     }
 
-    var filePath = path.join(directory, changedFile);
+    var filePath = path.join(directory, changedFile)
 
     if (!filename || filename === changedFile) {
-      fs.exists(filePath, function onExists(exists) {
+      fs.exists(filePath, function onExists (exists) {
         if (!exists) {
           // if the changed file no longer exists, it was a deletion.
           // we ignore deleted files
-          return;
+          return
         }
 
-        //At this point, a new file system activity has been detected,
-        //We have to wait for file transfert to be finished before moving on.
+        // At this point, a new file system activity has been detected,
+        // We have to wait for file transfert to be finished before moving on.
 
-        //If a cooldownId already exists, we delete it
+        // If a cooldownId already exists, we delete it
         if (cooldownId !== null) {
-          clearTimeout(cooldownId);
-          cooldownId = null;
+          clearTimeout(cooldownId)
+          cooldownId = null
         }
 
-        //Once the cooldownDelay has passed, the timeoutCallback function will be called
-        cooldownId = setTimeout(timeoutCallback, cooldownDelay);
-      });
+        // Once the cooldownDelay has passed, the timeoutCallback function will be called
+        cooldownId = setTimeout(timeoutCallback, cooldownDelay)
+      })
     }
   }
 
-  //Manage the case where filename is missing (because it's optionnal)
-  if (typeof cooldownDelay === "function") {
-    callback = cooldownDelay;
-    cooldownDelay = filename;
-    filename = null;
+  // Manage the case where filename is missing (because it's optionnal)
+  if (typeof cooldownDelay === 'function') {
+    callback = cooldownDelay
+    cooldownDelay = filename
+    filename = null
   }
 
   if (FSWatcher[name]) {
-    stopWatching(name);
+    stopWatching(name)
   }
 
-  FSWatcher[name] = fs.watch(directory, onWatchEvent);
+  FSWatcher[name] = fs.watch(directory, onWatchEvent)
 }
 
 /**
@@ -64,9 +64,9 @@ function makeFsWatchFilter(name, directory, filename, cooldownDelay, callback) {
  * @param {string} name: name of the watcher to close
  *
  **/
-function stopWatching(name) {
-  FSWatcher[name].close();
+function stopWatching (name) {
+  FSWatcher[name].close()
 }
 
-module.exports.makeFsWatchFilter = makeFsWatchFilter;
-module.exports.stopWatching = stopWatching;
+module.exports.makeFsWatchFilter = makeFsWatchFilter
+module.exports.stopWatching = stopWatching

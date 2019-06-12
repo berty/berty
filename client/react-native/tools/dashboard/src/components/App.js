@@ -1,17 +1,17 @@
-import React, { Fragment } from "react";
-import { inject, observer } from "mobx-react";
-import { Layout, Row, Col } from "antd";
+import React, { Fragment } from 'react'
+import { inject, observer } from 'mobx-react'
+import { Layout, Row, Col } from 'antd'
 
-import "antd/dist/antd.css";
-import "./App.css";
+import 'antd/dist/antd.css'
+import './App.css'
 
-import Map from "./Map";
-import Countries from "./Countries";
-import InstantBandwidth from "./InstantBandwidth";
-import Node from "./Node";
-import BandwidthOverTime from "./BandwidthOverTime";
+import Map from './Map'
+import Countries from './Countries'
+import InstantBandwidth from './InstantBandwidth'
+import Node from './Node'
+import BandwidthOverTime from './BandwidthOverTime'
 
-const { Content } = Layout;
+const { Content } = Layout
 
 const AppView = ({ node: { id } }) => (
   <Content>
@@ -38,14 +38,14 @@ const AppView = ({ node: { id } }) => (
         </Row>
       </Fragment>
     ) : (
-      <div style={{ height: "100vh" }}>
+      <div style={{ height: '100vh' }}>
         <h1
           style={{
-            textAlign: "center",
-            width: "100%",
-            position: "relative",
-            top: "50%",
-            transform: "translateY(-50%)"
+            textAlign: 'center',
+            width: '100%',
+            position: 'relative',
+            top: '50%',
+            transform: 'translateY(-50%)',
           }}
         >
           No connection
@@ -53,6 +53,6 @@ const AppView = ({ node: { id } }) => (
       </div>
     )}
   </Content>
-);
+)
 
-export default inject("node")(observer(AppView));
+export default inject('node')(observer(AppView))
