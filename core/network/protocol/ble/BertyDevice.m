@@ -9,6 +9,8 @@
 #import "BertyDevice.h"
 #import "ble.h"
 
+extern void sendBytesToConn(char *, void *, int);
+
 CBService *getService(NSArray *services, NSString *uuid) {
     CBService *result = nil;
     
@@ -47,19 +49,21 @@ CBService *getService(NSArray *services, NSString *uuid) {
                                               [peripheral.identifier UUIDString]]
                                              cStringUsingEncoding:NSASCIIStringEncoding],
                                             DISPATCH_QUEUE_SERIAL);
-        
+
         void (^maHandler)(NSData *data) = ^(NSData *data) {
             [self handleMa:data];
         };
-        
+
         void (^peerIDHandler)(NSData *data) = ^(NSData *data) {
             [self handlePeerID:data];
         };
 
+        void (^writeHandler)(NSData *data) = ^(NSData *data) {
+            sendBytesToConn([self.remoteMa UTF8String], [data bytes], (int)[data length]);
+        };
+
         self.characteristicHandlers = @{
-                                        [manager.writerUUID UUIDString]: ^(NSData *data) {
-                                           NSLog(@"juste writed");
-                                        },
+                                        [manager.writerUUID UUIDString]: [writeHandler copy],
                                         [manager.maUUID UUIDString]: [maHandler copy],
                                         [manager.peerUUID UUIDString]: [peerIDHandler copy],
                                         };

@@ -47,14 +47,15 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 
 - (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral
                            central:(BleManager *__nonnull)manager;
-- (void)discoverServices:(NSArray *__nonnull)serviceUUIDs;
+
 - (void)handshake;
 - (void)handleConnect:(NSError * __nullable)error;
-- (void)connectWithOptions:(NSDictionary * __nullable)options withBlock:(void (^)(BertyDevice *__nullable, NSError *__nullable))connectCallback;
+- (void)connectWithOptions:(NSDictionary * __nullable)options withBlock:(BertyDeviceConnectCallbackBlockType __nonnull)connectCallback;
+
 @property (nonatomic, copy, nullable) BertyDeviceConnectCallbackBlockType connectCallback;
 @property (nonatomic, copy, nullable) BertyDeviceServiceCallbackBlockType serviceCallback;
 @property (nonatomic, copy, nullable) BertyDeviceServiceCallbackBlockType characteristicCallback;
-@property (nonatomic, readwrite, strong) BertyDeviceWriteCallbackBlockType writeCallback;
+@property (nonatomic, copy, nullable) BertyDeviceWriteCallbackBlockType writeCallback;
 
 @end
 

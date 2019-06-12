@@ -297,7 +297,11 @@ static NSString* const __nonnull EOD = @"EOD";
         remote.remoteCentral = request.central;
         // check if final data was received
 //        NSLog(@"request ACTUALDATA=%@ VAL=%@ UUID=%@ P=%p", data, request.value, request.characteristic.UUID, data);
-        if ([request.value isEqual:[EOD dataUsingEncoding:NSUTF8StringEncoding]]) {
+        
+        if ([request.characteristic.UUID isEqual:self.writerUUID]) {
+            void(^handler)(NSData *) = [remote.characteristicHandlers objectForKey:[request.characteristic.UUID UUIDString]];
+            handler(request.value);
+        } else if ([request.value isEqual:[EOD dataUsingEncoding:NSUTF8StringEncoding]]) {
             // TODO: say it was the end of the data and then call the right handler
             // retrieve handler
             void(^handler)(NSData *) = [remote.characteristicHandlers objectForKey:[request.characteristic.UUID UUIDString]];
@@ -315,6 +319,7 @@ static NSString* const __nonnull EOD = @"EOD";
                 [data appendData:[request.value copy]];
             }
         }
+
         [peripheral respondToRequest:request withResult:CBATTErrorSuccess];
     }
 }

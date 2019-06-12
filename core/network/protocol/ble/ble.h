@@ -50,8 +50,6 @@ void setMa(char *);
 void setPeerID(char *);
 void startScanning(void);
 void startAdvertising(void);
-// not impl
-bool writeObjc(void *, char *);
 bool dialPeer(char *);
 void InitScannerAndAdvertiser(void);
 void CloseScannerAndAdvertiser(void);

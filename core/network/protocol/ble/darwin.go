@@ -11,8 +11,16 @@ import (
 #cgo darwin LDFLAGS: -framework Foundation -framework CoreBluetooth
 #import "ble.h"
 #import "BleManager.h"
+#import "BertyDevice.h"
 */
 import "C"
+
+//export sendBytesToConn
+func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
+	goBleUUID := C.GoString(bleUUID)
+	b := C.GoBytes(bytes, length)
+	BytesToConn(goBleUUID, b)
+}
 
 const (
 	CBManagerStateUnknown = iota
@@ -79,13 +87,6 @@ func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
 	goRAddr := C.GoString(rAddr)
 	AddToPeerStore(goPeerID, goRAddr)
 }
-
-// export sendBytesToConn
-// func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
-// 	goBleUUID := C.GoString(bleUUID)
-// 	b := C.GoBytes(bytes, length)
-// 	BytesToConn(goBleUUID, b)
-// }
 
 // export setConnClosed
 // func setConnClosed(bleUUID *C.char) {
