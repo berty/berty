@@ -192,6 +192,10 @@ debug.web.cleared: deps.web
 	$(LERNA_RUN) --scope=@berty/web clear-babel-cache
 	$(LERNA_RUN) --scope=@berty/web start
 
+.PHONY: build.web
+build.web: deps.web
+	$(LERNA_RUN) --scope=@berty/web build
+
 .PHONY: debug.dashboard
 debug.dashboard: deps.dashboard
 	$(LERNA_RUN) --scope=@berty/dashboard start

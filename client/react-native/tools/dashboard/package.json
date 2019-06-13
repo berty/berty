@@ -20,6 +20,7 @@
     "@berty/bridge": "^0.0.1",
     "antd": "^3.19.3",
     "chart.js": "^2.8.0",
+    "geoip-lite": "file:node-geoip",
     "google-palette": "^1.1.0",
     "history": "^4.9.0",
     "leaflet": "^1.5.1",
@@ -36,7 +37,7 @@
     "wu": "^2.1.0"
   },
   "alias": {
-    "geoip-nano": "./node-geoip",
+    "geoip-nano": "geoip-lite",
     "react-native": "react-native-web"
   }
 }

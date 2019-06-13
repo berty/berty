@@ -610,7 +610,12 @@ jobs:
       - run:
           name: build web app
           working_directory: ~/go/src/berty.tech/client/react-native
-          command: /tmp/retry -m 3 ./node_modules/.bin/lerna run --stream build --scope=@berty/web
+          command: /tmp/retry -m 3 make build.web
+
+      - run:
+          name: build dashboard
+          working_directory: ~/go/src/berty.tech/client/react-native
+          command: /tmp/retry -m 3 make build.dashboard
 
       - persist_to_workspace:
           root: ~/go/src/berty.tech/
