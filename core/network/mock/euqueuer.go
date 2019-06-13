@@ -11,6 +11,7 @@ import (
 type Enqueuer struct {
 	network.Driver
 
+	contactID string
 	queue     chan *entity.Envelope
 	pingQueue chan string
 }
@@ -60,8 +61,12 @@ func (e *Enqueuer) PingOtherNode(ctx context.Context, destination string) error 
 	return nil
 }
 
-func (e *Enqueuer) Join(ctx context.Context, input string) error {
-	tracer := tracing.EnterFunc(ctx, input)
+func (e *Enqueuer) SetContactID(contactID string) {
+	e.contactID = contactID
+}
+
+func (e *Enqueuer) Join(ctx context.Context) error {
+	tracer := tracing.EnterFunc(ctx, e.contactID)
 	defer tracer.Finish()
 	// ctx = tracer.Context()
 

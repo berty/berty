@@ -20,8 +20,11 @@ type Driver interface {
 	// Dial get a raw connection
 	Dial(context.Context, string, protocol.ID) (net.Conn, error)
 
+	// SetContactID for further uses
+	SetContactID(string)
+
 	// Join subscribe for new envelope in a channel
-	Join(context.Context, string) error
+	Join(context.Context) error
 
 	// OnEnvelopeHandler sets the callback that will handle each new received envelope
 	OnEnvelopeHandler(func(context.Context, *entity.Envelope) (*entity.Void, error))

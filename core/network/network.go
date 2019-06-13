@@ -23,6 +23,10 @@ type Network struct {
 	shutdown context.CancelFunc
 
 	cache PeerCache
+
+	lrm *LocalRecordManager
+
+	contactID string
 }
 
 // Chainconfig.Options chains multiple options into a single option.
@@ -68,6 +72,9 @@ func New(ctx context.Context, opts ...config.Option) (*Network, error) {
 	if net.Config().PeerCache {
 		net.cache = NewPeerCache(net.host)
 	}
+
+	net.lrm = NewLocalRecordManager(net)
+
 	return net, nil
 }
 
