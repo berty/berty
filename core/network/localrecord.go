@@ -1,17 +1,15 @@
 package network
 
 import (
-	"context"
 	"fmt"
 	"io"
 	onet "net"
 	"regexp"
-	"time"
 
 	"berty.tech/core/entity"
+	"berty.tech/core/network/helper"
 	ggio "github.com/gogo/protobuf/io"
 	inet "github.com/libp2p/go-libp2p-net"
-	peer "github.com/libp2p/go-libp2p-peer"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	filter "github.com/libp2p/go-maddr-filter"
 	ma "github.com/multiformats/go-multiaddr"
@@ -69,7 +67,7 @@ func (lrm *LocalRecordManager) Connected(net inet.Network, c inet.Conn) {
 	}
 
 	if isBLEMultiaddr || isPrivateIP {
-		if err := lrm.sendLocalRecord(context.Background(), c.RemotePeer()); err != nil {
+		if err := lrm.sendLocalRecord(c); err != nil {
 			logger().Error("sending local record failed", zap.Error(err))
 		} else {
 			logger().Debug("sending local record succeeded",
@@ -115,25 +113,27 @@ func (lrm *LocalRecordManager) handleLocalRecord(s inet.Stream) {
 	}
 }
 
-func (lrm *LocalRecordManager) sendLocalRecord(ctx context.Context, pID peer.ID) error {
-	tctx, cancel := context.WithTimeout(ctx, time.Second*10)
-	defer cancel()
+func (lrm *LocalRecordManager) sendLocalRecord(c inet.Conn) error {
+	logger().Debug("sending local record", zap.String("peerID", c.RemotePeer().Pretty()))
 
-	logger().Debug("sending local record", zap.String("peerID", pID.Pretty()))
-
-	if pID == lrm.net.host.ID() {
+	if c.RemotePeer() == lrm.net.host.ID() {
 		return fmt.Errorf("cannot dial to self")
 	}
 
-	s, err := lrm.net.host.NewStream(tctx, pID, recProtocolID)
+	s, err := c.NewStream()
 	if err != nil {
 		return fmt.Errorf("new stream failed: `%s`", err.Error())
 	}
 
+	sw := helper.NewStreamWrapper(s, recProtocolID)
+	if err != nil {
+		return fmt.Errorf("new stream wrapper failed: `%s`", err.Error())
+	}
+
 	lr := &entity.LocalRecord{ContactId: lrm.net.contactID}
-	pbw := ggio.NewDelimitedWriter(s)
+	pbw := ggio.NewDelimitedWriter(sw)
 	if err := pbw.WriteMsg(lr); err != nil {
-		return fmt.Errorf("write stream: `%s`", err.Error())
+		return fmt.Errorf("write stream failed: `%s`", err.Error())
 	}
 
 	go inet.FullClose(s)
