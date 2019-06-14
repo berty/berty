@@ -110,11 +110,13 @@ generate: .generated
 clean:
 	rm -f .generated $(GENERATED_FILES) $(GENERATION_TARGETS) $(BIN)
 	rm -rf vendor
+	@# FIXME: investigate
+	rm -rf google gogoproto github.com google.golang.org
 
 .PHONY: generate_local
 generate_local: $(GENERATION_TARGETS)
 	@# FIXME: investigate why (sometimes?) there are "github.com" and "google.golang.org" directories generated at the root of core/
-	rm -rf github.com google.golang.org
+	rm -rf google gogoproto github.com google.golang.org
 
 	goimports -w `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
 	gofmt -w -s `find . -name "*.pb.go" -or -name "*.gen.go" | grep -v /vendor/`
@@ -142,10 +144,18 @@ _ci_prepare:
 
 %.pb.json: %.proto
 	mkdir -p "$(dir ../client/react-native/app/bridge/service/$@)"
-	pbjs --path=. -t json "./$<" > ../client/react-native/app/bridge/service/$@
+	pbjs \
+		--path /protobuf \
+		--path vendor/github.com/gogo/protobuf/ \
+		--path vendor \
+		--path $(GOPATH)/src/berty.tech/core \
+		--path . \
+		-t json \
+		"./$<" > ../client/react-native/app/bridge/service/$@
 
 # FIXME: use an automated rule that matches every client generated files
 .client.generated: $(PROTOS)
+	$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=true,template_dir=./api/node:./api/node ./api/node/service.proto
 	@# FIXME: implement `uniq` in make
 	@set -e; for protodir in `echo $(dir $(SERVICE_PROTOS)) | tr " " "\n" | uniq`; do (set -xe; \
 		$(PROTOC) $(PROTOC_OPTS) --gotemplate_out=debug=false,all=false,single-package-mode=true,template_dir=./api/client:./api/client $$protodir/*.proto; \

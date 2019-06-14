@@ -1,4 +1,4 @@
-IMAGE ?= bertychat/protoc:v11
+IMAGE ?= bertychat/protoc:v12
 
 rebuild:
 	docker build --no-cache --pull -t $(IMAGE) .

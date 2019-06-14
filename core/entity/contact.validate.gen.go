@@ -20,7 +20,7 @@ func (m *Contact) Validate() error {
 		return nil
 	}
 
-	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<53004:1 []:true []:"ID" 65006:"gorm:\"primary_key\"" >  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
+	// handling field: ID - name:"id" number:1 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"id" options:<[]:true []:"ID" 65006:"gorm:\"primary_key\"" >  (is_contact_key=true, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	if err := validator.IsContactKey(m.GetID()); err != nil {
 		return err
 	}

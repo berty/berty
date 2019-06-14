@@ -107,7 +107,6 @@
                   "type": "string",
                   "id": 1,
                   "options": {
-                    "(gql.graphql_id)": true,
                     "(gogoproto.moretags)": "gorm:primary_key",
                     "(gogoproto.customname)": "ID",
                     "(validate.is_contact_key)": true
@@ -181,7 +180,6 @@
                   "type": "string",
                   "id": 1,
                   "options": {
-                    "(gql.graphql_id)": true,
                     "(gogoproto.moretags)": "gorm:primary_key",
                     "(gogoproto.customname)": "ID"
                   }
@@ -245,7 +243,6 @@
                   "type": "string",
                   "id": 1,
                   "options": {
-                    "(gql.graphql_id)": true,
                     "(gogoproto.moretags)": "gorm:primary_key",
                     "(gogoproto.customname)": "ID"
                   }
@@ -290,83 +287,407 @@
         }
       }
     },
-    "gql": {
+    "gogoproto": {
       "options": {
-        "go_package": "berty.tech/core/api/protobuf/graphql"
+        "java_package": "com.google.protobuf",
+        "java_outer_classname": "GoGoProtos",
+        "go_package": "github.com/gogo/protobuf/gogoproto"
       },
       "nested": {
-        "graphqlFields": {
+        "goprotoEnumPrefix": {
+          "type": "bool",
+          "id": 62001,
+          "extend": "google.protobuf.EnumOptions"
+        },
+        "goprotoEnumStringer": {
+          "type": "bool",
+          "id": 62021,
+          "extend": "google.protobuf.EnumOptions"
+        },
+        "enumStringer": {
+          "type": "bool",
+          "id": 62022,
+          "extend": "google.protobuf.EnumOptions"
+        },
+        "enumCustomname": {
           "type": "string",
-          "id": 53001,
-          "extend": "google.protobuf.MethodOptions"
+          "id": 62023,
+          "extend": "google.protobuf.EnumOptions"
         },
-        "graphqlType": {
+        "enumdecl": {
+          "type": "bool",
+          "id": 62024,
+          "extend": "google.protobuf.EnumOptions"
+        },
+        "enumvalueCustomname": {
           "type": "string",
-          "id": 53002,
-          "extend": "google.protobuf.MethodOptions"
+          "id": 66001,
+          "extend": "google.protobuf.EnumValueOptions"
         },
-        "graphqlInterface": {
+        "goprotoGettersAll": {
+          "type": "bool",
+          "id": 63001,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoEnumPrefixAll": {
+          "type": "bool",
+          "id": 63002,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoStringerAll": {
+          "type": "bool",
+          "id": 63003,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "verboseEqualAll": {
+          "type": "bool",
+          "id": 63004,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "faceAll": {
+          "type": "bool",
+          "id": 63005,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "gostringAll": {
+          "type": "bool",
+          "id": 63006,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "populateAll": {
+          "type": "bool",
+          "id": 63007,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "stringerAll": {
+          "type": "bool",
+          "id": 63008,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "onlyoneAll": {
+          "type": "bool",
+          "id": 63009,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "equalAll": {
+          "type": "bool",
+          "id": 63013,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "descriptionAll": {
+          "type": "bool",
+          "id": 63014,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "testgenAll": {
+          "type": "bool",
+          "id": 63015,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "benchgenAll": {
+          "type": "bool",
+          "id": 63016,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "marshalerAll": {
+          "type": "bool",
+          "id": 63017,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "unmarshalerAll": {
+          "type": "bool",
+          "id": 63018,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "stableMarshalerAll": {
+          "type": "bool",
+          "id": 63019,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "sizerAll": {
+          "type": "bool",
+          "id": 63020,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoEnumStringerAll": {
+          "type": "bool",
+          "id": 63021,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "enumStringerAll": {
+          "type": "bool",
+          "id": 63022,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "unsafeMarshalerAll": {
+          "type": "bool",
+          "id": 63023,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "unsafeUnmarshalerAll": {
+          "type": "bool",
+          "id": 63024,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoExtensionsMapAll": {
+          "type": "bool",
+          "id": 63025,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoUnrecognizedAll": {
+          "type": "bool",
+          "id": 63026,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "gogoprotoImport": {
+          "type": "bool",
+          "id": 63027,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "protosizerAll": {
+          "type": "bool",
+          "id": 63028,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "compareAll": {
+          "type": "bool",
+          "id": 63029,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "typedeclAll": {
+          "type": "bool",
+          "id": 63030,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "enumdeclAll": {
+          "type": "bool",
+          "id": 63031,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoRegistration": {
+          "type": "bool",
+          "id": 63032,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "messagenameAll": {
+          "type": "bool",
+          "id": 63033,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoSizecacheAll": {
+          "type": "bool",
+          "id": 63034,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoUnkeyedAll": {
+          "type": "bool",
+          "id": 63035,
+          "extend": "google.protobuf.FileOptions"
+        },
+        "goprotoGetters": {
+          "type": "bool",
+          "id": 64001,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "goprotoStringer": {
+          "type": "bool",
+          "id": 64003,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "verboseEqual": {
+          "type": "bool",
+          "id": 64004,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "face": {
+          "type": "bool",
+          "id": 64005,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "gostring": {
+          "type": "bool",
+          "id": 64006,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "populate": {
+          "type": "bool",
+          "id": 64007,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "stringer": {
+          "type": "bool",
+          "id": 67008,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "onlyone": {
+          "type": "bool",
+          "id": 64009,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "equal": {
+          "type": "bool",
+          "id": 64013,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "description": {
+          "type": "bool",
+          "id": 64014,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "testgen": {
+          "type": "bool",
+          "id": 64015,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "benchgen": {
+          "type": "bool",
+          "id": 64016,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "marshaler": {
+          "type": "bool",
+          "id": 64017,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "unmarshaler": {
+          "type": "bool",
+          "id": 64018,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "stableMarshaler": {
+          "type": "bool",
+          "id": 64019,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "sizer": {
+          "type": "bool",
+          "id": 64020,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "unsafeMarshaler": {
+          "type": "bool",
+          "id": 64023,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "unsafeUnmarshaler": {
+          "type": "bool",
+          "id": 64024,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "goprotoExtensionsMap": {
+          "type": "bool",
+          "id": 64025,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "goprotoUnrecognized": {
+          "type": "bool",
+          "id": 64026,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "protosizer": {
+          "type": "bool",
+          "id": 64028,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "compare": {
+          "type": "bool",
+          "id": 64029,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "typedecl": {
+          "type": "bool",
+          "id": 64030,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "messagename": {
+          "type": "bool",
+          "id": 64033,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "goprotoSizecache": {
+          "type": "bool",
+          "id": 64034,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "goprotoUnkeyed": {
+          "type": "bool",
+          "id": 64035,
+          "extend": "google.protobuf.MessageOptions"
+        },
+        "nullable": {
+          "type": "bool",
+          "id": 65001,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "embed": {
+          "type": "bool",
+          "id": 65002,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "customtype": {
           "type": "string",
-          "id": 53003,
-          "extend": "google.protobuf.MethodOptions"
+          "id": 65003,
+          "extend": "google.protobuf.FieldOptions"
         },
-        "graphqlOutput": {
+        "customname": {
           "type": "string",
-          "id": 53007,
-          "extend": "google.protobuf.MethodOptions"
+          "id": 65004,
+          "extend": "google.protobuf.FieldOptions"
         },
-        "graphqlInput": {
+        "jsontag": {
           "type": "string",
-          "id": 53010,
-          "extend": "google.protobuf.MethodOptions"
-        },
-        "graphqlId": {
-          "type": "bool",
-          "id": 53004,
+          "id": 65005,
           "extend": "google.protobuf.FieldOptions"
         },
-        "graphqlResolver": {
-          "type": "bool",
-          "id": 53005,
+        "moretags": {
+          "type": "string",
+          "id": 65006,
           "extend": "google.protobuf.FieldOptions"
         },
-        "graphqlSpread": {
-          "type": "bool",
-          "id": 53006,
+        "casttype": {
+          "type": "string",
+          "id": 65007,
           "extend": "google.protobuf.FieldOptions"
         },
-        "graphqlNullable": {
-          "type": "bool",
-          "id": 53008,
+        "castkey": {
+          "type": "string",
+          "id": 65008,
           "extend": "google.protobuf.FieldOptions"
         },
-        "graphqlNonNullable": {
-          "type": "bool",
-          "id": 53009,
+        "castvalue": {
+          "type": "string",
+          "id": 65009,
           "extend": "google.protobuf.FieldOptions"
         },
-        "graphqlUnexported": {
+        "stdtime": {
           "type": "bool",
-          "id": 53011,
+          "id": 65010,
           "extend": "google.protobuf.FieldOptions"
         },
-        "Node": {
-          "fields": {
-            "id": {
-              "type": "string",
-              "id": 1,
-              "options": {
-                "(gql.graphql_id)": true,
-                "(gogoproto.customname)": "ID"
-              }
-            }
-          }
+        "stdduration": {
+          "type": "bool",
+          "id": 65011,
+          "extend": "google.protobuf.FieldOptions"
+        },
+        "wktpointer": {
+          "type": "bool",
+          "id": 65012,
+          "extend": "google.protobuf.FieldOptions"
         }
       }
     },
     "google": {
       "nested": {
         "protobuf": {
+          "options": {
+            "go_package": "github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor",
+            "java_package": "com.google.protobuf",
+            "java_outer_classname": "DescriptorProtos",
+            "csharp_namespace": "Google.Protobuf.Reflection",
+            "objc_class_prefix": "GPB",
+            "cc_enable_arenas": true,
+            "optimize_for": "SPEED"
+          },
           "nested": {
             "FileDescriptorSet": {
               "fields": {
@@ -503,6 +824,10 @@
                     "end": {
                       "type": "int32",
                       "id": 2
+                    },
+                    "options": {
+                      "type": "ExtensionRangeOptions",
+                      "id": 3
                     }
                   }
                 },
@@ -519,6 +844,21 @@
                   }
                 }
               }
+            },
+            "ExtensionRangeOptions": {
+              "fields": {
+                "uninterpretedOption": {
+                  "rule": "repeated",
+                  "type": "UninterpretedOption",
+                  "id": 999
+                }
+              },
+              "extensions": [
+                [
+                  1000,
+                  536870911
+                ]
+              ]
             },
             "FieldDescriptorProto": {
               "fields": {
@@ -621,6 +961,30 @@
                 "options": {
                   "type": "EnumOptions",
                   "id": 3
+                },
+                "reservedRange": {
+                  "rule": "repeated",
+                  "type": "EnumReservedRange",
+                  "id": 4
+                },
+                "reservedName": {
+                  "rule": "repeated",
+                  "type": "string",
+                  "id": 5
+                }
+              },
+              "nested": {
+                "EnumReservedRange": {
+                  "fields": {
+                    "start": {
+                      "type": "int32",
+                      "id": 1
+                    },
+                    "end": {
+                      "type": "int32",
+                      "id": 2
+                    }
+                  }
                 }
               }
             },
@@ -677,11 +1041,17 @@
                 },
                 "clientStreaming": {
                   "type": "bool",
-                  "id": 5
+                  "id": 5,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "serverStreaming": {
                   "type": "bool",
-                  "id": 6
+                  "id": 6,
+                  "options": {
+                    "default": false
+                  }
                 }
               }
             },
@@ -697,7 +1067,10 @@
                 },
                 "javaMultipleFiles": {
                   "type": "bool",
-                  "id": 10
+                  "id": 10,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "javaGenerateEqualsAndHash": {
                   "type": "bool",
@@ -708,7 +1081,10 @@
                 },
                 "javaStringCheckUtf8": {
                   "type": "bool",
-                  "id": 27
+                  "id": 27,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "optimizeFor": {
                   "type": "OptimizeMode",
@@ -723,23 +1099,45 @@
                 },
                 "ccGenericServices": {
                   "type": "bool",
-                  "id": 16
+                  "id": 16,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "javaGenericServices": {
                   "type": "bool",
-                  "id": 17
+                  "id": 17,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "pyGenericServices": {
                   "type": "bool",
-                  "id": 18
+                  "id": 18,
+                  "options": {
+                    "default": false
+                  }
+                },
+                "phpGenericServices": {
+                  "type": "bool",
+                  "id": 42,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "deprecated": {
                   "type": "bool",
-                  "id": 23
+                  "id": 23,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "ccEnableArenas": {
                   "type": "bool",
-                  "id": 31
+                  "id": 31,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "objcClassPrefix": {
                   "type": "string",
@@ -748,6 +1146,26 @@
                 "csharpNamespace": {
                   "type": "string",
                   "id": 37
+                },
+                "swiftPrefix": {
+                  "type": "string",
+                  "id": 39
+                },
+                "phpClassPrefix": {
+                  "type": "string",
+                  "id": 40
+                },
+                "phpNamespace": {
+                  "type": "string",
+                  "id": 41
+                },
+                "phpMetadataNamespace": {
+                  "type": "string",
+                  "id": 44
+                },
+                "rubyPackage": {
+                  "type": "string",
+                  "id": 45
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -781,15 +1199,24 @@
               "fields": {
                 "messageSetWireFormat": {
                   "type": "bool",
-                  "id": 1
+                  "id": 1,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "noStandardDescriptorAccessor": {
                   "type": "bool",
-                  "id": 2
+                  "id": 2,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "deprecated": {
                   "type": "bool",
-                  "id": 3
+                  "id": 3,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "mapEntry": {
                   "type": "bool",
@@ -811,6 +1238,10 @@
                 [
                   8,
                   8
+                ],
+                [
+                  9,
+                  9
                 ]
               ]
             },
@@ -836,15 +1267,24 @@
                 },
                 "lazy": {
                   "type": "bool",
-                  "id": 5
+                  "id": 5,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "deprecated": {
                   "type": "bool",
-                  "id": 3
+                  "id": 3,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "weak": {
                   "type": "bool",
-                  "id": 10
+                  "id": 10,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -904,7 +1344,10 @@
                 },
                 "deprecated": {
                   "type": "bool",
-                  "id": 3
+                  "id": 3,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -917,13 +1360,22 @@
                   1000,
                   536870911
                 ]
+              ],
+              "reserved": [
+                [
+                  5,
+                  5
+                ]
               ]
             },
             "EnumValueOptions": {
               "fields": {
                 "deprecated": {
                   "type": "bool",
-                  "id": 1
+                  "id": 1,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -942,7 +1394,10 @@
               "fields": {
                 "deprecated": {
                   "type": "bool",
-                  "id": 33
+                  "id": 33,
+                  "options": {
+                    "default": false
+                  }
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -961,7 +1416,17 @@
               "fields": {
                 "deprecated": {
                   "type": "bool",
-                  "id": 33
+                  "id": 33,
+                  "options": {
+                    "default": false
+                  }
+                },
+                "idempotencyLevel": {
+                  "type": "IdempotencyLevel",
+                  "id": 34,
+                  "options": {
+                    "default": "IDEMPOTENCY_UNKNOWN"
+                  }
                 },
                 "uninterpretedOption": {
                   "rule": "repeated",
@@ -974,7 +1439,16 @@
                   1000,
                   536870911
                 ]
-              ]
+              ],
+              "nested": {
+                "IdempotencyLevel": {
+                  "values": {
+                    "IDEMPOTENCY_UNKNOWN": 0,
+                    "NO_SIDE_EFFECTS": 1,
+                    "IDEMPOTENT": 2
+                  }
+                }
+              }
             },
             "UninterpretedOption": {
               "fields": {

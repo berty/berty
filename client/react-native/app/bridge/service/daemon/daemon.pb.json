@@ -140,10 +140,6 @@
                   "type": "string",
                   "id": 2
                 },
-                "gqlBind": {
-                  "type": "string",
-                  "id": 3
-                },
                 "grpcWebBind": {
                   "type": "string",
                   "id": 25
@@ -242,10 +238,6 @@
             },
             "GetPortResponse": {
               "fields": {
-                "gqlPort": {
-                  "type": "int32",
-                  "id": 1
-                },
                 "grpcWebPort": {
                   "type": "int32",
                   "id": 2
