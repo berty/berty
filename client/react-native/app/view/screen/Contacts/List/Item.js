@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import { fragments } from '@berty/graphql'
 import * as enums from '@berty/common/enums.gen'
 import { Avatar, Flex, Text } from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
@@ -69,4 +68,4 @@ export class Item extends PureComponent {
   }
 }
 
-export default fragments.Contact(Item)
+export default Item

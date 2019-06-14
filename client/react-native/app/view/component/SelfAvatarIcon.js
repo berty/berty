@@ -5,15 +5,12 @@ import { withNavigation } from 'react-navigation'
 import Avatar from './Avatar'
 import { HeaderButton } from './Header'
 import { colors } from '@berty/common/constants'
-import { contact } from '@berty/relay/utils'
-import { withCurrentUser } from '@berty/relay/utils/contact'
 
+@withNavigation
+// @withCurrentUser
 class SelfAvatarLink extends PureComponent {
   onPress = data => {
-    this.props.navigation.navigate('modal/contacts/card', {
-      ...data,
-      id: contact.getCoreID(data.id),
-    })
+    this.props.navigation.navigate('modal/contacts/card', data)
   }
 
   render = () => {
@@ -21,7 +18,7 @@ class SelfAvatarLink extends PureComponent {
 
     return user ? (
       <TouchableOpacity onPress={() => this.onPress(user)}>
-        <Avatar data={{ ...user, id: contact.getCoreID(user.id) }} size={24} />
+        <Avatar data={{ ...user, id: user.id }} size={24} />
       </TouchableOpacity>
     ) : (
       <HeaderButton icon={'share'} color={colors.black} justify='end' middle />
@@ -29,4 +26,4 @@ class SelfAvatarLink extends PureComponent {
   }
 }
 
-export default withNavigation(withCurrentUser(SelfAvatarLink))
+export default SelfAvatarLink

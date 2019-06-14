@@ -18,7 +18,7 @@ import {
   smallText,
 } from '@berty/common/styles'
 import Accordion from 'react-native-collapsible/Accordion'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
 const Connection = {
   NOT_CONNECTED: 0,
@@ -42,6 +42,7 @@ const ConnectionType = c => {
   }
 }
 
+@withStoreContext
 class Peers extends Component {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -64,7 +65,7 @@ class Peers extends Component {
   }
 
   componentWillMount () {
-    this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe({
+    this.subscriber = this.props.context.node.service.monitorPeers.subscribe({
       iterator: undefined,
       updater: (store, data) => {
         const peer = data.MonitorPeers
@@ -78,13 +79,13 @@ class Peers extends Component {
   }
 
   componentWillUnmount () {
-    this.subscriber.unsubscribe()
+    this.subscriber.end()
   }
 
   fetchPeers = () => {
-    this.props.context.queries.Peers.fetch().then(data =>
-      this.updatePeers(data.list)
-    )
+    this.props.context.node.service
+      .Peers({})
+      .then(data => this.updatePeers(data.list))
   }
 
   updatePeers = peers => {
@@ -238,4 +239,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default withRelayContext(Peers)
+export default Peers

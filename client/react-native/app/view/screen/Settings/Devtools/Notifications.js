@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react'
 import { Header, Menu } from '@berty/component'
-import { withConfig } from '@berty/relay/config'
 import colors from '@berty/common/constants/colors'
 import { withNavigation } from 'react-navigation'
 import { showMessage } from 'react-native-flash-message'
-import { RelayContext } from '@berty/relay'
 import * as enums from '@berty/common/enums.gen'
+import { withStoreContext } from '@berty/store/context'
 
-class NotificationsBase extends PureComponent {
+@withNavigation
+class Notifications extends PureComponent {
   constructor (props) {
     super(props)
 
@@ -106,7 +106,7 @@ class NotificationsBase extends PureComponent {
         [field]: this.state.config[field],
       }
 
-      await this.props.relayContext.mutations.configUpdate(config)
+      await this.props.context.node.service.configUpdate(config)
     } catch (e) {
       showMessage({
         message: String(e),
@@ -118,10 +118,7 @@ class NotificationsBase extends PureComponent {
   }
 }
 
-const Notifications = withNavigation(
-  withConfig(NotificationsBase, { showOnlyLoaded: true })
-)
-
+@withStoreContext
 export default class NotificationsWrapper extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -135,10 +132,7 @@ export default class NotificationsWrapper extends PureComponent {
   })
 
   render () {
-    return (
-      <RelayContext.Consumer>
-        {context => <Notifications relayContext={context} />}
-      </RelayContext.Consumer>
-    )
+    const { context } = this.props
+    return <Notifications relayContext={context} />
   }
 }

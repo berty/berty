@@ -2,9 +2,11 @@ import React, { PureComponent } from 'react'
 import { View, Image } from 'react-native'
 import { Header, Menu } from '@berty/component'
 import { withNamespaces } from 'react-i18next'
-import { withRelayContext } from '@berty/relay/context'
 import I18n from 'i18next'
+import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
+@withNamespaces()
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -22,7 +24,7 @@ class List extends PureComponent {
   }
 
   componentDidMount () {
-    this.props.context.queries.AppVersion.fetch().then(data => {
+    this.props.context.node.service.AppVersion.then(data => {
       this.setState({ version: data.version })
     })
   }
@@ -63,4 +65,4 @@ class List extends PureComponent {
   }
 }
 
-export default withRelayContext(withNamespaces()(List))
+export default List

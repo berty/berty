@@ -3,10 +3,12 @@ import { ActivityIndicator, Switch, Alert, Platform } from 'react-native'
 
 import { Flex, Header, Menu, Screen, Text } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { withRelayContext } from '@berty/relay/context'
 import { withBridgeContext } from '@berty/bridge/Context'
 import RNDeviceInfo from 'react-native-device-info'
+import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
+@withBridgeContext
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header:
@@ -79,7 +81,7 @@ class List extends PureComponent {
   testLogBackgroundError = async () => {
     this.props.navigation.setParams({ testLogBackgroundError: true })
     this.setState({ testLogBackgroundError: true }, async () => {
-      await this.props.context.queries.TestLogBackgroundError.fetch()
+      await this.props.context.node.service.TestLogBackgroundError({})
       this.props.navigation.setParams({
         testLogBackgroundError: false,
       })
@@ -90,7 +92,7 @@ class List extends PureComponent {
   testLogBackgroundWarn = async () => {
     this.props.navigation.setParams({ testLogBackgroundWarn: true })
     this.setState({ testLogBackgroundWarn: true }, async () => {
-      await this.props.context.queries.TestLogBackgroundWarn.fetch()
+      await this.props.context.node.service.TestLogBackgroundWarn({})
       this.props.navigation.setParams({
         testLogBackgroundWarn: false,
       })
@@ -101,7 +103,7 @@ class List extends PureComponent {
   testLogBackgroundDebug = async () => {
     this.props.navigation.setParams({ testLogBackgroundDebug: true })
     this.setState({ testLogBackgroundDebug: true }, async () => {
-      await this.props.context.queries.TestLogBackgroundDebug.fetch()
+      await this.props.context.node.service.TestLogBackgroundDebug({})
       this.props.navigation.setParams({
         testLogBackgroundDebug: false,
       })
@@ -366,4 +368,4 @@ class List extends PureComponent {
   }
 }
 
-export default withBridgeContext(withRelayContext(List))
+export default List

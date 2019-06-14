@@ -3,12 +3,12 @@ import React, { PureComponent } from 'react'
 
 import { Flex, Header, Menu, Screen, Text } from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { withRelayContext } from '@berty/relay/context'
 import { withBridgeContext } from '@berty/bridge/Context'
-import { RelayContext } from '@berty/relay'
+import { withStoreContext } from '@berty/store/context'
 
+@withBridgeContext
+@withStoreContext
 class Database extends PureComponent {
-  static contextType = RelayContext
   static navigationOptions = ({ navigation }) => ({
     header: () =>
       navigation.getParam('dropDatabase') || (
@@ -23,7 +23,7 @@ class Database extends PureComponent {
 
   generateFakeData = async () => {
     try {
-      await this.props.context.mutations.generateFakeData({
+      await this.props.context.node.service.generateFakeData({
         t: true,
       })
     } catch (err) {
@@ -82,4 +82,4 @@ class Database extends PureComponent {
   }
 }
 
-export default withBridgeContext(withRelayContext(Database))
+export default Database

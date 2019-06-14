@@ -7,7 +7,6 @@ import { Icon } from '@berty/component'
 import { UpdateContext } from '@berty/update'
 import { colors } from '@berty/common/constants'
 import { createSplitNavigator } from './SplitNavigator'
-import { merge } from '@berty/common/helpers'
 import ChatNavigator, {
   SubviewsChatNavigator,
   SplitSideChatNavigator,
@@ -18,56 +17,29 @@ import ContactNavigator, {
 } from './ContactNavigator'
 import Placeholder from '@berty/screen/Placeholder'
 import SettingsNavigator from './SettingsNavigator'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
-class TabBarIconBase extends Component {
+@withStoreContext
+class TabBarIcon extends Component {
   constructor (props) {
     super(props)
-    const {
-      context: { queries, subscriptions },
-    } = props
+    const { context } = props
 
     this.state = {
       stored: [],
-      queryList: queries.EventList.graphql,
-      queryVariables:
-        props.routeName === 'contacts'
-          ? merge([
-            queries.EventList.defaultVariables,
-            {
-              filter: {
-                kind: 201,
-                direction: 1,
-              },
-              onlyWithoutSeenAt: 1,
-            },
-          ])
-          : merge([
-            queries.EventList.defaultVariables,
-            {
-              filter: {
-                kind: 302,
-                direction: 1,
-              },
-              onlyWithoutSeenAt: 1,
-            },
-          ]),
       subscription:
         props.routeName === 'contacts'
-          ? [subscriptions.contactRequest]
-          : [subscriptions.message],
+          ? [context.node.service.contactRequest]
+          : [context.node.service.message],
     }
 
     this.subscriber = null
   }
 
   componentDidMount () {
-    const {
-      context: { queries, subscriptions },
-    } = this.props
-    const { queryVariables } = this.state
+    const { context } = this.props
 
-    queries.EventUnseen.fetch(queryVariables).then(e => {
+    context.node.service.EventUnseen({}).then(e => {
       this.setState({
         stored: e.reduce((acc, val) => {
           if (acc.indexOf(val.targetAddr) === -1) {
@@ -77,14 +49,12 @@ class TabBarIconBase extends Component {
         }, []),
       })
     })
-    this.subscriber = subscriptions.commitLogStream.subscribe({
-      updater: this.updateBadge,
-    })
+    this.subscriber = context.node.service.commitLogStream({})
   }
 
   componentWillUnmount () {
     if (this.subscriber != null) {
-      this.subscriber.unsubscribe()
+      // this.subscriber.unsubscribe()
     }
   }
 
@@ -118,7 +88,7 @@ class TabBarIconBase extends Component {
     if (this.state.stored.length > 0) {
       await Promise.all(
         this.state.stored.map(val => {
-          return this.props.context.mutations.eventSeen({
+          return this.props.context.node.service.eventSeen({
             id: val,
           })
         })
@@ -169,8 +139,6 @@ class TabBarIconBase extends Component {
     )
   }
 }
-
-const TabBarIcon = withRelayContext(TabBarIconBase)
 
 const handleBothNavigationsOptions = ({ navigation }) => {
   return {

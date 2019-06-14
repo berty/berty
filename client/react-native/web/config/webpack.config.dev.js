@@ -230,7 +230,6 @@ module.exports = {
                 require.resolve(
                   '@babel/plugin-proposal-async-generator-functions'
                 ),
-                require.resolve('babel-plugin-relay'),
                 [
                   require.resolve('babel-plugin-named-asset-import'),
                   {

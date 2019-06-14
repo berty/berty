@@ -6,19 +6,10 @@ import React, { PureComponent } from 'react'
 import { Animation, Flex, Loader, Screen } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { defaultUsername } from '@berty/common/helpers/contacts'
-import { environment, contextValue } from '@berty/relay'
-import { getAvailableUpdate } from '@berty/update'
-import {
-  queries,
-  mutations,
-  subscriptions,
-  fragments,
-  updaters,
-} from '@berty/graphql'
+// import { getAvailableUpdate } from '@berty/update'
 import NavigationService from '@berty/common/helpers/NavigationService'
 import sleep from '@berty/common/helpers/sleep'
 import withDeepLinkHandler from '@berty/common/helpers/withDeepLinkHandler'
-import { withRelayContext } from '@berty/relay/context'
 import { withUpdateContext } from '@berty/update/context'
 import { withBridgeContext } from '@berty/bridge/Context'
 import { rpc, service, middleware } from '@berty/bridge'
@@ -57,22 +48,6 @@ class Auth extends PureComponent {
       navigation,
     } = this.props
     navigation.navigate(deepLink)
-  }
-
-  getRelayContext = async () => {
-    const test = await contextValue({
-      environment: await environment.setup({
-        getIp: this.getIp,
-        getPort: async () => (await this.getPort()).gqlPort,
-      }),
-      mutations,
-      subscriptions,
-      queries,
-      fragments,
-      updaters,
-    })
-
-    return test
   }
 
   init = async config => {
@@ -127,19 +102,7 @@ class Auth extends PureComponent {
     }
 
     await this.start(nickname) // @FIXME: implement this later
-    const context = await this.getRelayContext()
-    getAvailableUpdate(context).then(update => {
-      this.props.updateContext.setState(update)
-    })
-    this.props.context.setState(
-      {
-        relayContext: context,
-        loading: false,
-      },
-      () => {
-        this.openDeepLink()
-      }
-    )
+
     const nodeService = service.create(
       service.NodeService,
       rpc.grpcWebWithHostname(
@@ -148,6 +111,18 @@ class Auth extends PureComponent {
       middleware.chain(
         __DEV__ ? middleware.logger.create('NODE-SERVICE') : null // eslint-disable-line
       )
+    )
+    // @FIXME: destroyed by refactor
+    // getAvailableUpdate(context).then(update => {
+    //   this.props.updateContext.setState(update)
+    // })
+    this.props.context.setState(
+      {
+        loading: false,
+      },
+      () => {
+        this.openDeepLink()
+      }
     )
     this.props.bridge.setContext({
       ...this.props.bridge,
@@ -293,7 +268,5 @@ class Auth extends PureComponent {
 //   </BridgeContext.Consumer>
 // )
 export default withDeepLinkHandler(
-  withBridgeContext(
-    withRelayContext(withUpdateContext(withNamespaces()(hook(Auth))))
-  )
+  withBridgeContext(withUpdateContext(withNamespaces()(hook(Auth))))
 )

@@ -8,7 +8,6 @@ import React, { PureComponent } from 'react'
 import ReactNativeLanguages from 'react-native-languages'
 
 import { MovableView, DebugStateBar } from '@berty/component'
-import { RelayContext } from '@berty/relay'
 import { UpdateContext } from '@berty/update'
 import Instabug from '@berty/common/helpers/Instabug'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
@@ -29,7 +28,6 @@ export default class App extends PureComponent {
     showAnim:
       process.env['ENVIRONMENT'] !== 'integration_test' &&
       Platform.OS !== 'web',
-    relayContext: null,
     availableUpdate: null,
     store: new Store({
       daemon: service.create(
@@ -104,7 +102,7 @@ export default class App extends PureComponent {
 
   setStateContext = (i, f) => {
     this.setState(i, () => {
-      if (i.relayContext !== null && i.loading === false) {
+      if (i.loading === false) {
         this.setState({
           debugBar: <DebugStateBar />,
         })
@@ -119,7 +117,6 @@ export default class App extends PureComponent {
 
   render () {
     const {
-      relayContext,
       availableUpdate,
       store: { bridge },
       store,
@@ -130,33 +127,26 @@ export default class App extends PureComponent {
           <I18nextProvider i18n={i18n}>
             <SafeAreaView style={{ flex: 1 }} forceInset={{ bottom: 'never' }}>
               <StoreContext.Provider value={store}>
-                <RelayContext.Provider
+                <UpdateContext.Provider
                   value={{
-                    ...relayContext,
-                    setState: this.setStateContext,
+                    availableUpdate,
+                    setState: this.setStateUpdate,
                   }}
                 >
-                  <UpdateContext.Provider
-                    value={{
-                      availableUpdate,
-                      setState: this.setStateUpdate,
+                  {this.props.children}
+                  <FlashMessage position='top' />
+                  <View
+                    style={{
+                      zIndex: 1,
+                      position: 'absolute',
+                      top: 30,
+                      right: 48,
+                      padding: 5,
                     }}
                   >
-                    {this.props.children}
-                    <FlashMessage position='top' />
-                    <View
-                      style={{
-                        zIndex: 1,
-                        position: 'absolute',
-                        top: 30,
-                        right: 48,
-                        padding: 5,
-                      }}
-                    >
-                      <MovableView>{this.state.debugBar}</MovableView>
-                    </View>
-                  </UpdateContext.Provider>
-                </RelayContext.Provider>
+                    <MovableView>{this.state.debugBar}</MovableView>
+                  </View>
+                </UpdateContext.Provider>
               </StoreContext.Provider>
               {Platform.OS === 'ios' && <KeyboardSpacer />}
             </SafeAreaView>

@@ -3,7 +3,6 @@ import { createMaterialTopTabNavigator, withNavigation } from 'react-navigation'
 import I18n from 'i18next'
 import React from 'react'
 
-import { contact } from '@berty/relay/utils'
 import { formattedFingerprint } from '@berty/common/helpers/fingerprint'
 import { makeShareableUrl } from '@berty/common/helpers/contacts'
 import {
@@ -108,11 +107,12 @@ const ContactIdentityTabbedContent = createMaterialTopTabNavigator(
   }
 )
 
-class ContactIdentityBase extends React.Component {
+@withNavigation
+class ContactIdentity extends React.Component {
   static router = ContactIdentityTabbedContent.router
 
   render () {
-    const { data = contact.default, navigation } = this.props
+    const { data = {}, navigation } = this.props
 
     return (
       <>
@@ -140,4 +140,4 @@ class ContactIdentityBase extends React.Component {
   }
 }
 
-export default withNavigation(ContactIdentityBase)
+export default ContactIdentity

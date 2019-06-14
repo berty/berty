@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Menu, Header } from '@berty/component'
-import { RelayContext } from '@berty/relay'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
 const testScenarios = [
   {
@@ -63,8 +62,8 @@ class Observable {
   }
 }
 
+@withStoreContext
 class Tests extends PureComponent {
-  static contextType = RelayContext
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -87,7 +86,7 @@ class Tests extends PureComponent {
                 icon={icon}
                 title={title}
                 onPress={async () => {
-                  const promise = this.props.context.mutations.runIntegrationTests(
+                  const promise = this.props.context.node.service.runIntegrationTests(
                     { name: key }
                   )
                   const obs = new Observable()
@@ -119,4 +118,4 @@ class Tests extends PureComponent {
   }
 }
 
-export default withRelayContext(Tests)
+export default Tests

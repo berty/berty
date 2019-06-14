@@ -1,14 +1,12 @@
 import React, { PureComponent } from 'react'
 import { Text, ScrollView, TouchableOpacity, Clipboard } from 'react-native'
-import { RelayContext } from '@berty/relay'
 import { Header } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { padding } from '@berty/common/styles'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
 class EventDetails extends PureComponent {
-  static contextType = RelayContext
-
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -36,7 +34,7 @@ class EventDetails extends PureComponent {
         ]}
         onPress={async () => {
           try {
-            await this.props.context.mutations.debugRequeueEvent({
+            await this.props.context.node.service.debugRequeueEvent({
               eventId: data.id,
             })
           } catch (err) {
@@ -94,4 +92,4 @@ class EventDetails extends PureComponent {
   }
 }
 
-export default withRelayContext(EventDetails)
+export default EventDetails

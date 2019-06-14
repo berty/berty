@@ -1,25 +1,15 @@
-import { Text, TouchableOpacity, View } from 'react-native'
-import React, { PureComponent } from 'react'
-import moment from 'moment'
-
 import { FilterModal, PickerFilter } from '@berty/component/Filters'
-import {
-  Flex,
-  Header,
-  Screen,
-  SearchBar,
-  Icon,
-  Text as LibText,
-} from '@berty/component'
-import { Pagination, RelayContext } from '@berty/relay'
+import { Flex, Header, Icon } from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { fragments } from '@berty/graphql'
-import * as enums from '@berty/common/enums.gen'
 import Button from '@berty/component/Button'
-import { withRelayContext } from '@berty/relay/context'
+import React, { PureComponent } from 'react'
+import * as enums from '@berty/common/enums.gen'
 
-const Item = fragments.Event(({ data, navigation }) => (
+import { Text, TouchableOpacity } from 'react-native'
+import moment from 'moment'
+
+export const Item = ({ data, navigation }) => (
   <TouchableOpacity
     onPress={() => {
       navigation.navigate('devtools/eventdetails', { details: data })
@@ -90,7 +80,7 @@ const Item = fragments.Event(({ data, navigation }) => (
       </Flex.Rows>
     </Flex.Cols>
   </TouchableOpacity>
-))
+)
 
 class EventList extends PureComponent {
   state = {
@@ -135,49 +125,50 @@ class EventList extends PureComponent {
   }
 
   render () {
-    const {
-      navigation,
-      context: { queries },
-    } = this.props
-    return (
-      <Screen style={{ backgroundColor: colors.white }}>
-        <Pagination
-          query={queries.EventList.graphql}
-          variables={{
-            ...queries.EventList.defaultVariables,
-            ...navigation.getParam('filters'),
-          }}
-          fragment={fragments.EventList}
-          alias='EventList'
-          renderItem={props => <Item {...props} navigation={navigation} />}
-          ListHeaderComponent={
-            <View style={padding}>
-              <SearchBar onChangeText={search => this.searchHandler(search)}>
-                <LibText
-                  size={0}
-                  height={34}
-                  icon='filter'
-                  padding
-                  middle
-                  large
-                  onPress={() =>
-                    navigation.navigate('modal/devtools/event/list/filters', {
-                      defaultData: navigation.getParam('filters'),
-                      onSave: filters => navigation.setParams({ filters }),
-                    })
-                  }
-                />
-              </SearchBar>
-            </View>
-          }
-        />
-      </Screen>
-    )
+    // @FIXME: destroyed by refactor
+    return null
+    // const {
+    //   navigation,
+    //   context: { queries },
+    // } = this.props
+    // return (
+    //   <Screen style={{ backgroundColor: colors.white }}>
+    //     <Pagination
+    //       query={queries.EventList.graphql}
+    //       variables={{
+    //         ...queries.EventList.defaultVariables,
+    //         ...navigation.getParam('filters'),
+    //       }}
+    //       fragment={fragments.EventList}
+    //       alias='EventList'
+    //       renderItem={props => <Item {...props} navigation={navigation} />}
+    //       ListHeaderComponent={
+    //         <View style={padding}>
+    //           <SearchBar onChangeText={search => this.searchHandler(search)}>
+    //             <LibText
+    //               size={0}
+    //               height={34}
+    //               icon='filter'
+    //               padding
+    //               middle
+    //               large
+    //               onPress={() =>
+    //                 navigation.navigate('modal/devtools/event/list/filters', {
+    //                   defaultData: navigation.getParam('filters'),
+    //                   onSave: filters => navigation.setParams({ filters }),
+    //                 })
+    //               }
+    //             />
+    //           </SearchBar>
+    //         </View>
+    //       }
+    //     />
+    //   </Screen>
+    // )
   }
 }
 
-class EventListFilterModalWithContext extends PureComponent {
-  static contextType = RelayContext
+export class EventListFilterModal extends PureComponent {
   render () {
     const { navigation } = this.props
     return (
@@ -210,7 +201,4 @@ class EventListFilterModalWithContext extends PureComponent {
   }
 }
 
-export const EventListFilterModal = withRelayContext(
-  EventListFilterModalWithContext
-)
-export default withRelayContext(EventList)
+export default EventList

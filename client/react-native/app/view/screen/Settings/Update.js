@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
 import { ScrollView } from 'react-native'
 import { Screen, Flex, Text, Button, Header, Loader } from '@berty/component'
-import RelayContext from '@berty/relay/context'
 import {
   getInstalledVersion,
   getLatestVersion,
@@ -12,6 +11,7 @@ import colors from '@berty/common/constants/colors'
 import { borderBottom, padding } from '@berty/common/styles'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import { withStoreContext } from '@berty/store/context'
 
 const VersionInfoBase = ({ version, t }) =>
   [
@@ -35,7 +35,8 @@ const VersionInfoBase = ({ version, t }) =>
 
 const VersionInfo = withNamespaces()(VersionInfoBase)
 
-class UpdateBase extends PureComponent {
+@withNamespaces()
+class Update extends PureComponent {
   constructor (props) {
     super(props)
 
@@ -98,8 +99,7 @@ class UpdateBase extends PureComponent {
   }
 }
 
-const Update = withNamespaces()(UpdateBase)
-
+@withStoreContext
 export default class WrappedUpdate extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -113,10 +113,6 @@ export default class WrappedUpdate extends PureComponent {
   })
 
   render () {
-    return (
-      <RelayContext.Consumer>
-        {context => <Update context={context} navigator={navigator} />}
-      </RelayContext.Consumer>
-    )
+    return <Update context={this.props.context} navigator={navigator} />
   }
 }

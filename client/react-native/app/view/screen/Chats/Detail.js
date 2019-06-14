@@ -1,35 +1,21 @@
-import { Pagination, QueryReducer, RelayContext } from '@berty/relay'
-import { fragments } from '@berty/graphql'
-import * as enums from '@berty/common/enums.gen'
+import { Avatar, Flex, Header, Icon, Markdown, Text } from '@berty/component'
+import { colors } from '@berty/common/constants'
+import { parseEmbedded } from '@berty/common/helpers/json'
+import { shadow } from '@berty/common/styles'
+import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
 import React, { PureComponent } from 'react'
 import * as dateFns from '@berty/common/locale/dateFns'
+import * as enums from '@berty/common/enums.gen'
 
 import {
-  ActivityIndicator,
   Platform,
   TextInput as RNTextInput,
   StyleSheet,
   View,
 } from 'react-native'
-import ActionSheet from 'react-native-actionsheet'
-import {
-  Avatar,
-  Flex,
-  Header,
-  Icon,
-  Markdown,
-  Screen,
-  Text,
-} from '@berty/component'
 import { btoa } from 'b64-lite'
-import { colors } from '@berty/common/constants'
-import { merge } from '@berty/common/helpers'
-import { parseEmbedded } from '@berty/common/helpers/json'
-import { shadow } from '@berty/common/styles'
-import { conversation as utils } from '@berty/relay/utils'
 import { withNamespaces } from 'react-i18next'
-import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
-import { withRelayContext } from '@berty/relay/context'
+import ActionSheet from 'react-native-actionsheet'
 
 const textStyles = StyleSheet.flatten([
   Markdown.styles,
@@ -58,9 +44,8 @@ const textStyles = StyleSheet.flatten([
   },
 ])
 
-class Message extends React.Component {
-  static contextType = RelayContext
-
+@withNamespaces()
+export class Message extends React.Component {
   messageSeen = () => {
     this.props.context.mutations.eventSeen({
       id: this.props.data.id,
@@ -74,15 +59,15 @@ class Message extends React.Component {
   }
 
   shouldComponentUpdate (nextProps, nextState) {
-    const { data } = this.props
-
-    if (
-      data.seenAt !== nextProps.data.seenAt ||
-      (utils.isReadByOthers(nextProps.data) && !utils.isReadByOthers(data)) ||
-      utils.messageHasError(nextProps.data) !== utils.messageHasError(data)
-    ) {
-      return true
-    }
+    // @FIXME: destroyed by refactor
+    // const { data } = this.props
+    // if (
+    //   data.seenAt !== nextProps.data.seenAt ||
+    //   (utils.isReadByOthers(nextProps.data) && !utils.isReadByOthers(data)) ||
+    //   utils.messageHasError(nextProps.data) !== utils.messageHasError(data)
+    // ) {
+    //   return true
+    // }
     return false
   }
 
@@ -104,8 +89,10 @@ class Message extends React.Component {
     }
 
     let iconColor = null
-    let iconName = utils.isReadByOthers(data) ? 'check-circle' : 'circle'
-    let failed = utils.messageHasError(data)
+    // @FIXME: destroyed by refactor
+    let iconName = 'circle' // utils.isReadByOthers(data) ? 'check-circle' : 'circle'
+    // @FIXME: destroyed by refactor
+    let failed = true // utils.messageHasError(data)
     if (failed) {
       iconName = 'x-circle'
       iconColor = 'red'
@@ -199,8 +186,6 @@ class Message extends React.Component {
   }
 }
 
-const MessageContainer = fragments.Event(withNamespaces()(Message))
-
 class TextInputBase extends PureComponent {
   state = {
     height: 16,
@@ -258,9 +243,7 @@ class TextInputBase extends PureComponent {
 
 const TextInput = withNamespaces()(TextInputBase)
 
-class Input extends PureComponent {
-  static contextType = RelayContext
-
+export class Input extends PureComponent {
   state = {
     input: '',
   }
@@ -355,55 +338,53 @@ class Input extends PureComponent {
   }
 }
 
-const Chat = fragments.Conversation(
-  class Chat extends PureComponent {
-    render () {
-      const {
-        data,
-        navigation,
-        context: { queries, subscriptions, fragments },
-        context,
-      } = this.props
-      return (
-        <Flex.Rows>
-          <Pagination
-            style={[
-              { flex: 1 },
-              Platform.OS === 'web' ? { paddingTop: 48 } : {},
-            ]}
-            direction='forward'
-            query={queries.EventList.graphql}
-            variables={merge([
-              queries.EventList.defaultVariables,
-              {
-                filter: {
-                  kind: 302,
-                  targetAddr: data.id,
-                },
-              },
-            ])}
-            subscriptions={[subscriptions.message]}
-            fragment={fragments.EventList}
-            alias='EventList'
-            renderItem={props => (
-              <MessageContainer
-                {...props}
-                navigation={navigation}
-                context={context}
-                conversation={data}
-              />
-            )}
-            inverted
-          />
-          <Input
-            navigation={this.props.navigation}
-            context={this.props.context}
-          />
-        </Flex.Rows>
-      )
-    }
+export class Chat extends PureComponent {
+  render () {
+    // @FIXME: destroyed by refactor
+    return null
+    // const {
+    //   data,
+    //   navigation,
+    //   context: { queries, subscriptions, fragments },
+    //   context,
+    // } = this.props
+    // return (
+    //   <Flex.Rows>
+    //     <Pagination
+    //       style={[{ flex: 1 }, Platform.OS === 'web' ? { paddingTop: 48 } : {}]}
+    //       direction='forward'
+    //       query={queries.EventList.graphql}
+    //       variables={merge([
+    //         queries.EventList.defaultVariables,
+    //         {
+    //           filter: {
+    //             kind: 302,
+    //             targetAddr: data.id,
+    //           },
+    //         },
+    //       ])}
+    //       subscriptions={[subscriptions.message]}
+    //       fragment={fragments.EventList}
+    //       alias='EventList'
+    //       renderItem={props => (
+    //         <MessageContainer
+    //           {...props}
+    //           navigation={navigation}
+    //           context={context}
+    //           conversation={data}
+    //         />
+    //       )}
+    //       inverted
+    //     />
+    //     <Input
+    //       navigation={this.props.navigation}
+    //       context={this.props.context}
+    //     />
+    //   </Flex.Rows>
+    // )
   }
-)
+}
+
 class Detail extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -418,7 +399,10 @@ class Detail extends PureComponent {
               middle
               size={5}
             >
-              {utils.getTitle(navigation.state.params) || {}}
+              {
+                // @FIXME: destroyed by refactor
+                // utils.getTitle(navigation.state.params) || {}
+              }
             </Text>
             {navigation.state.params.topic ? (
               <Text
@@ -464,47 +448,48 @@ class Detail extends PureComponent {
   }
 
   render () {
-    const id = this.props.navigation.getParam('id')
-    const {
-      navigation,
-      context,
-      context: { queries },
-    } = this.props
-
-    return (
-      <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
-        <QueryReducer
-          query={queries.Conversation.graphql}
-          variables={merge([queries.Conversation.defaultVariables, { id }])}
-        >
-          {(state, retry) => {
-            switch (state.type) {
-              default:
-              case state.loading:
-                return (
-                  <Flex.Rows align='center'>
-                    <Flex.Cols align='center'>
-                      <ActivityIndicator size='large' />
-                    </Flex.Cols>
-                  </Flex.Rows>
-                )
-              case state.success:
-                return (
-                  <Chat
-                    navigation={navigation}
-                    context={context}
-                    data={state.data.Conversation}
-                  />
-                )
-              case state.error:
-                setTimeout(() => retry(), 1000)
-                return null
-            }
-          }}
-        </QueryReducer>
-      </Screen>
-    )
+    return null
+    // @FIXME: destroyed by refactor
+    // const id = this.props.navigation.getParam('id')
+    // const {
+    //   navigation,
+    //   context,
+    //   context: { queries },
+    // } = this.props
+    // return (
+    //   <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
+    //     <QueryReducer
+    //       query={queries.Conversation.graphql}
+    //       variables={merge([queries.Conversation.defaultVariables, { id }])}
+    //     >
+    //       {(state, retry) => {
+    //         switch (state.type) {
+    //           default:
+    //           case state.loading:
+    //             return (
+    //               <Flex.Rows align='center'>
+    //                 <Flex.Cols align='center'>
+    //                   <ActivityIndicator size='large' />
+    //                 </Flex.Cols>
+    //               </Flex.Rows>
+    //             )
+    //           case state.success:
+    //             return (
+    //               <Chat
+    //                 navigation={navigation}
+    //                 context={context}
+    //                 data={state.data.Conversation}
+    //               />
+    //             )
+    //           case state.error:
+    //             setTimeout(() => retry(), 1000)
+    //             return null
+    //         }
+    //       }}
+    //     </QueryReducer>
+    //   </Screen>
+    // )
   }
 }
 
-export default withRelayContext(Detail)
+export default Detail

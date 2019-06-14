@@ -4,12 +4,15 @@ import { colors } from '@berty/common/constants'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import I18n from 'i18next'
 import { withNamespaces } from 'react-i18next'
-import { withCurrentUser } from '@berty/relay/utils/contact'
-import RelayContext from '@berty/relay/context'
 import { showMessage } from 'react-native-flash-message'
 import { withGoBack } from '@berty/component/BackActionProvider'
+import { withStoreContext } from '@berty/store/context'
 
-class MyAccountBase extends React.PureComponent {
+@withGoBack
+@withNamespaces()
+// @withCurrentUser
+@withStoreContext
+class MyAccount extends React.PureComponent {
   constructor (props) {
     super(props)
 
@@ -26,7 +29,7 @@ class MyAccountBase extends React.PureComponent {
   }
 
   onSave = async () => {
-    await this.props.context.mutations.contactUpdate({
+    await this.props.context.node.service.contactUpdate({
       ...this.props.currentUser,
       displayName: this.state.displayName,
     })
@@ -80,11 +83,7 @@ class MyAccountBase extends React.PureComponent {
   }
 }
 
-const MyAccountContent = withGoBack(
-  withNamespaces()(withCurrentUser(MyAccountBase, { showOnlyLoaded: true }))
-)
-
-export default class MyAccount extends React.Component {
+export default class MyAccountScreen extends React.Component {
   static navigationOptions = ({ navigation }) => {
     const onSave = navigation.getParam('onSave')
     return {
@@ -104,14 +103,7 @@ export default class MyAccount extends React.Component {
   render () {
     return (
       <Screen>
-        <RelayContext.Consumer>
-          {context => (
-            <MyAccountContent
-              navigation={this.props.navigation}
-              context={context}
-            />
-          )}
-        </RelayContext.Consumer>
+        <MyAccount navigation={this.props.navigation} />
       </Screen>
     )
   }

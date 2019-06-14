@@ -1,17 +1,15 @@
+import { Avatar, Flex, Header, Text } from '@berty/component'
+import { border, borderBottom, marginLeft, padding } from '@berty/common/styles'
+import { colors } from '@berty/common/constants'
+import React, { Component, PureComponent } from 'react'
+import * as enums from '@berty/common/enums.gen'
+
 import { ActivityIndicator, View } from 'react-native'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
-import React, { Component, PureComponent } from 'react'
 
-import { Pagination, RelayContext } from '@berty/relay'
-import { Avatar, Flex, Header, Screen, SearchBar, Text } from '@berty/component'
-import { border, borderBottom, marginLeft, padding } from '@berty/common/styles'
-import { colors } from '@berty/common/constants'
-import { fragments } from '@berty/graphql'
-import * as enums from '@berty/common/enums.gen'
-import { withRelayContext } from '@berty/relay/context'
-
-class ItemBase extends PureComponent {
+@withNamespaces()
+export class Item extends PureComponent {
   state = { selected: false }
 
   onPress = () => {
@@ -81,10 +79,8 @@ class ItemBase extends PureComponent {
   }
 }
 
-const Item = withNamespaces()(fragments.Contact(ItemBase))
+@withNamespaces()
 class ListScreen extends Component {
-  static contextType = RelayContext
-
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -155,58 +151,60 @@ class ListScreen extends Component {
   }
 
   render () {
-    const { contactsID } = this.state
-    const { context, navigation } = this.props
-
-    const currentContactIds = navigation.getParam('currentContactIds', [])
-
-    return (
-      <Screen style={[{ backgroundColor: colors.white }]}>
-        <Pagination
-          context={context}
-          query={context.queries.ContactList.graphql}
-          variables={context.queries.ContactList.defaultVariables}
-          fragment={fragments.ContactList}
-          alias='ContactList'
-          ListHeaderComponent={
-            <View style={padding}>
-              <SearchBar
-                onChangeText={() => {
-                  console.warn('not implemented')
-                }}
-              />
-            </View>
-          }
-          ListEmptyComponent={
-            <View style={padding}>
-              {currentContactIds.length > 0 ? (
-                <Text>You can't add anyone to this conversation</Text>
-              ) : (
-                <Text>
-                  You need to have contacts before you can create a conversation
-                </Text>
-              )}
-            </View>
-          }
-          renderItem={props =>
-            props.data.status !== 42 &&
-            currentContactIds.indexOf(props.data.id) === -1 ? (
-                <Item
-                  {...props}
-                  onPress={() => {
-                    const index = contactsID.lastIndexOf(props.data.id)
-                    index < 0
-                      ? contactsID.push(props.data.id)
-                      : contactsID.splice(index, 1)
-                    this.setState({ contactsID })
-                  }}
-                />
-              ) : null
-          }
-        />
-      </Screen>
-    )
+    return null
+    // @FIXME: destroyed by refactor
+    //    const { contactsID } = this.state
+    //    const { context, navigation } = this.props
+    //
+    //    const currentContactIds = navigation.getParam('currentContactIds', [])
+    //
+    // return (
+    //   <Screen style={[{ backgroundColor: colors.white }]}>
+    //     <Pagination
+    //       context={context}
+    //       query={context.queries.ContactList.graphql}
+    //       variables={context.queries.ContactList.defaultVariables}
+    //       fragment={fragments.ContactList}
+    //       alias='ContactList'
+    //       ListHeaderComponent={
+    //         <View style={padding}>
+    //           <SearchBar
+    //             onChangeText={() => {
+    //               console.warn('not implemented')
+    //             }}
+    //           />
+    //         </View>
+    //       }
+    //       ListEmptyComponent={
+    //         <View style={padding}>
+    //           {currentContactIds.length > 0 ? (
+    //             <Text>You can't add anyone to this conversation</Text>
+    //           ) : (
+    //             <Text>
+    //               You need to have contacts before you can create a conversation
+    //             </Text>
+    //           )}
+    //         </View>
+    //       }
+    //       renderItem={props =>
+    //         props.data.status !== 42 &&
+    //         currentContactIds.indexOf(props.data.id) === -1 ? (
+    //             <Item
+    //               {...props}
+    //               onPress={() => {
+    //                 const index = contactsID.lastIndexOf(props.data.id)
+    //                 index < 0
+    //                   ? contactsID.push(props.data.id)
+    //                   : contactsID.splice(index, 1)
+    //                 this.setState({ contactsID })
+    //               }}
+    //             />
+    //           ) : null
+    //       }
+    //     />
+    //   </Screen>
+    // )
   }
 }
 
-export default withNamespaces()(withRelayContext(ListScreen))
+export default ListScreen

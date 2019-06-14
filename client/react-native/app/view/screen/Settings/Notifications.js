@@ -1,16 +1,4 @@
-import React, { PureComponent } from 'react'
-import {
-  ActivityIndicator,
-  Switch,
-  Platform,
-  NativeModules,
-  Alert,
-} from 'react-native'
-import { Flex, Header, Menu } from '@berty/component'
-import I18n from 'i18next'
-import { withNamespaces } from 'react-i18next'
-import { QueryReducer, RelayContext } from '@berty/relay'
-import { merge } from '@berty/common/helpers'
+import { Header, Menu } from '@berty/component'
 import {
   enableNativeNotifications,
   disableNativeNotifications,
@@ -18,10 +6,14 @@ import {
   enableMQTTNotifications,
   disableMQTTNotifications,
 } from '@berty/common/helpers/notifications'
-import * as enums from '@berty/common/enums.gen'
-import { withConfig } from '@berty/relay/config'
-import { showMessage } from 'react-native-flash-message'
 import { withBridgeContext } from '@berty/bridge/Context'
+import React, { PureComponent } from 'react'
+import * as enums from '@berty/common/enums.gen'
+
+import { Switch, Platform, NativeModules, Alert } from 'react-native'
+import { showMessage } from 'react-native-flash-message'
+import { withNamespaces } from 'react-i18next'
+import I18n from 'i18next'
 
 const { CoreModule } = NativeModules
 
@@ -37,7 +29,8 @@ export const notificationStatus = {
   provisional: 3,
 }
 
-class NotificationsBase extends PureComponent {
+@withNamespaces()
+export class Notifications extends PureComponent {
   getCurrentPushConfigs = () =>
     this.props.data.filter(elt => elt.pushType === getNativePushType())
 
@@ -242,6 +235,7 @@ class NotificationsBase extends PureComponent {
   }
 }
 
+@withBridgeContext
 class NotificationWrapper extends React.PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -254,51 +248,44 @@ class NotificationWrapper extends React.PureComponent {
   })
 
   render () {
-    const props = this.props
-
-    return (
-      <RelayContext.Consumer>
-        {context => (
-          <QueryReducer
-            query={context.queries.DevicePushConfigList.graphql}
-            variables={merge([
-              context.queries.DevicePushConfigList.defaultVariables,
-            ])}
-          >
-            {(state, retry) => {
-              switch (state.type) {
-                default:
-                case state.loading:
-                  return (
-                    <Flex.Rows align='center'>
-                      <Flex.Cols align='center'>
-                        <ActivityIndicator size='large' />
-                      </Flex.Cols>
-                    </Flex.Rows>
-                  )
-                case state.success:
-                  return (
-                    <Notifications
-                      data={state.data.DevicePushConfigList.edges}
-                      context={context}
-                      refresh={retry}
-                      {...props}
-                    />
-                  )
-                case state.error:
-                  setTimeout(() => retry(), 1000)
-                  return null
-              }
-            }}
-          </QueryReducer>
-        )}
-      </RelayContext.Consumer>
-    )
+    return null
+    // @FIXME: destroyed by refactor
+    // const props = this.props
+    // return (
+    //   <QueryReducer
+    //     query={context.queries.DevicePushConfigList.graphql}
+    //     variables={merge([
+    //       context.queries.DevicePushConfigList.defaultVariables,
+    //     ])}
+    //   >
+    //     {(state, retry) => {
+    //       switch (state.type) {
+    //         default:
+    //         case state.loading:
+    //           return (
+    //             <Flex.Rows align='center'>
+    //               <Flex.Cols align='center'>
+    //                 <ActivityIndicator size='large' />
+    //               </Flex.Cols>
+    //             </Flex.Rows>
+    //           )
+    //         case state.success:
+    //           return (
+    //             <Notifications
+    //               data={state.data.DevicePushConfigList.edges}
+    //               context={context}
+    //               refresh={retry}
+    //               {...props}
+    //             />
+    //           )
+    //         case state.error:
+    //           setTimeout(() => retry(), 1000)
+    //           return null
+    //       }
+    //     }}
+    //   </QueryReducer>
+    // )
   }
 }
 
-const Notifications = withConfig(withNamespaces()(NotificationsBase), {
-  showOnlyLoaded: true,
-})
-
-export default withBridgeContext(NotificationWrapper)
+export default NotificationWrapper

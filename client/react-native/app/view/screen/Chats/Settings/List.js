@@ -4,23 +4,21 @@ import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
 import { Avatar, Header, Menu, Screen } from '@berty/component'
-import { QueryReducer, RelayContext } from '@berty/relay'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import { colors } from '@berty/common/constants'
-import {
-  contact as contactUtils,
-  conversation as utils,
-} from '@berty/relay/utils'
 import * as enums from '@berty/common/enums.gen'
-import { merge } from '@berty/common/helpers'
 import { withGoBack } from '@berty/component/BackActionProvider'
-import { withRelayContext } from '@berty/relay/context'
+import { withStoreContext } from '@berty/store/context'
 
-class SettingsScreenBase extends PureComponent {
+@withNavigation
+@withNamespaces()
+@withStoreContext
+export class SettingsScreen extends PureComponent {
   constructor (props) {
     super(props)
     const conversation = props.navigation.getParam('conversation')
-    const title = utils.getTitle(conversation)
+    // @FIXME: destroyed by refactor
+    const title = conversation.title // utils.getTitle(conversation)
 
     this.state = {
       edit: false,
@@ -66,10 +64,9 @@ class SettingsScreenBase extends PureComponent {
   addMembers = async ({ contactsID }) => {
     try {
       const conversation = this.props.navigation.getParam('conversation')
-      await this.props.context.mutations.conversationInvite({
+      await this.props.context.node.service.conversationInvite({
         conversation,
         contacts: contactsID.map(id => ({
-          ...contactUtils.default,
           id,
         })),
       })
@@ -139,13 +136,11 @@ class SettingsScreenBase extends PureComponent {
                 title={t('contacts.details')}
                 onPress={() => {
                   navigation.navigate('chats/contact/detail/list', {
-                    id: contactUtils.getCoreID(
-                      members.find(
-                        _ =>
-                          _.contact.status !==
-                          enums.BertyEntityContactInputStatus.Myself
-                      ).contactId
-                    ),
+                    id: members.find(
+                      _ =>
+                        _.contact.status !==
+                        enums.BertyEntityContactInputStatus.Myself
+                    ).contactId,
                     editRoute: 'chats/contact/detail/edit',
                   })
                 }}
@@ -205,69 +200,64 @@ class SettingsScreenBase extends PureComponent {
   }
 }
 
-const SettingsScreen = withRelayContext(
-  withNavigation(withNamespaces()(SettingsScreenBase))
-)
-
-class ListBase extends PureComponent {
-  render () {
-    const { navigation, context } = this.props
-    const conversation = navigation.getParam('conversation')
-    const { id } = conversation
-    const { queries } = context
-
-    return (
-      <QueryReducer
-        query={queries.Conversation.graphql}
-        variables={merge([queries.Conversation.defaultVariables, { id }])}
-      >
-        {(state, retry) => {
-          if (state.type === state.error) {
-            setTimeout(() => retry(), 1000)
-          }
-
-          return (
-            <SettingsScreen
-              navigation={navigation}
-              context={context}
-              conversation={
-                state.type === state.success
-                  ? state.data.Conversation
-                  : conversation
-              }
-              retry={retry}
-            />
-          )
-        }}
-      </QueryReducer>
-    )
+@withGoBack
+class List extends PureComponent {
+  static navigationOptions = ({ navigation }) => {
+    const [conversation, { edit }, onEdit, onSave] = [
+      navigation.getParam('conversation') || { members: [] },
+      navigation.getParam('state') || {},
+      navigation.getParam('onEdit'),
+      navigation.getParam('onSave'),
+    ]
+    const rightIcon = edit ? 'save' : 'edit-2'
+    const onPressRight = edit ? onSave : onEdit
+    return {
+      tabBarVisible: false,
+      header: (
+        <Header
+          navigation={navigation}
+          title={I18n.t('chats.details')}
+          rightBtnIcon={conversation.members.length > 2 && rightIcon}
+          backBtn
+          onPressRightBtn={conversation.members.length > 2 && onPressRight}
+        />
+      ),
+    }
   }
-}
 
-const List = withGoBack(withRelayContext(ListBase))
+  render () {
+    return null
+    // @FIXME: destroyed by refactor
+    // const { navigation, context } = this.props
+    // const conversation = navigation.getParam('conversation')
+    // const { id } = conversation
+    // const { queries } = context
 
-List.contextType = RelayContext
+    // return (
+    //   <QueryReducer
+    //     query={queries.Conversation.graphql}
+    //     variables={merge([queries.Conversation.defaultVariables, { id }])}
+    //   >
+    //     {(state, retry) => {
+    //       if (state.type === state.error) {
+    //         setTimeout(() => retry(), 1000)
+    //       }
 
-List.navigationOptions = ({ navigation }) => {
-  const [conversation, { edit }, onEdit, onSave] = [
-    navigation.getParam('conversation') || { members: [] },
-    navigation.getParam('state') || {},
-    navigation.getParam('onEdit'),
-    navigation.getParam('onSave'),
-  ]
-  const rightIcon = edit ? 'save' : 'edit-2'
-  const onPressRight = edit ? onSave : onEdit
-  return {
-    tabBarVisible: false,
-    header: (
-      <Header
-        navigation={navigation}
-        title={I18n.t('chats.details')}
-        rightBtnIcon={conversation.members.length > 2 && rightIcon}
-        backBtn
-        onPressRightBtn={conversation.members.length > 2 && onPressRight}
-      />
-    ),
+    //       return (
+    //         <SettingsScreen
+    //           navigation={navigation}
+    //           context={context}
+    //           conversation={
+    //             state.type === state.success
+    //               ? state.data.Conversation
+    //               : conversation
+    //           }
+    //           retry={retry}
+    //         />
+    //       )
+    //     }}
+    //   </QueryReducer>
+    // )
   }
 }
 

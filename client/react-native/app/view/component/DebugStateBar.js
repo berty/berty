@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react'
 import { colors } from '@berty/common/constants'
-import { promiseWithTimeout } from 'react-relay-network-modern/es/middlewares/retry'
 import Flex from './Flex'
 import Text from './Text'
 import { View, Platform } from 'react-native'
 import Icon from './Icon'
 import NavigationService from '@berty/common/helpers/NavigationService'
-import { withRelayContext } from '@berty/relay/context'
 
 const daemonStateValues = {
   down: 0,
@@ -46,13 +44,14 @@ class DebugStateBar extends PureComponent {
 
     this.fetchPeers()
 
-    this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe({
-      iterator: undefined,
-      updater: (store, data) => {
-        const peer = data.MonitorPeers
-        this.addPeer(peer)
-      },
-    })
+    // @FIXME: destroyed by refactor
+    // this.subscriber = this.props.context.subscriptions.monitorPeers.subscribe({
+    //   iterator: undefined,
+    //   updater: (store, data) => {
+    //     const peer = data.MonitorPeers
+    //     this.addPeer(peer)
+    //   },
+    // })
   }
 
   componentWillUnmount () {
@@ -89,72 +88,74 @@ class DebugStateBar extends PureComponent {
   }
 
   fetchListenAddrs = async () => {
-    const { context } = this.props
-    const { watchTime, requestTimeout, timeouted } = this.state
-    try {
-      const e = await promiseWithTimeout(
-        context.queries.GetListenAddrs.fetch(),
-        requestTimeout,
-        this.timeoutPromise
-      )
-      const timer = setTimeout(this.fetchListenAddrs, watchTime)
-      // if we previously timeouted we need to refetch peers
-      if (timeouted === true) {
-        this.fetchPeers()
-      }
-      this.setState(
-        {
-          listenAddrs: e.addrs,
-          timeouted: false,
-          listenAddrTimer: timer,
-        },
-        this.setColor
-      )
-    } catch (err) {
-      const timer = setTimeout(this.fetchListenAddrs, watchTime)
-      this.setState({
-        listenAddrTimer: timer,
-        timeouted: true,
-        listenAddrs: [],
-      })
-      // console.warn('err listen address', err)
-    }
+    // @FIXME: destroyed by refactor
+    // const { context } = this.props
+    // const { watchTime, requestTimeout, timeouted } = this.state
+    // try {
+    //   const e = await promiseWithTimeout(
+    //     context.queries.GetListenAddrs.fetch(),
+    //     requestTimeout,
+    //     this.timeoutPromise
+    //   )
+    //   const timer = setTimeout(this.fetchListenAddrs, watchTime)
+    //   // if we previously timeouted we need to refetch peers
+    //   if (timeouted === true) {
+    //     this.fetchPeers()
+    //   }
+    //   this.setState(
+    //     {
+    //       listenAddrs: e.addrs,
+    //       timeouted: false,
+    //       listenAddrTimer: timer,
+    //     },
+    //     this.setColor
+    //   )
+    // } catch (err) {
+    //   const timer = setTimeout(this.fetchListenAddrs, watchTime)
+    //   this.setState({
+    //     listenAddrTimer: timer,
+    //     timeouted: true,
+    //     listenAddrs: [],
+    //   })
+    //   // console.warn('err listen address', err)
+    // }
   }
 
   fetchListenInterfaceAddrs = async () => {
-    const { context } = this.props
-    const { watchTime, requestTimeout, timeouted } = this.state
-    try {
-      const e = await promiseWithTimeout(
-        context.queries.GetListenInterfaceAddrs.fetch(),
-        requestTimeout,
-        this.timeoutPromise
-      )
-      const timer = setTimeout(this.fetchListenInterfaceAddrs, watchTime)
-      // if we previously timeouted we need to refetch peers
-      if (timeouted === true) {
-        this.fetchPeers()
-      }
-      this.setState(
-        {
-          listenInterfaceAddrs: e.addrs,
-          timeouted: false,
-          InterfaceAddrTimer: timer,
-        },
-        this.setColor
-      )
-    } catch (err) {
-      const timer = setTimeout(this.fetchListenInterfaceAddrs, watchTime)
-      this.setState(
-        {
-          InterfaceAddrTimer: timer,
-          timeouted: true,
-          listenInterfaceAddrs: [],
-        },
-        this.setColor
-      )
-      // console.warn('err Listen address', err)
-    }
+    // @FIXME: destroyed by refactor
+    // const { context } = this.props
+    // const { watchTime, requestTimeout, timeouted } = this.state
+    // try {
+    //   const e = await promiseWithTimeout(
+    //     context.queries.GetListenInterfaceAddrs.fetch(),
+    //     requestTimeout,
+    //     this.timeoutPromise
+    //   )
+    //   const timer = setTimeout(this.fetchListenInterfaceAddrs, watchTime)
+    //   // if we previously timeouted we need to refetch peers
+    //   if (timeouted === true) {
+    //     this.fetchPeers()
+    //   }
+    //   this.setState(
+    //     {
+    //       listenInterfaceAddrs: e.addrs,
+    //       timeouted: false,
+    //       InterfaceAddrTimer: timer,
+    //     },
+    //     this.setColor
+    //   )
+    // } catch (err) {
+    //   const timer = setTimeout(this.fetchListenInterfaceAddrs, watchTime)
+    //   this.setState(
+    //     {
+    //       InterfaceAddrTimer: timer,
+    //       timeouted: true,
+    //       listenInterfaceAddrs: [],
+    //     },
+    //     this.setColor
+    //   )
+    //   // console.warn('err Listen address', err)
+    // }
   }
 
   setColor = () => {
@@ -342,4 +343,4 @@ class DebugStateBar extends PureComponent {
   }
 }
 
-export default withRelayContext(DebugStateBar)
+export default DebugStateBar

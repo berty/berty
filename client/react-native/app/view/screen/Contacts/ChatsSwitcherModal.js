@@ -1,17 +1,13 @@
-import { FlatList, View } from 'react-native'
-import React from 'react'
-
-import { Avatar, Flex, ModalScreen } from '@berty/component'
-import { withRelayContext } from '@berty/relay/context'
-import Text from '@berty/component/Text'
-import { colors } from '@berty/common/constants'
-import { withNamespaces } from 'react-i18next'
-import { Pagination } from '@berty/relay'
-import { fragments } from '@berty/graphql'
+import { Avatar, Flex } from '@berty/component'
 import { borderTop, marginLeft, padding } from '@berty/common/styles'
-import { conversation as utils } from '@berty/relay/utils'
-import Mousetrap from '@berty/common/helpers/Mousetrap'
+import { colors } from '@berty/common/constants'
 import { withGoBack } from '@berty/component/BackActionProvider'
+import Mousetrap from '@berty/common/helpers/Mousetrap'
+import React from 'react'
+import Text from '@berty/component/Text'
+
+import { FlatList, View } from 'react-native'
+import { withNamespaces } from 'react-i18next'
 import {
   withNavigation,
   withNavigationFocus,
@@ -19,11 +15,15 @@ import {
   NavigationActions,
 } from 'react-navigation'
 
-const modalWidth = 480
+export const modalWidth = 480
 
 const FilteredListContext = React.createContext()
 
-class SwitcherListComponentBase extends React.PureComponent {
+@withGoBack
+@withNavigation
+@withNavigationFocus
+@withNamespaces()
+export class SwitcherListComponent extends React.PureComponent {
   constructor (props) {
     super(props)
 
@@ -216,124 +216,114 @@ class SwitcherListComponentBase extends React.PureComponent {
   }
 }
 
-const SwitcherListComponent = withGoBack(
-  withNavigation(
-    withNavigationFocus(withNamespaces()(SwitcherListComponentBase))
-  )
-)
+@withNavigation
+class ItemBase extends React.PureComponent {
+  constructor (props) {
+    super(props)
 
-const ItemBase = fragments.Conversation(
-  withNavigation(
-    class ItemClass extends React.PureComponent {
-      constructor (props) {
-        super(props)
+    const item = this.props.data
 
-        const item = this.props.data
+    this.forceIgnore = false
 
-        this.forceIgnore = false
+    if (!item.members) {
+      this.forceIgnore = true
+    } else if (
+      item.members.length === 2 &&
+      item.members.some(
+        m =>
+          m.contact == null ||
+          (m.contact.displayName === '' && m.contact.overrideDisplayName === '')
+      )
+    ) {
+      this.forceIgnore = true
+    } else {
+      // @FIXME: destroyed by refactor
+      this.title = item.title // utils.getTitle(item)
+      const membersName = item.members
+        .filter(m => m.contact && m.contact.status !== 42)
+        .map(m => `${m.contact.displayName} ${m.contact.overrideDisplayName}`)
+        .join(' ')
 
-        if (!item.members) {
-          this.forceIgnore = true
-        } else if (
-          item.members.length === 2 &&
-          item.members.some(
-            m =>
-              m.contact == null ||
-              (m.contact.displayName === '' &&
-                m.contact.overrideDisplayName === '')
-          )
-        ) {
-          this.forceIgnore = true
-        } else {
-          this.title = utils.getTitle(item)
-          const membersName = item.members
-            .filter(m => m.contact && m.contact.status !== 42)
-            .map(
-              m => `${m.contact.displayName} ${m.contact.overrideDisplayName}`
-            )
-            .join(' ')
-
-          this.testedName = (membersName + this.title).toLocaleLowerCase()
-        }
-      }
-
-      testItem () {
-        const { query } = this.props
-
-        return this.testedName.indexOf(query.toLocaleLowerCase()) !== -1
-      }
-
-      render () {
-        if (this.forceIgnore || !this.testItem()) {
-          return null
-        }
-
-        const {
-          data,
-          navigation,
-          index,
-          addMatched,
-          focusedIndex,
-          setCandidateRoute,
-        } = this.props
-
-        const route = {
-          routeName: 'chats/subviews',
-          action: StackActions.reset({
-            index: 0,
-            actions: [
-              NavigationActions.navigate({
-                routeName: 'chats/detail',
-                params: data,
-              }),
-            ],
-          }),
-        }
-
-        if (index === focusedIndex) {
-          setCandidateRoute(route)
-        }
-
-        addMatched && addMatched(index)
-
-        const title = utils.getTitle(data)
-
-        return (
-          <Flex.Cols
-            align='center'
-            onPress={() => navigation.navigate(route)}
-            style={[
-              { height: 72 },
-              padding,
-              borderTop,
-              index === focusedIndex ? { backgroundColor: colors.blue } : null,
-            ]}
-          >
-            <Flex.Rows size={1} align='center'>
-              <Avatar data={data} size={40} />
-            </Flex.Rows>
-            <Flex.Rows
-              size={7}
-              align='stretch'
-              justify='center'
-              style={[marginLeft]}
-            >
-              <Text
-                color={index === focusedIndex ? colors.white : colors.fakeBlack}
-                left
-                middle
-              >
-                {title}
-              </Text>
-            </Flex.Rows>
-          </Flex.Cols>
-        )
-      }
+      this.testedName = (membersName + this.title).toLocaleLowerCase()
     }
-  )
-)
+  }
 
-class Item extends React.PureComponent {
+  testItem () {
+    const { query } = this.props
+
+    return this.testedName.indexOf(query.toLocaleLowerCase()) !== -1
+  }
+
+  render () {
+    if (this.forceIgnore || !this.testItem()) {
+      return null
+    }
+
+    const {
+      data,
+      navigation,
+      index,
+      addMatched,
+      focusedIndex,
+      setCandidateRoute,
+    } = this.props
+
+    const route = {
+      routeName: 'chats/subviews',
+      action: StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: 'chats/detail',
+            params: data,
+          }),
+        ],
+      }),
+    }
+
+    if (index === focusedIndex) {
+      setCandidateRoute(route)
+    }
+
+    addMatched && addMatched(index)
+
+    // @FIXME: destroyed by refactor
+    const title = data.title // utils.getTitle(data)
+
+    return (
+      <Flex.Cols
+        align='center'
+        onPress={() => navigation.navigate(route)}
+        style={[
+          { height: 72 },
+          padding,
+          borderTop,
+          index === focusedIndex ? { backgroundColor: colors.blue } : null,
+        ]}
+      >
+        <Flex.Rows size={1} align='center'>
+          <Avatar data={data} size={40} />
+        </Flex.Rows>
+        <Flex.Rows
+          size={7}
+          align='stretch'
+          justify='center'
+          style={[marginLeft]}
+        >
+          <Text
+            color={index === focusedIndex ? colors.white : colors.fakeBlack}
+            left
+            middle
+          >
+            {title}
+          </Text>
+        </Flex.Rows>
+      </Flex.Cols>
+    )
+  }
+}
+
+export class Item extends React.PureComponent {
   render () {
     return (
       <FilteredListContext.Consumer>
@@ -353,44 +343,46 @@ class Item extends React.PureComponent {
 
 class ContactCardModal extends React.Component {
   render () {
-    const {
-      context,
-      context: { queries, fragments },
-    } = this.props
+    return null
+    // @FIXME destroyed by refactor
+    // const {
+    //   context,
+    //   context: { queries, fragments },
+    // } = this.props
 
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          paddingTop: 50,
-        }}
-      >
-        <ModalScreen
-          keyboardDismiss
-          backgroundColor={colors.transparentGrey}
-          width={modalWidth}
-        >
-          <View
-            style={{
-              height: 358,
-            }}
-          >
-            <Pagination
-              direction='forward'
-              query={queries.ConversationList.graphql}
-              variables={queries.ConversationList.defaultVariables}
-              fragment={fragments.ConversationList}
-              alias='ConversationList'
-              ListComponent={SwitcherListComponent}
-              renderItem={props => <Item {...props} context={context} />}
-              emptyItem={() => <Text>Nothing found</Text>}
-            />
-          </View>
-        </ModalScreen>
-      </View>
-    )
+    // return (
+    //   <View
+    //     style={{
+    //       flex: 1,
+    //       alignItems: 'center',
+    //       paddingTop: 50,
+    //     }}
+    //   >
+    //     <ModalScreen
+    //       keyboardDismiss
+    //       backgroundColor={colors.transparentGrey}
+    //       width={modalWidth}
+    //     >
+    //       <View
+    //         style={{
+    //           height: 358,
+    //         }}
+    //       >
+    //         <Pagination
+    //           direction='forward'
+    //           query={queries.ConversationList.graphql}
+    //           variables={queries.ConversationList.defaultVariables}
+    //           fragment={fragments.ConversationList}
+    //           alias='ConversationList'
+    //           ListComponent={SwitcherListComponent}
+    //           renderItem={props => <Item {...props} context={context} />}
+    //           emptyItem={() => <Text>Nothing found</Text>}
+    //         />
+    //       </View>
+    //     </ModalScreen>
+    //   </View>
+    // )
   }
 }
 
-export default withRelayContext(ContactCardModal)
+export default ContactCardModal

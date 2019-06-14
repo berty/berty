@@ -13,8 +13,8 @@ import React, { PureComponent } from 'react'
 import { Menu, Header, Text, Flex } from '@berty/component'
 import { borderBottom } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { withRelayContext } from '@berty/relay/context'
 import { withGoBack } from '@berty/component/BackActionProvider'
+import { withStoreContext } from '@berty/store/context'
 
 const listRenderInterval = 500
 var maxDisplaySize = 300
@@ -341,7 +341,8 @@ class Line extends PureComponent {
 
 export const FilterModal = withGoBack(FilterModalBase)
 
-class LogStreamWithContext extends PureComponent {
+@withStoreContext
+export class LogStream extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
       <Header
@@ -364,7 +365,7 @@ class LogStreamWithContext extends PureComponent {
   })
 
   componentWillMount () {
-    this.logStream = this.props.context.subscriptions.logStream({
+    this.logStream = this.props.context.node.service.logStream({
       continues: true,
       logLevel: '',
       namespaces: '',
@@ -373,11 +374,12 @@ class LogStreamWithContext extends PureComponent {
   }
 
   componentDidMount () {
-    this.subscriber = this.logStream.subscribe({
-      updater: (store, data) => {
-        this.addToList(data.LogStream.line)
-      },
-    })
+    // @FIXME: destroyed by refactor
+    // this.subscriber = this.logStream.subscribe({
+    //   updater: (store, data) => {
+    //     this.addToList(data.LogStream.line)
+    //   },
+    // })
     this.props.navigation.setParams({
       updateConfig: this.updateConfig,
       currentConfig: this.currentConfig,
@@ -386,7 +388,7 @@ class LogStreamWithContext extends PureComponent {
 
   componentWillUnmount () {
     clearTimeout(this.timer)
-    this.subscriber.unsubscribe()
+    this.subscriber.end()
   }
 
   logs = []
@@ -568,5 +570,3 @@ class LogStreamWithContext extends PureComponent {
     )
   }
 }
-
-export const LogStream = withRelayContext(LogStreamWithContext)
