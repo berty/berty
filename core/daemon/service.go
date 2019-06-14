@@ -110,17 +110,11 @@ func (d *Daemon) GetPort(context.Context, *Void) (*GetPortResponse, error) {
 		return nil, err
 	}
 
-	gqlPort, err := strconv.Atoi(strings.Split(a.GQLBind, ":")[1])
-	if err != nil {
-		return nil, err
-	}
-
 	grpcWebPort, err := strconv.Atoi(strings.Split(a.GrpcWebBind, ":")[1])
 	if err != nil {
 		return nil, err
 	}
 	return &GetPortResponse{
-		GqlPort:     int32(gqlPort),
 		GrpcWebPort: int32(grpcWebPort),
 	}, nil
 }

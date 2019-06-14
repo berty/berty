@@ -6,8 +6,7 @@ FROM    golang:1.12-alpine as builder
 RUN     apk --no-cache add make git go rsync libc-dev openssh docker npm
 
 # install compilers
-RUN     go get -u github.com/99designs/gqlgen \
-     && go get -u github.com/gogo/protobuf/gogoproto \
+RUN  go get -u github.com/gogo/protobuf/gogoproto \
      && go get -u github.com/gogo/protobuf/jsonpb \
      && go get -u github.com/gogo/protobuf/proto \
      && go get -u github.com/gogo/protobuf/protoc-gen-gofast \
@@ -18,8 +17,6 @@ RUN     go get -u github.com/99designs/gqlgen \
      && go get -u golang.org/x/tools/cmd/goimports \
      && go get -u moul.io/protoc-gen-gotemplate
 
-# gqlgen
-RUN     cd /go/src/github.com/99designs/gqlgen && git checkout v0.6.0 && go install github.com/99designs/gqlgen
 RUN     rm -f /go/bin/web-editor
 
 FROM    golang:1.12-alpine

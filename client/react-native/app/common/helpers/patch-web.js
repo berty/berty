@@ -15,7 +15,6 @@ if (Platform.OS === 'web') {
     getPort: async () => {
       const url = new URL(window.location.href)
       return {
-        gqlPort: url.searchParams.get('gql-port') || '8700',
         grpcWebPort: url.searchParams.get('grpc-web-port') || '8737',
       }
     },

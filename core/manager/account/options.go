@@ -1,15 +1,8 @@
 package account
 
 import (
-	"context"
-	"fmt"
 	"net/http"
-	"strings"
-	"sync"
 
-	"github.com/99designs/gqlgen/graphql"
-	gqlhandler "github.com/99designs/gqlgen/handler"
-	"github.com/gorilla/websocket"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
@@ -17,16 +10,10 @@ import (
 	grpc_ot "github.com/grpc-ecosystem/go-grpc-middleware/tracing/opentracing"
 	opentracing "github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
-	"github.com/rs/cors"
-	"github.com/vektah/gqlparser/gqlerror"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	helper "berty.tech/core/api/helper"
-	nodeapi "berty.tech/core/api/node"
-	gql "berty.tech/core/api/node/graphql"
-	graph "berty.tech/core/api/node/graphql/graph/generated"
 	"berty.tech/core/network"
 	"berty.tech/core/network/mock"
 	"berty.tech/core/pkg/errorcodes"
@@ -130,18 +117,18 @@ func WithGrpcServer(opts *GrpcServerOptions) NewOption {
 			grpc_recovery.UnaryServerInterceptor(grpc_recovery.WithRecoveryHandler(errorcodes.RecoveryHandler)),
 		}
 		if opts.Interceptors {
-			gqlLogger := zap.L().Named("vendor.grpc")
+			grpcLogger := zap.L().Named("vendor.grpc")
 			serverStreamOpts = append(serverStreamOpts,
 				// grpc_auth.StreamServerInterceptor(myAuthFunction),
 				// grpc_prometheus.StreamServerInterceptor,
 				grpc_ctxtags.StreamServerInterceptor(),
-				grpc_zap.StreamServerInterceptor(gqlLogger),
+				grpc_zap.StreamServerInterceptor(grpcLogger),
 			)
 			serverUnaryOpts = append(serverUnaryOpts,
 				// grpc_prometheus.UnaryServerInterceptor,
 				// grpc_auth.UnaryServerInterceptor(myAuthFunction),
 				grpc_ctxtags.UnaryServerInterceptor(),
-				grpc_zap.UnaryServerInterceptor(gqlLogger),
+				grpc_zap.UnaryServerInterceptor(grpcLogger),
 			)
 
 			if a.tracer != nil {
@@ -214,127 +201,6 @@ func WithGrpcWeb(opts *GrpcWebOptions) NewOption {
 			Addr:    a.GrpcWebBind,
 			Handler: handler,
 		}
-		return nil
-	}
-}
-
-type GQLOptions struct {
-	Bind         string
-	Interceptors bool
-}
-
-func WithGQL(opts *GQLOptions) NewOption {
-	return func(a *Account) error {
-		var err error
-		if opts == nil {
-			opts = &GQLOptions{}
-		}
-
-		interceptors := []grpc.DialOption{}
-		gqlLogger := zap.L().Named("vendor.graphql")
-		if opts.Interceptors {
-			clientStreamOpts := []grpc.StreamClientInterceptor{
-				grpc_zap.StreamClientInterceptor(gqlLogger),
-			}
-			clientUnaryOpts := []grpc.UnaryClientInterceptor{
-				grpc_zap.UnaryClientInterceptor(gqlLogger),
-			}
-
-			if a.tracer != nil {
-				tracerOpts := grpc_ot.WithTracer(a.tracer)
-				clientStreamOpts = append(clientStreamOpts, grpc_ot.StreamClientInterceptor(tracerOpts))
-				clientUnaryOpts = append(clientUnaryOpts, grpc_ot.UnaryClientInterceptor(tracerOpts))
-			}
-
-			interceptors = []grpc.DialOption{
-				grpc.WithStreamInterceptor(grpc_middleware.ChainStreamClient(clientStreamOpts...)),
-				grpc.WithUnaryInterceptor(grpc_middleware.ChainUnaryClient(clientUnaryOpts...)),
-			}
-		}
-
-		a.ioGrpc = helper.NewIOGrpc()
-		icdialer := a.ioGrpc.NewDialer()
-
-		dialOpts := append([]grpc.DialOption{
-			grpc.WithInsecure(),
-			grpc.WithDialer(icdialer),
-		}, interceptors...)
-
-		conn, err := grpc.Dial("", dialOpts...)
-		if err != nil {
-			return errorcodes.ErrNetDial.Wrap(err)
-		}
-
-		resolver := gql.New(nodeapi.NewServiceClient(conn))
-
-		mux := http.NewServeMux()
-		mux.Handle("/", gqlhandler.Playground("Berty", "/query"))
-		var (
-			gqlLogMutex    sync.Mutex
-			gqlLogPrevious string
-		)
-		mux.Handle("/query", gqlhandler.GraphQL(
-			graph.NewExecutableSchema(resolver),
-			gqlhandler.WebsocketUpgrader(websocket.Upgrader{
-				CheckOrigin: func(*http.Request) bool {
-					return true
-				},
-			}),
-			gqlhandler.ErrorPresenter(
-				func(ctx context.Context, e error) *gqlerror.Error {
-					exportedError := graphql.DefaultErrorPresenter(ctx, e)
-
-					err := errorcodes.Convert(e)
-					exportedError.Extensions = err.Extensions()
-
-					return exportedError
-				},
-			),
-			gqlhandler.RequestMiddleware(
-				func(ctx context.Context, next func(ctx context.Context) []byte) []byte {
-					req := graphql.GetRequestContext(ctx)
-					if req == nil {
-						resolver := graphql.GetResolverContext(ctx)
-						gqlLogger.Error("gql req is nil (should not)",
-							zap.String("req", fmt.Sprintf("%v", req)),
-							zap.String("resolver", fmt.Sprintf("%v", resolver)),
-						)
-
-						return next(ctx)
-					}
-					//verb := strings.TrimSpace(strings.Split(req.RawQuery, "{")[1]) // verb can be used to filter-out
-
-					// if subscription, only log lines when they differ from the previous one
-					gqlLogMutex.Lock()
-					if gqlLogPrevious != req.RawQuery {
-						gqlLogger.Debug(
-							"gql query",
-							zap.String(
-								"query",
-								strings.Replace(req.RawQuery, "\n", "", -1),
-							),
-						)
-						gqlLogPrevious = req.RawQuery
-					}
-					gqlLogMutex.Unlock()
-					return next(ctx)
-				},
-			),
-		))
-
-		if opts.Bind == "" {
-			opts.Bind = ":8700"
-		}
-		a.GQLBind = opts.Bind
-		a.gqlHandler = cors.New(cors.Options{
-			AllowedOrigins: []string{"*"}, // FIXME: use specific URLs?
-			AllowedMethods: []string{"POST"},
-			//AllowCredentials: true,
-			AllowedHeaders: []string{"authorization", "content-type"},
-			ExposedHeaders: []string{"Access-Control-Allow-Origin"},
-			//Debug:            true,
-		}).Handler(mux)
-
 		return nil
 	}
 }

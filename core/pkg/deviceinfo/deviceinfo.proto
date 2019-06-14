@@ -4,7 +4,6 @@ package berty.pkg.deviceinfo;
 
 option go_package = "berty.tech/core/pkg/deviceinfo";
 
-// DeviceInfos is a graphql-friendly, sortable map container
 message DeviceInfos {
   repeated DeviceInfo infos = 1;
 }

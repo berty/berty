@@ -89,5 +89,3 @@ func SaveDevices(db *gorm.DB, contactID string, devices []*Device) error {
 
 	return nil
 }
-
-func (d Device) IsNode() {} // required by gqlgen

@@ -127,18 +127,10 @@ deps.logs:
 	brew install --HEAD pidcat
 ##############################
 
-.PHONY: generate.relay
-generate.relay:
-	./node_modules/.bin/relay-compiler -src app/graphql --schema app/schema.graphql
-
-.PHONY: generate.relay.watch
-generate.relay.watch:
-	./node_modules/.bin/relay-compiler --src app/graphql --schema app/schema.graphql --watch
-
 ### Build release/debug part ###
 .PHONY: debug.react-native
 debug.react-native:
-	./node_modules/.bin/concurrently 'make generate.relay.watch' 'react-native start --reset-cache'
+	react-native start --reset-cache
 
 .PHONY: patch.android
 patch.android:

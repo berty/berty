@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package berty.network.metric;
 
-import "api/protobuf/graphql/graphql.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "berty.tech/core/network/metric";
@@ -19,11 +18,11 @@ enum MetricsType {
 }
 
 message BandwidthStats {
-  string id = 1 [(gql.graphql_nullable) = true, (gogoproto.customname) = "ID"];
-  int64 total_in  = 2 [(gql.graphql_nullable) = true];
-  int64 total_out  = 3 [(gql.graphql_nullable) = true];
-  double rate_in  = 4 [(gql.graphql_nullable) = true];
-  double rate_out  = 5 [(gql.graphql_nullable) = true];
+  string id = 1 [(gogoproto.customname) = "ID"];
+  int64 total_in  = 2;
+  int64 total_out  = 3;
+  double rate_in  = 4;
+  double rate_out  = 5;
   MetricsType type = 6;
 }
 

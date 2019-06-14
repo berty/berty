@@ -42,5 +42,3 @@ func (d *DevicePushConfig) CreateDevicePushIdentifier() (*DevicePushIdentifier, 
 		DeviceID:    d.DeviceID,
 	}, nil
 }
-
-func (d DevicePushConfig) IsNode() {} // required by gqlgen

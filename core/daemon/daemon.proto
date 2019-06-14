@@ -56,7 +56,6 @@ message Config {
   SQLConfig sqlOpts = 1;
 
   string grpcBind = 2;
-  string gqlBind = 3;
   string grpcWebBind = 25;
   bool hideBanner = 4;
   bool dropDatabase = 5;
@@ -85,7 +84,6 @@ message Config {
 
 // @TODO: list all ports available
 message GetPortResponse {
-  int32 gqlPort = 1;
   int32 grpcWebPort = 2;
 }
 

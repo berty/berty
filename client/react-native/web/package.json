@@ -6,9 +6,8 @@
   "homepage": "./",
   "private": true,
   "scripts": {
-    "start": "../node_modules/.bin/concurrently --colors 'npm run relay --watch' 'node scripts/start.js'",
-    "build": "npm run relay && node scripts/build.js",
-    "relay": "../node_modules/.bin/relay-compiler --colors --src ../app/graphql --schema ../app/schema.graphql",
+    "start": "node scripts/start.js",
+    "build": "node scripts/build.js",
     "test": "node scripts/test.js --colors",
     "clear-babel-cache": "rm -rf ./node_modules/.cache/babel-loader/*"
   },

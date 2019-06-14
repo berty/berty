@@ -5,10 +5,6 @@ for pkg in $(git grep func\ | grep .go: | cut -d: -f1 | uniq | xargs -n1 dirname
     logname="core."$(echo $pkg | tr / .)
     pkgname=$(basename $pkg)
 
-    if [ "$pkg" = "api/node/graphql/models" ]; then
-        logname="vendor.graphql.models"
-    fi
-
     if grep "package main" $pkg/*.go >/dev/null 2>/dev/null; then
         pkgname="main"
     fi
