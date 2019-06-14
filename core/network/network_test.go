@@ -139,7 +139,8 @@ func TestDriver(t *testing.T) {
 				return &entity.Void{}, nil
 			})
 
-			err = homer.Join(ctx, "Homer")
+			homer.SetContactID("Homer")
+			err = homer.Join(ctx)
 
 			err := bart.Emit(ctx, e)
 			So(err, ShouldBeNil)
