@@ -123,7 +123,7 @@ func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, 
 		panic(err)
 	}
 
-	st, _ := rAddr.ValueForProtocol(PBle)
+	st, _ := rAddr.ValueForProtocol(P_BLE)
 	conns.Store(st, &conn)
 	return conn
 }

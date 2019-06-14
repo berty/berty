@@ -54,7 +54,7 @@ func (t *Transport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 
 // Protocols returns the list of terminal protocols this transport can dial.
 func (t *Transport) Protocols() []int {
-	return []int{PBle}
+	return []int{P_BLE}
 }
 
 // Proxy always returns false for the TCP transport.

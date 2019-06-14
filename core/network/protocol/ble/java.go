@@ -25,7 +25,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 	// if int(C.isDiscovering()) != 1 {
 	// 	go C.startDiscover()
 	// }
-	s, err := rAddr.ValueForProtocol(PBle)
+	s, err := rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		return nil, err
 	}
@@ -46,14 +46,14 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 func (b *Conn) Close() error {
 	logger().Debug("BLEConn Close")
 	if b.closed == false {
-		val, err := b.rAddr.ValueForProtocol(PBle)
+		val, err := b.rAddr.ValueForProtocol(P_BLE)
 		if err != nil {
 			return err
 		}
 		CloseConnFromMa(val)
 	}
 	b.closed = true
-	// val, err := b.rAddr.ValueForProtocol(PBle)
+	// val, err := b.rAddr.ValueForProtocol(P_BLE)
 	// if err != nil {
 	// 	logger().Debug("BLEConn close", zap.Error(err))
 	// 	return err
@@ -68,7 +68,7 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 	if b.IsClosed() {
 		return 0, fmt.Errorf("conn already closed")
 	}
-	val, err := b.rAddr.ValueForProtocol(PBle)
+	val, err := b.rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		return 0, err
 	}
@@ -97,7 +97,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, e
 }
 
 func (b *Conn) IsClosed() bool {
-	// val, err := b.rAddr.ValueForProtocol(PBle)
+	// val, err := b.rAddr.ValueForProtocol(P_BLE)
 	// if err != nil {
 	// 	logger().Debug("BLEConn IsClosed", zap.Error(err))
 	// 	return true

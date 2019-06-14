@@ -3,46 +3,19 @@ package network
 import (
 	"fmt"
 	"io"
-	onet "net"
-	"regexp"
 
 	"berty.tech/core/entity"
 	"berty.tech/core/network/helper"
+	"berty.tech/core/network/protocol/ble"
 	ggio "github.com/gogo/protobuf/io"
 	inet "github.com/libp2p/go-libp2p-net"
 	protocol "github.com/libp2p/go-libp2p-protocol"
-	filter "github.com/libp2p/go-maddr-filter"
 	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr-net"
 	"go.uber.org/zap"
 )
 
-var (
-	recProtocolID  = protocol.ID("berty/p2p/localrecord")
-	privateIPCIDRs = []string{
-		"127.0.0.0/8",    // IPv4 loopback
-		"10.0.0.0/8",     // RFC1918
-		"172.16.0.0/12",  // RFC1918
-		"192.168.0.0/16", // RFC1918
-		"::1/128",        // IPv6 loopback
-		"fe80::/10",      // IPv6 link-local
-		"fc00::/7",       // IPv6 unique local addr
-	}
-	privateIPFilters = filter.NewFilters()
-)
-
-func init() {
-	// Init private IP filters
-	privateIPFilters.DefaultAction = filter.ActionDeny
-
-	for _, privateIPCIDR := range privateIPCIDRs {
-		_, ipnet, err := onet.ParseCIDR(privateIPCIDR)
-		if err != nil {
-			logger().Fatal("parsing CIDR failed", zap.Error(err), zap.String("CIDR", privateIPCIDR))
-		}
-
-		privateIPFilters.AddFilter(*ipnet, filter.ActionAccept)
-	}
-}
+const recProtocolID = protocol.ID("berty/p2p/localrecord")
 
 type LocalRecordManager struct {
 	net *Network
@@ -60,21 +33,18 @@ func NewLocalRecordManager(net *Network) *LocalRecordManager {
 }
 
 func (lrm *LocalRecordManager) Connected(net inet.Network, c inet.Conn) {
-	isPrivateIP := !privateIPFilters.AddrBlocked(c.RemoteMultiaddr())
-	isBLEMultiaddr, err := regexp.Match(`^/ble/.+`, c.RemoteMultiaddr().Bytes())
-	if err != nil {
-		logger().Fatal("parsing regex failed", zap.Error(err))
-	}
-
-	if isBLEMultiaddr || isPrivateIP {
-		if err := lrm.sendLocalRecord(c); err != nil {
-			logger().Error("sending local record failed", zap.Error(err))
-		} else {
-			logger().Debug("sending local record succeeded",
-				zap.String("peerID", c.RemotePeer().Pretty()),
-			)
+	go func() {
+		// Send local record if new connection is made through BLE or private IP
+		if ble.BLE.Matches(c.RemoteMultiaddr()) || manet.IsPrivateAddr(c.RemoteMultiaddr()) {
+			if err := lrm.sendLocalRecord(c); err != nil {
+				logger().Error("sending local record failed", zap.Error(err))
+			} else {
+				logger().Debug("sending local record succeeded",
+					zap.String("peerID", c.RemotePeer().Pretty()),
+				)
+			}
 		}
-	}
+	}()
 }
 
 // Unused notifees

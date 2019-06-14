@@ -6,18 +6,18 @@ import (
 	mafmt "github.com/whyrusleeping/mafmt"
 )
 
-const PBle = 0x56
+const P_BLE = 0x56
 
 var TranscoderBLE = ma.NewTranscoderFromFunctions(bleStB, bleBtS, nil)
 
-var BLE = mafmt.Or(mafmt.Base(PBle))
+var BLE = mafmt.Base(P_BLE)
 
 var protoBLE = ma.Protocol{
 	Name:       "ble",
-	Code:       PBle,
-	Path:       false,
+	Code:       P_BLE,
+	VCode:      ma.CodeToVarint(P_BLE),
 	Size:       128,
-	VCode:      ma.CodeToVarint(PBle),
+	Path:       false,
 	Transcoder: TranscoderBLE,
 }
 
