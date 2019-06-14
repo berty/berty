@@ -1,3 +1,7 @@
+# sub-packages
+/go-ipfs-log/
+
+# junk files
 /go.mod
 
 # core
