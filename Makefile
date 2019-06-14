@@ -42,6 +42,10 @@ lint-editorconfig:
 		! -ipath "*/vendor/*" \
 		! -ipath '*/node_modules/*' \
 		! -ipath '*/core/pkg/banner/banner.go' \
+		! -ipath '*/desktop/output/*' \
+		! -ipath '*.chunk.js' \
+		! -ipath '*/dist/*' \
+		! -ipath '*/precache-manifest.*.js' \
 		! -name "*.gen.*" \
 		! -name "*.generated.go" \
 		! -name "*generated*" \

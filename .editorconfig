@@ -27,6 +27,8 @@ indent_size = 2
 
 [*.js]
 indent_size = 2
+block_comment_start = /*
+block_comment_end = */
 
 [*.html]
 indent_size = 2

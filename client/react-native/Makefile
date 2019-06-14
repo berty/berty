@@ -78,6 +78,10 @@ pretty: deps.root
 gen.pretty: deps.root
 	npm run prettify -- $$(find app -type f -name '*.gen.js' -not -path '*/node_modules/*' -not -path '*/__generated__/*')
 
+.PHONY: tools.pretty
+tools.pretty: deps
+	npm run prettify -- $$(find tools -type f -name '*.js' -not -path '*/node_modules/*' -not -path '*/dist/*')
+
 ### Dependencies part ###
 .PHONY: deps.root
 deps.root:
@@ -114,6 +118,9 @@ deps.ios: deps
 
 .PHONY: deps.web
 deps.web: deps
+
+.PHONY: deps.dashboard
+deps.dashboard: deps
 
 .PHONY: deps.logs
 deps.logs:
@@ -184,6 +191,18 @@ debug.web: deps.web
 debug.web.cleared: deps.web
 	$(LERNA_RUN) --scope=@berty/web clear-babel-cache
 	$(LERNA_RUN) --scope=@berty/web start
+
+.PHONY: build.web
+build.web: deps.web
+	$(LERNA_RUN) --scope=@berty/web build
+
+.PHONY: debug.dashboard
+debug.dashboard: deps.dashboard
+	$(LERNA_RUN) --scope=@berty/dashboard start
+
+.PHONY: build.dashboard
+build.dashboard: deps.dashboard
+	$(LERNA_RUN) --scope=@berty/dashboard build
 ##############################
 
 
