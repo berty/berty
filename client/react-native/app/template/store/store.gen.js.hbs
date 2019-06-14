@@ -2,6 +2,7 @@
 
 import { observable, computed } from 'mobx'
 import Stream from 'stream'
+import objectHash from 'object-hash'
 
   {{#with (lookup 'berty.node.CommitLog.Entity')}}
     {{#each fields}}
@@ -66,14 +67,20 @@ import Stream from 'stream'
 
       {{#each methods}}
 
+        {{#if responseStream}}
+            {{case 'camel' name}}Cache = {}
+        {{/if}}
+
         {{case 'camel' name}} = async (input) => {
 
           {{#if responseStream}}
-            const stream = await this.bridge.{{case 'camel' name}}(input)
-            const transformStream = new Stream.Transform({
-              writableObjectMode: true,
-              readableObjectMode: true,
-              transform: (output, encoding, callback) => {
+            const inputHash = objectHash(input)
+            if (this.{{case 'camel' name}}Cache[inputHash] == null) {
+                const stream = await this.bridge.{{case 'camel' name}}(input)
+                this.{{case 'camel' name}}Cache[inputHash] = new Stream.Transform({
+                  writableObjectMode: true,
+                  readableObjectMode: true,
+                  transform: (output, encoding, callback) => {
           {{else}}
             let output = await this.bridge.{{case 'camel' name}}(input)
           {{/if}}
@@ -133,11 +140,20 @@ import Stream from 'stream'
           {{/with}}
 
           {{#if responseStream}}
-                callback(null, output)
-              },
+                    callback(null, output)
+                  },
+                })
+                stream.pipe(this.{{case 'camel' name}}Cache[inputHash])
+                this.{{case 'camel' name}}Cache[inputHash].on('end', () => {
+                delete this.{{case 'camel' name}}Cache[inputHash]
+                })
+            }
+            const passThroughStream = new Stream.PassThrough({
+                writableObjectMode: true,
+                readableObjectMode: true,
             })
-            stream.pipe(transformStream)
-            return transformStream
+            this.{{case 'camel' name}}Cache[inputHash].pipe(passThroughStream)
+            return passThroughStream
           {{else}}
             return output
           {{/if}}

@@ -36,25 +36,25 @@ class TabBarIcon extends Component {
     this.subscriber = null
   }
 
-  componentDidMount () {
+  eventUnseen = null
+
+  async componentDidMount () {
     const { context } = this.props
 
-    context.node.service.EventUnseen({}).then(e => {
-      this.setState({
-        stored: e.reduce((acc, val) => {
-          if (acc.indexOf(val.targetAddr) === -1) {
-            acc.push(val.targetAddr)
-          }
-          return acc
-        }, []),
-      })
+    const stream = await context.node.service.eventUnseen({})
+    stream.on('data', e => {
+      if (this.state.stored.indexOf(e.targetAddr) === -1) {
+        this.setState({
+          stored: [...this.state.stored, e],
+        })
+      }
     })
-    this.subscriber = context.node.service.commitLogStream({})
+    this.subscriber = await context.node.service.commitLogStream({})
   }
 
   componentWillUnmount () {
     if (this.subscriber != null) {
-      // this.subscriber.unsubscribe()
+      this.subscriber.destroy()
     }
   }
 

@@ -39,7 +39,7 @@ import { Component } from 'react'
 
           @withStoreContext
           export class {{name}}ServiceNode extends Stream {
-            get service () {
+            get method () {
               return this.props.context.node.service.{{case 'camel' name}}
             }
           }

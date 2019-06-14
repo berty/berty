@@ -141,21 +141,21 @@ export class IDServiceNode extends Unary {
 
 @withStoreContext
 export class CommitLogStreamServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.commitLogStream
   }
 }
 
 @withStoreContext
 export class EventStreamServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.eventStream
   }
 }
 
 @withStoreContext
 export class EventListServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.eventList
   }
 }
@@ -180,7 +180,7 @@ EventListServiceNode.Pagination = EventListServiceNodePagination
 
 @withStoreContext
 export class EventUnseenServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.eventUnseen
   }
 }
@@ -268,7 +268,7 @@ export class ContactUpdateServiceNode extends Unary {
 
 @withStoreContext
 export class ContactListServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.contactList
   }
 }
@@ -321,7 +321,7 @@ export class ConversationUpdateServiceNode extends Unary {
 
 @withStoreContext
 export class ConversationListServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.conversationList
   }
 }
@@ -514,21 +514,21 @@ export class ProtocolsServiceNode extends Unary {
 
 @withStoreContext
 export class LogStreamServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.logStream
   }
 }
 
 @withStoreContext
 export class LogfileListServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.logfileList
   }
 }
 
 @withStoreContext
 export class LogfileReadServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.logfileRead
   }
 }
@@ -570,14 +570,14 @@ export class TestErrorServiceNode extends Unary {
 
 @withStoreContext
 export class MonitorBandwidthServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.monitorBandwidth
   }
 }
 
 @withStoreContext
 export class MonitorPeersServiceNode extends Stream {
-  get service () {
+  get method () {
     return this.props.context.node.service.monitorPeers
   }
 }

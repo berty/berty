@@ -31,6 +31,7 @@ export class Stream extends Component {
   componentDidMount () {
     this.invoke()
   }
+  componentWillUnmount () {}
 
   invoke = async () => {
     const stream = await this.method(this.request)
@@ -124,6 +125,7 @@ export class StreamPagination extends Stream {
       if (supBottom) {
         if (bottomIndex + 1 !== this.queue.length || change.force) {
           this.queue.splice(bottomIndex + 1, 0, newValue)
+          return
         }
         return
       }

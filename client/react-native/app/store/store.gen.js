@@ -1,5 +1,6 @@
 import { observable, computed } from 'mobx'
 import Stream from 'stream'
+import objectHash from 'object-hash'
 
 export class ConfigEntityStore {
   store = null
@@ -280,259 +281,313 @@ export class NodeServiceStore {
     return output
   }
 
+  commitLogStreamCache = {}
+
   commitLogStream = async input => {
-    const stream = await this.bridge.commitLogStream(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.commitLogStreamCache[inputHash] == null) {
+      const stream = await this.bridge.commitLogStream(input)
+      this.commitLogStreamCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          Object.keys(output.entity).forEach(key => {
+            let entity = output.entity[key]
+            if (entity == null) {
+              return
+            }
+            switch (key) {
+              default:
+                break
+              case 'config':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.config.set(
+                      entity.id,
+                      new ConfigEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.config.has(entity.id)) {
+                      entity = this.store.entity.config.get(entity.id)
+                      this.store.entity.config.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'contact':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.contact.set(
+                      entity.id,
+                      new ContactEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.contact.has(entity.id)) {
+                      entity = this.store.entity.contact.get(entity.id)
+                      this.store.entity.contact.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'device':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.device.set(
+                      entity.id,
+                      new DeviceEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.device.has(entity.id)) {
+                      entity = this.store.entity.device.get(entity.id)
+                      this.store.entity.device.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'conversation':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.conversation.set(
+                      entity.id,
+                      new ConversationEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.conversation.has(entity.id)) {
+                      entity = this.store.entity.conversation.get(entity.id)
+                      this.store.entity.conversation.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'conversationMember':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.conversationMember.set(
+                      entity.id,
+                      new ConversationMemberEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.conversationMember.has(entity.id)) {
+                      entity = this.store.entity.conversationMember.get(
+                        entity.id
+                      )
+                      this.store.entity.conversationMember.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'event':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.event.set(
+                      entity.id,
+                      new EventEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.event.has(entity.id)) {
+                      entity = this.store.entity.event.get(entity.id)
+                      this.store.entity.event.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'devicePushConfig':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.devicePushConfig.set(
+                      entity.id,
+                      new DevicePushConfigEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.devicePushConfig.has(entity.id)) {
+                      entity = this.store.entity.devicePushConfig.get(entity.id)
+                      this.store.entity.devicePushConfig.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'devicePushIdentifier':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.devicePushIdentifier.set(
+                      entity.id,
+                      new DevicePushIdentifierEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.devicePushIdentifier.has(entity.id)) {
+                      entity = this.store.entity.devicePushIdentifier.get(
+                        entity.id
+                      )
+                      this.store.entity.devicePushIdentifier.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'eventDispatch':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.eventDispatch.set(
+                      entity.id,
+                      new EventDispatchEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.eventDispatch.has(entity.id)) {
+                      entity = this.store.entity.eventDispatch.get(entity.id)
+                      this.store.entity.eventDispatch.delete(entity.id)
+                    }
+                    break
+                }
+                break
+              case 'senderAlias':
+                switch (output.operation) {
+                  default:
+                  case 0:
+                  case 1:
+                    this.store.entity.senderAlias.set(
+                      entity.id,
+                      new SenderAliasEntityStore(this.store, entity)
+                    )
+                    break
+                  case 2:
+                    if (this.store.entity.senderAlias.has(entity.id)) {
+                      entity = this.store.entity.senderAlias.get(entity.id)
+                      this.store.entity.senderAlias.delete(entity.id)
+                    }
+                    break
+                }
+                break
+            }
+            output.entity[key] = entity
+          })
+
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.commitLogStreamCache[inputHash])
+      this.commitLogStreamCache[inputHash].on('end', () => {
+        delete this.commitLogStreamCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        Object.keys(output.entity).forEach(key => {
-          let entity = output.entity[key]
-          if (entity == null) {
-            return
-          }
-          switch (key) {
-            default:
-              break
-            case 'config':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.config.set(
-                    entity.id,
-                    new ConfigEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.config.has(entity.id)) {
-                    entity = this.store.entity.config.get(entity.id)
-                    this.store.entity.config.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'contact':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.contact.set(
-                    entity.id,
-                    new ContactEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.contact.has(entity.id)) {
-                    entity = this.store.entity.contact.get(entity.id)
-                    this.store.entity.contact.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'device':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.device.set(
-                    entity.id,
-                    new DeviceEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.device.has(entity.id)) {
-                    entity = this.store.entity.device.get(entity.id)
-                    this.store.entity.device.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'conversation':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.conversation.set(
-                    entity.id,
-                    new ConversationEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.conversation.has(entity.id)) {
-                    entity = this.store.entity.conversation.get(entity.id)
-                    this.store.entity.conversation.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'conversationMember':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.conversationMember.set(
-                    entity.id,
-                    new ConversationMemberEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.conversationMember.has(entity.id)) {
-                    entity = this.store.entity.conversationMember.get(entity.id)
-                    this.store.entity.conversationMember.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'event':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.event.set(
-                    entity.id,
-                    new EventEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.event.has(entity.id)) {
-                    entity = this.store.entity.event.get(entity.id)
-                    this.store.entity.event.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'devicePushConfig':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.devicePushConfig.set(
-                    entity.id,
-                    new DevicePushConfigEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.devicePushConfig.has(entity.id)) {
-                    entity = this.store.entity.devicePushConfig.get(entity.id)
-                    this.store.entity.devicePushConfig.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'devicePushIdentifier':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.devicePushIdentifier.set(
-                    entity.id,
-                    new DevicePushIdentifierEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.devicePushIdentifier.has(entity.id)) {
-                    entity = this.store.entity.devicePushIdentifier.get(
-                      entity.id
-                    )
-                    this.store.entity.devicePushIdentifier.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'eventDispatch':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.eventDispatch.set(
-                    entity.id,
-                    new EventDispatchEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.eventDispatch.has(entity.id)) {
-                    entity = this.store.entity.eventDispatch.get(entity.id)
-                    this.store.entity.eventDispatch.delete(entity.id)
-                  }
-                  break
-              }
-              break
-            case 'senderAlias':
-              switch (output.operation) {
-                default:
-                case 0:
-                case 1:
-                  this.store.entity.senderAlias.set(
-                    entity.id,
-                    new SenderAliasEntityStore(this.store, entity)
-                  )
-                  break
-                case 2:
-                  if (this.store.entity.senderAlias.has(entity.id)) {
-                    entity = this.store.entity.senderAlias.get(entity.id)
-                    this.store.entity.senderAlias.delete(entity.id)
-                  }
-                  break
-              }
-              break
-          }
-          output.entity[key] = entity
-        })
-
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.commitLogStreamCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
+
+  eventStreamCache = {}
 
   eventStream = async input => {
-    const stream = await this.bridge.eventStream(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.eventStreamCache[inputHash] == null) {
+      const stream = await this.bridge.eventStream(input)
+      this.eventStreamCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          output = new EventEntityStore(this.store, output)
+          this.store.entity.event.set(output.id, output)
+
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.eventStreamCache[inputHash])
+      this.eventStreamCache[inputHash].on('end', () => {
+        delete this.eventStreamCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new EventEntityStore(this.store, output)
-        this.store.entity.event.set(output.id, output)
-
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.eventStreamCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
+
+  eventListCache = {}
 
   eventList = async input => {
-    const stream = await this.bridge.eventList(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.eventListCache[inputHash] == null) {
+      const stream = await this.bridge.eventList(input)
+      this.eventListCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          output = new EventEntityStore(this.store, output)
+          this.store.entity.event.set(output.id, output)
+
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.eventListCache[inputHash])
+      this.eventListCache[inputHash].on('end', () => {
+        delete this.eventListCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new EventEntityStore(this.store, output)
-        this.store.entity.event.set(output.id, output)
-
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.eventListCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
+  eventUnseenCache = {}
+
   eventUnseen = async input => {
-    const stream = await this.bridge.eventUnseen(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.eventUnseenCache[inputHash] == null) {
+      const stream = await this.bridge.eventUnseen(input)
+      this.eventUnseenCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          output = new EventEntityStore(this.store, output)
+          this.store.entity.event.set(output.id, output)
+
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.eventUnseenCache[inputHash])
+      this.eventUnseenCache[inputHash].on('end', () => {
+        delete this.eventUnseenCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new EventEntityStore(this.store, output)
-        this.store.entity.event.set(output.id, output)
-
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.eventUnseenCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
   getEvent = async input => {
@@ -618,20 +673,33 @@ export class NodeServiceStore {
     return output
   }
 
+  contactListCache = {}
+
   contactList = async input => {
-    const stream = await this.bridge.contactList(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.contactListCache[inputHash] == null) {
+      const stream = await this.bridge.contactList(input)
+      this.contactListCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          output = new ContactEntityStore(this.store, output)
+          this.store.entity.contact.set(output.id, output)
+
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.contactListCache[inputHash])
+      this.contactListCache[inputHash].on('end', () => {
+        delete this.contactListCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new ContactEntityStore(this.store, output)
-        this.store.entity.contact.set(output.id, output)
-
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.contactListCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
   contact = async input => {
@@ -667,20 +735,33 @@ export class NodeServiceStore {
     return output
   }
 
+  conversationListCache = {}
+
   conversationList = async input => {
-    const stream = await this.bridge.conversationList(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.conversationListCache[inputHash] == null) {
+      const stream = await this.bridge.conversationList(input)
+      this.conversationListCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          output = new ConversationEntityStore(this.store, output)
+          this.store.entity.conversation.set(output.id, output)
+
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.conversationListCache[inputHash])
+      this.conversationListCache[inputHash].on('end', () => {
+        delete this.conversationListCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        output = new ConversationEntityStore(this.store, output)
-        this.store.entity.conversation.set(output.id, output)
-
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.conversationListCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
   conversationInvite = async input => {
@@ -867,43 +948,82 @@ export class NodeServiceStore {
     return output
   }
 
+  logStreamCache = {}
+
   logStream = async input => {
-    const stream = await this.bridge.logStream(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.logStreamCache[inputHash] == null) {
+      const stream = await this.bridge.logStream(input)
+      this.logStreamCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.logStreamCache[inputHash])
+      this.logStreamCache[inputHash].on('end', () => {
+        delete this.logStreamCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.logStreamCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
+
+  logfileListCache = {}
 
   logfileList = async input => {
-    const stream = await this.bridge.logfileList(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.logfileListCache[inputHash] == null) {
+      const stream = await this.bridge.logfileList(input)
+      this.logfileListCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.logfileListCache[inputHash])
+      this.logfileListCache[inputHash].on('end', () => {
+        delete this.logfileListCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.logfileListCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
+  logfileReadCache = {}
+
   logfileRead = async input => {
-    const stream = await this.bridge.logfileRead(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.logfileReadCache[inputHash] == null) {
+      const stream = await this.bridge.logfileRead(input)
+      this.logfileReadCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.logfileReadCache[inputHash])
+      this.logfileReadCache[inputHash].on('end', () => {
+        delete this.logfileReadCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.logfileReadCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
   testLogBackgroundError = async input => {
@@ -936,30 +1056,56 @@ export class NodeServiceStore {
     return output
   }
 
+  monitorBandwidthCache = {}
+
   monitorBandwidth = async input => {
-    const stream = await this.bridge.monitorBandwidth(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.monitorBandwidthCache[inputHash] == null) {
+      const stream = await this.bridge.monitorBandwidth(input)
+      this.monitorBandwidthCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.monitorBandwidthCache[inputHash])
+      this.monitorBandwidthCache[inputHash].on('end', () => {
+        delete this.monitorBandwidthCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.monitorBandwidthCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
+  monitorPeersCache = {}
+
   monitorPeers = async input => {
-    const stream = await this.bridge.monitorPeers(input)
-    const transformStream = new Stream.Transform({
+    const inputHash = objectHash(input)
+    if (this.monitorPeersCache[inputHash] == null) {
+      const stream = await this.bridge.monitorPeers(input)
+      this.monitorPeersCache[inputHash] = new Stream.Transform({
+        writableObjectMode: true,
+        readableObjectMode: true,
+        transform: (output, encoding, callback) => {
+          callback(null, output)
+        },
+      })
+      stream.pipe(this.monitorPeersCache[inputHash])
+      this.monitorPeersCache[inputHash].on('end', () => {
+        delete this.monitorPeersCache[inputHash]
+      })
+    }
+    const passThroughStream = new Stream.PassThrough({
       writableObjectMode: true,
       readableObjectMode: true,
-      transform: (output, encoding, callback) => {
-        callback(null, output)
-      },
     })
-    stream.pipe(transformStream)
-    return transformStream
+    this.monitorPeersCache[inputHash].pipe(passThroughStream)
+    return passThroughStream
   }
 
   getListenAddrs = async input => {

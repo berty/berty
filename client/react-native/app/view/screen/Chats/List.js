@@ -1,10 +1,21 @@
-import { Avatar, Flex, Header, Text, Badge, Icon } from '@berty/component'
+import {
+  Avatar,
+  Flex,
+  EmptyList,
+  Header,
+  Text,
+  Badge,
+  Icon,
+  Loader,
+  Screen,
+  OptimizedFlatList,
+} from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
 import { merge } from '@berty/common/helpers'
 import React, { PureComponent } from 'react'
 import * as enums from '@berty/common/enums.gen'
-
+import { Store } from '@berty/container'
 import { View, Platform } from 'react-native'
 import { hook } from 'cavy'
 import { withNamespaces } from 'react-i18next'
@@ -223,7 +234,7 @@ export class Item extends React.PureComponent {
 }
 
 @hook
-class ListScreen extends PureComponent {
+class ConversationList extends PureComponent {
   constructor (props) {
     super(props)
 
@@ -242,7 +253,7 @@ class ListScreen extends PureComponent {
         title={I18n.t('chats.title')}
         titleIcon='message-circle'
         rightBtnIcon='edit'
-        onPressRightBtn={() => ListScreen.onPress(navigation)}
+        onPressRightBtn={() => ConversationList.onPress(navigation)}
       />
     ),
     tabBarVisible: true,
@@ -252,46 +263,70 @@ class ListScreen extends PureComponent {
     navigation.navigate('chats/add')
   }
 
+  static ITEM_HEIGHT = (() => {
+    switch (Platform.OS) {
+      case 'web':
+        // eslint-disable-next-line
+        return __DEV__ ? 80.5 : 72
+      case 'android':
+      case 'ios':
+      default:
+        return 72
+    }
+  })()
+
+  getItemLayout = (data, index) => ({
+    length: ConversationList.ITEM_HEIGHT,
+    offset: ConversationList.ITEM_HEIGHT * index,
+    index,
+  })
+
+  renderItem = ({ item: data, index }) => (
+    <Item
+      data={data}
+      context={this.props.context}
+      navigation={this.props.navigation}
+      navigatorContext={this.props.navigatorContext}
+    />
+  )
+
   render () {
-    // const {
-    //   navigation,
-    //   navigatorContext,
-    //   context,
-    //   context: { queries, fragments, subscriptions },
-    // } = this.props
-    return null
-    // @FIXME: destroyed by refactor
-    // return (
-    //   <Screen style={[{ backgroundColor: colors.white }]}>
-    //     <Pagination
-    //       direction='forward'
-    //       query={queries.ConversationList.graphql}
-    //       variables={queries.ConversationList.defaultVariables}
-    //       fragment={fragments.ConversationList}
-    //       alias='ConversationList'
-    //       subscriptions={[subscriptions.conversation]}
-    //       renderItem={props => (
-    //         <Item
-    //           {...props}
-    //           context={context}
-    //           navigation={navigation}
-    //           navigatorContext={navigatorContext}
-    //         />
-    //       )}
-    //       emptyItem={() => (
-    //         <EmptyList
-    //           source={require('@berty/common/static/img/empty-conversation.png')}
-    //           text={I18n.t('chats.no-new-messages')}
-    //           icon={'edit'}
-    //           btnRef={this.props.generateTestHook('ChatList.NewConvButton')}
-    //           btnText={I18n.t('chats.new-conversation')}
-    //           onPress={() => ListScreen.onPress(navigation)}
-    //         />
-    //       )}
-    //     />
-    //   </Screen>
-    // )
+    const { navigation } = this.props
+    return (
+      <Screen>
+        <Store.Node.Service.ConversationList.Pagination
+          paginate={({ cursor }) => ({
+            first: 50,
+            after: cursor,
+            sortedBy: 'updated_at',
+          })}
+          fallback={<Loader />}
+        >
+          {({ queue, count, retry, loading, paginate }) =>
+            count ? (
+              <OptimizedFlatList
+                data={queue}
+                onEndReached={paginate}
+                getItemLayout={this.getItemLayout}
+                renderItem={this.renderItem}
+                onRefresh={retry}
+                refreshing={loading}
+              />
+            ) : (
+              <EmptyList
+                source={require('@berty/common/static/img/empty-conversation.png')}
+                text={I18n.t('chats.no-new-messages')}
+                icon={'edit'}
+                btnRef={this.props.generateTestHook('ChatList.NewConvButton')}
+                btnText={I18n.t('chats.new-conversation')}
+                onPress={() => ConversationList.onPress(navigation)}
+              />
+            )
+          }
+        </Store.Node.Service.ConversationList.Pagination>
+      </Screen>
+    )
   }
 }
 
-export default ListScreen
+export default ConversationList

@@ -14,6 +14,11 @@ import { withUpdateContext } from '@berty/update/context'
 import { withBridgeContext } from '@berty/bridge/Context'
 import { rpc, service, middleware } from '@berty/bridge'
 
+@withDeepLinkHandler
+@withBridgeContext
+@withUpdateContext
+@withNamespaces()
+@hook
 class Auth extends PureComponent {
   state = {
     list: [],
@@ -103,11 +108,11 @@ class Auth extends PureComponent {
 
     await this.start(nickname) // @FIXME: implement this later
 
+    const { grpcWebPort } = await this.getPort()
+    console.log(grpcWebPort)
     const nodeService = service.create(
       service.NodeService,
-      rpc.grpcWebWithHostname(
-        'http://localhost:' + (await this.getPort()).grpcWebPort
-      ),
+      rpc.grpcWebWithHostname('http://localhost:' + grpcWebPort),
       middleware.chain(
         __DEV__ ? middleware.logger.create('NODE-SERVICE') : null // eslint-disable-line
       )
@@ -116,14 +121,7 @@ class Auth extends PureComponent {
     // getAvailableUpdate(context).then(update => {
     //   this.props.updateContext.setState(update)
     // })
-    this.props.context.setState(
-      {
-        loading: false,
-      },
-      () => {
-        this.openDeepLink()
-      }
-    )
+    //
     this.props.bridge.setContext({
       ...this.props.bridge,
       node: {
@@ -131,6 +129,7 @@ class Auth extends PureComponent {
       },
     })
 
+    this.openDeepLink()
     this.props.navigation.navigate('switch/picker', {
       firstLaunch,
       deepLink: this.props.deepLinkHandler.deepLink,
@@ -262,11 +261,4 @@ class Auth extends PureComponent {
   }
 }
 
-// const withBridgeContext = Component => (
-//   <BridgeContext.Consumer>
-//     {bridge => <Component bridgeContext={bridge} />}
-//   </BridgeContext.Consumer>
-// )
-export default withDeepLinkHandler(
-  withBridgeContext(withUpdateContext(withNamespaces()(hook(Auth))))
-)
+export default Auth
