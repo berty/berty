@@ -19,16 +19,18 @@ import (
 	"github.com/pkg/errors"
 )
 
+// @TODO: trigger bootstrap manually for client (ex. trigger it when app switch
+// on forground)
 var defaultClientConfig = dht.BootstrapConfig{
-	Queries: 3,
-	Period:  1 * time.Minute,
+	Queries: 1,
+	Period:  5 * time.Minute,
 	Timeout: 10 * time.Second,
 }
 
 var defaultServerConfig = dht.BootstrapConfig{
-	Queries: 10,
-	Period:  1 * time.Minute,
-	Timeout: 40 * time.Second,
+	Queries: 1,
+	Period:  5 * time.Minute,
+	Timeout: 10 * time.Second,
 }
 
 // DHT is a IpfsRouting
