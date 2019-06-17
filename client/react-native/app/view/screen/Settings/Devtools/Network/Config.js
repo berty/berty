@@ -14,7 +14,8 @@ class Network extends PureComponent {
           navigation={navigation}
           title='Network configuration'
           titleIcon='sliders'
-          rightBtn={updating ? <Loader size='small' /> : undefined}
+          rightBtnIcon={updating ? 'refresh-ccw' : 'save'}
+          onPressRightBtn={() => navigation.state.params && navigation.state.params.onSave()}
           backBtn={!updating}
         />
       ),
@@ -29,24 +30,27 @@ class Network extends PureComponent {
     const config = await bridge.daemon.getNetworkConfig({})
     console.warn(config.json)
     this.setState(JSON.parse(config.json))
+    this.props.navigation.setParams({
+      onSave: this.saveConfig.bind(this),
+    })
   }
 
-  updateConfig = async config => {
+  updateConfig = config => {
+    this.setState(config)
+  }
+
+  saveConfig = async config => {
     const { bridge } = this.props
-    const lastConfig = this.state
 
     this.props.navigation.setParams({ updating: true })
-    this.setState(config, async () => {
-      try {
-        await bridge.daemon.updateNetworkConfig({
-          json: JSON.stringify(this.state),
-        })
-      } catch (err) {
-        console.error(err)
-        this.setState(lastConfig)
-      }
-      this.props.navigation.setParams({ updating: false })
-    })
+    try {
+      await bridge.daemon.updateNetworkConfig({
+        json: JSON.stringify(this.state),
+      })
+    } catch (err) {
+      console.error(err)
+    }
+    this.props.navigation.setParams({ updating: false })
   }
 
   render () {
