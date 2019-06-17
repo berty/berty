@@ -41,6 +41,7 @@ func (m *SimpleManager) AddPeer(driver *SimpleDriver) {
 
 type SimpleDriver struct {
 	network.Driver
+	contactID            string
 	manager              *SimpleManager
 	channels             []string
 	handler              func(context.Context, *entity.Envelope) (*entity.Void, error)
@@ -94,8 +95,12 @@ func (d *SimpleDriver) OnEnvelopeHandler(handler func(context.Context, *entity.E
 	}
 }
 
-func (d *SimpleDriver) Join(_ context.Context, channel string) error {
-	d.channels = append(d.channels, channel)
+func (d *SimpleDriver) SetContactID(contactID string) {
+	d.contactID = contactID
+}
+
+func (d *SimpleDriver) Join(_ context.Context) error {
+	d.channels = append(d.channels, d.contactID)
 	return nil
 }
 

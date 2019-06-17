@@ -44,7 +44,7 @@ func setConnClosed(bleUUID *C.char) {
 }
 
 func (b *Conn) IsClosed() bool {
-	val, err := b.rAddr.ValueForProtocol(PBle)
+	val, err := b.rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		logger().Debug("BLEConn IsClosed", zap.Error(err))
 		return true
@@ -61,7 +61,7 @@ func (b *Conn) Close() error {
 		close(b.closer)
 		b.closed = true
 	}
-	_, err := b.rAddr.ValueForProtocol(PBle)
+	_, err := b.rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		logger().Debug("BLEConn close", zap.Error(err))
 		return err
@@ -77,7 +77,7 @@ func (b *Conn) Write(p []byte) (n int, err error) {
 	if b.IsClosed() {
 		return 0, fmt.Errorf("conn already closed")
 	}
-	val, err := b.rAddr.ValueForProtocol(PBle)
+	val, err := b.rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		return 0, err
 	} else if val == "" {
@@ -172,7 +172,7 @@ func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tp
 	if int(C.isDiscovering()) != 1 {
 		go C.startScanning()
 	}
-	s, err := rAddr.ValueForProtocol(PBle)
+	s, err := rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		return nil, err
 	}

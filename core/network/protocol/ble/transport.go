@@ -73,7 +73,7 @@ func NewTransport(h host.Host) (*Transport, error) {
 		ID:             id.String(),
 		lAddr:          srcMA,
 	}
-	ma, err := ret.lAddr.ValueForProtocol(PBle)
+	ma, err := ret.lAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		return nil, err
 	}
@@ -87,14 +87,14 @@ func NewTransport(h host.Host) (*Transport, error) {
 func (t *Transport) ListenNewPeer() {
 	for {
 		pi := <-peerAdder
-		bleUUID, err := pi.Addrs[0].ValueForProtocol(PBle)
+		bleUUID, err := pi.Addrs[0].ValueForProtocol(P_BLE)
 		if err != nil {
 			panic(err)
 		}
 		for _, v := range t.Host.Peerstore().Peers() {
 			otherPi := t.Host.Peerstore().PeerInfo(v)
 			for _, addr := range otherPi.Addrs {
-				otherBleUUID, err := addr.ValueForProtocol(PBle)
+				otherBleUUID, err := addr.ValueForProtocol(P_BLE)
 				if err == nil && bleUUID == otherBleUUID {
 					t.Host.Peerstore().ClearAddrs(v)
 				}
@@ -102,7 +102,7 @@ func (t *Transport) ListenNewPeer() {
 		}
 
 		t.Host.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
-		lBleUUID, err := t.lAddr.ValueForProtocol(PBle)
+		lBleUUID, err := t.lAddr.ValueForProtocol(P_BLE)
 		if err != nil {
 			panic(err)
 		}
@@ -152,7 +152,7 @@ func (t *Transport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
 // Protocols returns the list of terminal protocols this transport can dial.
 func (t *Transport) Protocols() []int {
 	logger().Debug("BLETransport Protocols")
-	return []int{PBle}
+	return []int{P_BLE}
 }
 
 // Proxy always returns false for the TCP transport.

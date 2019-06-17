@@ -38,7 +38,7 @@ func RealAcceptSender(peerID string, ble string, incPeerID string) {
 }
 
 func (b *Listener) Addr() net.Addr {
-	m, _ := b.lAddr.ValueForProtocol(PBle)
+	m, _ := b.lAddr.ValueForProtocol(P_BLE)
 	return &Addr{
 		Address: m,
 	}

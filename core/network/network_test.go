@@ -109,13 +109,16 @@ func TestDriver(t *testing.T) {
 		})
 
 		Convey("homer, lisa and bart join themselves on the DHT", FailureHalts, func() {
-			err = homer.Join(ctx, "Homer")
+			homer.SetContactID("Homer")
+			err = homer.Join(ctx)
 			So(err, ShouldBeNil)
 
-			err = lisa.Join(ctx, "Lisa")
+			lisa.SetContactID("Lisa")
+			err = lisa.Join(ctx)
 			So(err, ShouldBeNil)
 
-			err = bart.Join(ctx, "Bart")
+			bart.SetContactID("Bart")
+			err = bart.Join(ctx)
 			So(err, ShouldBeNil)
 
 		})
@@ -136,7 +139,8 @@ func TestDriver(t *testing.T) {
 				return &entity.Void{}, nil
 			})
 
-			err = homer.Join(ctx, "Homer")
+			homer.SetContactID("Homer")
+			err = homer.Join(ctx)
 
 			err := bart.Emit(ctx, e)
 			So(err, ShouldBeNil)

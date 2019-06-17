@@ -38,7 +38,8 @@ func (n *Node) UseNetworkDriver(ctx context.Context, driver network.Driver) erro
 	// configure network
 	n.networkDriver.OnEnvelopeHandler(n.HandleEnvelope)
 
-	_ = n.networkDriver.Join(ctx, n.UserID())
+	n.networkDriver.SetContactID(n.UserID())
+	_ = n.networkDriver.Join(ctx)
 
 	// FIXME: subscribe to every owned device IDs
 	// var devices []entity.Device

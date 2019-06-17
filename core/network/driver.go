@@ -294,14 +294,18 @@ func (net *Network) handleEnvelope(s inet.Stream) {
 
 }
 
-func (net *Network) Join(ctx context.Context, contactID string) error {
+func (net *Network) SetContactID(contactID string) {
+	net.contactID = contactID
+}
+
+func (net *Network) Join(ctx context.Context) error {
 	go func() {
 		prevPeerInfo := pstore.PeerInfo{}
 		for {
 			duration := 1 * time.Minute
 			currPeerInfo := net.host.Peerstore().PeerInfo(net.host.ID())
 			if !reflect.DeepEqual(prevPeerInfo, currPeerInfo) {
-				err := routing_validator.PutTranslateRecord(ctx, net.host.Routing, contactID, currPeerInfo)
+				err := routing_validator.PutTranslateRecord(ctx, net.host.Routing, net.contactID, currPeerInfo)
 				if err != nil {
 					logger().Warn(errors.Wrap(err, "join failed").Error())
 					duration = 5 * time.Second
