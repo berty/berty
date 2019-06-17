@@ -2,6 +2,7 @@ import { Mutex } from 'async-mutex'
 import { debounce, throttle } from 'throttle-debounce'
 import { Component } from 'react'
 import objectHash from 'object-hash'
+import { deepFilterEqual } from './helper'
 
 export class Stream extends Component {
   get method () {
@@ -51,29 +52,6 @@ export class Stream extends Component {
       return this.props.fallback
     }
     return this.state.queue.map(this.props.children)
-  }
-}
-
-const deepFilterEqual = (a, b, opts = { exclude: [] }) => {
-  const { exclude } = opts
-  if (!a) {
-    return true
-  }
-  if (typeof a !== typeof b) {
-    return false
-  }
-  switch (typeof a) {
-    case 'object':
-      if (Array.isArray(a)) {
-        return a.every(av => b.some(bv => deepFilterEqual(av, bv)))
-      }
-      return Object.keys(a).every(
-        k =>
-          exclude.some(excludeKey => excludeKey === k) ||
-          deepFilterEqual(a[k], b[k])
-      )
-    default:
-      return a === b
   }
 }
 

@@ -1,12 +1,15 @@
 import React, { PureComponent } from 'react'
 
-import { Menu, Screen, Avatar, Header } from '@berty/component'
+import { Menu, Screen, Avatar, Header, Loader } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { UpdateContext, installUpdate } from '@berty/update'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 
 @withNamespaces()
+@withStoreContext
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -112,20 +115,28 @@ class List extends PureComponent {
   }
 
   render () {
-    const { navigation, currentUser, t } = this.props
+    const { navigation, t } = this.props
 
     return (
       <Screen>
-        <UpdateContext.Consumer>
-          {({ availableUpdate }) => (
-            <List.Menu
-              navigation={navigation}
-              data={currentUser}
-              availableUpdate={availableUpdate}
-              t={t}
-            />
-          )}
-        </UpdateContext.Consumer>
+        <Store.Entity.Contact status={42}>
+          {data =>
+            data ? (
+              <UpdateContext.Consumer>
+                {({ availableUpdate }) => (
+                  <List.Menu
+                    navigation={navigation}
+                    data={data}
+                    availableUpdate={availableUpdate}
+                    t={t}
+                  />
+                )}
+              </UpdateContext.Consumer>
+            ) : (
+              <Loader />
+            )
+          }
+        </Store.Entity.Contact>
       </Screen>
     )
   }

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react'
-import { observe } from 'mobx'
+import { observe, action } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
 import { Entity } from './entity'
@@ -10,27 +10,27 @@ import { Component } from 'react'
 @observer
 export class ConfigEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.config({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.config(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.config.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.config
   }
 }
 
 @withStoreContext
 @observer
 export class ContactEntity extends Entity {
-  fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.contact({ id })
+  @action.bound fetch () {
+    const { context, children, ...input } = this.props
+    return context.node.service.contact(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.contact.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.contact
   }
 }
 
@@ -38,13 +38,13 @@ export class ContactEntity extends Entity {
 @observer
 export class DeviceEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.device({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.device(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.device.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.device
   }
 }
 
@@ -52,13 +52,13 @@ export class DeviceEntity extends Entity {
 @observer
 export class ConversationEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.conversation({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.conversation(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.conversation.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.conversation
   }
 }
 
@@ -66,13 +66,13 @@ export class ConversationEntity extends Entity {
 @observer
 export class ConversationMemberEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.conversationMember({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.conversationMember(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.conversationMember.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.conversationMember
   }
 }
 
@@ -80,13 +80,13 @@ export class ConversationMemberEntity extends Entity {
 @observer
 export class EventEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.event({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.event(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.event.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.event
   }
 }
 
@@ -94,13 +94,13 @@ export class EventEntity extends Entity {
 @observer
 export class DevicePushConfigEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.devicePushConfig({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.devicePushConfig(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.devicePushConfig.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.devicePushConfig
   }
 }
 
@@ -108,13 +108,13 @@ export class DevicePushConfigEntity extends Entity {
 @observer
 export class DevicePushIdentifierEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.devicePushIdentifier({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.devicePushIdentifier(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.devicePushIdentifier.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.devicePushIdentifier
   }
 }
 
@@ -122,13 +122,13 @@ export class DevicePushIdentifierEntity extends Entity {
 @observer
 export class SenderAliasEntity extends Entity {
   fetch = () => {
-    const { context, id } = this.props
-    return context.node.service.senderAlias({ id })
+    const { context, children, ...input } = this.props
+    return context.node.service.senderAlias(input)
   }
 
-  get entity () {
-    const { context, id } = this.props
-    return context.entity.senderAlias.get(id)
+  get store () {
+    const { context } = this.props
+    return context.entity.senderAlias
   }
 }
 

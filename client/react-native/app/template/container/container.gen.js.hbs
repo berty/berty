@@ -18,13 +18,13 @@ import { Component } from 'react'
             @observer
             export class {{name}}Entity extends Entity {
               fetch = () => {
-                const { context, id } = this.props
-                return context.node.service.{{case 'camel' name}}({ id })
+                const { context, children, ...input } = this.props
+                return context.node.service.{{case 'camel' name}}(input)
               }
 
-              get entity () {
-                const { context, id } = this.props
-                return context.entity.{{case 'camel' name}}.get(id)
+              get store () {
+                const { context } = this.props
+                return context.entity.{{case 'camel' name}}
               }
             }
           {{/if}}
