@@ -5,6 +5,7 @@ import { Flex, Header, Menu, Screen, Text } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { withRelayContext } from '@berty/relay/context'
 import { withBridgeContext } from '@berty/bridge/Context'
+import RNDeviceInfo from 'react-native-device-info'
 
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
@@ -289,14 +290,14 @@ class List extends PureComponent {
             title='List events'
             onPress={() => navigation.navigate('devtools/eventlist')}
           />
-          {Platform.OS !== 'android' && (
+          {((Platform.OS !== 'android') || RNDeviceInfo.supportedABIs().some(e => e.indexOf('arm64') !== -1)) && (
             <Menu.Item
               icon='file-text'
               title='Console logs'
               onPress={() => navigation.navigate('devtools/logs')}
             />
           )}
-          {Platform.OS === 'android' && (
+          {((Platform.OS === 'android') && !RNDeviceInfo.supportedABIs().some(e => e.indexOf('arm64') !== -1)) && (
             <Menu.Item
               icon='file-text'
               title='Console logs (crash on Android cf. #627)'
