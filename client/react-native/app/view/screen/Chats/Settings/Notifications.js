@@ -4,7 +4,10 @@ import { Header, Menu } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { withNamespaces } from 'react-i18next'
 import I18n from 'i18next'
+import { withNavigation } from 'react-navigation'
 
+@withNavigation
+@withNamespaces()
 class Notifications extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -110,4 +113,4 @@ class Notifications extends PureComponent {
   }
 }
 
-export default withNamespaces()(Notifications)
+export default Notifications

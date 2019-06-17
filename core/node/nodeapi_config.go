@@ -1,11 +1,16 @@
 package node
 
 import (
+	"context"
+
 	"berty.tech/core/api/node"
 	"berty.tech/core/entity"
 	"berty.tech/core/pkg/errorcodes"
-	"context"
 )
+
+func (n *Node) Config(ctx context.Context, void *node.Void) (*entity.Config, error) {
+	return n.config, nil
+}
 
 func (n *Node) ConfigPublic(ctx context.Context, void *node.Void) (*entity.Config, error) {
 	return n.config.Filtered(), nil

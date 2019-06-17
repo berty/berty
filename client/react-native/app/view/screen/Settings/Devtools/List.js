@@ -81,7 +81,7 @@ class List extends PureComponent {
   testLogBackgroundError = async () => {
     this.props.navigation.setParams({ testLogBackgroundError: true })
     this.setState({ testLogBackgroundError: true }, async () => {
-      await this.props.context.node.service.TestLogBackgroundError({})
+      await this.props.context.node.service.testLogBackgroundError({})
       this.props.navigation.setParams({
         testLogBackgroundError: false,
       })
@@ -92,7 +92,7 @@ class List extends PureComponent {
   testLogBackgroundWarn = async () => {
     this.props.navigation.setParams({ testLogBackgroundWarn: true })
     this.setState({ testLogBackgroundWarn: true }, async () => {
-      await this.props.context.node.service.TestLogBackgroundWarn({})
+      await this.props.context.node.service.testLogBackgroundWarn({})
       this.props.navigation.setParams({
         testLogBackgroundWarn: false,
       })
@@ -103,7 +103,7 @@ class List extends PureComponent {
   testLogBackgroundDebug = async () => {
     this.props.navigation.setParams({ testLogBackgroundDebug: true })
     this.setState({ testLogBackgroundDebug: true }, async () => {
-      await this.props.context.node.service.TestLogBackgroundDebug({})
+      await this.props.context.node.service.testLogBackgroundDebug({})
       this.props.navigation.setParams({
         testLogBackgroundDebug: false,
       })

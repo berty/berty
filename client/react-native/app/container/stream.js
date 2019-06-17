@@ -2,7 +2,7 @@ import { Mutex } from 'async-mutex'
 import { debounce, throttle } from 'throttle-debounce'
 import { Component } from 'react'
 import objectHash from 'object-hash'
-import { deepFilterEqual } from './helper'
+import { deepFilterEqual, deepEqual } from './helper'
 
 export class Stream extends Component {
   get method () {
@@ -61,13 +61,18 @@ export class StreamPagination extends Stream {
   count = 0
   loading = true
 
+  componentWillReceiveProps (props) {
+    if (!deepEqual(props, this.props)) {
+      this.retry()
+    }
+  }
+
   retry = () => {
     this.loading = true
-    this.forceUpdate()
     this.cursor = ''
     this.queue = []
     this.invokeHashTable = {}
-    this.invoke()
+    this.forceUpdate(this.invoke)
   }
 
   add = change => {
@@ -150,7 +155,17 @@ export class StreamPagination extends Stream {
   forceUpdateDebounced = debounce(16, this.forceUpdate)
 
   get request () {
-    return { filter: this.filter, paginate: this.paginate }
+    const {
+      fallback,
+      children,
+      context,
+      request,
+      response,
+      filter,
+      paginate,
+      ...props
+    } = this.props
+    return { filter: this.filter, paginate: this.paginate, ...props }
   }
 
   get filter () {

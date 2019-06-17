@@ -4,6 +4,7 @@ import { Header } from '@berty/component'
 import { colors } from '@berty/common/constants'
 import { padding } from '@berty/common/styles'
 import { withStoreContext } from '@berty/store/context'
+import { formatDateTime } from '@berty/common/locale/dateFns'
 
 @withStoreContext
 class EventDetails extends PureComponent {
@@ -55,8 +56,13 @@ class EventDetails extends PureComponent {
       </TouchableOpacity>,
     ]
 
-    for (let key of Object.keys(data)) {
+    for (let key of Object.keys(data).filter(_ => _ !== 'store')) {
       let value = data[key] || 'null'
+      if (['createdAt', 'updatedAt'].some(_ => _ === key)) {
+        value = formatDateTime(
+          new Date(value.seconds * 1000 + (value.nanos % 1000))
+        )
+      }
       fields.push(
         <TouchableOpacity
           key={key}

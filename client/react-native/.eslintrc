@@ -2,6 +2,7 @@
   "parser": "babel-eslint",
   "extends": [
     "eslint:recommended",
+    "prettier",
     "standard",
     "standard-react",
     "react-app"
@@ -9,10 +10,8 @@
   "plugins": [
     "jsx-a11y",
     "react",
-    "prettier",
     "promise",
     "import",
-    "standard",
     "dependencies"
   ],
   "rules": {
@@ -35,7 +34,9 @@
     "jsx-a11y/href-no-hash": "off",
     "dependencies/no-cycles": 1,
     "dependencies/no-unresolved": 1,
-
+    "semi": ["error", "never"],
+    "padded-blocks": ["error", "never"],
+    "lines-between-class-members": ["error", "always"]
   },
   "parserOptions": {
     "ecmaFeatures": {

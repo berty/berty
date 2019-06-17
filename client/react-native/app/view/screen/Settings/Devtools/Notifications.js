@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react'
-import { Header, Menu } from '@berty/component'
+import { Loader, Header, Menu } from '@berty/component'
 import colors from '@berty/common/constants/colors'
 import { withNavigation } from 'react-navigation'
 import { showMessage } from 'react-native-flash-message'
 import * as enums from '@berty/common/enums.gen'
+import { Store } from '@berty/container'
 import { withStoreContext } from '@berty/store/context'
 
+@withStoreContext
 @withNavigation
 class Notifications extends PureComponent {
   constructor (props) {
@@ -118,7 +120,6 @@ class Notifications extends PureComponent {
   }
 }
 
-@withStoreContext
 export default class NotificationsWrapper extends PureComponent {
   static navigationOptions = ({ navigation }) => ({
     header: (
@@ -132,7 +133,10 @@ export default class NotificationsWrapper extends PureComponent {
   })
 
   render () {
-    const { context } = this.props
-    return <Notifications relayContext={context} />
+    return (
+      <Store.Entity.Config>
+        {data => (data ? <Notifications config={data} /> : <Loader />)}
+      </Store.Entity.Config>
+    )
   }
 }

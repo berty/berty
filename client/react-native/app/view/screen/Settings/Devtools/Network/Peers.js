@@ -64,14 +64,11 @@ class Peers extends Component {
     watchdog: false,
   }
 
-  componentWillMount () {
-    this.subscriber = this.props.context.node.service.monitorPeers.subscribe({
-      iterator: undefined,
-      updater: (store, data) => {
-        const peer = data.MonitorPeers
-        this.addPeer(peer)
-      },
-    })
+  async componentWillMount () {
+    this.monitorPeersStream = await this.props.context.node.service.monitorPeers(
+      {}
+    )
+    this.monitorPeersStream.on('data', this.addPeer)
   }
 
   componentDidMount () {
@@ -79,13 +76,12 @@ class Peers extends Component {
   }
 
   componentWillUnmount () {
-    this.subscriber.end()
+    this.monitorPeersStream.destroy()
   }
 
-  fetchPeers = () => {
-    this.props.context.node.service
-      .Peers({})
-      .then(data => this.updatePeers(data.list))
+  fetchPeers = async () => {
+    const data = await this.props.context.node.service.peers({})
+    this.updatePeers(data.list)
   }
 
   updatePeers = peers => {
@@ -148,7 +144,6 @@ class Peers extends Component {
 
   filteredPeers = () => {
     const { peers } = this.state
-
     if (this.state.filter.length === 0) {
       return peers.filter(peer => peer.connection === Connection.CONNECTED)
     }

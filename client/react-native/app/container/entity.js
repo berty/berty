@@ -9,7 +9,7 @@ export class Entity extends Component {
   }
 
   componentWillReceiveProps (props) {
-    if (!deepEqual(props, this.props)) {
+    if (!deepEqual(props, this.props) || this.entity == null) {
       this.fetch()
     }
   }

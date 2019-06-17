@@ -40,7 +40,7 @@ func (n *Node) DevicePushConfigCreate(ctx context.Context, input *node.DevicePus
 	}
 
 	if input.RelayPubkey == "" {
-		config, err := n.Config(ctx)
+		config, err := n.ConfigFromDB(ctx)
 		if err != nil {
 			return nil, sql.GenericError(err)
 		}

@@ -1,27 +1,31 @@
-import { TouchableOpacity } from 'react-native'
 import React, { PureComponent } from 'react'
+
+import Loader from './Loader'
+import { TouchableOpacity } from 'react-native'
 import { withNavigation } from 'react-navigation'
 
 import Avatar from './Avatar'
-import { HeaderButton } from './Header'
-import { colors } from '@berty/common/constants'
+import { Store } from '@berty/container'
 
 @withNavigation
-// @withCurrentUser
 class SelfAvatarLink extends PureComponent {
   onPress = data => {
     this.props.navigation.navigate('modal/contacts/card', data)
   }
 
-  render = () => {
-    let user = this.props.currentUser
-
-    return user ? (
-      <TouchableOpacity onPress={() => this.onPress(user)}>
-        <Avatar data={{ ...user, id: user.id }} size={24} />
-      </TouchableOpacity>
-    ) : (
-      <HeaderButton icon={'share'} color={colors.black} justify='end' middle />
+  render () {
+    return (
+      <Store.Entity.Contact status={42}>
+        {data =>
+          data ? (
+            <TouchableOpacity onPress={() => this.onPress(data)}>
+              <Avatar data={data} size={24} />
+            </TouchableOpacity>
+          ) : (
+            <Loader />
+          )
+        }
+      </Store.Entity.Contact>
     )
   }
 }

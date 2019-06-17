@@ -364,22 +364,14 @@ export class LogStream extends PureComponent {
     ),
   })
 
-  componentWillMount () {
-    this.logStream = this.props.context.node.service.logStream({
+  async componentDidMount () {
+    this.logStream = await this.props.context.node.service.logStream({
       continues: true,
       logLevel: '',
       namespaces: '',
       last: 0,
     })
-  }
-
-  componentDidMount () {
-    // @FIXME: destroyed by refactor
-    // this.subscriber = this.logStream.subscribe({
-    //   updater: (store, data) => {
-    //     this.addToList(data.LogStream.line)
-    //   },
-    // })
+    this.logStream.on('data', data => this.addToList(data.line))
     this.props.navigation.setParams({
       updateConfig: this.updateConfig,
       currentConfig: this.currentConfig,
@@ -388,7 +380,7 @@ export class LogStream extends PureComponent {
 
   componentWillUnmount () {
     clearTimeout(this.timer)
-    this.subscriber.end()
+    this.logStream.destroy()
   }
 
   logs = []

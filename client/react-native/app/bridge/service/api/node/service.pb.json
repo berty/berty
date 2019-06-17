@@ -45,6 +45,10 @@
                   "requestType": "berty.entity.Event",
                   "responseType": "berty.entity.Event"
                 },
+                "Config": {
+                  "requestType": "Void",
+                  "responseType": "berty.entity.Config"
+                },
                 "ConfigPublic": {
                   "requestType": "Void",
                   "responseType": "berty.entity.Config"

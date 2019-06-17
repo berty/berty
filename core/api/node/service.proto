@@ -50,6 +50,7 @@ service Service {
   //
   // Config
   //
+  rpc Config(Void) returns (berty.entity.Config);
   rpc ConfigPublic (Void) returns (berty.entity.Config);
 
   rpc ConfigUpdate (berty.entity.Config) returns (berty.entity.Config);

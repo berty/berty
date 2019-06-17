@@ -617,6 +617,15 @@ export class NodeServiceStore {
     return output
   }
 
+  config = async input => {
+    let output = await this.bridge.config(input)
+
+    output = new ConfigEntityStore(this.store, output)
+    this.store.entity.config.set(output.id, output)
+
+    return output
+  }
+
   configPublic = async input => {
     let output = await this.bridge.configPublic(input)
 

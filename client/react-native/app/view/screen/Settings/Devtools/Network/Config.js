@@ -59,14 +59,6 @@ class Network extends PureComponent {
     }
     return (
       <Menu>
-        <Menu.Section title='Swarm key'>
-          <Menu.Input
-            title='Swarm key'
-            value={this.state.SwarmKey}
-            multiline={3}
-            onChangeText={SwarmKey => this.updateConfig({ SwarmKey })}
-          />
-        </Menu.Section>
         <Menu.Section title='Discovery'>
           <Menu.Item
             title='Multicast DNS'

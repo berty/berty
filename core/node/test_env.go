@@ -185,7 +185,7 @@ func (t *TestEnv) AddDevice(contactName string, deviceName string) error {
 
 	testEnvDevice.Node = n
 
-	config, err := n.Config(t.ctx)
+	config, err := n.ConfigFromDB(t.ctx)
 	if err != nil {
 		return errors.Wrap(err, fmt.Sprintf("can't add device %s to contact %s, can't get node's config", deviceName, contactName))
 	}

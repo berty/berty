@@ -32,7 +32,7 @@ func WithInitConfig() NewNodeOption {
 		ctx := tracer.Context()
 
 		// get config from sql
-		config, err := n.Config(ctx)
+		config, err := n.ConfigFromDB(ctx)
 		if err != nil {
 			ID, err := uuid.NewV4()
 
@@ -67,7 +67,7 @@ func WithConfig() NewNodeOption {
 		ctx := tracer.Context()
 
 		// get config from sql
-		config, err := n.Config(ctx)
+		config, err := n.ConfigFromDB(ctx)
 
 		if err != nil {
 			zap.Error(errors.Wrap(err, "failed to load existing config"))
@@ -84,7 +84,7 @@ func WithConfig() NewNodeOption {
 			}
 		}
 
-		config, err = n.Config(ctx)
+		config, err = n.ConfigFromDB(ctx)
 
 		if err != nil {
 			logger().Error("WithConfig", zap.Error(errors.Wrap(err, "unable to load node config")))
@@ -165,7 +165,7 @@ func (n *Node) initConfig(ctx context.Context) (*entity.Config, error) {
 }
 
 // Config gets config from database
-func (n *Node) Config(ctx context.Context) (*entity.Config, error) {
+func (n *Node) ConfigFromDB(ctx context.Context) (*entity.Config, error) {
 	tracer := tracing.EnterFunc(ctx)
 	defer tracer.Finish()
 	ctx = tracer.Context()

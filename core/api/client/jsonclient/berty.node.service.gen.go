@@ -24,6 +24,7 @@ func init() {
 	registerUnary("berty.node.GetEvent", NodeGetEvent)
 	registerUnary("berty.node.EventSeen", NodeEventSeen)
 	registerUnary("berty.node.EventRetry", NodeEventRetry)
+	registerUnary("berty.node.Config", NodeConfig)
 	registerUnary("berty.node.ConfigPublic", NodeConfigPublic)
 	registerUnary("berty.node.ConfigUpdate", NodeConfigUpdate)
 	registerUnary("berty.node.ContactRequest", NodeContactRequest)
@@ -257,6 +258,26 @@ func NodeEventRetry(client *client.Client, ctx context.Context, jsonInput []byte
 	}
 	var header, trailer metadata.MD
 	ret, err := client.Node().EventRetry(
+		ctx,
+		&typedInput,
+		grpc.Header(&header),
+		grpc.Trailer(&trailer),
+	)
+	tracer.SetAnyField("header", header)
+	tracer.SetAnyField("trailer", trailer)
+	return ret, header, trailer, err
+}
+func NodeConfig(client *client.Client, ctx context.Context, jsonInput []byte) (interface{}, metadata.MD, metadata.MD, error) {
+	tracer := tracing.EnterFunc(ctx, string(jsonInput))
+	defer tracer.Finish()
+	ctx = tracer.Context()
+	tracer.SetTag("full-method", "berty.node.Config")
+	var typedInput node.Void
+	if err := json.Unmarshal(jsonInput, &typedInput); err != nil {
+		return nil, nil, nil, err
+	}
+	var header, trailer metadata.MD
+	ret, err := client.Node().Config(
 		ctx,
 		&typedInput,
 		grpc.Header(&header),

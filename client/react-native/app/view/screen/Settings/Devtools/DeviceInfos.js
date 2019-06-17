@@ -33,7 +33,7 @@ class DeviceInfos extends PureComponent {
   fetch = () => {
     const { context } = this.props
     this.setState({ refreshing: true }, async () => {
-      const data = await context.node.service.DeviceInfos({})
+      const data = await context.node.service.deviceInfos({})
       this.setState({ infos: data.infos, refreshing: false })
     })
   }

@@ -9,6 +9,7 @@
   "private": true,
   "dependencies": {
     "@berty/common": "^0.0.1",
+    "@berty/container": "^0.0.1",
     "@berty/store": "^0.0.1",
     "@berty/update": "^0.0.1",
     "react": "16.8.3"

@@ -7,17 +7,17 @@ import { withNamespaces } from 'react-i18next'
 import { showMessage } from 'react-native-flash-message'
 import { withGoBack } from '@berty/component/BackActionProvider'
 import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 
 @withGoBack
 @withNamespaces()
-// @withCurrentUser
 @withStoreContext
 class MyAccount extends React.PureComponent {
   constructor (props) {
     super(props)
 
     this.state = {
-      displayName: props.currentUser.displayName,
+      displayName: props.data.displayName,
       uri: '',
     }
   }
@@ -30,7 +30,6 @@ class MyAccount extends React.PureComponent {
 
   onSave = async () => {
     await this.props.context.node.service.contactUpdate({
-      ...this.props.currentUser,
       displayName: this.state.displayName,
     })
 
@@ -47,7 +46,7 @@ class MyAccount extends React.PureComponent {
   onChoosePicture = async event => this.setState(await choosePicture(event))
 
   render = () => {
-    const { t, currentUser } = this.props
+    const { t, data } = this.props
     const { displayName } = this.state
 
     return (
@@ -60,7 +59,7 @@ class MyAccount extends React.PureComponent {
               medium
               onPress={this.onChoosePicture}
             >
-              <Avatar data={currentUser} size={78} />
+              <Avatar data={data} size={78} />
             </Badge>
           }
         />
@@ -103,7 +102,9 @@ export default class MyAccountScreen extends React.Component {
   render () {
     return (
       <Screen>
-        <MyAccount navigation={this.props.navigation} />
+        <Store.Entity.Contact status={42}>
+          {data => <MyAccount navigation={this.props.navigation} data={data} />}
+        </Store.Entity.Contact>
       </Screen>
     )
   }

@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react'
-import { observe, action } from 'mobx'
+import { observe } from 'mobx'
 import { Stream, StreamPagination } from './stream'
 import { Unary } from './unary'
 import { Entity } from './entity'
@@ -23,7 +23,7 @@ export class ConfigEntity extends Entity {
 @withStoreContext
 @observer
 export class ContactEntity extends Entity {
-  @action.bound fetch () {
+  fetch = () => {
     const { context, children, ...input } = this.props
     return context.node.service.contact(input)
   }
@@ -221,6 +221,13 @@ export class EventSeenServiceNode extends Unary {
 export class EventRetryServiceNode extends Unary {
   get method () {
     return this.props.context.node.service.eventRetry
+  }
+}
+
+@withStoreContext
+export class ConfigServiceNode extends Unary {
+  get method () {
+    return this.props.context.node.service.config
   }
 }
 

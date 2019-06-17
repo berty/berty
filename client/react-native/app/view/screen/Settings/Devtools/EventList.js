@@ -1,12 +1,21 @@
 import { FilterModal, PickerFilter } from '@berty/component/Filters'
-import { Flex, Header, Icon } from '@berty/component'
+import {
+  Flex,
+  Header,
+  Icon,
+  SearchBar,
+  OptimizedFlatList,
+  Text as LibText,
+  Loader,
+} from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
 import Button from '@berty/component/Button'
 import React, { PureComponent } from 'react'
 import * as enums from '@berty/common/enums.gen'
-
-import { Text, TouchableOpacity } from 'react-native'
+import { Store } from '@berty/container'
+import { withNavigation } from 'react-navigation'
+import { Text, TouchableOpacity, View } from 'react-native'
 import moment from 'moment'
 
 export const Item = ({ data, navigation }) => (
@@ -82,6 +91,7 @@ export const Item = ({ data, navigation }) => (
   </TouchableOpacity>
 )
 
+@withNavigation
 class EventList extends PureComponent {
   state = {
     search: '',
@@ -124,47 +134,53 @@ class EventList extends PureComponent {
     }
   }
 
+  renderItem = ({ item: data }) => (
+    <Item data={data} navigation={this.props.navigation} />
+  )
+
   render () {
-    // @FIXME: destroyed by refactor
-    return null
-    // const {
-    //   navigation,
-    //   context: { queries },
-    // } = this.props
-    // return (
-    //   <Screen style={{ backgroundColor: colors.white }}>
-    //     <Pagination
-    //       query={queries.EventList.graphql}
-    //       variables={{
-    //         ...queries.EventList.defaultVariables,
-    //         ...navigation.getParam('filters'),
-    //       }}
-    //       fragment={fragments.EventList}
-    //       alias='EventList'
-    //       renderItem={props => <Item {...props} navigation={navigation} />}
-    //       ListHeaderComponent={
-    //         <View style={padding}>
-    //           <SearchBar onChangeText={search => this.searchHandler(search)}>
-    //             <LibText
-    //               size={0}
-    //               height={34}
-    //               icon='filter'
-    //               padding
-    //               middle
-    //               large
-    //               onPress={() =>
-    //                 navigation.navigate('modal/devtools/event/list/filters', {
-    //                   defaultData: navigation.getParam('filters'),
-    //                   onSave: filters => navigation.setParams({ filters }),
-    //                 })
-    //               }
-    //             />
-    //           </SearchBar>
-    //         </View>
-    //       }
-    //     />
-    //   </Screen>
-    // )
+    const { navigation } = this.props
+    return (
+      <Store.Node.Service.EventList.Pagination
+        paginate={({ cursor }) => ({
+          first: 50,
+          after: cursor,
+          sortedBy: 'created_at',
+        })}
+        {...navigation.getParam('filters')}
+        fallback={<Loader />}
+      >
+        {({ queue, loading, paginate, retry }) => (
+          <OptimizedFlatList
+            data={queue}
+            onEndReached={paginate}
+            renderItem={this.renderItem}
+            onRefresh={retry}
+            refreshing={loading}
+            ListHeaderComponent={
+              <View style={padding}>
+                <SearchBar onChangeText={search => this.searchHandler(search)}>
+                  <LibText
+                    size={0}
+                    height={34}
+                    icon='filter'
+                    padding
+                    middle
+                    large
+                    onPress={() =>
+                      navigation.navigate('modal/devtools/event/list/filters', {
+                        defaultData: navigation.getParam('filters'),
+                        onSave: filters => navigation.setParams({ filters }),
+                      })
+                    }
+                  />
+                </SearchBar>
+              </View>
+            }
+          />
+        )}
+      </Store.Node.Service.EventList.Pagination>
+    )
   }
 }
 

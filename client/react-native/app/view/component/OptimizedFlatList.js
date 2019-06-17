@@ -39,6 +39,7 @@ export class OptimizedFlatList extends PureComponent {
       onRefresh,
       getItemLayout,
       renderItem,
+      ...props
     } = this.props
     return (
       <FlatList
@@ -56,6 +57,7 @@ export class OptimizedFlatList extends PureComponent {
         refreshing={data.length === 0 && refreshing}
         onRefresh={Platform.OS !== 'web' && onRefresh}
         renderItem={renderItem}
+        {...props}
       />
     )
   }
