@@ -8,6 +8,7 @@
 //
 
 #import "BertyDevice.h"
+#import <os/log.h>
 #import "ble.h"
 
 extern void sendBytesToConn(char *, void *, int);
@@ -61,7 +62,6 @@ CBService *getService(NSArray *services, NSString *uuid) {
         };
 
         void (^writeHandler)(NSData *data) = ^(NSData *data) {
-//            NSLog(@"Writer handler cll");
             sendBytesToConn([self.remoteMa UTF8String], [data bytes], (int)[data length]);
         };
 
@@ -82,28 +82,27 @@ CBService *getService(NSArray *services, NSString *uuid) {
 }
 
 - (void)handleMa:(NSData *)maData {
+    NSString *remoteMa = [NSString stringWithUTF8String:[maData bytes]];
+    os_log(OS_LOG_DEFAULT, "handlePeerID() device %@ with current Ma %@, new Ma %@", [self.peripheral.identifier UUIDString], self.remoteMa, remoteMa);
     self.remoteMa = [NSString stringWithUTF8String:[maData bytes]];
     self.maRecv = TRUE;
-    [self checkAndSendToLibP2P];
-    NSLog(@"remote Ma %@", self.remoteMa);
+    [self checkAndAddToPeerstore];
 }
 
 - (void)handlePeerID:(NSData *)peerIDData {
-    self.remotePeerID = [NSString stringWithUTF8String:[peerIDData bytes]];
+    NSString *remotePeerID = [NSString stringWithUTF8String:[peerIDData bytes]];
+    os_log(OS_LOG_DEFAULT, "handlePeerID() device %@ with current peerID %@, new peerID %@", [self.peripheral.identifier UUIDString], self.remotePeerID, remotePeerID);
+    self.remotePeerID = remotePeerID;
     self.peerIDRecv = TRUE;
-    [self checkAndSendToLibP2P];
-    NSLog(@"remote PeerID %@", self.remotePeerID);
+    [self checkAndAddToPeerstore];
 }
 
-- (void)checkAndSendToLibP2P {
+- (void)checkAndAddToPeerstore {
     if (self.maSend == TRUE && self.peerIDSend == TRUE &&
         self.maRecv == TRUE && self.peerIDRecv == TRUE) {
-        NSLog(@"Send To libp2p");
+        os_log(OS_LOG_DEFAULT, "checkAndAddToPeerstore() adding %@ to peerstore", [self.peripheral.identifier UUIDString]);
         AddToPeerStoreC([self.remotePeerID UTF8String], [self.remoteMa UTF8String]);
     }
-}
-
-- (void)handleDiscoverServices:(NSArray *)services withError:(NSError *)error {
 }
 
 - (void)handshake {
@@ -111,23 +110,26 @@ CBService *getService(NSArray *services, NSString *uuid) {
         [self connectWithOptions:nil
             withBlock:^(BertyDevice* device, NSError *error){
             if (error) {
+                os_log_error(OS_LOG_DEFAULT, "handshake() device %@ connection failed %@", [device.peripheral.identifier UUIDString], error);
                 return;
             }
-
+            os_log(OS_LOG_DEFAULT, "handshake() device %@ connection succeed", [device.peripheral.identifier UUIDString]);
             [self discoverServices:@[self.manager.serviceUUID] withBlock:^(NSArray *services, NSError *error) {
                 if (error) {
+                    os_log_error(OS_LOG_DEFAULT, "handshake() device %@ discover service failed %@", [device.peripheral.identifier UUIDString], error);
                     return;
                 }
-
+                os_log(OS_LOG_DEFAULT, "handshake() device %@ service discover succeed", [device.peripheral.identifier UUIDString]);
                 CBService *service = getService(services, [self.manager.serviceUUID UUIDString]);
                 if (service == nil) {
                     return;
                 }
                 [self discoverCharacteristics:@[self.manager.maUUID, self.manager.peerUUID, self.manager.writerUUID, self.manager.closerUUID,] forService:service withBlock:^(NSArray *chars, NSError *error) {
                     if (error) {
+                        os_log_error(OS_LOG_DEFAULT, "handshake() device %@ discover characteristic failed %@", [device.peripheral.identifier UUIDString], error);
                         return;
                     }
-
+                    os_log(OS_LOG_DEFAULT, "handshake() device %@ discover characteristic succeed", [device.peripheral.identifier UUIDString]);
                     for (CBCharacteristic *chr in chars) {
                         if ([chr.UUID isEqual:self.manager.maUUID]) {
                             self.ma = chr;
@@ -140,17 +142,20 @@ CBService *getService(NSArray *services, NSString *uuid) {
 
                     [self writeToCharacteristic:[[self.manager.ma dataUsingEncoding:NSUTF8StringEncoding] mutableCopy] forCharacteristic:self.ma withEOD:TRUE andBlock:^(NSError *error) {
                         if (error) {
+                            os_log_error(OS_LOG_DEFAULT, "handshake() device %@ write Ma failed %@", [device.peripheral.identifier UUIDString], error);
                             return;
                         }
-
+                        os_log(OS_LOG_DEFAULT, "handshake() device %@ write Ma succeed", [device.peripheral.identifier UUIDString]);
                         self.maSend = TRUE;
                         [self writeToCharacteristic:[[self.manager.peerID dataUsingEncoding:NSUTF8StringEncoding] mutableCopy] forCharacteristic:self.peerID withEOD:TRUE andBlock:^(NSError *error) {
                             if (error) {
+                                os_log_error(OS_LOG_DEFAULT, "handshake() device %@ write peerID failed %@", [device.peripheral.identifier UUIDString], error);
                                 return;
                             }
+                            os_log(OS_LOG_DEFAULT, "handshake() device %@ write peerID succeed", [device.peripheral.identifier UUIDString]);
 
                             self.peerIDSend = TRUE;
-                            [self checkAndSendToLibP2P];
+                            [self checkAndAddToPeerstore];
                         }];
                     }];
                 }];
@@ -164,7 +169,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
     if (service == nil) {
         return;
     }
-    NSLog(@"invalidated");
+    os_log(OS_LOG_DEFAULT, "didModifyServices() with invalidated %@", invalidatedServices);
     self.maSend = FALSE;
     self.peerIDSend = FALSE;
     self.maRecv = FALSE;
@@ -233,14 +238,12 @@ CBService *getService(NSArray *services, NSString *uuid) {
                 writeCallback(blockError);
             }
         }
-//        NSLog(@"writed on %@", [characteristic.UUID UUIDString]);
         if (eod) {
             [self writeValue:[@"EOD" dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:characteristic withBlock:^(NSError *error){
                 blockError = error;
                 dispatch_semaphore_signal(sema);
             }];
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            NSLog(@"writed EOD");
         }
         dispatch_release(sema);
         writeCallback(nil);
@@ -256,7 +259,6 @@ CBService *getService(NSArray *services, NSString *uuid) {
 
 - (void)peripheral:(CBPeripheral *)peripheral didWriteValueForCharacteristic:(CBCharacteristic *)characteristic error:(NSError *)error {
     _BERTY_ON_D_THREAD(^{
-        NSLog(@"writeCallback %@", error);
         self.writeCallback(error);
         self.writeCallback = nil;
     });

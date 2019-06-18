@@ -12,9 +12,6 @@ import (
 )
 
 func (t *Transport) Dial(ctx context.Context, rAddr ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
-	// if int(C.isDiscovering()) != 1 {
-	// 	go C.startDiscover()
-	// }
 	s, err := rAddr.ValueForProtocol(P_BLE)
 	if err != nil {
 		return nil, err
@@ -43,14 +40,6 @@ func (b *Conn) Close() error {
 		CloseConnFromMa(val)
 	}
 	b.closed = true
-	// val, err := b.rAddr.ValueForProtocol(P_BLE)
-	// if err != nil {
-	// 	logger().Debug("BLEConn close", zap.Error(err))
-	// 	return err
-	// }
-	// ma := C.CString(val)
-	// defer C.free(unsafe.Pointer(ma))
-	// C.closeConn(ma)
 	return nil
 }
 
@@ -86,17 +75,7 @@ func NewListener(lAddr ma.Multiaddr, hostID peer.ID, t *Transport) (*Listener, e
 	return listener, nil
 }
 
-func (b *Conn) IsClosed() bool {
-	// val, err := b.rAddr.ValueForProtocol(P_BLE)
-	// if err != nil {
-	// 	logger().Debug("BLEConn IsClosed", zap.Error(err))
-	// 	return true
-	// }
-	// ma := C.CString(val)
-	// defer C.free(unsafe.Pointer(ma))
-
-	return b.closed
-}
+func (b *Conn) IsClosed() bool { return b.closed }
 
 func (b *Listener) closeNative() {
 	CloseScannerAndAdvertiser()

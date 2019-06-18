@@ -32,27 +32,18 @@
 @property (nonatomic, strong, nonnull) CBUUID *writerUUID;
 @property (nonatomic, strong, nonnull) CBUUID *closerUUID;
 @property (nonatomic, strong, nonnull) NSMutableArray *bDevices;
-
 @property (nonatomic, strong, nonnull) NSMutableArray *knownPeripherals;
-
 @property (nonatomic, strong, nonnull) CBCentralManager* cManager;
-
 @property (nonatomic, strong, nonnull) CBPeripheralManager* pManager;
-
 @property (nonatomic, strong, nonnull) dispatch_queue_t dQueue;
-
 @property (nonatomic, readwrite, strong) CountDownLatch* __nonnull statusCount;
-
-
 
 - (instancetype __nonnull) initScannerAndAdvertiser;
 - (void)addService;
 - (void)startScanning;
 - (void)startAdvertising;
-- (BertyDevice *)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier;
-- (BertyDevice *)findPeripheralFromMa:(NSString *__nonnull)ma;
-//- (void)setMa:(NSString *)ma;
-//- (void)setPeerID:(NSString *)peerID;
+- (BertyDevice *__nullable)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier;
+- (BertyDevice *__nullable)findPeripheralFromMa:(NSString *__nonnull)ma;
 
 @end
 

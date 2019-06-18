@@ -9,10 +9,11 @@
 
 #import "BleManager.h"
 #import "BertyDevice.h"
+#import <os/log.h>
 
 @implementation BleManager
 
-static NSString* const __nonnull SERVICE_UUID = @"A06C6AB8-886F-4D56-82FC-2CF8610D6665";
+static NSString* const __nonnull SERVICE_UUID = @"A06C6AB8-886F-4D56-82FC-2CF8610D6664";
 
 static NSString* const __nonnull WRITER_UUID = @"000CBD77-8D30-4EFF-9ADD-AC5F10C2CC1C";
 
@@ -89,16 +90,6 @@ static NSString* const __nonnull EOD = @"EOD";
 
 #pragma mark - go called functions
 
-//- (void)setMa:(NSString *)ma {
-//    NSLog(@"test");
-//    self.ma = ma;
-//}
-//
-//- (void)setPeerID:(NSString *)peerID {
-//    NSLog(@"test 1");
-//    self.peerID = peerID;
-//}
-
 - (void)startScanning {
     if (![self.cManager isScanning]) {
         NSDictionary *options = [NSDictionary
@@ -117,7 +108,7 @@ static NSString* const __nonnull EOD = @"EOD";
 - (void)addService {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSLog(@"peripheralManager: AddService: %@", [self.serviceUUID UUIDString]);
+        os_log(OS_LOG_DEFAULT, "peripheralManager: AddService: %@", [self.serviceUUID UUIDString]);
         [self.statusCount await];
         [self.pManager addService:self.bertyService];
     });
@@ -125,9 +116,9 @@ static NSString* const __nonnull EOD = @"EOD";
 
 - (void)peripheralManager:(CBPeripheralManager *)peripheral didAddService:(CBService *)service error:(nullable NSError *)error {
     if (error) {
-        NSLog(@"error: %@", [error localizedFailureReason]);
+        os_log(OS_LOG_DEFAULT, "didAddService() error: %@", [error localizedFailureReason]);
     }
-    NSLog(@"peripheralManager: didAddService: %@", [service.UUID UUIDString]);
+    os_log(OS_LOG_DEFAULT, "peripheralManager: didAddService: %@", [service.UUID UUIDString]);
 }
 
 #pragma mark - BertyDevice dict helper
@@ -153,7 +144,7 @@ static NSString* const __nonnull EOD = @"EOD";
 
 - (void)centralManager:(CBCentralManager *)central didConnectPeripheral:(CBPeripheral *)peripheral {
     _BERTY_ON_M_THREAD(^{
-        NSLog(@"Connected %@", peripheral.identifier);
+        os_log(OS_LOG_DEFAULT, "didConnectPeripheral() %@", [peripheral.identifier UUIDString]);
         BertyDevice *d = [self findPeripheral:peripheral];
         [d handleConnect:nil];
     });
@@ -162,7 +153,7 @@ static NSString* const __nonnull EOD = @"EOD";
 - (void)centralManager:(CBCentralManager *)central didFailToConnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
     BertyDevice *d = [self findPeripheral:peripheral];
     [d handleConnect:error];
-    NSLog(@"Failed to connect");
+    os_log(OS_LOG_DEFAULT, "didFailToConnectPeripheral() %@", [peripheral.identifier UUIDString]);
 }
 
 - (void)centralManager:(CBCentralManager *)central
@@ -175,14 +166,14 @@ static NSString* const __nonnull EOD = @"EOD";
             @synchronized (self.bDevices) {
                     [self.bDevices addObject:nDevice];
             }
-            NSLog(@"BertyDevice %@ added to BleManager.bDevices", nDevice.peripheral.identifier);
+            os_log(OS_LOG_DEFAULT, "didDiscoverPeripheral() device %@ added to BleManager.bDevices", [nDevice.peripheral.identifier UUIDString]);
             [nDevice handshake];
         }
     });
 }
 
 - (void)centralManager:(CBCentralManager *)central didDisconnectPeripheral:(CBPeripheral *)peripheral error:(NSError *)error {
-    NSLog(@"DidDidsco %@ %@", peripheral.identifier, error);
+    os_log(OS_LOG_DEFAULT, "didDisconnectPeripheral() for device %@ with error %@", [peripheral.identifier UUIDString], error);
     BertyDevice *nDevice = [self findPeripheral:peripheral];
     @synchronized (self.bDevices) {
         [self.bDevices removeObject:nDevice];
@@ -228,7 +219,7 @@ static NSString* const __nonnull EOD = @"EOD";
             break;
         }
     }
-    NSLog(@"peripheralManagerDidUpdateState: %@", stateString);
+    os_log(OS_LOG_DEFAULT, "peripheralManagerDidUpdateState: %@", stateString);
 }
 
 - (void)centralManagerDidUpdateState:(nonnull CBCentralManager *)central {
@@ -260,7 +251,7 @@ static NSString* const __nonnull EOD = @"EOD";
         }
     }
 
-    NSLog(@"centralManagerDidUpdateState: %@", stateString);
+    os_log(OS_LOG_DEFAULT, "centralManagerDidUpdateState: %@", stateString);
 }
 
 - (BertyDevice *)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier {
@@ -298,8 +289,8 @@ static NSString* const __nonnull EOD = @"EOD";
         // check if we hold a remote device of this type
         BertyDevice *remote = [self findPeripheralFromIdentifier:request.central.identifier];
         if (remote == nil) {
+            os_log(OS_LOG_DEFAULT, "didReceiveWriteRequests() failed peer unknown");
             // TODO: Add error HERE
-            NSLog(@"RECEIVED2bad");
             [peripheral respondToRequest:request withResult:CBATTErrorInsufficientAuthorization];
             return;
         }
@@ -310,8 +301,8 @@ static NSString* const __nonnull EOD = @"EOD";
         remote.remoteCentral = request.central;
         // check if final data was received
         // NSLog(@"request ACTUALDATA=%@ VAL=%@ UUID=%@ P=%p", data, request.value, request.characteristic.UUID, data);
-
         if ([request.characteristic.UUID isEqual:self.writerUUID]) {
+            os_log(OS_LOG_DEFAULT, "didReceiveWriteRequests() writer called for device %@", [remote.peripheral.identifier UUIDString]);
             void(^handler)(NSData *) = [remote.characteristicHandlers objectForKey:[request.characteristic.UUID UUIDString]];
             unsigned char zeroByte = 0;
             NSMutableData *tmpData = [NSMutableData dataWithData:request.value];

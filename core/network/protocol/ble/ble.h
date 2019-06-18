@@ -9,49 +9,32 @@
 #import <Foundation/Foundation.h>
 #import <CoreBluetooth/CoreBluetooth.h>
 #import <signal.h>
-#import "BleManager.h"
 
 #ifndef ble_h
 #define ble_h
+@class BleManager;
 
-#define _BERTY_ON_MAIN_THREAD(block) dispatch_async(dispatch_get_main_queue(), block)
-
-void closeBle(void);
-int stopAdvertising(void);
-int stopScanning(void);
-int isDiscovering(void);
-int centralManagerGetState(void);
-int peripheralManagerGetState(void);
-void addService(void);
-void removeService(void);
-void connDevice(CBPeripheral *peripheral);
-int isAdvertising(void);
-char *readPeerID(char *peerID);
-NSData *Bytes2NSData(void *bytes, int length);
-void writeNSData(NSData *data, char *ma);
-void closeConn(char *ma);
-int isClosed(char *ma);
-
-/*
-var SetMa func(string) = nil
-var SetPeerID func(string) = nil
-var StartScanning func() = nil
-var StartAdvertising func() = nil
-var Write func(p []byte, ma string) bool = nil
-var DialPeer func(ma string) bool = nil
-var InitScannerAndAdvertiser func() = nil
-var CloseScannerAndAdvertiser func() = nil
-var CloseConnFromMa func(ma string) = nil
-*/
-
-void setMa(char *);
-void setPeerID(char *);
+BleManager* getManager(void);
+void handleSigInt(int sig);
+void initSignalHandling(void);
+void handleException(NSException* exception);
+void InitScannerAndAdvertiser(void);
+void setMa(char *ma);
+void setPeerID(char *peerID);
 void startScanning(void);
 void startAdvertising(void);
-int dialPeer(char *);
-void InitScannerAndAdvertiser(void);
-void CloseScannerAndAdvertiser(void);
-void CloseConnFromMa(char *);
-
+NSData *Bytes2NSData(void *bytes, int length);
+void writeNSData(NSData *data, char *ma);
+int dialPeer(char *ma);
+void closeConn(char *ma);
+int isClosed(char *ma);
+void closeBle(void);
+void removeService(void);
+void addService(void);
+void connDevice(CBPeripheral *peripheral);
+int isDiscovering(void);
+int isAdvertising(void);
+int stopScanning(void);
+int stopAdvertising(void);
 
 #endif /* ble_h */
