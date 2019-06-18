@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <img src="https://berty.tech/img/logo.svg" alt="The Berty Project" height="300px">
+  <img src="https://berty.tech/img/berty.svg" alt="The Berty Project" height="300px">
   <br>
   <br>
   Berty
