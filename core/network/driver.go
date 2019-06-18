@@ -24,6 +24,7 @@ import (
 	pstore "github.com/libp2p/go-libp2p-peerstore"
 	protocol "github.com/libp2p/go-libp2p-protocol"
 	ma "github.com/multiformats/go-multiaddr"
+	manet "github.com/multiformats/go-multiaddr-net"
 	mh "github.com/multiformats/go-multihash"
 	"github.com/pkg/errors"
 	"go.uber.org/zap"
@@ -303,7 +304,23 @@ func (net *Network) Join(ctx context.Context) error {
 		prevPeerInfo := pstore.PeerInfo{}
 		for {
 			duration := 1 * time.Minute
-			currPeerInfo := net.host.Peerstore().PeerInfo(net.host.ID())
+			currPeerInfo := pstore.PeerInfo{
+				ID: net.host.ID(),
+			}
+
+			// filter out private addrs
+			for _, addr := range net.host.Addrs() {
+				if !manet.IsPrivateAddr(addr) {
+					currPeerInfo.Addrs = append(currPeerInfo.Addrs, addr)
+				}
+			}
+
+			if len(currPeerInfo.Addrs) == 0 {
+				logger().Warn("host has not addrs to provide")
+				duration = 5 * time.Second
+				continue
+			}
+
 			if !reflect.DeepEqual(prevPeerInfo, currPeerInfo) {
 				err := routing_validator.PutTranslateRecord(ctx, net.host.Routing, net.contactID, currPeerInfo)
 				if err != nil {

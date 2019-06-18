@@ -59,7 +59,7 @@ func WithServerTestOptions() config.Option {
 		DisableDefaultBind(),
 		Bind("/ip4/127.0.0.1/tcp/0"),
 		DisablePersistConfig(),
-		DisableHOP(),
+		EnableHOP(),
 	)
 }
 
