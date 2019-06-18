@@ -1,11 +1,25 @@
-import { Avatar, Flex, Header, Icon, Markdown, Text } from '@berty/component'
+import {
+  Avatar,
+  Flex,
+  Header,
+  Icon,
+  Markdown,
+  Text,
+  Loader,
+  Screen,
+  OptimizedFlatList,
+} from '@berty/component'
 import { colors } from '@berty/common/constants'
-import { parseEmbedded } from '@berty/common/helpers/json'
+import { conversation as utils } from '@berty/common/helpers/entity'
 import { shadow } from '@berty/common/styles'
+import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 import * as KeyboardContext from '@berty/common/helpers/KeyboardContext'
 import React, { PureComponent } from 'react'
 import * as dateFns from '@berty/common/locale/dateFns'
 import * as enums from '@berty/common/enums.gen'
+import tDate from '@berty/common/helpers/timestampDate'
+import BertyEntityMessage from '@berty/bridge/service/entity/message'
 
 import {
   Platform,
@@ -13,7 +27,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native'
-import { btoa } from 'b64-lite'
 import { withNamespaces } from 'react-i18next'
 import ActionSheet from 'react-native-actionsheet'
 
@@ -45,36 +58,23 @@ const textStyles = StyleSheet.flatten([
 ])
 
 @withNamespaces()
-export class Message extends React.Component {
+export class Message extends PureComponent {
   messageSeen = () => {
-    this.props.context.mutations.eventSeen({
-      id: this.props.data.id,
-    })
+    // this.props.context.node.service.eventSeen({
+    //   id: this.props.data.id,
+    // })
   }
 
   messageRetry = () => {
-    this.props.context.mutations.eventRetry({
+    this.props.context.node.service.eventRetry({
       id: this.props.data.id,
     })
-  }
-
-  shouldComponentUpdate (nextProps, nextState) {
-    // @FIXME: destroyed by refactor
-    // const { data } = this.props
-    // if (
-    //   data.seenAt !== nextProps.data.seenAt ||
-    //   (utils.isReadByOthers(nextProps.data) && !utils.isReadByOthers(data)) ||
-    //   utils.messageHasError(nextProps.data) !== utils.messageHasError(data)
-    // ) {
-    //   return true
-    // }
-    return false
   }
 
   render () {
     const { conversation, data, t } = this.props
 
-    const contactId = btoa(`contact:${data.sourceDeviceId}`)
+    const contactId = data.sourceDeviceId
     const { contact } =
       conversation.members.find(m => m.contact && m.contact.id === contactId) ||
       {}
@@ -83,21 +83,18 @@ export class Message extends React.Component {
     const isMyself = contact && contact.status === 42
     const isOneToOne =
       conversation.kind === enums.BertyEntityConversationInputKind.OneToOne
-    // TODO: implement message seeni
-    if (new Date(this.props.data.seenAt).getTime() === 0) {
+    // TODO: implement message seen
+    if (tDate(data.seenAt).getTime() <= 0) {
       this.messageSeen()
     }
 
     let iconColor = null
-    // @FIXME: destroyed by refactor
-    let iconName = 'circle' // utils.isReadByOthers(data) ? 'check-circle' : 'circle'
-    // @FIXME: destroyed by refactor
-    let failed = true // utils.messageHasError(data)
+    let iconName = utils.isReadByOthers(data) ? 'check-circle' : 'circle'
+    let failed = utils.messageHasError(data)
     if (failed) {
       iconName = 'x-circle'
       iconColor = 'red'
     }
-
     return (
       <Flex.Rows
         align={isMyself ? 'end' : 'start'}
@@ -136,7 +133,7 @@ export class Message extends React.Component {
           }}
         >
           <Markdown style={textStyles}>
-            {parseEmbedded(data.attributes).message.text}
+            {BertyEntityMessage.decode(data.attributes).text}
           </Markdown>
         </View>
         <Text
@@ -150,7 +147,7 @@ export class Message extends React.Component {
             [isMyself ? 'left' : 'right']: 42,
           }}
         >
-          {dateFns.fuzzyTimeOrFull(new Date(data.createdAt))}{' '}
+          {dateFns.fuzzyTimeOrFull(tDate(data.createdAt))}{' '}
           {isMyself ? (
             <Icon
               name={iconName}
@@ -255,7 +252,7 @@ export class Input extends PureComponent {
       try {
         const conversation = this.props.navigation.state.params || {}
         input &&
-          (await this.props.context.mutations.conversationAddMessage({
+          (await this.props.context.node.service.conversationAddMessage({
             conversation: {
               id: conversation.id,
             },
@@ -339,95 +336,119 @@ export class Input extends PureComponent {
 }
 
 export class Chat extends PureComponent {
+  getItemLayout = (data, index) => ({
+    length: 65,
+    offset: 65 * index,
+    index,
+  })
+
   render () {
-    // @FIXME: destroyed by refactor
-    return null
-    // const {
-    //   data,
-    //   navigation,
-    //   context: { queries, subscriptions, fragments },
-    //   context,
-    // } = this.props
-    // return (
-    //   <Flex.Rows>
-    //     <Pagination
-    //       style={[{ flex: 1 }, Platform.OS === 'web' ? { paddingTop: 48 } : {}]}
-    //       direction='forward'
-    //       query={queries.EventList.graphql}
-    //       variables={merge([
-    //         queries.EventList.defaultVariables,
-    //         {
-    //           filter: {
-    //             kind: 302,
-    //             targetAddr: data.id,
-    //           },
-    //         },
-    //       ])}
-    //       subscriptions={[subscriptions.message]}
-    //       fragment={fragments.EventList}
-    //       alias='EventList'
-    //       renderItem={props => (
-    //         <MessageContainer
-    //           {...props}
-    //           navigation={navigation}
-    //           context={context}
-    //           conversation={data}
-    //         />
-    //       )}
-    //       inverted
-    //     />
-    //     <Input
-    //       navigation={this.props.navigation}
-    //       context={this.props.context}
-    //     />
-    //   </Flex.Rows>
-    // )
+    const { data, navigation, context } = this.props
+
+    return (
+      <Flex.Rows>
+        <Store.Node.Service.EventList.Pagination
+          filter={{ kind: 302, targetAddr: data.id }}
+          paginate={({ cursor }) => ({
+            first: 30,
+            after: cursor
+              ? tDate(cursor).toISOString()
+              : new Date(Date.now()).toISOString(),
+            orderBy: 'created_at',
+            orderDesc: true,
+          })}
+          cursorExtractor={item => tDate(item.updatedAt).getTime() || 0}
+        >
+          {({ queue, count, retry, loading, paginate }) => (
+            <OptimizedFlatList
+              style={{ marginBottom: 50 }}
+              data={queue}
+              onEndReached={paginate}
+              getItemLayout={this.getItemLayout}
+              onRefresh={retry}
+              refreshing={loading}
+              renderItem={({ item }) => (
+                <Message
+                  data={item}
+                  navigation={navigation}
+                  context={context}
+                  conversation={data}
+                />
+              )}
+              inverted
+            />
+          )}
+        </Store.Node.Service.EventList.Pagination>
+        <Input
+          navigation={this.props.navigation}
+          context={this.props.context}
+        />
+      </Flex.Rows>
+    )
   }
 }
 
-class Detail extends PureComponent {
-  static navigationOptions = ({ navigation }) => ({
-    header: (
-      <Header
-        navigation={navigation}
-        title={
-          <View style={{ flexDirection: 'column' }}>
-            <Text
-              large
-              color={colors.fakeBlack}
-              justify={navigation.getParam('backBtn') ? 'center' : 'start'}
-              middle
-              size={5}
-            >
-              {
-                // @FIXME: destroyed by refactor
-                // utils.getTitle(navigation.state.params) || {}
+@withStoreContext
+class ConversationDetailHeader extends PureComponent {
+  render () {
+    const { navigation } = this.props
+    return (
+      <Store.Entity.Conversation id={navigation.getParam('id')}>
+        {data =>
+          data ? (
+            <Header
+              navigation={navigation}
+              title={
+                <View style={{ flexDirection: 'column' }}>
+                  <Text
+                    large
+                    color={colors.fakeBlack}
+                    justify={
+                      navigation.getParam('backBtn') ? 'center' : 'start'
+                    }
+                    middle
+                    size={5}
+                  >
+                    {utils.getTitle(data)}
+                  </Text>
+                  {data.topic ? (
+                    <Text
+                      justify={
+                        navigation.getParam('backBtn') ? 'center' : 'start'
+                      }
+                      middle
+                    >
+                      {data.topic}
+                    </Text>
+                  ) : null}
+                </View>
               }
-            </Text>
-            {navigation.state.params.topic ? (
-              <Text
-                justify={navigation.getParam('backBtn') ? 'center' : 'start'}
-                middle
-              >
-                {navigation.state.params.topic}
-              </Text>
-            ) : null}
-          </View>
+              rightBtnIcon='more-vertical'
+              onPressRightBtn={() =>
+                navigation.navigate('chats/settings', {
+                  conversation: data,
+                })
+              }
+              backBtn={() => {
+                const backBtn = navigation.getParam('backBtn')
+                if (backBtn) {
+                  backBtn()
+                }
+              }}
+            />
+          ) : (
+            <Loader />
+          )
         }
-        rightBtnIcon='more-vertical'
-        onPressRightBtn={() =>
-          navigation.navigate('chats/settings', {
-            conversation: navigation.state.params,
-          })
-        }
-        backBtn={() => {
-          const backBtn = navigation.getParam('backBtn')
-          if (backBtn) {
-            backBtn()
-          }
-        }}
-      />
-    ),
+      </Store.Entity.Conversation>
+    )
+  }
+}
+
+@withStoreContext
+class ConversationDetail extends PureComponent {
+  static navigationOptions = ({ navigation }) => ({
+    header: <ConversationDetailHeader navigation={navigation} />,
   })
 
   async componentDidMount () {
@@ -440,7 +461,7 @@ class Detail extends PureComponent {
     if (!id) {
       return
     }
-    const res = await this.props.context.mutations.conversationRead({
+    const res = await this.props.context.node.service.conversationRead({
       id,
     })
 
@@ -448,48 +469,21 @@ class Detail extends PureComponent {
   }
 
   render () {
-    return null
-    // @FIXME: destroyed by refactor
-    // const id = this.props.navigation.getParam('id')
-    // const {
-    //   navigation,
-    //   context,
-    //   context: { queries },
-    // } = this.props
-    // return (
-    //   <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
-    //     <QueryReducer
-    //       query={queries.Conversation.graphql}
-    //       variables={merge([queries.Conversation.defaultVariables, { id }])}
-    //     >
-    //       {(state, retry) => {
-    //         switch (state.type) {
-    //           default:
-    //           case state.loading:
-    //             return (
-    //               <Flex.Rows align='center'>
-    //                 <Flex.Cols align='center'>
-    //                   <ActivityIndicator size='large' />
-    //                 </Flex.Cols>
-    //               </Flex.Rows>
-    //             )
-    //           case state.success:
-    //             return (
-    //               <Chat
-    //                 navigation={navigation}
-    //                 context={context}
-    //                 data={state.data.Conversation}
-    //               />
-    //             )
-    //           case state.error:
-    //             setTimeout(() => retry(), 1000)
-    //             return null
-    //         }
-    //       }}
-    //     </QueryReducer>
-    //   </Screen>
-    // )
+    const { navigation, context } = this.props
+    return (
+      <Screen style={{ backgroundColor: colors.white, paddingTop: 0 }}>
+        <Store.Entity.Conversation id={navigation.getParam('id')}>
+          {data =>
+            data ? (
+              <Chat navigation={navigation} context={context} data={data} />
+            ) : (
+              <Loader />
+            )
+          }
+        </Store.Entity.Conversation>
+      </Screen>
+    )
   }
 }
 
-export default Detail
+export default ConversationDetail

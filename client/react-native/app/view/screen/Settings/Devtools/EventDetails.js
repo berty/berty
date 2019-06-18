@@ -60,7 +60,9 @@ class EventDetails extends PureComponent {
       let value = data[key] || 'null'
       if (['createdAt', 'updatedAt'].some(_ => _ === key)) {
         value = formatDateTime(
-          new Date(value.seconds * 1000 + (value.nanos % 1000))
+          new Date(
+            value.seconds * 1000 + (value.nanos ? value.nanos % 1000 : 0)
+          )
         )
       }
       fields.push(

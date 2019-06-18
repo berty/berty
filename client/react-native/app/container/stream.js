@@ -3,14 +3,17 @@ import { debounce, throttle } from 'throttle-debounce'
 import { Component } from 'react'
 import objectHash from 'object-hash'
 import { deepFilterEqual, deepEqual } from './helper'
+import Case from 'case'
 
 export class Stream extends Component {
   get method () {
     return this.props.method || function () {}
   }
+
   get request () {
     return this.props.request
   }
+
   get response () {
     return this.props.response
   }
@@ -32,6 +35,7 @@ export class Stream extends Component {
   componentDidMount () {
     this.invoke()
   }
+
   componentWillUnmount () {}
 
   invoke = async () => {
@@ -45,6 +49,7 @@ export class Stream extends Component {
   }
 
   setStateDebounce = debounce(50, this.setState)
+
   setStateDebounce = throttle(50, this.setState)
 
   render () {
@@ -57,8 +62,11 @@ export class Stream extends Component {
 
 export class StreamPagination extends Stream {
   queue = []
+
   cursor = ''
+
   count = 0
+
   loading = true
 
   componentWillReceiveProps (props) {
@@ -75,6 +83,15 @@ export class StreamPagination extends Stream {
     this.forceUpdate(this.invoke)
   }
 
+  cursorExtractor = item =>
+    this.props.cursorExtractor
+      ? this.props.cursorExtractor(item)
+      : item[Case.camel(this.paginate.orderBy || 'id')]
+
+  compareInf = (a, b) => (this.paginate.orderDesc ? a >= b : a <= b)
+
+  compareSup = (a, b) => (this.paginate.orderDesc ? a < b : a > b)
+
   add = change => {
     const { newValue } = change
 
@@ -84,38 +101,69 @@ export class StreamPagination extends Stream {
       return
     }
 
+    // find where to put the new item
+    const cursor = this.cursorExtractor(newValue)
+
     // if item exist, update it
     const index = this.queue.findIndex(item => newValue.id === item.id)
     if (index !== -1) {
-      this.queue.splice(index, 1, newValue)
-      return
+      // if cursor has not changed, just update item
+      if (cursor === this.cursorExtractor(this.queue[index])) {
+        this.queue.splice(index, 1, newValue)
+        return
+      } else {
+        // else, update his position
+      }
     }
-
-    // else find where to put the new item
-    const cursorField = this.paginate.sortedBy || 'id'
-    const cursor = newValue[cursorField]
 
     for (let topIndex in this.queue) {
       let itemTop = this.queue[topIndex]
-      let infTop = cursor <= itemTop[cursorField]
+      let infTop = this.compareInf(cursor, this.cursorExtractor(itemTop))
       if (infTop) {
-        this.queue.splice(topIndex, 0, newValue)
+        // if item exist, update his position
+        if (index !== -1) {
+          this.queue.splice(
+            // remove all items from top
+            topIndex,
+            // delete items from top to index (included)
+            index + 1 - topIndex,
+            // replace first by index updated
+            newValue,
+            // add the all items from top to index (not included)
+            ...this.queue.slice(topIndex, index)
+          )
+        } else {
+          this.queue.splice(topIndex, 0, newValue)
+        }
         return
       }
       let bottomIndex = this.queue.length - topIndex - 1
       let itemBottom = this.queue[bottomIndex]
-      let supBottom = cursor > itemBottom[cursorField]
+      let supBottom = this.compareSup(cursor, this.cursorExtractor(itemBottom))
       if (supBottom) {
-        if (bottomIndex + 1 !== this.queue.length || change.force) {
-          this.queue.splice(bottomIndex + 1, 0, newValue)
-          return
+        // if item exist, update his position
+        if (index !== -1) {
+          this.queue.splice(
+            // remove all items from index
+            index,
+            // delete items from index (included) to bottom
+            bottomIndex - (index + 1),
+            // add all items from index (not included) to bottom
+            ...this.queue.slice(index + 1, bottomIndex + 1),
+            // replace last by index updated
+            newValue
+          )
+        } else {
+          if (bottomIndex + 1 < this.queue.length || change.force) {
+            this.queue.splice(bottomIndex + 1, 0, newValue)
+          }
         }
         return
       }
     }
 
     // if forced to add, push it
-    if (change.force) {
+    if (this.queue.length === 0 && change.force) {
       this.queue.push(newValue)
       return
     }
@@ -139,12 +187,17 @@ export class StreamPagination extends Stream {
     this.queue.splice(index, 1)
   }
 
+  observeMutex = new Mutex()
   observe = async change => {
-    this[change.type](change)
+    this.observeMutex.acquire().then(unlock => {
+      this[change.type](change)
+      unlock()
+    })
     this.smartForceUpdate()
   }
 
   smartForceUpdateMutex = new Mutex()
+
   smartForceUpdate = async () => {
     if (this.smartForceUpdateMutex.isLocked()) {
       return
@@ -152,6 +205,7 @@ export class StreamPagination extends Stream {
     const release = await this.smartForceUpdateMutex.acquire()
     this.forceUpdateDebounced(release)
   }
+
   forceUpdateDebounced = debounce(16, this.forceUpdate)
 
   get request () {
@@ -189,6 +243,7 @@ export class StreamPagination extends Stream {
   }
 
   invokeHashTable = {}
+
   invoke = async () => {
     const queue = []
 
@@ -216,7 +271,8 @@ export class StreamPagination extends Stream {
       this.loading = false
 
       if (queue.length !== 0) {
-        this.cursor = queue[queue.length - 1][this.paginate.sortedBy || 'id']
+        this.cursor =
+          queue[queue.length - 1][Case.camel(this.paginate.orderBy || 'id')]
       }
 
       this.smartForceUpdate()
@@ -233,6 +289,7 @@ export class StreamPagination extends Stream {
       queue: this.queue,
       paginate: this.invoke,
       count: this.queue.length,
+      cursor: this.cursor,
       loading: this.loading,
       retry: this.retry,
     })

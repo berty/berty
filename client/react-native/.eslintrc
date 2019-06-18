@@ -35,8 +35,7 @@
     "dependencies/no-cycles": 1,
     "dependencies/no-unresolved": 1,
     "semi": ["error", "never"],
-    "padded-blocks": ["error", "never"],
-    "lines-between-class-members": ["error", "always"]
+    "padded-blocks": ["error", "never"]
   },
   "parserOptions": {
     "ecmaFeatures": {

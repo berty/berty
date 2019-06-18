@@ -2,7 +2,9 @@ import { action } from 'mobx'
 
 export class ServiceStore {
   type = ''
+
   store = null
+
   bridge = null
 
   constructor (store, bridge) {

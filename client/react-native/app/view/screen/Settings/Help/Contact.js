@@ -13,6 +13,7 @@ class Contact extends PureComponent {
       />
     ),
   })
+
   render () {
     const { t } = this.props
 

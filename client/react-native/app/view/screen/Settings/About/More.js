@@ -12,6 +12,7 @@ export default class More extends PureComponent {
       />
     ),
   })
+
   render () {
     return (
       <Flex.Cols size={1} align='center' justify='between'>

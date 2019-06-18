@@ -9,6 +9,7 @@ class FAQ extends PureComponent {
       <Header navigation={navigation} title={I18n.t('settings.faq')} backBtn />
     ),
   })
+
   render () {
     const { t } = this.props
 

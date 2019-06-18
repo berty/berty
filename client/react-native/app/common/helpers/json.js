@@ -8,5 +8,4 @@ if (TextDecoder === undefined) {
 
 const decoder = new TextDecoder('utf-8')
 
-export const parseEmbedded = serialized =>
-  JSON.parse(decoder.decode(new Uint8Array(serialized)))
+export const parseEmbedded = serialized => decoder.decode(serialized)

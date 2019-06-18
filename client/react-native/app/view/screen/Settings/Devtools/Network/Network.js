@@ -12,6 +12,7 @@ export default class Network extends PureComponent {
       />
     ),
   })
+
   render () {
     const { navigation } = this.props
     return (

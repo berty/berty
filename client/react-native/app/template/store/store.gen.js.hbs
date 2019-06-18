@@ -20,23 +20,27 @@ import Mutex from 'await-mutex'
               {{#if (and resolvedType (get (case 'camel' type) ../../../fields))}}
                 @computed get {{name}} () {
                   {{#if repeated}}
-                    return this.store.entity.{{case 'camel' type}}.values().filter(
-                      _ => _.{{case 'camel' ../name}}Id === this.id
-                    )
+                    const {{name}} = []
+                    for (const [, _] of this.store.entity.{{case 'camel' type}}) {
+                      if (_.{{case 'camel' ../name}}Id === this.id) {
+                        {{name}}.push(_)
+                      }
+                    }
+                    return {{name}}
                   {{else}}
                     return this.store.entity.{{case 'camel' type}}.get(this.{{name}}Id)
                   {{/if}}
                 }
-                set {{name}} ({{case 'camel' name}}) {
+                set {{name}} ({{name}}) {
                   {{#if repeated}}
-                    {{case 'camel' name}}.forEach(_ => this.store.entity.{{case 'camel' type}}.set(
+                    {{name}}.forEach(_ => this.store.entity.{{case 'camel' type}}.set(
                       _.id,
                       new {{type}}EntityStore(this.store, _),
                     ))
                   {{else}}
                     this.store.entity.{{case 'camel' type}}.set(
-                      this.{{name}}Id,
-                      new {{type}}EntityStore(this.store, {{case 'camel' name}}),
+                      {{name}}.id,
+                      new {{type}}EntityStore(this.store, {{name}}),
                     )
                   {{/if}}
                 }
@@ -69,20 +73,30 @@ import Mutex from 'await-mutex'
       {{#each methods}}
 
         {{#if responseStream}}
-            {{case 'camel' name}}Cache = {}
-            {{case 'camel' name}}Mutex = new Mutex()
+          {{case 'camel' name}}Cache = {}
+
+          {{#if (not (test name (toRegex 'List$')))}}
+           {{case 'camel' name}}Mutex = {}
+          {{/if}}
         {{/if}}
 
         {{case 'camel' name}} = async (input = {}) => {
+
           {{#if responseStream}}
-            const unlock = await this.{{case 'camel' name}}Mutex.lock()
-            const inputHash = objectHash(input)
-            if (this.{{case 'camel' name}}Cache[inputHash] == null) {
-                const stream = await this.bridge.{{case 'camel' name}}(input)
+            {{#if (not (test name (toRegex 'List$')))}}
+              const inputHash = objectHash(input)
+              const unlock = await (
+                this.{{case 'camel' name}}Mutex[inputHash]
+                || (this.{{case 'camel' name}}Mutex[inputHash] = new Mutex())
+              ).lock()
+              if (this.{{case 'camel' name}}Cache[inputHash] == null) {
                 this.{{case 'camel' name}}Cache[inputHash] = new Stream.Transform({
-                  writableObjectMode: true,
-                  readableObjectMode: true,
-                  transform: (output, encoding, callback) => {
+            {{else}}
+              const transformStream = new Stream.Transform({
+            {{/if}}
+              writableObjectMode: true,
+              readableObjectMode: true,
+              transform: (output, encoding, callback) => {
           {{else}}
             let output = await this.bridge.{{case 'camel' name}}(input)
           {{/if}}
@@ -142,21 +156,29 @@ import Mutex from 'await-mutex'
           {{/with}}
 
           {{#if responseStream}}
-                    callback(null, output)
-                  },
-                })
+                callback(null, output)
+              },
+            })
+            const stream = await this.bridge.{{case 'camel' name}}(input)
+
+            {{#if (not (test name (toRegex 'List$')))}}
+                this.{{case 'camel' name}}Cache[inputHash].setMaxListeners(30)
                 stream.pipe(this.{{case 'camel' name}}Cache[inputHash])
                 this.{{case 'camel' name}}Cache[inputHash].on('end', () => {
-                delete this.{{case 'camel' name}}Cache[inputHash]
+                  delete this.{{case 'camel' name}}Cache[inputHash]
                 })
-            }
-            const passThroughStream = new Stream.PassThrough({
-                writableObjectMode: true,
-                readableObjectMode: true,
-            })
-            this.{{case 'camel' name}}Cache[inputHash].pipe(passThroughStream)
-            unlock()
-            return passThroughStream
+              }
+              const passThroughStream = new Stream.PassThrough({
+                  writableObjectMode: true,
+                  readableObjectMode: true,
+              })
+              this.{{case 'camel' name}}Cache[inputHash].pipe(passThroughStream)
+              unlock()
+              return passThroughStream
+            {{else}}
+              stream.pipe(transformStream)
+              return transformStream
+            {{/if}}
           {{else}}
             return output
           {{/if}}

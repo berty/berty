@@ -12,7 +12,6 @@ import {
 } from '@berty/component'
 import { borderBottom, marginLeft, padding } from '@berty/common/styles'
 import { colors } from '@berty/common/constants'
-import { merge } from '@berty/common/helpers'
 import React, { PureComponent } from 'react'
 import * as enums from '@berty/common/enums.gen'
 import { Store } from '@berty/container'
@@ -21,6 +20,9 @@ import { hook } from 'cavy'
 import { withNamespaces } from 'react-i18next'
 import { withNavigation } from 'react-navigation'
 import I18n from 'i18next'
+import { withStoreContext } from '@berty/store/context'
+import { conversation } from '@berty/common/helpers/entity'
+import tDate from '@berty/common/helpers/timestampDate'
 
 /* global __DEV__ */
 
@@ -53,47 +55,35 @@ export class Item extends React.PureComponent {
     this.subscriber = null
   }
 
+  async componentDidMount () {
+    // const { context } = this.props
+    //
+    // this.eventUnseenStream = await context.node.service.eventUnseen({
+    //   filter: {
+    //     kind: 302,
+    //     targetAddr: this.props.data.id,
+    //     direction: 1,
+    //   },
+    //   onlyWithoutSeenAt: 1,
+    // })
+    // this.eventUnseenStream.on('data', e =>
+    //   this.setState({
+    //     unread: e.id,
+    //   })
+    // )
+    // this.commitLogStream = await context.node.service.commitLogStream({})
+    // this.commitLogStream.on('data', this.updateBadge)
+  }
+
   componentWillUnmount () {
+    // this.commitLogStream.destroy()
     if (this.state.interval !== null) {
       clearInterval(this.state.interval)
     }
-    if (this.subscriber !== null) {
-      this.subscriber.unsubscribe()
-    }
   }
 
-  componentDidMount () {
-    const {
-      context: { queries, subscriptions },
-    } = this.props
-
-    queries.EventUnseen.fetch(
-      merge([
-        queries.EventUnseen.defaultVariables,
-        {
-          filter: {
-            kind: 302,
-            targetAddr: this.props.data.id,
-            direction: 1,
-          },
-          onlyWithoutSeenAt: 1,
-        },
-      ])
-    ).then(e => {
-      this.setState({
-        unread: e.map(val => {
-          return val.id
-        }),
-      })
-    })
-
-    this.subscriber = subscriptions.commitLogStream.subscribe({
-      updater: this.updateBadge,
-    })
-  }
-
-  updateBadge = (store, data) => {
-    const [entity] = [data.CommitLogStream.entity.event]
+  updateBadge = data => {
+    const entity = data.entity.event
     const {
       data: { id },
     } = this.props
@@ -140,7 +130,7 @@ export class Item extends React.PureComponent {
     const { connected, unread } = this.state
 
     // @FIXME: destroyed by refactor
-    const isRead = false // utils.isReadByMe(data)
+    const isRead = conversation.isReadByMe(data)
     // fix when contact request is send after conversation invite
     if (
       data.members.length === 2 &&
@@ -155,9 +145,9 @@ export class Item extends React.PureComponent {
     return (
       <Flex.Cols
         align='center'
-        onPress={() =>
+        onPress={() => {
           navigation.navigate({ routeName: 'chats/detail', params: data })
-        }
+        }}
         style={[
           {
             height: 72,
@@ -193,10 +183,7 @@ export class Item extends React.PureComponent {
           style={[marginLeft]}
         >
           <Text color={colors.fakeBlack} left middle bold={!isRead}>
-            {
-              // @FIXME: destroyed by refactor
-              // utils.getTitle(data)
-            }
+            {conversation.getTitle(data)}
           </Text>
           <Flex.Cols size={1} justify='flex-start'>
             {data.members.length === 2 && connected ? (
@@ -233,6 +220,7 @@ export class Item extends React.PureComponent {
   }
 }
 
+@withStoreContext
 @hook
 class ConversationList extends PureComponent {
   constructor (props) {
@@ -293,14 +281,18 @@ class ConversationList extends PureComponent {
   render () {
     const { navigation } = this.props
     return (
-      <Screen>
+      <Screen style={{ backgroundColor: 'white' }}>
         <Store.Node.Service.ConversationList.Pagination
           paginate={({ cursor }) => ({
             first: 50,
-            after: cursor,
-            sortedBy: 'updated_at',
+            after: cursor
+              ? tDate(cursor).toISOString()
+              : new Date(Date.now()).toISOString(),
+            orderBy: 'wrote_at',
+            orderDesc: true,
           })}
           fallback={<Loader />}
+          cursorExtractor={item => tDate(item.updatedAt).getTime()}
         >
           {({ queue, count, retry, loading, paginate }) =>
             count ? (

@@ -44,7 +44,7 @@ export class OptimizedFlatList extends Component {
     return (
       <FlatList
         windowSize={11}
-        initialNumToRender={50}
+        initialNumToRender={10}
         maxToRenderPerBatch={5}
         updateCellsBatchingPeriod={64}
         scrollEventThrottle={128}

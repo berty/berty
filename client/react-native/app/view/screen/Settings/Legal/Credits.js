@@ -13,6 +13,7 @@ class Credits extends PureComponent {
       />
     ),
   })
+
   render () {
     const { t } = this.props
 

@@ -13,6 +13,7 @@ class Privacy extends PureComponent {
       />
     ),
   })
+
   render () {
     const { t } = this.props
 

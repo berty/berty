@@ -13,6 +13,7 @@ class Changelog extends PureComponent {
       />
     ),
   })
+
   render () {
     const { t } = this.props
 

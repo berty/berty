@@ -248,6 +248,7 @@ const getHeight = props => {
 
 export class BackgroundText extends PureComponent {
   static styles = {}
+
   static getStyles = ({
     icon,
     input,
@@ -305,6 +306,7 @@ export class BackgroundText extends PureComponent {
 
 export class ForegroundText extends PureComponent {
   static styles = {}
+
   static getStyles = ({
     icon,
     input,

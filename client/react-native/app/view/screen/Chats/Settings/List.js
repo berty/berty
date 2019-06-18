@@ -1,17 +1,17 @@
 import { withNamespaces } from 'react-i18next'
-import { withNavigation } from 'react-navigation'
 import I18n from 'i18next'
 import React, { PureComponent } from 'react'
 
-import { Avatar, Header, Menu, Screen } from '@berty/component'
+import { Avatar, Header, Menu, Screen, Loader } from '@berty/component'
 import { choosePicture } from '@berty/common/helpers/react-native-image-picker'
 import { colors } from '@berty/common/constants'
 import * as enums from '@berty/common/enums.gen'
 import { withGoBack } from '@berty/component/BackActionProvider'
 import { withStoreContext } from '@berty/store/context'
+import { Store } from '@berty/container'
 
-@withNavigation
 @withNamespaces()
+@withGoBack
 @withStoreContext
 export class SettingsScreen extends PureComponent {
   constructor (props) {
@@ -42,13 +42,10 @@ export class SettingsScreen extends PureComponent {
   }
 
   onSave = () => {
-    const { title, topic, conversation } = this.state
-    const {
-      context: { mutations },
-    } = this.props
+    const { title, topic } = this.state
+    const { context } = this.props
 
-    mutations.conversationUpdate({
-      ...conversation,
+    context.node.service.conversationUpdate({
       title,
       topic,
     })
@@ -77,11 +74,12 @@ export class SettingsScreen extends PureComponent {
   }
 
   onDeleteConversation = async () => {
+    const { context } = this.props
     const conversation = this.props.navigation.getParam('conversation')
     const { id } = conversation
     try {
-      await this.props.context.mutations.conversationRemove({ id })
-      this.props.navigation.popToTop()
+      await context.node.service.conversationRemove({ id })
+      this.props.goBack()
     } catch (err) {
       console.error(err)
     }
@@ -200,7 +198,6 @@ export class SettingsScreen extends PureComponent {
   }
 }
 
-@withGoBack
 class List extends PureComponent {
   static navigationOptions = ({ navigation }) => {
     const [conversation, { edit }, onEdit, onSave] = [
@@ -226,38 +223,22 @@ class List extends PureComponent {
   }
 
   render () {
-    return null
-    // @FIXME: destroyed by refactor
-    // const { navigation, context } = this.props
-    // const conversation = navigation.getParam('conversation')
-    // const { id } = conversation
-    // const { queries } = context
-
-    // return (
-    //   <QueryReducer
-    //     query={queries.Conversation.graphql}
-    //     variables={merge([queries.Conversation.defaultVariables, { id }])}
-    //   >
-    //     {(state, retry) => {
-    //       if (state.type === state.error) {
-    //         setTimeout(() => retry(), 1000)
-    //       }
-
-    //       return (
-    //         <SettingsScreen
-    //           navigation={navigation}
-    //           context={context}
-    //           conversation={
-    //             state.type === state.success
-    //               ? state.data.Conversation
-    //               : conversation
-    //           }
-    //           retry={retry}
-    //         />
-    //       )
-    //     }}
-    //   </QueryReducer>
-    // )
+    const { navigation } = this.props
+    const { id } = navigation.getParam('conversation')
+    return (
+      <Store.Entity.Conversation id={id}>
+        {data =>
+          data ? (
+            <SettingsScreen
+              navigation={navigation}
+              conversation={navigation.getParam('conversation')}
+            />
+          ) : (
+            <Loader />
+          )
+        }
+      </Store.Entity.Conversation>
+    )
   }
 }
 

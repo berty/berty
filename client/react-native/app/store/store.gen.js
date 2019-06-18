@@ -19,7 +19,7 @@ export class ConfigEntityStore {
   }
   set myself (myself) {
     this.store.entity.contact.set(
-      this.myselfId,
+      myself.id,
       new ContactEntityStore(this.store, myself)
     )
   }
@@ -29,7 +29,7 @@ export class ConfigEntityStore {
   }
   set currentDevice (currentDevice) {
     this.store.entity.device.set(
-      this.currentDeviceId,
+      currentDevice.id,
       new DeviceEntityStore(this.store, currentDevice)
     )
   }
@@ -55,9 +55,13 @@ export class ContactEntityStore {
   sigchain = null
   status = null
   @computed get devices () {
-    return this.store.entity.device
-      .values()
-      .filter(_ => _.contactId === this.id)
+    const devices = []
+    for (const [, _] of this.store.entity.device) {
+      if (_.contactId === this.id) {
+        devices.push(_)
+      }
+    }
+    return devices
   }
   set devices (devices) {
     devices.forEach(_ =>
@@ -85,9 +89,13 @@ export class DeviceEntityStore {
   apiVersion = null
   contactId = null
   @computed get pushIdentifiers () {
-    return this.store.entity.devicePushIdentifier
-      .values()
-      .filter(_ => _.deviceId === this.id)
+    const pushIdentifiers = []
+    for (const [, _] of this.store.entity.devicePushIdentifier) {
+      if (_.deviceId === this.id) {
+        pushIdentifiers.push(_)
+      }
+    }
+    return pushIdentifiers
   }
   set pushIdentifiers (pushIdentifiers) {
     pushIdentifiers.forEach(_ =>
@@ -116,9 +124,13 @@ export class ConversationEntityStore {
   infos = null
   kind = null
   @computed get members () {
-    return this.store.entity.conversationMember
-      .values()
-      .filter(_ => _.conversationId === this.id)
+    const members = []
+    for (const [, _] of this.store.entity.conversationMember) {
+      if (_.conversationId === this.id) {
+        members.push(_)
+      }
+    }
+    return members
   }
   set members (members) {
     members.forEach(_ =>
@@ -148,7 +160,7 @@ export class ConversationMemberEntityStore {
   }
   set contact (contact) {
     this.store.entity.contact.set(
-      this.contactId,
+      contact.id,
       new ContactEntityStore(this.store, contact)
     )
   }
@@ -177,9 +189,13 @@ export class EventEntityStore {
   seenAt = null
   ackStatus = null
   @computed get dispatches () {
-    return this.store.entity.eventDispatch
-      .values()
-      .filter(_ => _.eventId === this.id)
+    const dispatches = []
+    for (const [, _] of this.store.entity.eventDispatch) {
+      if (_.eventId === this.id) {
+        dispatches.push(_)
+      }
+    }
+    return dispatches
   }
   set dispatches (dispatches) {
     dispatches.forEach(_ =>
@@ -283,13 +299,16 @@ export class NodeServiceStore {
   }
 
   commitLogStreamCache = {}
-  commitLogStreamMutex = new Mutex()
+
+  commitLogStreamMutex = {}
 
   commitLogStream = async (input = {}) => {
-    const unlock = await this.commitLogStreamMutex.lock()
     const inputHash = objectHash(input)
+    const unlock = await (
+      this.commitLogStreamMutex[inputHash] ||
+      (this.commitLogStreamMutex[inputHash] = new Mutex())
+    ).lock()
     if (this.commitLogStreamCache[inputHash] == null) {
-      const stream = await this.bridge.commitLogStream(input)
       this.commitLogStreamCache[inputHash] = new Stream.Transform({
         writableObjectMode: true,
         readableObjectMode: true,
@@ -493,6 +512,9 @@ export class NodeServiceStore {
           callback(null, output)
         },
       })
+      const stream = await this.bridge.commitLogStream(input)
+
+      this.commitLogStreamCache[inputHash].setMaxListeners(30)
       stream.pipe(this.commitLogStreamCache[inputHash])
       this.commitLogStreamCache[inputHash].on('end', () => {
         delete this.commitLogStreamCache[inputHash]
@@ -508,13 +530,16 @@ export class NodeServiceStore {
   }
 
   eventStreamCache = {}
-  eventStreamMutex = new Mutex()
+
+  eventStreamMutex = {}
 
   eventStream = async (input = {}) => {
-    const unlock = await this.eventStreamMutex.lock()
     const inputHash = objectHash(input)
+    const unlock = await (
+      this.eventStreamMutex[inputHash] ||
+      (this.eventStreamMutex[inputHash] = new Mutex())
+    ).lock()
     if (this.eventStreamCache[inputHash] == null) {
-      const stream = await this.bridge.eventStream(input)
       this.eventStreamCache[inputHash] = new Stream.Transform({
         writableObjectMode: true,
         readableObjectMode: true,
@@ -525,6 +550,9 @@ export class NodeServiceStore {
           callback(null, output)
         },
       })
+      const stream = await this.bridge.eventStream(input)
+
+      this.eventStreamCache[inputHash].setMaxListeners(30)
       stream.pipe(this.eventStreamCache[inputHash])
       this.eventStreamCache[inputHash].on('end', () => {
         delete this.eventStreamCache[inputHash]
@@ -540,45 +568,35 @@ export class NodeServiceStore {
   }
 
   eventListCache = {}
-  eventListMutex = new Mutex()
 
   eventList = async (input = {}) => {
-    const unlock = await this.eventListMutex.lock()
-    const inputHash = objectHash(input)
-    if (this.eventListCache[inputHash] == null) {
-      const stream = await this.bridge.eventList(input)
-      this.eventListCache[inputHash] = new Stream.Transform({
-        writableObjectMode: true,
-        readableObjectMode: true,
-        transform: (output, encoding, callback) => {
-          output = new EventEntityStore(this.store, output)
-          this.store.entity.event.set(output.id, output)
-
-          callback(null, output)
-        },
-      })
-      stream.pipe(this.eventListCache[inputHash])
-      this.eventListCache[inputHash].on('end', () => {
-        delete this.eventListCache[inputHash]
-      })
-    }
-    const passThroughStream = new Stream.PassThrough({
+    const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
+      transform: (output, encoding, callback) => {
+        output = new EventEntityStore(this.store, output)
+        this.store.entity.event.set(output.id, output)
+
+        callback(null, output)
+      },
     })
-    this.eventListCache[inputHash].pipe(passThroughStream)
-    unlock()
-    return passThroughStream
+    const stream = await this.bridge.eventList(input)
+
+    stream.pipe(transformStream)
+    return transformStream
   }
 
   eventUnseenCache = {}
-  eventUnseenMutex = new Mutex()
+
+  eventUnseenMutex = {}
 
   eventUnseen = async (input = {}) => {
-    const unlock = await this.eventUnseenMutex.lock()
     const inputHash = objectHash(input)
+    const unlock = await (
+      this.eventUnseenMutex[inputHash] ||
+      (this.eventUnseenMutex[inputHash] = new Mutex())
+    ).lock()
     if (this.eventUnseenCache[inputHash] == null) {
-      const stream = await this.bridge.eventUnseen(input)
       this.eventUnseenCache[inputHash] = new Stream.Transform({
         writableObjectMode: true,
         readableObjectMode: true,
@@ -589,6 +607,9 @@ export class NodeServiceStore {
           callback(null, output)
         },
       })
+      const stream = await this.bridge.eventUnseen(input)
+
+      this.eventUnseenCache[inputHash].setMaxListeners(30)
       stream.pipe(this.eventUnseenCache[inputHash])
       this.eventUnseenCache[inputHash].on('end', () => {
         delete this.eventUnseenCache[inputHash]
@@ -696,35 +717,22 @@ export class NodeServiceStore {
   }
 
   contactListCache = {}
-  contactListMutex = new Mutex()
 
   contactList = async (input = {}) => {
-    const unlock = await this.contactListMutex.lock()
-    const inputHash = objectHash(input)
-    if (this.contactListCache[inputHash] == null) {
-      const stream = await this.bridge.contactList(input)
-      this.contactListCache[inputHash] = new Stream.Transform({
-        writableObjectMode: true,
-        readableObjectMode: true,
-        transform: (output, encoding, callback) => {
-          output = new ContactEntityStore(this.store, output)
-          this.store.entity.contact.set(output.id, output)
-
-          callback(null, output)
-        },
-      })
-      stream.pipe(this.contactListCache[inputHash])
-      this.contactListCache[inputHash].on('end', () => {
-        delete this.contactListCache[inputHash]
-      })
-    }
-    const passThroughStream = new Stream.PassThrough({
+    const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
+      transform: (output, encoding, callback) => {
+        output = new ContactEntityStore(this.store, output)
+        this.store.entity.contact.set(output.id, output)
+
+        callback(null, output)
+      },
     })
-    this.contactListCache[inputHash].pipe(passThroughStream)
-    unlock()
-    return passThroughStream
+    const stream = await this.bridge.contactList(input)
+
+    stream.pipe(transformStream)
+    return transformStream
   }
 
   contact = async (input = {}) => {
@@ -761,35 +769,22 @@ export class NodeServiceStore {
   }
 
   conversationListCache = {}
-  conversationListMutex = new Mutex()
 
   conversationList = async (input = {}) => {
-    const unlock = await this.conversationListMutex.lock()
-    const inputHash = objectHash(input)
-    if (this.conversationListCache[inputHash] == null) {
-      const stream = await this.bridge.conversationList(input)
-      this.conversationListCache[inputHash] = new Stream.Transform({
-        writableObjectMode: true,
-        readableObjectMode: true,
-        transform: (output, encoding, callback) => {
-          output = new ConversationEntityStore(this.store, output)
-          this.store.entity.conversation.set(output.id, output)
-
-          callback(null, output)
-        },
-      })
-      stream.pipe(this.conversationListCache[inputHash])
-      this.conversationListCache[inputHash].on('end', () => {
-        delete this.conversationListCache[inputHash]
-      })
-    }
-    const passThroughStream = new Stream.PassThrough({
+    const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
+      transform: (output, encoding, callback) => {
+        output = new ConversationEntityStore(this.store, output)
+        this.store.entity.conversation.set(output.id, output)
+
+        callback(null, output)
+      },
     })
-    this.conversationListCache[inputHash].pipe(passThroughStream)
-    unlock()
-    return passThroughStream
+    const stream = await this.bridge.conversationList(input)
+
+    stream.pipe(transformStream)
+    return transformStream
   }
 
   conversationInvite = async (input = {}) => {
@@ -977,13 +972,16 @@ export class NodeServiceStore {
   }
 
   logStreamCache = {}
-  logStreamMutex = new Mutex()
+
+  logStreamMutex = {}
 
   logStream = async (input = {}) => {
-    const unlock = await this.logStreamMutex.lock()
     const inputHash = objectHash(input)
+    const unlock = await (
+      this.logStreamMutex[inputHash] ||
+      (this.logStreamMutex[inputHash] = new Mutex())
+    ).lock()
     if (this.logStreamCache[inputHash] == null) {
-      const stream = await this.bridge.logStream(input)
       this.logStreamCache[inputHash] = new Stream.Transform({
         writableObjectMode: true,
         readableObjectMode: true,
@@ -991,6 +989,9 @@ export class NodeServiceStore {
           callback(null, output)
         },
       })
+      const stream = await this.bridge.logStream(input)
+
+      this.logStreamCache[inputHash].setMaxListeners(30)
       stream.pipe(this.logStreamCache[inputHash])
       this.logStreamCache[inputHash].on('end', () => {
         delete this.logStreamCache[inputHash]
@@ -1006,42 +1007,32 @@ export class NodeServiceStore {
   }
 
   logfileListCache = {}
-  logfileListMutex = new Mutex()
 
   logfileList = async (input = {}) => {
-    const unlock = await this.logfileListMutex.lock()
-    const inputHash = objectHash(input)
-    if (this.logfileListCache[inputHash] == null) {
-      const stream = await this.bridge.logfileList(input)
-      this.logfileListCache[inputHash] = new Stream.Transform({
-        writableObjectMode: true,
-        readableObjectMode: true,
-        transform: (output, encoding, callback) => {
-          callback(null, output)
-        },
-      })
-      stream.pipe(this.logfileListCache[inputHash])
-      this.logfileListCache[inputHash].on('end', () => {
-        delete this.logfileListCache[inputHash]
-      })
-    }
-    const passThroughStream = new Stream.PassThrough({
+    const transformStream = new Stream.Transform({
       writableObjectMode: true,
       readableObjectMode: true,
+      transform: (output, encoding, callback) => {
+        callback(null, output)
+      },
     })
-    this.logfileListCache[inputHash].pipe(passThroughStream)
-    unlock()
-    return passThroughStream
+    const stream = await this.bridge.logfileList(input)
+
+    stream.pipe(transformStream)
+    return transformStream
   }
 
   logfileReadCache = {}
-  logfileReadMutex = new Mutex()
+
+  logfileReadMutex = {}
 
   logfileRead = async (input = {}) => {
-    const unlock = await this.logfileReadMutex.lock()
     const inputHash = objectHash(input)
+    const unlock = await (
+      this.logfileReadMutex[inputHash] ||
+      (this.logfileReadMutex[inputHash] = new Mutex())
+    ).lock()
     if (this.logfileReadCache[inputHash] == null) {
-      const stream = await this.bridge.logfileRead(input)
       this.logfileReadCache[inputHash] = new Stream.Transform({
         writableObjectMode: true,
         readableObjectMode: true,
@@ -1049,6 +1040,9 @@ export class NodeServiceStore {
           callback(null, output)
         },
       })
+      const stream = await this.bridge.logfileRead(input)
+
+      this.logfileReadCache[inputHash].setMaxListeners(30)
       stream.pipe(this.logfileReadCache[inputHash])
       this.logfileReadCache[inputHash].on('end', () => {
         delete this.logfileReadCache[inputHash]
@@ -1094,13 +1088,16 @@ export class NodeServiceStore {
   }
 
   monitorBandwidthCache = {}
-  monitorBandwidthMutex = new Mutex()
+
+  monitorBandwidthMutex = {}
 
   monitorBandwidth = async (input = {}) => {
-    const unlock = await this.monitorBandwidthMutex.lock()
     const inputHash = objectHash(input)
+    const unlock = await (
+      this.monitorBandwidthMutex[inputHash] ||
+      (this.monitorBandwidthMutex[inputHash] = new Mutex())
+    ).lock()
     if (this.monitorBandwidthCache[inputHash] == null) {
-      const stream = await this.bridge.monitorBandwidth(input)
       this.monitorBandwidthCache[inputHash] = new Stream.Transform({
         writableObjectMode: true,
         readableObjectMode: true,
@@ -1108,6 +1105,9 @@ export class NodeServiceStore {
           callback(null, output)
         },
       })
+      const stream = await this.bridge.monitorBandwidth(input)
+
+      this.monitorBandwidthCache[inputHash].setMaxListeners(30)
       stream.pipe(this.monitorBandwidthCache[inputHash])
       this.monitorBandwidthCache[inputHash].on('end', () => {
         delete this.monitorBandwidthCache[inputHash]
@@ -1123,13 +1123,16 @@ export class NodeServiceStore {
   }
 
   monitorPeersCache = {}
-  monitorPeersMutex = new Mutex()
+
+  monitorPeersMutex = {}
 
   monitorPeers = async (input = {}) => {
-    const unlock = await this.monitorPeersMutex.lock()
     const inputHash = objectHash(input)
+    const unlock = await (
+      this.monitorPeersMutex[inputHash] ||
+      (this.monitorPeersMutex[inputHash] = new Mutex())
+    ).lock()
     if (this.monitorPeersCache[inputHash] == null) {
-      const stream = await this.bridge.monitorPeers(input)
       this.monitorPeersCache[inputHash] = new Stream.Transform({
         writableObjectMode: true,
         readableObjectMode: true,
@@ -1137,6 +1140,9 @@ export class NodeServiceStore {
           callback(null, output)
         },
       })
+      const stream = await this.bridge.monitorPeers(input)
+
+      this.monitorPeersCache[inputHash].setMaxListeners(30)
       stream.pipe(this.monitorPeersCache[inputHash])
       this.monitorPeersCache[inputHash].on('end', () => {
         delete this.monitorPeersCache[inputHash]

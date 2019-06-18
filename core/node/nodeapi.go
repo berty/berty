@@ -2,6 +2,7 @@ package node
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -53,6 +54,7 @@ func (n *Node) EventList(input *node.EventListInput, stream node.Service_EventLi
 		query = query.Where("seen_at IS NOT NULL")
 	}
 
+	logger().Debug(fmt.Sprintf("PAGINATE %+v", input.Paginate))
 	// pagination
 	var err error
 	query, err = paginate(query, input.Paginate)

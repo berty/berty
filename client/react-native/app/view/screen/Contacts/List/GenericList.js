@@ -142,6 +142,7 @@ class GenericList extends React.Component {
   static List = Platform.OS === 'web' ? FlatListWeb : FlatList
 
   lastIndex = null
+
   onScroll = paginate => {
     return e => {
       if (this.lastIndex) {

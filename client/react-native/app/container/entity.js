@@ -22,7 +22,7 @@ export class Entity extends Component {
     }
     for (const [, data] of this.store) {
       if (deepFilterEqual(filter, data)) {
-        return data
+        return this.store.get(data.id)
       }
     }
     return null

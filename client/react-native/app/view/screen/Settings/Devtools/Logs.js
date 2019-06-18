@@ -40,8 +40,11 @@ class FilterModalBase extends PureComponent {
   })
 
   currentConfig = undefined
+
   newConfig = undefined
+
   newMaxDisplaySize = undefined
+
   newMaxBufferSize = undefined
 
   antispamTimer = undefined
@@ -384,12 +387,14 @@ export class LogStream extends PureComponent {
   }
 
   logs = []
+
   state = {
     filtered: [],
     loading: true,
   }
 
   timer = undefined
+
   updateCounter = 0
 
   addToList = line => {

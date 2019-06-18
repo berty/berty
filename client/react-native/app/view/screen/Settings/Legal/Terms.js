@@ -13,6 +13,7 @@ class Terms extends PureComponent {
       />
     ),
   })
+
   render () {
     const { t } = this.props
 
