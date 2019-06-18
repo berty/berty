@@ -26,7 +26,7 @@ static NSString* const __nonnull EOD = @"EOD";
 
 - (instancetype __nonnull) initScannerAndAdvertiser {
     self = [super init];
-    
+
     if (self) {
         _dQueue = dispatch_queue_create("BleManager", DISPATCH_QUEUE_SERIAL);
         _statusCount = [[CountDownLatch alloc] init:2];
@@ -135,14 +135,14 @@ static NSString* const __nonnull EOD = @"EOD";
 - (BertyDevice *)findPeripheral:(CBPeripheral *)peripheral {
     BertyDevice *result = nil;
     NSArray *devicesCopy = [NSArray arrayWithArray:self.bDevices];
-    
+
     for (BertyDevice *bDevice in devicesCopy) {
         if (bDevice.peripheral == peripheral) {
             result = bDevice;
             break;
         }
     }
-    
+
     return result;
 }
 
@@ -263,18 +263,31 @@ static NSString* const __nonnull EOD = @"EOD";
     NSLog(@"centralManagerDidUpdateState: %@", stateString);
 }
 
-
 - (BertyDevice *)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier {
     BertyDevice *result = nil;
     NSArray *devicesCopy = [NSArray arrayWithArray:self.bDevices];
-    
+
     for (BertyDevice *bDevice in devicesCopy) {
         if ([bDevice.peripheral.identifier isEqual:identifier]) {
             result = bDevice;
             break;
         }
     }
-    
+
+    return result;
+}
+
+- (BertyDevice *)findPeripheralFromMa:(NSString *__nonnull)ma {
+    BertyDevice *result = nil;
+    NSArray *devicesCopy = [NSArray arrayWithArray:self.bDevices];
+
+    for (BertyDevice *bDevice in devicesCopy) {
+        if ([bDevice.remoteMa isEqual:ma]) {
+            result = bDevice;
+            break;
+        }
+    }
+
     return result;
 }
 
@@ -296,11 +309,14 @@ static NSString* const __nonnull EOD = @"EOD";
         }
         remote.remoteCentral = request.central;
         // check if final data was received
-//        NSLog(@"request ACTUALDATA=%@ VAL=%@ UUID=%@ P=%p", data, request.value, request.characteristic.UUID, data);
-        
+        // NSLog(@"request ACTUALDATA=%@ VAL=%@ UUID=%@ P=%p", data, request.value, request.characteristic.UUID, data);
+
         if ([request.characteristic.UUID isEqual:self.writerUUID]) {
             void(^handler)(NSData *) = [remote.characteristicHandlers objectForKey:[request.characteristic.UUID UUIDString]];
-            handler(request.value);
+            unsigned char zeroByte = 0;
+            NSMutableData *tmpData = [NSMutableData dataWithData:request.value];
+            [data appendBytes:&zeroByte length:1];
+            handler(tmpData);
         } else if ([request.value isEqual:[EOD dataUsingEncoding:NSUTF8StringEncoding]]) {
             // TODO: say it was the end of the data and then call the right handler
             // retrieve handler

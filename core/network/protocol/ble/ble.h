@@ -32,25 +32,23 @@ void writeNSData(NSData *data, char *ma);
 void closeConn(char *ma);
 int isClosed(char *ma);
 
-
-
 /*
- var SetMa func(string) = nil
- var SetPeerID func(string) = nil
- var StartScanning func() = nil
- var StartAdvertising func() = nil
- var Write func(p []byte, ma string) bool = nil
- var DialPeer func(ma string) bool = nil
- var InitScannerAndAdvertiser func() = nil
- var CloseScannerAndAdvertiser func() = nil
- var CloseConnFromMa func(ma string) = nil
- */
+var SetMa func(string) = nil
+var SetPeerID func(string) = nil
+var StartScanning func() = nil
+var StartAdvertising func() = nil
+var Write func(p []byte, ma string) bool = nil
+var DialPeer func(ma string) bool = nil
+var InitScannerAndAdvertiser func() = nil
+var CloseScannerAndAdvertiser func() = nil
+var CloseConnFromMa func(ma string) = nil
+*/
 
 void setMa(char *);
 void setPeerID(char *);
 void startScanning(void);
 void startAdvertising(void);
-bool dialPeer(char *);
+int dialPeer(char *);
 void InitScannerAndAdvertiser(void);
 void CloseScannerAndAdvertiser(void);
 void CloseConnFromMa(char *);

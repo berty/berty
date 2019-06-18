@@ -13,6 +13,7 @@
 #import "ble.h"
 #ifndef BleManager_h
 #define BleManager_h
+@class BertyDevice;
 
 #define _BERTY_ON_M_THREAD(block) dispatch_async(self.dQueue, block)
 
@@ -48,6 +49,8 @@
 - (void)addService;
 - (void)startScanning;
 - (void)startAdvertising;
+- (BertyDevice *)findPeripheralFromIdentifier:(NSUUID *__nonnull)identifier;
+- (BertyDevice *)findPeripheralFromMa:(NSString *__nonnull)ma;
 //- (void)setMa:(NSString *)ma;
 //- (void)setPeerID:(NSString *)peerID;
 

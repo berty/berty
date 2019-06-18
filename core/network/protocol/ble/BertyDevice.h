@@ -45,9 +45,8 @@ typedef void (^BertyDeviceWriteCallbackBlockType)(NSError * __nullable);
 @property (nonatomic, strong, nullable) NSString *remoteMa;
 @property (nonatomic, strong, nullable) NSString *remotePeerID;
 
-- (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral
-                           central:(BleManager *__nonnull)manager;
-
+- (instancetype __nullable)initWithPeripheral:(CBPeripheral *__nonnull)peripheral central:(BleManager *__nonnull)manager;
+- (void)writeToCharacteristic:(NSMutableData *)data forCharacteristic:(CBCharacteristic *)characteristic withEOD:(BOOL)eod andBlock:(void (^)(NSError *))writeCallback;
 - (void)handshake;
 - (void)handleConnect:(NSError * __nullable)error;
 - (void)connectWithOptions:(NSDictionary * __nullable)options withBlock:(BertyDeviceConnectCallbackBlockType __nonnull)connectCallback;

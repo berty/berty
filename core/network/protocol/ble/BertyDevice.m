@@ -1,3 +1,4 @@
+// +build darwin
 //
 //  BertyDevice.m
 //  ble
@@ -10,10 +11,11 @@
 #import "ble.h"
 
 extern void sendBytesToConn(char *, void *, int);
+extern void AddToPeerStoreC(char *, char *);
 
 CBService *getService(NSArray *services, NSString *uuid) {
     CBService *result = nil;
-    
+
     for (CBService *service in services) {
         if ([[service.UUID UUIDString] isEqual:uuid]) {
             result = service;
@@ -43,7 +45,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
                                          [peripheral.identifier UUIDString]]
                                                cStringUsingEncoding:NSASCIIStringEncoding],
                                         DISPATCH_QUEUE_SERIAL);
-        
+
         self.writeQueue = dispatch_queue_create([[NSString stringWithFormat:@"%@%@",
                                               @"WriteBertyDevice-",
                                               [peripheral.identifier UUIDString]]
@@ -59,6 +61,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
         };
 
         void (^writeHandler)(NSData *data) = ^(NSData *data) {
+//            NSLog(@"Writer handler cll");
             sendBytesToConn([self.remoteMa UTF8String], [data bytes], (int)[data length]);
         };
 
@@ -96,11 +99,11 @@ CBService *getService(NSArray *services, NSString *uuid) {
     if (self.maSend == TRUE && self.peerIDSend == TRUE &&
         self.maRecv == TRUE && self.peerIDRecv == TRUE) {
         NSLog(@"Send To libp2p");
+        AddToPeerStoreC([self.remotePeerID UTF8String], [self.remoteMa UTF8String]);
     }
 }
 
 - (void)handleDiscoverServices:(NSArray *)services withError:(NSError *)error {
-    
 }
 
 - (void)handshake {
@@ -124,7 +127,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
                     if (error) {
                         return;
                     }
-                    
+
                     for (CBCharacteristic *chr in chars) {
                         if ([chr.UUID isEqual:self.manager.maUUID]) {
                             self.ma = chr;
@@ -166,7 +169,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
     self.peerIDSend = FALSE;
     self.maRecv = FALSE;
     self.peerIDRecv = FALSE;
-    
+
     [self.manager.cManager cancelPeripheralConnection:peripheral];
     // TODO: advertise libp2p that it fail
 }
@@ -197,7 +200,7 @@ CBService *getService(NSArray *services, NSString *uuid) {
     NSUInteger chunckSize = self.remainingData.length > [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse] ? [self.peripheral maximumWriteValueLengthForType:CBCharacteristicWriteWithResponse] : self.remainingData.length;
 
     result = [NSData dataWithBytes:[self.remainingData bytes] length:chunckSize];
-    
+
     if (self.remainingData.length <= chunckSize) {
         self.remainingData = nil;
     } else {
@@ -213,24 +216,24 @@ CBService *getService(NSArray *services, NSString *uuid) {
     dispatch_async(self.writeQueue, ^{
         NSData *toSend = nil;
         __block NSError *blockError = nil;
-        
+
         self.remainingData = data;
         dispatch_semaphore_t sema = dispatch_semaphore_create(0);
 
         while (self.remainingData.length > 0) {
             toSend = [self getDataToSend];
-            
+
             [self writeValue:toSend forCharacteristic:characteristic withBlock:^(NSError *error){
                 blockError = error;
                 dispatch_semaphore_signal(sema);
             }];
             dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
-            
+
             if (blockError != nil) {
                 writeCallback(blockError);
             }
         }
-        NSLog(@"writed on %@", [characteristic.UUID UUIDString]);
+//        NSLog(@"writed on %@", [characteristic.UUID UUIDString]);
         if (eod) {
             [self writeValue:[@"EOD" dataUsingEncoding:NSUTF8StringEncoding] forCharacteristic:characteristic withBlock:^(NSError *error){
                 blockError = error;

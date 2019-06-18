@@ -165,7 +165,7 @@ public final class BleManager {
         try {
             // Turn on Bluetooth adapter
             if (!mBluetoothAdapter.isEnabled()) {
-                Log.d(TAG, "initBluetoothService() Bluetooth adapter is off: turning it on");
+                Log.d(TAG, "initBluetooStartScanningthService() Bluetooth adapter is off: turning it on");
 
                 Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 activity.startActivityForResult(enableBluetoothIntent, BLUETOOTH_ENABLE_REQUEST);

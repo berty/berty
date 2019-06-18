@@ -22,6 +22,13 @@ func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
 	BytesToConn(goBleUUID, b)
 }
 
+//export AddToPeerStoreC
+func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
+	goPeerID := C.GoString(peerID)
+	goRAddr := C.GoString(rAddr)
+	AddToPeerStore(goPeerID, goRAddr)
+}
+
 const (
 	CBManagerStateUnknown = iota
 	CBManagerStateResetting
@@ -57,21 +64,21 @@ func Write(p []byte, ma string) bool {
 		),
 		cMa,
 	)
-	return false
+	return true
 }
-	
+
 func DialPeer(ma string) bool {
-	// ma := C.CString(s)
-	// defer C.free(unsafe.Pointer(ma))
-	// if C.dialPeer(ma) == false {
-		// return nil, fmt.Errorf("error dialing ble")
-	// }
-	return false 
+	cMa := C.CString(ma)
+	defer C.free(unsafe.Pointer(cMa))
+	if C.dialPeer(cMa) == 1 {
+		return true
+	}
+	return false
 }
 
 func InitScannerAndAdvertiser() { C.InitScannerAndAdvertiser() }
 
-func CloseScannerAndAdvertiser() { 
+func CloseScannerAndAdvertiser() {
 	C.closeBle()
 }
 
@@ -79,13 +86,6 @@ func CloseConnFromMa(ma string) {
 	// ma := C.CString(val)
 	// logger().Debug("BLEConn close", zap.String("VALUE",val))
 	// defer C.free(unsafe.Pointer(ma))
-}
-
-// export AddToPeerStoreC
-func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
-	goPeerID := C.GoString(peerID)
-	goRAddr := C.GoString(rAddr)
-	AddToPeerStore(goPeerID, goRAddr)
 }
 
 // export setConnClosed

@@ -9,10 +9,22 @@
 
 #import "ble.h"
 //#import "BertyUtils.h"
-//#import "BertyDevice.h"
+#import "BertyDevice.h"
 //#import "BertyCentralManagerDelegate.h"
 //#import "BleManager.m"
 //#import "BertyPeripheralManagerDelegate.h"
+
+static BleManager *manager = nil;
+
+BleManager* getManager(void) {
+//    NSLog(@"getting manager");
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        manager = [[BleManager alloc] initScannerAndAdvertiser];
+    });
+//    NSLog(@"getting manager rey");
+    return manager;
+}
 
 void handleSigInt(int sig) {
     exit(-1);
@@ -26,22 +38,33 @@ void handleException(NSException* exception) {
     NSLog(@"Unhandled exception %@", exception);
 }
 
-static BleManager *manager = nil;
-
-BleManager* getManager(void) {
-    NSLog(@"getting manager");
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        manager = [[BleManager alloc] initScannerAndAdvertiser];
-    });
-    NSLog(@"getting manager rey");
-    return manager;
-}
-
 void InitScannerAndAdvertiser() {
     getManager();
     NSSetUncaughtExceptionHandler(handleException);
 }
+
+void setMa(char *ma) {
+    NSLog(@"will set");
+    [getManager() setMa:[NSString stringWithUTF8String:ma]];
+    NSLog(@"SETTED3");
+}
+
+void setPeerID(char *peerID) {
+    NSLog(@"will setbis");
+    [getManager() setPeerID:[NSString stringWithUTF8String:peerID]];
+    NSLog(@"SETTED");
+}
+
+void startScanning() {
+    NSLog(@"startScanning()");
+    [getManager() startScanning];
+}
+
+void startAdvertising() {
+    NSLog(@"startAdvertising()");
+    [manager startAdvertising];
+}
+
 
 void closeBle() {
 //    if (centralManager != nil) {
@@ -65,26 +88,10 @@ void removeService() {
 //  }
 }
 
-void setMa(char *ma) {
-    NSLog(@"will set");
-  [getManager() setMa:[NSString stringWithUTF8String:ma]];
-    NSLog(@"SETTED3");
-}
-
-void setPeerID(char *peerID) {
-    NSLog(@"will setbis");
-  [getManager() setPeerID:[NSString stringWithUTF8String:peerID]];
-    NSLog(@"SETTED");
-}
-
 void connDevice(CBPeripheral *peripheral) {
 //    [centralManager connectPeripheral:peripheral options:nil];
 }
 
-void startScanning() {
-    NSLog(@"startScanning()");
-    [getManager() startScanning];
-}
 
 int stopScanning() {
 //    NSLog(@"stopScanning()");
@@ -105,11 +112,6 @@ int isAdvertising() {
     return 1;
 }
 
-void startAdvertising() {
-    NSLog(@"startAdvertising()");
-    [manager startAdvertising];
-}
-
 int stopAdvertising() {
     NSLog(@"stopAdvertising()");
 //    if ([peripheralManager isAdvertising]) {
@@ -122,17 +124,31 @@ int stopAdvertising() {
 NSData *Bytes2NSData(void *bytes, int length) { return [NSData dataWithBytes:bytes length:length]; }
 
 void writeNSData(NSData *data, char *ma) {
-//    BertyDevice *bDevice = [BertyUtils getDeviceFromMa:[NSString stringWithUTF8String:ma]];
-//    [bDevice write:data];
+    BertyDevice *bDevice = [getManager() findPeripheralFromMa:[NSString stringWithUTF8String:ma]];
+
+    if (bDevice != nil) {
+        __block NSError *blockError = nil;
+        dispatch_semaphore_t sema = dispatch_semaphore_create(0);
+
+        [bDevice writeToCharacteristic:[NSMutableData dataWithData:data] forCharacteristic:bDevice.writer withEOD:FALSE andBlock:^(NSError *error) {
+            blockError = error;
+            dispatch_semaphore_signal(sema);
+        }];
+        dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
+        dispatch_release(sema);
+//        NSLog(@"Success wirte");
+        return;
+    } else {
+        NSLog(@"No device found can't write");
+    }
 }
 
-bool dialPeer(char *peerID) {
-//    if ([BertyUtils inDevicesWithMa:[NSString stringWithUTF8String:peerID]] == YES) {
-//        NSLog(@"TEST 1 %@", [NSString stringWithUTF8String:peerID]);
-//        return TRUE;
-//    }
-    NSLog(@"TEST 0 %@", [NSString stringWithUTF8String:peerID]);
-    return FALSE;
+int dialPeer(char *ma) {
+    BertyDevice *bDevice = [getManager() findPeripheralFromMa:[NSString stringWithUTF8String:ma]];
+    if (bDevice != nil) {
+        return 1;
+    }
+    return 0;
 }
 
 void closeConn(char *ma) {
