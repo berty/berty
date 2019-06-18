@@ -36,8 +36,8 @@
 </p>
 
 <p align="center"><b>
-    <a href="https://berty.chat">berty.chat</a> •
     <a href="https://berty.tech">berty.tech</a> •
+    <a href="https://twitter.com/berty">Twitter</a> •
     <a href="https://github.com/berty">GitHub</a>
 </b></p>
 
