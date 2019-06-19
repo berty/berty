@@ -63,7 +63,8 @@ class BertyDevice {
     private String dAddr;
     private int dMtu;
 
-    private static final int DEFAULT_MTU = 23;
+    private static final int DEFAULT_MTU = 23; // See https://chromium.googlesource.com/aosp/platform/system/bt/+/29e794418452c8b35c2d42fe0cda81acd86bbf43/stack/include/gatt_api.h#133
+    private static final int MAXIMUM_MTU = 517; // See https://chromium.googlesource.com/aosp/platform/system/bt/+/29e794418452c8b35c2d42fe0cda81acd86bbf43/stack/include/gatt_api.h#123
 
     private BluetoothGattService bertyService;
     private BluetoothGattCharacteristic maCharacteristic;
@@ -134,7 +135,6 @@ class BertyDevice {
         return identified;
     }
 
-
     // Attempt to (re)connect GATT then, if device isn't already identified, init Berty handshake
     void asyncConnectionToDevice(final String caller) {
         Log.d(TAG, "asyncConnectionToDevice() called for device: " + dDevice + ", caller: " + caller);
@@ -161,17 +161,9 @@ class BertyDevice {
                                         Log.i(TAG, "asyncConnectionToDevice() succeeded with device: " + dDevice + ", MultiAddr: " + dMultiAddr + ", PeerID: " + dPeerID + ", caller: " + callerAndThread);
                                         identified = true;
 
-                                        // TODO: Implement binary search to agree on biggest MTU possible or find a way to retrieve biggest MTU for local device
-                                        // See: https://punchthrough.com/pt-blog-post/maximizing-ble-throughput-part-2-use-larger-att-mtu/
                                         if (dMtu == DEFAULT_MTU) {
                                             Log.i(TAG, "asyncConnectionToDevice() try to agree on a new MTU with device: " + dDevice + ", caller: " + callerAndThread);
-                                            if (dGatt.requestMtu(100)) { // Request a (too) big value, it will be decreased automatically during exchange
-                                                Thread.sleep(420);
-                                                if (dMtu == DEFAULT_MTU) {
-                                                    Thread.sleep(420);
-                                                    dGatt.requestMtu(50);
-                                                }
-                                            }
+                                            dGatt.requestMtu(MAXIMUM_MTU);
                                         }
 
                                         Core.addToPeerStore(dPeerID, dMultiAddr);
