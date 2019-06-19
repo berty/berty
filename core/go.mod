@@ -66,6 +66,7 @@ require (
 	github.com/libp2p/go-stream-muxer v0.1.0
 	github.com/libp2p/go-tcp-transport v0.1.0
 	github.com/libp2p/go-ws-transport v0.1.0
+	github.com/libp2p/go-yamux v1.2.3
 	github.com/maruel/circular v0.0.0-20161028021427-97eeabbe7b43
 	github.com/maruel/ut v1.0.0 // indirect
 	github.com/multiformats/go-multiaddr v0.0.4
@@ -94,7 +95,6 @@ require (
 	github.com/whyrusleeping/go-logging v0.0.0-20170515211332-0457bb6b88fc
 	github.com/whyrusleeping/go-smux-multistream v2.0.2+incompatible
 	github.com/whyrusleeping/mafmt v1.2.8
-	github.com/whyrusleeping/yamux v1.1.5
 	github.com/xeodou/go-sqlcipher v0.0.0-20180523161204-7f9cd319987f
 	go.uber.org/atomic v1.3.2 // indirect
 	go.uber.org/multierr v1.1.0 // indirect
