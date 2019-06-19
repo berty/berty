@@ -120,6 +120,7 @@ func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, 
 	// TODO: remove timout, it should be handled by the native write function
 	configDefault.ConnectionWriteTimeout = 120 * time.Second
 	configDefault.KeepAliveInterval = 240 * time.Second
+	configDefault.LogOutput = getYamuxLogger()
 
 	if dir == 1 {
 		//server side
