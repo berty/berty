@@ -2,6 +2,7 @@ package ble
 
 import (
 	"fmt"
+	"net"
 	"sync"
 	"time"
 
@@ -9,8 +10,8 @@ import (
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
 	smu "github.com/libp2p/go-stream-muxer"
+	yamux "github.com/libp2p/go-yamux"
 	ma "github.com/multiformats/go-multiaddr"
-	yamux "github.com/whyrusleeping/yamux"
 	"go.uber.org/zap"
 )
 
@@ -30,6 +31,14 @@ type Conn struct {
 
 type ConnForSmux struct {
 	*Conn
+}
+
+type localConn struct {
+	*ConnForSmux
+}
+
+type remoteConn struct {
+	*ConnForSmux
 }
 
 var conns sync.Map
@@ -110,7 +119,7 @@ func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, 
 	configDefault := yamux.DefaultConfig()
 	// TODO: remove timout, it should be handled by the native write function
 	configDefault.ConnectionWriteTimeout = 120 * time.Second
-	// configDefault.KeepAliveInterval = 240 * time.Second
+	configDefault.KeepAliveInterval = 240 * time.Second
 
 	if dir == 1 {
 		//server side
@@ -173,6 +182,46 @@ func (b *Conn) RemoteMultiaddr() ma.Multiaddr {
 func (b *Conn) Transport() tpt.Transport {
 	logger().Debug("BLEConn Transport")
 	return b.transport
+}
+
+func (b *ConnForSmux) LocalAddr() net.Addr {
+	return &localConn{
+		b,
+	}
+}
+
+func (b *ConnForSmux) RemoteAddr() net.Addr {
+	return &remoteConn{
+		b,
+	}
+}
+
+func (b *remoteConn) String() string {
+	return b.rAddr.String()
+}
+
+func (b *localConn) String() string {
+	return b.lAddr.String()
+}
+
+func (b *localConn) Network() string {
+	return "ble"
+}
+
+func (b *remoteConn) Network() string {
+	return "ble"
+}
+
+func (b *ConnForSmux) SetDeadline(t time.Time) error {
+	return nil
+}
+
+func (b *ConnForSmux) SetReadDeadline(t time.Time) error {
+	return nil
+}
+
+func (b *ConnForSmux) SetWriteDeadline(t time.Time) error {
+	return nil
 }
 
 func (b *ConnForSmux) Close() error {

@@ -12,27 +12,29 @@
 
 #ifndef ble_h
 #define ble_h
+@class BleManager;
 
-void init(void);
-void closeBle(void);
-int startAdvertising(void);
-int stopAdvertising(void);
-int startScanning(void);
-int stopScanning(void);
-int isDiscovering(void);
-int centralManagerGetState(void);
-int peripheralManagerGetState(void);
-void addService(void);
-void removeService(void);
+BleManager* getManager(void);
+void handleSigInt(int sig);
+void initSignalHandling(void);
+void handleException(NSException* exception);
+void InitScannerAndAdvertiser(void);
 void setMa(char *ma);
 void setPeerID(char *peerID);
-void connDevice(CBPeripheral *peripheral);
-int isAdvertising(void);
-int dialPeer(char *peerID);
-char *readPeerID(char *peerID);
+void startScanning(void);
+void startAdvertising(void);
 NSData *Bytes2NSData(void *bytes, int length);
 void writeNSData(NSData *data, char *ma);
+int dialPeer(char *ma);
 void closeConn(char *ma);
 int isClosed(char *ma);
+void closeBle(void);
+void removeService(void);
+void addService(void);
+void connDevice(CBPeripheral *peripheral);
+int isDiscovering(void);
+int isAdvertising(void);
+int stopScanning(void);
+int stopAdvertising(void);
 
 #endif /* ble_h */
