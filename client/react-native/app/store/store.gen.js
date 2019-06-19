@@ -1,6 +1,7 @@
 import { observable, computed } from 'mobx'
 import Stream from 'stream'
 import objectHash from 'object-hash'
+import Mutex from 'await-mutex'
 
 export class ConfigEntityStore {
   store = null
@@ -275,15 +276,17 @@ export class NodeServiceStore {
     })
   }
 
-  id = async input => {
+  id = async (input = {}) => {
     let output = await this.bridge.id(input)
 
     return output
   }
 
   commitLogStreamCache = {}
+  commitLogStreamMutex = new Mutex()
 
-  commitLogStream = async input => {
+  commitLogStream = async (input = {}) => {
+    const unlock = await this.commitLogStreamMutex.lock()
     const inputHash = objectHash(input)
     if (this.commitLogStreamCache[inputHash] == null) {
       const stream = await this.bridge.commitLogStream(input)
@@ -500,12 +503,15 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.commitLogStreamCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
   eventStreamCache = {}
+  eventStreamMutex = new Mutex()
 
-  eventStream = async input => {
+  eventStream = async (input = {}) => {
+    const unlock = await this.eventStreamMutex.lock()
     const inputHash = objectHash(input)
     if (this.eventStreamCache[inputHash] == null) {
       const stream = await this.bridge.eventStream(input)
@@ -529,12 +535,15 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.eventStreamCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
   eventListCache = {}
+  eventListMutex = new Mutex()
 
-  eventList = async input => {
+  eventList = async (input = {}) => {
+    const unlock = await this.eventListMutex.lock()
     const inputHash = objectHash(input)
     if (this.eventListCache[inputHash] == null) {
       const stream = await this.bridge.eventList(input)
@@ -558,12 +567,15 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.eventListCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
   eventUnseenCache = {}
+  eventUnseenMutex = new Mutex()
 
-  eventUnseen = async input => {
+  eventUnseen = async (input = {}) => {
+    const unlock = await this.eventUnseenMutex.lock()
     const inputHash = objectHash(input)
     if (this.eventUnseenCache[inputHash] == null) {
       const stream = await this.bridge.eventUnseen(input)
@@ -587,10 +599,11 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.eventUnseenCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
-  getEvent = async input => {
+  getEvent = async (input = {}) => {
     let output = await this.bridge.getEvent(input)
 
     output = new EventEntityStore(this.store, output)
@@ -599,7 +612,7 @@ export class NodeServiceStore {
     return output
   }
 
-  eventSeen = async input => {
+  eventSeen = async (input = {}) => {
     let output = await this.bridge.eventSeen(input)
 
     output = new EventEntityStore(this.store, output)
@@ -608,7 +621,7 @@ export class NodeServiceStore {
     return output
   }
 
-  eventRetry = async input => {
+  eventRetry = async (input = {}) => {
     let output = await this.bridge.eventRetry(input)
 
     output = new EventEntityStore(this.store, output)
@@ -617,7 +630,7 @@ export class NodeServiceStore {
     return output
   }
 
-  config = async input => {
+  config = async (input = {}) => {
     let output = await this.bridge.config(input)
 
     output = new ConfigEntityStore(this.store, output)
@@ -626,7 +639,7 @@ export class NodeServiceStore {
     return output
   }
 
-  configPublic = async input => {
+  configPublic = async (input = {}) => {
     let output = await this.bridge.configPublic(input)
 
     output = new ConfigEntityStore(this.store, output)
@@ -635,7 +648,7 @@ export class NodeServiceStore {
     return output
   }
 
-  configUpdate = async input => {
+  configUpdate = async (input = {}) => {
     let output = await this.bridge.configUpdate(input)
 
     output = new ConfigEntityStore(this.store, output)
@@ -644,7 +657,7 @@ export class NodeServiceStore {
     return output
   }
 
-  contactRequest = async input => {
+  contactRequest = async (input = {}) => {
     let output = await this.bridge.contactRequest(input)
 
     output = new ContactEntityStore(this.store, output)
@@ -653,7 +666,7 @@ export class NodeServiceStore {
     return output
   }
 
-  contactAcceptRequest = async input => {
+  contactAcceptRequest = async (input = {}) => {
     let output = await this.bridge.contactAcceptRequest(input)
 
     output = new ContactEntityStore(this.store, output)
@@ -662,7 +675,7 @@ export class NodeServiceStore {
     return output
   }
 
-  contactRemove = async input => {
+  contactRemove = async (input = {}) => {
     let output = await this.bridge.contactRemove(input)
 
     if (this.store.entity.contact.has(output.id)) {
@@ -673,7 +686,7 @@ export class NodeServiceStore {
     return output
   }
 
-  contactUpdate = async input => {
+  contactUpdate = async (input = {}) => {
     let output = await this.bridge.contactUpdate(input)
 
     output = new ContactEntityStore(this.store, output)
@@ -683,8 +696,10 @@ export class NodeServiceStore {
   }
 
   contactListCache = {}
+  contactListMutex = new Mutex()
 
-  contactList = async input => {
+  contactList = async (input = {}) => {
+    const unlock = await this.contactListMutex.lock()
     const inputHash = objectHash(input)
     if (this.contactListCache[inputHash] == null) {
       const stream = await this.bridge.contactList(input)
@@ -708,10 +723,11 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.contactListCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
-  contact = async input => {
+  contact = async (input = {}) => {
     let output = await this.bridge.contact(input)
 
     output = new ContactEntityStore(this.store, output)
@@ -720,13 +736,13 @@ export class NodeServiceStore {
     return output
   }
 
-  contactCheckPublicKey = async input => {
+  contactCheckPublicKey = async (input = {}) => {
     let output = await this.bridge.contactCheckPublicKey(input)
 
     return output
   }
 
-  conversationCreate = async input => {
+  conversationCreate = async (input = {}) => {
     let output = await this.bridge.conversationCreate(input)
 
     output = new ConversationEntityStore(this.store, output)
@@ -735,7 +751,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversationUpdate = async input => {
+  conversationUpdate = async (input = {}) => {
     let output = await this.bridge.conversationUpdate(input)
 
     output = new ConversationEntityStore(this.store, output)
@@ -745,8 +761,10 @@ export class NodeServiceStore {
   }
 
   conversationListCache = {}
+  conversationListMutex = new Mutex()
 
-  conversationList = async input => {
+  conversationList = async (input = {}) => {
+    const unlock = await this.conversationListMutex.lock()
     const inputHash = objectHash(input)
     if (this.conversationListCache[inputHash] == null) {
       const stream = await this.bridge.conversationList(input)
@@ -770,10 +788,11 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.conversationListCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
-  conversationInvite = async input => {
+  conversationInvite = async (input = {}) => {
     let output = await this.bridge.conversationInvite(input)
 
     output = new ConversationEntityStore(this.store, output)
@@ -782,7 +801,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversationExclude = async input => {
+  conversationExclude = async (input = {}) => {
     let output = await this.bridge.conversationExclude(input)
 
     output = new ConversationEntityStore(this.store, output)
@@ -791,7 +810,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversationAddMessage = async input => {
+  conversationAddMessage = async (input = {}) => {
     let output = await this.bridge.conversationAddMessage(input)
 
     output = new EventEntityStore(this.store, output)
@@ -800,7 +819,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversation = async input => {
+  conversation = async (input = {}) => {
     let output = await this.bridge.conversation(input)
 
     output = new ConversationEntityStore(this.store, output)
@@ -809,7 +828,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversationMember = async input => {
+  conversationMember = async (input = {}) => {
     let output = await this.bridge.conversationMember(input)
 
     output = new ConversationMemberEntityStore(this.store, output)
@@ -818,7 +837,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversationRead = async input => {
+  conversationRead = async (input = {}) => {
     let output = await this.bridge.conversationRead(input)
 
     output = new ConversationEntityStore(this.store, output)
@@ -827,7 +846,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversationRemove = async input => {
+  conversationRemove = async (input = {}) => {
     let output = await this.bridge.conversationRemove(input)
 
     if (this.store.entity.conversation.has(output.id)) {
@@ -838,7 +857,7 @@ export class NodeServiceStore {
     return output
   }
 
-  conversationLastEvent = async input => {
+  conversationLastEvent = async (input = {}) => {
     let output = await this.bridge.conversationLastEvent(input)
 
     output = new EventEntityStore(this.store, output)
@@ -847,13 +866,13 @@ export class NodeServiceStore {
     return output
   }
 
-  devicePushConfigList = async input => {
+  devicePushConfigList = async (input = {}) => {
     let output = await this.bridge.devicePushConfigList(input)
 
     return output
   }
 
-  devicePushConfigCreate = async input => {
+  devicePushConfigCreate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigCreate(input)
 
     output = new DevicePushConfigEntityStore(this.store, output)
@@ -862,19 +881,19 @@ export class NodeServiceStore {
     return output
   }
 
-  devicePushConfigNativeRegister = async input => {
+  devicePushConfigNativeRegister = async (input = {}) => {
     let output = await this.bridge.devicePushConfigNativeRegister(input)
 
     return output
   }
 
-  devicePushConfigNativeUnregister = async input => {
+  devicePushConfigNativeUnregister = async (input = {}) => {
     let output = await this.bridge.devicePushConfigNativeUnregister(input)
 
     return output
   }
 
-  devicePushConfigRemove = async input => {
+  devicePushConfigRemove = async (input = {}) => {
     let output = await this.bridge.devicePushConfigRemove(input)
 
     if (this.store.entity.devicePushConfig.has(output.id)) {
@@ -885,7 +904,7 @@ export class NodeServiceStore {
     return output
   }
 
-  devicePushConfigUpdate = async input => {
+  devicePushConfigUpdate = async (input = {}) => {
     let output = await this.bridge.devicePushConfigUpdate(input)
 
     output = new DevicePushConfigEntityStore(this.store, output)
@@ -894,31 +913,31 @@ export class NodeServiceStore {
     return output
   }
 
-  handleEvent = async input => {
+  handleEvent = async (input = {}) => {
     let output = await this.bridge.handleEvent(input)
 
     return output
   }
 
-  generateFakeData = async input => {
+  generateFakeData = async (input = {}) => {
     let output = await this.bridge.generateFakeData(input)
 
     return output
   }
 
-  runIntegrationTests = async input => {
+  runIntegrationTests = async (input = {}) => {
     let output = await this.bridge.runIntegrationTests(input)
 
     return output
   }
 
-  debugPing = async input => {
+  debugPing = async (input = {}) => {
     let output = await this.bridge.debugPing(input)
 
     return output
   }
 
-  debugRequeueEvent = async input => {
+  debugRequeueEvent = async (input = {}) => {
     let output = await this.bridge.debugRequeueEvent(input)
 
     output = new EventEntityStore(this.store, output)
@@ -927,39 +946,41 @@ export class NodeServiceStore {
     return output
   }
 
-  debugRequeueAll = async input => {
+  debugRequeueAll = async (input = {}) => {
     let output = await this.bridge.debugRequeueAll(input)
 
     return output
   }
 
-  deviceInfos = async input => {
+  deviceInfos = async (input = {}) => {
     let output = await this.bridge.deviceInfos(input)
 
     return output
   }
 
-  appVersion = async input => {
+  appVersion = async (input = {}) => {
     let output = await this.bridge.appVersion(input)
 
     return output
   }
 
-  peers = async input => {
+  peers = async (input = {}) => {
     let output = await this.bridge.peers(input)
 
     return output
   }
 
-  protocols = async input => {
+  protocols = async (input = {}) => {
     let output = await this.bridge.protocols(input)
 
     return output
   }
 
   logStreamCache = {}
+  logStreamMutex = new Mutex()
 
-  logStream = async input => {
+  logStream = async (input = {}) => {
+    const unlock = await this.logStreamMutex.lock()
     const inputHash = objectHash(input)
     if (this.logStreamCache[inputHash] == null) {
       const stream = await this.bridge.logStream(input)
@@ -980,12 +1001,15 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.logStreamCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
   logfileListCache = {}
+  logfileListMutex = new Mutex()
 
-  logfileList = async input => {
+  logfileList = async (input = {}) => {
+    const unlock = await this.logfileListMutex.lock()
     const inputHash = objectHash(input)
     if (this.logfileListCache[inputHash] == null) {
       const stream = await this.bridge.logfileList(input)
@@ -1006,12 +1030,15 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.logfileListCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
   logfileReadCache = {}
+  logfileReadMutex = new Mutex()
 
-  logfileRead = async input => {
+  logfileRead = async (input = {}) => {
+    const unlock = await this.logfileReadMutex.lock()
     const inputHash = objectHash(input)
     if (this.logfileReadCache[inputHash] == null) {
       const stream = await this.bridge.logfileRead(input)
@@ -1032,42 +1059,45 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.logfileReadCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
-  testLogBackgroundError = async input => {
+  testLogBackgroundError = async (input = {}) => {
     let output = await this.bridge.testLogBackgroundError(input)
 
     return output
   }
 
-  testLogBackgroundWarn = async input => {
+  testLogBackgroundWarn = async (input = {}) => {
     let output = await this.bridge.testLogBackgroundWarn(input)
 
     return output
   }
 
-  testLogBackgroundDebug = async input => {
+  testLogBackgroundDebug = async (input = {}) => {
     let output = await this.bridge.testLogBackgroundDebug(input)
 
     return output
   }
 
-  testPanic = async input => {
+  testPanic = async (input = {}) => {
     let output = await this.bridge.testPanic(input)
 
     return output
   }
 
-  testError = async input => {
+  testError = async (input = {}) => {
     let output = await this.bridge.testError(input)
 
     return output
   }
 
   monitorBandwidthCache = {}
+  monitorBandwidthMutex = new Mutex()
 
-  monitorBandwidth = async input => {
+  monitorBandwidth = async (input = {}) => {
+    const unlock = await this.monitorBandwidthMutex.lock()
     const inputHash = objectHash(input)
     if (this.monitorBandwidthCache[inputHash] == null) {
       const stream = await this.bridge.monitorBandwidth(input)
@@ -1088,12 +1118,15 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.monitorBandwidthCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
   monitorPeersCache = {}
+  monitorPeersMutex = new Mutex()
 
-  monitorPeers = async input => {
+  monitorPeers = async (input = {}) => {
+    const unlock = await this.monitorPeersMutex.lock()
     const inputHash = objectHash(input)
     if (this.monitorPeersCache[inputHash] == null) {
       const stream = await this.bridge.monitorPeers(input)
@@ -1114,22 +1147,23 @@ export class NodeServiceStore {
       readableObjectMode: true,
     })
     this.monitorPeersCache[inputHash].pipe(passThroughStream)
+    unlock()
     return passThroughStream
   }
 
-  getListenAddrs = async input => {
+  getListenAddrs = async (input = {}) => {
     let output = await this.bridge.getListenAddrs(input)
 
     return output
   }
 
-  getListenInterfaceAddrs = async input => {
+  getListenInterfaceAddrs = async (input = {}) => {
     let output = await this.bridge.getListenInterfaceAddrs(input)
 
     return output
   }
 
-  libp2PPing = async input => {
+  libp2PPing = async (input = {}) => {
     let output = await this.bridge.libp2PPing(input)
 
     return output

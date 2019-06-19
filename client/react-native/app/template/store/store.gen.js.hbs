@@ -3,6 +3,7 @@
 import { observable, computed } from 'mobx'
 import Stream from 'stream'
 import objectHash from 'object-hash'
+import Mutex from 'await-mutex'
 
   {{#with (lookup 'berty.node.CommitLog.Entity')}}
     {{#each fields}}
@@ -69,11 +70,12 @@ import objectHash from 'object-hash'
 
         {{#if responseStream}}
             {{case 'camel' name}}Cache = {}
+            {{case 'camel' name}}Mutex = new Mutex()
         {{/if}}
 
-        {{case 'camel' name}} = async (input) => {
-
+        {{case 'camel' name}} = async (input = {}) => {
           {{#if responseStream}}
+            const unlock = await this.{{case 'camel' name}}Mutex.lock()
             const inputHash = objectHash(input)
             if (this.{{case 'camel' name}}Cache[inputHash] == null) {
                 const stream = await this.bridge.{{case 'camel' name}}(input)
@@ -153,6 +155,7 @@ import objectHash from 'object-hash'
                 readableObjectMode: true,
             })
             this.{{case 'camel' name}}Cache[inputHash].pipe(passThroughStream)
+            unlock()
             return passThroughStream
           {{else}}
             return output

@@ -41,14 +41,14 @@ class TabBarIcon extends Component {
   async componentDidMount () {
     const { context } = this.props
 
-    const stream = await context.node.service.eventUnseen({})
-    stream.on('data', e => {
-      if (this.state.stored.indexOf(e.targetAddr) === -1) {
-        this.setState({
-          stored: [...this.state.stored, e],
-        })
-      }
-    })
+    // const stream = await context.node.service.eventUnseen({})
+    // stream.on('data', e => {
+    //   if (this.state.stored.indexOf(e.targetAddr) === -1) {
+    //     this.setState({
+    //       stored: [...this.state.stored, e],
+    //     })
+    //   }
+    // })
     this.subscriber = await context.node.service.commitLogStream({})
   }
 
@@ -85,19 +85,16 @@ class TabBarIcon extends Component {
   }
 
   contactSeen = async () => {
-    if (this.state.stored.length > 0) {
-      await Promise.all(
-        this.state.stored.map(val => {
-          return this.props.context.node.service.eventSeen({
-            id: val,
-          })
-        })
-      )
-
-      this.setState({
-        stored: [],
-      })
-    }
+    // if (this.state.stored.length > 0) {
+    //   for (const val of this.state.stored) {
+    //     await this.props.context.node.service.eventSeen({
+    //       id: val,
+    //     })
+    //   }
+    //   this.setState({
+    //     stored: [],
+    //   })
+    // }
   }
 
   render () {
