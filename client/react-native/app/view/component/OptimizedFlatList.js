@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import { FlatList as NavFlatList } from 'react-navigation'
 import { FlatList as NatFlatList, Platform } from 'react-native'
 
 const FlatList = Platform.OS === 'web' ? NatFlatList : NavFlatList
 
-export class OptimizedFlatList extends PureComponent {
+export class OptimizedFlatList extends Component {
   lastIndex = null
 
   onRefresh = () => {
