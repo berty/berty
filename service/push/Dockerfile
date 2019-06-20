@@ -21,4 +21,3 @@ CMD ["berty daemon \
         --bind-p2p /ip4/0.0.0.0/udp/4004/quic,/ip4/0.0.0.0/tcp/4004,/ip4/0.0.0.0/tcp/80,/ip4/0.0.0.0/tcp/443 \
         --mdns=false \
         $OPTIONS"]
-

@@ -9,6 +9,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 
 	"berty.tech/core/api/node"
@@ -159,12 +160,14 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 	// defer tracer.Finish()
 	// ctx = tracer.Context()
 
+	logger().Debug("PUSH EVENT")
 	pushIdentifiers, err := n.getPushDestinationsForEvent(ctx, event)
 	if err != nil {
 		return errorcodes.ErrPush.Wrap(err)
 	}
 
 	if len(pushIdentifiers) == 0 {
+		logger().Warn("no identitifiers found for", zap.String("channel id", envelope.GetChannelID()))
 		return nil
 	}
 
