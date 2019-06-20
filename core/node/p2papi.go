@@ -163,6 +163,7 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 	logger().Debug("PUSH EVENT")
 	pushIdentifiers, err := n.getPushDestinationsForEvent(ctx, event)
 	if err != nil {
+		logger().Warn("get push event identifier", zap.Error(err))
 		return errorcodes.ErrPush.Wrap(err)
 	}
 
@@ -176,6 +177,7 @@ func (n *Node) pushEvent(ctx context.Context, event *entity.Event, envelope *ent
 		return errorcodes.ErrSerialization.Wrap(err)
 	}
 
+	logger().Debug("enqueue push event")
 	for _, pushIdentifier := range pushIdentifiers {
 		if err := n.EnqueueOutgoingEvent(ctx,
 			n.NewEvent(ctx).
