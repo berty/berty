@@ -12,15 +12,15 @@ import (
 
 func initBleFunc() {
 	// TODO: Refactor this, see core/network/protocol/ble/driver/os_android.go
+	bledrv.InitScannerAndAdvertiser = BleManager.InitBluetoothService
+	bledrv.CloseScannerAndAdvertiser = BleManager.CloseBluetoothService
 	bledrv.SetMa = BleManager.SetMultiAddr
 	bledrv.SetPeerID = BleManager.SetPeerID
 	bledrv.StartScanning = BleManager.StartScanning
 	bledrv.StartAdvertising = BleManager.StartAdvertising
 	bledrv.Write = DeviceManager.WriteToDevice
 	bledrv.DialPeer = DeviceManager.DialPeer
-	bledrv.InitScannerAndAdvertiser = BleManager.InitBluetoothService
-	bledrv.CloseScannerAndAdvertiser = BleManager.CloseBluetoothService
-	bledrv.CloseConnFromMa = DeviceManager.DisconnectFromDevice
+	bledrv.CloseConnWithDevice = DeviceManager.DisconnectFromDevice
 }
 
 // TODO: Rename this function

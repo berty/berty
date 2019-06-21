@@ -1,4 +1,4 @@
-// +build !darwin,!android
+// +build !android,!darwin
 
 package driver
 
@@ -15,11 +15,11 @@ See client/react-native/gomobile/core/android_ble.go
 */
 
 // Noop implementation for platform that are not Darwin or Android
-func InitScannerAndAdvertiser() bool  { return false }
-func CloseScannerAndAdvertiser() bool { return false }
+func InitScannerAndAdvertiser()  {}
+func CloseScannerAndAdvertiser() {}
 
-func setMa(_ string)     {}
-func setPeerID(_ string) {}
+func SetMa(_ string)     {}
+func SetPeerID(_ string) {}
 
 func StartScanning()    {}
 func StartAdvertising() {}

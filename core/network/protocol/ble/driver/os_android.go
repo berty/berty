@@ -17,7 +17,7 @@ ConnClosedWithDevice(remoteMa string)
 NotifyPeerFound(remoteAddr string, remoteID string)
 */
 
-var InitScannerAndAdvertiser func() bool = nil
+var InitScannerAndAdvertiser func() = nil
 var CloseScannerAndAdvertiser func() = nil
 
 var SetMa func(string) = nil
