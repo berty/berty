@@ -386,7 +386,9 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 			n.LogBackgroundWarn(ctx, errors.Wrap(err, "failed to emit envelope on network"))
 
 			// push the outgoing event on the client stream
-			go n.queuePushEvent(ctx, event, envelope)
+			if event.Kind != entity.Kind_DevicePushTo {
+				go n.queuePushEvent(ctx, event, envelope)
+			}
 			return
 		}
 
@@ -397,7 +399,9 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 	case <-done:
 	case <-time.After(1 * time.Second):
 		// push the outgoing event on the client stream
-		go n.queuePushEvent(ctx, event, envelope)
+		if event.Kind != entity.Kind_DevicePushTo {
+			go n.queuePushEvent(ctx, event, envelope)
+		}
 	}
 	return nil
 }
