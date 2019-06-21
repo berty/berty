@@ -267,8 +267,15 @@ func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Even
 	// defer tracer.Finish()
 	// ctx = tracer.Context()
 
+	if event.Kind == entity.Kind_DevicePushTo && event.TargetType == entity.Event_ToSpecificContact {
+		return []*entity.EventDispatch{
+			&entity.EventDispatch{
+				ContactID: event.TargetAddr,
+			},
+		}, nil
+	}
+
 	if event.AckStatus == entity.Event_AckedByAllDevices {
-		logger().Warn("acked by all devices")
 		return []*entity.EventDispatch{}, nil
 	}
 
@@ -278,10 +285,6 @@ func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Even
 		if err := n.generateDispatchesForEvent(ctx, event); err != nil {
 			return nil, err
 		}
-	}
-
-	if event.Kind == entity.Kind_DevicePushTo && len(event.Dispatches) != 0 {
-		return event.Dispatches, nil
 	}
 
 	// refresh event.Dispatches in case there were changes since the time the event was loaded from DB
