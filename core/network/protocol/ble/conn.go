@@ -3,9 +3,10 @@ package ble
 import (
 	"fmt"
 	"net"
-	"sync"
 	"time"
 
+	bledrv "berty.tech/core/network/protocol/ble/driver"
+	blema "berty.tech/core/network/protocol/ble/multiaddr"
 	ic "github.com/libp2p/go-libp2p-crypto"
 	peer "github.com/libp2p/go-libp2p-peer"
 	tpt "github.com/libp2p/go-libp2p-transport"
@@ -15,235 +16,125 @@ import (
 	"go.uber.org/zap"
 )
 
+// TODO: Check if there is a simplier way to implement this using recent
+// libp2p features
 type Conn struct {
-	tpt.Conn
-	closed            bool
-	closer            chan struct{}
-	transport         *Transport
-	lID               peer.ID
-	rID               peer.ID
-	lAddr             ma.Multiaddr
-	rAddr             ma.Multiaddr
-	notFinishedToRead []byte
-	incoming          chan []byte
-	sess              *yamux.Session
+	nConn         net.Conn // For yamux
+	sess          *yamux.Session
+	incomingData  chan []byte
+	remainingData []byte
+
+	tConn     tpt.Conn // For libp2p
+	transport *Transport
+	localID   peer.ID
+	remoteID  peer.ID
+	localMa   ma.Multiaddr
+	remoteMa  ma.Multiaddr
+
+	// Common
+	closed bool
+	closer chan struct{}
 }
 
-type ConnForSmux struct {
-	*Conn
-}
-
-type localConn struct {
-	*ConnForSmux
-}
-
-type remoteConn struct {
-	*ConnForSmux
-}
-
-var conns sync.Map
-var readers sync.Map
-
-type reader struct {
-	sync.Mutex
-	funcSlice []func(*Conn)
-}
-
-func getConn(bleUUID string) (*Conn, bool) {
-	c, ok := conns.Load(bleUUID)
-	if !ok {
-		return nil, ok
-	}
-	return c.(*Conn), ok
-}
-
-func loadOrCreate(bleUUID string) *reader {
-	c, ok := readers.Load(bleUUID)
-	if !ok {
-		newReader := &reader{
-			funcSlice: make([]func(*Conn), 0),
-		}
-		readers.Store(bleUUID, newReader)
-		return newReader
-	}
-	return c.(*reader)
-}
-
-func makeFunc(tmp []byte) func(c *Conn) {
-	return func(c *Conn) {
-		c.incoming <- tmp
-	}
-}
-
-func BytesToConn(bleUUID string, b []byte) {
-	tmp := make([]byte, len(b))
-	copy(tmp, b)
-	r := loadOrCreate(bleUUID)
-	r.funcSlice = append(r.funcSlice, makeFunc(tmp))
-	go func(bleUUID string, r *reader) {
-		r.Lock()
-		defer r.Unlock()
-		for {
-			if conn, ok := getConn(bleUUID); ok {
-				r.funcSlice[0](conn)
-				r.funcSlice = r.funcSlice[1:]
-				return
-			}
-		}
-	}(bleUUID, r)
-}
-
-func ConnClosed(bleUUID string) {
-	if conn, ok := getConn(bleUUID); ok {
-		conns.Delete(bleUUID)
-		conn.sess.Close()
-	}
-}
-
-func NewConn(transport *Transport, lID, rID peer.ID, lAddr, rAddr ma.Multiaddr, dir int) Conn {
-	conn := Conn{
-		closed:            false,
-		closer:            make(chan struct{}),
-		transport:         transport,
-		incoming:          make(chan []byte),
-		lID:               lID,
-		rID:               rID,
-		lAddr:             lAddr,
-		rAddr:             rAddr,
-		notFinishedToRead: make([]byte, 0),
-	}
-	var err error
-	connForSmux := ConnForSmux{
-		&conn,
-	}
-	configDefault := yamux.DefaultConfig()
-	// TODO: remove timout, it should be handled by the native write function
-	configDefault.ConnectionWriteTimeout = 120 * time.Second
-	configDefault.KeepAliveInterval = 240 * time.Second
-	configDefault.LogOutput = getYamuxLogger()
-
-	if dir == 1 {
-		//server side
-		conn.sess, err = yamux.Server(&connForSmux, configDefault)
-	} else {
-		// cli side
-		conn.sess, err = yamux.Client(&connForSmux, configDefault)
-	}
-	if err != nil {
-		panic(err)
-	}
-
-	st, _ := rAddr.ValueForProtocol(P_BLE)
-	conns.Store(st, &conn)
-	return conn
-}
-
-func (b *Conn) Read(p []byte) (n int, err error) {
-	if b.notFinishedToRead != nil && len(b.notFinishedToRead) > 0 {
+// Implement net.Conn interface
+// See https://golang.org/pkg/net/#Conn
+func (c *Conn) Read(p []byte) (n int, err error) {
+	if c.remainingData != nil && len(c.remainingData) > 0 {
 		// Read remaining data left in last call.
-		copied := copy(p, b.notFinishedToRead)
-		b.notFinishedToRead = b.notFinishedToRead[copied:]
+		copied := copy(p, c.remainingData)
+		c.remainingData = c.remainingData[copied:]
 		return copied, nil
 	}
 
 	select {
-	case b.notFinishedToRead = <-b.incoming:
-		copied := copy(p, b.notFinishedToRead)
-		b.notFinishedToRead = b.notFinishedToRead[copied:]
+	case c.remainingData = <-c.incomingData:
+		copied := copy(p, c.remainingData)
+		c.remainingData = c.remainingData[copied:]
 		return copied, nil
-	case <-b.closer:
-		return 0, fmt.Errorf("conn closed")
+	case <-c.closer:
+		return 0, fmt.Errorf("conn read failed: conn already closed")
 	}
 }
 
-func (b *Conn) LocalPeer() peer.ID {
-	return b.lID
-}
-
-func (b *Conn) LocalPrivateKey() ic.PrivKey {
-	return nil
-}
-
-func (b *Conn) RemotePeer() peer.ID {
-	return b.rID
-}
-
-func (b *Conn) RemotePublicKey() ic.PubKey {
-	return nil
-}
-
-func (b *Conn) LocalMultiaddr() ma.Multiaddr {
-	return b.lAddr
-}
-
-func (b *Conn) RemoteMultiaddr() ma.Multiaddr {
-	return b.rAddr
-}
-
-func (b *Conn) Transport() tpt.Transport {
-	logger().Debug("BLEConn Transport")
-	return b.transport
-}
-
-func (b *ConnForSmux) LocalAddr() net.Addr {
-	return &localConn{
-		b,
+func (c *Conn) Write(p []byte) (n int, err error) {
+	if c.IsClosed() {
+		return 0, fmt.Errorf("conn write failed: conn already closed")
 	}
-}
 
-func (b *ConnForSmux) RemoteAddr() net.Addr {
-	return &remoteConn{
-		b,
-	}
-}
-
-func (b *remoteConn) String() string {
-	return b.rAddr.String()
-}
-
-func (b *localConn) String() string {
-	return b.lAddr.String()
-}
-
-func (b *localConn) Network() string {
-	return "ble"
-}
-
-func (b *remoteConn) Network() string {
-	return "ble"
-}
-
-func (b *ConnForSmux) SetDeadline(t time.Time) error {
-	return nil
-}
-
-func (b *ConnForSmux) SetReadDeadline(t time.Time) error {
-	return nil
-}
-
-func (b *ConnForSmux) SetWriteDeadline(t time.Time) error {
-	return nil
-}
-
-func (b *ConnForSmux) Close() error {
-	logger().Debug("BLEConnForSmux Close")
-	return nil
-}
-
-// OpenStream creates a new stream.
-func (b *Conn) OpenStream() (smu.Stream, error) {
-	s, err := b.sess.OpenStream()
+	val, err := c.remoteMa.ValueForProtocol(blema.P_BLE)
 	if err != nil {
-		logger().Error("BLEConn OpenStream", zap.Error(err))
+		return 0, err
+	}
+
+	// Write using native driver
+	if bledrv.Write(p, val) == false {
+		return 0, fmt.Errorf("conn write failed: native write failed")
+	}
+
+	return len(p), nil
+}
+
+func (c *Conn) Close() error {
+	if c.closed == false {
+		val, err := c.remoteMa.ValueForProtocol(blema.P_BLE)
+		if err != nil {
+			return err
+		}
+
+		logger().Debug("close native connection")
+		bledrv.CloseConnWithDevice(val)
+	}
+
+	c.closed = true
+	return nil
+}
+
+func (c *Conn) LocalAddr() net.Addr {
+	val, _ := c.localMa.ValueForProtocol(blema.P_BLE)
+	return &Addr{
+		Address: val,
+	}
+}
+
+func (c *Conn) RemoteAddr() net.Addr {
+	val, _ := c.remoteMa.ValueForProtocol(blema.P_BLE)
+	return &Addr{
+		Address: val,
+	}
+}
+
+// Noop deadline methods
+func (c *Conn) SetDeadline(t time.Time) error      { return nil }
+func (c *Conn) SetReadDeadline(t time.Time) error  { return nil }
+func (c *Conn) SetWriteDeadline(t time.Time) error { return nil }
+
+// TODO: Refacto using updated version of libp2p
+// Implement go-libp2p-transport CapableConn interface
+// See https://github.com/libp2p/go-libp2p-core/blob/master/transport/transport.go
+func (c *Conn) IsClosed() bool {
+	return c.closed
+}
+
+func (c *Conn) OpenStream() (smu.Stream, error) {
+	s, err := c.sess.OpenStream()
+	if err != nil {
+		logger().Error("conn OpenStream failed", zap.Error(err))
 	}
 	return s, err
 }
 
-// AcceptStream accepts a stream opened by the other side.
-func (b *Conn) AcceptStream() (smu.Stream, error) {
-	s, err := b.sess.AcceptStream()
+func (c *Conn) AcceptStream() (smu.Stream, error) {
+	s, err := c.sess.AcceptStream()
 	if err != nil {
-		logger().Error("BLEConn AcceptStream", zap.Error(err))
+		logger().Error("conn AcceptStream failed", zap.Error(err))
 	}
 	return s, err
 }
+
+func (c *Conn) LocalPeer() peer.ID            { return c.localID }
+func (c *Conn) LocalPrivateKey() ic.PrivKey   { return nil }
+func (c *Conn) RemotePeer() peer.ID           { return c.remoteID }
+func (c *Conn) RemotePublicKey() ic.PubKey    { return nil }
+func (c *Conn) LocalMultiaddr() ma.Multiaddr  { return c.localMa }
+func (c *Conn) RemoteMultiaddr() ma.Multiaddr { return c.remoteMa }
+func (c *Conn) Transport() tpt.Transport      { return c.transport }

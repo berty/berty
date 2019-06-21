@@ -1,167 +1,122 @@
-// +build android darwin
-
 package ble
 
 import (
 	"context"
 	"fmt"
-	"time"
 
+	bledrv "berty.tech/core/network/protocol/ble/driver"
+	blema "berty.tech/core/network/protocol/ble/multiaddr"
 	"github.com/gofrs/uuid"
-	logging "github.com/ipfs/go-log"
 	host "github.com/libp2p/go-libp2p-host"
 	peer "github.com/libp2p/go-libp2p-peer"
-	pstore "github.com/libp2p/go-libp2p-peerstore"
 	tpt "github.com/libp2p/go-libp2p-transport"
-	rtpt "github.com/libp2p/go-reuseport-transport"
 	ma "github.com/multiformats/go-multiaddr"
-	"go.uber.org/zap"
+	"github.com/pkg/errors"
 )
 
-var peerAdder chan *pstore.PeerInfo = make(chan *pstore.PeerInfo)
+const DefaultBind = "/ble/00000000-0000-0000-0000-000000000000"
 
-// BLETransport is the TCP transport.
+// Transport is the BLE transport
 type Transport struct {
-	Host host.Host
-	// Explicitly disable reuseport.
-	DisableReuseport bool
-	// ID
-	ID    string
-	lAddr ma.Multiaddr
-	// TCP connect timeout
-	ConnectTimeout time.Duration
-	reuse          rtpt.Transport
+	host     host.Host
+	listener *Listener // BLE transport can only have one listener
 }
-
-// DefaultConnectTimeout is the (default) maximum amount of time the TCP
-// transport will spend on the initial TCP connect before giving up.
-var DefaultConnectTimeout = 5 * time.Second
-
-var log = logging.Logger("ble-tpt")
 
 var _ tpt.Transport = &Transport{}
 
-func AddToPeerStore(peerID string, rAddr string) {
-	pID, err := peer.IDB58Decode(peerID)
-	if err != nil {
-		panic(err)
+// NewTransport creates a BLE transport object that tracks dialers and listener
+func NewTransport(h host.Host) *Transport {
+	return &Transport{
+		host: h,
 	}
-	rMa, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", rAddr))
-	if err != nil {
-		panic(err)
-	}
-	pi := &pstore.PeerInfo{
-		ID:    pID,
-		Addrs: []ma.Multiaddr{rMa},
-	}
-	defer func() {
-		peerAdder <- pi
-		logger().Debug("SENDED TO PEERADDER\n")
-	}()
 }
 
-// NewBLETransport creates a tcp transport object that tracks dialers and listeners
-// created. It represents an entire tcp stack (though it might not necessarily be)
-func NewTransport(h host.Host) (*Transport, error) {
-	// use deterministic id based on host peerID
-	logger().Debug("BLE: " + h.ID().String())
-	id := uuid.NewV5(uuid.UUID{}, h.ID().String())
-	srcMA, err := ma.NewMultiaddr(fmt.Sprintf("/ble/%s", id.String()))
-	ret := &Transport{
-		ConnectTimeout: DefaultConnectTimeout,
-		Host:           h,
-		ID:             id.String(),
-		lAddr:          srcMA,
+// Dial dials the peer at the remote address.
+func (t *Transport) Dial(ctx context.Context, rMa ma.Multiaddr, p peer.ID) (tpt.Conn, error) {
+	// BLE transport needs to have a running listener in order to Dial other peer
+	// Native drivers are initialized during listener creation
+	if t.listener == nil {
+		return nil, errors.New("transport dialing peer failed: no active listener")
 	}
-	ma, err := ret.lAddr.ValueForProtocol(P_BLE)
+
+	rAddr, err := rMa.ValueForProtocol(blema.P_BLE)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "transport dialing peer failed")
 	}
-	peerID := h.ID().Pretty()
-	SetMa(ma)
-	SetPeerID(peerID)
-	go ret.ListenNewPeer()
-	return ret, nil
-}
 
-func (t *Transport) ListenNewPeer() {
-	for {
-		pi := <-peerAdder
-		bleUUID, err := pi.Addrs[0].ValueForProtocol(P_BLE)
-		if err != nil {
-			panic(err)
-		}
-		for _, v := range t.Host.Peerstore().Peers() {
-			otherPi := t.Host.Peerstore().PeerInfo(v)
-			for _, addr := range otherPi.Addrs {
-				otherBleUUID, err := addr.ValueForProtocol(P_BLE)
-				if err == nil && bleUUID == otherBleUUID {
-					t.Host.Peerstore().ClearAddrs(v)
-				}
-			}
-		}
-
-		t.Host.Peerstore().AddAddrs(pi.ID, pi.Addrs, pstore.TempAddrTTL)
-		lBleUUID, err := t.lAddr.ValueForProtocol(P_BLE)
-		if err != nil {
-			panic(err)
-		}
-		rVal := 0
-		for _, i := range bleUUID {
-			rVal += int(i)
-		}
-		lVal := 0
-		for _, i := range lBleUUID {
-			lVal += int(i)
-		}
-
-		if lVal < rVal {
-			err := t.Host.Connect(context.Background(), *pi)
-			if err != nil {
-				logger().Error("BLETransport Error connecting", zap.Error(err))
-			} else {
-				logger().Debug("SUCCESS CONNECTING")
-			}
-		} else {
-			peerID := pi.ID.Pretty()
-			logger().Debug("REAL ACCEPT")
-			RealAcceptSender(lBleUUID, bleUUID, peerID)
-		}
+	// TODO: Is this pertinent? We need to think about it
+	if bledrv.DialPeer(rAddr) == false {
+		return nil, errors.New("transport dialing peer failed")
 	}
+
+	var conn *Conn
+	// Check if a conn already exists
+	if conn = getConn(rAddr); conn != nil {
+		conn.closed = false
+		conn.closer = make(chan struct{})
+	} else {
+		// TODO: Is this pertinent? Or should it be better to return an error?
+		conn = newConn(t, t.host.ID(), p, t.listener.localMa, rMa, client)
+	}
+
+	return conn, nil
 }
 
 // CanDial returns true if this transport believes it can dial the given
 // multiaddr.
 func (t *Transport) CanDial(addr ma.Multiaddr) bool {
-	logger().Debug("BLETransport CanDial", zap.String("peer", addr.String()))
-	return BLE.Matches(addr)
-}
-
-// UseReuseport returns true if reuseport is enabled and available.
-func (t *Transport) UseReuseport() bool {
-	logger().Debug("BLETransport Reuseport")
-	return false
+	return blema.BLE.Matches(addr)
 }
 
 // Listen listens on the given multiaddr.
-func (t *Transport) Listen(laddr ma.Multiaddr) (tpt.Listener, error) {
-	logger().Debug("BLETransport Listen")
-	return NewListener(laddr, t.Host.ID(), t)
+// BLE can't listen on more than one listener
+func (t *Transport) Listen(lMa ma.Multiaddr) (tpt.Listener, error) {
+	var lAddr string
+	var err error
+
+	// Replace default bind by a deterministic one based on local peerID
+	if lMa.String() == DefaultBind {
+		lAddr = uuid.NewV5(uuid.UUID{}, t.host.ID().String()).String()
+		lMa, err = ma.NewMultiaddr(fmt.Sprintf("/ble/%s", lAddr))
+		if err != nil { // Should never append
+			panic(err)
+		}
+	} else {
+		lAddr, err = lMa.ValueForProtocol(blema.P_BLE)
+		if err != nil {
+			return nil, errors.New("transport listen failed: wrong multiaddr")
+		}
+	}
+
+	// If a listener already exists
+	if t.listener != nil {
+		// If the addr is the same as the current one, return the current listener
+		if t.listener.Addr().String() == lAddr {
+			return t.listener, nil
+		}
+		// If the addr is different, return an error
+		return nil, errors.New("transport listen failed: one listener maximum")
+	}
+
+	// Otherwise, create a new listener and return it
+	t.listener, err = newListener(lMa, t)
+	if err == nil {
+		startDiscovery(t) // Start discovery service
+	}
+
+	return t.listener, err
 }
 
-// Protocols returns the list of terminal protocols this transport can dial.
-func (t *Transport) Protocols() []int {
-	logger().Debug("BLETransport Protocols")
-	return []int{P_BLE}
-}
-
-// Proxy always returns false for the TCP transport.
+// Proxy returns true if this transport proxies.
 func (t *Transport) Proxy() bool {
-	logger().Debug("BLETransport Proxy")
 	return false
 }
 
+// Protocols returns the set of protocols handled by this transport.
+func (t *Transport) Protocols() []int {
+	return []int{blema.P_BLE}
+}
+
 func (t *Transport) String() string {
-	logger().Debug("BLETransport String")
-	return "ble"
+	return "BLE"
 }

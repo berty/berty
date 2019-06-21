@@ -1,6 +1,6 @@
 // +build darwin
 
-package ble
+package driver
 
 import (
 	"unsafe"
@@ -15,18 +15,34 @@ import (
 */
 import "C"
 
+/* TODO: Refactor this file and correponding objC to have this functions only:
+GO -> NATIVE:
+StartBleDriver(localMa string, localID string) bool
+StopBleDriver() bool
+
+SendToDevice(remoteMa string, payload []byte) bool
+CloseConnWithDevice(remoteMa string)
+
+
+NATIVE -> GO:
+ReceiveFromDevice(remoteMa string, payload []byte)
+ConnClosedWithDevice(remoteMa string)
+NotifyPeerFound(remoteAddr string, remoteID string) bool
+*/
+
 //export sendBytesToConn
 func sendBytesToConn(bleUUID *C.char, bytes unsafe.Pointer, length C.int) {
-	goBleUUID := C.GoString(bleUUID)
+	rAddr := C.GoString(bleUUID)
 	b := C.GoBytes(bytes, length)
-	BytesToConn(goBleUUID, b)
+	ReceiveFromDevice(rAddr, b)
 }
 
 //export AddToPeerStoreC
-func AddToPeerStoreC(peerID *C.char, rAddr *C.char) {
-	goPeerID := C.GoString(peerID)
+func AddToPeerStoreC(rID *C.char, rAddr *C.char) {
+	goRID := C.GoString(rID)
 	goRAddr := C.GoString(rAddr)
-	AddToPeerStore(goPeerID, goRAddr)
+	// TODO: Check return on native side (disconnect device if error)
+	_ = HandlePeerFound(goRID, goRAddr)
 }
 
 const (
@@ -82,7 +98,7 @@ func CloseScannerAndAdvertiser() {
 	C.closeBle()
 }
 
-func CloseConnFromMa(ma string) {
+func CloseConnWithDevice(ma string) {
 	// ma := C.CString(val)
 	// logger().Debug("BLEConn close", zap.String("VALUE",val))
 	// defer C.free(unsafe.Pointer(ma))
