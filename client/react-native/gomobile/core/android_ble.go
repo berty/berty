@@ -11,7 +11,7 @@ import (
 )
 
 func initBleFunc() {
-	// TODO: Check return of startScanning / startAdvertising / initScannerAndAdvertiser / closeScannerAndAdvertiser / etc...
+	// TODO: Refactor this, see core/network/protocol/ble/driver/os_android.go
 	bledrv.SetMa = BleManager.SetMultiAddr
 	bledrv.SetPeerID = BleManager.SetPeerID
 	bledrv.StartScanning = BleManager.StartScanning

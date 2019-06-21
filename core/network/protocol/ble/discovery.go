@@ -29,7 +29,7 @@ func startDiscovery(t *Transport) {
 	}()
 }
 
-// Handler called by native driver when new peer found
+// Handler called by the native driver when a new peer is found
 func HandlePeerFound(rID string, rAddr string) bool {
 	if disc != nil {
 		logger().Error("discovery handle peer failed: discovery service not started")

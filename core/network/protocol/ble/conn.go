@@ -61,13 +61,13 @@ func (c *Conn) Write(p []byte) (n int, err error) {
 		return 0, fmt.Errorf("conn write failed: conn already closed")
 	}
 
-	val, err := c.remoteMa.ValueForProtocol(blema.P_BLE)
+	rAddr, err := c.remoteMa.ValueForProtocol(blema.P_BLE)
 	if err != nil {
 		return 0, err
 	}
 
 	// Write using native driver
-	if bledrv.Write(p, val) == false {
+	if bledrv.Write(p, rAddr) == false {
 		return 0, fmt.Errorf("conn write failed: native write failed")
 	}
 
@@ -76,13 +76,13 @@ func (c *Conn) Write(p []byte) (n int, err error) {
 
 func (c *Conn) Close() error {
 	if c.closed == false {
-		val, err := c.remoteMa.ValueForProtocol(blema.P_BLE)
+		rAddr, err := c.remoteMa.ValueForProtocol(blema.P_BLE)
 		if err != nil {
 			return err
 		}
 
 		logger().Debug("close native connection")
-		bledrv.CloseConnWithDevice(val)
+		bledrv.CloseConnWithDevice(rAddr)
 	}
 
 	c.closed = true
@@ -90,16 +90,16 @@ func (c *Conn) Close() error {
 }
 
 func (c *Conn) LocalAddr() net.Addr {
-	val, _ := c.localMa.ValueForProtocol(blema.P_BLE)
+	lAddr, _ := c.localMa.ValueForProtocol(blema.P_BLE)
 	return &Addr{
-		Address: val,
+		Address: lAddr,
 	}
 }
 
 func (c *Conn) RemoteAddr() net.Addr {
-	val, _ := c.remoteMa.ValueForProtocol(blema.P_BLE)
+	rAddr, _ := c.remoteMa.ValueForProtocol(blema.P_BLE)
 	return &Addr{
-		Address: val,
+		Address: rAddr,
 	}
 }
 

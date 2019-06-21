@@ -62,8 +62,8 @@ func newConn(transport *Transport, lID, rID peer.ID, lMa, rMa ma.Multiaddr, s si
 }
 
 // Returns an existing conn
-func getConn(bleUUID string) *Conn {
-	c, ok := conns.Load(bleUUID)
+func getConn(rAddr string) *Conn {
+	c, ok := conns.Load(rAddr)
 	if !ok {
 		return nil
 	}
@@ -71,13 +71,13 @@ func getConn(bleUUID string) *Conn {
 }
 
 // Returns an existing reader or create a new one
-func getOrCreateReader(bleUUID string) *reader {
-	c, ok := readers.Load(bleUUID)
+func getOrCreateReader(rAddr string) *reader {
+	c, ok := readers.Load(rAddr)
 	if !ok {
 		newReader := &reader{
 			funcSlice: make([]func(*Conn), 0),
 		}
-		readers.Store(bleUUID, newReader)
+		readers.Store(rAddr, newReader)
 		return newReader
 	}
 	return c.(*reader)

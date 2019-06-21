@@ -35,7 +35,7 @@ func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 	}
 
 	/* TODO: Replace this by:
-	if !StartBleDriver(listener.Addr().String(), t.host.ID().Pretty()) {
+	if !bledrv.StartBleDriver(listener.Addr().String(), t.host.ID().Pretty()) {
 		return nil, errors.New("listener creation failed: can't start BLE native driver")
 	}
 	*/
@@ -49,9 +49,9 @@ func newListener(lMa ma.Multiaddr, t *Transport) (*Listener, error) {
 }
 
 func (l *Listener) Addr() net.Addr {
-	val, _ := l.localMa.ValueForProtocol(blema.P_BLE)
+	lAddr, _ := l.localMa.ValueForProtocol(blema.P_BLE)
 	return &Addr{
-		Address: val,
+		Address: lAddr,
 	}
 }
 
@@ -84,7 +84,7 @@ func (l *Listener) Close() error {
 	default:
 		/* TODO: Replace this by:
 		defer close(l.closer)
-		if !StopBleDriver() {
+		if !bledrv.StopBleDriver() {
 			return errors.New("listener close failed: can't stop BLE native driver")
 		}
 		return nil

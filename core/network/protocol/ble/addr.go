@@ -7,10 +7,5 @@ type Addr struct {
 	Address string
 }
 
-func (b *Addr) String() string {
-	return b.Address
-}
-
-func (b *Addr) Network() string {
-	return "ble"
-}
+func (b *Addr) String() string  { return b.Address }
+func (b *Addr) Network() string { return "ble" }
