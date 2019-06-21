@@ -271,6 +271,7 @@ func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Even
 		return []*entity.EventDispatch{
 			&entity.EventDispatch{
 				ContactID: event.TargetAddr,
+				EventID:   event.ID,
 			},
 		}, nil
 	}
