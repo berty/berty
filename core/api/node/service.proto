@@ -228,10 +228,6 @@ message EventListInput {
   NullableTrueFalse only_without_seen_at = 3;
   Pagination paginate = 99;
 }
-message EventEdge {
-  berty.entity.Event node = 1;
-  string cursor = 2;
-}
 
 
 //
@@ -241,10 +237,6 @@ message EventEdge {
 message ContactListInput {
   berty.entity.Contact filter = 1;
   Pagination paginate = 99;
-}
-message ContactEdge {
-  berty.entity.Contact node = 1;
-  string cursor = 2;
 }
 message ContactInput {
   berty.entity.Contact filter = 1;
@@ -259,10 +251,6 @@ message ConversationListInput {
   berty.entity.Conversation filter = 1;
   Pagination paginate = 99;
 }
-message ConversationEdge {
-  berty.entity.Conversation node = 1;
-  string cursor = 2;
-}
 
 message ConversationCreateInput {
   repeated berty.entity.Contact contacts = 1 [(validate.min_items) = 1];
@@ -276,10 +264,6 @@ message ConversationManageMembersInput {
   repeated berty.entity.Contact contacts = 2 [(validate.min_items) = 1];
 }
 
-message DevicePushConfigEdge {
-  berty.entity.DevicePushConfig node = 1;
-  string cursor = 2;
-}
 message DevicePushConfigListOutput {
   repeated entity.DevicePushConfig edges = 1;
 }

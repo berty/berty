@@ -443,18 +443,6 @@
                 }
               }
             },
-            "EventEdge": {
-              "fields": {
-                "node": {
-                  "type": "berty.entity.Event",
-                  "id": 1
-                },
-                "cursor": {
-                  "type": "string",
-                  "id": 2
-                }
-              }
-            },
             "ContactListInput": {
               "fields": {
                 "filter": {
@@ -464,18 +452,6 @@
                 "paginate": {
                   "type": "Pagination",
                   "id": 99
-                }
-              }
-            },
-            "ContactEdge": {
-              "fields": {
-                "node": {
-                  "type": "berty.entity.Contact",
-                  "id": 1
-                },
-                "cursor": {
-                  "type": "string",
-                  "id": 2
                 }
               }
             },
@@ -496,18 +472,6 @@
                 "paginate": {
                   "type": "Pagination",
                   "id": 99
-                }
-              }
-            },
-            "ConversationEdge": {
-              "fields": {
-                "node": {
-                  "type": "berty.entity.Conversation",
-                  "id": 1
-                },
-                "cursor": {
-                  "type": "string",
-                  "id": 2
                 }
               }
             },
@@ -552,18 +516,6 @@
                   "options": {
                     "(validate.min_items)": 1
                   }
-                }
-              }
-            },
-            "DevicePushConfigEdge": {
-              "fields": {
-                "node": {
-                  "type": "berty.entity.DevicePushConfig",
-                  "id": 1
-                },
-                "cursor": {
-                  "type": "string",
-                  "id": 2
                 }
               }
             },

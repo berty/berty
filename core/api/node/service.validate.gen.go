@@ -171,22 +171,6 @@ func (m *EventListInput) Validate() error {
 
 	return nil
 }
-func (m *EventEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Event" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-	return nil
-}
 func (m *ContactListInput) Validate() error {
 	if m == nil {
 		return nil
@@ -208,22 +192,6 @@ func (m *ContactListInput) Validate() error {
 		}
 	}
 
-	return nil
-}
-func (m *ContactEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Contact" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *ContactInput) Validate() error {
@@ -262,22 +230,6 @@ func (m *ConversationListInput) Validate() error {
 		}
 	}
 
-	return nil
-}
-func (m *ConversationEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.Conversation" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *ConversationCreateInput) Validate() error {
@@ -331,22 +283,6 @@ func (m *ConversationManageMembersInput) Validate() error {
 	if len(m.GetContacts()) < 1 {
 		return errors.New("Contacts must contain at least 1 item(s)")
 	}
-	return nil
-}
-func (m *DevicePushConfigEdge) Validate() error {
-	if m == nil {
-		return nil
-	}
-
-	// handling field: Node - name:"node" number:1 label:LABEL_OPTIONAL type:TYPE_MESSAGE type_name:".berty.entity.DevicePushConfig" json_name:"node"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
-
-	if v, ok := interface{}(m.GetNode()).(interface{ Validate() error }); ok {
-		if err := v.Validate(); err != nil {
-			return errors.Wrap(err, "embedded message verification failed: Node")
-		}
-	}
-
-	// handling field: Cursor - name:"cursor" number:2 label:LABEL_OPTIONAL type:TYPE_STRING json_name:"cursor"  (is_contact_key=false, defined_only=false, min_len=0, max_len=0, skip=false, required=false, min_items=0, max_items=0)
 	return nil
 }
 func (m *DevicePushConfigListOutput) Validate() error {
