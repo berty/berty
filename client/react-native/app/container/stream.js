@@ -121,7 +121,7 @@ export class StreamPagination extends Stream {
       let infTop = this.compareInf(cursor, this.cursorExtractor(itemTop))
       if (infTop) {
         // if item exist, update his position
-        if (index !== -1) {
+        if (index !== -1 && index >= topIndex) {
           this.queue.splice(
             // remove all items from top
             topIndex,
@@ -142,7 +142,7 @@ export class StreamPagination extends Stream {
       let supBottom = this.compareSup(cursor, this.cursorExtractor(itemBottom))
       if (supBottom) {
         // if item exist, update his position
-        if (index !== -1) {
+        if (index !== -1 && index < bottomIndex) {
           this.queue.splice(
             // remove all items from index
             index,
