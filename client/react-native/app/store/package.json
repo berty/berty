@@ -6,7 +6,7 @@
   "private": true,
   "dependencies": {
     "@berty/common": "^0.0.1",
-    "await-mutex": "^1.0.2",
+    "await-mutex": "1.0.1",
     "mobx": "^5.10.0"
   }
 }
