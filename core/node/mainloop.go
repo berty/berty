@@ -365,6 +365,10 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 	// wait for 1s to simulate a sync subscription,
 	// if too long, the task will be done in background
 	done := make(chan bool, 1)
+	if event.Kind == entity.Kind_DevicePushTo {
+		logger().Debug("sending push notification message")
+	}
+
 	go func() {
 		tctx, cancel := context.WithTimeout(ctx, time.Minute)
 		defer cancel()
@@ -388,8 +392,8 @@ func (n *Node) sendDispatch(ctx context.Context, dispatch *entity.EventDispatch,
 			// push the outgoing event on the client stream
 			if event.Kind != entity.Kind_DevicePushTo {
 				go n.queuePushEvent(ctx, event, envelope)
+				return
 			}
-			return
 		}
 
 		done <- true

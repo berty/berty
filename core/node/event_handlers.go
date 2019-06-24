@@ -552,6 +552,7 @@ func (n *Node) handleDevicePushTo(ctx context.Context, event *entity.Event) erro
 		return errorcodes.ErrPushUnknownDestination.Wrap(err)
 	}
 
+	logger().Info("Dispatching push notif")
 	if err := n.pushManager.Dispatch(&push.PushData{
 		PushIdentifier: pushAttrs.PushIdentifier,
 		Envelope:       pushAttrs.Envelope,
