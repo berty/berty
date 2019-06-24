@@ -215,8 +215,28 @@ func (n *Node) generateDispatchesForEvent(ctx context.Context, event *entity.Eve
 	// ctx = tracer.Context()
 
 	db := n.sql(ctx)
-
 	query := db.Model(&entity.Device{})
+
+	if event.Kind == entity.Kind_DevicePushTo && event.TargetType == entity.Event_ToSpecificContact {
+		tx := db.Begin()
+		dispatch := &entity.EventDispatch{
+			EventID:   event.ID,
+			ContactID: event.TargetAddr,
+		}
+		if err := tx.Create(&dispatch).Error; err != nil {
+			tx.Rollback()
+			return sql.GenericError(err)
+		}
+
+		if err := tx.Commit().Error; err != nil {
+			return sql.GenericError(err)
+		}
+
+		if err := tx.Error; err != nil {
+			return sql.GenericError(err)
+		}
+		return nil
+	}
 
 	switch event.TargetType {
 	case entity.Event_ToSpecificConversation:
@@ -266,15 +286,6 @@ func (n *Node) activeDispatchesFromEvent(ctx context.Context, event *entity.Even
 	// tracer := tracing.EnterFunc(ctx, event)
 	// defer tracer.Finish()
 	// ctx = tracer.Context()
-
-	if event.Kind == entity.Kind_DevicePushTo && event.TargetType == entity.Event_ToSpecificContact {
-		return []*entity.EventDispatch{
-			&entity.EventDispatch{
-				ContactID: event.TargetAddr,
-				EventID:   event.ID,
-			},
-		}, nil
-	}
 
 	if event.AckStatus == entity.Event_AckedByAllDevices {
 		return []*entity.EventDispatch{}, nil
